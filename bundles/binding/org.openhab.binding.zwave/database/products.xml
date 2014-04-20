@@ -257,6 +257,10 @@
 				<Type>0002</Type>
 				<Id>0004</Id>
 			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>001D</Id>
+			</Reference>
 			<Model>DoorSensor</Model>
 			<Label lang="en">Door/Window sensor</Label>
 			<Label lang="de">Tür-Fenster-Sensor</Label>
@@ -287,7 +291,16 @@
 			</Reference>
 			<Model>DSB06</Model>
 			<Label lang="en">Smart Energy Switch</Label>
-			<ConfigFile></ConfigFile>
+			<ConfigFile>aeon/dsb06.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0008</Id>
+			</Reference>
+			<Model>Smart Dimmer</Model>
+			<Label lang="en">Smart Energy Dimmer</Label>
+			<ConfigFile>aeon/smartdimmer.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -314,10 +327,19 @@
 		<Product>
 			<Reference>
 				<Type>0003</Type>
+				<Id>0011</Id>
+			</Reference>
+			<Model>MSES</Model>
+			<Label lang="en">Micro Smart Switch</Label>
+			<ConfigFile>aeon/mses.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
 				<Id>001A</Id>
 			</Reference>
 			<Model>MES</Model>
-			<Label lang="en">Micro Smart Switch</Label>
+			<Label lang="en">Switching Insert</Label>
 			<ConfigFile>aeon/mes.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -339,8 +361,8 @@
 		<Name>Radio Thermostat Company of America</Name>
 		<Product>
 			<Reference>
-				<Type>001E</Type>
-				<Id>0001</Id>
+				<Type>0001</Type>
+				<Id>001E</Id>
 			</Reference>
 			<Reference>
 				<Type>1E12</Type>
@@ -413,6 +435,15 @@
 			<Label lang="en">Smoke Detector</Label>
 			<Label lang="de">Rauchmelder</Label>
 			<ConfigFile>vision/zs6101.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>2005</Type>
+				<Id>0503</Id>
+			</Reference>
+			<Model>ZM1601</Model>
+			<Label lang="en">Battery Siren</Label>
+			<ConfigFile>vision/zm1601.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -646,8 +677,17 @@
 		<Name>Wenzhou TKB Control System</Name>
 		<Product>
 			<Reference>
-				<Type>0103</Type>
-				<Id>0101</Id>
+				<Type>0202</Type>
+				<Id>0611</Id>
+			</Reference>
+			<Model>TZ67</Model>
+			<Label lang="en">Wall Plug Dimmer</Label>
+			<ConfigFile>tkb/tz67.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0101</Type>
+				<Id>0103</Id>
 			</Reference>
 			<Model>TZ68</Model>
 			<Label lang="en">Wall Plug</Label>
@@ -726,6 +766,18 @@
 			<Model>TH8320ZW</Model>
 			<Label lang="en">VisionPRO Z-Wave Touchscreen Programmable Thermostat</Label>
 			<ConfigFile>honeywell/th8320zw.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0147</Id>
+		<Name>RPi</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>RPi Controller</Model>
+			<Label lang="en">RPi ZWave Controller</Label>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

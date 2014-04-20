@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>action</artifactId>
+		<version>1.5.0-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<bundle.symbolicName>org.openhab.action.pushover</bundle.symbolicName>
+		<bundle.namespace>org.openhab.action.pushover</bundle.namespace>
+		<deb.name>openhab-addon-action-pushover</deb.name>
+		<deb.description>openhab addon action pushover</deb.description>
+	</properties>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.action</groupId>
+	<artifactId>org.openhab.action.pushover</artifactId>
+
+	<name>openHAB Pushover Action</name>
+
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
