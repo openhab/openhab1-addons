@@ -30,6 +30,7 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue
 import com.tinkerforge.BrickletIO16
 import com.tinkerforge.BrickletRemoteSwitch
 import com.tinkerforge.BrickletMotionDetector
+import com.tinkerforge.BrickletMultiTouch
 
 /**
  * @author Theo Weiss
@@ -59,6 +60,7 @@ type MTinkerBrickletAmbientLight wraps BrickletAmbientLight
 type MTinkerBrickletLCD20x4 wraps BrickletLCD20x4
 type TinkerBrickletRemoteSwitch wraps BrickletRemoteSwitch
 type TinkerBrickletMotionDetector wraps BrickletMotionDetector
+type TinkerBrickletMultiTouch wraps BrickletMultiTouch
 type Enum wraps Enum
 
 class Ecosystem {
@@ -252,6 +254,23 @@ class DigitalSensor extends IODevice, MSensor<DigitalValue>,
 	boolean pullUpResistorEnabled
 	char port
 	int pin
+}
+
+class MBrickletMultiTouch extends MDevice<TinkerBrickletMultiTouch>,
+        MSubDeviceHolder<MultiTouchDevice>{
+    readonly String deviceType = "bricklet_multitouch"
+}
+class MultiTouchDevice extends  MSubDevice<MBrickletMultiTouch>,
+    MSensor<DigitalValue>{
+    int pin
+}
+
+class Electrode extends MultiTouchDevice {
+    readonly String deviceType = "electrode"
+}
+
+class Proximity extends MultiTouchDevice {
+    readonly String deviceType = "proximity"
 }
 
 class MBrickletMotionDetector extends MDevice<TinkerBrickletMotionDetector>, MSensor<DigitalValue>{

@@ -396,6 +396,48 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_MULTI_TOUCH:
+      {
+        MBrickletMultiTouch mBrickletMultiTouch = (MBrickletMultiTouch)theEObject;
+        T result = caseMBrickletMultiTouch(mBrickletMultiTouch);
+        if (result == null) result = caseMDevice(mBrickletMultiTouch);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletMultiTouch);
+        if (result == null) result = caseMBaseDevice(mBrickletMultiTouch);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MULTI_TOUCH_DEVICE:
+      {
+        MultiTouchDevice multiTouchDevice = (MultiTouchDevice)theEObject;
+        T result = caseMultiTouchDevice(multiTouchDevice);
+        if (result == null) result = caseMSubDevice(multiTouchDevice);
+        if (result == null) result = caseMSensor(multiTouchDevice);
+        if (result == null) result = caseMBaseDevice(multiTouchDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.ELECTRODE:
+      {
+        Electrode electrode = (Electrode)theEObject;
+        T result = caseElectrode(electrode);
+        if (result == null) result = caseMultiTouchDevice(electrode);
+        if (result == null) result = caseMSubDevice(electrode);
+        if (result == null) result = caseMSensor(electrode);
+        if (result == null) result = caseMBaseDevice(electrode);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.PROXIMITY:
+      {
+        Proximity proximity = (Proximity)theEObject;
+        T result = caseProximity(proximity);
+        if (result == null) result = caseMultiTouchDevice(proximity);
+        if (result == null) result = caseMSubDevice(proximity);
+        if (result == null) result = caseMSensor(proximity);
+        if (result == null) result = caseMBaseDevice(proximity);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_MOTION_DETECTOR:
       {
         MBrickletMotionDetector mBrickletMotionDetector = (MBrickletMotionDetector)theEObject;
@@ -1200,6 +1242,70 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseDigitalSensor(DigitalSensor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Multi Touch</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Multi Touch</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletMultiTouch(MBrickletMultiTouch object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Multi Touch Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Multi Touch Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMultiTouchDevice(MultiTouchDevice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Electrode</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Electrode</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseElectrode(Electrode object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Proximity</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Proximity</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseProximity(Proximity object)
   {
     return null;
   }

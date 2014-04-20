@@ -282,6 +282,26 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createDigitalSensorAdapter();
       }
       @Override
+      public Adapter caseMBrickletMultiTouch(MBrickletMultiTouch object)
+      {
+        return createMBrickletMultiTouchAdapter();
+      }
+      @Override
+      public Adapter caseMultiTouchDevice(MultiTouchDevice object)
+      {
+        return createMultiTouchDeviceAdapter();
+      }
+      @Override
+      public Adapter caseElectrode(Electrode object)
+      {
+        return createElectrodeAdapter();
+      }
+      @Override
+      public Adapter caseProximity(Proximity object)
+      {
+        return createProximityAdapter();
+      }
+      @Override
       public Adapter caseMBrickletMotionDetector(MBrickletMotionDetector object)
       {
         return createMBrickletMotionDetectorAdapter();
@@ -919,6 +939,66 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createDigitalSensorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch <em>MBricklet Multi Touch</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch
+   * @generated
+   */
+  public Adapter createMBrickletMultiTouchAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice <em>Multi Touch Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice
+   * @generated
+   */
+  public Adapter createMultiTouchDeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.Electrode <em>Electrode</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.Electrode
+   * @generated
+   */
+  public Adapter createElectrodeAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.Proximity <em>Proximity</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.Proximity
+   * @generated
+   */
+  public Adapter createProximityAdapter()
   {
     return null;
   }

@@ -203,6 +203,42 @@ public interface ModelFactory extends EFactory
   DigitalSensor createDigitalSensor();
 
   /**
+   * Returns a new object of class '<em>MBricklet Multi Touch</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Multi Touch</em>'.
+   * @generated
+   */
+  MBrickletMultiTouch createMBrickletMultiTouch();
+
+  /**
+   * Returns a new object of class '<em>Multi Touch Device</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Multi Touch Device</em>'.
+   * @generated
+   */
+  MultiTouchDevice createMultiTouchDevice();
+
+  /**
+   * Returns a new object of class '<em>Electrode</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Electrode</em>'.
+   * @generated
+   */
+  Electrode createElectrode();
+
+  /**
+   * Returns a new object of class '<em>Proximity</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Proximity</em>'.
+   * @generated
+   */
+  Proximity createProximity();
+
+  /**
    * Returns a new object of class '<em>MBricklet Motion Detector</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
