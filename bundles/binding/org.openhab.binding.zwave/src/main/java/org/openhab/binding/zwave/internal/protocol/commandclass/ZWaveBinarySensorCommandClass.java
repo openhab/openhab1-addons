@@ -68,17 +68,17 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
 		logger.trace("Handle Message Sensor Binary Request");
-		logger.debug(String.format("Received Sensor Binary Request for Node ID = %d", this.getNode().getNodeId()));
+		logger.debug("NODE {}: Received Sensor Binary Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 			case SENSOR_BINARY_GET:
-				logger.warn(String.format("Command 0x%02X not implemented.", command));
+				logger.warn(String.format("NODE %d: Command 0x%02X not implemented.", this.getNode().getNodeId(), command));
 				return;
 			case SENSOR_BINARY_REPORT:
 				logger.trace("Process Sensor Binary Report");
 				
 				int value = serialMessage.getMessagePayloadByte(offset + 1); 
-				logger.debug(String.format("Sensor Binary report from nodeId = %d, value = 0x%02X", this.getNode().getNodeId(), value));
+				logger.debug(String.format("NODE %d: Sensor Binary report, value = 0x%02X", this.getNode().getNodeId(), value));
 				ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
 				this.getController().notifyEventListeners(zEvent);
 				
@@ -86,7 +86,8 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 					this.getNode().advanceNodeStage(NodeStage.DONE);
 				break;
 			default:
-			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
+			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).", 
+					this.getNode().getNodeId(),
 					command, 
 					this.getCommandClass().getLabel(),
 					this.getCommandClass().getKey()));
@@ -98,7 +99,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 	 * @return the serial message
 	 */
 	public SerialMessage getValueMessage() {
-		logger.debug("Creating new message for application command SENSOR_BINARY_GET for node {}", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command SENSOR_BINARY_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
