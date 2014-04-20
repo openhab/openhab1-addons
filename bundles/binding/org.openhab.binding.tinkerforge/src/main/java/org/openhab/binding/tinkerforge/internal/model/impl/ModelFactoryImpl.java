@@ -81,6 +81,7 @@ import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
+import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.Device;
@@ -151,6 +152,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.DIGITAL_ACTOR: return createDigitalActor();
       case ModelPackage.MBRICKLET_IO16: return createMBrickletIO16();
       case ModelPackage.DIGITAL_SENSOR: return createDigitalSensor();
+      case ModelPackage.MBRICKLET_MOTION_DETECTOR: return createMBrickletMotionDetector();
       case ModelPackage.MDUAL_RELAY: return createMDualRelay();
       case ModelPackage.MBRICKLET_REMOTE_SWITCH: return createMBrickletRemoteSwitch();
       case ModelPackage.REMOTE_SWITCH_A: return createRemoteSwitchA();
@@ -258,6 +260,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createMTinkerBrickletLCD20x4FromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_REMOTE_SWITCH:
         return createTinkerBrickletRemoteSwitchFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_MOTION_DETECTOR:
+        return createTinkerBrickletMotionDetectorFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -339,6 +343,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertMTinkerBrickletLCD20x4ToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_REMOTE_SWITCH:
         return convertTinkerBrickletRemoteSwitchToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_MOTION_DETECTOR:
+        return convertTinkerBrickletMotionDetectorToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -554,6 +560,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     DigitalSensorImpl digitalSensor = new DigitalSensorImpl();
     return digitalSensor;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletMotionDetector createMBrickletMotionDetector()
+  {
+    MBrickletMotionDetectorImpl mBrickletMotionDetector = new MBrickletMotionDetectorImpl();
+    return mBrickletMotionDetector;
   }
 
   /**
@@ -1394,6 +1411,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletRemoteSwitchToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletMotionDetector createTinkerBrickletMotionDetectorFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletMotionDetector)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletMotionDetectorToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }
