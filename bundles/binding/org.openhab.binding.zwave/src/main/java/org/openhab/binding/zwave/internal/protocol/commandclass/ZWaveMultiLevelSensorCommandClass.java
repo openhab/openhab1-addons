@@ -89,9 +89,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
 		logger.trace("Handle Message Sensor Multi Level Request");
-		logger.debug(String.format(
-				"Received Sensor Multi Level Request for Node ID = %d", this
-						.getNode().getNodeId()));
+		logger.debug("NODE {}: Received Sensor Multi Level Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 		case SENSOR_MULTI_LEVEL_GET:
@@ -116,7 +114,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 					    // (n)th bit is set. n is the index for the alarm type enumeration.
 						SensorType sensorTypeToAdd = SensorType.getSensorType(index);
 						this.sensors.add(sensorTypeToAdd);
-						logger.debug(String.format("Added sensor type %s (0x%02x)", sensorTypeToAdd.getLabel(), index));
+						logger.debug(String.format("NODE %d: Added sensor type %s (0x%02x)", this.getNode().getNodeId(), sensorTypeToAdd.getLabel(), index));
 				}
 			}
 			
@@ -124,17 +122,15 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 			break;
 		case SENSOR_MULTI_LEVEL_REPORT:
 			logger.trace("Process Multi Level Sensor Report");
-			logger.debug(String.format(
-					"Sensor Multi Level report from nodeId = %d", this
-							.getNode().getNodeId()));
+			logger.debug("NODE {}: Sensor Multi Level report received", this.getNode().getNodeId());
 
 			int sensorTypeCode = serialMessage.getMessagePayloadByte(offset + 1);
-			logger.debug(String.format("Sensor Type = (0x%02x)", sensorTypeCode));
+			logger.debug(String.format("NODE %d: Sensor Type = (0x%02x)", this.getNode().getNodeId(), sensorTypeCode));
 
 			SensorType sensorType = SensorType.getSensorType(sensorTypeCode);
 			
 			if (sensorType == null) {
-				logger.error(String.format("Unknown Alarm Type = 0x%02x, ignoring report.", sensorTypeCode));
+				logger.error(String.format("NODE %d: Unknown Sensor Type = 0x%02x, ignoring report.", this.getNode().getNodeId(), sensorTypeCode));
 				return;
 			}
 			
@@ -144,7 +140,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 
 			BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
 
-			logger.debug(String.format("Sensor Value = (%f)", value));
+			logger.debug(String.format("NODE %d: Sensor Value = (%f)", this.getNode().getNodeId(), value));
 			
 			ZWaveMultiLevelSensorValueEvent zEvent = new ZWaveMultiLevelSensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, value);
 			this.getController().notifyEventListeners(zEvent);
@@ -173,7 +169,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 		}
 		
 		logger.debug(
-				"Creating new message for application command SENSOR_MULTI_LEVEL_GET for node {}",
+				"NODE {}: Creating new message for application command SENSOR_MULTI_LEVEL_GET",
 				this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(),
 				SerialMessageClass.SendData, SerialMessageType.Request,
@@ -194,7 +190,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	 */
 	public SerialMessage getSupportedValueMessage() {
 		logger.debug(
-				"Creating new message for application command SENSOR_MULTI_LEVEL_SUPPORTED_GET for node {}",
+				"NODE {}: Creating new message for application command SENSOR_MULTI_LEVEL_SUPPORTED_GET",
 				this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(),
 				SerialMessageClass.SendData, SerialMessageType.Request,
@@ -216,7 +212,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	 */
 	public SerialMessage getMessage(SensorType sensorType) {
 		logger.debug(
-				"Creating new message for application command SENSOR_MULTI_LEVEL_GET for node {}",
+				"NODE {}: Creating new message for application command SENSOR_MULTI_LEVEL_GET",
 				this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(),
 				SerialMessageClass.SendData, SerialMessageType.Request,

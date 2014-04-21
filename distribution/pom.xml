@@ -746,16 +746,22 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-
         <dependency>
-            <groupId>org.openhab.io</groupId>
-            <artifactId>org.openhab.io.multimedia.tts.freetts</artifactId>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.gpio</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.irtrans</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
             <groupId>org.openhab.io</groupId>
-            <artifactId>org.openhab.io.multimedia.tts.marytts</artifactId>
+            <artifactId>org.openhab.io.cv</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
@@ -767,13 +773,31 @@
         </dependency>
         <dependency>
             <groupId>org.openhab.io</groupId>
-            <artifactId>org.openhab.io.squeezeserver</artifactId>
+            <artifactId>org.openhab.io.gpio</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.openhab.io</groupId>
-            <artifactId>org.openhab.io.cv</artifactId>
+            <artifactId>org.openhab.io.multimedia.tts.macintalk</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>    
+        <dependency>
+            <groupId>org.openhab.io</groupId>
+            <artifactId>org.openhab.io.multimedia.tts.marytts</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.io</groupId>
+            <artifactId>org.openhab.io.multimedia.tts.freetts</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.io</groupId>
+            <artifactId>org.openhab.io.squeezeserver</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>

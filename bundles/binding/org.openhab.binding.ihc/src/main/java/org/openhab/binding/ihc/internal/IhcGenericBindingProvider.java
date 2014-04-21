@@ -171,7 +171,6 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		logger.debug("Validate item type for item {}", item.getName());
 
 		if (!(item instanceof NumberItem || item instanceof SwitchItem
 				|| item instanceof ContactItem || item instanceof StringItem
@@ -190,14 +189,20 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 
 	@Override
 	public Boolean autoUpdate(String itemName) {
+
 		// Cancel auto update functionality for items, which are handled on this binding
+
 		if (providesBindingFor(itemName)) {
-			if (!isOutBindingOnly(itemName)) {
+
+			if (isOutBindingOnly(itemName) == false) {
+				
 				// Cancel auto update functionality only if item is not 'out binding only'
+
 				logger.debug("AutoUpdate for item {} canceled", itemName);
-				return Boolean.FALSE;
+				return false;
 			}
 		}
+
 		return null;
 	}
 

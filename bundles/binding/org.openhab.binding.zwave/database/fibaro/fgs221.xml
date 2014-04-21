@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>FGS221</Model>
-	<Endpoints>2</Endpoints>
 	<Label lang="en">Double Relay Switch 2x1.5kW</Label>
 	<CommandClasses>
 		<Class><id>0x00</id></Class>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>FGD211</Model>
-	<Endpoints>2</Endpoints>
 	<Label lang="en">Universal Dimmer 500W</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>

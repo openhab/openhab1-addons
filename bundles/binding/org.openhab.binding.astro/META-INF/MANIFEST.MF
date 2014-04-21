@@ -1,0 +1,37 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.astro.internal
+Ignore-Package: org.openhab.binding.astro.internal
+Bundle-Name: openHAB Astro Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.5.0.qualifier
+Bundle-Activator: org.openhab.binding.astro.internal.bus.AstroActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Description: This is the Astro binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.apache.commons.lang,
+ org.apache.commons.lang.builder,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.transform,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.quartz,
+ org.quartz.impl,
+ org.quartz.impl.matchers,
+ org.quartz.utils,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.astro
+Bundle-DocURL: http://www.openhab.org
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .
+Export-Package: org.openhab.binding.astro
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+
