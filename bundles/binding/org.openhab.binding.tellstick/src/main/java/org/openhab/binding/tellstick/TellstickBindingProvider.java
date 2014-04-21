@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2013-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,9 +15,9 @@ import org.openhab.binding.tellstick.internal.device.TellstickDevice;
 import org.openhab.core.binding.BindingProvider;
 
 /**
- * This interface provides the method for getting the openhab configuration 
+ * This interface provides the methods for getting the openhab configuration
  * for the tellstick binding.
- * @author jbh
+ * @author jarlebh
  * @since 1.5.0
  */
 public interface TellstickBindingProvider extends BindingProvider {

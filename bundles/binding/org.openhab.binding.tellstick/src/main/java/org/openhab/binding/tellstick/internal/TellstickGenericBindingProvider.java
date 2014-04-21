@@ -30,21 +30,19 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * This class is responsible for parsing the binding configuration.
  * 
- * @author jbh
- * @since 1.4.0
+ * @author jarlebh
+ * @since 1.5.0
  */
 public class TellstickGenericBindingProvider extends AbstractGenericBindingProvider implements TellstickBindingProvider {
-	private static final Logger logger = LoggerFactory
-			.getLogger(TellstickGenericBindingProvider.class);
-	
-	
+	private static final Logger logger = LoggerFactory.getLogger(TellstickGenericBindingProvider.class);
+
 	private List<TellstickDevice> allDevices = null;
-	
+
 	private TellsticEventHandler listener = null;
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -53,31 +51,34 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof NumberItem  || item instanceof DimmerItem)) {
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Number and Switch- and DimmerItems are allowed - please check your *.items configuration");
+		if (!(item instanceof SwitchItem || item instanceof NumberItem || item instanceof DimmerItem)) {
+			throw new BindingConfigParseException(
+					"item '"
+							+ item.getName()
+							+ "' is of type '"
+							+ item.getClass().getSimpleName()
+							+ "', only Number and Switch- and DimmerItems are allowed - please check your *.items configuration");
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item, String bindingConfig)
+			throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 		TellstickBindingConfig config = new TellstickBindingConfig();
 		config.setItemName(item.getName());
-		
+
 		String[] configParts = bindingConfig.trim().split(":");
 
 		if (configParts.length < 1) {
-			throw new BindingConfigParseException(
-					"Tellstick binding must contain two parts separated by ':'");
+			throw new BindingConfigParseException("Tellstick binding must contain two parts separated by ':'");
 		}
 		TellstickDevice device;
 		try {
@@ -87,12 +88,12 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 		}
 		validateBinding(item, configParts, device);
 
-		if (device == null) {		
+		if (device == null) {
 			config.setId(Integer.valueOf(configParts[0].trim()));
 		} else {
-			config.setId(device.getId());				
+			config.setId(device.getId());
 		}
-	
+
 		config.setValueSelector(TellstickValueSelector.getValueSelector(configParts[1].trim()));
 		if (configParts.length > 2 && configParts[2].trim().length() > 0) {
 			config.setUsageSelector(TellstickValueSelector.getValueSelector(configParts[2].trim()));
@@ -100,20 +101,20 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 		if (configParts.length > 3) {
 			config.setResend(Integer.parseInt(configParts[3]));
 		}
-		
-		logger.debug("Context:"+context+" Item "+item+" Conf:"+config);
-		addBindingConfig(item, config);		
+
+		logger.debug("Context:" + context + " Item " + item + " Conf:" + config);
+		addBindingConfig(item, config);
 	}
 
-	private void validateBinding(Item item, String[] configParts,
-			TellstickDevice device) throws BindingConfigParseException {
+	private void validateBinding(Item item, String[] configParts, TellstickDevice device)
+			throws BindingConfigParseException {
 		if (device == null && !StringUtils.isNumeric(configParts[0].trim())) {
-			throw new BindingConfigParseException("item '" + item.getName()
-								+ "' telldus device "+configParts[0].trim()+" not found");
+			throw new BindingConfigParseException("item '" + item.getName() + "' telldus device "
+					+ configParts[0].trim() + " not found");
 		}
 		if (configParts.length > 3 && !StringUtils.isNumeric(configParts[3].trim())) {
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' resend config wrong"+configParts[3].trim()+" not a number");
+			throw new BindingConfigParseException("item '" + item.getName() + "' resend config wrong"
+					+ configParts[3].trim() + " not a number");
 		}
 	}
 
@@ -139,11 +140,11 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 			listener.setDeviceList(allDevices);
 		}
 	}
-	
+
 	public void addListener(EventListener changeListener) {
 		listener.addListener(changeListener);
 	}
-	
+
 	public void resetTellstickListener() throws SupportedMethodsException {
 		try {
 			listener.remove();
@@ -160,19 +161,20 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 			throw new RuntimeException("Could not reset tellstick", e);
 		}
 	}
-	
+
 	@Override
 	public TellstickBindingConfig getTellstickBindingConfig(int id, TellstickValueSelector valueSel) {
 		TellstickBindingConfig name = null;
 		for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
-			TellstickBindingConfig bv = (TellstickBindingConfig)entry.getValue();
+			TellstickBindingConfig bv = (TellstickBindingConfig) entry.getValue();
 			if (bv.getId() == id) {
 				if (valueSel == null || valueSel.equals(bv.getValueSelector()))
-				name = bv;
+					name = bv;
 			}
 		}
 		return name;
 	}
+
 	public TellstickBindingConfig getTellstickBindingConfig(String itemName) {
 		return (TellstickBindingConfig) bindingConfigs.get(itemName);
 	}
@@ -180,7 +182,7 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 	@Override
 	public TellstickDevice getDevice(String itemName) {
 		TellstickDevice res = null;
-		
+
 		TellstickBindingConfig conf = getTellstickBindingConfig(itemName);
 		if (conf != null) {
 			for (TellstickDevice device : getAllDevices()) {
@@ -190,8 +192,8 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 				}
 			}
 		} else {
-			logger.warn("Could not find conf for "+itemName);
-		}		
+			logger.warn("Could not find conf for " + itemName);
+		}
 		return res;
 	}
 
@@ -200,7 +202,7 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 			try {
 				updateDevices();
 			} catch (SupportedMethodsException e) {
-				logger.error("Failed to get devices",e);
+				logger.error("Failed to get devices", e);
 				throw new RuntimeException("Failed to list devices", e);
 			}
 		}

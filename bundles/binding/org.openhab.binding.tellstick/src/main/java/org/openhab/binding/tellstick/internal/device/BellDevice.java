@@ -11,7 +11,6 @@ package org.openhab.binding.tellstick.internal.device;
 import org.openhab.binding.tellstick.internal.JNA;
 import org.openhab.binding.tellstick.internal.device.iface.BellDeviceIntf;
 
-
 /**
  * A Bell.
  * 
@@ -27,10 +26,11 @@ public class BellDevice extends TellstickDevice implements BellDeviceIntf {
 	@Override
 	public void bell() throws TellstickException {
 		int status = JNA.CLibrary.INSTANCE.tdBell(getId());
-		if (status != TELLSTICK_SUCCESS)throw new TellstickException(this, status);
+		if (status != TELLSTICK_SUCCESS)
+			throw new TellstickException(this, status);
 	}
-	
-	public String getType(){
+
+	public String getType() {
 		return "Bell Device";
 	}
 

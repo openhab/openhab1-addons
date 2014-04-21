@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2013-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,25 +26,15 @@ import org.openhab.core.library.items.RollershutterItem;
  */
 public enum TellstickValueSelector {
 
-	RAW_DATA ("RawData", StringItem.class),
-	SHUTTER ("Shutter", RollershutterItem.class),
-	COMMAND ("Command", SwitchItem.class),
-	SIGNAL_LEVEL ("SignalLevel", NumberItem.class),
-	DIMMING_LEVEL ("DimmingLevel", DimmerItem.class),
-	DIMMABLE ("Dimmable", SwitchItem.class),
-	TEMPERATURE ("Temperature", NumberItem.class),
-	HUMIDITY ("Humidity", NumberItem.class),
-	HUMIDITY_STATUS ("HumidityStatus", StringItem.class),
-	BATTERY_LEVEL ("BatteryLevel", NumberItem.class),
-	PRESSURE("Pressure", NumberItem.class),
-	FORECAST("Forecast", NumberItem.class),
-	RAIN_RATE("RainRate", NumberItem.class),
-	RAIN_TOTAL("RainTotal", NumberItem.class),
-	WIND_DIRECTION("WindDirection", NumberItem.class),
-	WIND_SPEED("WindSpeed", NumberItem.class),
-	INSTANT_POWER("InstantPower", NumberItem.class),
-	MOTION("Motion", SwitchItem.class),
-	TOTAL_USAGE("TotalUsage", NumberItem.class);
+	RAW_DATA("RawData", StringItem.class), SHUTTER("Shutter", RollershutterItem.class), COMMAND("Command",
+			SwitchItem.class), SIGNAL_LEVEL("SignalLevel", NumberItem.class), DIMMING_LEVEL("DimmingLevel",
+			DimmerItem.class), DIMMABLE("Dimmable", SwitchItem.class), TEMPERATURE("Temperature", NumberItem.class), HUMIDITY(
+			"Humidity", NumberItem.class), HUMIDITY_STATUS("HumidityStatus", StringItem.class), BATTERY_LEVEL(
+			"BatteryLevel", NumberItem.class), PRESSURE("Pressure", NumberItem.class), FORECAST("Forecast",
+			NumberItem.class), RAIN_RATE("RainRate", NumberItem.class), RAIN_TOTAL("RainTotal", NumberItem.class), WIND_DIRECTION(
+			"WindDirection", NumberItem.class), WIND_SPEED("WindSpeed", NumberItem.class), INSTANT_POWER(
+			"InstantPower", NumberItem.class), MOTION("Motion", SwitchItem.class), TOTAL_USAGE("TotalUsage",
+			NumberItem.class);
 
 	private final String text;
 	private Class<? extends Item> itemClass;
@@ -74,9 +64,8 @@ public enum TellstickValueSelector {
 	 * @throws InvalidClassException
 	 *             Not valid class for value selector.
 	 */
-	public static boolean validateBinding(String valueSelector,
-			Class<? extends Item> itemClass) throws IllegalArgumentException,
-			InvalidClassException {
+	public static boolean validateBinding(String valueSelector, Class<? extends Item> itemClass)
+			throws IllegalArgumentException, InvalidClassException {
 
 		for (TellstickValueSelector c : TellstickValueSelector.values()) {
 			if (c.text.equals(valueSelector)) {
@@ -84,8 +73,7 @@ public enum TellstickValueSelector {
 				if (c.getItemClass().equals(itemClass))
 					return true;
 				else
-					throw new InvalidClassException(
-							"Not valid class for value selector");
+					throw new InvalidClassException("Not valid class for value selector");
 			}
 		}
 
@@ -102,8 +90,7 @@ public enum TellstickValueSelector {
 	 * @throws InvalidClassException
 	 *             Not valid class for value selector.
 	 */
-	public static TellstickValueSelector getValueSelector(String valueSelectorText)
-			throws IllegalArgumentException {
+	public static TellstickValueSelector getValueSelector(String valueSelectorText) throws IllegalArgumentException {
 
 		for (TellstickValueSelector c : TellstickValueSelector.values()) {
 			if (c.text.equals(valueSelectorText)) {

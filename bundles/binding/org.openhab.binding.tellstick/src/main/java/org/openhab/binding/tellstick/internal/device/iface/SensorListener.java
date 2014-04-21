@@ -11,6 +11,7 @@ package org.openhab.binding.tellstick.internal.device.iface;
 import java.util.EventListener;
 
 import org.openhab.binding.tellstick.internal.device.TellstickSensorEvent;
+
 /**
  * A listener for sensor events.
  * 

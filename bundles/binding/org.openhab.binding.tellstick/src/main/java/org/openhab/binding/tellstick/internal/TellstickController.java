@@ -12,28 +12,30 @@ import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
- * This class is the coordinator between openhab and telldus center, it 
- * is responsible for all updates in both directions.
+ * This class is the coordinator between openhab and telldus center, it is
+ * responsible for all updates in both directions.
  * 
  * @since 1.5.0
  * @author jarlebh
- *
+ * 
  */
 public class TellstickController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(TellstickController.class);
 	private long lastSend = 0;
 	private static final int INTERVAL_BETWEEN_SEND = 250;
-	
-	public void handleSendEvent(TellstickBindingConfig config, TellstickDevice dev, Command command) throws TellstickException {
-		
-		int resend = config.getResend();		
+
+	public void handleSendEvent(TellstickBindingConfig config, TellstickDevice dev, Command command)
+			throws TellstickException {
+
+		int resend = config.getResend();
 		for (int i = 0; i < resend; i++) {
 			checkLastAndWait();
-			logger.info("Send "+command+" to "+dev+" time="+i+" conf "+config);
+			logger.info("Send " + command + " to " + dev + " time=" + i + " conf " + config);
 			switch (config.getValueSelector()) {
-	
+
 			case COMMAND:
 				if (command == OnOffType.ON) {
 					if (config.getUsageSelector() == TellstickValueSelector.DIMMABLE) {
@@ -60,11 +62,11 @@ public class TellstickController {
 				break;
 			}
 		}
-		
+
 	}
-	
-	private void increaseDecrease(TellstickDevice dev,
-			IncreaseDecreaseType increaseDecreaseType) throws TellstickException {
+
+	private void increaseDecrease(TellstickDevice dev, IncreaseDecreaseType increaseDecreaseType)
+			throws TellstickException {
 		String strValue = dev.getData();
 		double value = Double.valueOf(strValue);
 		int precent = (int) ((value / 255) * 100);
@@ -78,7 +80,7 @@ public class TellstickController {
 					precent -= 10;
 				}
 			}
-		}		
+		}
 		dim(dev, new PercentType(precent));
 	}
 
@@ -86,31 +88,31 @@ public class TellstickController {
 		double value = command.doubleValue();
 		double tdVal = (value / 100) * 255;
 		if (dev instanceof DimmableDeviceIntf) {
-			((DimmableDeviceIntf)dev).dim((int)tdVal);
+			((DimmableDeviceIntf) dev).dim((int) tdVal);
 		} else {
-			throw new RuntimeException("Cannot send DIM to "+dev);
+			throw new RuntimeException("Cannot send DIM to " + dev);
 		}
 	}
 
 	private void turnOff(TellstickDevice dev) throws TellstickException {
 		if (dev instanceof DeviceIntf) {
-			((DeviceIntf)dev).off();
+			((DeviceIntf) dev).off();
 		} else {
-			throw new RuntimeException("Cannot send OFF to "+dev);
+			throw new RuntimeException("Cannot send OFF to " + dev);
 		}
 	}
 
 	private void turnOn(TellstickBindingConfig config, TellstickDevice dev) throws TellstickException {
-		if (dev instanceof DeviceIntf) {			
-			((DeviceIntf)dev).on();
+		if (dev instanceof DeviceIntf) {
+			((DeviceIntf) dev).on();
 		} else {
-			throw new RuntimeException("Cannot send ON to "+dev);
+			throw new RuntimeException("Cannot send ON to " + dev);
 		}
 	}
 
 	private void checkLastAndWait() {
 		while ((System.currentTimeMillis() - lastSend) < INTERVAL_BETWEEN_SEND) {
-			logger.info("Wait for "+INTERVAL_BETWEEN_SEND+" millisec");
+			logger.info("Wait for " + INTERVAL_BETWEEN_SEND + " millisec");
 			try {
 				Thread.sleep(INTERVAL_BETWEEN_SEND);
 			} catch (InterruptedException e) {

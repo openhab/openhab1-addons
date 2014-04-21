@@ -7,18 +7,18 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tellstick.internal.device;
+
 /**
  * Exception for unsuported devices.
  * 
  * @author jarlebh
  * @since 1.5.0
  */
-public class DeviceNotSupportedException extends Exception{
-	
+public class DeviceNotSupportedException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public DeviceNotSupportedException(String message){
+	public DeviceNotSupportedException(String message) {
 		super(message);
 	}
 }

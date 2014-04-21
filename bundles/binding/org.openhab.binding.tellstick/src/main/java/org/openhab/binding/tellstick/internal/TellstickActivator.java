@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2013-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,42 +16,38 @@ import org.slf4j.LoggerFactory;
 
 import com.sun.jna.Platform;
 
-
 /**
- * Extension of the default OSGi bundle activator
+ * Tellstick activator, starts the JNA connection to Telldus Center.
  * 
- * @author jbh
- * @since 1.4.0
+ * @author jarlebh
+ * @since 1.5.0
  */
 public final class TellstickActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(TellstickActivator.class); 
-	
+	private static Logger logger = LoggerFactory.getLogger(TellstickActivator.class);
+
 	private static BundleContext context;
-	
+
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("Tellstick binding has been started."+Thread.currentThread());
+		logger.debug("Tellstick binding has been started." + Thread.currentThread());
 		try {
 			if (Platform.isWindows()) {
-				System.setProperty("jna.library.path",
-						"C:/Program Files/Telldus/;C:/Program Files (x86)/Telldus/");
+				System.setProperty("jna.library.path", "C:/Program Files/Telldus/;C:/Program Files (x86)/Telldus/");
 			}
-					
-			TellstickDevice.setSupportedMethods(JNA.CLibrary.TELLSTICK_BELL
-					| JNA.CLibrary.TELLSTICK_TURNOFF
-					| JNA.CLibrary.TELLSTICK_TURNON | JNA.CLibrary.TELLSTICK_DIM
-					| JNA.CLibrary.TELLSTICK_LEARN | JNA.CLibrary.TELLSTICK_EXECUTE
-					| JNA.CLibrary.TELLSTICK_STOP);
+
+			TellstickDevice.setSupportedMethods(JNA.CLibrary.TELLSTICK_BELL | JNA.CLibrary.TELLSTICK_TURNOFF
+					| JNA.CLibrary.TELLSTICK_TURNON | JNA.CLibrary.TELLSTICK_DIM | JNA.CLibrary.TELLSTICK_LEARN
+					| JNA.CLibrary.TELLSTICK_EXECUTE | JNA.CLibrary.TELLSTICK_STOP);
 			JNA.CLibrary.INSTANCE.tdInit();
 		} catch (Exception e) {
-			logger.error("Failed to init ",e);
+			logger.error("Failed to init ", e);
 			throw e;
 		} catch (Throwable e) {
-			logger.error("Failed to init ",e);
+			logger.error("Failed to init ", e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -63,15 +59,16 @@ public final class TellstickActivator implements BundleActivator {
 		context = null;
 		logger.debug("Tellstick binding has been stopped.");
 		JNA.CLibrary.INSTANCE.tdClose();
-		
+
 	}
-	
+
 	/**
 	 * Returns the bundle context of this bundle
+	 * 
 	 * @return the bundle context
 	 */
 	public static BundleContext getContext() {
 		return context;
 	}
-	
+
 }

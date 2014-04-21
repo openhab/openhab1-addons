@@ -9,29 +9,31 @@
 package org.openhab.binding.tellstick.internal.device;
 
 import org.openhab.binding.tellstick.internal.JNA;
+
 /**
  * A Scene.
  * 
  * @author jarlebh
  * @since 1.5.0
  */
-public class SceneDevice extends TellstickDevice{
+public class SceneDevice extends TellstickDevice {
 
 	public SceneDevice(int deviceId) throws SupportedMethodsException {
 		super(deviceId);
 	}
-	
+
 	/**
 	 * Executes Scene.
 	 * 
 	 * @throws TellstickException
 	 */
-	public void execute() throws TellstickException{
+	public void execute() throws TellstickException {
 		int status = JNA.CLibrary.INSTANCE.tdExecute(getId());
-		if (status != TELLSTICK_SUCCESS)throw new TellstickException(this, status);
+		if (status != TELLSTICK_SUCCESS)
+			throw new TellstickException(this, status);
 	}
-	
-	public String getType(){
+
+	public String getType() {
 		return "Scene";
 	}
 }
