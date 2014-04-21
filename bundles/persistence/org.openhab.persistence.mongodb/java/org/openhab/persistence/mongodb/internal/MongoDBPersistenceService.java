@@ -122,7 +122,7 @@ public class MongoDBPersistenceService implements QueryablePersistenceService,
 			return;
 		}
 
-		// Connect to mySQL server if we're not already connected
+		// Connect to mongodb server if we're not already connected
 		if (!isConnected()) {
 			connectToDatabase();
 		}
@@ -211,7 +211,7 @@ public class MongoDBPersistenceService implements QueryablePersistenceService,
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
