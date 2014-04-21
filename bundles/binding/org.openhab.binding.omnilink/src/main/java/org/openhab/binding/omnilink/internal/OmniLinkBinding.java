@@ -20,7 +20,7 @@ import org.openhab.binding.omnilink.OmniLinkBindingProvider;
 import org.openhab.binding.omnilink.internal.model.Area;
 import org.openhab.binding.omnilink.internal.model.AudioSource;
 import org.openhab.binding.omnilink.internal.model.AudioZone;
-import org.openhab.binding.omnilink.internal.model.Aux;
+import org.openhab.binding.omnilink.internal.model.Auxiliary;
 import org.openhab.binding.omnilink.internal.model.Button;
 import org.openhab.binding.omnilink.internal.model.OmnilinkDevice;
 import org.openhab.binding.omnilink.internal.model.Thermostat;
@@ -94,7 +94,7 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 	private Map<Integer, Area> areaMap = Collections.synchronizedMap(new HashMap<Integer, Area>());
 	private Map<Integer, AudioSource> audioSourceMap = Collections.synchronizedMap(new HashMap<Integer, AudioSource>());
 	private Map<Integer, AudioZone> audioZoneMap = Collections.synchronizedMap(new HashMap<Integer, AudioZone>());
-	private Map<Integer, Aux> auxMap = Collections.synchronizedMap(new HashMap<Integer, Aux>());
+	private Map<Integer, Auxiliary> auxMap = Collections.synchronizedMap(new HashMap<Integer, Auxiliary>());
 	private Map<Integer, Thermostat> thermostatMap = Collections.synchronizedMap(new HashMap<Integer, Thermostat>());
 	private Map<Integer, Unit> unitMap = Collections.synchronizedMap(new HashMap<Integer, Unit>());
 	private Map<Integer, Zone> zoneMap = Collections.synchronizedMap(new HashMap<Integer, Zone>());
@@ -569,14 +569,14 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 						case AUX_LOW:
 						case AUX_STATUS: {
 							AuxSensorProperties p = readAuxProperties(config.getNumber());
-							Aux aux = auxMap.get(number);
-							if (aux == null) {
-								aux = new Aux(p, celius);
-								auxMap.put(number, aux);
+							Auxiliary auxiliary = auxMap.get(number);
+							if (auxiliary == null) {
+								auxiliary = new Auxiliary(p, celius);
+								auxMap.put(number, auxiliary);
 							}
-							config.setDevice(aux);
-							aux.setProperties(p);
-							aux.updateItem(provider.getItem(itemName), config,
+							config.setDevice(auxiliary);
+							auxiliary.setProperties(p);
+							auxiliary.updateItem(provider.getItem(itemName), config,
 									eventPublisher);
 						}
 							break;
@@ -661,9 +661,9 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 		}
 
 		/**
-		 * Read the properties of a aux sensor
-		 * @param number of aux sensor
-		 * @return AuxSensorProperties of aux sensor or null if not found
+		 * Read the properties of a Auxiliary sensor
+		 * @param number of Auxiliary sensor
+		 * @return AuxSensorProperties of Auxiliary sensor or null if not found
 		 * @throws IOException
 		 * @throws OmniNotConnectedException
 		 * @throws OmniInvalidResponseException

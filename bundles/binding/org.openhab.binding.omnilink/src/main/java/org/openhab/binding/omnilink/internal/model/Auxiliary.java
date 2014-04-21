@@ -20,18 +20,18 @@ import com.digitaldan.jomnilinkII.MessageUtils;
 import com.digitaldan.jomnilinkII.MessageTypes.properties.AuxSensorProperties;
 
 /**
- * Aux are temperature and/or humidity sensors
+ * An Auxiliary is a temperature and/or humidity sensors
  * 
  * @author Dan Cunningham
  * @since 1.5.0
  */
-public class Aux extends OmnilinkDevice {
-	private static final Logger logger = LoggerFactory.getLogger(Aux.class);
+public class Auxiliary extends OmnilinkDevice {
+	private static final Logger logger = LoggerFactory.getLogger(Auxiliary.class);
 
 	private AuxSensorProperties properties;
 	private boolean celsius;
 
-	public Aux(AuxSensorProperties properties, boolean celius) {
+	public Auxiliary(AuxSensorProperties properties, boolean celius) {
 		this.properties = properties;
 		this.celsius = celius;
 	}

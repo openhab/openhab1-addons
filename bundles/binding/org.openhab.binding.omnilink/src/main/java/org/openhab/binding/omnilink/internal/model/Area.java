@@ -27,7 +27,7 @@ import com.digitaldan.jomnilinkII.MessageTypes.properties.AreaProperties;
  * @since 1.5.0
  */
 public class Area extends OmnilinkDevice {
-	private static final Logger logger = LoggerFactory.getLogger(Aux.class);
+	private static final Logger logger = LoggerFactory.getLogger(Area.class);
 
 	public static final String[] omniText = { "Off", "Day", "Night", "Away",
 			"Vacation", "Day-Instant", "Night-Delayed" };
