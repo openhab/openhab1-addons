@@ -36,7 +36,7 @@ public class ConfigurationParameter {
 			throw new IllegalArgumentException("illegal parameter size");
 		}
 		
-		if (index < 1 || index > 0xFF) {
+		if (index < 0 || index > 0xFF) {
 			throw new IllegalArgumentException("illegal parameter index");
 		}
 		
