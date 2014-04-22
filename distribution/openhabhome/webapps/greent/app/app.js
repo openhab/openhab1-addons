@@ -875,7 +875,7 @@ function addsWidget(id, data, container, nav_parent) {
 	} else if (data.type == "Webview") {
 		widget = createWebviewWidget(data.item ? data.item.name : '', data.url, data.height, data.label, data.icon);
 	} else if (data.type == "Chart") {
-		widget = createChartWidget(data.item ? data.item.name : '', id, data.w, data.h, data.period, data.refresh, data.item ? data.item.type : '', data.label, data.icon);	
+		widget = createChartWidget(data.item ? data.item.name : '', id, data.w, data.h, data.period, data.refresh, data.item ? data.item.type : '', data.label, data.icon, data.service);	
 	} else if (data.type == "Text") {
         if (data.linkedPage) {
             if (deviceType == "Phone") {
@@ -1779,6 +1779,10 @@ Ext.define('Oph.field.Chart', {
 		//config.img_src = '/'+chart_servlet+'?'+chartType+'='+config.oph_item+'&period='+config.oph_period+'&w='+config.oph_w+'&h='+config.oph_h;
 		
 		config.img_src = '/'+chart_servlet+'?'+chartType+'='+config.oph_item+'&period='+config.oph_period;
+
+		if(config.oph_service != null)
+			config.img_src += '&service='+config.oph_service;
+
 		this.callParent([config]);
         this.setHtml('<div style="width:100%;padding:0.4em;"><img id="img'+config.oph_id+'" src="'+config.img_src+'&random=' + new Date().getTime() + '" style="width:100%;"></div>');
 		
@@ -2090,7 +2094,7 @@ function createImageWidget(url) {
 }
 
 
-function createChartWidget(oph_item, oph_id, oph_w, oph_h, oph_period, oph_refresh, oph_type, oph_label, oph_icon) {
+function createChartWidget(oph_item, oph_id, oph_w, oph_h, oph_period, oph_refresh, oph_type, oph_label, oph_icon, oph_service) {
     return {
         xtype: 'oph_chartfield',
         oph_item: oph_item,
@@ -2100,7 +2104,8 @@ function createChartWidget(oph_item, oph_id, oph_w, oph_h, oph_period, oph_refre
 		oph_refresh: oph_refresh,
 		oph_id: oph_id,
 		oph_type: oph_type,
-		img_src: ''
+		img_src: '',
+		oph_service: oph_service
     };
 
 }

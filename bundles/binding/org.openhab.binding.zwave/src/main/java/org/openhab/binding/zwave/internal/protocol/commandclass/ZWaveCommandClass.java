@@ -228,6 +228,12 @@ public abstract class ZWaveCommandClass {
 		int size = buffer[offset] & SIZE_MASK;
 		int precision = (buffer[offset] & PRECISION_MASK) >> PRECISION_SHIFT;
 
+		if((size+offset) >= buffer.length) {
+			logger.error("Error extracting value - length={}, offset={}, size={}.", 
+					new Object[] { buffer.length, offset, size});
+			return BigDecimal.ZERO;
+		}
+		
 		int value = 0;
 		int i;
 		for (i = 0; i < size; ++i) {
@@ -238,7 +244,6 @@ public abstract class ZWaveCommandClass {
 		// Deal with sign extension. All values are signed
 		BigDecimal result;
 		if ((buffer[offset + 1] & 0x80) == 0x80) {
-
 			// MSB is signed
 			if (size == 1) {
 				value |= 0xffffff00;
