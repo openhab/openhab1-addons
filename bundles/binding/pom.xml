@@ -103,6 +103,7 @@
 	<module>org.openhab.binding.gpio</module>
 	<module>org.openhab.binding.irtrans</module>
 	<module>org.openhab.binding.astro</module>
+	<module>org.openhab.binding.k8055</module>
   </modules>
 
 </project>
