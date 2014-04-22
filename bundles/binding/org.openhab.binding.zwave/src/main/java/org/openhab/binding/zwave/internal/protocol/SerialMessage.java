@@ -403,15 +403,21 @@ public class SerialMessage {
 		SerialApiSetTimeouts(0x06,"SerialApiSetTimeouts"),									// Set Serial API timeouts
 		SerialApiGetCapabilities(0x07,"SerialApiGetCapabilities"),							// Request Serial API capabilities
 		SerialApiSoftReset(0x08,"SerialApiSoftReset"),										// Soft reset. Restarts Z-Wave chip
+		RfReceiveMode(0x10,"RfReceiveMode"),												// Power down the RF section of the stick
+		SetSleepMode(0x11,"SetSleepMode"),													// Set the CPU into sleep mode
 		SendNodeInfo(0x12,"SendNodeInfo"),													// Send Node Information Frame of the stick
 		SendData(0x13,"SendData"),															// Send data.
+		SendDataMulti(0x14, "SendDataMulti"),
 		GetVersion(0x15,"GetVersion"),														// Request controller hardware version
 		SendDataAbort(0x16,"SendDataAbort"),												// Abort Send data.
 		RfPowerLevelSet(0x17,"RfPowerLevelSet"),											// Set RF Power level
+		SendDataMeta(0x18, "SendDataMeta"),
 		GetRandom(0x1c,"GetRandom"),														// ???
 		MemoryGetId(0x20,"MemoryGetId"),													// ???
 		MemoryGetByte(0x21,"MemoryGetByte"),												// Get a byte of memory.
+		MemoryPutByte(0x22, "MemoryPutByte"),
 		ReadMemory(0x23,"ReadMemory"),														// Read memory.
+		WriteMemory(0x24, "WriteMemory"),
 		SetLearnNodeState(0x40,"SetLearnNodeState"),    									// ???
 		IdentifyNode(0x41,"IdentifyNode"),    												// Get protocol info (baud rate, listening, etc.) for a given node
 		SetDefault(0x42,"SetDefault"),    													// Reset controller and node info to default (original) values
@@ -433,12 +439,14 @@ public class SerialMessage {
 		SetSucNodeID(0x54,"SetSucNodeID"),													// Identify a Static Update Controller node id
 		DeleteSUCReturnRoute(0x55,"DeleteSUCReturnRoute"),									// Remove return routes to the SUC
 		GetSucNodeId(0x56,"GetSucNodeId"),													// Try to retrieve a Static Update Controller node id (zero if no SUC present)
+		SendSucId(0x57, "SendSucId"),
 		RequestNodeNeighborUpdateOptions(0x5a,"RequestNodeNeighborUpdateOptions"),   		// Allow options for request node neighbor update
 		RequestNodeInfo(0x60,"RequestNodeInfo"),											// Get info (supported command classes) for the specified node
 		RemoveFailedNodeID(0x61,"RemoveFailedNodeID"),										// Mark a specified node id as failed
 		IsFailedNodeID(0x62,"IsFailedNodeID"),												// Check to see if a specified node has failed
 		ReplaceFailedNode(0x63,"ReplaceFailedNode"),										// Remove a failed node from the controller's list (?)
 		GetRoutingInfo(0x80,"GetRoutingInfo"),												// Get a specified node's neighbor information from the controller
+		LockRoute(0x90, "LockRoute"),
 		SerialApiSlaveNodeInfo(0xA0,"SerialApiSlaveNodeInfo"),								// Set application virtual slave node information
 		ApplicationSlaveCommandHandler(0xA1,"ApplicationSlaveCommandHandler"),				// Slave command handler
 		SendSlaveNodeInfo(0xA2,"ApplicationSlaveCommandHandler"),							// Send a slave node information frame
@@ -446,6 +454,13 @@ public class SerialMessage {
 		SetSlaveLearnMode(0xA4,"SetSlaveLearnMode"),										// Enter slave learn mode
 		GetVirtualNodes(0xA5,"GetVirtualNodes"),											// Return all virtual nodes
 		IsVirtualNode(0xA6,"IsVirtualNode"),												// Virtual node test
+		WatchDogEnable(0xB6, "WatchDogEnable"),
+		WatchDogDisable(0xB7, "WatchDogDisable"),
+		WatchDogKick(0xB6, "WatchDogKick"),
+		RfPowerLevelGet(0xBA,"RfPowerLevelSet"),											// Get RF Power level
+		GetLibraryType(0xBD, "GetLibraryType"),												// Gets the type of ZWave library on the stick
+		SendTestFrame(0xBE, "SendTestFrame"),												// Send a test frame to a node
+		GetProtocolStatus(0xBF, "GetProtocolStatus"),
 		SetPromiscuousMode(0xD0,"SetPromiscuousMode"),										// Set controller into promiscuous mode to listen to all frames
 		PromiscuousApplicationCommandHandler(0xD1,"PromiscuousApplicationCommandHandler");
 		
