@@ -6,14 +6,17 @@ Bundle-Name: openHAB homematic Binding
 Bundle-SymbolicName: org.openhab.binding.homematic;singleton:=true
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.5.0.qualifier
-Bundle-Activator: org.openhab.binding.homematic.internal.HomematicActivator
+Bundle-Activator: org.openhab.binding.homematic.internal.bus.HomematicActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the homematic binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: javax.xml.bind,
  javax.xml.bind.annotation,
  org.apache.commons.httpclient,
+ org.apache.commons.httpclient.methods,
+ org.apache.commons.httpclient.params,
  org.apache.commons.lang,
+ org.apache.commons.lang.builder,
  org.apache.commons.logging,
  org.openhab.core.binding,
  org.openhab.core.events,

@@ -11,20 +11,20 @@ package org.openhab.binding.homematic.internal.xmlrpc;
 import org.apache.xmlrpc.client.XmlRpcClient;
 
 /**
- * This class adds RF specific methods of the CCU interface. It connects to port
- * 2001 of the given address.
+ * This class adds Wired specific methods of the CCU interface. It connects to
+ * port 2000 of the given address.
  * 
  * @see XmlRpcConnection
  * 
- * @author Mathias Ewald
- * @since 1.2.0
+ * @author Gerhard Riegler
+ * @since 1.5.0
  */
-public class XmlRpcConnectionRF extends XmlRpcConnection {
+public class XmlRpcConnectionWired extends XmlRpcConnection {
 
 	private final String address;
 	private XmlRpcClient xmlRpcClient;
 
-	public XmlRpcConnectionRF(String address) {
+	public XmlRpcConnectionWired(String address) {
 		this.address = address;
 		xmlRpcClient = createXmlRpcClient();
 	}
@@ -41,22 +41,7 @@ public class XmlRpcConnectionRF extends XmlRpcConnection {
 
 	@Override
 	public Integer getPort() {
-		return 2001;
-	}
-
-	public void getServiceMessages() {
-
-		Object[] params = {};
-		Object[] value = (Object[]) executeRPC("getServiceMessages", params);
-
-		for (Object o : value) {
-			Object[] values = (Object[]) o;
-			for (Object entry : values) {
-				System.out.println(entry);
-			}
-			System.out.println("");
-		}
-
+		return 2000;
 	}
 
 }
