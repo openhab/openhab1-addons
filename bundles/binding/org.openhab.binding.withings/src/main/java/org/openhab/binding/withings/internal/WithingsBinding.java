@@ -14,17 +14,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.withings.WithingsBindingConfig;
 import org.openhab.binding.withings.WithingsBindingProvider;
 import org.openhab.binding.withings.internal.api.WithingsApiClient;
-import org.openhab.binding.withings.internal.api.WithingsAuthenticator;
 import org.openhab.binding.withings.internal.model.Category;
 import org.openhab.binding.withings.internal.model.Measure;
 import org.openhab.binding.withings.internal.model.MeasureGroup;
 import org.openhab.binding.withings.internal.model.MeasureType;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -59,35 +60,57 @@ public class WithingsBinding extends
 	 */
 	private long refreshInterval = 3600000;
 
-	private WithingsAuthenticator withingsAuthenticator;
+	private final List<WithingsApiClient> withingsApiClients = new CopyOnWriteArrayList<WithingsApiClient>();
 
 	@Override
-	public void activate() {
-		setProperlyConfigured(true);
+	public void allBindingsChanged(BindingProvider provider) {
+		super.allBindingsChanged(provider);
+		if (isProperlyConfigured()) {
+			execute();
+		}
 	}
 
 	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
 		if (config != null) {
-			String refreshIntervalString = (String) config.get("refresh");
-			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				refreshInterval = Long.parseLong(refreshIntervalString);
+			String refreshInterval = (String) config.get("refresh");
+			if (StringUtils.isNotBlank(refreshInterval)) {
+				this.refreshInterval = Long.parseLong(refreshInterval);
+				if (isProperlyConfigured() && activeService.isRunning()) {
+					activeService.shutdown();
+					activeService.interrupt();
+					try {
+						// wait 5 seconds until polling thread is definitely
+						// shutdown
+						Thread.sleep(5000);
+					} catch (InterruptedException unhandled) {
+					}
+					setProperlyConfigured(isProperlyConfigured());
+				}
 			}
 		}
 	}
 
+	protected void addWithingsApiClient(WithingsApiClient withingsApiClient) {
+		this.withingsApiClients.add(withingsApiClient);
+		if (!isProperlyConfigured()) {
+			setProperlyConfigured(true);
+		}
+	}
+
 	@Override
-	protected void execute() {
+	protected synchronized void execute() {
 
 		Map<String, WithingsBindingConfig> withingsBindings = getWithingsBindings();
+
 		if (withingsBindings.isEmpty()) {
 			logger.info("No item -> withings binding found. Skipping data refresh.");
 			return;
 		}
 
-		if (!this.withingsAuthenticator.isAuthenticated()) {
-			logger.info("Withings binding is not authenticated. Skipping data refresh.");
+		if (this.withingsApiClients.isEmpty()) {
+			logger.info("No withings client found. Withings binding is probably not authenticated. Skipping data refresh.");
 			return;
 		}
 
@@ -114,14 +137,11 @@ public class WithingsBinding extends
 		// nothing to do
 	}
 
-	protected void setWithingsAuthenticator(
-			WithingsAuthenticator withingsAuthenticator) {
-		this.withingsAuthenticator = withingsAuthenticator;
-	}
-
-	protected void unsetWithingsAuthenticator(
-			WithingsAuthenticator withingsAuthenticator) {
-		this.withingsAuthenticator = withingsAuthenticator;
+	protected void removeWithingsApiClient(WithingsApiClient withingsApiClient) {
+		this.withingsApiClients.remove(withingsApiClient);
+		if (withingsApiClients.isEmpty()) {
+			setProperlyConfigured(false);
+		}
 	}
 
 	private Float findLastMeasureValue(List<MeasureGroup> measures,
@@ -174,7 +194,7 @@ public class WithingsBinding extends
 			Map<String, WithingsBindingConfig> withingsBindings) {
 		try {
 
-			WithingsApiClient client = this.withingsAuthenticator.getClient();
+			WithingsApiClient client = this.withingsApiClients.get(0);
 			List<MeasureGroup> measures = client.getMeasures(lastUpdate);
 
 			if (measures == null || measures.isEmpty()) {
