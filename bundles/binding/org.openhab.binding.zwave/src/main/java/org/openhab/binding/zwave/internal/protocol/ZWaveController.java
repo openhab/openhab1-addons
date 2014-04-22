@@ -756,6 +756,9 @@ public class ZWaveController {
 				if (lastSentMessage == null)
 					continue;
 				
+				// If this message is a data packet to a node
+				// then make sure the node is not a battery device.
+				// If it's a battery device, it needs to be awake, or we queue the frame until it is.
 				if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 					ZWaveNode node = getNode(lastSentMessage.getMessageNode());
 					
@@ -769,8 +772,10 @@ public class ZWaveController {
 					}
 				}
 				
+				// Clear the semaphore used to acknowledge the response.
 				transactionCompleted.drainPermits();
 				
+				// Send the message to the controller
 				byte[] buffer = lastSentMessage.getMessageBuffer();
 				logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
 				try {
@@ -783,6 +788,7 @@ public class ZWaveController {
 					break;
 				}
 				
+				// Now wait for the response...
 				try {
 					if (!transactionCompleted.tryAcquire(1, zWaveResponseTimeout, TimeUnit.MILLISECONDS)) {
 						timeOutCount.incrementAndGet();
@@ -879,6 +885,20 @@ public class ZWaveController {
 
 			// Send a NAK to resynchronise communications
 			sendResponse(NAK);
+			
+			// If we want to do a soft reset on the serial interface, do it here.
+			// It seems there's no response to this message, so sending it through
+			// 'normal' channels will cause a timeout.
+			try {
+				synchronized (serialPort.getOutputStream()) {
+					byte[] buffer = new SerialMessage(SerialMessageClass.SerialApiSoftReset, SerialMessageType.Request, SerialMessageClass.SerialApiSoftReset, SerialMessagePriority.High).getMessageBuffer();
+
+					serialPort.getOutputStream().write(buffer);
+					serialPort.getOutputStream().flush();
+				}
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+			}
 
 			while (!interrupted()) {
 				int nextByte;
