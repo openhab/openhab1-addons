@@ -89,6 +89,8 @@ public class ZWaveController {
 	
 	private final Semaphore transactionCompleted = new Semaphore(1);
 	private volatile SerialMessage lastSentMessage = null;
+	private long lastMessageStartTime = 0;
+	private long longestResponseTime = 0;
 	private SerialPort serialPort;
 	private int zWaveResponseTimeout = ZWAVE_RESPONSE_TIMEOUT;
 	private Timer watchdog;
@@ -778,6 +780,7 @@ public class ZWaveController {
 				// Send the message to the controller
 				byte[] buffer = lastSentMessage.getMessageBuffer();
 				logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
+				lastMessageStartTime = System.currentTimeMillis();
 				try {
 					synchronized (serialPort.getOutputStream()) {
 						serialPort.getOutputStream().write(buffer);
@@ -819,6 +822,10 @@ public class ZWaveController {
 						}
 						continue;
 					}
+					long responseTime = System.currentTimeMillis() - lastMessageStartTime;
+					if(responseTime > longestResponseTime)
+						longestResponseTime = responseTime;
+					logger.debug("Response processed after {}ms/{}ms.", responseTime, longestResponseTime);
 					logger.trace("Acquired. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 				} catch (InterruptedException e) {
 					break;
@@ -891,7 +898,8 @@ public class ZWaveController {
 			// 'normal' channels will cause a timeout.
 			try {
 				synchronized (serialPort.getOutputStream()) {
-					byte[] buffer = new SerialMessage(SerialMessageClass.SerialApiSoftReset, SerialMessageType.Request, SerialMessageClass.SerialApiSoftReset, SerialMessagePriority.High).getMessageBuffer();
+					SerialMessage resetMsg = new SerialApiSoftResetMessageClass().doRequest();
+					byte[] buffer = resetMsg.getMessageBuffer();
 
 					serialPort.getOutputStream().write(buffer);
 					serialPort.getOutputStream().flush();
