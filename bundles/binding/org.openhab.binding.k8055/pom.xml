@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>binding</artifactId>
+		<version>1.5.0-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<bundle.symbolicName>org.openhab.binding.k8055</bundle.symbolicName>
+		<bundle.namespace>org.openhab.binding.k8055</bundle.namespace>
+		<deb.name>openhab-addon-binding-k8055</deb.name>
+		<deb.description>${name}</deb.description>
+	</properties>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.binding</groupId>
+	<artifactId>org.openhab.binding.k8055</artifactId>
+
+	<name>openHAB k8055 Binding</name>
+
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>
+
