@@ -282,6 +282,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createDigitalSensorAdapter();
       }
       @Override
+      public Adapter caseMBrickletMotionDetector(MBrickletMotionDetector object)
+      {
+        return createMBrickletMotionDetectorAdapter();
+      }
+      @Override
       public Adapter caseMDualRelay(MDualRelay object)
       {
         return createMDualRelayAdapter();
@@ -914,6 +919,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createDigitalSensorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector <em>MBricklet Motion Detector</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector
+   * @generated
+   */
+  public Adapter createMBrickletMotionDetectorAdapter()
   {
     return null;
   }

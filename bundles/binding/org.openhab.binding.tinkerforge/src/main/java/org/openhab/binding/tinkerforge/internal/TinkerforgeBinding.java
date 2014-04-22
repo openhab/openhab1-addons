@@ -995,7 +995,7 @@ public class TinkerforgeBinding extends
 			fillupConfig(ohtfDevice, deviceConfig);
 		} else if (deviceType.equals(TypeKey.bricklet_industrial_digital_4in
 				.name()) || deviceType.equals(TypeKey.bricklet_io16.name())) {
-			logger.debug("{} setting no tfConfig device_type {}",
+			logger.debug("{} setting TFInterruptListenerConfiguration device_type {}",
 					LoggerConstants.CONFIG, deviceType);
 			TFInterruptListenerConfiguration tfInterruptListenerConfiguration = modelFactory
 					.createTFInterruptListenerConfiguration();

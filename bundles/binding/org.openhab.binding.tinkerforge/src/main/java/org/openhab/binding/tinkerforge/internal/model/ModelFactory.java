@@ -203,6 +203,15 @@ public interface ModelFactory extends EFactory
   DigitalSensor createDigitalSensor();
 
   /**
+   * Returns a new object of class '<em>MBricklet Motion Detector</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Motion Detector</em>'.
+   * @generated
+   */
+  MBrickletMotionDetector createMBrickletMotionDetector();
+
+  /**
    * Returns a new object of class '<em>MDual Relay</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

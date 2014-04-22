@@ -122,7 +122,7 @@ public class SerialMessage {
 	 * @param buffer the buffer to create the SerialMessage from.
 	 */
 	public SerialMessage(int nodeId, byte[] buffer) {
-		logger.debug("NODE {}: Creating new SerialMessage from buffer = {}", nodeId, SerialMessage.bb2hex(buffer));
+		logger.trace("NODE {}: Creating new SerialMessage from buffer = {}", nodeId, SerialMessage.bb2hex(buffer));
 		messageLength = buffer.length - 2; // buffer[1];
 		byte messageCheckSumm = calculateChecksum(buffer);
 		byte messageCheckSummReceived = buffer[messageLength+1];
@@ -139,7 +139,7 @@ public class SerialMessage {
 		this.messageClass = SerialMessageClass.getMessageClass(buffer[3] & 0xFF);
 		this.messagePayload = ArrayUtils.subarray(buffer, 4, messageLength + 1);
 		this.messageNode = nodeId;
-		logger.debug("NODE {}: Message payload = {}", getMessageNode(), SerialMessage.bb2hex(messagePayload));
+		logger.trace("NODE {}: Message payload = {}", getMessageNode(), SerialMessage.bb2hex(messagePayload));
 	}
 
     /**

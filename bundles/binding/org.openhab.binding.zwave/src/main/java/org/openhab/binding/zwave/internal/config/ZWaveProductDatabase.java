@@ -104,6 +104,9 @@ public class ZWaveProductDatabase {
 		// Have we selected a product?
 		if (selProduct == null)
 			return null;
+		
+		if(selProduct.ConfigFile == null || selProduct.ConfigFile.isEmpty())
+			return null;
 
 		URL entry = FrameworkUtil.getBundle(ZWaveProductDatabase.class).getEntry("database/" + selProduct.ConfigFile);
 		if (entry == null) {

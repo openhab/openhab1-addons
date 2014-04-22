@@ -758,6 +758,18 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.astro</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.k8055</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
 
         <dependency>
             <groupId>org.openhab.io</groupId>
@@ -862,98 +874,6 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
+    </dependencies>
 
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.k8055</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	
-    <dependency>
-		  <groupId>org.openhab.io</groupId>
-		  <artifactId>org.openhab.io.multimedia.tts.freetts</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-    <dependency>
-		  <groupId>org.openhab.io</groupId>
-		  <artifactId>org.openhab.io.multimedia.tts.marytts</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-    <dependency>
-		  <groupId>org.openhab.io</groupId>
-		  <artifactId>org.openhab.io.dropbox</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-	<dependency>
-		<groupId>org.openhab.io</groupId>
-		<artifactId>org.openhab.io.squeezeserver</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.io</groupId>
-		<artifactId>org.openhab.io.cv</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-    
-    <dependency>
-		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.sense</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-    <dependency>
-		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.rrd4j</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-    <dependency>
-		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.logging</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-    <dependency>
-		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.db4o</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-    <dependency>
-		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.exec</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-      <dependency>
-		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.cosm</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-      </dependency>
-    <dependency>
-		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.mysql</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-    <dependency>
-		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.gcal</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-    <dependency>
-		  <groupId>org.openhab.persistence</groupId>
-		  <artifactId>org.openhab.persistence.mqtt</artifactId>
-	      <version>${project.version}</version>
-	      <type>jar</type>
-    </dependency>
-  </dependencies>
 </project>
