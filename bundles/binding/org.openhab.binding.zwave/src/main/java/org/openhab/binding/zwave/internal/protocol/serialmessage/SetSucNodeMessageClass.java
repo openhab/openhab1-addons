@@ -13,7 +13,6 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,32 +21,36 @@ import org.slf4j.LoggerFactory;
  * @author Chris Jackson
  * @since 1.5.0
  */
-public class AssignSucReturnRouteMessageClass extends ZWaveCommandProcessor {
-	private static final Logger logger = LoggerFactory.getLogger(AssignSucReturnRouteMessageClass.class);
+public class SetSucNodeMessageClass extends ZWaveCommandProcessor {
+	private static final Logger logger = LoggerFactory.getLogger(SetSucNodeMessageClass.class);
 
-	public SerialMessage doRequest(int nodeId) {
-		logger.debug("NODE {}: Assigning SUC return route", nodeId);
+	public SerialMessage doRequest(int nodeId, SUCType type) {
+		logger.debug("NODE {}: SetSucNodeID node as {}", nodeId, type.toString());
 
 		// Queue the request
-		SerialMessage newMessage = new SerialMessage(SerialMessageClass.AssignSucReturnRoute, SerialMessageType.Request,
-				SerialMessageClass.AssignSucReturnRoute, SerialMessagePriority.High);
-		byte[] newPayload = { (byte) nodeId };
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.SetSucNodeID, SerialMessageType.Request,
+				SerialMessageClass.SetSucNodeID, SerialMessagePriority.High);
+		byte[] newPayload = new byte[5];
+		newPayload[0] = (byte)nodeId;
+		newPayload[1] =
+		newPayload[2] = 1;				// Low power option
+		newPayload[3] =1;
+		newPayload[4] =1;				// Callback!!!
 		newMessage.setMessagePayload(newPayload);
     	return newMessage;
 	}
-	
+
 	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 		
-		logger.debug("NODE {}: Got AssignSucReturnRoute response.", nodeId);
+		logger.debug("NODE {}: SetSucNodeID node response.", nodeId);
 
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
-			logger.debug("NODE {}: AssignSucReturnRoute command in progress.", nodeId);
+			logger.debug("NODE {}: SetSucNodeID command OK.", nodeId);
 		} else {
-			logger.error("NODE {}: AssignSucReturnRoute command failed.", nodeId);
-			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignSucReturnRoute, nodeId,
-					ZWaveNetworkEvent.State.Failure));
+			logger.error("NODE {}: SetSucNodeID command failed.", nodeId);
+			checkTransactionComplete(lastSentMessage, incomingMessage);
 		}
 		
 		return false;
@@ -57,18 +60,20 @@ public class AssignSucReturnRouteMessageClass extends ZWaveCommandProcessor {
 	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 
-		logger.debug("NODE {}: Got AssignSucReturnRoute request.", nodeId);
+		logger.debug("NODE {}: SetSucNodeID node request.", nodeId);
 
 		if (incomingMessage.getMessagePayloadByte(1) != 0x00) {
-			logger.error("NODE {}: Assign SUC return routes failed with error 0x{}.", nodeId,
+			logger.error("NODE {}: SetSucNodeID failed with error 0x{}.", nodeId,
 					Integer.toHexString(incomingMessage.getMessagePayloadByte(1)));
-			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignSucReturnRoute, nodeId,
-					ZWaveNetworkEvent.State.Failure));
 		} else {
-			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignSucReturnRoute, nodeId,
-					ZWaveNetworkEvent.State.Success));
 		}
 
+		checkTransactionComplete(lastSentMessage, incomingMessage);
 		return false;
 	}
+	
+	enum SUCType {
+		NONE, BASIC, SERVER
+	}
+
 }
