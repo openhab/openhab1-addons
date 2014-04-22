@@ -186,9 +186,9 @@ public class SerialMessage {
 	 */
 	@Override
 	public String toString() {
-		return String.format("Message: class = %s (0x%02X), type = %s (0x%02X), buffer = %s", 
+		return String.format("Message: class = %s (0x%02X), type = %s (0x%02X), payload = %s", 
 				new Object[] { messageClass, messageClass.key, messageType, messageType.ordinal(),
-				SerialMessage.bb2hex(this.getMessageBuffer()) });
+				SerialMessage.bb2hex(this.getMessagePayload()) });
 	};
 	
 	/**
