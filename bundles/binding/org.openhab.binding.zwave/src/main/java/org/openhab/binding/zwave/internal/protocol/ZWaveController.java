@@ -90,6 +90,7 @@ public class ZWaveController {
 	private final Semaphore transactionCompleted = new Semaphore(1);
 	private volatile SerialMessage lastSentMessage = null;
 	private SerialPort serialPort;
+	private int zWaveResponseTimeout = ZWAVE_RESPONSE_TIMEOUT;
 	private Timer watchdog;
 	
 	private String zWaveVersion = "Unknown";
@@ -121,8 +122,12 @@ public class ZWaveController {
 	 * communication with the Z-Wave controller stick.
 	 * @throws SerialInterfaceException when a connection error occurs.
 	 */
-	public ZWaveController(final String serialPortName) throws SerialInterfaceException {
+	public ZWaveController(final String serialPortName, final Integer timeout) throws SerialInterfaceException {
 			logger.info("Starting Z-Wave controller");
+			if(timeout != null && timeout >= 1500 && timeout <= 10000) {
+				zWaveResponseTimeout = timeout;
+			}
+			logger.info("Z-Wave timeout is set to {}ms.", zWaveResponseTimeout);
 			connect(serialPortName);
 			this.watchdog = new Timer(true);
 			this.watchdog.schedule(
@@ -779,7 +784,7 @@ public class ZWaveController {
 				}
 				
 				try {
-					if (!transactionCompleted.tryAcquire(1, ZWAVE_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS)) {
+					if (!transactionCompleted.tryAcquire(1, zWaveResponseTimeout, TimeUnit.MILLISECONDS)) {
 						timeOutCount.incrementAndGet();
 						if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 							
