@@ -257,12 +257,16 @@ class DigitalSensor extends IODevice, MSensor<DigitalValue>,
 }
 
 class MBrickletMultiTouch extends MDevice<TinkerBrickletMultiTouch>,
-        MSubDeviceHolder<MultiTouchDevice>{
+        MSubDeviceHolder<MultiTouchDevice>, MTFConfigConsumer<BrickletMultiTouchConfiguration>{
     readonly String deviceType = "bricklet_multitouch"
+    Boolean recalibrate
+    Short sensitivity
 }
+
 class MultiTouchDevice extends  MSubDevice<MBrickletMultiTouch>,
-    MSensor<DigitalValue>{
+    MSensor<DigitalValue>, MTFConfigConsumer<MultiTouchDeviceConfiguration>{
     int pin
+    Boolean disableElectrode
 }
 
 class Electrode extends MultiTouchDevice {
@@ -487,6 +491,15 @@ class RemoteSwitchCConfiguration extends TFConfig{
 
 }
 
+class MultiTouchDeviceConfiguration extends TFConfig {
+    Boolean disableElectrode
+}
+
+class BrickletMultiTouchConfiguration extends TFConfig {
+    Boolean recalibrate
+    Short sensitivity
+}
+
 enum NoSubIds {
 	
 }
@@ -524,4 +537,10 @@ enum LCDButtonSubIds {
 
 enum LCDBacklightSubIds {
 	BACKLIGHT
+}
+
+enum MultiTouchSubIds {
+    ELECTRODE0, ELECTRODE1, ELECTRODE2, ELECTRODE3, ELECTRODE4,
+    ELECTRODE5, ELECTRODE6, ELECTRODE7, ELECTRODE8, ELECTRODE9,
+    ELECTRODE10, ELECTRODE11, PROXIMITY
 }

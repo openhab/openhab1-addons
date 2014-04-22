@@ -3610,13 +3610,40 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_MULTI_TOUCH__MSUBDEVICES = MDEVICE_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_MULTI_TOUCH__TF_CONFIG = MDEVICE_FEATURE_COUNT + 1;
+
+  /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_MULTI_TOUCH__DEVICE_TYPE = MDEVICE_FEATURE_COUNT + 1;
+  int MBRICKLET_MULTI_TOUCH__DEVICE_TYPE = MDEVICE_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Recalibrate</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_MULTI_TOUCH__RECALIBRATE = MDEVICE_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Sensitivity</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_MULTI_TOUCH__SENSITIVITY = MDEVICE_FEATURE_COUNT + 4;
 
   /**
    * The number of structural features of the '<em>MBricklet Multi Touch</em>' class.
@@ -3625,7 +3652,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_MULTI_TOUCH_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 2;
+  int MBRICKLET_MULTI_TOUCH_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 5;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -3737,13 +3764,31 @@ public interface ModelPackage extends EPackage
   int MULTI_TOUCH_DEVICE__SENSOR_VALUE = MSUB_DEVICE_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MULTI_TOUCH_DEVICE__TF_CONFIG = MSUB_DEVICE_FEATURE_COUNT + 1;
+
+  /**
    * The feature id for the '<em><b>Pin</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MULTI_TOUCH_DEVICE__PIN = MSUB_DEVICE_FEATURE_COUNT + 1;
+  int MULTI_TOUCH_DEVICE__PIN = MSUB_DEVICE_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Disable Electrode</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MULTI_TOUCH_DEVICE__DISABLE_ELECTRODE = MSUB_DEVICE_FEATURE_COUNT + 3;
 
   /**
    * The number of structural features of the '<em>Multi Touch Device</em>' class.
@@ -3752,7 +3797,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MULTI_TOUCH_DEVICE_FEATURE_COUNT = MSUB_DEVICE_FEATURE_COUNT + 2;
+  int MULTI_TOUCH_DEVICE_FEATURE_COUNT = MSUB_DEVICE_FEATURE_COUNT + 4;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -3864,6 +3909,15 @@ public interface ModelPackage extends EPackage
   int ELECTRODE__SENSOR_VALUE = MULTI_TOUCH_DEVICE__SENSOR_VALUE;
 
   /**
+   * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ELECTRODE__TF_CONFIG = MULTI_TOUCH_DEVICE__TF_CONFIG;
+
+  /**
    * The feature id for the '<em><b>Pin</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3871,6 +3925,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int ELECTRODE__PIN = MULTI_TOUCH_DEVICE__PIN;
+
+  /**
+   * The feature id for the '<em><b>Disable Electrode</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ELECTRODE__DISABLE_ELECTRODE = MULTI_TOUCH_DEVICE__DISABLE_ELECTRODE;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -4000,6 +4063,15 @@ public interface ModelPackage extends EPackage
   int PROXIMITY__SENSOR_VALUE = MULTI_TOUCH_DEVICE__SENSOR_VALUE;
 
   /**
+   * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROXIMITY__TF_CONFIG = MULTI_TOUCH_DEVICE__TF_CONFIG;
+
+  /**
    * The feature id for the '<em><b>Pin</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4007,6 +4079,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int PROXIMITY__PIN = MULTI_TOUCH_DEVICE__PIN;
+
+  /**
+   * The feature id for the '<em><b>Disable Electrode</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROXIMITY__DISABLE_ELECTRODE = MULTI_TOUCH_DEVICE__DISABLE_ELECTRODE;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -7604,6 +7685,89 @@ public interface ModelPackage extends EPackage
   int REMOTE_SWITCH_CCONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
 
   /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceConfigurationImpl <em>Multi Touch Device Configuration</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceConfigurationImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMultiTouchDeviceConfiguration()
+   * @generated
+   */
+  int MULTI_TOUCH_DEVICE_CONFIGURATION = 65;
+
+  /**
+   * The feature id for the '<em><b>Disable Electrode</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MULTI_TOUCH_DEVICE_CONFIGURATION__DISABLE_ELECTRODE = TF_CONFIG_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Multi Touch Device Configuration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MULTI_TOUCH_DEVICE_CONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 1;
+
+  /**
+   * The number of operations of the '<em>Multi Touch Device Configuration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MULTI_TOUCH_DEVICE_CONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletMultiTouchConfigurationImpl <em>Bricklet Multi Touch Configuration</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.BrickletMultiTouchConfigurationImpl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletMultiTouchConfiguration()
+   * @generated
+   */
+  int BRICKLET_MULTI_TOUCH_CONFIGURATION = 66;
+
+  /**
+   * The feature id for the '<em><b>Recalibrate</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_MULTI_TOUCH_CONFIGURATION__RECALIBRATE = TF_CONFIG_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Sensitivity</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_MULTI_TOUCH_CONFIGURATION__SENSITIVITY = TF_CONFIG_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Bricklet Multi Touch Configuration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_MULTI_TOUCH_CONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 2;
+
+  /**
+   * The number of operations of the '<em>Bricklet Multi Touch Configuration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BRICKLET_MULTI_TOUCH_CONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
+
+  /**
    * The meta object id for the '<em>Switch State</em>' data type.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -7611,7 +7775,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getSwitchState()
    * @generated
    */
-  int SWITCH_STATE = 84;
+  int SWITCH_STATE = 87;
 
   /**
    * The meta object id for the '<em>Digital Value</em>' data type.
@@ -7621,7 +7785,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalValue()
    * @generated
    */
-  int DIGITAL_VALUE = 85;
+  int DIGITAL_VALUE = 88;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet IO16</em>' data type.
@@ -7631,7 +7795,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIO16()
    * @generated
    */
-  int TINKER_BRICKLET_IO16 = 86;
+  int TINKER_BRICKLET_IO16 = 89;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode <em>DC Drive Mode</em>}' enum.
@@ -7641,7 +7805,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDCDriveMode()
    * @generated
    */
-  int DC_DRIVE_MODE = 65;
+  int DC_DRIVE_MODE = 67;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}' enum.
@@ -7651,7 +7815,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getNoSubIds()
    * @generated
    */
-  int NO_SUB_IDS = 66;
+  int NO_SUB_IDS = 68;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs <em>Industrial Digital In Sub IDs</em>}' enum.
@@ -7661,7 +7825,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDigitalInSubIDs()
    * @generated
    */
-  int INDUSTRIAL_DIGITAL_IN_SUB_IDS = 67;
+  int INDUSTRIAL_DIGITAL_IN_SUB_IDS = 69;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs <em>Industrial Quad Relay IDs</em>}' enum.
@@ -7671,7 +7835,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialQuadRelayIDs()
    * @generated
    */
-  int INDUSTRIAL_QUAD_RELAY_IDS = 68;
+  int INDUSTRIAL_QUAD_RELAY_IDS = 70;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ServoSubIDs <em>Servo Sub IDs</em>}' enum.
@@ -7681,7 +7845,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getServoSubIDs()
    * @generated
    */
-  int SERVO_SUB_IDS = 69;
+  int SERVO_SUB_IDS = 71;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs <em>Barometer Sub IDs</em>}' enum.
@@ -7691,7 +7855,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBarometerSubIDs()
    * @generated
    */
-  int BAROMETER_SUB_IDS = 70;
+  int BAROMETER_SUB_IDS = 72;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.IO16SubIds <em>IO16 Sub Ids</em>}' enum.
@@ -7701,7 +7865,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIO16SubIds()
    * @generated
    */
-  int IO16_SUB_IDS = 71;
+  int IO16_SUB_IDS = 73;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds <em>Dual Relay Sub Ids</em>}' enum.
@@ -7711,7 +7875,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDualRelaySubIds()
    * @generated
    */
-  int DUAL_RELAY_SUB_IDS = 72;
+  int DUAL_RELAY_SUB_IDS = 74;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds <em>LCD Button Sub Ids</em>}' enum.
@@ -7721,7 +7885,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLCDButtonSubIds()
    * @generated
    */
-  int LCD_BUTTON_SUB_IDS = 73;
+  int LCD_BUTTON_SUB_IDS = 75;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds <em>LCD Backlight Sub Ids</em>}' enum.
@@ -7731,7 +7895,17 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getLCDBacklightSubIds()
    * @generated
    */
-  int LCD_BACKLIGHT_SUB_IDS = 74;
+  int LCD_BACKLIGHT_SUB_IDS = 76;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds <em>Multi Touch Sub Ids</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMultiTouchSubIds()
+   * @generated
+   */
+  int MULTI_TOUCH_SUB_IDS = 77;
 
   /**
    * The meta object id for the '<em>MIP Connection</em>' data type.
@@ -7741,7 +7915,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIPConnection()
    * @generated
    */
-  int MIP_CONNECTION = 75;
+  int MIP_CONNECTION = 78;
 
   /**
    * The meta object id for the '<em>MTinker Device</em>' data type.
@@ -7751,7 +7925,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerDevice()
    * @generated
    */
-  int MTINKER_DEVICE = 76;
+  int MTINKER_DEVICE = 79;
 
   /**
    * The meta object id for the '<em>MLogger</em>' data type.
@@ -7761,7 +7935,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLogger()
    * @generated
    */
-  int MLOGGER = 77;
+  int MLOGGER = 80;
 
 
   /**
@@ -7772,7 +7946,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMAtomicBoolean()
    * @generated
    */
-  int MATOMIC_BOOLEAN = 78;
+  int MATOMIC_BOOLEAN = 81;
 
   /**
    * The meta object id for the '<em>MTinkerforge Device</em>' data type.
@@ -7782,7 +7956,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeDevice()
    * @generated
    */
-  int MTINKERFORGE_DEVICE = 79;
+  int MTINKERFORGE_DEVICE = 82;
 
   /**
    * The meta object id for the '<em>MTinker Brick DC</em>' data type.
@@ -7792,7 +7966,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickDC()
    * @generated
    */
-  int MTINKER_BRICK_DC = 80;
+  int MTINKER_BRICK_DC = 83;
 
   /**
    * The meta object id for the '<em>MTinker Brick Servo</em>' data type.
@@ -7802,7 +7976,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickServo()
    * @generated
    */
-  int MTINKER_BRICK_SERVO = 87;
+  int MTINKER_BRICK_SERVO = 90;
 
 
   /**
@@ -7813,7 +7987,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeValue()
    * @generated
    */
-  int MTINKERFORGE_VALUE = 88;
+  int MTINKERFORGE_VALUE = 91;
 
   /**
    * The meta object id for the '<em>MDecimal Value</em>' data type.
@@ -7823,7 +7997,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDecimalValue()
    * @generated
    */
-  int MDECIMAL_VALUE = 89;
+  int MDECIMAL_VALUE = 92;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Humidity</em>' data type.
@@ -7833,7 +8007,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletHumidity()
    * @generated
    */
-  int MTINKER_BRICKLET_HUMIDITY = 90;
+  int MTINKER_BRICKLET_HUMIDITY = 93;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Distance IR</em>' data type.
@@ -7843,7 +8017,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDistanceIR()
    * @generated
    */
-  int MTINKER_BRICKLET_DISTANCE_IR = 91;
+  int MTINKER_BRICKLET_DISTANCE_IR = 94;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Temperature</em>' data type.
@@ -7853,7 +8027,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletTemperature()
    * @generated
    */
-  int MTINKER_BRICKLET_TEMPERATURE = 92;
+  int MTINKER_BRICKLET_TEMPERATURE = 95;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Barometer</em>' data type.
@@ -7863,7 +8037,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletBarometer()
    * @generated
    */
-  int MTINKER_BRICKLET_BAROMETER = 93;
+  int MTINKER_BRICKLET_BAROMETER = 96;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Ambient Light</em>' data type.
@@ -7873,7 +8047,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletAmbientLight()
    * @generated
    */
-  int MTINKER_BRICKLET_AMBIENT_LIGHT = 94;
+  int MTINKER_BRICKLET_AMBIENT_LIGHT = 97;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet LCD2 0x4</em>' data type.
@@ -7883,7 +8057,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletLCD20x4()
    * @generated
    */
-  int MTINKER_BRICKLET_LCD2_0X4 = 95;
+  int MTINKER_BRICKLET_LCD2_0X4 = 98;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Remote Switch</em>' data type.
@@ -7893,7 +8067,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletRemoteSwitch()
    * @generated
    */
-  int TINKER_BRICKLET_REMOTE_SWITCH = 96;
+  int TINKER_BRICKLET_REMOTE_SWITCH = 99;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Motion Detector</em>' data type.
@@ -7903,7 +8077,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMotionDetector()
    * @generated
    */
-  int TINKER_BRICKLET_MOTION_DETECTOR = 97;
+  int TINKER_BRICKLET_MOTION_DETECTOR = 100;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Multi Touch</em>' data type.
@@ -7913,7 +8087,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMultiTouch()
    * @generated
    */
-  int TINKER_BRICKLET_MULTI_TOUCH = 98;
+  int TINKER_BRICKLET_MULTI_TOUCH = 101;
 
   /**
    * The meta object id for the '<em>Enum</em>' data type.
@@ -7923,7 +8097,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getEnum()
    * @generated
    */
-  int ENUM = 99;
+  int ENUM = 102;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.TFConfig <em>TF Config</em>}'.
@@ -8090,7 +8264,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDualRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_DUAL_RELAY = 81;
+  int MTINKER_BRICKLET_DUAL_RELAY = 84;
 
 
   /**
@@ -8101,7 +8275,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialQuadRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 82;
+  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 85;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Industrial Digital In4</em>' data type.
@@ -8111,7 +8285,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalIn4()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 83;
+  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 86;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.Ecosystem <em>Ecosystem</em>}'.
@@ -9222,6 +9396,28 @@ public interface ModelPackage extends EPackage
   EAttribute getMBrickletMultiTouch_DeviceType();
 
   /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch#getRecalibrate <em>Recalibrate</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Recalibrate</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch#getRecalibrate()
+   * @see #getMBrickletMultiTouch()
+   * @generated
+   */
+  EAttribute getMBrickletMultiTouch_Recalibrate();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch#getSensitivity <em>Sensitivity</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Sensitivity</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch#getSensitivity()
+   * @see #getMBrickletMultiTouch()
+   * @generated
+   */
+  EAttribute getMBrickletMultiTouch_Sensitivity();
+
+  /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice <em>Multi Touch Device</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -9241,6 +9437,17 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EAttribute getMultiTouchDevice_Pin();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice#getDisableElectrode <em>Disable Electrode</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Disable Electrode</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice#getDisableElectrode()
+   * @see #getMultiTouchDevice()
+   * @generated
+   */
+  EAttribute getMultiTouchDevice_DisableElectrode();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.Electrode <em>Electrode</em>}'.
@@ -9862,6 +10069,59 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EAttribute getRemoteSwitchCConfiguration_Repeats();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration <em>Multi Touch Device Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Multi Touch Device Configuration</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration
+   * @generated
+   */
+  EClass getMultiTouchDeviceConfiguration();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration#getDisableElectrode <em>Disable Electrode</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Disable Electrode</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration#getDisableElectrode()
+   * @see #getMultiTouchDeviceConfiguration()
+   * @generated
+   */
+  EAttribute getMultiTouchDeviceConfiguration_DisableElectrode();
+
+  /**
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration <em>Bricklet Multi Touch Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Bricklet Multi Touch Configuration</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration
+   * @generated
+   */
+  EClass getBrickletMultiTouchConfiguration();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration#getRecalibrate <em>Recalibrate</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Recalibrate</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration#getRecalibrate()
+   * @see #getBrickletMultiTouchConfiguration()
+   * @generated
+   */
+  EAttribute getBrickletMultiTouchConfiguration_Recalibrate();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration#getSensitivity <em>Sensitivity</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Sensitivity</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration#getSensitivity()
+   * @see #getBrickletMultiTouchConfiguration()
+   * @generated
+   */
+  EAttribute getBrickletMultiTouchConfiguration_Sensitivity();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MServo <em>MServo</em>}'.
@@ -10696,6 +10956,16 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EEnum getLCDBacklightSubIds();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds <em>Multi Touch Sub Ids</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Multi Touch Sub Ids</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds
+   * @generated
+   */
+  EEnum getMultiTouchSubIds();
 
   /**
    * Returns the meta object for data type '{@link com.tinkerforge.IPConnection <em>MIP Connection</em>}'.
@@ -11988,6 +12258,22 @@ public interface ModelPackage extends EPackage
     EAttribute MBRICKLET_MULTI_TOUCH__DEVICE_TYPE = eINSTANCE.getMBrickletMultiTouch_DeviceType();
 
     /**
+     * The meta object literal for the '<em><b>Recalibrate</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKLET_MULTI_TOUCH__RECALIBRATE = eINSTANCE.getMBrickletMultiTouch_Recalibrate();
+
+    /**
+     * The meta object literal for the '<em><b>Sensitivity</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICKLET_MULTI_TOUCH__SENSITIVITY = eINSTANCE.getMBrickletMultiTouch_Sensitivity();
+
+    /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl <em>Multi Touch Device</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -12004,6 +12290,14 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute MULTI_TOUCH_DEVICE__PIN = eINSTANCE.getMultiTouchDevice_Pin();
+
+    /**
+     * The meta object literal for the '<em><b>Disable Electrode</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MULTI_TOUCH_DEVICE__DISABLE_ELECTRODE = eINSTANCE.getMultiTouchDevice_DisableElectrode();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.ElectrodeImpl <em>Electrode</em>}' class.
@@ -12500,6 +12794,50 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute REMOTE_SWITCH_CCONFIGURATION__REPEATS = eINSTANCE.getRemoteSwitchCConfiguration_Repeats();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceConfigurationImpl <em>Multi Touch Device Configuration</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceConfigurationImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMultiTouchDeviceConfiguration()
+     * @generated
+     */
+    EClass MULTI_TOUCH_DEVICE_CONFIGURATION = eINSTANCE.getMultiTouchDeviceConfiguration();
+
+    /**
+     * The meta object literal for the '<em><b>Disable Electrode</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MULTI_TOUCH_DEVICE_CONFIGURATION__DISABLE_ELECTRODE = eINSTANCE.getMultiTouchDeviceConfiguration_DisableElectrode();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletMultiTouchConfigurationImpl <em>Bricklet Multi Touch Configuration</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.BrickletMultiTouchConfigurationImpl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getBrickletMultiTouchConfiguration()
+     * @generated
+     */
+    EClass BRICKLET_MULTI_TOUCH_CONFIGURATION = eINSTANCE.getBrickletMultiTouchConfiguration();
+
+    /**
+     * The meta object literal for the '<em><b>Recalibrate</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute BRICKLET_MULTI_TOUCH_CONFIGURATION__RECALIBRATE = eINSTANCE.getBrickletMultiTouchConfiguration_Recalibrate();
+
+    /**
+     * The meta object literal for the '<em><b>Sensitivity</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute BRICKLET_MULTI_TOUCH_CONFIGURATION__SENSITIVITY = eINSTANCE.getBrickletMultiTouchConfiguration_Sensitivity();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl <em>MServo</em>}' class.
@@ -13190,6 +13528,16 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EEnum LCD_BACKLIGHT_SUB_IDS = eINSTANCE.getLCDBacklightSubIds();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds <em>Multi Touch Sub Ids</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMultiTouchSubIds()
+     * @generated
+     */
+    EEnum MULTI_TOUCH_SUB_IDS = eINSTANCE.getMultiTouchSubIds();
 
     /**
      * The meta object literal for the '<em>MIP Connection</em>' data type.

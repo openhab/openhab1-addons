@@ -24,9 +24,11 @@ import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
 
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +50,9 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getMbrick <em>Mbrick</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getSensorValue <em>Sensor Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getPin <em>Pin</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getDisableElectrode <em>Disable Electrode</em>}</li>
  * </ul>
  * </p>
  *
@@ -147,6 +151,16 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
   protected HighLowValue sensorValue;
 
   /**
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTfConfig()
+   * @generated
+   * @ordered
+   */
+  protected MultiTouchDeviceConfiguration tfConfig;
+
+  /**
    * The default value of the '{@link #getPin() <em>Pin</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -165,6 +179,26 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
    * @ordered
    */
   protected int pin = PIN_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getDisableElectrode() <em>Disable Electrode</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDisableElectrode()
+   * @generated
+   * @ordered
+   */
+  protected static final Boolean DISABLE_ELECTRODE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDisableElectrode() <em>Disable Electrode</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDisableElectrode()
+   * @generated
+   * @ordered
+   */
+  protected Boolean disableElectrode = DISABLE_ELECTRODE_EDEFAULT;
 
   private int mask;
 
@@ -356,6 +390,54 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
    * <!-- end-user-doc -->
    * @generated
    */
+  public MultiTouchDeviceConfiguration getTfConfig()
+  {
+    return tfConfig;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetTfConfig(MultiTouchDeviceConfiguration newTfConfig, NotificationChain msgs)
+  {
+    MultiTouchDeviceConfiguration oldTfConfig = tfConfig;
+    tfConfig = newTfConfig;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG, oldTfConfig, newTfConfig);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTfConfig(MultiTouchDeviceConfiguration newTfConfig)
+  {
+    if (newTfConfig != tfConfig)
+    {
+      NotificationChain msgs = null;
+      if (tfConfig != null)
+        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG, null, msgs);
+      if (newTfConfig != null)
+        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG, null, msgs);
+      msgs = basicSetTfConfig(newTfConfig, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG, newTfConfig, newTfConfig));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public int getPin()
   {
     return pin;
@@ -372,6 +454,29 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     pin = newPin;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__PIN, oldPin, pin));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Boolean getDisableElectrode()
+  {
+    return disableElectrode;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDisableElectrode(Boolean newDisableElectrode)
+  {
+    Boolean oldDisableElectrode = disableElectrode;
+    disableElectrode = newDisableElectrode;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__DISABLE_ELECTRODE, oldDisableElectrode, disableElectrode));
   }
 
   /**
@@ -426,19 +531,43 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
-  {
-    setSensorValue(HighLowValue.UNDEF);
+  public void enable() {
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("disableElectrode"))) {
+        if (tfConfig.getDisableElectrode()) {
+          logger.debug("{} MultiTouchDevice uid {} subid {} disable electrode {}", LoggerConstants.TFINIT,
+              getUid(), getSubId(), getPin());
+          setDisableElectrode(true);
+        }
+      }
+    }
     MBrickletMultiTouch bricklet = getMbrick();
     if (bricklet == null) {
-      logger.error("{} No bricklet found for MultiTouchDevice: {}:{} ",
-              LoggerConstants.TFINIT, getUid(), subId);
-  } else {
-    BrickletMultiTouch brickletMultiTouch = bricklet.getTinkerforgeDevice();
-    touchListener = new TouchListener();
-    brickletMultiTouch.addTouchStateListener(touchListener);
-    setSensorValue(fetchSensorValue());
-  }
+      logger.error("{} No bricklet found for MultiTouchDevice: {}:{} ", LoggerConstants.TFINIT,
+          getUid(), subId);
+    } else {
+      try {
+        BrickletMultiTouch brickletMultiTouch = bricklet.getTinkerforgeDevice();
+        if (getDisableElectrode() != null && getDisableElectrode()) {
+          logger.debug("{} MultiTouchDevice uid {} subid {} disabling electrode {}", LoggerConstants.TFINIT, getUid(), getSubId(), getPin());
+          getEnabledA().set(false);
+          int electrodeConfig = brickletMultiTouch.getElectrodeConfig();
+          electrodeConfig &= ~mask;
+          brickletMultiTouch.setElectrodeConfig(electrodeConfig);
+          return;
+        }
+        setSensorValue(HighLowValue.UNDEF);
+        touchListener = new TouchListener();
+        brickletMultiTouch.addTouchStateListener(touchListener);
+        setSensorValue(fetchSensorValue());
+
+      } catch (TimeoutException e) {
+        TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+      } catch (NotConnectedException e) {
+        TinkerforgeErrorHandler.handleError(this,
+            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+      }
+    }
   }
 
   /**
@@ -448,7 +577,9 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
    */
   public void disable()
   {
-    getMbrick().getTinkerforgeDevice().removeTouchStateListener(touchListener);
+    if (touchListener != null){
+      getMbrick().getTinkerforgeDevice().removeTouchStateListener(touchListener);
+    }
   }
 
   /**
@@ -459,9 +590,12 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
   private class TouchListener implements BrickletMultiTouch.TouchStateListener {
     @Override
     public void touchState(int state) {
-      logger.debug("{} TouchListener updating state for {}:{}", LoggerConstants.TFMODELUPDATE,
-          getUid(), getSubId());
-      setSensorValue(extractValue(state));
+      HighLowValue new_state = extractValue(state);
+      if (new_state != getSensorValue()) {
+        logger.debug("{} TouchListener updating state for {}:{}", LoggerConstants.TFMODELUPDATE,
+            getUid(), getSubId());
+        setSensorValue(extractValue(state));
+      }
     }
   }
 
@@ -495,6 +629,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     {
       case ModelPackage.MULTI_TOUCH_DEVICE__MBRICK:
         return basicSetMbrick(null, msgs);
+      case ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG:
+        return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -537,8 +673,12 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
         return getMbrick();
       case ModelPackage.MULTI_TOUCH_DEVICE__SENSOR_VALUE:
         return getSensorValue();
+      case ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG:
+        return getTfConfig();
       case ModelPackage.MULTI_TOUCH_DEVICE__PIN:
         return getPin();
+      case ModelPackage.MULTI_TOUCH_DEVICE__DISABLE_ELECTRODE:
+        return getDisableElectrode();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -571,8 +711,14 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
       case ModelPackage.MULTI_TOUCH_DEVICE__SENSOR_VALUE:
         setSensorValue((HighLowValue)newValue);
         return;
+      case ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG:
+        setTfConfig((MultiTouchDeviceConfiguration)newValue);
+        return;
       case ModelPackage.MULTI_TOUCH_DEVICE__PIN:
         setPin((Integer)newValue);
+        return;
+      case ModelPackage.MULTI_TOUCH_DEVICE__DISABLE_ELECTRODE:
+        setDisableElectrode((Boolean)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -606,8 +752,14 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
       case ModelPackage.MULTI_TOUCH_DEVICE__SENSOR_VALUE:
         setSensorValue((HighLowValue)null);
         return;
+      case ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG:
+        setTfConfig((MultiTouchDeviceConfiguration)null);
+        return;
       case ModelPackage.MULTI_TOUCH_DEVICE__PIN:
         setPin(PIN_EDEFAULT);
+        return;
+      case ModelPackage.MULTI_TOUCH_DEVICE__DISABLE_ELECTRODE:
+        setDisableElectrode(DISABLE_ELECTRODE_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -635,8 +787,12 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
         return getMbrick() != null;
       case ModelPackage.MULTI_TOUCH_DEVICE__SENSOR_VALUE:
         return sensorValue != null;
+      case ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG:
+        return tfConfig != null;
       case ModelPackage.MULTI_TOUCH_DEVICE__PIN:
         return pin != PIN_EDEFAULT;
+      case ModelPackage.MULTI_TOUCH_DEVICE__DISABLE_ELECTRODE:
+        return DISABLE_ELECTRODE_EDEFAULT == null ? disableElectrode != null : !DISABLE_ELECTRODE_EDEFAULT.equals(disableElectrode);
     }
     return super.eIsSet(featureID);
   }
@@ -654,6 +810,14 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
       switch (derivedFeatureID)
       {
         case ModelPackage.MULTI_TOUCH_DEVICE__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
         default: return -1;
       }
     }
@@ -676,6 +840,14 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
         default: return -1;
       }
     }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MULTI_TOUCH_DEVICE__TF_CONFIG;
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -692,6 +864,13 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
       switch (baseOperationID)
       {
         case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.MULTI_TOUCH_DEVICE___FETCH_SENSOR_VALUE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
         default: return -1;
       }
     }
@@ -746,6 +925,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     result.append(sensorValue);
     result.append(", pin: ");
     result.append(pin);
+    result.append(", disableElectrode: ");
+    result.append(disableElectrode);
     result.append(')');
     return result.toString();
   }

@@ -4,6 +4,8 @@ package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -26,12 +28,15 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
+import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.Electrode;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
@@ -58,7 +63,10 @@ import org.slf4j.LoggerFactory;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getMsubdevices <em>Msubdevices</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getRecalibrate <em>Recalibrate</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getSensitivity <em>Sensitivity</em>}</li>
  * </ul>
  * </p>
  *
@@ -247,6 +255,16 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
   protected EList<MultiTouchDevice> msubdevices;
 
   /**
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTfConfig()
+   * @generated
+   * @ordered
+   */
+  protected BrickletMultiTouchConfiguration tfConfig;
+
+  /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -265,6 +283,46 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
    * @ordered
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getRecalibrate() <em>Recalibrate</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRecalibrate()
+   * @generated
+   * @ordered
+   */
+  protected static final Boolean RECALIBRATE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getRecalibrate() <em>Recalibrate</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRecalibrate()
+   * @generated
+   * @ordered
+   */
+  protected Boolean recalibrate = RECALIBRATE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getSensitivity() <em>Sensitivity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSensitivity()
+   * @generated
+   * @ordered
+   */
+  protected static final Short SENSITIVITY_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getSensitivity() <em>Sensitivity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSensitivity()
+   * @generated
+   * @ordered
+   */
+  protected Short sensitivity = SENSITIVITY_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -558,9 +616,103 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated
    */
+  public BrickletMultiTouchConfiguration getTfConfig()
+  {
+    return tfConfig;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetTfConfig(BrickletMultiTouchConfiguration newTfConfig, NotificationChain msgs)
+  {
+    BrickletMultiTouchConfiguration oldTfConfig = tfConfig;
+    tfConfig = newTfConfig;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG, oldTfConfig, newTfConfig);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTfConfig(BrickletMultiTouchConfiguration newTfConfig)
+  {
+    if (newTfConfig != tfConfig)
+    {
+      NotificationChain msgs = null;
+      if (tfConfig != null)
+        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG, null, msgs);
+      if (newTfConfig != null)
+        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG, null, msgs);
+      msgs = basicSetTfConfig(newTfConfig, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG, newTfConfig, newTfConfig));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getDeviceType()
   {
     return deviceType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Boolean getRecalibrate()
+  {
+    return recalibrate;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setRecalibrate(Boolean newRecalibrate)
+  {
+    Boolean oldRecalibrate = recalibrate;
+    recalibrate = newRecalibrate;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__RECALIBRATE, oldRecalibrate, recalibrate));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Short getSensitivity()
+  {
+    return sensitivity;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSensitivity(Short newSensitivity)
+  {
+    Short oldSensitivity = sensitivity;
+    sensitivity = newSensitivity;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__SENSITIVITY, oldSensitivity, sensitivity));
   }
 
   /**
@@ -606,9 +758,36 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
-  {
+  public void enable() {
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("sensitivity"))) {
+        setSensitivity(tfConfig.getSensitivity());
+        logger.debug("{} MultiTouchDevice uid {} setSensitivity {}", LoggerConstants.TFINIT,
+            getUid(), getSensitivity());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("recalibrate"))) {
+        setRecalibrate(tfConfig.getRecalibrate());
+        logger.debug("{} MultiTouchDevice uid {} setRecalibrate {}", LoggerConstants.TFINIT,
+            getUid(), getRecalibrate());
+      }
+    }
+
     tinkerforgeDevice = new BrickletMultiTouch(getUid(), getIpConnection());
+    try {
+      if (getSensitivity() != null) {
+        tinkerforgeDevice.setElectrodeSensitivity(getSensitivity());
+      }
+      if (getRecalibrate() != null && getRecalibrate()){
+        tinkerforgeDevice.recalibrate();
+      }
+      // enable all electrodes by default
+      tinkerforgeDevice.setElectrodeConfig(8191);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
@@ -656,6 +835,8 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
         return basicSetBrickd(null, msgs);
       case ModelPackage.MBRICKLET_MULTI_TOUCH__MSUBDEVICES:
         return ((InternalEList<?>)getMsubdevices()).basicRemove(otherEnd, msgs);
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG:
+        return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -708,8 +889,14 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
         return getBrickd();
       case ModelPackage.MBRICKLET_MULTI_TOUCH__MSUBDEVICES:
         return getMsubdevices();
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG:
+        return getTfConfig();
       case ModelPackage.MBRICKLET_MULTI_TOUCH__DEVICE_TYPE:
         return getDeviceType();
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__RECALIBRATE:
+        return getRecalibrate();
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__SENSITIVITY:
+        return getSensitivity();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -759,6 +946,15 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
         getMsubdevices().clear();
         getMsubdevices().addAll((Collection<? extends MultiTouchDevice>)newValue);
         return;
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG:
+        setTfConfig((BrickletMultiTouchConfiguration)newValue);
+        return;
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__RECALIBRATE:
+        setRecalibrate((Boolean)newValue);
+        return;
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__SENSITIVITY:
+        setSensitivity((Short)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -806,6 +1002,15 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
       case ModelPackage.MBRICKLET_MULTI_TOUCH__MSUBDEVICES:
         getMsubdevices().clear();
         return;
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG:
+        setTfConfig((BrickletMultiTouchConfiguration)null);
+        return;
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__RECALIBRATE:
+        setRecalibrate(RECALIBRATE_EDEFAULT);
+        return;
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__SENSITIVITY:
+        setSensitivity(SENSITIVITY_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -842,8 +1047,14 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
         return getBrickd() != null;
       case ModelPackage.MBRICKLET_MULTI_TOUCH__MSUBDEVICES:
         return msubdevices != null && !msubdevices.isEmpty();
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG:
+        return tfConfig != null;
       case ModelPackage.MBRICKLET_MULTI_TOUCH__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__RECALIBRATE:
+        return RECALIBRATE_EDEFAULT == null ? recalibrate != null : !RECALIBRATE_EDEFAULT.equals(recalibrate);
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__SENSITIVITY:
+        return SENSITIVITY_EDEFAULT == null ? sensitivity != null : !SENSITIVITY_EDEFAULT.equals(sensitivity);
     }
     return super.eIsSet(featureID);
   }
@@ -861,6 +1072,14 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
       switch (derivedFeatureID)
       {
         case ModelPackage.MBRICKLET_MULTI_TOUCH__MSUBDEVICES: return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
         default: return -1;
       }
     }
@@ -883,6 +1102,14 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
         default: return -1;
       }
     }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_MULTI_TOUCH__TF_CONFIG;
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -899,6 +1126,13 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
       switch (baseOperationID)
       {
         case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES: return ModelPackage.MBRICKLET_MULTI_TOUCH___INIT_SUB_DEVICES;
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
         default: return -1;
       }
     }
@@ -962,6 +1196,10 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     result.append(name);
     result.append(", deviceType: ");
     result.append(deviceType);
+    result.append(", recalibrate: ");
+    result.append(recalibrate);
+    result.append(", sensitivity: ");
+    result.append(sensitivity);
     result.append(')');
     return result.toString();
   }

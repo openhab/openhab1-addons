@@ -186,6 +186,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.REMOTE_SWITCH_ACONFIGURATION: return createRemoteSwitchAConfiguration();
       case ModelPackage.REMOTE_SWITCH_BCONFIGURATION: return createRemoteSwitchBConfiguration();
       case ModelPackage.REMOTE_SWITCH_CCONFIGURATION: return createRemoteSwitchCConfiguration();
+      case ModelPackage.MULTI_TOUCH_DEVICE_CONFIGURATION: return createMultiTouchDeviceConfiguration();
+      case ModelPackage.BRICKLET_MULTI_TOUCH_CONFIGURATION: return createBrickletMultiTouchConfiguration();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -221,6 +223,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createLCDButtonSubIdsFromString(eDataType, initialValue);
       case ModelPackage.LCD_BACKLIGHT_SUB_IDS:
         return createLCDBacklightSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.MULTI_TOUCH_SUB_IDS:
+        return createMultiTouchSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -306,6 +310,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertLCDButtonSubIdsToString(eDataType, instanceValue);
       case ModelPackage.LCD_BACKLIGHT_SUB_IDS:
         return convertLCDBacklightSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.MULTI_TOUCH_SUB_IDS:
+        return convertMultiTouchSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -752,6 +758,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public MultiTouchDeviceConfiguration createMultiTouchDeviceConfiguration()
+  {
+    MultiTouchDeviceConfigurationImpl multiTouchDeviceConfiguration = new MultiTouchDeviceConfigurationImpl();
+    return multiTouchDeviceConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletMultiTouchConfiguration createBrickletMultiTouchConfiguration()
+  {
+    BrickletMultiTouchConfigurationImpl brickletMultiTouchConfiguration = new BrickletMultiTouchConfigurationImpl();
+    return brickletMultiTouchConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public MServo createMServo()
   {
     MServoImpl mServo = new MServoImpl();
@@ -1144,6 +1172,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertLCDBacklightSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MultiTouchSubIds createMultiTouchSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    MultiTouchSubIds result = MultiTouchSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertMultiTouchSubIdsToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

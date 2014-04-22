@@ -347,6 +347,24 @@ public interface ModelFactory extends EFactory
   RemoteSwitchCConfiguration createRemoteSwitchCConfiguration();
 
   /**
+   * Returns a new object of class '<em>Multi Touch Device Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Multi Touch Device Configuration</em>'.
+   * @generated
+   */
+  MultiTouchDeviceConfiguration createMultiTouchDeviceConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Bricklet Multi Touch Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bricklet Multi Touch Configuration</em>'.
+   * @generated
+   */
+  BrickletMultiTouchConfiguration createBrickletMultiTouchConfiguration();
+
+  /**
    * Returns a new object of class '<em>MServo</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
