@@ -24,9 +24,19 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class represents a message which is used in serial API 
- * interface to communicate with usb Z-Wave stick/
+ * interface to communicate with usb Z-Wave stick
+ * 
+ * A ZWave serial message frame is made up as follows
+ * Byte 0 : SOF (Start of Frame) 0x01
+ * Byte 1 : Length of frame - number of bytes to follow
+ * Byte 2 : Request (0x00) or Response (0x01)
+ * Byte 3 : Message Class (see SerialMessageClass)
+ * Byte 4+: Message Class data                             >> Message Payload
+ * Byte x : Last byte is checksum
+ * 
  * @author Victor Belov
  * @author Brian Crosby
+ * @author Chris Jackson
  * @since 1.3.0
  */
 public class SerialMessage {
