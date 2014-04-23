@@ -303,6 +303,17 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			{
 				sendVolume(ip + ":" + port, command);
 			}
+			else if (tmp.contains("source"))
+			{
+				String[] commandlist = tmp.split("\\.");
+				if (commandlist.length < 2)
+				{
+					logger.warn("wrong number of arguments for source command \"" + tmp + "\". Should be at least mode.X...");
+					return;
+				}
+				sendSource(ip+":" + port, commandlist[1]);
+				
+			}
 			else
 			{
 				logger.warn("Unrecognized tv command \"" + tmp + "\". Only key.X or ambilight[].X is supported");
@@ -311,6 +322,9 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		}
 	}
 	
+	
+
+
 	
 
 
@@ -365,6 +379,16 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		return retval;
 	}
 	
+	private void sendSource(String host, String source) {
+		String url = "http://" + host + "/1/sources/current";
+		
+		StringBuilder content = new StringBuilder();
+		content.append("{\"id\":\"" + source + "\"}");
+		logger.debug("Switching source to " + source);
+		logger.trace(content.toString());
+		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000); 
+	}
+	
 	
 	private void sendVolume(String host, Command command) {
 		volumeConfig conf = getTVVolume(host);
@@ -399,6 +423,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		newvalue = Math.min(newvalue, conf.max);
 		newvalue = Math.max(newvalue, conf.min);
 		content.append("{\"muted\":\"" + conf.mute + "\", \"current\":\""+newvalue+"\"}");
+		logger.trace(content.toString());
 		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
 	}
 	
