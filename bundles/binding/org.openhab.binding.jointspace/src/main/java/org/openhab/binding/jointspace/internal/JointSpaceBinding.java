@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.library.types.OnOffType;
@@ -237,19 +238,24 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			
 			String tmp = null;
 			
-			if (command instanceof HSBType)
-			{
-				tmp = provider.getTVCommand(itemName, "HSB");
-			}
-			else if (command instanceof DecimalType)
-			{
-				tmp = provider.getTVCommand(itemName, "DEC");
-			}
-			else
-			{
-				tmp = provider.getTVCommand(itemName, command.toString());
-			}
 			
+			tmp = provider.getTVCommand(itemName, command.toString());
+			
+			if (tmp == null)
+			{
+				if (command instanceof HSBType)
+				{
+					tmp = provider.getTVCommand(itemName, "HSB");
+				}
+				else if (command instanceof DecimalType)
+				{
+					tmp = provider.getTVCommand(itemName, "DEC");
+				}
+				else
+				{
+					tmp = provider.getTVCommand(itemName, "*");
+				}
+			}
 			
 			
 			if (tmp == null)
@@ -295,20 +301,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			}
 			else if (tmp.contains("volume"))
 			{
-				String[] commandlist = tmp.split("\\.");
-				if (commandlist.length < 2)
-				{
-					logger.warn("wrong number of arguments for volume command \"" + tmp + "\". Should be ambilight.mode.internal, ambilight.mode.manual, ambilight.mode.expert");
-					return;
-				}
-				if(commandlist[1].contains("increase"))
-				{
-					addtoTVVolume(1, ip+":"+port);
-				}
-				else if (commandlist[1].contains("decrease"))
-				{
-					addtoTVVolume(-1, ip+":"+port);
-				}
+				sendVolume(ip + ":" + port, command);
 			}
 			else
 			{
@@ -318,6 +311,9 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		}
 	}
 	
+	
+
+
 	/**
 	 * Gets the color for a specified ambilight pixel from the host and tries to parse the returned json value
 	 * 
@@ -367,6 +363,43 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		}
 			
 		return retval;
+	}
+	
+	
+	private void sendVolume(String host, Command command) {
+		volumeConfig conf = getTVVolume(host);
+		String url = "http://" + host + "/1/audio/volume";
+		
+		StringBuilder content = new StringBuilder();
+		int newvalue = conf.volume;
+		//ensure that we are in the valid range for this device
+		
+		
+		if (command instanceof DecimalType)
+		{
+			newvalue = ((DecimalType)command).intValue();
+		}
+		else if (command instanceof IncreaseDecreaseType)
+		{
+			if ((IncreaseDecreaseType)command == IncreaseDecreaseType.INCREASE)
+			{
+				newvalue ++;
+			}
+			else
+			{
+				newvalue --;
+			}
+		}
+		else
+		{
+			logger.warn("Unitl now only DecimalType and IncreaseDecreaseType commands are supported vor volume command");
+			return;
+		}
+		
+		newvalue = Math.min(newvalue, conf.max);
+		newvalue = Math.max(newvalue, conf.min);
+		content.append("{\"muted\":\"" + conf.mute + "\", \"current\":\""+newvalue+"\"}");
+		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
 	}
 	
 	
