@@ -54,7 +54,7 @@ public class XmlRpcClient implements CcuClient {
 	 */
 	@Override
 	public void release(HmInterface hmInterface) throws CcuClientException {
-		xmlRpcConnections.get(hmInterface).init("", hmInterface.toString());
+		xmlRpcConnections.get(hmInterface).init(config.getXmlRpcCallbackUrl(), "");
 	}
 
 	/**
