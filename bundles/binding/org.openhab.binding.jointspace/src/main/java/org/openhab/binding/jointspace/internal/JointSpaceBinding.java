@@ -9,6 +9,8 @@
 package org.openhab.binding.jointspace.internal;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Dictionary;
 
 
@@ -24,6 +26,7 @@ import org.openhab.core.library.types.HSBType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.io.net.actions.Ping;
 import org.openhab.io.net.http.HttpUtil;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -48,6 +51,10 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	
 	/** Constant which represents the content type <code>application/json</code> */
 	public final static String CONTENT_TYPE_JSON = "application/json";
+	
+	
+	public final static String PREFIX_HSB_TYPE = "HSB";
+	public final static String PREFIX_DECIMAL_TYPE = "DEC";
 
 
 	
@@ -105,7 +112,32 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
+		logger.debug("Checking if host is available");
+		
+		boolean success = false;
+		int timeout = 1000;
+		try {
+			success = Ping.checkVitality(ip, 0, timeout);
+			if (success)
+			{
+				logger.debug("established connection [host '{}' port '{}' timeout '{}']", new Object[] {ip, 0, timeout});
+			}
+			else
+			{
+				logger.debug("couldn't establish network connection [host '{}' port '{}' timeout '{}']", new Object[] {ip, 0, timeout});
+			}
+		} 
+		catch (SocketTimeoutException se) {
+			logger.debug("timed out while connecting to host '{}' port '{}' timeout '{}'", new Object[] {ip, 0, timeout});
+		}
+		catch (IOException ioe) {
+			logger.debug("couldn't establish network connection [host '{}' port '{}' timeout '{}']", new Object[] {ip, 0, timeout});
+		}
+		//if TV is not on, then we won't be able to poll it.
+		if (!success)
+		{
+			return;
+		}
 		for (JointSpaceBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
 				String tvcommand = provider.getTVCommand(itemName, "POLL");
@@ -208,6 +240,10 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			if (command instanceof HSBType)
 			{
 				tmp = provider.getTVCommand(itemName, "HSB");
+			}
+			else if (command instanceof DecimalType)
+			{
+				tmp = provider.getTVCommand(itemName, "DEC");
 			}
 			else
 			{
