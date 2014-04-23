@@ -36,6 +36,15 @@ Example:
     	<feature name="lastheardfrom">2472Dlasttime</feature>
     </productKey>
   </subcategory>
+  <subcategory>
+    <name>KeypadLinc Dimmer</name>
+    <description>2486DWH8</description>
+    <subCat>0x1C</subCat>
+    <productKey name="0x000051">
+    	<feature name="dimmer">2486DWH8dimmer</feature>
+    	<feature name="lastheardfrom">2486DWH8lasttime</feature>
+    </productKey>
+  </subcategory>
 </category>
 <category>
   <name>Switch</name>
