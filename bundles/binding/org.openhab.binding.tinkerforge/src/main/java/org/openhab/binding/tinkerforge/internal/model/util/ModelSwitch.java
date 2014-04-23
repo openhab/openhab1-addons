@@ -396,6 +396,62 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_MULTI_TOUCH:
+      {
+        MBrickletMultiTouch mBrickletMultiTouch = (MBrickletMultiTouch)theEObject;
+        T result = caseMBrickletMultiTouch(mBrickletMultiTouch);
+        if (result == null) result = caseMDevice(mBrickletMultiTouch);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletMultiTouch);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletMultiTouch);
+        if (result == null) result = caseMBaseDevice(mBrickletMultiTouch);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MULTI_TOUCH_DEVICE:
+      {
+        MultiTouchDevice multiTouchDevice = (MultiTouchDevice)theEObject;
+        T result = caseMultiTouchDevice(multiTouchDevice);
+        if (result == null) result = caseMSubDevice(multiTouchDevice);
+        if (result == null) result = caseMSensor(multiTouchDevice);
+        if (result == null) result = caseMTFConfigConsumer(multiTouchDevice);
+        if (result == null) result = caseMBaseDevice(multiTouchDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.ELECTRODE:
+      {
+        Electrode electrode = (Electrode)theEObject;
+        T result = caseElectrode(electrode);
+        if (result == null) result = caseMultiTouchDevice(electrode);
+        if (result == null) result = caseMSubDevice(electrode);
+        if (result == null) result = caseMSensor(electrode);
+        if (result == null) result = caseMTFConfigConsumer(electrode);
+        if (result == null) result = caseMBaseDevice(electrode);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.PROXIMITY:
+      {
+        Proximity proximity = (Proximity)theEObject;
+        T result = caseProximity(proximity);
+        if (result == null) result = caseMultiTouchDevice(proximity);
+        if (result == null) result = caseMSubDevice(proximity);
+        if (result == null) result = caseMSensor(proximity);
+        if (result == null) result = caseMTFConfigConsumer(proximity);
+        if (result == null) result = caseMBaseDevice(proximity);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MBRICKLET_MOTION_DETECTOR:
+      {
+        MBrickletMotionDetector mBrickletMotionDetector = (MBrickletMotionDetector)theEObject;
+        T result = caseMBrickletMotionDetector(mBrickletMotionDetector);
+        if (result == null) result = caseMDevice(mBrickletMotionDetector);
+        if (result == null) result = caseMSensor(mBrickletMotionDetector);
+        if (result == null) result = caseMBaseDevice(mBrickletMotionDetector);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MDUAL_RELAY:
       {
         MDualRelay mDualRelay = (MDualRelay)theEObject;
@@ -689,6 +745,22 @@ public class ModelSwitch<T> extends Switch<T>
         RemoteSwitchCConfiguration remoteSwitchCConfiguration = (RemoteSwitchCConfiguration)theEObject;
         T result = caseRemoteSwitchCConfiguration(remoteSwitchCConfiguration);
         if (result == null) result = caseTFConfig(remoteSwitchCConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MULTI_TOUCH_DEVICE_CONFIGURATION:
+      {
+        MultiTouchDeviceConfiguration multiTouchDeviceConfiguration = (MultiTouchDeviceConfiguration)theEObject;
+        T result = caseMultiTouchDeviceConfiguration(multiTouchDeviceConfiguration);
+        if (result == null) result = caseTFConfig(multiTouchDeviceConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.BRICKLET_MULTI_TOUCH_CONFIGURATION:
+      {
+        BrickletMultiTouchConfiguration brickletMultiTouchConfiguration = (BrickletMultiTouchConfiguration)theEObject;
+        T result = caseBrickletMultiTouchConfiguration(brickletMultiTouchConfiguration);
+        if (result == null) result = caseTFConfig(brickletMultiTouchConfiguration);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1195,6 +1267,86 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Multi Touch</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Multi Touch</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletMultiTouch(MBrickletMultiTouch object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Multi Touch Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Multi Touch Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMultiTouchDevice(MultiTouchDevice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Electrode</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Electrode</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseElectrode(Electrode object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Proximity</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Proximity</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseProximity(Proximity object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Motion Detector</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Motion Detector</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletMotionDetector(MBrickletMotionDetector object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>MSub Device</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1398,6 +1550,38 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseRemoteSwitchCConfiguration(RemoteSwitchCConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Multi Touch Device Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Multi Touch Device Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMultiTouchDeviceConfiguration(MultiTouchDeviceConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Bricklet Multi Touch Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Bricklet Multi Touch Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseBrickletMultiTouchConfiguration(BrickletMultiTouchConfiguration object)
   {
     return null;
   }

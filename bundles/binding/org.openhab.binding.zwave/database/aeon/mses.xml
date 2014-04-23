@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+        <Model>MSS2E</Model>
+        <Label lang="en">Micro Smart Switch 2nd Edition</Label>
+        <Label lang="de">Micro Smart Switch 2nd Edition</Label>
+        <CommandClasses>
+                <Class><id>0x20</id></Class>
+                <Class><id>0x25</id></Class>
+                <Class><id>0x27</id></Class>
+                <Class><id>0x31</id></Class>
+                <Class><id>0x32</id></Class>
+                <Class><id>0x70</id></Class>
+                <Class><id>0x72</id></Class>
+                <Class><id>0x85</id></Class>
+                <Class><id>0x86</id></Class>
+        </CommandClasses>
+        <Associations>
+                <Group>
+                        <Index>1</Index>
+                        <Maximum>5</Maximum>
+                        <Label lang="en">Group 1</Label>
+                </Group>
+                <Group>
+                        <Index>2</Index>
+                        <Maximum>5</Maximum>
+                        <Label lang="en">Group 2</Label>
+                </Group>
+                <Group>
+                        <Index>3</Index>
+                        <Maximum>5</Maximum>
+                        <Label lang="en">Group 3</Label>
+                </Group>
+        </Associations>
+        <Configuration>
+                <Parameter>
+                        <Index>1</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Type of Sensor Report</Label>
+                        <Help lang="en">Load will be closed when current more that 15.5A and time more than 2 minutes</Help>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Power</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Voltage</Label>
+                        </Item>
+                </Parameter>
+                <Parameter>
+                        <Index>2</Index>
+                        <Type>short</Type>
+                        <Minimum>0</Minimum>
+                        <Maximum>65535</Maximum>
+                        <Default>0</Default>
+                        <Size>2</Size>
+                        <Label lang="en">Blink</Label>
+						<Help lang="en">This is a double byte value. The LSB defines the total time the device need to blink. The value if set in seconds. The MSB defines the on/off interval of the blinking. The unit is 0.1 s.</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>80</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Notification on Status Change</Label>
+                        <Help lang="en">Parameter to Enable to send notification to associated devices (Group 1) when the state of Micro Smart Switch's load changed</Help>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Deactivate</Label>
+                                <Label lang="de">Deaktiviert</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Hail CC Sent</Label>
+                                <Label lang="de">Hail CC Sent</Label>
+                        </Item>
+                        <Item>
+                                <Value>2</Value>
+                                <Label lang="en">Basic CC Report Sent</Label>
+                                <Label lang="de">Basic CC Report Sent</Label>
+                        </Item>
+                </Parameter>
+                <Parameter>
+                        <Index>90</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Automated sending of a Report triggered by minimal change of value.</Label>
+                        <Label lang="de">Automated sending of a Report triggered by minimal change of value.</Label>
+                        <Help lang="en">Parameter to Enable/Disable automated sending of a Report triggered by minimal change of value.</Help>
+                        <Help lang="de">Parameter to Enable/Disable automated sending of a Report triggered by minimal change of value.</Help>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Deavtivate</Label>
+                                <Label lang="de">Deaktiviert</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Activate</Label>
+                                <Label lang="de">Aktiviert</Label>
+                        </Item>
+                </Parameter>
+                <Parameter>
+                        <Index>91</Index>
+                        <Type>short</Type>
+                        <Default>25</Default>
+                        <Size>2</Size>
+                        <Label lang="en">Minimum Change to send Report (Watt)</Label>
+                        <Label lang="de">Minimum Change to send Report (Watt)</Label>
+                        <Help lang="en">The value represents the minimum change in Wattage for a Report to be sent.</Help>
+                        <Help lang="de">The value represents the minimum change in Wattage for a Report to be sent.</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>92</Index>
+                        <Type>byte</Type>
+                        <Default>5</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Minimum Change to send Report (%)</Label>
+                        <Label lang="de">Minimum Change to send Report (%)</Label>
+                        <Help lang="en">The value represents the minimum change in Watage Percent for a report to be sent.</Help>
+                        <Help lang="de">The value represents the minimum change in Watage Percent for a report to be sent.</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>101</Index>
+                        <Type>int</Type>
+                        <Default>4</Default>
+                        <Size>4</Size>
+                        <Label lang="en">Which reports need to send automatically in timing intervals for group 1</Label>
+                        <Label lang="de">Welche Berichte sollen automatisch zu den definierten intervallen der Gruppe 1 gesendet werden</Label>
+                        <Help lang="en">The value is a combination number made up of the sum of the values for the individual parameters.
+                                                        The parameters have the values: KWH=8, Wattage=4, Current=2, Voltage=1.
+                                                        Therefore if you want all parameters sending regular reports, set the parameter to 15 (8 + 4 + 2 + 1).</Help>
+                        <Help lang="de">The value is a combination number made up of the sum of the values for the individual parameters.
+                                                        The parameters have the values: KWH=8, Wattage=4, Current=2, Voltage=1.
+                                                        Therefore if you want all parameters sending regular reports, set the parameter to 15 (8 + 4 + 2 + 1).</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>102</Index>
+                        <Type>int</Type>
+                        <Default>8</Default>
+                        <Size>4</Size>
+                        <Label lang="en">Which reports need to send automatically in timing intervals for group 2</Label>
+                        <Label lang="de">Welche Berichte sollen automatisch zu den definierten intervallen der Gruppe 2 gesendet werden</Label>
+                        <Help lang="en">The value is a combination number made up of the sum of the values for the individual parameters.
+                                                        The parameters have the values: KWH=8, Wattage=4, Current=2, Voltage=1.
+                                                        Therefore if you want all parameters sending regular reports, set the parameter to 15 (8 + 4 + 2 + 1).</Help>
+                        <Help lang="de">The value is a combination number made up of the sum of the values for the individual parameters.
+                                                        The parameters have the values: KWH=8, Wattage=4, Current=2, Voltage=1.
+                                                        Therefore if you want all parameters sending regular reports, set the parameter to 15 (8 + 4 + 2 + 1).</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>103</Index>
+                        <Type>int</Type>
+                        <Default>0</Default>
+                        <Size>4</Size>
+                        <Label lang="en">Which reports need to send automatically in timing intervals for group 3</Label>
+                        <Label lang="de">Welche Berichte sollen automatisch zu den definierten intervallen der Gruppe 3 gesendet werden</Label>
+                        <Help lang="en">The value is a combination number made up of the sum of the values for the individual parameters.
+                                                        The parameters have the values: KWH=8, Wattage=4, Current=2, Voltage=1.
+                                                        Therefore if you want all parameters sending regular reports, set the parameter to 15 (8 + 4 + 2 + 1).</Help>
+                        <Help lang="de">The value is a combination number made up of the sum of the values for the individual parameters.
+                                                        The parameters have the values: KWH=8, Wattage=4, Current=2, Voltage=1.
+                                                        Therefore if you want all parameters sending regular reports, set the parameter to 15 (8 + 4 + 2 + 1).</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>111</Index>
+                        <Type>int</Type>
+                        <Minimum>1</Minimum>
+                        <Maximum>2678400</Maximum>
+                        <Default>3</Default>
+                        <Size>4</Size>
+                        <Label lang="en">Interval to send out reports of group 1</Label>
+                        <Label lang="de">Interval in welchem die Berichte der Gruppe 1 gesendet werden</Label>
+                </Parameter>
+                <Parameter>
+                        <Index>112</Index>
+                        <Type>int</Type>
+                        <Minimum>1</Minimum>
+                        <Maximum>2678400</Maximum>
+                        <Default>600</Default>
+                        <Size>4</Size>
+                        <Label lang="en">Interval to send out reports of group 2</Label>
+                        <Label lang="de">Interval in welchem die Berichte der Gruppe 2 gesendet werden</Label>
+                </Parameter>
+                <Parameter>
+                        <Index>113</Index>
+                        <Type>int</Type>
+                        <Minimum>1</Minimum>
+                        <Maximum>2678400</Maximum>
+                        <Default>600</Default>
+                        <Size>4</Size>
+                        <Label lang="en">Interval to send out reports of group 3</Label>
+                        <Label lang="de">Interval in welchem die Berichte der Gruppe 3 gesendet werden</Label>
+                </Parameter>
+        </Configuration>
+</Product>
