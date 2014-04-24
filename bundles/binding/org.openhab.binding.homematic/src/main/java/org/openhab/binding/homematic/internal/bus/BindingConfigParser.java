@@ -62,8 +62,9 @@ public class BindingConfigParser {
 
 			// convert entry id to device if necessary
 			if ("id".equalsIgnoreCase(key)) {
-//				logger.info("Please change the Homematic binding with the attribute 'id' to 'address' in entry: "
-//						+ entry + " -> " + StringUtils.replace(entry, "id=", "address="));
+				// logger.info("Please change the Homematic binding with the attribute 'id' to 'address' in entry: "
+				// + entry + " -> " + StringUtils.replace(entry, "id=",
+				// "address="));
 				key = "address";
 			}
 			String value = StringUtils.trim(entryParts[1]);
@@ -78,9 +79,9 @@ public class BindingConfigParser {
 		}
 
 		Converter<?> converter = null;
-		if (helper.isValidDatapoint() || helper.isValidVariable()) {
-			converter = instantiateConverter(helper.converter);
-		}
+//		if (helper.isValidDatapoint() || helper.isValidVariable()) {
+//			converter = instantiateConverter(helper.converter);
+//		}
 
 		BindingAction bindingAction = getBindingAction(item, helper.action);
 
@@ -104,6 +105,7 @@ public class BindingConfigParser {
 	/**
 	 * If a converter is specified in the binding, try to instantiate it.
 	 */
+	@SuppressWarnings("unused")
 	private Converter<?> instantiateConverter(String converterName) {
 		Converter<?> converter = null;
 		if (converterName != null) {
@@ -156,6 +158,7 @@ public class BindingConfigParser {
 		public String address;
 		public String channel;
 		public String parameter;
+		@SuppressWarnings("unused")
 		public String converter;
 		public String variable;
 		public String program;
