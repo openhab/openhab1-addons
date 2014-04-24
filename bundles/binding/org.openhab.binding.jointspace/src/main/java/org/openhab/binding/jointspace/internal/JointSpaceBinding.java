@@ -181,6 +181,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	 * - "ambilight[...]" returning a HSBType state for the given ambilight pixel specified in [...]
 	 * - "volume" returning a DecimalType
 	 * - "volume.mute" returning 'On' or 'Off' 
+	 * - "source" returning a String with selected source (e.g. "hdmi1", "tv", etc)
 	 *  
 	 * @param itemName
 	 * @param tvCommand
@@ -384,6 +385,12 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		return retval;
 	}
 	
+	/**
+	 * Polls the source from the tv and returns it as a string
+	 * 
+	 * @param host
+	 * @return a string containig the "source" returned by the TV, or null if unsuccesfull
+	 */
 	private String getSource(String host)
 	{
 		String url = "http://" + host + "/1/sources/current";
@@ -411,6 +418,14 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		return null;
 	}
 	
+	
+	/**
+	 * Sets the current source at the TV
+	 * 
+	 * @param host
+	 * @param source string identifying the desired source. valid values are "hdmi1", "tv", etc. (@see http://jointspace.sourceforge.net/projectdata/documentation/jasonApi/1/doc/API-Method-sources-GET.html)
+	 */
+	
 	private void sendSource(String host, String source) {
 		String url = "http://" + host + "/1/sources/current";
 		
@@ -422,14 +437,20 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	}
 	
 	
+	/**
+	 * Sends a volume command to the TV, depending on the command received
+	 * For commands of type DecimalType, the value for volume will be set directly (mute will not be affected)
+	 * For commands of type IncreaseDecreaseType, the current value (polled from TV( for volume will be incremented/decremented
+	 * 
+	 * @param host
+	 * @param command
+	 */
 	private void sendVolume(String host, Command command) {
 		volumeConfig conf = getTVVolume(host);
 		String url = "http://" + host + "/1/audio/volume";
 		
 		StringBuilder content = new StringBuilder();
-		int newvalue = conf.volume;
-		//ensure that we are in the valid range for this device
-		
+		int newvalue = conf.volume;		
 		
 		if (command instanceof DecimalType)
 		{
@@ -451,7 +472,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			logger.warn("Unitl now only DecimalType and IncreaseDecreaseType commands are supported vor volume command");
 			return;
 		}
-		
+		//ensure that we are in the valid range for this device		
 		newvalue = Math.min(newvalue, conf.max);
 		newvalue = Math.max(newvalue, conf.min);
 		content.append("{\"muted\":\"" + conf.mute + "\", \"current\":\""+newvalue+"\"}");
