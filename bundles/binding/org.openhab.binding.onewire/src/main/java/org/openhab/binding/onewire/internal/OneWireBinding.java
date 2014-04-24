@@ -10,7 +10,7 @@ package org.openhab.binding.onewire.internal;
 
 import java.io.IOException;
 import java.util.Dictionary;
-
+import java.util.HashMap;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -67,6 +67,9 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 
 	/** defines which temperature scale owserver should return temperatures in (optional, defaults to CELSIUS) */
 	private OwTemperatureScale tempScale = OwTemperatureScale.OWNET_TS_CELSIUS;
+	
+	/** maintains state of filters for eliminating outliers */
+	private HashMap<String, Filter> filters = new HashMap<String, Filter>();
 
 
 	@Override
@@ -123,7 +126,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 
 					String sensorId = provider.getSensorId(itemName);
 					String unitId = provider.getUnitId(itemName);
-
+					Filter filter = getFilter(provider, itemName);
 					if (sensorId == null || unitId == null) {
 						logger.warn("sensorId or unitId isn't configured properly "
 								+ "for the given itemName [itemName={}, sensorId={}, unitId={}] => querying bus for values aborted!",
@@ -148,6 +151,9 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 										value = valueString.trim().equals("1") ? OnOffType.ON : OnOffType.OFF;
 									} else if (item instanceof NumberItem) {
 										value = new DecimalType(Double.valueOf(valueString));
+										if (filter != null) {
+											value = filter.filter((DecimalType)value);
+										}
 									} else {
 										throw new IllegalStateException(
 											"The item with name " + itemName + " is not a valid type.");
@@ -269,4 +275,22 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 			logger.warn("OneWireClient is null => writing aborted!");
 		}
 	}
+
+	private Filter getFilter(OneWireBindingProvider provider, String itemName) {
+		String filterType = provider.getFilter(itemName);
+		if (filterType == null) {
+			return null;
+		}
+		if (!filterType.equals("tuckey")) {
+			logger.warn("invalid filter type specified: " + filterType);
+			return null;
+		}
+		Filter f = filters.get(itemName);
+		if (f == null) {
+			filters.put(itemName, new Filter());
+			f = filters.get(itemName);
+		}
+		return f;
+	}
+	
 }
