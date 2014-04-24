@@ -281,7 +281,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 		if (filterType == null) {
 			return null;
 		}
-		if (!filterType.equals("tuckey")) {
+		if (!filterType.equals("tukey")) {
 			logger.warn("invalid filter type specified: " + filterType);
 			return null;
 		}

@@ -45,7 +45,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 0.6.0
  */
 public class OneWireGenericBindingProvider extends AbstractGenericBindingProvider implements OneWireBindingProvider {
-	private static final TreeSet<String> filterTypes = new TreeSet<String>(Arrays.asList("tuckey"));
+	private static final TreeSet<String> filterTypes = new TreeSet<String>(Arrays.asList("tukey"));
 	/**
 	 * {@inheritDoc}
 	 */
