@@ -24,6 +24,7 @@ import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.library.types.OnOffType;
@@ -203,6 +204,10 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 				eventPublisher.postUpdate(itemName, new DecimalType(getTVVolume(ip + ":" + port).volume));
 			}
 		}
+		else if (tvCommand.contains("source"))
+		{
+			eventPublisher.postUpdate(itemName, new StringType(getSource(ip+":"+port)));
+		}
 		else
 		{
 			logger.error("Could not parse item state\"" + tvCommand + "\" for polling");
@@ -379,6 +384,33 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		return retval;
 	}
 	
+	private String getSource(String host)
+	{
+		String url = "http://" + host + "/1/sources/current";
+		String source_json = HttpUtil.executeUrl("GET", url, IOUtils.toInputStream(""), CONTENT_TYPE_JSON, 1000);
+		
+		if (source_json != null)
+		{
+			logger.trace("TV returned for source request: " + source_json);
+			try
+			{
+				Object obj=JSONValue.parse(source_json);
+				JSONObject array=(JSONObject)obj;
+				return array.get("id").toString();
+			}
+			catch(Throwable t)
+			{
+				logger.warn("Could not parse JSON String for source. Error: " + t.toString());
+			}
+			
+		}
+		else
+		{
+			logger.debug("Could not get source from JointSpace Server \"" + host + "\"");
+		}
+		return null;
+	}
+	
 	private void sendSource(String host, String source) {
 		String url = "http://" + host + "/1/sources/current";
 		
@@ -498,27 +530,6 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		
 	}
 	
-	/**
-	 * Helper function to increase (or decrease if @see inc is negative) the volume by a fixed amount.
-	 * First queries the current volume, adds the value of @see inc and then sends this new value as a command
-	 * 
-	 * @param inc
-	 * @param host
-	 */
-	private void addtoTVVolume(int inc, String host)
-	{
-		volumeConfig conf = getTVVolume(host);
-		String url = "http://" + host + "/1/audio/volume";
-		
-		StringBuilder content = new StringBuilder();
-		int newvalue = conf.volume + inc;
-		//ensure that we are in the valid range for this device
-		newvalue = Math.min(newvalue, conf.max);
-		newvalue = Math.max(newvalue, conf.min);
-		content.append("{\"muted\":\"" + conf.mute + "\", \"current\":\""+newvalue+"\"}");
-
-		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
-	}
 	
 	
 	/**
@@ -532,26 +543,28 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	{
 		volumeConfig conf = new volumeConfig();
 		String url = "http://" + host + "/1/audio/volume";
-		String retval = HttpUtil.executeUrl("GET", url, IOUtils.toInputStream(""), CONTENT_TYPE_JSON, 1000);
-		if (retval != null)
+		String volume_json = HttpUtil.executeUrl("GET", url, IOUtils.toInputStream(""), CONTENT_TYPE_JSON, 1000);
+		if (volume_json != null)
 		{
-			String[] fields = retval.split(",");
-			if (fields.length < 4)
-			{
-				logger.warn("Could not interpret volume json return type");
-				return conf;
-			}
 			try
 			{
-				conf.mute = Boolean.parseBoolean(fields[0].split(":")[1].trim());
-				conf.volume = Integer.parseInt(fields[1].split(":")[1].trim());
-				conf.min = Integer.parseInt(fields[2].split(":")[1].trim());
-				conf.max = Integer.parseInt(fields[3].split(":")[1].replace('}', ' ').trim());
+				Object obj=JSONValue.parse(volume_json);
+				JSONObject array=(JSONObject)obj;
+
+				conf.mute = Boolean.parseBoolean(array.get("muted").toString());
+				conf.volume = Integer.parseInt(array.get("current").toString());
+				conf.min = Integer.parseInt(array.get("min").toString());
+				conf.max = Integer.parseInt(array.get("max").toString());
 			}
 			catch(NumberFormatException ex)
 			{
 				logger.warn("Exception while interpreting volume json return");
 			}
+			catch(Throwable t)
+			{
+				logger.warn("Could not parse JSON String for volume value. Error: " + t.toString());
+			}
+			
 		}
 		return conf;
 	}
