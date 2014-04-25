@@ -9,6 +9,7 @@
 package org.openhab.binding.homematic.internal.communicator.client;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.List;
 import java.util.Map;
@@ -111,11 +112,15 @@ public class BinRpcClient implements CcuClient {
 					throw new IOException(faultCode + " " + faultString);
 				}
 			}
+		} catch (ConnectException cex) {
+			logger.info("Can't connect to interface {}", hmInterface);
 		} catch (Exception ex) {
 			throw new CcuClientException(ex.getMessage(), ex);
 		} finally {
 			try {
-				socket.close();
+				if (socket != null) {
+					socket.close();
+				}
 			} catch (IOException ex) {
 				// ignore
 			}
