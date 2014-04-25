@@ -329,7 +329,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 			if (bindingConfig.getAction() == BindingAction.RELOAD_VARIABLES) {
 				stateHolder.reloadVariables();
 			} else if (bindingConfig.getAction() == BindingAction.RELOAD_DATAPOINTS) {
-				stateHolder.reloadVariables();
+				stateHolder.reloadDatapoints();
 			} else {
 				logger.warn("Unknown action {}", bindingConfig.getAction());
 			}
