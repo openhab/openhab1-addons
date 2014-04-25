@@ -117,7 +117,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		logger.debug("Checking if host is available");
 		
 		boolean success = false;
-		int timeout = 1000;
+		int timeout = 5000;
 		try {
 			success = Ping.checkVitality(ip, 0, timeout);
 			if (success)
@@ -273,6 +273,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			
 			if (tmp.contains("key"))
 			{
+				logger.debug("Found a Key command: " + tmp);
 				String[] commandlist = tmp.split("\\.");
 				if (commandlist.length != 2)
 				{
@@ -284,6 +285,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			}
 			else if (tmp.contains("ambilight"))
 			{
+				logger.debug("Found an ambilight command: " + tmp);
 				String[] commandlist = tmp.split("\\.");
 				String [] layer = command2LayerString(tmp);
 				if (commandlist.length < 2)
@@ -307,10 +309,12 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			}
 			else if (tmp.contains("volume"))
 			{
+				logger.debug("Found a Volume command: " + tmp);
 				sendVolume(ip + ":" + port, command);
 			}
 			else if (tmp.contains("source"))
 			{
+				logger.debug("Found a Source command: " + tmp);
 				String[] commandlist = tmp.split("\\.");
 				if (commandlist.length < 2)
 				{
@@ -343,7 +347,8 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	 */
 	private Color getAmbilightColor(String host, String[] layers)
 	{
-		//http://ip-address:1925/1/ambilight/cached
+		
+		logger.debug("Getting ambilight color for host " + host + " for layers " + layers);
 		Color retval = new Color(0, 0, 0);
 		String url = "http://" + host + "/1/ambilight/processed";
 		
@@ -395,7 +400,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	{
 		String url = "http://" + host + "/1/sources/current";
 		String source_json = HttpUtil.executeUrl("GET", url, IOUtils.toInputStream(""), CONTENT_TYPE_JSON, 1000);
-		
+		logger.debug("Getting source for host " + host );
 		if (source_json != null)
 		{
 			logger.trace("TV returned for source request: " + source_json);
@@ -427,11 +432,13 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	 */
 	
 	private void sendSource(String host, String source) {
+		
+		
 		String url = "http://" + host + "/1/sources/current";
 		
 		StringBuilder content = new StringBuilder();
 		content.append("{\"id\":\"" + source + "\"}");
-		logger.debug("Switching source to " + source);
+		logger.debug("Switching source of host " + host + " to " + source);
 		logger.trace(content.toString());
 		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000); 
 	}
@@ -446,6 +453,8 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	 * @param command
 	 */
 	private void sendVolume(String host, Command command) {
+		
+		logger.debug("Sending volume to host " + host + " for command " + command.toString());
 		volumeConfig conf = getTVVolume(host);
 		String url = "http://" + host + "/1/audio/volume";
 		
@@ -454,16 +463,19 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		
 		if (command instanceof DecimalType)
 		{
+			logger.debug("Setting volume to decimal type");
 			newvalue = ((DecimalType)command).intValue();
 		}
 		else if (command instanceof IncreaseDecreaseType)
 		{
 			if ((IncreaseDecreaseType)command == IncreaseDecreaseType.INCREASE)
 			{
+				logger.debug("Increased volume");
 				newvalue ++;
 			}
 			else
 			{
+				logger.debug("Decreased volume");
 				newvalue --;
 			}
 		}
@@ -477,7 +489,15 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		newvalue = Math.max(newvalue, conf.min);
 		content.append("{\"muted\":\"" + conf.mute + "\", \"current\":\""+newvalue+"\"}");
 		logger.trace(content.toString());
-		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
+		String retval = HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
+		if (retval == null)
+		{
+			logger.warn("Sending Volume failed");
+		}
+		else
+		{
+			logger.debug("Sending Volume successfull");
+		}
 	}
 	
 	
@@ -496,6 +516,8 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			logger.warn("Until now only HSBType is allowed for ambilight commands");
 			return;
 		}
+		
+		logger.debug("Setting Ambilight color for host " + host + " and layer " + layers + " to "  + command.toString());
 		
 		HSBType hsbcommand = (HSBType) command;
 		String url = "http://" + host + "/1/ambilight/cached";
@@ -529,7 +551,15 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 
 		logger.trace("Trying to post json for ambilight: " + content.toString());
 		
-		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000); 
+		String retval = HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
+		if (retval == null)
+		{
+			logger.warn("Sending ambilight color failed");
+		}
+		else
+		{
+			logger.debug("Sending ambilight color successfull");
+		}
 	}
 
 	/**
@@ -541,14 +571,22 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	 */
 	private void sendTVCommand(String key, String host) {
 		
+		logger.debug("Sending Key " + key + " to " + host);
 		String url = "http://" + host + "/1/input/key";
 		
 		StringBuilder content = new StringBuilder();
 		content.append("{\"key\":\"" + key + "\"}");
 		
         
-		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000); 
-		
+		String retval = HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
+		if (retval == null)
+		{
+			logger.warn("Sending key failed");
+		}
+		else
+		{
+			logger.debug("Sending key successfull");
+		}
 	}
 	
 	
