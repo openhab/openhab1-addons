@@ -85,7 +85,7 @@ public class WithingsAuthenticator implements ManagedService {
 	/**
 	 * Default Redirect URL to which the user is redirected after the login
 	 */
-	private static final String DEFAULT_REDIRECT_URL = "http://dnobel.github.io/openhab/withings.html";
+	private static final String DEFAULT_REDIRECT_URL = "http://www.openhab.org/oauth/withings";
 
 	private static final String FILE_NAME_OAUTH_TOKEN = "oauth_tokens";
 
