@@ -26,6 +26,6 @@
 	<reference bind="addBindingProvider" cardinality="1..n"
 		interface="org.openhab.binding.withings.WithingsBindingProvider" name="WithingsBindingProvider"
 		policy="dynamic" unbind="removeBindingProvider" />
- <reference bind="setWithingsAuthenticator" cardinality="1..1" interface="org.openhab.binding.withings.internal.api.WithingsAuthenticator" name="WithingsAuthenticator" policy="static" unbind="unsetWithingsAuthenticator"/>
+ <reference bind="addWithingsApiClient" cardinality="0..n" interface="org.openhab.binding.withings.internal.api.WithingsApiClient" name="WithingsApiClient" policy="dynamic" unbind="removeWithingsApiClient"/>
 	
 </scr:component>

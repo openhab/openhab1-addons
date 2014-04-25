@@ -1,0 +1,37 @@
+body {
+    background-color: #FAFAFA;
+    padding-top: 25px;
+}
+
+h1 {
+    color: #ff6600;
+}
+
+#logo {
+    width: 150px;
+    margin: 10px;
+}
+
+.container {
+    text-align: center;
+}
+
+form {
+    margin: 30px auto 0px;
+    max-width: 500px;
+}
+
+form h3 {
+    margin-top: 30px;
+}
+
+.btn-primary.disabled, .btn-primary[disabled], fieldset[disabled] .btn-primary, .btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled:active, .btn-primary[disabled]:active, fieldset[disabled] .btn-primary:active, .btn-primary.disabled.active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary.active {
+    background-color: #ff6600;
+    border-color: #AB4500;
+}
+
+footer {
+    position: fixed;
+    bottom: 0px;
+    text-align: center;
+}

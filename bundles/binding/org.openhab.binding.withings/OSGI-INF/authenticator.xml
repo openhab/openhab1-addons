@@ -16,8 +16,8 @@
 	</property>
 
 	<service>
-		<provide
-			interface="org.openhab.binding.withings.internal.api.WithingsAuthenticator" />
+  <provide interface="org.osgi.service.cm.ManagedService"/>
 	</service>
+ <property name="service.pid" type="String" value="org.openhab.withings-oauth"/>
 
 </scr:component>

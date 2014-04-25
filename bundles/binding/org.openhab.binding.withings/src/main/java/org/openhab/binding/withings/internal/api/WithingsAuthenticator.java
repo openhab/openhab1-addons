@@ -13,6 +13,8 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
@@ -23,6 +25,10 @@ import oauth.signpost.http.HttpParameters;
 import oauth.signpost.signature.AuthorizationHeaderSigningStrategy;
 import oauth.signpost.signature.HmacSha1MessageSigner;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * @author Dennis Nobel
  * @since 1.5.0
  */
-public class WithingsAuthenticator {
+public class WithingsAuthenticator implements ManagedService {
 
 	public static final class OAuthTokens implements Serializable {
 
@@ -63,19 +69,23 @@ public class WithingsAuthenticator {
 	}
 
 	/**
-	 * OAuth consumer key
+	 * Default OAuth consumer key
 	 */
-	private static final String CONSUMER_KEY = "8d512d30824ee862602f7df249e31d0476cf286bc99b4068b60d4e1c541";
-
+	private static final String DEFAULT_CONSUMER_KEY = "8d512d30824ee862602f7df249e31d0476cf286bc99b4068b60d4e1c541";
 	/**
-	 * OAuth consumer secret
+	 * Default OAuth consumer secret
 	 */
-	private static final String CONSUMER_SECRET = "1d0117ec8f6f4cb4cf123484f2b39d8f3524264ebefc7edbd435e0e28e60";
+	private static final String DEFAULT_CONSUMER_SECRET = "1d0117ec8f6f4cb4cf123484f2b39d8f3524264ebefc7edbd435e0e28e60";
 
 	/**
 	 * Default content dir for data storage
 	 */
 	private static final String DEFAULT_CONTENT_DIR = "data/withings";
+
+	/**
+	 * Default Redirect URL to which the user is redirected after the login
+	 */
+	private static final String DEFAULT_REDIRECT_URL = "http://dnobel.github.io/openhab/withings.html";
 
 	private static final String FILE_NAME_OAUTH_TOKEN = "oauth_tokens";
 
@@ -90,20 +100,32 @@ public class WithingsAuthenticator {
 
 	private static final String OAUTH_AUTHORIZE_ENDPOINT_URL = "https://oauth.withings.com/account/authorize";
 
-	/**
-	 * Redirect URL to which the user is redirected after the login
-	 */
-	private static final String OAUTH_REDIRECT_URL = "http://dnobel.github.io/openhab/withings.html";
-
 	private static final String OAUTH_REQUEST_TOKEN_ENDPOINT = "https://oauth.withings.com/account/request_token";
 
-	private WithingsApiClient client;
+	private BundleContext bundleContext;
+
+	private ServiceRegistration<?> clientServiceRegistration;
 
 	private OAuthConsumer consumer;
 
-	private final String contentDir = DEFAULT_CONTENT_DIR;
+	/**
+	 * OAuth consumer key
+	 */
+	private String consumerKey = DEFAULT_CONSUMER_KEY;
+
+	/**
+	 * OAuth consumer secret
+	 */
+	private String consumerSecret = DEFAULT_CONSUMER_SECRET;
+
+	private String contentDir = DEFAULT_CONTENT_DIR;
 
 	private OAuthProvider provider;
+
+	/**
+	 * Redirect URL to which the user is redirected after the login
+	 */
+	private String redirectUrl = DEFAULT_REDIRECT_URL;
 
 	/**
 	 * Finishes the OAuth authentication flow.
@@ -134,29 +156,9 @@ public class WithingsAuthenticator {
 		writeToFile(oAuthTokens, FILE_NAME_OAUTH_TOKEN);
 		writeToFile(userId, FILE_NAME_USER_ID);
 
-		this.client = new WithingsApiClient(consumer, userId);
+		registerClientAsService(userId);
 
 		printAuthenticationSuccessful();
-	}
-
-	/**
-	 * Returns the {@link WithingsApiClient} or null if the binding is not yet
-	 * authenticated.
-	 * 
-	 * @return {@link WithingsApiClient} or null if the binding is not yet
-	 *         authenticated
-	 */
-	public WithingsApiClient getClient() {
-		return client;
-	}
-
-	/**
-	 * Returns true if the Withings binding is authenticated, false otherwise
-	 * 
-	 * @return true if the Withings binding is authenticated, false otherwise
-	 */
-	public boolean isAuthenticated() {
-		return this.client != null;
 	}
 
 	/**
@@ -171,7 +173,7 @@ public class WithingsAuthenticator {
 
 		try {
 			String url = provider.retrieveRequestToken(consumer,
-					OAUTH_REDIRECT_URL);
+					this.redirectUrl);
 			printSetupInstructions(url);
 		} catch (OAuthException ex) {
 			logger.error(ex.getMessage(), ex);
@@ -180,7 +182,36 @@ public class WithingsAuthenticator {
 
 	}
 
+	@Override
+	public void updated(Dictionary<String, ?> properties)
+			throws ConfigurationException {
+		if (properties != null) {
+
+			String redirectUrl = (String) properties.get("redirectUrl");
+			if (redirectUrl != null) {
+				this.redirectUrl = redirectUrl;
+			}
+
+			String consumerKey = (String) properties.get("consumerKey");
+			if (consumerKey != null) {
+				this.consumerKey = consumerKey;
+			}
+
+			String consumerSecret = (String) properties.get("consumerSecret");
+			if (consumerSecret != null) {
+				this.consumerSecret = consumerSecret;
+			}
+
+			String contentDir = (String) properties.get("contentDir");
+			if (contentDir != null) {
+				this.contentDir = contentDir;
+			}
+		}
+	}
+
 	protected void activate(ComponentContext componentContext) {
+		this.bundleContext = componentContext.getBundleContext();
+
 		OAuthTokens oAuthTokens = (OAuthTokens) readFromFile(FILE_NAME_OAUTH_TOKEN);
 		String userId = (String) readFromFile(FILE_NAME_USER_ID);
 
@@ -189,7 +220,9 @@ public class WithingsAuthenticator {
 			this.consumer.setTokenWithSecret(oAuthTokens.token,
 					oAuthTokens.tokenSecret);
 			this.consumer.setAdditionalParameters(new HttpParameters());
-			this.client = new WithingsApiClient(consumer, userId);
+
+			registerClientAsService(userId);
+
 			logger.info("Withings OAuth tokens successfully restored.");
 			logger.info("Withings Binding is ready to work.");
 		} else {
@@ -197,9 +230,15 @@ public class WithingsAuthenticator {
 		}
 	}
 
+	protected void deactivate(ComponentContext componentContext) {
+		if (this.clientServiceRegistration != null) {
+			this.clientServiceRegistration.unregister();
+		}
+	}
+
 	private OAuthConsumer createConsumer() {
-		OAuthConsumer consumer = new DefaultOAuthConsumer(CONSUMER_KEY,
-				CONSUMER_SECRET);
+		OAuthConsumer consumer = new DefaultOAuthConsumer(this.consumerKey,
+				this.consumerSecret);
 		consumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
 		consumer.setMessageSigner(new HmacSha1MessageSigner());
 		return consumer;
@@ -264,6 +303,19 @@ public class WithingsAuthenticator {
 			logger.debug("File '{}' does not exists.", fileName);
 			return null;
 		}
+	}
+
+	private void registerClientAsService(String userId) {
+		Dictionary<String, Object> serviceProperties = new Hashtable<String, Object>();
+		serviceProperties.put("withings.userid", userId);
+
+		if (this.clientServiceRegistration != null) {
+			this.clientServiceRegistration.unregister();
+		}
+
+		this.clientServiceRegistration = this.bundleContext.registerService(
+				WithingsApiClient.class.getName(), new WithingsApiClient(
+						consumer, userId), serviceProperties);
 	}
 
 	private void writeToFile(Serializable object, String fileName) {
