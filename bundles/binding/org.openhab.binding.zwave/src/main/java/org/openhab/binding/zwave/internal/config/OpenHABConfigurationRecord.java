@@ -35,11 +35,11 @@ public class OpenHABConfigurationRecord {
 	public Map<String, String> actionlist;
 
 	enum TYPE {
-		LIST, BYTE, SHORT, LONG, STRING, GROUP
+		LIST, FREELIST, MULTILIST, STRING, GROUP, DECIMAL, HEXADECIMAL, BINARY, BYTE, SHORT, LONG
 	}
 	
 	enum STATE {
-		OK, WARNING, ERROR, INITIALIZING
+		OK, WARNING, ERROR, INITIALIZING, PENDING
 	}
 	
 	/**

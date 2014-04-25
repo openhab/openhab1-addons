@@ -33,7 +33,7 @@ Import-Package: javax.servlet,
  org.osgi.service.http,
  org.slf4j
 Bundle-ClassPath: .,
- lib/xchart-2.2.1.jar
+ lib/xchart-2.3.2.jar
 Bundle-SymbolicName: org.openhab.ui
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
