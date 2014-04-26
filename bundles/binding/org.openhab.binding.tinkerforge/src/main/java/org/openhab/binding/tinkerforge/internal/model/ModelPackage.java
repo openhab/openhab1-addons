@@ -40,7 +40,7 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- end-model-doc -->
  * @see org.openhab.binding.tinkerforge.internal.model.ModelFactory
  * @model kind="package"
- *        annotation="http://www.eclipse.org/emf/2002/GenModel basePackage='org.openhab.binding.tinkerforge.internal'"
+ *        annotation="http://www.eclipse.org/emf/2002/GenModel basePackage='org.openhab.binding.tinkerforge.internal' literalsInterface='true' loadInitialization='false'"
  * @generated
  */
 public interface ModelPackage extends EPackage

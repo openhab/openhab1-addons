@@ -6,6 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
+@GenModel(literalsInterface="true", loadInitialization="false")
 package org.openhab.binding.tinkerforge.internal.model
 
 import com.tinkerforge.Device
