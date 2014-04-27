@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<templates><template id="commandevent" autoinsert="true" context="org.openhab.model.rule.Rules.CommandEventTrigger" deleted="false" description="Template for a command trigger event" enabled="true" name="Command Event Trigger">Item ${item} received command ${command}</template><template id="rule" autoinsert="true" context="org.openhab.model.rule.Rules.Rule" deleted="false" description="Template for a new rule" enabled="true" name="Rule">rule ${name}
+<templates><template id="commandevent" autoinsert="true" context="org.openhab.model.rule.Rules.CommandEventTrigger" deleted="false" description="Template for a command trigger event" enabled="true" name="Command Event Trigger">Item ${item} received command ${command}</template><template id="rule" autoinsert="true" context="org.openhab.model.rule.Rules.Rule" deleted="false" description="Template for a new rule" enabled="true" name="Rule">rule ${project.name}
 when
 	${variable:cursor}
 then

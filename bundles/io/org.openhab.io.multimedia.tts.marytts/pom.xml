@@ -16,7 +16,7 @@
 		<bundle.namespace>org.openhab.io.multimedia.tts.marytts</bundle.namespace>
 		<project.dependencyDirectory>${basedir}/resources</project.dependencyDirectory>
 		<deb.name>openhab-addon-io-multimedia-marytts</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
