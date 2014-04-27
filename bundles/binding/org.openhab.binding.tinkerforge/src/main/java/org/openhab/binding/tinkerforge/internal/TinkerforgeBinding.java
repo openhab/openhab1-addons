@@ -587,8 +587,8 @@ public class TinkerforgeBinding extends
 	/**
 	 * The working method which is called by the refresh thread.
 	 * 
-	 * Sensor or state values for all devices are fetched from the
-	 * {@link Ecosystem} and posted to the event bus. All OutActors are
+	 * Triggers an update of state values for all devices. The update is propagated
+	 * through the {@link Ecosystem} listeners. All OutActors are
 	 * ignored, they may only send updates if the hardware device has updates
 	 * (think of a pressed switch).
 	 * 
@@ -603,7 +603,7 @@ public class TinkerforgeBinding extends
 	}
 
 	/**
-	 * Get the current values for an {@code Item}.
+	 * Triggers an update of state values for all devices.
 	 * 
 	 * @param provider
 	 *            The {@code TinkerforgeBindingProvider} which is bound to the
@@ -626,8 +626,6 @@ public class TinkerforgeBinding extends
 				deviceSubId);
 		if (mDevice != null && mDevice.getEnabledA().get()) {
 			if (mDevice instanceof MSensor) {
-			  // fetchSensorValue() triggers updates of model values
-			  // the ecosystem listener posts the updates
 				((MSensor<?>) mDevice).fetchSensorValue();
 			} else if (mDevice instanceof MInSwitchActor
 					&& item instanceof SwitchItem) {
