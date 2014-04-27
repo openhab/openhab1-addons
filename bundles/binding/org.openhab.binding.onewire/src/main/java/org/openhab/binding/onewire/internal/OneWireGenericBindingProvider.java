@@ -14,7 +14,9 @@ import java.util.Set;
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
