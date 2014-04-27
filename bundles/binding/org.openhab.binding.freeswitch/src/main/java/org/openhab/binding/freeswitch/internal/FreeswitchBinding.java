@@ -486,7 +486,8 @@ public class FreeswitchBinding extends AbstractBinding<FreeswitchBindingProvider
 			return;
 		}
 
-		Pattern pattern = Pattern.compile("([0-9]+)/([0-9]+)\\s\\([0-9]+\\/[0-9]+\\)");
+		//Pattern pattern = Pattern.compile("([0-9]+)/([0-9]+)\\s\\([0-9]+\\/[0-9]+\\)");
+		Pattern pattern = Pattern.compile("([0-9]+)/([0-9]+).*");
 
 		Matcher matcher = pattern.matcher(messagesString);
 
