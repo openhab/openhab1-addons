@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the Exec Persistence Bundle
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-SymbolicName: org.openhab.persistence.exec.test
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: openHAB.org
 Fragment-Host: org.openhab.persistence.exec
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

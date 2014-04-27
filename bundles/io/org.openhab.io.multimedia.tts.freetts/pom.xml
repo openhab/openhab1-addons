@@ -1,22 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>org.openhab.bundles</groupId>
-    <artifactId>io</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>io</artifactId>
+		<version>1.5.0-SNAPSHOT</version>
+	</parent>
 
-  <properties>
-    <bundle.symbolicName>org.openhab.io.multimedia.tts.freetts</bundle.symbolicName>
-    <bundle.namespace>org.openhab.io.multimedia.tts.freetts</bundle.namespace>
-  </properties>
+	<name>openHAB Multimedia FreeTTS</name>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.io</groupId>
-  <artifactId>org.openhab.io.multimedia.tts.freetts</artifactId>
+	<properties>
+		<bundle.symbolicName>org.openhab.io.multimedia.tts.freetts</bundle.symbolicName>
+		<bundle.namespace>org.openhab.io.multimedia.tts.freetts</bundle.namespace>
+		<deb.name>openhab-addon-io-multimedia-freetts</deb.name>
+		<deb.description>${name}</deb.description>
+	</properties>
 
-  <name>openHAB Multimedia FreeTTS</name>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.io</groupId>
+	<artifactId>org.openhab.io.multimedia.tts.freetts</artifactId>
 
-  <packaging>eclipse-plugin</packaging>
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ import java.util.Dictionary;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.zwave.ZWaveBindingConfig;
 import org.openhab.binding.zwave.ZWaveBindingProvider;
+import org.openhab.binding.zwave.internal.config.ZWaveConfiguration;
 import org.openhab.binding.zwave.internal.converter.ZWaveConverterHandler;
 import org.openhab.binding.zwave.internal.protocol.SerialInterfaceException;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Victor Belov
  * @author Brian Crosby
  * @author Jan-Willem Spuij
+ * @author Chris Jackson
  * @since 1.3.0
  */
 public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvider> implements ManagedService, ZWaveEventListener {
@@ -46,10 +48,17 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveActiveBinding.class);
 	private String port;
+	private Integer healtime = null;
 	private volatile ZWaveController zController;
 	private volatile ZWaveConverterHandler converterHandler;
 
 	private boolean isZwaveNetworkReady = false;
+	
+	// Configuration Service
+	ZWaveConfiguration zConfigurationService;
+	
+	// Network monitoring class
+	ZWaveNetworkMonitor networkMonitor;
 
 	
 	/**
@@ -82,6 +91,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			return;
 		}
 		
+		// Call the network monitor
+		networkMonitor.execute();
+		
 		// loop all binding providers for the Z-wave binding.
 		for (ZWaveBindingProvider provider : providers) {
 			// loop all bound items for this provider
@@ -106,7 +118,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		if (zProvider != null) {
 			ZWaveBindingConfig bindingConfig = zProvider.getZwaveBindingConfig(itemName);
 			
-			if (bindingConfig != null) {
+			if (bindingConfig != null && converterHandler != null) {
 					converterHandler.executeRefresh(zProvider, itemName, true);
 			}
 		}
@@ -138,7 +150,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			converterHandler.receiveCommand(provider, itemName, command);
 			handled = true;
 		}
-		
+
 		if (!handled)
 			logger.warn("No converter found for item = {}, command = {}, ignoring.", itemName, command.toString());
 	}
@@ -163,11 +175,46 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		if (this.converterHandler != null) {
 			this.converterHandler = null;
 		}
+
+		if (this.zConfigurationService != null) {
+			this.zController.removeEventListener(this.zConfigurationService);
+			this.zConfigurationService = null;
+		}
+
 		ZWaveController controller = this.zController;
 		if (controller != null) {
 			this.zController = null;
 			controller.close();
 			controller.removeEventListener(this);
+		}
+	}
+	
+	/**
+	 * Initialises the binding. This is called after the 'updated' method
+	 * has been called and all configuration has been passed.
+	 * @throws ConfigurationException 
+	 */
+	private void initialise() throws ConfigurationException {
+		try {
+			this.setProperlyConfigured(true);
+			this.deactivate();
+			this.zController = new ZWaveController(port);
+			this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
+			zController.initialize();
+			zController.addEventListener(this);
+
+			// The network monitor service needs to know the controller...
+			this.networkMonitor = new ZWaveNetworkMonitor(this.zController);
+			if(healtime != null)
+				this.networkMonitor.setHealTime(healtime);
+
+			// The config service needs to know the controller and the network monitor...
+			this.zConfigurationService = new ZWaveConfiguration(this.zController, this.networkMonitor);
+			zController.addEventListener(this.zConfigurationService);
+			return;
+		} catch (SerialInterfaceException ex) {
+			this.setProperlyConfigured(false);
+			throw new ConfigurationException("port", ex.getLocalizedMessage(), ex);
 		}
 	}
 
@@ -182,22 +229,21 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		// Check the serial port configuration value.
 		// This value is mandatory.
 		if (StringUtils.isNotBlank((String) config.get("port"))) {
+			port = (String) config.get("port");
+			logger.info("Update config, port = {}", port);
+		}
+		if (StringUtils.isNotBlank((String) config.get("healtime"))) {
 			try {
-				port = (String) config.get("port");
-				logger.info("Update config, port = {}", port);
-				this.setProperlyConfigured(true);
-				this.deactivate();
-				this.zController = new ZWaveController(port);
-				this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
-				zController.initialize();
-				zController.addEventListener(this);
-				return;
-			} catch (SerialInterfaceException ex) {
-				this.setProperlyConfigured(false);
-				throw new ConfigurationException("port", ex.getLocalizedMessage(), ex);
+				healtime = Integer.parseInt((String) config.get("healtime"));
+				logger.info("Update config, healtime = {}", healtime);
+			} catch (NumberFormatException e) {
+				healtime = null;
+				logger.error("Error parsing 'healtime'. This must be a single number to set the hour to perform the heal.");
 			}
 		}
-		this.setProperlyConfigured(false);
+
+		// Now that we've read ALL the configuration, initialise the binding.
+		initialise();
 	}
 
 	/**
@@ -238,8 +284,6 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			handleZWaveCommandClassValueEvent((ZWaveCommandClassValueEvent)event);
 			return;
 		}
-		
-		logger.warn("Unknown event type {}", event.getClass().getName());
 	}
 
 	/**

@@ -1,0 +1,39 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.daikin.internal
+Ignore-Package: org.openhab.binding.daikin.internal
+Bundle-Name: openHAB Daikin Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.5.0.qualifier
+Bundle-Activator: org.openhab.binding.daikin.internal.DaikinActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Description: This is the Daikin binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ org.apache.commons.collections,
+ org.apache.commons.collections.list,
+ org.apache.commons.io,
+ org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.transform,
+ org.openhab.core.types,
+ org.openhab.io.net.http,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.daikin
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/binding.xml
+Bundle-ClassPath: .,
+ lib/httpclient-4.3.3.jar,
+ lib/httpcore-4.3.2.jar,
+ lib/commons-logging-1.1.3.jar

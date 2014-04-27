@@ -3,7 +3,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: lib485 interface for openHAB DMX Binding
 Bundle-SymbolicName: org.openhab.binding.dmx.lib485
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the lib485 interface of the DMX binding of the open Home Aut
  omation Bus (openHAB)

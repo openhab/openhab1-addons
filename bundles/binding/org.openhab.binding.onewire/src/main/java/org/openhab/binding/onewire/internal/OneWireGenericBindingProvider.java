@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -55,13 +55,12 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if ((item instanceof NumberItem)) {
+		if ((item instanceof NumberItem) || (item instanceof ContactItem) || (item instanceof SwitchItem)) {
 			return;
 		}
 		throw new BindingConfigParseException("item '" + item.getName()
-				+ "' is of type '" + item.getClass().getSimpleName()
-				+ "', only Number type is allowed - please check your *.items configuration");
-
+			+ "' is of type '" + item.getClass().getSimpleName()
+			+ "', only Number- Contact- and Switch type is allowed - please check your *.items configuration");
 	}
 	
 	/**

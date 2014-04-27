@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -46,15 +46,39 @@ public class CVBroadcasterCache extends UUIDBroadcasterCache {
 				ItemStateListBean cachedStateList = (ItemStateListBean) cacheMessage;
 				// add states to the response (maybe a comparison is needed here
 				// so that only the last state of an item is used)
-				response.stateList.entries
-						.addAll(cachedStateList.stateList.entries);
+				for (JAXBElement elem : cachedStateList.stateList.entries) {
+					boolean exists = false;
+					for (JAXBElement responseElem : response.stateList.entries) {
+						if (responseElem.getName().equals(elem.getName())) {
+							// Element already exists in the response -> just update the state
+							responseElem.setValue(elem.getValue());
+							exists=true;
+							break;
+						}
+					}
+					if (!exists) {
+						// add element to response
+						response.stateList.entries.add(elem);
+					}
+				}
 				if (response.index < cachedStateList.index) {
 					response.index = cachedStateList.index;
 				}
 			} else if (cacheMessage instanceof Item) {
 				Item item = (Item) cacheMessage;
-				response.stateList.entries.add(new JAXBElement(new QName(item
+				boolean exists = false;
+				for (JAXBElement responseElem : response.stateList.entries) {
+					if (responseElem.getName().getLocalPart().equals(item.getName())) {
+						// Element already exists in the response -> just update the state
+						responseElem.setValue(item.getState().toString());
+						exists=true;
+						break;
+					}
+				}
+				if (!exists) {
+					response.stateList.entries.add(new JAXBElement(new QName(item
 						.getName()), String.class, item.getState().toString()));
+				}
 			}
 		}
 		if (response.stateList.entries.size() > 0) {
@@ -65,10 +89,12 @@ public class CVBroadcasterCache extends UUIDBroadcasterCache {
 		}
 		if (logger.isTraceEnabled()) {
 			logger.trace("Retrieved for AtmosphereResource {} cached messages {}",
-				r.uuid(), result);
+				r.uuid(), response.stateList.entries);
 		}
 		return result;
 	}
+    
+    
 
 }
 

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Multimedia I/O Bundle
 Bundle-SymbolicName: org.openhab.io.multimedia
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Eclipse-RegisterBuddy: org.openhab.core.drools
@@ -16,9 +16,8 @@ Import-Package: org.apache.commons.collections,
  org.openhab.core.scriptengine.action,
  org.osgi.framework,
  org.slf4j
-Export-Package: org.openhab.io.multimedia.actions,
- org.openhab.io.multimedia.tts
-Service-Component: OSGI-INF/tts_mac.xml,
- OSGI-INF/audioaction.xml
+Export-Package: org.openhab.io.multimedia.actions,org.openhab.io.multi
+ media.tts
+Service-Component: OSGI-INF/audioaction.xml
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openhab.io.multimedia.internal.MultimediaActivator

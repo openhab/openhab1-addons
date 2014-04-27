@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,6 +32,7 @@ import org.openhab.core.types.UnDefType;
 public class RFXComTemperatureHumidityMessage extends RFXComBaseMessage {
 
 	public enum SubType {
+		UNDEF(0),
 		THGN122_123_132_THGR122_228_238_268(1),
 		THGN800_THGR810(2),
 		RTGR328(3),

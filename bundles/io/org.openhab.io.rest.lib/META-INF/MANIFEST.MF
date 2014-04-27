@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB REST libraries Bundle
 Bundle-SymbolicName: org.openhab.io.rest.lib
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/jackson-core-asl-1.9.2.jar,
@@ -17,10 +17,10 @@ Bundle-ClassPath: lib/jackson-core-asl-1.9.2.jar,
  lib/jettison-1.1.jar,
  lib/jersey-core-1.17.1.jar,
  lib/jsr311-api-1.1.1.jar,
- lib/atmosphere-annotations-2.0.3.jar,
  lib/atmosphere-compat-jbossweb-2.0.1.jar,
  lib/atmosphere-compat-tomcat-2.0.1.jar,
  lib/atmosphere-compat-tomcat7-2.0.1.jar,
+ lib/atmosphere-annotations-2.0.3.jar,
  lib/atmosphere-jersey-2.0.3.jar,
  lib/atmosphere-runtime-2.0.3.jar
 Import-Package: com.sun.jersey.api.core,
@@ -38,24 +38,12 @@ Import-Package: com.sun.jersey.api.core,
  org.osgi.framework,
  org.slf4j
 DynamicImport-Package: *
-Export-Package: com.sun.jersey.api.client,
- com.sun.jersey.api.core,
- com.sun.jersey.api.core.servlet,
- com.sun.jersey.api.json,
- com.sun.jersey.core.osgi,
- com.sun.jersey.core.util,
- com.sun.jersey.spi.container,
- javax.ws.rs,
- javax.ws.rs.core,
- javax.ws.rs.ext,
- org.atmosphere,
- org.atmosphere.annotation,
- org.atmosphere.cache,
- org.atmosphere.cpr,
- org.atmosphere.jersey,
- org.atmosphere.util,
- org.codehaus.jackson;version="1.9.2",
- org.codehaus.jackson.annotate;version="1.9.2",
- org.codehaus.jackson.map;version="1.9.2",
- org.codehaus.jackson.type;version="1.9.2"
+Export-Package: com.sun.jersey.api.client,com.sun.jersey.api.core,com.
+ sun.jersey.api.core.servlet,com.sun.jersey.api.json,com.sun.jersey.co
+ re.osgi,com.sun.jersey.core.util,com.sun.jersey.spi.container,javax.w
+ s.rs,javax.ws.rs.core,javax.ws.rs.ext,org.atmosphere,org.atmosphere.a
+ nnotation,org.atmosphere.cache,org.atmosphere.cpr,org.atmosphere.jers
+ ey,org.atmosphere.util,org.codehaus.jackson;version="1.9.2",org.codeh
+ aus.jackson.annotate;version="1.9.2",org.codehaus.jackson.map;version
+ ="1.9.2",org.codehaus.jackson.type;version="1.9.2"
 Require-Bundle: javax.servlet

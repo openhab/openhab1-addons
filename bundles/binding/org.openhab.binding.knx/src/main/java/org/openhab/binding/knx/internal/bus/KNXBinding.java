@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -431,6 +431,9 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 					increaseReadLimitCounter(datapoint);
 				} catch (KNXIllegalArgumentException e) {
 					logger.warn("Error sending KNX read request for '{}': {}", new String[] { datapoint.getName(), e.getMessage() });
+					increaseReadLimitCounter(datapoint);
+				} catch (InterruptedException e) {
+					logger.warn("Cannot read value for item '{}' from KNX bus: {}", new String[] { datapoint.getName(), e.getMessage() });
 					increaseReadLimitCounter(datapoint);
 				}
 

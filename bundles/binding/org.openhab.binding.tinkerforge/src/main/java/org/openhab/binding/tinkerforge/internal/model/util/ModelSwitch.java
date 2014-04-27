@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -141,6 +141,13 @@ public class ModelSwitch<T> extends Switch<T>
       {
         MBrickd mBrickd = (MBrickd)theEObject;
         T result = caseMBrickd(mBrickd);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.SUB_DEVICE_ADMIN:
+      {
+        SubDeviceAdmin subDeviceAdmin = (SubDeviceAdmin)theEObject;
+        T result = caseSubDeviceAdmin(subDeviceAdmin);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -389,6 +396,62 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_MULTI_TOUCH:
+      {
+        MBrickletMultiTouch mBrickletMultiTouch = (MBrickletMultiTouch)theEObject;
+        T result = caseMBrickletMultiTouch(mBrickletMultiTouch);
+        if (result == null) result = caseMDevice(mBrickletMultiTouch);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletMultiTouch);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletMultiTouch);
+        if (result == null) result = caseMBaseDevice(mBrickletMultiTouch);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MULTI_TOUCH_DEVICE:
+      {
+        MultiTouchDevice multiTouchDevice = (MultiTouchDevice)theEObject;
+        T result = caseMultiTouchDevice(multiTouchDevice);
+        if (result == null) result = caseMSubDevice(multiTouchDevice);
+        if (result == null) result = caseMSensor(multiTouchDevice);
+        if (result == null) result = caseMTFConfigConsumer(multiTouchDevice);
+        if (result == null) result = caseMBaseDevice(multiTouchDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.ELECTRODE:
+      {
+        Electrode electrode = (Electrode)theEObject;
+        T result = caseElectrode(electrode);
+        if (result == null) result = caseMultiTouchDevice(electrode);
+        if (result == null) result = caseMSubDevice(electrode);
+        if (result == null) result = caseMSensor(electrode);
+        if (result == null) result = caseMTFConfigConsumer(electrode);
+        if (result == null) result = caseMBaseDevice(electrode);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.PROXIMITY:
+      {
+        Proximity proximity = (Proximity)theEObject;
+        T result = caseProximity(proximity);
+        if (result == null) result = caseMultiTouchDevice(proximity);
+        if (result == null) result = caseMSubDevice(proximity);
+        if (result == null) result = caseMSensor(proximity);
+        if (result == null) result = caseMTFConfigConsumer(proximity);
+        if (result == null) result = caseMBaseDevice(proximity);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MBRICKLET_MOTION_DETECTOR:
+      {
+        MBrickletMotionDetector mBrickletMotionDetector = (MBrickletMotionDetector)theEObject;
+        T result = caseMBrickletMotionDetector(mBrickletMotionDetector);
+        if (result == null) result = caseMDevice(mBrickletMotionDetector);
+        if (result == null) result = caseMSensor(mBrickletMotionDetector);
+        if (result == null) result = caseMBaseDevice(mBrickletMotionDetector);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MDUAL_RELAY:
       {
         MDualRelay mDualRelay = (MDualRelay)theEObject;
@@ -397,6 +460,68 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSubDevice(mDualRelay);
         if (result == null) result = caseMSwitchActor(mDualRelay);
         if (result == null) result = caseMBaseDevice(mDualRelay);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH:
+      {
+        MBrickletRemoteSwitch mBrickletRemoteSwitch = (MBrickletRemoteSwitch)theEObject;
+        T result = caseMBrickletRemoteSwitch(mBrickletRemoteSwitch);
+        if (result == null) result = caseMDevice(mBrickletRemoteSwitch);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletRemoteSwitch);
+        if (result == null) result = caseSubDeviceAdmin(mBrickletRemoteSwitch);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletRemoteSwitch);
+        if (result == null) result = caseMBaseDevice(mBrickletRemoteSwitch);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH:
+      {
+        RemoteSwitch remoteSwitch = (RemoteSwitch)theEObject;
+        T result = caseRemoteSwitch(remoteSwitch);
+        if (result == null) result = caseMInSwitchActor(remoteSwitch);
+        if (result == null) result = caseMSubDevice(remoteSwitch);
+        if (result == null) result = caseMSwitchActor(remoteSwitch);
+        if (result == null) result = caseMBaseDevice(remoteSwitch);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH_A:
+      {
+        RemoteSwitchA remoteSwitchA = (RemoteSwitchA)theEObject;
+        T result = caseRemoteSwitchA(remoteSwitchA);
+        if (result == null) result = caseRemoteSwitch(remoteSwitchA);
+        if (result == null) result = caseMTFConfigConsumer(remoteSwitchA);
+        if (result == null) result = caseMInSwitchActor(remoteSwitchA);
+        if (result == null) result = caseMSubDevice(remoteSwitchA);
+        if (result == null) result = caseMSwitchActor(remoteSwitchA);
+        if (result == null) result = caseMBaseDevice(remoteSwitchA);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH_B:
+      {
+        RemoteSwitchB remoteSwitchB = (RemoteSwitchB)theEObject;
+        T result = caseRemoteSwitchB(remoteSwitchB);
+        if (result == null) result = caseRemoteSwitch(remoteSwitchB);
+        if (result == null) result = caseMTFConfigConsumer(remoteSwitchB);
+        if (result == null) result = caseMInSwitchActor(remoteSwitchB);
+        if (result == null) result = caseMSubDevice(remoteSwitchB);
+        if (result == null) result = caseMSwitchActor(remoteSwitchB);
+        if (result == null) result = caseMBaseDevice(remoteSwitchB);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH_C:
+      {
+        RemoteSwitchC remoteSwitchC = (RemoteSwitchC)theEObject;
+        T result = caseRemoteSwitchC(remoteSwitchC);
+        if (result == null) result = caseRemoteSwitch(remoteSwitchC);
+        if (result == null) result = caseMTFConfigConsumer(remoteSwitchC);
+        if (result == null) result = caseMInSwitchActor(remoteSwitchC);
+        if (result == null) result = caseMSubDevice(remoteSwitchC);
+        if (result == null) result = caseMSwitchActor(remoteSwitchC);
+        if (result == null) result = caseMBaseDevice(remoteSwitchC);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -520,6 +645,14 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE:
+      {
+        OHTFSubDeviceAdminDevice<?, ?> ohtfSubDeviceAdminDevice = (OHTFSubDeviceAdminDevice<?, ?>)theEObject;
+        T result = caseOHTFSubDeviceAdminDevice(ohtfSubDeviceAdminDevice);
+        if (result == null) result = caseOHTFDevice(ohtfSubDeviceAdminDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.OH_CONFIG:
       {
         OHConfig ohConfig = (OHConfig)theEObject;
@@ -583,6 +716,54 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.BRICKLET_REMOTE_SWITCH_CONFIGURATION:
+      {
+        BrickletRemoteSwitchConfiguration brickletRemoteSwitchConfiguration = (BrickletRemoteSwitchConfiguration)theEObject;
+        T result = caseBrickletRemoteSwitchConfiguration(brickletRemoteSwitchConfiguration);
+        if (result == null) result = caseTFConfig(brickletRemoteSwitchConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH_ACONFIGURATION:
+      {
+        RemoteSwitchAConfiguration remoteSwitchAConfiguration = (RemoteSwitchAConfiguration)theEObject;
+        T result = caseRemoteSwitchAConfiguration(remoteSwitchAConfiguration);
+        if (result == null) result = caseTFConfig(remoteSwitchAConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH_BCONFIGURATION:
+      {
+        RemoteSwitchBConfiguration remoteSwitchBConfiguration = (RemoteSwitchBConfiguration)theEObject;
+        T result = caseRemoteSwitchBConfiguration(remoteSwitchBConfiguration);
+        if (result == null) result = caseTFConfig(remoteSwitchBConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.REMOTE_SWITCH_CCONFIGURATION:
+      {
+        RemoteSwitchCConfiguration remoteSwitchCConfiguration = (RemoteSwitchCConfiguration)theEObject;
+        T result = caseRemoteSwitchCConfiguration(remoteSwitchCConfiguration);
+        if (result == null) result = caseTFConfig(remoteSwitchCConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MULTI_TOUCH_DEVICE_CONFIGURATION:
+      {
+        MultiTouchDeviceConfiguration multiTouchDeviceConfiguration = (MultiTouchDeviceConfiguration)theEObject;
+        T result = caseMultiTouchDeviceConfiguration(multiTouchDeviceConfiguration);
+        if (result == null) result = caseTFConfig(multiTouchDeviceConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.BRICKLET_MULTI_TOUCH_CONFIGURATION:
+      {
+        BrickletMultiTouchConfiguration brickletMultiTouchConfiguration = (BrickletMultiTouchConfiguration)theEObject;
+        T result = caseBrickletMultiTouchConfiguration(brickletMultiTouchConfiguration);
+        if (result == null) result = caseTFConfig(brickletMultiTouchConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       default: return defaultCase(theEObject);
     }
   }
@@ -617,6 +798,22 @@ public class ModelSwitch<T> extends Switch<T>
 	@SuppressWarnings("rawtypes")
 	public <TFC extends TFConfig, IDS extends Enum> T caseOHTFDevice(
 			OHTFDevice<TFC, IDS> object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>OHTF Sub Device Admin Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>OHTF Sub Device Admin Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public <TFC extends TFConfig, IDS extends Enum> T caseOHTFSubDeviceAdminDevice(OHTFSubDeviceAdminDevice<TFC, IDS> object)
   {
     return null;
   }
@@ -665,6 +862,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMBrickd(MBrickd object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Sub Device Admin</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Sub Device Admin</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseSubDeviceAdmin(SubDeviceAdmin object)
   {
     return null;
   }
@@ -1054,6 +1267,86 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Multi Touch</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Multi Touch</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletMultiTouch(MBrickletMultiTouch object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Multi Touch Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Multi Touch Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMultiTouchDevice(MultiTouchDevice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Electrode</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Electrode</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseElectrode(Electrode object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Proximity</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Proximity</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseProximity(Proximity object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Motion Detector</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Motion Detector</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletMotionDetector(MBrickletMotionDetector object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>MSub Device</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1086,6 +1379,86 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Remote Switch</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Remote Switch</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletRemoteSwitch(MBrickletRemoteSwitch object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitch(RemoteSwitch object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch A</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch A</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitchA(RemoteSwitchA object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch B</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch B</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitchB(RemoteSwitchB object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch C</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch C</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitchC(RemoteSwitchC object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>TF Null Configuration</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1113,6 +1486,102 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTFServoConfiguration(TFServoConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Bricklet Remote Switch Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Bricklet Remote Switch Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseBrickletRemoteSwitchConfiguration(BrickletRemoteSwitchConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch AConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch AConfiguration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitchAConfiguration(RemoteSwitchAConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch BConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch BConfiguration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitchBConfiguration(RemoteSwitchBConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remote Switch CConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remote Switch CConfiguration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoteSwitchCConfiguration(RemoteSwitchCConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Multi Touch Device Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Multi Touch Device Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMultiTouchDeviceConfiguration(MultiTouchDeviceConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Bricklet Multi Touch Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Bricklet Multi Touch Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseBrickletMultiTouchConfiguration(BrickletMultiTouchConfiguration object)
   {
     return null;
   }

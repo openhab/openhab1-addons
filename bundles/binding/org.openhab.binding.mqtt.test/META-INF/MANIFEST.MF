@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for MQTT Binding
 Bundle-SymbolicName: org.openhab.binding.mqtt.test
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Fragment-Host: org.openhab.binding.mqtt;bundle-version="1.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: openHAB.org

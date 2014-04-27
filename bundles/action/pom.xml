@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>bundles</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.5.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -18,6 +18,7 @@
   <modules>
     <module>org.openhab.action.mail</module>
     <module>org.openhab.action.prowl</module>
+    <module>org.openhab.action.pushover</module>
     <module>org.openhab.action.squeezebox</module>
     <module>org.openhab.action.twitter</module>
     <module>org.openhab.action.xbmc</module>

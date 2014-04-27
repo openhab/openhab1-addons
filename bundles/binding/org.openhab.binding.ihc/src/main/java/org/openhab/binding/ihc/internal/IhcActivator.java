@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.ihc.internal;
 
-import org.openhab.binding.ihc.utcs.IhcClient;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -38,10 +37,6 @@ public final class IhcActivator implements BundleActivator {
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
-		IhcClient client = IhcConnection.getCommunicator();
-		if (client != null) {
-			client.closeConnection();
-		}
 		context = null;
 		logger.debug("IHC / ELKO LS binding has been stopped.");
 	}

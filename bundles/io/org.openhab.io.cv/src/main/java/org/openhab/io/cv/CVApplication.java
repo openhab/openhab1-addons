@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -205,7 +205,7 @@ public class CVApplication extends PackagesResourceConfig  {
 //        The BroadcasterCache is set in ResourceStateChangeListener.registerItems(), because otherwise
 //        it gets somehow overridden by other registered servlets (e.g. the REST-bundle)
 //        the other advantage of this solution is, that the BroadcasterCache class does not need to be exported by this package
-//        jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.openhab.io.cv.cache.CVBroadcasterCache");        
+//        jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.openhab.io.cv.internal.cache.CVBroadcasterCache");        
         
         // required because of bug http://java.net/jira/browse/JERSEY-361
         jerseyServletParams.put(FeaturesAndProperties.FEATURE_XMLROOTELEMENT_PROCESSING, "true");

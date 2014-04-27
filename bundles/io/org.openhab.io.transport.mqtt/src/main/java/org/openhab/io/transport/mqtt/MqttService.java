@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -105,8 +105,7 @@ public class MqttService implements ManagedService {
 			try {
 				con.start();
 			} catch (Exception e) {
-				logger.error("Error starting broker connection {} : {}",
-						con.getName(), e.getMessage());
+				logger.error("Error starting broker connection", e);
 			}
 		}
 	}
@@ -127,7 +126,7 @@ public class MqttService implements ManagedService {
 		Enumeration<String> e = brokerConnections.keys();
 		while (e.hasMoreElements()) {
 			MqttBrokerConnection conn = brokerConnections.get(e.nextElement());
-			logger.info("Stopping connection {}", conn.getName());
+			logger.info("Stopping broker connection '{}'", conn.getName());
 			conn.close();
 		}
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,7 +29,7 @@ public class BasicBindingTest {
     public static final String MOCK_PARAM_ADDRESS = "mockDevice:1";
     public static final String SHORT_PRESS_PARAMETER_KEY = "SHORT_PRESS";
     public static final String PEMPERATURE_PARAMETER_KEY = "TEMPERATURE";
-    public static final String ITEM_NAME = "mockItem";
+    public static final String ITEM_NAME = HomematicBindingProviderMock.DEFAULT_ITEM_NAME;
 
     protected Map<String, Object> values;
     protected HomematicBinding binding;
@@ -45,7 +45,7 @@ public class BasicBindingTest {
     public void setUpBindingMock() {
         binding = new HomematicBinding();
         ccu = new CCUMock();
-        binding.getConverterFactory().setCcu(ccu);
+        binding.getConverterLookupByConfiguredDevices().setCcu(ccu);
         values = new HashMap<String, Object>();
         ccu.getPhysicalDevice(null).getChannel(1).setValues(new Paramset(values));
         binding.setCCU(ccu);
@@ -60,7 +60,8 @@ public class BasicBindingTest {
             Object expectedValue) {
         HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKeySend.name());
         provider.setParameterAddress(paramAddress);
-        binding.internalReceiveCommand("default", command);
+        binding.configureConverterForItem(provider, ITEM_NAME, paramAddress, provider.getItem(ITEM_NAME));
+        binding.internalReceiveCommand(ITEM_NAME, command);
         Object value = values.get(parameterKeyReceive.name());
         assertEquals("Value", expectedValue, value);
     }
@@ -68,7 +69,8 @@ public class BasicBindingTest {
     protected void checkReceiveCommand(ParameterKey parameterKey, Command command, Object expectedValue) {
         HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
         provider.setParameterAddress(paramAddress);
-        binding.internalReceiveCommand("default", command);
+        binding.configureConverterForItem(provider, ITEM_NAME, paramAddress, provider.getItem(ITEM_NAME));
+        binding.internalReceiveCommand(ITEM_NAME, command);
         Object value = values.get(parameterKey.name());
         assertEquals("Value", expectedValue, value);
     }
@@ -76,7 +78,8 @@ public class BasicBindingTest {
     protected void checkReceiveState(ParameterKey parameterKey, State state, Object expectedValue) {
         HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
         provider.setParameterAddress(paramAddress);
-        binding.internalReceiveUpdate("default", state);
+        binding.configureConverterForItem(provider, ITEM_NAME, paramAddress, provider.getItem(ITEM_NAME));
+        binding.internalReceiveUpdate(ITEM_NAME, state);
         Object value = values.get(parameterKey.name());
         assertEquals("Value", expectedValue, value);
     }
@@ -84,17 +87,28 @@ public class BasicBindingTest {
     protected void checkInitialValue(ParameterKey parameterKey, Object homematicValue, Type expectedValue) {
         HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
         provider.setParameterAddress(paramAddress);
+        binding.configureConverterForItem(provider, ITEM_NAME, paramAddress, provider.getItem(ITEM_NAME));
         values.put(parameterKey.name(), homematicValue);
         binding.event("dummie", MOCK_PARAM_ADDRESS, parameterKey.name(), homematicValue);
-        assertEquals("Update State", expectedValue, publisher.getUpdateState());
+        assertEquals("Update State", expectedValue, publisher.popLastState());
     }
 
     protected void checkValueReceived(ParameterKey parameterKey, Object homematicValue, Type expectedValue) {
         HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
         provider.setParameterAddress(paramAddress);
+        binding.configureConverterForItem(provider, ITEM_NAME, paramAddress, provider.getItem(ITEM_NAME));
         values.put(parameterKey.name(), homematicValue);
         binding.event("dummie", MOCK_PARAM_ADDRESS, parameterKey.name(), homematicValue);
-        assertEquals("Update State", expectedValue, publisher.getUpdateState());
+        assertEquals("Update State", expectedValue, publisher.popLastState());
+    }
+
+    protected void checkCommandReceived(ParameterKey parameterKey, Object homematicValue, Command expectedCommand) {
+        HomematicParameterAddress paramAddress = HomematicParameterAddress.from(MOCK_PARAM_ADDRESS, parameterKey.name());
+        provider.setParameterAddress(paramAddress);
+        binding.configureConverterForItem(provider, ITEM_NAME, paramAddress, provider.getItem(ITEM_NAME));
+        values.put(parameterKey.name(), homematicValue);
+        binding.event("dummie", MOCK_PARAM_ADDRESS, parameterKey.name(), homematicValue);
+        assertEquals("Command received", expectedCommand, publisher.popLastCommand());
     }
 
 }

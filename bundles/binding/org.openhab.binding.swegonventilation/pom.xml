@@ -5,22 +5,31 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.4.0-SNAPSHOT</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
+
+	<name>openHAB Swegon ventilation Binding</name>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.swegonventilation</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.swegonventilation</bundle.namespace>
+		<deb.name>openhab-addon-binding-swegonventilation</deb.name>
+		<deb.description>${name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.swegonventilation</artifactId>
 
-	<name>openHAB Swegon ventilation Binding</name>
-
 	<packaging>eclipse-plugin</packaging>
 
-	<version>1.4.0-SNAPSHOT</version>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

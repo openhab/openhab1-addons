@@ -5,7 +5,7 @@ Bundle-License: http://www.gnu.org/licenses/gpl.html
 Bundle-Name: openHAB OpenPaths Binding
 Bundle-SymbolicName: org.openhab.binding.openpaths
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.binding.openpaths.internal.OpenPathsActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the OpenPaths binding of the open Home Automation Bus (openHAB)

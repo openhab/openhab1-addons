@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,30 +24,33 @@ import org.slf4j.Logger;
  */
 public final class L_Message extends Message {
 
-	private List<Device> devices = new ArrayList<Device>();
-
 	public L_Message(String raw) {
 		super(raw);
 	}
 
 	public Collection<? extends Device> getDevices(List<Configuration> configurations) {
-		
+
+		List<Device> devices = new ArrayList<Device>();
+
 		byte[] decodedRawMessage = Base64.decodeBase64(getPayload().getBytes());
 
 		MaxTokenizer tokenizer = new MaxTokenizer(decodedRawMessage);
 
 		while (tokenizer.hasMoreElements()) {
 			byte[] token = tokenizer.nextElement();
-
-			devices.add(Device.create(token, configurations));
+			Device tempDevice = Device.create(token, configurations);
+			if (tempDevice != null) {
+				devices.add(tempDevice);
+			}
 		}
-		
+
 		return devices;
 	}
-	
+
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== L_Message === ");
+		logger.debug("\tRAW:" + this.getPayload());
 	}
 
 	@Override

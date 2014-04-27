@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>FGSS101</Model>
+	<Label lang="en">Smoke Sensor</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x7a</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8b</id></Class>
+		<Class><id>0x8e</id></Class>
+		<Class><id>0x91</id></Class>
+		<Class><id>0x9c</id></Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>3600</Maximum>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Alarm Cancellation Delay</Label>
+			<Help lang="en">Additional delay after an alarm has ceased. The parameter allows you to specify additional time, after which the alarm is cancelled once its violation has ceased.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Acoustic and visual signals On / Off in case of alarm</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">acoustic and visual alarms inactive</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">acoustic alarm inactive, visual alarm active</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">acoustic alarm active, visual alarm inactive</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">acoustic and visual alarms active</Label>
+			</Item>
+			<Help lang="en">parameter allows for LED indicator and acoustic alarm deactivation in case of smoke detection</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>-127</Default>
+			<Size>1</Size>
+			<Label lang="en">Type of alarm frame sent to 1-st association group (SMOKE)</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">ALARM SENSOR (SMOKE)</Label>
+			</Item>
+			<Item>
+				<Value>-127</Value>
+				<Label lang="en">BASIC_SET</Label>
+			</Item>
+			<Help lang="en">parameter determines a type of command frame sent by the Sensor in case smoke detection has been detected or cancelled</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>7</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">Forced Level of Dimming group 1</Label>
+			<Help lang="en"><![CDATA[Value of the parameter specifying the forced level of dimming / opening sun blinds when comes "switch on" / "open" command to devices from association group no. 1.<BR/>
+In the case of alarm frames the alarm priority is specified. Possible parameter settings: (1 � 99) and 255. Value of 255 makes it possible to activate the device when using the Dimmer module it means activating the device and setting it to the previous stored condition, e.g. when Dimmer is set to 30%, then deactivated, and then reactivated using command 255, it will automatically be set to the previous condition, i.e. 30%.]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>10</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>32767</Maximum>
+			<Default>300</Default>
+			<Size>2</Size>
+			<Label lang="en">Interval between successive readings of temperature sensors</Label>
+			<Help lang="en">Interval between successive readings of temperature from all sensors connected to the device in seconds. Note: taking temperature readings from the sensor does not result in sending a temperature condition report to the central hub.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>1000</Maximum>
+			<Default>50</Default>
+			<Size>2</Size>
+			<Label lang="en">Insensitiveness to temperature changes.</Label>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Broadcast inactive</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Smoke broadcast mode active, Tamper broadcast mode inactive</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Smoke broadcast mode inactive, Tamper broadcast mode active</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Smoke and Tamper broadcast mode active</Label>
+			</Item>
+			<Label lang="en">Transmitting the alarm or control frame broadcast mode</Label>
+			<Help lang="en"><![CDATA[Transmitting the alarm or control frame in "broadcast" mode (i.e. to all devices within range), information sent in this mode is not repeated by the mesh network.<BR/><B>NOTE:</B> If the broadcast mode of information transmission is activated for a given channel, then transmission of information in singlecast mode to devices assigned to the association group of this channel is deactivated.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>80</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Z-Wave range test interval</Label>
+			<Help lang="en"><![CDATA[Time period between the consecutive Z-Wave network range tests.<BR/>
+			0 10min[10min-24h] - 17 10min[10min-24h]	   ->  	0 – Z-Wave network range test inactive]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>82</Index>
+			<Type>byte</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">High</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Medium</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Low</Label>
+			</Item>
+			<Label lang="en">Smoke Sensor sensitivity</Label>
+			<Help lang="en"><![CDATA[There are 3 levels of sensitivity to smoke presence. Level 1 means the highest sensitivity.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>83</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">High</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Medium</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Low</Label>
+			</Item>
+			<Label lang="en">Black Box sensitivity level</Label>
+			<Help lang="en"><![CDATA[Parameter specifies temperature and smoke level after which the Black Box starts recording them.]]></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Fire Status</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">TMP Button</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Device Status</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

@@ -3,7 +3,7 @@ Private-Package: org.openhab.binding.ihc.internal
 Ignore-Package: org.openhab.binding.ihc.internal
 Bundle-Name: openHAB IHC/ELKO LS Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.binding.ihc.internal.IhcActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
@@ -32,5 +32,5 @@ Import-Package: com.google.common.base,
 Bundle-SymbolicName: org.openhab.binding.ihc
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Service-Component: OSGI-INF/connection.xml, OSGI-INF/genericbindingprovider.xml, OSGI-INF/binding.xml
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/binding.xml
 Bundle-ClassPath: .

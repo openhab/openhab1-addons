@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Persistence Model UI
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-SymbolicName: org.openhab.model.persistence.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.openhab.model.persistence;visibility:=reexport,
@@ -21,7 +21,7 @@ Import-Package: org.apache.commons.logging,
  org.openhab.core.items,
  org.openhab.designer.ui
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.openhab.model.persistence.ui.contentassist,
- org.openhab.model.persistence.ui.contentassist.antlr,
- org.openhab.model.persistence.ui.internal
+Export-Package: org.openhab.model.persistence.ui.contentassist,org.ope
+ nhab.model.persistence.ui.contentassist.antlr,org.openhab.model.persi
+ stence.ui.internal
 Bundle-Activator: org.openhab.model.persistence.ui.internal.PersistenceActivator

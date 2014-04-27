@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB TCP-UDP Binding
 Bundle-SymbolicName: org.openhab.binding.tcp
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Activator: org.openhab.binding.tcp.internal.TCPActivator
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
@@ -27,7 +27,7 @@ Import-Package: org.apache.commons.lang,
  org.slf4j
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Export-Package: org.openhab.binding.tcp,
- org.openhab.binding.tcp.protocol
+Export-Package: org.openhab.binding.tcp,org.openhab.binding.tcp.protoc
+ ol
 Service-Component: OSGI-INF/tcpgenericbindingprovider.xml, OSGI-INF/tcpbinding.xml,OSGI-INF/udpgenericbindingprovider.xml, OSGI-INF/udpbinding.xml
 

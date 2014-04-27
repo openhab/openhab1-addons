@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Net I/O Bundle
 Bundle-SymbolicName: org.openhab.io.net
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Eclipse-RegisterBuddy: org.openhab.core.drools
@@ -25,9 +25,8 @@ Import-Package: javax.servlet;version="2.6.0",
  org.osgi.service.http,
  org.slf4j
 Bundle-ClassPath: .
-Export-Package: org.openhab.io.net.actions,
- org.openhab.io.net.exec,
- org.openhab.io.net.http
+Export-Package: org.openhab.io.net.actions,org.openhab.io.net.exec,org
+ .openhab.io.net.http
 Service-Component: OSGI-INF/securehttpcontext.xml, OSGI-INF/pingaction.xml, OSGI-INF/httpaction.xml,
  OSGI-INF/execaction.xml
 Bundle-ActivationPolicy: lazy

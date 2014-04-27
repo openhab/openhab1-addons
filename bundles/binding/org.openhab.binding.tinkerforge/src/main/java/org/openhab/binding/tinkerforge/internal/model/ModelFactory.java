@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,6 +39,15 @@ public interface ModelFactory extends EFactory
    */
 	@SuppressWarnings("rawtypes")
 	<TFC extends TFConfig, IDS extends Enum> OHTFDevice<TFC, IDS> createOHTFDevice();
+
+  /**
+   * Returns a new object of class '<em>OHTF Sub Device Admin Device</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>OHTF Sub Device Admin Device</em>'.
+   * @generated
+   */
+  <TFC extends TFConfig, IDS extends Enum> OHTFSubDeviceAdminDevice<TFC, IDS> createOHTFSubDeviceAdminDevice();
 
   /**
    * Returns a new object of class '<em>OH Config</em>'.
@@ -194,6 +203,51 @@ public interface ModelFactory extends EFactory
   DigitalSensor createDigitalSensor();
 
   /**
+   * Returns a new object of class '<em>MBricklet Multi Touch</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Multi Touch</em>'.
+   * @generated
+   */
+  MBrickletMultiTouch createMBrickletMultiTouch();
+
+  /**
+   * Returns a new object of class '<em>Multi Touch Device</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Multi Touch Device</em>'.
+   * @generated
+   */
+  MultiTouchDevice createMultiTouchDevice();
+
+  /**
+   * Returns a new object of class '<em>Electrode</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Electrode</em>'.
+   * @generated
+   */
+  Electrode createElectrode();
+
+  /**
+   * Returns a new object of class '<em>Proximity</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Proximity</em>'.
+   * @generated
+   */
+  Proximity createProximity();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Motion Detector</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Motion Detector</em>'.
+   * @generated
+   */
+  MBrickletMotionDetector createMBrickletMotionDetector();
+
+  /**
    * Returns a new object of class '<em>MDual Relay</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -201,6 +255,42 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MDualRelay createMDualRelay();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Remote Switch</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Remote Switch</em>'.
+   * @generated
+   */
+  MBrickletRemoteSwitch createMBrickletRemoteSwitch();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch A</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch A</em>'.
+   * @generated
+   */
+  RemoteSwitchA createRemoteSwitchA();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch B</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch B</em>'.
+   * @generated
+   */
+  RemoteSwitchB createRemoteSwitchB();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch C</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch C</em>'.
+   * @generated
+   */
+  RemoteSwitchC createRemoteSwitchC();
 
   /**
    * Returns a new object of class '<em>TF Null Configuration</em>'.
@@ -219,6 +309,60 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   TFServoConfiguration createTFServoConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Bricklet Remote Switch Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bricklet Remote Switch Configuration</em>'.
+   * @generated
+   */
+  BrickletRemoteSwitchConfiguration createBrickletRemoteSwitchConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch AConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch AConfiguration</em>'.
+   * @generated
+   */
+  RemoteSwitchAConfiguration createRemoteSwitchAConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch BConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch BConfiguration</em>'.
+   * @generated
+   */
+  RemoteSwitchBConfiguration createRemoteSwitchBConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Remote Switch CConfiguration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remote Switch CConfiguration</em>'.
+   * @generated
+   */
+  RemoteSwitchCConfiguration createRemoteSwitchCConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Multi Touch Device Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Multi Touch Device Configuration</em>'.
+   * @generated
+   */
+  MultiTouchDeviceConfiguration createMultiTouchDeviceConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Bricklet Multi Touch Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Bricklet Multi Touch Configuration</em>'.
+   * @generated
+   */
+  BrickletMultiTouchConfiguration createBrickletMultiTouchConfiguration();
 
   /**
    * Returns a new object of class '<em>MServo</em>'.

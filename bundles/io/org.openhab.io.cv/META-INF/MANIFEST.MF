@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB CV Interface Bundle
 Bundle-SymbolicName: org.openhab.io.cv
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.sun.jersey.api.core.servlet,
@@ -40,4 +40,7 @@ Service-Component: OSGI-INF/cvapplication.xml
 Require-Bundle: org.openhab.io.rest.lib,
  javax.servlet,
  org.openhab.io.servicediscovery
-Export-Package: org.openhab.io.cv
+Export-Package: org.openhab.io.cv; uses:="org.openhab.core.items,  org
+ .openhab.model.core,  org.openhab.io.servicediscovery,  com.sun.jerse
+ y.api.core,  org.openhab.core.events,  org.osgi.service.http,  org.op
+ enhab.ui.items"

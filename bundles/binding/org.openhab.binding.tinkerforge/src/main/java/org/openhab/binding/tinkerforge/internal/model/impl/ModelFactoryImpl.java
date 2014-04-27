@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -81,6 +81,9 @@ import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
+import com.tinkerforge.BrickletMotionDetector;
+import com.tinkerforge.BrickletMultiTouch;
+import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
@@ -150,7 +153,16 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.DIGITAL_ACTOR: return createDigitalActor();
       case ModelPackage.MBRICKLET_IO16: return createMBrickletIO16();
       case ModelPackage.DIGITAL_SENSOR: return createDigitalSensor();
+      case ModelPackage.MBRICKLET_MULTI_TOUCH: return createMBrickletMultiTouch();
+      case ModelPackage.MULTI_TOUCH_DEVICE: return createMultiTouchDevice();
+      case ModelPackage.ELECTRODE: return createElectrode();
+      case ModelPackage.PROXIMITY: return createProximity();
+      case ModelPackage.MBRICKLET_MOTION_DETECTOR: return createMBrickletMotionDetector();
       case ModelPackage.MDUAL_RELAY: return createMDualRelay();
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH: return createMBrickletRemoteSwitch();
+      case ModelPackage.REMOTE_SWITCH_A: return createRemoteSwitchA();
+      case ModelPackage.REMOTE_SWITCH_B: return createRemoteSwitchB();
+      case ModelPackage.REMOTE_SWITCH_C: return createRemoteSwitchC();
       case ModelPackage.MBRICKLET_HUMIDITY: return createMBrickletHumidity();
       case ModelPackage.MBRICKLET_DISTANCE_IR: return createMBrickletDistanceIR();
       case ModelPackage.MBRICKLET_TEMPERATURE: return createMBrickletTemperature();
@@ -161,6 +173,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MLCD2_0X4_BACKLIGHT: return createMLCD20x4Backlight();
       case ModelPackage.MLCD2_0X4_BUTTON: return createMLCD20x4Button();
       case ModelPackage.OHTF_DEVICE: return createOHTFDevice();
+      case ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE: return createOHTFSubDeviceAdminDevice();
       case ModelPackage.OH_CONFIG: return createOHConfig();
       case ModelPackage.TF_NULL_CONFIGURATION: return createTFNullConfiguration();
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
@@ -169,6 +182,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION: return createTFInterruptListenerConfiguration();
       case ModelPackage.TFIO_SENSOR_CONFIGURATION: return createTFIOSensorConfiguration();
       case ModelPackage.TF_SERVO_CONFIGURATION: return createTFServoConfiguration();
+      case ModelPackage.BRICKLET_REMOTE_SWITCH_CONFIGURATION: return createBrickletRemoteSwitchConfiguration();
+      case ModelPackage.REMOTE_SWITCH_ACONFIGURATION: return createRemoteSwitchAConfiguration();
+      case ModelPackage.REMOTE_SWITCH_BCONFIGURATION: return createRemoteSwitchBConfiguration();
+      case ModelPackage.REMOTE_SWITCH_CCONFIGURATION: return createRemoteSwitchCConfiguration();
+      case ModelPackage.MULTI_TOUCH_DEVICE_CONFIGURATION: return createMultiTouchDeviceConfiguration();
+      case ModelPackage.BRICKLET_MULTI_TOUCH_CONFIGURATION: return createBrickletMultiTouchConfiguration();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -204,6 +223,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createLCDButtonSubIdsFromString(eDataType, initialValue);
       case ModelPackage.LCD_BACKLIGHT_SUB_IDS:
         return createLCDBacklightSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.MULTI_TOUCH_SUB_IDS:
+        return createMultiTouchSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -246,6 +267,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createMTinkerBrickletAmbientLightFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICKLET_LCD2_0X4:
         return createMTinkerBrickletLCD20x4FromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_REMOTE_SWITCH:
+        return createTinkerBrickletRemoteSwitchFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_MOTION_DETECTOR:
+        return createTinkerBrickletMotionDetectorFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_MULTI_TOUCH:
+        return createTinkerBrickletMultiTouchFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -283,6 +310,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertLCDButtonSubIdsToString(eDataType, instanceValue);
       case ModelPackage.LCD_BACKLIGHT_SUB_IDS:
         return convertLCDBacklightSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.MULTI_TOUCH_SUB_IDS:
+        return convertMultiTouchSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -325,6 +354,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertMTinkerBrickletAmbientLightToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICKLET_LCD2_0X4:
         return convertMTinkerBrickletLCD20x4ToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_REMOTE_SWITCH:
+        return convertTinkerBrickletRemoteSwitchToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_MOTION_DETECTOR:
+        return convertTinkerBrickletMotionDetectorToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_MULTI_TOUCH:
+        return convertTinkerBrickletMultiTouchToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -342,6 +377,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     OHTFDeviceImpl<TFC, IDS> ohtfDevice = new OHTFDeviceImpl<TFC, IDS>();
     return ohtfDevice;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public <TFC extends TFConfig, IDS extends Enum> OHTFSubDeviceAdminDevice<TFC, IDS> createOHTFSubDeviceAdminDevice()
+  {
+    OHTFSubDeviceAdminDeviceImpl<TFC, IDS> ohtfSubDeviceAdminDevice = new OHTFSubDeviceAdminDeviceImpl<TFC, IDS>();
+    return ohtfSubDeviceAdminDevice;
   }
 
   /**
@@ -536,10 +582,109 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public MBrickletMultiTouch createMBrickletMultiTouch()
+  {
+    MBrickletMultiTouchImpl mBrickletMultiTouch = new MBrickletMultiTouchImpl();
+    return mBrickletMultiTouch;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MultiTouchDevice createMultiTouchDevice()
+  {
+    MultiTouchDeviceImpl multiTouchDevice = new MultiTouchDeviceImpl();
+    return multiTouchDevice;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Electrode createElectrode()
+  {
+    ElectrodeImpl electrode = new ElectrodeImpl();
+    return electrode;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Proximity createProximity()
+  {
+    ProximityImpl proximity = new ProximityImpl();
+    return proximity;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletMotionDetector createMBrickletMotionDetector()
+  {
+    MBrickletMotionDetectorImpl mBrickletMotionDetector = new MBrickletMotionDetectorImpl();
+    return mBrickletMotionDetector;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public MDualRelay createMDualRelay()
   {
     MDualRelayImpl mDualRelay = new MDualRelayImpl();
     return mDualRelay;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletRemoteSwitch createMBrickletRemoteSwitch()
+  {
+    MBrickletRemoteSwitchImpl mBrickletRemoteSwitch = new MBrickletRemoteSwitchImpl();
+    return mBrickletRemoteSwitch;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoteSwitchA createRemoteSwitchA()
+  {
+    RemoteSwitchAImpl remoteSwitchA = new RemoteSwitchAImpl();
+    return remoteSwitchA;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoteSwitchB createRemoteSwitchB()
+  {
+    RemoteSwitchBImpl remoteSwitchB = new RemoteSwitchBImpl();
+    return remoteSwitchB;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoteSwitchC createRemoteSwitchC()
+  {
+    RemoteSwitchCImpl remoteSwitchC = new RemoteSwitchCImpl();
+    return remoteSwitchC;
   }
 
   /**
@@ -562,6 +707,72 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     TFServoConfigurationImpl tfServoConfiguration = new TFServoConfigurationImpl();
     return tfServoConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletRemoteSwitchConfiguration createBrickletRemoteSwitchConfiguration()
+  {
+    BrickletRemoteSwitchConfigurationImpl brickletRemoteSwitchConfiguration = new BrickletRemoteSwitchConfigurationImpl();
+    return brickletRemoteSwitchConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoteSwitchAConfiguration createRemoteSwitchAConfiguration()
+  {
+    RemoteSwitchAConfigurationImpl remoteSwitchAConfiguration = new RemoteSwitchAConfigurationImpl();
+    return remoteSwitchAConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoteSwitchBConfiguration createRemoteSwitchBConfiguration()
+  {
+    RemoteSwitchBConfigurationImpl remoteSwitchBConfiguration = new RemoteSwitchBConfigurationImpl();
+    return remoteSwitchBConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoteSwitchCConfiguration createRemoteSwitchCConfiguration()
+  {
+    RemoteSwitchCConfigurationImpl remoteSwitchCConfiguration = new RemoteSwitchCConfigurationImpl();
+    return remoteSwitchCConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MultiTouchDeviceConfiguration createMultiTouchDeviceConfiguration()
+  {
+    MultiTouchDeviceConfigurationImpl multiTouchDeviceConfiguration = new MultiTouchDeviceConfigurationImpl();
+    return multiTouchDeviceConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletMultiTouchConfiguration createBrickletMultiTouchConfiguration()
+  {
+    BrickletMultiTouchConfigurationImpl brickletMultiTouchConfiguration = new BrickletMultiTouchConfigurationImpl();
+    return brickletMultiTouchConfiguration;
   }
 
   /**
@@ -970,6 +1181,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public MultiTouchSubIds createMultiTouchSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    MultiTouchSubIds result = MultiTouchSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertMultiTouchSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public IPConnection createMIPConnectionFromString(EDataType eDataType, String initialValue)
   {
     return (IPConnection)super.createFromString(eDataType, initialValue);
@@ -1261,6 +1494,66 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertMTinkerBrickletLCD20x4ToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletRemoteSwitch createTinkerBrickletRemoteSwitchFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletRemoteSwitch)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletRemoteSwitchToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletMotionDetector createTinkerBrickletMotionDetectorFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletMotionDetector)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletMotionDetectorToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletMultiTouch createTinkerBrickletMultiTouchFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletMultiTouch)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletMultiTouchToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

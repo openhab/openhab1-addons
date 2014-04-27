@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>bundles</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.5.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -27,6 +27,7 @@
     <module>org.openhab.persistence.cosm</module>
     <module>org.openhab.persistence.gcal</module>
     <module>org.openhab.persistence.mqtt</module>
+    <module>org.openhab.persistence.mongodb</module>
   </modules>
 
 </project>

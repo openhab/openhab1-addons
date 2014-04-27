@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Rule Model UI
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-SymbolicName: org.openhab.model.rule.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.openhab.model.rule;visibility:=reexport,
@@ -38,7 +38,6 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.cm,
  org.slf4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.openhab.model.rule.ui.contentassist.antlr,
- org.openhab.model.rule.ui.internal,
- org.openhab.model.rule.ui.contentassist
+Export-Package: org.openhab.model.rule.ui.contentassist.antlr,org.open
+ hab.model.rule.ui.internal,org.openhab.model.rule.ui.contentassist
 Bundle-Activator: org.openhab.model.rule.ui.internal.RuleModelUIActivator
