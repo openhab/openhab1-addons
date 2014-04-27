@@ -459,52 +459,48 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void turnSwitch(OnOffValue state) {
-		logger.trace("turnSwitch called");
-		try {
-			if (state == OnOffValue.OFF) {
-				tinkerforgeDevice.setVelocity((short) 0);
-			} else if (state == OnOffValue.ON) {
-				tinkerforgeDevice.setVelocity(switchOnVelocity);
-			}
-			else {
-				logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
-			}
-			switchState = state == null ? OnOffValue.UNDEF
-					: state;
-			setSwitchState(switchState);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-	}
+  public void turnSwitch(OnOffValue state) {
+    logger.trace("turnSwitch called");
+    try {
+      if (state == OnOffValue.OFF) {
+        tinkerforgeDevice.setVelocity((short) 0);
+      } else if (state == OnOffValue.ON) {
+        tinkerforgeDevice.setVelocity(switchOnVelocity);
+      } else {
+        logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+      }
+      switchState = state == null ? OnOffValue.UNDEF : state;
+      setSwitchState(switchState);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public OnOffValue fetchSwitchState() {
-		OnOffValue value = OnOffValue.UNDEF;
-		try {
-			short currentVelocity = tinkerforgeDevice.getVelocity();
-			value = currentVelocity == 0 ? OnOffValue.OFF : OnOffValue.ON;
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		return value;
-	}
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void fetchSwitchState() {
+    OnOffValue value = OnOffValue.UNDEF;
+    try {
+      short currentVelocity = tinkerforgeDevice.getVelocity();
+      value = currentVelocity == 0 ? OnOffValue.OFF : OnOffValue.ON;
+      setSwitchState(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
 
   /**
    * <!-- begin-user-doc -->
@@ -1455,7 +1451,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         turnSwitch((OnOffValue)arguments.get(0));
         return null;
       case ModelPackage.MBRICK_DC___FETCH_SWITCH_STATE:
-        return fetchSwitchState();
+        fetchSwitchState();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }

@@ -393,19 +393,17 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * 
    * @generated NOT
    */
-  public DecimalValue fetchSensorValue() {
+  public void fetchSensorValue() {
     try {
       short chipTemperature = getMbrick().getTinkerforgeDevice().getChipTemperature();
       DecimalValue value = Tools.calculate100(chipTemperature);
       setSensorValue(value);
-      return value;
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
       TinkerforgeErrorHandler.handleError(this,
           TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
     }
-    return null;
   }
 
   /**
@@ -686,7 +684,8 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
         disable();
         return null;
       case ModelPackage.MBAROMETER_TEMPERATURE___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }

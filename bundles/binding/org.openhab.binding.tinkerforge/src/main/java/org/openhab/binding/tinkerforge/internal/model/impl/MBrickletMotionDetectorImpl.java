@@ -6,6 +6,8 @@ import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMotionDetector.DetectionCycleEndedListener;
 import com.tinkerforge.BrickletMotionDetector.MotionDetectedListener;
 import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -25,6 +27,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
@@ -587,9 +590,24 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public HighLowValue fetchSensorValue()
+  public void fetchSensorValue()
   {
-    return getSensorValue();
+    HighLowValue value = HighLowValue.UNDEF;
+    try {
+      short motionDetected = tinkerforgeDevice.getMotionDetected();
+      if (motionDetected == 1){
+        value = HighLowValue.HIGH;
+      }
+      else {
+        value = HighLowValue.LOW;
+      }
+      setSensorValue(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
@@ -618,6 +636,7 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
       }
     };
     tinkerforgeDevice.addDetectionCycleEndedListener(detectionCycleEndedListener);
+    fetchSensorValue();
   }
 
   /**
@@ -926,7 +945,8 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
         init();
         return null;
       case ModelPackage.MBRICKLET_MOTION_DETECTOR___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
       case ModelPackage.MBRICKLET_MOTION_DETECTOR___ENABLE:
         enable();
         return null;

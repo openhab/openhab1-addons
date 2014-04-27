@@ -231,60 +231,52 @@ private int mask;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void turnSwitch(OnOffValue state) {
-		logger.debug("turnSwitchState called on: {}",
-				MIndustrialQuadRelayBrickletImpl.class);
-		try {
-			if (state == OnOffValue.OFF) {
-				logger.debug("setSwitchValue off");
-				getMbrick().getTinkerforgeDevice().setSelectedValues(mask,
-						OFF_BYTE);
-			} else if (state == OnOffValue.ON) {
-				logger.debug("setSwitchState on");
-				getMbrick().getTinkerforgeDevice()
-						.setSelectedValues(mask, mask);
-			} else {
-				logger.error("{} unkown switchstate {}",
-						LoggerConstants.TFMODELUPDATE, state);
-			}
-			setSwitchState(state);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-	}
+  public void turnSwitch(OnOffValue state) {
+    logger.debug("turnSwitchState called on: {}", MIndustrialQuadRelayBrickletImpl.class);
+    try {
+      if (state == OnOffValue.OFF) {
+        logger.debug("setSwitchValue off");
+        getMbrick().getTinkerforgeDevice().setSelectedValues(mask, OFF_BYTE);
+      } else if (state == OnOffValue.ON) {
+        logger.debug("setSwitchState on");
+        getMbrick().getTinkerforgeDevice().setSelectedValues(mask, mask);
+      } else {
+        logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+      }
+      setSwitchState(state);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public OnOffValue fetchSwitchState()
-  {
-	  OnOffValue value = OnOffValue.UNDEF;
-	  try {
-		int deviceValue = getMbrick().getTinkerforgeDevice().getValue();
-		if ((deviceValue & mask) == mask ){
-			value = OnOffValue.ON;
-		}
-		else {
-			value = OnOffValue.OFF;
-		}
-	} catch (TimeoutException e) {
-		TinkerforgeErrorHandler.handleError(this,
-				TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-	} catch (NotConnectedException e) {
-		TinkerforgeErrorHandler.handleError(this,
-				TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-	}
-	  return value;
+  public void fetchSwitchState() {
+    OnOffValue value = OnOffValue.UNDEF;
+    try {
+      int deviceValue = getMbrick().getTinkerforgeDevice().getValue();
+      if ((deviceValue & mask) == mask) {
+        value = OnOffValue.ON;
+      } else {
+        value = OnOffValue.OFF;
+      }
+      setSwitchState(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
@@ -435,36 +427,33 @@ private int mask;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void init()
-  {
-	  setEnabledA(new AtomicBoolean());
-	  logger = LoggerFactory.getLogger(MIndustrialQuadRelay.class);
-	  relayNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() -1)));
-	  mask = DEFAULT_SELECTION_MASK << relayNum;
-	  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-	public void enable() {
-		logger.debug("enable called on MIndustrialQuadRelayImpl");
-		setSwitchState(fetchSwitchState());
-	}
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  public void disable()
-  {
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MIndustrialQuadRelay.class);
+    relayNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
+    mask = DEFAULT_SELECTION_MASK << relayNum;
   }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void enable() {
+    logger.debug("enable called on MIndustrialQuadRelayImpl");
+    fetchSwitchState();
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void disable() {}
 
   /**
    * <!-- begin-user-doc -->
@@ -747,7 +736,8 @@ private int mask;
         turnSwitch((OnOffValue)arguments.get(0));
         return null;
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY___FETCH_SWITCH_STATE:
-        return fetchSwitchState();
+        fetchSwitchState();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }

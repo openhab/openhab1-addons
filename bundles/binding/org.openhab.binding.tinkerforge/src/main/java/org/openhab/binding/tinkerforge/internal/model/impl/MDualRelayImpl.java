@@ -640,7 +640,8 @@ private short relayNum;
         turnSwitch((OnOffValue)arguments.get(0));
         return null;
       case ModelPackage.MDUAL_RELAY___FETCH_SWITCH_STATE:
-        return fetchSwitchState();
+        fetchSwitchState();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }
@@ -671,94 +672,89 @@ private short relayNum;
     result.append(')');
     return result.toString();
   }
+
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	@Override
-	public void init() {
-	    setEnabledA(new AtomicBoolean());
-		logger = LoggerFactory.getLogger(MDualRelayBrickletImpl.class);
-		relayNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	@Override
-	public void enable() {
-		logger.debug("enable called on MDualRelayImpl");
-		setSwitchState(fetchSwitchState());
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	@Override
-	public void disable() {
-	}
+  @Override
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MDualRelayBrickletImpl.class);
+    relayNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
+  }
 
   /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	@Override
-	public void turnSwitch(OnOffValue state) {
-		logger.debug("setSwitchState called on: {}", MDualRelayImpl.class);
-		try {
-			if (state == OnOffValue.OFF) {
-				logger.debug("setSwitchState off");
-				getMbrick().getTinkerforgeDevice().setSelectedState(relayNum,
-						false);
-			} else if (state == OnOffValue.ON) {
-				logger.debug("setSwitchState on");
-				getMbrick().getTinkerforgeDevice().setSelectedState(relayNum,
-						true);
-			} else  {
-				logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
-			}
-			setSwitchState(state);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-	}
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  @Override
+  public void enable() {
+    logger.debug("enable called on MDualRelayImpl");
+    fetchSwitchState();
+  }
 
   /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	@Override
-	public OnOffValue fetchSwitchState() {
-		OnOffValue switchValue = OnOffValue.UNDEF;
-		try {
-			State state = getMbrick().getTinkerforgeDevice().getState();
-			if (relayNum == 1){
-				switchValue = (state.relay1) ? OnOffValue.ON : OnOffValue.OFF;
-			}
-			else {
-				switchValue = (state.relay2) ? OnOffValue.ON : OnOffValue.OFF;
-			}
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		} 
-		setSwitchState(switchValue);
-		return switchValue;
-	}
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  @Override
+  public void disable() {}
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  @Override
+  public void turnSwitch(OnOffValue state) {
+    logger.debug("setSwitchState called on: {}", MDualRelayImpl.class);
+    try {
+      if (state == OnOffValue.OFF) {
+        logger.debug("setSwitchState off");
+        getMbrick().getTinkerforgeDevice().setSelectedState(relayNum, false);
+      } else if (state == OnOffValue.ON) {
+        logger.debug("setSwitchState on");
+        getMbrick().getTinkerforgeDevice().setSelectedState(relayNum, true);
+      } else {
+        logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+      }
+      setSwitchState(state);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  @Override
+  public void fetchSwitchState() {
+    OnOffValue switchValue = OnOffValue.UNDEF;
+    try {
+      State state = getMbrick().getTinkerforgeDevice().getState();
+      if (relayNum == 1) {
+        switchValue = (state.relay1) ? OnOffValue.ON : OnOffValue.OFF;
+      } else {
+        switchValue = (state.relay2) ? OnOffValue.ON : OnOffValue.OFF;
+      }
+      setSwitchState(switchValue);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+    setSwitchState(switchValue);
+  }
 
   /**
    * <!-- begin-user-doc -->

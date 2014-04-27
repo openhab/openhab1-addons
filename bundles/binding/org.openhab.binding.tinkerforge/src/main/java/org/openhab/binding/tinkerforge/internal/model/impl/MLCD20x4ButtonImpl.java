@@ -573,7 +573,7 @@ private ButtonReleasedListener buttonReleasedListener;
    * <!-- end-user-doc -->
    * @generated
    */
-  public OnOffValue fetchSwitchState()
+  public void fetchSwitchState()
   {
     // TODO: implement this method
     // Ensure that you remove @generated or mark it @generated NOT
@@ -925,7 +925,8 @@ private ButtonReleasedListener buttonReleasedListener;
         turnSwitch((OnOffValue)arguments.get(0));
         return null;
       case ModelPackage.MLCD2_0X4_BUTTON___FETCH_SWITCH_STATE:
-        return fetchSwitchState();
+        fetchSwitchState();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }

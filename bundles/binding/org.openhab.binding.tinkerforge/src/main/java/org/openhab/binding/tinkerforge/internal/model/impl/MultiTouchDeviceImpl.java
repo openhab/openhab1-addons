@@ -484,59 +484,56 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
    * @generated NOT
    */
   private HighLowValue extractValue(int state) {
-      HighLowValue value = HighLowValue.UNDEF;
-      if ((state & mask) == mask) {
-          value = HighLowValue.HIGH;
-      } else {
-          value = HighLowValue.LOW;
-      }
-      return value;
-  }
-
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  public HighLowValue fetchSensorValue()
-  {
     HighLowValue value = HighLowValue.UNDEF;
-    try {
-      value = extractValue(getMbrick().getTinkerforgeDevice().getTouchState());
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this,
-              TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-  } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-              TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-  }
+    if ((state & mask) == mask) {
+      value = HighLowValue.HIGH;
+    } else {
+      value = HighLowValue.LOW;
+    }
     return value;
   }
 
+
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void init()
-  {
+  public void fetchSensorValue() {
+    HighLowValue value = HighLowValue.UNDEF;
+    try {
+      value = extractValue(getMbrick().getTinkerforgeDevice().getTouchState());
+      setSensorValue(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void init() {
     setEnabledA(new AtomicBoolean());
     logger = LoggerFactory.getLogger(MultiTouchDeviceImpl.class);
     mask = 0000000000001 << getPin();
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
   public void enable() {
     if (tfConfig != null) {
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("disableElectrode"))) {
         if (tfConfig.getDisableElectrode()) {
-          logger.debug("{} MultiTouchDevice uid {} subid {} disable electrode {}", LoggerConstants.TFINIT,
-              getUid(), getSubId(), getPin());
+          logger.debug("{} MultiTouchDevice uid {} subid {} disable electrode {}",
+              LoggerConstants.TFINIT, getUid(), getSubId(), getPin());
           setDisableElectrode(true);
         }
       }
@@ -549,7 +546,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
       try {
         BrickletMultiTouch brickletMultiTouch = bricklet.getTinkerforgeDevice();
         if (getDisableElectrode() != null && getDisableElectrode()) {
-          logger.debug("{} MultiTouchDevice uid {} subid {} disabling electrode {}", LoggerConstants.TFINIT, getUid(), getSubId(), getPin());
+          logger.debug("{} MultiTouchDevice uid {} subid {} disabling electrode {}",
+              LoggerConstants.TFINIT, getUid(), getSubId(), getPin());
           getEnabledA().set(false);
           int electrodeConfig = brickletMultiTouch.getElectrodeConfig();
           electrodeConfig &= ~mask;
@@ -559,7 +557,7 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
         setSensorValue(HighLowValue.UNDEF);
         touchListener = new TouchListener();
         brickletMultiTouch.addTouchStateListener(touchListener);
-        setSensorValue(fetchSensorValue());
+        fetchSensorValue();
 
       } catch (TimeoutException e) {
         TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -571,13 +569,12 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void disable()
-  {
-    if (touchListener != null){
+  public void disable() {
+    if (touchListener != null) {
       getMbrick().getTinkerforgeDevice().removeTouchStateListener(touchListener);
     }
   }
@@ -888,7 +885,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     switch (operationID)
     {
       case ModelPackage.MULTI_TOUCH_DEVICE___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
       case ModelPackage.MULTI_TOUCH_DEVICE___INIT:
         init();
         return null;

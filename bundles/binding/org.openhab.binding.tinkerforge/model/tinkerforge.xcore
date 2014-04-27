@@ -130,7 +130,7 @@ interface MActor{
 interface MSwitchActor {
 	SwitchState switchState
 	op void turnSwitch(SwitchState state)
-	op SwitchState fetchSwitchState()
+	op void fetchSwitchState()
 }
 
 interface MOutSwitchActor extends MSwitchActor{
@@ -161,7 +161,7 @@ interface InterruptListener {
 
 interface MSensor<DeviceValue extends MTinkerforgeValue> {
 	DeviceValue sensorValue
-	op DeviceValue fetchSensorValue()
+	op void fetchSensorValue()
 }
 
 interface MTextActor{
@@ -237,7 +237,7 @@ class DigitalActor extends IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
 	readonly String deviceType = "io_actuator"
 	DigitalValue digitalState
 	op void turnDigital(DigitalValue digitalState)
-	op DigitalValue fetchDigitalValue()
+	op void fetchDigitalValue()
 	char port
 	int pin
 	String defaultState

@@ -741,19 +741,17 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
    * 
    * @generated NOT
    */
-  public DecimalValue fetchSensorValue() {
+  public void fetchSensorValue() {
     try {
       int distance = tinkerforgeDevice.getDistance();
       DecimalValue value = Tools.calculate(distance);
       setSensorValue(value);
-      return value;
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
       TinkerforgeErrorHandler.handleError(this,
           TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
     }
-    return null;
   }
 
   /**
@@ -777,7 +775,7 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
       tinkerforgeDevice.setDistanceCallbackPeriod(callbackPeriod);
       listener = new DistanceListener();
       tinkerforgeDevice.addDistanceListener(listener);
-      setSensorValue(fetchSensorValue());
+      fetchSensorValue();
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -1188,7 +1186,8 @@ public class MBrickletDistanceIRImpl extends MinimalEObjectImpl.Container implem
         init();
         return null;
       case ModelPackage.MBRICKLET_DISTANCE_IR___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
       case ModelPackage.MBRICKLET_DISTANCE_IR___ENABLE:
         enable();
         return null;

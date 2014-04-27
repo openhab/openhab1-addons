@@ -602,118 +602,110 @@ private InterruptListener interruptListener;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public HighLowValue fetchSensorValue() {
-		HighLowValue value = HighLowValue.UNDEF;
-		try {
-			value = extractValue(getMbrick().getTinkerforgeDevice().getPort(
-					getPort()));
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		return value;
-	}
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  public void init()
-  {
-	    setEnabledA(new AtomicBoolean());
-		logger = LoggerFactory.getLogger(DigitalSensorImpl.class);
-		mask = 00000001 << getPin();
+  public void fetchSensorValue() {
+    HighLowValue value = HighLowValue.UNDEF;
+    try {
+      value = extractValue(getMbrick().getTinkerforgeDevice().getPort(getPort()));
+      setSensorValue(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void enable() {
-		setSensorValue(HighLowValue.UNDEF);
-		if (tfConfig != null) {
-			logger.debug("{} found config for DigitalSensor",
-					LoggerConstants.TFINIT);
-			setPullUpResistorEnabled(tfConfig.isPullUpResistorEnabled());
-			logger.debug("{} pull-up resistor state is {}",
-					LoggerConstants.TFINIT, isPullUpResistorEnabled());
-		}
-		MBrickletIO16 bricklet = getMbrick();
-		if (bricklet == null) {
-			logger.error("{} No bricklet found for DigitalSensor: {} ",
-					LoggerConstants.TFINIT, subId);
-		} else {
-			BrickletIO16 brickletIO16 = bricklet.getTinkerforgeDevice();
-			try {
-				logger.debug(
-						"{} setting InterruptListener for DigitalSensor: {} ",
-						LoggerConstants.TFINIT, subId);
-				interruptListener = new InterruptListener();
-				brickletIO16.addInterruptListener(interruptListener);
-				brickletIO16.setPortConfiguration(getPort(), (short) mask,
-						BrickletIO16.DIRECTION_IN, isPullUpResistorEnabled());
-				setSensorValue(fetchSensorValue());
-			} catch (TimeoutException e) {
-				TinkerforgeErrorHandler.handleError(this,
-						TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-			} catch (NotConnectedException e) {
-				TinkerforgeErrorHandler.handleError(this,
-						TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * @generated NOT
-	 */
-	private HighLowValue extractValue(int valueMask) {
-		HighLowValue value = HighLowValue.UNDEF;
-		if ((valueMask & mask) == mask) {
-			value = HighLowValue.HIGH;
-		} else {
-			value = HighLowValue.LOW;
-		}
-		return value;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	private class InterruptListener implements BrickletIO16.InterruptListener {
-
-		@Override
-		public void interrupt(char port, short interruptMask, short valueMask) {
-			logger.debug(
-					"{} interruptListner DigitalSensor called interrupt mask {}, valuemask {}",
-					LoggerConstants.TFMODELUPDATE, interruptMask, valueMask);
-			if (port == getPort() && (interruptMask & mask) == mask) {
-				logger.debug("{} interruptListner DigitalSensor updating",
-						LoggerConstants.TFMODELUPDATE);
-				setSensorValue(extractValue(valueMask));
-			}
-		}
-	}
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(DigitalSensorImpl.class);
+    mask = 00000001 << getPin();
+  }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void disable()
-  {
-	  getMbrick().getTinkerforgeDevice().removeInterruptListener(interruptListener);
+  public void enable() {
+    setSensorValue(HighLowValue.UNDEF);
+    if (tfConfig != null) {
+      logger.debug("{} found config for DigitalSensor", LoggerConstants.TFINIT);
+      setPullUpResistorEnabled(tfConfig.isPullUpResistorEnabled());
+      logger.debug("{} pull-up resistor state is {}", LoggerConstants.TFINIT,
+          isPullUpResistorEnabled());
+    }
+    MBrickletIO16 bricklet = getMbrick();
+    if (bricklet == null) {
+      logger.error("{} No bricklet found for DigitalSensor: {} ", LoggerConstants.TFINIT, subId);
+    } else {
+      BrickletIO16 brickletIO16 = bricklet.getTinkerforgeDevice();
+      try {
+        logger.debug("{} setting InterruptListener for DigitalSensor: {} ", LoggerConstants.TFINIT,
+            subId);
+        interruptListener = new InterruptListener();
+        brickletIO16.addInterruptListener(interruptListener);
+        brickletIO16.setPortConfiguration(getPort(), (short) mask, BrickletIO16.DIRECTION_IN,
+            isPullUpResistorEnabled());
+        fetchSensorValue();
+      } catch (TimeoutException e) {
+        TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+      } catch (NotConnectedException e) {
+        TinkerforgeErrorHandler.handleError(this,
+            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+      }
+    }
+  }
+
+  /**
+   * 
+   * @generated NOT
+   */
+  private HighLowValue extractValue(int valueMask) {
+    HighLowValue value = HighLowValue.UNDEF;
+    if ((valueMask & mask) == mask) {
+      value = HighLowValue.HIGH;
+    } else {
+      value = HighLowValue.LOW;
+    }
+    return value;
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  private class InterruptListener implements BrickletIO16.InterruptListener {
+
+    @Override
+    public void interrupt(char port, short interruptMask, short valueMask) {
+      logger.debug("{} interruptListner DigitalSensor called interrupt mask {}, valuemask {}",
+          LoggerConstants.TFMODELUPDATE, interruptMask, valueMask);
+      if (port == getPort() && (interruptMask & mask) == mask) {
+        logger.debug("{} interruptListner DigitalSensor updating", LoggerConstants.TFMODELUPDATE);
+        setSensorValue(extractValue(valueMask));
+      }
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void disable() {
+    if (interruptListener != null) {
+      getMbrick().getTinkerforgeDevice().removeInterruptListener(interruptListener);
+    }
   }
 
   /**
@@ -1052,7 +1044,8 @@ private InterruptListener interruptListener;
     switch (operationID)
     {
       case ModelPackage.DIGITAL_SENSOR___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
       case ModelPackage.DIGITAL_SENSOR___INIT:
         init();
         return null;

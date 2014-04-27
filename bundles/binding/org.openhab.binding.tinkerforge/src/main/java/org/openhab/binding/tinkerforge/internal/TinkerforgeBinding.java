@@ -626,21 +626,16 @@ public class TinkerforgeBinding extends
 				deviceSubId);
 		if (mDevice != null && mDevice.getEnabledA().get()) {
 			if (mDevice instanceof MSensor) {
-				postUpdate(deviceUid, deviceSubId,
-						((MSensor<?>) mDevice).fetchSensorValue());
+			  // fetchSensorValue() triggers updates of model values
+			  // the ecosystem listener posts the updates
+				((MSensor<?>) mDevice).fetchSensorValue();
 			} else if (mDevice instanceof MInSwitchActor
 					&& item instanceof SwitchItem) {
-				OnOffValue switchState = ((MInSwitchActor) mDevice)
+				((MInSwitchActor) mDevice)
 						.fetchSwitchState();
-				postUpdate(deviceUid, deviceSubId, switchState);
-				logger.debug("execute called: found MInSwitchActor state: {}",
-						switchState);
 			} else if (mDevice instanceof DigitalActor) {
-				HighLowValue highLowValue = ((DigitalActor) mDevice)
+				((DigitalActor) mDevice)
 						.fetchDigitalValue();
-				postUpdate(deviceUid, deviceSubId, highLowValue);
-				logger.debug("{} execute called: found DigitalActor state: {}",
-						LoggerConstants.TFCOMMAND, highLowValue);
 			}
 		}
 	}

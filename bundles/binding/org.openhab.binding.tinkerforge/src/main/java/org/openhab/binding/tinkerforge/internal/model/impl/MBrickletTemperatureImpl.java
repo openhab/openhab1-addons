@@ -742,19 +742,17 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * @generated NOT
    */
   @Override
-  public DecimalValue fetchSensorValue() {
+  public void fetchSensorValue() {
     try {
       short temperature = tinkerforgeDevice.getTemperature();
       DecimalValue value = Tools.calculate100(temperature);
       setSensorValue(value);
-      return value;
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
       TinkerforgeErrorHandler.handleError(this,
           TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
     }
-    return null;
   }
 
   /**
@@ -779,7 +777,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
       tinkerforgeDevice.setTemperatureCallbackPeriod(callbackPeriod);
       listener = new TemperatureListener();
       tinkerforgeDevice.addTemperatureListener(listener);
-      setSensorValue(fetchSensorValue());
+      fetchSensorValue();
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -1191,7 +1189,8 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         init();
         return null;
       case ModelPackage.MBRICKLET_TEMPERATURE___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
       case ModelPackage.MBRICKLET_TEMPERATURE___ENABLE:
         enable();
         return null;

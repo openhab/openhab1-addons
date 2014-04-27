@@ -4601,7 +4601,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     op = initEOperation(getMSwitchActor__TurnSwitch__OnOffValue(), null, "turnSwitch", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getSwitchState(), "state", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
-    initEOperation(getMSwitchActor__FetchSwitchState(), this.getSwitchState(), "fetchSwitchState", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    initEOperation(getMSwitchActor__FetchSwitchState(), null, "fetchSwitchState", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mOutSwitchActorEClass, MOutSwitchActor.class, "MOutSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -4627,9 +4627,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(mSensorEClass_DeviceValue);
     initEAttribute(getMSensor_SensorValue(), g1, "sensorValue", null, 0, 1, MSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    op = initEOperation(getMSensor__FetchSensorValue(), null, "fetchSensorValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    g1 = createEGenericType(mSensorEClass_DeviceValue);
-    initEOperation(op, g1);
+    initEOperation(getMSensor__FetchSensorValue(), null, "fetchSensorValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mTextActorEClass, MTextActor.class, "MTextActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMTextActor_Text(), theEcorePackage.getEString(), "text", null, 0, 1, MTextActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4689,7 +4687,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     op = initEOperation(getDigitalActor__TurnDigital__HighLowValue(), null, "turnDigital", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getDigitalValue(), "digitalState", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
-    initEOperation(getDigitalActor__FetchDigitalValue(), this.getDigitalValue(), "fetchDigitalValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    initEOperation(getDigitalActor__FetchDigitalValue(), null, "fetchDigitalValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickletIO16EClass, MBrickletIO16.class, "MBrickletIO16", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletIO16_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_io16", 0, 1, MBrickletIO16.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

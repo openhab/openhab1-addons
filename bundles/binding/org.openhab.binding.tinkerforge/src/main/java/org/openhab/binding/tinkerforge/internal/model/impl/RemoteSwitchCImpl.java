@@ -645,14 +645,11 @@ public class RemoteSwitchCImpl extends MinimalEObjectImpl.Container implements R
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public OnOffValue fetchSwitchState()
-  {
-    return getSwitchState();
-  }
+  public void fetchSwitchState() {}
 
   /**
    * <!-- begin-user-doc -->
@@ -1000,7 +997,8 @@ public class RemoteSwitchCImpl extends MinimalEObjectImpl.Container implements R
         turnSwitch((OnOffValue)arguments.get(0));
         return null;
       case ModelPackage.REMOTE_SWITCH_C___FETCH_SWITCH_STATE:
-        return fetchSwitchState();
+        fetchSwitchState();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }

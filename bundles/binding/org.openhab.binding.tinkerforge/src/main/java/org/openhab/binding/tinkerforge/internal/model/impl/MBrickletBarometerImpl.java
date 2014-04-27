@@ -788,19 +788,17 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * 
    * @generated NOT
    */
-  public DecimalValue fetchSensorValue() {
+  public void fetchSensorValue() {
     try {
       int airPressure = tinkerforgeDevice.getAirPressure();
       DecimalValue value = Tools.calculate1000(airPressure);
       setSensorValue(value);
-      return value;
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
       TinkerforgeErrorHandler.handleError(this,
           TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
     }
-    return null;
   }
 
   /**
@@ -824,7 +822,7 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
       tinkerforgeDevice.setAirPressureCallbackPeriod(callbackPeriod);
       listener = new AirPressureListener();
       tinkerforgeDevice.addAirPressureListener(listener);
-      setSensorValue(fetchSensorValue());
+      fetchSensorValue();
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -1279,7 +1277,8 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         initSubDevices();
         return null;
       case ModelPackage.MBRICKLET_BAROMETER___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
       case ModelPackage.MBRICKLET_BAROMETER___ENABLE:
         enable();
         return null;

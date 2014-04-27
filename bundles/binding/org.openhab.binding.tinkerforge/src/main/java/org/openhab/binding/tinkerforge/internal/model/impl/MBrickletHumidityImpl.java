@@ -755,19 +755,17 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
    * @generated NOT
    */
   @Override
-  public DecimalValue fetchSensorValue() {
+  public void fetchSensorValue() {
     try {
       int humidity = tinkerforgeDevice.getHumidity();
       DecimalValue value = Tools.calculate10(humidity);
       setSensorValue(value);
-      return value;
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
       TinkerforgeErrorHandler.handleError(this,
           TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
     }
-    return null;
   }
 
   /**
@@ -793,7 +791,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
       tinkerforgeDevice.setHumidityCallbackPeriod(callbackPeriod);
       listener = new HumidityListener();
       tinkerforgeDevice.addHumidityListener(listener);
-      setSensorValue(fetchSensorValue());
+      fetchSensorValue();
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -1258,7 +1256,8 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
         disable();
         return null;
       case ModelPackage.MBRICKLET_HUMIDITY___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }

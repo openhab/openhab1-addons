@@ -374,89 +374,80 @@ private BrickletLCD20x4 brickletLCD20x4;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void init()
-  {
-	    setEnabledA(new AtomicBoolean());
-		logger = LoggerFactory.getLogger(MLCD20x4BacklightImpl.class);
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MLCD20x4BacklightImpl.class);
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void enable() {
-		setSwitchState(OnOffValue.UNDEF);
-		MBrickletLCD20x4 masterBrick = getMbrick();
-		if (masterBrick == null) {
-			logger.error("{} No brick found for Button: {} ",
-					LoggerConstants.TFINIT, subId);
-		} else {
-			brickletLCD20x4 = masterBrick.getTinkerforgeDevice();
-			setSwitchState(fetchSwitchState());
-		}
-	}
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  public void disable()
-  {
+  public void enable() {
+    setSwitchState(OnOffValue.UNDEF);
+    MBrickletLCD20x4 masterBrick = getMbrick();
+    if (masterBrick == null) {
+      logger.error("{} No brick found for Button: {} ", LoggerConstants.TFINIT, subId);
+    } else {
+      brickletLCD20x4 = masterBrick.getTinkerforgeDevice();
+      fetchSwitchState();
+    }
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void turnSwitch(OnOffValue state)
-  {
-		try {
-			if (state == OnOffValue.OFF) {
-				logger.debug("setSwitchState off");
-				brickletLCD20x4.backlightOff();
-			} else if (state == OnOffValue.ON) {
-				logger.debug("setSwitchState on");
-				brickletLCD20x4.backlightOn();
-			} else {
-				logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
-			}
-			setSwitchState(state);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
+  public void disable() {}
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void turnSwitch(OnOffValue state) {
+    try {
+      if (state == OnOffValue.OFF) {
+        logger.debug("setSwitchState off");
+        brickletLCD20x4.backlightOff();
+      } else if (state == OnOffValue.ON) {
+        logger.debug("setSwitchState on");
+        brickletLCD20x4.backlightOn();
+      } else {
+        logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+      }
+      setSwitchState(state);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public OnOffValue fetchSwitchState()
-  {
-		OnOffValue switchValue = OnOffValue.UNDEF;
-		try {
-			switchValue = brickletLCD20x4.isBacklightOn() ? OnOffValue.ON
-					: OnOffValue.OFF;
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-		setSwitchState(switchValue);
-		return switchValue;
+  public void fetchSwitchState() {
+    OnOffValue switchValue = OnOffValue.UNDEF;
+    try {
+      switchValue = brickletLCD20x4.isBacklightOn() ? OnOffValue.ON : OnOffValue.OFF;
+      setSwitchState(switchValue);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+    setSwitchState(switchValue);
   }
 
   /**
@@ -761,7 +752,8 @@ private BrickletLCD20x4 brickletLCD20x4;
         turnSwitch((OnOffValue)arguments.get(0));
         return null;
       case ModelPackage.MLCD2_0X4_BACKLIGHT___FETCH_SWITCH_STATE:
-        return fetchSwitchState();
+        fetchSwitchState();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }

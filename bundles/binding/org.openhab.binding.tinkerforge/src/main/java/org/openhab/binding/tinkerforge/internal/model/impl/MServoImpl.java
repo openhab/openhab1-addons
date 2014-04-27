@@ -663,158 +663,138 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void init()
-  {
-	setEnabledA(new AtomicBoolean());
+  public void init() {
+    setEnabledA(new AtomicBoolean());
     logger = LoggerFactory.getLogger(MServoImpl.class);
     logger.debug("init called on MServo: " + uid);
   }
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-	@Override
-	public void enable() {
-		MBrickServo brick = getMbrick();
-		if (brick == null) {
-			logger.error("No servo brick configured for servo: " + uid);
-		} else {
-			if (tfConfig != null) {
-				logger.debug("found tfConfig");
-				if (tfConfig.getVelocity() != 0)
-					setVelocity(tfConfig.getVelocity()); // TODO check for unset
-															// state
-				if (tfConfig.getAcceleration() != 0)
-					setAcceleration(tfConfig.getAcceleration());
-				if (tfConfig.getPeriod() != 0)
-					setPeriod(tfConfig.getPeriod());
-				if (tfConfig.getPulseWidthMax() != 0
-						&& tfConfig.getPulseWidthMin() != 0) {
-					setPulseWidthMax(tfConfig.getPulseWidthMax());
-					setPulseWidthMin(tfConfig.getPulseWidthMin());
-				}
-				if (tfConfig.getOutputVoltage() != 0)
-					setOutputVoltage(tfConfig.getOutputVoltage());
-			}
-			BrickServo tinkerBrickServo = brick.getTinkerforgeDevice();
-			try {
-
-				servoNum = Short.parseShort(String.valueOf(subId.charAt(subId
-						.length() - 1)));
-				tinkerBrickServo.setVelocity(servoNum, velocity);
-				tinkerBrickServo.setAcceleration(servoNum, acceleration);
-				tinkerBrickServo.setPulseWidth(servoNum, pulseWidthMin,
-						pulseWidthMax);
-				tinkerBrickServo.setPeriod(servoNum, period);
-				tinkerBrickServo.setOutputVoltage(outputVoltage);
-				tinkerBrickServo
-						.addPositionReachedListener(new PositionReachedListener());
-				tinkerBrickServo.enable(servoNum);
-				setSwitchState(fetchSwitchState());
-			} catch (NumberFormatException e) {
-				TinkerforgeErrorHandler.handleError(this,
-						"can not determine servoNum", e);
-			} catch (TimeoutException e) {
-				TinkerforgeErrorHandler.handleError(this,
-						TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-			} catch (NotConnectedException e) {
-				TinkerforgeErrorHandler.handleError(this,
-						TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-			}
-		}
-	}
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	@Override
-	public void disable() {
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-  public OnOffValue fetchSwitchState()
-  {
-		OnOffValue value = OnOffValue.UNDEF;
-		try {
-			short position = getMbrick().getTinkerforgeDevice().getPosition(servoNum);
-			if (position == OFF_POSITION){
-				value = OnOffValue.OFF;
-			} else if (position == ON_POSITION) {
-				value = OnOffValue.ON;
-			}
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		return value;
+  @Override
+  public void enable() {
+    MBrickServo brick = getMbrick();
+    if (brick == null) {
+      logger.error("No servo brick configured for servo: " + uid);
+    } else {
+      if (tfConfig != null) {
+        logger.debug("found tfConfig");
+        if (tfConfig.getVelocity() != 0) setVelocity(tfConfig.getVelocity()); // TODO check for
+                                                                              // unset
+        // state
+        if (tfConfig.getAcceleration() != 0) setAcceleration(tfConfig.getAcceleration());
+        if (tfConfig.getPeriod() != 0) setPeriod(tfConfig.getPeriod());
+        if (tfConfig.getPulseWidthMax() != 0 && tfConfig.getPulseWidthMin() != 0) {
+          setPulseWidthMax(tfConfig.getPulseWidthMax());
+          setPulseWidthMin(tfConfig.getPulseWidthMin());
+        }
+        if (tfConfig.getOutputVoltage() != 0) setOutputVoltage(tfConfig.getOutputVoltage());
+      }
+      BrickServo tinkerBrickServo = brick.getTinkerforgeDevice();
+      try {
+        servoNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
+        tinkerBrickServo.setVelocity(servoNum, velocity);
+        tinkerBrickServo.setAcceleration(servoNum, acceleration);
+        tinkerBrickServo.setPulseWidth(servoNum, pulseWidthMin, pulseWidthMax);
+        tinkerBrickServo.setPeriod(servoNum, period);
+        tinkerBrickServo.setOutputVoltage(outputVoltage);
+        tinkerBrickServo.addPositionReachedListener(new PositionReachedListener());
+        tinkerBrickServo.enable(servoNum);
+        fetchSwitchState();
+      } catch (NumberFormatException e) {
+        TinkerforgeErrorHandler.handleError(this, "can not determine servoNum", e);
+      } catch (TimeoutException e) {
+        TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+      } catch (NotConnectedException e) {
+        TinkerforgeErrorHandler.handleError(this,
+            TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+      }
+    }
   }
 
-/**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  @Override
+  public void disable() {}
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void fetchSwitchState() {
+    OnOffValue value = OnOffValue.UNDEF;
+    try {
+      short position = getMbrick().getTinkerforgeDevice().getPosition(servoNum);
+      if (position == OFF_POSITION) {
+        value = OnOffValue.OFF;
+      } else if (position == ON_POSITION) {
+        value = OnOffValue.ON;
+      }
+      setSwitchState(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
   private class PositionReachedListener implements BrickServo.PositionReachedListener {
 
-	@Override
-	public void positionReached(short servoNumPar, short position) {
-		if (servoNumPar == servoNum) setServoCurrentPosition(position);
-	}
-	  
+    @Override
+    public void positionReached(short servoNumPar, short position) {
+      if (servoNumPar == servoNum) setServoCurrentPosition(position);
+    }
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-    @Override
-	public void turnSwitch(OnOffValue state) {
-		logger.debug("setSwitchState called");
-		try {
-			
-			if (state == OnOffValue.OFF) {
-				logger.debug("setSwitchState off");
-				setServoDestinationPosition(OFF_POSITION);
-				getMbrick().getTinkerforgeDevice().setPosition(servoNum,
-						OFF_POSITION);
-			}
-			else if (state == OnOffValue.ON){
-				logger.debug("setSwitchState off");
+  @Override
+  public void turnSwitch(OnOffValue state) {
+    logger.debug("setSwitchState called");
+    try {
 
-				setServoDestinationPosition(ON_POSITION);
-				MBrickServo mbrick = getMbrick();
-				mbrick.getTinkerforgeDevice()
-						.setPosition(servoNum, ON_POSITION);
-			}
-			else {
-				logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
-			}
-			switchState = state == null ? OnOffValue.UNDEF
-					: state;
-			setSwitchState(switchState);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-	}
+      if (state == OnOffValue.OFF) {
+        logger.debug("setSwitchState off");
+        setServoDestinationPosition(OFF_POSITION);
+        getMbrick().getTinkerforgeDevice().setPosition(servoNum, OFF_POSITION);
+      } else if (state == OnOffValue.ON) {
+        logger.debug("setSwitchState off");
+
+        setServoDestinationPosition(ON_POSITION);
+        MBrickServo mbrick = getMbrick();
+        mbrick.getTinkerforgeDevice().setPosition(servoNum, ON_POSITION);
+      } else {
+        logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+      }
+      switchState = state == null ? OnOffValue.UNDEF : state;
+      setSwitchState(switchState);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
 
 /**
    * <!-- begin-user-doc -->
@@ -1338,7 +1318,8 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         turnSwitch((OnOffValue)arguments.get(0));
         return null;
       case ModelPackage.MSERVO___FETCH_SWITCH_STATE:
-        return fetchSwitchState();
+        fetchSwitchState();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }

@@ -652,63 +652,58 @@ private int mask;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void turnDigital(HighLowValue digitalState) {
-		BrickletIO16 brickletIO16 = getMbrick().getTinkerforgeDevice();
-		try {
-			if (digitalState == HighLowValue.HIGH) {
-				brickletIO16.setSelectedValues(getPort(), (short) mask,
-						(short) mask);
-			}
-			else if (digitalState == HighLowValue.LOW){
-				brickletIO16.setSelectedValues(getPort(), (short) mask, (short) 0);
-			} else  {
-				logger.error("{} unkown digitalState {}", LoggerConstants.TFMODELUPDATE, digitalState);
-			}
-			setDigitalState(digitalState);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
+  public void turnDigital(HighLowValue digitalState) {
+    BrickletIO16 brickletIO16 = getMbrick().getTinkerforgeDevice();
+    try {
+      if (digitalState == HighLowValue.HIGH) {
+        brickletIO16.setSelectedValues(getPort(), (short) mask, (short) mask);
+      } else if (digitalState == HighLowValue.LOW) {
+        brickletIO16.setSelectedValues(getPort(), (short) mask, (short) 0);
+      } else {
+        logger.error("{} unkown digitalState {}", LoggerConstants.TFMODELUPDATE, digitalState);
+      }
+      setDigitalState(digitalState);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
 
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public HighLowValue fetchDigitalValue() {
-		HighLowValue pinValue = HighLowValue.UNDEF;
-		try {
-			pinValue = extractValue(getMbrick().getTinkerforgeDevice().getPort(
-					getPort()));
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		return pinValue;
-	}
+  }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void init() {
-		setEnabledA(new AtomicBoolean());
-		logger = LoggerFactory.getLogger(DigitalActorImpl.class);
-		mask = 00000001 << getPin();
-	}
+  public void fetchDigitalValue() {
+    HighLowValue pinValue = HighLowValue.UNDEF;
+    try {
+      pinValue = extractValue(getMbrick().getTinkerforgeDevice().getPort(getPort()));
+      setDigitalState(pinValue);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(DigitalActorImpl.class);
+    mask = 00000001 << getPin();
+  }
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -735,9 +730,7 @@ private int mask;
         logger.debug("{} reconnected: no new port configuration set for {}",
             LoggerConstants.TFINIT, getSubId());
       } else if (defaultState == null || defaultState.equals("keep")) {
-        boolean state = (fetchDigitalValue() == HighLowValue.HIGH) ? true : false;
-        logger.debug("{} keep: no new port configuration set for {}", LoggerConstants.TFINIT,
-            state);
+        logger.debug("{} keep: no new port configuration set", LoggerConstants.TFINIT);
       } else if (defaultState.equals("true")) {
         logger.debug("{} setPortconfiguration to state: true", LoggerConstants.TFINIT);
         getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(), (short) mask,
@@ -747,7 +740,7 @@ private int mask;
         getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(), (short) mask,
             BrickletIO16.DIRECTION_OUT, false);
       }
-      setDigitalState(fetchDigitalValue());
+      fetchDigitalValue();
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -756,28 +749,26 @@ private int mask;
     }
   }
 
-	/**
-	 * 
-	 * @generated NOT
-	 */
-	private HighLowValue extractValue(int valueMask) {
-		HighLowValue value = HighLowValue.UNDEF;
-		if ((valueMask & mask) == mask) {
-			value = HighLowValue.HIGH;
-		} else {
-			value = HighLowValue.LOW;
-		}
-		return value;
-	}
-
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void disable()
-  {
+  private HighLowValue extractValue(int valueMask) {
+    HighLowValue value = HighLowValue.UNDEF;
+    if ((valueMask & mask) == mask) {
+      value = HighLowValue.HIGH;
+    } else {
+      value = HighLowValue.LOW;
+    }
+    return value;
   }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void disable() {}
 
   /**
    * <!-- begin-user-doc -->
@@ -1079,7 +1070,8 @@ private int mask;
         turnDigital((HighLowValue)arguments.get(0));
         return null;
       case ModelPackage.DIGITAL_ACTOR___FETCH_DIGITAL_VALUE:
-        return fetchDigitalValue();
+        fetchDigitalValue();
+        return null;
       case ModelPackage.DIGITAL_ACTOR___INIT:
         init();
         return null;

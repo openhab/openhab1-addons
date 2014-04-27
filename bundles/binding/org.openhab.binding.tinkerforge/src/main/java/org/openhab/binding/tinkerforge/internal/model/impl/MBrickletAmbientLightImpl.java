@@ -738,19 +738,17 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * 
    * @generated NOT
    */
-  public DecimalValue fetchSensorValue() {
+  public void fetchSensorValue() {
     try {
       int illuminance = tinkerforgeDevice.getIlluminance();
       DecimalValue value = Tools.calculate10(illuminance);
       setSensorValue(value);
-      return value;
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
       TinkerforgeErrorHandler.handleError(this,
           TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
     }
-    return null;
   }
 
   /**
@@ -774,7 +772,7 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
       tinkerforgeDevice.setIlluminanceCallbackPeriod(callbackPeriod);
       listener = new IlluminanceListener();
       tinkerforgeDevice.addIlluminanceListener(listener);
-      setSensorValue(fetchSensorValue());
+      fetchSensorValue();
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -1184,7 +1182,8 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
         init();
         return null;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT___ENABLE:
         enable();
         return null;

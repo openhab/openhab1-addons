@@ -335,95 +335,89 @@ private int mask;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public HighLowValue fetchSensorValue()
-  {
-	  HighLowValue value = HighLowValue.UNDEF;
-	  try {
-		value = extractValue(getMbrick().getTinkerforgeDevice().getValue());
-	} catch (TimeoutException e) {
-		TinkerforgeErrorHandler.handleError(this,
-				TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-	} catch (NotConnectedException e) {
-		TinkerforgeErrorHandler.handleError(this,
-				TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-	}
-	  return value;
+  public void fetchSensorValue() {
+    HighLowValue value = HighLowValue.UNDEF;
+    try {
+      value = extractValue(getMbrick().getTinkerforgeDevice().getValue());
+      setSensorValue(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void init()
-  {
-	    setEnabledA(new AtomicBoolean());
-		logger = LoggerFactory.getLogger(MIndustrialDigitalInImpl.class);
-		inNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
-		mask = 0001 << inNum;
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MIndustrialDigitalInImpl.class);
+    inNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
+    mask = 0001 << inNum;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void enable() {
-		setSensorValue(HighLowValue.UNDEF);
-		MBrickletIndustrialDigitalIn4 bricklet = getMbrick();
-		if (bricklet == null) {
-			logger.error("{} No brick found for Digital4In: {} ",
-					LoggerConstants.TFINIT, subId);
-		} else {
-			BrickletIndustrialDigitalIn4 brickletIndustrialDigitalIn4 = bricklet
-					.getTinkerforgeDevice();
-			interruptListener = new InterruptListener();
-			brickletIndustrialDigitalIn4
-					.addInterruptListener(interruptListener);
-			setSensorValue(fetchSensorValue());
-		}
-	}
+  public void enable() {
+    setSensorValue(HighLowValue.UNDEF);
+    MBrickletIndustrialDigitalIn4 bricklet = getMbrick();
+    if (bricklet == null) {
+      logger.error("{} No brick found for Digital4In: {} ", LoggerConstants.TFINIT, subId);
+    } else {
+      BrickletIndustrialDigitalIn4 brickletIndustrialDigitalIn4 = bricklet.getTinkerforgeDevice();
+      interruptListener = new InterruptListener();
+      brickletIndustrialDigitalIn4.addInterruptListener(interruptListener);
+      fetchSensorValue();
+    }
+  }
 
   /**
-  *
-  * @generated NOT
-  */
-	private HighLowValue extractValue(int valueMask) {
-		HighLowValue value = HighLowValue.UNDEF;
-		if ((valueMask & mask) == mask) {
-			value = HighLowValue.HIGH;
-		} else {
-			value = HighLowValue.LOW;
-		}
-		return value;
-	}
-
-	/**
-	 * 
-	 * @generated NOT
-	 */
-	private class InterruptListener implements
-			BrickletIndustrialDigitalIn4.InterruptListener {
-		@Override
-		public void interrupt(int interruptMask, int valueMask) {
-			if ((interruptMask & mask) == mask) {
-				setSensorValue(extractValue(valueMask));
-			}
-		}
-	}
-  
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void disable()
-  {
-	  getMbrick().getTinkerforgeDevice().removeInterruptListener(interruptListener);
+  private HighLowValue extractValue(int valueMask) {
+    HighLowValue value = HighLowValue.UNDEF;
+    if ((valueMask & mask) == mask) {
+      value = HighLowValue.HIGH;
+    } else {
+      value = HighLowValue.LOW;
+    }
+    return value;
+  }
+
+  /**
+   * 
+   * @generated NOT
+   */
+  private class InterruptListener implements BrickletIndustrialDigitalIn4.InterruptListener {
+    @Override
+    public void interrupt(int interruptMask, int valueMask) {
+      if ((interruptMask & mask) == mask) {
+        setSensorValue(extractValue(valueMask));
+      }
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void disable() {
+    if (interruptListener != null){
+      getMbrick().getTinkerforgeDevice().removeInterruptListener(interruptListener);
+    }
   }
 
   /**
@@ -660,7 +654,8 @@ private int mask;
     switch (operationID)
     {
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN___INIT:
         init();
         return null;
