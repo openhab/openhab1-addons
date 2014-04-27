@@ -776,13 +776,22 @@ public interface ModelPackage extends EPackage
   int MBASE_DEVICE__UID = 1;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBASE_DEVICE__POLL = 2;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBASE_DEVICE__ENABLED_A = 2;
+  int MBASE_DEVICE__ENABLED_A = 3;
 
   /**
    * The number of structural features of the '<em>MBase Device</em>' class.
@@ -791,7 +800,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBASE_DEVICE_FEATURE_COUNT = 3;
+  int MBASE_DEVICE_FEATURE_COUNT = 4;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -846,6 +855,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MDEVICE__UID = MBASE_DEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MDEVICE__POLL = MBASE_DEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -1209,6 +1227,15 @@ public interface ModelPackage extends EPackage
   int MSUB_DEVICE__UID = MBASE_DEVICE__UID;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSUB_DEVICE__POLL = MBASE_DEVICE__POLL;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1297,6 +1324,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int IO_DEVICE__UID = MSUB_DEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int IO_DEVICE__POLL = MSUB_DEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -1575,6 +1611,15 @@ public interface ModelPackage extends EPackage
   int MLCD_SUB_DEVICE__UID = MSUB_DEVICE__UID;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MLCD_SUB_DEVICE__POLL = MSUB_DEVICE__POLL;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1663,6 +1708,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MBRICK_SERVO__UID = MDEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICK_SERVO__POLL = MDEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -1836,13 +1890,22 @@ public interface ModelPackage extends EPackage
   int MSERVO__UID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO__POLL = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MSERVO__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+  int MSERVO__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Sub Id</b></em>' attribute.
@@ -1851,7 +1914,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__SUB_ID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
+  int MSERVO__SUB_ID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Mbrick</b></em>' container reference.
@@ -1860,7 +1923,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__MBRICK = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
+  int MSERVO__MBRICK = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
@@ -1869,7 +1932,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__TF_CONFIG = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
+  int MSERVO__TF_CONFIG = MIN_SWITCH_ACTOR_FEATURE_COUNT + 6;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -1878,7 +1941,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__DEVICE_TYPE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 6;
+  int MSERVO__DEVICE_TYPE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 7;
 
   /**
    * The feature id for the '<em><b>Velocity</b></em>' attribute.
@@ -1887,7 +1950,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__VELOCITY = MIN_SWITCH_ACTOR_FEATURE_COUNT + 7;
+  int MSERVO__VELOCITY = MIN_SWITCH_ACTOR_FEATURE_COUNT + 8;
 
   /**
    * The feature id for the '<em><b>Acceleration</b></em>' attribute.
@@ -1896,7 +1959,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__ACCELERATION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 8;
+  int MSERVO__ACCELERATION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 9;
 
   /**
    * The feature id for the '<em><b>Pulse Width Min</b></em>' attribute.
@@ -1905,7 +1968,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__PULSE_WIDTH_MIN = MIN_SWITCH_ACTOR_FEATURE_COUNT + 9;
+  int MSERVO__PULSE_WIDTH_MIN = MIN_SWITCH_ACTOR_FEATURE_COUNT + 10;
 
   /**
    * The feature id for the '<em><b>Pulse Width Max</b></em>' attribute.
@@ -1914,7 +1977,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__PULSE_WIDTH_MAX = MIN_SWITCH_ACTOR_FEATURE_COUNT + 10;
+  int MSERVO__PULSE_WIDTH_MAX = MIN_SWITCH_ACTOR_FEATURE_COUNT + 11;
 
   /**
    * The feature id for the '<em><b>Period</b></em>' attribute.
@@ -1923,7 +1986,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__PERIOD = MIN_SWITCH_ACTOR_FEATURE_COUNT + 11;
+  int MSERVO__PERIOD = MIN_SWITCH_ACTOR_FEATURE_COUNT + 12;
 
   /**
    * The feature id for the '<em><b>Output Voltage</b></em>' attribute.
@@ -1932,7 +1995,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__OUTPUT_VOLTAGE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 12;
+  int MSERVO__OUTPUT_VOLTAGE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 13;
 
   /**
    * The feature id for the '<em><b>Servo Current Position</b></em>' attribute.
@@ -1941,7 +2004,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__SERVO_CURRENT_POSITION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 13;
+  int MSERVO__SERVO_CURRENT_POSITION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 14;
 
   /**
    * The feature id for the '<em><b>Servo Destination Position</b></em>' attribute.
@@ -1950,7 +2013,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__SERVO_DESTINATION_POSITION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 14;
+  int MSERVO__SERVO_DESTINATION_POSITION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 15;
 
   /**
    * The number of structural features of the '<em>MServo</em>' class.
@@ -1959,7 +2022,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 15;
+  int MSERVO_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 16;
 
   /**
    * The operation id for the '<em>Turn Switch</em>' operation.
@@ -2043,13 +2106,22 @@ public interface ModelPackage extends EPackage
   int MBRICK_DC__UID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICK_DC__POLL = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICK_DC__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+  int MBRICK_DC__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Tinkerforge Device</b></em>' attribute.
@@ -2058,7 +2130,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__TINKERFORGE_DEVICE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
+  int MBRICK_DC__TINKERFORGE_DEVICE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Ip Connection</b></em>' attribute.
@@ -2067,7 +2139,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__IP_CONNECTION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
+  int MBRICK_DC__IP_CONNECTION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Connected Uid</b></em>' attribute.
@@ -2076,7 +2148,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__CONNECTED_UID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
+  int MBRICK_DC__CONNECTED_UID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 6;
 
   /**
    * The feature id for the '<em><b>Position</b></em>' attribute.
@@ -2085,7 +2157,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__POSITION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 6;
+  int MBRICK_DC__POSITION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 7;
 
   /**
    * The feature id for the '<em><b>Device Identifier</b></em>' attribute.
@@ -2094,7 +2166,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__DEVICE_IDENTIFIER = MIN_SWITCH_ACTOR_FEATURE_COUNT + 7;
+  int MBRICK_DC__DEVICE_IDENTIFIER = MIN_SWITCH_ACTOR_FEATURE_COUNT + 8;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2103,7 +2175,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__NAME = MIN_SWITCH_ACTOR_FEATURE_COUNT + 8;
+  int MBRICK_DC__NAME = MIN_SWITCH_ACTOR_FEATURE_COUNT + 9;
 
   /**
    * The feature id for the '<em><b>Brickd</b></em>' container reference.
@@ -2112,7 +2184,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__BRICKD = MIN_SWITCH_ACTOR_FEATURE_COUNT + 9;
+  int MBRICK_DC__BRICKD = MIN_SWITCH_ACTOR_FEATURE_COUNT + 10;
 
   /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
@@ -2121,7 +2193,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__TF_CONFIG = MIN_SWITCH_ACTOR_FEATURE_COUNT + 10;
+  int MBRICK_DC__TF_CONFIG = MIN_SWITCH_ACTOR_FEATURE_COUNT + 11;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -2130,7 +2202,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__DEVICE_TYPE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 11;
+  int MBRICK_DC__DEVICE_TYPE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 12;
 
   /**
    * The feature id for the '<em><b>Velocity</b></em>' attribute.
@@ -2139,7 +2211,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__VELOCITY = MIN_SWITCH_ACTOR_FEATURE_COUNT + 12;
+  int MBRICK_DC__VELOCITY = MIN_SWITCH_ACTOR_FEATURE_COUNT + 13;
 
   /**
    * The feature id for the '<em><b>Current Velocity</b></em>' attribute.
@@ -2148,7 +2220,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__CURRENT_VELOCITY = MIN_SWITCH_ACTOR_FEATURE_COUNT + 13;
+  int MBRICK_DC__CURRENT_VELOCITY = MIN_SWITCH_ACTOR_FEATURE_COUNT + 14;
 
   /**
    * The feature id for the '<em><b>Acceleration</b></em>' attribute.
@@ -2157,7 +2229,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__ACCELERATION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 14;
+  int MBRICK_DC__ACCELERATION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 15;
 
   /**
    * The feature id for the '<em><b>Pwm Frequency</b></em>' attribute.
@@ -2166,7 +2238,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__PWM_FREQUENCY = MIN_SWITCH_ACTOR_FEATURE_COUNT + 15;
+  int MBRICK_DC__PWM_FREQUENCY = MIN_SWITCH_ACTOR_FEATURE_COUNT + 16;
 
   /**
    * The feature id for the '<em><b>Drive Mode</b></em>' attribute.
@@ -2175,7 +2247,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__DRIVE_MODE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 16;
+  int MBRICK_DC__DRIVE_MODE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 17;
 
   /**
    * The feature id for the '<em><b>Switch On Velocity</b></em>' attribute.
@@ -2184,7 +2256,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__SWITCH_ON_VELOCITY = MIN_SWITCH_ACTOR_FEATURE_COUNT + 17;
+  int MBRICK_DC__SWITCH_ON_VELOCITY = MIN_SWITCH_ACTOR_FEATURE_COUNT + 18;
 
   /**
    * The number of structural features of the '<em>MBrick DC</em>' class.
@@ -2193,7 +2265,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 18;
+  int MBRICK_DC_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 19;
 
   /**
    * The operation id for the '<em>Turn Switch</em>' operation.
@@ -2266,6 +2338,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MDUAL_RELAY_BRICKLET__UID = MDEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MDUAL_RELAY_BRICKLET__POLL = MDEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -2430,6 +2511,15 @@ public interface ModelPackage extends EPackage
   int MINDUSTRIAL_QUAD_RELAY_BRICKLET__UID = MDEVICE__UID;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MINDUSTRIAL_QUAD_RELAY_BRICKLET__POLL = MDEVICE__POLL;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2592,13 +2682,22 @@ public interface ModelPackage extends EPackage
   int MINDUSTRIAL_QUAD_RELAY__UID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MINDUSTRIAL_QUAD_RELAY__POLL = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MINDUSTRIAL_QUAD_RELAY__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+  int MINDUSTRIAL_QUAD_RELAY__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Sub Id</b></em>' attribute.
@@ -2607,7 +2706,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MINDUSTRIAL_QUAD_RELAY__SUB_ID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
+  int MINDUSTRIAL_QUAD_RELAY__SUB_ID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Mbrick</b></em>' container reference.
@@ -2616,7 +2715,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MINDUSTRIAL_QUAD_RELAY__MBRICK = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
+  int MINDUSTRIAL_QUAD_RELAY__MBRICK = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -2625,7 +2724,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MINDUSTRIAL_QUAD_RELAY__DEVICE_TYPE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
+  int MINDUSTRIAL_QUAD_RELAY__DEVICE_TYPE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 6;
 
   /**
    * The number of structural features of the '<em>MIndustrial Quad Relay</em>' class.
@@ -2634,7 +2733,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MINDUSTRIAL_QUAD_RELAY_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 6;
+  int MINDUSTRIAL_QUAD_RELAY_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 7;
 
   /**
    * The operation id for the '<em>Turn Switch</em>' operation.
@@ -2718,13 +2817,22 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__UID = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__POLL = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__ENABLED_A = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 2;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__ENABLED_A = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Tinkerforge Device</b></em>' attribute.
@@ -2733,7 +2841,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__TINKERFORGE_DEVICE = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 3;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__TINKERFORGE_DEVICE = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Ip Connection</b></em>' attribute.
@@ -2742,7 +2850,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__IP_CONNECTION = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 4;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__IP_CONNECTION = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Connected Uid</b></em>' attribute.
@@ -2751,7 +2859,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__CONNECTED_UID = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 5;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__CONNECTED_UID = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 6;
 
   /**
    * The feature id for the '<em><b>Position</b></em>' attribute.
@@ -2760,7 +2868,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__POSITION = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 6;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__POSITION = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 7;
 
   /**
    * The feature id for the '<em><b>Device Identifier</b></em>' attribute.
@@ -2769,7 +2877,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_IDENTIFIER = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 7;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_IDENTIFIER = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 8;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2778,7 +2886,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__NAME = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 8;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__NAME = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 9;
 
   /**
    * The feature id for the '<em><b>Brickd</b></em>' container reference.
@@ -2787,7 +2895,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 9;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__BRICKD = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 10;
 
   /**
    * The feature id for the '<em><b>Debounce Period</b></em>' attribute.
@@ -2796,7 +2904,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEBOUNCE_PERIOD = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 10;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEBOUNCE_PERIOD = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 11;
 
   /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
@@ -2805,7 +2913,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__TF_CONFIG = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 11;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__TF_CONFIG = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 12;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -2814,7 +2922,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_TYPE = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 12;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_TYPE = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 13;
 
   /**
    * The number of structural features of the '<em>MBricklet Industrial Digital In4</em>' class.
@@ -2823,7 +2931,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4_FEATURE_COUNT = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 13;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_IN4_FEATURE_COUNT = MSUB_DEVICE_HOLDER_FEATURE_COUNT + 14;
 
   /**
    * The operation id for the '<em>Init Sub Devices</em>' operation.
@@ -2887,6 +2995,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MINDUSTRIAL_DIGITAL_IN__UID = MSUB_DEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MINDUSTRIAL_DIGITAL_IN__POLL = MSUB_DEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -2995,6 +3112,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int DIGITAL_ACTOR__UID = IO_DEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR__POLL = IO_DEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -3177,6 +3303,15 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_IO16__UID = MDEVICE__UID;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_IO16__POLL = MDEVICE__POLL;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3357,6 +3492,15 @@ public interface ModelPackage extends EPackage
   int DIGITAL_SENSOR__UID = IO_DEVICE__UID;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_SENSOR__POLL = IO_DEVICE__POLL;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3527,6 +3671,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MBRICKLET_MULTI_TOUCH__UID = MDEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_MULTI_TOUCH__POLL = MDEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -3728,6 +3881,15 @@ public interface ModelPackage extends EPackage
   int MULTI_TOUCH_DEVICE__UID = MSUB_DEVICE__UID;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MULTI_TOUCH_DEVICE__POLL = MSUB_DEVICE__POLL;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3871,6 +4033,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int ELECTRODE__UID = MULTI_TOUCH_DEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ELECTRODE__POLL = MULTI_TOUCH_DEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -4027,6 +4198,15 @@ public interface ModelPackage extends EPackage
   int PROXIMITY__UID = MULTI_TOUCH_DEVICE__UID;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROXIMITY__POLL = MULTI_TOUCH_DEVICE__POLL;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4179,6 +4359,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MBRICKLET_MOTION_DETECTOR__UID = MDEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_MOTION_DETECTOR__POLL = MDEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -4352,13 +4541,22 @@ public interface ModelPackage extends EPackage
   int MDUAL_RELAY__UID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MDUAL_RELAY__POLL = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MDUAL_RELAY__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+  int MDUAL_RELAY__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Sub Id</b></em>' attribute.
@@ -4367,7 +4565,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MDUAL_RELAY__SUB_ID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
+  int MDUAL_RELAY__SUB_ID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Mbrick</b></em>' container reference.
@@ -4376,7 +4574,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MDUAL_RELAY__MBRICK = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
+  int MDUAL_RELAY__MBRICK = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -4385,7 +4583,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MDUAL_RELAY__DEVICE_TYPE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
+  int MDUAL_RELAY__DEVICE_TYPE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 6;
 
   /**
    * The number of structural features of the '<em>MDual Relay</em>' class.
@@ -4394,7 +4592,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MDUAL_RELAY_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 6;
+  int MDUAL_RELAY_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 7;
 
   /**
    * The operation id for the '<em>Turn Switch</em>' operation.
@@ -4477,6 +4675,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MBRICKLET_REMOTE_SWITCH__UID = MDEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_REMOTE_SWITCH__POLL = MDEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -4705,13 +4912,22 @@ public interface ModelPackage extends EPackage
   int REMOTE_SWITCH__UID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH__POLL = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+  int REMOTE_SWITCH__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Sub Id</b></em>' attribute.
@@ -4720,7 +4936,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH__SUB_ID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
+  int REMOTE_SWITCH__SUB_ID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Mbrick</b></em>' container reference.
@@ -4729,7 +4945,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH__MBRICK = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
+  int REMOTE_SWITCH__MBRICK = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
 
   /**
    * The number of structural features of the '<em>Remote Switch</em>' class.
@@ -4738,7 +4954,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
+  int REMOTE_SWITCH_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 6;
 
   /**
    * The operation id for the '<em>Turn Switch</em>' operation.
@@ -4830,6 +5046,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int REMOTE_SWITCH_A__UID = REMOTE_SWITCH__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_A__POLL = REMOTE_SWITCH__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -5004,6 +5229,15 @@ public interface ModelPackage extends EPackage
   int REMOTE_SWITCH_B__UID = REMOTE_SWITCH__UID;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__POLL = REMOTE_SWITCH__POLL;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5176,6 +5410,15 @@ public interface ModelPackage extends EPackage
   int REMOTE_SWITCH_C__UID = REMOTE_SWITCH__UID;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_C__POLL = REMOTE_SWITCH__POLL;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5338,13 +5581,22 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_HUMIDITY__UID = MSENSOR_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_HUMIDITY__POLL = MSENSOR_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__ENABLED_A = MSENSOR_FEATURE_COUNT + 2;
+  int MBRICKLET_HUMIDITY__ENABLED_A = MSENSOR_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Tinkerforge Device</b></em>' attribute.
@@ -5353,7 +5605,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__TINKERFORGE_DEVICE = MSENSOR_FEATURE_COUNT + 3;
+  int MBRICKLET_HUMIDITY__TINKERFORGE_DEVICE = MSENSOR_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Ip Connection</b></em>' attribute.
@@ -5362,7 +5614,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__IP_CONNECTION = MSENSOR_FEATURE_COUNT + 4;
+  int MBRICKLET_HUMIDITY__IP_CONNECTION = MSENSOR_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Connected Uid</b></em>' attribute.
@@ -5371,7 +5623,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__CONNECTED_UID = MSENSOR_FEATURE_COUNT + 5;
+  int MBRICKLET_HUMIDITY__CONNECTED_UID = MSENSOR_FEATURE_COUNT + 6;
 
   /**
    * The feature id for the '<em><b>Position</b></em>' attribute.
@@ -5380,7 +5632,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__POSITION = MSENSOR_FEATURE_COUNT + 6;
+  int MBRICKLET_HUMIDITY__POSITION = MSENSOR_FEATURE_COUNT + 7;
 
   /**
    * The feature id for the '<em><b>Device Identifier</b></em>' attribute.
@@ -5389,7 +5641,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__DEVICE_IDENTIFIER = MSENSOR_FEATURE_COUNT + 7;
+  int MBRICKLET_HUMIDITY__DEVICE_IDENTIFIER = MSENSOR_FEATURE_COUNT + 8;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -5398,7 +5650,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__NAME = MSENSOR_FEATURE_COUNT + 8;
+  int MBRICKLET_HUMIDITY__NAME = MSENSOR_FEATURE_COUNT + 9;
 
   /**
    * The feature id for the '<em><b>Brickd</b></em>' container reference.
@@ -5407,7 +5659,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__BRICKD = MSENSOR_FEATURE_COUNT + 9;
+  int MBRICKLET_HUMIDITY__BRICKD = MSENSOR_FEATURE_COUNT + 10;
 
   /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
@@ -5416,7 +5668,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__TF_CONFIG = MSENSOR_FEATURE_COUNT + 10;
+  int MBRICKLET_HUMIDITY__TF_CONFIG = MSENSOR_FEATURE_COUNT + 11;
 
   /**
    * The feature id for the '<em><b>Callback Period</b></em>' attribute.
@@ -5425,7 +5677,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__CALLBACK_PERIOD = MSENSOR_FEATURE_COUNT + 11;
+  int MBRICKLET_HUMIDITY__CALLBACK_PERIOD = MSENSOR_FEATURE_COUNT + 12;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -5434,7 +5686,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__DEVICE_TYPE = MSENSOR_FEATURE_COUNT + 12;
+  int MBRICKLET_HUMIDITY__DEVICE_TYPE = MSENSOR_FEATURE_COUNT + 13;
 
   /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
@@ -5443,7 +5695,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__THRESHOLD = MSENSOR_FEATURE_COUNT + 13;
+  int MBRICKLET_HUMIDITY__THRESHOLD = MSENSOR_FEATURE_COUNT + 14;
 
   /**
    * The number of structural features of the '<em>MBricklet Humidity</em>' class.
@@ -5452,7 +5704,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 14;
+  int MBRICKLET_HUMIDITY_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 15;
 
   /**
    * The operation id for the '<em>Fetch Sensor Value</em>' operation.
@@ -5516,6 +5768,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MBRICKLET_DISTANCE_IR__UID = MDEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_DISTANCE_IR__POLL = MDEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -5707,6 +5968,15 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_TEMPERATURE__UID = MDEVICE__UID;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_TEMPERATURE__POLL = MDEVICE__POLL;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5894,6 +6164,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MBRICKLET_BAROMETER__UID = MDEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_BAROMETER__POLL = MDEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -6112,13 +6391,22 @@ public interface ModelPackage extends EPackage
   int MBAROMETER_TEMPERATURE__UID = MSENSOR_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBAROMETER_TEMPERATURE__POLL = MSENSOR_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBAROMETER_TEMPERATURE__ENABLED_A = MSENSOR_FEATURE_COUNT + 2;
+  int MBAROMETER_TEMPERATURE__ENABLED_A = MSENSOR_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Sub Id</b></em>' attribute.
@@ -6127,7 +6415,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBAROMETER_TEMPERATURE__SUB_ID = MSENSOR_FEATURE_COUNT + 3;
+  int MBAROMETER_TEMPERATURE__SUB_ID = MSENSOR_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Mbrick</b></em>' container reference.
@@ -6136,7 +6424,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBAROMETER_TEMPERATURE__MBRICK = MSENSOR_FEATURE_COUNT + 4;
+  int MBAROMETER_TEMPERATURE__MBRICK = MSENSOR_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -6145,7 +6433,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBAROMETER_TEMPERATURE__DEVICE_TYPE = MSENSOR_FEATURE_COUNT + 5;
+  int MBAROMETER_TEMPERATURE__DEVICE_TYPE = MSENSOR_FEATURE_COUNT + 6;
 
   /**
    * The number of structural features of the '<em>MBarometer Temperature</em>' class.
@@ -6154,7 +6442,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBAROMETER_TEMPERATURE_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 6;
+  int MBAROMETER_TEMPERATURE_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 7;
 
   /**
    * The operation id for the '<em>Fetch Sensor Value</em>' operation.
@@ -6218,6 +6506,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MBRICKLET_AMBIENT_LIGHT__UID = MDEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_AMBIENT_LIGHT__POLL = MDEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -6407,6 +6704,15 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MBRICKLET_LCD2_0X4__UID = MDEVICE__UID;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_LCD2_0X4__POLL = MDEVICE__POLL;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -6635,13 +6941,22 @@ public interface ModelPackage extends EPackage
   int MLCD2_0X4_BACKLIGHT__UID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MLCD2_0X4_BACKLIGHT__POLL = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BACKLIGHT__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+  int MLCD2_0X4_BACKLIGHT__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Sub Id</b></em>' attribute.
@@ -6650,7 +6965,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BACKLIGHT__SUB_ID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
+  int MLCD2_0X4_BACKLIGHT__SUB_ID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Mbrick</b></em>' container reference.
@@ -6659,7 +6974,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BACKLIGHT__MBRICK = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
+  int MLCD2_0X4_BACKLIGHT__MBRICK = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -6668,7 +6983,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BACKLIGHT__DEVICE_TYPE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
+  int MLCD2_0X4_BACKLIGHT__DEVICE_TYPE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 6;
 
   /**
    * The number of structural features of the '<em>MLCD2 0x4 Backlight</em>' class.
@@ -6677,7 +6992,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BACKLIGHT_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 6;
+  int MLCD2_0X4_BACKLIGHT_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 7;
 
   /**
    * The operation id for the '<em>Turn Switch</em>' operation.
@@ -6771,13 +7086,22 @@ public interface ModelPackage extends EPackage
   int MLCD2_0X4_BUTTON__UID = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MLCD2_0X4_BUTTON__POLL = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 2;
+
+  /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BUTTON__ENABLED_A = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 2;
+  int MLCD2_0X4_BUTTON__ENABLED_A = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Sub Id</b></em>' attribute.
@@ -6786,7 +7110,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BUTTON__SUB_ID = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 3;
+  int MLCD2_0X4_BUTTON__SUB_ID = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Mbrick</b></em>' container reference.
@@ -6795,7 +7119,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BUTTON__MBRICK = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 4;
+  int MLCD2_0X4_BUTTON__MBRICK = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Callback Period</b></em>' attribute.
@@ -6804,7 +7128,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BUTTON__CALLBACK_PERIOD = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 5;
+  int MLCD2_0X4_BUTTON__CALLBACK_PERIOD = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 6;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -6813,7 +7137,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BUTTON__DEVICE_TYPE = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 6;
+  int MLCD2_0X4_BUTTON__DEVICE_TYPE = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 7;
 
   /**
    * The feature id for the '<em><b>Button Num</b></em>' attribute.
@@ -6822,7 +7146,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BUTTON__BUTTON_NUM = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 7;
+  int MLCD2_0X4_BUTTON__BUTTON_NUM = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 8;
 
   /**
    * The number of structural features of the '<em>MLCD2 0x4 Button</em>' class.
@@ -6831,7 +7155,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BUTTON_FEATURE_COUNT = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 8;
+  int MLCD2_0X4_BUTTON_FEATURE_COUNT = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 9;
 
   /**
    * The operation id for the '<em>Turn Switch</em>' operation.
@@ -8537,6 +8861,17 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EAttribute getMBaseDevice_Uid();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBaseDevice#isPoll <em>Poll</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Poll</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBaseDevice#isPoll()
+   * @see #getMBaseDevice()
+   * @generated
+   */
+  EAttribute getMBaseDevice_Poll();
 
   /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBaseDevice#getEnabledA <em>Enabled A</em>}'.
@@ -11471,6 +11806,14 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute MBASE_DEVICE__UID = eINSTANCE.getMBaseDevice_Uid();
+
+    /**
+     * The meta object literal for the '<em><b>Poll</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBASE_DEVICE__POLL = eINSTANCE.getMBaseDevice_Poll();
 
     /**
      * The meta object literal for the '<em><b>Enabled A</b></em>' attribute feature.

@@ -462,6 +462,12 @@ public class TinkerforgeBinding extends
 			if (featureID == ModelPackage.MSWITCH_ACTOR__SWITCH_STATE) {
 				processValue((MBaseDevice) switchActor, notification);
 			}
+		} else if (notification.getNotifier() instanceof DigitalActor) {
+		  DigitalActor actor = (DigitalActor) notification.getNotifier();
+		  int featureID = notification.getFeatureID(DigitalActor.class);
+		  if (featureID == ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE){
+		    processValue((MBaseDevice) actor, notification);
+		  }
 		} else {
 			logger.trace("{} ignored notifier {}",
 					LoggerConstants.TFMODELUPDATE, notification.getNotifier());
@@ -597,7 +603,7 @@ public class TinkerforgeBinding extends
 	protected void execute() {
 		for (TinkerforgeBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
-				updateItemValues(provider, itemName);
+				updateItemValues(provider, itemName, true);
 			}
 		}
 	}
@@ -610,9 +616,12 @@ public class TinkerforgeBinding extends
 	 *            device as {@code Item}
 	 * @param itemName
 	 *            The name of the {@code Item} as String
+	 * @param only_poll_enabled
+	 *             Fetch only the values of devices which do not support callback
+	 *             listeners. These devices are marked with poll "true" flag.
 	 */
 	protected void updateItemValues(TinkerforgeBindingProvider provider,
-			String itemName) {
+			String itemName, boolean only_poll_enabled) {
 		String deviceUid = provider.getUid(itemName);
 		Item item = provider.getItem(itemName);
 		String deviceSubId = provider.getSubId(itemName);
@@ -625,6 +634,12 @@ public class TinkerforgeBinding extends
 		MBaseDevice mDevice = tinkerforgeEcosystem.getDevice(deviceUid,
 				deviceSubId);
 		if (mDevice != null && mDevice.getEnabledA().get()) {
+		  if ( only_poll_enabled && ! mDevice.isPoll()){
+		    // do nothing
+		    logger.debug("{} omitting fetch value for no poll{}:{}", 
+		      LoggerConstants.ITEMUPDATE, deviceUid, deviceSubId);
+		  }
+		  else {
 			if (mDevice instanceof MSensor) {
 				((MSensor<?>) mDevice).fetchSensorValue();
 			} else if (mDevice instanceof MInSwitchActor
@@ -635,6 +650,7 @@ public class TinkerforgeBinding extends
 				((DigitalActor) mDevice)
 						.fetchDigitalValue();
 			}
+		  }
 		}
 	}
 
@@ -642,7 +658,7 @@ public class TinkerforgeBinding extends
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		logger.debug("{} bindingChanged item {}", LoggerConstants.ITEMUPDATE,
 				itemName);
-		updateItemValues((TinkerforgeBindingProvider) provider, itemName);
+		updateItemValues((TinkerforgeBindingProvider) provider, itemName, false);
 	}
 
 	private void postUpdate(String uid, String subId,

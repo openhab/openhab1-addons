@@ -48,6 +48,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getSwitchState <em>Switch State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayImpl#getMbrick <em>Mbrick</em>}</li>
@@ -118,6 +119,26 @@ public class MDualRelayImpl extends MinimalEObjectImpl.Container implements MDua
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -256,6 +277,29 @@ private short relayNum;
     uid = newUid;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY__UID, oldUid, uid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MDUAL_RELAY__POLL, oldPoll, poll));
   }
 
   /**
@@ -425,6 +469,8 @@ private short relayNum;
         return getLogger();
       case ModelPackage.MDUAL_RELAY__UID:
         return getUid();
+      case ModelPackage.MDUAL_RELAY__POLL:
+        return isPoll();
       case ModelPackage.MDUAL_RELAY__ENABLED_A:
         return getEnabledA();
       case ModelPackage.MDUAL_RELAY__SUB_ID:
@@ -455,6 +501,9 @@ private short relayNum;
         return;
       case ModelPackage.MDUAL_RELAY__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.MDUAL_RELAY__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.MDUAL_RELAY__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -488,6 +537,9 @@ private short relayNum;
       case ModelPackage.MDUAL_RELAY__UID:
         setUid(UID_EDEFAULT);
         return;
+      case ModelPackage.MDUAL_RELAY__POLL:
+        setPoll(POLL_EDEFAULT);
+        return;
       case ModelPackage.MDUAL_RELAY__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
@@ -517,6 +569,8 @@ private short relayNum;
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MDUAL_RELAY__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MDUAL_RELAY__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.MDUAL_RELAY__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.MDUAL_RELAY__SUB_ID:
@@ -543,6 +597,7 @@ private short relayNum;
       {
         case ModelPackage.MDUAL_RELAY__LOGGER: return ModelPackage.MBASE_DEVICE__LOGGER;
         case ModelPackage.MDUAL_RELAY__UID: return ModelPackage.MBASE_DEVICE__UID;
+        case ModelPackage.MDUAL_RELAY__POLL: return ModelPackage.MBASE_DEVICE__POLL;
         case ModelPackage.MDUAL_RELAY__ENABLED_A: return ModelPackage.MBASE_DEVICE__ENABLED_A;
         default: return -1;
       }
@@ -573,6 +628,7 @@ private short relayNum;
       {
         case ModelPackage.MBASE_DEVICE__LOGGER: return ModelPackage.MDUAL_RELAY__LOGGER;
         case ModelPackage.MBASE_DEVICE__UID: return ModelPackage.MDUAL_RELAY__UID;
+        case ModelPackage.MBASE_DEVICE__POLL: return ModelPackage.MDUAL_RELAY__POLL;
         case ModelPackage.MBASE_DEVICE__ENABLED_A: return ModelPackage.MDUAL_RELAY__ENABLED_A;
         default: return -1;
       }
@@ -663,6 +719,8 @@ private short relayNum;
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", subId: ");
@@ -681,6 +739,7 @@ private short relayNum;
   @Override
   public void init() {
     setEnabledA(new AtomicBoolean());
+    poll = true; // don't use the setter to prevent notification
     logger = LoggerFactory.getLogger(MDualRelayBrickletImpl.class);
     relayNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
   }

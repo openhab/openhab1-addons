@@ -54,6 +54,7 @@ import com.tinkerforge.TimeoutException;
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLCD20x4Impl#getIpConnection <em>Ip Connection</em>}</li>
@@ -115,6 +116,26 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
 	protected String uid = UID_EDEFAULT;
 
 	/**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
+
+  /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @see #getEnabledA()
@@ -420,6 +441,29 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
   }
 
 	/**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LCD2_0X4__POLL, oldPoll, poll));
+  }
+
+  /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
    * @generated
    */
@@ -915,6 +959,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
         return getLogger();
       case ModelPackage.MBRICKLET_LCD2_0X4__UID:
         return getUid();
+      case ModelPackage.MBRICKLET_LCD2_0X4__POLL:
+        return isPoll();
       case ModelPackage.MBRICKLET_LCD2_0X4__ENABLED_A:
         return getEnabledA();
       case ModelPackage.MBRICKLET_LCD2_0X4__TINKERFORGE_DEVICE:
@@ -963,6 +1009,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
         return;
       case ModelPackage.MBRICKLET_LCD2_0X4__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.MBRICKLET_LCD2_0X4__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.MBRICKLET_LCD2_0X4__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -1022,6 +1071,9 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
       case ModelPackage.MBRICKLET_LCD2_0X4__UID:
         setUid(UID_EDEFAULT);
         return;
+      case ModelPackage.MBRICKLET_LCD2_0X4__POLL:
+        setPoll(POLL_EDEFAULT);
+        return;
       case ModelPackage.MBRICKLET_LCD2_0X4__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
@@ -1077,6 +1129,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MBRICKLET_LCD2_0X4__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MBRICKLET_LCD2_0X4__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.MBRICKLET_LCD2_0X4__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.MBRICKLET_LCD2_0X4__TINKERFORGE_DEVICE:
@@ -1225,6 +1279,8 @@ public class MBrickletLCD20x4Impl extends MinimalEObjectImpl.Container
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", tinkerforgeDevice: ");

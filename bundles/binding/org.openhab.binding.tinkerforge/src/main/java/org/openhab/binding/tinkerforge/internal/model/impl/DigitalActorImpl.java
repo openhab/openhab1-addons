@@ -47,6 +47,7 @@ import com.tinkerforge.TimeoutException;
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getMbrick <em>Mbrick</em>}</li>
@@ -104,6 +105,26 @@ public class DigitalActorImpl extends MinimalEObjectImpl.Container implements Di
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -362,6 +383,29 @@ private int mask;
     uid = newUid;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__UID, oldUid, uid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__POLL, oldPoll, poll));
   }
 
   /**
@@ -701,6 +745,7 @@ private int mask;
    */
   public void init() {
     setEnabledA(new AtomicBoolean());
+    poll = true; // don't use the setter to prevent notification
     logger = LoggerFactory.getLogger(DigitalActorImpl.class);
     mask = 00000001 << getPin();
   }
@@ -836,6 +881,8 @@ private int mask;
         return getLogger();
       case ModelPackage.DIGITAL_ACTOR__UID:
         return getUid();
+      case ModelPackage.DIGITAL_ACTOR__POLL:
+        return isPoll();
       case ModelPackage.DIGITAL_ACTOR__ENABLED_A:
         return getEnabledA();
       case ModelPackage.DIGITAL_ACTOR__SUB_ID:
@@ -877,6 +924,9 @@ private int mask;
         return;
       case ModelPackage.DIGITAL_ACTOR__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.DIGITAL_ACTOR__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.DIGITAL_ACTOR__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -928,6 +978,9 @@ private int mask;
       case ModelPackage.DIGITAL_ACTOR__UID:
         setUid(UID_EDEFAULT);
         return;
+      case ModelPackage.DIGITAL_ACTOR__POLL:
+        setPoll(POLL_EDEFAULT);
+        return;
       case ModelPackage.DIGITAL_ACTOR__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
@@ -976,6 +1029,8 @@ private int mask;
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.DIGITAL_ACTOR__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.DIGITAL_ACTOR__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.DIGITAL_ACTOR__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.DIGITAL_ACTOR__SUB_ID:
@@ -1100,6 +1155,8 @@ private int mask;
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", subId: ");

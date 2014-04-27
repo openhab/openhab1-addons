@@ -51,6 +51,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getSwitchState <em>Switch State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getIpConnection <em>Ip Connection</em>}</li>
@@ -133,6 +134,26 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -553,6 +574,29 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * <!-- end-user-doc -->
    * @generated
    */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__POLL, oldPoll, poll));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public AtomicBoolean getEnabledA()
   {
     return enabledA;
@@ -958,6 +1002,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   public void init()
   {
     logger = LoggerFactory.getLogger(MBrickDCImpl.class);
+    poll = true; // don't use the setter to prevent notification
     setEnabledA(new AtomicBoolean());
   }
 
@@ -1083,6 +1128,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return getLogger();
       case ModelPackage.MBRICK_DC__UID:
         return getUid();
+      case ModelPackage.MBRICK_DC__POLL:
+        return isPoll();
       case ModelPackage.MBRICK_DC__ENABLED_A:
         return getEnabledA();
       case ModelPackage.MBRICK_DC__TINKERFORGE_DEVICE:
@@ -1137,6 +1184,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return;
       case ModelPackage.MBRICK_DC__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.MBRICK_DC__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.MBRICK_DC__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -1206,6 +1256,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC__UID:
         setUid(UID_EDEFAULT);
         return;
+      case ModelPackage.MBRICK_DC__POLL:
+        setPoll(POLL_EDEFAULT);
+        return;
       case ModelPackage.MBRICK_DC__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
@@ -1271,6 +1324,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MBRICK_DC__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MBRICK_DC__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.MBRICK_DC__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.MBRICK_DC__TINKERFORGE_DEVICE:
@@ -1321,6 +1376,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       {
         case ModelPackage.MBRICK_DC__LOGGER: return ModelPackage.MBASE_DEVICE__LOGGER;
         case ModelPackage.MBRICK_DC__UID: return ModelPackage.MBASE_DEVICE__UID;
+        case ModelPackage.MBRICK_DC__POLL: return ModelPackage.MBASE_DEVICE__POLL;
         case ModelPackage.MBRICK_DC__ENABLED_A: return ModelPackage.MBASE_DEVICE__ENABLED_A;
         default: return -1;
       }
@@ -1364,6 +1420,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       {
         case ModelPackage.MBASE_DEVICE__LOGGER: return ModelPackage.MBRICK_DC__LOGGER;
         case ModelPackage.MBASE_DEVICE__UID: return ModelPackage.MBRICK_DC__UID;
+        case ModelPackage.MBASE_DEVICE__POLL: return ModelPackage.MBRICK_DC__POLL;
         case ModelPackage.MBASE_DEVICE__ENABLED_A: return ModelPackage.MBRICK_DC__ENABLED_A;
         default: return -1;
       }
@@ -1474,6 +1531,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", tinkerforgeDevice: ");

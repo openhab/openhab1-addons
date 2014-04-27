@@ -103,6 +103,7 @@ interface MTFConfigConsumer<TFC>{
 interface MBaseDevice{
 	MLogger logger
 	String uid
+	boolean poll = "false"
 	MAtomicBoolean enabledA
 	op void init()
 	op void enable()
