@@ -32,6 +32,7 @@ import com.tinkerforge.BrickletIO16
 import com.tinkerforge.BrickletRemoteSwitch
 import com.tinkerforge.BrickletMotionDetector
 import com.tinkerforge.BrickletMultiTouch
+import java.math.BigDecimal
 
 /**
  * @author Theo Weiss
@@ -325,8 +326,7 @@ class MBrickletHumidity extends MSensor<MDecimalValue>,
 		MDevice<MTinkerBrickletHumidity>, 
 		MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
 	String deviceType = "bricklet_humidity"
-	int humiditiy
-	int threshold = "5"
+	BigDecimal threshold = "0.5"
 	op void init(){}
 }
 
@@ -334,8 +334,7 @@ class MBrickletDistanceIR extends MDevice<MTinkerBrickletDistanceIR>,
 		MSensor<MDecimalValue>, 
 		MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
 	readonly String deviceType = "bricklet_distance_ir"
-	int distance
-	int threshold = "5"
+	BigDecimal threshold = "5"
 	op void init(){}
 }
 
@@ -343,8 +342,7 @@ class MBrickletTemperature extends MDevice<MTinkerBrickletTemperature>,
 		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
 		CallbackListener {
 	readonly String deviceType = "bricklet_temperature"
-	short temperature
-	int threshold = "10"
+	BigDecimal threshold = "0.05"
 	op void init(){}
 }
 
@@ -352,15 +350,13 @@ class MBrickletBarometer extends MDevice<MTinkerBrickletBarometer>,
 		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
 		MSubDeviceHolder<MBarometerTemperature>, CallbackListener {
 	readonly String deviceType = "bricklet_barometer"
-	int airPressure
-	int threshold = "1000"
+	BigDecimal threshold = "0.5"
 	op void init(){}
 }
 
 class MBarometerTemperature extends MSensor<MDecimalValue>, 
 		MSubDevice<MBrickletBarometer>{
 	readonly String deviceType = "barometer_temperature"
-	short temperature
 	op void init(){}
 }
 
@@ -368,8 +364,7 @@ class MBrickletAmbientLight extends MDevice<MTinkerBrickletAmbientLight>,
 		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
 		CallbackListener {
 	readonly String deviceType = "bricklet_ambient_light"
-	int illuminance
-	int threshold = "10"
+	BigDecimal threshold = "0.5"
 	op void init(){}
 }
 
@@ -387,10 +382,9 @@ class MLCD20x4Backlight extends MInSwitchActor, MLCDSubDevice{
 	readonly String deviceType = "backlight"
 }
 
-class MLCD20x4Button extends MOutSwitchActor, MLCDSubDevice{
+class MLCD20x4Button extends MOutSwitchActor, MLCDSubDevice, CallbackListener{
 	readonly String deviceType = "lcd_button"
 	short buttonNum
-	int callbackPeriod
 }
 
 // configuration model
@@ -430,7 +424,7 @@ class TFNullConfiguration extends TFConfig {
 }
 
 class TFBaseConfiguration extends TFConfig {
-	int threshold
+	BigDecimal threshold
 	int callbackPeriod
 }
 

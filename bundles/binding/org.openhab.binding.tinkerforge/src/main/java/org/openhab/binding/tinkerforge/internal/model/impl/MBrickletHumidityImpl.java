@@ -11,6 +11,7 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -21,6 +22,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
@@ -30,6 +32,7 @@ import org.openhab.binding.tinkerforge.internal.model.MDevice;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +66,6 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getHumiditiy <em>Humiditiy</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletHumidityImpl#getThreshold <em>Threshold</em>}</li>
  * </ul>
  * </p>
@@ -303,26 +305,6 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getHumiditiy() <em>Humiditiy</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getHumiditiy()
-   * @generated
-   * @ordered
-   */
-  protected static final int HUMIDITIY_EDEFAULT = 0;
-
-  /**
-   * The cached value of the '{@link #getHumiditiy() <em>Humiditiy</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getHumiditiy()
-   * @generated
-   * @ordered
-   */
-  protected int humiditiy = HUMIDITIY_EDEFAULT;
-
-  /**
    * The default value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -330,7 +312,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
    * @generated
    * @ordered
    */
-  protected static final int THRESHOLD_EDEFAULT = 5;
+  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("0.5");
 
   /**
    * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
@@ -340,7 +322,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
    * @generated
    * @ordered
    */
-  protected int threshold = THRESHOLD_EDEFAULT;
+  protected BigDecimal threshold = THRESHOLD_EDEFAULT;
+
+  private HumidityListener listener;
 
   /**
    * <!-- begin-user-doc -->
@@ -737,30 +721,7 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public int getHumiditiy()
-  {
-    return humiditiy;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setHumiditiy(int newHumiditiy)
-  {
-    int oldHumiditiy = humiditiy;
-    humiditiy = newHumiditiy;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__HUMIDITIY, oldHumiditiy, humiditiy));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public int getThreshold()
+  public BigDecimal getThreshold()
   {
     return threshold;
   }
@@ -770,9 +731,9 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setThreshold(int newThreshold)
+  public void setThreshold(BigDecimal newThreshold)
   {
-    int oldThreshold = threshold;
+    BigDecimal oldThreshold = threshold;
     threshold = newThreshold;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_HUMIDITY__THRESHOLD, oldThreshold, threshold));
@@ -783,71 +744,97 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	public void init() {
-	    setEnabledA(new AtomicBoolean());
-		logger = LoggerFactory.getLogger(MBrickletHumidityImpl.class);
-	}
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MBrickletHumidityImpl.class);
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  @Override
+  public DecimalValue fetchSensorValue() {
+    try {
+      int humidity = tinkerforgeDevice.getHumidity();
+      DecimalValue value = Tools.calculate10(humidity);
+      setSensorValue(value);
+      return value;
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+    return null;
+  }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	@Override
-	public void enable() {
-		tinkerforgeDevice = new BrickletHumidity(uid, ipConnection);
-		if (tfConfig != null) {
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"threshold"))) {
-				setThreshold(tfConfig.getThreshold());
-			}
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"callbackPeriod"))) {
-				setCallbackPeriod(tfConfig.getCallbackPeriod());
-			}
-		}
+  @Override
+  public void enable() {
+    tinkerforgeDevice = new BrickletHumidity(uid, ipConnection);
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
+        setThreshold(tfConfig.getThreshold());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
+        setCallbackPeriod(tfConfig.getCallbackPeriod());
+      }
+    }
 
-		try {
-			tinkerforgeDevice.setResponseExpected(
-					BrickletHumidity.FUNCTION_SET_HUMIDITY_CALLBACK_PERIOD,
-					false);
-			tinkerforgeDevice.setHumidityCallbackPeriod(callbackPeriod);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		tinkerforgeDevice
-				.addHumidityListener(new BrickletHumidity.HumidityListener() {
-
-					@Override
-					public void humidity(int newHumidity) {
-						if (newHumidity > (humiditiy + threshold)
-								|| newHumidity < (humiditiy - threshold)) {
-							setSensorValue(new DecimalValue(newHumidity / 10.0));
-							setHumiditiy(newHumidity);
-						} else {
-							logger.trace(String.format(
-									"new humidity: %s, old %s", newHumidity,
-									humiditiy));
-						}
-
-					}
-				});
-		setSensorValue(fetchSensorValue());
-	}
+    try {
+      tinkerforgeDevice.setResponseExpected(BrickletHumidity.FUNCTION_SET_HUMIDITY_CALLBACK_PERIOD,
+          false);
+      tinkerforgeDevice.setHumidityCallbackPeriod(callbackPeriod);
+      listener = new HumidityListener();
+      tinkerforgeDevice.addHumidityListener(listener);
+      setSensorValue(fetchSensorValue());
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	@Override
-	public void disable() {
-		tinkerforgeDevice = null;
-	}
+  private class HumidityListener implements BrickletHumidity.HumidityListener {
+
+    @Override
+    public void humidity(int humidity) {
+      DecimalValue newValue = Tools.calculate10(humidity);
+      logger.trace("{} got new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+      if (newValue.compareTo(getSensorValue(), getThreshold()) != 0 ) {
+        logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+        setSensorValue(newValue);
+      } else {
+        logger.trace("{} omitting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+      }
+    }
+    
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  @Override
+  public void disable() {
+    if (listener != null){
+      tinkerforgeDevice.removeHumidityListener(listener);
+    }
+    tinkerforgeDevice = null;
+  }
 
 	/**
    * <!-- begin-user-doc -->
@@ -902,26 +889,6 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
   }
 
   /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	@Override
-	public DecimalValue fetchSensorValue() {
-		try {
-			//TODO do not return anything update model instead: thread safety?
-			return new DecimalValue( tinkerforgeDevice.getHumidity() / 10.0);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-		return null;
-	}
-
-  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -959,8 +926,6 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
         return getCallbackPeriod();
       case ModelPackage.MBRICKLET_HUMIDITY__DEVICE_TYPE:
         return getDeviceType();
-      case ModelPackage.MBRICKLET_HUMIDITY__HUMIDITIY:
-        return getHumiditiy();
       case ModelPackage.MBRICKLET_HUMIDITY__THRESHOLD:
         return getThreshold();
     }
@@ -1019,11 +984,8 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
       case ModelPackage.MBRICKLET_HUMIDITY__DEVICE_TYPE:
         setDeviceType((String)newValue);
         return;
-      case ModelPackage.MBRICKLET_HUMIDITY__HUMIDITIY:
-        setHumiditiy((Integer)newValue);
-        return;
       case ModelPackage.MBRICKLET_HUMIDITY__THRESHOLD:
-        setThreshold((Integer)newValue);
+        setThreshold((BigDecimal)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -1081,9 +1043,6 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
       case ModelPackage.MBRICKLET_HUMIDITY__DEVICE_TYPE:
         setDeviceType(DEVICE_TYPE_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_HUMIDITY__HUMIDITIY:
-        setHumiditiy(HUMIDITIY_EDEFAULT);
-        return;
       case ModelPackage.MBRICKLET_HUMIDITY__THRESHOLD:
         setThreshold(THRESHOLD_EDEFAULT);
         return;
@@ -1129,10 +1088,8 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
         return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.MBRICKLET_HUMIDITY__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-      case ModelPackage.MBRICKLET_HUMIDITY__HUMIDITIY:
-        return humiditiy != HUMIDITIY_EDEFAULT;
       case ModelPackage.MBRICKLET_HUMIDITY__THRESHOLD:
-        return threshold != THRESHOLD_EDEFAULT;
+        return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
     }
     return super.eIsSet(featureID);
   }
@@ -1341,8 +1298,6 @@ public class MBrickletHumidityImpl extends MinimalEObjectImpl.Container implemen
     result.append(callbackPeriod);
     result.append(", deviceType: ");
     result.append(deviceType);
-    result.append(", humiditiy: ");
-    result.append(humiditiy);
     result.append(", threshold: ");
     result.append(threshold);
     result.append(')');

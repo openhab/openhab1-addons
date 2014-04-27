@@ -5437,22 +5437,13 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_HUMIDITY__DEVICE_TYPE = MSENSOR_FEATURE_COUNT + 12;
 
   /**
-   * The feature id for the '<em><b>Humiditiy</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICKLET_HUMIDITY__HUMIDITIY = MSENSOR_FEATURE_COUNT + 13;
-
-  /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY__THRESHOLD = MSENSOR_FEATURE_COUNT + 14;
+  int MBRICKLET_HUMIDITY__THRESHOLD = MSENSOR_FEATURE_COUNT + 13;
 
   /**
    * The number of structural features of the '<em>MBricklet Humidity</em>' class.
@@ -5461,7 +5452,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_HUMIDITY_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 15;
+  int MBRICKLET_HUMIDITY_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 14;
 
   /**
    * The operation id for the '<em>Fetch Sensor Value</em>' operation.
@@ -5635,22 +5626,13 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_DISTANCE_IR__DEVICE_TYPE = MDEVICE_FEATURE_COUNT + 3;
 
   /**
-   * The feature id for the '<em><b>Distance</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICKLET_DISTANCE_IR__DISTANCE = MDEVICE_FEATURE_COUNT + 4;
-
-  /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_DISTANCE_IR__THRESHOLD = MDEVICE_FEATURE_COUNT + 5;
+  int MBRICKLET_DISTANCE_IR__THRESHOLD = MDEVICE_FEATURE_COUNT + 4;
 
   /**
    * The number of structural features of the '<em>MBricklet Distance IR</em>' class.
@@ -5659,7 +5641,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_DISTANCE_IR_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 6;
+  int MBRICKLET_DISTANCE_IR_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 5;
 
   /**
    * The operation id for the '<em>Enable</em>' operation.
@@ -5833,22 +5815,13 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_TEMPERATURE__DEVICE_TYPE = MDEVICE_FEATURE_COUNT + 3;
 
   /**
-   * The feature id for the '<em><b>Temperature</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICKLET_TEMPERATURE__TEMPERATURE = MDEVICE_FEATURE_COUNT + 4;
-
-  /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_TEMPERATURE__THRESHOLD = MDEVICE_FEATURE_COUNT + 5;
+  int MBRICKLET_TEMPERATURE__THRESHOLD = MDEVICE_FEATURE_COUNT + 4;
 
   /**
    * The number of structural features of the '<em>MBricklet Temperature</em>' class.
@@ -5857,7 +5830,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_TEMPERATURE_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 6;
+  int MBRICKLET_TEMPERATURE_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 5;
 
   /**
    * The operation id for the '<em>Enable</em>' operation.
@@ -6040,22 +6013,13 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_BAROMETER__DEVICE_TYPE = MDEVICE_FEATURE_COUNT + 4;
 
   /**
-   * The feature id for the '<em><b>Air Pressure</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICKLET_BAROMETER__AIR_PRESSURE = MDEVICE_FEATURE_COUNT + 5;
-
-  /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_BAROMETER__THRESHOLD = MDEVICE_FEATURE_COUNT + 6;
+  int MBRICKLET_BAROMETER__THRESHOLD = MDEVICE_FEATURE_COUNT + 5;
 
   /**
    * The number of structural features of the '<em>MBricklet Barometer</em>' class.
@@ -6064,7 +6028,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_BAROMETER_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 7;
+  int MBRICKLET_BAROMETER_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 6;
 
   /**
    * The operation id for the '<em>Enable</em>' operation.
@@ -6184,22 +6148,13 @@ public interface ModelPackage extends EPackage
   int MBAROMETER_TEMPERATURE__DEVICE_TYPE = MSENSOR_FEATURE_COUNT + 5;
 
   /**
-   * The feature id for the '<em><b>Temperature</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBAROMETER_TEMPERATURE__TEMPERATURE = MSENSOR_FEATURE_COUNT + 6;
-
-  /**
    * The number of structural features of the '<em>MBarometer Temperature</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBAROMETER_TEMPERATURE_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 7;
+  int MBAROMETER_TEMPERATURE_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 6;
 
   /**
    * The operation id for the '<em>Fetch Sensor Value</em>' operation.
@@ -6373,22 +6328,13 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_AMBIENT_LIGHT__DEVICE_TYPE = MDEVICE_FEATURE_COUNT + 3;
 
   /**
-   * The feature id for the '<em><b>Illuminance</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICKLET_AMBIENT_LIGHT__ILLUMINANCE = MDEVICE_FEATURE_COUNT + 4;
-
-  /**
    * The feature id for the '<em><b>Threshold</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_AMBIENT_LIGHT__THRESHOLD = MDEVICE_FEATURE_COUNT + 5;
+  int MBRICKLET_AMBIENT_LIGHT__THRESHOLD = MDEVICE_FEATURE_COUNT + 4;
 
   /**
    * The number of structural features of the '<em>MBricklet Ambient Light</em>' class.
@@ -6397,7 +6343,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_AMBIENT_LIGHT_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 6;
+  int MBRICKLET_AMBIENT_LIGHT_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 5;
 
   /**
    * The operation id for the '<em>Enable</em>' operation.
@@ -6852,13 +6798,22 @@ public interface ModelPackage extends EPackage
   int MLCD2_0X4_BUTTON__MBRICK = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 4;
 
   /**
+   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MLCD2_0X4_BUTTON__CALLBACK_PERIOD = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 5;
+
+  /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BUTTON__DEVICE_TYPE = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 5;
+  int MLCD2_0X4_BUTTON__DEVICE_TYPE = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 6;
 
   /**
    * The feature id for the '<em><b>Button Num</b></em>' attribute.
@@ -6867,16 +6822,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MLCD2_0X4_BUTTON__BUTTON_NUM = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 6;
-
-  /**
-   * The feature id for the '<em><b>Callback Period</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MLCD2_0X4_BUTTON__CALLBACK_PERIOD = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 7;
+  int MLCD2_0X4_BUTTON__BUTTON_NUM = MOUT_SWITCH_ACTOR_FEATURE_COUNT + 7;
 
   /**
    * The number of structural features of the '<em>MLCD2 0x4 Button</em>' class.
@@ -10337,17 +10283,6 @@ public interface ModelPackage extends EPackage
   EAttribute getMBrickletHumidity_DeviceType();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity#getHumiditiy <em>Humiditiy</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Humiditiy</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity#getHumiditiy()
-   * @see #getMBrickletHumidity()
-   * @generated
-   */
-  EAttribute getMBrickletHumidity_Humiditiy();
-
-  /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity#getThreshold <em>Threshold</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -10390,17 +10325,6 @@ public interface ModelPackage extends EPackage
   EAttribute getMBrickletDistanceIR_DeviceType();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR#getDistance <em>Distance</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Distance</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR#getDistance()
-   * @see #getMBrickletDistanceIR()
-   * @generated
-   */
-  EAttribute getMBrickletDistanceIR_Distance();
-
-  /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR#getThreshold <em>Threshold</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -10441,17 +10365,6 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EAttribute getMBrickletTemperature_DeviceType();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#getTemperature <em>Temperature</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Temperature</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#getTemperature()
-   * @see #getMBrickletTemperature()
-   * @generated
-   */
-  EAttribute getMBrickletTemperature_Temperature();
 
   /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature#getThreshold <em>Threshold</em>}'.
@@ -10528,17 +10441,6 @@ public interface ModelPackage extends EPackage
   EAttribute getMBrickletBarometer_DeviceType();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer#getAirPressure <em>Air Pressure</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Air Pressure</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer#getAirPressure()
-   * @see #getMBrickletBarometer()
-   * @generated
-   */
-  EAttribute getMBrickletBarometer_AirPressure();
-
-  /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer#getThreshold <em>Threshold</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -10581,17 +10483,6 @@ public interface ModelPackage extends EPackage
   EAttribute getMBarometerTemperature_DeviceType();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature#getTemperature <em>Temperature</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Temperature</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature#getTemperature()
-   * @see #getMBarometerTemperature()
-   * @generated
-   */
-  EAttribute getMBarometerTemperature_Temperature();
-
-  /**
    * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature#init() <em>Init</em>}' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -10621,17 +10512,6 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EAttribute getMBrickletAmbientLight_DeviceType();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight#getIlluminance <em>Illuminance</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Illuminance</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight#getIlluminance()
-   * @see #getMBrickletAmbientLight()
-   * @generated
-   */
-  EAttribute getMBrickletAmbientLight_Illuminance();
 
   /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight#getThreshold <em>Threshold</em>}'.
@@ -10812,17 +10692,6 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EAttribute getMLCD20x4Button_ButtonNum();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button#getCallbackPeriod <em>Callback Period</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Callback Period</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button#getCallbackPeriod()
-   * @see #getMLCD20x4Button()
-   * @generated
-   */
-  EAttribute getMLCD20x4Button_CallbackPeriod();
 
   /**
    * Returns the meta object for data type '{@link org.openhab.binding.tinkerforge.internal.types.OnOffValue <em>Switch State</em>}'.
@@ -13010,14 +12879,6 @@ public interface ModelPackage extends EPackage
     EAttribute MBRICKLET_HUMIDITY__DEVICE_TYPE = eINSTANCE.getMBrickletHumidity_DeviceType();
 
     /**
-     * The meta object literal for the '<em><b>Humiditiy</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute MBRICKLET_HUMIDITY__HUMIDITIY = eINSTANCE.getMBrickletHumidity_Humiditiy();
-
-    /**
      * The meta object literal for the '<em><b>Threshold</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -13052,14 +12913,6 @@ public interface ModelPackage extends EPackage
     EAttribute MBRICKLET_DISTANCE_IR__DEVICE_TYPE = eINSTANCE.getMBrickletDistanceIR_DeviceType();
 
     /**
-     * The meta object literal for the '<em><b>Distance</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute MBRICKLET_DISTANCE_IR__DISTANCE = eINSTANCE.getMBrickletDistanceIR_Distance();
-
-    /**
      * The meta object literal for the '<em><b>Threshold</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -13092,14 +12945,6 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute MBRICKLET_TEMPERATURE__DEVICE_TYPE = eINSTANCE.getMBrickletTemperature_DeviceType();
-
-    /**
-     * The meta object literal for the '<em><b>Temperature</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute MBRICKLET_TEMPERATURE__TEMPERATURE = eINSTANCE.getMBrickletTemperature_Temperature();
 
     /**
      * The meta object literal for the '<em><b>Threshold</b></em>' attribute feature.
@@ -13162,14 +13007,6 @@ public interface ModelPackage extends EPackage
     EAttribute MBRICKLET_BAROMETER__DEVICE_TYPE = eINSTANCE.getMBrickletBarometer_DeviceType();
 
     /**
-     * The meta object literal for the '<em><b>Air Pressure</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute MBRICKLET_BAROMETER__AIR_PRESSURE = eINSTANCE.getMBrickletBarometer_AirPressure();
-
-    /**
      * The meta object literal for the '<em><b>Threshold</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -13204,14 +13041,6 @@ public interface ModelPackage extends EPackage
     EAttribute MBAROMETER_TEMPERATURE__DEVICE_TYPE = eINSTANCE.getMBarometerTemperature_DeviceType();
 
     /**
-     * The meta object literal for the '<em><b>Temperature</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute MBAROMETER_TEMPERATURE__TEMPERATURE = eINSTANCE.getMBarometerTemperature_Temperature();
-
-    /**
      * The meta object literal for the '<em><b>Init</b></em>' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -13236,14 +13065,6 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute MBRICKLET_AMBIENT_LIGHT__DEVICE_TYPE = eINSTANCE.getMBrickletAmbientLight_DeviceType();
-
-    /**
-     * The meta object literal for the '<em><b>Illuminance</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute MBRICKLET_AMBIENT_LIGHT__ILLUMINANCE = eINSTANCE.getMBrickletAmbientLight_Illuminance();
 
     /**
      * The meta object literal for the '<em><b>Threshold</b></em>' attribute feature.
@@ -13390,14 +13211,6 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute MLCD2_0X4_BUTTON__BUTTON_NUM = eINSTANCE.getMLCD20x4Button_ButtonNum();
-
-    /**
-     * The meta object literal for the '<em><b>Callback Period</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute MLCD2_0X4_BUTTON__CALLBACK_PERIOD = eINSTANCE.getMLCD20x4Button_CallbackPeriod();
 
     /**
      * The meta object literal for the '<em>Switch State</em>' data type.

@@ -26,6 +26,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,6 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getMbrick <em>Mbrick</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getTemperature <em>Temperature</em>}</li>
  * </ul>
  * </p>
  *
@@ -167,26 +167,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getTemperature() <em>Temperature</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTemperature()
-   * @generated
-   * @ordered
-   */
-  protected static final short TEMPERATURE_EDEFAULT = 0;
-
-  /**
-   * The cached value of the '{@link #getTemperature() <em>Temperature</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTemperature()
-   * @generated
-   * @ordered
-   */
-  protected short temperature = TEMPERATURE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -382,35 +362,11 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
-  public short getTemperature()
-  {
-    return temperature;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setTemperature(short newTemperature)
-  {
-    short oldTemperature = temperature;
-    temperature = newTemperature;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__TEMPERATURE, oldTemperature, temperature));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void init()
-  {
-	 setEnabledA(new AtomicBoolean());
-	 logger = LoggerFactory.getLogger(MBarometerTemperatureImpl.class);
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MBarometerTemperatureImpl.class);
   }
 
   /**
@@ -420,18 +376,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    */
   public void enable()
   {
-		short chipTemperature = 0;
-		try {
-			chipTemperature = getMbrick().getTinkerforgeDevice()
-					.getChipTemperature();
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		setTemperature(chipTemperature);
+    fetchSensorValue();
   }
 
   /**
@@ -444,25 +389,24 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public DecimalValue fetchSensorValue() {
-		try {
-			short chipTemperature = getMbrick().getTinkerforgeDevice()
-					.getChipTemperature();
-			setTemperature(chipTemperature);
-			return new DecimalValue(chipTemperature / 100);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		return null;
-	}
+  public DecimalValue fetchSensorValue() {
+    try {
+      short chipTemperature = getMbrick().getTinkerforgeDevice().getChipTemperature();
+      DecimalValue value = Tools.calculate100(chipTemperature);
+      setSensorValue(value);
+      return value;
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+    return null;
+  }
 
   /**
    * <!-- begin-user-doc -->
@@ -538,8 +482,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
         return getMbrick();
       case ModelPackage.MBAROMETER_TEMPERATURE__DEVICE_TYPE:
         return getDeviceType();
-      case ModelPackage.MBAROMETER_TEMPERATURE__TEMPERATURE:
-        return getTemperature();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -571,9 +513,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__MBRICK:
         setMbrick((MBrickletBarometer)newValue);
-        return;
-      case ModelPackage.MBAROMETER_TEMPERATURE__TEMPERATURE:
-        setTemperature((Short)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -607,9 +546,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
       case ModelPackage.MBAROMETER_TEMPERATURE__MBRICK:
         setMbrick((MBrickletBarometer)null);
         return;
-      case ModelPackage.MBAROMETER_TEMPERATURE__TEMPERATURE:
-        setTemperature(TEMPERATURE_EDEFAULT);
-        return;
     }
     super.eUnset(featureID);
   }
@@ -638,8 +574,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
         return getMbrick() != null;
       case ModelPackage.MBAROMETER_TEMPERATURE__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-      case ModelPackage.MBAROMETER_TEMPERATURE__TEMPERATURE:
-        return temperature != TEMPERATURE_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -780,8 +714,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     result.append(subId);
     result.append(", deviceType: ");
     result.append(deviceType);
-    result.append(", temperature: ");
-    result.append(temperature);
     result.append(')');
     return result.toString();
   }

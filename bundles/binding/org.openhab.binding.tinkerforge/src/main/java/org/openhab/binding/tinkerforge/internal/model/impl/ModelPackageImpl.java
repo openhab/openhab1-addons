@@ -3007,19 +3007,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickletHumidity_Humiditiy()
-  {
-    return (EAttribute)mBrickletHumidityEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getMBrickletHumidity_Threshold()
   {
-    return (EAttribute)mBrickletHumidityEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)mBrickletHumidityEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -3057,19 +3047,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickletDistanceIR_Distance()
-  {
-    return (EAttribute)mBrickletDistanceIREClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getMBrickletDistanceIR_Threshold()
   {
-    return (EAttribute)mBrickletDistanceIREClass.getEStructuralFeatures().get(2);
+    return (EAttribute)mBrickletDistanceIREClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -3107,19 +3087,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickletTemperature_Temperature()
-  {
-    return (EAttribute)mBrickletTemperatureEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getMBrickletTemperature_Threshold()
   {
-    return (EAttribute)mBrickletTemperatureEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)mBrickletTemperatureEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -3187,19 +3157,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickletBarometer_AirPressure()
-  {
-    return (EAttribute)mBrickletBarometerEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getMBrickletBarometer_Threshold()
   {
-    return (EAttribute)mBrickletBarometerEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)mBrickletBarometerEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -3237,16 +3197,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBarometerTemperature_Temperature()
-  {
-    return (EAttribute)mBarometerTemperatureEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EOperation getMBarometerTemperature__Init()
   {
     return mBarometerTemperatureEClass.getEOperations().get(0);
@@ -3277,19 +3227,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickletAmbientLight_Illuminance()
-  {
-    return (EAttribute)mBrickletAmbientLightEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getMBrickletAmbientLight_Threshold()
   {
-    return (EAttribute)mBrickletAmbientLightEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)mBrickletAmbientLightEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -3450,16 +3390,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getMLCD20x4Button_ButtonNum()
   {
     return (EAttribute)mlcd20x4ButtonEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getMLCD20x4Button_CallbackPeriod()
-  {
-    return (EAttribute)mlcd20x4ButtonEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -4046,36 +3976,30 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     mBrickletHumidityEClass = createEClass(MBRICKLET_HUMIDITY);
     createEAttribute(mBrickletHumidityEClass, MBRICKLET_HUMIDITY__DEVICE_TYPE);
-    createEAttribute(mBrickletHumidityEClass, MBRICKLET_HUMIDITY__HUMIDITIY);
     createEAttribute(mBrickletHumidityEClass, MBRICKLET_HUMIDITY__THRESHOLD);
     createEOperation(mBrickletHumidityEClass, MBRICKLET_HUMIDITY___INIT);
 
     mBrickletDistanceIREClass = createEClass(MBRICKLET_DISTANCE_IR);
     createEAttribute(mBrickletDistanceIREClass, MBRICKLET_DISTANCE_IR__DEVICE_TYPE);
-    createEAttribute(mBrickletDistanceIREClass, MBRICKLET_DISTANCE_IR__DISTANCE);
     createEAttribute(mBrickletDistanceIREClass, MBRICKLET_DISTANCE_IR__THRESHOLD);
     createEOperation(mBrickletDistanceIREClass, MBRICKLET_DISTANCE_IR___INIT);
 
     mBrickletTemperatureEClass = createEClass(MBRICKLET_TEMPERATURE);
     createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__DEVICE_TYPE);
-    createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__TEMPERATURE);
     createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__THRESHOLD);
     createEOperation(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE___INIT);
 
     mBrickletBarometerEClass = createEClass(MBRICKLET_BAROMETER);
     createEAttribute(mBrickletBarometerEClass, MBRICKLET_BAROMETER__DEVICE_TYPE);
-    createEAttribute(mBrickletBarometerEClass, MBRICKLET_BAROMETER__AIR_PRESSURE);
     createEAttribute(mBrickletBarometerEClass, MBRICKLET_BAROMETER__THRESHOLD);
     createEOperation(mBrickletBarometerEClass, MBRICKLET_BAROMETER___INIT);
 
     mBarometerTemperatureEClass = createEClass(MBAROMETER_TEMPERATURE);
     createEAttribute(mBarometerTemperatureEClass, MBAROMETER_TEMPERATURE__DEVICE_TYPE);
-    createEAttribute(mBarometerTemperatureEClass, MBAROMETER_TEMPERATURE__TEMPERATURE);
     createEOperation(mBarometerTemperatureEClass, MBAROMETER_TEMPERATURE___INIT);
 
     mBrickletAmbientLightEClass = createEClass(MBRICKLET_AMBIENT_LIGHT);
     createEAttribute(mBrickletAmbientLightEClass, MBRICKLET_AMBIENT_LIGHT__DEVICE_TYPE);
-    createEAttribute(mBrickletAmbientLightEClass, MBRICKLET_AMBIENT_LIGHT__ILLUMINANCE);
     createEAttribute(mBrickletAmbientLightEClass, MBRICKLET_AMBIENT_LIGHT__THRESHOLD);
     createEOperation(mBrickletAmbientLightEClass, MBRICKLET_AMBIENT_LIGHT___INIT);
 
@@ -4093,7 +4017,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mlcd20x4ButtonEClass = createEClass(MLCD2_0X4_BUTTON);
     createEAttribute(mlcd20x4ButtonEClass, MLCD2_0X4_BUTTON__DEVICE_TYPE);
     createEAttribute(mlcd20x4ButtonEClass, MLCD2_0X4_BUTTON__BUTTON_NUM);
-    createEAttribute(mlcd20x4ButtonEClass, MLCD2_0X4_BUTTON__CALLBACK_PERIOD);
 
     tfConfigEClass = createEClass(TF_CONFIG);
 
@@ -4565,6 +4488,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mlcd20x4BacklightEClass.getESuperTypes().add(this.getMLCDSubDevice());
     mlcd20x4ButtonEClass.getESuperTypes().add(this.getMOutSwitchActor());
     mlcd20x4ButtonEClass.getESuperTypes().add(this.getMLCDSubDevice());
+    mlcd20x4ButtonEClass.getESuperTypes().add(this.getCallbackListener());
     g1 = createEGenericType(this.getOHTFDevice());
     g2 = createEGenericType(ohtfSubDeviceAdminDeviceEClass_TFC);
     g1.getETypeArguments().add(g2);
@@ -4827,42 +4751,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(mBrickletHumidityEClass, MBrickletHumidity.class, "MBrickletHumidity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletHumidity_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_humidity", 0, 1, MBrickletHumidity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickletHumidity_Humiditiy(), theEcorePackage.getEInt(), "humiditiy", null, 0, 1, MBrickletHumidity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickletHumidity_Threshold(), theEcorePackage.getEInt(), "threshold", "5", 0, 1, MBrickletHumidity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletHumidity_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.5", 0, 1, MBrickletHumidity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickletHumidity__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickletDistanceIREClass, MBrickletDistanceIR.class, "MBrickletDistanceIR", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletDistanceIR_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_distance_ir", 0, 1, MBrickletDistanceIR.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickletDistanceIR_Distance(), theEcorePackage.getEInt(), "distance", null, 0, 1, MBrickletDistanceIR.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickletDistanceIR_Threshold(), theEcorePackage.getEInt(), "threshold", "5", 0, 1, MBrickletDistanceIR.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletDistanceIR_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "5", 0, 1, MBrickletDistanceIR.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickletDistanceIR__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickletTemperatureEClass, MBrickletTemperature.class, "MBrickletTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_temperature", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickletTemperature_Temperature(), theEcorePackage.getEShort(), "temperature", null, 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickletTemperature_Threshold(), theEcorePackage.getEInt(), "threshold", "10", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletTemperature_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.05", 0, 1, MBrickletTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickletTemperature__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickletBarometerEClass, MBrickletBarometer.class, "MBrickletBarometer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletBarometer_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_barometer", 0, 1, MBrickletBarometer.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickletBarometer_AirPressure(), theEcorePackage.getEInt(), "airPressure", null, 0, 1, MBrickletBarometer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickletBarometer_Threshold(), theEcorePackage.getEInt(), "threshold", "1000", 0, 1, MBrickletBarometer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletBarometer_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.5", 0, 1, MBrickletBarometer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickletBarometer__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBarometerTemperatureEClass, MBarometerTemperature.class, "MBarometerTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBarometerTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "barometer_temperature", 0, 1, MBarometerTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBarometerTemperature_Temperature(), theEcorePackage.getEShort(), "temperature", null, 0, 1, MBarometerTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBarometerTemperature__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickletAmbientLightEClass, MBrickletAmbientLight.class, "MBrickletAmbientLight", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletAmbientLight_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_ambient_light", 0, 1, MBrickletAmbientLight.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickletAmbientLight_Illuminance(), theEcorePackage.getEInt(), "illuminance", null, 0, 1, MBrickletAmbientLight.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickletAmbientLight_Threshold(), theEcorePackage.getEInt(), "threshold", "10", 0, 1, MBrickletAmbientLight.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletAmbientLight_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.5", 0, 1, MBrickletAmbientLight.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickletAmbientLight__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
@@ -4881,7 +4799,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(mlcd20x4ButtonEClass, MLCD20x4Button.class, "MLCD20x4Button", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMLCD20x4Button_DeviceType(), theEcorePackage.getEString(), "deviceType", "lcd_button", 0, 1, MLCD20x4Button.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMLCD20x4Button_ButtonNum(), theEcorePackage.getEShort(), "buttonNum", null, 0, 1, MLCD20x4Button.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMLCD20x4Button_CallbackPeriod(), theEcorePackage.getEInt(), "callbackPeriod", null, 0, 1, MLCD20x4Button.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfConfigEClass, TFConfig.class, "TFConfig", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -4933,7 +4850,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(tfNullConfigurationEClass, TFNullConfiguration.class, "TFNullConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(tfBaseConfigurationEClass, TFBaseConfiguration.class, "TFBaseConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getTFBaseConfiguration_Threshold(), theEcorePackage.getEInt(), "threshold", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFBaseConfiguration_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFBaseConfiguration_CallbackPeriod(), theEcorePackage.getEInt(), "callbackPeriod", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfBrickDCConfigurationEClass, TFBrickDCConfiguration.class, "TFBrickDCConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

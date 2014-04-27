@@ -9,6 +9,7 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -19,6 +20,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
@@ -27,6 +29,7 @@ import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +63,6 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getIlluminance <em>Illuminance</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightImpl#getThreshold <em>Threshold</em>}</li>
  * </ul>
  * </p>
@@ -300,26 +302,6 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getIlluminance() <em>Illuminance</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getIlluminance()
-   * @generated
-   * @ordered
-   */
-  protected static final int ILLUMINANCE_EDEFAULT = 0;
-
-  /**
-   * The cached value of the '{@link #getIlluminance() <em>Illuminance</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getIlluminance()
-   * @generated
-   * @ordered
-   */
-  protected int illuminance = ILLUMINANCE_EDEFAULT;
-
-  /**
    * The default value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -327,7 +309,7 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * @generated
    * @ordered
    */
-  protected static final int THRESHOLD_EDEFAULT = 10;
+  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("0.5");
 
   /**
    * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
@@ -337,7 +319,9 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * @generated
    * @ordered
    */
-  protected int threshold = THRESHOLD_EDEFAULT;
+  protected BigDecimal threshold = THRESHOLD_EDEFAULT;
+
+  private IlluminanceListener listener;
 
   /**
    * <!-- begin-user-doc -->
@@ -721,30 +705,7 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public int getIlluminance()
-  {
-    return illuminance;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setIlluminance(int newIlluminance)
-  {
-    int oldIlluminance = illuminance;
-    illuminance = newIlluminance;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT__ILLUMINANCE, oldIlluminance, illuminance));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public int getThreshold()
+  public BigDecimal getThreshold()
   {
     return threshold;
   }
@@ -754,9 +715,9 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setThreshold(int newThreshold)
+  public void setThreshold(BigDecimal newThreshold)
   {
-    int oldThreshold = threshold;
+    BigDecimal oldThreshold = threshold;
     threshold = newThreshold;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT__THRESHOLD, oldThreshold, threshold));
@@ -767,86 +728,91 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void init()
-  {
-	setEnabledA(new AtomicBoolean());
+  public void init() {
+    setEnabledA(new AtomicBoolean());
     logger = LoggerFactory.getLogger(MBrickletAmbientLight.class);
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public DecimalValue fetchSensorValue() {
-		try {
-			return new DecimalValue(tinkerforgeDevice.getIlluminance() / 10);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		return null;
-	}
+  public DecimalValue fetchSensorValue() {
+    try {
+      int illuminance = tinkerforgeDevice.getIlluminance();
+      DecimalValue value = Tools.calculate10(illuminance);
+      setSensorValue(value);
+      return value;
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+    return null;
+  }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void enable() {
-		if (tfConfig != null) {
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"threshold"))) {
-				setThreshold(tfConfig.getThreshold());
-			}
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"callbackPeriod"))) {
-				setCallbackPeriod(tfConfig.getCallbackPeriod());
-			}
-		}
-		tinkerforgeDevice = new BrickletAmbientLight(uid, ipConnection);
-		// tinkerforgeDevice.setResponseExpected(BrickletAmbientLight.FUNCTION_SET_ILLUMINANCE_CALLBACK_PERIOD,
-		// false);
-		try {
-			tinkerforgeDevice.setIlluminanceCallbackPeriod(callbackPeriod);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		tinkerforgeDevice
-				.addIlluminanceListener(new BrickletAmbientLight.IlluminanceListener() {
-
-					@Override
-					public void illuminance(int newIlluminance) {
-						if (newIlluminance > (illuminance + threshold)
-								|| newIlluminance < (illuminance - threshold)) {
-							setSensorValue(new DecimalValue(
-									newIlluminance / 10.0));
-							setIlluminance(newIlluminance);
-						} else {
-							logger.trace(String.format(
-									"new illuminance: %s old: %s",
-									newIlluminance, illuminance));
-						}
-					}
-				});
-		setSensorValue(fetchSensorValue());
-	}
+  public void enable() {
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
+        setThreshold(tfConfig.getThreshold());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
+        setCallbackPeriod(tfConfig.getCallbackPeriod());
+      }
+    }
+    tinkerforgeDevice = new BrickletAmbientLight(uid, ipConnection);
+    // tinkerforgeDevice.setResponseExpected(BrickletAmbientLight.FUNCTION_SET_ILLUMINANCE_CALLBACK_PERIOD,
+    // false);
+    try {
+      tinkerforgeDevice.setIlluminanceCallbackPeriod(callbackPeriod);
+      listener = new IlluminanceListener();
+      tinkerforgeDevice.addIlluminanceListener(listener);
+      setSensorValue(fetchSensorValue());
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void disable()
-  {
-	  tinkerforgeDevice = null;
+  private class IlluminanceListener implements BrickletAmbientLight.IlluminanceListener {
+    @Override
+
+    public void illuminance(int newIlluminance) {
+      DecimalValue newValue = Tools.calculate10(newIlluminance);
+      logger.trace("{} got new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+      if (newValue.compareTo(getSensorValue(), getThreshold()) != 0 ) {
+        logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+        setSensorValue(newValue);
+      } else {
+        logger.trace("{} omitting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+      }
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void disable() {
+    if (listener != null){
+      tinkerforgeDevice.removeIlluminanceListener(listener);
+    }
+    tinkerforgeDevice = null;
   }
 
   /**
@@ -939,8 +905,6 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
         return getCallbackPeriod();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__DEVICE_TYPE:
         return getDeviceType();
-      case ModelPackage.MBRICKLET_AMBIENT_LIGHT__ILLUMINANCE:
-        return getIlluminance();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__THRESHOLD:
         return getThreshold();
     }
@@ -996,11 +960,8 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD:
         setCallbackPeriod((Long)newValue);
         return;
-      case ModelPackage.MBRICKLET_AMBIENT_LIGHT__ILLUMINANCE:
-        setIlluminance((Integer)newValue);
-        return;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__THRESHOLD:
-        setThreshold((Integer)newValue);
+        setThreshold((BigDecimal)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -1055,9 +1016,6 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__CALLBACK_PERIOD:
         setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_AMBIENT_LIGHT__ILLUMINANCE:
-        setIlluminance(ILLUMINANCE_EDEFAULT);
-        return;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__THRESHOLD:
         setThreshold(THRESHOLD_EDEFAULT);
         return;
@@ -1103,10 +1061,8 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
         return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-      case ModelPackage.MBRICKLET_AMBIENT_LIGHT__ILLUMINANCE:
-        return illuminance != ILLUMINANCE_EDEFAULT;
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT__THRESHOLD:
-        return threshold != THRESHOLD_EDEFAULT;
+        return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
     }
     return super.eIsSet(featureID);
   }
@@ -1274,8 +1230,6 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
     result.append(callbackPeriod);
     result.append(", deviceType: ");
     result.append(deviceType);
-    result.append(", illuminance: ");
-    result.append(illuminance);
     result.append(", threshold: ");
     result.append(threshold);
     result.append(')');

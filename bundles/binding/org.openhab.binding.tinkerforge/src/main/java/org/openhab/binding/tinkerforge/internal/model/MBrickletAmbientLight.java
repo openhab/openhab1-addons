@@ -9,6 +9,7 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import com.tinkerforge.BrickletAmbientLight;
+import java.math.BigDecimal;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 
 /**
@@ -20,7 +21,6 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight#getIlluminance <em>Illuminance</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight#getThreshold <em>Threshold</em>}</li>
  * </ul>
  * </p>
@@ -48,34 +48,8 @@ public interface MBrickletAmbientLight extends MDevice<BrickletAmbientLight>, MS
   String getDeviceType();
 
   /**
-   * Returns the value of the '<em><b>Illuminance</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Illuminance</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Illuminance</em>' attribute.
-   * @see #setIlluminance(int)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAmbientLight_Illuminance()
-   * @model unique="false"
-   * @generated
-   */
-  int getIlluminance();
-
-  /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight#getIlluminance <em>Illuminance</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Illuminance</em>' attribute.
-   * @see #getIlluminance()
-   * @generated
-   */
-  void setIlluminance(int value);
-
-  /**
    * Returns the value of the '<em><b>Threshold</b></em>' attribute.
-   * The default value is <code>"10"</code>.
+   * The default value is <code>"0.5"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Threshold</em>' attribute isn't clear,
@@ -83,12 +57,12 @@ public interface MBrickletAmbientLight extends MDevice<BrickletAmbientLight>, MS
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Threshold</em>' attribute.
-   * @see #setThreshold(int)
+   * @see #setThreshold(BigDecimal)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAmbientLight_Threshold()
-   * @model default="10" unique="false"
+   * @model default="0.5" unique="false"
    * @generated
    */
-  int getThreshold();
+  BigDecimal getThreshold();
 
   /**
    * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight#getThreshold <em>Threshold</em>}' attribute.
@@ -98,7 +72,7 @@ public interface MBrickletAmbientLight extends MDevice<BrickletAmbientLight>, MS
    * @see #getThreshold()
    * @generated
    */
-  void setThreshold(int value);
+  void setThreshold(BigDecimal value);
 
   /**
    * <!-- begin-user-doc -->

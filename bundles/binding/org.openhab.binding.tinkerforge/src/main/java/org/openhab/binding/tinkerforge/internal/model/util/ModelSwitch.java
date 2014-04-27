@@ -625,6 +625,7 @@ public class ModelSwitch<T> extends Switch<T>
         T result = caseMLCD20x4Button(mlcd20x4Button);
         if (result == null) result = caseMOutSwitchActor(mlcd20x4Button);
         if (result == null) result = caseMLCDSubDevice(mlcd20x4Button);
+        if (result == null) result = caseCallbackListener(mlcd20x4Button);
         if (result == null) result = caseMSwitchActor(mlcd20x4Button);
         if (result == null) result = caseMSubDevice(mlcd20x4Button);
         if (result == null) result = caseMBaseDevice(mlcd20x4Button);

@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
@@ -49,9 +50,9 @@ import com.tinkerforge.BrickletLCD20x4;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getButtonNum <em>Button Num</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4ButtonImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  * </ul>
  * </p>
  *
@@ -160,6 +161,26 @@ public class MLCD20x4ButtonImpl extends MinimalEObjectImpl.Container implements 
   protected String subId = SUB_ID_EDEFAULT;
 
   /**
+   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCallbackPeriod()
+   * @generated
+   * @ordered
+   */
+  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
+
+  /**
+   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCallbackPeriod()
+   * @generated
+   * @ordered
+   */
+  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
+
+/**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -198,26 +219,6 @@ public class MLCD20x4ButtonImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected short buttonNum = BUTTON_NUM_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected static final int CALLBACK_PERIOD_EDEFAULT = 0;
-
-  /**
-   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected int callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
 
 private ButtonPressedListener buttonPressedListener;
 
@@ -442,7 +443,7 @@ private ButtonReleasedListener buttonReleasedListener;
    * <!-- end-user-doc -->
    * @generated
    */
-  public int getCallbackPeriod()
+  public long getCallbackPeriod()
   {
     return callbackPeriod;
   }
@@ -452,9 +453,9 @@ private ButtonReleasedListener buttonReleasedListener;
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setCallbackPeriod(int newCallbackPeriod)
+  public void setCallbackPeriod(long newCallbackPeriod)
   {
-    int oldCallbackPeriod = callbackPeriod;
+    long oldCallbackPeriod = callbackPeriod;
     callbackPeriod = newCallbackPeriod;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
@@ -651,12 +652,12 @@ private ButtonReleasedListener buttonReleasedListener;
         return getSubId();
       case ModelPackage.MLCD2_0X4_BUTTON__MBRICK:
         return getMbrick();
+      case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD:
+        return getCallbackPeriod();
       case ModelPackage.MLCD2_0X4_BUTTON__DEVICE_TYPE:
         return getDeviceType();
       case ModelPackage.MLCD2_0X4_BUTTON__BUTTON_NUM:
         return getButtonNum();
-      case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD:
-        return getCallbackPeriod();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -689,11 +690,11 @@ private ButtonReleasedListener buttonReleasedListener;
       case ModelPackage.MLCD2_0X4_BUTTON__MBRICK:
         setMbrick((MBrickletLCD20x4)newValue);
         return;
+      case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD:
+        setCallbackPeriod((Long)newValue);
+        return;
       case ModelPackage.MLCD2_0X4_BUTTON__BUTTON_NUM:
         setButtonNum((Short)newValue);
-        return;
-      case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD:
-        setCallbackPeriod((Integer)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -727,11 +728,11 @@ private ButtonReleasedListener buttonReleasedListener;
       case ModelPackage.MLCD2_0X4_BUTTON__MBRICK:
         setMbrick((MBrickletLCD20x4)null);
         return;
-      case ModelPackage.MLCD2_0X4_BUTTON__BUTTON_NUM:
-        setButtonNum(BUTTON_NUM_EDEFAULT);
-        return;
       case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD:
         setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        return;
+      case ModelPackage.MLCD2_0X4_BUTTON__BUTTON_NUM:
+        setButtonNum(BUTTON_NUM_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -759,12 +760,12 @@ private ButtonReleasedListener buttonReleasedListener;
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
       case ModelPackage.MLCD2_0X4_BUTTON__MBRICK:
         return getMbrick() != null;
+      case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD:
+        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.MLCD2_0X4_BUTTON__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.MLCD2_0X4_BUTTON__BUTTON_NUM:
         return buttonNum != BUTTON_NUM_EDEFAULT;
-      case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -800,6 +801,14 @@ private ButtonReleasedListener buttonReleasedListener;
     {
       switch (derivedFeatureID)
       {
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -840,6 +849,14 @@ private ButtonReleasedListener buttonReleasedListener;
         default: return -1;
       }
     }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.MLCD2_0X4_BUTTON__CALLBACK_PERIOD;
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -869,6 +886,13 @@ private ButtonReleasedListener buttonReleasedListener;
       }
     }
     if (baseClass == MLCDSubDevice.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
     {
       switch (baseOperationID)
       {
@@ -927,12 +951,12 @@ private ButtonReleasedListener buttonReleasedListener;
     result.append(enabledA);
     result.append(", subId: ");
     result.append(subId);
+    result.append(", callbackPeriod: ");
+    result.append(callbackPeriod);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(", buttonNum: ");
     result.append(buttonNum);
-    result.append(", callbackPeriod: ");
-    result.append(callbackPeriod);
     result.append(')');
     return result.toString();
   }

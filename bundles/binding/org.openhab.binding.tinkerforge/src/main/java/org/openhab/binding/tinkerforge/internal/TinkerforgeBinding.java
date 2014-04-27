@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.tinkerforge.internal;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -1155,6 +1156,10 @@ public class TinkerforgeBinding extends
                           logger.debug("{} found String value",
                                   LoggerConstants.CONFIG);
                           tfConfig.eSet(feature, deviceConfig.get(property));
+                        } else if (className.equals("java.math.BigDecimal")){
+                          logger.debug("{} found BigDecimal value",
+                            LoggerConstants.CONFIG);
+                          tfConfig.eSet(feature, new BigDecimal(deviceConfig.get(property)));
 //						} else if (feature.getEType().getInstanceClassName().equals("EList")){
 //							logger.debug("{} found EList value", LoggerConstants.CONFIG);
 //							List<String> strings = new ArrayList<String>(Arrays.asList(deviceConfig.get(property).trim().split("\\s+")));
