@@ -284,8 +284,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					break;
 				}
 
-				// Add the save button
+				// Add the action buttons
 				record.addAction("Save", "Save Node");
+				record.addAction("Heal", "Heal Node");
 
 				// Add the delete button if the node is not "operational"
 				if(canDelete) {
@@ -422,6 +423,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.value = "Mains";
 				}
 				records.add(record);
+
+				// Add controller specific status information
+				if(node.getNodeId() == zController.getDeviceId()) {
+				}
 			} else if (arg.equals("parameters/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
@@ -699,6 +704,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			}
 
 			if (splitDomain.length == 2) {
+				if (action.equals("Heal")) {
+					logger.debug("Heal node '{}'", nodeId);
+
+					if(networkMonitor != null)
+						networkMonitor.healNode(nodeId);
+				}
+
 				if (action.equals("Save")) {
 					logger.debug("Saving node '{}'", nodeId);
 
