@@ -198,6 +198,7 @@ public class UrtsiBinding extends AbstractBinding<UrtsiBindingProvider>
 							}
 							urtsiDevice = new UrtsiDevice(port);
 							try {
+								System.setProperty("gnu.io.rxtx.SerialPorts", port);
 								urtsiDevice.initialize();
 							} catch (InitializationException e) {
 								throw new ConfigurationException(configKey, 

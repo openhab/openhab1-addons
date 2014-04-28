@@ -48,6 +48,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveActiveBinding.class);
 	private String port;
+	private Integer healtime = null;
 	private volatile ZWaveController zController;
 	private volatile ZWaveConverterHandler converterHandler;
 
@@ -55,6 +56,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	
 	// Configuration Service
 	ZWaveConfiguration zConfigurationService;
+	
+	// Network monitoring class
+	ZWaveNetworkMonitor networkMonitor;
 
 	
 	/**
@@ -86,6 +90,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				this.zController.checkForDeadOrSleepingNodes();
 			return;
 		}
+		
+		// Call the network monitor
+		networkMonitor.execute();
 		
 		// loop all binding providers for the Z-wave binding.
 		for (ZWaveBindingProvider provider : providers) {
@@ -181,6 +188,35 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			controller.removeEventListener(this);
 		}
 	}
+	
+	/**
+	 * Initialises the binding. This is called after the 'updated' method
+	 * has been called and all configuration has been passed.
+	 * @throws ConfigurationException 
+	 */
+	private void initialise() throws ConfigurationException {
+		try {
+			this.setProperlyConfigured(true);
+			this.deactivate();
+			this.zController = new ZWaveController(port);
+			this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
+			zController.initialize();
+			zController.addEventListener(this);
+
+			// The network monitor service needs to know the controller...
+			this.networkMonitor = new ZWaveNetworkMonitor(this.zController);
+			if(healtime != null)
+				this.networkMonitor.setHealTime(healtime);
+
+			// The config service needs to know the controller and the network monitor...
+			this.zConfigurationService = new ZWaveConfiguration(this.zController, this.networkMonitor);
+			zController.addEventListener(this.zConfigurationService);
+			return;
+		} catch (SerialInterfaceException ex) {
+			this.setProperlyConfigured(false);
+			throw new ConfigurationException("port", ex.getLocalizedMessage(), ex);
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -193,26 +229,21 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		// Check the serial port configuration value.
 		// This value is mandatory.
 		if (StringUtils.isNotBlank((String) config.get("port"))) {
+			port = (String) config.get("port");
+			logger.info("Update config, port = {}", port);
+		}
+		if (StringUtils.isNotBlank((String) config.get("healtime"))) {
 			try {
-				port = (String) config.get("port");
-				logger.info("Update config, port = {}", port);
-				this.setProperlyConfigured(true);
-				this.deactivate();
-				this.zController = new ZWaveController(port);
-				this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
-				zController.initialize();
-				zController.addEventListener(this);
-				
-				// The config service needs to know the controller...
-				this.zConfigurationService = new ZWaveConfiguration(this.zController);
-				zController.addEventListener(this.zConfigurationService);
-				return;
-			} catch (SerialInterfaceException ex) {
-				this.setProperlyConfigured(false);
-				throw new ConfigurationException("port", ex.getLocalizedMessage(), ex);
+				healtime = Integer.parseInt((String) config.get("healtime"));
+				logger.info("Update config, healtime = {}", healtime);
+			} catch (NumberFormatException e) {
+				healtime = null;
+				logger.error("Error parsing 'healtime'. This must be a single number to set the hour to perform the heal.");
 			}
 		}
-		this.setProperlyConfigured(false);
+
+		// Now that we've read ALL the configuration, initialise the binding.
+		initialise();
 	}
 
 	/**
@@ -253,8 +284,6 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			handleZWaveCommandClassValueEvent((ZWaveCommandClassValueEvent)event);
 			return;
 		}
-
-		logger.warn("Unknown event type {}", event.getClass().getName());
 	}
 
 	/**

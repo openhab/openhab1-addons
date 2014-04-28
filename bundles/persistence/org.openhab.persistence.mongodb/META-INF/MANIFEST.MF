@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB mongodb Persistence bundle
+Bundle-SymbolicName: org.openhab.persistence.mongodb
+Bundle-Version: 1.5.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+DynamicImport-Package: *
+Import-Package: org.apache.commons.io,
+ org.apache.commons.lang,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.persistence,
+ org.openhab.core.types,
+ org.openhab.io.net.http,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.slf4j
+Bundle-ClassPath: .,
+ lib/mongo-java-driver-2.12.0.jar
+Service-Component: OSGI-INF/mongodb.xml
+Bundle-Activator: org.openhab.persistence.mongodb.internal.MongoDBPersistenceServiceActivator

@@ -451,6 +451,15 @@
 		<Name>Fibaro System</Name>
 		<Product>
 			<Reference>
+				<Type>0800</Type>
+				<Id>1001</Id>
+			</Reference>
+			<Model>FGMS01</Model>
+			<Label lang="en">Movement Sensor</Label>
+			<ConfigFile>fibaro/fgms01.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0301</Type>
 				<Id>1001</Id>
 			</Reference>
@@ -619,6 +628,23 @@
 			<Label lang="en">Fibaro RGBW Controller</Label>
 			<ConfigFile>fibaro/fgrgbw.xml</ConfigFile>
 		</Product>
+		<Product>
+      			<Reference>
+        			<Type>0300</Type>
+        			<Id>100a</Id>
+      			</Reference>
+      			<Reference>
+        			<Type>0300</Type>
+        			<Id>0106</Id>
+      			</Reference>
+      			<Reference>
+        			<Type>0300</Type>
+        			<Id>0107</Id>
+      			</Reference>
+      			<Model>FGR221</Model>
+      			<Label lang="en">Fibaro FGR221 Roller Shutter Controller</Label>
+      			<ConfigFile>fibaro/fgr221.xml</ConfigFile>
+    		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>011F</Id>
