@@ -73,6 +73,9 @@ public class SerialApiGetInitDataMessageClass extends ZWaveCommandProcessor {
 		logger.info("----------------------------------------------------------------------------");
 
 		if((incomingMessage.getMessagePayloadByte(1) & 0x01) == 1) {
+			nodeType = ZWaveDeviceType.SLAVE;
+		}
+		else {
 			if((incomingMessage.getMessagePayloadByte(1) & 0x08) == 1)
 				nodeType = ZWaveDeviceType.SUC;
 			else if((incomingMessage.getMessagePayloadByte(1) & 0x04) == 1)
@@ -80,9 +83,8 @@ public class SerialApiGetInitDataMessageClass extends ZWaveCommandProcessor {
 			else
 				nodeType = ZWaveDeviceType.PRIMARY;
 		}
-		else {
-			nodeType = ZWaveDeviceType.SLAVE;
-		}
+		logger.info("ZWave Controller type is: {}", nodeType.toString());
+
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 
 		return true;
