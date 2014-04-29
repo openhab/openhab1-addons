@@ -645,6 +645,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			} else if (arg.equals("controller/")) {
 				// Create the record
 				record = new OpenHABConfigurationRecord(domain, "Type", "Controller Type", true);
+				record.type = OpenHABConfigurationRecord.TYPE.LIST;
 				record.value = zController.getControllerType().getLabel();
 				record.addValue(ZWaveDeviceType.PRIMARY.toString(), ZWaveDeviceType.PRIMARY.toString());
 				record.addValue(ZWaveDeviceType.SECONDARY.toString(), ZWaveDeviceType.SECONDARY.toString());
