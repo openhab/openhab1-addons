@@ -647,9 +647,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				record = new OpenHABConfigurationRecord(domain, "Type", "Controller Type", true);
 				record.type = OpenHABConfigurationRecord.TYPE.LIST;
 				record.value = zController.getControllerType().getLabel();
-				record.addValue(ZWaveDeviceType.PRIMARY.toString(), ZWaveDeviceType.PRIMARY.toString());
-				record.addValue(ZWaveDeviceType.SECONDARY.toString(), ZWaveDeviceType.SECONDARY.toString());
-				record.addValue(ZWaveDeviceType.SUC.toString(), ZWaveDeviceType.SUC.toString());
+				record.addValue(ZWaveDeviceType.PRIMARY.toString(), ZWaveDeviceType.PRIMARY.getLabel());
+				record.addValue(ZWaveDeviceType.SECONDARY.toString(), ZWaveDeviceType.SECONDARY.getLabel());
+				record.addValue(ZWaveDeviceType.SUC.toString(), ZWaveDeviceType.SUC.getLabel());
 
 				// Set the read-only if this isn't a controller!
 				switch(zController.getControllerType()) {
