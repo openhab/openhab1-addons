@@ -85,6 +85,7 @@ import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletTemperature;
+import com.tinkerforge.BrickletTemperatureIR;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
 
@@ -166,6 +167,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_HUMIDITY: return createMBrickletHumidity();
       case ModelPackage.MBRICKLET_DISTANCE_IR: return createMBrickletDistanceIR();
       case ModelPackage.MBRICKLET_TEMPERATURE: return createMBrickletTemperature();
+      case ModelPackage.MBRICKLET_TEMPERATURE_IR: return createMBrickletTemperatureIR();
+      case ModelPackage.OBJECT_TEMPERATURE: return createObjectTemperature();
+      case ModelPackage.AMBIENT_TEMPERATURE: return createAmbientTemperature();
       case ModelPackage.MBRICKLET_BAROMETER: return createMBrickletBarometer();
       case ModelPackage.MBAROMETER_TEMPERATURE: return createMBarometerTemperature();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT: return createMBrickletAmbientLight();
@@ -177,6 +181,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.OH_CONFIG: return createOHConfig();
       case ModelPackage.TF_NULL_CONFIGURATION: return createTFNullConfiguration();
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
+      case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION: return createTFObjectTemperatureConfiguration();
       case ModelPackage.TF_BRICK_DC_CONFIGURATION: return createTFBrickDCConfiguration();
       case ModelPackage.TFIO_ACTOR_CONFIGURATION: return createTFIOActorConfiguration();
       case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION: return createTFInterruptListenerConfiguration();
@@ -225,6 +230,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createLCDBacklightSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MULTI_TOUCH_SUB_IDS:
         return createMultiTouchSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.TEMPERATURE_IR_SUB_IDS:
+        return createTemperatureIRSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -273,6 +280,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletMotionDetectorFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_MULTI_TOUCH:
         return createTinkerBrickletMultiTouchFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_TEMPERATURE_IR:
+        return createTinkerBrickletTemperatureIRFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -312,6 +321,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertLCDBacklightSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MULTI_TOUCH_SUB_IDS:
         return convertMultiTouchSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.TEMPERATURE_IR_SUB_IDS:
+        return convertTemperatureIRSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -360,6 +371,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletMotionDetectorToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_MULTI_TOUCH:
         return convertTinkerBrickletMultiTouchToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_TEMPERATURE_IR:
+        return convertTinkerBrickletTemperatureIRToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -824,10 +837,54 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public MBrickletTemperatureIR createMBrickletTemperatureIR()
+  {
+    MBrickletTemperatureIRImpl mBrickletTemperatureIR = new MBrickletTemperatureIRImpl();
+    return mBrickletTemperatureIR;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ObjectTemperature createObjectTemperature()
+  {
+    ObjectTemperatureImpl objectTemperature = new ObjectTemperatureImpl();
+    return objectTemperature;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AmbientTemperature createAmbientTemperature()
+  {
+    AmbientTemperatureImpl ambientTemperature = new AmbientTemperatureImpl();
+    return ambientTemperature;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public TFBaseConfiguration createTFBaseConfiguration()
   {
     TFBaseConfigurationImpl tfBaseConfiguration = new TFBaseConfigurationImpl();
     return tfBaseConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFObjectTemperatureConfiguration createTFObjectTemperatureConfiguration()
+  {
+    TFObjectTemperatureConfigurationImpl tfObjectTemperatureConfiguration = new TFObjectTemperatureConfigurationImpl();
+    return tfObjectTemperatureConfiguration;
   }
 
   /**
@@ -1203,6 +1260,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public TemperatureIRSubIds createTemperatureIRSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    TemperatureIRSubIds result = TemperatureIRSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTemperatureIRSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public IPConnection createMIPConnectionFromString(EDataType eDataType, String initialValue)
   {
     return (IPConnection)super.createFromString(eDataType, initialValue);
@@ -1554,6 +1633,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletMultiTouchToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletTemperatureIR createTinkerBrickletTemperatureIRFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletTemperatureIR)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletTemperatureIRToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

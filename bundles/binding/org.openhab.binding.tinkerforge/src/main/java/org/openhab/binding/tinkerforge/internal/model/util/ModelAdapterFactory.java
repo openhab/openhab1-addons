@@ -352,6 +352,26 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMBrickletTemperatureAdapter();
       }
       @Override
+      public Adapter caseMBrickletTemperatureIR(MBrickletTemperatureIR object)
+      {
+        return createMBrickletTemperatureIRAdapter();
+      }
+      @Override
+      public Adapter caseMTemperatureIRDevice(MTemperatureIRDevice object)
+      {
+        return createMTemperatureIRDeviceAdapter();
+      }
+      @Override
+      public Adapter caseObjectTemperature(ObjectTemperature object)
+      {
+        return createObjectTemperatureAdapter();
+      }
+      @Override
+      public Adapter caseAmbientTemperature(AmbientTemperature object)
+      {
+        return createAmbientTemperatureAdapter();
+      }
+      @Override
       public Adapter caseMBrickletBarometer(MBrickletBarometer object)
       {
         return createMBrickletBarometerAdapter();
@@ -410,6 +430,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       public Adapter caseTFBaseConfiguration(TFBaseConfiguration object)
       {
         return createTFBaseConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFObjectTemperatureConfiguration(TFObjectTemperatureConfiguration object)
+      {
+        return createTFObjectTemperatureConfigurationAdapter();
       }
       @Override
       public Adapter caseTFBrickDCConfiguration(TFBrickDCConfiguration object)
@@ -1359,6 +1384,66 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR <em>MBricklet Temperature IR</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR
+   * @generated
+   */
+  public Adapter createMBrickletTemperatureIRAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice <em>MTemperature IR Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice
+   * @generated
+   */
+  public Adapter createMTemperatureIRDeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.ObjectTemperature <em>Object Temperature</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.ObjectTemperature
+   * @generated
+   */
+  public Adapter createObjectTemperatureAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.AmbientTemperature <em>Ambient Temperature</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.AmbientTemperature
+   * @generated
+   */
+  public Adapter createAmbientTemperatureAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration <em>TF Base Configuration</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -1369,6 +1454,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createTFBaseConfigurationAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration <em>TF Object Temperature Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration
+   * @generated
+   */
+  public Adapter createTFObjectTemperatureConfigurationAdapter()
   {
     return null;
   }

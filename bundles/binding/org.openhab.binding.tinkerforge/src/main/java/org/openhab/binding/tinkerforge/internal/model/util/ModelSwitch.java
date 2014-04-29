@@ -561,6 +561,53 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_TEMPERATURE_IR:
+      {
+        MBrickletTemperatureIR mBrickletTemperatureIR = (MBrickletTemperatureIR)theEObject;
+        T result = caseMBrickletTemperatureIR(mBrickletTemperatureIR);
+        if (result == null) result = caseMDevice(mBrickletTemperatureIR);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletTemperatureIR);
+        if (result == null) result = caseMBaseDevice(mBrickletTemperatureIR);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MTEMPERATURE_IR_DEVICE:
+      {
+        MTemperatureIRDevice mTemperatureIRDevice = (MTemperatureIRDevice)theEObject;
+        T result = caseMTemperatureIRDevice(mTemperatureIRDevice);
+        if (result == null) result = caseMSensor(mTemperatureIRDevice);
+        if (result == null) result = caseMSubDevice(mTemperatureIRDevice);
+        if (result == null) result = caseCallbackListener(mTemperatureIRDevice);
+        if (result == null) result = caseMBaseDevice(mTemperatureIRDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.OBJECT_TEMPERATURE:
+      {
+        ObjectTemperature objectTemperature = (ObjectTemperature)theEObject;
+        T result = caseObjectTemperature(objectTemperature);
+        if (result == null) result = caseMTemperatureIRDevice(objectTemperature);
+        if (result == null) result = caseMTFConfigConsumer(objectTemperature);
+        if (result == null) result = caseMSensor(objectTemperature);
+        if (result == null) result = caseMSubDevice(objectTemperature);
+        if (result == null) result = caseCallbackListener(objectTemperature);
+        if (result == null) result = caseMBaseDevice(objectTemperature);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.AMBIENT_TEMPERATURE:
+      {
+        AmbientTemperature ambientTemperature = (AmbientTemperature)theEObject;
+        T result = caseAmbientTemperature(ambientTemperature);
+        if (result == null) result = caseMTemperatureIRDevice(ambientTemperature);
+        if (result == null) result = caseMTFConfigConsumer(ambientTemperature);
+        if (result == null) result = caseMSensor(ambientTemperature);
+        if (result == null) result = caseMSubDevice(ambientTemperature);
+        if (result == null) result = caseCallbackListener(ambientTemperature);
+        if (result == null) result = caseMBaseDevice(ambientTemperature);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_BAROMETER:
       {
         MBrickletBarometer mBrickletBarometer = (MBrickletBarometer)theEObject;
@@ -674,6 +721,15 @@ public class ModelSwitch<T> extends Switch<T>
         TFBaseConfiguration tfBaseConfiguration = (TFBaseConfiguration)theEObject;
         T result = caseTFBaseConfiguration(tfBaseConfiguration);
         if (result == null) result = caseTFConfig(tfBaseConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION:
+      {
+        TFObjectTemperatureConfiguration tfObjectTemperatureConfiguration = (TFObjectTemperatureConfiguration)theEObject;
+        T result = caseTFObjectTemperatureConfiguration(tfObjectTemperatureConfiguration);
+        if (result == null) result = caseTFBaseConfiguration(tfObjectTemperatureConfiguration);
+        if (result == null) result = caseTFConfig(tfObjectTemperatureConfiguration);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1700,6 +1756,70 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Temperature IR</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Temperature IR</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletTemperatureIR(MBrickletTemperatureIR object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MTemperature IR Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MTemperature IR Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMTemperatureIRDevice(MTemperatureIRDevice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Object Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Object Temperature</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseObjectTemperature(ObjectTemperature object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Ambient Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Ambient Temperature</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseAmbientTemperature(AmbientTemperature object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>TF Base Configuration</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1711,6 +1831,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTFBaseConfiguration(TFBaseConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>TF Object Temperature Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>TF Object Temperature Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTFObjectTemperatureConfiguration(TFObjectTemperatureConfiguration object)
   {
     return null;
   }

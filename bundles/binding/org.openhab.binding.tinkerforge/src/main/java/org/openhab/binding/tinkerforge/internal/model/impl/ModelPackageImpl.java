@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
@@ -58,6 +59,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
 import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
 import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
@@ -75,6 +77,7 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
@@ -85,6 +88,7 @@ import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
+import org.openhab.binding.tinkerforge.internal.model.ObjectTemperature;
 import org.openhab.binding.tinkerforge.internal.model.Proximity;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
@@ -102,7 +106,9 @@ import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
@@ -124,6 +130,7 @@ import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletTemperature;
+import com.tinkerforge.BrickletTemperatureIR;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
 
@@ -546,7 +553,42 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass mBrickletTemperatureIREClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mTemperatureIRDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass objectTemperatureEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ambientTemperatureEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass tfBaseConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass tfObjectTemperatureConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -686,6 +728,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EEnum temperatureIRSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EDataType mipConnectionEDataType = null;
 
   /**
@@ -806,6 +855,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletMultiTouchEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletTemperatureIREDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3117,6 +3173,96 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getMBrickletTemperatureIR()
+  {
+    return mBrickletTemperatureIREClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletTemperatureIR_DeviceType()
+  {
+    return (EAttribute)mBrickletTemperatureIREClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMTemperatureIRDevice()
+  {
+    return mTemperatureIRDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMTemperatureIRDevice_Threshold()
+  {
+    return (EAttribute)mTemperatureIRDeviceEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getObjectTemperature()
+  {
+    return objectTemperatureEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getObjectTemperature_DeviceType()
+  {
+    return (EAttribute)objectTemperatureEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getObjectTemperature_Emissivity()
+  {
+    return (EAttribute)objectTemperatureEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getAmbientTemperature()
+  {
+    return ambientTemperatureEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAmbientTemperature_DeviceType()
+  {
+    return (EAttribute)ambientTemperatureEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getTFBaseConfiguration()
   {
     return tfBaseConfigurationEClass;
@@ -3140,6 +3286,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getTFBaseConfiguration_CallbackPeriod()
   {
     return (EAttribute)tfBaseConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getTFObjectTemperatureConfiguration()
+  {
+    return tfObjectTemperatureConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFObjectTemperatureConfiguration_Emissivity()
+  {
+    return (EAttribute)tfObjectTemperatureConfigurationEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -3547,6 +3713,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getTemperatureIRSubIds()
+  {
+    return temperatureIRSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getMIPConnection()
   {
     return mipConnectionEDataType;
@@ -3720,6 +3896,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EDataType getTinkerBrickletMultiTouch()
   {
     return tinkerBrickletMultiTouchEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getTinkerBrickletTemperatureIR()
+  {
+    return tinkerBrickletTemperatureIREDataType;
   }
 
   /**
@@ -4000,6 +4186,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE__THRESHOLD);
     createEOperation(mBrickletTemperatureEClass, MBRICKLET_TEMPERATURE___INIT);
 
+    mBrickletTemperatureIREClass = createEClass(MBRICKLET_TEMPERATURE_IR);
+    createEAttribute(mBrickletTemperatureIREClass, MBRICKLET_TEMPERATURE_IR__DEVICE_TYPE);
+
+    mTemperatureIRDeviceEClass = createEClass(MTEMPERATURE_IR_DEVICE);
+    createEAttribute(mTemperatureIRDeviceEClass, MTEMPERATURE_IR_DEVICE__THRESHOLD);
+
+    objectTemperatureEClass = createEClass(OBJECT_TEMPERATURE);
+    createEAttribute(objectTemperatureEClass, OBJECT_TEMPERATURE__DEVICE_TYPE);
+    createEAttribute(objectTemperatureEClass, OBJECT_TEMPERATURE__EMISSIVITY);
+
+    ambientTemperatureEClass = createEClass(AMBIENT_TEMPERATURE);
+    createEAttribute(ambientTemperatureEClass, AMBIENT_TEMPERATURE__DEVICE_TYPE);
+
     mBrickletBarometerEClass = createEClass(MBRICKLET_BAROMETER);
     createEAttribute(mBrickletBarometerEClass, MBRICKLET_BAROMETER__DEVICE_TYPE);
     createEAttribute(mBrickletBarometerEClass, MBRICKLET_BAROMETER__THRESHOLD);
@@ -4053,6 +4252,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfBaseConfigurationEClass = createEClass(TF_BASE_CONFIGURATION);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__THRESHOLD);
     createEAttribute(tfBaseConfigurationEClass, TF_BASE_CONFIGURATION__CALLBACK_PERIOD);
+
+    tfObjectTemperatureConfigurationEClass = createEClass(TF_OBJECT_TEMPERATURE_CONFIGURATION);
+    createEAttribute(tfObjectTemperatureConfigurationEClass, TF_OBJECT_TEMPERATURE_CONFIGURATION__EMISSIVITY);
 
     tfBrickDCConfigurationEClass = createEClass(TF_BRICK_DC_CONFIGURATION);
     createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__VELOCITY);
@@ -4119,6 +4321,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     lcdButtonSubIdsEEnum = createEEnum(LCD_BUTTON_SUB_IDS);
     lcdBacklightSubIdsEEnum = createEEnum(LCD_BACKLIGHT_SUB_IDS);
     multiTouchSubIdsEEnum = createEEnum(MULTI_TOUCH_SUB_IDS);
+    temperatureIRSubIdsEEnum = createEEnum(TEMPERATURE_IR_SUB_IDS);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -4145,6 +4348,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletRemoteSwitchEDataType = createEDataType(TINKER_BRICKLET_REMOTE_SWITCH);
     tinkerBrickletMotionDetectorEDataType = createEDataType(TINKER_BRICKLET_MOTION_DETECTOR);
     tinkerBrickletMultiTouchEDataType = createEDataType(TINKER_BRICKLET_MULTI_TOUCH);
+    tinkerBrickletTemperatureIREDataType = createEDataType(TINKER_BRICKLET_TEMPERATURE_IR);
     enumEDataType = createEDataType(ENUM);
   }
 
@@ -4446,6 +4650,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(this.getCallbackListener());
     mBrickletTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletTemperatureIR());
+    g1.getETypeArguments().add(g2);
+    mBrickletTemperatureIREClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getMTemperatureIRDevice());
+    g1.getETypeArguments().add(g2);
+    mBrickletTemperatureIREClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    mTemperatureIRDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletTemperatureIR());
+    g1.getETypeArguments().add(g2);
+    mTemperatureIRDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    mTemperatureIRDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTemperatureIRDevice());
+    objectTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFObjectTemperatureConfiguration());
+    g1.getETypeArguments().add(g2);
+    objectTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTemperatureIRDevice());
+    ambientTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    ambientTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickletBarometer());
     g1.getETypeArguments().add(g2);
     mBrickletBarometerEClass.getEGenericSuperTypes().add(g1);
@@ -4508,6 +4742,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ohtfSubDeviceAdminDeviceEClass.getEGenericSuperTypes().add(g1);
     tfNullConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfObjectTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfBrickDCConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfioActorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfInterruptListenerConfigurationEClass.getESuperTypes().add(this.getTFConfig());
@@ -4777,6 +5012,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getMBrickletTemperature__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(mBrickletTemperatureIREClass, MBrickletTemperatureIR.class, "MBrickletTemperatureIR", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletTemperatureIR_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_temperatureIR", 0, 1, MBrickletTemperatureIR.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(mTemperatureIRDeviceEClass, MTemperatureIRDevice.class, "MTemperatureIRDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMTemperatureIRDevice_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.1", 0, 1, MTemperatureIRDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(objectTemperatureEClass, ObjectTemperature.class, "ObjectTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getObjectTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "object_temperature", 0, 1, ObjectTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getObjectTemperature_Emissivity(), theEcorePackage.getEInt(), "emissivity", "65535", 0, 1, ObjectTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ambientTemperatureEClass, AmbientTemperature.class, "AmbientTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getAmbientTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "ambient_temperature", 0, 1, AmbientTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(mBrickletBarometerEClass, MBrickletBarometer.class, "MBrickletBarometer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletBarometer_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_barometer", 0, 1, MBrickletBarometer.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletBarometer_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.5", 0, 1, MBrickletBarometer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4862,6 +5110,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(tfBaseConfigurationEClass, TFBaseConfiguration.class, "TFBaseConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFBaseConfiguration_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFBaseConfiguration_CallbackPeriod(), theEcorePackage.getEInt(), "callbackPeriod", null, 0, 1, TFBaseConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfObjectTemperatureConfigurationEClass, TFObjectTemperatureConfiguration.class, "TFObjectTemperatureConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFObjectTemperatureConfiguration_Emissivity(), theEcorePackage.getEInt(), "emissivity", null, 0, 1, TFObjectTemperatureConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfBrickDCConfigurationEClass, TFBrickDCConfiguration.class, "TFBrickDCConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFBrickDCConfiguration_Velocity(), theEcorePackage.getEShort(), "velocity", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -5009,6 +5260,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE11);
     addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.PROXIMITY);
 
+    initEEnum(temperatureIRSubIdsEEnum, TemperatureIRSubIds.class, "TemperatureIRSubIds");
+    addEEnumLiteral(temperatureIRSubIdsEEnum, TemperatureIRSubIds.OBJECT_TEMPERATURE);
+    addEEnumLiteral(temperatureIRSubIdsEEnum, TemperatureIRSubIds.AMBIENT_TEMPERATURE);
+
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerDeviceEDataType, Device.class, "MTinkerDevice", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -5034,6 +5289,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletRemoteSwitchEDataType, BrickletRemoteSwitch.class, "TinkerBrickletRemoteSwitch", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletMotionDetectorEDataType, BrickletMotionDetector.class, "TinkerBrickletMotionDetector", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletMultiTouchEDataType, BrickletMultiTouch.class, "TinkerBrickletMultiTouch", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletTemperatureIREDataType, BrickletTemperatureIR.class, "TinkerBrickletTemperatureIR", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource

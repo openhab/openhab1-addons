@@ -58,6 +58,7 @@ import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletTemperature;
+import com.tinkerforge.BrickletTemperatureIR;
 import com.tinkerforge.IPConnection;
 import com.tinkerforge.NotConnectedException;
 
@@ -830,6 +831,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletMultiTouch");
               mDevice = factory.createMBrickletMultiTouch();
               mDevice.setDeviceIdentifier(BrickletMultiTouch.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletTemperatureIR.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletTemperatureIR");
+              mDevice = factory.createMBrickletTemperatureIR();
+              mDevice.setDeviceIdentifier(BrickletTemperatureIR.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

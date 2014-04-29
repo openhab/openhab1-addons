@@ -59,13 +59,16 @@ import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
@@ -179,7 +182,7 @@ public class TinkerforgeBinding extends
 		bricklet_temperature, bricklet_barometer, bricklet_ambient_light,
 		io_actuator, iosensor, bricklet_io16, bricklet_industrial_digital_4in,
 		remote_switch_a, remote_switch_b, remote_switch_c, bricklet_remote_switch,
-		bricklet_multitouch, electrode, proximity
+		bricklet_multitouch, electrode, proximity, object_temperature, ambient_temperature, bricklet_temperatureIR
 	}
 	
 	public TinkerforgeBinding() {
@@ -948,15 +951,17 @@ public class TinkerforgeBinding extends
 					LoggerConstants.CONFIG);
 			TFServoConfiguration servoConfiguration = modelFactory
 					.createTFServoConfiguration();
-			OHTFDevice<TFServoConfiguration, IO16SubIds> ohtfDevice = modelFactory
+			OHTFDevice<TFServoConfiguration, ServoSubIDs> ohtfDevice = modelFactory
 					.createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(ServoSubIDs.values()));
 			ohtfDevice.setTfConfig(servoConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
 		} else if (deviceType.equals(TypeKey.bricklet_distance_ir.name())
 				|| deviceType.equals(TypeKey.bricklet_humidity.name())
 				|| deviceType.equals(TypeKey.bricklet_temperature.name())
 				|| deviceType.equals(TypeKey.bricklet_barometer.name())
-				|| deviceType.equals(TypeKey.bricklet_ambient_light.name())) {
+				|| deviceType.equals(TypeKey.bricklet_ambient_light.name())
+				|| deviceType.equals(TypeKey.ambient_temperature.name())) {
 			logger.debug("{} setting base config",
 					LoggerConstants.CONFIG);
 			TFBaseConfiguration tfBaseConfiguration = modelFactory
@@ -964,12 +969,20 @@ public class TinkerforgeBinding extends
 			if (deviceType.equals(TypeKey.bricklet_barometer)) {
 				OHTFDevice<TFBaseConfiguration, BarometerSubIDs> ohtfDevice = modelFactory
 						.createOHTFDevice();
+	            ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(BarometerSubIDs.values()));
 				ohtfDevice.setTfConfig(tfBaseConfiguration);
 				fillupConfig(ohtfDevice, deviceConfig);
-
+            } else if (deviceType.equals(TypeKey.ambient_temperature.name())) {
+              OHTFDevice<TFBaseConfiguration, TemperatureIRSubIds> ohtfDevice =
+                  modelFactory.createOHTFDevice();
+              ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(TemperatureIRSubIds.values()));
+              ohtfDevice.setTfConfig(tfBaseConfiguration);
+              fillupConfig(ohtfDevice, deviceConfig);
 			} else {
 				OHTFDevice<TFBaseConfiguration, NoSubIds> ohtfDevice = modelFactory
 						.createOHTFDevice();
+	            ohtfDevice.getSubDeviceIds().addAll(
+                  Arrays.asList(NoSubIds.values()));
 				ohtfDevice.setTfConfig(tfBaseConfiguration);
 				fillupConfig(ohtfDevice, deviceConfig);
 			}
@@ -1072,6 +1085,14 @@ public class TinkerforgeBinding extends
             ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(MultiTouchSubIds.values()));
             ohtfDevice.setTfConfig(configuration);
             fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.object_temperature.name())){
+          logger.debug("{} setting TFObjectTemperatureConfiguration device_type {}",
+            LoggerConstants.CONFIG, deviceType);
+          TFObjectTemperatureConfiguration configuration = modelFactory.createTFObjectTemperatureConfiguration();
+          OHTFDevice<TFObjectTemperatureConfiguration,TemperatureIRSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+          ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(TemperatureIRSubIds.values()));
+          ohtfDevice.setTfConfig(configuration);
+          fillupConfig(ohtfDevice, deviceConfig);
         } else {
 			logger.debug("{} setting no tfConfig device_type {}",
 					LoggerConstants.CONFIG, deviceType);

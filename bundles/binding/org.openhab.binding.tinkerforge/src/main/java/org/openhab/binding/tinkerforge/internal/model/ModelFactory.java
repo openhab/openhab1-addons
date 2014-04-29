@@ -401,6 +401,33 @@ public interface ModelFactory extends EFactory
   MBrickletTemperature createMBrickletTemperature();
 
   /**
+   * Returns a new object of class '<em>MBricklet Temperature IR</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Temperature IR</em>'.
+   * @generated
+   */
+  MBrickletTemperatureIR createMBrickletTemperatureIR();
+
+  /**
+   * Returns a new object of class '<em>Object Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Object Temperature</em>'.
+   * @generated
+   */
+  ObjectTemperature createObjectTemperature();
+
+  /**
+   * Returns a new object of class '<em>Ambient Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Ambient Temperature</em>'.
+   * @generated
+   */
+  AmbientTemperature createAmbientTemperature();
+
+  /**
    * Returns a new object of class '<em>TF Base Configuration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -408,6 +435,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   TFBaseConfiguration createTFBaseConfiguration();
+
+  /**
+   * Returns a new object of class '<em>TF Object Temperature Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Object Temperature Configuration</em>'.
+   * @generated
+   */
+  TFObjectTemperatureConfiguration createTFObjectTemperatureConfiguration();
 
   /**
    * Returns a new object of class '<em>MBricklet Barometer</em>'.
