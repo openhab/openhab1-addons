@@ -104,6 +104,7 @@ public class ZWaveController {
 	private int deviceId = 0;
 	private int ZWaveLibraryType = 0;
 	private int sentDataPointer = 1;
+	private ZWaveDeviceType controllerType = ZWaveDeviceType.UNKNOWN;
 	
 	private int SOFCount = 0;
 	private int CANCount = 0;
@@ -243,6 +244,7 @@ public class ZWaveController {
 					this.zwaveNodes.put(nodeId, node);
 					node.advanceNodeStage(NodeStage.PROTOINFO);
 				}
+				this.controllerType = ((SerialApiGetInitDataMessageClass)processor).getNodeType();
 				break;
 			case SerialApiGetCapabilities:
 				this.serialAPIVersion = ((SerialApiGetCapabilitiesMessageClass)processor).getSerialAPIVersion();
@@ -620,6 +622,14 @@ public class ZWaveController {
 	public String getSerialAPIVersion() {
 		return serialAPIVersion;
 	}
+	
+    /**
+     * Gets the zWave Version of the controller.
+	 * @return the zWaveVersion
+	 */
+	public String getZWaveVersion() {
+		return zWaveVersion;
+	}
 
 	/**
 	 * Gets the Manufacturer ID of the controller. 
@@ -651,6 +661,14 @@ public class ZWaveController {
 	 */
 	public int getOwnNodeId() {
 		return ownNodeId;
+	}
+
+	/**
+	 * Gets the device type of the controller.
+	 * @return the device type
+	 */
+	public ZWaveDeviceType getControllerType() {
+		return controllerType;
 	}
 
 	/**

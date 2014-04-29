@@ -17,6 +17,7 @@ import java.util.TimerTask;
 import org.openhab.binding.zwave.internal.ZWaveNetworkMonitor;
 import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceType;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
@@ -370,6 +371,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					}
 				}
 
+				// Is this a controller
+				if(nodeId == zController.getOwnNodeId()) {
+					record = new OpenHABConfigurationRecord(domain + "controller/", "Controller");
+					records.add(record);
+				}
+
 				record = new OpenHABConfigurationRecord(domain + "neighbors/", "Neighbors");
 				record.addAction("Refresh", "Refresh");
 				records.add(record);
@@ -635,6 +642,33 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 					records.add(record);
 				}
+			} else if (arg.equals("controller/")) {
+				// Create the record
+				record = new OpenHABConfigurationRecord(domain, "Type", "Controller Type", true);
+				record.addValue(ZWaveDeviceType.PRIMARY.toString(), ZWaveDeviceType.PRIMARY.toString());
+				record.addValue(ZWaveDeviceType.SECONDARY.toString(), ZWaveDeviceType.SECONDARY.toString());
+				record.addValue(ZWaveDeviceType.SUC.toString(), ZWaveDeviceType.SUC.toString());
+
+				// Set the read-only if this isn't a controller!
+				switch(zController.getControllerType()) {
+				case SUC:
+				case PRIMARY:
+				case SECONDARY:
+					record.readonly = false;
+					break;
+				default:
+					record.readonly = true;
+					break;
+				}
+				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain, "APIVersion", "API Version", true);
+				record.value = zController.getSerialAPIVersion();
+				records.add(record);
+				
+				record = new OpenHABConfigurationRecord(domain, "ZWaveVersion", "ZWave Version", true);
+				record.value = zController.getZWaveVersion();
+				records.add(record);
 			}
 			
 			return records;
@@ -896,6 +930,14 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					this.zController.sendData(wakeupCommandClass.setInterval(Integer.parseInt(value)));
 					// And request a read-back
 					this.zController.sendData(wakeupCommandClass.getIntervalMessage());
+				}
+				if (splitDomain[2].equals("controller")) {
+					if(splitDomain[3].equals("Type")) {
+						ZWaveDeviceType type = ZWaveDeviceType.fromString(value);
+						logger.error("NODE {}: Setting controller type to {}", nodeId, type.toString());
+//						ZW_EnableSUC and ZW_SetSUCNodeID
+					}
+
 				}
 			} else if (splitDomain.length == 5) {
 				if (splitDomain[2].equals("associations")) {
