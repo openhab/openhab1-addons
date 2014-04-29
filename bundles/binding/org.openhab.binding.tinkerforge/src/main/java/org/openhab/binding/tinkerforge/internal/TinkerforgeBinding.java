@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -31,6 +30,7 @@ import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
@@ -49,6 +49,8 @@ import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds;
 import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
@@ -175,7 +177,8 @@ public class TinkerforgeBinding extends
 		servo, bricklet_distance_ir, brick_dc, bricklet_humidity, 
 		bricklet_temperature, bricklet_barometer, bricklet_ambient_light,
 		io_actuator, iosensor, bricklet_io16, bricklet_industrial_digital_4in,
-		remote_switch_a, remote_switch_b, remote_switch_c, bricklet_remote_switch
+		remote_switch_a, remote_switch_b, remote_switch_c, bricklet_remote_switch,
+		bricklet_multitouch, electrode, proximity
 	}
 	
 	public TinkerforgeBinding() {
@@ -1043,7 +1046,23 @@ public class TinkerforgeBinding extends
 					Arrays.asList(NoSubIds.values()));
 			ohtfDevice.setTfConfig(configuration);
 			fillupConfig(ohtfDevice, deviceConfig);
-		} else {
+		} else if (deviceType.equals(TypeKey.bricklet_multitouch.name())){
+          logger.debug("{} setting BrickletMultiTouchConfiguration device_type {}",
+            LoggerConstants.CONFIG, deviceType);
+          BrickletMultiTouchConfiguration configuration = modelFactory.createBrickletMultiTouchConfiguration();
+          OHTFDevice<BrickletMultiTouchConfiguration, MultiTouchSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+          ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(MultiTouchSubIds.values()));
+          ohtfDevice.setTfConfig(configuration);
+          fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.electrode.name()) || deviceType.equals(TypeKey.proximity.name())) {
+            logger.debug("{} setting MultiTouchDeviceConfiguration device_type {}",
+          LoggerConstants.CONFIG, deviceType);
+            MultiTouchDeviceConfiguration configuration = modelFactory.createMultiTouchDeviceConfiguration();
+            OHTFDevice<MultiTouchDeviceConfiguration, MultiTouchSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(MultiTouchSubIds.values()));
+            ohtfDevice.setTfConfig(configuration);
+            fillupConfig(ohtfDevice, deviceConfig);
+        } else {
 			logger.debug("{} setting no tfConfig device_type {}",
 					LoggerConstants.CONFIG, deviceType);
 			logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);

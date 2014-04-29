@@ -764,6 +764,12 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.k8055</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
 
         <dependency>
             <groupId>org.openhab.io</groupId>
@@ -865,6 +871,12 @@
         <dependency>
             <groupId>org.openhab.persistence</groupId>
             <artifactId>org.openhab.persistence.mqtt</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.persistence</groupId>
+            <artifactId>org.openhab.persistence.mongodb</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>

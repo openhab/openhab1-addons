@@ -30,6 +30,7 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue
 import com.tinkerforge.BrickletIO16
 import com.tinkerforge.BrickletRemoteSwitch
 import com.tinkerforge.BrickletMotionDetector
+import com.tinkerforge.BrickletMultiTouch
 
 /**
  * @author Theo Weiss
@@ -59,6 +60,7 @@ type MTinkerBrickletAmbientLight wraps BrickletAmbientLight
 type MTinkerBrickletLCD20x4 wraps BrickletLCD20x4
 type TinkerBrickletRemoteSwitch wraps BrickletRemoteSwitch
 type TinkerBrickletMotionDetector wraps BrickletMotionDetector
+type TinkerBrickletMultiTouch wraps BrickletMultiTouch
 type Enum wraps Enum
 
 class Ecosystem {
@@ -252,6 +254,27 @@ class DigitalSensor extends IODevice, MSensor<DigitalValue>,
 	boolean pullUpResistorEnabled
 	char port
 	int pin
+}
+
+class MBrickletMultiTouch extends MDevice<TinkerBrickletMultiTouch>,
+        MSubDeviceHolder<MultiTouchDevice>, MTFConfigConsumer<BrickletMultiTouchConfiguration>{
+    readonly String deviceType = "bricklet_multitouch"
+    Boolean recalibrate
+    Short sensitivity
+}
+
+class MultiTouchDevice extends  MSubDevice<MBrickletMultiTouch>,
+    MSensor<DigitalValue>, MTFConfigConsumer<MultiTouchDeviceConfiguration>{
+    int pin
+    Boolean disableElectrode
+}
+
+class Electrode extends MultiTouchDevice {
+    readonly String deviceType = "electrode"
+}
+
+class Proximity extends MultiTouchDevice {
+    readonly String deviceType = "proximity"
 }
 
 class MBrickletMotionDetector extends MDevice<TinkerBrickletMotionDetector>, MSensor<DigitalValue>{
@@ -468,6 +491,15 @@ class RemoteSwitchCConfiguration extends TFConfig{
 
 }
 
+class MultiTouchDeviceConfiguration extends TFConfig {
+    Boolean disableElectrode
+}
+
+class BrickletMultiTouchConfiguration extends TFConfig {
+    Boolean recalibrate
+    Short sensitivity
+}
+
 enum NoSubIds {
 	
 }
@@ -505,4 +537,10 @@ enum LCDButtonSubIds {
 
 enum LCDBacklightSubIds {
 	BACKLIGHT
+}
+
+enum MultiTouchSubIds {
+    ELECTRODE0, ELECTRODE1, ELECTRODE2, ELECTRODE3, ELECTRODE4,
+    ELECTRODE5, ELECTRODE6, ELECTRODE7, ELECTRODE8, ELECTRODE9,
+    ELECTRODE10, ELECTRODE11, PROXIMITY
 }
