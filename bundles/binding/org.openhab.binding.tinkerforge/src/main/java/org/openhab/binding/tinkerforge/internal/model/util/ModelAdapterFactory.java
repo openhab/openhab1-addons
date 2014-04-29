@@ -387,6 +387,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMBrickletAmbientLightAdapter();
       }
       @Override
+      public Adapter caseMBrickletSoundIntensity(MBrickletSoundIntensity object)
+      {
+        return createMBrickletSoundIntensityAdapter();
+      }
+      @Override
       public Adapter caseMBrickletLCD20x4(MBrickletLCD20x4 object)
       {
         return createMBrickletLCD20x4Adapter();
@@ -1514,6 +1519,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMBrickletAmbientLightAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity <em>MBricklet Sound Intensity</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity
+   * @generated
+   */
+  public Adapter createMBrickletSoundIntensityAdapter()
   {
     return null;
   }

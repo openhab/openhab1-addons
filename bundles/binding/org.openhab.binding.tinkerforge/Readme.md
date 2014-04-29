@@ -85,9 +85,51 @@
         Text item=electrode10
         Text item=electrode11
         Text item=proximity
+        ```
+    * Bricklet TemperatureIR
+       * openhab.cfg (optional)
        ```
+        tinkerforge:objIR.uid=kr2
+        tinkerforge:objIR.subid=object_temperature
+        tinkerforge:objIR.type=object_temperature
+        tinkerforge:objIR.emissivity=65535
+        tinkerforge:objIR.threshold=0
+        
+        tinkerforge:ambIR.uid=kr2
+        tinkerforge:ambIR.subid=ambient_temperature
+        tinkerforge:ambIR.type=ambient_temperature
+        tinkerforge:ambIR.threshold=0
+        ```
+        * items
+        ```
+        Number AmbientTemperature                 "AmbientTemperature [%.1f C]"  { tinkerforge="uid=kr2, subid=ambient_temperature" }
+        Number ObjectTemperature                 "ObjectTemperature [%.1f C]"  { tinkerforge="uid=kr2, subid=object_temperature" }
+        ```
+        sitemap
+        ```
+        Text item=AmbientTemperature
+        Text item=ObjectTemperature
+       ```
+    * Bricklet SoundIntensity
+       * openhab.cfg (optional)
+        ```
+            tinkerforge:sound.uid=iQE
+            tinkerforge:sound.type=bricklet_soundintensity
+            tinkerforge:sound.threshold=1
+            tinkerforge:sound.callbackPeriod=50
+        ```
+        * items
+        ```
+        Number SoundIntensity                 "Sound [%.1f]"  { tinkerforge="uid=iQE" }
+        ```
+        * sitemap
+        ```
+        Text item=SoundIntensity
+        ```
 # other changes
  ## 1.4.0
    * updated Tinkerforge API to 2.0.12
  ## 1.5.0
    * Tinkerforge API 2.1.0.2
+   * Threshold values now have the unit as the sensor value (incompatible change, you have to update your openhab.cfg)
+   * polling is only done for devices which don't support CallbackListeners / InterruptListeners

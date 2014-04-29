@@ -643,6 +643,18 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_SOUND_INTENSITY:
+      {
+        MBrickletSoundIntensity mBrickletSoundIntensity = (MBrickletSoundIntensity)theEObject;
+        T result = caseMBrickletSoundIntensity(mBrickletSoundIntensity);
+        if (result == null) result = caseMDevice(mBrickletSoundIntensity);
+        if (result == null) result = caseMSensor(mBrickletSoundIntensity);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletSoundIntensity);
+        if (result == null) result = caseCallbackListener(mBrickletSoundIntensity);
+        if (result == null) result = caseMBaseDevice(mBrickletSoundIntensity);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_LCD2_0X4:
       {
         MBrickletLCD20x4 mBrickletLCD20x4 = (MBrickletLCD20x4)theEObject;
@@ -1895,6 +1907,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMBrickletAmbientLight(MBrickletAmbientLight object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Sound Intensity</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Sound Intensity</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletSoundIntensity(MBrickletSoundIntensity object)
   {
     return null;
   }

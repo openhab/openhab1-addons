@@ -473,6 +473,15 @@ public interface ModelFactory extends EFactory
   MBrickletAmbientLight createMBrickletAmbientLight();
 
   /**
+   * Returns a new object of class '<em>MBricklet Sound Intensity</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Sound Intensity</em>'.
+   * @generated
+   */
+  MBrickletSoundIntensity createMBrickletSoundIntensity();
+
+  /**
    * Returns a new object of class '<em>MBricklet LCD2 0x4</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

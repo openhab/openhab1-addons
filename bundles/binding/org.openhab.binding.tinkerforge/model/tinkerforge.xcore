@@ -33,6 +33,7 @@ import com.tinkerforge.BrickletRemoteSwitch
 import com.tinkerforge.BrickletMotionDetector
 import com.tinkerforge.BrickletMultiTouch
 import com.tinkerforge.BrickletTemperatureIR
+import com.tinkerforge.BrickletSoundIntensity
 import java.math.BigDecimal
 
 /**
@@ -65,6 +66,7 @@ type TinkerBrickletRemoteSwitch wraps BrickletRemoteSwitch
 type TinkerBrickletMotionDetector wraps BrickletMotionDetector
 type TinkerBrickletMultiTouch wraps BrickletMultiTouch
 type TinkerBrickletTemperatureIR wraps BrickletTemperatureIR
+type TinkerBrickletSoundIntensity wraps BrickletSoundIntensity
 type Enum wraps Enum
 
 class Ecosystem {
@@ -390,6 +392,14 @@ class MBrickletAmbientLight extends MDevice<MTinkerBrickletAmbientLight>,
 	readonly String deviceType = "bricklet_ambient_light"
 	BigDecimal threshold = "1"
 	op void init(){}
+}
+
+class MBrickletSoundIntensity extends MDevice<TinkerBrickletSoundIntensity>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_soundintensity"
+    BigDecimal threshold = "0"
+    op void init(){}
 }
 
 class MBrickletLCD20x4 extends MDevice<MTinkerBrickletLCD20x4>, MTextActor, 
