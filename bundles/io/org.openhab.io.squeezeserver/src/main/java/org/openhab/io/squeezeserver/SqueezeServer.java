@@ -43,19 +43,19 @@ public class SqueezeServer implements ManagedService {
 	// TODO: should probably add some sort of watchdog timer to check the 'listener' thread
 	//		 periodically so we can re-connect without having to wait for a sendCommand()
 	
-	private static Logger logger = LoggerFactory.getLogger(SqueezeServer.class);
+	private static final Logger logger = LoggerFactory.getLogger(SqueezeServer.class);
 
     // configuration defaults for optional properties
-	private static int DEFAULT_CLI_PORT = 9090;
-	private static int DEFAULT_WEB_PORT = 9000;
+	private static final int DEFAULT_CLI_PORT = 9090;
+	private static final int DEFAULT_WEB_PORT = 9000;
 
 	/// regEx to validate SqueezeServer config <code>'^(squeeze:)(host|cliport|webport)=.+$'</code>
-	private final Pattern SERVER_CONFIG_PATTERN = Pattern.compile("^(server)\\.(host|cliport|webport)$");
+	private static final Pattern SERVER_CONFIG_PATTERN = Pattern.compile("^(server)\\.(host|cliport|webport)$");
 	
 	// regEx to validate a mpdPlayer config <code>'^(.*?)\\.(id)$'</code>
-	private final Pattern PLAYER_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(id)$");
+	private static final Pattern PLAYER_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(id)$");
 	
-	private final static String NEW_LINE = System.getProperty("line.separator");
+	private static final String NEW_LINE = System.getProperty("line.separator");
 	
 	// the value by which the volume is changed by each INCREASE or DECREASE-Event 
 	private static final int VOLUME_CHANGE_SIZE = 5;
@@ -63,30 +63,38 @@ public class SqueezeServer implements ManagedService {
 	// connection properties and client socket
     private String host;
     private int cliPort;
-    private int webPort;	// unused - needed if we want to bring back artwork via the Squeeze Server web server
+    private int webPort;
     private Socket clientSocket;
 
     // configured players - keyed by playerId and MAC address
-	private Map<String, SqueezePlayer> playersById = new ConcurrentHashMap<String, SqueezePlayer>();
-	private Map<String, SqueezePlayer> playersByMacAddress = new ConcurrentHashMap<String, SqueezePlayer>();
+	private final Map<String, SqueezePlayer> playersById = new ConcurrentHashMap<String, SqueezePlayer>();
+	private final Map<String, SqueezePlayer> playersByMacAddress = new ConcurrentHashMap<String, SqueezePlayer>();
     
     // listener thread for processing server messages
     private final SqueezeServerListener listener = new SqueezeServerListener();
     
-    public boolean isConnected() {
-        return (clientSocket != null && clientSocket.isConnected());
+    public synchronized boolean isConnected() {
+  		return (clientSocket != null && clientSocket.isConnected());
     }
 
-	public List<SqueezePlayer> getPlayers() {
+	public synchronized List<SqueezePlayer> getPlayers() {
 		return new ArrayList<SqueezePlayer>(playersById.values());
 	}
 
-	public SqueezePlayer getPlayer(String playerId) {
+	public synchronized SqueezePlayer getPlayer(String playerId) {
 		if (!playersById.containsKey(playerId)) {
 			logger.warn("No player exists for '{}'", playerId);
 			return null;
 		}
 		return playersById.get(playerId);
+	}
+
+	public synchronized SqueezePlayer getPlayerByMacAddress(String macAddress) {
+		if (!playersByMacAddress.containsKey(macAddress)) {
+			logger.warn("No player exists for MAC {}", macAddress);
+			return null;
+		}
+		return playersByMacAddress.get(macAddress);
 	}
 
 	public void mute(String playerId) {
@@ -234,7 +242,7 @@ public class SqueezeServer implements ManagedService {
 	/**
 	 * Send a command to the Squeeze Server.
 	 */
-	public void sendCommand(String command) {
+	private synchronized void sendCommand(String command) {
 		if (!isConnected()) {
 			logger.debug("No connection to SqueezeServer, will attempt to reconnect now...");
 			connect();
@@ -254,7 +262,7 @@ public class SqueezeServer implements ManagedService {
 	}
 	
 	@Override
-	public void updated(Dictionary<String, ?> config)
+	public synchronized void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
 		// disconnect first in case the config has been changed for an existing instance
         disconnect();
@@ -314,7 +322,7 @@ public class SqueezeServer implements ManagedService {
             throw new ConfigurationException("host", "No Squeeze Server host specified - this property is mandatory");
         if (playersById.size() == 0)
             throw new ConfigurationException("host", "No Squeezebox players specified - there must be at least one player");
-            
+        
         // attempt to connect using our new config
         connect();
 	}
@@ -330,16 +338,17 @@ public class SqueezeServer implements ManagedService {
     }
 
     private void disconnect() {
-		if (isConnected()) {
-			try {
-		  		listener.setInterrupted(true);
-				clientSocket.close(); 
-				logger.debug("Squeeze Server connection stopped.");
-			} catch (IOException e) {
-				logger.error("Failed to disconnect from SqueezeServer at " + host + ":" + cliPort, e);
-			} finally {
-				clientSocket = null;
-			}
+		if (!isConnected())
+			return;
+
+		try {
+	  		listener.setInterrupted(true);
+			clientSocket.close(); 
+			logger.debug("Squeeze Server connection stopped.");
+		} catch (IOException e) {
+			logger.error("Failed to disconnect from SqueezeServer at " + host + ":" + cliPort, e);
+		} finally {
+			clientSocket = null;
 		}
     }
         
@@ -435,7 +444,7 @@ public class SqueezeServer implements ManagedService {
 					continue;
 
 				// see if this player exists in our config
-				SqueezePlayer player = playersByMacAddress.get(macAddress);
+				SqueezePlayer player = getPlayerByMacAddress(macAddress);
 				if (player == null)
 					continue;
 				
@@ -465,7 +474,7 @@ public class SqueezeServer implements ManagedService {
 			}
 			
 			// get the MAC address 
-			SqueezePlayer player = playersByMacAddress.get(decode(messageParts[0]));
+			SqueezePlayer player = getPlayerByMacAddress(decode(messageParts[0]));
 			if (player == null) {
 				logger.warn("Status message received for MAC address {} which is not configured in openHAB. Ignoring.", messageParts[0]);
 				return;
@@ -481,7 +490,7 @@ public class SqueezeServer implements ManagedService {
 			} else if (messageType.equals("prefset")) {
 				handlePrefsetMessage(player, messageParts);
 			} else if (messageType.equals("ir")) {
-					player.setIrCode(messageParts[2]);
+				player.setIrCode(messageParts[2]);
 			} else if (messageType.equals("power")) {
 				// ignore these for now
 				//player.setPowered(messageParts[1].equals("1"));
