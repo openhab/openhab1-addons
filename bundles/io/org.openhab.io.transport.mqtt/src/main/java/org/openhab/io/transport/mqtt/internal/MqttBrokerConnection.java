@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -25,7 +26,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
  * 60 seconds.
  * 
  * @author Davy Vanherbergen
+ * @author Ben Jones
  * @since 1.3.0
  */
 public class MqttBrokerConnection implements MqttCallback {
@@ -70,11 +71,11 @@ public class MqttBrokerConnection implements MqttCallback {
 
 	private MqttClient client;
 
-	private boolean started;
+	private volatile boolean started;
 
-	private List<MqttMessageConsumer> consumers = new ArrayList<MqttMessageConsumer>();
-
-	private List<MqttMessageProducer> producers = new ArrayList<MqttMessageProducer>();
+	private final List<MqttMessageConsumer> consumers = new ArrayList<MqttMessageConsumer>();
+	private final List<MqttMessageProducer> producers = new ArrayList<MqttMessageProducer>();
+	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
 	private Timer reconnectTimer;
 
@@ -87,7 +88,7 @@ public class MqttBrokerConnection implements MqttCallback {
 	public MqttBrokerConnection(String name) {
 		this.name = name;
 	}
-
+	
 	/**
 	 * Start the connection. This will try to open an MQTT client connection to
 	 * the MQTT broker and notify all publishers and subscribers on this
@@ -97,33 +98,55 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *             If connection could not be created.
 	 */
 	public void start() throws Exception {
-
 		if (StringUtils.isEmpty(url)) {
 			logger.debug("No url defined for MQTT broker connection '{}'. Not starting.", name);
 			return;
 		}
 
-		logger.info("Starting MQTT broker connection '{}'", name);
-		openConnection();
-
+		// we are active, so stop trying to reconnect
 		if (reconnectTimer != null) {
-			// we are active, so stop trying to reconnect
 			reconnectTimer.cancel();
+			reconnectTimer = null;
 		}
 
-		// start all consumers
-		for (MqttMessageConsumer c : consumers) {
-			startConsumer(c);
+		logger.info("Starting MQTT broker connection '{}'", name);
+		try {
+			openConnection();
+		} catch (Exception e) {
+			logger.error("Error starting connection to broker", e);
 		}
-
-		// start all producers
-		for (MqttMessageProducer p : producers) {
-			startProducer(p);
-		}
-
 		started = true;
+		
+		lock.readLock().lock();
+		try {
+			
+			// start all consumers
+			for (MqttMessageConsumer c : consumers) {
+				startConsumer(c);
+			}
+
+			// start all producers
+			for (MqttMessageProducer p : producers) {
+				startProducer(p);
+			}
+		} finally {
+			lock.readLock().unlock();
+		}
 	}
 
+	/**
+	 * Close the MQTT connection.
+	 */
+	public void close() {
+		logger.info("Closing connection to broker '{}'", name);
+		try {
+			closeConnection();
+		} catch (Exception e) {
+			logger.error("Error closing connection to broker", e);
+		}
+		started = false;
+	}
+	
 	/**
 	 * @return name for the connection as defined in openhab.cfg.
 	 */
@@ -325,6 +348,14 @@ public class MqttBrokerConnection implements MqttCallback {
 		client.connect(options);
 	}
 
+	private void closeConnection() throws Exception {
+		if (client == null || !client.isConnected()) {
+			return;
+		}		
+
+		client.disconnect();
+	}
+
 	/**
 	 * Create a trust manager which is not too concerned about validating
 	 * certificates.
@@ -366,10 +397,31 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *            to add.
 	 */
 	public void addProducer(MqttMessageProducer publisher) {
-		producers.add(publisher);
-		if (started) {
-			startProducer(publisher);
+		lock.writeLock().lock();
+		try {			
+			producers.add(publisher);
+		} finally {
+			lock.writeLock().unlock();
 		}
+
+		startProducer(publisher);
+	}
+
+	/**
+	 * Remove a previously registered producer from this connection.
+	 * 
+	 * @param publisher
+	 *            to remove.
+	 */
+	public void removeProducer(MqttMessageProducer publisher) {
+		lock.writeLock().lock();
+		try {			
+			producers.remove(publisher);
+		} finally {
+			lock.writeLock().unlock();
+		}
+
+		stopProducer(publisher);
 	}
 
 	/**
@@ -379,16 +431,17 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *            to start.
 	 */
 	private void startProducer(MqttMessageProducer publisher) {
-
-		logger.trace("Starting message producer for broker '{}'", name);
-
+		if (!started)
+			return;
+		
+		logger.debug("Starting message producer for broker '{}'", name);
 		publisher.setSenderChannel(new MqttSenderChannel() {
 
 			@Override
 			public void publish(String topic, byte[] payload) throws Exception {
 
 				if (!started) {
-					logger.warn("Broker connection not started. Cannot publish message to topic '{}'", topic);
+					logger.warn("Broker connection not started. Cannot publish message to topic '{}'.", topic);
 					return;
 				}
 
@@ -409,10 +462,13 @@ public class MqttBrokerConnection implements MqttCallback {
 						logger.error("Did not receive completion message within timeout limit whilst publishing to topic '{}'", topic);
 					}
 				}
-
 			}
 		});
-
+	}
+	
+	private void stopProducer(MqttMessageProducer publisher) {
+		logger.debug("Stopping message producer for broker '{}'", name);
+		publisher.setSenderChannel(null);		
 	}
 
 	/**
@@ -422,40 +478,14 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *            to add.
 	 */
 	public void addConsumer(MqttMessageConsumer subscriber) {
-		consumers.add(subscriber);
-		if (started) {
-			startConsumer(subscriber);
+		lock.writeLock().lock();
+		try {			
+			consumers.add(subscriber);
+		} finally {
+			lock.writeLock().unlock();
 		}
-	}
 
-	/**
-	 * Start a registered consumer, so that it can start receiving messages.
-	 * 
-	 * @param subscriber
-	 *            to start.
-	 */
-	private void startConsumer(MqttMessageConsumer subscriber) {
-
-		String topic = subscriber.getTopic();
-		logger.debug("Starting message consumer for broker '{}' on topic '{}'", name, topic);
-
-		try {
-			client.subscribe(topic, qos);
-		} catch (Exception e) {
-			logger.error("Error starting consumer", e);
-		}
-	}
-
-	/**
-	 * Remove a previously registered producer from this connection.
-	 * 
-	 * @param publisher
-	 *            to remove.
-	 */
-	public void removeProducer(MqttMessageProducer publisher) {
-		logger.debug("Removing message producer for broker '{}'", name);
-		publisher.setSenderChannel(null);
-		producers.remove(publisher);
+		startConsumer(subscriber);
 	}
 
 	/**
@@ -465,33 +495,50 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *            to remove.
 	 */
 	public void removeConsumer(MqttMessageConsumer subscriber) {
-		logger.debug("Unsubscribing message consumer for topic '{}' from broker '{}'", subscriber.getTopic(), name);
-		try {
-			if (started) {
-				client.unsubscribe(subscriber.getTopic());
-			}
-		} catch (Exception e) {
-			logger.error("Error unsubscribing topic from broker", e);
+		lock.writeLock().lock();
+		try {			
+			consumers.remove(subscriber);
+		} finally {
+			lock.writeLock().unlock();
 		}
-		consumers.remove(subscriber);
 
+		stopConsumer(subscriber);
 	}
 
 	/**
-	 * Close the MQTT connection.
+	 * Start a registered consumer, so that it can start receiving messages.
+	 * 
+	 * @param subscriber
+	 *            to start.
 	 */
-	public void close() {
-		logger.debug("Closing connection to broker '{}'", name);
-		try {
-			if (started) {
-				client.disconnect();
-			}
-		} catch (MqttException e) {
-			logger.error("Error closing connection to broker", e);
-		}
-		started = false;
-	}
+	private void startConsumer(MqttMessageConsumer subscriber) {
+		if (!started)
+			return;
+		
+		String topic = subscriber.getTopic();
+		logger.debug("Starting message consumer for broker '{}' on topic '{}'", name, topic);
 
+		try {
+			client.subscribe(topic, qos);
+		} catch (Exception e) {
+			logger.error("Error subscribing topic to broker", e);
+		}
+	}
+	
+	private void stopConsumer(MqttMessageConsumer subscriber) {
+		if (!started)
+			return;
+		
+		String topic = subscriber.getTopic();
+		logger.debug("Stopping message consumer for broker '{}' on topic '{}'", name, topic);
+		
+		try {
+			client.unsubscribe(topic);
+		} catch (Exception e) {
+			logger.error("Error unsubscribing topic from broker", e);
+		}
+	}
+	
 	@Override
 	public void connectionLost(Throwable t) {		
 		logger.error("MQTT connection to broker was lost", t);
@@ -502,7 +549,6 @@ public class MqttBrokerConnection implements MqttCallback {
 		MqttBrokerConnectionHelper helper = new MqttBrokerConnectionHelper(this);
 		reconnectTimer = new Timer(true);
 		reconnectTimer.schedule(helper, 10000, RECONNECT_FREQUENCY);
-
 	}
 
 
@@ -513,12 +559,17 @@ public class MqttBrokerConnection implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
+		logger.debug("Received message on topic '{}' : {}", topic, new String(message.getPayload()));
 
-		logger.trace("Received message on topic '{}' : {}", topic, new String(message.getPayload()));
-		for (MqttMessageConsumer consumer : consumers) {
-			if (isTopicMatch(topic, consumer.getTopic())) {
-				consumer.processMessage(topic, message.getPayload());
+		lock.readLock().lock();
+		try {			
+			for (MqttMessageConsumer consumer : consumers) {
+				if (isTopicMatch(topic, consumer.getTopic())) {
+					consumer.processMessage(topic, message.getPayload());
+				}
 			}
+		} finally {
+			lock.readLock().unlock();
 		}
 	}
 
@@ -552,7 +603,5 @@ public class MqttBrokerConnection implements MqttCallback {
 				return false;
 			}
 		}
-
 	}
-
 }
