@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.withings.internal
+Ignore-Package: org.openhab.binding.withings.internal
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB Withings Binding
+Bundle-SymbolicName: org.openhab.binding.withings
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.5.0.qualifier
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the Withings binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.service,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Export-Package: org.openhab.binding.withings
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/*.xml
+Bundle-ClassPath: .,
+ lib/signpost-core-1.2.1.2.jar,
+ lib/gson-2.2.4.jar
+Require-Bundle: org.apache.commons.codec;bundle-version="1.4.0"
