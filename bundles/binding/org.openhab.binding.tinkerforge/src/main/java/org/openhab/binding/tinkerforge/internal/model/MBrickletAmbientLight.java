@@ -49,7 +49,7 @@ public interface MBrickletAmbientLight extends MDevice<BrickletAmbientLight>, MS
 
   /**
    * Returns the value of the '<em><b>Threshold</b></em>' attribute.
-   * The default value is <code>"0.5"</code>.
+   * The default value is <code>"1"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Threshold</em>' attribute isn't clear,
@@ -59,7 +59,7 @@ public interface MBrickletAmbientLight extends MDevice<BrickletAmbientLight>, MS
    * @return the value of the '<em>Threshold</em>' attribute.
    * @see #setThreshold(BigDecimal)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAmbientLight_Threshold()
-   * @model default="0.5" unique="false"
+   * @model default="1" unique="false"
    * @generated
    */
   BigDecimal getThreshold();

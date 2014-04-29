@@ -330,7 +330,7 @@ public class MBrickletAmbientLightImpl extends MinimalEObjectImpl.Container impl
    * @generated
    * @ordered
    */
-  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("0.5");
+  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("1");
 
   /**
    * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.

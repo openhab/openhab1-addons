@@ -345,7 +345,7 @@ class MBrickletTemperature extends MDevice<MTinkerBrickletTemperature>,
 		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
 		CallbackListener {
 	readonly String deviceType = "bricklet_temperature"
-	BigDecimal threshold = "0.05"
+	BigDecimal threshold = "0.1"
 	op void init(){}
 }
 
@@ -374,7 +374,7 @@ class MBrickletBarometer extends MDevice<MTinkerBrickletBarometer>,
 		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
 		MSubDeviceHolder<MBarometerTemperature>, CallbackListener {
 	readonly String deviceType = "bricklet_barometer"
-	BigDecimal threshold = "0.5"
+	BigDecimal threshold = "1"
 	op void init(){}
 }
 
@@ -388,7 +388,7 @@ class MBrickletAmbientLight extends MDevice<MTinkerBrickletAmbientLight>,
 		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
 		CallbackListener {
 	readonly String deviceType = "bricklet_ambient_light"
-	BigDecimal threshold = "0.5"
+	BigDecimal threshold = "1"
 	op void init(){}
 }
 

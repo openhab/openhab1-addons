@@ -52,7 +52,7 @@ public interface MBrickletTemperature extends MDevice<BrickletTemperature>, MSen
 
   /**
    * Returns the value of the '<em><b>Threshold</b></em>' attribute.
-   * The default value is <code>"0.05"</code>.
+   * The default value is <code>"0.1"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Threshold</em>' attribute isn't clear,
@@ -62,7 +62,7 @@ public interface MBrickletTemperature extends MDevice<BrickletTemperature>, MSen
    * @return the value of the '<em>Threshold</em>' attribute.
    * @see #setThreshold(BigDecimal)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletTemperature_Threshold()
-   * @model default="0.05" unique="false"
+   * @model default="0.1" unique="false"
    * @generated
    */
   BigDecimal getThreshold();

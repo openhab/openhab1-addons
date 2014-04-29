@@ -332,7 +332,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * @generated
    * @ordered
    */
-  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("0.05");
+  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("0.1");
 
   /**
    * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
