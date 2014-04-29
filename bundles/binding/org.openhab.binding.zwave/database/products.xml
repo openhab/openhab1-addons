@@ -255,6 +255,16 @@
 		<Product>
 			<Reference>
 				<Type>0002</Type>
+				<Id>0036</Id>
+			</Reference>
+			</Reference>
+			<Model>DSB54</Model>
+			<Label lang="en">Recessed Door/Window sensor</Label>
+			<ConfigFile>aeon/dsb54.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
 				<Id>0004</Id>
 			</Reference>
 			<Reference>
