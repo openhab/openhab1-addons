@@ -115,10 +115,10 @@ public class MqttBrokerConnection implements MqttCallback {
 		} catch (Exception e) {
 			logger.error("Error starting connection to broker", e);
 		}
-		started = true;
 		
 		lock.readLock().lock();
 		try {
+			started = true;
 			
 			// start all consumers
 			for (MqttMessageConsumer c : consumers) {
@@ -400,11 +400,10 @@ public class MqttBrokerConnection implements MqttCallback {
 		lock.writeLock().lock();
 		try {			
 			producers.add(publisher);
+			startProducer(publisher);
 		} finally {
 			lock.writeLock().unlock();
 		}
-
-		startProducer(publisher);
 	}
 
 	/**
@@ -417,11 +416,10 @@ public class MqttBrokerConnection implements MqttCallback {
 		lock.writeLock().lock();
 		try {			
 			producers.remove(publisher);
+			stopProducer(publisher);
 		} finally {
 			lock.writeLock().unlock();
 		}
-
-		stopProducer(publisher);
 	}
 
 	/**
@@ -481,11 +479,10 @@ public class MqttBrokerConnection implements MqttCallback {
 		lock.writeLock().lock();
 		try {			
 			consumers.add(subscriber);
+			startConsumer(subscriber);
 		} finally {
 			lock.writeLock().unlock();
 		}
-
-		startConsumer(subscriber);
 	}
 
 	/**
@@ -498,11 +495,10 @@ public class MqttBrokerConnection implements MqttCallback {
 		lock.writeLock().lock();
 		try {			
 			consumers.remove(subscriber);
+			stopConsumer(subscriber);
 		} finally {
 			lock.writeLock().unlock();
 		}
-
-		stopConsumer(subscriber);
 	}
 
 	/**
@@ -542,10 +538,9 @@ public class MqttBrokerConnection implements MqttCallback {
 	@Override
 	public void connectionLost(Throwable t) {		
 		logger.error("MQTT connection to broker was lost", t);
-		
 		started = false;
-		logger.info("Starting connection helper to periodically try restore connection to broker '{}'", name);
 
+		logger.info("Starting connection helper to periodically try restore connection to broker '{}'", name);
 		MqttBrokerConnectionHelper helper = new MqttBrokerConnectionHelper(this);
 		reconnectTimer = new Timer(true);
 		reconnectTimer.schedule(helper, 10000, RECONNECT_FREQUENCY);

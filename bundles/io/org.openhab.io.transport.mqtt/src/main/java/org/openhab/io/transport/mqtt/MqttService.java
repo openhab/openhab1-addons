@@ -69,7 +69,7 @@ public class MqttService implements ManagedService {
 				}
 	
 				String value = (String) properties.get(key);
-				String name = subkeys[0].toLowerCase();
+				String brokerName = subkeys[0];
 				String property = subkeys[1];
 	
 				if (StringUtils.isBlank(value)) {
@@ -79,12 +79,8 @@ public class MqttService implements ManagedService {
 					logger.trace("Processing property: {} = {}", key, value);
 				}
 	
-				MqttBrokerConnection connection = brokerConnections.get(name);
-				if (connection == null) {
-					connection = new MqttBrokerConnection(name);
-					brokerConnections.put(name, connection);
-				}
-	
+				MqttBrokerConnection connection = getConnection(brokerName);
+
 				if (property.equals("url")) {
 					connection.setUrl(value);
 				} else if (property.equals("user")) {
@@ -147,11 +143,11 @@ public class MqttService implements ManagedService {
 	 */
 	private MqttBrokerConnection getConnection(String brokerName) {	
 		synchronized (lock) {
-			String key = brokerName.toLowerCase();
-			if (!brokerConnections.containsKey(key)) {
-				brokerConnections.put(key, new MqttBrokerConnection(brokerName));
+			String brokerKey = brokerName.toLowerCase();
+			if (!brokerConnections.containsKey(brokerKey)) {
+				brokerConnections.put(brokerKey, new MqttBrokerConnection(brokerName));
 			}
-			return brokerConnections.get(key);
+			return brokerConnections.get(brokerKey);
 		}
 	}
 
