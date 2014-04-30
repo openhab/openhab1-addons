@@ -18,14 +18,15 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture#getThreshold <em>Threshold</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture#getMovingAverage <em>Moving Average</em>}</li>
  * </ul>
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletMoisture()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletMoisture> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.TinkerBrickletMoisture> org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
-public interface MBrickletMoisture extends MDevice<BrickletMoisture>, MSensor<DecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, CallbackListener
+public interface MBrickletMoisture extends MDevice<BrickletMoisture>, MSensor<DecimalValue>, MTFConfigConsumer<TFMoistureBrickletConfiguration>, CallbackListener
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
@@ -69,6 +70,33 @@ public interface MBrickletMoisture extends MDevice<BrickletMoisture>, MSensor<De
    * @generated
    */
   void setThreshold(BigDecimal value);
+
+  /**
+   * Returns the value of the '<em><b>Moving Average</b></em>' attribute.
+   * The default value is <code>"100"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Moving Average</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Moving Average</em>' attribute.
+   * @see #setMovingAverage(Short)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletMoisture_MovingAverage()
+   * @model default="100" unique="false"
+   * @generated
+   */
+  Short getMovingAverage();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture#getMovingAverage <em>Moving Average</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Moving Average</em>' attribute.
+   * @see #getMovingAverage()
+   * @generated
+   */
+  void setMovingAverage(Short value);
 
   /**
    * <!-- begin-user-doc -->

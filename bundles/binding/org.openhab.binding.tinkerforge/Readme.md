@@ -126,14 +126,14 @@
         ```
         Text item=SoundIntensity
         ```
-    * Bricklet Moiture
+    * Bricklet Moisture
        * openhab.cfg (optional)
         ```
-            tinkerforge:moiture.uid=kve
-            tinkerforge:moiture.type=bricklet_moiture
-            tinkerforge:moiture.threshold=0
-            tinkerforge:moiture.callbackPeriod=5000
-            tinkerforge:moiture.movingAverage=90
+            tinkerforge:moisture.uid=kve
+            tinkerforge:moisture.type=bricklet_moisture
+            tinkerforge:moisture.threshold=0
+            tinkerforge:moisture.callbackPeriod=5000
+            tinkerforge:moisture.movingAverage=90
         ```
         * items
         ```

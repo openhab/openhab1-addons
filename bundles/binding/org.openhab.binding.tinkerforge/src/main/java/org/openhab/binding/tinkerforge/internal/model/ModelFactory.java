@@ -446,6 +446,15 @@ public interface ModelFactory extends EFactory
   TFObjectTemperatureConfiguration createTFObjectTemperatureConfiguration();
 
   /**
+   * Returns a new object of class '<em>TF Moisture Bricklet Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Moisture Bricklet Configuration</em>'.
+   * @generated
+   */
+  TFMoistureBrickletConfiguration createTFMoistureBrickletConfiguration();
+
+  /**
    * Returns a new object of class '<em>MBricklet Barometer</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

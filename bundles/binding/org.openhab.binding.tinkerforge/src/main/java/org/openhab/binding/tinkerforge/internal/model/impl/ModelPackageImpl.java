@@ -107,6 +107,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
@@ -593,6 +594,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass tfObjectTemperatureConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass tfMoistureBrickletConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3345,6 +3353,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getTFMoistureBrickletConfiguration()
+  {
+    return tfMoistureBrickletConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFMoistureBrickletConfiguration_MovingAverage()
+  {
+    return (EAttribute)tfMoistureBrickletConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMBrickletBarometer()
   {
     return mBrickletBarometerEClass;
@@ -3518,6 +3546,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getMBrickletMoisture_Threshold()
   {
     return (EAttribute)mBrickletMoistureEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletMoisture_MovingAverage()
+  {
+    return (EAttribute)mBrickletMoistureEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -4353,6 +4391,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mBrickletMoistureEClass = createEClass(MBRICKLET_MOISTURE);
     createEAttribute(mBrickletMoistureEClass, MBRICKLET_MOISTURE__DEVICE_TYPE);
     createEAttribute(mBrickletMoistureEClass, MBRICKLET_MOISTURE__THRESHOLD);
+    createEAttribute(mBrickletMoistureEClass, MBRICKLET_MOISTURE__MOVING_AVERAGE);
     createEOperation(mBrickletMoistureEClass, MBRICKLET_MOISTURE___INIT);
 
     mBrickletLCD20x4EClass = createEClass(MBRICKLET_LCD2_0X4);
@@ -4397,6 +4436,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     tfObjectTemperatureConfigurationEClass = createEClass(TF_OBJECT_TEMPERATURE_CONFIGURATION);
     createEAttribute(tfObjectTemperatureConfigurationEClass, TF_OBJECT_TEMPERATURE_CONFIGURATION__EMISSIVITY);
+
+    tfMoistureBrickletConfigurationEClass = createEClass(TF_MOISTURE_BRICKLET_CONFIGURATION);
+    createEAttribute(tfMoistureBrickletConfigurationEClass, TF_MOISTURE_BRICKLET_CONFIGURATION__MOVING_AVERAGE);
 
     tfBrickDCConfigurationEClass = createEClass(TF_BRICK_DC_CONFIGURATION);
     createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__VELOCITY);
@@ -4886,7 +4928,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mBrickletMoistureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
-    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g2 = createEGenericType(this.getTFMoistureBrickletConfiguration());
     g1.getETypeArguments().add(g2);
     mBrickletMoistureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getCallbackListener());
@@ -4915,6 +4957,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfNullConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBaseConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfObjectTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
+    tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfBrickDCConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfioActorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfInterruptListenerConfigurationEClass.getESuperTypes().add(this.getTFConfig());
@@ -5223,6 +5266,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(mBrickletMoistureEClass, MBrickletMoisture.class, "MBrickletMoisture", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletMoisture_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_moisture", 0, 1, MBrickletMoisture.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletMoisture_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1, MBrickletMoisture.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletMoisture_MovingAverage(), theEcorePackage.getEShortObject(), "movingAverage", "100", 0, 1, MBrickletMoisture.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickletMoisture__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
@@ -5297,6 +5341,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(tfObjectTemperatureConfigurationEClass, TFObjectTemperatureConfiguration.class, "TFObjectTemperatureConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFObjectTemperatureConfiguration_Emissivity(), theEcorePackage.getEInt(), "emissivity", null, 0, 1, TFObjectTemperatureConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfMoistureBrickletConfigurationEClass, TFMoistureBrickletConfiguration.class, "TFMoistureBrickletConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFMoistureBrickletConfiguration_MovingAverage(), theEcorePackage.getEShortObject(), "movingAverage", null, 0, 1, TFMoistureBrickletConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfBrickDCConfigurationEClass, TFBrickDCConfiguration.class, "TFBrickDCConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFBrickDCConfiguration_Velocity(), theEcorePackage.getEShort(), "velocity", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

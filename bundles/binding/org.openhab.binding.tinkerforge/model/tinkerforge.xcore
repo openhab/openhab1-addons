@@ -405,10 +405,11 @@ class MBrickletSoundIntensity extends MDevice<TinkerBrickletSoundIntensity>,
 }
 
 class MBrickletMoisture extends MDevice<TinkerBrickletMoisture>,
-        MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFMoistureBrickletConfiguration>,
         CallbackListener {
     readonly String deviceType = "bricklet_moisture"
     BigDecimal threshold = "0"
+    Short movingAverage = "100"
     op void init(){}
 }
 
@@ -476,6 +477,9 @@ class TFObjectTemperatureConfiguration extends TFBaseConfiguration {
     int emissivity
 }
 
+class TFMoistureBrickletConfiguration extends TFBaseConfiguration {
+    Short movingAverage
+}
 class TFBrickDCConfiguration extends TFConfig{
 	short velocity
 	int acceleration

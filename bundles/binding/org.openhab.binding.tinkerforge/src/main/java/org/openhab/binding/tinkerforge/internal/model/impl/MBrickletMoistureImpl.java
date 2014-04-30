@@ -22,7 +22,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
@@ -56,6 +56,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMoistureImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMoistureImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMoistureImpl#getThreshold <em>Threshold</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMoistureImpl#getMovingAverage <em>Moving Average</em>}</li>
  * </ul>
  * </p>
  *
@@ -271,7 +272,7 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
    * @generated
    * @ordered
    */
-  protected TFBaseConfiguration tfConfig;
+  protected TFMoistureBrickletConfiguration tfConfig;
 
   /**
    * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
@@ -332,6 +333,26 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected BigDecimal threshold = THRESHOLD_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getMovingAverage() <em>Moving Average</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMovingAverage()
+   * @generated
+   * @ordered
+   */
+  protected static final Short MOVING_AVERAGE_EDEFAULT = new Short((short)100);
+
+  /**
+   * The cached value of the '{@link #getMovingAverage() <em>Moving Average</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMovingAverage()
+   * @generated
+   * @ordered
+   */
+  protected Short movingAverage = MOVING_AVERAGE_EDEFAULT;
 
   private MoistureListener listener;
 
@@ -659,7 +680,7 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public TFBaseConfiguration getTfConfig()
+  public TFMoistureBrickletConfiguration getTfConfig()
   {
     return tfConfig;
   }
@@ -669,9 +690,9 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetTfConfig(TFBaseConfiguration newTfConfig, NotificationChain msgs)
+  public NotificationChain basicSetTfConfig(TFMoistureBrickletConfiguration newTfConfig, NotificationChain msgs)
   {
-    TFBaseConfiguration oldTfConfig = tfConfig;
+    TFMoistureBrickletConfiguration oldTfConfig = tfConfig;
     tfConfig = newTfConfig;
     if (eNotificationRequired())
     {
@@ -686,7 +707,7 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setTfConfig(TFBaseConfiguration newTfConfig)
+  public void setTfConfig(TFMoistureBrickletConfiguration newTfConfig)
   {
     if (newTfConfig != tfConfig)
     {
@@ -761,6 +782,29 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
+   * @generated
+   */
+  public Short getMovingAverage()
+  {
+    return movingAverage;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMovingAverage(Short newMovingAverage)
+  {
+    Short oldMovingAverage = movingAverage;
+    movingAverage = newMovingAverage;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOISTURE__MOVING_AVERAGE, oldMovingAverage, movingAverage));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
    * @generated NOT
    */
   public void init()
@@ -793,8 +837,7 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void enable()
-  {
+  public void enable() {
     if (tfConfig != null) {
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
         setThreshold(tfConfig.getThreshold());
@@ -802,10 +845,16 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
         setCallbackPeriod(tfConfig.getCallbackPeriod());
       }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("movingAverage"))) {
+        logger.debug("{} setting movingAverage: {}", LoggerConstants.TFINIT,
+            tfConfig.getMovingAverage());
+        setMovingAverage(tfConfig.getMovingAverage());
+      }
     }
     try {
       tinkerforgeDevice = new BrickletMoisture(getUid(), getIpConnection());
       tinkerforgeDevice.setMoistureCallbackPeriod(getCallbackPeriod());
+      tinkerforgeDevice.setMovingAverage(getMovingAverage());
       listener = new MoistureListener();
       tinkerforgeDevice.addMoistureListener(listener);
       fetchSensorValue();
@@ -945,6 +994,8 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
         return getDeviceType();
       case ModelPackage.MBRICKLET_MOISTURE__THRESHOLD:
         return getThreshold();
+      case ModelPackage.MBRICKLET_MOISTURE__MOVING_AVERAGE:
+        return getMovingAverage();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -996,13 +1047,16 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
         setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.MBRICKLET_MOISTURE__TF_CONFIG:
-        setTfConfig((TFBaseConfiguration)newValue);
+        setTfConfig((TFMoistureBrickletConfiguration)newValue);
         return;
       case ModelPackage.MBRICKLET_MOISTURE__CALLBACK_PERIOD:
         setCallbackPeriod((Long)newValue);
         return;
       case ModelPackage.MBRICKLET_MOISTURE__THRESHOLD:
         setThreshold((BigDecimal)newValue);
+        return;
+      case ModelPackage.MBRICKLET_MOISTURE__MOVING_AVERAGE:
+        setMovingAverage((Short)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -1055,13 +1109,16 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
         setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.MBRICKLET_MOISTURE__TF_CONFIG:
-        setTfConfig((TFBaseConfiguration)null);
+        setTfConfig((TFMoistureBrickletConfiguration)null);
         return;
       case ModelPackage.MBRICKLET_MOISTURE__CALLBACK_PERIOD:
         setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
         return;
       case ModelPackage.MBRICKLET_MOISTURE__THRESHOLD:
         setThreshold(THRESHOLD_EDEFAULT);
+        return;
+      case ModelPackage.MBRICKLET_MOISTURE__MOVING_AVERAGE:
+        setMovingAverage(MOVING_AVERAGE_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -1109,6 +1166,8 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.MBRICKLET_MOISTURE__THRESHOLD:
         return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
+      case ModelPackage.MBRICKLET_MOISTURE__MOVING_AVERAGE:
+        return MOVING_AVERAGE_EDEFAULT == null ? movingAverage != null : !MOVING_AVERAGE_EDEFAULT.equals(movingAverage);
     }
     return super.eIsSet(featureID);
   }
@@ -1281,6 +1340,8 @@ public class MBrickletMoistureImpl extends MinimalEObjectImpl.Container implemen
     result.append(deviceType);
     result.append(", threshold: ");
     result.append(threshold);
+    result.append(", movingAverage: ");
+    result.append(movingAverage);
     result.append(')');
     return result.toString();
   }

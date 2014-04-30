@@ -757,6 +757,15 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION:
+      {
+        TFMoistureBrickletConfiguration tfMoistureBrickletConfiguration = (TFMoistureBrickletConfiguration)theEObject;
+        T result = caseTFMoistureBrickletConfiguration(tfMoistureBrickletConfiguration);
+        if (result == null) result = caseTFBaseConfiguration(tfMoistureBrickletConfiguration);
+        if (result == null) result = caseTFConfig(tfMoistureBrickletConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.TF_BRICK_DC_CONFIGURATION:
       {
         TFBrickDCConfiguration tfBrickDCConfiguration = (TFBrickDCConfiguration)theEObject;
@@ -1871,6 +1880,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTFObjectTemperatureConfiguration(TFObjectTemperatureConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>TF Moisture Bricklet Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>TF Moisture Bricklet Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTFMoistureBrickletConfiguration(TFMoistureBrickletConfiguration object)
   {
     return null;
   }

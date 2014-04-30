@@ -186,6 +186,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.TF_NULL_CONFIGURATION: return createTFNullConfiguration();
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
       case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION: return createTFObjectTemperatureConfiguration();
+      case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION: return createTFMoistureBrickletConfiguration();
       case ModelPackage.TF_BRICK_DC_CONFIGURATION: return createTFBrickDCConfiguration();
       case ModelPackage.TFIO_ACTOR_CONFIGURATION: return createTFIOActorConfiguration();
       case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION: return createTFInterruptListenerConfiguration();
@@ -897,6 +898,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     TFObjectTemperatureConfigurationImpl tfObjectTemperatureConfiguration = new TFObjectTemperatureConfigurationImpl();
     return tfObjectTemperatureConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFMoistureBrickletConfiguration createTFMoistureBrickletConfiguration()
+  {
+    TFMoistureBrickletConfigurationImpl tfMoistureBrickletConfiguration = new TFMoistureBrickletConfigurationImpl();
+    return tfMoistureBrickletConfiguration;
   }
 
   /**

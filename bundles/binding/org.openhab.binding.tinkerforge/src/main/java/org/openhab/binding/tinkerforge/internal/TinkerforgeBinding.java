@@ -66,6 +66,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
@@ -963,8 +964,8 @@ public class TinkerforgeBinding extends
 				|| deviceType.equals(TypeKey.bricklet_barometer.name())
 				|| deviceType.equals(TypeKey.bricklet_ambient_light.name())
 				|| deviceType.equals(TypeKey.ambient_temperature.name())
-				|| deviceType.equals(TypeKey.bricklet_soundintensity.name())
-				|| deviceType.equals(TypeKey.bricklet_moisture.name())) {
+				|| deviceType.equals(TypeKey.bricklet_soundintensity.name()))
+		{
 			logger.debug("{} setting base config",
 					LoggerConstants.CONFIG);
 			TFBaseConfiguration tfBaseConfiguration = modelFactory
@@ -1094,6 +1095,12 @@ public class TinkerforgeBinding extends
           TFObjectTemperatureConfiguration configuration = modelFactory.createTFObjectTemperatureConfiguration();
           OHTFDevice<TFObjectTemperatureConfiguration,TemperatureIRSubIds> ohtfDevice = modelFactory.createOHTFDevice();
           ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(TemperatureIRSubIds.values()));
+          ohtfDevice.setTfConfig(configuration);
+          fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.bricklet_moisture.name())){
+          TFMoistureBrickletConfiguration configuration = modelFactory.createTFMoistureBrickletConfiguration();
+          OHTFDevice<TFMoistureBrickletConfiguration,NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+          ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
           ohtfDevice.setTfConfig(configuration);
           fillupConfig(ohtfDevice, deviceConfig);
         } else {
