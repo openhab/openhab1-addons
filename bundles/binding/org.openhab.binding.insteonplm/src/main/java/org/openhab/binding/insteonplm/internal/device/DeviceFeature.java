@@ -782,8 +782,8 @@ public class DeviceFeature implements StatePublisher {
 			f.setMessageDispatcher(new PassThroughDispatcher(f));
 			f.setDefaultMsgHandler(new LastTimeHandler(f));
 			f.setDefaultCommandHandler(new NoOpCommandHandler(f));
-		} else	if (s.equals("2477Ddimmer")) {
-			f = new DeviceFeature("2477Ddimmer");
+		} else	if ( (s.equals("2477Ddimmer") || s.equals("2472Ddimmer") || s.equals("2486DWH8dimmer") ) ) {
+			f = new DeviceFeature(s);
 			f.setMessageDispatcher(new DefaultDispatcher(f));
 			f.addMessageHandler(new Integer(0x06), new NoOpMsgHandler(f));
 			f.addMessageHandler(new Integer(0x11), new LightOnDimmerHandler(f));
@@ -794,8 +794,8 @@ public class DeviceFeature implements StatePublisher {
 			f.addCommandHandler(PercentType.class, new PercentHandler(f));
 			f.addCommandHandler(OnOffType.class, new LightOnOffCommandHandler(f));
 			f.setPollHandler(new DefaultPollHandler(f));
-		} else	if (s.equals("2477Dlasttime")) {
-			f = new DeviceFeature("2477Dlasttime");
+		} else	if ( (s.equals("2477Dlasttime") || s.equals("2472Dlasttime") || s.equals("2486DWH8lasttime") ) ) {
+			f = new DeviceFeature(s);
 			f.setStatusFeature(true);
 			f.setMessageDispatcher(new PassThroughDispatcher(f));
 			f.setDefaultMsgHandler(new LastTimeHandler(f));
