@@ -34,6 +34,7 @@ import com.tinkerforge.BrickletMotionDetector
 import com.tinkerforge.BrickletMultiTouch
 import com.tinkerforge.BrickletTemperatureIR
 import com.tinkerforge.BrickletSoundIntensity
+import com.tinkerforge.BrickletMoisture
 import java.math.BigDecimal
 
 /**
@@ -67,6 +68,7 @@ type TinkerBrickletMotionDetector wraps BrickletMotionDetector
 type TinkerBrickletMultiTouch wraps BrickletMultiTouch
 type TinkerBrickletTemperatureIR wraps BrickletTemperatureIR
 type TinkerBrickletSoundIntensity wraps BrickletSoundIntensity
+type TinkerBrickletMoisture wraps BrickletMoisture
 type Enum wraps Enum
 
 class Ecosystem {
@@ -398,6 +400,14 @@ class MBrickletSoundIntensity extends MDevice<TinkerBrickletSoundIntensity>,
         MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
         CallbackListener {
     readonly String deviceType = "bricklet_soundintensity"
+    BigDecimal threshold = "0"
+    op void init(){}
+}
+
+class MBrickletMoisture extends MDevice<TinkerBrickletMoisture>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_moisture"
     BigDecimal threshold = "0"
     op void init(){}
 }

@@ -81,6 +81,7 @@ import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
+import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletRemoteSwitch;
@@ -175,6 +176,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBAROMETER_TEMPERATURE: return createMBarometerTemperature();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT: return createMBrickletAmbientLight();
       case ModelPackage.MBRICKLET_SOUND_INTENSITY: return createMBrickletSoundIntensity();
+      case ModelPackage.MBRICKLET_MOISTURE: return createMBrickletMoisture();
       case ModelPackage.MBRICKLET_LCD2_0X4: return createMBrickletLCD20x4();
       case ModelPackage.MLCD2_0X4_BACKLIGHT: return createMLCD20x4Backlight();
       case ModelPackage.MLCD2_0X4_BUTTON: return createMLCD20x4Button();
@@ -286,6 +288,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletTemperatureIRFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_SOUND_INTENSITY:
         return createTinkerBrickletSoundIntensityFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_MOISTURE:
+        return createTinkerBrickletMoistureFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -379,6 +383,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletTemperatureIRToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_SOUND_INTENSITY:
         return convertTinkerBrickletSoundIntensityToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_MOISTURE:
+        return convertTinkerBrickletMoistureToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -935,6 +941,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletSoundIntensityImpl mBrickletSoundIntensity = new MBrickletSoundIntensityImpl();
     return mBrickletSoundIntensity;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletMoisture createMBrickletMoisture()
+  {
+    MBrickletMoistureImpl mBrickletMoisture = new MBrickletMoistureImpl();
+    return mBrickletMoisture;
   }
 
   /**
@@ -1690,6 +1707,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletSoundIntensityToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletMoisture createTinkerBrickletMoistureFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletMoisture)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletMoistureToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

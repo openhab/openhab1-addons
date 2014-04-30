@@ -183,7 +183,7 @@ public class TinkerforgeBinding extends
 		io_actuator, iosensor, bricklet_io16, bricklet_industrial_digital_4in,
 		remote_switch_a, remote_switch_b, remote_switch_c, bricklet_remote_switch,
 		bricklet_multitouch, electrode, proximity, object_temperature, ambient_temperature, 
-		bricklet_temperatureIR, bricklet_soundintensity
+		bricklet_temperatureIR, bricklet_soundintensity, bricklet_moisture
 	}
 	
 	public TinkerforgeBinding() {
@@ -963,7 +963,8 @@ public class TinkerforgeBinding extends
 				|| deviceType.equals(TypeKey.bricklet_barometer.name())
 				|| deviceType.equals(TypeKey.bricklet_ambient_light.name())
 				|| deviceType.equals(TypeKey.ambient_temperature.name())
-				|| deviceType.equals(TypeKey.bricklet_soundintensity.name())) {
+				|| deviceType.equals(TypeKey.bricklet_soundintensity.name())
+				|| deviceType.equals(TypeKey.bricklet_moisture.name())) {
 			logger.debug("{} setting base config",
 					LoggerConstants.CONFIG);
 			TFBaseConfiguration tfBaseConfiguration = modelFactory

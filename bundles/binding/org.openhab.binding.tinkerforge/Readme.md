@@ -116,7 +116,7 @@
             tinkerforge:sound.uid=iQE
             tinkerforge:sound.type=bricklet_soundintensity
             tinkerforge:sound.threshold=1
-            tinkerforge:sound.callbackPeriod=50
+            tinkerforge:sound.callbackPeriod=5000
         ```
         * items
         ```
@@ -125,6 +125,23 @@
         * sitemap
         ```
         Text item=SoundIntensity
+        ```
+    * Bricklet Moiture
+       * openhab.cfg (optional)
+        ```
+            tinkerforge:moiture.uid=kve
+            tinkerforge:moiture.type=bricklet_moiture
+            tinkerforge:moiture.threshold=0
+            tinkerforge:moiture.callbackPeriod=5000
+            tinkerforge:moiture.movingAverage=90
+        ```
+        * items
+        ```
+        Number Moisture                 "Moisture [%.1f]"  { tinkerforge="uid=kve" }
+        ```
+        * sitemap
+        ```
+        Text item=Moisture 
         ```
 # other changes
  ## 1.4.0
