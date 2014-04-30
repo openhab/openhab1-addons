@@ -20,4 +20,9 @@ class UrtsiItemConfiguration implements BindingConfig {
 	 * Channel of the urtsi device
 	 */
 	int channel
+
+	/**
+	 * Address of the urtsi device
+	 */
+	int address
 }
