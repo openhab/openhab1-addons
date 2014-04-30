@@ -99,7 +99,7 @@ public class XbmcGenericBindingProvider extends AbstractGenericBindingProvider i
 	@Override
 	public boolean isInBound(String itemname) {
 		XbmcBindingConfig bindingConfig = (XbmcBindingConfig) bindingConfigs.get(itemname);
-		return bindingConfig.isInBound();
+		return bindingConfig != null ? bindingConfig.isInBound(): false;
 	}
 
 	class XbmcBindingConfig implements BindingConfig {
