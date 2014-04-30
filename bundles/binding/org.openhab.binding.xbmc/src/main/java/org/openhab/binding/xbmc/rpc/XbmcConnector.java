@@ -26,6 +26,7 @@ import org.openhab.binding.xbmc.rpc.calls.PlayerGetActivePlayers;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetItem;
 import org.openhab.binding.xbmc.rpc.calls.PlayerPlayPause;
 import org.openhab.binding.xbmc.rpc.calls.PlayerStop;
+import org.openhab.binding.xbmc.rpc.calls.SystemShutdown;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.StringType;
 
@@ -306,6 +307,11 @@ public class XbmcConnector {
 		showNotification.execute();
 	}
 	
+	public void systemShutdown() {
+		final SystemShutdown shutdown = new SystemShutdown(client, httpUri);
+		shutdown.execute();
+	}
+
 	private void processPlayerStateChanged(String method, Map<String, Object> json) {
 		if ("Player.OnPlay".equals(method)) {
 			// get the player id and make a new request for the media details
