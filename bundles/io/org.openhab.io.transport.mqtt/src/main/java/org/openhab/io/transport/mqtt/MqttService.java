@@ -10,6 +10,7 @@ package org.openhab.io.transport.mqtt;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,13 +28,15 @@ import org.slf4j.LoggerFactory;
  * transport.
  * 
  * @author Davy Vanherbergen
+ * @author Ben Jones
  * @since 1.3.0
  */
 public class MqttService implements ManagedService {
 
 	private static Logger logger = LoggerFactory.getLogger(MqttService.class);
 
-	private ConcurrentHashMap<String, MqttBrokerConnection> brokerConnections = new ConcurrentHashMap<String, MqttBrokerConnection>();
+	private final Map<String, MqttBrokerConnection> brokerConnections = new ConcurrentHashMap<String, MqttBrokerConnection>();
+	private final Object lock = new Object();
 
 	private EventPublisher eventPublisher;
 
@@ -46,66 +49,64 @@ public class MqttService implements ManagedService {
 			return;
 		}
 
-		Enumeration<String> keys = properties.keys();
-		while (keys.hasMoreElements()) {
+		synchronized (lock) {
+			Enumeration<String> keys = properties.keys();
+			while (keys.hasMoreElements()) {
+	
+				String key = keys.nextElement();
+	
+				if (key.equals("service.pid")) {
+					// ignore the only non-broker property..
+					continue;
+				}
+	
+				String[] subkeys = key.split("\\.");
+				if (subkeys.length != 2) {
+					logger.debug(
+							"MQTT Broker property '{}' should have the format 'broker.propertykey'",
+							key);
+					continue;
+				}
+	
+				String value = (String) properties.get(key);
+				String brokerName = subkeys[0];
+				String property = subkeys[1];
+	
+				if (StringUtils.isBlank(value)) {
+					logger.trace("Property is empty: {}", key);
+					continue;
+				} else {
+					logger.trace("Processing property: {} = {}", key, value);
+				}
+	
+				MqttBrokerConnection connection = getConnection(brokerName);
 
-			String key = keys.nextElement();
-
-			if (key.equals("service.pid")) {
-				// ignore the only non-broker property..
-				continue;
+				if (property.equals("url")) {
+					connection.setUrl(value);
+				} else if (property.equals("user")) {
+					connection.setUser(value);
+				} else if (property.equals("pwd")) {
+					connection.setPassword(value);
+				} else if (property.equals("qos")) {
+					connection.setQos(Integer.parseInt(value));
+				} else if (property.equals("retain")) {
+					connection.setRetain(Boolean.parseBoolean(value));
+				} else if (property.equals("async")) {
+					connection.setAsync(Boolean.parseBoolean(value));
+				} else if (property.equals("clientId")) {
+					connection.setClientId(value);
+				} else {
+					logger.warn("Unrecognized property: {}", key);
+				}
 			}
-
-			String[] subkeys = key.split("\\.");
-			if (subkeys.length != 2) {
-				logger.debug(
-						"MQTT Broker property '{}' should have the format 'broker.propertykey'",
-						key);
-				continue;
-			}
-
-			String value = (String) properties.get(key);
-			String name = subkeys[0].toLowerCase();
-			String property = subkeys[1];
-
-			if (StringUtils.isBlank(value)) {
-				logger.trace("Property is empty: {}", key);
-				continue;
-			} else {
-				logger.trace("Processing property: {} = {}", key, value);
-			}
-
-			MqttBrokerConnection conn = brokerConnections.get(name);
-			if (conn == null) {
-				conn = new MqttBrokerConnection(name);
-				brokerConnections.put(name, conn);
-			}
-
-			if (property.equals("url")) {
-				conn.setUrl(value);
-			} else if (property.equals("user")) {
-				conn.setUser(value);
-			} else if (property.equals("pwd")) {
-				conn.setPassword(value);
-			} else if (property.equals("qos")) {
-				conn.setQos(Integer.parseInt(value));
-			} else if (property.equals("retain")) {
-				conn.setRetain(Boolean.parseBoolean(value));
-			} else if (property.equals("async")) {
-				conn.setAsync(Boolean.parseBoolean(value));
-			} else if (property.equals("clientId")) {
-				conn.setClientId(value);
-			} else {
-				logger.warn("Unrecognized property: {}", key);
-			}
-		}
-		logger.info("MQTT Service initialization completed.");
-
-		for (MqttBrokerConnection con : brokerConnections.values()) {
-			try {
-				con.start();
-			} catch (Exception e) {
-				logger.error("Error starting broker connection", e);
+			logger.info("MQTT Service initialization completed.");
+	
+			for (MqttBrokerConnection connection : brokerConnections.values()) {
+				try {
+					connection.start();
+				} catch (Exception e) {
+					logger.error("Error starting broker connection", e);
+				}
 			}
 		}
 	}
@@ -123,11 +124,11 @@ public class MqttService implements ManagedService {
 	public void deactivate() {
 		logger.debug("Stopping MQTT Service...");
 
-		Enumeration<String> e = brokerConnections.keys();
-		while (e.hasMoreElements()) {
-			MqttBrokerConnection conn = brokerConnections.get(e.nextElement());
-			logger.info("Stopping broker connection '{}'", conn.getName());
-			conn.close();
+		synchronized (lock) {
+			for (MqttBrokerConnection connection : brokerConnections.values()) {
+				logger.info("Stopping broker connection '{}'", connection.getName());
+				connection.close();
+			}
 		}
 
 		logger.debug("MQTT Service stopped.");
@@ -140,15 +141,14 @@ public class MqttService implements ManagedService {
 	 *            to look for.
 	 * @return existing connection or new one if it didn't exist yet.
 	 */
-	private MqttBrokerConnection getConnection(String brokerName) {
-
-		MqttBrokerConnection conn = brokerConnections.get(brokerName
-				.toLowerCase());
-		if (conn == null) {
-			conn = new MqttBrokerConnection(brokerName);
-			brokerConnections.put(brokerName.toLowerCase(), conn);
+	private MqttBrokerConnection getConnection(String brokerName) {	
+		synchronized (lock) {
+			String brokerKey = brokerName.toLowerCase();
+			if (!brokerConnections.containsKey(brokerKey)) {
+				brokerConnections.put(brokerKey, new MqttBrokerConnection(brokerName));
+			}
+			return brokerConnections.get(brokerKey);
 		}
-		return conn;
 	}
 
 	/**
