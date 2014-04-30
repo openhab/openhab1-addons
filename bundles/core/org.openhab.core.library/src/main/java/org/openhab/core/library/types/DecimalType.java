@@ -21,7 +21,8 @@ import org.openhab.core.types.State;
  * @author Kai Kreuzer
  * 
  */
-public class DecimalType extends Number implements PrimitiveType, State, Command, Comparable<DecimalType> {
+public class DecimalType extends Number implements PrimitiveType, State,
+		Command, Comparable<DecimalType> {
 
 	private static final long serialVersionUID = 4226845847123464690L;
 
@@ -58,11 +59,18 @@ public class DecimalType extends Number implements PrimitiveType, State, Command
 	}
 
 	public String format(String pattern) {
-		if (pattern.contains("%d")) {
-			return String.format(pattern, value.toBigInteger());
-		} else {
-			return String.format(pattern, value);
+		if (value.scale() == 0) {
+			// The value is an integer value. Convert to BigInteger in order to
+			// have access to more conversion formats.
+			try {
+				return String.format(pattern, value.toBigIntegerExact());
+			} catch (ArithmeticException ae) {
+				// Could not convert to integer value without loss of
+				// information. Fall through to default behavior.
+			}
 		}
+
+		return String.format(pattern, value);
 	}
 
 	public BigDecimal toBigDecimal() {
