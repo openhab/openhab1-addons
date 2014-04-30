@@ -68,7 +68,10 @@ public class TellstickController {
 	private void increaseDecrease(TellstickDevice dev, IncreaseDecreaseType increaseDecreaseType)
 			throws TellstickException {
 		String strValue = dev.getData();
-		double value = Double.valueOf(strValue);
+		double value = 0;
+		if (strValue != null) {
+			 value = Double.valueOf(strValue);
+		}
 		int precent = (int) ((value / 255) * 100);
 		if (IncreaseDecreaseType.INCREASE == increaseDecreaseType) {
 			if (precent < 100) {
