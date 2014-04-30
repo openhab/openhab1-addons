@@ -17,6 +17,7 @@ import org.openhab.binding.xbmc.XbmcBindingProvider;
 import org.openhab.binding.xbmc.rpc.XbmcConnector;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -273,6 +274,8 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 				connector.playerStop();
 			if (property.equals("GUI.ShowNotification"))
 				connector.showNotification("openHAB", command.toString());
+			if (property.equals("System.Shutdown") && command == OnOffType.OFF)
+				connector.systemShutdown();
 		} catch (Exception e) {
 			logger.error("Error handling command", e);
 		}
