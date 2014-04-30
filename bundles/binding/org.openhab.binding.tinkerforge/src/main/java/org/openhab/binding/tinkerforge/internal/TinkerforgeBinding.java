@@ -63,6 +63,7 @@ import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
+import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
@@ -184,7 +185,8 @@ public class TinkerforgeBinding extends
 		io_actuator, iosensor, bricklet_io16, bricklet_industrial_digital_4in,
 		remote_switch_a, remote_switch_b, remote_switch_c, bricklet_remote_switch,
 		bricklet_multitouch, electrode, proximity, object_temperature, ambient_temperature, 
-		bricklet_temperatureIR, bricklet_soundintensity, bricklet_moisture
+		bricklet_temperatureIR, bricklet_soundintensity, bricklet_moisture,
+		bricklet_distanceUS
 	}
 	
 	public TinkerforgeBinding() {
@@ -1100,6 +1102,12 @@ public class TinkerforgeBinding extends
         } else if (deviceType.equals(TypeKey.bricklet_moisture.name())){
           TFMoistureBrickletConfiguration configuration = modelFactory.createTFMoistureBrickletConfiguration();
           OHTFDevice<TFMoistureBrickletConfiguration,NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+          ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+          ohtfDevice.setTfConfig(configuration);
+          fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.bricklet_distanceUS.name())){
+          TFDistanceUSBrickletConfiguration configuration = modelFactory.createTFDistanceUSBrickletConfiguration();
+          OHTFDevice<TFDistanceUSBrickletConfiguration,NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
           ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
           ohtfDevice.setTfConfig(configuration);
           fillupConfig(ohtfDevice, deviceConfig);

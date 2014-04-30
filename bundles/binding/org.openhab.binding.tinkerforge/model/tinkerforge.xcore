@@ -35,6 +35,7 @@ import com.tinkerforge.BrickletMultiTouch
 import com.tinkerforge.BrickletTemperatureIR
 import com.tinkerforge.BrickletSoundIntensity
 import com.tinkerforge.BrickletMoisture
+import com.tinkerforge.BrickletDistanceUS
 import java.math.BigDecimal
 
 /**
@@ -69,6 +70,7 @@ type TinkerBrickletMultiTouch wraps BrickletMultiTouch
 type TinkerBrickletTemperatureIR wraps BrickletTemperatureIR
 type TinkerBrickletSoundIntensity wraps BrickletSoundIntensity
 type TinkerBrickletMoisture wraps BrickletMoisture
+type TinkerBrickletDistanceUS wraps BrickletDistanceUS
 type Enum wraps Enum
 
 class Ecosystem {
@@ -413,6 +415,15 @@ class MBrickletMoisture extends MDevice<TinkerBrickletMoisture>,
     op void init(){}
 }
 
+class MBrickletDistanceUS extends MDevice<TinkerBrickletDistanceUS>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFDistanceUSBrickletConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_distanceUS"
+    BigDecimal threshold = "0"
+    Short movingAverage = "100"
+    op void init(){}
+}
+
 class MBrickletLCD20x4 extends MDevice<MTinkerBrickletLCD20x4>, MTextActor, 
 		MSubDeviceHolder<MLCDSubDevice>{
 	readonly String deviceType = "bricklet_LCD20x4"
@@ -480,6 +491,11 @@ class TFObjectTemperatureConfiguration extends TFBaseConfiguration {
 class TFMoistureBrickletConfiguration extends TFBaseConfiguration {
     Short movingAverage
 }
+
+class TFDistanceUSBrickletConfiguration extends TFBaseConfiguration {
+    Short movingAverage
+}
+
 class TFBrickDCConfiguration extends TFConfig{
 	short velocity
 	int acceleration

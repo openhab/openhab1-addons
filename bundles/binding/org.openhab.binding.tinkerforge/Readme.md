@@ -143,6 +143,23 @@
         ```
         Text item=Moisture 
         ```
+    * Bricklet DistanceUS
+       * openhab.cfg (optional)
+        ```
+            tinkerforge:distanceUS.uid=mXq
+            tinkerforge:distanceUS.type=bricklet_distanceUS
+            tinkerforge:distanceUS.threshold=0
+            tinkerforge:distanceUS.callbackPeriod=100
+            tinkerforge:distanceUS.movingAverage=100
+        ```
+        * items
+        ```
+        Number DistanceUS                 "DistanceUS [%.1f]"  { tinkerforge="uid=mXq" }
+        ```
+        * sitemap
+        ```
+        Text item=DistanceUS 
+        ```
 # other changes
  ## 1.4.0
    * updated Tinkerforge API to 2.0.12

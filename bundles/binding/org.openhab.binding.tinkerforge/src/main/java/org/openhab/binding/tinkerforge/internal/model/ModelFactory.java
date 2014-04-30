@@ -455,6 +455,15 @@ public interface ModelFactory extends EFactory
   TFMoistureBrickletConfiguration createTFMoistureBrickletConfiguration();
 
   /**
+   * Returns a new object of class '<em>TF Distance US Bricklet Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Distance US Bricklet Configuration</em>'.
+   * @generated
+   */
+  TFDistanceUSBrickletConfiguration createTFDistanceUSBrickletConfiguration();
+
+  /**
    * Returns a new object of class '<em>MBricklet Barometer</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -498,6 +507,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickletMoisture createMBrickletMoisture();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Distance US</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Distance US</em>'.
+   * @generated
+   */
+  MBrickletDistanceUS createMBrickletDistanceUS();
 
   /**
    * Returns a new object of class '<em>MBricklet LCD2 0x4</em>'.

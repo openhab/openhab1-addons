@@ -75,6 +75,7 @@ import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
+import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
@@ -177,6 +178,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT: return createMBrickletAmbientLight();
       case ModelPackage.MBRICKLET_SOUND_INTENSITY: return createMBrickletSoundIntensity();
       case ModelPackage.MBRICKLET_MOISTURE: return createMBrickletMoisture();
+      case ModelPackage.MBRICKLET_DISTANCE_US: return createMBrickletDistanceUS();
       case ModelPackage.MBRICKLET_LCD2_0X4: return createMBrickletLCD20x4();
       case ModelPackage.MLCD2_0X4_BACKLIGHT: return createMLCD20x4Backlight();
       case ModelPackage.MLCD2_0X4_BUTTON: return createMLCD20x4Button();
@@ -187,6 +189,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
       case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION: return createTFObjectTemperatureConfiguration();
       case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION: return createTFMoistureBrickletConfiguration();
+      case ModelPackage.TF_DISTANCE_US_BRICKLET_CONFIGURATION: return createTFDistanceUSBrickletConfiguration();
       case ModelPackage.TF_BRICK_DC_CONFIGURATION: return createTFBrickDCConfiguration();
       case ModelPackage.TFIO_ACTOR_CONFIGURATION: return createTFIOActorConfiguration();
       case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION: return createTFInterruptListenerConfiguration();
@@ -291,6 +294,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletSoundIntensityFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_MOISTURE:
         return createTinkerBrickletMoistureFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_DISTANCE_US:
+        return createTinkerBrickletDistanceUSFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -386,6 +391,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletSoundIntensityToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_MOISTURE:
         return convertTinkerBrickletMoistureToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_DISTANCE_US:
+        return convertTinkerBrickletDistanceUSToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -916,6 +923,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public TFDistanceUSBrickletConfiguration createTFDistanceUSBrickletConfiguration()
+  {
+    TFDistanceUSBrickletConfigurationImpl tfDistanceUSBrickletConfiguration = new TFDistanceUSBrickletConfigurationImpl();
+    return tfDistanceUSBrickletConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public MBrickletBarometer createMBrickletBarometer()
   {
     MBrickletBarometerImpl mBrickletBarometer = new MBrickletBarometerImpl();
@@ -964,6 +982,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletMoistureImpl mBrickletMoisture = new MBrickletMoistureImpl();
     return mBrickletMoisture;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletDistanceUS createMBrickletDistanceUS()
+  {
+    MBrickletDistanceUSImpl mBrickletDistanceUS = new MBrickletDistanceUSImpl();
+    return mBrickletDistanceUS;
   }
 
   /**
@@ -1739,6 +1768,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletMoistureToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletDistanceUS createTinkerBrickletDistanceUSFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletDistanceUS)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletDistanceUSToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

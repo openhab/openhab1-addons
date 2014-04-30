@@ -667,6 +667,18 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_DISTANCE_US:
+      {
+        MBrickletDistanceUS mBrickletDistanceUS = (MBrickletDistanceUS)theEObject;
+        T result = caseMBrickletDistanceUS(mBrickletDistanceUS);
+        if (result == null) result = caseMDevice(mBrickletDistanceUS);
+        if (result == null) result = caseMSensor(mBrickletDistanceUS);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletDistanceUS);
+        if (result == null) result = caseCallbackListener(mBrickletDistanceUS);
+        if (result == null) result = caseMBaseDevice(mBrickletDistanceUS);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_LCD2_0X4:
       {
         MBrickletLCD20x4 mBrickletLCD20x4 = (MBrickletLCD20x4)theEObject;
@@ -763,6 +775,15 @@ public class ModelSwitch<T> extends Switch<T>
         T result = caseTFMoistureBrickletConfiguration(tfMoistureBrickletConfiguration);
         if (result == null) result = caseTFBaseConfiguration(tfMoistureBrickletConfiguration);
         if (result == null) result = caseTFConfig(tfMoistureBrickletConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_DISTANCE_US_BRICKLET_CONFIGURATION:
+      {
+        TFDistanceUSBrickletConfiguration tfDistanceUSBrickletConfiguration = (TFDistanceUSBrickletConfiguration)theEObject;
+        T result = caseTFDistanceUSBrickletConfiguration(tfDistanceUSBrickletConfiguration);
+        if (result == null) result = caseTFBaseConfiguration(tfDistanceUSBrickletConfiguration);
+        if (result == null) result = caseTFConfig(tfDistanceUSBrickletConfiguration);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1901,6 +1922,22 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>TF Distance US Bricklet Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>TF Distance US Bricklet Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTFDistanceUSBrickletConfiguration(TFDistanceUSBrickletConfiguration object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>MBricklet Barometer</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1976,6 +2013,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMBrickletMoisture(MBrickletMoisture object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Distance US</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Distance US</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletDistanceUS(MBrickletDistanceUS object)
   {
     return null;
   }

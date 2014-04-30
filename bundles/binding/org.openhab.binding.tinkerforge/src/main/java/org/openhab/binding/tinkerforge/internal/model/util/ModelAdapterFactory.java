@@ -397,6 +397,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMBrickletMoistureAdapter();
       }
       @Override
+      public Adapter caseMBrickletDistanceUS(MBrickletDistanceUS object)
+      {
+        return createMBrickletDistanceUSAdapter();
+      }
+      @Override
       public Adapter caseMBrickletLCD20x4(MBrickletLCD20x4 object)
       {
         return createMBrickletLCD20x4Adapter();
@@ -450,6 +455,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       public Adapter caseTFMoistureBrickletConfiguration(TFMoistureBrickletConfiguration object)
       {
         return createTFMoistureBrickletConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFDistanceUSBrickletConfiguration(TFDistanceUSBrickletConfiguration object)
+      {
+        return createTFDistanceUSBrickletConfigurationAdapter();
       }
       @Override
       public Adapter caseTFBrickDCConfiguration(TFBrickDCConfiguration object)
@@ -1504,6 +1514,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration <em>TF Distance US Bricklet Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration
+   * @generated
+   */
+  public Adapter createTFDistanceUSBrickletConfigurationAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer <em>MBricklet Barometer</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -1574,6 +1599,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMBrickletMoistureAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS <em>MBricklet Distance US</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS
+   * @generated
+   */
+  public Adapter createMBrickletDistanceUSAdapter()
   {
     return null;
   }
