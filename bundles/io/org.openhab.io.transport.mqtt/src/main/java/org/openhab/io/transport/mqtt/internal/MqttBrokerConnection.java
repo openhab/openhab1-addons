@@ -563,18 +563,32 @@ public class MqttBrokerConnection implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
-		logger.debug("Received message on topic '{}' : {}", topic, new String(message.getPayload()));
+		byte[] payload = message.getPayload();
+		String messagePayload = new String(payload);
 
+		logger.debug("Received message on topic '{}' : {}...", topic, messagePayload);
+
+		// get a list of consumers that match this message topic
+		List<MqttMessageConsumer> matches = new ArrayList<MqttMessageConsumer>();
 		lock.readLock().lock();
 		try {			
 			for (MqttMessageConsumer consumer : consumers) {
 				if (isTopicMatch(topic, consumer.getTopic())) {
-					consumer.processMessage(topic, message.getPayload());
+					logger.trace("Consumer on topic '{}' matches message on topic '{}'", consumer.getTopic(), topic);
+					matches.add(consumer);
 				}
 			}
 		} finally {
 			lock.readLock().unlock();
 		}
+
+		// then let the consumers process the message outside of the lock
+		for (MqttMessageConsumer consumer : matches) {
+			logger.trace("Consumer on topic '{}' processing message on topic '{}'...", consumer.getTopic(), topic);
+			consumer.processMessage(topic, payload);
+		}
+		
+		logger.trace("Message handling complete for message on topic '{}' : {}", topic, messagePayload);
 	}
 
 	/**

@@ -10,8 +10,8 @@ package org.openhab.io.transport.mqtt;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.events.EventPublisher;
@@ -35,7 +35,7 @@ public class MqttService implements ManagedService {
 
 	private static Logger logger = LoggerFactory.getLogger(MqttService.class);
 
-	private final Map<String, MqttBrokerConnection> brokerConnections = new ConcurrentHashMap<String, MqttBrokerConnection>();
+	private final Map<String, MqttBrokerConnection> brokerConnections = new HashMap<String, MqttBrokerConnection>();
 	private final Object lock = new Object();
 
 	private EventPublisher eventPublisher;
