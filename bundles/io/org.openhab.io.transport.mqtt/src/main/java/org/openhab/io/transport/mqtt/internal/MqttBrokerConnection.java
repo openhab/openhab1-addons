@@ -116,10 +116,10 @@ public class MqttBrokerConnection implements MqttCallback {
 			logger.error("Error starting connection to broker", e);
 		}
 		
+		// this lock will block any other threads trying to add
+		// consumers or producers
 		lock.readLock().lock();
-		try {
-			started = true;
-			
+		try {		
 			// start all consumers
 			for (MqttMessageConsumer c : consumers) {
 				startConsumer(c);
@@ -129,6 +129,12 @@ public class MqttBrokerConnection implements MqttCallback {
 			for (MqttMessageProducer p : producers) {
 				startProducer(p);
 			}
+			
+			// set the 'started' flag inside our lock so that
+			// we ensure we won't miss out on starting any
+			// consumers/producers that are waiting to be added
+			started = true;
+			
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -400,9 +406,12 @@ public class MqttBrokerConnection implements MqttCallback {
 		lock.writeLock().lock();
 		try {			
 			producers.add(publisher);
-			startProducer(publisher);
 		} finally {
 			lock.writeLock().unlock();
+		}
+
+		if (started) {
+			startProducer(publisher);
 		}
 	}
 
@@ -416,9 +425,12 @@ public class MqttBrokerConnection implements MqttCallback {
 		lock.writeLock().lock();
 		try {			
 			producers.remove(publisher);
-			stopProducer(publisher);
 		} finally {
 			lock.writeLock().unlock();
+		}
+
+		if (started) {
+			stopProducer(publisher);
 		}
 	}
 
@@ -429,9 +441,6 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *            to start.
 	 */
 	private void startProducer(MqttMessageProducer publisher) {
-		if (!started)
-			return;
-		
 		logger.debug("Starting message producer for broker '{}'", name);
 		publisher.setSenderChannel(new MqttSenderChannel() {
 
@@ -479,9 +488,12 @@ public class MqttBrokerConnection implements MqttCallback {
 		lock.writeLock().lock();
 		try {			
 			consumers.add(subscriber);
-			startConsumer(subscriber);
 		} finally {
 			lock.writeLock().unlock();
+		}
+
+		if (started) {
+			startConsumer(subscriber);
 		}
 	}
 
@@ -495,9 +507,12 @@ public class MqttBrokerConnection implements MqttCallback {
 		lock.writeLock().lock();
 		try {			
 			consumers.remove(subscriber);
-			stopConsumer(subscriber);
 		} finally {
 			lock.writeLock().unlock();
+		}
+
+		if (started) {
+			stopConsumer(subscriber);
 		}
 	}
 
@@ -508,9 +523,6 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *            to start.
 	 */
 	private void startConsumer(MqttMessageConsumer subscriber) {
-		if (!started)
-			return;
-		
 		String topic = subscriber.getTopic();
 		logger.debug("Starting message consumer for broker '{}' on topic '{}'", name, topic);
 
@@ -522,9 +534,6 @@ public class MqttBrokerConnection implements MqttCallback {
 	}
 	
 	private void stopConsumer(MqttMessageConsumer subscriber) {
-		if (!started)
-			return;
-		
 		String topic = subscriber.getTopic();
 		logger.debug("Stopping message consumer for broker '{}' on topic '{}'", name, topic);
 		
