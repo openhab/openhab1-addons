@@ -98,24 +98,20 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *             If connection could not be created.
 	 */
 	public void start() throws Exception {
+		
 		if (StringUtils.isEmpty(url)) {
 			logger.debug("No url defined for MQTT broker connection '{}'. Not starting.", name);
 			return;
 		}
 
-		// we are active, so stop trying to reconnect
+		logger.info("Starting MQTT broker connection '{}'", name);
+		openConnection();
+		
 		if (reconnectTimer != null) {
+			// we are active, so stop trying to reconnect
 			reconnectTimer.cancel();
-			reconnectTimer = null;
 		}
 
-		logger.info("Starting MQTT broker connection '{}'", name);
-		try {
-			openConnection();
-		} catch (Exception e) {
-			logger.error("Error starting connection to broker", e);
-		}
-		
 		// this lock will block any other threads trying to add
 		// consumers or producers
 		lock.readLock().lock();
@@ -442,13 +438,14 @@ public class MqttBrokerConnection implements MqttCallback {
 	 */
 	private void startProducer(MqttMessageProducer publisher) {
 		logger.debug("Starting message producer for broker '{}'", name);
+		
 		publisher.setSenderChannel(new MqttSenderChannel() {
 
 			@Override
 			public void publish(String topic, byte[] payload) throws Exception {
 
 				if (!started) {
-					logger.warn("Broker connection not started. Cannot publish message to topic '{}'.", topic);
+					logger.warn("Broker connection not started. Cannot publish message to topic '{}'", topic);
 					return;
 				}
 
@@ -475,6 +472,7 @@ public class MqttBrokerConnection implements MqttCallback {
 	
 	private void stopProducer(MqttMessageProducer publisher) {
 		logger.debug("Stopping message producer for broker '{}'", name);
+		
 		publisher.setSenderChannel(null);		
 	}
 
@@ -523,22 +521,20 @@ public class MqttBrokerConnection implements MqttCallback {
 	 *            to start.
 	 */
 	private void startConsumer(MqttMessageConsumer subscriber) {
-		String topic = subscriber.getTopic();
-		logger.debug("Starting message consumer for broker '{}' on topic '{}'", name, topic);
+		logger.debug("Starting message consumer for broker '{}' on topic '{}'", name, subscriber.getTopic());
 
 		try {
-			client.subscribe(topic, qos);
+			client.subscribe(subscriber.getTopic(), qos);
 		} catch (Exception e) {
 			logger.error("Error subscribing topic to broker", e);
 		}
 	}
 	
 	private void stopConsumer(MqttMessageConsumer subscriber) {
-		String topic = subscriber.getTopic();
-		logger.debug("Stopping message consumer for broker '{}' on topic '{}'", name, topic);
+		logger.debug("Stopping message consumer for broker '{}' on topic '{}'", name, subscriber.getTopic());
 		
 		try {
-			client.unsubscribe(topic);
+			client.unsubscribe(subscriber.getTopic());
 		} catch (Exception e) {
 			logger.error("Error unsubscribing topic from broker", e);
 		}
