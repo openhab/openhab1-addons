@@ -137,7 +137,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	 */
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
-		logger.debug("bindingChanged {}", itemName);		
+		logger.trace("bindingChanged {}", itemName);		
 		
 		ZWaveBindingProvider zProvider = (ZWaveBindingProvider)provider;
 		
@@ -148,21 +148,18 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 					converterHandler.executeRefresh(zProvider, itemName, true);
 			}
 		}
-		
-		logger.debug("Rebuilding polling table");
+
+		// Rebuild the polling table
 		pollingList.clear();
 
 		// Loop all binding providers for the Z-wave binding.
 		for (ZWaveBindingProvider eachProvider : providers) {
-			logger.debug("Rebuilding polling table - provider {}", eachProvider.toString());
 			// loop all bound items for this provider
 			for (String name : eachProvider.getItemNames()) {
-				logger.debug("Rebuilding polling table - loop {}", name);
 				ZWaveBindingConfig bindingConfiguration = eachProvider.getZwaveBindingConfig(name);
 
 				// This binding is configured to poll - add it to the list
 				if (bindingConfiguration.getRefreshInterval() != null && bindingConfiguration.getRefreshInterval() != 0) {
-					logger.debug("Rebuilding polling table - adding {}", name);
 					ZWavePollItem item = new ZWavePollItem();
 					item.item = name;
 					item.provider = eachProvider;
