@@ -13,7 +13,7 @@ import org.openhab.core.binding.BindingProvider;
 
 /**
  * @author Karel Goderis
- * @since 1.1.0
+ * @since 1.5.0
  *
  */
 public interface RMEBindingProvider extends BindingProvider {

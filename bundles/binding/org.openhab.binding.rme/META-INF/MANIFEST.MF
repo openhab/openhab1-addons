@@ -30,5 +30,4 @@ Import-Package: gnu.io,
  org.slf4j
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/rmebinding.xml
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .,
- lib/nrjavaserial-3.8.8.jar
+Bundle-ClassPath: .
