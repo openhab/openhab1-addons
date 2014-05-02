@@ -56,6 +56,7 @@ public class StiebelHeatPumpGenericBindingProvider extends AbstractGenericBindin
 		super.processBindingConfiguration(context, item, bindingConfig);
 		StiebelHeatPumpBindingConfig config = new StiebelHeatPumpBindingConfig();	
 		config.parameter=bindingConfig.trim();
+		config.itemType = item.getClass();
 		addBindingConfig(item, config);		
 	}
 		

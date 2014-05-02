@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
  * @author Peter Kreutzer
  * @author Günter Speckhofer
  * @param <T>
+ * original protocol parser was written by Robert Penz in python
  * @since 1.4.0
  */
 public class StiebelHeatPumpDataParser {
@@ -37,7 +38,7 @@ public class StiebelHeatPumpDataParser {
 	public static byte STARTCOMMUNICATION = (byte) 0x02;
 	public static byte[] FOOTER = { ESCAPE, END };
 	public static byte[] DATAAVAILABLE = { ESCAPE, STARTCOMMUNICATION };
-	
+
 	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
 	
 	public List<Request> parserConfiguration = new ArrayList<Request>();
@@ -61,13 +62,17 @@ public class StiebelHeatPumpDataParser {
 
 		Map<String, String> map = new HashMap<String, String>();
 
+		logger.debug("Parse bytes: {}",
+				StiebelHeatPumpDataParser.bytesToHex(response));
+		
 		// parse response and fill map
 		for (RecordDefinition recordDefinition : request.getRecordDefinitions()) {
 			String value = parseRecord(response, recordDefinition);
-			logger.debug("Parsed bytes {} from heatpump to {} -> {}",
-					StiebelHeatPumpDataParser.bytesToHex(response), 
+			logger.debug("Parsed value {} -> {} with pos: {} , len: {}", 
 					recordDefinition.getName(),
-					value);
+					value,
+					recordDefinition.getPosition(),
+					recordDefinition.getLength());
 			map.put(recordDefinition.getName(), value);
 		}
 		return map;
@@ -168,7 +173,7 @@ public class StiebelHeatPumpDataParser {
 
 		if (response[1] != GET & response[1] != SET) {
 			throw new StiebelHeatPumpException(
-					"invalid response on request of data, response is wether get nor set: "
+					"invalid response on request of data, response is neither get nor set: "
 							+ new String(response));
 		}
 
@@ -177,6 +182,16 @@ public class StiebelHeatPumpDataParser {
 					"invalid checksum on request of data "
 							+ new String(response));
 		}
+	}
+	
+	public boolean headerCheck(byte[] response){
+		try{
+			verifyHeader(response);
+		}catch (StiebelHeatPumpException e){
+			return false;
+		}
+		
+		return true;
 	}
 
 	/**
@@ -330,6 +345,9 @@ public class StiebelHeatPumpDataParser {
 	/**
 	 * Gets one bit back from a bit string stored in a byte array at the
 	 * specified position.
+	 * @param data, byte array to pick short value from
+	 * @param position to get the bit value
+	 * @return integer value 1 or 0 that represents the bit
 	 */
 	private int getBit(byte[] data, int pos) {
 		int posByte = pos / 8;
@@ -342,23 +360,44 @@ public class StiebelHeatPumpDataParser {
 	/**
 	 * Sets one bit to a bit string at the specified position with the specified
 	 * bit value.
+	 * @param data, byte array to pick short value from
+	 * @param position to set the bit
+	 * @param value to set the bit to (0 or 1)
 	 */
-	private void setBit(byte[] data, int pos, int val) {
-		int posByte = pos / 8;
-		int posBit = pos % 8;
+	private void setBit(byte[] data, int position, int value) {
+		int posByte = position / 8;
+		int posBit = position % 8;
 		byte oldByte = data[posByte];
 		oldByte = (byte) (((0xFF7F >> posBit) & oldByte) & 0x00FF);
-		byte newByte = (byte) ((val << (8 - (posBit + 1))) | oldByte);
+		byte newByte = (byte) ((value << (8 - (posBit + 1))) | oldByte);
 		data[posByte] = newByte;
 	}
 	
+	/**
+	 * Converts a byte array to good readable string.
+	 * @param bytes to be converted
+	 * @return string representing the bytes
+	 */
 	public static String bytesToHex(byte[] bytes) {
-	    char[] hexChars = new char[bytes.length * 3];
+		int dwords = bytes.length / 4 + 1;
+	    char[] hexChars = new char[bytes.length * 3 + dwords*4 ];
+	    int position = 0;
 	    for ( int j = 0; j < bytes.length; j++ ) {
 	        int v = bytes[j] & 0xFF;
-	        hexChars[j * 3] = hexArray[v >>> 4];
-	        hexChars[j * 3 + 1] = hexArray[v & 0x0F];
-	        hexChars[j * 3 + 2] = ' ';
+	        if(j % 4 == 0){
+	        	String str = "(" + String.format("%02d", j) + ")";
+	        	char[] charArray = str.toCharArray();
+	        	for (char character :charArray){
+	        		hexChars[position] = character;
+	        		position++;
+	        	}
+	        }
+	        hexChars[position] = hexArray[v >>> 4];
+	        position++;
+	        hexChars[position] = hexArray[v & 0x0F];
+	        position++;
+	        hexChars[position] = ' ';
+	        position++;
 	    }
 	    return new String(hexChars);
 	}

@@ -48,7 +48,7 @@ public class StiebelHeatPumpBinding extends
 			.getLogger(StiebelHeatPumpBinding.class);
 
 	// configuration defaults for optional properties
-	private static int DEFAULT_BAUD_RATE = 57600;
+	private static int DEFAULT_BAUD_RATE = 9600;
 	private static int DEFAULT_SERIAL_TIMEOUT = 5;
 
 	/**
@@ -105,7 +105,7 @@ public class StiebelHeatPumpBinding extends
 	 * connects to the stiebel heat pump connector depending on the project
 	 * property the "StiebelHeatPumpSimulate" the simulator is connected
 	 * 
-	 * @return stiebelheatpumpconnectos object
+	 * @return stiebelheatpumpconnector object
 	 */
 	private final StiebelHeatPumpConnector getStiebelHeatPumpConnector() {
 		if (connector != null) {
@@ -160,6 +160,7 @@ public class StiebelHeatPumpBinding extends
 				}
 			}
 		} catch (StiebelHeatPumpException e) {
+			logger.debug(e.getMessage());
 		}
 		finally{
 			try {
@@ -242,8 +243,10 @@ public class StiebelHeatPumpBinding extends
 				return;
 			}
 
+			logger.info("Created heatpump configuratio with  serialport:{}, baudrate:{}, version:{} ",
+					serialPort, baudRate, version);
+			
 			setProperlyConfigured(true);
-			logger.debug("Binding configuration loaded.");
 		}
 	}
 

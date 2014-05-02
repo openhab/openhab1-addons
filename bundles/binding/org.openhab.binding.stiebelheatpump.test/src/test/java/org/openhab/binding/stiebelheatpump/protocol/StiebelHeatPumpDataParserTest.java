@@ -598,13 +598,23 @@ public class StiebelHeatPumpDataParserTest {
 	}
 	
 	@Test
-	// request FD
+	public void testHeader() {
+		try {
+			Assert.assertFalse(parser.headerCheck(new byte[] {
+					(byte)0x01, (byte)0x01, (byte)0xfe, (byte)0xfc, (byte)0x10, (byte)0x03 }));
+			Assert.assertTrue(parser.headerCheck(new byte[] {
+					(byte)0x01, (byte)0x00, (byte)0xcc, (byte)0xfd,  (byte)0x00, (byte)0xce, (byte)0x10, (byte)0x03 }));
+		} catch (Exception e) {
+			Assert.fail("unexpected exception");
+		}
+	}
+	
+	@Test
 	public void testParseByteToHex() throws StiebelHeatPumpException {
 		byte[] response = new byte[] { (byte) 0x01, (byte) 0x00, (byte) 0xb5,
-				(byte) 0xfd, (byte) 0x01, (byte) 0xb6, (byte) 0x10, (byte) 0x03 };
+				(byte) 0xfd, (byte) 0x01, (byte) 0xb6, (byte) 0xff, (byte) 0x10, (byte) 0x03 };
 		
 		String hex = StiebelHeatPumpDataParser.bytesToHex(response);
-		Assert.assertEquals("01 00 B5 FD 01 B6 10 03 ",hex);
+		Assert.assertEquals("(00)01 00 B5 FD (04)01 B6 FF 10 (08)03 ",hex);
 	}
-
 }
