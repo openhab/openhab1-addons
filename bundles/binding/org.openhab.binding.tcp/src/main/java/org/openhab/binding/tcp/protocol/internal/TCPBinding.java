@@ -91,7 +91,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
 			if(result!=null && blocking) {
 				String resultString = "";
 				try {
-					resultString = new String(result.array(), charset);
+					resultString = new String(result.array(), charset).split("\0")[0];
 				} catch (UnsupportedEncodingException e) {
 					logger.warn("Exception while attempting an unsupported encoding scheme");
 				}
@@ -137,7 +137,7 @@ public class TCPBinding extends AbstractSocketChannelBinding<TCPBindingProvider>
 
 		String theUpdate = "";
 		try {
-			theUpdate = new String(byteBuffer.array(), charset);
+			theUpdate = new String(byteBuffer.array(), charset).split("\0")[0];
 		} catch (UnsupportedEncodingException e) {
 			logger.warn("Exception while attempting an unsupported encoding scheme");
 		}
