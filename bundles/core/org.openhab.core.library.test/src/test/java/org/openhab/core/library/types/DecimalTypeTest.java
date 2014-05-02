@@ -11,6 +11,9 @@ package org.openhab.core.library.types;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
 import org.junit.Test;
 
 /**
@@ -55,12 +58,17 @@ public class DecimalTypeTest {
 			// That's what we expect.
 		}
 
+		// We know that DecimalType calls "String.format()" without a locale. So
+		// we have to do the same thing here in order to get the right decimal
+		// separator.
+		final char sep = (new DecimalFormatSymbols().getDecimalSeparator());
+
 		// A float value with float conversion.
 		DecimalType dt5 = new DecimalType("11.123");
-		dt5.format("%.1f");
+		assertEquals("11" + sep + "1", dt5.format("%.1f")); // "11.1"
 
 		// An integer value with float conversion. This has to work.
 		DecimalType dt6 = new DecimalType("11");
-		dt6.format("%.1f");
+		assertEquals("11" + sep + "0", dt6.format("%.1f")); // "11.0"
 	}
 }
