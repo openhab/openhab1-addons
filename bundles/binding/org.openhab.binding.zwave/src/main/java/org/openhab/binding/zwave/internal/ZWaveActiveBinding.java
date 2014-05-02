@@ -8,7 +8,10 @@
  */
 package org.openhab.binding.zwave.internal;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.zwave.ZWaveBindingConfig;
@@ -44,7 +47,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	/**
 	 * The refresh interval which is used to poll values from the ZWave binding. 
 	 */
-	private static final long REFRESH_INTERVAL = 10000;
+	private long refreshInterval = 10000;
+	
+	private int pollingMax = 2;
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveActiveBinding.class);
 	private String port;
@@ -54,6 +59,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private volatile ZWaveConverterHandler converterHandler;
 
 	private boolean isZwaveNetworkReady = false;
+	
+	private Iterator<ZWavePollItem> pollingIterator = null;
+	private List<ZWavePollItem> pollingList = new ArrayList<ZWavePollItem>();
 	
 	// Configuration Service
 	ZWaveConfiguration zConfigurationService;
@@ -67,7 +75,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	 */
 	@Override
 	protected long getRefreshInterval() {
-		return REFRESH_INTERVAL;
+		return refreshInterval;
 	}
 
 	/**
@@ -94,14 +102,49 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		
 		// Call the network monitor
 		networkMonitor.execute();
-		
-		// loop all binding providers for the Z-wave binding.
-		for (ZWaveBindingProvider provider : providers) {
-			// loop all bound items for this provider
-			for (String itemName : provider.getItemNames()) {
-				converterHandler.executeRefresh(provider, itemName, false);
+
+		// If we're not currently in a poll cycle, rebuild the polling table
+		if(pollingIterator == null) {
+			logger.debug("Rebuilding polling table");
+			pollingList.clear();
+
+			// Loop all binding providers for the Z-wave binding.
+			for (ZWaveBindingProvider provider : providers) {
+				// loop all bound items for this provider
+				for (String itemName : provider.getItemNames()) {
+					ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
+
+					// This binding is configured to poll - add it to the list
+					if (bindingConfiguration.getRefreshInterval() != null && 0 == bindingConfiguration.getRefreshInterval()) {
+						logger.debug("Rebuilding polling table - adding {}", itemName);
+						ZWavePollItem item = new ZWavePollItem();
+						item.item = itemName;
+						item.provider = provider;
+						pollingList.add(item);
+					}
+				}
 			}
-		}		
+
+			pollingIterator = pollingList.iterator();
+		}
+		
+		// Loop through the polling list. We only allow a certain number of messages
+		// into the send queue at a time to avoid congesting the system.
+		// The queue ensures all nodes get a chance - if we always started at the top
+		// The last items might never get polled.
+		ZWavePollItem poll;
+		while((poll = pollingIterator.next()) != null) {
+			logger.debug("Polling item {}", poll.item);
+			converterHandler.executeRefresh(poll.provider, poll.item, false);
+			if(zController.getSendQueueLength() > pollingMax) {
+				logger.debug("Polling queue full!");
+				break;
+			}
+		}
+		if(poll == null) {
+			logger.debug("Polling cycle complete");
+			pollingIterator = null;
+		}
 	}
 	
 	/**
@@ -123,7 +166,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 					converterHandler.executeRefresh(zProvider, itemName, true);
 			}
 		}
-		
+
 		super.bindingChanged(provider, itemName);
 	}
 	
@@ -322,5 +365,10 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		if (!handled)
 			logger.warn("No item bound for event from nodeId = {}, endpoint = {}, command class = {}, value = {}, ignoring.", 
 					new Object[] { event.getNodeId(), event.getEndpoint(), event.getCommandClass().getLabel(), event.getValue() } );
+	}
+	
+	class ZWavePollItem {
+		ZWaveBindingProvider provider;
+		String item;
 	}
 }
