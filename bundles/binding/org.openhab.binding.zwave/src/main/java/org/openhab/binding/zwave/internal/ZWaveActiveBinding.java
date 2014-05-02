@@ -47,9 +47,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	/**
 	 * The refresh interval which is used to poll values from the ZWave binding. 
 	 */
-	private long refreshInterval = 10000;
+	private long refreshInterval = 5000;
 	
-	private int pollingMax = 2;
+	private int pollingQueue = 1;
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveActiveBinding.class);
 	private String port;
@@ -103,46 +103,27 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		// Call the network monitor
 		networkMonitor.execute();
 
-		// If we're not currently in a poll cycle, rebuild the polling table
+		// If we're not currently in a poll cycle, restart the polling table
 		if(pollingIterator == null) {
-			logger.debug("Rebuilding polling table");
-			pollingList.clear();
-
-			// Loop all binding providers for the Z-wave binding.
-			for (ZWaveBindingProvider provider : providers) {
-				// loop all bound items for this provider
-				for (String itemName : provider.getItemNames()) {
-					ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
-
-					// This binding is configured to poll - add it to the list
-					if (bindingConfiguration.getRefreshInterval() != null && 0 == bindingConfiguration.getRefreshInterval()) {
-						logger.debug("Rebuilding polling table - adding {}", itemName);
-						ZWavePollItem item = new ZWavePollItem();
-						item.item = itemName;
-						item.provider = provider;
-						pollingList.add(item);
-					}
-				}
-			}
-
+			logger.trace("Polling iterator null");
 			pollingIterator = pollingList.iterator();
 		}
 		
 		// Loop through the polling list. We only allow a certain number of messages
-		// into the send queue at a time to avoid congesting the system.
+		// into the send queue at a time to avoid congestion within the system.
+		// Basically, we don't want the polling to slow down 'important' stuff.
 		// The queue ensures all nodes get a chance - if we always started at the top
 		// The last items might never get polled.
-		ZWavePollItem poll;
-		while((poll = pollingIterator.next()) != null) {
-			logger.debug("Polling item {}", poll.item);
-			converterHandler.executeRefresh(poll.provider, poll.item, false);
-			if(zController.getSendQueueLength() > pollingMax) {
-				logger.debug("Polling queue full!");
+		while(pollingIterator.hasNext()) {
+			if(zController.getSendQueueLength() >= pollingQueue) {
+				logger.trace("Polling queue full!");
 				break;
 			}
+			ZWavePollItem poll = pollingIterator.next();
+			converterHandler.executeRefresh(poll.provider, poll.item, false);
 		}
-		if(poll == null) {
-			logger.debug("Polling cycle complete");
+		if(pollingIterator.hasNext() == false) {
+			logger.trace("Polling cycle complete");
 			pollingIterator = null;
 		}
 	}
@@ -156,6 +137,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	 */
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
+		logger.debug("bindingChanged {}", itemName);		
 		
 		ZWaveBindingProvider zProvider = (ZWaveBindingProvider)provider;
 		
@@ -166,6 +148,29 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 					converterHandler.executeRefresh(zProvider, itemName, true);
 			}
 		}
+		
+		logger.debug("Rebuilding polling table");
+		pollingList.clear();
+
+		// Loop all binding providers for the Z-wave binding.
+		for (ZWaveBindingProvider eachProvider : providers) {
+			logger.debug("Rebuilding polling table - provider {}", eachProvider.toString());
+			// loop all bound items for this provider
+			for (String name : eachProvider.getItemNames()) {
+				logger.debug("Rebuilding polling table - loop {}", name);
+				ZWaveBindingConfig bindingConfiguration = eachProvider.getZwaveBindingConfig(name);
+
+				// This binding is configured to poll - add it to the list
+				if (bindingConfiguration.getRefreshInterval() != null && bindingConfiguration.getRefreshInterval() != 0) {
+					logger.debug("Rebuilding polling table - adding {}", name);
+					ZWavePollItem item = new ZWavePollItem();
+					item.item = name;
+					item.provider = eachProvider;
+					pollingList.add(item);
+				}
+			}
+		}
+		pollingIterator = null;
 
 		super.bindingChanged(provider, itemName);
 	}
@@ -283,6 +288,24 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			} catch (NumberFormatException e) {
 				healtime = null;
 				logger.error("Error parsing 'healtime'. This must be a single number to set the hour to perform the heal.");
+			}
+		}
+		if (StringUtils.isNotBlank((String) config.get("refreshInterval"))) {
+			try {
+				refreshInterval = Integer.parseInt((String) config.get("refreshInterval"));
+				logger.info("Update config, refreshInterval = {}", refreshInterval);
+			} catch (NumberFormatException e) {
+				refreshInterval = 10000;
+				logger.error("Error parsing 'refreshInterval'. This must be a single number time in milliseconds.");
+			}
+		}
+		if (StringUtils.isNotBlank((String) config.get("pollingQueue"))) {
+			try {
+				pollingQueue = Integer.parseInt((String) config.get("pollingQueue"));
+				logger.info("Update config, pollingQueue = {}", pollingQueue);
+			} catch (NumberFormatException e) {
+				pollingQueue = 2;
+				logger.error("Error parsing 'pollingQueue'. This must be a single number time in milliseconds.");
 			}
 		}
 		if (StringUtils.isNotBlank((String) config.get("timeout"))) {
