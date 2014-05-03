@@ -248,6 +248,8 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 					modbusSlave.setStart(Integer.valueOf(value));
 				} else if ("length".equals(configKey)) {
 					modbusSlave.setLength(Integer.valueOf(value));
+				} else if ("step".equals(configKey)) {
+					modbusSlave.setStep(Integer.valueOf(value));
 				} else if ("id".equals(configKey)) {
 					modbusSlave.setId(Integer.valueOf(value));
 				} else if ("type".equals(configKey)) {

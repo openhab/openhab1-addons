@@ -80,10 +80,10 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 	/** Modbus slave id */
 	private int id = 1;
 
-	/** starting reference and number of item to fetch from the device */
+	/** starting reference, number of item, and step width to fetch from the device */
 	private int start = 0;
-
 	private int length = 0;
+	private int step = 1;
 
 	private Object storage;
 	protected ModbusTransaction transaction = null; 
@@ -194,7 +194,8 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		
 		ModbusRequest request = null;
 		if (writeMultipleRegisters) {
-			Register [] regs = new Register[1];
+			Register [] regs = new Register[step];
+			// TODO: we don't deal with updating the values correctly now - this only does the low-word....
 			regs[0] = newValue;
 			request = new WriteMultipleRegistersRequest(writeRegister, regs);			
 		} else {
@@ -254,9 +255,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 		}
 		
 		try {
-
-		Object local = null;
-
+			Object local = null;
 
 			if (ModbusBindingProvider.TYPE_COIL.equals(getType())) {
 				ModbusRequest request = new ReadCoilsRequest(getStart(), getLength());
@@ -270,18 +269,31 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 				ModbusRequest request = new ReadInputDiscretesRequest(getStart(), getLength());
 				ReadInputDiscretesResponse responce = (ReadInputDiscretesResponse) getModbusData(request);
 				local = responce.getDiscretes();
-			// TODO: problematic for Drexel&Weiß - function code 3 for multiple registers not supported, only function code 4 for a single register
 			} else if (ModbusBindingProvider.TYPE_HOLDING.equals(getType()) && readMultipleRegisters) {  
 				ModbusRequest request = new ReadMultipleRegistersRequest(getStart(), getLength());
 				ReadMultipleRegistersResponse response = (ReadMultipleRegistersResponse) getModbusData(request);
 				local = response.getRegisters();
 			} else if (ModbusBindingProvider.TYPE_INPUT.equals(getType()) ||
 					(ModbusBindingProvider.TYPE_HOLDING.equals(getType()) && !readMultipleRegisters)) {
-				// TODO: make configurable with which "step width" the commands are sent
-				// D&W always needs to read 2 words in one go
-				ModbusRequest request = new ReadInputRegistersRequest(getStart(), getLength());
-				ReadInputRegistersResponse response = (ReadInputRegistersResponse) getModbusData(request);
-				local = response.getRegisters();
+				if (step == 1) {
+					// standard case: just issue a single read request for the whole range
+					ModbusRequest request = new ReadInputRegistersRequest(getStart(), getLength());
+					ReadInputRegistersResponse response = (ReadInputRegistersResponse) getModbusData(request);
+					local = response.getRegisters();
+				}
+				else {
+					// flexible case: make multiple read request with "step width" number of words each
+					// e.g. Drexel&Weiß always needs to read 2 words in one go, no other read/write lengths supported...
+					// TODO: validate length and step
+					// TODO: optimize by only reading those addresses that actually yield in items
+					local = new InputRegister[getLength()];
+					for (int i=0; i<getLength()/getStep(); i++) {
+						ModbusRequest request = new ReadInputRegistersRequest(getStart()+i*getStep(), getStep());
+						ReadInputRegistersResponse response = (ReadInputRegistersResponse) getModbusData(request);
+						InputRegister[] ret = response.getRegisters();
+						System.arraycopy(local, i*getStep(), ret, 0, getStep());
+					}
+				}
 			}
 			if (storage == null) 
 				storage = local;
@@ -354,6 +366,14 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
 	void setLength(int length) {
 		this.length = length;
+	}
+
+	int getStep() {
+		return step;
+	}
+
+	void setStep(int step) {
+		this.step = step;
 	}
 
 	int getId() {
