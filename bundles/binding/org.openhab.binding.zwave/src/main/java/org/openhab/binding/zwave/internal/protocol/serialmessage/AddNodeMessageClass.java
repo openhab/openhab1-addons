@@ -66,18 +66,18 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 
 	@Override
 	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		switch(incomingMessage.getMessagePayloadByte(0)) {
+		switch(incomingMessage.getMessagePayloadByte(1)) {
 		case ADD_NODE_STATUS_LEARN_READY:
 			logger.debug("Learn ready.");
 			break;
 		case ADD_NODE_STATUS_NODE_FOUND:
-			logger.debug("Node found.");
+			logger.debug("Node found {}.", incomingMessage.getMessagePayloadByte(2));
 			break;
 		case ADD_NODE_STATUS_ADDING_SLAVE:
-			logger.debug("Adding slave {}.", incomingMessage.getMessagePayloadByte(1));
+			logger.debug("Adding slave {}.", incomingMessage.getMessagePayloadByte(2));
 			break;
 		case ADD_NODE_STATUS_ADDING_CONTROLLER:
-			logger.debug("Adding controller {}.", incomingMessage.getMessagePayloadByte(1));
+			logger.debug("Adding controller {}.", incomingMessage.getMessagePayloadByte(2));
 			break;
 		case ADD_NODE_STATUS_PROTOCOL_DONE:
 			logger.debug("Protocol done.");
@@ -85,13 +85,14 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 			break;
 		case ADD_NODE_STATUS_DONE:
 			logger.debug("Done.");
+			doRequestStop();
 			break;
 		case ADD_NODE_STATUS_FAILED:
 			logger.debug("Failed.");
 			doRequestStop();
 			break;
 		default:
-			logger.debug("Unknown request ({}).", incomingMessage.getMessagePayloadByte(0));
+			logger.debug("Unknown request ({}).", incomingMessage.getMessagePayloadByte(1));
 			break;
 		}
 		checkTransactionComplete(lastSentMessage, incomingMessage);

@@ -44,6 +44,7 @@ import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRou
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignSucReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.DeleteReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.IdentifyNodeMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeNeighborUpdateMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveFailedNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeInfoMessageClass;
@@ -508,7 +509,23 @@ public class ZWaveController {
 	}
 
 	/**
-	 * Removes a failed nodes from the network.
+	 * Puts the controller into exclusion mode to remove new nodes
+	 */
+	public void requestRemoveNodesStart()
+	{
+		this.enqueue(new RemoveNodeMessageClass().doRequestStart(true));
+	}
+
+	/**
+	 * Terminates the exclusion mode
+	 */
+	public void requestRemoveNodesStop()
+	{
+		this.enqueue(new RemoveNodeMessageClass().doRequestStop());
+	}
+
+	/**
+	 * Removes a failed node from the network.
 	 * Note that this won't remove nodes that have not failed.
 	 * @param nodeId The address of the node to remove
 	 */

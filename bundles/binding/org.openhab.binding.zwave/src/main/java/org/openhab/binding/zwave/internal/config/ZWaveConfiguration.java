@@ -727,6 +727,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					zController.requestAddNodesStart();
 					setInclusionTimer();
 				}
+				if (action.equals("Exclude")) {
+					zController.requestRemoveNodesStart();
+					setExclusionTimer();
+				}
 			}
 		}
 		else if (splitDomain[0].equals("nodes")) {
@@ -1033,7 +1037,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		}
 	}
 
-	
 	// The following timer implements a re-triggerable timer to stop the inclusion
 	// mode after 30 seconds.
 	private class InclusionTimerTask extends TimerTask {
@@ -1062,7 +1065,36 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		// Start the timer
 		timer.schedule(timerTask, 30000);
 	}
-	
+
+	// The following timer implements a re-triggerable timer to stop the exclusion
+	// mode after 30 seconds.
+	private class ExclusionTimerTask extends TimerTask {
+		ZWaveController zController;
+
+		ExclusionTimerTask(ZWaveController zController) {
+			this.zController = zController;
+		}
+
+		@Override
+		public void run() {
+			logger.debug("Ending exclusion mode.");
+			zController.requestRemoveNodesStop();
+		}
+	}
+
+	public synchronized void setExclusionTimer() {
+		// Stop any existing timer
+		if(timerTask != null) {
+			timerTask.cancel();
+		}
+
+		// Create the timer task
+		timerTask = new ExclusionTimerTask(zController);
+
+		// Start the timer
+		timer.schedule(timerTask, 30000);
+	}
+
 	/**
 	 * The PendingConfiguration class holds information on outstanding requests
 	 * When the binding sends a configuration request to a device, we hold a copy
