@@ -149,6 +149,18 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			}
 		}
 
+		// Bindings have changed - rebuild the polling table
+		rebuildPollingTable();
+		
+		super.bindingChanged(provider, itemName);
+	}
+	
+	/**
+	 * This method rebuilds the polling table. The polling table is a list of items that have
+	 * polling enabled (ie a refresh interval is set). This list is then checked periodically
+	 * and any item that has passed its polling interval will be polled.
+	 */
+	private void rebuildPollingTable() {
 		// Rebuild the polling table
 		pollingList.clear();
 
@@ -157,6 +169,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			// loop all bound items for this provider
 			for (String name : eachProvider.getItemNames()) {
 				ZWaveBindingConfig bindingConfiguration = eachProvider.getZwaveBindingConfig(name);
+				logger.trace("Polling list: Checking {} == {}", name, bindingConfiguration.getRefreshInterval());
 
 				// This binding is configured to poll - add it to the list
 				if (bindingConfiguration.getRefreshInterval() != null && bindingConfiguration.getRefreshInterval() != 0) {
@@ -164,12 +177,11 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 					item.item = name;
 					item.provider = eachProvider;
 					pollingList.add(item);
+					logger.trace("Polling list added {}", name);
 				}
 			}
 		}
 		pollingIterator = null;
-
-		super.bindingChanged(provider, itemName);
 	}
 	
 	/**
