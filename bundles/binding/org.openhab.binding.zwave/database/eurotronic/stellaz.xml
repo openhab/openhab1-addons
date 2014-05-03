@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>EUR_STELLAZ</Model>
+	<Label lang="en">Thermostatic Valve</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x40</id></Class>
+		<Class><id>0x43</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x77</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+</Product>

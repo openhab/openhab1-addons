@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB Oceanic Binding
+Bundle-SymbolicName: org.openhab.binding.oceanic
+Bundle-Version: 1.5.0.qualifier
+Bundle-Activator: org.openhab.binding.oceanic.internal.OceanicActivator
+Bundle-Vendor: openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: gnu.io,
+ org.apache.commons.io;version="2.0.1",
+ org.apache.commons.lang;version="2.4.0",
+ org.joda.time,
+ org.joda.time.base,
+ org.joda.time.format,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.io.net.http,
+ org.openhab.model.core,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.quartz,
+ org.quartz.impl,
+ org.quartz.impl.matchers,
+ org.quartz.utils,
+ org.slf4j
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/oceanicbinding.xml
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .

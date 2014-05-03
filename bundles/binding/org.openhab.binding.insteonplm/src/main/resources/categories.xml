@@ -1,0 +1,284 @@
+<xml>
+<!-- Categories
+Example: 
+<category>
+     <name>Controllers</name>
+     <description>Generalized Controllers</description>
+     <devCat>0x00</devCat>
+</category>
+ -->
+
+
+<category>
+  <name>Controllers</name>
+  <description>Generalized Controllers</description>
+  <devCat>0x00</devCat>
+</category>
+<category>
+  <name>Dimmer</name>
+  <description>Dimmable Lighting Control</description>
+  <devCat>0x01</devCat>
+  <subcategory>
+    <name>LampLinc V2</name>
+    <description>2456D3</description>
+    <subCat>0x00</subCat>
+    <productKey name="F00.00.05">
+    	<feature name="dimmer">GenericDimmer</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>KepadLinc Dimmer</name>
+    <description>2486D</description>
+    <subCat>0x09</subCat>
+    <productKey name="0x000037">
+    	<feature name="dimmer">GenericDimmer</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>KeypadLinc Dimmer</name>
+    <description>2486DWH8</description>
+    <subCat>0x1C</subCat>
+    <productKey name="0x000051">
+    	<feature name="dimmer">GenericDimmer</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>SwitchLinc Dimmer</name>
+    <description>2477D</description>
+    <subCat>0x20</subCat>
+    <productKey name="F00.00.01">
+    	<feature name="dimmer">GenericDimmer</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>OutletLinc Dimmer</name>
+    <description>2472D</description>
+    <subCat>0x21</subCat>
+    <productKey name="0x000068">
+    	<feature name="dimmer">GenericDimmer</feature>
+ 	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>DIN Rail Dimmer</name>
+    <description>2452-222</description>
+    <subCat>0x34</subCat>
+    <productKey name="F00.00.08">
+    	<feature name="dimmer">GenericDimmer</feature>
+ 	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>Micro Dimmer</name>
+    <description>2442-222</description>
+    <subCat>0x35</subCat>
+    <productKey name="F00.00.06">
+    	<feature name="dimmer">GenericDimmer</feature>
+ 	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>OutletLinc Dimmer</name>
+    <description>2472D</description>
+    <subCat>0x21</subCat>
+    <productKey name="0x000068">
+    	<feature name="dimmer">2472Ddimmer</feature>
+    	<feature name="lastheardfrom">2472Dlasttime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>KeypadLinc Dimmer</name>
+    <description>2486DWH8</description>
+    <subCat>0x1C</subCat>
+    <productKey name="0x000051">
+    	<feature name="dimmer">2486DWH8dimmer</feature>
+    	<feature name="lastheardfrom">2486DWH8lasttime</feature>
+    </productKey>
+  </subcategory>
+</category>
+<category>
+  <name>Switch</name>
+  <description>Switchable Lighting</description>
+  <devCat>0x02</devCat>
+  <subcategory>
+    <name>ICON Switch</name>
+    <description>2876S</description>
+    <subCat>0x0B</subCat>
+    <productKey name="F00.00.04">
+    	<feature name="switch">GenericSwitch</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>SwitchLinc Switch</name>
+    <description>2477S</description>
+    <subCat>0x2A</subCat>
+    <productKey name="F00.00.02">
+    	<feature name="switch">GenericSwitch</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>DIN Rail On/Off</name>
+    <description>2453-222</description>
+    <subCat>0x2e</subCat>
+    <productKey name="F00.00.07">
+    	<feature name="switch">GenericSwitch</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+</category>
+<category>
+  <name>Network Bridge</name>
+  <description>Network Bridge</description>
+  <devCat>0x03</devCat>
+  <subcategory>
+    <name>PowerLinc 2413U USB modem</name>
+    <description>2413U</description>
+    <productKey name="0x000045">
+    	<feature name="control">GenericModemControl</feature>
+    </productKey>
+    <subCat>0x15</subCat>
+  </subcategory>
+</category>
+<category>
+  <name>Network Bridge</name>
+  <description>Network Bridge</description>
+  <devCat>0x03</devCat>
+</category>
+<category>
+  <name>Irrigation Control</name>
+  <description>Irrigation Management, Sprinkler Controls</description>
+  <devCat>0x04</devCat>
+</category>
+<category>
+  <name>Climate Control</name>
+  <description>Heating, AC, Fans, Air Quality</description>
+  <devCat>0x05</devCat>
+</category>
+<category>
+  <name>Pool and Spa Control</name>
+  <description>Pumps, Heaters, Chemical Control</description>
+  <devCat>0x06</devCat>
+</category>
+<category>
+  <name>Sensor/Actuator</name>
+  <description>Sensors and Actuators</description>
+  <devCat>0x07</devCat>
+
+  <subcategory>
+    <name>IO Link</name>
+    <description>2450</description>
+    <subCat>0x00</subCat>
+    <productKey name="0x00001A">
+    	<feature name="contact">IOLincContact</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    	<feature name="switch">IOLincSwitch</feature>
+    </productKey>
+  </subcategory>
+
+</category>
+<category>
+  <name>Home Entertainment</name>
+  <description>Audio/Video Equipment</description>
+  <devCat>0x08</devCat>
+</category>
+<category>
+  <name>Energy Management</name>
+  <description>Electricity, Water, Gas, Leak Monitors</description>
+  <devCat>0x09</devCat>
+</category>
+<category>
+  <name>Appliance Control</name>
+  <description>Appliance Controls</description>
+  <devCat>0x0A</devCat>
+</category>
+<category>
+  <name>Plumbing Control</name>
+  <description>Faucets, Showers, Toilets</description>
+  <devCat>0x0B</devCat>
+</category>
+<category>
+  <name>Communication</name>
+  <description>Telephone System Controls, Intercoms</description>
+  <devCat>0x0C</devCat>
+</category>
+<category>
+  <name>Computer Control</name>
+  <description>PC On/Off, UPS Control, App Activation, Mouse, Keyboards</description>
+  <devCat>0x0D</devCat>
+</category>
+<category>
+  <name>Window Control</name>
+  <description>Drapes, Blinds, Awnings</description>
+  <devCat>0x0E</devCat>
+</category>
+<category>
+  <name>Access Control</name>
+  <description>Doors, Gates, Windows Locks</description>
+  <devCat>0x0F</devCat>
+</category>
+<category>
+  <name>Security/Health/Saftey Control</name>
+  <description>Door and Window Sensors, Motion sensors, Scales</description>
+  <devCat>0x10</devCat>
+    <subcategory>
+	<name>Motion Sensor</name>
+    	<description>2842-222</description>
+    	<subCat>0x01</subCat>
+    	<productKey name="0x00004A">
+    	  <feature name="contact">MotionSensorContact</feature>
+    	  <feature name="lastheardfrom">GenericLastTime</feature>
+    	</productKey>
+    </subcategory>
+    <subcategory>
+	<name>Hidden Door Sensor</name>
+    	<description>2845-222</description>
+    	<subCat>0x11</subCat>
+    	<productKey name="F00.00.03">
+    	  <feature name="contact">GenericContact</feature>
+    	  <feature name="lastheardfrom">GenericLastTime</feature>
+    	</productKey>
+    </subcategory>
+</category>
+<category>
+  <name>Surveillance Control</name>
+  <description>Video Camera, Time-lapse, Security System Links</description>
+  <devCat>0x11</devCat>
+</category>
+<category>
+  <name>Automotive Control</name>
+  <description>Remote Starts, Car Alarms, Car Door Locks</description>
+  <devCat>0x12</devCat>
+</category>
+<category>
+  <name>Pet Care</name>
+  <description>Pet Feeders, Trackers</description>
+  <devCat>0x13</devCat>
+</category>
+<category>
+  <name>Toys Control</name>
+  <description>Model Trains</description>
+  <devCat>0x14</devCat>
+</category>
+<category>
+  <name>Time Keeping</name>
+  <description>Clocks, Alarms, and Timers</description>
+  <devCat>0x15</devCat>
+</category>
+<category>
+  <name>Holiday</name>
+  <description>Christmas Lights, Displays</description>
+  <devCat>0x16</devCat>
+</category>
+<category>
+  <name>Unassigned</name>
+  <description>Will be given category by software</description>
+  <devCat>0xFF</devCat>
+</category>
+
+</xml>
