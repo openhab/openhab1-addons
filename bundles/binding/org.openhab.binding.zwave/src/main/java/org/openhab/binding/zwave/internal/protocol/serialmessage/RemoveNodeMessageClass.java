@@ -21,17 +21,17 @@ import org.slf4j.LoggerFactory;
 public class RemoveNodeMessageClass extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(RemoveNodeMessageClass.class);
 
-	private final int REMOVE_NODE_ANY                       = 0x01;
-	private final int REMOVE_NODE_CONTROLLER                = 0x02;
-	private final int REMOVE_NODE_SLAVE                     = 0x03;
-	private final int REMOVE_NODE_STOP                      = 0x05;
+	private final int REMOVE_NODE_ANY                        = 0x01;
+	private final int REMOVE_NODE_CONTROLLER                 = 0x02;
+	private final int REMOVE_NODE_SLAVE                      = 0x03;
+	private final int REMOVE_NODE_STOP                       = 0x05;
 
-	private final int REMOVE_NODE_STATUS_LEARN_READY        = 0x01;
-	private final int REMOVE_NODE_STATUS_NODE_FOUND         = 0x02;
-	private final int REMOVE_NODE_STATUS_ADDING_SLAVE       = 0x03;
-	private final int REMOVE_NODE_STATUS_ADDING_CONTROLLER  = 0x04;
-	private final int REMOVE_NODE_STATUS_DONE               = 0x06;
-	private final int REMOVE_NODE_STATUS_FAILED             = 0x07;
+	private final int REMOVE_NODE_STATUS_LEARN_READY         = 0x01;
+	private final int REMOVE_NODE_STATUS_NODE_FOUND          = 0x02;
+	private final int REMOVE_NODE_STATUS_REMOVING_SLAVE      = 0x03;
+	private final int REMOVE_NODE_STATUS_REMOVING_CONTROLLER = 0x04;
+	private final int REMOVE_NODE_STATUS_DONE                = 0x06;
+	private final int REMOVE_NODE_STATUS_FAILED              = 0x07;
 	
 	public SerialMessage doRequestStart(boolean highPower) {
 		logger.debug("Setting controller into EXCLUSION mode.");
@@ -39,7 +39,7 @@ public class RemoveNodeMessageClass extends ZWaveCommandProcessor {
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessage.SerialMessageClass.RemoveNodeFromNetwork, SerialMessage.SerialMessageType.Request,
 				SerialMessage.SerialMessageClass.RemoveNodeFromNetwork, SerialMessage.SerialMessagePriority.High);
-		byte[] newPayload = { (byte) REMOVE_NODE_ANY };
+		byte[] newPayload = { (byte) REMOVE_NODE_ANY, (byte)255 };
 
     	newMessage.setMessagePayload(newPayload);
     	return newMessage;
@@ -64,21 +64,21 @@ public class RemoveNodeMessageClass extends ZWaveCommandProcessor {
 			logger.debug("Learn ready.");
 			break;
 		case REMOVE_NODE_STATUS_NODE_FOUND:
-			logger.debug("Node found {}.", incomingMessage.getMessagePayloadByte(2));
+			logger.debug("Node found for removal.");
 			break;
-		case REMOVE_NODE_STATUS_ADDING_SLAVE:
-			logger.debug("Removing slave {}.", incomingMessage.getMessagePayloadByte(2));
+		case REMOVE_NODE_STATUS_REMOVING_SLAVE:
+			logger.debug("NODE {}: Removing slave.", incomingMessage.getMessagePayloadByte(2));
 			break;
-		case REMOVE_NODE_STATUS_ADDING_CONTROLLER:
-			logger.debug("Removing controller {}.", incomingMessage.getMessagePayloadByte(2));
+		case REMOVE_NODE_STATUS_REMOVING_CONTROLLER:
+			logger.debug("NODE {}: Removing controller.", incomingMessage.getMessagePayloadByte(2));
 			break;
 		case REMOVE_NODE_STATUS_DONE:
-			logger.debug("Done.");
-			doRequestStop();
+			logger.debug("NODE {}: Removed from network.", incomingMessage.getMessagePayloadByte(2));
+			zController.sendData(doRequestStop());
 			break;
 		case REMOVE_NODE_STATUS_FAILED:
 			logger.debug("Failed.");
-			doRequestStop();
+			zController.sendData(doRequestStop());
 			break;
 		default:
 			logger.debug("Unknown request ({}).", incomingMessage.getMessagePayloadByte(1));
@@ -87,13 +87,5 @@ public class RemoveNodeMessageClass extends ZWaveCommandProcessor {
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 
 		return transactionComplete;
-	}
-
-	@Override
-	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		logger.debug("handleResponse.");
-		checkTransactionComplete(lastSentMessage, incomingMessage);
-		
-		return true;
 	}
 }

@@ -44,7 +44,7 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessage.SerialMessageClass.AddNodeToNetwork, SerialMessage.SerialMessageType.Request,
 				SerialMessage.SerialMessageClass.AddNodeToNetwork, SerialMessage.SerialMessagePriority.High);
-		byte[] newPayload = { (byte) ADD_NODE_ANY };
+		byte[] newPayload = { (byte) ADD_NODE_ANY, (byte)255 };
 		if(highPower == true)
 			newPayload[0] |= OPTION_HIGH_POWER;
 
@@ -71,25 +71,24 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 			logger.debug("Learn ready.");
 			break;
 		case ADD_NODE_STATUS_NODE_FOUND:
-			logger.debug("Node found {}.", incomingMessage.getMessagePayloadByte(2));
+			logger.debug("New node found.");
 			break;
 		case ADD_NODE_STATUS_ADDING_SLAVE:
-			logger.debug("Adding slave {}.", incomingMessage.getMessagePayloadByte(2));
+			logger.debug("NODE {}: Adding slave.", incomingMessage.getMessagePayloadByte(2));
 			break;
 		case ADD_NODE_STATUS_ADDING_CONTROLLER:
-			logger.debug("Adding controller {}.", incomingMessage.getMessagePayloadByte(2));
+			logger.debug("NODE {}: Adding controller.", incomingMessage.getMessagePayloadByte(2));
 			break;
 		case ADD_NODE_STATUS_PROTOCOL_DONE:
 			logger.debug("Protocol done.");
-			doRequestStop();
 			break;
 		case ADD_NODE_STATUS_DONE:
 			logger.debug("Done.");
-			doRequestStop();
+			zController.sendData(doRequestStop());
 			break;
 		case ADD_NODE_STATUS_FAILED:
 			logger.debug("Failed.");
-			doRequestStop();
+			zController.sendData(doRequestStop());
 			break;
 		default:
 			logger.debug("Unknown request ({}).", incomingMessage.getMessagePayloadByte(1));
@@ -98,13 +97,5 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 
 		return transactionComplete;
-	}
-
-	@Override
-	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		logger.debug("handleResponse.");
-		checkTransactionComplete(lastSentMessage, incomingMessage);
-		
-		return true;
 	}
 }

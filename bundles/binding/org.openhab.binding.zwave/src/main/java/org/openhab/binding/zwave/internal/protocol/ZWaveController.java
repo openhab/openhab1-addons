@@ -35,9 +35,11 @@ import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AddNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRouteMessageClass;
@@ -378,6 +380,41 @@ public class ZWaveController {
 		for (ZWaveEventListener listener : this.zwaveEventListeners) {
 			logger.trace("Notifying {}", listener.toString());
 			listener.ZWaveIncomingEvent(event);
+		}
+		
+		// We also need to handle the inclusion internally within the controller
+		if(event instanceof ZWaveInclusionEvent) {
+			ZWaveInclusionEvent incEvent = (ZWaveInclusionEvent)event;
+			switch(incEvent.getEvent()) {
+			case IncludeDone:
+				// First make sure this isn't an existing node
+				if(getNode(incEvent.getNodeId()) != null) {
+					logger.debug("NODE {}: Newly included node already exists - not initialising.");
+					break;
+				}
+				
+				// Initialise the new node
+				ZWaveNode node = new ZWaveNode(this.homeId, incEvent.getNodeId(), this);
+
+				this.zwaveNodes.put(incEvent.getNodeId(), node);
+				node.advanceNodeStage(NodeStage.PROTOINFO);
+
+				break;
+			case ExcludeDone:
+				// Remove the node from the controller
+				if(getNode(incEvent.getNodeId()) != null) {
+					logger.debug("NODE {}: Excluding node that doesn't exist.");
+					break;
+				}
+				this.zwaveNodes.remove(getNode(incEvent.getNodeId()));
+				
+				// Remove the XML file
+				ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+				nodeSerializer.DeleteNode(event.getNodeId());
+				break;
+			default:
+				break;
+			}
 		}
 	}
 	
