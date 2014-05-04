@@ -218,6 +218,24 @@
 		<Name>Reitz Group</Name>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>054336</Model>
+			<Label lang="en">One Paddle Wall Dimmer Insert</Label>
+			<ConfigFile>reitz/054336.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064394</Model>
+			<Label lang="en">Schuko Plug Dimmer</Label>
+			<ConfigFile>reitz/064394.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>2001</Type>
 				<Id>0000</Id>
 			</Reference>
