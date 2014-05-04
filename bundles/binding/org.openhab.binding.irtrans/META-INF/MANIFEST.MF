@@ -4,7 +4,7 @@ Ignore-Package: org.openhab.binding.irtrans.internal
 Bundle-Name: openHAB irTrans Binding
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.5.0.qualifier
-Bundle-Activator: org.openhab.binding.irtrans.internal.IrTransActivator
+Bundle-Activator: org.openhab.binding.irtrans.internal.IRtransActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the irTrans binding of the open Home Aut
