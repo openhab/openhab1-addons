@@ -10,6 +10,7 @@ package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,15 +70,18 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 		switch(incomingMessage.getMessagePayloadByte(1)) {
 		case ADD_NODE_STATUS_LEARN_READY:
 			logger.debug("Learn ready.");
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeStart));
 			break;
 		case ADD_NODE_STATUS_NODE_FOUND:
 			logger.debug("New node found.");
 			break;
 		case ADD_NODE_STATUS_ADDING_SLAVE:
 			logger.debug("NODE {}: Adding slave.", incomingMessage.getMessagePayloadByte(2));
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeSlaveFound, incomingMessage.getMessagePayloadByte(2)));
 			break;
 		case ADD_NODE_STATUS_ADDING_CONTROLLER:
 			logger.debug("NODE {}: Adding controller.", incomingMessage.getMessagePayloadByte(2));
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeControllerFound, incomingMessage.getMessagePayloadByte(2)));
 			break;
 		case ADD_NODE_STATUS_PROTOCOL_DONE:
 			logger.debug("Protocol done.");
@@ -85,10 +89,12 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 		case ADD_NODE_STATUS_DONE:
 			logger.debug("Done.");
 			zController.sendData(doRequestStop());
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeDone, incomingMessage.getMessagePayloadByte(2)));
 			break;
 		case ADD_NODE_STATUS_FAILED:
 			logger.debug("Failed.");
 			zController.sendData(doRequestStop());
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeFail));
 			break;
 		default:
 			logger.debug("Unknown request ({}).", incomingMessage.getMessagePayloadByte(1));

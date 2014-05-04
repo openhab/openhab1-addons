@@ -29,6 +29,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurati
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
@@ -48,6 +49,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 	private ZWaveController zController = null;
 	private ZWaveNetworkMonitor networkMonitor = null;
+	
+	private boolean inclusion = false;
+	private boolean exclusion = false;
 
 	private Timer timer = new Timer();
 
@@ -702,9 +706,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	@Override
 	public void doAction(String domain, String action) {
 		logger.trace("doAction domain '{}' to '{}'", domain, action);
-		
+
 		// If the controller isn't ready, then ignore any requests
-		if(zController.isConnected() == false) {
+		if (zController.isConnected() == false) {
 			logger.debug("Controller not ready - Ignoring request to '{}'", domain);
 			return;
 		}
@@ -720,20 +724,26 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		if (splitDomain[0].equals("binding")) {
 			if (splitDomain[1].equals("network")) {
 				if (action.equals("Heal")) {
-					if(networkMonitor != null)
+					if (networkMonitor != null)
 						networkMonitor.rescheduleHeal();
 				}
-				if (action.equals("Include")) {
-					zController.requestAddNodesStart();
-					setInclusionTimer();
+				if (inclusion == false && exclusion == false) {
+					if (action.equals("Include")) {
+						inclusion = true;
+						zController.requestAddNodesStart();
+						setInclusionTimer();
+					}
+					if (action.equals("Exclude")) {
+						exclusion = true;
+						zController.requestRemoveNodesStart();
+						setInclusionTimer();
+					}
 				}
-				if (action.equals("Exclude")) {
-					zController.requestRemoveNodesStart();
-					setExclusionTimer();
+				else {
+					logger.debug("Exclusion/Inclusion already in progress.");
 				}
 			}
-		}
-		else if (splitDomain[0].equals("nodes")) {
+		} else if (splitDomain[0].equals("nodes")) {
 			int nodeId = Integer.parseInt(splitDomain[1].substring(4));
 
 			// Get the node - if it exists
@@ -747,7 +757,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if (action.equals("Heal")) {
 					logger.debug("NODE {}: Heal node", nodeId);
 
-					if(networkMonitor != null)
+					if (networkMonitor != null)
 						networkMonitor.healNode(nodeId);
 				}
 
@@ -762,10 +772,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if (action.equals("Delete")) {
 					logger.debug("NODE {}: Delete node", nodeId);
 					this.zController.requestRemoveFailedNode(nodeId);
-					
+
 					// Delete the XML file.
-					// TODO: This should be possibly be done after registering an event handler
-					// Then we can delete this after the controller confirms the removal.
+					// TODO: This should be possibly be done after registering
+					// an event handler
+					// Then we can delete this after the controller confirms the
+					// removal.
 					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 					nodeSerializer.DeleteNode(nodeId);
 				}
@@ -822,8 +834,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			if (splitDomain[2].equals("neighbors")) {
 				if (action.equals("Refresh")) {
-//					this.zController.requestNodeNeighborUpdate(nodeId);
-					this.zController.requestNodeRoutingInfo(nodeId);//.requestNodeNeighborUpdate(nodeId);
+					// this.zController.requestNodeNeighborUpdate(nodeId);
+					this.zController.requestNodeRoutingInfo(nodeId);// .requestNodeNeighborUpdate(nodeId);
 				}
 			}
 
@@ -991,6 +1003,35 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	}
 
 	/**
+	 * Handle the inclusion/exclusion event. This just notifies the GUI.
+	 * @param event
+	 */
+	void handleInclusionEvent(ZWaveInclusionEvent event) {
+		switch(event.getEvent()) {
+		case IncludeStart:
+			break;
+		case IncludeSlaveFound:
+			break;
+		case IncludeControllerFound:
+			break;
+		case IncludeFail:
+			break;
+		case IncludeDone:
+			break;
+		case ExcludeStart:
+			break;
+		case ExcludeSlaveFound:
+			break;
+		case ExcludeControllerFound:
+			break;
+		case ExcludeFail:
+			break;
+		case ExcludeDone:
+			break;
+		}
+	}
+
+	/**
 	 * Event handler method for incoming Z-Wave events.
 	 * 
 	 * @param event
@@ -1035,21 +1076,34 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			PendingCfg.Remove(ZWaveCommandClass.CommandClass.WAKE_UP.getKey(), event.getNodeId());
 			return;
 		}
+
+		if (event instanceof ZWaveInclusionEvent) {
+			handleInclusionEvent((ZWaveInclusionEvent)event);
+		}
 	}
 
 	// The following timer implements a re-triggerable timer to stop the inclusion
 	// mode after 30 seconds.
 	private class InclusionTimerTask extends TimerTask {
 		ZWaveController zController;
+//		boolean inclusion;
 
+//		InclusionTimerTask(ZWaveController zController, boolean inclusion) {
 		InclusionTimerTask(ZWaveController zController) {
 			this.zController = zController;
+//			this.inclusion = inclusion;
 		}
 
 		@Override
 		public void run() {
 			logger.debug("Ending inclusion mode.");
-			zController.requestAddNodesStop();
+			if(inclusion)
+				zController.requestAddNodesStop();
+			else
+				zController.requestRemoveNodesStop();
+			
+			inclusion = false;
+			exclusion = false;
 		}
 	}
 	
@@ -1060,36 +1114,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		}
 
 		// Create the timer task
+//		timerTask = new InclusionTimerTask(zController, inclusion);
 		timerTask = new InclusionTimerTask(zController);
-
-		// Start the timer
-		timer.schedule(timerTask, 30000);
-	}
-
-	// The following timer implements a re-triggerable timer to stop the exclusion
-	// mode after 30 seconds.
-	private class ExclusionTimerTask extends TimerTask {
-		ZWaveController zController;
-
-		ExclusionTimerTask(ZWaveController zController) {
-			this.zController = zController;
-		}
-
-		@Override
-		public void run() {
-			logger.debug("Ending exclusion mode.");
-			zController.requestRemoveNodesStop();
-		}
-	}
-
-	public synchronized void setExclusionTimer() {
-		// Stop any existing timer
-		if(timerTask != null) {
-			timerTask.cancel();
-		}
-
-		// Create the timer task
-		timerTask = new ExclusionTimerTask(zController);
 
 		// Start the timer
 		timer.schedule(timerTask, 30000);

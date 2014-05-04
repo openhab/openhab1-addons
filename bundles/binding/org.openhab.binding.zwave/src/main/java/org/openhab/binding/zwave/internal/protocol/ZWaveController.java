@@ -387,9 +387,10 @@ public class ZWaveController {
 			ZWaveInclusionEvent incEvent = (ZWaveInclusionEvent)event;
 			switch(incEvent.getEvent()) {
 			case IncludeDone:
+				logger.debug("NODE {}: Including node.", incEvent.getNodeId());
 				// First make sure this isn't an existing node
 				if(getNode(incEvent.getNodeId()) != null) {
-					logger.debug("NODE {}: Newly included node already exists - not initialising.");
+					logger.debug("NODE {}: Newly included node already exists - not initialising.", incEvent.getNodeId());
 					break;
 				}
 				
@@ -398,15 +399,15 @@ public class ZWaveController {
 
 				this.zwaveNodes.put(incEvent.getNodeId(), node);
 				node.advanceNodeStage(NodeStage.PROTOINFO);
-
 				break;
 			case ExcludeDone:
+				logger.debug("NODE {}: Excluding node.", incEvent.getNodeId());
 				// Remove the node from the controller
-				if(getNode(incEvent.getNodeId()) != null) {
-					logger.debug("NODE {}: Excluding node that doesn't exist.");
+				if(getNode(incEvent.getNodeId()) == null) {
+					logger.debug("NODE {}: Excluding node that doesn't exist.", incEvent.getNodeId());
 					break;
 				}
-				this.zwaveNodes.remove(getNode(incEvent.getNodeId()));
+				this.zwaveNodes.remove(incEvent.getNodeId());
 				
 				// Remove the XML file
 				ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();

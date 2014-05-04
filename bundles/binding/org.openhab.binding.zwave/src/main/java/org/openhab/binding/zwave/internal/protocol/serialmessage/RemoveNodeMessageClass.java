@@ -10,6 +10,8 @@ package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,23 +64,28 @@ public class RemoveNodeMessageClass extends ZWaveCommandProcessor {
 		switch(incomingMessage.getMessagePayloadByte(1)) {
 		case REMOVE_NODE_STATUS_LEARN_READY:
 			logger.debug("Learn ready.");
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.ExcludeStart));
 			break;
 		case REMOVE_NODE_STATUS_NODE_FOUND:
 			logger.debug("Node found for removal.");
 			break;
 		case REMOVE_NODE_STATUS_REMOVING_SLAVE:
 			logger.debug("NODE {}: Removing slave.", incomingMessage.getMessagePayloadByte(2));
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.ExcludeSlaveFound, incomingMessage.getMessagePayloadByte(2)));
 			break;
 		case REMOVE_NODE_STATUS_REMOVING_CONTROLLER:
 			logger.debug("NODE {}: Removing controller.", incomingMessage.getMessagePayloadByte(2));
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.ExcludeControllerFound, incomingMessage.getMessagePayloadByte(2)));
 			break;
 		case REMOVE_NODE_STATUS_DONE:
 			logger.debug("NODE {}: Removed from network.", incomingMessage.getMessagePayloadByte(2));
 			zController.sendData(doRequestStop());
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.ExcludeDone, incomingMessage.getMessagePayloadByte(2)));
 			break;
 		case REMOVE_NODE_STATUS_FAILED:
 			logger.debug("Failed.");
 			zController.sendData(doRequestStop());
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.ExcludeFail));
 			break;
 		default:
 			logger.debug("Unknown request ({}).", incomingMessage.getMessagePayloadByte(1));
