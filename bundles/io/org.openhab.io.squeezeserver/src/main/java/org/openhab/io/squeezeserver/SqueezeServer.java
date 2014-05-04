@@ -74,7 +74,13 @@ public class SqueezeServer implements ManagedService {
     private final SqueezeServerListener listener = new SqueezeServerListener();
     
     public synchronized boolean isConnected() {
-  		return (clientSocket != null && clientSocket.isConnected());
+  		if (clientSocket == null)
+  			return false;
+  		
+  		// NOTE: isConnected() returns true once a connection is made and will 
+  		//       always return true even after the socket is closed
+  		// 		 http://stackoverflow.com/questions/10163358/
+  		return clientSocket.isConnected() && !clientSocket.isClosed();
     }
 
 	public synchronized List<SqueezePlayer> getPlayers() {
