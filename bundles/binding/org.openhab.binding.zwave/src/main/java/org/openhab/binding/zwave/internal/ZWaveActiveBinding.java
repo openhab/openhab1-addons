@@ -105,8 +105,6 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
 		// If we're not currently in a poll cycle, restart the polling table
 		if(pollingIterator == null) {
-			logger.trace("Polling iterator null");
-			rebuildPollingTable();
 			pollingIterator = pollingList.iterator();
 		}
 		
@@ -114,7 +112,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		// into the send queue at a time to avoid congestion within the system.
 		// Basically, we don't want the polling to slow down 'important' stuff.
 		// The queue ensures all nodes get a chance - if we always started at the top
-		// The last items might never get polled.
+		// then the last items might never get polled.
 		while(pollingIterator.hasNext()) {
 			if(zController.getSendQueueLength() >= pollingQueue) {
 				logger.trace("Polling queue full!");
@@ -124,7 +122,6 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			converterHandler.executeRefresh(poll.provider, poll.item, false);
 		}
 		if(pollingIterator.hasNext() == false) {
-			logger.trace("Polling cycle complete");
 			pollingIterator = null;
 		}
 	}
@@ -354,6 +351,10 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			if (event instanceof ZWaveInitializationCompletedEvent) {
 				logger.debug("ZWaveIncomingEvent Called, Network Event, Init Done. Setting ZWave Network Ready.");
 				isZwaveNetworkReady = true;
+				
+				// Initialise the polling table
+				rebuildPollingTable();
+
 				return;
 			}		
 		}
