@@ -10,6 +10,8 @@ package org.openhab.binding.zwave.internal.protocol.commandclass;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -79,7 +81,9 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 				
 				int value = serialMessage.getMessagePayloadByte(offset + 1); 
 				logger.debug(String.format("NODE %d: Sensor Binary report, value = 0x%02X", this.getNode().getNodeId(), value));
-				ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
+				
+				SensorType sensorType = SensorType.UNKNOWN;
+				ZWaveBinarySensorValueEvent zEvent = new ZWaveBinarySensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, value);
 				this.getController().notifyEventListeners(zEvent);
 				
 				if (this.getNode().getNodeStage() != NodeStage.DONE)
@@ -119,5 +123,100 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 		result.add(getValueMessage());
 		
 		return result;
+	}
+	
+	
+	/**
+	 * Z-Wave SensorType enumeration. The sensor type indicates the type
+	 * of sensor that is reported.
+	 * @author Chris Jackson
+	 * @since 1.5.0
+	 */
+	@XStreamAlias("sensorType")
+	public enum SensorType {
+		UNKNOWN(0x00, "Unknown"),
+		TAMPER(0x08,"Tamper"),
+		DOOR(0x0a,"Door/Window"),
+		MOTION(0x0c,"Motion");
+
+		/**
+		 * A mapping between the integer code and its corresponding Sensor type
+		 * to facilitate lookup by code.
+		 */
+		private static Map<Integer, SensorType> codeToSensorTypeMapping;
+
+		private int key;
+		private String label;
+
+		private SensorType(int key, String label) {
+			this.key = key;
+			this.label = label;
+		}
+
+		private static void initMapping() {
+			codeToSensorTypeMapping = new HashMap<Integer, SensorType>();
+			for (SensorType s : values()) {
+				codeToSensorTypeMapping.put(s.key, s);
+			}
+		}
+
+		/**
+		 * Lookup function based on the sensor type code.
+		 * Returns null if the code does not exist.
+		 * @param i the code to lookup
+		 * @return enumeration value of the sensor type.
+		 */
+		public static SensorType getSensorType(int i) {
+			if (codeToSensorTypeMapping == null) {
+				initMapping();
+			}
+			
+			return codeToSensorTypeMapping.get(i);
+		}
+
+		/**
+		 * @return the key
+		 */
+		public int getKey() {
+			return key;
+		}
+
+		/**
+		 * @return the label
+		 */
+		public String getLabel() {
+			return label;
+		}
+	}
+	
+	
+	/**
+	 * Z-Wave Binary Sensor Event class. Indicates that an sensor value changed. 
+	 * @author Chris Jackson
+	 * @since 1.5.0
+	 */
+	public class ZWaveBinarySensorValueEvent extends ZWaveCommandClassValueEvent {
+
+		private SensorType sensorType;
+		
+		/**
+		 * Constructor. Creates a instance of the ZWaveBinarySensorValueEvent class.
+		 * @param nodeId the nodeId of the event
+		 * @param endpoint the endpoint of the event.
+		 * @param sensorType the sensor type that triggered the event;
+		 * @param value the value for the event.
+		 */
+		private ZWaveBinarySensorValueEvent(int nodeId, int endpoint,
+				SensorType sensorType, Object value) {
+			super(nodeId, endpoint, CommandClass.SENSOR_BINARY, value);
+			this.sensorType = sensorType;
+		}
+
+		/**
+		 * Gets the alarm type for this alarm sensor value event.
+		 */
+		public SensorType getSensorType() {
+			return sensorType;
+		}
 	}
 }
