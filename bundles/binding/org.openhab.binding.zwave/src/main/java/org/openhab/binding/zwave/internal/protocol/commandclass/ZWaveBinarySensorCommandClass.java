@@ -80,11 +80,16 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 				return;
 			case SENSOR_BINARY_REPORT:
 				logger.trace("Process Sensor Binary Report");
-				
-				int value = serialMessage.getMessagePayloadByte(offset + 1); 
-				logger.debug(String.format("NODE %d: Sensor Binary report, value = 0x%02X", this.getNode().getNodeId(), value));
-				
+				int value = serialMessage.getMessagePayloadByte(offset + 1);
+
 				SensorType sensorType = SensorType.UNKNOWN;
+				if(this.getVersion() > 1) {
+					// For V2, we have the sensor type after the value
+					sensorType = SensorType.getSensorType(serialMessage.getMessagePayloadByte(offset + 1));
+				}
+
+				logger.debug(String.format("NODE %d: Sensor Binary report, type=%s, value=0x%02X", this.getNode().getNodeId(), sensorType.getLabel(), value));
+
 				ZWaveBinarySensorValueEvent zEvent = new ZWaveBinarySensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, value);
 				this.getController().notifyEventListeners(zEvent);
 				
@@ -115,6 +120,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
     	// Should there be another byte here to specify the sensor type?
     	// Looking at the RaZberry doc, it talks about requesting the sensor type
     	// and using FF for the first sensor.
+    	// Maybe this is a V2 feature - need to find some docs on V2!
     	
     	
     	result.setMessagePayload(newPayload);
