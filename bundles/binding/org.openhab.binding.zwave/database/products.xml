@@ -120,6 +120,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>AN157</Model>
+			<Label lang="en">Switch Plugin</Label>
+			<ConfigFile>everspring/an157.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0101</Type>
 				<Id>0001</Id>
 			</Reference>
