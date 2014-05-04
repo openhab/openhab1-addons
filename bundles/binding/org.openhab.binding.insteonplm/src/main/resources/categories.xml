@@ -221,6 +221,14 @@ Example:
   <name>Access Control</name>
   <description>Doors, Gates, Windows Locks</description>
   <devCat>0x0F</devCat>
+  <subcategory>
+	<name>MorningLinc RF Lock Controller</name>
+    	<description>2458-A1</description>
+    	<subCat>0x06</subCat>
+    	<productKey name="F00.00.09">
+    	  <feature name="switch">GenericSwitch</feature>
+    	</productKey>
+    </subcategory>
 </category>
 <category>
   <name>Security/Health/Saftey Control</name>
