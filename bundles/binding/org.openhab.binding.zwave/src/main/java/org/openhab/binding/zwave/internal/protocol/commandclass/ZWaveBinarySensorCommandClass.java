@@ -39,7 +39,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveBinarySensorCommandClass.class);
-	
+
+	private static final int MAX_SUPPORTED_VERSION = 2;
+
 	private static final int SENSOR_BINARY_GET = 0x02;
 	private static final int SENSOR_BINARY_REPORT = 0x03;
 	
@@ -109,6 +111,12 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
     							2, 
 								(byte) getCommandClass().getKey(), 
 								(byte) SENSOR_BINARY_GET };
+    	
+    	// Should there be another byte here to specify the sensor type?
+    	// Looking at the RaZberry doc, it talks about requesting the sensor type
+    	// and using FF for the first sensor.
+    	
+    	
     	result.setMessagePayload(newPayload);
     	return result;		
 	}
@@ -125,6 +133,13 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 		return result;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMaxVersion() {
+		return MAX_SUPPORTED_VERSION;
+	}
 	
 	/**
 	 * Z-Wave SensorType enumeration. The sensor type indicates the type
@@ -135,9 +150,20 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 	@XStreamAlias("sensorType")
 	public enum SensorType {
 		UNKNOWN(0x00, "Unknown"),
+		GENERAL(0x01, "General Purpose"),
+		SMOKE(0x02, "Smoke"),
+		CO(0x03, "Carbon Monoxide"),
+		CO2(0x04, "Carbon Dioxide"),
+		HEAT(0x05, "Heat"),
+		WATER(0x06, "Water"),
+		FREEZE(0x07, "Freeze"),
 		TAMPER(0x08,"Tamper"),
-		DOOR(0x0a,"Door/Window"),
-		MOTION(0x0c,"Motion");
+		AUX(0x09, "Aux"),
+		DOORWINDOW(0x0a,"Door/Window"),
+		TILT(0x0b, "Tilt"),
+		MOTION(0x0c,"Motion"),
+		GLASSBREAK(0x0d, "Glass Break");
+
 
 		/**
 		 * A mapping between the integer code and its corresponding Sensor type
