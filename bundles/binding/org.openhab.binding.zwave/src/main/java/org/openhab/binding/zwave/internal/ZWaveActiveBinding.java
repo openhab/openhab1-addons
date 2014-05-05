@@ -48,6 +48,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveActiveBinding.class);
 	private String port;
+	private boolean isSUC = false;
 	private Integer healtime = null;
 	private Integer timeout = null;
 	private volatile ZWaveController zController;
@@ -199,7 +200,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		try {
 			this.setProperlyConfigured(true);
 			this.deactivate();
-			this.zController = new ZWaveController(port, timeout);
+			this.zController = new ZWaveController(isSUC, port, timeout);
 			this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
 			zController.initialize();
 			zController.addEventListener(this);
@@ -249,6 +250,15 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			} catch (NumberFormatException e) {
 				timeout = null;
 				logger.error("Error parsing 'timeout'. This must be an Integer.");
+			}
+		}
+		if (StringUtils.isNotBlank((String) config.get("setSUC"))) {
+			try {
+				isSUC = Boolean.parseBoolean((String) config.get("timeout"));
+				logger.info("Update config, isSUC = {}", isSUC);
+			} catch (NumberFormatException e) {
+				isSUC = false;
+				logger.error("Error parsing 'isSUC'. This must be boolean.");
 			}
 		}
 

@@ -108,6 +108,7 @@ public class ZWaveController {
 	private int deviceId = 0;
 	private int ZWaveLibraryType = 0;
 	private int sentDataPointer = 1;
+	private boolean setSUC = false;
 	private ZWaveDeviceType controllerType = ZWaveDeviceType.UNKNOWN;
 	
 	private int SOFCount = 0;
@@ -129,8 +130,9 @@ public class ZWaveController {
 	 * communication with the Z-Wave controller stick.
 	 * @throws SerialInterfaceException when a connection error occurs.
 	 */
-	public ZWaveController(final String serialPortName, final Integer timeout) throws SerialInterfaceException {
+	public ZWaveController(final boolean isSUC, final String serialPortName, final Integer timeout) throws SerialInterfaceException {
 			logger.info("Starting Z-Wave controller");
+			this.setSUC = isSUC;
 			if(timeout != null && timeout >= 1500 && timeout <= 10000) {
 				zWaveResponseTimeout = timeout;
 			}
@@ -251,7 +253,7 @@ public class ZWaveController {
 				break;
 			case GetSucNodeId:
 				// If we want to be the SUC, enable it here
-				if(((GetSucNodeIdMessageClass)processor).getSucNodeId() == 0) {
+				if(this.setSUC == true && ((GetSucNodeIdMessageClass)processor).getSucNodeId() == 0) {
 					this.enqueue(new EnableSucMessageClass().doRequest(EnableSucMessageClass.SUCType.SERVER));
 					this.enqueue(new SetSucNodeMessageClass().doRequest(this.ownNodeId, SetSucNodeMessageClass.SUCType.SERVER));
 				}
