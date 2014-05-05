@@ -36,6 +36,7 @@ import com.tinkerforge.BrickletTemperatureIR
 import com.tinkerforge.BrickletSoundIntensity
 import com.tinkerforge.BrickletMoisture
 import com.tinkerforge.BrickletDistanceUS
+import com.tinkerforge.BrickletVoltageCurrent
 import java.math.BigDecimal
 
 /**
@@ -71,6 +72,7 @@ type TinkerBrickletTemperatureIR wraps BrickletTemperatureIR
 type TinkerBrickletSoundIntensity wraps BrickletSoundIntensity
 type TinkerBrickletMoisture wraps BrickletMoisture
 type TinkerBrickletDistanceUS wraps BrickletDistanceUS
+type TinkerBrickletVoltageCurrent wraps BrickletVoltageCurrent
 type Enum wraps Enum
 
 class Ecosystem {
@@ -376,6 +378,35 @@ class AmbientTemperature extends MTemperatureIRDevice,
     readonly String deviceType = "ambient_temperature"
 }
 
+class MBrickletVoltageCurrent extends MDevice<TinkerBrickletVoltageCurrent>,
+         MSubDeviceHolder<VoltageCurrentDevice>, 
+         MTFConfigConsumer<TFVoltageCurrentConfiguration> {
+    readonly String deviceType = "bricklet_voltageCurrent"
+    Short averaging = "3"
+    Short voltageConversionTime = "4"
+    Short currentConversionTime = "4"
+}
+
+interface VoltageCurrentDevice extends MSensor<MDecimalValue>, 
+        MSubDevice<MBrickletVoltageCurrent>, CallbackListener,
+        MTFConfigConsumer<TFBaseConfiguration>{
+}
+
+class VCDeviceVoltage extends VoltageCurrentDevice {
+    readonly String deviceType = "voltageCurrent_voltage"
+    BigDecimal threshold = "0.1"
+}
+
+class VCDeviceCurrent extends VoltageCurrentDevice {
+    readonly String deviceType = "voltageCurrent_current"
+    BigDecimal threshold = "0.1"
+}
+
+class VCDevicePower extends VoltageCurrentDevice {
+    readonly String deviceType = "voltageCurrent_power"
+    BigDecimal threshold = "0.1"
+}
+
 class MBrickletBarometer extends MDevice<MTinkerBrickletBarometer>, 
 		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
 		MSubDeviceHolder<MBarometerTemperature>, CallbackListener {
@@ -496,6 +527,12 @@ class TFDistanceUSBrickletConfiguration extends TFBaseConfiguration {
     Short movingAverage
 }
 
+class TFVoltageCurrentConfiguration extends TFConfig {
+    Short averaging
+    Short voltageConversionTime
+    Short currentConversionTime
+}
+
 class TFBrickDCConfiguration extends TFConfig{
 	short velocity
 	int acceleration
@@ -612,3 +649,6 @@ enum TemperatureIRSubIds {
     OBJECT_TEMPERATURE, AMBIENT_TEMPERATURE
 }
 
+enum VoltageCurrentSubIds {
+    VCDEVICEVOLTAGE, VCDEVICECURRENT, VCDEVICEPOWER
+}

@@ -608,6 +608,68 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_VOLTAGE_CURRENT:
+      {
+        MBrickletVoltageCurrent mBrickletVoltageCurrent = (MBrickletVoltageCurrent)theEObject;
+        T result = caseMBrickletVoltageCurrent(mBrickletVoltageCurrent);
+        if (result == null) result = caseMDevice(mBrickletVoltageCurrent);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletVoltageCurrent);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletVoltageCurrent);
+        if (result == null) result = caseMBaseDevice(mBrickletVoltageCurrent);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.VOLTAGE_CURRENT_DEVICE:
+      {
+        VoltageCurrentDevice voltageCurrentDevice = (VoltageCurrentDevice)theEObject;
+        T result = caseVoltageCurrentDevice(voltageCurrentDevice);
+        if (result == null) result = caseMSensor(voltageCurrentDevice);
+        if (result == null) result = caseMSubDevice(voltageCurrentDevice);
+        if (result == null) result = caseCallbackListener(voltageCurrentDevice);
+        if (result == null) result = caseMTFConfigConsumer(voltageCurrentDevice);
+        if (result == null) result = caseMBaseDevice(voltageCurrentDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.VC_DEVICE_VOLTAGE:
+      {
+        VCDeviceVoltage vcDeviceVoltage = (VCDeviceVoltage)theEObject;
+        T result = caseVCDeviceVoltage(vcDeviceVoltage);
+        if (result == null) result = caseVoltageCurrentDevice(vcDeviceVoltage);
+        if (result == null) result = caseMSensor(vcDeviceVoltage);
+        if (result == null) result = caseMSubDevice(vcDeviceVoltage);
+        if (result == null) result = caseCallbackListener(vcDeviceVoltage);
+        if (result == null) result = caseMTFConfigConsumer(vcDeviceVoltage);
+        if (result == null) result = caseMBaseDevice(vcDeviceVoltage);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.VC_DEVICE_CURRENT:
+      {
+        VCDeviceCurrent vcDeviceCurrent = (VCDeviceCurrent)theEObject;
+        T result = caseVCDeviceCurrent(vcDeviceCurrent);
+        if (result == null) result = caseVoltageCurrentDevice(vcDeviceCurrent);
+        if (result == null) result = caseMSensor(vcDeviceCurrent);
+        if (result == null) result = caseMSubDevice(vcDeviceCurrent);
+        if (result == null) result = caseCallbackListener(vcDeviceCurrent);
+        if (result == null) result = caseMTFConfigConsumer(vcDeviceCurrent);
+        if (result == null) result = caseMBaseDevice(vcDeviceCurrent);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.VC_DEVICE_POWER:
+      {
+        VCDevicePower vcDevicePower = (VCDevicePower)theEObject;
+        T result = caseVCDevicePower(vcDevicePower);
+        if (result == null) result = caseVoltageCurrentDevice(vcDevicePower);
+        if (result == null) result = caseMSensor(vcDevicePower);
+        if (result == null) result = caseMSubDevice(vcDevicePower);
+        if (result == null) result = caseCallbackListener(vcDevicePower);
+        if (result == null) result = caseMTFConfigConsumer(vcDevicePower);
+        if (result == null) result = caseMBaseDevice(vcDevicePower);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_BAROMETER:
       {
         MBrickletBarometer mBrickletBarometer = (MBrickletBarometer)theEObject;
@@ -784,6 +846,14 @@ public class ModelSwitch<T> extends Switch<T>
         T result = caseTFDistanceUSBrickletConfiguration(tfDistanceUSBrickletConfiguration);
         if (result == null) result = caseTFBaseConfiguration(tfDistanceUSBrickletConfiguration);
         if (result == null) result = caseTFConfig(tfDistanceUSBrickletConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_VOLTAGE_CURRENT_CONFIGURATION:
+      {
+        TFVoltageCurrentConfiguration tfVoltageCurrentConfiguration = (TFVoltageCurrentConfiguration)theEObject;
+        T result = caseTFVoltageCurrentConfiguration(tfVoltageCurrentConfiguration);
+        if (result == null) result = caseTFConfig(tfVoltageCurrentConfiguration);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1874,6 +1944,86 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Voltage Current</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Voltage Current</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletVoltageCurrent(MBrickletVoltageCurrent object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Voltage Current Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Voltage Current Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseVoltageCurrentDevice(VoltageCurrentDevice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>VC Device Voltage</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>VC Device Voltage</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseVCDeviceVoltage(VCDeviceVoltage object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>VC Device Current</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>VC Device Current</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseVCDeviceCurrent(VCDeviceCurrent object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>VC Device Power</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>VC Device Power</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseVCDevicePower(VCDevicePower object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>TF Base Configuration</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1933,6 +2083,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTFDistanceUSBrickletConfiguration(TFDistanceUSBrickletConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>TF Voltage Current Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>TF Voltage Current Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTFVoltageCurrentConfiguration(TFVoltageCurrentConfiguration object)
   {
     return null;
   }

@@ -428,6 +428,42 @@ public interface ModelFactory extends EFactory
   AmbientTemperature createAmbientTemperature();
 
   /**
+   * Returns a new object of class '<em>MBricklet Voltage Current</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Voltage Current</em>'.
+   * @generated
+   */
+  MBrickletVoltageCurrent createMBrickletVoltageCurrent();
+
+  /**
+   * Returns a new object of class '<em>VC Device Voltage</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>VC Device Voltage</em>'.
+   * @generated
+   */
+  VCDeviceVoltage createVCDeviceVoltage();
+
+  /**
+   * Returns a new object of class '<em>VC Device Current</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>VC Device Current</em>'.
+   * @generated
+   */
+  VCDeviceCurrent createVCDeviceCurrent();
+
+  /**
+   * Returns a new object of class '<em>VC Device Power</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>VC Device Power</em>'.
+   * @generated
+   */
+  VCDevicePower createVCDevicePower();
+
+  /**
    * Returns a new object of class '<em>TF Base Configuration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -462,6 +498,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   TFDistanceUSBrickletConfiguration createTFDistanceUSBrickletConfiguration();
+
+  /**
+   * Returns a new object of class '<em>TF Voltage Current Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Voltage Current Configuration</em>'.
+   * @generated
+   */
+  TFVoltageCurrentConfiguration createTFVoltageCurrentConfiguration();
 
   /**
    * Returns a new object of class '<em>MBricklet Barometer</em>'.

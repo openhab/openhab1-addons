@@ -1,6 +1,9 @@
 # Bugfixes
  ## 1.4.0
   * Missing updates of Items if a Tinkerforge Device is referenced in several Items
+ ## 1.5.0
+  * Reconnect support for IO16 Bricklet
+  * polled values now are only send once to the eventbus
 # Incompatible Changes
  ## 1.4.0
   * LCDBacklight is a sub device of LCD20x4 Bricklet (items file must be changed)
@@ -164,6 +167,6 @@
  ## 1.4.0
    * updated Tinkerforge API to 2.0.12
  ## 1.5.0
-   * Tinkerforge API 2.1.0.2
+   * updated Tinkerforge API to 2.1.0.2
    * Threshold values now have the unit as the sensor value (incompatible change, you have to update your openhab.cfg)
    * polling is only done for devices which don't support CallbackListeners / InterruptListeners

@@ -372,6 +372,31 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createAmbientTemperatureAdapter();
       }
       @Override
+      public Adapter caseMBrickletVoltageCurrent(MBrickletVoltageCurrent object)
+      {
+        return createMBrickletVoltageCurrentAdapter();
+      }
+      @Override
+      public Adapter caseVoltageCurrentDevice(VoltageCurrentDevice object)
+      {
+        return createVoltageCurrentDeviceAdapter();
+      }
+      @Override
+      public Adapter caseVCDeviceVoltage(VCDeviceVoltage object)
+      {
+        return createVCDeviceVoltageAdapter();
+      }
+      @Override
+      public Adapter caseVCDeviceCurrent(VCDeviceCurrent object)
+      {
+        return createVCDeviceCurrentAdapter();
+      }
+      @Override
+      public Adapter caseVCDevicePower(VCDevicePower object)
+      {
+        return createVCDevicePowerAdapter();
+      }
+      @Override
       public Adapter caseMBrickletBarometer(MBrickletBarometer object)
       {
         return createMBrickletBarometerAdapter();
@@ -460,6 +485,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       public Adapter caseTFDistanceUSBrickletConfiguration(TFDistanceUSBrickletConfiguration object)
       {
         return createTFDistanceUSBrickletConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseTFVoltageCurrentConfiguration(TFVoltageCurrentConfiguration object)
+      {
+        return createTFVoltageCurrentConfigurationAdapter();
       }
       @Override
       public Adapter caseTFBrickDCConfiguration(TFBrickDCConfiguration object)
@@ -1469,6 +1499,81 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent <em>MBricklet Voltage Current</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent
+   * @generated
+   */
+  public Adapter createMBrickletVoltageCurrentAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice <em>Voltage Current Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice
+   * @generated
+   */
+  public Adapter createVoltageCurrentDeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage <em>VC Device Voltage</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage
+   * @generated
+   */
+  public Adapter createVCDeviceVoltageAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent <em>VC Device Current</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent
+   * @generated
+   */
+  public Adapter createVCDeviceCurrentAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.VCDevicePower <em>VC Device Power</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.VCDevicePower
+   * @generated
+   */
+  public Adapter createVCDevicePowerAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration <em>TF Base Configuration</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -1524,6 +1629,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createTFDistanceUSBrickletConfigurationAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration <em>TF Voltage Current Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration
+   * @generated
+   */
+  public Adapter createTFVoltageCurrentConfigurationAdapter()
   {
     return null;
   }

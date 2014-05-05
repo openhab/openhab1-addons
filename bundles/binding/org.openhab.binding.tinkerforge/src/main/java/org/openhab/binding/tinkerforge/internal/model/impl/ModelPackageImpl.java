@@ -63,6 +63,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
 import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
 import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
@@ -82,6 +83,7 @@ import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
+import org.openhab.binding.tinkerforge.internal.model.MVoltageCurrentDevice;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
@@ -113,7 +115,13 @@ import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfigur
 import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
+import org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent;
+import org.openhab.binding.tinkerforge.internal.model.VCDevicePower;
+import org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage;
+import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice;
+import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
@@ -139,6 +147,7 @@ import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
+import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
 
@@ -589,6 +598,41 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass mBrickletVoltageCurrentEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass voltageCurrentDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass vcDeviceVoltageEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass vcDeviceCurrentEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass vcDevicePowerEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass tfBaseConfigurationEClass = null;
 
   /**
@@ -611,6 +655,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass tfDistanceUSBrickletConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass tfVoltageCurrentConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -778,6 +829,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EEnum voltageCurrentSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EDataType mipConnectionEDataType = null;
 
   /**
@@ -926,6 +984,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletDistanceUSEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletVoltageCurrentEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3327,6 +3392,156 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getMBrickletVoltageCurrent()
+  {
+    return mBrickletVoltageCurrentEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletVoltageCurrent_DeviceType()
+  {
+    return (EAttribute)mBrickletVoltageCurrentEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletVoltageCurrent_Averaging()
+  {
+    return (EAttribute)mBrickletVoltageCurrentEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletVoltageCurrent_VoltageConversionTime()
+  {
+    return (EAttribute)mBrickletVoltageCurrentEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletVoltageCurrent_CurrentConversionTime()
+  {
+    return (EAttribute)mBrickletVoltageCurrentEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getVoltageCurrentDevice()
+  {
+    return voltageCurrentDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getVCDeviceVoltage()
+  {
+    return vcDeviceVoltageEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getVCDeviceVoltage_DeviceType()
+  {
+    return (EAttribute)vcDeviceVoltageEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getVCDeviceVoltage_Threshold()
+  {
+    return (EAttribute)vcDeviceVoltageEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getVCDeviceCurrent()
+  {
+    return vcDeviceCurrentEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getVCDeviceCurrent_DeviceType()
+  {
+    return (EAttribute)vcDeviceCurrentEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getVCDeviceCurrent_Threshold()
+  {
+    return (EAttribute)vcDeviceCurrentEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getVCDevicePower()
+  {
+    return vcDevicePowerEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getVCDevicePower_DeviceType()
+  {
+    return (EAttribute)vcDevicePowerEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getVCDevicePower_Threshold()
+  {
+    return (EAttribute)vcDevicePowerEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getTFBaseConfiguration()
   {
     return tfBaseConfigurationEClass;
@@ -3410,6 +3625,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getTFDistanceUSBrickletConfiguration_MovingAverage()
   {
     return (EAttribute)tfDistanceUSBrickletConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getTFVoltageCurrentConfiguration()
+  {
+    return tfVoltageCurrentConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFVoltageCurrentConfiguration_Averaging()
+  {
+    return (EAttribute)tfVoltageCurrentConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFVoltageCurrentConfiguration_VoltageConversionTime()
+  {
+    return (EAttribute)tfVoltageCurrentConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTFVoltageCurrentConfiguration_CurrentConversionTime()
+  {
+    return (EAttribute)tfVoltageCurrentConfigurationEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -3967,6 +4222,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getVoltageCurrentSubIds()
+  {
+    return voltageCurrentSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getMIPConnection()
   {
     return mipConnectionEDataType;
@@ -4180,6 +4445,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EDataType getTinkerBrickletDistanceUS()
   {
     return tinkerBrickletDistanceUSEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getTinkerBrickletVoltageCurrent()
+  {
+    return tinkerBrickletVoltageCurrentEDataType;
   }
 
   /**
@@ -4473,6 +4748,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ambientTemperatureEClass = createEClass(AMBIENT_TEMPERATURE);
     createEAttribute(ambientTemperatureEClass, AMBIENT_TEMPERATURE__DEVICE_TYPE);
 
+    mBrickletVoltageCurrentEClass = createEClass(MBRICKLET_VOLTAGE_CURRENT);
+    createEAttribute(mBrickletVoltageCurrentEClass, MBRICKLET_VOLTAGE_CURRENT__DEVICE_TYPE);
+    createEAttribute(mBrickletVoltageCurrentEClass, MBRICKLET_VOLTAGE_CURRENT__AVERAGING);
+    createEAttribute(mBrickletVoltageCurrentEClass, MBRICKLET_VOLTAGE_CURRENT__VOLTAGE_CONVERSION_TIME);
+    createEAttribute(mBrickletVoltageCurrentEClass, MBRICKLET_VOLTAGE_CURRENT__CURRENT_CONVERSION_TIME);
+
+    voltageCurrentDeviceEClass = createEClass(VOLTAGE_CURRENT_DEVICE);
+
+    vcDeviceVoltageEClass = createEClass(VC_DEVICE_VOLTAGE);
+    createEAttribute(vcDeviceVoltageEClass, VC_DEVICE_VOLTAGE__DEVICE_TYPE);
+    createEAttribute(vcDeviceVoltageEClass, VC_DEVICE_VOLTAGE__THRESHOLD);
+
+    vcDeviceCurrentEClass = createEClass(VC_DEVICE_CURRENT);
+    createEAttribute(vcDeviceCurrentEClass, VC_DEVICE_CURRENT__DEVICE_TYPE);
+    createEAttribute(vcDeviceCurrentEClass, VC_DEVICE_CURRENT__THRESHOLD);
+
+    vcDevicePowerEClass = createEClass(VC_DEVICE_POWER);
+    createEAttribute(vcDevicePowerEClass, VC_DEVICE_POWER__DEVICE_TYPE);
+    createEAttribute(vcDevicePowerEClass, VC_DEVICE_POWER__THRESHOLD);
+
     mBrickletBarometerEClass = createEClass(MBRICKLET_BAROMETER);
     createEAttribute(mBrickletBarometerEClass, MBRICKLET_BAROMETER__DEVICE_TYPE);
     createEAttribute(mBrickletBarometerEClass, MBRICKLET_BAROMETER__THRESHOLD);
@@ -4553,6 +4848,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfDistanceUSBrickletConfigurationEClass = createEClass(TF_DISTANCE_US_BRICKLET_CONFIGURATION);
     createEAttribute(tfDistanceUSBrickletConfigurationEClass, TF_DISTANCE_US_BRICKLET_CONFIGURATION__MOVING_AVERAGE);
 
+    tfVoltageCurrentConfigurationEClass = createEClass(TF_VOLTAGE_CURRENT_CONFIGURATION);
+    createEAttribute(tfVoltageCurrentConfigurationEClass, TF_VOLTAGE_CURRENT_CONFIGURATION__AVERAGING);
+    createEAttribute(tfVoltageCurrentConfigurationEClass, TF_VOLTAGE_CURRENT_CONFIGURATION__VOLTAGE_CONVERSION_TIME);
+    createEAttribute(tfVoltageCurrentConfigurationEClass, TF_VOLTAGE_CURRENT_CONFIGURATION__CURRENT_CONVERSION_TIME);
+
     tfBrickDCConfigurationEClass = createEClass(TF_BRICK_DC_CONFIGURATION);
     createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__VELOCITY);
     createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__ACCELERATION);
@@ -4619,6 +4919,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     lcdBacklightSubIdsEEnum = createEEnum(LCD_BACKLIGHT_SUB_IDS);
     multiTouchSubIdsEEnum = createEEnum(MULTI_TOUCH_SUB_IDS);
     temperatureIRSubIdsEEnum = createEEnum(TEMPERATURE_IR_SUB_IDS);
+    voltageCurrentSubIdsEEnum = createEEnum(VOLTAGE_CURRENT_SUB_IDS);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -4649,6 +4950,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletSoundIntensityEDataType = createEDataType(TINKER_BRICKLET_SOUND_INTENSITY);
     tinkerBrickletMoistureEDataType = createEDataType(TINKER_BRICKLET_MOISTURE);
     tinkerBrickletDistanceUSEDataType = createEDataType(TINKER_BRICKLET_DISTANCE_US);
+    tinkerBrickletVoltageCurrentEDataType = createEDataType(TINKER_BRICKLET_VOLTAGE_CURRENT);
     enumEDataType = createEDataType(ENUM);
   }
 
@@ -4980,6 +5282,35 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     ambientTemperatureEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletVoltageCurrent());
+    g1.getETypeArguments().add(g2);
+    mBrickletVoltageCurrentEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getVoltageCurrentDevice());
+    g1.getETypeArguments().add(g2);
+    mBrickletVoltageCurrentEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFVoltageCurrentConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletVoltageCurrentEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    voltageCurrentDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletVoltageCurrent());
+    g1.getETypeArguments().add(g2);
+    voltageCurrentDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    voltageCurrentDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFBaseConfiguration());
+    g1.getETypeArguments().add(g2);
+    voltageCurrentDeviceEClass.getEGenericSuperTypes().add(g1);
+    vcDeviceVoltageEClass.getESuperTypes().add(this.getVoltageCurrentDevice());
+    vcDeviceCurrentEClass.getESuperTypes().add(this.getVoltageCurrentDevice());
+    vcDevicePowerEClass.getESuperTypes().add(this.getVoltageCurrentDevice());
+    g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickletBarometer());
     g1.getETypeArguments().add(g2);
     mBrickletBarometerEClass.getEGenericSuperTypes().add(g1);
@@ -5087,6 +5418,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfObjectTemperatureConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfDistanceUSBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
+    tfVoltageCurrentConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfBrickDCConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfioActorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfInterruptListenerConfigurationEClass.getESuperTypes().add(this.getTFConfig());
@@ -5369,6 +5701,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(ambientTemperatureEClass, AmbientTemperature.class, "AmbientTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAmbientTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "ambient_temperature", 0, 1, AmbientTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(mBrickletVoltageCurrentEClass, MBrickletVoltageCurrent.class, "MBrickletVoltageCurrent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletVoltageCurrent_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_voltageCurrent", 0, 1, MBrickletVoltageCurrent.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletVoltageCurrent_Averaging(), theEcorePackage.getEShortObject(), "averaging", "3", 0, 1, MBrickletVoltageCurrent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletVoltageCurrent_VoltageConversionTime(), theEcorePackage.getEShortObject(), "voltageConversionTime", "4", 0, 1, MBrickletVoltageCurrent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletVoltageCurrent_CurrentConversionTime(), theEcorePackage.getEShortObject(), "currentConversionTime", "4", 0, 1, MBrickletVoltageCurrent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(voltageCurrentDeviceEClass, VoltageCurrentDevice.class, "VoltageCurrentDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(vcDeviceVoltageEClass, VCDeviceVoltage.class, "VCDeviceVoltage", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getVCDeviceVoltage_DeviceType(), theEcorePackage.getEString(), "deviceType", "voltageCurrent_voltage", 0, 1, VCDeviceVoltage.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVCDeviceVoltage_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.1", 0, 1, VCDeviceVoltage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(vcDeviceCurrentEClass, VCDeviceCurrent.class, "VCDeviceCurrent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getVCDeviceCurrent_DeviceType(), theEcorePackage.getEString(), "deviceType", "voltageCurrent_current", 0, 1, VCDeviceCurrent.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVCDeviceCurrent_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.1", 0, 1, VCDeviceCurrent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(vcDevicePowerEClass, VCDevicePower.class, "VCDevicePower", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getVCDevicePower_DeviceType(), theEcorePackage.getEString(), "deviceType", "voltageCurrent_power", 0, 1, VCDevicePower.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVCDevicePower_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.1", 0, 1, VCDevicePower.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(mBrickletBarometerEClass, MBrickletBarometer.class, "MBrickletBarometer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletBarometer_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_barometer", 0, 1, MBrickletBarometer.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletBarometer_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "1", 0, 1, MBrickletBarometer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -5483,6 +5835,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(tfDistanceUSBrickletConfigurationEClass, TFDistanceUSBrickletConfiguration.class, "TFDistanceUSBrickletConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFDistanceUSBrickletConfiguration_MovingAverage(), theEcorePackage.getEShortObject(), "movingAverage", null, 0, 1, TFDistanceUSBrickletConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tfVoltageCurrentConfigurationEClass, TFVoltageCurrentConfiguration.class, "TFVoltageCurrentConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTFVoltageCurrentConfiguration_Averaging(), theEcorePackage.getEShortObject(), "averaging", null, 0, 1, TFVoltageCurrentConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFVoltageCurrentConfiguration_VoltageConversionTime(), theEcorePackage.getEShortObject(), "voltageConversionTime", null, 0, 1, TFVoltageCurrentConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFVoltageCurrentConfiguration_CurrentConversionTime(), theEcorePackage.getEShortObject(), "currentConversionTime", null, 0, 1, TFVoltageCurrentConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfBrickDCConfigurationEClass, TFBrickDCConfiguration.class, "TFBrickDCConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFBrickDCConfiguration_Velocity(), theEcorePackage.getEShort(), "velocity", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -5634,6 +5991,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(temperatureIRSubIdsEEnum, TemperatureIRSubIds.OBJECT_TEMPERATURE);
     addEEnumLiteral(temperatureIRSubIdsEEnum, TemperatureIRSubIds.AMBIENT_TEMPERATURE);
 
+    initEEnum(voltageCurrentSubIdsEEnum, VoltageCurrentSubIds.class, "VoltageCurrentSubIds");
+    addEEnumLiteral(voltageCurrentSubIdsEEnum, VoltageCurrentSubIds.VCDEVICEVOLTAGE);
+    addEEnumLiteral(voltageCurrentSubIdsEEnum, VoltageCurrentSubIds.VCDEVICECURRENT);
+    addEEnumLiteral(voltageCurrentSubIdsEEnum, VoltageCurrentSubIds.VCDEVICEPOWER);
+
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerDeviceEDataType, Device.class, "MTinkerDevice", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -5663,6 +6025,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletSoundIntensityEDataType, BrickletSoundIntensity.class, "TinkerBrickletSoundIntensity", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletMoistureEDataType, BrickletMoisture.class, "TinkerBrickletMoisture", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletDistanceUSEDataType, BrickletDistanceUS.class, "TinkerBrickletDistanceUS", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletVoltageCurrentEDataType, BrickletVoltageCurrent.class, "TinkerBrickletVoltageCurrent", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource

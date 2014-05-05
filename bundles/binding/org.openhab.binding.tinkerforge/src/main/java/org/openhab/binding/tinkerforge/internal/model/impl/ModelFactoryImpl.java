@@ -89,6 +89,7 @@ import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
+import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
 
@@ -173,6 +174,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_TEMPERATURE_IR: return createMBrickletTemperatureIR();
       case ModelPackage.OBJECT_TEMPERATURE: return createObjectTemperature();
       case ModelPackage.AMBIENT_TEMPERATURE: return createAmbientTemperature();
+      case ModelPackage.MBRICKLET_VOLTAGE_CURRENT: return createMBrickletVoltageCurrent();
+      case ModelPackage.VC_DEVICE_VOLTAGE: return createVCDeviceVoltage();
+      case ModelPackage.VC_DEVICE_CURRENT: return createVCDeviceCurrent();
+      case ModelPackage.VC_DEVICE_POWER: return createVCDevicePower();
       case ModelPackage.MBRICKLET_BAROMETER: return createMBrickletBarometer();
       case ModelPackage.MBAROMETER_TEMPERATURE: return createMBarometerTemperature();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT: return createMBrickletAmbientLight();
@@ -190,6 +195,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION: return createTFObjectTemperatureConfiguration();
       case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION: return createTFMoistureBrickletConfiguration();
       case ModelPackage.TF_DISTANCE_US_BRICKLET_CONFIGURATION: return createTFDistanceUSBrickletConfiguration();
+      case ModelPackage.TF_VOLTAGE_CURRENT_CONFIGURATION: return createTFVoltageCurrentConfiguration();
       case ModelPackage.TF_BRICK_DC_CONFIGURATION: return createTFBrickDCConfiguration();
       case ModelPackage.TFIO_ACTOR_CONFIGURATION: return createTFIOActorConfiguration();
       case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION: return createTFInterruptListenerConfiguration();
@@ -240,6 +246,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createMultiTouchSubIdsFromString(eDataType, initialValue);
       case ModelPackage.TEMPERATURE_IR_SUB_IDS:
         return createTemperatureIRSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.VOLTAGE_CURRENT_SUB_IDS:
+        return createVoltageCurrentSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -296,6 +304,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletMoistureFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_DISTANCE_US:
         return createTinkerBrickletDistanceUSFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_VOLTAGE_CURRENT:
+        return createTinkerBrickletVoltageCurrentFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -337,6 +347,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertMultiTouchSubIdsToString(eDataType, instanceValue);
       case ModelPackage.TEMPERATURE_IR_SUB_IDS:
         return convertTemperatureIRSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.VOLTAGE_CURRENT_SUB_IDS:
+        return convertVoltageCurrentSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -393,6 +405,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletMoistureToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_DISTANCE_US:
         return convertTinkerBrickletDistanceUSToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_VOLTAGE_CURRENT:
+        return convertTinkerBrickletVoltageCurrentToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -890,6 +904,50 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public MBrickletVoltageCurrent createMBrickletVoltageCurrent()
+  {
+    MBrickletVoltageCurrentImpl mBrickletVoltageCurrent = new MBrickletVoltageCurrentImpl();
+    return mBrickletVoltageCurrent;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VCDeviceVoltage createVCDeviceVoltage()
+  {
+    VCDeviceVoltageImpl vcDeviceVoltage = new VCDeviceVoltageImpl();
+    return vcDeviceVoltage;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VCDeviceCurrent createVCDeviceCurrent()
+  {
+    VCDeviceCurrentImpl vcDeviceCurrent = new VCDeviceCurrentImpl();
+    return vcDeviceCurrent;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VCDevicePower createVCDevicePower()
+  {
+    VCDevicePowerImpl vcDevicePower = new VCDevicePowerImpl();
+    return vcDevicePower;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public TFBaseConfiguration createTFBaseConfiguration()
   {
     TFBaseConfigurationImpl tfBaseConfiguration = new TFBaseConfigurationImpl();
@@ -927,6 +985,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     TFDistanceUSBrickletConfigurationImpl tfDistanceUSBrickletConfiguration = new TFDistanceUSBrickletConfigurationImpl();
     return tfDistanceUSBrickletConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFVoltageCurrentConfiguration createTFVoltageCurrentConfiguration()
+  {
+    TFVoltageCurrentConfigurationImpl tfVoltageCurrentConfiguration = new TFVoltageCurrentConfigurationImpl();
+    return tfVoltageCurrentConfiguration;
   }
 
   /**
@@ -1348,6 +1417,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTemperatureIRSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VoltageCurrentSubIds createVoltageCurrentSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    VoltageCurrentSubIds result = VoltageCurrentSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertVoltageCurrentSubIdsToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }
@@ -1788,6 +1879,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletDistanceUSToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletVoltageCurrent createTinkerBrickletVoltageCurrentFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletVoltageCurrent)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletVoltageCurrentToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

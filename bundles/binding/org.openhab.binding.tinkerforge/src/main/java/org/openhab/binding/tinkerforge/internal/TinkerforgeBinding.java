@@ -70,7 +70,9 @@ import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfigu
 import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
+import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
@@ -186,7 +188,8 @@ public class TinkerforgeBinding extends
 		remote_switch_a, remote_switch_b, remote_switch_c, bricklet_remote_switch,
 		bricklet_multitouch, electrode, proximity, object_temperature, ambient_temperature, 
 		bricklet_temperatureIR, bricklet_soundintensity, bricklet_moisture,
-		bricklet_distanceUS
+		bricklet_distanceUS, bricklet_voltageCurrent, voltageCurrent_voltage,
+		voltageCurrent_current, voltageCurrent_power
 	}
 	
 	public TinkerforgeBinding() {
@@ -966,7 +969,10 @@ public class TinkerforgeBinding extends
 				|| deviceType.equals(TypeKey.bricklet_barometer.name())
 				|| deviceType.equals(TypeKey.bricklet_ambient_light.name())
 				|| deviceType.equals(TypeKey.ambient_temperature.name())
-				|| deviceType.equals(TypeKey.bricklet_soundintensity.name()))
+				|| deviceType.equals(TypeKey.bricklet_soundintensity.name())
+				|| deviceType.equals(TypeKey.voltageCurrent_voltage.name())
+				|| deviceType.equals(TypeKey.voltageCurrent_current.name())
+				|| deviceType.equals(TypeKey.voltageCurrent_power.name()))
 		{
 			logger.debug("{} setting base config",
 					LoggerConstants.CONFIG);
@@ -1109,6 +1115,12 @@ public class TinkerforgeBinding extends
           TFDistanceUSBrickletConfiguration configuration = modelFactory.createTFDistanceUSBrickletConfiguration();
           OHTFDevice<TFDistanceUSBrickletConfiguration,NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
           ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+          ohtfDevice.setTfConfig(configuration);
+          fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.bricklet_voltageCurrent.name())){
+          TFVoltageCurrentConfiguration configuration = modelFactory.createTFVoltageCurrentConfiguration();
+          OHTFDevice<TFVoltageCurrentConfiguration, VoltageCurrentSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+          ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(VoltageCurrentSubIds.values()));
           ohtfDevice.setTfConfig(configuration);
           fillupConfig(ohtfDevice, deviceConfig);
         } else {
