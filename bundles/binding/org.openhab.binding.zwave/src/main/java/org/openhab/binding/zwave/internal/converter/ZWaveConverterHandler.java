@@ -253,7 +253,7 @@ public class ZWaveConverterHandler {
 					bindingConfiguration.getEndpoint());
 
 			if (commandClass == null) {
-				logger.warn("No command class found for item = {}, command class name = {}, ignoring execute refresh.",
+				logger.warn("No command class found for item = {}, command class name = {}, using 0 refresh interval.",
 						itemName, commandClassName);
 				return 0;
 			}
@@ -262,7 +262,7 @@ public class ZWaveConverterHandler {
 		}
 
 		if (commandClass == null) {
-			logger.warn("No converter found for item = {}, ignoring execute refresh.", itemName);
+			logger.warn("No converter found for item = {}, using 0 refresh interval.", itemName);
 			return 0;
 		}
 
@@ -270,7 +270,7 @@ public class ZWaveConverterHandler {
 				.getCommandClass());
 
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, ignoring execute refresh.", itemName);
+			logger.warn("No converter found for item = {}, using 0 refresh interval.", itemName);
 			return 0;
 		}
 
