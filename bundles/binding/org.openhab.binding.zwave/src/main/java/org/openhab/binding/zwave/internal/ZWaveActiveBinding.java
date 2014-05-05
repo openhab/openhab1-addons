@@ -157,6 +157,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	 * {@inheritDoc}
 	 */
 	public void allBindingsChanged(BindingProvider provider) {
+		logger.trace("allBindingsChanged");		
 		super.allBindingsChanged(provider);
 
 		// Bindings have changed - rebuild the polling table
