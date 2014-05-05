@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 public class GetSucNodeIdMessageClass extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(GetSucNodeIdMessageClass.class);
 
+	int sucNode = 0;
+	
 	public SerialMessage doRequest() {
 		logger.debug("Get SUC NodeID");
 
@@ -40,6 +42,7 @@ public class GetSucNodeIdMessageClass extends ZWaveCommandProcessor {
 
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
 			logger.debug("NODE {}: Node is SUC.", incomingMessage.getMessagePayloadByte(0));
+			sucNode = incomingMessage.getMessagePayloadByte(0);
 		} else {
 			logger.debug("No SUC Node is set");
 		}
@@ -47,5 +50,8 @@ public class GetSucNodeIdMessageClass extends ZWaveCommandProcessor {
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 		return false;
 	}
-
+	
+	public int getSucNodeId() {
+		return sucNode;
+	}
 }

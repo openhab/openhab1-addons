@@ -43,6 +43,9 @@ import org.openhab.binding.zwave.internal.protocol.serialmessage.AddNodeMessageC
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignSucReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.DeleteReturnRouteMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.EnableSucMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.GetControllerCapabilitiesMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.GetSucNodeIdMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.IdentifyNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeNeighborUpdateMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveFailedNodeMessageClass;
@@ -50,6 +53,7 @@ import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeInfo
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetRoutingInfoMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SendDataMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SerialApiSoftResetMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.SetSucNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.ZWaveCommandProcessor;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetVersionMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.MemoryGetIdMessageClass;
@@ -246,6 +250,13 @@ public class ZWaveController {
 				}
 				this.controllerType = ((SerialApiGetInitDataMessageClass)processor).getNodeType();
 				break;
+			case GetSucNodeId:
+				// If we want to be the SUC, enable it here
+				if(((GetSucNodeIdMessageClass)processor).getSucNodeId() == 0) {
+					this.enqueue(new EnableSucMessageClass().doRequest(EnableSucMessageClass.SUCType.SERVER));
+					this.enqueue(new SetSucNodeMessageClass().doRequest(this.ownNodeId, SetSucNodeMessageClass.SUCType.SERVER));
+				}
+				break;
 			case SerialApiGetCapabilities:
 				this.serialAPIVersion = ((SerialApiGetCapabilitiesMessageClass)processor).getSerialAPIVersion();
 				this.manufactureId = ((SerialApiGetCapabilitiesMessageClass)processor).getManufactureId();
@@ -386,6 +397,8 @@ public class ZWaveController {
 	public void initialize() {
 		this.enqueue(new GetVersionMessageClass().doRequest());
 		this.enqueue(new MemoryGetIdMessageClass().doRequest());
+		this.enqueue(new GetControllerCapabilitiesMessageClass().doRequest());
+		this.enqueue(new GetSucNodeIdMessageClass().doRequest());
 		this.enqueue(new SerialApiGetCapabilitiesMessageClass().doRequest());
 	}
 	

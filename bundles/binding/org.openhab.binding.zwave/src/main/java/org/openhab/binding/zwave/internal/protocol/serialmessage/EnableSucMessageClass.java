@@ -66,7 +66,7 @@ public class EnableSucMessageClass extends ZWaveCommandProcessor {
 		return false;
 	}
 	
-	enum SUCType {
+	public enum SUCType {
 		NONE, BASIC, SERVER
 	}
 }
