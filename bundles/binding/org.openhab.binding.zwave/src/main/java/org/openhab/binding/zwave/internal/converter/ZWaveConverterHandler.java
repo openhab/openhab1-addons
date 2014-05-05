@@ -270,8 +270,13 @@ public class ZWaveConverterHandler {
 		String commandClassName = bindingConfiguration.getArguments().get("command");
 		
 		// ignore nodes that are not initialized or dead.
-		if (node.getNodeStage() != NodeStage.DONE)
-			return;
+		// Chris Jackson - removed this (for now)
+		// This will allow a command to be sent even if the node is considered DEAD
+		// The send handler will not retry to DEAD nodes so it will be a one shot.
+//		if (node.getNodeStage() != NodeStage.DONE) {
+//			logger.trace("NODE {}: stage is not DONE: {}", node.getNodeId(), node.getNodeStage());
+//			return;
+//		}
 		
 		if (commandClassName != null) {
 			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName), bindingConfiguration.getEndpoint());
