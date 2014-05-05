@@ -9,6 +9,7 @@
 package org.openhab.binding.insteonplm.internal.device;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import org.openhab.binding.insteonplm.internal.driver.Driver;
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
 import org.openhab.binding.insteonplm.internal.utils.Utils;
+import org.openhab.binding.insteonplm.internal.utils.Utils.ParsingException;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -47,12 +49,11 @@ import org.slf4j.LoggerFactory;
  * Lastly, StateListeners can register with the DeviceFeature to get notifications when
  * the state of a feature has changed.
  * 
- * The character of a DeviceFeature is thus given by its message and command handlers. The long
- * term goal is to abstract the logic into an xml file, such that new DeviceFeatures (for new devices)
- * can be plugged together from existing Handlers without touching the source code. Right now the
- * DeviceFeatures are hard coded in a factory method.
- * We decided to wait with going to xml until the problem domain (the quirks of the Insteon bus)
- * are better understood, and more devices are available for testing.
+ * The character of a DeviceFeature is thus given by a set of message and command handlers.
+ * A FeatureTemplate captures exactly that: it says what set of handlers make up a DeviceFeature.
+ * 
+ * DeviceFeatures are added to a new device by referencing a FeatureTemplate (defined in device_features.xml)
+ * from the Device definition file (categories.xml).
  * 
  * @author Daniel Pfrommer
  * @author Bernd Pfrommer
@@ -67,15 +68,17 @@ public class DeviceFeature implements StatePublisher {
 
 	private static final Logger logger = LoggerFactory.getLogger(DeviceFeature.class);
 	
+	private static HashMap<String, FeatureTemplate> s_features = new HashMap<String, FeatureTemplate>();
+	
 	private InsteonDevice				m_device = null;
 	private String						m_name	 = "INVALID_FEATURE_NAME";
-	private boolean						m_isStatus = false;
+	private boolean					m_isStatus = false;
 	private QueryStatus	                m_queryStatus = QueryStatus.NEVER_QUERIED;
 	
 	private MessageHandler				m_defaultMsgHandler = new DefaultMsgHandler(this);
 	private CommandHandler				m_defaultCommandHandler = new WarnCommandHandler(this);
 	private PollHandler					m_pollHandler = null;
-	private	MessageDispatcher			m_dispatcher = null;
+	private	 MessageDispatcher			m_dispatcher = null;
 	private HashMap<String, String>		m_parameters = new HashMap<String, String>();
 
 	private HashMap<Integer, MessageHandler> m_msgHandlers =
@@ -83,6 +86,20 @@ public class DeviceFeature implements StatePublisher {
 	private HashMap<Class<? extends Command>, CommandHandler> m_commandHandlers =
 				new HashMap<Class<? extends Command>, CommandHandler>();
 	private ArrayList<StateListener> m_listeners = new ArrayList<StateListener>();
+	
+	static {
+		try {
+			InputStream input = DeviceFeature.class.getResourceAsStream("/device_features.xml");
+			ArrayList<FeatureTemplate> features = XMLDeviceFeatureReader.s_readTemplates(input);
+			for (FeatureTemplate f : features) {
+				s_features.put(f.getName(), f);
+			}
+		} catch (IOException e) {
+			logger.error("IOException while reading device features", e);
+		} catch (ParsingException e) {
+			logger.error("Parsing exception while reading device features", e);
+		}
+	}
 	
 	/**
 	 * Constructor
@@ -102,27 +119,26 @@ public class DeviceFeature implements StatePublisher {
 		m_name = name;
 	}
 	
-	public String	 	 getName()			{ return m_name; }
-	public QueryStatus	 getQueryStatus()	{ return m_queryStatus; }
-	public String		 getParameter(String p)	{ return m_parameters.get(p); }
+	public String	 	getName()			{ return m_name; }
+	public QueryStatus	getQueryStatus()	{ return m_queryStatus; }
+	public String		getParameter(String p)	{ return m_parameters.get(p); }
 	public InsteonDevice getDevice() 		{ return m_device; }
-	public boolean 	hasListeners() 			{ return !m_listeners.isEmpty(); }
-	public boolean	isStatusFeature()		{ return m_isStatus; }
+	public boolean 	hasListeners() 		{ return !m_listeners.isEmpty(); }
+	public boolean		isStatusFeature()	{ return m_isStatus; }
 	
 	
-	public void	setStatusFeature(boolean f)		{ m_isStatus = f; }
-	public void	setPollHandler(PollHandler h)	{ m_pollHandler = h; }
-	public void	setDevice(InsteonDevice d)		{ m_device = d; }
+	public void setStatusFeature(boolean f)	{ m_isStatus = f; }
+	public void setPollHandler(PollHandler h)	{ m_pollHandler = h; }
+	public void setDevice(InsteonDevice d)		{ m_device = d; }
 	public void setMessageDispatcher(MessageDispatcher md) { m_dispatcher = md; }
 	public void setDefaultCommandHandler(CommandHandler ch) { m_defaultCommandHandler = ch; }
 	public void setDefaultMsgHandler(MessageHandler mh) { m_defaultMsgHandler = mh; }
 	public void setParameters(HashMap<String,String> p) { m_parameters = p;	}
 	
-	public void	 setQueryStatus(QueryStatus status)	{
+	public void setQueryStatus(QueryStatus status)	{
 		logger.trace("{} set query status to: {}", m_name, status);
 		m_queryStatus = status;
 	}
-	
 
 	public void addListener(StateListener l) {
 		synchronized(m_listeners) {
@@ -185,13 +201,11 @@ public class DeviceFeature implements StatePublisher {
 		return m_name + "(" + m_listeners.size()  +":" +m_commandHandlers.size() + ":" + m_msgHandlers.size() + ")";
 	}
 	
-	//
-	// --- handlers for various incoming Insteon messages --------
-	//
 	/**
 	 * Base class for all message handlers. A message handler processes incoming
 	 * Insteon messages and reacts by publishing corresponding messages on the openhab
 	 * bus, updates device state etc.
+	 * @author Daniel Pfrommer
 	 */
 	public static abstract class MessageHandler {
 		StatePublisher m_pub = null;
@@ -199,7 +213,7 @@ public class DeviceFeature implements StatePublisher {
 		 * Constructor
 		 * @param p state publishing object for dissemination of state changes
 		 */
-		MessageHandler(StatePublisher p) {
+		MessageHandler(DeviceFeature p) {
 				m_pub = p;
 		}
 		/**
@@ -213,10 +227,11 @@ public class DeviceFeature implements StatePublisher {
 		 */
 		public abstract void handleMessage(byte cmd1, Msg msg, DeviceFeature feature,
 									String fromPort);
+		
 	}
 	
 	public static class DefaultMsgHandler extends MessageHandler {
-		DefaultMsgHandler(StatePublisher p) { super(p); }
+		DefaultMsgHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
@@ -225,7 +240,7 @@ public class DeviceFeature implements StatePublisher {
 	}
 
 	public static class NoOpMsgHandler extends MessageHandler {
-		NoOpMsgHandler(StatePublisher p) { super(p); }
+		NoOpMsgHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
@@ -234,7 +249,7 @@ public class DeviceFeature implements StatePublisher {
 	}
 
 	public static class LightOnDimmerHandler extends MessageHandler {
-		LightOnDimmerHandler(StatePublisher p) { super(p); }
+		LightOnDimmerHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
@@ -273,7 +288,7 @@ public class DeviceFeature implements StatePublisher {
 		}
 	}
 	public static class LightOnSwitchHandler extends MessageHandler {
-		LightOnSwitchHandler(StatePublisher p) { super(p); }
+		LightOnSwitchHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
@@ -282,16 +297,22 @@ public class DeviceFeature implements StatePublisher {
 	}
 	
 	public static class LightOffHandler extends MessageHandler {
-		LightOffHandler(StatePublisher p) { super(p); }
+		LightOffHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
 			m_pub.publish(OnOffType.OFF);
 		}
 	}
-	
+	/**
+	 * A message handler which reads the command2 field
+	 * if command2 == 0xFF then the light has been turned on
+	 * else if command2 == 0x00 then the light has been turned off
+	 * it should ideally be mapped to the 0x19 command byte so that it reads
+	 * the status request acks sent back by the switch
+	 */
 	public static class LightStateSwitchHandler extends  MessageHandler {
-		LightStateSwitchHandler(StatePublisher p) { super(p); }
+		LightStateSwitchHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
@@ -313,8 +334,13 @@ public class DeviceFeature implements StatePublisher {
 			}
 		}
 	}
+	/**
+	 * Similar to the LightStateSwitchHandler, but for a dimmer
+	 * In the dimmers case the command2 byte represents the light level from 0-255
+	 * @see LightStateSwitchHandler
+	 */
 	public static class LightStateDimmerHandler extends  MessageHandler {
-		LightStateDimmerHandler(StatePublisher p) { super(p); }
+		LightStateDimmerHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
@@ -344,7 +370,7 @@ public class DeviceFeature implements StatePublisher {
 	}
 	
 	public static class StopManualChangeHandler extends MessageHandler {
-		StopManualChangeHandler(StatePublisher p) { super(p); }
+		StopManualChangeHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
@@ -354,7 +380,7 @@ public class DeviceFeature implements StatePublisher {
 	}
 	
 	public static class InfoRequestReplyHandler extends MessageHandler {
-		InfoRequestReplyHandler(StatePublisher p) { super(p); }
+		InfoRequestReplyHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
@@ -387,7 +413,7 @@ public class DeviceFeature implements StatePublisher {
 	}
 
 	public static class LastTimeHandler extends MessageHandler {
-		LastTimeHandler(StatePublisher p) { super(p); }
+		LastTimeHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1a, Msg msg, DeviceFeature f,
 					String fromPort) {
@@ -400,7 +426,7 @@ public class DeviceFeature implements StatePublisher {
 
 	
 	public static class StateContactHandler extends MessageHandler {
-		StateContactHandler(StatePublisher p) { super(p); }
+		StateContactHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1a, Msg msg, DeviceFeature f,
 					String fromPort) {
@@ -423,7 +449,7 @@ public class DeviceFeature implements StatePublisher {
 	}
 	
 	public static class ClosedContactHandler extends MessageHandler {
-		ClosedContactHandler(StatePublisher p) { super(p); }
+		ClosedContactHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
@@ -432,17 +458,13 @@ public class DeviceFeature implements StatePublisher {
 	}
 
 	public static class OpenedContactHandler extends MessageHandler {
-		OpenedContactHandler(StatePublisher p) { super(p); }
+		OpenedContactHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
 			m_pub.publish(OpenClosedType.OPEN);
 		}
 	}
-
-	//
-	// --- poll handlers create the appropriate polling messages
-	//
 
 	/**
 	 * A PollHandler creates an Insteon message to query a particular
@@ -452,11 +474,11 @@ public class DeviceFeature implements StatePublisher {
 		DeviceFeature m_feature = null;
 		/**
 		 * Constructor
-		 * @param feature The device feature to be polled
+		 * @param feature The device feature being polled
 		 */
 		PollHandler(DeviceFeature feature) {
 			m_feature = feature;
-		}
+		}		
 		/**
 		 * Creates Insteon message that can be used to poll a feature
 		 * via the Insteon network.
@@ -509,9 +531,6 @@ public class DeviceFeature implements StatePublisher {
 			return null;
 		}
 	}
-	//
-	// --- command handlers to translate OpenHAB commands into insteon messages
-	//
 	/**
 	 * A command handler translates an openHAB command into a insteon message
 	 *
@@ -526,7 +545,7 @@ public class DeviceFeature implements StatePublisher {
 		 */
 		CommandHandler(DeviceFeature feature) {
 			m_feature = feature;
-		}
+		}	
 		/**
 		 * Implements what to do when an openHAB command is received
 		 * @param cmd the openhab command issued
@@ -674,13 +693,12 @@ public class DeviceFeature implements StatePublisher {
 				}
 			}
 		}
-
 	}
 	/**
 	 * Does preprocessing of messages to decide which handler should be called
 	 *
 	 */
-	private static abstract class MessageDispatcher {
+	public static abstract class MessageDispatcher {
 		DeviceFeature m_feature = null;
 		/**
 		 * Constructor
@@ -695,7 +713,7 @@ public class DeviceFeature implements StatePublisher {
 		 * @param port Insteon device ('/dev/usb') from which the message came
 		 * @return true if dispatch was successful, false otherwise
 		 */
-		abstract boolean dispatch(Msg msg, String port);
+		public abstract boolean dispatch(Msg msg, String port);
 	}
 
 	private static class DefaultDispatcher extends MessageDispatcher {
@@ -758,8 +776,7 @@ public class DeviceFeature implements StatePublisher {
 	}
 	
 	/**
-	 * Factory method for creating DeviceFeatures. Once the problem domain is better understood
-	 * and there are more devices, this should be done with an xml file.
+	 * Factory method for creating DeviceFeatures.
 	 * @param s The name of the device feature to create.
 	 * @return The newly created DeviceFeature, or null if requested DeviceFeature does not exist.
 	 */
@@ -768,87 +785,45 @@ public class DeviceFeature implements StatePublisher {
 		DeviceFeature f = null;
 		if (s.equals("PLACEHOLDER")) {
 			f = new DeviceFeature("PLACEHOLDER");
-		} else	if (s.equals("2477Sswitch")) {
-			f = new DeviceFeature("2477Sswitch");
-			f.setMessageDispatcher(new DefaultDispatcher(f));
-			f.addMessageHandler(new Integer(0x11), new LightOnSwitchHandler(f));
-			f.addMessageHandler(new Integer(0x13), new LightOffHandler(f));
-			f.addMessageHandler(new Integer(0x19), new LightStateSwitchHandler(f));
-			f.addCommandHandler(OnOffType.class, new LightOnOffCommandHandler(f));
-			f.setPollHandler(new DefaultPollHandler(f));
-		} else	if (s.equals("2477Slasttime")) {
-			f = new DeviceFeature("2477Slasttime");
-			f.setStatusFeature(true);
-			f.setMessageDispatcher(new PassThroughDispatcher(f));
-			f.setDefaultMsgHandler(new LastTimeHandler(f));
-			f.setDefaultCommandHandler(new NoOpCommandHandler(f));
-		} else	if (s.equals("2477Ddimmer")) {
-			f = new DeviceFeature("2477Ddimmer");
-			f.setMessageDispatcher(new DefaultDispatcher(f));
-			f.addMessageHandler(new Integer(0x06), new NoOpMsgHandler(f));
-			f.addMessageHandler(new Integer(0x11), new LightOnDimmerHandler(f));
-			f.addMessageHandler(new Integer(0x13), new LightOffHandler(f));
-			f.addMessageHandler(new Integer(0x17), new NoOpMsgHandler(f));
-			f.addMessageHandler(new Integer(0x18), new StopManualChangeHandler(f));
-			f.addMessageHandler(new Integer(0x19), new LightStateDimmerHandler(f));
-			f.addCommandHandler(PercentType.class, new PercentHandler(f));
-			f.addCommandHandler(OnOffType.class, new LightOnOffCommandHandler(f));
-			f.setPollHandler(new DefaultPollHandler(f));
-		} else	if (s.equals("2477Dlasttime")) {
-			f = new DeviceFeature("2477Dlasttime");
-			f.setStatusFeature(true);
-			f.setMessageDispatcher(new PassThroughDispatcher(f));
-			f.setDefaultMsgHandler(new LastTimeHandler(f));
-			f.setDefaultCommandHandler(new NoOpCommandHandler(f));
-		} else	if (s.equals("2450IOLincContact")) {
-			f = new DeviceFeature("2450IOLincContact");
-			f.setMessageDispatcher(new DefaultDispatcher(f));
-			f.addMessageHandler(new Integer(0x06), new NoOpMsgHandler(f));
-			f.addMessageHandler(new Integer(0x11), new OpenedContactHandler(f));
-			f.addMessageHandler(new Integer(0x13), new ClosedContactHandler(f));
-			f.addMessageHandler(new Integer(0x19), new StateContactHandler(f));
-			f.addCommandHandler(OnOffType.class, new NoOpCommandHandler(f));
-			f.setPollHandler(new ContactPollHandler(f));
-		} else	if (s.equals("2842contact")) {
-			f = new DeviceFeature("2842contact");
-			f.setMessageDispatcher(new DefaultDispatcher(f));
-			f.addMessageHandler(new Integer(0x06), new NoOpMsgHandler(f));
-			f.addMessageHandler(new Integer(0x11), new OpenedContactHandler(f));
-			f.addMessageHandler(new Integer(0x13), new ClosedContactHandler(f));
-			f.addCommandHandler(OnOffType.class, new NoOpCommandHandler(f));
-			f.setPollHandler(new NoPollHandler(f));
-		} else	if (s.equals("2450IOLincSwitch")) {
-			f = new DeviceFeature("2450IOLincSwitch");
-			f.setMessageDispatcher(new DefaultDispatcher(f));
-			f.addMessageHandler(new Integer(0x06), new NoOpMsgHandler(f));
-			f.addMessageHandler(new Integer(0x11), new NoOpMsgHandler(f));
-			f.addMessageHandler(new Integer(0x13), new NoOpMsgHandler(f));
-			f.addMessageHandler(new Integer(0x19), new LightStateSwitchHandler(f));
-			f.addCommandHandler(OnOffType.class, new IOLincOnOffCommandHandler(f));
-			f.setPollHandler(new DefaultPollHandler(f));
-		} else	if (s.equals("2450IOLinclasttime")) {
-			f = new DeviceFeature("2450IOLinclasttime");
-			f.setStatusFeature(true);
-			f.setMessageDispatcher(new PassThroughDispatcher(f));
-			f.setDefaultMsgHandler(new LastTimeHandler(f));
-			f.setDefaultCommandHandler(new NoOpCommandHandler(f));
-		} else	if (s.equals("2842lasttime")) {
-			f = new DeviceFeature("2842lasttime");
-			f.setStatusFeature(true);
-			f.setMessageDispatcher(new PassThroughDispatcher(f));
-			f.setDefaultMsgHandler(new LastTimeHandler(f));
-			f.setDefaultCommandHandler(new NoOpCommandHandler(f));
-		} else	if (s.equals("2413Ucontrol")) {
-			f = new DeviceFeature("2413Ucontrol");
-			f.setStatusFeature(false);
-			f.setMessageDispatcher(new PassThroughDispatcher(f));
-			f.setDefaultMsgHandler(new NoOpMsgHandler(f));
-			f.addCommandHandler(DecimalType.class, new ModemCommandHandler(f));
+		} else if (s_features.containsKey(s)) {
+			f = s_features.get(s).build();
 		} else {
 			logger.error("unimplemented feature requested: {}", s);
 		}
 		return f;
 	}
-	
-}
 
+	/**
+	 * Factory method for creating device dispatchers given a name.
+	 * The name is usually the class name.
+	 * @param name the name of the dispatcher to create
+	 * @param f the feature for which to create the dispatcher
+	 * @return the dispatcher which was created
+	 */
+	public static MessageDispatcher s_makeMessageDispatcher(String name, DeviceFeature f) {
+		if (name.equals("PassThroughDispatcher")) return new PassThroughDispatcher(f);
+		else if (name.equals("DefaultDispatcher")) return new DefaultDispatcher(f);
+		else {
+			logger.error("unimplemented message dispatcher requested: {}", name);
+			return null;
+		}
+	}
+	/**
+	 * Factory method for creating handlers of a given name using java reflection
+	 * @param name the name of the handler to create
+	 * @param f the feature for which to create the handler
+	 * @return the handler which was created
+	 */
+	public static <T> T s_makeHandler(String name, DeviceFeature f) {
+		String cname = DeviceFeature.class.getName() + "$" + name;
+		try {
+			Class<?> c = Class.forName(cname);
+			@SuppressWarnings("unchecked")
+			Class<? extends T> dc = (Class <? extends T>) c;
+			return dc.getDeclaredConstructor(DeviceFeature.class).newInstance(f);
+		} catch (Exception e) {
+			logger.error("error trying to create message handler: {}", name, e);
+		}
+		return null;
+	}
+}

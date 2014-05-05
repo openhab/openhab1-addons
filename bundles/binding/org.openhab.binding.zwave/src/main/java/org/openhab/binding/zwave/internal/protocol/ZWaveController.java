@@ -89,7 +89,10 @@ public class ZWaveController {
 	
 	private final Semaphore transactionCompleted = new Semaphore(1);
 	private volatile SerialMessage lastSentMessage = null;
+	private long lastMessageStartTime = 0;
+	private long longestResponseTime = 0;
 	private SerialPort serialPort;
+	private int zWaveResponseTimeout = ZWAVE_RESPONSE_TIMEOUT;
 	private Timer watchdog;
 	
 	private String zWaveVersion = "Unknown";
@@ -101,6 +104,7 @@ public class ZWaveController {
 	private int deviceId = 0;
 	private int ZWaveLibraryType = 0;
 	private int sentDataPointer = 1;
+	private ZWaveDeviceType controllerType = ZWaveDeviceType.UNKNOWN;
 	
 	private int SOFCount = 0;
 	private int CANCount = 0;
@@ -121,8 +125,12 @@ public class ZWaveController {
 	 * communication with the Z-Wave controller stick.
 	 * @throws SerialInterfaceException when a connection error occurs.
 	 */
-	public ZWaveController(final String serialPortName) throws SerialInterfaceException {
+	public ZWaveController(final String serialPortName, final Integer timeout) throws SerialInterfaceException {
 			logger.info("Starting Z-Wave controller");
+			if(timeout != null && timeout >= 1500 && timeout <= 10000) {
+				zWaveResponseTimeout = timeout;
+			}
+			logger.info("Z-Wave timeout is set to {}ms.", zWaveResponseTimeout);
 			connect(serialPortName);
 			this.watchdog = new Timer(true);
 			this.watchdog.schedule(
@@ -236,6 +244,7 @@ public class ZWaveController {
 					this.zwaveNodes.put(nodeId, node);
 					node.advanceNodeStage(NodeStage.PROTOINFO);
 				}
+				this.controllerType = ((SerialApiGetInitDataMessageClass)processor).getNodeType();
 				break;
 			case SerialApiGetCapabilities:
 				this.serialAPIVersion = ((SerialApiGetCapabilitiesMessageClass)processor).getSerialAPIVersion();
@@ -613,6 +622,14 @@ public class ZWaveController {
 	public String getSerialAPIVersion() {
 		return serialAPIVersion;
 	}
+	
+    /**
+     * Gets the zWave Version of the controller.
+	 * @return the zWaveVersion
+	 */
+	public String getZWaveVersion() {
+		return zWaveVersion;
+	}
 
 	/**
 	 * Gets the Manufacturer ID of the controller. 
@@ -644,6 +661,14 @@ public class ZWaveController {
 	 */
 	public int getOwnNodeId() {
 		return ownNodeId;
+	}
+
+	/**
+	 * Gets the device type of the controller.
+	 * @return the device type
+	 */
+	public ZWaveDeviceType getControllerType() {
+		return controllerType;
 	}
 
 	/**
@@ -751,6 +776,9 @@ public class ZWaveController {
 				if (lastSentMessage == null)
 					continue;
 				
+				// If this message is a data packet to a node
+				// then make sure the node is not a battery device.
+				// If it's a battery device, it needs to be awake, or we queue the frame until it is.
 				if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 					ZWaveNode node = getNode(lastSentMessage.getMessageNode());
 					
@@ -764,10 +792,13 @@ public class ZWaveController {
 					}
 				}
 				
+				// Clear the semaphore used to acknowledge the response.
 				transactionCompleted.drainPermits();
 				
+				// Send the message to the controller
 				byte[] buffer = lastSentMessage.getMessageBuffer();
 				logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
+				lastMessageStartTime = System.currentTimeMillis();
 				try {
 					synchronized (serialPort.getOutputStream()) {
 						serialPort.getOutputStream().write(buffer);
@@ -778,8 +809,9 @@ public class ZWaveController {
 					break;
 				}
 				
+				// Now wait for the response...
 				try {
-					if (!transactionCompleted.tryAcquire(1, ZWAVE_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS)) {
+					if (!transactionCompleted.tryAcquire(1, zWaveResponseTimeout, TimeUnit.MILLISECONDS)) {
 						timeOutCount.incrementAndGet();
 						if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 							
@@ -808,6 +840,10 @@ public class ZWaveController {
 						}
 						continue;
 					}
+					long responseTime = System.currentTimeMillis() - lastMessageStartTime;
+					if(responseTime > longestResponseTime)
+						longestResponseTime = responseTime;
+					logger.debug("Response processed after {}ms/{}ms.", responseTime, longestResponseTime);
 					logger.trace("Acquired. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 				} catch (InterruptedException e) {
 					break;
@@ -874,6 +910,21 @@ public class ZWaveController {
 
 			// Send a NAK to resynchronise communications
 			sendResponse(NAK);
+			
+			// If we want to do a soft reset on the serial interface, do it here.
+			// It seems there's no response to this message, so sending it through
+			// 'normal' channels will cause a timeout.
+			try {
+				synchronized (serialPort.getOutputStream()) {
+					SerialMessage resetMsg = new SerialApiSoftResetMessageClass().doRequest();
+					byte[] buffer = resetMsg.getMessageBuffer();
+
+					serialPort.getOutputStream().write(buffer);
+					serialPort.getOutputStream().flush();
+				}
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+			}
 
 			while (!interrupted()) {
 				int nextByte;

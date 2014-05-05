@@ -49,6 +49,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveActiveBinding.class);
 	private String port;
 	private Integer healtime = null;
+	private Integer timeout = null;
 	private volatile ZWaveController zController;
 	private volatile ZWaveConverterHandler converterHandler;
 
@@ -198,7 +199,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		try {
 			this.setProperlyConfigured(true);
 			this.deactivate();
-			this.zController = new ZWaveController(port);
+			this.zController = new ZWaveController(port, timeout);
 			this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
 			zController.initialize();
 			zController.addEventListener(this);
@@ -239,6 +240,15 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			} catch (NumberFormatException e) {
 				healtime = null;
 				logger.error("Error parsing 'healtime'. This must be a single number to set the hour to perform the heal.");
+			}
+		}
+		if (StringUtils.isNotBlank((String) config.get("timeout"))) {
+			try {
+				timeout = Integer.parseInt((String) config.get("timeout"));
+				logger.info("Update config, timeout = {}", timeout);
+			} catch (NumberFormatException e) {
+				timeout = null;
+				logger.error("Error parsing 'timeout'. This must be an Integer.");
 			}
 		}
 
