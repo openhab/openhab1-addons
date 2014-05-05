@@ -248,7 +248,6 @@ public class ZWaveController {
 					this.zwaveNodes.put(nodeId, node);
 					node.advanceNodeStage(NodeStage.PROTOINFO);
 				}
-				this.controllerType = ((SerialApiGetInitDataMessageClass)processor).getNodeType();
 				break;
 			case GetSucNodeId:
 				// If we want to be the SUC, enable it here
@@ -264,6 +263,9 @@ public class ZWaveController {
 				this.deviceType = ((SerialApiGetCapabilitiesMessageClass)processor).getDeviceType();
 				
 				this.enqueue(new SerialApiGetInitDataMessageClass().doRequest());
+				break;
+			case GetControllerCapabilities:
+				this.controllerType = ((GetControllerCapabilitiesMessageClass)processor).getDeviceType();
 				break;
 			default:
 				break;				
