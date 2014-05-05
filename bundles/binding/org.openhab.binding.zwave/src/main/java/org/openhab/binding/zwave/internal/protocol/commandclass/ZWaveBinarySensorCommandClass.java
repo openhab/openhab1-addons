@@ -72,7 +72,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
 		logger.trace("Handle Message Sensor Binary Request");
-		logger.debug("NODE {}: Received Sensor Binary Request", this.getNode().getNodeId());
+		logger.debug("NODE {}: Received Sensor Binary Request (v{})", this.getNode().getNodeId(), this.getVersion());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 			case SENSOR_BINARY_GET:
@@ -84,8 +84,12 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 
 				SensorType sensorType = SensorType.UNKNOWN;
 				if(this.getVersion() > 1) {
+					logger.debug("Processing Sensor Type {}", serialMessage.getMessagePayloadByte(offset + 2));
 					// For V2, we have the sensor type after the value
-					sensorType = SensorType.getSensorType(serialMessage.getMessagePayloadByte(offset + 1));
+					sensorType = SensorType.getSensorType(serialMessage.getMessagePayloadByte(offset + 2));
+					logger.debug("Sensor Type is {}", sensorType);
+					if(sensorType == null)
+						sensorType = SensorType.UNKNOWN;
 				}
 
 				logger.debug(String.format("NODE %d: Sensor Binary report, type=%s, value=0x%02X", this.getNode().getNodeId(), sensorType.getLabel(), value));
