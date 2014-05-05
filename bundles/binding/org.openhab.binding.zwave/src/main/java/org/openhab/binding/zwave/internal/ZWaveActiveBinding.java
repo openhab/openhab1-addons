@@ -154,6 +154,17 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	public void allBindingsChanged(BindingProvider provider) {
+		super.allBindingsChanged(provider);
+
+		// Bindings have changed - rebuild the polling table
+		rebuildPollingTable();
+	}
+
+	
+	/**
 	 * This method rebuilds the polling table. The polling table is a list of items that have
 	 * polling enabled (ie a refresh interval is set). This list is then checked periodically
 	 * and any item that has passed its polling interval will be polled.
