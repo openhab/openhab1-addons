@@ -30,7 +30,7 @@
 
 -->
 
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="org.openhab.binding.bticino">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.binding.bticino">
    <implementation class="org.openhab.binding.bticino.internal.BticinoBinding"/>
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
