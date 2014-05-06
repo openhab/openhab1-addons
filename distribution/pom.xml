@@ -355,12 +355,6 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>org.openhab.action</groupId>
-            <artifactId>org.openhab.action.homematic</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
 
         <dependency>
             <groupId>org.openhab.binding</groupId>

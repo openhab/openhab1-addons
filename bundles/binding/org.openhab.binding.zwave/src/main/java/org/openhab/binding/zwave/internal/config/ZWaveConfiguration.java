@@ -17,6 +17,7 @@ import java.util.TimerTask;
 import org.openhab.binding.zwave.internal.ZWaveNetworkMonitor;
 import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceType;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
@@ -250,7 +251,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 								+ Integer.toHexString(node.getDeviceId()) + ",Type:"
 								+ Integer.toHexString(node.getDeviceType()) + "]";
 					}
-					logger.debug("No database entry node {}: {}", node.getNodeId(), record.value);
+					logger.debug("NODE {}: No database entry: {}", node.getNodeId(), record.value);
 				} else {
 					if (node.getLocation() == null || node.getLocation().isEmpty())
 						record.value = database.getProductName();
@@ -284,8 +285,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					break;
 				}
 
-				// Add the save button
+				// Add the action buttons
 				record.addAction("Save", "Save Node");
+				record.addAction("Heal", "Heal Node");
 
 				// Add the delete button if the node is not "operational"
 				if(canDelete) {
@@ -370,6 +372,12 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					}
 				}
 
+				// Is this a controller
+				if(nodeId == zController.getOwnNodeId()) {
+					record = new OpenHABConfigurationRecord(domain + "controller/", "Controller");
+					records.add(record);
+				}
+
 				record = new OpenHABConfigurationRecord(domain + "neighbors/", "Neighbors");
 				record.addAction("Refresh", "Refresh");
 				records.add(record);
@@ -422,16 +430,22 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.value = "Mains";
 				}
 				records.add(record);
+
+				// Add controller specific status information
+				if(node.getNodeId() == zController.getDeviceId()) {
+				}
 			} else if (arg.equals("parameters/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
+					if(configList == null)
+						return records;
 
 					// Get the configuration command class for this node
 					ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
 							.getCommandClass(CommandClass.CONFIGURATION);
 
 					if (configurationCommandClass == null) {
-						logger.error("Error getting configurationCommandClass for node '{}'", nodeId);
+						logger.error("NODE {}: Error getting configurationCommandClass", nodeId);
 						return null;
 					}
 
@@ -575,7 +589,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						.getCommandClass(CommandClass.WAKE_UP);
 
 				if(wakeupCommandClass == null) {
-					logger.error("Error getting wakeupCommandClass for node '{}'", nodeId);
+					logger.error("NODE {}: Error getting wakeupCommandClass", nodeId);
 					return null;
 				}
 
@@ -633,6 +647,35 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 					records.add(record);
 				}
+			} else if (arg.equals("controller/")) {
+				// Create the record
+				record = new OpenHABConfigurationRecord(domain, "Type", "Controller Type", true);
+				record.type = OpenHABConfigurationRecord.TYPE.LIST;
+				record.value = zController.getControllerType().getLabel();
+				record.addValue(ZWaveDeviceType.PRIMARY.toString(), ZWaveDeviceType.PRIMARY.getLabel());
+				record.addValue(ZWaveDeviceType.SECONDARY.toString(), ZWaveDeviceType.SECONDARY.getLabel());
+				record.addValue(ZWaveDeviceType.SUC.toString(), ZWaveDeviceType.SUC.getLabel());
+
+				// Set the read-only if this isn't a controller!
+				switch(zController.getControllerType()) {
+				case SUC:
+				case PRIMARY:
+				case SECONDARY:
+					record.readonly = false;
+					break;
+				default:
+					record.readonly = true;
+					break;
+				}
+				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain, "APIVersion", "API Version", true);
+				record.value = zController.getSerialAPIVersion();
+				records.add(record);
+				
+				record = new OpenHABConfigurationRecord(domain, "ZWaveVersion", "ZWave Version", true);
+				record.value = zController.getZWaveVersion();
+				records.add(record);
 			}
 			
 			return records;
@@ -692,13 +735,20 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			// Get the node - if it exists
 			ZWaveNode node = zController.getNode(nodeId);
 			if (node == null) {
-				logger.error("Error finding node in doAction '{}'", nodeId);
+				logger.error("NODE {}: Error finding node in doAction", nodeId);
 				return;
 			}
 
 			if (splitDomain.length == 2) {
+				if (action.equals("Heal")) {
+					logger.debug("NODE {}: Heal node", nodeId);
+
+					if(networkMonitor != null)
+						networkMonitor.healNode(nodeId);
+				}
+
 				if (action.equals("Save")) {
-					logger.debug("Saving node '{}'", nodeId);
+					logger.debug("NODE {}: Saving node", nodeId);
 
 					// Write the node to disk
 					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
@@ -706,7 +756,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 
 				if (action.equals("Delete")) {
-					logger.debug("Delete node '{}'", nodeId);
+					logger.debug("NODE {}: Delete node", nodeId);
 					this.zController.requestRemoveFailedNode(nodeId);
 					
 					// Delete the XML file.
@@ -726,15 +776,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						.getCommandClass(CommandClass.CONFIGURATION);
 
 				if (configurationCommandClass == null) {
-					logger.error("Error getting configurationCommandClass in doAction for node '{}'", nodeId);
+					logger.error("NODE {}: Error getting configurationCommandClass in doAction", nodeId);
 					return;
 				}
 				if (action.equals("Refresh")) {
-					logger.debug("Refresh parameters for node '{}'", nodeId);
+					logger.debug("NODE {}: Refresh parameters", nodeId);
 
 					ZWaveProductDatabase database = new ZWaveProductDatabase();
 					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
-						logger.error("Error getting parameters for node '{}' - no database found", nodeId);
+						logger.error("NODE {}: Error getting parameters - no database found", nodeId);
 						return;
 					}
 
@@ -748,13 +798,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			if (splitDomain[2].equals("wakeup")) {
 				if (action.equals("Refresh")) {
-					logger.debug("Refresh wakeup capabilities for node '{}'", nodeId);
+					logger.debug("NODE {}: Refresh wakeup capabilities", nodeId);
 
 					ZWaveWakeUpCommandClass wakeupCommandClass = (ZWaveWakeUpCommandClass) node
 							.getCommandClass(CommandClass.WAKE_UP);
 
 					if (wakeupCommandClass == null) {
-						logger.error("Error getting wakeupCommandClass in doAction for node '{}'", nodeId);
+						logger.error("NODE {}: Error getting wakeupCommandClass in doAction", nodeId);
 						return;
 					}
 
@@ -775,18 +825,18 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			if (splitDomain[2].equals("associations")) {
 				if (action.equals("Refresh")) {
-					logger.debug("Refresh associations for node '{}'", nodeId);
+					logger.debug("NODE {}: Refresh associations", nodeId);
 
 					ZWaveProductDatabase database = new ZWaveProductDatabase();
 					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
-						logger.error("Error in doAction for node '{}' - no database found", nodeId);
+						logger.error("NODE {}: Error in doAction - no database found", nodeId);
 						return;
 					}
 
 					ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
 							.getCommandClass(CommandClass.ASSOCIATION);
 					if (associationCommandClass == null) {
-						logger.error("Error getting associationCommandClass in doAction for node '{}'", nodeId);
+						logger.error("NODE {}: Error getting associationCommandClass in doAction", nodeId);
 						return;
 					}
 
@@ -834,7 +884,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 			if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
-				logger.error("Error in doSet for node '{}' - no database found", nodeId);
+				logger.error("NODE {}: Error in doSet - no database found", nodeId);
 				return;
 			}
 
@@ -849,7 +899,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 							.getCommandClass(CommandClass.CONFIGURATION);
 
 					if (configurationCommandClass == null) {
-						logger.error("Error getting configurationCommandClass in doSet for node '{}'", nodeId);
+						logger.error("NODE {}: Error getting configurationCommandClass in doSet", nodeId);
 						return;
 					}
 
@@ -881,11 +931,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 							.getCommandClass(CommandClass.WAKE_UP);
 
 					if (wakeupCommandClass == null) {
-						logger.error("Error getting wakeupCommandClass in doSet for node '{}'", nodeId);
+						logger.error("NODE {}: Error getting wakeupCommandClass in doSet", nodeId);
 						return;
 					}
 					
-					logger.debug("Set wakeup interval to '{}'", value);
+					logger.debug("NODE {}: Set wakeup interval to '{}'", nodeId, value);
 
 					// Add this as a pending transaction
 					PendingCfg.Add(ZWaveCommandClass.CommandClass.WAKE_UP.getKey(), node.getNodeId(), Integer.parseInt(value));
@@ -895,12 +945,20 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					// And request a read-back
 					this.zController.sendData(wakeupCommandClass.getIntervalMessage());
 				}
+				if (splitDomain[2].equals("controller")) {
+					if(splitDomain[3].equals("Type")) {
+						ZWaveDeviceType type = ZWaveDeviceType.fromString(value);
+						logger.error("NODE {}: Setting controller type to {}", nodeId, type.toString());
+//						ZW_EnableSUC and ZW_SetSUCNodeID
+					}
+
+				}
 			} else if (splitDomain.length == 5) {
 				if (splitDomain[2].equals("associations")) {
 					ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
 							.getCommandClass(CommandClass.ASSOCIATION);
 					if (associationCommandClass == null) {
-						logger.error("Error getting associationCommandClass in doSet for node '{}'", nodeId);
+						logger.error("NODE {}: Error getting associationCommandClass in doSet", nodeId);
 						return;
 					}
 					int assocId = Integer.parseInt(splitDomain[3].substring(11));
