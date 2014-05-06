@@ -104,6 +104,8 @@
 	<module>org.openhab.binding.irtrans</module>
 	<module>org.openhab.binding.astro</module>
 	<module>org.openhab.binding.k8055</module>
+    <module>org.openhab.binding.withings</module>
+    <module>org.openhab.binding.rme</module>
   </modules>
 
 </project>

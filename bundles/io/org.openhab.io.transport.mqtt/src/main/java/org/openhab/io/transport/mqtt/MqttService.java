@@ -95,6 +95,10 @@ public class MqttService implements ManagedService {
 				conn.setAsync(Boolean.parseBoolean(value));
 			} else if (property.equals("clientId")) {
 				conn.setClientId(value);
+			} else if (property.equals("lwt")) {
+				MqttWillAndTestament will = MqttWillAndTestament.fromString(value);
+				logger.debug("Setting last will: {}", will);
+				conn.setLastWill(will);
 			} else {
 				logger.warn("Unrecognized property: {}", key);
 			}

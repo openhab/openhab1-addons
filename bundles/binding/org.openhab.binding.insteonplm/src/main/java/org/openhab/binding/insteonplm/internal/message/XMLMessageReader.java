@@ -20,9 +20,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
 import org.openhab.binding.insteonplm.internal.utils.Pair;
-import org.openhab.binding.insteonplm.internal.utils.Utils;
+import org.openhab.binding.insteonplm.internal.utils.Utils.DataTypeParser;
+import org.openhab.binding.insteonplm.internal.utils.Utils.ParsingException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -37,18 +37,6 @@ import org.xml.sax.SAXException;
 */
 
 public class XMLMessageReader {
-	/**
-	 * Exception to indicate various xml parsing errors.
-	 */
-	@SuppressWarnings("serial")
-	public static class ParsingException  extends Exception { 
-		public ParsingException(String msg) {
-			super(msg);
-		}
-		public ParsingException(String msg, Throwable cause) {
-			super(msg, cause);
-		}
-	}
 	/**
 	 * Reads the message definitions from an xml file
 	 * @param input input stream from which to read
@@ -157,7 +145,7 @@ public class XMLMessageReader {
 		Field f = new Field(name, dType, offset);
 		//Now we have field, only need value
 		String sVal = field.getTextContent();
-		Object val = FieldValueParser.s_parseDataType(dType, sVal);
+		Object val = DataTypeParser.s_parseDataType(dType, sVal);
 		Pair<Field, Object> pair = new Pair<Field, Object>(f, val);
 		return pair;
 	}
@@ -172,38 +160,7 @@ public class XMLMessageReader {
 		return msg;
 	}
 	
-	private static class FieldValueParser {
-		public static Object s_parseDataType(DataType type, String val) {
-			switch(type) {
-			case BYTE: 		return s_parseByte(val);
-			case INT:		return s_parseInt(val);
-			case FLOAT: 	return s_parseFloat(val);
-			case ADDRESS:	return s_parseAddress(val);
-			default : throw new IllegalArgumentException("Data Type not implemented in Field Value Parser!");
-			}
-		}
-		
-		public static byte s_parseByte(String val) {
-			if (val != null && !val.trim().equals("")) {
-				return (byte) Utils.from0xHexString(val.trim());
-			} else return 0x00;
-		}
-		public static int s_parseInt(String val) {
-			if (val != null && !val.trim().equals("")) {
-				return Integer.parseInt(val);
-			} else return 0x00;
-		}
-		public static float s_parseFloat(String val) {
-			if (val != null && !val.trim().equals("")) {
-				return Float.parseFloat(val.trim());
-			} else return 0;
-		}
-		public static InsteonAddress s_parseAddress(String val) {
-			if (val != null && !val.trim().equals("")) {
-				return InsteonAddress.s_parseAddress(val.trim());
-			} else return new InsteonAddress();
-		}
-	}
+
 	public static void main(String[] args) throws Exception {
 		// for local testing
 		File f = new File(System.getProperty("user.home") + 

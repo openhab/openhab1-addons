@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
@@ -31,6 +32,7 @@ import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
 import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.Electrode;
 import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
 import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
@@ -53,6 +55,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
@@ -75,10 +78,14 @@ import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds;
 import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
+import org.openhab.binding.tinkerforge.internal.model.Proximity;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
@@ -114,6 +121,7 @@ import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletMotionDetector;
+import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.Device;
@@ -349,6 +357,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass mBrickletMultiTouchEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass multiTouchDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass electrodeEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass proximityEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass mBrickletMotionDetectorEClass = null;
 
   /**
@@ -441,6 +477,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass remoteSwitchCConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass multiTouchDeviceConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass brickletMultiTouchConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -629,6 +679,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EEnum multiTouchSubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EDataType mipConnectionEDataType = null;
 
   /**
@@ -742,6 +799,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletMotionDetectorEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletMultiTouchEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2043,6 +2107,116 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getMBrickletMultiTouch()
+  {
+    return mBrickletMultiTouchEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletMultiTouch_DeviceType()
+  {
+    return (EAttribute)mBrickletMultiTouchEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletMultiTouch_Recalibrate()
+  {
+    return (EAttribute)mBrickletMultiTouchEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletMultiTouch_Sensitivity()
+  {
+    return (EAttribute)mBrickletMultiTouchEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMultiTouchDevice()
+  {
+    return multiTouchDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMultiTouchDevice_Pin()
+  {
+    return (EAttribute)multiTouchDeviceEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMultiTouchDevice_DisableElectrode()
+  {
+    return (EAttribute)multiTouchDeviceEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getElectrode()
+  {
+    return electrodeEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getElectrode_DeviceType()
+  {
+    return (EAttribute)electrodeEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getProximity()
+  {
+    return proximityEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getProximity_DeviceType()
+  {
+    return (EAttribute)proximityEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMBrickletMotionDetector()
   {
     return mBrickletMotionDetectorEClass;
@@ -2576,6 +2750,56 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getRemoteSwitchCConfiguration_Repeats()
   {
     return (EAttribute)remoteSwitchCConfigurationEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMultiTouchDeviceConfiguration()
+  {
+    return multiTouchDeviceConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMultiTouchDeviceConfiguration_DisableElectrode()
+  {
+    return (EAttribute)multiTouchDeviceConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getBrickletMultiTouchConfiguration()
+  {
+    return brickletMultiTouchConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBrickletMultiTouchConfiguration_Recalibrate()
+  {
+    return (EAttribute)brickletMultiTouchConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBrickletMultiTouchConfiguration_Sensitivity()
+  {
+    return (EAttribute)brickletMultiTouchConfigurationEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -3373,6 +3597,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getMultiTouchSubIds()
+  {
+    return multiTouchSubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getMIPConnection()
   {
     return mipConnectionEDataType;
@@ -3536,6 +3770,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EDataType getTinkerBrickletMotionDetector()
   {
     return tinkerBrickletMotionDetectorEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getTinkerBrickletMultiTouch()
+  {
+    return tinkerBrickletMultiTouchEDataType;
   }
 
   /**
@@ -3752,6 +3996,21 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(digitalSensorEClass, DIGITAL_SENSOR__PORT);
     createEAttribute(digitalSensorEClass, DIGITAL_SENSOR__PIN);
 
+    mBrickletMultiTouchEClass = createEClass(MBRICKLET_MULTI_TOUCH);
+    createEAttribute(mBrickletMultiTouchEClass, MBRICKLET_MULTI_TOUCH__DEVICE_TYPE);
+    createEAttribute(mBrickletMultiTouchEClass, MBRICKLET_MULTI_TOUCH__RECALIBRATE);
+    createEAttribute(mBrickletMultiTouchEClass, MBRICKLET_MULTI_TOUCH__SENSITIVITY);
+
+    multiTouchDeviceEClass = createEClass(MULTI_TOUCH_DEVICE);
+    createEAttribute(multiTouchDeviceEClass, MULTI_TOUCH_DEVICE__PIN);
+    createEAttribute(multiTouchDeviceEClass, MULTI_TOUCH_DEVICE__DISABLE_ELECTRODE);
+
+    electrodeEClass = createEClass(ELECTRODE);
+    createEAttribute(electrodeEClass, ELECTRODE__DEVICE_TYPE);
+
+    proximityEClass = createEClass(PROXIMITY);
+    createEAttribute(proximityEClass, PROXIMITY__DEVICE_TYPE);
+
     mBrickletMotionDetectorEClass = createEClass(MBRICKLET_MOTION_DETECTOR);
     createEAttribute(mBrickletMotionDetectorEClass, MBRICKLET_MOTION_DETECTOR__DEVICE_TYPE);
     createEOperation(mBrickletMotionDetectorEClass, MBRICKLET_MOTION_DETECTOR___INIT);
@@ -3907,6 +4166,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(remoteSwitchCConfigurationEClass, REMOTE_SWITCH_CCONFIGURATION__DEVICE_CODE);
     createEAttribute(remoteSwitchCConfigurationEClass, REMOTE_SWITCH_CCONFIGURATION__REPEATS);
 
+    multiTouchDeviceConfigurationEClass = createEClass(MULTI_TOUCH_DEVICE_CONFIGURATION);
+    createEAttribute(multiTouchDeviceConfigurationEClass, MULTI_TOUCH_DEVICE_CONFIGURATION__DISABLE_ELECTRODE);
+
+    brickletMultiTouchConfigurationEClass = createEClass(BRICKLET_MULTI_TOUCH_CONFIGURATION);
+    createEAttribute(brickletMultiTouchConfigurationEClass, BRICKLET_MULTI_TOUCH_CONFIGURATION__RECALIBRATE);
+    createEAttribute(brickletMultiTouchConfigurationEClass, BRICKLET_MULTI_TOUCH_CONFIGURATION__SENSITIVITY);
+
     // Create enums
     dcDriveModeEEnum = createEEnum(DC_DRIVE_MODE);
     noSubIdsEEnum = createEEnum(NO_SUB_IDS);
@@ -3918,6 +4184,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     dualRelaySubIdsEEnum = createEEnum(DUAL_RELAY_SUB_IDS);
     lcdButtonSubIdsEEnum = createEEnum(LCD_BUTTON_SUB_IDS);
     lcdBacklightSubIdsEEnum = createEEnum(LCD_BACKLIGHT_SUB_IDS);
+    multiTouchSubIdsEEnum = createEEnum(MULTI_TOUCH_SUB_IDS);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -3943,6 +4210,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mTinkerBrickletLCD20x4EDataType = createEDataType(MTINKER_BRICKLET_LCD2_0X4);
     tinkerBrickletRemoteSwitchEDataType = createEDataType(TINKER_BRICKLET_REMOTE_SWITCH);
     tinkerBrickletMotionDetectorEDataType = createEDataType(TINKER_BRICKLET_MOTION_DETECTOR);
+    tinkerBrickletMultiTouchEDataType = createEDataType(TINKER_BRICKLET_MULTI_TOUCH);
     enumEDataType = createEDataType(ENUM);
   }
 
@@ -4124,6 +4392,32 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     digitalSensorEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletMultiTouch());
+    g1.getETypeArguments().add(g2);
+    mBrickletMultiTouchEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getMultiTouchDevice());
+    g1.getETypeArguments().add(g2);
+    mBrickletMultiTouchEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getBrickletMultiTouchConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletMultiTouchEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletMultiTouch());
+    g1.getETypeArguments().add(g2);
+    multiTouchDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getDigitalValue());
+    g1.getETypeArguments().add(g2);
+    multiTouchDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getMultiTouchDeviceConfiguration());
+    g1.getETypeArguments().add(g2);
+    multiTouchDeviceEClass.getEGenericSuperTypes().add(g1);
+    electrodeEClass.getESuperTypes().add(this.getMultiTouchDevice());
+    proximityEClass.getESuperTypes().add(this.getMultiTouchDevice());
+    g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletMotionDetector());
     g1.getETypeArguments().add(g2);
     mBrickletMotionDetectorEClass.getEGenericSuperTypes().add(g1);
@@ -4288,6 +4582,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     remoteSwitchAConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     remoteSwitchBConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     remoteSwitchCConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    multiTouchDeviceConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    brickletMultiTouchConfigurationEClass.getESuperTypes().add(this.getTFConfig());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(ecosystemEClass, Ecosystem.class, "Ecosystem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -4480,6 +4776,21 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getDigitalSensor_Port(), theEcorePackage.getEChar(), "port", null, 0, 1, DigitalSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDigitalSensor_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, DigitalSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(mBrickletMultiTouchEClass, MBrickletMultiTouch.class, "MBrickletMultiTouch", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletMultiTouch_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_multitouch", 0, 1, MBrickletMultiTouch.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletMultiTouch_Recalibrate(), theEcorePackage.getEBooleanObject(), "recalibrate", null, 0, 1, MBrickletMultiTouch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletMultiTouch_Sensitivity(), theEcorePackage.getEShortObject(), "sensitivity", null, 0, 1, MBrickletMultiTouch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(multiTouchDeviceEClass, MultiTouchDevice.class, "MultiTouchDevice", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMultiTouchDevice_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, MultiTouchDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMultiTouchDevice_DisableElectrode(), theEcorePackage.getEBooleanObject(), "disableElectrode", null, 0, 1, MultiTouchDevice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(electrodeEClass, Electrode.class, "Electrode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getElectrode_DeviceType(), theEcorePackage.getEString(), "deviceType", "electrode", 0, 1, Electrode.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(proximityEClass, Proximity.class, "Proximity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getProximity_DeviceType(), theEcorePackage.getEString(), "deviceType", "proximity", 0, 1, Proximity.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(mBrickletMotionDetectorEClass, MBrickletMotionDetector.class, "MBrickletMotionDetector", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletMotionDetector_DeviceType(), theEcorePackage.getEString(), "deviceType", "motion_detector", 0, 1, MBrickletMotionDetector.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -4671,6 +4982,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getRemoteSwitchCConfiguration_DeviceCode(), theEcorePackage.getEShortObject(), "deviceCode", null, 0, 1, RemoteSwitchCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getRemoteSwitchCConfiguration_Repeats(), theEcorePackage.getEShortObject(), "repeats", null, 0, 1, RemoteSwitchCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(multiTouchDeviceConfigurationEClass, MultiTouchDeviceConfiguration.class, "MultiTouchDeviceConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMultiTouchDeviceConfiguration_DisableElectrode(), theEcorePackage.getEBooleanObject(), "disableElectrode", null, 0, 1, MultiTouchDeviceConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(brickletMultiTouchConfigurationEClass, BrickletMultiTouchConfiguration.class, "BrickletMultiTouchConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getBrickletMultiTouchConfiguration_Recalibrate(), theEcorePackage.getEBooleanObject(), "recalibrate", null, 0, 1, BrickletMultiTouchConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBrickletMultiTouchConfiguration_Sensitivity(), theEcorePackage.getEShortObject(), "sensitivity", null, 0, 1, BrickletMultiTouchConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     // Initialize enums and add enum literals
     initEEnum(dcDriveModeEEnum, DCDriveMode.class, "DCDriveMode");
     addEEnumLiteral(dcDriveModeEEnum, DCDriveMode.BRAKE);
@@ -4749,6 +5067,21 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEEnum(lcdBacklightSubIdsEEnum, LCDBacklightSubIds.class, "LCDBacklightSubIds");
     addEEnumLiteral(lcdBacklightSubIdsEEnum, LCDBacklightSubIds.BACKLIGHT);
 
+    initEEnum(multiTouchSubIdsEEnum, MultiTouchSubIds.class, "MultiTouchSubIds");
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE0);
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE1);
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE2);
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE3);
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE4);
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE5);
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE6);
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE7);
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE8);
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE9);
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE10);
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.ELECTRODE11);
+    addEEnumLiteral(multiTouchSubIdsEEnum, MultiTouchSubIds.PROXIMITY);
+
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerDeviceEDataType, Device.class, "MTinkerDevice", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -4773,6 +5106,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(mTinkerBrickletLCD20x4EDataType, BrickletLCD20x4.class, "MTinkerBrickletLCD20x4", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletRemoteSwitchEDataType, BrickletRemoteSwitch.class, "TinkerBrickletRemoteSwitch", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletMotionDetectorEDataType, BrickletMotionDetector.class, "TinkerBrickletMotionDetector", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletMultiTouchEDataType, BrickletMultiTouch.class, "TinkerBrickletMultiTouch", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource

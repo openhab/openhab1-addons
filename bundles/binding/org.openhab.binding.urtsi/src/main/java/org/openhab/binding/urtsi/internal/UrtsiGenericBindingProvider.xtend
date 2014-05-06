@@ -19,10 +19,9 @@ import static org.openhab.binding.urtsi.internal.UrtsiGenericBindingProvider.*
  */
 class UrtsiGenericBindingProvider extends AbstractGenericBindingProvider implements UrtsiBindingProvider {
 	
-	
 	static val Logger logger = LoggerFactory::getLogger(typeof(UrtsiGenericBindingProvider))
 
-	static val Pattern CONFIG_BINDING_PATTERN = Pattern::compile("(.*?):([0-9]*)")
+	static val Pattern CONFIG_BINDING_PATTERN = Pattern::compile("(.*?):([0-9]*)((:)?([0-9])?)")
 
 	override getBindingType() {
 		"urtsi"
@@ -74,19 +73,40 @@ class UrtsiGenericBindingProvider extends AbstractGenericBindingProvider impleme
 		val matcher = CONFIG_BINDING_PATTERN.matcher(bindingConfig)
 		
 		if (!matcher.matches) {
-			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid Urtsii-binding-configuration. A valid configuration is matched by the RegExp '" + CONFIG_BINDING_PATTERN.pattern() + "'")
+			bombOut(bindingConfig);
 		}
 		matcher.reset
 		if (matcher.find) {
-			val urtsiConfig = new UrtsiItemConfiguration(matcher.group(1), Integer::valueOf(matcher.group(2)))
+			var address = 1;
+			var channel = 1;
+			if (matcher.group(5) != null) { // both address and channel are specified
+				channel = Integer::valueOf(matcher.group(5));
+				if (matcher.group(2) == null) {
+				   bombOut(bindingConfig);
+				}
+				address = Integer::valueOf(matcher.group(2));
+			} else { // just channel specified
+				if (matcher.group(2) == null) {
+				   bombOut(bindingConfig);
+				}
+				channel = Integer::valueOf(matcher.group(2));
+			}
+			val urtsiConfig = new UrtsiItemConfiguration(matcher.group(1), channel, address);
 			addBindingConfig(item, urtsiConfig)
-
 		} else {
-			throw new BindingConfigParseException("bindingConfig '" + bindingConfig + "' doesn't contain a valid Urtsii-binding-configuration. A valid configuration is matched by the RegExp '" + CONFIG_BINDING_PATTERN.pattern() + "'")
+			bombOut(bindingConfig);
 		}
 
 	}
-	
+	/**
+	* Shorthand for throwing lenghty exception
+	*/
+	def private void bombOut(String config) throws BindingConfigParseException {
+		throw new BindingConfigParseException("bindingConfig '" + config +
+			"' doesn't contain a valid Urtsii-binding-configuration. A valid configuration is matched by the RegExp '" +
+			CONFIG_BINDING_PATTERN.pattern() + "'");		
+	}
+
 	/**
 	 * Returns the device id which is associated to the given item.
 	 */
@@ -100,6 +120,13 @@ class UrtsiGenericBindingProvider extends AbstractGenericBindingProvider impleme
 	 */
 	override getChannel(String itemName) {
 		itemName.itemConfiguration?.channel
+	}
+
+	/**
+	 * Returns the urtsi device address which is associated to the given item.
+	 */
+	override getAddress(String itemName) {
+		itemName.itemConfiguration?.address
 	}
 	
 	/**

@@ -1,0 +1,67 @@
+<xml>
+
+<feature name="GenericSwitch">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x11">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13">LightOffHandler</message-handler>
+	<message-handler cmd="0x19">LightStateSwitchHandler</message-handler>
+	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
+	<poll-handler>DefaultPollHandler</poll-handler>
+</feature>
+<feature name="GenericLastTime" statusFeature="true">
+	<message-dispatcher>PassThroughDispatcher</message-dispatcher>
+	<message-handler default="true">LastTimeHandler</message-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+</feature>
+<feature name="GenericDimmer">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">LightOnDimmerHandler</message-handler>
+	<message-handler cmd="0x13">LightOffHandler</message-handler>
+	<message-handler cmd="0x17">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x18">StopManualChangeHandler</message-handler>
+	<message-handler cmd="0x19">LightStateDimmerHandler</message-handler>
+	<command-handler command="PercentType">PercentHandler</command-handler>
+	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
+	<poll-handler>DefaultPollHandler</poll-handler>
+</feature>
+<feature name="IOLincContact">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">OpenedContactHandler</message-handler>
+	<message-handler cmd="0x13">ClosedContactHandler</message-handler>
+	<message-handler cmd="0x19">StateContactHandler</message-handler>
+	<command-handler command="OnOffType">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="IOLincSwitch">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x13">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x19">LightStateSwitchHandler</message-handler>
+	<command-handler command="OnOffType">IOLincOnOffCommandHandler</command-handler>
+	<poll-handler>DefaultPollHandler</poll-handler>
+</feature>
+<feature name="MotionSensorContact">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">OpenedContactHandler</message-handler>
+	<message-handler cmd="0x13">ClosedContactHandler</message-handler>
+	<command-handler command="OnOffType">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="GenericContact">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">OpenedContactHandler</message-handler>
+	<message-handler cmd="0x13">ClosedContactHandler</message-handler>
+	<command-handler command="OnOffType">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="GenericModemControl">
+	<message-dispatcher>PassThroughDispatcher</message-dispatcher>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="DecimalType">ModemCommandHandler</command-handler>
+</feature>
+</xml>

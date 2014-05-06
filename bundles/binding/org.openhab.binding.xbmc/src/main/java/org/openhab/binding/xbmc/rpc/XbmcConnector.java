@@ -22,6 +22,7 @@ import java.util.concurrent.TimeoutException;
 import org.openhab.binding.xbmc.internal.XbmcHost;
 import org.openhab.binding.xbmc.rpc.calls.FilesPrepareDownload;
 import org.openhab.binding.xbmc.rpc.calls.GUIShowNotification;
+import org.openhab.binding.xbmc.rpc.calls.JSONRPCPing;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetActivePlayers;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetItem;
 import org.openhab.binding.xbmc.rpc.calls.PlayerPlayPause;
@@ -73,6 +74,7 @@ public class XbmcConnector {
 	// the async connection to the XBMC instance
 	private AsyncHttpClient client;
 	private WebSocket webSocket;
+	private boolean connected = false;
 
 	// the current player state
 	private State currentState = State.Stop;
@@ -103,8 +105,11 @@ public class XbmcConnector {
 	 * 
 	 * @return true if an active connection to the XBMC instance exists, false otherwise
 	 */
-	public boolean isOpen() { 
-		return webSocket != null && webSocket.isOpen();
+	public boolean isConnected() { 
+		if (webSocket == null || !webSocket.isOpen())
+			return false;
+		
+		return connected;
 	}
 	
 	/**
@@ -164,6 +169,7 @@ public class XbmcConnector {
 		@Override
 		public void onOpen(WebSocket webSocket) {
 			logger.debug("[{}]: Websocket opened", xbmc.getHostname());
+			connected = true;
 		}
 		
 		@Override
@@ -181,6 +187,7 @@ public class XbmcConnector {
 		public void onClose(WebSocket webSocket) {
 			logger.warn("[{}]: Websocket closed", xbmc.getHostname());
 			webSocket = null;
+			connected = false;
 		}
 		
 		@Override
@@ -217,6 +224,20 @@ public class XbmcConnector {
 		
 		@Override
 		public void onFragment(String fragment, boolean last) {}
+	}
+
+	/**
+	 * Send a ping to the XBMC host and wait for a 'pong'.
+	 */
+	public void ping() {
+		final JSONRPCPing ping = new JSONRPCPing(client, rsUri);
+		
+		ping.execute(new Runnable() {
+			@Override
+			public void run() {
+				connected = ping.isPong();
+			}
+		});
 	}
 	
 	/**

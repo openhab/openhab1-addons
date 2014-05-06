@@ -250,7 +250,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	public void execute() {
 		// Don't start the next node if there's a queue
 		if(zController.getSendQueueLength() > 1) {
-			logger.debug("Queue length is {} - deferring HEAL.");
+			logger.debug("Queue length is {} - deferring HEAL.", zController.getSendQueueLength());
 			return;
 		}
 
