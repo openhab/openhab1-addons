@@ -45,11 +45,6 @@ public class ItemDisabler extends TimerTask {
 
 	private Map<HomematicBindingConfig, Long> itemsToDisable = new HashMap<HomematicBindingConfig, Long>();
 	private Timer timer;
-	private CcuStateHolder stateHolder;
-
-	public ItemDisabler(CcuStateHolder stateHolder) {
-		this.stateHolder = stateHolder;
-	}
 
 	/**
 	 * Starts the ItemDisabler timer.
@@ -90,7 +85,7 @@ public class ItemDisabler extends TimerTask {
 
 					@Override
 					public void next(HomematicBindingConfig providerBindingConfig, Item item, Converter<?> converter) {
-						HmValueItem hmValueItem = stateHolder.getState(providerBindingConfig);
+						HmValueItem hmValueItem = context.getStateHolder().getState(providerBindingConfig);
 						if (providerBindingConfig instanceof ProgramConfig) {
 							context.getEventPublisher().postUpdate(item.getName(), OnOffType.OFF);
 						} else {

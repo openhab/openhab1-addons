@@ -30,7 +30,8 @@ Import-Package: javax.xml.bind,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.homematic
+Export-Package: org.openhab.binding.homematic.internal.common,
+ org.openhab.binding.homematic.internal.communicator.client
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/homematicbinding.xml, OSGI-INF/genericbindingprovider.xml

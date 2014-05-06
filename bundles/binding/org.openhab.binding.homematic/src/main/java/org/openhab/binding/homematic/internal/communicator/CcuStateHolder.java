@@ -16,7 +16,6 @@ import java.util.concurrent.Executors;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.ProviderItemIterator.ProviderItemIteratorCallback;
 import org.openhab.binding.homematic.internal.communicator.client.CcuClientException;
-import org.openhab.binding.homematic.internal.communicator.client.TclRegaScriptClient;
 import org.openhab.binding.homematic.internal.communicator.client.TclRegaScriptClient.TclIteratorCallback;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.converter.state.Converter;
@@ -36,20 +35,19 @@ import org.slf4j.LoggerFactory;
 public class CcuStateHolder {
 	private static final Logger logger = LoggerFactory.getLogger(CcuStateHolder.class);
 
-	private HomematicContext context = HomematicContext.getInstance();
+	private HomematicContext context;
 
 	private ExecutorService reloadExecutorPool = Executors.newCachedThreadPool();
-	private TclRegaScriptClient tclRegaScriptClient;
 
 	private boolean datapointReloadInProgress = false;
 	private Map<HomematicBindingConfig, Object> refreshCache = new HashMap<HomematicBindingConfig, Object>();
 	private Map<HomematicBindingConfig, HmValueItem> ccuDatapoints = new HashMap<HomematicBindingConfig, HmValueItem>();
 	private Map<HomematicBindingConfig, HmValueItem> ccuVariables = new HashMap<HomematicBindingConfig, HmValueItem>();
 
-	public CcuStateHolder(TclRegaScriptClient tclRegaScriptClient) {
-		this.tclRegaScriptClient = tclRegaScriptClient;
+	public CcuStateHolder(HomematicContext context) {
+		this.context = context;
 	}
-
+	
 	/**
 	 * If a datapoint reload is currently running, this returns true.
 	 */
@@ -82,7 +80,7 @@ public class CcuStateHolder {
 	public void loadDatapoints() throws CcuClientException {
 		logger.info("Loading CCU datapoints");
 
-		tclRegaScriptClient.iterateAllDatapoints(new TclIteratorCallback() {
+		context.getTclRegaScriptClient().iterateAllDatapoints(new TclIteratorCallback() {
 
 			@Override
 			public void iterate(HomematicBindingConfig bindingConfig, HmValueItem hmValueItem) {
@@ -105,7 +103,7 @@ public class CcuStateHolder {
 				try {
 					logger.debug("Reloading CCU datapoints");
 					datapointReloadInProgress = true;
-					tclRegaScriptClient.iterateAllDatapoints(new TclIteratorCallback() {
+					context.getTclRegaScriptClient().iterateAllDatapoints(new TclIteratorCallback() {
 						@Override
 						public void iterate(HomematicBindingConfig bindingConfig, HmValueItem hmValueItem) {
 							if (!ccuDatapoints.containsKey(bindingConfig)) {
@@ -144,7 +142,7 @@ public class CcuStateHolder {
 	public void loadVariables() throws CcuClientException {
 		logger.info("Loading CCU variables");
 
-		tclRegaScriptClient.iterateAllVariables(new TclIteratorCallback() {
+		context.getTclRegaScriptClient().iterateAllVariables(new TclIteratorCallback() {
 
 			@Override
 			public void iterate(HomematicBindingConfig bindingConfig, HmValueItem variable) {
@@ -166,7 +164,7 @@ public class CcuStateHolder {
 				logger.debug("Reloading CCU variables");
 
 				try {
-					tclRegaScriptClient.iterateAllVariables(new TclIteratorCallback() {
+					context.getTclRegaScriptClient().iterateAllVariables(new TclIteratorCallback() {
 
 						@Override
 						public void iterate(HomematicBindingConfig bindingConfig, HmValueItem variable) {

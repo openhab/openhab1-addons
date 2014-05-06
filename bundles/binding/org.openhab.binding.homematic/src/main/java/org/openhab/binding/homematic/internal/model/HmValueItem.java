@@ -66,6 +66,13 @@ public class HmValueItem {
 	public Object getValue() {
 		return value;
 	}
+	
+	/**
+	 * Returns the valueList.
+	 */
+	public String[] getValueList() {
+		return valueList;
+	}
 
 	/**
 	 * Returns the index of the value in a valueList variable.
@@ -176,6 +183,13 @@ public class HmValueItem {
 		}
 	}
 
+	/**
+	 * Returns the valueType.
+	 */
+	public Integer getValueType() {
+		return valueType;
+	}
+	
 	/**
 	 * Checks if the value is from type boolean.
 	 */

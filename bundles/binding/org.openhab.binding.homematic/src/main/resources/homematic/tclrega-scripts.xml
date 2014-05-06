@@ -201,19 +201,29 @@ Write("</programlist>");
 		]]>
 		</data>
 	</script>
-	<script name="setRemoteControl">
+	<script name="setRemoteControlDisplay">
 		<data>
 		<![CDATA[
 Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
-Write('<result><valid>')
-object remote_obj = dom.GetObject("{remote_address}");
-if (remote_obj) {
-  remote_obj.DPByHssDP("TEXT").State("{text_value}")
-  remote_obj.DPByHssDP("UNIT").State({unit_value})
-  remote_obj.DPByHssDP("BACKLIGHT").State({backlight_value})
-  remote_obj.DPByHssDP("BEEP").State({beep_value})
-  remote_obj.DPByHssDP("SUBMIT").State(1)
+Write('<result><valid>');
+object remote_control_display = dom.GetObject("BidCos-RF.{remote_address}:18.SUBMIT");
+if (remote_control_display) {
+  if ("{text}" != "*NO_STRING*") {
+    dom.GetObject("BidCos-RF.{remote_address}:18.TEXT").State("{text}");
+  }
+  dom.GetObject("BidCos-RF.{remote_address}:18.BEEP").State({beep_value});
+  dom.GetObject("BidCos-RF.{remote_address}:18.UNIT").State({unit_value});
+  dom.GetObject("BidCos-RF.{remote_address}:18.BACKLIGHT").State({backlight_value});
 
+  string symbols = "{symbols}";
+  string symbol;
+  if (symbols != "") {
+    foreach (symbol, symbols) {
+      dom.GetObject("BidCos-RF.KEQ0048285:18." # symbol).State(1);      
+    }
+  }
+
+  remote_control_display.State(1);
   Write('true');
 }
 else {

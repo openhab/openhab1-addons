@@ -26,8 +26,8 @@ import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
+import org.openhab.binding.homematic.internal.communicator.RemoteControlOptionParser;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.VariableConfig;
@@ -38,6 +38,7 @@ import org.openhab.binding.homematic.internal.model.HmDevice;
 import org.openhab.binding.homematic.internal.model.HmDeviceList;
 import org.openhab.binding.homematic.internal.model.HmProgram;
 import org.openhab.binding.homematic.internal.model.HmProgramList;
+import org.openhab.binding.homematic.internal.model.HmRemoteControlOptions;
 import org.openhab.binding.homematic.internal.model.HmResult;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.openhab.binding.homematic.internal.model.HmVariable;
@@ -57,17 +58,24 @@ import org.slf4j.LoggerFactory;
  */
 public class TclRegaScriptClient {
 	private static final Logger logger = LoggerFactory.getLogger(TclRegaScriptClient.class);
-	private final static boolean TRACE_ENABLED = logger.isTraceEnabled();
-
-	private HomematicConfig config = HomematicContext.getInstance().getConfig();
+	private static final boolean TRACE_ENABLED = logger.isTraceEnabled();
 
 	private Map<String, String> tclregaScripts;
 	private HttpClient httpClient;
 
+	private HomematicContext context;
+
 	/**
-	 * Creates the client.
+	 * Creates the TclRegaScriptClient.
 	 */
-	public TclRegaScriptClient() {
+	public TclRegaScriptClient(HomematicContext context) {
+		this.context = context;
+	}
+
+	/**
+	 * Starts the TclRegaScriptClient.
+	 */
+	public void start() throws CcuClientException {
 		logger.info("Starting {}", TclRegaScriptClient.class.getSimpleName());
 
 		tclregaScripts = loadTclRegaScripts();
@@ -80,7 +88,7 @@ public class TclRegaScriptClient {
 	}
 
 	/**
-	 * Destroys the client.
+	 * Destroys the TclRegaScriptClient.
 	 */
 	public void shutdown() {
 		tclregaScripts = null;
@@ -146,31 +154,53 @@ public class TclRegaScriptClient {
 	}
 
 	/**
-	 * Sends a message and/or sets properties for the display of a 19 key Homematic remote control.
-	 * Used in the Homematic action.
+	 * Sends a message and sets properties for the display of a 19 key Homematic
+	 * remote control. Used in the Homematic action.
 	 */
-	public void setRemoteControlDisplay(String remoteDisplayAddress, String text, int unit, int backlight, int beep)
-			throws Exception {
-		HmResult result = sendScriptByName("setRemoteControl", HmResult.class, new String[] { "remote_address",
-				"text_value", "unit_value", "backlight_value", "beep_value" }, new String[] { remoteDisplayAddress,
-				text, String.valueOf(unit), String.valueOf(backlight), String.valueOf(beep) });
+	public void setRemoteControlDisplay(String remoteControlAddress, String text, String options)
+			throws CcuClientException {
+
+		RemoteControlOptionParser rcParameterParser = new RemoteControlOptionParser();
+		HmRemoteControlOptions rco = rcParameterParser.parse(remoteControlAddress, options);
+		rco.setText(text);
+
+		logger.debug("Sending to remote control {}: {}", remoteControlAddress, rco);
+
+		HmResult result = sendScriptByName("setRemoteControlDisplay", HmResult.class, new String[] { "remote_address",
+				"text", "beep_value", "backlight_value", "unit_value", "symbols" },
+				new String[] { remoteControlAddress, rco.getText(), rco.getBeepAsString(), rco.getBacklightAsString(),
+						rco.getUnitAsString(), StringUtils.join(rco.getSymbols(), "\t") });
 
 		if (!result.isValid()) {
-			throw new CcuClientException("Failed to set RemoteControl with address " + remoteDisplayAddress);
+			throw new CcuClientException("Failed to set remote control with address " + remoteControlAddress);
 		}
 	}
 
+	/**
+	 * Returns true, if the client is started.
+	 */
+	public boolean isStarted() {
+		return tclregaScripts != null;
+	}
+
 	private <T> T sendScriptByName(String scriptName, Class<T> clazz) throws CcuClientException {
-		return sendScript(tclregaScripts.get(scriptName), clazz);
+		return sendScript(getTclRegaScript(scriptName), clazz);
 	}
 
 	private <T> T sendScriptByName(String scriptName, Class<T> clazz, String[] variableNames, String[] values)
 			throws CcuClientException {
-		String script = tclregaScripts.get(scriptName);
+		String script = getTclRegaScript(scriptName);
 		for (int i = 0; i < variableNames.length; i++) {
 			script = StringUtils.replace(script, "{" + variableNames[i] + "}", values[i]);
 		}
 		return sendScript(script, clazz);
+	}
+
+	private String getTclRegaScript(String scriptName) throws CcuClientException {
+		if (! isStarted()) {
+			throw new CcuClientException(TclRegaScriptClient.class.getSimpleName() + " is not configured!");
+		}
+		return tclregaScripts.get(scriptName);
 	}
 
 	/**
@@ -188,7 +218,7 @@ public class TclRegaScriptClient {
 				logger.trace("TclRegaScript: {}", script);
 			}
 
-			post = new PostMethod(config.getTclRegaUrl());
+			post = new PostMethod(context.getConfig().getTclRegaUrl());
 			RequestEntity re = new ByteArrayRequestEntity(script.getBytes("ISO-8859-1"));
 			post.setRequestEntity(re);
 			httpClient.executeMethod(post);
@@ -214,7 +244,7 @@ public class TclRegaScriptClient {
 	/**
 	 * Load predefined scripts from an XML file.
 	 */
-	private Map<String, String> loadTclRegaScripts() {
+	private Map<String, String> loadTclRegaScripts() throws CcuClientException {
 		try {
 			Unmarshaller um = JAXBContext.newInstance(TclScripts.class).createUnmarshaller();
 			InputStream stream = Thread.currentThread().getContextClassLoader()
@@ -227,7 +257,7 @@ public class TclRegaScriptClient {
 			}
 			return result;
 		} catch (JAXBException ex) {
-			throw new RuntimeException(ex.getMessage(), ex);
+			throw new CcuClientException(ex.getMessage(), ex);
 		}
 	}
 

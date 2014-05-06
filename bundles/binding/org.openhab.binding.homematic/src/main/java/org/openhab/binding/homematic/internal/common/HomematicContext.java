@@ -11,6 +11,8 @@ package org.openhab.binding.homematic.internal.common;
 import java.util.Collection;
 
 import org.openhab.binding.homematic.HomematicBindingProvider;
+import org.openhab.binding.homematic.internal.communicator.CcuStateHolder;
+import org.openhab.binding.homematic.internal.communicator.client.TclRegaScriptClient;
 import org.openhab.binding.homematic.internal.converter.ConverterFactory;
 import org.openhab.core.events.EventPublisher;
 
@@ -25,6 +27,8 @@ public class HomematicContext {
 	private Collection<HomematicBindingProvider> providers;
 	private HomematicConfig config = new HomematicConfig();
 	private ConverterFactory converterFactory = new ConverterFactory();
+	private TclRegaScriptClient tclRegaScriptClient;
+	private CcuStateHolder stateHolder;
 
 	private static HomematicContext instance;
 
@@ -37,6 +41,8 @@ public class HomematicContext {
 	public static HomematicContext getInstance() {
 		if (instance == null) {
 			instance = new HomematicContext();
+			instance.tclRegaScriptClient = new TclRegaScriptClient(instance);
+			instance.stateHolder = new CcuStateHolder(instance);
 		}
 		return instance;
 	}
@@ -81,5 +87,19 @@ public class HomematicContext {
 	 */
 	public ConverterFactory getConverterFactory() {
 		return converterFactory;
+	}
+
+	/**
+	 * Returns the TclRegaScriptClient.
+	 */
+	public TclRegaScriptClient getTclRegaScriptClient() {
+		return tclRegaScriptClient;
+	}
+
+	/**
+	 * Returns the CcuStateHolder.
+	 */
+	public CcuStateHolder getStateHolder() {
+		return stateHolder;
 	}
 }

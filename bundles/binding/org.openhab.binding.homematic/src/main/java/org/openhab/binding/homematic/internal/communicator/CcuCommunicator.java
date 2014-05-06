@@ -14,7 +14,6 @@ import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.ProviderItemIterator.ProviderItemIteratorCallback;
 import org.openhab.binding.homematic.internal.communicator.client.BinRpcClient;
 import org.openhab.binding.homematic.internal.communicator.client.CcuClientException;
-import org.openhab.binding.homematic.internal.communicator.client.TclRegaScriptClient;
 import org.openhab.binding.homematic.internal.communicator.client.XmlRpcClient;
 import org.openhab.binding.homematic.internal.communicator.server.BinRpcCallbackServer;
 import org.openhab.binding.homematic.internal.communicator.server.XmlRpcCallbackServer;
@@ -51,8 +50,6 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 
 	private CcuCallbackServer ccuCallbackServer;
 	private CcuClient ccuClient;
-	private TclRegaScriptClient tclRegaScriptClient;
-	private CcuStateHolder stateHolder;
 	private ItemDisabler itemDisabler;
 
 	private long lastEventTime = System.currentTimeMillis();
@@ -67,12 +64,11 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 				boolean isBinRpc = context.getConfig().isBinRpc();
 				ccuCallbackServer = isBinRpc ? new BinRpcCallbackServer(this) : new XmlRpcCallbackServer(this);
 
-				tclRegaScriptClient = new TclRegaScriptClient();
-				stateHolder = new CcuStateHolder(tclRegaScriptClient);
-				stateHolder.loadDatapoints();
-				stateHolder.loadVariables();
+				context.getTclRegaScriptClient().start();
+				context.getStateHolder().loadDatapoints();
+				context.getStateHolder().loadVariables();
 
-				itemDisabler = new ItemDisabler(stateHolder);
+				itemDisabler = new ItemDisabler();
 				itemDisabler.start();
 				newDevicesCounter = 0;
 
@@ -101,7 +97,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 			@Override
 			public void run() {
 				logger.debug("Initial CCU datapoints reload");
-				stateHolder.reloadDatapoints();
+				context.getStateHolder().reloadDatapoints();
 			}
 		}, 60000);
 	}
@@ -123,12 +119,12 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 						// ignore
 					}
 				}
-				tclRegaScriptClient.shutdown();
+				context.getTclRegaScriptClient().shutdown();
 				if (itemDisabler != null) {
 					itemDisabler.stop();
 				}
-				if (stateHolder != null) {
-					stateHolder.destroy();
+				if (context.getStateHolder() != null) {
+					context.getStateHolder().destroy();
 				}
 			} finally {
 				ccuCallbackServer = null;
@@ -150,11 +146,11 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 
 		final Event event = new Event(bindingConfig, value);
 
-		if (stateHolder.isDatapointReloadInProgress()) {
-			stateHolder.addToRefreshCache(event.getBindingConfig(), event.getNewValue());
+		if (context.getStateHolder().isDatapointReloadInProgress()) {
+			context.getStateHolder().addToRefreshCache(event.getBindingConfig(), event.getNewValue());
 		}
 
-		event.setHmValueItem(stateHolder.getState(event.getBindingConfig()));
+		event.setHmValueItem(context.getStateHolder().getState(event.getBindingConfig()));
 		if (event.getHmValueItem() != null) {
 			event.getHmValueItem().setValue(event.getNewValue());
 
@@ -183,7 +179,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 	 * file is reloaded. Publishes the current States to openHAB.
 	 */
 	public void publishChangedItemToOpenhab(Item item, HomematicBindingConfig bindingConfig) {
-		HmValueItem hmValueItem = stateHolder.getState(bindingConfig);
+		HmValueItem hmValueItem = context.getStateHolder().getState(bindingConfig);
 		if (hmValueItem != null) {
 			Converter<?> converter = context.getConverterFactory().createConverter(item, bindingConfig);
 			if (converter != null) {
@@ -224,7 +220,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 				executeProgram(event);
 			}
 		} else {
-			event.setHmValueItem(stateHolder.getState(event.getBindingConfig()));
+			event.setHmValueItem(context.getStateHolder().getState(event.getBindingConfig()));
 
 			if (event.getHmValueItem() == null) {
 				logger.warn("Can't find {}, value is not published to CCU!", event.getBindingConfig());
@@ -252,8 +248,8 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 					}
 				} catch (Exception ex) {
 					logger.error(ex.getMessage(), ex);
-					stateHolder.reloadDatapoints();
-					stateHolder.reloadVariables();
+					context.getStateHolder().reloadDatapoints();
+					context.getStateHolder().reloadVariables();
 				}
 			}
 		}
@@ -279,7 +275,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 
 		else {
 			if (event.isVariable()) {
-				tclRegaScriptClient.setVariable(event.getHmValueItem(), event.getNewValue());
+				context.getTclRegaScriptClient().setVariable(event.getHmValueItem(), event.getNewValue());
 			} else {
 				ccuClient.setDatapointValue((HmDatapoint) event.getHmValueItem(), event.getHmValueItem().getName(),
 						event.getNewValue());
@@ -313,7 +309,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 	 */
 	private void executeProgram(Event event) {
 		try {
-			tclRegaScriptClient.executeProgram(((ProgramConfig) event.getBindingConfig()).getName());
+			context.getTclRegaScriptClient().executeProgram(((ProgramConfig) event.getBindingConfig()).getName());
 		} catch (CcuClientException ex) {
 			logger.error(ex.getMessage(), ex);
 		} finally {
@@ -327,9 +323,9 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 	private void executeBindingAction(HomematicBindingConfig bindingConfig) {
 		if (bindingConfig.getAction() != null) {
 			if (bindingConfig.getAction() == BindingAction.RELOAD_VARIABLES) {
-				stateHolder.reloadVariables();
+				context.getStateHolder().reloadVariables();
 			} else if (bindingConfig.getAction() == BindingAction.RELOAD_DATAPOINTS) {
-				stateHolder.reloadDatapoints();
+				context.getStateHolder().reloadDatapoints();
 			} else {
 				logger.warn("Unknown action {}", bindingConfig.getAction());
 			}
@@ -349,7 +345,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 		// prevent from duplicate loading at startup
 		if (newDevicesCounter > 2) {
 			logger.info("New device(s) detected, refreshing datapoints");
-			stateHolder.reloadDatapoints();
+			context.getStateHolder().reloadDatapoints();
 		}
 	}
 
