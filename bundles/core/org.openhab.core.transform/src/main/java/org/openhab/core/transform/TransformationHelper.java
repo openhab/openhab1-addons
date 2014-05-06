@@ -9,6 +9,8 @@
 package org.openhab.core.transform;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -20,6 +22,8 @@ public class TransformationHelper {
 
 	private static Logger logger = LoggerFactory.getLogger(TransformationHelper.class);
 
+	private static Map<String, TransformationService> cachedServices = new ConcurrentHashMap<String, TransformationService>();
+	
 	/**
 	 * Queries the OSGi service registry for a service that provides a transformation service of
 	 * a given transformation type (e.g. REGEX, XSLT, etc.)
@@ -28,12 +32,19 @@ public class TransformationHelper {
 	 * @return a service instance or null, if none could be found
 	 */
 	static public TransformationService getTransformationService(BundleContext context, String transformationType) {
+		
+		if (cachedServices.containsKey(transformationType)) {
+			return cachedServices.get(transformationType);
+		}
+		
 		if(context!=null) {
 			String filter = "(openhab.transform=" + transformationType + ")";
 			try {
 				Collection<ServiceReference<TransformationService>> refs = context.getServiceReferences(TransformationService.class, filter);
 				if(refs!=null && refs.size() > 0) {
-					return (TransformationService) context.getService(refs.iterator().next());
+					TransformationService service = (TransformationService) context.getService(refs.iterator().next());
+					cachedServices.put(transformationType, service);
+					return service;
 				} else {
 					logger.warn("Cannot get service reference for transformation service of type " + transformationType);
 				}
