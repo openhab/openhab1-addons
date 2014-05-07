@@ -124,6 +124,15 @@ foreach (dev_id, root.Devices().EnumUsedIDs()) {
         Write("' writeable='false'");
         Write(" />\n");
       }
+      object press_cont = channel_obj.DPByHssDP("PRESS_CONT");
+      if (press_cont) {
+        Write("      <datapoint");
+        Write(" name='PRESS_CONT'")
+        Write(" value='false'");
+        Write(" valueType='" # press_cont.ValueType());
+        Write("' writeable='false'");
+        Write(" />\n");
+      }
 
       foreach(dp_id, channel_obj.DPs().EnumUsedIDs()) {
         object dp_obj = dom.GetObject(dp_id);
