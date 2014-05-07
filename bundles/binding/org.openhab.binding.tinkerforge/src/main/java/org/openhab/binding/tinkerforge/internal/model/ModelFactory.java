@@ -428,6 +428,33 @@ public interface ModelFactory extends EFactory
   AmbientTemperature createAmbientTemperature();
 
   /**
+   * Returns a new object of class '<em>MBricklet Tilt</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Tilt</em>'.
+   * @generated
+   */
+  MBrickletTilt createMBrickletTilt();
+
+  /**
+   * Returns a new object of class '<em>Tilt Switch</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Tilt Switch</em>'.
+   * @generated
+   */
+  TiltSwitch createTiltSwitch();
+
+  /**
+   * Returns a new object of class '<em>Tilt Sensor</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Tilt Sensor</em>'.
+   * @generated
+   */
+  TiltSensor createTiltSensor();
+
+  /**
    * Returns a new object of class '<em>MBricklet Voltage Current</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

@@ -372,6 +372,26 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createAmbientTemperatureAdapter();
       }
       @Override
+      public Adapter caseMBrickletTilt(MBrickletTilt object)
+      {
+        return createMBrickletTiltAdapter();
+      }
+      @Override
+      public Adapter caseTiltDevice(TiltDevice object)
+      {
+        return createTiltDeviceAdapter();
+      }
+      @Override
+      public Adapter caseTiltSwitch(TiltSwitch object)
+      {
+        return createTiltSwitchAdapter();
+      }
+      @Override
+      public Adapter caseTiltSensor(TiltSensor object)
+      {
+        return createTiltSensorAdapter();
+      }
+      @Override
       public Adapter caseMBrickletVoltageCurrent(MBrickletVoltageCurrent object)
       {
         return createMBrickletVoltageCurrentAdapter();
@@ -1494,6 +1514,66 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createAmbientTemperatureAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletTilt <em>MBricklet Tilt</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletTilt
+   * @generated
+   */
+  public Adapter createMBrickletTiltAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.TiltDevice <em>Tilt Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.TiltDevice
+   * @generated
+   */
+  public Adapter createTiltDeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.TiltSwitch <em>Tilt Switch</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.TiltSwitch
+   * @generated
+   */
+  public Adapter createTiltSwitchAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.TiltSensor <em>Tilt Sensor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.TiltSensor
+   * @generated
+   */
+  public Adapter createTiltSensorAdapter()
   {
     return null;
   }

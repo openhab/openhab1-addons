@@ -37,6 +37,7 @@ import com.tinkerforge.BrickletSoundIntensity
 import com.tinkerforge.BrickletMoisture
 import com.tinkerforge.BrickletDistanceUS
 import com.tinkerforge.BrickletVoltageCurrent
+import com.tinkerforge.BrickletTilt
 import java.math.BigDecimal
 
 /**
@@ -73,6 +74,7 @@ type TinkerBrickletSoundIntensity wraps BrickletSoundIntensity
 type TinkerBrickletMoisture wraps BrickletMoisture
 type TinkerBrickletDistanceUS wraps BrickletDistanceUS
 type TinkerBrickletVoltageCurrent wraps BrickletVoltageCurrent
+type TinkerBrickletTilt wraps BrickletTilt
 type Enum wraps Enum
 
 class Ecosystem {
@@ -290,7 +292,8 @@ class Proximity extends MultiTouchDevice {
     readonly String deviceType = "proximity"
 }
 
-class MBrickletMotionDetector extends MDevice<TinkerBrickletMotionDetector>, MSensor<DigitalValue>{
+class MBrickletMotionDetector extends MDevice<TinkerBrickletMotionDetector>,
+                 MSensor<DigitalValue>{
     readonly String deviceType = "motion_detector"
     op void init(){}
 }
@@ -376,6 +379,26 @@ class ObjectTemperature extends MTemperatureIRDevice,
 class AmbientTemperature extends MTemperatureIRDevice, 
         MTFConfigConsumer<TFBaseConfiguration>{
     readonly String deviceType = "ambient_temperature"
+}
+
+class MBrickletTilt extends MDevice<TinkerBrickletTilt>,
+    MSubDeviceHolder<TiltDevice>, MTFConfigConsumer<TFConfig>,
+    CallbackListener{
+    readonly String deviceType = "bricklet_tilt"
+    BigDecimal threshold = "10"
+}
+
+interface TiltDevice extends MSubDevice<MBrickletTilt>
+{
+    
+}
+
+class TiltSwitch extends TiltDevice, MSensor<DigitalValue>{
+    readonly String deviceType = "tilt_switch"
+}
+
+class TiltSensor extends TiltDevice, MSensor<MDecimalValue> {
+    readonly String deviceType = "tilt_sensor"
 }
 
 class MBrickletVoltageCurrent extends MDevice<TinkerBrickletVoltageCurrent>,

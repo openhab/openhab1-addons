@@ -189,7 +189,7 @@ public class TinkerforgeBinding extends
 		bricklet_multitouch, electrode, proximity, object_temperature, ambient_temperature, 
 		bricklet_temperatureIR, bricklet_soundintensity, bricklet_moisture,
 		bricklet_distanceUS, bricklet_voltageCurrent, voltageCurrent_voltage,
-		voltageCurrent_current, voltageCurrent_power
+		voltageCurrent_current, voltageCurrent_power, bricklet_tilt
 	}
 	
 	public TinkerforgeBinding() {
@@ -972,7 +972,8 @@ public class TinkerforgeBinding extends
 				|| deviceType.equals(TypeKey.bricklet_soundintensity.name())
 				|| deviceType.equals(TypeKey.voltageCurrent_voltage.name())
 				|| deviceType.equals(TypeKey.voltageCurrent_current.name())
-				|| deviceType.equals(TypeKey.voltageCurrent_power.name()))
+				|| deviceType.equals(TypeKey.voltageCurrent_power.name())
+				|| deviceType.equals(TypeKey.bricklet_tilt.name()))
 		{
 			logger.debug("{} setting base config",
 					LoggerConstants.CONFIG);

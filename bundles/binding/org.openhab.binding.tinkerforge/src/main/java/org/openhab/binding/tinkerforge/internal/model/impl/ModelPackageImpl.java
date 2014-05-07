@@ -63,6 +63,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTilt;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
 import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
@@ -116,6 +117,9 @@ import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfigu
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
+import org.openhab.binding.tinkerforge.internal.model.TiltDevice;
+import org.openhab.binding.tinkerforge.internal.model.TiltSensor;
+import org.openhab.binding.tinkerforge.internal.model.TiltSwitch;
 import org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent;
 import org.openhab.binding.tinkerforge.internal.model.VCDevicePower;
 import org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage;
@@ -146,6 +150,7 @@ import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
+import com.tinkerforge.BrickletTilt;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
@@ -597,6 +602,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass mBrickletTiltEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass tiltDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass tiltSwitchEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass tiltSensorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass mBrickletVoltageCurrentEClass = null;
 
   /**
@@ -990,6 +1023,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletVoltageCurrentEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletTiltEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -3391,6 +3431,86 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getMBrickletTilt()
+  {
+    return mBrickletTiltEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletTilt_DeviceType()
+  {
+    return (EAttribute)mBrickletTiltEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletTilt_Threshold()
+  {
+    return (EAttribute)mBrickletTiltEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getTiltDevice()
+  {
+    return tiltDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getTiltSwitch()
+  {
+    return tiltSwitchEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTiltSwitch_DeviceType()
+  {
+    return (EAttribute)tiltSwitchEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getTiltSensor()
+  {
+    return tiltSensorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getTiltSensor_DeviceType()
+  {
+    return (EAttribute)tiltSensorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMBrickletVoltageCurrent()
   {
     return mBrickletVoltageCurrentEClass;
@@ -4461,6 +4581,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletTilt()
+  {
+    return tinkerBrickletTiltEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getEnum()
   {
     return enumEDataType;
@@ -4747,6 +4877,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ambientTemperatureEClass = createEClass(AMBIENT_TEMPERATURE);
     createEAttribute(ambientTemperatureEClass, AMBIENT_TEMPERATURE__DEVICE_TYPE);
 
+    mBrickletTiltEClass = createEClass(MBRICKLET_TILT);
+    createEAttribute(mBrickletTiltEClass, MBRICKLET_TILT__DEVICE_TYPE);
+    createEAttribute(mBrickletTiltEClass, MBRICKLET_TILT__THRESHOLD);
+
+    tiltDeviceEClass = createEClass(TILT_DEVICE);
+
+    tiltSwitchEClass = createEClass(TILT_SWITCH);
+    createEAttribute(tiltSwitchEClass, TILT_SWITCH__DEVICE_TYPE);
+
+    tiltSensorEClass = createEClass(TILT_SENSOR);
+    createEAttribute(tiltSensorEClass, TILT_SENSOR__DEVICE_TYPE);
+
     mBrickletVoltageCurrentEClass = createEClass(MBRICKLET_VOLTAGE_CURRENT);
     createEAttribute(mBrickletVoltageCurrentEClass, MBRICKLET_VOLTAGE_CURRENT__DEVICE_TYPE);
     createEAttribute(mBrickletVoltageCurrentEClass, MBRICKLET_VOLTAGE_CURRENT__AVERAGING);
@@ -4950,6 +5092,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletMoistureEDataType = createEDataType(TINKER_BRICKLET_MOISTURE);
     tinkerBrickletDistanceUSEDataType = createEDataType(TINKER_BRICKLET_DISTANCE_US);
     tinkerBrickletVoltageCurrentEDataType = createEDataType(TINKER_BRICKLET_VOLTAGE_CURRENT);
+    tinkerBrickletTiltEDataType = createEDataType(TINKER_BRICKLET_TILT);
     enumEDataType = createEDataType(ENUM);
   }
 
@@ -5280,6 +5423,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getTFBaseConfiguration());
     g1.getETypeArguments().add(g2);
     ambientTemperatureEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletTilt());
+    g1.getETypeArguments().add(g2);
+    mBrickletTiltEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getTiltDevice());
+    g1.getETypeArguments().add(g2);
+    mBrickletTiltEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFConfig());
+    g1.getETypeArguments().add(g2);
+    mBrickletTiltEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
+    mBrickletTiltEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletTilt());
+    g1.getETypeArguments().add(g2);
+    tiltDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getTiltDevice());
+    tiltSwitchEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getDigitalValue());
+    g1.getETypeArguments().add(g2);
+    tiltSwitchEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getTiltDevice());
+    tiltSensorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    tiltSensorEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletVoltageCurrent());
     g1.getETypeArguments().add(g2);
@@ -5700,6 +5873,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(ambientTemperatureEClass, AmbientTemperature.class, "AmbientTemperature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAmbientTemperature_DeviceType(), theEcorePackage.getEString(), "deviceType", "ambient_temperature", 0, 1, AmbientTemperature.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(mBrickletTiltEClass, MBrickletTilt.class, "MBrickletTilt", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletTilt_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_tilt", 0, 1, MBrickletTilt.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickletTilt_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "10", 0, 1, MBrickletTilt.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tiltDeviceEClass, TiltDevice.class, "TiltDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(tiltSwitchEClass, TiltSwitch.class, "TiltSwitch", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTiltSwitch_DeviceType(), theEcorePackage.getEString(), "deviceType", "tilt_switch", 0, 1, TiltSwitch.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(tiltSensorEClass, TiltSensor.class, "TiltSensor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTiltSensor_DeviceType(), theEcorePackage.getEString(), "deviceType", "tilt_sensor", 0, 1, TiltSensor.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(mBrickletVoltageCurrentEClass, MBrickletVoltageCurrent.class, "MBrickletVoltageCurrent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletVoltageCurrent_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_voltageCurrent", 0, 1, MBrickletVoltageCurrent.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletVoltageCurrent_Averaging(), theEcorePackage.getEShortObject(), "averaging", "3", 0, 1, MBrickletVoltageCurrent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -6025,6 +6210,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletMoistureEDataType, BrickletMoisture.class, "TinkerBrickletMoisture", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletDistanceUSEDataType, BrickletDistanceUS.class, "TinkerBrickletDistanceUS", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletVoltageCurrentEDataType, BrickletVoltageCurrent.class, "TinkerBrickletVoltageCurrent", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletTiltEDataType, BrickletTilt.class, "TinkerBrickletTilt", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource

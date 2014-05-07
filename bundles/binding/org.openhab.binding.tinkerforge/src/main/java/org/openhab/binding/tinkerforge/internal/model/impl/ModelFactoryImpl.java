@@ -89,6 +89,7 @@ import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
+import com.tinkerforge.BrickletTilt;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
@@ -174,6 +175,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_TEMPERATURE_IR: return createMBrickletTemperatureIR();
       case ModelPackage.OBJECT_TEMPERATURE: return createObjectTemperature();
       case ModelPackage.AMBIENT_TEMPERATURE: return createAmbientTemperature();
+      case ModelPackage.MBRICKLET_TILT: return createMBrickletTilt();
+      case ModelPackage.TILT_SWITCH: return createTiltSwitch();
+      case ModelPackage.TILT_SENSOR: return createTiltSensor();
       case ModelPackage.MBRICKLET_VOLTAGE_CURRENT: return createMBrickletVoltageCurrent();
       case ModelPackage.VC_DEVICE_VOLTAGE: return createVCDeviceVoltage();
       case ModelPackage.VC_DEVICE_CURRENT: return createVCDeviceCurrent();
@@ -306,6 +310,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletDistanceUSFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_VOLTAGE_CURRENT:
         return createTinkerBrickletVoltageCurrentFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_TILT:
+        return createTinkerBrickletTiltFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -407,6 +413,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletDistanceUSToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_VOLTAGE_CURRENT:
         return convertTinkerBrickletVoltageCurrentToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_TILT:
+        return convertTinkerBrickletTiltToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -897,6 +905,39 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     AmbientTemperatureImpl ambientTemperature = new AmbientTemperatureImpl();
     return ambientTemperature;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletTilt createMBrickletTilt()
+  {
+    MBrickletTiltImpl mBrickletTilt = new MBrickletTiltImpl();
+    return mBrickletTilt;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TiltSwitch createTiltSwitch()
+  {
+    TiltSwitchImpl tiltSwitch = new TiltSwitchImpl();
+    return tiltSwitch;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TiltSensor createTiltSensor()
+  {
+    TiltSensorImpl tiltSensor = new TiltSensorImpl();
+    return tiltSensor;
   }
 
   /**
@@ -1899,6 +1940,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletVoltageCurrentToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletTilt createTinkerBrickletTiltFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletTilt)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletTiltToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

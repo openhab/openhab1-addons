@@ -62,6 +62,7 @@ import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
+import com.tinkerforge.BrickletTilt;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.IPConnection;
 import com.tinkerforge.NotConnectedException;
@@ -855,6 +856,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletVoltageCurrent");
               mDevice = factory.createMBrickletVoltageCurrent();
               mDevice.setDeviceIdentifier(BrickletVoltageCurrent.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletTilt.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletTilt");
+              mDevice = factory.createMBrickletTilt();
+              mDevice.setDeviceIdentifier(BrickletTilt.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

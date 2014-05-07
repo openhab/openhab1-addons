@@ -608,6 +608,49 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_TILT:
+      {
+        MBrickletTilt mBrickletTilt = (MBrickletTilt)theEObject;
+        T result = caseMBrickletTilt(mBrickletTilt);
+        if (result == null) result = caseMDevice(mBrickletTilt);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletTilt);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletTilt);
+        if (result == null) result = caseCallbackListener(mBrickletTilt);
+        if (result == null) result = caseMBaseDevice(mBrickletTilt);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TILT_DEVICE:
+      {
+        TiltDevice tiltDevice = (TiltDevice)theEObject;
+        T result = caseTiltDevice(tiltDevice);
+        if (result == null) result = caseMSubDevice(tiltDevice);
+        if (result == null) result = caseMBaseDevice(tiltDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TILT_SWITCH:
+      {
+        TiltSwitch tiltSwitch = (TiltSwitch)theEObject;
+        T result = caseTiltSwitch(tiltSwitch);
+        if (result == null) result = caseTiltDevice(tiltSwitch);
+        if (result == null) result = caseMSensor(tiltSwitch);
+        if (result == null) result = caseMSubDevice(tiltSwitch);
+        if (result == null) result = caseMBaseDevice(tiltSwitch);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TILT_SENSOR:
+      {
+        TiltSensor tiltSensor = (TiltSensor)theEObject;
+        T result = caseTiltSensor(tiltSensor);
+        if (result == null) result = caseTiltDevice(tiltSensor);
+        if (result == null) result = caseMSensor(tiltSensor);
+        if (result == null) result = caseMSubDevice(tiltSensor);
+        if (result == null) result = caseMBaseDevice(tiltSensor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_VOLTAGE_CURRENT:
       {
         MBrickletVoltageCurrent mBrickletVoltageCurrent = (MBrickletVoltageCurrent)theEObject;
@@ -1939,6 +1982,70 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseAmbientTemperature(AmbientTemperature object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Tilt</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Tilt</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletTilt(MBrickletTilt object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Tilt Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Tilt Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTiltDevice(TiltDevice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Tilt Switch</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Tilt Switch</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTiltSwitch(TiltSwitch object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Tilt Sensor</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Tilt Sensor</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTiltSensor(TiltSensor object)
   {
     return null;
   }
