@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -32,6 +33,10 @@ public class TransformationHelper {
 	 * @return a service instance or null, if none could be found
 	 */
 	static public TransformationService getTransformationService(BundleContext context, String transformationType) {
+		
+		if (StringUtils.isBlank(transformationType)) {
+			return null;
+		}
 		
 		if (cachedServices.containsKey(transformationType)) {
 			return cachedServices.get(transformationType);
