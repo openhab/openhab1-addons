@@ -235,7 +235,7 @@ public class VCDevicePowerImpl extends MinimalEObjectImpl.Container implements V
    * @generated
    * @ordered
    */
-  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("0.1");
+  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("50");
 
   /**
    * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.

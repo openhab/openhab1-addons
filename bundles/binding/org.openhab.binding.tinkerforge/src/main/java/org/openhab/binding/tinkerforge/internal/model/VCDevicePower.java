@@ -42,7 +42,7 @@ public interface VCDevicePower extends VoltageCurrentDevice
 
   /**
    * Returns the value of the '<em><b>Threshold</b></em>' attribute.
-   * The default value is <code>"0.1"</code>.
+   * The default value is <code>"50"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Threshold</em>' attribute isn't clear,
@@ -52,7 +52,7 @@ public interface VCDevicePower extends VoltageCurrentDevice
    * @return the value of the '<em>Threshold</em>' attribute.
    * @see #setThreshold(BigDecimal)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getVCDevicePower_Threshold()
-   * @model default="0.1" unique="false"
+   * @model default="50" unique="false"
    * @generated
    */
   BigDecimal getThreshold();

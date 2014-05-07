@@ -394,17 +394,17 @@ interface VoltageCurrentDevice extends MSensor<MDecimalValue>,
 
 class VCDeviceVoltage extends VoltageCurrentDevice {
     readonly String deviceType = "voltageCurrent_voltage"
-    BigDecimal threshold = "0.1"
+    BigDecimal threshold = "20"
 }
 
 class VCDeviceCurrent extends VoltageCurrentDevice {
     readonly String deviceType = "voltageCurrent_current"
-    BigDecimal threshold = "0.1"
+    BigDecimal threshold = "10"
 }
 
 class VCDevicePower extends VoltageCurrentDevice {
     readonly String deviceType = "voltageCurrent_power"
-    BigDecimal threshold = "0.1"
+    BigDecimal threshold = "50"
 }
 
 class MBrickletBarometer extends MDevice<MTinkerBrickletBarometer>, 

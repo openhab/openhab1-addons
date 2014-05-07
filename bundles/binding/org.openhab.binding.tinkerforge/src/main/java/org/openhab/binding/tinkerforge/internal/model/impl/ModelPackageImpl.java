@@ -5711,15 +5711,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(vcDeviceVoltageEClass, VCDeviceVoltage.class, "VCDeviceVoltage", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVCDeviceVoltage_DeviceType(), theEcorePackage.getEString(), "deviceType", "voltageCurrent_voltage", 0, 1, VCDeviceVoltage.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getVCDeviceVoltage_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.1", 0, 1, VCDeviceVoltage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVCDeviceVoltage_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "20", 0, 1, VCDeviceVoltage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(vcDeviceCurrentEClass, VCDeviceCurrent.class, "VCDeviceCurrent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVCDeviceCurrent_DeviceType(), theEcorePackage.getEString(), "deviceType", "voltageCurrent_current", 0, 1, VCDeviceCurrent.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getVCDeviceCurrent_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.1", 0, 1, VCDeviceCurrent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVCDeviceCurrent_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "10", 0, 1, VCDeviceCurrent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(vcDevicePowerEClass, VCDevicePower.class, "VCDevicePower", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVCDevicePower_DeviceType(), theEcorePackage.getEString(), "deviceType", "voltageCurrent_power", 0, 1, VCDevicePower.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getVCDevicePower_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0.1", 0, 1, VCDevicePower.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVCDevicePower_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "50", 0, 1, VCDevicePower.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mBrickletBarometerEClass, MBrickletBarometer.class, "MBrickletBarometer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletBarometer_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_barometer", 0, 1, MBrickletBarometer.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
