@@ -60,18 +60,18 @@ public class SqueezeServer implements ManagedService {
 	// the value by which the volume is changed by each INCREASE or DECREASE-Event 
 	private static final int VOLUME_CHANGE_SIZE = 5;
 	
-	// connection properties and client socket
+	// connection properties
     private String host;
     private int cliPort;
     private int webPort;
+    
+    // client socket and listener thread
     private Socket clientSocket;
+    private SqueezeServerListener listener;
 
     // configured players - keyed by playerId and MAC address
 	private final Map<String, SqueezePlayer> playersById = new ConcurrentHashMap<String, SqueezePlayer>();
 	private final Map<String, SqueezePlayer> playersByMacAddress = new ConcurrentHashMap<String, SqueezePlayer>();
-    
-    // listener thread for processing server messages
-    private final SqueezeServerListener listener = new SqueezeServerListener();
     
     public synchronized boolean isConnected() {
   		if (clientSocket == null)
@@ -251,7 +251,7 @@ public class SqueezeServer implements ManagedService {
 	private synchronized void sendCommand(String command) {
 		if (!isConnected()) {
 			logger.debug("No connection to SqueezeServer, will attempt to reconnect now...");
-			reconnect();
+			connect();
 			if (!isConnected()) {
 				logger.error("Failed to reconnect to SqueezeServer, unable to send command {}", command);
 				return;
@@ -269,12 +269,10 @@ public class SqueezeServer implements ManagedService {
 	
 	@Override
 	public synchronized void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {        
-		if (config == null || config.isEmpty()) {
-			logger.warn("Empty or null configuration. Ignoring.");            	
-			return;
-		}
-        
+			throws ConfigurationException {
+		// disconnect first in case the config has changed for an existing instance
+		disconnect();
+		
         host = null;
         cliPort = DEFAULT_CLI_PORT;
         webPort = DEFAULT_WEB_PORT;
@@ -282,6 +280,11 @@ public class SqueezeServer implements ManagedService {
         playersById.clear();
         playersByMacAddress.clear();
 		
+		if (config == null || config.isEmpty()) {
+			logger.warn("Empty or null configuration. Ignoring.");            	
+			return;
+		}
+        
         Enumeration<String> keys = config.keys();
         while (keys.hasMoreElements()) {
             
@@ -327,50 +330,44 @@ public class SqueezeServer implements ManagedService {
             throw new ConfigurationException("host", "No Squeezebox players specified - there must be at least one player");
         
         // attempt to connect using our new config
-        reconnect();
+        connect();
 	}
 
-	private void reconnect() {
-		disconnect();
-		connect();
-	}
-	
     private void connect() {
 		try {
 			clientSocket = new Socket(host, cliPort);
-	    	listener.start();
-			logger.info("Squeeze Server connection established.");
+			logger.debug("Client socket connection established.");
 		} catch (IOException e) {
-			logger.error("Failed to connect to SqueezeServer at " + host + ":" + cliPort, e);
+			logger.error("Failed to connect to the Squeeze Server at " + host + ":" + cliPort, e);
+			return;
+		}
+		
+		try {
+			listener = new SqueezeServerListener();
+	    	listener.start();
+			logger.debug("Listener thread started.");
+		} catch (IllegalThreadStateException e) {
+			logger.error("Failed to start the Squeeze Server listener thread", e);
+			return;
 		}        
+
+		logger.info("Squeeze Server connection started.");
     }
 
     private void disconnect() {
-		if (clientSocket == null)
-			return;
-
-		// close the client socket
+    	if (!isConnected())
+    		return;
+    	
 		try {
-		    clientSocket.close(); 
-			logger.debug("Client socket closed.");
-		} catch (IOException e) {
-			logger.error("Failed to disconnect cleanly from SqueezeServer at " + host + ":" + cliPort, e);			
-		} 
-
-		// shutdown the listener thread
-		if (listener != null) {
 			listener.setInterrupted(true);
-			listener.interrupt();
-			try {
-				listener.join();
-			} catch (InterruptedException e) {
-				// ignore
-			}
-			logger.debug("Listener thread stopped.");
+		    clientSocket.close(); 
+			logger.info("Squeeze Server connection stopped.");
+		} catch (IOException e) {
+			logger.error("Failed to disconnect from Squeeze Server at " + host + ":" + cliPort, e);			
+		} finally {
+			clientSocket = null;
+			listener = null;
 		}
-		
-		clientSocket = null;
-		logger.info("Squeeze Server connection stopped.");
     }
         
 	/**
