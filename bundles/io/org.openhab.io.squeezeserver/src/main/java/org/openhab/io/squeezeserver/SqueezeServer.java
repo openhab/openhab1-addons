@@ -336,7 +336,6 @@ public class SqueezeServer implements ManagedService {
     private void connect() {
 		try {
 			clientSocket = new Socket(host, cliPort);
-			logger.debug("Client socket connection established.");
 		} catch (IOException e) {
 			logger.error("Failed to connect to the Squeeze Server at " + host + ":" + cliPort, e);
 			return;
@@ -345,7 +344,6 @@ public class SqueezeServer implements ManagedService {
 		try {
 			listener = new SqueezeServerListener();
 	    	listener.start();
-			logger.debug("Listener thread started.");
 		} catch (IllegalThreadStateException e) {
 			logger.error("Failed to start the Squeeze Server listener thread", e);
 			return;
@@ -359,15 +357,17 @@ public class SqueezeServer implements ManagedService {
     		return;
     	
 		try {
-			listener.setInterrupted(true);
-		    clientSocket.close(); 
-			logger.info("Squeeze Server connection stopped.");
+			listener.terminate();
+			clientSocket.close(); 
 		} catch (IOException e) {
-			logger.error("Failed to disconnect from Squeeze Server at " + host + ":" + cliPort, e);			
+			logger.error("Error attempting to disconnect from Squeeze Server at " + host + ":" + cliPort, e);
+			return;
 		} finally {
 			clientSocket = null;
 			listener = null;
 		}
+
+		logger.info("Squeeze Server connection stopped.");
     }
         
 	/**
@@ -386,20 +386,21 @@ public class SqueezeServer implements ManagedService {
 	}
 	
 	private class SqueezeServerListener extends Thread {
-		private boolean interrupted = false;
+		private boolean terminate = false;
 		
 		public SqueezeServerListener() {
 			super("Squeeze Server Listener");
 		}
 
-		public void setInterrupted(boolean interrupted) {
-			this.interrupted = interrupted;
+		public void terminate() {
+			logger.warn("Squeeze Server listener being terminated");
+			this.terminate = true;
 		}
 
 		@Override
 		public void run() {
-			setInterrupted(false);
-			
+			logger.debug("Squeeze Server listener started.");
+
 			BufferedReader reader = null;			
 			try {
 				reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -408,7 +409,7 @@ public class SqueezeServer implements ManagedService {
 				sendCommand("listen 1");
 				
 				String message;
-				while (!interrupted && (message = reader.readLine()) != null) {
+				while (!terminate && (message = reader.readLine()) != null) {
 					logger.debug("Message received: {}", message);
 
 					if (message.startsWith("listen 1"))
@@ -421,17 +422,19 @@ public class SqueezeServer implements ManagedService {
 					}
 				}
 			} catch (IOException e) {
-				logger.error("Error while reading from Squeeze Server", e);
+				logger.error("Error in Squeeze Server listener", e);
 			} finally {
 				if (reader != null) {
 					try {
 						reader.close();
 					} catch (IOException e) {
-						logger.error("Error trying to close buffered reader, ignoring.");
+						// ignore
 					}
 					reader = null;
 				}
 			}
+			
+			logger.warn("Squeeze Server listener exiting.");
 		}
 
 		private String decode(String raw) {
