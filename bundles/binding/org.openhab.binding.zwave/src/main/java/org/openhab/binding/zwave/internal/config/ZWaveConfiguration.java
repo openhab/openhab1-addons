@@ -270,7 +270,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					Date lastDead = node.getDeadTime();
 					Long timeSinceLastDead = Long.MAX_VALUE;
 					if(lastDead != null) {
-						timeSinceLastDead = lastDead.getTime() - System.currentTimeMillis();
+						timeSinceLastDead = System.currentTimeMillis() - lastDead.getTime();
 					}
 					if(node.getDeadCount() > 0 && timeSinceLastDead < 86400000)
 						record.state = OpenHABConfigurationRecord.STATE.WARNING;
