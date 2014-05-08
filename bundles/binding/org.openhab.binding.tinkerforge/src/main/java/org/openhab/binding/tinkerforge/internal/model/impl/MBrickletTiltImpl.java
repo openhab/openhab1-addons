@@ -2,42 +2,31 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickletTilt;
-import com.tinkerforge.IPConnection;
-
 import java.lang.reflect.InvocationTargetException;
-
-import java.math.BigDecimal;
-import java.util.Collection;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
-import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.util.InternalEList;
-
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTilt;
-import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
-import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
-import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.TFConfig;
-import org.openhab.binding.tinkerforge.internal.model.TiltDevice;
-
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletTilt;
+import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -57,11 +46,8 @@ import org.slf4j.Logger;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTiltImpl#getDeviceIdentifier <em>Device Identifier</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTiltImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTiltImpl#getBrickd <em>Brickd</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTiltImpl#getMsubdevices <em>Msubdevices</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTiltImpl#getTfConfig <em>Tf Config</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTiltImpl#getCallbackPeriod <em>Callback Period</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTiltImpl#getSensorValue <em>Sensor Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTiltImpl#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTiltImpl#getThreshold <em>Threshold</em>}</li>
  * </ul>
  * </p>
  *
@@ -260,44 +246,14 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getMsubdevices() <em>Msubdevices</em>}' containment reference list.
+   * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getMsubdevices()
+   * @see #getSensorValue()
    * @generated
    * @ordered
    */
-  protected EList<TiltDevice> msubdevices;
-
-  /**
-   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTfConfig()
-   * @generated
-   * @ordered
-   */
-  protected TFConfig tfConfig;
-
-  /**
-   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
-
-  /**
-   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
+  protected DecimalValue sensorValue;
 
   /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -319,25 +275,7 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
    */
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
-  /**
-   * The default value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getThreshold()
-   * @generated
-   * @ordered
-   */
-  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("10");
-
-  /**
-   * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getThreshold()
-   * @generated
-   * @ordered
-   */
-  protected BigDecimal threshold = THRESHOLD_EDEFAULT;
+  private TiltStateListener listener;
 
   /**
    * <!-- begin-user-doc -->
@@ -640,13 +578,9 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<TiltDevice> getMsubdevices()
+  public DecimalValue getSensorValue()
   {
-    if (msubdevices == null)
-    {
-      msubdevices = new EObjectContainmentWithInverseEList<TiltDevice>(MSubDevice.class, this, ModelPackage.MBRICKLET_TILT__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
-    }
-    return msubdevices;
+    return sensorValue;
   }
 
   /**
@@ -654,70 +588,12 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
    * <!-- end-user-doc -->
    * @generated
    */
-  public TFConfig getTfConfig()
+  public void setSensorValue(DecimalValue newSensorValue)
   {
-    return tfConfig;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetTfConfig(TFConfig newTfConfig, NotificationChain msgs)
-  {
-    TFConfig oldTfConfig = tfConfig;
-    tfConfig = newTfConfig;
+    DecimalValue oldSensorValue = sensorValue;
+    sensorValue = newSensorValue;
     if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_TILT__TF_CONFIG, oldTfConfig, newTfConfig);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setTfConfig(TFConfig newTfConfig)
-  {
-    if (newTfConfig != tfConfig)
-    {
-      NotificationChain msgs = null;
-      if (tfConfig != null)
-        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_TILT__TF_CONFIG, null, msgs);
-      if (newTfConfig != null)
-        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_TILT__TF_CONFIG, null, msgs);
-      msgs = basicSetTfConfig(newTfConfig, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_TILT__TF_CONFIG, newTfConfig, newTfConfig));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public long getCallbackPeriod()
-  {
-    return callbackPeriod;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setCallbackPeriod(long newCallbackPeriod)
-  {
-    long oldCallbackPeriod = callbackPeriod;
-    callbackPeriod = newCallbackPeriod;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_TILT__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_TILT__SENSOR_VALUE, oldSensorValue, sensorValue));
   }
 
   /**
@@ -733,36 +609,19 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
-  public BigDecimal getThreshold()
-  {
-    return threshold;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setThreshold(BigDecimal newThreshold)
-  {
-    BigDecimal oldThreshold = threshold;
-    threshold = newThreshold;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_TILT__THRESHOLD, oldThreshold, threshold));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void initSubDevices()
+  public void fetchSensorValue()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    try {
+      DecimalValue value = convert(tinkerforgeDevice.getTiltState());
+      setSensorValue(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
@@ -772,9 +631,8 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
    */
   public void init()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MBrickletTiltImpl.class);
   }
 
   /**
@@ -784,9 +642,48 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
    */
   public void enable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    tinkerforgeDevice = new BrickletTilt(getUid(), getIpConnection());
+    listener = new TiltStateListener();
+    tinkerforgeDevice.addTiltStateListener(listener);
+    fetchSensorValue();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  private class TiltStateListener implements BrickletTilt.TiltStateListener {
+
+    @Override
+    public void tiltState(short state) {
+      logger.trace("{} got new value {}", LoggerConstants.TFMODELUPDATE, state);
+      DecimalValue value = convert(state);
+      setSensorValue(value);
+    }
+    
+  }
+  
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  private DecimalValue convert(short state) {
+    DecimalValue value = null;
+    switch (state) {
+      case BrickletTilt.TILT_STATE_CLOSED:
+        value = DecimalValue.ZERO;
+        break;
+      case BrickletTilt.TILT_STATE_OPEN:
+        value = DecimalValue.valueOf("1");
+        break;
+      case BrickletTilt.TILT_STATE_CLOSED_VIBRATING:
+        value = DecimalValue.valueOf("2");
+        break;
+    }
+    logger.trace("{} converted value {} to {}", LoggerConstants.TFMODELUPDATE, state, value);
+    return value;
   }
 
   /**
@@ -796,9 +693,10 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
    */
   public void disable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    if (listener != null){
+      tinkerforgeDevice.removeTiltStateListener(listener);
+    }
+    tinkerforgeDevice = null;
   }
 
   /**
@@ -806,7 +704,6 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -816,8 +713,6 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
         return basicSetBrickd((MBrickd)otherEnd, msgs);
-      case ModelPackage.MBRICKLET_TILT__MSUBDEVICES:
-        return ((InternalEList<InternalEObject>)(InternalEList<?>)getMsubdevices()).basicAdd(otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
   }
@@ -834,10 +729,6 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
     {
       case ModelPackage.MBRICKLET_TILT__BRICKD:
         return basicSetBrickd(null, msgs);
-      case ModelPackage.MBRICKLET_TILT__MSUBDEVICES:
-        return ((InternalEList<?>)getMsubdevices()).basicRemove(otherEnd, msgs);
-      case ModelPackage.MBRICKLET_TILT__TF_CONFIG:
-        return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -890,16 +781,10 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
         return getName();
       case ModelPackage.MBRICKLET_TILT__BRICKD:
         return getBrickd();
-      case ModelPackage.MBRICKLET_TILT__MSUBDEVICES:
-        return getMsubdevices();
-      case ModelPackage.MBRICKLET_TILT__TF_CONFIG:
-        return getTfConfig();
-      case ModelPackage.MBRICKLET_TILT__CALLBACK_PERIOD:
-        return getCallbackPeriod();
+      case ModelPackage.MBRICKLET_TILT__SENSOR_VALUE:
+        return getSensorValue();
       case ModelPackage.MBRICKLET_TILT__DEVICE_TYPE:
         return getDeviceType();
-      case ModelPackage.MBRICKLET_TILT__THRESHOLD:
-        return getThreshold();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -909,7 +794,6 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
@@ -948,18 +832,8 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
       case ModelPackage.MBRICKLET_TILT__BRICKD:
         setBrickd((MBrickd)newValue);
         return;
-      case ModelPackage.MBRICKLET_TILT__MSUBDEVICES:
-        getMsubdevices().clear();
-        getMsubdevices().addAll((Collection<? extends TiltDevice>)newValue);
-        return;
-      case ModelPackage.MBRICKLET_TILT__TF_CONFIG:
-        setTfConfig((TFConfig)newValue);
-        return;
-      case ModelPackage.MBRICKLET_TILT__CALLBACK_PERIOD:
-        setCallbackPeriod((Long)newValue);
-        return;
-      case ModelPackage.MBRICKLET_TILT__THRESHOLD:
-        setThreshold((BigDecimal)newValue);
+      case ModelPackage.MBRICKLET_TILT__SENSOR_VALUE:
+        setSensorValue((DecimalValue)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -1008,17 +882,8 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
       case ModelPackage.MBRICKLET_TILT__BRICKD:
         setBrickd((MBrickd)null);
         return;
-      case ModelPackage.MBRICKLET_TILT__MSUBDEVICES:
-        getMsubdevices().clear();
-        return;
-      case ModelPackage.MBRICKLET_TILT__TF_CONFIG:
-        setTfConfig((TFConfig)null);
-        return;
-      case ModelPackage.MBRICKLET_TILT__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
-        return;
-      case ModelPackage.MBRICKLET_TILT__THRESHOLD:
-        setThreshold(THRESHOLD_EDEFAULT);
+      case ModelPackage.MBRICKLET_TILT__SENSOR_VALUE:
+        setSensorValue((DecimalValue)null);
         return;
     }
     super.eUnset(featureID);
@@ -1056,16 +921,10 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case ModelPackage.MBRICKLET_TILT__BRICKD:
         return getBrickd() != null;
-      case ModelPackage.MBRICKLET_TILT__MSUBDEVICES:
-        return msubdevices != null && !msubdevices.isEmpty();
-      case ModelPackage.MBRICKLET_TILT__TF_CONFIG:
-        return tfConfig != null;
-      case ModelPackage.MBRICKLET_TILT__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
+      case ModelPackage.MBRICKLET_TILT__SENSOR_VALUE:
+        return sensorValue != null;
       case ModelPackage.MBRICKLET_TILT__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-      case ModelPackage.MBRICKLET_TILT__THRESHOLD:
-        return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
     }
     return super.eIsSet(featureID);
   }
@@ -1078,27 +937,11 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSubDeviceHolder.class)
+    if (baseClass == MSensor.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MBRICKLET_TILT__MSUBDEVICES: return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.MBRICKLET_TILT__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
-        default: return -1;
-      }
-    }
-    if (baseClass == CallbackListener.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.MBRICKLET_TILT__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
+        case ModelPackage.MBRICKLET_TILT__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -1113,27 +956,11 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSubDeviceHolder.class)
+    if (baseClass == MSensor.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES: return ModelPackage.MBRICKLET_TILT__MSUBDEVICES;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_TILT__TF_CONFIG;
-        default: return -1;
-      }
-    }
-    if (baseClass == CallbackListener.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_TILT__CALLBACK_PERIOD;
+        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.MBRICKLET_TILT__SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -1148,25 +975,11 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
   @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
-    if (baseClass == MSubDeviceHolder.class)
+    if (baseClass == MSensor.class)
     {
       switch (baseOperationID)
       {
-        case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES: return ModelPackage.MBRICKLET_TILT___INIT_SUB_DEVICES;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (baseOperationID)
-      {
-        default: return -1;
-      }
-    }
-    if (baseClass == CallbackListener.class)
-    {
-      switch (baseOperationID)
-      {
+        case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.MBRICKLET_TILT___FETCH_SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -1183,8 +996,8 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
   {
     switch (operationID)
     {
-      case ModelPackage.MBRICKLET_TILT___INIT_SUB_DEVICES:
-        initSubDevices();
+      case ModelPackage.MBRICKLET_TILT___FETCH_SENSOR_VALUE:
+        fetchSensorValue();
         return null;
       case ModelPackage.MBRICKLET_TILT___INIT:
         init();
@@ -1230,12 +1043,10 @@ public class MBrickletTiltImpl extends MinimalEObjectImpl.Container implements M
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
-    result.append(", callbackPeriod: ");
-    result.append(callbackPeriod);
+    result.append(", sensorValue: ");
+    result.append(sensorValue);
     result.append(", deviceType: ");
     result.append(deviceType);
-    result.append(", threshold: ");
-    result.append(threshold);
     result.append(')');
     return result.toString();
   }

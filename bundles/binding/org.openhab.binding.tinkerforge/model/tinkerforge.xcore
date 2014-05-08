@@ -382,23 +382,8 @@ class AmbientTemperature extends MTemperatureIRDevice,
 }
 
 class MBrickletTilt extends MDevice<TinkerBrickletTilt>,
-    MSubDeviceHolder<TiltDevice>, MTFConfigConsumer<TFConfig>,
-    CallbackListener{
+    MSensor<MDecimalValue>{
     readonly String deviceType = "bricklet_tilt"
-    BigDecimal threshold = "10"
-}
-
-interface TiltDevice extends MSubDevice<MBrickletTilt>
-{
-    
-}
-
-class TiltSwitch extends TiltDevice, MSensor<DigitalValue>{
-    readonly String deviceType = "tilt_switch"
-}
-
-class TiltSensor extends TiltDevice, MSensor<MDecimalValue> {
-    readonly String deviceType = "tilt_sensor"
 }
 
 class MBrickletVoltageCurrent extends MDevice<TinkerBrickletVoltageCurrent>,
@@ -673,5 +658,5 @@ enum TemperatureIRSubIds {
 }
 
 enum VoltageCurrentSubIds {
-    VCDEVICEVOLTAGE, VCDEVICECURRENT, VCDEVICEPOWER
+    VOLTAGECURRENT_VOLTAGE, VOLTAGECURRENT_CURRENT, VOLTAGECURRENT_POWER
 }

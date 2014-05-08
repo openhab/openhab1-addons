@@ -1,4 +1,9 @@
 CLOSED=closed
 OPEN=open
 undefined=unknown
+-=unknown
+0=closed
+1=open
+2=vibrating
+
  

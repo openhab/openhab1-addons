@@ -687,7 +687,16 @@ public class TinkerforgeBinding extends
 			Class<? extends Item> itemType = provider.getItemType(itemName);
 			State value = UnDefType.UNDEF;
 			if (sensorValue instanceof DecimalValue) {
-				value = DecimalType.valueOf(String.valueOf(sensorValue));
+              if (itemType.isAssignableFrom(NumberItem.class)
+                  || itemType.isAssignableFrom(StringItem.class)) {
+                value = DecimalType.valueOf(String.valueOf(sensorValue));
+              } else if (itemType.isAssignableFrom(ContactItem.class)){
+                  value = sensorValue.equals(DecimalValue.ZERO) ? OpenClosedType.CLOSED
+                      : OpenClosedType.OPEN;
+              } else if (itemType.isAssignableFrom(SwitchItem.class)){
+                value = sensorValue.equals(DecimalValue.ZERO) ? OnOffType.OFF
+                    : OnOffType.ON;
+              }
 			} else if (sensorValue instanceof HighLowValue) {
 				if (itemType.isAssignableFrom(NumberItem.class)
 						|| itemType.isAssignableFrom(StringItem.class)) {
@@ -972,8 +981,7 @@ public class TinkerforgeBinding extends
 				|| deviceType.equals(TypeKey.bricklet_soundintensity.name())
 				|| deviceType.equals(TypeKey.voltageCurrent_voltage.name())
 				|| deviceType.equals(TypeKey.voltageCurrent_current.name())
-				|| deviceType.equals(TypeKey.voltageCurrent_power.name())
-				|| deviceType.equals(TypeKey.bricklet_tilt.name()))
+				|| deviceType.equals(TypeKey.voltageCurrent_power.name()))
 		{
 			logger.debug("{} setting base config",
 					LoggerConstants.CONFIG);
@@ -992,10 +1000,10 @@ public class TinkerforgeBinding extends
               ohtfDevice.setTfConfig(tfBaseConfiguration);
               fillupConfig(ohtfDevice, deviceConfig);
 			} else {
-				OHTFDevice<TFBaseConfiguration, NoSubIds> ohtfDevice = modelFactory
+				OHTFDevice<TFBaseConfiguration, VoltageCurrentSubIds> ohtfDevice = modelFactory
 						.createOHTFDevice();
 	            ohtfDevice.getSubDeviceIds().addAll(
-                  Arrays.asList(NoSubIds.values()));
+                  Arrays.asList(VoltageCurrentSubIds.values()));
 				ohtfDevice.setTfConfig(tfBaseConfiguration);
 				fillupConfig(ohtfDevice, deviceConfig);
 			}

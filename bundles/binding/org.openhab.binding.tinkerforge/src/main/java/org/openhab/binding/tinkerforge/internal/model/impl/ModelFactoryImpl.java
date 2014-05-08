@@ -176,8 +176,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.OBJECT_TEMPERATURE: return createObjectTemperature();
       case ModelPackage.AMBIENT_TEMPERATURE: return createAmbientTemperature();
       case ModelPackage.MBRICKLET_TILT: return createMBrickletTilt();
-      case ModelPackage.TILT_SWITCH: return createTiltSwitch();
-      case ModelPackage.TILT_SENSOR: return createTiltSensor();
       case ModelPackage.MBRICKLET_VOLTAGE_CURRENT: return createMBrickletVoltageCurrent();
       case ModelPackage.VC_DEVICE_VOLTAGE: return createVCDeviceVoltage();
       case ModelPackage.VC_DEVICE_CURRENT: return createVCDeviceCurrent();
@@ -916,28 +914,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletTiltImpl mBrickletTilt = new MBrickletTiltImpl();
     return mBrickletTilt;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public TiltSwitch createTiltSwitch()
-  {
-    TiltSwitchImpl tiltSwitch = new TiltSwitchImpl();
-    return tiltSwitch;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public TiltSensor createTiltSensor()
-  {
-    TiltSensorImpl tiltSensor = new TiltSensorImpl();
-    return tiltSensor;
   }
 
   /**

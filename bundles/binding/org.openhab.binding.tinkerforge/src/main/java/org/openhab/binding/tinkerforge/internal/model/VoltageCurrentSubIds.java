@@ -20,79 +20,75 @@ import org.eclipse.emf.common.util.Enumerator;
 public enum VoltageCurrentSubIds implements Enumerator
 {
   /**
-   * The '<em><b>VCDEVICEVOLTAGE</b></em>' literal object.
+   * The '<em><b>VOLTAGECURRENT VOLTAGE</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #VCDEVICEVOLTAGE_VALUE
+   * @see #VOLTAGECURRENT_VOLTAGE_VALUE
    * @generated
    * @ordered
    */
-  VCDEVICEVOLTAGE(0, "VCDEVICEVOLTAGE", "VCDEVICEVOLTAGE"),
-
-  /**
-   * The '<em><b>VCDEVICECURRENT</b></em>' literal object.
+  VOLTAGECURRENT_VOLTAGE(0, "VOLTAGECURRENT_VOLTAGE", "VOLTAGECURRENT_VOLTAGE"), /**
+   * The '<em><b>VOLTAGECURRENT CURRENT</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #VCDEVICECURRENT_VALUE
+   * @see #VOLTAGECURRENT_CURRENT_VALUE
    * @generated
    * @ordered
    */
-  VCDEVICECURRENT(0, "VCDEVICECURRENT", "VCDEVICECURRENT"),
-
-  /**
-   * The '<em><b>VCDEVICEPOWER</b></em>' literal object.
+  VOLTAGECURRENT_CURRENT(0, "VOLTAGECURRENT_CURRENT", "VOLTAGECURRENT_CURRENT"), /**
+   * The '<em><b>VOLTAGECURRENT POWER</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #VCDEVICEPOWER_VALUE
+   * @see #VOLTAGECURRENT_POWER_VALUE
    * @generated
    * @ordered
    */
-  VCDEVICEPOWER(0, "VCDEVICEPOWER", "VCDEVICEPOWER");
+  VOLTAGECURRENT_POWER(0, "VOLTAGECURRENT_POWER", "VOLTAGECURRENT_POWER");
 
   /**
-   * The '<em><b>VCDEVICEVOLTAGE</b></em>' literal value.
+   * The '<em><b>VOLTAGECURRENT VOLTAGE</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>VCDEVICEVOLTAGE</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>VOLTAGECURRENT VOLTAGE</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #VCDEVICEVOLTAGE
+   * @see #VOLTAGECURRENT_VOLTAGE
    * @model
    * @generated
    * @ordered
    */
-  public static final int VCDEVICEVOLTAGE_VALUE = 0;
+  public static final int VOLTAGECURRENT_VOLTAGE_VALUE = 0;
 
   /**
-   * The '<em><b>VCDEVICECURRENT</b></em>' literal value.
+   * The '<em><b>VOLTAGECURRENT CURRENT</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>VCDEVICECURRENT</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>VOLTAGECURRENT CURRENT</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #VCDEVICECURRENT
+   * @see #VOLTAGECURRENT_CURRENT
    * @model
    * @generated
    * @ordered
    */
-  public static final int VCDEVICECURRENT_VALUE = 0;
+  public static final int VOLTAGECURRENT_CURRENT_VALUE = 0;
 
   /**
-   * The '<em><b>VCDEVICEPOWER</b></em>' literal value.
+   * The '<em><b>VOLTAGECURRENT POWER</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>VCDEVICEPOWER</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>VOLTAGECURRENT POWER</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #VCDEVICEPOWER
+   * @see #VOLTAGECURRENT_POWER
    * @model
    * @generated
    * @ordered
    */
-  public static final int VCDEVICEPOWER_VALUE = 0;
+  public static final int VOLTAGECURRENT_POWER_VALUE = 0;
 
   /**
    * An array of all the '<em><b>Voltage Current Sub Ids</b></em>' enumerators.
@@ -103,9 +99,9 @@ public enum VoltageCurrentSubIds implements Enumerator
   private static final VoltageCurrentSubIds[] VALUES_ARRAY =
     new VoltageCurrentSubIds[]
     {
-      VCDEVICEVOLTAGE,
-      VCDEVICECURRENT,
-      VCDEVICEPOWER,
+      VOLTAGECURRENT_VOLTAGE,
+      VOLTAGECURRENT_CURRENT,
+      VOLTAGECURRENT_POWER,
     };
 
   /**
@@ -164,7 +160,7 @@ public enum VoltageCurrentSubIds implements Enumerator
   {
     switch (value)
     {
-      case VCDEVICEVOLTAGE_VALUE: return VCDEVICEVOLTAGE;
+      case VOLTAGECURRENT_VOLTAGE_VALUE: return VOLTAGECURRENT_VOLTAGE;
     }
     return null;
   }
