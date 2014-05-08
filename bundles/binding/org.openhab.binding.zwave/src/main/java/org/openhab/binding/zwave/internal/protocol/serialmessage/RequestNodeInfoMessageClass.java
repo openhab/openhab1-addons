@@ -34,7 +34,7 @@ public class RequestNodeInfoMessageClass  extends ZWaveCommandProcessor {
 	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.trace("Handle RequestNodeInfo Response");
-		if(incomingMessage.getMessageBuffer()[2] != 0x00)
+		if(incomingMessage.getMessagePayloadByte(0) != 0x00)
 			logger.debug("Request node info successfully placed on stack.");
 		else
 			logger.error("Request node info not placed on stack due to error.");
