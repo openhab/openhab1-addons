@@ -256,7 +256,29 @@ Text item=Voltage
 Text item=Current
 Text item=Power
 ```
-     
+
+# Bricklet Tilt
+* openhab.cfg: no entries needed
+* items
+```
+Contact tiltContact     "tilt [MAP(en.map):%s]" { tinkerforge="uid=j7k" }
+Number tiltSensor       "tilt [MAP(en.map):%s]"  { tinkerforge="uid=j7k" }
+Switch tiltSwitch         "tilt" { tinkerforge="uid=j7k" }
+```
+
+* sitemap
+```
+Text item=tiltContact
+Text item=tiltSensor
+Switch item=tiltSwitch
+```
+* en.map (optional)
+```
+0=closed
+1=open
+2=vibrating
+```
+
 # other changes
  ## 1.4.0
    * updated Tinkerforge API to 2.0.12
