@@ -127,10 +127,8 @@ public class Iec6205621MeterBinding extends
 						Class<? extends Item> itemType = provider
 								.getItemType(itemName);
 						if (itemType.isAssignableFrom(NumberItem.class)) {
-							double value = Double.parseDouble(dataSet
-									.getValue());
 							eventPublisher.postUpdate(itemName,
-									new DecimalType(value));
+									new DecimalType(dataSet.getValue()));
 						}
 						if (itemType.isAssignableFrom(StringItem.class)) {
 							String value = dataSet.getValue();
