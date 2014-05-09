@@ -999,14 +999,22 @@ public class TinkerforgeBinding extends
               ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(TemperatureIRSubIds.values()));
               ohtfDevice.setTfConfig(tfBaseConfiguration);
               fillupConfig(ohtfDevice, deviceConfig);
-			} else {
+			} else if (deviceType.equals(TypeKey.voltageCurrent_current.name())
+			    || deviceType.equals(TypeKey.voltageCurrent_voltage.name())
+			    || deviceType.equals(TypeKey.voltageCurrent_power.name())) {
 				OHTFDevice<TFBaseConfiguration, VoltageCurrentSubIds> ohtfDevice = modelFactory
 						.createOHTFDevice();
 	            ohtfDevice.getSubDeviceIds().addAll(
                   Arrays.asList(VoltageCurrentSubIds.values()));
 				ohtfDevice.setTfConfig(tfBaseConfiguration);
 				fillupConfig(ohtfDevice, deviceConfig);
-			}
+            } else {
+              OHTFDevice<TFBaseConfiguration, NoSubIds> ohtfDevice = modelFactory
+                              .createOHTFDevice();
+              ohtfDevice.setTfConfig(tfBaseConfiguration);
+              fillupConfig(ohtfDevice, deviceConfig);
+            }
+
 		} else if (deviceType.equals(TypeKey.brick_dc.name())) {
 			logger.debug("{} setting dc config",
 					LoggerConstants.CONFIG);
