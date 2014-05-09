@@ -125,7 +125,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
    * @generated
    * @ordered
    */
-  protected static final boolean POLL_EDEFAULT = false;
+  protected static final boolean POLL_EDEFAULT = true;
 
   /**
    * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.

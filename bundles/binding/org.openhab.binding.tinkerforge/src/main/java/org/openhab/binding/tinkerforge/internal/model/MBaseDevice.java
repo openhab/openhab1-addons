@@ -88,7 +88,7 @@ public interface MBaseDevice extends EObject
 
   /**
    * Returns the value of the '<em><b>Poll</b></em>' attribute.
-   * The default value is <code>"false"</code>.
+   * The default value is <code>"true"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Poll</em>' attribute isn't clear,
@@ -98,7 +98,7 @@ public interface MBaseDevice extends EObject
    * @return the value of the '<em>Poll</em>' attribute.
    * @see #setPoll(boolean)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBaseDevice_Poll()
-   * @model default="false" unique="false"
+   * @model default="true" unique="false"
    * @generated
    */
   boolean isPoll();

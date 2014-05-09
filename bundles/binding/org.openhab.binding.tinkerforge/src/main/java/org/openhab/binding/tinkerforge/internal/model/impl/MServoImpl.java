@@ -142,7 +142,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * @generated
    * @ordered
    */
-  protected static final boolean POLL_EDEFAULT = false;
+  protected static final boolean POLL_EDEFAULT = true;
   /**
    * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
    * <!-- begin-user-doc -->

@@ -113,7 +113,7 @@ public class MDualRelayBrickletImpl extends MinimalEObjectImpl.Container impleme
    * @generated
    * @ordered
    */
-  protected static final boolean POLL_EDEFAULT = false;
+  protected static final boolean POLL_EDEFAULT = true;
 
   /**
    * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.

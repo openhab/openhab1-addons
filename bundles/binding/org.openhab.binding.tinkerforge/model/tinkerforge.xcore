@@ -115,7 +115,10 @@ interface MTFConfigConsumer<TFC>{
 interface MBaseDevice{
 	MLogger logger
 	String uid
-	boolean poll = "false"
+	// for now poll all devices because at startup time
+	// updates are missed by the ui, because binding start
+	// can happen before ui start.
+	boolean poll = "true"
 	MAtomicBoolean enabledA
 	op void init()
 	op void enable()
