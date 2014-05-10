@@ -266,8 +266,9 @@ public class ZWaveController {
 					// We don't want to be SUC, but we currently are!
 					// Disable SERVER functionality, and set the node to 0
 					this.enqueue(new EnableSucMessageClass().doRequest(EnableSucMessageClass.SUCType.NONE));
-					this.enqueue(new SetSucNodeMessageClass().doRequest(0, SetSucNodeMessageClass.SUCType.NONE));
+					this.enqueue(new SetSucNodeMessageClass().doRequest(this.ownNodeId, SetSucNodeMessageClass.SUCType.NONE));
 				}
+				this.enqueue(new GetControllerCapabilitiesMessageClass().doRequest());
 				break;
 			case SerialApiGetCapabilities:
 				this.serialAPIVersion = ((SerialApiGetCapabilitiesMessageClass)processor).getSerialAPIVersion();
@@ -412,7 +413,6 @@ public class ZWaveController {
 	public void initialize() {
 		this.enqueue(new GetVersionMessageClass().doRequest());
 		this.enqueue(new MemoryGetIdMessageClass().doRequest());
-		this.enqueue(new GetControllerCapabilitiesMessageClass().doRequest());
 		this.enqueue(new GetSucNodeIdMessageClass().doRequest());
 		this.enqueue(new SerialApiGetCapabilitiesMessageClass().doRequest());
 	}
