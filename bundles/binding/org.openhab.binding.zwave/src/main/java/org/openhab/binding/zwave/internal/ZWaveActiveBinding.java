@@ -254,11 +254,11 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		}
 		if (StringUtils.isNotBlank((String) config.get("setSUC"))) {
 			try {
-				isSUC = Boolean.parseBoolean((String) config.get("timeout"));
-				logger.info("Update config, isSUC = {}", isSUC);
+				isSUC = Boolean.parseBoolean((String) config.get("setSUC"));
+				logger.info("Update config, setSUC = {}", isSUC);
 			} catch (NumberFormatException e) {
 				isSUC = false;
-				logger.error("Error parsing 'isSUC'. This must be boolean.");
+				logger.error("Error parsing 'setSUC'. This must be boolean.");
 			}
 		}
 
