@@ -25,13 +25,16 @@ import org.slf4j.LoggerFactory;
 public class AssignSucReturnRouteMessageClass extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(AssignSucReturnRouteMessageClass.class);
 
-	public SerialMessage doRequest(int nodeId) {
+	public SerialMessage doRequest(int nodeId, int callbackId) {
 		logger.debug("NODE {}: Assigning SUC return route", nodeId);
 
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.AssignSucReturnRoute, SerialMessageType.Request,
 				SerialMessageClass.AssignSucReturnRoute, SerialMessagePriority.High);
-		byte[] newPayload = { (byte) nodeId };
+		byte[] newPayload = {
+				(byte) nodeId,
+				(byte) callbackId
+		};
 		newMessage.setMessagePayload(newPayload);
     	return newMessage;
 	}
@@ -50,6 +53,7 @@ public class AssignSucReturnRouteMessageClass extends ZWaveCommandProcessor {
 					ZWaveNetworkEvent.State.Failure));
 		}
 		
+		checkTransactionComplete(lastSentMessage, incomingMessage);
 		return false;
 	}
 

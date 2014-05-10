@@ -400,6 +400,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				zController.requestAssignSucReturnRoute(healing.nodeId);
 				break;
 			}
+			healing.state = HealState.UPDATENEIGHBORS;
 		case UPDATENEIGHBORS:
 			logger.debug("NODE {}: Heal is updating node neighbors.", healing.nodeId);
 			healing.event = ZWaveNetworkEvent.Type.NodeNeighborUpdate;

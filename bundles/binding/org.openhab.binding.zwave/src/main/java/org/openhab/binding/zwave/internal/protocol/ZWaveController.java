@@ -52,7 +52,6 @@ import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveFailedNod
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeInfoMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetRoutingInfoMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SendDataMessageClass;
-import org.openhab.binding.zwave.internal.protocol.serialmessage.SerialApiSoftResetMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SetSucNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.ZWaveCommandProcessor;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetVersionMessageClass;
@@ -566,7 +565,7 @@ public class ZWaveController {
 	 */
 	public void requestAssignReturnRoute(int nodeId, int destinationId)
 	{
-		this.enqueue(new AssignReturnRouteMessageClass().doRequest(nodeId, destinationId));
+		this.enqueue(new AssignReturnRouteMessageClass().doRequest(nodeId, destinationId, getCallbackId()));
 	}
 
 	/**
@@ -577,18 +576,21 @@ public class ZWaveController {
 	 */
 	public void requestAssignSucReturnRoute(int nodeId)
 	{
-		this.enqueue(new AssignSucReturnRouteMessageClass().doRequest(nodeId));
+		this.enqueue(new AssignSucReturnRouteMessageClass().doRequest(nodeId, getCallbackId()));
 	}
 
 	/**
-	 * Request the controller is soft reset.
-	 * This resets the controller but doesn't loose the network configuration.
+	 * Returns the next callback ID
+	 * @return callback ID
 	 */
-	public void requestAssignSucReturnRoute()
-	{
-		this.enqueue(new SerialApiSoftResetMessageClass().doRequest());
+	public int getCallbackId() {
+		if (++sentDataPointer > 0xFF)
+			sentDataPointer = 1;
+		logger.debug("Callback ID = {}", sentDataPointer);
+		
+		return sentDataPointer;
 	}
-
+	
 	/**
 	 * Transmits the SerialMessage to a single Z-Wave Node.
 	 * Sets the transmission options as well.
@@ -620,10 +622,7 @@ public class ZWaveController {
 		}
     	
     	serialMessage.setTransmitOptions(TRANSMIT_OPTION_ACK | TRANSMIT_OPTION_AUTO_ROUTE | TRANSMIT_OPTION_EXPLORE);
-    	if (++sentDataPointer > 0xFF)
-    		sentDataPointer = 1;
-    	serialMessage.setCallbackId(sentDataPointer);
-    	logger.debug("Callback ID = {}", sentDataPointer);
+    	serialMessage.setCallbackId(getCallbackId());
     	this.enqueue(serialMessage);
 	}
 	
