@@ -110,6 +110,7 @@ public class ZWaveController {
 	private int sentDataPointer = 1;
 	private boolean setSUC = false;
 	private ZWaveDeviceType controllerType = ZWaveDeviceType.UNKNOWN;
+	private int sucID = 0;
 	
 	private int SOFCount = 0;
 	private int CANCount = 0;
@@ -252,10 +253,20 @@ public class ZWaveController {
 				}
 				break;
 			case GetSucNodeId:
+				// Remember the SUC ID
+				this.sucID = ((GetSucNodeIdMessageClass)processor).getSucNodeId();
+				
 				// If we want to be the SUC, enable it here
-				if(this.setSUC == true && ((GetSucNodeIdMessageClass)processor).getSucNodeId() == 0) {
+				if(this.setSUC == true && this.sucID == 0) {
+					// We want to be SUC
 					this.enqueue(new EnableSucMessageClass().doRequest(EnableSucMessageClass.SUCType.SERVER));
 					this.enqueue(new SetSucNodeMessageClass().doRequest(this.ownNodeId, SetSucNodeMessageClass.SUCType.SERVER));
+				}
+				else if(this.setSUC == false && this.sucID == this.ownNodeId) {
+					// We don't want to be SUC, but we currently are!
+					// Disable SERVER functionality, and set the node to 0
+					this.enqueue(new EnableSucMessageClass().doRequest(EnableSucMessageClass.SUCType.NONE));
+					this.enqueue(new SetSucNodeMessageClass().doRequest(0, SetSucNodeMessageClass.SUCType.NONE));
 				}
 				break;
 			case SerialApiGetCapabilities:
@@ -686,6 +697,14 @@ public class ZWaveController {
 	 */
 	public ZWaveDeviceType getControllerType() {
 		return controllerType;
+	}
+
+	/**
+	 * Gets the networks SUC controller ID.
+	 * @return the device id of the SUC, or 0 if none exists
+	 */
+	public int getSucId() {
+		return sucID;
 	}
 
 	/**
