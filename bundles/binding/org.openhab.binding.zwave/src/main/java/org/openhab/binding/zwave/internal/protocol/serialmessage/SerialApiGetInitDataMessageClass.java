@@ -15,6 +15,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
+import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,8 @@ public class SerialApiGetInitDataMessageClass extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(SerialApiGetInitDataMessageClass.class);
 
 	private ArrayList<Integer>zwaveNodes = new ArrayList<Integer>();
+	
+	private ZWaveDeviceType nodeType = ZWaveDeviceType.UNKNOWN;
 	
 	private static final int NODE_BYTES = 29; // 29 bytes = 232 bits, one for each supported node by Z-Wave;
 	
@@ -68,7 +71,20 @@ public class SerialApiGetInitDataMessageClass extends ZWaveCommandProcessor {
 		logger.info("------------Number of Nodes Found Registered to ZWave Controller------------");
 		logger.info(String.format("# Nodes = %d", zwaveNodes.size()));
 		logger.info("----------------------------------------------------------------------------");
-		
+
+		if((incomingMessage.getMessagePayloadByte(1) & 0x01) == 1) {
+			nodeType = ZWaveDeviceType.SLAVE;
+		}
+		else {
+			if((incomingMessage.getMessagePayloadByte(1) & 0x08) == 1)
+				nodeType = ZWaveDeviceType.SUC;
+			else if((incomingMessage.getMessagePayloadByte(1) & 0x04) == 1)
+				nodeType = ZWaveDeviceType.SECONDARY;
+			else
+				nodeType = ZWaveDeviceType.PRIMARY;
+		}
+		logger.info("ZWave Controller type is: {}", nodeType.toString());
+
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 
 		return true;
@@ -76,5 +92,9 @@ public class SerialApiGetInitDataMessageClass extends ZWaveCommandProcessor {
 
 	public ArrayList<Integer> getNodes() {
 		return zwaveNodes;
+	}
+	
+	public ZWaveDeviceType getNodeType() {
+		return nodeType;
 	}
 }

@@ -255,6 +255,15 @@
 		<Product>
 			<Reference>
 				<Type>0002</Type>
+				<Id>0036</Id>
+			</Reference>
+			<Model>DSB54</Model>
+			<Label lang="en">Recessed Door/Window sensor</Label>
+			<ConfigFile>aeon/dsb54.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
 				<Id>0004</Id>
 			</Reference>
 			<Reference>
@@ -628,6 +637,23 @@
 			<Label lang="en">Fibaro RGBW Controller</Label>
 			<ConfigFile>fibaro/fgrgbw.xml</ConfigFile>
 		</Product>
+		<Product>
+      			<Reference>
+        			<Type>0300</Type>
+        			<Id>100a</Id>
+      			</Reference>
+      			<Reference>
+        			<Type>0300</Type>
+        			<Id>0106</Id>
+      			</Reference>
+      			<Reference>
+        			<Type>0300</Type>
+        			<Id>0107</Id>
+      			</Reference>
+      			<Model>FGR221</Model>
+      			<Label lang="en">Fibaro FGR221 Roller Shutter Controller</Label>
+      			<ConfigFile>fibaro/fgr221.xml</ConfigFile>
+    		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>011F</Id>
@@ -787,6 +813,19 @@
 			</Reference>
 			<Model>RPi Controller</Model>
 			<Label lang="en">RPi ZWave Controller</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0148</Id>
+		<Name>EUROtronic Technology</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>EUR_STELLAZ</Model>
+			<Label lang="en">Thermostatic Valve</Label>
+			<ConfigFile>eurotronic/stellaz.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

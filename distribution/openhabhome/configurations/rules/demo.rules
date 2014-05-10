@@ -5,28 +5,6 @@ import org.openhab.model.script.actions.*
 var Number counter = 1
 var Timer timer = null
 
-rule Startup
-when 
-	System started
-then
-	say("Welcome at openHab!")
-end
-
-rule Goodbye
-when 
-	System shuts down
-then
-	say("Good bye!")
-end
-
-rule "Crontest"
-	when 
-		Time cron "0/15 * * * * ?"
-	then
-		say(counter)
-		counter = counter + 1
-end	
-
 /**
  * This is a demo rule which simulates a real dimmer by reacting to increase/decrease commands 
  * and posting an updated state on the bus 
@@ -76,13 +54,6 @@ rule "Volume control"
 			if(receivedCommand==DECREASE) decreaseMasterVolume(20)	
 		}
 		postUpdate(Volume, masterVolume * 100)
-end
-
-rule "Say temperature on update"
-	when 
-		Item Weather_Temperature received update
-	then
-		say("The temperature outside is " + Weather_Temperature.state.format("%d") + " degrees celsius")
 end
 
 /**
