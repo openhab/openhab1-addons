@@ -275,7 +275,7 @@ public class ZWaveConverterHandler {
 		
 		// ignore nodes that are not initialized or dead.
 		if (node.getNodeStage() != NodeStage.DONE) {
-			logger.trace("{} stage is node DONE: {}", node.getNodeId(), node.getNodeStage());
+			logger.trace("NODE {}: stage is not DONE: {}", node.getNodeId(), node.getNodeStage());
 			return;
 		}
 		
