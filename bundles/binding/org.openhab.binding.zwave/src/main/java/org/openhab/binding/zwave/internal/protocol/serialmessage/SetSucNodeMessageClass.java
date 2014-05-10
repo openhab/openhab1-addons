@@ -32,10 +32,23 @@ public class SetSucNodeMessageClass extends ZWaveCommandProcessor {
 				SerialMessageClass.SetSucNodeID, SerialMessagePriority.High);
 		byte[] newPayload = new byte[5];
 		newPayload[0] = (byte)nodeId;
-		newPayload[1] =
-		newPayload[2] = 1;				// Low power option
-		newPayload[3] =1;
-		newPayload[4] =1;				// Callback!!!
+		switch(type) {
+			case NONE:
+				newPayload[1] = 0;
+				newPayload[3] = 0;
+				break;
+			case BASIC:
+				newPayload[1] = 1;
+				newPayload[3] = 0;
+				break;
+			case SERVER:
+				newPayload[1] = 1;
+				newPayload[3] = 1;
+				break;
+		}
+
+		newPayload[2] = 0;				// Low power option = false
+		newPayload[4] = 1;				// Callback!!!
 		newMessage.setMessagePayload(newPayload);
     	return newMessage;
 	}

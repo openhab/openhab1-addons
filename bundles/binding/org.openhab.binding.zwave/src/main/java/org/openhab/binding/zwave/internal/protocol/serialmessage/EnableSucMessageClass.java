@@ -47,7 +47,6 @@ public class EnableSucMessageClass extends ZWaveCommandProcessor {
 			newPayload[1] = 1;
 			break;
 		}
-		newPayload[0] = 1;
 		newMessage.setMessagePayload(newPayload);
     	return newMessage;
 	}

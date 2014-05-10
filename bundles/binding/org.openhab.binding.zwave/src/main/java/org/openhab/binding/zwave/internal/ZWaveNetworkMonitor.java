@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
  * Rational
  * ========
  * # Ping the node to see if it's awake
+ * # Set the SUC return route (if there's an SUC)
  * # Update all the neighbors so that all nodes know who is around them
  * # Update the associations so that we know which nodes need to talk to others
  * # Update the routes between devices that have associations set
@@ -385,7 +386,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				if (zwaveCommandClass == null)
 					break;
 				zController.sendData(zwaveCommandClass.getNoOperationMessage());
-				healing.stateNext = HealState.UPDATENEIGHBORS;
+				healing.stateNext = HealState.SETSUCROUTE;
 				break;
 			}
 			healing.state = HealState.SETSUCROUTE;
@@ -395,7 +396,6 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				// Update the route to the controller
 				logger.debug("NODE {}: Heal is setting SUC route.", healing.nodeId);
 				healing.event = ZWaveNetworkEvent.Type.AssignSucReturnRoute;
-				healing.event = ZWaveNetworkEvent.Type.NodeRoutingInfo;
 				healing.stateNext = HealState.UPDATENEIGHBORS;
 				zController.requestAssignSucReturnRoute(healing.nodeId);
 				break;
