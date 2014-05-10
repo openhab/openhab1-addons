@@ -556,6 +556,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 					List<Integer> members = associationCommandClass.getGroupMembers(groupId);
 					for(ZWaveNode nodeList : zController.getNodes()) {
+						// Don't allow an association with itself
+						if(nodeList.getNodeId() == node.getNodeId())
+							continue;
+						
+						// Add the member
 						if (nodeList.getName() == null || nodeList.getName().isEmpty())
 							record = new OpenHABConfigurationRecord(domain, "node" + nodeList.getNodeId(), "Node " + nodeList.getNodeId(), false);
 						else
@@ -661,7 +666,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				case SUC:
 				case PRIMARY:
 				case SECONDARY:
-					record.readonly = false;
+					record.readonly = true;
 					break;
 				default:
 					record.readonly = true;
