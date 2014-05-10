@@ -119,7 +119,7 @@ public class MBrickletSoundIntensityImpl extends MinimalEObjectImpl.Container im
    * @generated
    * @ordered
    */
-  protected static final boolean POLL_EDEFAULT = false;
+  protected static final boolean POLL_EDEFAULT = true;
 
   /**
    * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
