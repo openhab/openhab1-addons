@@ -412,8 +412,8 @@ public class ZWaveController {
 	public void initialize() {
 		this.enqueue(new GetVersionMessageClass().doRequest());
 		this.enqueue(new MemoryGetIdMessageClass().doRequest());
-		this.enqueue(new GetSucNodeIdMessageClass().doRequest());
 		this.enqueue(new SerialApiGetCapabilitiesMessageClass().doRequest());
+		this.enqueue(new GetSucNodeIdMessageClass().doRequest());
 	}
 	
 	/**
