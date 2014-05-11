@@ -236,6 +236,15 @@ Example:
     	</productKey>
     </subcategory>
     <subcategory>
+	<name>Wireless Open/Close Sensor</name>
+    	<description>2843-222</description>
+    	<subCat>0x02</subCat>
+    	<productKey name="0x000049">
+    	  <feature name="contact">GenericContact</feature>
+    	  <feature name="lastheardfrom">GenericLastTime</feature>
+    	</productKey>
+    </subcategory>
+    <subcategory>
 	<name>Hidden Door Sensor</name>
     	<description>2845-222</description>
     	<subCat>0x11</subCat>
