@@ -123,7 +123,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					break;
 
 				record = new OpenHABConfigurationRecord(domain, "ManufacturerID", "Manufacturer ID", true);
-				record.value = database.getManufacturerId().toString();
+				record.value = Integer.toHexString(database.getManufacturerId());
 				records.add(record);
 				
 				for (ZWaveDbProduct product : database.GetProducts()) {
@@ -290,7 +290,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 
 				// Add the action buttons
-				record.addAction("Save", "Save Node");
 				record.addAction("Heal", "Heal Node");
 
 				// Add the delete button if the node is not "operational"
@@ -331,7 +330,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				if (database.FindManufacturer(node.getManufacturer()) == false) {
 					record = new OpenHABConfigurationRecord(domain, "ManufacturerID", "Manufacturer ID", true);
-					record.value = Integer.toString(node.getManufacturer());
+					record.value = Integer.toHexString(node.getManufacturer());
 					records.add(record);
 				} else {
 					record = new OpenHABConfigurationRecord(domain, "Manufacturer", "Manufacturer", true);
@@ -341,11 +340,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
 					record = new OpenHABConfigurationRecord(domain, "DeviceId", "Device ID", true);
-					record.value = Integer.toString(node.getDeviceId());
+					record.value = Integer.toHexString(node.getDeviceId());
 					records.add(record);
 
 					record = new OpenHABConfigurationRecord(domain, "DeviceType", "Device Type", true);
-					record.value = Integer.toString(node.getDeviceType());
+					record.value = Integer.toHexString(node.getDeviceType());
 					records.add(record);
 					
 					record = new OpenHABConfigurationRecord(domain, "Version", "Version", true);
