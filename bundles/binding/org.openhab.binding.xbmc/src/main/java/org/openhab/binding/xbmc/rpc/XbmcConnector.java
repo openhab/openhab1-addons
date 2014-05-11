@@ -82,6 +82,7 @@ public class XbmcConnector {
 	private enum State {
 		Play,
 		Pause,
+		End,
 		Stop
 	}
 
@@ -322,6 +323,13 @@ public class XbmcConnector {
 		}
 
 		if ("Player.OnStop".equals(method)) {
+			// get the end parameter and send an End state if true
+			Map<String, Object> params = RpcCall.getMap(json, "params");
+			Map<String, Object> data = RpcCall.getMap(params, "data");
+			Boolean end = (Boolean)data.get("end");
+			if (end) {
+				updateState(State.End);
+			}
 			updateState(State.Stop);
 		}
 	}
