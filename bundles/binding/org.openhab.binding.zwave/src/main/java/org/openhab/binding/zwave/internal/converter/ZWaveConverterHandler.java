@@ -266,12 +266,18 @@ public class ZWaveConverterHandler {
 	public void receiveCommand(ZWaveBindingProvider provider, String itemName, Command command) {
 		ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
 		ZWaveNode node = this.controller.getNode(bindingConfiguration.getNodeId());
+		if(node == null) {
+			logger.error("Item {} has non existant node {}", itemName, bindingConfiguration.getNodeId());
+			return;
+		}
 		ZWaveCommandClass commandClass;
 		String commandClassName = bindingConfiguration.getArguments().get("command");
 		
 		// ignore nodes that are not initialized or dead.
-		if (node.getNodeStage() != NodeStage.DONE)
+		if (node.getNodeStage() != NodeStage.DONE) {
+			logger.trace("NODE {}: stage is not DONE: {}", node.getNodeId(), node.getNodeStage());
 			return;
+		}
 		
 		if (commandClassName != null) {
 			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName), bindingConfiguration.getEndpoint());
