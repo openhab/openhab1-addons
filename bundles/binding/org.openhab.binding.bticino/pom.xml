@@ -12,6 +12,8 @@
   <properties>
     <bundle.symbolicName>org.openhab.binding.bticino</bundle.symbolicName>
     <bundle.namespace>org.openhab.binding.bticino</bundle.namespace>
+    <deb.name>openhab-addon-binding-bticino</deb.name>
+    <deb.description>${project.name}</deb.description>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>

@@ -32,10 +32,9 @@ import it.cicolella.openwebnet.IBticinoEventListener;
 import it.cicolella.openwebnet.OpenWebNet;
 import it.cicolella.openwebnet.ProtocolRead;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
+import org.openhab.binding.bticino.internal.BticinoGenericBindingProvider.BticinoBindingConfig;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.RollershutterItem;
@@ -48,40 +47,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class represents a serial device that is linked to exactly one String
- * item and/or Switch item.
+ * This class connects to the openweb gateway of bticino (MH200(N)) It opens a
+ * monitor session to retrieve the events And creates (for every) command
+ * received a command on the bus
  * 
- * @author Kai Kreuzer
+ * @author Tom De Vlaminck
+ * @serial 1.0
+ * @since 1.5.0
  * 
  */
 public class BticinoDevice implements IBticinoEventListener
 {
+	// The ID of this gateway (corresponds with the .cfg)
+	private String m_gateway_id;
+	// The Bticino binding object (needed to send the events back + retrieve
+	// information about the binding config of the items)
+	private BticinoBinding m_bticino_binding;
+	// Hostname or Host IP (of the MH200)
 	private String m_host = "";
+	// Port to connect to
 	private int m_port = 0;
+	// Indicator if this device is started
 	private boolean m_device_is_started = false;
+	// A lock object
 	private Object m_lock = new Object();
-
+	// The openweb object that handles connections and events
 	private OpenWebNet m_open_web_net;
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(BticinoDevice.class);
 
-	// itemname, item object
-	private Map<String, Item> m_item_map = new HashMap<String, Item>();
-	// itemname, item bticino config (key-values
-	// if=default;who=1;what=1;where=23)
-	private Map<String, HashMap<String, String>> m_item_config_map = new HashMap<String, HashMap<String, String>>();
-	// bticino point (who (light, heating, ...) ";" where (adress of the light)
-	// , itemname
-	// this is used to find a match between te events on the bus and the device
-	// only one unique is allowed (could give problem when eg a timed event for
-	// light and dimmer and onoff)
-	private Map<String, List<String>> m_btchino_device_to_item_map = new HashMap<String, List<String>>();
-
 	private EventPublisher eventPublisher;
 
-	public BticinoDevice(String p_gateway_id)
+	public BticinoDevice(String p_gateway_id, BticinoBinding p_bticino_binding)
 	{
+		m_gateway_id = p_gateway_id;
+		m_bticino_binding = p_bticino_binding;
 	}
 
 	public void setHost(String p_host)
@@ -104,54 +105,21 @@ public class BticinoDevice implements IBticinoEventListener
 		this.eventPublisher = null;
 	}
 
-	public void addItem(Item p_item,
-			HashMap<String, String> p_bticino_binding_config)
-	{
-		m_item_map.put(p_item.getName(), p_item);
-		m_item_config_map.put(p_item.getName(), p_bticino_binding_config);
-
-		String l_hash_key = p_bticino_binding_config.get("who") + ";"
-				+ p_bticino_binding_config.get("where");
-
-		List<String> l_list;
-
-		if (!m_btchino_device_to_item_map.containsKey(l_hash_key))
-		{
-			l_list = new LinkedList<String>();
-			m_btchino_device_to_item_map.put(l_hash_key, l_list);
-		} else
-		{
-			l_list = m_btchino_device_to_item_map.get(l_hash_key);
-		}
-		l_list.add(p_item.getName());
-
-	}
-
-	public Item removeItem(String p_item_name)
-	{
-		m_item_config_map.remove(p_item_name);
-		return (m_item_map.remove(p_item_name));
-	}
-
-	public boolean hasItems()
-	{
-		return (m_item_map.isEmpty());
-	}
-
 	/**
-	 * Initialize this device and open the serial port
+	 * Initialize this device
 	 * 
 	 * @throws InitializationException
-	 *             if port can not be opened
 	 */
 	public void initialize() throws InitializationException
 	{
-		// throw new InitializationException("Serial port '" + port +
-		// "' could not be found. Available ports are:\n" + sb.toString());
-
-		logger.debug("initialize OK");
+		// Add other initialization stuff here
+		logger.debug("Gateway [" + m_gateway_id + "], initialize OK");
 	}
 
+	/**
+	 * Start this device
+	 * 
+	 */
 	public void startDevice()
 	{
 		if (m_open_web_net == null)
@@ -160,8 +128,8 @@ public class BticinoDevice implements IBticinoEventListener
 			m_open_web_net.addEventListener(this);
 			m_open_web_net.onStart();
 		}
-
 		m_device_is_started = true;
+		logger.debug("Gateway [" + m_gateway_id + "], started OK");
 	}
 
 	public void stopDevice()
@@ -179,7 +147,8 @@ public class BticinoDevice implements IBticinoEventListener
 		return m_device_is_started;
 	}
 
-	public void receiveCommand(String itemName, Command command)
+	public void receiveCommand(String itemName, Command command,
+			BticinoBindingConfig itemBindingConfig)
 	{
 		try
 		{
@@ -187,23 +156,17 @@ public class BticinoDevice implements IBticinoEventListener
 			{
 				// An command is received from the openHab system
 				// analyse it and execute it
-				logger.debug("Command '{}' received for item {}", new String[] {
-						command.toString(), itemName });
+				logger.debug(
+						"Gateway [" + m_gateway_id
+								+ "], Command '{}' received for item {}",
+						(Object[]) new String[] { command.toString(), itemName });
 
-				// TODO : instead of working with this string to map, use an
-				// object
-				// representation
-				HashMap<String, String> l_item_config_map = m_item_config_map
-						.get(itemName);
-				// TODO : check for existance
+				ProtocolRead l_pr = new ProtocolRead(itemBindingConfig.who
+						+ "*" + itemBindingConfig.where);
+				l_pr.addProperty("who", itemBindingConfig.who);
+				l_pr.addProperty("address", itemBindingConfig.where);
 
-				ProtocolRead l_pr = new ProtocolRead(
-						l_item_config_map.get("who") + "*"
-								+ l_item_config_map.get("where"));
-				l_pr.addProperty("who", l_item_config_map.get("who"));
-				l_pr.addProperty("address", l_item_config_map.get("where"));
-
-				int l_who = Integer.parseInt(l_item_config_map.get("who"));
+				int l_who = Integer.parseInt(itemBindingConfig.who);
 				switch (l_who)
 				{
 				// Lights
@@ -232,101 +195,91 @@ public class BticinoDevice implements IBticinoEventListener
 			}
 		} catch (Exception e)
 		{
-			logger.error("Error processing receiveCommand '{}'",
-					new String[] { e.getMessage() });
+			logger.error("Gateway [" + m_gateway_id
+					+ "], Error processing receiveCommand '{}'",
+					(Object[]) new String[] { e.getMessage() });
 		}
-
 	}
 
 	public void handleEvent(ProtocolRead p_protocol_read) throws Exception
 	{
 		// the events on the bus are now received
 		// map them to events on the openhab bus
+		logger.debug("Gateway [" + m_gateway_id + "], Bticino WHO ["
+				+ p_protocol_read.getProperty("who") + "], WHAT ["
+				+ p_protocol_read.getProperty("what") + "], WHERE ["
+				+ p_protocol_read.getProperty("where") + "]");
 
-		// who + adress => komt dit voor in de lijst met Items?
-		// dan voor alle Items het correcte type zetten adv het ontvangen event
-		logger.debug("Bticino WHO [" + p_protocol_read.getProperty("who")
-				+ "], WHAT [" + p_protocol_read.getProperty("what")
-				+ "], WHERE [" + p_protocol_read.getProperty("where") + "]");
+		// Get all the configs that are connected to this (who,where), multiple possible
+		List<BticinoBindingConfig> l_binding_configs = m_bticino_binding
+				.getItemForBticinoBindingConfig(
+						p_protocol_read.getProperty("who"),
+						p_protocol_read.getProperty("where"));
 
-		String l_hash_key = p_protocol_read.getProperty("who") + ";"
-				+ p_protocol_read.getProperty("where");
-
-		if (m_btchino_device_to_item_map.containsKey(l_hash_key))
+		// log it when an event has occured that no item is bound to
+		if (l_binding_configs.isEmpty())
 		{
-			logger.debug("RECEIVED EVENT FOR Item, TRANSLATE TO OPENHAB BUS EVENT");
+			logger.debug("Gateway [" + m_gateway_id
+					+ "], No Item found for bticino event, WHO ["
+					+ p_protocol_read.getProperty("who") + "], WHAT ["
+					+ p_protocol_read.getProperty("what") + "], WHERE ["
+					+ p_protocol_read.getProperty("where") + "]");
+		}
 
-			// Get every Item object linked to this bticino item
-			List<String> l_item_names = m_btchino_device_to_item_map
-					.get(l_hash_key);
+		// every item associated with this who/where update the status
+		for (BticinoBindingConfig l_binding_config : l_binding_configs)
+		{
+			// Get the Item out of the config
+			Item l_item = l_binding_config.getItem();
 
-			// depending on every item, generate the correct event
-			for (String l_item_name : l_item_names)
+			logger.debug("Gateway [" + m_gateway_id
+					+ "], RECEIVED EVENT FOR Item [" + l_item.getName()
+					+ "], TRANSLATE TO OPENHAB BUS EVENT");
+
+			if (l_item instanceof SwitchItem)
 			{
-				Item l_item = m_item_map.get(l_item_name);
-
-				if (l_item instanceof SwitchItem)
+				if (p_protocol_read.getProperty("messageType")
+						.equalsIgnoreCase("lighting"))
 				{
-					if (p_protocol_read.getProperty("messageType")
-							.equalsIgnoreCase("lighting"))
+					if (p_protocol_read.getProperty("messageDescription")
+							.equalsIgnoreCase("Light ON"))
 					{
-						if (p_protocol_read.getProperty("messageDescription")
-								.equalsIgnoreCase("Light ON"))
-						{
-							eventPublisher
-									.postUpdate(l_item_name, OnOffType.ON);
-						} else if (p_protocol_read.getProperty(
-								"messageDescription").equalsIgnoreCase(
-								"Light OFF"))
-						{
-							eventPublisher.postUpdate(l_item_name,
-									OnOffType.OFF);
-						}
+						eventPublisher.postUpdate(l_item.getName(),
+								OnOffType.ON);
+					} else if (p_protocol_read
+							.getProperty("messageDescription")
+							.equalsIgnoreCase("Light OFF"))
+					{
+						eventPublisher.postUpdate(l_item.getName(),
+								OnOffType.OFF);
 					}
-				} else if (l_item instanceof RollershutterItem)
+				}
+			} else if (l_item instanceof RollershutterItem)
+			{
+				if (p_protocol_read.getProperty("messageType")
+						.equalsIgnoreCase("automation"))
 				{
-					if (p_protocol_read.getProperty("messageType")
-							.equalsIgnoreCase("automation"))
-					{
 
-						if (p_protocol_read.getProperty("messageDescription")
-								.equalsIgnoreCase("Automation STOP"))
-						{
-							// eventPublisher
-							// .postUpdate(l_item_name, StopMoveType.STOP);
-						} else if (p_protocol_read.getProperty(
-								"messageDescription").equalsIgnoreCase(
-								"Automation UP"))
-						{
-							eventPublisher.postUpdate(l_item_name,
-									UpDownType.UP);
-						} else if (p_protocol_read.getProperty(
-								"messageDescription").equalsIgnoreCase(
-								"Automation DOWN"))
-						{
-							eventPublisher.postUpdate(l_item_name,
-									UpDownType.DOWN);
-						}
+					if (p_protocol_read.getProperty("messageDescription")
+							.equalsIgnoreCase("Automation STOP"))
+					{
+						// eventPublisher
+						// .postUpdate(l_item_name, StopMoveType.STOP);
+					} else if (p_protocol_read
+							.getProperty("messageDescription")
+							.equalsIgnoreCase("Automation UP"))
+					{
+						eventPublisher.postUpdate(l_item.getName(),
+								UpDownType.UP);
+					} else if (p_protocol_read
+							.getProperty("messageDescription")
+							.equalsIgnoreCase("Automation DOWN"))
+					{
+						eventPublisher.postUpdate(l_item.getName(),
+								UpDownType.DOWN);
 					}
 				}
 			}
-
-			// // send data to the bus
-			// logger.debug("Received message '{}' on serial port {}", new
-			// String[]
-			// { result, port });
-			// if (eventPublisher != null && stringItemName != null) {
-			// eventPublisher.postUpdate(stringItemName, new
-			// StringType(result));
-			// }
-			// // if we receive empty values, we treat this to be a switch
-			// operation
-			// if (eventPublisher != null && switchItemName != null &&
-			// result.trim().isEmpty()) {
-			// eventPublisher.postUpdate(switchItemName, OnOffType.ON);
-			// eventPublisher.postUpdate(switchItemName, OnOffType.OFF);
-			// }
-
 		}
 	}
 }

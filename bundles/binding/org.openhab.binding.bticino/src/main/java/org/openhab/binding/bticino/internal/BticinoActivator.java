@@ -33,29 +33,32 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Extension of the default OSGi bundle activator
  * 
- * @author Kai Kreuzer
- * @since 0.6.0
+ * @author Tom De Vlaminck
+ * @serial 1.0
+ * @since 1.5.0
+ * 
  */
-public final class BticinoActivator implements BundleActivator {
+public final class BticinoActivator implements BundleActivator
+{
+	private static Logger logger = LoggerFactory
+			.getLogger(BticinoActivator.class);
 
-	private static Logger logger = LoggerFactory.getLogger(BticinoActivator.class); 
-	
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
-	public void start(BundleContext bc) throws Exception {
+	public void start(BundleContext bc) throws Exception
+	{
 		logger.debug("Bticino binding has been started.");
 	}
 
 	/**
 	 * Called whenever the OSGi framework stops our bundle
 	 */
-	public void stop(BundleContext bc) throws Exception {
+	public void stop(BundleContext bc) throws Exception
+	{
 		logger.debug("Bticino binding has been stopped.");
 	}
-	
 }

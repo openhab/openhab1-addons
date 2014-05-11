@@ -28,25 +28,20 @@
  */
 package org.openhab.binding.bticino.internal;
 
-import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openhab.core.events.AbstractEventSubscriber;
+import org.openhab.binding.bticino.internal.BticinoGenericBindingProvider.BticinoBindingConfig;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.events.EventPublisher;
-import org.openhab.core.items.Item;
-import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.model.item.binding.BindingConfigParseException;
-import org.openhab.model.item.binding.BindingConfigReader;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -54,29 +49,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- * This class implements a binding of serial devices to openHAB. The binding
+ * This class implements a binding of bticino devices to openHAB. The binding
  * configurations are provided by the {@link GenericItemProvider}.
  * </p>
  * 
- * <p>
- * The format of the binding configuration is simple and looks like this:
- * </p>
- * serial="&lt;port&gt;" where &lt;port&gt; is the identification of the serial
- * port on the host system, e.g. "COM1" on Windows, "/dev/ttyS0" on Linux or
- * "/dev/tty.PL2303-0000103D" on Mac
- * <p>
- * Switch items with this binding will receive an ON-OFF update on the bus,
- * whenever data becomes available on the serial interface<br/>
- * String items will receive the submitted data in form of a string value as a
- * status update, while openHAB commands to a Switch item is sent out as data
- * through the serial interface.
- * </p>
- * 
- * @author Kai Kreuzer
+ * @author Tom De Vlaminck
+ * @serial 1.0
+ * @since 1.5.0
  * 
  */
-public class BticinoBinding extends AbstractEventSubscriber implements
-		BindingConfigReader, ManagedService
+public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
+		implements ManagedService
 {
 
 	private static final Logger logger = LoggerFactory
@@ -89,27 +72,16 @@ public class BticinoBinding extends AbstractEventSubscriber implements
 	private static final Pattern EXTRACT_BTICINO_GATEWAY_CONFIG_PATTERN = Pattern
 			.compile("^(.*?)\\.(host|port)$");
 
-	private Map<String, BticinoDevice> bticinoDevices = new HashMap<String, BticinoDevice>();
-
-	/**
-	 * stores information about the which items are associated to which port.
-	 * The map has this content structure: itemname -> port
-	 */
-	private Map<String, String> itemMap = new HashMap<String, String>();
-
 	// indicates that the updated has been run once
 	boolean m_binding_initialized = false;
-	
-	/**
-	 * stores information about the context of items. The map has this content
-	 * structure: context -> Set of itemNames
-	 */
-	private Map<String, Set<String>> contextMap = new HashMap<String, Set<String>>();
 
 	private EventPublisher eventPublisher = null;
 
-	private Map<String, BticinoConfig> m_bticino_config_cache = new HashMap<String, BticinoConfig>();
-
+	// (interfaceid, deviceconfig)
+	private Map<String, BticinoConfig> m_bticino_devices_config = new HashMap<String, BticinoConfig>();
+	// (interfaceid, device)
+	private Map<String, BticinoDevice> m_bticino_devices = new HashMap<String, BticinoDevice>();
+	
 	static class BticinoConfig
 	{
 		String id;
@@ -124,44 +96,115 @@ public class BticinoBinding extends AbstractEventSubscriber implements
 		}
 	}
 
+	@Override
 	public void setEventPublisher(EventPublisher eventPublisher)
 	{
 		this.eventPublisher = eventPublisher;
 
-		for (BticinoDevice serialDevice : bticinoDevices.values())
+		for (BticinoDevice bticinodevice : m_bticino_devices.values())
 		{
-			serialDevice.setEventPublisher(eventPublisher);
+			bticinodevice.setEventPublisher(eventPublisher);
 		}
 	}
 
+	@Override
 	public void unsetEventPublisher(EventPublisher eventPublisher)
 	{
 		this.eventPublisher = null;
 
-		for (BticinoDevice serialDevice : bticinoDevices.values())
+		for (BticinoDevice bticinodevice : m_bticino_devices.values())
 		{
-			serialDevice.setEventPublisher(null);
+			bticinodevice.setEventPublisher(null);
 		}
+	}
+
+	/**
+	 * For the given item, get the bticino binding configuration
+	 * 
+	 * @param itemName
+	 * @return
+	 * @throws Exception
+	 */
+	public BticinoBindingConfig getBticinoBindingConfigForItem(String itemName)
+	{
+		// Get the bticino binding config for the associated item
+		BticinoBindingConfig l_item_binding = null;
+		for (BticinoBindingProvider provider : providers)
+		{
+			if (provider.providesBindingFor(itemName))
+			{
+				l_item_binding = provider.getConfig(itemName);
+				break;
+			}
+		}
+		// the item must have a config
+		if (l_item_binding == null)
+			throw new RuntimeException("BindingConfig not found for item ["
+					+ itemName + "]");
+		return l_item_binding;
+	}
+
+	/**
+	 * Returns the BticinoBindingConfig(s) associated with the who / where config
+	 * 
+	 * @param who
+	 * @param where
+	 * @return
+	 */
+	public List<BticinoBindingConfig> getItemForBticinoBindingConfig(
+			String who, String where)
+	{
+		// Find all the bindings for the who-where combination (multiple
+		// possible)
+		List<BticinoBindingConfig> l_item_bindings = new LinkedList<BticinoBindingConfig>();
+
+		// Get all the bticino providers
+		for (BticinoBindingProvider provider : providers)
+		{
+			// Get all the items it provides binding for
+			for (String l_item_name : provider.getItemNames())
+			{
+				// Check if this config item provides binding for the given
+				// who/where
+				BticinoBindingConfig l_binding_config = provider
+						.getConfig(l_item_name);
+
+				if (l_binding_config.who.equals(who)
+						&& l_binding_config.where.equals(where))
+				{
+					// Add it to the list
+					l_item_bindings.add(l_binding_config);
+				}
+			}
+		}
+		return l_item_bindings;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void receiveCommand(String itemName, Command command)
+	public void internalReceiveCommand(String itemName, Command command)
 	{
-		if (itemMap.keySet().contains(itemName))
+		super.internalReceiveCommand(itemName, command);
+		// Get the bticino interface id from the itemconfig
+		BticinoBindingConfig l_item_binding = getBticinoBindingConfigForItem(itemName);
+		// Get the interface from the item config
+		String l_interface_id = l_item_binding.gatewayID;
+		// Get the bticino device from the map (if it exists)
+		if (m_bticino_devices.containsKey(l_interface_id))
 		{
-			BticinoDevice l_bticino_device = bticinoDevices.get(itemMap
-					.get(itemName));
-			l_bticino_device.receiveCommand(itemName, command);
-
+			BticinoDevice l_bticino_device = m_bticino_devices
+					.get(l_interface_id);
+			l_bticino_device.receiveCommand(itemName, command, l_item_binding);
 		} else
 		{
 			// just to know that something is wrong
 			logger.error("Item ["
 					+ itemName
-					+ "] is not handled by any openweb gateway, possible programming bug! Handled items : " + Arrays.toString(itemMap.keySet().toArray()));
+					+ "] uses Bticino interface with ID ["
+					+ l_interface_id
+					+ "] but this gateway doesn't exist : check items.cfg and openhab.cfg!");
 		}
 	}
 
@@ -169,121 +212,42 @@ public class BticinoBinding extends AbstractEventSubscriber implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void receiveUpdate(String itemName, State newStatus)
+	public void internalReceiveUpdate(String itemName, State newState)
 	{
-		// ignore any updates
+		// the code being executed when a state was sent on the openHAB
+		// event bus goes here. This method is only called if one of the 
+		// BindingProviders provide a binding for the given 'itemName'.
+		logger.debug("internalReceiveUpdate() is called!");
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * # OpenWeb gateway IP address / Hostname bticino:default.host=x.x.x.x OR
+	 * hostname # OpenWeb gateway Port (optional, defaults to 20000)
+	 * bticino:default.port=z (20000)
+	 * 
+	 * # Interface with name aaa bticino:aaa.host=x.x.x.x OR hostname # OpenWeb
+	 * gateway Port (optional, defaults to 20000) bticino:aaa.port=z (20000)
 	 */
-	public String getBindingType()
-	{
-		return "bticino";
-	}
 
 	/**
-	 * {@inheritDoc}
+	 * @{inheritDoc
 	 */
-	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException
-	{
-		if (!(item instanceof SwitchItem || item instanceof RollershutterItem))
-		{
-			throw new BindingConfigParseException(
-					"item '"
-							+ item.getName()
-							+ "' is of type '"
-							+ item.getClass().getSimpleName()
-							+ "', this Items is not allowed - please check your *.items configuration");
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void processBindingConfiguration(String context, Item item,
-			String bindingConfig) throws BindingConfigParseException
-	{
-		// bticino="if=0;who=1;what=1;where=23"
-		// if => support for multiple MH200 devices (= several houses throug
-		// VPN)
-
-		HashMap<String, String> l_bticino_binding_config = bticinoBindingConfigDecompose(bindingConfig);
-
-		// the gateway name is defined with the "if" property
-		// when this is not defined, we revert to default (this
-		// must be present in openhab*.cfg
-		String l_gw_if_id = "default";
-
-		if (l_bticino_binding_config.containsKey("if"))
-			l_gw_if_id = l_bticino_binding_config.get("if");
-
-		BticinoDevice l_bticino_device = bticinoDevices.get(l_gw_if_id);
-
-		if (l_bticino_device != null)
-		{
-
-			// remember which if will handle which item
-			itemMap.put(item.getName(), l_gw_if_id);
-
-			l_bticino_device.addItem(item, l_bticino_binding_config);
-
-			Set<String> itemNames = contextMap.get(context);
-			if (itemNames == null)
-			{
-				itemNames = new HashSet<String>();
-				contextMap.put(context, itemNames);
-			}
-			itemNames.add(item.getName());
-		} else
-		{
-			throw new BindingConfigParseException(
-					"Could not get BTicino interface with ID [" + l_gw_if_id
-							+ "] that is needed for Item [" + item.getName()
-							+ "]");
-		}
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void removeConfigurations(String context)
-	{
-		Set<String> itemNames = contextMap.get(context);
-		if (itemNames != null)
-		{
-			for (String itemName : itemNames)
-			{
-				// we remove all information in the serial devices
-				BticinoDevice l_bticino_device = bticinoDevices.get(itemMap
-						.get(itemName));
-				itemMap.remove(itemName);
-				if (l_bticino_device == null)
-				{
-					continue;
-				}
-				l_bticino_device.removeItem(itemName);
-				// if there is no binding left, dispose this device
-				// l_bticino_device.close();
-			}
-			contextMap.remove(context);
-		}
-	}
-
-	@SuppressWarnings("rawtypes")
-	public void updated(Dictionary config) throws ConfigurationException
+	public void updated(Dictionary<String, ?> properties)
+			throws ConfigurationException
 	{
 		if (!m_binding_initialized)
 		{
-			m_binding_initialized = true;
+			// remove all configs
+			m_bticino_devices_config.clear();
+			// remove all interfaces
+			m_bticino_devices.clear();
+
 			// We will read every configuration key, and encounter
 			// hostname, port for the configured bticino gateways
-			Enumeration keys = config.keys();
+			Enumeration<String> keys = properties.keys();
 			while (keys.hasMoreElements())
 			{
-				String key = (String) keys.nextElement();
+				String key = keys.nextElement();
 
 				// the config-key enumeration contains additional keys that we
 				// don't want to process here ...
@@ -307,31 +271,39 @@ public class BticinoBinding extends AbstractEventSubscriber implements
 				matcher.reset();
 				matcher.find();
 
+				// Get the interface id
 				String l_gw_if_id = matcher.group(1);
 
-				BticinoConfig l_bticino_config = m_bticino_config_cache
+				// Search the config, to update the values (row / row)
+				BticinoConfig l_bticino_config = m_bticino_devices_config
 						.get(l_gw_if_id);
+				// Create a new config if it wasnt found now
 				if (l_bticino_config == null)
 				{
 					l_bticino_config = new BticinoConfig();
+					// set the id
 					l_bticino_config.id = l_gw_if_id;
-					m_bticino_config_cache.put(l_gw_if_id, l_bticino_config);
+					// add (if_id, bticino config) entry
+					m_bticino_devices_config.put(l_gw_if_id, l_bticino_config);
 				}
 
 				String configKey = matcher.group(2);
-				String value = (String) config.get(key);
+				String value = (String) properties.get(key);
 
+				// parameter host
 				if ("host".equals(configKey))
 				{
 					l_bticino_config.host = value;
-				} else if ("port".equals(configKey))
+				}
+				// parameter port
+				else if ("port".equals(configKey))
 				{
 					l_bticino_config.port = Integer.valueOf(value);
 				} else
 				{
 					throw new ConfigurationException(configKey,
 							"the given configKey '" + configKey
-									+ "' is unknown");
+									+ "' with value '" + value + "' is unknown");
 				}
 			}
 
@@ -341,75 +313,51 @@ public class BticinoBinding extends AbstractEventSubscriber implements
 
 			// Now start all the bticino gateways
 			startAllBticinoDevices();
+
+			// Indicate that this binding has been initialized
+			m_binding_initialized = true;
 		}
 	}
 
 	private void connectAllBticinoDevices() throws ConfigurationException
 	{
-		for (String l_gw_if_id : m_bticino_config_cache.keySet())
+		for (String l_gw_if_id : m_bticino_devices_config.keySet())
 		{
-			BticinoConfig l_current_device_config = m_bticino_config_cache
+			BticinoConfig l_current_device_config = m_bticino_devices_config
 					.get(l_gw_if_id);
 
-			BticinoDevice l_bticino_device = bticinoDevices.get(l_gw_if_id);
-
-			if (l_bticino_device == null)
+			// Create a gw service object
+			BticinoDevice l_bticino_device = new BticinoDevice(
+					l_current_device_config.id, this);
+			l_bticino_device.setEventPublisher(eventPublisher);
+			l_bticino_device.setHost(l_current_device_config.host);
+			l_bticino_device.setPort(l_current_device_config.port);
+			try
 			{
-				// Create a gw service object
-				l_bticino_device = new BticinoDevice(l_current_device_config.id);
-				l_bticino_device.setEventPublisher(eventPublisher);
-				l_bticino_device.setHost(l_current_device_config.host);
-				l_bticino_device.setPort(l_current_device_config.port);
-				try
-				{
-					l_bticino_device.initialize();
-				} catch (InitializationException e)
-				{
-					throw new ConfigurationException(l_gw_if_id,
-							"Could not open create BTicino interface with ID ["
-									+ l_gw_if_id + "], Exception : "
-									+ e.getMessage());
-				} catch (Throwable e)
-				{
-					throw new ConfigurationException(l_gw_if_id,
-							"Could not open create BTicino interface with ID ["
-									+ l_gw_if_id + "], Exception : "
-									+ e.getMessage());
-				}
-				bticinoDevices.put(l_gw_if_id, l_bticino_device);
+				l_bticino_device.initialize();
+			} catch (InitializationException e)
+			{
+				throw new ConfigurationException(l_gw_if_id,
+						"Could not open create BTicino interface with ID ["
+								+ l_gw_if_id + "], Exception : "
+								+ e.getMessage());
+			} catch (Throwable e)
+			{
+				throw new ConfigurationException(l_gw_if_id,
+						"Could not open create BTicino interface with ID ["
+								+ l_gw_if_id + "], Exception : "
+								+ e.getMessage());
 			}
+			m_bticino_devices.put(l_gw_if_id, l_bticino_device);
 		}
 	}
 
 	private void startAllBticinoDevices() throws ConfigurationException
 	{
-		for (String l_gw_if_id : m_bticino_config_cache.keySet())
+		for (String l_gw_if_id : m_bticino_devices.keySet())
 		{
-			BticinoConfig l_current_device_config = m_bticino_config_cache
-					.get(l_gw_if_id);
-
-			BticinoDevice l_bticino_device = bticinoDevices.get(l_gw_if_id);
-
-			if ((l_bticino_device != null)
-					&& (!l_bticino_device.isDeviceStarted()))
-			{
-				l_bticino_device.startDevice();
-			}
+			BticinoDevice l_bticino_device = m_bticino_devices.get(l_gw_if_id);
+			l_bticino_device.startDevice();
 		}
 	}
-
-	static private HashMap<String, String> bticinoBindingConfigDecompose(
-			String p_binding_config)
-	{
-		HashMap<String, String> l_configuration_hm = new HashMap<String, String>();
-		// who=1;what=1;where=23
-		String[] l_key_value_pairs = p_binding_config.split(";");
-		for (int l_idx = 0; l_idx < l_key_value_pairs.length; l_idx++)
-		{
-			String[] l_key_value = l_key_value_pairs[l_idx].split("=");
-			l_configuration_hm.put(l_key_value[0], l_key_value[1]);
-		}
-		return l_configuration_hm;
-	}
-
 }
