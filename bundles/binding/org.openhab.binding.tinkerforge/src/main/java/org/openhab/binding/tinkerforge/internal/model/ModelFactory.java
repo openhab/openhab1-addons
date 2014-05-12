@@ -203,6 +203,33 @@ public interface ModelFactory extends EFactory
   DigitalSensor createDigitalSensor();
 
   /**
+   * Returns a new object of class '<em>MBricklet IO4</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet IO4</em>'.
+   * @generated
+   */
+  MBrickletIO4 createMBrickletIO4();
+
+  /**
+   * Returns a new object of class '<em>Digital Sensor IO4</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Digital Sensor IO4</em>'.
+   * @generated
+   */
+  DigitalSensorIO4 createDigitalSensorIO4();
+
+  /**
+   * Returns a new object of class '<em>Digital Actor IO4</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Digital Actor IO4</em>'.
+   * @generated
+   */
+  DigitalActorIO4 createDigitalActorIO4();
+
+  /**
    * Returns a new object of class '<em>MBricklet Multi Touch</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

@@ -396,6 +396,53 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_IO4:
+      {
+        MBrickletIO4 mBrickletIO4 = (MBrickletIO4)theEObject;
+        T result = caseMBrickletIO4(mBrickletIO4);
+        if (result == null) result = caseMDevice(mBrickletIO4);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletIO4);
+        if (result == null) result = caseInterruptListener(mBrickletIO4);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletIO4);
+        if (result == null) result = caseMBaseDevice(mBrickletIO4);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.IO4_DEVICE:
+      {
+        IO4Device io4Device = (IO4Device)theEObject;
+        T result = caseIO4Device(io4Device);
+        if (result == null) result = caseMSubDevice(io4Device);
+        if (result == null) result = caseGenericDevice(io4Device);
+        if (result == null) result = caseMBaseDevice(io4Device);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DIGITAL_SENSOR_IO4:
+      {
+        DigitalSensorIO4 digitalSensorIO4 = (DigitalSensorIO4)theEObject;
+        T result = caseDigitalSensorIO4(digitalSensorIO4);
+        if (result == null) result = caseIO4Device(digitalSensorIO4);
+        if (result == null) result = caseMSensor(digitalSensorIO4);
+        if (result == null) result = caseMTFConfigConsumer(digitalSensorIO4);
+        if (result == null) result = caseMSubDevice(digitalSensorIO4);
+        if (result == null) result = caseGenericDevice(digitalSensorIO4);
+        if (result == null) result = caseMBaseDevice(digitalSensorIO4);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DIGITAL_ACTOR_IO4:
+      {
+        DigitalActorIO4 digitalActorIO4 = (DigitalActorIO4)theEObject;
+        T result = caseDigitalActorIO4(digitalActorIO4);
+        if (result == null) result = caseIO4Device(digitalActorIO4);
+        if (result == null) result = caseMTFConfigConsumer(digitalActorIO4);
+        if (result == null) result = caseMSubDevice(digitalActorIO4);
+        if (result == null) result = caseGenericDevice(digitalActorIO4);
+        if (result == null) result = caseMBaseDevice(digitalActorIO4);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_MULTI_TOUCH:
       {
         MBrickletMultiTouch mBrickletMultiTouch = (MBrickletMultiTouch)theEObject;
@@ -1453,6 +1500,70 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseDigitalSensor(DigitalSensor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet IO4</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet IO4</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletIO4(MBrickletIO4 object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>IO4 Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>IO4 Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseIO4Device(IO4Device object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Digital Sensor IO4</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Digital Sensor IO4</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDigitalSensorIO4(DigitalSensorIO4 object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Digital Actor IO4</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Digital Actor IO4</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDigitalActorIO4(DigitalActorIO4 object)
   {
     return null;
   }

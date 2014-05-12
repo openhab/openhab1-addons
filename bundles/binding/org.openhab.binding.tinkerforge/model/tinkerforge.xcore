@@ -38,6 +38,7 @@ import com.tinkerforge.BrickletMoisture
 import com.tinkerforge.BrickletDistanceUS
 import com.tinkerforge.BrickletVoltageCurrent
 import com.tinkerforge.BrickletTilt
+import com.tinkerforge.BrickletIO4
 import java.math.BigDecimal
 
 /**
@@ -75,6 +76,7 @@ type TinkerBrickletMoisture wraps BrickletMoisture
 type TinkerBrickletDistanceUS wraps BrickletDistanceUS
 type TinkerBrickletVoltageCurrent wraps BrickletVoltageCurrent
 type TinkerBrickletTilt wraps BrickletTilt
+type TinkerBrickletIO4 wraps BrickletIO4
 type Enum wraps Enum
 
 class Ecosystem {
@@ -272,6 +274,32 @@ class DigitalSensor extends IODevice, MSensor<DigitalValue>,
 	boolean pullUpResistorEnabled
 	char port
 	int pin
+}
+
+class MBrickletIO4 extends MDevice<TinkerBrickletIO4>,
+        MSubDeviceHolder<IO4Device>, InterruptListener,
+        MTFConfigConsumer<TFInterruptListenerConfiguration> {
+   readonly String deviceType = "bricklet_io4"
+}
+
+interface IO4Device extends MSubDevice<MBrickletIO4>, GenericDevice {
+}
+
+class DigitalSensorIO4 extends IO4Device, MSensor<DigitalValue>, 
+        MTFConfigConsumer<TFIOSensorConfiguration> {
+    readonly String deviceType = "io4sensor"
+    boolean pullUpResistorEnabled
+    int pin
+}
+
+class DigitalActorIO4 extends IO4Device, MTFConfigConsumer<TFIOActorConfiguration>{
+    readonly String deviceType = "io4_actuator"
+    DigitalValue digitalState
+    op void turnDigital(DigitalValue digitalState)
+    op void fetchDigitalValue()
+    int pin
+    String defaultState
+    boolean keepOnReconnect = "false"
 }
 
 class MBrickletMultiTouch extends MDevice<TinkerBrickletMultiTouch>,
@@ -636,6 +664,10 @@ enum IO16SubIds {
 	INB0, INB1, INB2, INB3, INB4, INB5, INB6, INB7
 	OUTA0, OUTA1, OUTA2, OUTA3, OUTA4, OUTA5, OUTA6, OUTA7
 	OUTB0, OUTB1, OUTB2, OUTB3, OUTB4, OUTB5, OUTB6, OUTB7
+}
+
+enum IO4SubIds {
+    IN0, IN1, IN2, IN3, OUT0, OUT1, OUT2, OUT3
 }
 
 enum DualRelaySubIds {
