@@ -25,6 +25,11 @@
  * containing parts covered by the terms of the Eclipse Public License
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
+ * 
+ * @author Tom De Vlaminck
+ * @serial 1.0
+ * @since 1.5.0
+ * 
  */
 package org.openhab.binding.bticino.internal;
 
@@ -86,12 +91,15 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
 	{
 		String id;
 		String host;
-		int port;
+		// Default port is 20000 for a MH200
+		int port = 20000;
+		// Default rescan interval is 300 seconds
+		int rescan_secs = 300;
 
 		@Override
 		public String toString()
 		{
-			return "Bticino [id=" + id + ", host=" + host + ", port=" + port
+			return "Bticino [id=" + id + ", host=" + host + ", port=" + port + ", rescan secs=" + rescan_secs
 					+ "]";
 		}
 	}
@@ -299,7 +307,12 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
 				else if ("port".equals(configKey))
 				{
 					l_bticino_config.port = Integer.valueOf(value);
-				} else
+				} 
+				else if ("rescan_secs".equals(configKey))
+				{
+					l_bticino_config.rescan_secs = Integer.valueOf(value);
+				} 
+				else
 				{
 					throw new ConfigurationException(configKey,
 							"the given configKey '" + configKey
@@ -332,6 +345,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
 			l_bticino_device.setEventPublisher(eventPublisher);
 			l_bticino_device.setHost(l_current_device_config.host);
 			l_bticino_device.setPort(l_current_device_config.port);
+			l_bticino_device.setRescanInterval(l_current_device_config.rescan_secs);
 			try
 			{
 				l_bticino_device.initialize();

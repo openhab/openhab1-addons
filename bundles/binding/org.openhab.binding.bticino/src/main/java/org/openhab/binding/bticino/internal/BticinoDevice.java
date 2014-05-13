@@ -25,12 +25,17 @@
  * containing parts covered by the terms of the Eclipse Public License
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
+ * 
+ * @author Tom De Vlaminck
+ * @serial 1.0
+ * @since 1.5.0
+ * 
  */
 package org.openhab.binding.bticino.internal;
 
-import it.cicolella.openwebnet.IBticinoEventListener;
-import it.cicolella.openwebnet.OpenWebNet;
-import it.cicolella.openwebnet.ProtocolRead;
+import be.devlaminck.openwebnet.IBticinoEventListener;
+import be.devlaminck.openwebnet.OpenWebNet;
+import be.devlaminck.openwebnet.ProtocolRead;
 
 import java.util.List;
 
@@ -67,6 +72,8 @@ public class BticinoDevice implements IBticinoEventListener
 	private String m_host = "";
 	// Port to connect to
 	private int m_port = 0;
+	// Rescan interval in seconds
+	private int m_rescan_interval_secs = 0;
 	// Indicator if this device is started
 	private boolean m_device_is_started = false;
 	// A lock object
@@ -95,6 +102,11 @@ public class BticinoDevice implements IBticinoEventListener
 		m_port = p_port;
 	}
 
+	public void setRescanInterval(int p_rescan_interval_secs)
+	{
+		m_rescan_interval_secs = p_rescan_interval_secs;
+	}
+	
 	public void setEventPublisher(EventPublisher eventPublisher)
 	{
 		this.eventPublisher = eventPublisher;
@@ -124,7 +136,7 @@ public class BticinoDevice implements IBticinoEventListener
 	{
 		if (m_open_web_net == null)
 		{
-			m_open_web_net = new OpenWebNet(m_host, m_port);
+			m_open_web_net = new OpenWebNet(m_host, m_port, m_rescan_interval_secs);
 			m_open_web_net.addEventListener(this);
 			m_open_web_net.onStart();
 		}

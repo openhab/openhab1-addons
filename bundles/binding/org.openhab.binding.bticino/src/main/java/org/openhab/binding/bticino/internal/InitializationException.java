@@ -25,6 +25,11 @@
  * containing parts covered by the terms of the Eclipse Public License
  * (EPL), the licensors of this Program grant you additional permission
  * to convey the resulting work.
+ * 
+ * @author Tom De Vlaminck
+ * @serial 1.0
+ * @since 1.5.0
+ * 
  */
 package org.openhab.binding.bticino.internal;
 
