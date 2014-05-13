@@ -63,6 +63,7 @@ public abstract class Device {
 				case HeatingThermostatPlus:
 				case HeatingThermostat:
 					return new HeatingThermostat(c);
+				case EcoSwitch:
 				case ShutterContact:
 					return new ShutterContact(c);
 				case WallMountedThermostat:
@@ -138,17 +139,23 @@ public abstract class Device {
 			int timeValue = raw[10] & 0xFF;
 			Date date = Utils.resolveDateTime(dateValue, timeValue);
 			heatingThermostat.setDateSetpoint(date);
-
+			break;
+		case EcoSwitch:
+			
+			String eCoSwitch = Utils.toHex(raw[3] & 0xFF, raw[4] & 0xFF, raw[5] & 0xFF);
+			logger.debug ("EcoSwitch Device {} status bytes : {}", rfAddress, eCoSwitch);
 			break;
 		case ShutterContact:
 			ShutterContact shutterContact = (ShutterContact) device;
 			// xxxx xx10 = shutter open, xxxx xx00 = shutter closed
 			if (bits2[1] == true && bits2[0] == false) {
 				shutterContact.setShutterState(OpenClosedType.OPEN);
+				logger.trace ("Device {} status: Open", rfAddress);
 			} else if (bits2[1] == false && bits2[0] == false) {
 				shutterContact.setShutterState(OpenClosedType.CLOSED);
+				logger.trace ("Device {} status: Closed", rfAddress);
 			} else {
-				// TODO: handel malformed message
+				logger.trace ("Device {} status switch status Unknown (true-true)", rfAddress);
 			}
 
 			break;
