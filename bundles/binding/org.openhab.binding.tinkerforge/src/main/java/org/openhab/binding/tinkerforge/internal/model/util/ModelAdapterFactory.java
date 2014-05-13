@@ -282,6 +282,26 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createDigitalSensorAdapter();
       }
       @Override
+      public Adapter caseMBrickletIO4(MBrickletIO4 object)
+      {
+        return createMBrickletIO4Adapter();
+      }
+      @Override
+      public Adapter caseIO4Device(IO4Device object)
+      {
+        return createIO4DeviceAdapter();
+      }
+      @Override
+      public Adapter caseDigitalSensorIO4(DigitalSensorIO4 object)
+      {
+        return createDigitalSensorIO4Adapter();
+      }
+      @Override
+      public Adapter caseDigitalActorIO4(DigitalActorIO4 object)
+      {
+        return createDigitalActorIO4Adapter();
+      }
+      @Override
       public Adapter caseMBrickletMultiTouch(MBrickletMultiTouch object)
       {
         return createMBrickletMultiTouchAdapter();
@@ -1034,6 +1054,66 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createDigitalSensorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIO4 <em>MBricklet IO4</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletIO4
+   * @generated
+   */
+  public Adapter createMBrickletIO4Adapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.IO4Device <em>IO4 Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.IO4Device
+   * @generated
+   */
+  public Adapter createIO4DeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4 <em>Digital Sensor IO4</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4
+   * @generated
+   */
+  public Adapter createDigitalSensorIO4Adapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4 <em>Digital Actor IO4</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4
+   * @generated
+   */
+  public Adapter createDigitalActorIO4Adapter()
   {
     return null;
   }

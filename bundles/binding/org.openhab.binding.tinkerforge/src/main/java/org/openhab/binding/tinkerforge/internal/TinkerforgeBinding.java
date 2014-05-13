@@ -37,6 +37,7 @@ import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
 import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
@@ -189,7 +190,8 @@ public class TinkerforgeBinding extends
 		bricklet_multitouch, electrode, proximity, object_temperature, ambient_temperature, 
 		bricklet_temperatureIR, bricklet_soundintensity, bricklet_moisture,
 		bricklet_distanceUS, bricklet_voltageCurrent, voltageCurrent_voltage,
-		voltageCurrent_current, voltageCurrent_power, bricklet_tilt
+		voltageCurrent_current, voltageCurrent_power, bricklet_tilt, io4_actuator, 
+		io4sensor, bricklet_io4
 	}
 	
 	public TinkerforgeBinding() {
@@ -1037,6 +1039,17 @@ public class TinkerforgeBinding extends
 					Arrays.asList(IO16SubIds.values()));
 			ohtfDevice.setTfConfig(tfioActorConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
+		} else if (deviceType.equals(TypeKey.io4_actuator.name())) {
+          logger.debug("{} setting io4_actuator config",
+            LoggerConstants.CONFIG);
+            TFIOActorConfiguration tfioActorConfiguration = modelFactory
+                .createTFIOActorConfiguration();
+            OHTFDevice<TFIOActorConfiguration, IO4SubIds> ohtfDevice = modelFactory
+                .createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(
+            Arrays.asList(IO4SubIds.values()));
+            ohtfDevice.setTfConfig(tfioActorConfiguration);
+            fillupConfig(ohtfDevice, deviceConfig);
 		} else if (deviceType.equals(TypeKey.iosensor.name())) {
 			logger.debug("{} setting iosensor config",
 					LoggerConstants.CONFIG);
@@ -1048,8 +1061,20 @@ public class TinkerforgeBinding extends
 					Arrays.asList(IO16SubIds.values()));
 			ohtfDevice.setTfConfig(tfioSensorConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
+		} else if (deviceType.equals(TypeKey.io4sensor.name())){
+            logger.debug("{} setting io4sensor config",
+              LoggerConstants.CONFIG);
+            TFIOSensorConfiguration tfioSensorConfiguration = modelFactory
+                .createTFIOSensorConfiguration();
+            OHTFDevice<TFIOSensorConfiguration, IO4SubIds> ohtfDevice = modelFactory
+                .createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(
+              Arrays.asList(IO4SubIds.values()));
+            ohtfDevice.setTfConfig(tfioSensorConfiguration);
+            fillupConfig(ohtfDevice, deviceConfig);
 		} else if (deviceType.equals(TypeKey.bricklet_industrial_digital_4in
-				.name()) || deviceType.equals(TypeKey.bricklet_io16.name())) {
+				.name()) || deviceType.equals(TypeKey.bricklet_io16.name())
+				|| deviceType.equals(TypeKey.bricklet_io4.name())) {
 			logger.debug("{} setting TFInterruptListenerConfiguration device_type {}",
 					LoggerConstants.CONFIG, deviceType);
 			TFInterruptListenerConfiguration tfInterruptListenerConfiguration = modelFactory

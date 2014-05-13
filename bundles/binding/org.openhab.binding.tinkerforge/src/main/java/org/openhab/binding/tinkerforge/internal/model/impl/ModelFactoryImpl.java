@@ -79,6 +79,7 @@ import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
+import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
@@ -159,6 +160,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.DIGITAL_ACTOR: return createDigitalActor();
       case ModelPackage.MBRICKLET_IO16: return createMBrickletIO16();
       case ModelPackage.DIGITAL_SENSOR: return createDigitalSensor();
+      case ModelPackage.MBRICKLET_IO4: return createMBrickletIO4();
+      case ModelPackage.DIGITAL_SENSOR_IO4: return createDigitalSensorIO4();
+      case ModelPackage.DIGITAL_ACTOR_IO4: return createDigitalActorIO4();
       case ModelPackage.MBRICKLET_MULTI_TOUCH: return createMBrickletMultiTouch();
       case ModelPackage.MULTI_TOUCH_DEVICE: return createMultiTouchDevice();
       case ModelPackage.ELECTRODE: return createElectrode();
@@ -238,6 +242,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createBarometerSubIDsFromString(eDataType, initialValue);
       case ModelPackage.IO16_SUB_IDS:
         return createIO16SubIdsFromString(eDataType, initialValue);
+      case ModelPackage.IO4_SUB_IDS:
+        return createIO4SubIdsFromString(eDataType, initialValue);
       case ModelPackage.DUAL_RELAY_SUB_IDS:
         return createDualRelaySubIdsFromString(eDataType, initialValue);
       case ModelPackage.LCD_BUTTON_SUB_IDS:
@@ -310,6 +316,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletVoltageCurrentFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_TILT:
         return createTinkerBrickletTiltFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_IO4:
+        return createTinkerBrickletIO4FromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -341,6 +349,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertBarometerSubIDsToString(eDataType, instanceValue);
       case ModelPackage.IO16_SUB_IDS:
         return convertIO16SubIdsToString(eDataType, instanceValue);
+      case ModelPackage.IO4_SUB_IDS:
+        return convertIO4SubIdsToString(eDataType, instanceValue);
       case ModelPackage.DUAL_RELAY_SUB_IDS:
         return convertDualRelaySubIdsToString(eDataType, instanceValue);
       case ModelPackage.LCD_BUTTON_SUB_IDS:
@@ -413,6 +423,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletVoltageCurrentToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_TILT:
         return convertTinkerBrickletTiltToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_IO4:
+        return convertTinkerBrickletIO4ToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -628,6 +640,39 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     DigitalSensorImpl digitalSensor = new DigitalSensorImpl();
     return digitalSensor;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletIO4 createMBrickletIO4()
+  {
+    MBrickletIO4Impl mBrickletIO4 = new MBrickletIO4Impl();
+    return mBrickletIO4;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DigitalSensorIO4 createDigitalSensorIO4()
+  {
+    DigitalSensorIO4Impl digitalSensorIO4 = new DigitalSensorIO4Impl();
+    return digitalSensorIO4;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DigitalActorIO4 createDigitalActorIO4()
+  {
+    DigitalActorIO4Impl digitalActorIO4 = new DigitalActorIO4Impl();
+    return digitalActorIO4;
   }
 
   /**
@@ -1333,6 +1378,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public IO4SubIds createIO4SubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    IO4SubIds result = IO4SubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertIO4SubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public DualRelaySubIds createDualRelaySubIdsFromString(EDataType eDataType, String initialValue)
   {
     DualRelaySubIds result = DualRelaySubIds.get(initialValue);
@@ -1936,6 +2003,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletTiltToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletIO4 createTinkerBrickletIO4FromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletIO4)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletIO4ToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

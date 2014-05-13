@@ -52,6 +52,7 @@ import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
+import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
@@ -860,6 +861,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletTilt");
               mDevice = factory.createMBrickletTilt();
               mDevice.setDeviceIdentifier(BrickletTilt.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletIO4.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletIO4");
+              mDevice = factory.createMBrickletIO4();
+              mDevice.setDeviceIdentifier(BrickletIO4.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

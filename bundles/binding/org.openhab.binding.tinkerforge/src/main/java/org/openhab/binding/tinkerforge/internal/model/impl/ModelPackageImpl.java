@@ -30,12 +30,16 @@ import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfig
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
 import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.Electrode;
 import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
 import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IO4Device;
+import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
@@ -54,6 +58,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
@@ -137,6 +142,7 @@ import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
+import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
@@ -376,6 +382,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass digitalSensorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletIO4EClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass io4DeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass digitalSensorIO4EClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass digitalActorIO4EClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -802,6 +836,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EEnum io4SubIdsEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EEnum dualRelaySubIdsEEnum = null;
 
   /**
@@ -1006,6 +1047,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletTiltEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletIO4EDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2310,6 +2358,156 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getDigitalSensor_Pin()
   {
     return (EAttribute)digitalSensorEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletIO4()
+  {
+    return mBrickletIO4EClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickletIO4_DeviceType()
+  {
+    return (EAttribute)mBrickletIO4EClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getIO4Device()
+  {
+    return io4DeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDigitalSensorIO4()
+  {
+    return digitalSensorIO4EClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalSensorIO4_DeviceType()
+  {
+    return (EAttribute)digitalSensorIO4EClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalSensorIO4_PullUpResistorEnabled()
+  {
+    return (EAttribute)digitalSensorIO4EClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalSensorIO4_Pin()
+  {
+    return (EAttribute)digitalSensorIO4EClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDigitalActorIO4()
+  {
+    return digitalActorIO4EClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActorIO4_DeviceType()
+  {
+    return (EAttribute)digitalActorIO4EClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActorIO4_DigitalState()
+  {
+    return (EAttribute)digitalActorIO4EClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActorIO4_Pin()
+  {
+    return (EAttribute)digitalActorIO4EClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActorIO4_DefaultState()
+  {
+    return (EAttribute)digitalActorIO4EClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActorIO4_KeepOnReconnect()
+  {
+    return (EAttribute)digitalActorIO4EClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getDigitalActorIO4__TurnDigital__HighLowValue()
+  {
+    return digitalActorIO4EClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getDigitalActorIO4__FetchDigitalValue()
+  {
+    return digitalActorIO4EClass.getEOperations().get(1);
   }
 
   /**
@@ -4207,6 +4405,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getIO4SubIds()
+  {
+    return io4SubIdsEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getDualRelaySubIds()
   {
     return dualRelaySubIdsEEnum;
@@ -4507,6 +4715,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletIO4()
+  {
+    return tinkerBrickletIO4EDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getEnum()
   {
     return enumEDataType;
@@ -4716,6 +4934,25 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(digitalSensorEClass, DIGITAL_SENSOR__PULL_UP_RESISTOR_ENABLED);
     createEAttribute(digitalSensorEClass, DIGITAL_SENSOR__PORT);
     createEAttribute(digitalSensorEClass, DIGITAL_SENSOR__PIN);
+
+    mBrickletIO4EClass = createEClass(MBRICKLET_IO4);
+    createEAttribute(mBrickletIO4EClass, MBRICKLET_IO4__DEVICE_TYPE);
+
+    io4DeviceEClass = createEClass(IO4_DEVICE);
+
+    digitalSensorIO4EClass = createEClass(DIGITAL_SENSOR_IO4);
+    createEAttribute(digitalSensorIO4EClass, DIGITAL_SENSOR_IO4__DEVICE_TYPE);
+    createEAttribute(digitalSensorIO4EClass, DIGITAL_SENSOR_IO4__PULL_UP_RESISTOR_ENABLED);
+    createEAttribute(digitalSensorIO4EClass, DIGITAL_SENSOR_IO4__PIN);
+
+    digitalActorIO4EClass = createEClass(DIGITAL_ACTOR_IO4);
+    createEAttribute(digitalActorIO4EClass, DIGITAL_ACTOR_IO4__DEVICE_TYPE);
+    createEAttribute(digitalActorIO4EClass, DIGITAL_ACTOR_IO4__DIGITAL_STATE);
+    createEAttribute(digitalActorIO4EClass, DIGITAL_ACTOR_IO4__PIN);
+    createEAttribute(digitalActorIO4EClass, DIGITAL_ACTOR_IO4__DEFAULT_STATE);
+    createEAttribute(digitalActorIO4EClass, DIGITAL_ACTOR_IO4__KEEP_ON_RECONNECT);
+    createEOperation(digitalActorIO4EClass, DIGITAL_ACTOR_IO4___TURN_DIGITAL__HIGHLOWVALUE);
+    createEOperation(digitalActorIO4EClass, DIGITAL_ACTOR_IO4___FETCH_DIGITAL_VALUE);
 
     mBrickletMultiTouchEClass = createEClass(MBRICKLET_MULTI_TOUCH);
     createEAttribute(mBrickletMultiTouchEClass, MBRICKLET_MULTI_TOUCH__DEVICE_TYPE);
@@ -4962,6 +5199,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     servoSubIDsEEnum = createEEnum(SERVO_SUB_IDS);
     barometerSubIDsEEnum = createEEnum(BAROMETER_SUB_IDS);
     io16SubIdsEEnum = createEEnum(IO16_SUB_IDS);
+    io4SubIdsEEnum = createEEnum(IO4_SUB_IDS);
     dualRelaySubIdsEEnum = createEEnum(DUAL_RELAY_SUB_IDS);
     lcdButtonSubIdsEEnum = createEEnum(LCD_BUTTON_SUB_IDS);
     lcdBacklightSubIdsEEnum = createEEnum(LCD_BACKLIGHT_SUB_IDS);
@@ -5000,6 +5238,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletDistanceUSEDataType = createEDataType(TINKER_BRICKLET_DISTANCE_US);
     tinkerBrickletVoltageCurrentEDataType = createEDataType(TINKER_BRICKLET_VOLTAGE_CURRENT);
     tinkerBrickletTiltEDataType = createEDataType(TINKER_BRICKLET_TILT);
+    tinkerBrickletIO4EDataType = createEDataType(TINKER_BRICKLET_IO4);
     enumEDataType = createEDataType(ENUM);
   }
 
@@ -5180,6 +5419,42 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getTFIOSensorConfiguration());
     g1.getETypeArguments().add(g2);
     digitalSensorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletIO4());
+    g1.getETypeArguments().add(g2);
+    mBrickletIO4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getIO4Device());
+    g1.getETypeArguments().add(g2);
+    mBrickletIO4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getInterruptListener());
+    mBrickletIO4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFInterruptListenerConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletIO4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletIO4());
+    g1.getETypeArguments().add(g2);
+    io4DeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getGenericDevice());
+    io4DeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getIO4Device());
+    digitalSensorIO4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getDigitalValue());
+    g1.getETypeArguments().add(g2);
+    digitalSensorIO4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFIOSensorConfiguration());
+    g1.getETypeArguments().add(g2);
+    digitalSensorIO4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getIO4Device());
+    digitalActorIO4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFIOActorConfiguration());
+    g1.getETypeArguments().add(g2);
+    digitalActorIO4EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletMultiTouch());
     g1.getETypeArguments().add(g2);
@@ -5678,6 +5953,28 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getDigitalSensor_Port(), theEcorePackage.getEChar(), "port", null, 0, 1, DigitalSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDigitalSensor_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, DigitalSensor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(mBrickletIO4EClass, MBrickletIO4.class, "MBrickletIO4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickletIO4_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_io4", 0, 1, MBrickletIO4.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(io4DeviceEClass, IO4Device.class, "IO4Device", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(digitalSensorIO4EClass, DigitalSensorIO4.class, "DigitalSensorIO4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDigitalSensorIO4_DeviceType(), theEcorePackage.getEString(), "deviceType", "io4sensor", 0, 1, DigitalSensorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalSensorIO4_PullUpResistorEnabled(), theEcorePackage.getEBoolean(), "pullUpResistorEnabled", null, 0, 1, DigitalSensorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalSensorIO4_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, DigitalSensorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(digitalActorIO4EClass, DigitalActorIO4.class, "DigitalActorIO4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDigitalActorIO4_DeviceType(), theEcorePackage.getEString(), "deviceType", "io4_actuator", 0, 1, DigitalActorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalActorIO4_DigitalState(), this.getDigitalValue(), "digitalState", null, 0, 1, DigitalActorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalActorIO4_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, DigitalActorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalActorIO4_DefaultState(), theEcorePackage.getEString(), "defaultState", null, 0, 1, DigitalActorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalActorIO4_KeepOnReconnect(), theEcorePackage.getEBoolean(), "keepOnReconnect", "false", 0, 1, DigitalActorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    op = initEOperation(getDigitalActorIO4__TurnDigital__HighLowValue(), null, "turnDigital", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDigitalValue(), "digitalState", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getDigitalActorIO4__FetchDigitalValue(), null, "fetchDigitalValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
     initEClass(mBrickletMultiTouchEClass, MBrickletMultiTouch.class, "MBrickletMultiTouch", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletMultiTouch_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_multitouch", 0, 1, MBrickletMultiTouch.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickletMultiTouch_Recalibrate(), theEcorePackage.getEBooleanObject(), "recalibrate", null, 0, 1, MBrickletMultiTouch.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -6019,6 +6316,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTB6);
     addEEnumLiteral(io16SubIdsEEnum, IO16SubIds.OUTB7);
 
+    initEEnum(io4SubIdsEEnum, IO4SubIds.class, "IO4SubIds");
+    addEEnumLiteral(io4SubIdsEEnum, IO4SubIds.IN0);
+    addEEnumLiteral(io4SubIdsEEnum, IO4SubIds.IN1);
+    addEEnumLiteral(io4SubIdsEEnum, IO4SubIds.IN2);
+    addEEnumLiteral(io4SubIdsEEnum, IO4SubIds.IN3);
+    addEEnumLiteral(io4SubIdsEEnum, IO4SubIds.OUT0);
+    addEEnumLiteral(io4SubIdsEEnum, IO4SubIds.OUT1);
+    addEEnumLiteral(io4SubIdsEEnum, IO4SubIds.OUT2);
+    addEEnumLiteral(io4SubIdsEEnum, IO4SubIds.OUT3);
+
     initEEnum(dualRelaySubIdsEEnum, DualRelaySubIds.class, "DualRelaySubIds");
     addEEnumLiteral(dualRelaySubIdsEEnum, DualRelaySubIds.RELAY1);
     addEEnumLiteral(dualRelaySubIdsEEnum, DualRelaySubIds.RELAY2);
@@ -6087,6 +6394,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletDistanceUSEDataType, BrickletDistanceUS.class, "TinkerBrickletDistanceUS", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletVoltageCurrentEDataType, BrickletVoltageCurrent.class, "TinkerBrickletVoltageCurrent", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletTiltEDataType, BrickletTilt.class, "TinkerBrickletTilt", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletIO4EDataType, BrickletIO4.class, "TinkerBrickletIO4", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource
