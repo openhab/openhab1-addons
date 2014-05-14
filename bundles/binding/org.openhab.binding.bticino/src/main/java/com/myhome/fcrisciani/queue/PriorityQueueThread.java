@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
 import com.myhome.fcrisciani.connector.MyHomeSocketFactory;
 
@@ -18,6 +21,9 @@ import com.myhome.fcrisciani.connector.MyHomeSocketFactory;
  *
  */
 public class PriorityQueueThread implements Runnable{
+	private static final Logger logger = LoggerFactory
+			.getLogger(PriorityQueueThread.class);
+	
 	// ----- TYPES ----- //
 
 	// ---- MEMBERS ---- //
@@ -57,6 +63,7 @@ public class PriorityQueueThread implements Runnable{
 		do{
 			try{
 				tosend = list.getCommand();
+				logger.info("OpenWebNet CMD [" + tosend + "]");
 				if(sk == null){                  // Create a new command session
 					try{
 						sk = MyHomeSocketFactory.openCommandSession(myConnector.ip, myConnector.port);

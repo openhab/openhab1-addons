@@ -442,13 +442,28 @@ public class MonitorSessionThread extends Thread
 				where = "";
 			event = new ProtocolRead(frame);
 			objectName = who + "*" + where;
-
+            
+			// Virtual configurator support
+			// where=XXYY (XX = A (01-10), YY = PL (01-15)) 
+			// eg. A=10 and PL=5 the where will be 1005, A=2 and PL=12 the where will be 0212
+			boolean virtual_where = (where.length() == 4);
+			
 			switch (Integer.parseInt(who))
 			{
 			// LIGHTING
 			case 1:
 				messageType = "Lighting";
 				objectClass = "Light";
+				
+				// For virtual configuration we receive for light on 1000#1
+				// so assuming the second part is the what
+				if (virtual_where)
+				{
+					String[] what_parts = what.split("#");
+					// take the last part for the what
+					what = what_parts[what_parts.length - 1];
+				}
+				
 				switch (Integer.parseInt(what))
 				{
 				// Light OFF
@@ -688,6 +703,8 @@ public class MonitorSessionThread extends Thread
 			if (where != null)
 			{
 				event.addProperty("where", where);
+				// Indicate virtual where message
+				event.addProperty("virtual", virtual_where?"true":"false");
 			}
 			if (messageType != null)
 			{
@@ -705,7 +722,7 @@ public class MonitorSessionThread extends Thread
 			{
 				event.addProperty("object.name", objectName);
 			}
-
+			
 			logger.info("Frame " + frame + " is " + messageType
 					+ " message. Notify it as OpenHab event "
 					+ messageDescription == "No Description set" ? ""

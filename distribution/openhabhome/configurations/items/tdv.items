@@ -33,6 +33,9 @@ Switch Light_GF_Corridor_Ceiling 	"Ceiling" 		(GF_Corridor, Lights) { bticino="i
 Switch Light_GF_Living_LED_Spot "LED Spot" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=23" }
 Switch Light_GF_Living_Ceiling "Ceiling" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=22" }
 Switch Light_GF_Living_TV_PWR "TV" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=18" }
+/* Test virtual config range */
+/* where=XXYY (XX = A (01-10), YY = PL (01-15)) eg. A=10 and PL=5 the where will be 1005, A=2 and PL=12 the where will be 0212 */ 
+/*Switch Light_GF_Living_VIRTUAL "VIRTUAL" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=0113" }*/
 
 /* Dimmer Light_GF_Living_Table 		"Table" 		(GF_Living, Lights)*/
 
