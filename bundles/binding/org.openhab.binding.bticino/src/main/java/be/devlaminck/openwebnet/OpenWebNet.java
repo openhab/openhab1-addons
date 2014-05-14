@@ -35,6 +35,7 @@ public class OpenWebNet extends Thread
 	private Integer port = 20000;
 	private Date m_last_bus_scan = new Date(0);
 	private Integer m_bus_scan_interval_secs = 120;
+	private Integer m_first_scan_delay_secs = 60;
 	public MyHomeJavaConnector myPlant = null;
 	private MonitorSessionThread monitorSessionThread = null;
 
@@ -66,15 +67,15 @@ public class OpenWebNet extends Thread
 	{
 		// create thread
 		monitorSessionThread = new MonitorSessionThread(this, host, port);
+		// start first bus scan 30 secs later
+		m_last_bus_scan = new Date((new Date()).getTime() - (1000 * m_bus_scan_interval_secs) + (1000 * m_first_scan_delay_secs));
 		// start thread
 		monitorSessionThread.start();
-		// synchronizes the software with the system status
-		initSystem();
-
-		logger.info("Connected to [" + host + ":" + port + "], Rescan bus every [" + m_bus_scan_interval_secs + "] seconds");
-		// reset the last bus scan date
-		m_last_bus_scan = new Date();
-
+		logger.info("Connected to [" + host + ":" + port + "], Rescan bus every [" + 
+		m_bus_scan_interval_secs + 
+		"] seconds, first scan over [" + 
+		(((new Date()).getTime() - m_last_bus_scan.getTime()) / 1000) + 
+		"] seconds.");
 		// start the processing thread
 		start();
 	}
@@ -110,6 +111,7 @@ public class OpenWebNet extends Thread
 		{
 			while (true)
 			{
+				// synchronizes the software with the system status
 				// Every x seconds do a full bus scan
 				checkForBusScan();
 				Thread.sleep(1000);
