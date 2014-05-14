@@ -42,6 +42,7 @@ import org.openhab.binding.tinkerforge.internal.model.IO4Device;
 import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOut4;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
 import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
 import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
@@ -60,6 +61,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
@@ -144,6 +146,7 @@ import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
+import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletMoisture;
@@ -298,6 +301,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass mIndustrialDigitalInEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletIndustrialDigitalOut4EClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass industrialDigitalOut4EClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1082,6 +1099,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType mTinkerBrickletIndustrialDigitalIn4EDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType mTinkerBrickletIndustrialDigitalOut4EDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2028,6 +2052,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EClass getMIndustrialDigitalIn()
   {
     return mIndustrialDigitalInEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletIndustrialDigitalOut4()
+  {
+    return mBrickletIndustrialDigitalOut4EClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getIndustrialDigitalOut4()
+  {
+    return industrialDigitalOut4EClass;
   }
 
   /**
@@ -4765,6 +4809,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getMTinkerBrickletIndustrialDigitalOut4()
+  {
+    return mTinkerBrickletIndustrialDigitalOut4EDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public ModelFactory getModelFactory()
   {
     return (ModelFactory)getEFactoryInstance();
@@ -4915,6 +4969,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletIndustrialDigitalIn4EClass, MBRICKLET_INDUSTRIAL_DIGITAL_IN4__DEVICE_TYPE);
 
     mIndustrialDigitalInEClass = createEClass(MINDUSTRIAL_DIGITAL_IN);
+
+    mBrickletIndustrialDigitalOut4EClass = createEClass(MBRICKLET_INDUSTRIAL_DIGITAL_OUT4);
+
+    industrialDigitalOut4EClass = createEClass(INDUSTRIAL_DIGITAL_OUT4);
 
     digitalActorEClass = createEClass(DIGITAL_ACTOR);
     createEAttribute(digitalActorEClass, DIGITAL_ACTOR__DEVICE_TYPE);
@@ -5217,6 +5275,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mTinkerBrickletDualRelayEDataType = createEDataType(MTINKER_BRICKLET_DUAL_RELAY);
     mTinkerBrickletIndustrialQuadRelayEDataType = createEDataType(MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY);
     mTinkerBrickletIndustrialDigitalIn4EDataType = createEDataType(MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4);
+    mTinkerBrickletIndustrialDigitalOut4EDataType = createEDataType(MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4);
     switchStateEDataType = createEDataType(SWITCH_STATE);
     digitalValueEDataType = createEDataType(DIGITAL_VALUE);
     tinkerBrickletIO16EDataType = createEDataType(TINKER_BRICKLET_IO16);
@@ -5389,6 +5448,24 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getDigitalValue());
     g1.getETypeArguments().add(g2);
     mIndustrialDigitalInEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getMTinkerBrickletIndustrialDigitalOut4());
+    g1.getETypeArguments().add(g2);
+    mBrickletIndustrialDigitalOut4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getIndustrialDigitalOut4());
+    g1.getETypeArguments().add(g2);
+    mBrickletIndustrialDigitalOut4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getInterruptListener());
+    mBrickletIndustrialDigitalOut4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(this.getTFInterruptListenerConfiguration());
+    g1.getETypeArguments().add(g2);
+    mBrickletIndustrialDigitalOut4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletIndustrialDigitalOut4());
+    g1.getETypeArguments().add(g2);
+    industrialDigitalOut4EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getIODevice());
     digitalActorEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
@@ -5931,6 +6008,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(mIndustrialDigitalInEClass, MIndustrialDigitalIn.class, "MIndustrialDigitalIn", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
+    initEClass(mBrickletIndustrialDigitalOut4EClass, MBrickletIndustrialDigitalOut4.class, "MBrickletIndustrialDigitalOut4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(industrialDigitalOut4EClass, IndustrialDigitalOut4.class, "IndustrialDigitalOut4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
     initEClass(digitalActorEClass, DigitalActor.class, "DigitalActor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDigitalActor_DeviceType(), theEcorePackage.getEString(), "deviceType", "io_actuator", 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDigitalActor_DigitalState(), this.getDigitalValue(), "digitalState", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -6373,6 +6454,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(mTinkerBrickletDualRelayEDataType, BrickletDualRelay.class, "MTinkerBrickletDualRelay", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickletIndustrialQuadRelayEDataType, BrickletIndustrialQuadRelay.class, "MTinkerBrickletIndustrialQuadRelay", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerBrickletIndustrialDigitalIn4EDataType, BrickletIndustrialDigitalIn4.class, "MTinkerBrickletIndustrialDigitalIn4", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(mTinkerBrickletIndustrialDigitalOut4EDataType, BrickletIndustrialDigitalOut4.class, "MTinkerBrickletIndustrialDigitalOut4", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(switchStateEDataType, OnOffValue.class, "SwitchState", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(digitalValueEDataType, HighLowValue.class, "DigitalValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletIO16EDataType, BrickletIO16.class, "TinkerBrickletIO16", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

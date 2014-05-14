@@ -39,6 +39,7 @@ import com.tinkerforge.BrickletDistanceUS
 import com.tinkerforge.BrickletVoltageCurrent
 import com.tinkerforge.BrickletTilt
 import com.tinkerforge.BrickletIO4
+import com.tinkerforge.BrickletIndustrialDigitalOut4
 import java.math.BigDecimal
 
 /**
@@ -55,6 +56,7 @@ type MTinkerBrickDC wraps BrickDC
 type MTinkerBrickletDualRelay wraps BrickletDualRelay
 type MTinkerBrickletIndustrialQuadRelay wraps BrickletIndustrialQuadRelay
 type MTinkerBrickletIndustrialDigitalIn4 wraps BrickletIndustrialDigitalIn4
+type MTinkerBrickletIndustrialDigitalOut4 wraps BrickletIndustrialDigitalOut4
 type SwitchState wraps OnOffValue
 type DigitalValue wraps HighLowValue
 type TinkerBrickletIO16 wraps BrickletIO16
@@ -249,6 +251,16 @@ class MBrickletIndustrialDigitalIn4 extends
 
 class MIndustrialDigitalIn extends MSubDevice<MBrickletIndustrialDigitalIn4>, 
 		MSensor<DigitalValue> {
+}
+
+class MBrickletIndustrialDigitalOut4 extends MDevice<MTinkerBrickletIndustrialDigitalOut4>,
+        MSubDeviceHolder<IndustrialDigitalOut4>,
+        InterruptListener, MTFConfigConsumer<TFInterruptListenerConfiguration>{
+    
+}
+
+class IndustrialDigitalOut4 extends MSubDevice<MBrickletIndustrialDigitalOut4> {
+    
 }
 
 class DigitalActor extends IODevice, MTFConfigConsumer<TFIOActorConfiguration>{

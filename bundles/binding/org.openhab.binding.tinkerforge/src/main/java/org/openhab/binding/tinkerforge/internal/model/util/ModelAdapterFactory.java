@@ -267,6 +267,16 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMIndustrialDigitalInAdapter();
       }
       @Override
+      public Adapter caseMBrickletIndustrialDigitalOut4(MBrickletIndustrialDigitalOut4 object)
+      {
+        return createMBrickletIndustrialDigitalOut4Adapter();
+      }
+      @Override
+      public Adapter caseIndustrialDigitalOut4(IndustrialDigitalOut4 object)
+      {
+        return createIndustrialDigitalOut4Adapter();
+      }
+      @Override
       public Adapter caseDigitalActor(DigitalActor object)
       {
         return createDigitalActorAdapter();
@@ -874,6 +884,36 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMIndustrialDigitalInAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4 <em>MBricklet Industrial Digital Out4</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4
+   * @generated
+   */
+  public Adapter createMBrickletIndustrialDigitalOut4Adapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOut4 <em>Industrial Digital Out4</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOut4
+   * @generated
+   */
+  public Adapter createIndustrialDigitalOut4Adapter()
   {
     return null;
   }

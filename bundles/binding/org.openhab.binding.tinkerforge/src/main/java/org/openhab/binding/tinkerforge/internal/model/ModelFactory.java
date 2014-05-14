@@ -149,6 +149,24 @@ public interface ModelFactory extends EFactory
   MIndustrialDigitalIn createMIndustrialDigitalIn();
 
   /**
+   * Returns a new object of class '<em>MBricklet Industrial Digital Out4</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Industrial Digital Out4</em>'.
+   * @generated
+   */
+  MBrickletIndustrialDigitalOut4 createMBrickletIndustrialDigitalOut4();
+
+  /**
+   * Returns a new object of class '<em>Industrial Digital Out4</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Industrial Digital Out4</em>'.
+   * @generated
+   */
+  IndustrialDigitalOut4 createIndustrialDigitalOut4();
+
+  /**
    * Returns a new object of class '<em>TFIO Actor Configuration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

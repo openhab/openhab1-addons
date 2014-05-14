@@ -81,6 +81,7 @@ import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
+import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletMoisture;
@@ -157,6 +158,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY: return createMIndustrialQuadRelay();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4: return createMBrickletIndustrialDigitalIn4();
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN: return createMIndustrialDigitalIn();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4: return createMBrickletIndustrialDigitalOut4();
+      case ModelPackage.INDUSTRIAL_DIGITAL_OUT4: return createIndustrialDigitalOut4();
       case ModelPackage.DIGITAL_ACTOR: return createDigitalActor();
       case ModelPackage.MBRICKLET_IO16: return createMBrickletIO16();
       case ModelPackage.DIGITAL_SENSOR: return createDigitalSensor();
@@ -274,6 +277,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createMTinkerBrickletIndustrialQuadRelayFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4:
         return createMTinkerBrickletIndustrialDigitalIn4FromString(eDataType, initialValue);
+      case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4:
+        return createMTinkerBrickletIndustrialDigitalOut4FromString(eDataType, initialValue);
       case ModelPackage.SWITCH_STATE:
         return createSwitchStateFromString(eDataType, initialValue);
       case ModelPackage.DIGITAL_VALUE:
@@ -381,6 +386,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertMTinkerBrickletIndustrialQuadRelayToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4:
         return convertMTinkerBrickletIndustrialDigitalIn4ToString(eDataType, instanceValue);
+      case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4:
+        return convertMTinkerBrickletIndustrialDigitalOut4ToString(eDataType, instanceValue);
       case ModelPackage.SWITCH_STATE:
         return convertSwitchStateToString(eDataType, instanceValue);
       case ModelPackage.DIGITAL_VALUE:
@@ -574,6 +581,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MIndustrialDigitalInImpl mIndustrialDigitalIn = new MIndustrialDigitalInImpl();
     return mIndustrialDigitalIn;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletIndustrialDigitalOut4 createMBrickletIndustrialDigitalOut4()
+  {
+    MBrickletIndustrialDigitalOut4Impl mBrickletIndustrialDigitalOut4 = new MBrickletIndustrialDigitalOut4Impl();
+    return mBrickletIndustrialDigitalOut4;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public IndustrialDigitalOut4 createIndustrialDigitalOut4()
+  {
+    IndustrialDigitalOut4Impl industrialDigitalOut4 = new IndustrialDigitalOut4Impl();
+    return industrialDigitalOut4;
   }
 
   /**
@@ -2104,6 +2133,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertMTinkerBrickletIndustrialDigitalIn4ToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletIndustrialDigitalOut4 createMTinkerBrickletIndustrialDigitalOut4FromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletIndustrialDigitalOut4)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertMTinkerBrickletIndustrialDigitalOut4ToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }
