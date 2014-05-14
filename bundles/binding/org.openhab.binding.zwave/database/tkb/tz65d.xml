@@ -188,6 +188,7 @@
                         <Index>3</Index>
                         <Maximum>5</Maximum>
                         <Label lang="en">Group 4</Label>
+                        <SetToController>true</SetToController>
                         <Help lang="en"><![CDATA[Send Reports on switch state change]]></Help>
                 </Group>
         </Associations>
