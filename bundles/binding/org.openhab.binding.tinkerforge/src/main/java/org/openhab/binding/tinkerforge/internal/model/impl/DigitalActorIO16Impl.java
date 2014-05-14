@@ -19,11 +19,14 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
+import org.openhab.binding.tinkerforge.internal.model.IODevice;
+import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
@@ -45,27 +48,47 @@ import com.tinkerforge.TimeoutException;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getLogger <em>Logger</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getUid <em>Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#isPoll <em>Poll</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getEnabledA <em>Enabled A</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getSubId <em>Sub Id</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getMbrick <em>Mbrick</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getGenericDeviceId <em>Generic Device Id</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getTfConfig <em>Tf Config</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getDigitalState <em>Digital State</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getPort <em>Port</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getPin <em>Pin</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getDefaultState <em>Default State</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#isKeepOnReconnect <em>Keep On Reconnect</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getDigitalState <em>Digital State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getLogger <em>Logger</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#isPoll <em>Poll</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getEnabledA <em>Enabled A</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getSubId <em>Sub Id</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getGenericDeviceId <em>Generic Device Id</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getPort <em>Port</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getPin <em>Pin</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#getDefaultState <em>Default State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl#isKeepOnReconnect <em>Keep On Reconnect</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class DigitalActorImpl extends MinimalEObjectImpl.Container implements DigitalActor
+public class DigitalActorIO16Impl extends MinimalEObjectImpl.Container implements DigitalActorIO16
 {
+  /**
+   * The default value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDigitalState()
+   * @generated
+   * @ordered
+   */
+  protected static final HighLowValue DIGITAL_STATE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDigitalState()
+   * @generated
+   * @ordered
+   */
+  protected HighLowValue digitalState = DIGITAL_STATE_EDEFAULT;
+
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -217,26 +240,6 @@ public class DigitalActorImpl extends MinimalEObjectImpl.Container implements Di
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDigitalState()
-   * @generated
-   * @ordered
-   */
-  protected static final HighLowValue DIGITAL_STATE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDigitalState()
-   * @generated
-   * @ordered
-   */
-  protected HighLowValue digitalState = DIGITAL_STATE_EDEFAULT;
-
-  /**
    * The default value of the '{@link #getPort() <em>Port</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -323,7 +326,7 @@ private int mask;
    * <!-- end-user-doc -->
    * @generated
    */
-  protected DigitalActorImpl()
+  protected DigitalActorIO16Impl()
   {
     super();
   }
@@ -336,7 +339,30 @@ private int mask;
   @Override
   protected EClass eStaticClass()
   {
-    return ModelPackage.Literals.DIGITAL_ACTOR;
+    return ModelPackage.Literals.DIGITAL_ACTOR_IO16;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public HighLowValue getDigitalState()
+  {
+    return digitalState;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDigitalState(HighLowValue newDigitalState)
+  {
+    HighLowValue oldDigitalState = digitalState;
+    digitalState = newDigitalState;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__DIGITAL_STATE, oldDigitalState, digitalState));
   }
 
   /**
@@ -359,7 +385,7 @@ private int mask;
     Logger oldLogger = logger;
     logger = newLogger;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__LOGGER, oldLogger, logger));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__LOGGER, oldLogger, logger));
   }
 
   /**
@@ -382,7 +408,7 @@ private int mask;
     String oldUid = uid;
     uid = newUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__UID, oldUid, uid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__UID, oldUid, uid));
   }
 
   /**
@@ -405,7 +431,7 @@ private int mask;
     boolean oldPoll = poll;
     poll = newPoll;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__POLL, oldPoll, poll));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__POLL, oldPoll, poll));
   }
 
   /**
@@ -428,7 +454,7 @@ private int mask;
     AtomicBoolean oldEnabledA = enabledA;
     enabledA = newEnabledA;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__ENABLED_A, oldEnabledA, enabledA));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__ENABLED_A, oldEnabledA, enabledA));
   }
 
   /**
@@ -451,7 +477,7 @@ private int mask;
     String oldSubId = subId;
     subId = newSubId;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__SUB_ID, oldSubId, subId));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__SUB_ID, oldSubId, subId));
   }
 
   /**
@@ -461,7 +487,7 @@ private int mask;
    */
   public MBrickletIO16 getMbrick()
   {
-    if (eContainerFeatureID() != ModelPackage.DIGITAL_ACTOR__MBRICK) return null;
+    if (eContainerFeatureID() != ModelPackage.DIGITAL_ACTOR_IO16__MBRICK) return null;
     return (MBrickletIO16)eContainer();
   }
 
@@ -472,7 +498,7 @@ private int mask;
    */
   public NotificationChain basicSetMbrick(MBrickletIO16 newMbrick, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.DIGITAL_ACTOR__MBRICK, msgs);
+    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.DIGITAL_ACTOR_IO16__MBRICK, msgs);
     return msgs;
   }
 
@@ -483,7 +509,7 @@ private int mask;
    */
   public void setMbrick(MBrickletIO16 newMbrick)
   {
-    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.DIGITAL_ACTOR__MBRICK && newMbrick != null))
+    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.DIGITAL_ACTOR_IO16__MBRICK && newMbrick != null))
     {
       if (EcoreUtil.isAncestor(this, newMbrick))
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -496,7 +522,7 @@ private int mask;
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__MBRICK, newMbrick, newMbrick));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__MBRICK, newMbrick, newMbrick));
   }
 
   /**
@@ -519,7 +545,7 @@ private int mask;
     String oldGenericDeviceId = genericDeviceId;
     genericDeviceId = newGenericDeviceId;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID, oldGenericDeviceId, genericDeviceId));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__GENERIC_DEVICE_ID, oldGenericDeviceId, genericDeviceId));
   }
 
   /**
@@ -543,7 +569,7 @@ private int mask;
     tfConfig = newTfConfig;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__TF_CONFIG, oldTfConfig, newTfConfig);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__TF_CONFIG, oldTfConfig, newTfConfig);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -560,14 +586,14 @@ private int mask;
     {
       NotificationChain msgs = null;
       if (tfConfig != null)
-        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.DIGITAL_ACTOR__TF_CONFIG, null, msgs);
+        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.DIGITAL_ACTOR_IO16__TF_CONFIG, null, msgs);
       if (newTfConfig != null)
-        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.DIGITAL_ACTOR__TF_CONFIG, null, msgs);
+        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.DIGITAL_ACTOR_IO16__TF_CONFIG, null, msgs);
       msgs = basicSetTfConfig(newTfConfig, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__TF_CONFIG, newTfConfig, newTfConfig));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__TF_CONFIG, newTfConfig, newTfConfig));
   }
 
   /**
@@ -578,29 +604,6 @@ private int mask;
   public String getDeviceType()
   {
     return deviceType;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public HighLowValue getDigitalState()
-  {
-    return digitalState;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setDigitalState(HighLowValue newDigitalState)
-  {
-    HighLowValue oldDigitalState = digitalState;
-    digitalState = newDigitalState;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE, oldDigitalState, digitalState));
   }
 
   /**
@@ -623,7 +626,7 @@ private int mask;
     char oldPort = port;
     port = newPort;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__PORT, oldPort, port));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__PORT, oldPort, port));
   }
 
   /**
@@ -646,7 +649,7 @@ private int mask;
     int oldPin = pin;
     pin = newPin;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__PIN, oldPin, pin));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__PIN, oldPin, pin));
   }
 
   /**
@@ -669,7 +672,7 @@ private int mask;
     String oldDefaultState = defaultState;
     defaultState = newDefaultState;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__DEFAULT_STATE, oldDefaultState, defaultState));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__DEFAULT_STATE, oldDefaultState, defaultState));
   }
 
   /**
@@ -692,7 +695,7 @@ private int mask;
     boolean oldKeepOnReconnect = keepOnReconnect;
     keepOnReconnect = newKeepOnReconnect;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__KEEP_ON_RECONNECT, oldKeepOnReconnect, keepOnReconnect));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO16__KEEP_ON_RECONNECT, oldKeepOnReconnect, keepOnReconnect));
   }
 
   /**
@@ -746,7 +749,7 @@ private int mask;
   public void init() {
     setEnabledA(new AtomicBoolean());
     poll = true; // don't use the setter to prevent notification
-    logger = LoggerFactory.getLogger(DigitalActorImpl.class);
+    logger = LoggerFactory.getLogger(DigitalActorIO16Impl.class);
     mask = 00000001 << getPin();
   }
 
@@ -825,7 +828,7 @@ private int mask;
   {
     switch (featureID)
     {
-      case ModelPackage.DIGITAL_ACTOR__MBRICK:
+      case ModelPackage.DIGITAL_ACTOR_IO16__MBRICK:
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
         return basicSetMbrick((MBrickletIO16)otherEnd, msgs);
@@ -843,9 +846,9 @@ private int mask;
   {
     switch (featureID)
     {
-      case ModelPackage.DIGITAL_ACTOR__MBRICK:
+      case ModelPackage.DIGITAL_ACTOR_IO16__MBRICK:
         return basicSetMbrick(null, msgs);
-      case ModelPackage.DIGITAL_ACTOR__TF_CONFIG:
+      case ModelPackage.DIGITAL_ACTOR_IO16__TF_CONFIG:
         return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -861,7 +864,7 @@ private int mask;
   {
     switch (eContainerFeatureID())
     {
-      case ModelPackage.DIGITAL_ACTOR__MBRICK:
+      case ModelPackage.DIGITAL_ACTOR_IO16__MBRICK:
         return eInternalContainer().eInverseRemove(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES, MSubDeviceHolder.class, msgs);
     }
     return super.eBasicRemoveFromContainerFeature(msgs);
@@ -877,33 +880,33 @@ private int mask;
   {
     switch (featureID)
     {
-      case ModelPackage.DIGITAL_ACTOR__LOGGER:
-        return getLogger();
-      case ModelPackage.DIGITAL_ACTOR__UID:
-        return getUid();
-      case ModelPackage.DIGITAL_ACTOR__POLL:
-        return isPoll();
-      case ModelPackage.DIGITAL_ACTOR__ENABLED_A:
-        return getEnabledA();
-      case ModelPackage.DIGITAL_ACTOR__SUB_ID:
-        return getSubId();
-      case ModelPackage.DIGITAL_ACTOR__MBRICK:
-        return getMbrick();
-      case ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID:
-        return getGenericDeviceId();
-      case ModelPackage.DIGITAL_ACTOR__TF_CONFIG:
-        return getTfConfig();
-      case ModelPackage.DIGITAL_ACTOR__DEVICE_TYPE:
-        return getDeviceType();
-      case ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE:
+      case ModelPackage.DIGITAL_ACTOR_IO16__DIGITAL_STATE:
         return getDigitalState();
-      case ModelPackage.DIGITAL_ACTOR__PORT:
+      case ModelPackage.DIGITAL_ACTOR_IO16__LOGGER:
+        return getLogger();
+      case ModelPackage.DIGITAL_ACTOR_IO16__UID:
+        return getUid();
+      case ModelPackage.DIGITAL_ACTOR_IO16__POLL:
+        return isPoll();
+      case ModelPackage.DIGITAL_ACTOR_IO16__ENABLED_A:
+        return getEnabledA();
+      case ModelPackage.DIGITAL_ACTOR_IO16__SUB_ID:
+        return getSubId();
+      case ModelPackage.DIGITAL_ACTOR_IO16__MBRICK:
+        return getMbrick();
+      case ModelPackage.DIGITAL_ACTOR_IO16__GENERIC_DEVICE_ID:
+        return getGenericDeviceId();
+      case ModelPackage.DIGITAL_ACTOR_IO16__TF_CONFIG:
+        return getTfConfig();
+      case ModelPackage.DIGITAL_ACTOR_IO16__DEVICE_TYPE:
+        return getDeviceType();
+      case ModelPackage.DIGITAL_ACTOR_IO16__PORT:
         return getPort();
-      case ModelPackage.DIGITAL_ACTOR__PIN:
+      case ModelPackage.DIGITAL_ACTOR_IO16__PIN:
         return getPin();
-      case ModelPackage.DIGITAL_ACTOR__DEFAULT_STATE:
+      case ModelPackage.DIGITAL_ACTOR_IO16__DEFAULT_STATE:
         return getDefaultState();
-      case ModelPackage.DIGITAL_ACTOR__KEEP_ON_RECONNECT:
+      case ModelPackage.DIGITAL_ACTOR_IO16__KEEP_ON_RECONNECT:
         return isKeepOnReconnect();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -919,43 +922,43 @@ private int mask;
   {
     switch (featureID)
     {
-      case ModelPackage.DIGITAL_ACTOR__LOGGER:
-        setLogger((Logger)newValue);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__UID:
-        setUid((String)newValue);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__POLL:
-        setPoll((Boolean)newValue);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__ENABLED_A:
-        setEnabledA((AtomicBoolean)newValue);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__SUB_ID:
-        setSubId((String)newValue);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__MBRICK:
-        setMbrick((MBrickletIO16)newValue);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID:
-        setGenericDeviceId((String)newValue);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__TF_CONFIG:
-        setTfConfig((TFIOActorConfiguration)newValue);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE:
+      case ModelPackage.DIGITAL_ACTOR_IO16__DIGITAL_STATE:
         setDigitalState((HighLowValue)newValue);
         return;
-      case ModelPackage.DIGITAL_ACTOR__PORT:
+      case ModelPackage.DIGITAL_ACTOR_IO16__LOGGER:
+        setLogger((Logger)newValue);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__UID:
+        setUid((String)newValue);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__POLL:
+        setPoll((Boolean)newValue);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__ENABLED_A:
+        setEnabledA((AtomicBoolean)newValue);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__SUB_ID:
+        setSubId((String)newValue);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__MBRICK:
+        setMbrick((MBrickletIO16)newValue);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__GENERIC_DEVICE_ID:
+        setGenericDeviceId((String)newValue);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__TF_CONFIG:
+        setTfConfig((TFIOActorConfiguration)newValue);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__PORT:
         setPort((Character)newValue);
         return;
-      case ModelPackage.DIGITAL_ACTOR__PIN:
+      case ModelPackage.DIGITAL_ACTOR_IO16__PIN:
         setPin((Integer)newValue);
         return;
-      case ModelPackage.DIGITAL_ACTOR__DEFAULT_STATE:
+      case ModelPackage.DIGITAL_ACTOR_IO16__DEFAULT_STATE:
         setDefaultState((String)newValue);
         return;
-      case ModelPackage.DIGITAL_ACTOR__KEEP_ON_RECONNECT:
+      case ModelPackage.DIGITAL_ACTOR_IO16__KEEP_ON_RECONNECT:
         setKeepOnReconnect((Boolean)newValue);
         return;
     }
@@ -972,43 +975,43 @@ private int mask;
   {
     switch (featureID)
     {
-      case ModelPackage.DIGITAL_ACTOR__LOGGER:
-        setLogger(LOGGER_EDEFAULT);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__UID:
-        setUid(UID_EDEFAULT);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__POLL:
-        setPoll(POLL_EDEFAULT);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__ENABLED_A:
-        setEnabledA(ENABLED_A_EDEFAULT);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__SUB_ID:
-        setSubId(SUB_ID_EDEFAULT);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__MBRICK:
-        setMbrick((MBrickletIO16)null);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID:
-        setGenericDeviceId(GENERIC_DEVICE_ID_EDEFAULT);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__TF_CONFIG:
-        setTfConfig((TFIOActorConfiguration)null);
-        return;
-      case ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE:
+      case ModelPackage.DIGITAL_ACTOR_IO16__DIGITAL_STATE:
         setDigitalState(DIGITAL_STATE_EDEFAULT);
         return;
-      case ModelPackage.DIGITAL_ACTOR__PORT:
+      case ModelPackage.DIGITAL_ACTOR_IO16__LOGGER:
+        setLogger(LOGGER_EDEFAULT);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__UID:
+        setUid(UID_EDEFAULT);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__POLL:
+        setPoll(POLL_EDEFAULT);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__ENABLED_A:
+        setEnabledA(ENABLED_A_EDEFAULT);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__SUB_ID:
+        setSubId(SUB_ID_EDEFAULT);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__MBRICK:
+        setMbrick((MBrickletIO16)null);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__GENERIC_DEVICE_ID:
+        setGenericDeviceId(GENERIC_DEVICE_ID_EDEFAULT);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__TF_CONFIG:
+        setTfConfig((TFIOActorConfiguration)null);
+        return;
+      case ModelPackage.DIGITAL_ACTOR_IO16__PORT:
         setPort(PORT_EDEFAULT);
         return;
-      case ModelPackage.DIGITAL_ACTOR__PIN:
+      case ModelPackage.DIGITAL_ACTOR_IO16__PIN:
         setPin(PIN_EDEFAULT);
         return;
-      case ModelPackage.DIGITAL_ACTOR__DEFAULT_STATE:
+      case ModelPackage.DIGITAL_ACTOR_IO16__DEFAULT_STATE:
         setDefaultState(DEFAULT_STATE_EDEFAULT);
         return;
-      case ModelPackage.DIGITAL_ACTOR__KEEP_ON_RECONNECT:
+      case ModelPackage.DIGITAL_ACTOR_IO16__KEEP_ON_RECONNECT:
         setKeepOnReconnect(KEEP_ON_RECONNECT_EDEFAULT);
         return;
     }
@@ -1025,33 +1028,33 @@ private int mask;
   {
     switch (featureID)
     {
-      case ModelPackage.DIGITAL_ACTOR__LOGGER:
-        return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-      case ModelPackage.DIGITAL_ACTOR__UID:
-        return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-      case ModelPackage.DIGITAL_ACTOR__POLL:
-        return poll != POLL_EDEFAULT;
-      case ModelPackage.DIGITAL_ACTOR__ENABLED_A:
-        return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-      case ModelPackage.DIGITAL_ACTOR__SUB_ID:
-        return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
-      case ModelPackage.DIGITAL_ACTOR__MBRICK:
-        return getMbrick() != null;
-      case ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID:
-        return GENERIC_DEVICE_ID_EDEFAULT == null ? genericDeviceId != null : !GENERIC_DEVICE_ID_EDEFAULT.equals(genericDeviceId);
-      case ModelPackage.DIGITAL_ACTOR__TF_CONFIG:
-        return tfConfig != null;
-      case ModelPackage.DIGITAL_ACTOR__DEVICE_TYPE:
-        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-      case ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE:
+      case ModelPackage.DIGITAL_ACTOR_IO16__DIGITAL_STATE:
         return DIGITAL_STATE_EDEFAULT == null ? digitalState != null : !DIGITAL_STATE_EDEFAULT.equals(digitalState);
-      case ModelPackage.DIGITAL_ACTOR__PORT:
+      case ModelPackage.DIGITAL_ACTOR_IO16__LOGGER:
+        return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
+      case ModelPackage.DIGITAL_ACTOR_IO16__UID:
+        return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.DIGITAL_ACTOR_IO16__POLL:
+        return poll != POLL_EDEFAULT;
+      case ModelPackage.DIGITAL_ACTOR_IO16__ENABLED_A:
+        return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
+      case ModelPackage.DIGITAL_ACTOR_IO16__SUB_ID:
+        return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
+      case ModelPackage.DIGITAL_ACTOR_IO16__MBRICK:
+        return getMbrick() != null;
+      case ModelPackage.DIGITAL_ACTOR_IO16__GENERIC_DEVICE_ID:
+        return GENERIC_DEVICE_ID_EDEFAULT == null ? genericDeviceId != null : !GENERIC_DEVICE_ID_EDEFAULT.equals(genericDeviceId);
+      case ModelPackage.DIGITAL_ACTOR_IO16__TF_CONFIG:
+        return tfConfig != null;
+      case ModelPackage.DIGITAL_ACTOR_IO16__DEVICE_TYPE:
+        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
+      case ModelPackage.DIGITAL_ACTOR_IO16__PORT:
         return port != PORT_EDEFAULT;
-      case ModelPackage.DIGITAL_ACTOR__PIN:
+      case ModelPackage.DIGITAL_ACTOR_IO16__PIN:
         return pin != PIN_EDEFAULT;
-      case ModelPackage.DIGITAL_ACTOR__DEFAULT_STATE:
+      case ModelPackage.DIGITAL_ACTOR_IO16__DEFAULT_STATE:
         return DEFAULT_STATE_EDEFAULT == null ? defaultState != null : !DEFAULT_STATE_EDEFAULT.equals(defaultState);
-      case ModelPackage.DIGITAL_ACTOR__KEEP_ON_RECONNECT:
+      case ModelPackage.DIGITAL_ACTOR_IO16__KEEP_ON_RECONNECT:
         return keepOnReconnect != KEEP_ON_RECONNECT_EDEFAULT;
     }
     return super.eIsSet(featureID);
@@ -1065,11 +1068,38 @@ private int mask;
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
+    if (baseClass == MBaseDevice.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.DIGITAL_ACTOR_IO16__LOGGER: return ModelPackage.MBASE_DEVICE__LOGGER;
+        case ModelPackage.DIGITAL_ACTOR_IO16__UID: return ModelPackage.MBASE_DEVICE__UID;
+        case ModelPackage.DIGITAL_ACTOR_IO16__POLL: return ModelPackage.MBASE_DEVICE__POLL;
+        case ModelPackage.DIGITAL_ACTOR_IO16__ENABLED_A: return ModelPackage.MBASE_DEVICE__ENABLED_A;
+        default: return -1;
+      }
+    }
+    if (baseClass == MSubDevice.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.DIGITAL_ACTOR_IO16__SUB_ID: return ModelPackage.MSUB_DEVICE__SUB_ID;
+        case ModelPackage.DIGITAL_ACTOR_IO16__MBRICK: return ModelPackage.MSUB_DEVICE__MBRICK;
+        default: return -1;
+      }
+    }
     if (baseClass == GenericDevice.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID: return ModelPackage.GENERIC_DEVICE__GENERIC_DEVICE_ID;
+        case ModelPackage.DIGITAL_ACTOR_IO16__GENERIC_DEVICE_ID: return ModelPackage.GENERIC_DEVICE__GENERIC_DEVICE_ID;
+        default: return -1;
+      }
+    }
+    if (baseClass == IODevice.class)
+    {
+      switch (derivedFeatureID)
+      {
         default: return -1;
       }
     }
@@ -1077,7 +1107,7 @@ private int mask;
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.DIGITAL_ACTOR__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
+        case ModelPackage.DIGITAL_ACTOR_IO16__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
         default: return -1;
       }
     }
@@ -1092,11 +1122,38 @@ private int mask;
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
+    if (baseClass == MBaseDevice.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MBASE_DEVICE__LOGGER: return ModelPackage.DIGITAL_ACTOR_IO16__LOGGER;
+        case ModelPackage.MBASE_DEVICE__UID: return ModelPackage.DIGITAL_ACTOR_IO16__UID;
+        case ModelPackage.MBASE_DEVICE__POLL: return ModelPackage.DIGITAL_ACTOR_IO16__POLL;
+        case ModelPackage.MBASE_DEVICE__ENABLED_A: return ModelPackage.DIGITAL_ACTOR_IO16__ENABLED_A;
+        default: return -1;
+      }
+    }
+    if (baseClass == MSubDevice.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MSUB_DEVICE__SUB_ID: return ModelPackage.DIGITAL_ACTOR_IO16__SUB_ID;
+        case ModelPackage.MSUB_DEVICE__MBRICK: return ModelPackage.DIGITAL_ACTOR_IO16__MBRICK;
+        default: return -1;
+      }
+    }
     if (baseClass == GenericDevice.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.GENERIC_DEVICE__GENERIC_DEVICE_ID: return ModelPackage.DIGITAL_ACTOR__GENERIC_DEVICE_ID;
+        case ModelPackage.GENERIC_DEVICE__GENERIC_DEVICE_ID: return ModelPackage.DIGITAL_ACTOR_IO16__GENERIC_DEVICE_ID;
+        default: return -1;
+      }
+    }
+    if (baseClass == IODevice.class)
+    {
+      switch (baseFeatureID)
+      {
         default: return -1;
       }
     }
@@ -1104,7 +1161,7 @@ private int mask;
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.DIGITAL_ACTOR__TF_CONFIG;
+        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.DIGITAL_ACTOR_IO16__TF_CONFIG;
         default: return -1;
       }
     }
@@ -1117,23 +1174,72 @@ private int mask;
    * @generated
    */
   @Override
+  public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
+  {
+    if (baseClass == MBaseDevice.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.MBASE_DEVICE___INIT: return ModelPackage.DIGITAL_ACTOR_IO16___INIT;
+        case ModelPackage.MBASE_DEVICE___ENABLE: return ModelPackage.DIGITAL_ACTOR_IO16___ENABLE;
+        case ModelPackage.MBASE_DEVICE___DISABLE: return ModelPackage.DIGITAL_ACTOR_IO16___DISABLE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MSubDevice.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == GenericDevice.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == IODevice.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    return super.eDerivedOperationID(baseOperationID, baseClass);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException
   {
     switch (operationID)
     {
-      case ModelPackage.DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE:
+      case ModelPackage.DIGITAL_ACTOR_IO16___TURN_DIGITAL__HIGHLOWVALUE:
         turnDigital((HighLowValue)arguments.get(0));
         return null;
-      case ModelPackage.DIGITAL_ACTOR___FETCH_DIGITAL_VALUE:
+      case ModelPackage.DIGITAL_ACTOR_IO16___FETCH_DIGITAL_VALUE:
         fetchDigitalValue();
         return null;
-      case ModelPackage.DIGITAL_ACTOR___INIT:
+      case ModelPackage.DIGITAL_ACTOR_IO16___INIT:
         init();
         return null;
-      case ModelPackage.DIGITAL_ACTOR___ENABLE:
+      case ModelPackage.DIGITAL_ACTOR_IO16___ENABLE:
         enable();
         return null;
-      case ModelPackage.DIGITAL_ACTOR___DISABLE:
+      case ModelPackage.DIGITAL_ACTOR_IO16___DISABLE:
         disable();
         return null;
     }
@@ -1151,7 +1257,9 @@ private int mask;
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (logger: ");
+    result.append(" (digitalState: ");
+    result.append(digitalState);
+    result.append(", logger: ");
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
@@ -1165,8 +1273,6 @@ private int mask;
     result.append(genericDeviceId);
     result.append(", deviceType: ");
     result.append(deviceType);
-    result.append(", digitalState: ");
-    result.append(digitalState);
     result.append(", port: ");
     result.append(port);
     result.append(", pin: ");

@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
 import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
@@ -160,7 +159,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN: return createMIndustrialDigitalIn();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4: return createMBrickletIndustrialDigitalOut4();
       case ModelPackage.INDUSTRIAL_DIGITAL_OUT4: return createIndustrialDigitalOut4();
-      case ModelPackage.DIGITAL_ACTOR: return createDigitalActor();
+      case ModelPackage.DIGITAL_ACTOR_IO16: return createDigitalActorIO16();
       case ModelPackage.MBRICKLET_IO16: return createMBrickletIO16();
       case ModelPackage.DIGITAL_SENSOR: return createDigitalSensor();
       case ModelPackage.MBRICKLET_IO4: return createMBrickletIO4();
@@ -610,10 +609,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public TFIOActorConfiguration createTFIOActorConfiguration()
+  public DigitalActorIO16 createDigitalActorIO16()
   {
-    TFIOActorConfigurationImpl tfioActorConfiguration = new TFIOActorConfigurationImpl();
-    return tfioActorConfiguration;
+    DigitalActorIO16Impl digitalActorIO16 = new DigitalActorIO16Impl();
+    return digitalActorIO16;
   }
 
   /**
@@ -621,10 +620,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public DigitalActor createDigitalActor()
+  public TFIOActorConfiguration createTFIOActorConfiguration()
   {
-    DigitalActorImpl digitalActor = new DigitalActorImpl();
-    return digitalActor;
+    TFIOActorConfigurationImpl tfioActorConfiguration = new TFIOActorConfigurationImpl();
+    return tfioActorConfiguration;
   }
 
   /**

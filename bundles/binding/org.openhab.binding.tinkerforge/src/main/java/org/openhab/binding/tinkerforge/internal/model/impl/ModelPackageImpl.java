@@ -30,6 +30,7 @@ import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfig
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
@@ -321,6 +322,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass digitalActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass digitalActorIO16EClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass mActorEClass = null;
 
   /**
@@ -357,13 +372,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass tfioActorConfigurationEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass digitalActorEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2079,6 +2087,126 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getDigitalActor()
+  {
+    return digitalActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActor_DigitalState()
+  {
+    return (EAttribute)digitalActorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getDigitalActor__TurnDigital__HighLowValue()
+  {
+    return digitalActorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getDigitalActor__FetchDigitalValue()
+  {
+    return digitalActorEClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDigitalActorIO16()
+  {
+    return digitalActorIO16EClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActorIO16_DeviceType()
+  {
+    return (EAttribute)digitalActorIO16EClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActorIO16_Port()
+  {
+    return (EAttribute)digitalActorIO16EClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActorIO16_Pin()
+  {
+    return (EAttribute)digitalActorIO16EClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActorIO16_DefaultState()
+  {
+    return (EAttribute)digitalActorIO16EClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActorIO16_KeepOnReconnect()
+  {
+    return (EAttribute)digitalActorIO16EClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getDigitalActorIO16__TurnDigital__HighLowValue()
+  {
+    return digitalActorIO16EClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getDigitalActorIO16__FetchDigitalValue()
+  {
+    return digitalActorIO16EClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMActor()
   {
     return mActorEClass;
@@ -2192,96 +2320,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getTFIOActorConfiguration_KeepOnReconnect()
   {
     return (EAttribute)tfioActorConfigurationEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getDigitalActor()
-  {
-    return digitalActorEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getDigitalActor_DeviceType()
-  {
-    return (EAttribute)digitalActorEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getDigitalActor_DigitalState()
-  {
-    return (EAttribute)digitalActorEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getDigitalActor_Port()
-  {
-    return (EAttribute)digitalActorEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getDigitalActor_Pin()
-  {
-    return (EAttribute)digitalActorEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getDigitalActor_DefaultState()
-  {
-    return (EAttribute)digitalActorEClass.getEStructuralFeatures().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getDigitalActor_KeepOnReconnect()
-  {
-    return (EAttribute)digitalActorEClass.getEStructuralFeatures().get(5);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EOperation getDigitalActor__TurnDigital__HighLowValue()
-  {
-    return digitalActorEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EOperation getDigitalActor__FetchDigitalValue()
-  {
-    return digitalActorEClass.getEOperations().get(1);
   }
 
   /**
@@ -2499,7 +2537,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getDigitalActorIO4_DigitalState()
+  public EAttribute getDigitalActorIO4_Pin()
   {
     return (EAttribute)digitalActorIO4EClass.getEStructuralFeatures().get(1);
   }
@@ -2509,7 +2547,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getDigitalActorIO4_Pin()
+  public EAttribute getDigitalActorIO4_DefaultState()
   {
     return (EAttribute)digitalActorIO4EClass.getEStructuralFeatures().get(2);
   }
@@ -2519,19 +2557,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getDigitalActorIO4_DefaultState()
-  {
-    return (EAttribute)digitalActorIO4EClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getDigitalActorIO4_KeepOnReconnect()
   {
-    return (EAttribute)digitalActorIO4EClass.getEStructuralFeatures().get(4);
+    return (EAttribute)digitalActorIO4EClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -4975,14 +5003,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     industrialDigitalOut4EClass = createEClass(INDUSTRIAL_DIGITAL_OUT4);
 
     digitalActorEClass = createEClass(DIGITAL_ACTOR);
-    createEAttribute(digitalActorEClass, DIGITAL_ACTOR__DEVICE_TYPE);
     createEAttribute(digitalActorEClass, DIGITAL_ACTOR__DIGITAL_STATE);
-    createEAttribute(digitalActorEClass, DIGITAL_ACTOR__PORT);
-    createEAttribute(digitalActorEClass, DIGITAL_ACTOR__PIN);
-    createEAttribute(digitalActorEClass, DIGITAL_ACTOR__DEFAULT_STATE);
-    createEAttribute(digitalActorEClass, DIGITAL_ACTOR__KEEP_ON_RECONNECT);
     createEOperation(digitalActorEClass, DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE);
     createEOperation(digitalActorEClass, DIGITAL_ACTOR___FETCH_DIGITAL_VALUE);
+
+    digitalActorIO16EClass = createEClass(DIGITAL_ACTOR_IO16);
+    createEAttribute(digitalActorIO16EClass, DIGITAL_ACTOR_IO16__DEVICE_TYPE);
+    createEAttribute(digitalActorIO16EClass, DIGITAL_ACTOR_IO16__PORT);
+    createEAttribute(digitalActorIO16EClass, DIGITAL_ACTOR_IO16__PIN);
+    createEAttribute(digitalActorIO16EClass, DIGITAL_ACTOR_IO16__DEFAULT_STATE);
+    createEAttribute(digitalActorIO16EClass, DIGITAL_ACTOR_IO16__KEEP_ON_RECONNECT);
+    createEOperation(digitalActorIO16EClass, DIGITAL_ACTOR_IO16___TURN_DIGITAL__HIGHLOWVALUE);
+    createEOperation(digitalActorIO16EClass, DIGITAL_ACTOR_IO16___FETCH_DIGITAL_VALUE);
 
     mBrickletIO16EClass = createEClass(MBRICKLET_IO16);
     createEAttribute(mBrickletIO16EClass, MBRICKLET_IO16__DEVICE_TYPE);
@@ -5005,7 +5037,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     digitalActorIO4EClass = createEClass(DIGITAL_ACTOR_IO4);
     createEAttribute(digitalActorIO4EClass, DIGITAL_ACTOR_IO4__DEVICE_TYPE);
-    createEAttribute(digitalActorIO4EClass, DIGITAL_ACTOR_IO4__DIGITAL_STATE);
     createEAttribute(digitalActorIO4EClass, DIGITAL_ACTOR_IO4__PIN);
     createEAttribute(digitalActorIO4EClass, DIGITAL_ACTOR_IO4__DEFAULT_STATE);
     createEAttribute(digitalActorIO4EClass, DIGITAL_ACTOR_IO4__KEEP_ON_RECONNECT);
@@ -5466,12 +5497,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMBrickletIndustrialDigitalOut4());
     g1.getETypeArguments().add(g2);
     industrialDigitalOut4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getDigitalActor());
+    digitalActorIO16EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getIODevice());
-    digitalActorEClass.getEGenericSuperTypes().add(g1);
+    digitalActorIO16EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
     g2 = createEGenericType(this.getTFIOActorConfiguration());
     g1.getETypeArguments().add(g2);
-    digitalActorEClass.getEGenericSuperTypes().add(g1);
+    digitalActorIO16EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletIO16());
     g1.getETypeArguments().add(g2);
@@ -5526,6 +5559,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getTFIOSensorConfiguration());
     g1.getETypeArguments().add(g2);
     digitalSensorIO4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getDigitalActor());
+    digitalActorIO4EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getIO4Device());
     digitalActorIO4EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMTFConfigConsumer());
@@ -6012,18 +6047,25 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(industrialDigitalOut4EClass, IndustrialDigitalOut4.class, "IndustrialDigitalOut4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-    initEClass(digitalActorEClass, DigitalActor.class, "DigitalActor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getDigitalActor_DeviceType(), theEcorePackage.getEString(), "deviceType", "io_actuator", 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(digitalActorEClass, DigitalActor.class, "DigitalActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDigitalActor_DigitalState(), this.getDigitalValue(), "digitalState", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getDigitalActor_Port(), theEcorePackage.getEChar(), "port", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getDigitalActor_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getDigitalActor_DefaultState(), theEcorePackage.getEString(), "defaultState", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getDigitalActor_KeepOnReconnect(), theEcorePackage.getEBoolean(), "keepOnReconnect", "false", 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     op = initEOperation(getDigitalActor__TurnDigital__HighLowValue(), null, "turnDigital", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getDigitalValue(), "digitalState", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEOperation(getDigitalActor__FetchDigitalValue(), null, "fetchDigitalValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(digitalActorIO16EClass, DigitalActorIO16.class, "DigitalActorIO16", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDigitalActorIO16_DeviceType(), theEcorePackage.getEString(), "deviceType", "io_actuator", 0, 1, DigitalActorIO16.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalActorIO16_Port(), theEcorePackage.getEChar(), "port", null, 0, 1, DigitalActorIO16.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalActorIO16_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, DigitalActorIO16.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalActorIO16_DefaultState(), theEcorePackage.getEString(), "defaultState", null, 0, 1, DigitalActorIO16.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDigitalActorIO16_KeepOnReconnect(), theEcorePackage.getEBoolean(), "keepOnReconnect", "false", 0, 1, DigitalActorIO16.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    op = initEOperation(getDigitalActorIO16__TurnDigital__HighLowValue(), null, "turnDigital", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDigitalValue(), "digitalState", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getDigitalActorIO16__FetchDigitalValue(), null, "fetchDigitalValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickletIO16EClass, MBrickletIO16.class, "MBrickletIO16", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletIO16_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_io16", 0, 1, MBrickletIO16.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -6046,7 +6088,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(digitalActorIO4EClass, DigitalActorIO4.class, "DigitalActorIO4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDigitalActorIO4_DeviceType(), theEcorePackage.getEString(), "deviceType", "io4_actuator", 0, 1, DigitalActorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getDigitalActorIO4_DigitalState(), this.getDigitalValue(), "digitalState", null, 0, 1, DigitalActorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDigitalActorIO4_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, DigitalActorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDigitalActorIO4_DefaultState(), theEcorePackage.getEString(), "defaultState", null, 0, 1, DigitalActorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDigitalActorIO4_KeepOnReconnect(), theEcorePackage.getEBoolean(), "keepOnReconnect", "false", 0, 1, DigitalActorIO4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

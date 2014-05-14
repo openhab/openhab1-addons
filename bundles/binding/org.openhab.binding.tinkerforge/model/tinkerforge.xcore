@@ -263,11 +263,16 @@ class IndustrialDigitalOut4 extends MSubDevice<MBrickletIndustrialDigitalOut4> {
     
 }
 
-class DigitalActor extends IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
+interface DigitalActor {
+    DigitalValue digitalState
+    op void turnDigital(DigitalValue digitalState)
+    op void fetchDigitalValue()
+}
+
+class DigitalActorIO16 extends DigitalActor, IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
 	readonly String deviceType = "io_actuator"
-	DigitalValue digitalState
-	op void turnDigital(DigitalValue digitalState)
-	op void fetchDigitalValue()
+    op void turnDigital(DigitalValue digitalState)
+    op void fetchDigitalValue()
 	char port
 	int pin
 	String defaultState
@@ -304,9 +309,8 @@ class DigitalSensorIO4 extends IO4Device, MSensor<DigitalValue>,
     int pin
 }
 
-class DigitalActorIO4 extends IO4Device, MTFConfigConsumer<TFIOActorConfiguration>{
+class DigitalActorIO4 extends DigitalActor, IO4Device, MTFConfigConsumer<TFIOActorConfiguration>{
     readonly String deviceType = "io4_actuator"
-    DigitalValue digitalState
     op void turnDigital(DigitalValue digitalState)
     op void fetchDigitalValue()
     int pin
