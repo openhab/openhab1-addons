@@ -33,9 +33,19 @@ Switch Light_GF_Corridor_Ceiling 	"Ceiling" 		(GF_Corridor, Lights) { bticino="i
 Switch Light_GF_Living_LED_Spot "LED Spot" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=23" }
 Switch Light_GF_Living_Ceiling "Ceiling" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=22" }
 Switch Light_GF_Living_TV_PWR "TV" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=18" }
+
 /* Test virtual config range */
 /* where=XXYY (XX = A (01-10), YY = PL (01-15)) eg. A=10 and PL=5 the where will be 1005, A=2 and PL=12 the where will be 0212 */ 
 /*Switch Light_GF_Living_VIRTUAL "VIRTUAL" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=0113" }*/
+
+/* Test CEN buttons */
+/* Pushbutton L/H4652/3 ((A1:6,PL1:9),(A2:0,PL2:0),(A3:0,PL3:0),(M:CEN)) */
+Switch Light_GF_Living_69_BTN1 	"CEN_69_BTN_1" 		(GF_Living, Lights) { bticino="if=default;who=15;what=01;where=69" }
+Switch Light_GF_Living_69_BTN2 	"CEN_69_BTN_2" 		(GF_Living, Lights) { bticino="if=default;who=15;what=02;where=69" }
+Switch Light_GF_Living_69_BTN3 	"CEN_69_BTN_3" 		(GF_Living, Lights) { bticino="if=default;who=15;what=03;where=69" }
+Switch Light_GF_Living_69_BTN4 	"CEN_69_BTN_4" 		(GF_Living, Lights) { bticino="if=default;who=15;what=04;where=69" }
+Switch Light_GF_Living_69_BTN5 	"CEN_69_BTN_5" 		(GF_Living, Lights) { bticino="if=default;who=15;what=05;where=69" }
+Switch Light_GF_Living_69_BTN6 	"CEN_69_BTN_6" 		(GF_Living, Lights) { bticino="if=default;who=15;what=06;where=69" }
 
 /* Dimmer Light_GF_Living_Table 		"Table" 		(GF_Living, Lights)*/
 

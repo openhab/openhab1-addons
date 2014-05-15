@@ -106,7 +106,7 @@ public class BticinoDevice implements IBticinoEventListener
 	{
 		m_rescan_interval_secs = p_rescan_interval_secs;
 	}
-	
+
 	public void setEventPublisher(EventPublisher eventPublisher)
 	{
 		this.eventPublisher = eventPublisher;
@@ -136,7 +136,8 @@ public class BticinoDevice implements IBticinoEventListener
 	{
 		if (m_open_web_net == null)
 		{
-			m_open_web_net = new OpenWebNet(m_host, m_port, m_rescan_interval_secs);
+			m_open_web_net = new OpenWebNet(m_host, m_port,
+					m_rescan_interval_secs);
 			m_open_web_net.addEventListener(this);
 			m_open_web_net.onStart();
 		}
@@ -222,7 +223,8 @@ public class BticinoDevice implements IBticinoEventListener
 				+ p_protocol_read.getProperty("what") + "], WHERE ["
 				+ p_protocol_read.getProperty("where") + "]");
 
-		// Get all the configs that are connected to this (who,where), multiple possible
+		// Get all the configs that are connected to this (who,where), multiple
+		// possible
 		List<BticinoBindingConfig> l_binding_configs = m_bticino_binding
 				.getItemForBticinoBindingConfig(
 						p_protocol_read.getProperty("who"),
@@ -250,6 +252,7 @@ public class BticinoDevice implements IBticinoEventListener
 
 			if (l_item instanceof SwitchItem)
 			{
+				// Lights
 				if (p_protocol_read.getProperty("messageType")
 						.equalsIgnoreCase("lighting"))
 				{
@@ -264,6 +267,48 @@ public class BticinoDevice implements IBticinoEventListener
 					{
 						eventPublisher.postUpdate(l_item.getName(),
 								OnOffType.OFF);
+					}
+				}
+				// CENs
+				if (p_protocol_read.getProperty("messageType")
+						.equalsIgnoreCase("CEN Basic and Evolved"))
+				{
+					// Pushbutton virtual address must match
+					if (l_binding_config.what.equalsIgnoreCase(p_protocol_read
+							.getProperty("what")))
+					{
+						if (p_protocol_read.getProperty("messageDescription")
+								.equalsIgnoreCase("Virtual pressure"))
+						{
+							eventPublisher.postUpdate(l_item.getName(),
+									OnOffType.ON);
+							eventPublisher.postUpdate(l_item.getName(),
+									OnOffType.OFF);
+						} else if (p_protocol_read.getProperty(
+								"messageDescription").equalsIgnoreCase(
+								"Virtual release after short pressure"))
+						{
+							eventPublisher.postUpdate(l_item.getName(),
+									OnOffType.ON);
+							eventPublisher.postUpdate(l_item.getName(),
+									OnOffType.OFF);
+						} else if (p_protocol_read.getProperty(
+								"messageDescription").equalsIgnoreCase(
+								"Virtual release after an extended pressure"))
+						{
+							eventPublisher.postUpdate(l_item.getName(),
+									OnOffType.ON);
+							eventPublisher.postUpdate(l_item.getName(),
+									OnOffType.OFF);
+						} else if (p_protocol_read.getProperty(
+								"messageDescription").equalsIgnoreCase(
+								"Virtual extended pressure"))
+						{
+							eventPublisher.postUpdate(l_item.getName(),
+									OnOffType.ON);
+							eventPublisher.postUpdate(l_item.getName(),
+									OnOffType.OFF);
+						}
 					}
 				}
 			} else if (l_item instanceof RollershutterItem)

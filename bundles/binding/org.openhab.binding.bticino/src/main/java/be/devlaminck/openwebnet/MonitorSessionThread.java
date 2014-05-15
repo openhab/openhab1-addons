@@ -365,7 +365,7 @@ public class MonitorSessionThread extends Thread
 					String seconds = frameParts[6];
 					messageType = "gatewayControl";
 					messageDescription = "Uptime request";
-					event.addProperty("uptime", days + "D:" + hours + "H:"
+					event.addProperty("uptime ", days + "D:" + hours + "H:"
 							+ minutes + "m:" + seconds + "s");
 				}
 				if (frameParts[2].equalsIgnoreCase("22"))
@@ -406,6 +406,48 @@ public class MonitorSessionThread extends Thread
 							+ release + "." + build);
 				}
 			}
+			// Basic and evolved CEN
+			if (who.equalsIgnoreCase("15"))
+			{
+				objectClass = "CEN_Basic_Evolved";
+				objectName = who + "*" + where;
+				what = frameParts[2];
+				String[] what_parts = what.split("#");
+
+				if (what_parts.length == 1)
+				{
+					// push button n
+					event.addProperty("push_button_n", what_parts[0]);
+					// type of pressure
+					event.addProperty("pressure", "Virtual pressure");
+
+				} else if (what_parts.length == 2)
+				{
+					// push button n
+					event.addProperty("push_button_n", what_parts[0]);
+					if (what_parts[0].equalsIgnoreCase("1"))
+					{
+						// type of pressure
+						event.addProperty("pressure",
+								"Virtual release after short pressure");
+					}
+					if (what_parts[0].equalsIgnoreCase("2"))
+					{
+						// type of pressure
+						event.addProperty("pressure",
+								"Virtual release after an extended pressure");
+					}
+					if (what_parts[0].equalsIgnoreCase("3"))
+					{
+						// type of pressure
+						event.addProperty("pressure",
+								"Virtual extended pressure");
+					}
+				} else
+				{
+					logger.debug("other CEN Basic or Evolved message");
+				}
+			}
 
 			event.addProperty("who", who);
 			if (where != null)
@@ -442,19 +484,22 @@ public class MonitorSessionThread extends Thread
 				where = "";
 			event = new ProtocolRead(frame);
 			objectName = who + "*" + where;
-            
+
 			// Virtual configurator support
-			// where=XXYY (XX = A (01-10), YY = PL (01-15)) 
-			// eg. A=10 and PL=5 the where will be 1005, A=2 and PL=12 the where will be 0212
+			// where=XXYY (XX = A (01-10), YY = PL (01-15))
+			// eg. A=10 and PL=5 the where will be 1005, A=2 and PL=12 the where
+			// will be 0212
+			// split in parts, if 2 parts with riser
+			// todo
 			boolean virtual_where = (where.length() == 4);
-			
+
 			switch (Integer.parseInt(who))
 			{
 			// LIGHTING
 			case 1:
 				messageType = "Lighting";
 				objectClass = "Light";
-				
+
 				// For virtual configuration we receive for light on 1000#1
 				// so assuming the second part is the what
 				if (virtual_where)
@@ -463,7 +508,7 @@ public class MonitorSessionThread extends Thread
 					// take the last part for the what
 					what = what_parts[what_parts.length - 1];
 				}
-				
+
 				switch (Integer.parseInt(what))
 				{
 				// Light OFF
@@ -487,6 +532,8 @@ public class MonitorSessionThread extends Thread
 			// AUTOMATION
 			case 2:
 				messageType = "Automation";
+				objectClass = "Automation";
+
 				switch (Integer.parseInt(what))
 				{
 				case 0:
@@ -525,6 +572,8 @@ public class MonitorSessionThread extends Thread
 			// THERMOREGULATION
 			case 4:
 				messageType = "thermoregulation";
+				objectClass = "Temperature";
+
 				switch (Integer.parseInt(what))
 				{
 				case 0:
@@ -590,6 +639,8 @@ public class MonitorSessionThread extends Thread
 			// BURGLAR ALARM
 			case 5:
 				messageType = "alarm";
+				objectClass = "Alarm";
+
 				switch (Integer.parseInt(what))
 				{
 				case 0:
@@ -667,6 +718,8 @@ public class MonitorSessionThread extends Thread
 			// SOUND SYSTEM
 			case 16:
 				messageType = "Sound System";
+				objectClass = "Sound";
+
 				switch (Integer.parseInt(what))
 				{
 				case 0:
@@ -690,6 +743,39 @@ public class MonitorSessionThread extends Thread
 				}
 				break; // close SOUND SYSTEM switch
 
+			// CEN (Basic & Evolved)
+			case 15:
+				messageType = "CEN Basic and Evolved";
+				objectClass = "CEN";
+
+				String[] what_parts = what.split("#");
+
+				if (what_parts.length == 1)
+				{
+					// type of pressure
+					messageDescription = "Virtual pressure";
+
+				} else if (what_parts.length == 2)
+				{
+					if (what_parts[0].equalsIgnoreCase("1"))
+					{
+						// type of pressure
+						messageDescription = "Virtual release after short pressure";
+					}
+					if (what_parts[0].equalsIgnoreCase("2"))
+					{
+						// type of pressure
+						messageDescription = "Virtual release after an extended pressure";
+					}
+					if (what_parts[0].equalsIgnoreCase("3"))
+					{
+						// type of pressure
+						messageDescription = "Virtual extended pressure";
+					}
+				} else
+				{
+					messageDescription = "other CEN Basic or Evolved message";
+				}
 			} // close switch(who)
 
 			if (who != null)
@@ -704,7 +790,7 @@ public class MonitorSessionThread extends Thread
 			{
 				event.addProperty("where", where);
 				// Indicate virtual where message
-				event.addProperty("virtual", virtual_where?"true":"false");
+				event.addProperty("virtual", virtual_where ? "true" : "false");
 			}
 			if (messageType != null)
 			{
@@ -722,7 +808,7 @@ public class MonitorSessionThread extends Thread
 			{
 				event.addProperty("object.name", objectName);
 			}
-			
+
 			logger.info("Frame " + frame + " is " + messageType
 					+ " message. Notify it as OpenHab event "
 					+ messageDescription == "No Description set" ? ""

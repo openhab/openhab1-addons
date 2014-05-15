@@ -75,7 +75,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
 	 * <code>'^(.*?)\\.(host|port)$'</code>
 	 */
 	private static final Pattern EXTRACT_BTICINO_GATEWAY_CONFIG_PATTERN = Pattern
-			.compile("^(.*?)\\.(host|port)$");
+			.compile("^(.*?)\\.(host|port|rescan_secs)$");
 
 	// indicates that the updated has been run once
 	boolean m_binding_initialized = false;
