@@ -202,6 +202,15 @@ public class BticinoDevice implements IBticinoEventListener
 						l_pr.addProperty("what", "0");
 					break;
 				}
+				// CEN Basic & Evolved
+				case 15:
+				{
+					// Only for the on type, send a CEN event (aka a pushbutton device)
+					// the CEN can start a scenario on eg. a MH200N gateway device
+					if (OnOffType.ON.equals(command))
+						l_pr.addProperty("what", itemBindingConfig.what);
+					break;
+				}
 				}
 
 				m_open_web_net.onCommand(l_pr);
