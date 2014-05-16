@@ -119,6 +119,9 @@ Number Weather_Temp_Min 		"Todays Minimum [%.1f °C]"	<temperature> (Weather_Cha
 /* NTP binding demo item */
 DateTime		Date			"Date [%1$tA, %1$td.%1$tm.%1$tY]"	<calendar>	{ ntp="Europe/Berlin:de_DE" }
 
+/* Bluetooth presence detector switches */
+Switch Android_B0C4E7225CBC_DR_TOM_S3				"Switch"
+
 /* Demo items */
 Switch DemoSwitch				"Switch"
 Dimmer DimmedLight				"Dimmer [%d %%]"		<slider>

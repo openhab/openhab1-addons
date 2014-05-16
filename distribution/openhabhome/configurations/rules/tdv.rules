@@ -1,0 +1,17 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+
+// Scenario button test
+rule "Scenario living read lights"
+when
+	Item Light_GF_Living_69_BTN1 received update
+then
+	if(Light_GF_Living_69_BTN1.state==ON)
+	{
+		if (Light_GF_Living_LED_Spot.state==OFF)
+			sendCommand(Light_GF_Living_LED_Spot, ON)
+		else
+			sendCommand(Light_GF_Living_LED_Spot, OFF)
+	}
+end

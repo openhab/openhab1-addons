@@ -1,5 +1,10 @@
 sitemap demo label="Main Menu"
 {
+	Frame label="Presence"
+	{
+		Switch item=Android_B0C4E7225CBC_DR_TOM_S3 label="DR_TOM_S3 (B0:C4:E7:22:5C:BC)"
+	}
+	
 	Frame {
 		Group item=gFF label="First Floor" icon="firstfloor"
 		Group item=gGF label="Ground Floor" icon="groundfloor"
