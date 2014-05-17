@@ -121,8 +121,8 @@ DateTime		Date			"Date [%1$tA, %1$td.%1$tm.%1$tY]"	<calendar>	{ ntp="Europe/Berl
 
 /* Bluetooth presence detector switches */
 Switch Android_B0C4E7225CBC_DR_TOM_S3			"Switch"
-Switch Android_B8F6B1199AC6_dr-tom-ret-i		"Switch"
-Switch Android_D48890CEFBFB_els-i9k				"Switch"
+Switch Android_B8F6B1199AC6_dr_tom_ret_i		"Switch"
+Switch Android_D48890CEFBFB_els_i9k				"Switch"
 
 /* Demo items */
 Switch DemoSwitch				"Switch"

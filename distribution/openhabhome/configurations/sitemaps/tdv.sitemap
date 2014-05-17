@@ -3,8 +3,8 @@ sitemap demo label="Main Menu"
 	Frame label="Presence"
 	{
 		Switch item=Android_B0C4E7225CBC_DR_TOM_S3 label="DR_TOM_S3 (B0:C4:E7:22:5C:BC)"
-		Switch item=Android_B8F6B1199AC6_dr-tom-ret-i label="dr-tom-ret-i (B8:F6:B1:19:9A:C6)"
-		Switch item=Android_D48890CEFBFB_els-i9k label="els-i9k (D4:88:90:CE:FB:FB)"
+		Switch item=Android_B8F6B1199AC6_dr_tom_ret_i label="dr-tom-ret-i (B8:F6:B1:19:9A:C6)"
+		Switch item=Android_D48890CEFBFB_els_i9k label="els-i9k (D4:88:90:CE:FB:FB)"
 	}
 	
 	Frame {
