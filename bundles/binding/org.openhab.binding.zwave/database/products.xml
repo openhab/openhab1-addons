@@ -120,6 +120,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>AN157</Model>
+			<Label lang="en">Switch Plugin</Label>
+			<ConfigFile>everspring/an157.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0101</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -216,6 +225,24 @@
 	<Manufacturer>
 		<Id>0064</Id>
 		<Name>Reitz Group</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>054336</Model>
+			<Label lang="en">One Paddle Wall Dimmer Insert</Label>
+			<ConfigFile>reitz/054336.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064394</Model>
+			<Label lang="en">Schuko Plug Dimmer</Label>
+			<ConfigFile>reitz/064394.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>2001</Type>
@@ -666,6 +693,15 @@
 			<Model>DWZWAVE1</Model>
 			<Label lang="en">Z-Wave Door/Window Sensor</Label>
 			<ConfigFile>eco/dwzwave1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>TILTZWAVE1</Model>
+			<Label lang="en">Z-Wave Garage Door Sensor</Label>
+			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>	
 	<Manufacturer>

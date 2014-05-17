@@ -9,7 +9,7 @@
 		<version>1.5.0-SNAPSHOT</version>
 	</parent>
 
-	<name>openHAB RME Binding</name>
+	<name>openHAB Oceanic Binding</name>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.oceanic</bundle.symbolicName>

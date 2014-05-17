@@ -131,7 +131,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 					
 				break;
 			default:
-			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
+				logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
 					command, 
 					this.getCommandClass().getLabel(),
 					this.getCommandClass().getKey()));
