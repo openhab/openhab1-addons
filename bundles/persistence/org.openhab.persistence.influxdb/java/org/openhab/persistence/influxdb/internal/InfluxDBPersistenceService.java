@@ -7,12 +7,14 @@
  */
 package org.openhab.persistence.influxdb.internal;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,12 +27,15 @@ import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
+import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -40,12 +45,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This is the implementation of the InfluxDB {@link PersistenceService}. It persists item values
+ * using the <a href="http://influxdb.org">InfluxDB</a> time series database. The states (
+ * {@link State}) of an {@link Item} are persisted in a time series with names equal to the name of
+ * the item. All values are stored using integers or floats, {@link OnOffType} and
+ * {@link OpenClosedType} are stored using 0 or 1.
+ * 
  * @author Theo Weiss
  * @since 1.5.0
  */
 public class InfluxDBPersistenceService implements QueryablePersistenceService, ManagedService {
 
 
+  private static final String DIGITAL_VALUE_OFF = "0";
+  private static final String DIGITAL_VALUE_ON = "1";
   private static final String VALUE_COLUMN_NAME = "value";
   private ItemRegistry itemRegistry;
   private InfluxDB influxDB;
@@ -56,7 +69,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private String user;
   private String password;
   private boolean isProperlyConfigured;
-  private SimpleDateFormat dateFormat;
+  private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
   public void setItemRegistry(ItemRegistry itemRegistry) {
     this.itemRegistry = itemRegistry;
@@ -68,8 +81,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
 
   public void activate() {
     logger.debug("influxdb persistence service activated");
-    //2014-03-12 23:32:01.232
-    dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
   }
 
   public void deactivate() {
@@ -100,7 +111,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   }
 
   /**
-   * aliases are ignored because they can not be used for querying.
+   * {@inheritDoc} Aliases are ignored because they can not be used for querying.
    */
   @Override
   public void store(Item item, String alias) {
@@ -126,21 +137,18 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       return;
     }
     String name = item.getName();
-    String value = convertState((DecimalType) item.getStateAs(DecimalType.class));
-    if (value != null) {
-      logger.trace("storing {} in influxdb", name);
-      Serie serie = new Serie(name);
-//      serie.setColumns(new String[] {"time", VALUE_COLUMN_NAME});
-//      Object[] point = new Object[] {System.currentTimeMillis(), value};
-      
-      serie.setColumns(new String[] {VALUE_COLUMN_NAME});
-      Object[] point = new Object[] {value};
-      serie.setPoints(new Object[][] {point});
-      Serie[] series = new Serie[] {serie};
-      influxDB.write(dbName, series, TimeUnit.MILLISECONDS);
-    } else {
-      logger.warn("influxdb got non decimal state from item {}", item.getName());
-    }
+    Object value = stateToObject(item.getState());
+    logger.trace("storing {} in influxdb {}", name, value);
+    Serie serie = new Serie(name);
+    // For now time is calculated by influxdb, may be this should be configurable?
+    // serie.setColumns(new String[] {"time", VALUE_COLUMN_NAME});
+    // Object[] point = new Object[] {System.currentTimeMillis(), value};
+
+    serie.setColumns(new String[] {VALUE_COLUMN_NAME});
+    Object[] point = new Object[] {value};
+    serie.setPoints(new Object[][] {point});
+    Serie[] series = new Serie[] {serie};
+    influxDB.write(dbName, series, TimeUnit.MILLISECONDS);
   }
 
   @Override
@@ -214,9 +222,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       query.append(" where ");
       boolean foundState = false;
       boolean foundBeginDate = false;
-      boolean foundEndDate = false;
       if (filter.getState() != null && filter.getOperator() != null) {
-        String value = convertState(filter.getState());
+        String value = stateToString(filter.getState());
         if (value != null) {
           foundState = true;
           query.append(VALUE_COLUMN_NAME);
@@ -240,7 +247,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       }
 
       if (filter.getEndDate() != null) {
-        foundEndDate = true;
         if (foundState || foundBeginDate) {
           query.append(" and");
         }
@@ -252,8 +258,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       }
 
       if (filter.getOrdering() == Ordering.ASCENDING) {
-        // The order of the points defaults to time descending. The only other option is to order by
-        // time ascending by adding order asc to the query.
         query.append(" order asc");
       }
 
@@ -287,35 +291,104 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       }
       Object[][] points = result.getPoints();
       for (int i = 0; i < points.length; i++) {
-        if (pageSize != null && pageNumber == null && pageSize < i){
-          logger.debug("returning no more points page size reached {} pageNumber {} i {}", pageSize, pageNumber, i);
+        if (pageSize != null && pageNumber == null && pageSize < i) {
+          logger.debug("returning no more points pageSize {} pageNumber {} i {}", pageSize,
+              pageNumber, i);
           break;
         }
         Object[] objects = points[i];
-        logger.debug("adding historic item {}: time {} value {}", historicItemName, (Double) objects[timeColumnNum]
-            , (String) objects[valueColumnNum]);
-        historicItems.add(new InfluxdbItem(historicItemName, mapToState((String) objects[valueColumnNum],
-          historicItemName), new Date(((Double) objects[timeColumnNum]).longValue())));;
+        logger.debug("adding historic item {}: time {} value {}", historicItemName,
+            (Double) objects[timeColumnNum], String.valueOf(objects[valueColumnNum]));
+        historicItems.add(new InfluxdbItem(historicItemName, stringToState(
+            String.valueOf(objects[valueColumnNum]), historicItemName), new Date(
+            ((Double) objects[timeColumnNum]).longValue())));;
       }
     }
     return historicItems;
   }
 
-  private String convertState(State state) {
-    if (state instanceof DecimalType) {
-      return state.toString();
+  /**
+   * This method returns integers if possible if not floats are returned. This is an optimization
+   * for influxdb because integers have less overhead.
+   * 
+   * @param value the BigDecimal to be converted
+   * @return A double if possible else a float is returned.
+   */
+  private Object convertBigDecimalToNum(BigDecimal value) {
+    Object convertedValue;
+    if (value.scale() == 0) {
+      logger.trace("found no fractional part");
+      convertedValue = value.doubleValue();
+    } else {
+      logger.trace("found fractional part");
+      convertedValue = value.floatValue();
     }
-    return null;
+    return convertedValue;
   }
 
-  private State mapToState(String value, String itemName) {
+  /**
+   * Converts {@link State} to objects fitting into influxdb values.
+   * 
+   * @param state to be converted
+   * @return integer or float value for DecimalType and PercentType, an integer for DateTimeType and
+   *         0 or 1 for OnOffType and OpenClosedType.
+   */
+  private Object stateToObject(State state) {
+    Object value;
+    if (state instanceof PercentType) {
+      value = convertBigDecimalToNum(((PercentType) state).toBigDecimal());
+    } else if (state instanceof DecimalType) {
+      value = convertBigDecimalToNum(((DecimalType) state).toBigDecimal());
+    } else if (state instanceof DateTimeType) {
+      value = ((DateTimeType) state).getCalendar().getTime().getTime();
+    } else if (state instanceof OnOffType) {
+      value = (OnOffType) state == OnOffType.ON ? 1 : 0;
+    } else if (state instanceof OpenClosedType) {
+      value = (OpenClosedType) state == OpenClosedType.OPEN ? 1 : 0;
+    } else {
+      value = state.toString();
+    }
+    return value;
+  }
+
+  /**
+   * Converts {@link State} to a String suitable for influxdb queries.
+   * 
+   * @param state to be converted
+   * @return {@link String} equivalent of the {@link State}
+   */
+  private String stateToString(State state) {
+    String value;
+    if (state instanceof PercentType) {
+      value = ((PercentType) state).toBigDecimal().toString();
+    } else if (state instanceof DateTimeType) {
+      value = String.valueOf(((DateTimeType) state).getCalendar().getTime().getTime());
+    } else if (state instanceof DecimalType) {
+      value = ((DecimalType) state).toBigDecimal().toString();
+    } else if (state instanceof OnOffType) {
+      value = ((OnOffType) state) == OnOffType.ON ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
+    } else {
+      value = state.toString();
+    }
+    return value;
+  }
+
+  /**
+   * Converts a value to a {@link State} which is suitable for the given {@link Item}. This is
+   * needed for querying a {@link HistoricState}.
+   * 
+   * @param value to be converted to a {@link State}
+   * @param itemName name of the {@link Item} to get the {@link State} for
+   * @return
+   */
+  private State stringToState(String value, String itemName) {
     if (itemRegistry != null) {
       try {
         Item item = itemRegistry.getItem(itemName);
         if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
-          return value.equals("0") ? OnOffType.OFF : OnOffType.ON;
+          return value.equals(DIGITAL_VALUE_OFF) ? OnOffType.OFF : OnOffType.ON;
         } else if (item instanceof ContactItem) {
-          return value.equals("0") ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+          return value.equals(DIGITAL_VALUE_OFF) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
         }
       } catch (ItemNotFoundException e) {
         logger.warn("Could not find item '{}' in registry", itemName);
