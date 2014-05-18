@@ -15,3 +15,27 @@ then
 			sendCommand(Light_GF_Living_LED_Spot, OFF)
 	}
 end
+
+// Notify My Android test
+rule "Scenario detection corridor"
+when
+	Item Light_GF_Corridor_Ceiling received update
+then
+	if(Light_GF_Corridor_Ceiling.state==ON)
+	{
+		notifyMyAndroid("Movement detected", "Licht in de gang is aan als gevolg van IR detectie")
+		//sendMail("tom_de_vlaminck@hotmail.com", "Movement detected", "Licht in de gang is aan als gevolg van IR detectie")
+	}
+end
+
+// Doorbel mail test
+rule "Doorbel handler"
+when
+	Item Light_DOORBEL_98_BTN1 received update
+then
+	if(Light_DOORBEL_98_BTN1.state==ON)
+	{
+		notifyMyAndroid("Doorbel", "Deurbelknop ingedrukt")
+		//sendMail("tom_de_vlaminck@hotmail.com", "OpenHAB Deurbel", "Deurbel ingedrukt")
+	}
+end
