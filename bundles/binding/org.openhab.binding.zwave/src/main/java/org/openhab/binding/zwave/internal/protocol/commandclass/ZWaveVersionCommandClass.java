@@ -43,7 +43,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	public static final int VERSION_COMMAND_CLASS_GET = 0x13;
 	public static final int VERSION_COMMAND_CLASS_REPORT = 0x14;
 	
-	private LibraryType libraryType;
+	private LibraryType libraryType = LibraryType.LIB_UNKNOWN;
 	private Double protocolVersion;
 	private Double applicationVersion;
 	
@@ -198,8 +198,8 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	/**
 	 * Returns the current ZWave library type
 	 */
-	public void getLibraryType() {
-		
+	public LibraryType getLibraryType() {
+		return libraryType;
 	}
 
 	/**
@@ -220,6 +220,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	
 	public enum LibraryType
 	{
+		LIB_UNKNOWN(0,"Unknown"),
 		LIB_CONTROLLER_STATIC(1,"Static Controller"),
 		LIB_CONTROLLER(2,"Controller"),
 		LIB_SLAVE_ENHANCED(3,"Slave Enhanced"),
@@ -261,6 +262,9 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 				initMapping();
 			}
 			
+			if(libraryMapping.get(i) == null)
+				return LIB_UNKNOWN;
+
 			return libraryMapping.get(i);
 		}
 
