@@ -1737,24 +1737,24 @@ class SonosZonePlayer {
 	}
 
 	/**
-	 * 	Play music from the line-in of the given UDN
+	 * 	Play music from the line-in of the Player given its name or UDN
 	 * 
 	 * 	@param udn
 	 * 	@return true if the sonos device started to play
 	 */
-	public boolean playLineIn(String remoteUDN) {
+	public boolean playLineIn(String remotePlayerName) {
 		if (!isConfigured) {
 			return false;
 		}
 
-		SonosZonePlayer coordinator = sonosBinding
-				.getCoordinatorForZonePlayer(this);
+		SonosZonePlayer coordinator = sonosBinding.getCoordinatorForZonePlayer(this);
+		SonosZonePlayer remotePlayer = sonosBinding.getPlayerForID(remotePlayerName);
 
 		// stop whatever is currently playing
 		coordinator.stop();
 
 		// set the
-		coordinator.setCurrentURI("x-rincon-stream:" + remoteUDN, "");
+		coordinator.setCurrentURI("x-rincon-stream:" + remotePlayer.getUdn(), "");
 
 		// take the system off mute
 		coordinator.setMute("OFF");

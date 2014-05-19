@@ -220,6 +220,68 @@ public class ZWaveConverterHandler {
 	}
 
 	/**
+	 * Get the refresh interval for an item binding
+	 * 
+	 * @param provider
+	 *            the {@link ZWaveBindingProvider} that provides the item
+	 * @param itemName
+	 *            the name of the item to poll.
+	 */
+	@SuppressWarnings("unchecked")
+	public Integer getRefreshInterval(ZWaveBindingProvider provider, String itemName) {
+		ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
+		ZWaveCommandClass commandClass;
+		String commandClassName = bindingConfiguration.getArguments().get("command");
+
+		// this binding is configured not to poll.
+		if (bindingConfiguration.getRefreshInterval() != null && 0 == bindingConfiguration.getRefreshInterval())
+			return 0;
+
+		ZWaveNode node = this.controller.getNode(bindingConfiguration.getNodeId());
+
+		// ignore nodes that are not initialized or dead.
+		if (node == null)
+			return 0;
+
+		if (commandClassName != null) {
+			// this is a report item, handle it with the report info converter.
+			if (commandClassName.equalsIgnoreCase("info")) {
+				return infoConverter.getRefreshInterval();
+			}
+
+			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
+					bindingConfiguration.getEndpoint());
+
+			if (commandClass == null) {
+				logger.warn("No command class found for item = {}, command class name = {}, using 0 refresh interval.",
+						itemName, commandClassName);
+				return 0;
+			}
+		} else {
+			commandClass = resolveConverter(provider.getItem(itemName), node, bindingConfiguration.getEndpoint());
+		}
+
+		if (commandClass == null) {
+			logger.warn("No converter found for item = {}, using 0 refresh interval.", itemName);
+			return 0;
+		}
+
+		ZWaveCommandClassConverter<ZWaveCommandClass> converter = (ZWaveCommandClassConverter<ZWaveCommandClass>) getConverter(commandClass
+				.getCommandClass());
+
+		if (converter == null) {
+			logger.warn("No converter found for item = {}, using 0 refresh interval.", itemName);
+			return 0;
+		}
+
+		if (bindingConfiguration.getRefreshInterval() == null) {
+			bindingConfiguration.setRefreshInterval(converter.getRefreshInterval());
+		}
+
+		return bindingConfiguration.getRefreshInterval();
+	}
+
+	/**
 	 * Handles an incoming {@link ZWaveCommandClassValueEvent}. Implement
 	 * this message in derived classes to convert the value and post an
 	 * update on the openHAB bus.
@@ -266,12 +328,18 @@ public class ZWaveConverterHandler {
 	public void receiveCommand(ZWaveBindingProvider provider, String itemName, Command command) {
 		ZWaveBindingConfig bindingConfiguration = provider.getZwaveBindingConfig(itemName);
 		ZWaveNode node = this.controller.getNode(bindingConfiguration.getNodeId());
+		if(node == null) {
+			logger.error("Item {} has non existant node {}", itemName, bindingConfiguration.getNodeId());
+			return;
+		}
 		ZWaveCommandClass commandClass;
 		String commandClassName = bindingConfiguration.getArguments().get("command");
 		
 		// ignore nodes that are not initialized or dead.
-		if (node.getNodeStage() != NodeStage.DONE)
+		if (node.getNodeStage() != NodeStage.DONE) {
+			logger.trace("NODE {}: stage is not DONE: {}", node.getNodeId(), node.getNodeStage());
 			return;
+		}
 		
 		if (commandClassName != null) {
 			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName), bindingConfiguration.getEndpoint());
