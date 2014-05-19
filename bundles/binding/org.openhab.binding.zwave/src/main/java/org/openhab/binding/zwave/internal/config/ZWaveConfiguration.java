@@ -27,6 +27,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass.ZWaveConfigurationParameterEvent;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
@@ -784,6 +785,22 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					// removal.
 					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 					nodeSerializer.DeleteNode(nodeId);
+				}
+
+				// This is temporary
+				// It should be in the startup code, but that needs refactoring
+				if (action.equals("Version")) {
+					logger.debug("NODE {}: Delete node", nodeId);
+					ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
+							.getCommandClass(CommandClass.VERSION);
+
+					if (versionCommandClass == null) {
+						logger.error("NODE {}: Error getting wakeupCommandClass in doAction", nodeId);
+						return;
+					}
+
+					// Request the version report for this node
+					this.zController.sendData(versionCommandClass.getVersionMessage());
 				}
 
 				// Return here as afterwards we assume there are more elements

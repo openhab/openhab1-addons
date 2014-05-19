@@ -8,6 +8,9 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -39,6 +42,10 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	public static final int VERSION_REPORT = 0x12;
 	public static final int VERSION_COMMAND_CLASS_GET = 0x13;
 	public static final int VERSION_COMMAND_CLASS_REPORT = 0x14;
+	
+	private LibraryType libraryType;
+	private Double protocolVersion;
+	private Double applicationVersion;
 	
 	/**
 	 * Creates a new instance of the ZWaveVersionCommandClass class.
@@ -76,19 +83,15 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 				return;
 			case VERSION_REPORT:
 				logger.debug("Process Version Report");
-				int libraryType = serialMessage.getMessagePayloadByte(offset + 1);
-				int protocolVersion = serialMessage.getMessagePayloadByte(offset + 2);
-				int protocolSubVersion = serialMessage.getMessagePayloadByte(offset + 3);
-				int applicationVersion = serialMessage.getMessagePayloadByte(offset + 4);
-				int applicationSubVersion = serialMessage.getMessagePayloadByte(offset + 5);
+				libraryType = LibraryType.getLibraryType(serialMessage.getMessagePayloadByte(offset + 1));
+				protocolVersion = (double)serialMessage.getMessagePayloadByte(offset + 2) +
+					    ((double)serialMessage.getMessagePayloadByte(offset + 3) / 10);
+				applicationVersion = serialMessage.getMessagePayloadByte(offset + 4) +
+						((double)serialMessage.getMessagePayloadByte(offset + 5) / 10);
 				
 				logger.debug(String.format("NODE %d: Library Type = 0x%02x", this.getNode().getNodeId(), libraryType));
-				logger.debug(String.format("NODE %d: Protocol Version = 0x%02x", this.getNode().getNodeId(), protocolVersion));
-				logger.debug(String.format("NODE %d: Protocol Sub Version = 0x%02x", this.getNode().getNodeId(), protocolSubVersion));
-				logger.debug(String.format("NODE %d: Application Version = 0x%02x", this.getNode().getNodeId(), applicationVersion));
-				logger.debug(String.format("NODE %d: Application Sub Version = 0x%02x", this.getNode().getNodeId(), applicationSubVersion));
-				
-				// Nothing to do with this info, not exactly useful.
+				logger.debug(String.format("NODE %d: Protocol Version = %.1f", this.getNode().getNodeId(), protocolVersion));
+				logger.debug(String.format("NODE %d: Application Version = %.1f", this.getNode().getNodeId(), applicationVersion));
 				break;
 			case VERSION_COMMAND_CLASS_REPORT:
 				logger.debug("Process Version Command Class Report");
@@ -191,4 +194,88 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 		
 		this.getController().sendData(versionCommandClass.getCommandClassVersionMessage(commandClass.getCommandClass()));
 	};
+	
+	/**
+	 * Returns the current ZWave library type
+	 */
+	public void getLibraryType() {
+		
+	}
+
+	/**
+	 * Returns the version of the protocol used by the device
+	 * @return Protocol version as double (version . subversion) 
+	 */
+	public Double getProtocolVersion() {
+		return protocolVersion;
+	}
+	
+	/**
+	 * Returns the version of the firmware used by the device
+	 * @return Application version as double (version . subversion) 
+	 */
+	public Double getApplicationVersion() {
+		return applicationVersion;
+	}
+	
+	public enum LibraryType
+	{
+		LIB_CONTROLLER_STATIC(1,"Static Controller"),
+		LIB_CONTROLLER(2,"Controller"),
+		LIB_SLAVE_ENHANCED(3,"Slave Enhanced"),
+		LIB_SLAVE(4,"Static Controller"),
+		LIB_INSTALLER(5,"Static Controller"),
+		LIB_SLAVE_ROUTING(5,"Static Controller"),
+		LIB_CONTROLLER_BRIDGE(6,"Static Controller"),
+		LIB_TEST(7,"Test");
+		
+		/**
+		 * A mapping between the integer code and its corresponding Library type
+		 * to facilitate lookup by code.
+		 */
+		private static Map<Integer, LibraryType> libraryMapping;
+
+		private int key;
+		private String label;
+
+		private LibraryType(int key, String label) {
+			this.key = key;
+			this.label = label;
+		}
+
+		private static void initMapping() {
+			libraryMapping = new HashMap<Integer, LibraryType>();
+			for (LibraryType s : values()) {
+				libraryMapping.put(s.key, s);
+			}
+		}
+
+		/**
+		 * Lookup function based on the sensor type code.
+		 * Returns null if the code does not exist.
+		 * @param i the code to lookup
+		 * @return enumeration value of the sensor type.
+		 */
+		public static LibraryType getLibraryType(int i) {
+			if (libraryMapping == null) {
+				initMapping();
+			}
+			
+			return libraryMapping.get(i);
+		}
+
+		/**
+		 * @return the key
+		 */
+		public int getKey() {
+			return key;
+		}
+
+		/**
+		 * @return the label
+		 */
+		public String getLabel() {
+			return label;
+		}
+	}
 }
