@@ -64,7 +64,7 @@ public class AstroCalculator {
   }
 
   private int getTimeZone() {
-    return calendar.getTimeZone().getDSTSavings() / 3600000;
+    return calendar.getTimeZone().getRawOffset() / 3600000;
   }
 
   private boolean isDaylightSavingTime() {
