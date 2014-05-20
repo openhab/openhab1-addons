@@ -162,7 +162,7 @@ public class ZWaveConverterHandler {
 		
 		ZWaveNode node = this.controller.getNode(bindingConfiguration.getNodeId());
 		
-		// ignore nodes that are not initialized or dead.
+		// ignore nodes that are not initialized.
 		if (node == null)
 			return;
 		
@@ -239,7 +239,7 @@ public class ZWaveConverterHandler {
 
 		ZWaveNode node = this.controller.getNode(bindingConfiguration.getNodeId());
 
-		// ignore nodes that are not initialized or dead.
+		// ignore nodes that are not initialized.
 		if (node == null)
 			return 0;
 
@@ -334,12 +334,6 @@ public class ZWaveConverterHandler {
 		}
 		ZWaveCommandClass commandClass;
 		String commandClassName = bindingConfiguration.getArguments().get("command");
-		
-		// ignore nodes that are not initialized or dead.
-		if (node.getNodeStage() != NodeStage.DONE) {
-			logger.trace("NODE {}: stage is not DONE: {}", node.getNodeId(), node.getNodeStage());
-			return;
-		}
 		
 		if (commandClassName != null) {
 			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName), bindingConfiguration.getEndpoint());
