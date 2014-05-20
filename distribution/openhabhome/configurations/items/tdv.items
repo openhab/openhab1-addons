@@ -30,9 +30,15 @@ Group:Contact:OR(OPEN, CLOSED) 	Windows 	"Open windows [(%d)]"				<contact>		(Al
 /* Lights Bticino */
 Switch Light_GF_Corridor_Ceiling 	"Ceiling" 		(GF_Corridor, Lights) { bticino="if=default;who=1;what=1;where=21" }
 
-Switch Light_GF_Living_LED_Spot "LED Spot" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=23" }
-Switch Light_GF_Living_Ceiling "Ceiling" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=22" }
-Switch Light_GF_Living_TV_PWR "TV" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=18" }
+Switch Light_GF_Living_1x_LED "LED spot" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=23" }
+Switch Light_GF_Living_4x_LED "Spots zetel" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=46" }
+Switch Light_GF_Living_4x_METAL_HYDIDE "Grote lichten" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=22" }
+Switch Light_GF_Living_TV_PWR "Stekkers PS3+TV+Radio" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=18" }
+
+Switch Light_GF_Living_VENT_1 "Kachel Vent 1" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=26" }
+Switch Light_GF_Living_VENT_2 "Kachel Vent 2" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=27" }
+Switch Light_GF_Living_VENT_3 "Kachel Vent 3" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=28" }
+
 
 /* Test virtual config range */
 /* where=XXYY (XX = A (01-10), YY = PL (01-15)) eg. A=10 and PL=5 the where will be 1005, A=2 and PL=12 the where will be 0212 */ 
@@ -46,6 +52,9 @@ Switch Light_GF_Living_69_BTN3 	"CEN_69_BTN_3" 		(GF_Living, Lights) { bticino="
 Switch Light_GF_Living_69_BTN4 	"CEN_69_BTN_4" 		(GF_Living, Lights) { bticino="if=default;who=15;what=04;where=69" }
 Switch Light_GF_Living_69_BTN5 	"CEN_69_BTN_5" 		(GF_Living, Lights) { bticino="if=default;who=15;what=05;where=69" }
 Switch Light_GF_Living_69_BTN6 	"CEN_69_BTN_6" 		(GF_Living, Lights) { bticino="if=default;who=15;what=06;where=69" }
+
+Switch Light_DOORBEL_98_BTN1 	"CEN_98_BTN_1" 		(GF_Corridor, Lights) { bticino="if=default;who=15;what=01;where=98" }
+
 
 /* Dimmer Light_GF_Living_Table 		"Table" 		(GF_Living, Lights)*/
 

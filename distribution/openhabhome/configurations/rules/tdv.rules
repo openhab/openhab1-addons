@@ -9,10 +9,10 @@ when
 then
 	if(Light_GF_Living_69_BTN1.state==ON)
 	{
-		if (Light_GF_Living_LED_Spot.state==OFF)
-			sendCommand(Light_GF_Living_LED_Spot, ON)
+		if (Light_GF_Living_4x_LED.state==OFF)
+			sendCommand(Light_GF_Living_4x_LED, ON)
 		else
-			sendCommand(Light_GF_Living_LED_Spot, OFF)
+			sendCommand(Light_GF_Living_4x_LED, OFF)
 	}
 end
 
@@ -28,14 +28,44 @@ then
 	}
 end
 
-// Doorbel mail test
+// Doorbel mail & notify
 rule "Doorbel handler"
 when
 	Item Light_DOORBEL_98_BTN1 received update
 then
 	if(Light_DOORBEL_98_BTN1.state==ON)
 	{
-		notifyMyAndroid("Doorbel", "Deurbelknop ingedrukt")
-		//sendMail("tom_de_vlaminck@hotmail.com", "OpenHAB Deurbel", "Deurbel ingedrukt")
+		notifyMyAndroid("Doorbel", "Deurbelknop ingedrukt - sending image")
+		sendMail("devlaminck.tom@gmail.com", "OpenHAB Deurbel", "Deurbel ingedrukt", "http://10.0.6.11/lastsnap.jpg")
+		sendMail("els.carnol@gmail.com", "OpenHAB Deurbel", "Deurbel ingedrukt", "http://10.0.6.11/lastsnap.jpg")		
+	}
+end
+
+rule "Scenario living read kachel"
+when
+	Item Light_GF_Living_69_BTN3 received update
+then
+	if(Light_GF_Living_69_BTN3.state==ON)
+	{
+		if (Light_GF_Living_VENT_1.state==OFF)
+		{
+			sendCommand(Light_GF_Living_VENT_1, ON)
+		}		
+		else
+		{
+			if (Light_GF_Living_VENT_2.state==OFF)
+				sendCommand(Light_GF_Living_VENT_2, ON)
+			else
+			{
+				if (Light_GF_Living_VENT_3.state==OFF)
+					sendCommand(Light_GF_Living_VENT_3, ON)
+				else
+				{
+		    		sendCommand(Light_GF_Living_VENT_1, OFF)
+					sendCommand(Light_GF_Living_VENT_2, OFF)
+					sendCommand(Light_GF_Living_VENT_3, OFF)
+				}
+			}
+		}		
 	}
 end
