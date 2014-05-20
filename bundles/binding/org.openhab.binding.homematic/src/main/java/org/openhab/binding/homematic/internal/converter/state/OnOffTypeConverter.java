@@ -10,6 +10,7 @@ package org.openhab.binding.homematic.internal.converter.state;
 
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.openhab.core.library.types.OnOffType;
+
 /**
  * Converts between openHAB OnOffType and Homematic values.
  * 
@@ -35,10 +36,11 @@ public class OnOffTypeConverter extends AbstractEnumTypeConverter<OnOffType> {
 	}
 
 	/**
-	 * If the item is a sensor, then OnOff must be inverted.
+	 * If the item is a sensor or a state from a window shutter contact, then
+	 * OnOff must be inverted.
 	 */
 	@Override
 	protected boolean isInvert(HmValueItem hmValueItem) {
-		return isSensorValueName(hmValueItem);
+		return isName(hmValueItem, "SENSOR") || isNameFromDevice(hmValueItem, "STATE", "HM-SEC-SC");
 	}
 }

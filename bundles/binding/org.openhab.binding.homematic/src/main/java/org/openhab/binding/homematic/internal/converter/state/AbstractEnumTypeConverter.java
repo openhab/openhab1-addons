@@ -8,8 +8,10 @@
  */
 package org.openhab.binding.homematic.internal.converter.state;
 
+import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.openhab.core.types.State;
+
 /**
  * Baseclass for all Enum converters with common methods.
  * 
@@ -19,12 +21,14 @@ import org.openhab.core.types.State;
 public abstract class AbstractEnumTypeConverter<T extends State> extends AbstractTypeConverter<T> {
 
 	/**
-	 * Subclasses must implement this method to create the 'false' type of an enum.
+	 * Subclasses must implement this method to create the 'false' type of an
+	 * enum.
 	 */
 	protected abstract T getFalseType();
 
 	/**
-	 * Subclasses must implement this method to create the 'true' type of an enum.
+	 * Subclasses must implement this method to create the 'true' type of an
+	 * enum.
 	 */
 	protected abstract T getTrueType();
 
@@ -34,10 +38,24 @@ public abstract class AbstractEnumTypeConverter<T extends State> extends Abstrac
 	protected abstract boolean isInvert(HmValueItem hmValueItem);
 
 	/**
-	 * Checks if the name of the item is SENSOR, value must be inverted for some types.
+	 * Checks the name of the item, value must be inverted for some types.
 	 */
-	protected boolean isSensorValueName(HmValueItem hmValueItem) {
-		return hmValueItem.getName().equals("SENSOR");
+	protected boolean isName(HmValueItem hmValueItem, String name) {
+		return hmValueItem.getName().equals(name);
+	}
+
+	/**
+	 * Checks the name and the device of the item, value must be inverted for
+	 * some devices.
+	 */
+	protected boolean isNameFromDevice(HmValueItem hmValueItem, String name, String device) {
+		if (hmValueItem.getName().equals(name)) {
+			if (hmValueItem instanceof HmDatapoint) {
+				HmDatapoint dp = (HmDatapoint) hmValueItem;
+				return dp.getChannel().getDevice().getType().toUpperCase().startsWith(device);
+			}
+		}
+		return false;
 	}
 
 	/**

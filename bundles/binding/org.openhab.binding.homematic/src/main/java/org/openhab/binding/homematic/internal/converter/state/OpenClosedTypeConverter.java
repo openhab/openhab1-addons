@@ -10,6 +10,7 @@ package org.openhab.binding.homematic.internal.converter.state;
 
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.openhab.core.library.types.OpenClosedType;
+
 /**
  * Converts between openHAB OpenClosedType and Homematic values.
  * 
@@ -35,11 +36,13 @@ public class OpenClosedTypeConverter extends AbstractEnumTypeConverter<OpenClose
 	}
 
 	/**
-	 * Invert only boolean values which are not from a SENSOR.
+	 * Invert only boolean values which are not from a sensor or a state from a
+	 * window shutter contact.
 	 */
 	@Override
 	protected boolean isInvert(HmValueItem hmValueItem) {
-		return !isSensorValueName(hmValueItem) && hmValueItem.isBooleanValue();
+		return !isName(hmValueItem, "SENSOR") && !isNameFromDevice(hmValueItem, "STATE", "HM-SEC-SC")
+				&& hmValueItem.isBooleanValue();
 	}
 
 }
