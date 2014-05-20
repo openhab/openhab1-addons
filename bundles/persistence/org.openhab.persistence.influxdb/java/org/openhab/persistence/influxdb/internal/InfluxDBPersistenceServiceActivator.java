@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Theo Weiss
+ * @author Theo Weiss - Initial Contribution
  * @since 1.5.0
  */
 public class InfluxDBPersistenceServiceActivator implements BundleActivator {

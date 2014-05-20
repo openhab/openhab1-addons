@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
@@ -48,10 +47,10 @@ import org.slf4j.LoggerFactory;
  * This is the implementation of the InfluxDB {@link PersistenceService}. It persists item values
  * using the <a href="http://influxdb.org">InfluxDB</a> time series database. The states (
  * {@link State}) of an {@link Item} are persisted in a time series with names equal to the name of
- * the item. All values are stored using integers or floats, {@link OnOffType} and
+ * the item. All values are stored using integers or doubles, {@link OnOffType} and
  * {@link OpenClosedType} are stored using 0 or 1.
  * 
- * @author Theo Weiss
+ * @author Theo Weiss - Initial Contribution
  * @since 1.5.0
  */
 public class InfluxDBPersistenceService implements QueryablePersistenceService, ManagedService {
@@ -308,11 +307,11 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   }
 
   /**
-   * This method returns integers if possible if not floats are returned. This is an optimization
+   * This method returns an integer if possible if not a double is returned. This is an optimization
    * for influxdb because integers have less overhead.
    * 
    * @param value the BigDecimal to be converted
-   * @return A double if possible else a float is returned.
+   * @return A double if possible else a double is returned.
    */
   private Object convertBigDecimalToNum(BigDecimal value) {
     Object convertedValue;
@@ -321,7 +320,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       convertedValue = value.doubleValue();
     } else {
       logger.trace("found fractional part");
-      convertedValue = value.floatValue();
+      convertedValue = value.doubleValue();
     }
     return convertedValue;
   }
@@ -330,7 +329,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
    * Converts {@link State} to objects fitting into influxdb values.
    * 
    * @param state to be converted
-   * @return integer or float value for DecimalType and PercentType, an integer for DateTimeType and
+   * @return integer or double value for DecimalType and PercentType, an integer for DateTimeType and
    *         0 or 1 for OnOffType and OpenClosedType.
    */
   private Object stateToObject(State state) {

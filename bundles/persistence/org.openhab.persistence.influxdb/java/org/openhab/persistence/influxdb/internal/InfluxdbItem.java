@@ -16,7 +16,7 @@ import org.openhab.core.types.State;
 /**
  * This is a Java bean used to return historic items from Influxdb.
  * 
- * @author Theo Weiss
+ * @author Theo Weiss - Initial Contribution
  * @since 1.5.0
  * 
  */
