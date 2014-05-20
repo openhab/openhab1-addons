@@ -660,6 +660,10 @@
 				<Type>0900</Type>
 				<Id>4000</Id>
 			</Reference>
+			<Reference>
+				<Type>0900</Type>
+				<Id>1000</Id>
+			</Reference>
 			<Model>FGRGBW</Model>
 			<Label lang="en">Fibaro RGBW Controller</Label>
 			<ConfigFile>fibaro/fgrgbw.xml</ConfigFile>
@@ -746,6 +750,24 @@
 	<Manufacturer>
 		<Id>0118</Id>
 		<Name>Wenzhou TKB Control System</Name>
+		<Product>
+			<Reference>
+				<Type>0808</Type>
+				<Id>0808</Id>
+			</Reference>
+			<Model>TZ65D</Model>
+			<Label lang="en">Dual Paddle Wall Dimmer</Label>
+			<ConfigFile>tkb/tz65d.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0102</Type>
+				<Id>1020</Id>
+			</Reference>
+			<Model>TZ66D</Model>
+			<Label lang="en">Dual Paddle Wall Switch</Label>
+			<ConfigFile>tkb/tz66d.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0202</Type>
