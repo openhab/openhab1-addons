@@ -75,7 +75,7 @@
 			</Item>
 			<Item>
 				<Value>3</Value>
-				<Label lang="en">Switch on if load is off else switch off/Label>
+				<Label lang="en">Switch on if load is off else switch off</Label>
 			</Item>
 			<Help lang="en"><![CDATA[Defines how to interpret RF Off command. Can be used in conjunction with Auto Off function: Ignore - to switch on the light by motion detectors and switch it off after some amount of time: in case of multiple motion detectors each would try to switch the light off that would break logics; Switch on - to switch on the light on both On and Off paddle press on the remote and switch it off after some amount of time. Button off click will still work (if button operations are not disabled).]]></Help>
 		</Parameter>
@@ -185,12 +185,11 @@
 				<Value>2</Value>
 				<Label lang="en">Switch All</Label>
 			</Item>
-				<Item>
+			<Item>
 				<Value>3</Value>
 				<Label lang="en">Send Scenes</Label>
 			</Item>
-			</Item>
-				<Item>
+			<Item>
 				<Value>5</Value>
 				<Label lang="en">Send Preconfigured Scenes</Label>
 			</Item>
@@ -223,8 +222,7 @@
 				<Value>3</Value>
 				<Label lang="en">Send Scenes</Label>
 			</Item>
-			</Item>
-				<Item>
+			<Item>
 				<Value>5</Value>
 				<Label lang="en">Send Preconfigured Scenes</Label>
 			</Item>
