@@ -256,7 +256,7 @@
 			<Type>list</Type>
 			<Default>1</Default>
 			<Size>1</Size>
-			<Label lang="en">Send the following switch all commands</Label>
+			<Label lang="en">What to do on button Down press</Label>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Switch off (Default)</Label>
