@@ -296,7 +296,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
           break;
         }
         Object[] objects = points[i];
-        logger.debug("adding historic item {}: time {} value {}", historicItemName,
+        logger.trace("adding historic item {}: time {} value {}", historicItemName,
             (Double) objects[timeColumnNum], String.valueOf(objects[valueColumnNum]));
         historicItems.add(new InfluxdbItem(historicItemName, stringToState(
             String.valueOf(objects[valueColumnNum]), historicItemName), new Date(
