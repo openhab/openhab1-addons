@@ -115,7 +115,7 @@ public class BinRpcClient implements CcuClient {
 		} catch (ConnectException cex) {
 			logger.info("Can't connect to interface {}", hmInterface);
 		} catch (Exception ex) {
-			throw new CcuClientException(ex.getMessage(), ex);
+			throw new CcuClientException(ex.getMessage() + "(sending " + request + ")", ex);
 		} finally {
 			try {
 				if (socket != null) {
