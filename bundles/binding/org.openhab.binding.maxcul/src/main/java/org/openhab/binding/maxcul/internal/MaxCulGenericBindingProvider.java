@@ -30,6 +30,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * <li><code>{ maxcul="RadiatorThermostat:JEQ1234565:battery" }</code> - will return the battery level of JEQ0304492</li>
  * <li><code>{ maxcul="WallThermostat:JEQ1234566:temperature" }</code> - will return the temperature of a wall mounted thermostat with serial number JEQ0304447</li>
  * <li><code>{ maxcul="PushButton:JEQ1234567" }</code> - will default to 'switch' mode</li>
+ * <li><code>{ maxcul="PairMode" }</code> - Switch only, enables pair mode for 60s</li>
  * 
  * @author Paul Hampson (cyclingengineer)
  * @since 1.5.0
@@ -52,6 +53,10 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		
 		switch (config.deviceType)
 		{
+		case PAIR_MODE:
+			if (!(item instanceof SwitchItem))
+				throw new BindingConfigParseException("Invalid item type. PairMode can only be a switch");
+			break;
 		case PUSH_BUTTON:
 		case SHUTTER_CONTACT:
 			if (config.feature == MaxCulFeature.BATTERY && !(item instanceof NumberItem))
@@ -94,7 +99,17 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		MaxCulBindingConfig(String bindingConfig) throws BindingConfigParseException
 		{
 			String[] configParts = bindingConfig.trim().split(":");
-			if (configParts.length <= 3)
+
+			if (configParts.length == 1)
+			{
+				if (configParts[0] == "PairMode")
+				{
+					this.deviceType = MaxCulDevice.PAIR_MODE;
+					return;
+				}
+			}
+			
+			if (configParts.length < 2)
 			{
 				throw new BindingConfigParseException("MaxCul configuration requires a configuration of at least the format <device_type>:<serial_num> for a MAX! device.");
 			}
@@ -116,7 +131,7 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 					break;
 				case "ShutterContact":
 					this.deviceType = MaxCulDevice.SHUTTER_CONTACT;
-					break;
+					break;				
 				default:
 					throw new BindingConfigParseException("Invalid device type. Use RadiatorThermostat / RadiatorThermostatPlus / WallThermostat / PushButton / ShutterContact");
 			}
