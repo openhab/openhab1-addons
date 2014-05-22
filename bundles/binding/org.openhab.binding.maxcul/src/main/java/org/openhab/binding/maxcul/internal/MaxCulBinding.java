@@ -16,6 +16,11 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.io.transport.cul.CULDeviceException;
+import org.openhab.io.transport.cul.CULHandler;
+import org.openhab.io.transport.cul.CULListener;
+import org.openhab.io.transport.cul.CULManager;
+import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -29,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @author Paul Hampson (cyclingengineer)
  * @since 1.5.0
  */
-public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> implements ManagedService {
+public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> implements ManagedService, CULListener {
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(MaxCulBinding.class);
@@ -40,21 +45,29 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	 * server (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
-	
-	
+
+	/**
+	 * The device that is used to access the CUL hardware
+	 */
+	private static String accessDevice;
+
+	/**
+	 * This provides access to the CULFW device (e.g. USB stick)
+	 */
+	private CULHandler cul;
+
 	public MaxCulBinding() {
 	}
-		
-	
+
 	public void activate() {
+		logger.debug("Activating MaxCul binding");
 	}
-	
+
 	public void deactivate() {
 		// deallocate resources here that are no longer needed and 
 		// should be reset when activating this binding again
 	}
 
-	
 	/**
 	 * @{inheritDoc}
 	 */
@@ -117,10 +130,45 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			}
 			
 			// read further config parameters here ...
-
+			String deviceString = (String) config.get("device");
+			if (StringUtils.isNotBlank(deviceString)) {
+				setupDevice(deviceString);
+				if (cul == null)
+					throw new ConfigurationException("device", "Configuration failed. Unable to access CUL device " + deviceString);
+			} else {
+				setProperlyConfigured(false);
+				throw new ConfigurationException("device", "No device set - please set one");
+			}
 			setProperlyConfigured(true);
 		}
 	}
 	
+	private void setupDevice(String device)
+	{
+		if (cul != null) {
+			CULManager.close(cul);
+		}
+		try {
+			accessDevice = device;
+			logger.debug("Opening CUL device on " + accessDevice);
+			cul = CULManager.getOpenCULHandler(accessDevice, CULMode.MAX);
+			cul.registerListener(this);
+		} catch (CULDeviceException e) {
+			logger.error("Cannot open CUL device", e);
+			cul = null;
+			accessDevice = null;
+		}
+	}
 
+
+	@Override
+	public void dataReceived(String data) {
+		// TODO Auto-generated method stub
+	}
+
+
+	@Override
+	public void error(Exception e) {
+		// TODO Auto-generated method stub
+	}
 }

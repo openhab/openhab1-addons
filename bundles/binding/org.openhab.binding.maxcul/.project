@@ -3,6 +3,7 @@
 	<name>org.openhab.binding.maxcul</name>
 	<comment>This is the MaxCul binding of the open Home Automation Bus (openHAB)</comment>
 	<projects>
+		<project>org.openhab.io.transport.cul</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
