@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.maxcul;
 
+import org.openhab.binding.maxcul.internal.MaxCulBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 
 /**
@@ -15,5 +16,7 @@ import org.openhab.core.binding.BindingProvider;
  * @since 1.5.0
  */
 public interface MaxCulBindingProvider extends BindingProvider {
+
+	MaxCulBindingConfig getConfigForItemName(String itemName);
 
 }
