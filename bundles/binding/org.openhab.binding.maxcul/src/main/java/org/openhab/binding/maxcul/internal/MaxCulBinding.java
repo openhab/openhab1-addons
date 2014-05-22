@@ -9,13 +9,18 @@
 package org.openhab.binding.maxcul.internal;
 
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.openhab.binding.maxcul.MaxCulBindingProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.CULHandler;
 import org.openhab.io.transport.cul.CULListener;
@@ -49,12 +54,26 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	/**
 	 * The device that is used to access the CUL hardware
 	 */
-	private static String accessDevice;
+	private String accessDevice;
 
 	/**
 	 * This provides access to the CULFW device (e.g. USB stick)
 	 */
 	private CULHandler cul;
+
+	/**
+	 * This sets the address of the controller i.e. us!
+	 */
+	private String srcAddr = "010203";
+	
+	/**
+	 * Flag to indicate if we are in pairing mode. Default timeout
+	 * is 60 seconds.
+	 */
+	private boolean pairMode = false;
+	private int pairModeTimeout = 60000;
+	
+	private Map<String,Timer> timers = new HashMap<String,Timer>();
 
 	public MaxCulBinding() {
 	}
@@ -97,24 +116,79 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	 * @{inheritDoc}
 	 */
 	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
+	protected void internalReceiveCommand(final String itemName, Command command) {
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand() is called!");
+		Timer timer = null;
+		
+		MaxCulBindingConfig bindingConfig = null;
+		for (MaxCulBindingProvider provider : super.providers) {
+			bindingConfig = provider.getConfigForItemName(itemName);
+			if (bindingConfig != null) {
+				break;
+			}
+		}
+		logger.debug("Received command " + command.toString()
+				+ " for item " + itemName);
+		if (bindingConfig != null) {
+			logger.debug("Found config for "+itemName);
+			
+			if (bindingConfig.deviceType == MaxCulDevice.PAIR_MODE && (command instanceof OnOffType))
+			{
+				switch ((OnOffType)command)
+				{
+					case ON:
+						/* turn on pair mode and schedule disabling of pairing mode */
+						pairMode = true;
+						TimerTask task = new TimerTask() {
+                            public void run() {
+                            	logger.debug(itemName+" pairMode time out executed");
+                                pairMode = false;
+                                eventPublisher.postUpdate(itemName, OnOffType.OFF);
+                            }
+						};
+						timer = timers.get(itemName);
+						if(timer!=null) {
+                            timer.cancel();
+                            timers.remove(itemName);
+						}
+						timer = new Timer();
+						timers.put(itemName, timer);
+						timer.schedule(task, pairModeTimeout);
+						logger.debug(itemName+" pairMode enabled & timeout scheduled");
+						break;
+					case OFF:
+						/* we are manually disabling, so clear the timer and the flag */
+						pairMode = false;
+						timer = timers.get(itemName);
+						if(timer!=null) {
+							logger.debug(itemName+" pairMode timer cancelled");
+                            timer.cancel();
+                            timers.remove(itemName);
+						}
+						logger.debug(itemName+" pairMode cleared");
+						break;
+				}
+			}
+			else if ((bindingConfig.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT ||
+					bindingConfig.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT_PLUS ||
+					bindingConfig.deviceType == MaxCulDevice.WALL_THERMOSTAT) &&  
+					bindingConfig.feature == MaxCulFeature.THERMOSTAT)
+			{
+				if (command instanceof OnOffType)
+				{
+					// TODO handle setting thermostat to On or Off
+				} else if (command instanceof DecimalType)
+				{
+					// TODO handle sending temperature to device 
+				}
+			}
+			else logger.warn("Command ignored as it doesn't make sense");
+		}
 	}
 	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
-	}
-		
 	/**
 	 * @{inheritDoc}
 	 */
@@ -163,12 +237,17 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 
 	@Override
 	public void dataReceived(String data) {
-		// TODO Auto-generated method stub
+		if (data.startsWith("Z"))
+		{
+			/* TODO it's a MAX! command so process it */
+			logger.debug("Received command "+data);
+		}
 	}
 
 
 	@Override
 	public void error(Exception e) {
-		// TODO Auto-generated method stub
+		logger.error("CUL error: "+e.getMessage());
+		// TODO add some specific error handling as necessary
 	}
 }
