@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.tinkerforge.internal;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -36,6 +37,7 @@ import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
 import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
@@ -58,13 +60,20 @@ import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
+import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
+import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
@@ -178,7 +187,11 @@ public class TinkerforgeBinding extends
 		bricklet_temperature, bricklet_barometer, bricklet_ambient_light,
 		io_actuator, iosensor, bricklet_io16, bricklet_industrial_digital_4in,
 		remote_switch_a, remote_switch_b, remote_switch_c, bricklet_remote_switch,
-		bricklet_multitouch, electrode, proximity
+		bricklet_multitouch, electrode, proximity, object_temperature, ambient_temperature, 
+		bricklet_temperatureIR, bricklet_soundintensity, bricklet_moisture,
+		bricklet_distanceUS, bricklet_voltageCurrent, voltageCurrent_voltage,
+		voltageCurrent_current, voltageCurrent_power, bricklet_tilt, io4_actuator, 
+		io4sensor, bricklet_io4
 	}
 	
 	public TinkerforgeBinding() {
@@ -461,6 +474,12 @@ public class TinkerforgeBinding extends
 			if (featureID == ModelPackage.MSWITCH_ACTOR__SWITCH_STATE) {
 				processValue((MBaseDevice) switchActor, notification);
 			}
+		} else if (notification.getNotifier() instanceof DigitalActor) {
+		  DigitalActor actor = (DigitalActor) notification.getNotifier();
+		  int featureID = notification.getFeatureID(DigitalActor.class);
+		  if (featureID == ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE){
+		    processValue((MBaseDevice) actor, notification);
+		  }
 		} else {
 			logger.trace("{} ignored notifier {}",
 					LoggerConstants.TFMODELUPDATE, notification.getNotifier());
@@ -586,8 +605,8 @@ public class TinkerforgeBinding extends
 	/**
 	 * The working method which is called by the refresh thread.
 	 * 
-	 * Sensor or state values for all devices are fetched from the
-	 * {@link Ecosystem} and posted to the event bus. All OutActors are
+	 * Triggers an update of state values for all devices. The update is propagated
+	 * through the {@link Ecosystem} listeners. All OutActors are
 	 * ignored, they may only send updates if the hardware device has updates
 	 * (think of a pressed switch).
 	 * 
@@ -596,22 +615,25 @@ public class TinkerforgeBinding extends
 	protected void execute() {
 		for (TinkerforgeBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
-				updateItemValues(provider, itemName);
+				updateItemValues(provider, itemName, true);
 			}
 		}
 	}
 
 	/**
-	 * Get the current values for an {@code Item}.
+	 * Triggers an update of state values for all devices.
 	 * 
 	 * @param provider
 	 *            The {@code TinkerforgeBindingProvider} which is bound to the
 	 *            device as {@code Item}
 	 * @param itemName
 	 *            The name of the {@code Item} as String
+	 * @param only_poll_enabled
+	 *             Fetch only the values of devices which do not support callback
+	 *             listeners. These devices are marked with poll "true" flag.
 	 */
 	protected void updateItemValues(TinkerforgeBindingProvider provider,
-			String itemName) {
+			String itemName, boolean only_poll_enabled) {
 		String deviceUid = provider.getUid(itemName);
 		Item item = provider.getItem(itemName);
 		String deviceSubId = provider.getSubId(itemName);
@@ -624,23 +646,23 @@ public class TinkerforgeBinding extends
 		MBaseDevice mDevice = tinkerforgeEcosystem.getDevice(deviceUid,
 				deviceSubId);
 		if (mDevice != null && mDevice.getEnabledA().get()) {
+		  if ( only_poll_enabled && ! mDevice.isPoll()){
+		    // do nothing
+		    logger.debug("{} omitting fetch value for no poll{}:{}", 
+		      LoggerConstants.ITEMUPDATE, deviceUid, deviceSubId);
+		  }
+		  else {
 			if (mDevice instanceof MSensor) {
-				postUpdate(deviceUid, deviceSubId,
-						((MSensor<?>) mDevice).fetchSensorValue());
+				((MSensor<?>) mDevice).fetchSensorValue();
 			} else if (mDevice instanceof MInSwitchActor
 					&& item instanceof SwitchItem) {
-				OnOffValue switchState = ((MInSwitchActor) mDevice)
+				((MInSwitchActor) mDevice)
 						.fetchSwitchState();
-				postUpdate(deviceUid, deviceSubId, switchState);
-				logger.debug("execute called: found MInSwitchActor state: {}",
-						switchState);
 			} else if (mDevice instanceof DigitalActor) {
-				HighLowValue highLowValue = ((DigitalActor) mDevice)
+				((DigitalActor) mDevice)
 						.fetchDigitalValue();
-				postUpdate(deviceUid, deviceSubId, highLowValue);
-				logger.debug("{} execute called: found DigitalActor state: {}",
-						LoggerConstants.TFCOMMAND, highLowValue);
 			}
+		  }
 		}
 	}
 
@@ -648,7 +670,7 @@ public class TinkerforgeBinding extends
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		logger.debug("{} bindingChanged item {}", LoggerConstants.ITEMUPDATE,
 				itemName);
-		updateItemValues((TinkerforgeBindingProvider) provider, itemName);
+		updateItemValues((TinkerforgeBindingProvider) provider, itemName, false);
 	}
 
 	private void postUpdate(String uid, String subId,
@@ -667,7 +689,16 @@ public class TinkerforgeBinding extends
 			Class<? extends Item> itemType = provider.getItemType(itemName);
 			State value = UnDefType.UNDEF;
 			if (sensorValue instanceof DecimalValue) {
-				value = DecimalType.valueOf(String.valueOf(sensorValue));
+              if (itemType.isAssignableFrom(NumberItem.class)
+                  || itemType.isAssignableFrom(StringItem.class)) {
+                value = DecimalType.valueOf(String.valueOf(sensorValue));
+              } else if (itemType.isAssignableFrom(ContactItem.class)){
+                  value = sensorValue.equals(DecimalValue.ZERO) ? OpenClosedType.CLOSED
+                      : OpenClosedType.OPEN;
+              } else if (itemType.isAssignableFrom(SwitchItem.class)){
+                value = sensorValue.equals(DecimalValue.ZERO) ? OnOffType.OFF
+                    : OnOffType.ON;
+              }
 			} else if (sensorValue instanceof HighLowValue) {
 				if (itemType.isAssignableFrom(NumberItem.class)
 						|| itemType.isAssignableFrom(StringItem.class)) {
@@ -938,15 +969,22 @@ public class TinkerforgeBinding extends
 					LoggerConstants.CONFIG);
 			TFServoConfiguration servoConfiguration = modelFactory
 					.createTFServoConfiguration();
-			OHTFDevice<TFServoConfiguration, IO16SubIds> ohtfDevice = modelFactory
+			OHTFDevice<TFServoConfiguration, ServoSubIDs> ohtfDevice = modelFactory
 					.createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(ServoSubIDs.values()));
 			ohtfDevice.setTfConfig(servoConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
 		} else if (deviceType.equals(TypeKey.bricklet_distance_ir.name())
 				|| deviceType.equals(TypeKey.bricklet_humidity.name())
 				|| deviceType.equals(TypeKey.bricklet_temperature.name())
 				|| deviceType.equals(TypeKey.bricklet_barometer.name())
-				|| deviceType.equals(TypeKey.bricklet_ambient_light.name())) {
+				|| deviceType.equals(TypeKey.bricklet_ambient_light.name())
+				|| deviceType.equals(TypeKey.ambient_temperature.name())
+				|| deviceType.equals(TypeKey.bricklet_soundintensity.name())
+				|| deviceType.equals(TypeKey.voltageCurrent_voltage.name())
+				|| deviceType.equals(TypeKey.voltageCurrent_current.name())
+				|| deviceType.equals(TypeKey.voltageCurrent_power.name()))
+		{
 			logger.debug("{} setting base config",
 					LoggerConstants.CONFIG);
 			TFBaseConfiguration tfBaseConfiguration = modelFactory
@@ -954,15 +992,31 @@ public class TinkerforgeBinding extends
 			if (deviceType.equals(TypeKey.bricklet_barometer)) {
 				OHTFDevice<TFBaseConfiguration, BarometerSubIDs> ohtfDevice = modelFactory
 						.createOHTFDevice();
+	            ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(BarometerSubIDs.values()));
 				ohtfDevice.setTfConfig(tfBaseConfiguration);
 				fillupConfig(ohtfDevice, deviceConfig);
-
-			} else {
-				OHTFDevice<TFBaseConfiguration, NoSubIds> ohtfDevice = modelFactory
+            } else if (deviceType.equals(TypeKey.ambient_temperature.name())) {
+              OHTFDevice<TFBaseConfiguration, TemperatureIRSubIds> ohtfDevice =
+                  modelFactory.createOHTFDevice();
+              ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(TemperatureIRSubIds.values()));
+              ohtfDevice.setTfConfig(tfBaseConfiguration);
+              fillupConfig(ohtfDevice, deviceConfig);
+			} else if (deviceType.equals(TypeKey.voltageCurrent_current.name())
+			    || deviceType.equals(TypeKey.voltageCurrent_voltage.name())
+			    || deviceType.equals(TypeKey.voltageCurrent_power.name())) {
+				OHTFDevice<TFBaseConfiguration, VoltageCurrentSubIds> ohtfDevice = modelFactory
 						.createOHTFDevice();
+	            ohtfDevice.getSubDeviceIds().addAll(
+                  Arrays.asList(VoltageCurrentSubIds.values()));
 				ohtfDevice.setTfConfig(tfBaseConfiguration);
 				fillupConfig(ohtfDevice, deviceConfig);
-			}
+            } else {
+              OHTFDevice<TFBaseConfiguration, NoSubIds> ohtfDevice = modelFactory
+                              .createOHTFDevice();
+              ohtfDevice.setTfConfig(tfBaseConfiguration);
+              fillupConfig(ohtfDevice, deviceConfig);
+            }
+
 		} else if (deviceType.equals(TypeKey.brick_dc.name())) {
 			logger.debug("{} setting dc config",
 					LoggerConstants.CONFIG);
@@ -985,6 +1039,17 @@ public class TinkerforgeBinding extends
 					Arrays.asList(IO16SubIds.values()));
 			ohtfDevice.setTfConfig(tfioActorConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
+		} else if (deviceType.equals(TypeKey.io4_actuator.name())) {
+          logger.debug("{} setting io4_actuator config",
+            LoggerConstants.CONFIG);
+            TFIOActorConfiguration tfioActorConfiguration = modelFactory
+                .createTFIOActorConfiguration();
+            OHTFDevice<TFIOActorConfiguration, IO4SubIds> ohtfDevice = modelFactory
+                .createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(
+            Arrays.asList(IO4SubIds.values()));
+            ohtfDevice.setTfConfig(tfioActorConfiguration);
+            fillupConfig(ohtfDevice, deviceConfig);
 		} else if (deviceType.equals(TypeKey.iosensor.name())) {
 			logger.debug("{} setting iosensor config",
 					LoggerConstants.CONFIG);
@@ -996,8 +1061,20 @@ public class TinkerforgeBinding extends
 					Arrays.asList(IO16SubIds.values()));
 			ohtfDevice.setTfConfig(tfioSensorConfiguration);
 			fillupConfig(ohtfDevice, deviceConfig);
+		} else if (deviceType.equals(TypeKey.io4sensor.name())){
+            logger.debug("{} setting io4sensor config",
+              LoggerConstants.CONFIG);
+            TFIOSensorConfiguration tfioSensorConfiguration = modelFactory
+                .createTFIOSensorConfiguration();
+            OHTFDevice<TFIOSensorConfiguration, IO4SubIds> ohtfDevice = modelFactory
+                .createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(
+              Arrays.asList(IO4SubIds.values()));
+            ohtfDevice.setTfConfig(tfioSensorConfiguration);
+            fillupConfig(ohtfDevice, deviceConfig);
 		} else if (deviceType.equals(TypeKey.bricklet_industrial_digital_4in
-				.name()) || deviceType.equals(TypeKey.bricklet_io16.name())) {
+				.name()) || deviceType.equals(TypeKey.bricklet_io16.name())
+				|| deviceType.equals(TypeKey.bricklet_io4.name())) {
 			logger.debug("{} setting TFInterruptListenerConfiguration device_type {}",
 					LoggerConstants.CONFIG, deviceType);
 			TFInterruptListenerConfiguration tfInterruptListenerConfiguration = modelFactory
@@ -1062,6 +1139,32 @@ public class TinkerforgeBinding extends
             ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(MultiTouchSubIds.values()));
             ohtfDevice.setTfConfig(configuration);
             fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.object_temperature.name())){
+          logger.debug("{} setting TFObjectTemperatureConfiguration device_type {}",
+            LoggerConstants.CONFIG, deviceType);
+          TFObjectTemperatureConfiguration configuration = modelFactory.createTFObjectTemperatureConfiguration();
+          OHTFDevice<TFObjectTemperatureConfiguration,TemperatureIRSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+          ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(TemperatureIRSubIds.values()));
+          ohtfDevice.setTfConfig(configuration);
+          fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.bricklet_moisture.name())){
+          TFMoistureBrickletConfiguration configuration = modelFactory.createTFMoistureBrickletConfiguration();
+          OHTFDevice<TFMoistureBrickletConfiguration,NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+          ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+          ohtfDevice.setTfConfig(configuration);
+          fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.bricklet_distanceUS.name())){
+          TFDistanceUSBrickletConfiguration configuration = modelFactory.createTFDistanceUSBrickletConfiguration();
+          OHTFDevice<TFDistanceUSBrickletConfiguration,NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+          ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+          ohtfDevice.setTfConfig(configuration);
+          fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.bricklet_voltageCurrent.name())){
+          TFVoltageCurrentConfiguration configuration = modelFactory.createTFVoltageCurrentConfiguration();
+          OHTFDevice<TFVoltageCurrentConfiguration, VoltageCurrentSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+          ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(VoltageCurrentSubIds.values()));
+          ohtfDevice.setTfConfig(configuration);
+          fillupConfig(ohtfDevice, deviceConfig);
         } else {
 			logger.debug("{} setting no tfConfig device_type {}",
 					LoggerConstants.CONFIG, deviceType);
@@ -1155,6 +1258,10 @@ public class TinkerforgeBinding extends
                           logger.debug("{} found String value",
                                   LoggerConstants.CONFIG);
                           tfConfig.eSet(feature, deviceConfig.get(property));
+                        } else if (className.equals("java.math.BigDecimal")){
+                          logger.debug("{} found BigDecimal value",
+                            LoggerConstants.CONFIG);
+                          tfConfig.eSet(feature, new BigDecimal(deviceConfig.get(property)));
 //						} else if (feature.getEType().getInstanceClassName().equals("EList")){
 //							logger.debug("{} found EList value", LoggerConstants.CONFIG);
 //							List<String> strings = new ArrayList<String>(Arrays.asList(deviceConfig.get(property).trim().split("\\s+")));
