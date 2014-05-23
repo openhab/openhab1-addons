@@ -396,6 +396,53 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_IO4:
+      {
+        MBrickletIO4 mBrickletIO4 = (MBrickletIO4)theEObject;
+        T result = caseMBrickletIO4(mBrickletIO4);
+        if (result == null) result = caseMDevice(mBrickletIO4);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletIO4);
+        if (result == null) result = caseInterruptListener(mBrickletIO4);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletIO4);
+        if (result == null) result = caseMBaseDevice(mBrickletIO4);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.IO4_DEVICE:
+      {
+        IO4Device io4Device = (IO4Device)theEObject;
+        T result = caseIO4Device(io4Device);
+        if (result == null) result = caseMSubDevice(io4Device);
+        if (result == null) result = caseGenericDevice(io4Device);
+        if (result == null) result = caseMBaseDevice(io4Device);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DIGITAL_SENSOR_IO4:
+      {
+        DigitalSensorIO4 digitalSensorIO4 = (DigitalSensorIO4)theEObject;
+        T result = caseDigitalSensorIO4(digitalSensorIO4);
+        if (result == null) result = caseIO4Device(digitalSensorIO4);
+        if (result == null) result = caseMSensor(digitalSensorIO4);
+        if (result == null) result = caseMTFConfigConsumer(digitalSensorIO4);
+        if (result == null) result = caseMSubDevice(digitalSensorIO4);
+        if (result == null) result = caseGenericDevice(digitalSensorIO4);
+        if (result == null) result = caseMBaseDevice(digitalSensorIO4);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DIGITAL_ACTOR_IO4:
+      {
+        DigitalActorIO4 digitalActorIO4 = (DigitalActorIO4)theEObject;
+        T result = caseDigitalActorIO4(digitalActorIO4);
+        if (result == null) result = caseIO4Device(digitalActorIO4);
+        if (result == null) result = caseMTFConfigConsumer(digitalActorIO4);
+        if (result == null) result = caseMSubDevice(digitalActorIO4);
+        if (result == null) result = caseGenericDevice(digitalActorIO4);
+        if (result == null) result = caseMBaseDevice(digitalActorIO4);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_MULTI_TOUCH:
       {
         MBrickletMultiTouch mBrickletMultiTouch = (MBrickletMultiTouch)theEObject;
@@ -561,6 +608,125 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_TEMPERATURE_IR:
+      {
+        MBrickletTemperatureIR mBrickletTemperatureIR = (MBrickletTemperatureIR)theEObject;
+        T result = caseMBrickletTemperatureIR(mBrickletTemperatureIR);
+        if (result == null) result = caseMDevice(mBrickletTemperatureIR);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletTemperatureIR);
+        if (result == null) result = caseMBaseDevice(mBrickletTemperatureIR);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MTEMPERATURE_IR_DEVICE:
+      {
+        MTemperatureIRDevice mTemperatureIRDevice = (MTemperatureIRDevice)theEObject;
+        T result = caseMTemperatureIRDevice(mTemperatureIRDevice);
+        if (result == null) result = caseMSensor(mTemperatureIRDevice);
+        if (result == null) result = caseMSubDevice(mTemperatureIRDevice);
+        if (result == null) result = caseCallbackListener(mTemperatureIRDevice);
+        if (result == null) result = caseMBaseDevice(mTemperatureIRDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.OBJECT_TEMPERATURE:
+      {
+        ObjectTemperature objectTemperature = (ObjectTemperature)theEObject;
+        T result = caseObjectTemperature(objectTemperature);
+        if (result == null) result = caseMTemperatureIRDevice(objectTemperature);
+        if (result == null) result = caseMTFConfigConsumer(objectTemperature);
+        if (result == null) result = caseMSensor(objectTemperature);
+        if (result == null) result = caseMSubDevice(objectTemperature);
+        if (result == null) result = caseCallbackListener(objectTemperature);
+        if (result == null) result = caseMBaseDevice(objectTemperature);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.AMBIENT_TEMPERATURE:
+      {
+        AmbientTemperature ambientTemperature = (AmbientTemperature)theEObject;
+        T result = caseAmbientTemperature(ambientTemperature);
+        if (result == null) result = caseMTemperatureIRDevice(ambientTemperature);
+        if (result == null) result = caseMTFConfigConsumer(ambientTemperature);
+        if (result == null) result = caseMSensor(ambientTemperature);
+        if (result == null) result = caseMSubDevice(ambientTemperature);
+        if (result == null) result = caseCallbackListener(ambientTemperature);
+        if (result == null) result = caseMBaseDevice(ambientTemperature);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MBRICKLET_TILT:
+      {
+        MBrickletTilt mBrickletTilt = (MBrickletTilt)theEObject;
+        T result = caseMBrickletTilt(mBrickletTilt);
+        if (result == null) result = caseMDevice(mBrickletTilt);
+        if (result == null) result = caseMSensor(mBrickletTilt);
+        if (result == null) result = caseMBaseDevice(mBrickletTilt);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MBRICKLET_VOLTAGE_CURRENT:
+      {
+        MBrickletVoltageCurrent mBrickletVoltageCurrent = (MBrickletVoltageCurrent)theEObject;
+        T result = caseMBrickletVoltageCurrent(mBrickletVoltageCurrent);
+        if (result == null) result = caseMDevice(mBrickletVoltageCurrent);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletVoltageCurrent);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletVoltageCurrent);
+        if (result == null) result = caseMBaseDevice(mBrickletVoltageCurrent);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.VOLTAGE_CURRENT_DEVICE:
+      {
+        VoltageCurrentDevice voltageCurrentDevice = (VoltageCurrentDevice)theEObject;
+        T result = caseVoltageCurrentDevice(voltageCurrentDevice);
+        if (result == null) result = caseMSensor(voltageCurrentDevice);
+        if (result == null) result = caseMSubDevice(voltageCurrentDevice);
+        if (result == null) result = caseCallbackListener(voltageCurrentDevice);
+        if (result == null) result = caseMTFConfigConsumer(voltageCurrentDevice);
+        if (result == null) result = caseMBaseDevice(voltageCurrentDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.VC_DEVICE_VOLTAGE:
+      {
+        VCDeviceVoltage vcDeviceVoltage = (VCDeviceVoltage)theEObject;
+        T result = caseVCDeviceVoltage(vcDeviceVoltage);
+        if (result == null) result = caseVoltageCurrentDevice(vcDeviceVoltage);
+        if (result == null) result = caseMSensor(vcDeviceVoltage);
+        if (result == null) result = caseMSubDevice(vcDeviceVoltage);
+        if (result == null) result = caseCallbackListener(vcDeviceVoltage);
+        if (result == null) result = caseMTFConfigConsumer(vcDeviceVoltage);
+        if (result == null) result = caseMBaseDevice(vcDeviceVoltage);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.VC_DEVICE_CURRENT:
+      {
+        VCDeviceCurrent vcDeviceCurrent = (VCDeviceCurrent)theEObject;
+        T result = caseVCDeviceCurrent(vcDeviceCurrent);
+        if (result == null) result = caseVoltageCurrentDevice(vcDeviceCurrent);
+        if (result == null) result = caseMSensor(vcDeviceCurrent);
+        if (result == null) result = caseMSubDevice(vcDeviceCurrent);
+        if (result == null) result = caseCallbackListener(vcDeviceCurrent);
+        if (result == null) result = caseMTFConfigConsumer(vcDeviceCurrent);
+        if (result == null) result = caseMBaseDevice(vcDeviceCurrent);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.VC_DEVICE_POWER:
+      {
+        VCDevicePower vcDevicePower = (VCDevicePower)theEObject;
+        T result = caseVCDevicePower(vcDevicePower);
+        if (result == null) result = caseVoltageCurrentDevice(vcDevicePower);
+        if (result == null) result = caseMSensor(vcDevicePower);
+        if (result == null) result = caseMSubDevice(vcDevicePower);
+        if (result == null) result = caseCallbackListener(vcDevicePower);
+        if (result == null) result = caseMTFConfigConsumer(vcDevicePower);
+        if (result == null) result = caseMBaseDevice(vcDevicePower);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_BAROMETER:
       {
         MBrickletBarometer mBrickletBarometer = (MBrickletBarometer)theEObject;
@@ -596,6 +762,42 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_SOUND_INTENSITY:
+      {
+        MBrickletSoundIntensity mBrickletSoundIntensity = (MBrickletSoundIntensity)theEObject;
+        T result = caseMBrickletSoundIntensity(mBrickletSoundIntensity);
+        if (result == null) result = caseMDevice(mBrickletSoundIntensity);
+        if (result == null) result = caseMSensor(mBrickletSoundIntensity);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletSoundIntensity);
+        if (result == null) result = caseCallbackListener(mBrickletSoundIntensity);
+        if (result == null) result = caseMBaseDevice(mBrickletSoundIntensity);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MBRICKLET_MOISTURE:
+      {
+        MBrickletMoisture mBrickletMoisture = (MBrickletMoisture)theEObject;
+        T result = caseMBrickletMoisture(mBrickletMoisture);
+        if (result == null) result = caseMDevice(mBrickletMoisture);
+        if (result == null) result = caseMSensor(mBrickletMoisture);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletMoisture);
+        if (result == null) result = caseCallbackListener(mBrickletMoisture);
+        if (result == null) result = caseMBaseDevice(mBrickletMoisture);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MBRICKLET_DISTANCE_US:
+      {
+        MBrickletDistanceUS mBrickletDistanceUS = (MBrickletDistanceUS)theEObject;
+        T result = caseMBrickletDistanceUS(mBrickletDistanceUS);
+        if (result == null) result = caseMDevice(mBrickletDistanceUS);
+        if (result == null) result = caseMSensor(mBrickletDistanceUS);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletDistanceUS);
+        if (result == null) result = caseCallbackListener(mBrickletDistanceUS);
+        if (result == null) result = caseMBaseDevice(mBrickletDistanceUS);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_LCD2_0X4:
       {
         MBrickletLCD20x4 mBrickletLCD20x4 = (MBrickletLCD20x4)theEObject;
@@ -625,6 +827,7 @@ public class ModelSwitch<T> extends Switch<T>
         T result = caseMLCD20x4Button(mlcd20x4Button);
         if (result == null) result = caseMOutSwitchActor(mlcd20x4Button);
         if (result == null) result = caseMLCDSubDevice(mlcd20x4Button);
+        if (result == null) result = caseCallbackListener(mlcd20x4Button);
         if (result == null) result = caseMSwitchActor(mlcd20x4Button);
         if (result == null) result = caseMSubDevice(mlcd20x4Button);
         if (result == null) result = caseMBaseDevice(mlcd20x4Button);
@@ -673,6 +876,41 @@ public class ModelSwitch<T> extends Switch<T>
         TFBaseConfiguration tfBaseConfiguration = (TFBaseConfiguration)theEObject;
         T result = caseTFBaseConfiguration(tfBaseConfiguration);
         if (result == null) result = caseTFConfig(tfBaseConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION:
+      {
+        TFObjectTemperatureConfiguration tfObjectTemperatureConfiguration = (TFObjectTemperatureConfiguration)theEObject;
+        T result = caseTFObjectTemperatureConfiguration(tfObjectTemperatureConfiguration);
+        if (result == null) result = caseTFBaseConfiguration(tfObjectTemperatureConfiguration);
+        if (result == null) result = caseTFConfig(tfObjectTemperatureConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION:
+      {
+        TFMoistureBrickletConfiguration tfMoistureBrickletConfiguration = (TFMoistureBrickletConfiguration)theEObject;
+        T result = caseTFMoistureBrickletConfiguration(tfMoistureBrickletConfiguration);
+        if (result == null) result = caseTFBaseConfiguration(tfMoistureBrickletConfiguration);
+        if (result == null) result = caseTFConfig(tfMoistureBrickletConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_DISTANCE_US_BRICKLET_CONFIGURATION:
+      {
+        TFDistanceUSBrickletConfiguration tfDistanceUSBrickletConfiguration = (TFDistanceUSBrickletConfiguration)theEObject;
+        T result = caseTFDistanceUSBrickletConfiguration(tfDistanceUSBrickletConfiguration);
+        if (result == null) result = caseTFBaseConfiguration(tfDistanceUSBrickletConfiguration);
+        if (result == null) result = caseTFConfig(tfDistanceUSBrickletConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.TF_VOLTAGE_CURRENT_CONFIGURATION:
+      {
+        TFVoltageCurrentConfiguration tfVoltageCurrentConfiguration = (TFVoltageCurrentConfiguration)theEObject;
+        T result = caseTFVoltageCurrentConfiguration(tfVoltageCurrentConfiguration);
+        if (result == null) result = caseTFConfig(tfVoltageCurrentConfiguration);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1267,6 +1505,70 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet IO4</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet IO4</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletIO4(MBrickletIO4 object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>IO4 Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>IO4 Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseIO4Device(IO4Device object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Digital Sensor IO4</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Digital Sensor IO4</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDigitalSensorIO4(DigitalSensorIO4 object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Digital Actor IO4</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Digital Actor IO4</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDigitalActorIO4(DigitalActorIO4 object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>MBricklet Multi Touch</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1699,6 +2001,166 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Temperature IR</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Temperature IR</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletTemperatureIR(MBrickletTemperatureIR object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MTemperature IR Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MTemperature IR Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMTemperatureIRDevice(MTemperatureIRDevice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Object Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Object Temperature</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseObjectTemperature(ObjectTemperature object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Ambient Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Ambient Temperature</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseAmbientTemperature(AmbientTemperature object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Tilt</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Tilt</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletTilt(MBrickletTilt object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Voltage Current</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Voltage Current</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletVoltageCurrent(MBrickletVoltageCurrent object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Voltage Current Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Voltage Current Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseVoltageCurrentDevice(VoltageCurrentDevice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>VC Device Voltage</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>VC Device Voltage</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseVCDeviceVoltage(VCDeviceVoltage object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>VC Device Current</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>VC Device Current</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseVCDeviceCurrent(VCDeviceCurrent object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>VC Device Power</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>VC Device Power</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseVCDevicePower(VCDevicePower object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>TF Base Configuration</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1710,6 +2172,70 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTFBaseConfiguration(TFBaseConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>TF Object Temperature Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>TF Object Temperature Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTFObjectTemperatureConfiguration(TFObjectTemperatureConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>TF Moisture Bricklet Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>TF Moisture Bricklet Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTFMoistureBrickletConfiguration(TFMoistureBrickletConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>TF Distance US Bricklet Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>TF Distance US Bricklet Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTFDistanceUSBrickletConfiguration(TFDistanceUSBrickletConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>TF Voltage Current Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>TF Voltage Current Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseTFVoltageCurrentConfiguration(TFVoltageCurrentConfiguration object)
   {
     return null;
   }
@@ -1758,6 +2284,54 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMBrickletAmbientLight(MBrickletAmbientLight object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Sound Intensity</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Sound Intensity</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletSoundIntensity(MBrickletSoundIntensity object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Moisture</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Moisture</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletMoisture(MBrickletMoisture object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Distance US</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Distance US</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletDistanceUS(MBrickletDistanceUS object)
   {
     return null;
   }

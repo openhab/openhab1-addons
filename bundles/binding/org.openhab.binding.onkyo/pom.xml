@@ -14,7 +14,7 @@
 		<bundle.symbolicName>org.openhab.binding.onkyo</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.onkyo</bundle.namespace>
 		<deb.name>openhab-addon-binding-onkyo</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

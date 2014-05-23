@@ -47,6 +47,7 @@ import com.tinkerforge.TimeoutException;
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorImpl#getMbrick <em>Mbrick</em>}</li>
@@ -104,6 +105,26 @@ public class DigitalActorImpl extends MinimalEObjectImpl.Container implements Di
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = true;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -362,6 +383,29 @@ private int mask;
     uid = newUid;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__UID, oldUid, uid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR__POLL, oldPoll, poll));
   }
 
   /**
@@ -652,63 +696,59 @@ private int mask;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void turnDigital(HighLowValue digitalState) {
-		BrickletIO16 brickletIO16 = getMbrick().getTinkerforgeDevice();
-		try {
-			if (digitalState == HighLowValue.HIGH) {
-				brickletIO16.setSelectedValues(getPort(), (short) mask,
-						(short) mask);
-			}
-			else if (digitalState == HighLowValue.LOW){
-				brickletIO16.setSelectedValues(getPort(), (short) mask, (short) 0);
-			} else  {
-				logger.error("{} unkown digitalState {}", LoggerConstants.TFMODELUPDATE, digitalState);
-			}
-			setDigitalState(digitalState);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
+  public void turnDigital(HighLowValue digitalState) {
+    BrickletIO16 brickletIO16 = getMbrick().getTinkerforgeDevice();
+    try {
+      if (digitalState == HighLowValue.HIGH) {
+        brickletIO16.setSelectedValues(getPort(), (short) mask, (short) mask);
+      } else if (digitalState == HighLowValue.LOW) {
+        brickletIO16.setSelectedValues(getPort(), (short) mask, (short) 0);
+      } else {
+        logger.error("{} unkown digitalState {}", LoggerConstants.TFMODELUPDATE, digitalState);
+      }
+      setDigitalState(digitalState);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
 
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public HighLowValue fetchDigitalValue() {
-		HighLowValue pinValue = HighLowValue.UNDEF;
-		try {
-			pinValue = extractValue(getMbrick().getTinkerforgeDevice().getPort(
-					getPort()));
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		return pinValue;
-	}
+  }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void init() {
-		setEnabledA(new AtomicBoolean());
-		logger = LoggerFactory.getLogger(DigitalActorImpl.class);
-		mask = 00000001 << getPin();
-	}
+  public void fetchDigitalValue() {
+    HighLowValue pinValue = HighLowValue.UNDEF;
+    try {
+      pinValue = extractValue(getMbrick().getTinkerforgeDevice().getPort(getPort()));
+      setDigitalState(pinValue);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    poll = true; // don't use the setter to prevent notification
+    logger = LoggerFactory.getLogger(DigitalActorImpl.class);
+    mask = 00000001 << getPin();
+  }
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -735,9 +775,7 @@ private int mask;
         logger.debug("{} reconnected: no new port configuration set for {}",
             LoggerConstants.TFINIT, getSubId());
       } else if (defaultState == null || defaultState.equals("keep")) {
-        boolean state = (fetchDigitalValue() == HighLowValue.HIGH) ? true : false;
-        logger.debug("{} keep: no new port configuration set for {}", LoggerConstants.TFINIT,
-            state);
+        logger.debug("{} keep: no new port configuration set", LoggerConstants.TFINIT);
       } else if (defaultState.equals("true")) {
         logger.debug("{} setPortconfiguration to state: true", LoggerConstants.TFINIT);
         getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(), (short) mask,
@@ -747,7 +785,7 @@ private int mask;
         getMbrick().getTinkerforgeDevice().setPortConfiguration(getPort(), (short) mask,
             BrickletIO16.DIRECTION_OUT, false);
       }
-      setDigitalState(fetchDigitalValue());
+      fetchDigitalValue();
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -756,28 +794,26 @@ private int mask;
     }
   }
 
-	/**
-	 * 
-	 * @generated NOT
-	 */
-	private HighLowValue extractValue(int valueMask) {
-		HighLowValue value = HighLowValue.UNDEF;
-		if ((valueMask & mask) == mask) {
-			value = HighLowValue.HIGH;
-		} else {
-			value = HighLowValue.LOW;
-		}
-		return value;
-	}
-
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void disable()
-  {
+  private HighLowValue extractValue(int valueMask) {
+    HighLowValue value = HighLowValue.UNDEF;
+    if ((valueMask & mask) == mask) {
+      value = HighLowValue.HIGH;
+    } else {
+      value = HighLowValue.LOW;
+    }
+    return value;
   }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void disable() {}
 
   /**
    * <!-- begin-user-doc -->
@@ -845,6 +881,8 @@ private int mask;
         return getLogger();
       case ModelPackage.DIGITAL_ACTOR__UID:
         return getUid();
+      case ModelPackage.DIGITAL_ACTOR__POLL:
+        return isPoll();
       case ModelPackage.DIGITAL_ACTOR__ENABLED_A:
         return getEnabledA();
       case ModelPackage.DIGITAL_ACTOR__SUB_ID:
@@ -886,6 +924,9 @@ private int mask;
         return;
       case ModelPackage.DIGITAL_ACTOR__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.DIGITAL_ACTOR__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.DIGITAL_ACTOR__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -937,6 +978,9 @@ private int mask;
       case ModelPackage.DIGITAL_ACTOR__UID:
         setUid(UID_EDEFAULT);
         return;
+      case ModelPackage.DIGITAL_ACTOR__POLL:
+        setPoll(POLL_EDEFAULT);
+        return;
       case ModelPackage.DIGITAL_ACTOR__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
@@ -985,6 +1029,8 @@ private int mask;
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.DIGITAL_ACTOR__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.DIGITAL_ACTOR__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.DIGITAL_ACTOR__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.DIGITAL_ACTOR__SUB_ID:
@@ -1079,7 +1125,8 @@ private int mask;
         turnDigital((HighLowValue)arguments.get(0));
         return null;
       case ModelPackage.DIGITAL_ACTOR___FETCH_DIGITAL_VALUE:
-        return fetchDigitalValue();
+        fetchDigitalValue();
+        return null;
       case ModelPackage.DIGITAL_ACTOR___INIT:
         init();
         return null;
@@ -1108,6 +1155,8 @@ private int mask;
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", subId: ");

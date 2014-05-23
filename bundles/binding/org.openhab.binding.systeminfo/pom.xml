@@ -14,7 +14,7 @@
 		<bundle.symbolicName>org.openhab.binding.systeminfo</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.systeminfo</bundle.namespace>
 		<deb.name>openhab-addon-binding-systeminfo</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

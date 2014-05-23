@@ -13,7 +13,7 @@
 		<bundle.symbolicName>org.openhab.binding.irtrans</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.irtrans</bundle.namespace>
 		<deb.name>openhab-addon-binding-irtrans</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

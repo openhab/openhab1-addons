@@ -61,9 +61,9 @@ public interface MSensor<DeviceValue extends TinkerforgeValue> extends EObject
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @model unique="false"
+   * @model
    * @generated
    */
-  DeviceValue fetchSensorValue();
+  void fetchSensorValue();
 
 } // MSensor

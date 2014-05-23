@@ -17,7 +17,7 @@
 
     <properties>
         <deb.name>openhab-runtime</deb.name>
-        <deb.description>${name}</deb.description>
+        <deb.description>${project.name}</deb.description>
     </properties>
 
     <build>
@@ -346,6 +346,12 @@
         <dependency>
             <groupId>org.openhab.action</groupId>
             <artifactId>org.openhab.action.nma</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.action</groupId>
+            <artifactId>org.openhab.action.pushover</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
@@ -736,6 +742,12 @@
         </dependency>
         <dependency>
             <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.insteonplm</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.tivo</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
@@ -767,6 +779,18 @@
         <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.k8055</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.withings</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.rme</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>DSB54</Model>
+	<Label lang="en">Door/Window sensor</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+
+	 <Configuration>
+                <Parameter>
+                        <Index>1</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">On for opened, Off for closed</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Off for opened, On for closed</Label>
+                        </Item>
+                        <Label lang="en">Send Sensor binary report on open/close events</Label>
+						<Help lang="en"></Help>
+                </Parameter>
+                <Parameter>
+                        <Index>3</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">On for opened, Off for closed</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Off for opened, On for closed</Label>
+                        </Item>
+                        <Label lang="en">Send Basic Set on open/close event</Label>
+						<Help lang="en"></Help>
+                </Parameter>
+                <Parameter>
+                        <Index>101</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Disable</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Enable</Label>
+                        </Item>
+                        <Label lang="en">Low battery voltage check</Label>
+						<Help lang="en">parameter defines, if battery check function is possible, when battery is below warning voltage</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>111</Index>
+                        <Type>long</Type>
+                        <Default>112</Default>
+                        <Size>4</Size>
+                        <Minimum>0</Minimum>
+                        <Maximum>65535</Maximum>
+                        <Label lang="en">Low battery voltage check time</Label>
+						<Help lang="en">Minimum battery low check Interval time is 4 minutes (240 seconds)</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>121</Index>
+                        <Type>long</Type>
+                        <Default>256</Default>
+                        <Size>4</Size>
+                        <Minimum>0</Minimum>
+                        <Maximum>65535</Maximum>
+                        <Label lang="en">Flag values for triggered magnet switch</Label>
+						<Help lang="en">Flag values for which reports to send when the magnet switch is triggered</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>252</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Unlock</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Lock</Label>
+                        </Item>
+                        <Label lang="en">Permit other configurations</Label>
+						<Help lang="en">Lock or Unlock other configuration set function</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>255</Index>
+                        <Type>constant</Type>
+                        <Default>0</Default>
+                        <Size>2</Size>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Reset</Label>
+                        </Item>
+                        <Label lang="en">Reset to default</Label>
+						<Help lang="en">Reset to the default configuration</Help>
+                </Parameter>
+    </Configuration>
+    
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">State Updates</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Battery Warnings</Label>
+		</Group>
+	</Associations>
+</Product>

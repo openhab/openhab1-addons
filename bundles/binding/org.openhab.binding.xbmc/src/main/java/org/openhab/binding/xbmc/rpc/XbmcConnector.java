@@ -10,7 +10,6 @@ package org.openhab.binding.xbmc.rpc;
 
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +21,7 @@ import java.util.concurrent.TimeoutException;
 import org.openhab.binding.xbmc.internal.XbmcHost;
 import org.openhab.binding.xbmc.rpc.calls.FilesPrepareDownload;
 import org.openhab.binding.xbmc.rpc.calls.GUIShowNotification;
+import org.openhab.binding.xbmc.rpc.calls.JSONRPCPing;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetActivePlayers;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetItem;
 import org.openhab.binding.xbmc.rpc.calls.PlayerPlayPause;
@@ -64,15 +64,17 @@ public class XbmcConnector {
 	private final XbmcHost xbmc;
 	private final EventPublisher eventPublisher;
 
-	private final String rsUri;
+	private final String httpUri;
 	private final String wsUri;
-
+	private final AsyncHttpClient client;
+	private final WebSocketUpgradeHandler handler;
+	
 	// stores which property is associated with each item
 	private final Map<String, String> watches = new HashMap<String, String>();
 
 	// the async connection to the XBMC instance
-	private AsyncHttpClient client;
 	private WebSocket webSocket;
+	private boolean connected = false;
 
 	// the current player state
 	private State currentState = State.Stop;
@@ -80,6 +82,7 @@ public class XbmcConnector {
 	private enum State {
 		Play,
 		Pause,
+		End,
 		Stop
 	}
 
@@ -94,8 +97,11 @@ public class XbmcConnector {
 		this.xbmc = xbmc;
 		this.eventPublisher = eventPublisher;
 
-		rsUri = String.format("http://%s:%d/jsonrpc", xbmc.getHostname(), xbmc.getPort());
-		wsUri = String.format("ws://%s:%d/jsonrpc", xbmc.getHostname(), xbmc.getWSPort());
+		this.httpUri = String.format("http://%s:%d/jsonrpc", xbmc.getHostname(), xbmc.getPort());
+		this.wsUri = String.format("ws://%s:%d/jsonrpc", xbmc.getHostname(), xbmc.getWSPort());
+		
+		this.client = new AsyncHttpClient(new NettyAsyncHttpProvider(createAsyncHttpClientConfig()));
+		this.handler = createWebSocketHandler();
 	}
 
 	/***
@@ -103,26 +109,26 @@ public class XbmcConnector {
 	 * 
 	 * @return true if an active connection to the XBMC instance exists, false otherwise
 	 */
-	public boolean isOpen() { 
-		return webSocket != null && webSocket.isOpen();
+	public boolean isConnected() { 
+		if (webSocket == null || !webSocket.isOpen())
+			return false;
+		
+		return connected;
 	}
 	
 	/**
 	 * Attempts to create a connection to the XBMC host and begin listening
 	 * for updates over the async http web socket
 	 *  
-	 * @throws URISyntaxException
-	 *             If the result of adding protocol and port to the hostname is
-	 *             not a valid uri
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 * @throws IOException 
 	 */
-	public void open() throws URISyntaxException, IOException, InterruptedException, ExecutionException {
-		AsyncHttpClientConfig config = createAsyncHttpClientConfig();
-		WebSocketUpgradeHandler handler = createWebSocketHandler();
+	public void open() throws IOException, InterruptedException, ExecutionException {
+		// cleanup any existing web socket left over from previous attempts
+		close();
 		
-		client = new AsyncHttpClient(new NettyAsyncHttpProvider(config));
+		// attempt to open the web socket connection to the XBMC instance
 		webSocket = client.prepareGet(wsUri).execute(handler).get();
 	}
 
@@ -130,10 +136,11 @@ public class XbmcConnector {
 	 * Close this connection to the XBMC instance
 	 */
 	public void close() {
-		if (webSocket != null) 
+		// if there is an old web socket then clean up and destroy
+		if (webSocket != null) { 
 			webSocket.close();
-		if (client != null) 
-			client.close();
+			webSocket = null;
+		}
 	}
 		
 	private AsyncHttpClientConfig createAsyncHttpClientConfig() {
@@ -164,6 +171,7 @@ public class XbmcConnector {
 		@Override
 		public void onOpen(WebSocket webSocket) {
 			logger.debug("[{}]: Websocket opened", xbmc.getHostname());
+			connected = true;
 		}
 		
 		@Override
@@ -181,6 +189,7 @@ public class XbmcConnector {
 		public void onClose(WebSocket webSocket) {
 			logger.warn("[{}]: Websocket closed", xbmc.getHostname());
 			webSocket = null;
+			connected = false;
 		}
 		
 		@Override
@@ -218,6 +227,20 @@ public class XbmcConnector {
 		@Override
 		public void onFragment(String fragment, boolean last) {}
 	}
+
+	/**
+	 * Send a ping to the XBMC host and wait for a 'pong'.
+	 */
+	public void ping() {
+		final JSONRPCPing ping = new JSONRPCPing(client, httpUri);
+		
+		ping.execute(new Runnable() {
+			@Override
+			public void run() {
+				connected = ping.isPong();
+			}
+		});
+	}
 	
 	/**
 	 * Create a mapping between an item and an xbmc property
@@ -236,7 +259,7 @@ public class XbmcConnector {
 	}
 	
 	public void updatePlayerStatus() {
-		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, rsUri);
+		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, httpUri);
 		
 		activePlayers.execute(new Runnable() {
 			@Override
@@ -252,11 +275,11 @@ public class XbmcConnector {
 	}
 
 	public void playerPlayPause() {
-		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, rsUri);
+		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, httpUri);
 		
 		activePlayers.execute(new Runnable() {
 			public void run() {
-				PlayerPlayPause playPause = new PlayerPlayPause(client, rsUri);
+				PlayerPlayPause playPause = new PlayerPlayPause(client, httpUri);
 				playPause.setPlayerId(activePlayers.getPlayerId());
 				playPause.execute();
 			}
@@ -264,11 +287,11 @@ public class XbmcConnector {
 	}
 	
 	public void playerStop() {
-		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, rsUri);
+		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, httpUri);
 		
 		activePlayers.execute(new Runnable() {
 			public void run() {
-				PlayerStop stop = new PlayerStop(client, rsUri);
+				PlayerStop stop = new PlayerStop(client, httpUri);
 				stop.setPlayerId(activePlayers.getPlayerId());
 				stop.execute();
 			}
@@ -276,7 +299,7 @@ public class XbmcConnector {
 	}
 	
 	public void showNotification(String title, String message) {
-		final GUIShowNotification showNotification = new GUIShowNotification(client, rsUri);
+		final GUIShowNotification showNotification = new GUIShowNotification(client, httpUri);
 		
 		showNotification.setTitle(title);
 		showNotification.setMessage(message);
@@ -300,6 +323,13 @@ public class XbmcConnector {
 		}
 
 		if ("Player.OnStop".equals(method)) {
+			// get the end parameter and send an End state if true
+			Map<String, Object> params = RpcCall.getMap(json, "params");
+			Map<String, Object> data = RpcCall.getMap(params, "data");
+			Boolean end = (Boolean)data.get("end");
+			if (end) {
+				updateState(State.End);
+			}
 			updateState(State.Stop);
 		}
 	}
@@ -339,7 +369,7 @@ public class XbmcConnector {
 		final List<String> properties = getPlayerProperties();
 		
 		// make the request for the player item details
-		final PlayerGetItem item = new PlayerGetItem(client, rsUri);
+		final PlayerGetItem item = new PlayerGetItem(client, httpUri);
 		item.setPlayerId(playerId);
 		item.setProperties(properties);
 		
@@ -362,7 +392,7 @@ public class XbmcConnector {
 		if (StringUtils.isEmpty(imagePath))
 			return;
 		
-		final FilesPrepareDownload fanart = new FilesPrepareDownload(client, rsUri);
+		final FilesPrepareDownload fanart = new FilesPrepareDownload(client, httpUri);
 		fanart.setImagePath(imagePath);
 		
 		fanart.execute(new Runnable() {
