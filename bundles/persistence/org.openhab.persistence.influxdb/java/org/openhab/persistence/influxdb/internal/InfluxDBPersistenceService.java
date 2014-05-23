@@ -110,7 +110,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   }
 
   /**
-   * {@inheritDoc} Aliases are ignored because they can not be used for querying.
+   * {@inheritDoc}
    */
   @Override
   public void store(Item item, String alias) {
@@ -135,7 +135,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
               item);
       return;
     }
-    String name = item.getName();
+    String realName = item.getName();
+    String name = (alias != null) ? alias : realName;
     Object value = stateToObject(item.getState());
     logger.trace("storing {} in influxdb {}", name, value);
     Serie serie = new Serie(name);
