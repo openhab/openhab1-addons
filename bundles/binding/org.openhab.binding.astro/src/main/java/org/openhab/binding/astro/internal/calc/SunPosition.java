@@ -15,26 +15,26 @@ package org.openhab.binding.astro.internal.calc;
  * @since 1.5.0
  */
 public class SunPosition {
-  private double azimuth;
-  private double elevation;
+	private double azimuth;
+	private double elevation;
 
-  public SunPosition(double azimuth, double elevation) {
-    this.azimuth = azimuth;
-    this.elevation = elevation;
-  }
+	public SunPosition(double azimuth, double elevation) {
+		this.azimuth = azimuth;
+		this.elevation = elevation;
+	}
 
-  /**
-   * Returns the azimuth.
-   */
-  public double getAzimuth() {
-    return azimuth;
-  }
+	/**
+	 * Returns the azimuth.
+	 */
+	public double getAzimuth() {
+		return azimuth;
+	}
 
-  /**
-   * Returns the elevation.
-   */
-  public double getElevation() {
-    return elevation;
-  }
+	/**
+	 * Returns the elevation.
+	 */
+	public double getElevation() {
+		return elevation;
+	}
 
 }
