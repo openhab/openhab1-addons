@@ -12,7 +12,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 
 import java.text.DecimalFormatSymbols;
-import java.util.Locale;
 
 import org.junit.Test;
 

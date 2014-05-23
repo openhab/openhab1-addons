@@ -37,6 +37,7 @@ public class ItemUIRegistryImplTest {
 
 	static private ItemRegistry registry;
 	static private ItemUIRegistryImpl uiRegistry = new ItemUIRegistryImpl();
+	// we need to get the decimal separator of the default locale for our tests
 	static private final char sep = (new DecimalFormatSymbols().getDecimalSeparator());
 
 
