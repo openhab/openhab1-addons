@@ -317,7 +317,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     Object convertedValue;
     if (value.scale() == 0) {
       logger.trace("found no fractional part");
-      convertedValue = value.doubleValue();
+      convertedValue = value.toBigInteger();
     } else {
       logger.trace("found fractional part");
       convertedValue = value.doubleValue();
