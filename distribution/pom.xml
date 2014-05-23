@@ -17,7 +17,7 @@
 
     <properties>
         <deb.name>openhab-runtime</deb.name>
-        <deb.description>${name}</deb.description>
+        <deb.description>${project.name}</deb.description>
     </properties>
 
     <build>

@@ -47,6 +47,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getSwitchState <em>Switch State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MIndustrialQuadRelayImpl#getMbrick <em>Mbrick</em>}</li>
@@ -117,6 +118,26 @@ public class MIndustrialQuadRelayImpl extends MinimalEObjectImpl.Container imple
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = true;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -231,60 +252,52 @@ private int mask;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void turnSwitch(OnOffValue state) {
-		logger.debug("turnSwitchState called on: {}",
-				MIndustrialQuadRelayBrickletImpl.class);
-		try {
-			if (state == OnOffValue.OFF) {
-				logger.debug("setSwitchValue off");
-				getMbrick().getTinkerforgeDevice().setSelectedValues(mask,
-						OFF_BYTE);
-			} else if (state == OnOffValue.ON) {
-				logger.debug("setSwitchState on");
-				getMbrick().getTinkerforgeDevice()
-						.setSelectedValues(mask, mask);
-			} else {
-				logger.error("{} unkown switchstate {}",
-						LoggerConstants.TFMODELUPDATE, state);
-			}
-			setSwitchState(state);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-	}
+  public void turnSwitch(OnOffValue state) {
+    logger.debug("turnSwitchState called on: {}", MIndustrialQuadRelayBrickletImpl.class);
+    try {
+      if (state == OnOffValue.OFF) {
+        logger.debug("setSwitchValue off");
+        getMbrick().getTinkerforgeDevice().setSelectedValues(mask, OFF_BYTE);
+      } else if (state == OnOffValue.ON) {
+        logger.debug("setSwitchState on");
+        getMbrick().getTinkerforgeDevice().setSelectedValues(mask, mask);
+      } else {
+        logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+      }
+      setSwitchState(state);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public OnOffValue fetchSwitchState()
-  {
-	  OnOffValue value = OnOffValue.UNDEF;
-	  try {
-		int deviceValue = getMbrick().getTinkerforgeDevice().getValue();
-		if ((deviceValue & mask) == mask ){
-			value = OnOffValue.ON;
-		}
-		else {
-			value = OnOffValue.OFF;
-		}
-	} catch (TimeoutException e) {
-		TinkerforgeErrorHandler.handleError(this,
-				TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-	} catch (NotConnectedException e) {
-		TinkerforgeErrorHandler.handleError(this,
-				TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-	}
-	  return value;
+  public void fetchSwitchState() {
+    OnOffValue value = OnOffValue.UNDEF;
+    try {
+      int deviceValue = getMbrick().getTinkerforgeDevice().getValue();
+      if ((deviceValue & mask) == mask) {
+        value = OnOffValue.ON;
+      } else {
+        value = OnOffValue.OFF;
+      }
+      setSwitchState(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
@@ -331,6 +344,29 @@ private int mask;
     uid = newUid;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID, oldUid, uid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MINDUSTRIAL_QUAD_RELAY__POLL, oldPoll, poll));
   }
 
   /**
@@ -435,36 +471,34 @@ private int mask;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void init()
-  {
-	  setEnabledA(new AtomicBoolean());
-	  logger = LoggerFactory.getLogger(MIndustrialQuadRelay.class);
-	  relayNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() -1)));
-	  mask = DEFAULT_SELECTION_MASK << relayNum;
-	  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-	public void enable() {
-		logger.debug("enable called on MIndustrialQuadRelayImpl");
-		setSwitchState(fetchSwitchState());
-	}
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  public void disable()
-  {
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    poll = true; // don't use the setter to prevent notification
+    logger = LoggerFactory.getLogger(MIndustrialQuadRelay.class);
+    relayNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
+    mask = DEFAULT_SELECTION_MASK << relayNum;
   }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void enable() {
+    logger.debug("enable called on MIndustrialQuadRelayImpl");
+    fetchSwitchState();
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void disable() {}
 
   /**
    * <!-- begin-user-doc -->
@@ -532,6 +566,8 @@ private int mask;
         return getLogger();
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID:
         return getUid();
+      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__POLL:
+        return isPoll();
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A:
         return getEnabledA();
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY__SUB_ID:
@@ -562,6 +598,9 @@ private int mask;
         return;
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -595,6 +634,9 @@ private int mask;
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID:
         setUid(UID_EDEFAULT);
         return;
+      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__POLL:
+        setPoll(POLL_EDEFAULT);
+        return;
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
@@ -624,6 +666,8 @@ private int mask;
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MINDUSTRIAL_QUAD_RELAY__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY__SUB_ID:
@@ -650,6 +694,7 @@ private int mask;
       {
         case ModelPackage.MINDUSTRIAL_QUAD_RELAY__LOGGER: return ModelPackage.MBASE_DEVICE__LOGGER;
         case ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID: return ModelPackage.MBASE_DEVICE__UID;
+        case ModelPackage.MINDUSTRIAL_QUAD_RELAY__POLL: return ModelPackage.MBASE_DEVICE__POLL;
         case ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A: return ModelPackage.MBASE_DEVICE__ENABLED_A;
         default: return -1;
       }
@@ -680,6 +725,7 @@ private int mask;
       {
         case ModelPackage.MBASE_DEVICE__LOGGER: return ModelPackage.MINDUSTRIAL_QUAD_RELAY__LOGGER;
         case ModelPackage.MBASE_DEVICE__UID: return ModelPackage.MINDUSTRIAL_QUAD_RELAY__UID;
+        case ModelPackage.MBASE_DEVICE__POLL: return ModelPackage.MINDUSTRIAL_QUAD_RELAY__POLL;
         case ModelPackage.MBASE_DEVICE__ENABLED_A: return ModelPackage.MINDUSTRIAL_QUAD_RELAY__ENABLED_A;
         default: return -1;
       }
@@ -747,7 +793,8 @@ private int mask;
         turnSwitch((OnOffValue)arguments.get(0));
         return null;
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY___FETCH_SWITCH_STATE:
-        return fetchSwitchState();
+        fetchSwitchState();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }
@@ -769,6 +816,8 @@ private int mask;
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", subId: ");

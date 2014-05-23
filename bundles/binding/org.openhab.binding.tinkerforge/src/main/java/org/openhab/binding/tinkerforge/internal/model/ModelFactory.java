@@ -203,6 +203,33 @@ public interface ModelFactory extends EFactory
   DigitalSensor createDigitalSensor();
 
   /**
+   * Returns a new object of class '<em>MBricklet IO4</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet IO4</em>'.
+   * @generated
+   */
+  MBrickletIO4 createMBrickletIO4();
+
+  /**
+   * Returns a new object of class '<em>Digital Sensor IO4</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Digital Sensor IO4</em>'.
+   * @generated
+   */
+  DigitalSensorIO4 createDigitalSensorIO4();
+
+  /**
+   * Returns a new object of class '<em>Digital Actor IO4</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Digital Actor IO4</em>'.
+   * @generated
+   */
+  DigitalActorIO4 createDigitalActorIO4();
+
+  /**
    * Returns a new object of class '<em>MBricklet Multi Touch</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -401,6 +428,78 @@ public interface ModelFactory extends EFactory
   MBrickletTemperature createMBrickletTemperature();
 
   /**
+   * Returns a new object of class '<em>MBricklet Temperature IR</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Temperature IR</em>'.
+   * @generated
+   */
+  MBrickletTemperatureIR createMBrickletTemperatureIR();
+
+  /**
+   * Returns a new object of class '<em>Object Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Object Temperature</em>'.
+   * @generated
+   */
+  ObjectTemperature createObjectTemperature();
+
+  /**
+   * Returns a new object of class '<em>Ambient Temperature</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Ambient Temperature</em>'.
+   * @generated
+   */
+  AmbientTemperature createAmbientTemperature();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Tilt</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Tilt</em>'.
+   * @generated
+   */
+  MBrickletTilt createMBrickletTilt();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Voltage Current</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Voltage Current</em>'.
+   * @generated
+   */
+  MBrickletVoltageCurrent createMBrickletVoltageCurrent();
+
+  /**
+   * Returns a new object of class '<em>VC Device Voltage</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>VC Device Voltage</em>'.
+   * @generated
+   */
+  VCDeviceVoltage createVCDeviceVoltage();
+
+  /**
+   * Returns a new object of class '<em>VC Device Current</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>VC Device Current</em>'.
+   * @generated
+   */
+  VCDeviceCurrent createVCDeviceCurrent();
+
+  /**
+   * Returns a new object of class '<em>VC Device Power</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>VC Device Power</em>'.
+   * @generated
+   */
+  VCDevicePower createVCDevicePower();
+
+  /**
    * Returns a new object of class '<em>TF Base Configuration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -408,6 +507,42 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   TFBaseConfiguration createTFBaseConfiguration();
+
+  /**
+   * Returns a new object of class '<em>TF Object Temperature Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Object Temperature Configuration</em>'.
+   * @generated
+   */
+  TFObjectTemperatureConfiguration createTFObjectTemperatureConfiguration();
+
+  /**
+   * Returns a new object of class '<em>TF Moisture Bricklet Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Moisture Bricklet Configuration</em>'.
+   * @generated
+   */
+  TFMoistureBrickletConfiguration createTFMoistureBrickletConfiguration();
+
+  /**
+   * Returns a new object of class '<em>TF Distance US Bricklet Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Distance US Bricklet Configuration</em>'.
+   * @generated
+   */
+  TFDistanceUSBrickletConfiguration createTFDistanceUSBrickletConfiguration();
+
+  /**
+   * Returns a new object of class '<em>TF Voltage Current Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>TF Voltage Current Configuration</em>'.
+   * @generated
+   */
+  TFVoltageCurrentConfiguration createTFVoltageCurrentConfiguration();
 
   /**
    * Returns a new object of class '<em>MBricklet Barometer</em>'.
@@ -435,6 +570,33 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickletAmbientLight createMBrickletAmbientLight();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Sound Intensity</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Sound Intensity</em>'.
+   * @generated
+   */
+  MBrickletSoundIntensity createMBrickletSoundIntensity();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Moisture</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Moisture</em>'.
+   * @generated
+   */
+  MBrickletMoisture createMBrickletMoisture();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Distance US</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Distance US</em>'.
+   * @generated
+   */
+  MBrickletDistanceUS createMBrickletDistanceUS();
 
   /**
    * Returns a new object of class '<em>MBricklet LCD2 0x4</em>'.
