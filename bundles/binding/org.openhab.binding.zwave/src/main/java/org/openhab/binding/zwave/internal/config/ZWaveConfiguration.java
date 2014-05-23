@@ -27,6 +27,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass.ZWaveConfigurationParameterEvent;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
@@ -291,12 +292,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				// Add the action buttons
 				record.addAction("Heal", "Heal Node");
-
+				
 				// Add the delete button if the node is not "operational"
 				if(canDelete) {
 					record.addAction("Delete", "Delete Node");
 				}
 				records.add(record);
+
+				// This needs to be removed - temporary only until it's added to initialisation code.
+				record.addAction("Version", "Version Info");
 			}
 			return records;
 		}
@@ -434,8 +438,30 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 				records.add(record);
 
-				// Add controller specific status information
-				if(node.getNodeId() == zController.getDeviceId()) {
+				ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
+						.getCommandClass(CommandClass.VERSION);
+
+				if (versionCommandClass != null) {
+					record = new OpenHABConfigurationRecord(domain, "LibType", "Library Type", true);
+					if(versionCommandClass.getLibraryType() == null)
+						record.value = "Unknown";
+					else
+						record.value = versionCommandClass.getLibraryType().getLabel();
+					records.add(record);
+
+					record = new OpenHABConfigurationRecord(domain, "ProtocolVersion", "Protocol Version", true);
+					if(versionCommandClass.getProtocolVersion() == null)
+						record.value = "Unknown";
+					else
+						record.value = Double.toString(versionCommandClass.getProtocolVersion());
+					records.add(record);
+
+					record = new OpenHABConfigurationRecord(domain, "AppVersion", "Application Version", true);
+					if(versionCommandClass.getApplicationVersion() == null)
+						record.value = "Unknown";
+					else
+						record.value = Double.toString(versionCommandClass.getApplicationVersion());
+					records.add(record);
 				}
 			} else if (arg.equals("parameters/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
@@ -784,6 +810,22 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					// removal.
 					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 					nodeSerializer.DeleteNode(nodeId);
+				}
+
+				// This is temporary
+				// It should be in the startup code, but that needs refactoring
+				if (action.equals("Version")) {
+					logger.debug("NODE {}: Get node version", nodeId);
+					ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
+							.getCommandClass(CommandClass.VERSION);
+
+					if (versionCommandClass == null) {
+						logger.error("NODE {}: Error getting versionCommandClass in doAction", nodeId);
+						return;
+					}
+
+					// Request the version report for this node
+					this.zController.sendData(versionCommandClass.getVersionMessage());
 				}
 
 				// Return here as afterwards we assume there are more elements
