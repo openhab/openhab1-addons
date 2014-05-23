@@ -13,6 +13,9 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.text.DecimalFormatSymbols;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -34,6 +37,8 @@ public class ItemUIRegistryImplTest {
 
 	static private ItemRegistry registry;
 	static private ItemUIRegistryImpl uiRegistry = new ItemUIRegistryImpl();
+	static private final char sep = (new DecimalFormatSymbols().getDecimalSeparator());
+
 
 	@Before
 	public void prepareRegistry() {
@@ -87,6 +92,34 @@ public class ItemUIRegistryImplTest {
 	}
 
 	@Test
+	public void getLabel_labelWithIntegerValueAndWidth() throws ItemNotFoundException {
+		String testLabel = "Label [%3d]";
+		Widget w = mock(Widget.class);
+		Item item = mock(Item.class);
+		when(w.getLabel()).thenReturn(testLabel);
+		when(w.getItem()).thenReturn("Item");
+		when(registry.getItem("Item")).thenReturn(item);
+		when(item.getState()).thenReturn(new DecimalType(20));
+		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(20));
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [ 20]", label);
+	}
+
+	@Test
+	public void getLabel_labelWithHexValueAndWidth() throws ItemNotFoundException {
+		String testLabel = "Label [%3x]";
+		Widget w = mock(Widget.class);
+		Item item = mock(Item.class);
+		when(w.getLabel()).thenReturn(testLabel);
+		when(w.getItem()).thenReturn("Item");
+		when(registry.getItem("Item")).thenReturn(item);
+		when(item.getState()).thenReturn(new DecimalType(20));
+		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(20));
+		String label = uiRegistry.getLabel(w);
+		assertEquals("Label [ 14]", label);
+	}
+
+	@Test
 	public void getLabel_labelWithDecimalValue() throws ItemNotFoundException {
 		String testLabel = "Label [%.3f]";
 		Widget w = mock(Widget.class);
@@ -97,7 +130,7 @@ public class ItemUIRegistryImplTest {
 		when(item.getState()).thenReturn(new DecimalType(10f/3f));
 		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(10f/3f));
 		String label = uiRegistry.getLabel(w);
-		assertEquals("Label [3.333]", label);
+		assertEquals("Label [3" + sep + "333]", label);
 	}
 
 	@Test
@@ -111,7 +144,7 @@ public class ItemUIRegistryImplTest {
 		when(item.getState()).thenReturn(new DecimalType(10f/3f));
 		when(item.getStateAs(DecimalType.class)).thenReturn(new DecimalType(10f/3f));
 		String label = uiRegistry.getLabel(w);
-		assertEquals("Label [3.3 %]", label);
+		assertEquals("Label [3" + sep + "3 %]", label);
 	}
 
 	@Test
