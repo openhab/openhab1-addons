@@ -35,15 +35,18 @@ import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AddNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignSucReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.DeleteReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.IdentifyNodeMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeNeighborUpdateMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveFailedNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeInfoMessageClass;
@@ -378,6 +381,42 @@ public class ZWaveController {
 			logger.trace("Notifying {}", listener.toString());
 			listener.ZWaveIncomingEvent(event);
 		}
+		
+		// We also need to handle the inclusion internally within the controller
+		if(event instanceof ZWaveInclusionEvent) {
+			ZWaveInclusionEvent incEvent = (ZWaveInclusionEvent)event;
+			switch(incEvent.getEvent()) {
+			case IncludeDone:
+				logger.debug("NODE {}: Including node.", incEvent.getNodeId());
+				// First make sure this isn't an existing node
+				if(getNode(incEvent.getNodeId()) != null) {
+					logger.debug("NODE {}: Newly included node already exists - not initialising.", incEvent.getNodeId());
+					break;
+				}
+				
+				// Initialise the new node
+				ZWaveNode node = new ZWaveNode(this.homeId, incEvent.getNodeId(), this);
+
+				this.zwaveNodes.put(incEvent.getNodeId(), node);
+				node.advanceNodeStage(NodeStage.PROTOINFO);
+				break;
+			case ExcludeDone:
+				logger.debug("NODE {}: Excluding node.", incEvent.getNodeId());
+				// Remove the node from the controller
+				if(getNode(incEvent.getNodeId()) == null) {
+					logger.debug("NODE {}: Excluding node that doesn't exist.", incEvent.getNodeId());
+					break;
+				}
+				this.zwaveNodes.remove(incEvent.getNodeId());
+				
+				// Remove the XML file
+				ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+				nodeSerializer.DeleteNode(event.getNodeId());
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	
 	/**
@@ -508,7 +547,23 @@ public class ZWaveController {
 	}
 
 	/**
-	 * Removes a failed nodes from the network.
+	 * Puts the controller into exclusion mode to remove new nodes
+	 */
+	public void requestRemoveNodesStart()
+	{
+		this.enqueue(new RemoveNodeMessageClass().doRequestStart(true));
+	}
+
+	/**
+	 * Terminates the exclusion mode
+	 */
+	public void requestRemoveNodesStop()
+	{
+		this.enqueue(new RemoveNodeMessageClass().doRequestStop());
+	}
+
+	/**
+	 * Removes a failed node from the network.
 	 * Note that this won't remove nodes that have not failed.
 	 * @param nodeId The address of the node to remove
 	 */

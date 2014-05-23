@@ -15,7 +15,7 @@
 		<bundle.symbolicName>org.openhab.binding.bluetooth</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.bluetooth</bundle.namespace>
 		<deb.name>openhab-addon-binding-bluetooth</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
