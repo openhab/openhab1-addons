@@ -36,6 +36,22 @@ then
 	if(Light_DOORBEL_98_BTN1.state==ON)
 	{
 		notifyMyAndroid("Doorbel", "Deurbelknop ingedrukt - sending image")
+		
+		var Number idx=0
+		// number of rings
+		while(idx<5 )
+		{
+			sendCommand(Light_GF_Corridor_BEL, ON)
+	       	sendCommand(Light_GF_Living_1x_LED, ON)
+	       	sendCommand(Light_FF_Bed_LED_Spot, ON)
+	        Thread::sleep(1500)
+	        sendCommand(Light_GF_Corridor_BEL, OFF)
+	       	sendCommand(Light_GF_Living_1x_LED, OFF)
+	       	sendCommand(Light_FF_Bed_LED_Spot, OFF)
+	        Thread::sleep(1500)
+			idx = idx + 1
+		}
+			
 		sendMail("devlaminck.tom@gmail.com", "OpenHAB Deurbel", "Deurbel ingedrukt", "http://10.0.6.11/lastsnap.jpg")
 		sendMail("els.carnol@gmail.com", "OpenHAB Deurbel", "Deurbel ingedrukt", "http://10.0.6.11/lastsnap.jpg")		
 	}
