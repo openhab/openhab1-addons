@@ -83,7 +83,15 @@ public class ConfigurationHandler {
   }
 
   private enum TypeKey {
-    servo, bricklet_distance_ir, brick_dc, bricklet_humidity, bricklet_temperature, bricklet_barometer, bricklet_ambient_light, io_actuator, iosensor, bricklet_io16, bricklet_industrial_digital_4in, remote_switch_a, remote_switch_b, remote_switch_c, bricklet_remote_switch, bricklet_multitouch, electrode, proximity, object_temperature, ambient_temperature, bricklet_temperatureIR, bricklet_soundintensity, bricklet_moisture, bricklet_distanceUS, bricklet_voltageCurrent, voltageCurrent_voltage, voltageCurrent_current, voltageCurrent_power, bricklet_tilt, io4_actuator, io4sensor, bricklet_io4
+    servo, bricklet_distance_ir, brick_dc, bricklet_humidity, bricklet_temperature, 
+    bricklet_barometer, bricklet_ambient_light, io_actuator, iosensor, bricklet_io16, 
+    bricklet_industrial_digital_4in, remote_switch_a, remote_switch_b, remote_switch_c,
+    bricklet_remote_switch, bricklet_multitouch, electrode, proximity, 
+    object_temperature, ambient_temperature, bricklet_temperatureIR, 
+    bricklet_soundintensity, bricklet_moisture, bricklet_distanceUS, 
+    bricklet_voltageCurrent, voltageCurrent_voltage, voltageCurrent_current, 
+    voltageCurrent_power, bricklet_tilt, io4_actuator, io4sensor, bricklet_io4, 
+    bricklet_halleffect
   }
 
 
@@ -210,7 +218,8 @@ public class ConfigurationHandler {
         || deviceType.equals(TypeKey.bricklet_soundintensity.name())
         || deviceType.equals(TypeKey.voltageCurrent_voltage.name())
         || deviceType.equals(TypeKey.voltageCurrent_current.name())
-        || deviceType.equals(TypeKey.voltageCurrent_power.name())) {
+        || deviceType.equals(TypeKey.voltageCurrent_power.name())
+        || deviceType.equals(TypeKey.bricklet_halleffect)) {
       logger.debug("{} setting base config", LoggerConstants.CONFIG);
       TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
       if (deviceType.equals(TypeKey.bricklet_barometer)) {

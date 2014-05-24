@@ -293,6 +293,15 @@ public interface ModelFactory extends EFactory
   MBrickletMotionDetector createMBrickletMotionDetector();
 
   /**
+   * Returns a new object of class '<em>MBricklet Hall Effect</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Hall Effect</em>'.
+   * @generated
+   */
+  MBrickletHallEffect createMBrickletHallEffect();
+
+  /**
    * Returns a new object of class '<em>MDual Relay</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

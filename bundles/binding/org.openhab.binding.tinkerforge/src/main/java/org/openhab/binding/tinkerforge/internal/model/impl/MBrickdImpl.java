@@ -50,6 +50,7 @@ import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIO4;
@@ -865,6 +866,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletIO4");
               mDevice = factory.createMBrickletIO4();
               mDevice.setDeviceIdentifier(BrickletIO4.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletHallEffect.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletHallEffect");
+              mDevice = factory.createMBrickletHallEffect();
+              mDevice.setDeviceIdentifier(BrickletHallEffect.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

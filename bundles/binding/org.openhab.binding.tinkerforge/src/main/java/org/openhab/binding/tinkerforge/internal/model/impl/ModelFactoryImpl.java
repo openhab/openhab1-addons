@@ -76,6 +76,7 @@ import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIO4;
@@ -170,6 +171,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.ELECTRODE: return createElectrode();
       case ModelPackage.PROXIMITY: return createProximity();
       case ModelPackage.MBRICKLET_MOTION_DETECTOR: return createMBrickletMotionDetector();
+      case ModelPackage.MBRICKLET_HALL_EFFECT: return createMBrickletHallEffect();
       case ModelPackage.MDUAL_RELAY: return createMDualRelay();
       case ModelPackage.MBRICKLET_REMOTE_SWITCH: return createMBrickletRemoteSwitch();
       case ModelPackage.REMOTE_SWITCH_A: return createRemoteSwitchA();
@@ -322,6 +324,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletTiltFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_IO4:
         return createTinkerBrickletIO4FromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_HALL_EFFECT:
+        return createTinkerBrickletHallEffectFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -431,6 +435,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletTiltToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_IO4:
         return convertTinkerBrickletIO4ToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_HALL_EFFECT:
+        return convertTinkerBrickletHallEffectToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -756,6 +762,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletMotionDetectorImpl mBrickletMotionDetector = new MBrickletMotionDetectorImpl();
     return mBrickletMotionDetector;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletHallEffect createMBrickletHallEffect()
+  {
+    MBrickletHallEffectImpl mBrickletHallEffect = new MBrickletHallEffectImpl();
+    return mBrickletHallEffect;
   }
 
   /**
@@ -2051,6 +2068,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletIO4ToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletHallEffect createTinkerBrickletHallEffectFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletHallEffect)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletHallEffectToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

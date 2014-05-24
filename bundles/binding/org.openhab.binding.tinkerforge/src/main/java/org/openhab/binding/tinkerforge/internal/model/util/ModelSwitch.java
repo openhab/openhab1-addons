@@ -529,6 +529,18 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_HALL_EFFECT:
+      {
+        MBrickletHallEffect mBrickletHallEffect = (MBrickletHallEffect)theEObject;
+        T result = caseMBrickletHallEffect(mBrickletHallEffect);
+        if (result == null) result = caseMDevice(mBrickletHallEffect);
+        if (result == null) result = caseMSensor(mBrickletHallEffect);
+        if (result == null) result = caseCallbackListener(mBrickletHallEffect);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletHallEffect);
+        if (result == null) result = caseMBaseDevice(mBrickletHallEffect);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MDUAL_RELAY:
       {
         MDualRelay mDualRelay = (MDualRelay)theEObject;
@@ -1722,6 +1734,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMBrickletMotionDetector(MBrickletMotionDetector object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Hall Effect</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Hall Effect</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletHallEffect(MBrickletHallEffect object)
   {
     return null;
   }
