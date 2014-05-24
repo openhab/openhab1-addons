@@ -31,7 +31,9 @@ public enum MaxCulMsgType {
 	SET_DISPLAY_ACTUAL_TEMP(0x82),
 
 	WAKEUP(0xF1),
-	RESET(0xF0);
+	RESET(0xF0),
+
+	UNKNOWN(0xFF);
 
 	private final int msgType;
 
@@ -45,6 +47,16 @@ public enum MaxCulMsgType {
 
 	public byte toByte() {
 		return (byte) msgType;
+	}
+
+	public static MaxCulMsgType fromByte( byte b )
+	{
+		for (MaxCulMsgType m : values())
+		{
+			if (m.toByte() == b)
+				return m;
+		}
+		return null;
 	}
 
 }

@@ -19,6 +19,7 @@ public class MaxCulCommandHelper {
 		byte msgCount;
 		byte msgFlag;
 		byte msgTypeRaw;
+		MaxCulMsgType msgType;
 		byte[] srcAddr = new byte[3];
 		byte[] dstAddr = new byte[3];
 		byte groupid;
@@ -51,6 +52,8 @@ public class MaxCulCommandHelper {
 
 		pkt.msgTypeRaw = Byte.parseByte(rawMsg.substring(startIdx,startIdx+2),16);
 		startIdx += 2;
+
+		pkt.msgType = MaxCulMsgType.fromByte(pkt.msgTypeRaw);
 
 		pkt.srcAddr[0] = Byte.parseByte(rawMsg.substring(startIdx,startIdx+2),16);
 		startIdx += 2;
