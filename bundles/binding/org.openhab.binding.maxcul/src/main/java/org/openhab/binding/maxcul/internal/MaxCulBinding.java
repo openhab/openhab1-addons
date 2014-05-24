@@ -15,6 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.openhab.binding.maxcul.MaxCulBindingProvider;
+import org.openhab.binding.maxcul.internal.MaxCulCommandHelper.MaxPacket;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -30,22 +31,22 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-	
+
 
 /**
  * Implement this class if you are going create an actively polling service
  * like querying a Website/Device.
- * 
+ *
  * @author Paul Hampson (cyclingengineer)
  * @since 1.5.0
  */
 public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> implements ManagedService, CULListener {
 
-	private static final Logger logger = 
+	private static final Logger logger =
 		LoggerFactory.getLogger(MaxCulBinding.class);
 
-	
-	/** 
+
+	/**
 	 * the refresh interval which is used to poll values from the MaxCul
 	 * server (optional, defaults to 60000ms)
 	 */
@@ -65,14 +66,14 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	 * This sets the address of the controller i.e. us!
 	 */
 	private String srcAddr = "010203";
-	
+
 	/**
 	 * Flag to indicate if we are in pairing mode. Default timeout
 	 * is 60 seconds.
 	 */
 	private boolean pairMode = false;
 	private int pairModeTimeout = 60000;
-	
+
 	private Map<String,Timer> timers = new HashMap<String,Timer>();
 
 	public MaxCulBinding() {
@@ -83,7 +84,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	}
 
 	public void deactivate() {
-		// deallocate resources here that are no longer needed and 
+		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
 	}
 
@@ -102,7 +103,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	protected String getName() {
 		return "MaxCul Refresh Service";
 	}
-	
+
 	/**
 	 * @{inheritDoc}
 	 */
@@ -118,11 +119,11 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	@Override
 	protected void internalReceiveCommand(final String itemName, Command command) {
 		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
+		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand() is called!");
 		Timer timer = null;
-		
+
 		MaxCulBindingConfig bindingConfig = null;
 		for (MaxCulBindingProvider provider : super.providers) {
 			bindingConfig = provider.getConfigForItemName(itemName);
@@ -134,7 +135,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 				+ " for item " + itemName);
 		if (bindingConfig != null) {
 			logger.debug("Found config for "+itemName);
-			
+
 			if (bindingConfig.deviceType == MaxCulDevice.PAIR_MODE && (command instanceof OnOffType))
 			{
 				switch ((OnOffType)command)
@@ -174,7 +175,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			}
 			else if ((bindingConfig.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT ||
 					bindingConfig.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT_PLUS ||
-					bindingConfig.deviceType == MaxCulDevice.WALL_THERMOSTAT) &&  
+					bindingConfig.deviceType == MaxCulDevice.WALL_THERMOSTAT) &&
 					bindingConfig.feature == MaxCulFeature.THERMOSTAT)
 			{
 				if (command instanceof OnOffType)
@@ -182,27 +183,27 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 					// TODO handle setting thermostat to On or Off
 				} else if (command instanceof DecimalType)
 				{
-					// TODO handle sending temperature to device 
+					// TODO handle sending temperature to device
 				}
 			}
 			else logger.warn("Command ignored as it doesn't make sense");
 		}
 	}
-	
+
 	/**
 	 * @{inheritDoc}
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		if (config != null) {
-			
-			// to override the default refresh interval one has to add a 
+
+			// to override the default refresh interval one has to add a
 			// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
 			String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
-			
+
 			// read further config parameters here ...
 			String deviceString = (String) config.get("device");
 			if (StringUtils.isNotBlank(deviceString)) {
@@ -216,7 +217,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			setProperlyConfigured(true);
 		}
 	}
-	
+
 	private void setupDevice(String device)
 	{
 		if (cul != null) {
@@ -239,8 +240,18 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	public void dataReceived(String data) {
 		if (data.startsWith("Z"))
 		{
-			/* TODO it's a MAX! command so process it */
 			logger.debug("Received command "+data);
+			MaxPacket pkt = MaxCulCommandHelper.parsePacket(data);
+			if (pkt == null) return; /* error processing packet, already logged issue */
+			/* TODO it's a MAX! command so process it */
+			if (pairMode && pkt.msgType == MaxCulMsgType.PAIR_PING)
+			{
+				/* TODO handle pair mode here */
+			}
+			else
+			{
+				/* TODO handle all other incoming messages */
+			}
 		}
 	}
 
