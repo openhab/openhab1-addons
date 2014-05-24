@@ -2,8 +2,6 @@
  */
 package org.openhab.binding.tinkerforge.internal.model;
 
-import org.eclipse.emf.common.util.EList;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Bricklet Multi Touch Configuration</b></em>'.

@@ -9,10 +9,10 @@
 package org.openhab.io.transport.mqtt.internal;
 
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -76,9 +76,9 @@ public class MqttBrokerConnection implements MqttCallback {
 
 	private boolean started;
 
-	private List<MqttMessageConsumer> consumers = new ArrayList<MqttMessageConsumer>();
+	private List<MqttMessageConsumer> consumers = new CopyOnWriteArrayList<MqttMessageConsumer>();
 
-	private List<MqttMessageProducer> producers = new ArrayList<MqttMessageProducer>();
+	private List<MqttMessageProducer> producers = new CopyOnWriteArrayList<MqttMessageProducer>();
 
 	private Timer reconnectTimer;
 
@@ -100,7 +100,7 @@ public class MqttBrokerConnection implements MqttCallback {
 	 * @throws Exception
 	 *             If connection could not be created.
 	 */
-	public void start() throws Exception {
+	public synchronized void start() throws Exception {
 
 		if (StringUtils.isEmpty(url)) {
 			logger.debug(
@@ -392,7 +392,7 @@ public class MqttBrokerConnection implements MqttCallback {
 	 * @param publisher
 	 *            to add.
 	 */
-	public void addProducer(MqttMessageProducer publisher) {
+	public synchronized void addProducer(MqttMessageProducer publisher) {
 		producers.add(publisher);
 		if (started) {
 			startProducer(publisher);
@@ -453,7 +453,7 @@ public class MqttBrokerConnection implements MqttCallback {
 	 * @param consumer
 	 *            to add.
 	 */
-	public void addConsumer(MqttMessageConsumer subscriber) {
+	public synchronized void addConsumer(MqttMessageConsumer subscriber) {
 		consumers.add(subscriber);
 		if (started) {
 			startConsumer(subscriber);
@@ -485,7 +485,7 @@ public class MqttBrokerConnection implements MqttCallback {
 	 * @param publisher
 	 *            to remove.
 	 */
-	public void removeProducer(MqttMessageProducer publisher) {
+	public synchronized void removeProducer(MqttMessageProducer publisher) {
 		logger.debug("Removing message producer for broker '{}'", name);
 		publisher.setSenderChannel(null);
 		producers.remove(publisher);
@@ -497,10 +497,9 @@ public class MqttBrokerConnection implements MqttCallback {
 	 * @param subscriber
 	 *            to remove.
 	 */
-	public void removeConsumer(MqttMessageConsumer subscriber) {
-		logger.debug(
-				"Unsubscribing message consumer for topic '{}' from broker '{}'",
-				subscriber.getTopic(), name);
+	public synchronized void removeConsumer(MqttMessageConsumer subscriber) {
+		logger.debug("Unsubscribing message consumer for topic '{}' from broker '{}'", subscriber.getTopic(), name);
+
 		try {
 			if (started) {
 				client.unsubscribe(subscriber.getTopic());
@@ -515,8 +514,8 @@ public class MqttBrokerConnection implements MqttCallback {
 	/**
 	 * Close the MQTT connection.
 	 */
-	public void close() {
-		logger.debug("Closing connection to broker '{}'", name);
+	public synchronized void close() {
+	logger.debug("Closing connection to broker '{}'", name);
 		try {
 			if (started) {
 				client.disconnect();
@@ -528,9 +527,18 @@ public class MqttBrokerConnection implements MqttCallback {
 	}
 
 	@Override
-	public void connectionLost(Throwable t) {
+	public synchronized void connectionLost(Throwable t) {
+	
 		logger.error("MQTT connection to broker was lost", t);
-
+	
+		if (t instanceof MqttException) {
+			MqttException e = (MqttException) t;
+			logger.error("MQTT connection to '{}' was lost: {} : ReasonCode {} : Cause : {}",
+					new Object[] { name, e.getMessage(), e.getReasonCode(), (e.getCause() == null ? "Unknown" : e.getCause().getMessage()) });
+		} else {			
+			logger.error("MQTT connection to '{}' was lost: {}", name, t.getMessage());
+		}
+		
 		started = false;
 		logger.info(
 				"Starting connection helper to periodically try restore connection to broker '{}'",

@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMultiTouchImpl#getIpConnection <em>Ip Connection</em>}</li>
@@ -113,6 +114,26 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = true;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -389,6 +410,29 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     uid = newUid;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__UID, oldUid, uid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MULTI_TOUCH__POLL, oldPoll, poll));
   }
 
   /**
@@ -871,6 +915,8 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
         return getLogger();
       case ModelPackage.MBRICKLET_MULTI_TOUCH__UID:
         return getUid();
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__POLL:
+        return isPoll();
       case ModelPackage.MBRICKLET_MULTI_TOUCH__ENABLED_A:
         return getEnabledA();
       case ModelPackage.MBRICKLET_MULTI_TOUCH__TINKERFORGE_DEVICE:
@@ -917,6 +963,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
         return;
       case ModelPackage.MBRICKLET_MULTI_TOUCH__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.MBRICKLET_MULTI_TOUCH__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -975,6 +1024,9 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
       case ModelPackage.MBRICKLET_MULTI_TOUCH__UID:
         setUid(UID_EDEFAULT);
         return;
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__POLL:
+        setPoll(POLL_EDEFAULT);
+        return;
       case ModelPackage.MBRICKLET_MULTI_TOUCH__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
@@ -1029,6 +1081,8 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MBRICKLET_MULTI_TOUCH__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MBRICKLET_MULTI_TOUCH__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.MBRICKLET_MULTI_TOUCH__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.MBRICKLET_MULTI_TOUCH__TINKERFORGE_DEVICE:
@@ -1180,6 +1234,8 @@ public class MBrickletMultiTouchImpl extends MinimalEObjectImpl.Container implem
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", tinkerforgeDevice: ");

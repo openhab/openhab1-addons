@@ -120,6 +120,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>AN157</Model>
+			<Label lang="en">Switch Plugin</Label>
+			<ConfigFile>everspring/an157.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0101</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -216,6 +225,24 @@
 	<Manufacturer>
 		<Id>0064</Id>
 		<Name>Reitz Group</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>054336</Model>
+			<Label lang="en">One Paddle Wall Dimmer Insert</Label>
+			<ConfigFile>reitz/054336.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064394</Model>
+			<Label lang="en">Schuko Plug Dimmer</Label>
+			<ConfigFile>reitz/064394.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>2001</Type>
@@ -633,6 +660,10 @@
 				<Type>0900</Type>
 				<Id>4000</Id>
 			</Reference>
+			<Reference>
+				<Type>0900</Type>
+				<Id>1000</Id>
+			</Reference>
 			<Model>FGRGBW</Model>
 			<Label lang="en">Fibaro RGBW Controller</Label>
 			<ConfigFile>fibaro/fgrgbw.xml</ConfigFile>
@@ -666,6 +697,15 @@
 			<Model>DWZWAVE1</Model>
 			<Label lang="en">Z-Wave Door/Window Sensor</Label>
 			<ConfigFile>eco/dwzwave1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>TILTZWAVE1</Model>
+			<Label lang="en">Z-Wave Garage Door Sensor</Label>
+			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>	
 	<Manufacturer>
@@ -710,6 +750,24 @@
 	<Manufacturer>
 		<Id>0118</Id>
 		<Name>Wenzhou TKB Control System</Name>
+		<Product>
+			<Reference>
+				<Type>0808</Type>
+				<Id>0808</Id>
+			</Reference>
+			<Model>TZ65D</Model>
+			<Label lang="en">Dual Paddle Wall Dimmer</Label>
+			<ConfigFile>tkb/tz65d.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0102</Type>
+				<Id>1020</Id>
+			</Reference>
+			<Model>TZ66D</Model>
+			<Label lang="en">Dual Paddle Wall Switch</Label>
+			<ConfigFile>tkb/tz66d.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0202</Type>

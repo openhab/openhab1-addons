@@ -67,9 +67,9 @@ public interface MSwitchActor extends EObject
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @model dataType="org.openhab.binding.tinkerforge.internal.model.SwitchState" unique="false"
+   * @model
    * @generated
    */
-  OnOffValue fetchSwitchState();
+  void fetchSwitchState();
 
 } // MSwitchActor

@@ -144,7 +144,7 @@ public class MqttService implements ManagedService {
 	 *            to look for.
 	 * @return existing connection or new one if it didn't exist yet.
 	 */
-	private MqttBrokerConnection getConnection(String brokerName) {
+	private synchronized MqttBrokerConnection getConnection(String brokerName) {
 
 		MqttBrokerConnection conn = brokerConnections.get(brokerName
 				.toLowerCase());

@@ -8,6 +8,7 @@
  */
 package org.openhab.io.transport.cul;
 
+import org.openhab.io.transport.cul.internal.CULNetworkHandlerImpl;
 import org.openhab.io.transport.cul.internal.CULSerialHandlerImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -33,6 +34,7 @@ public class CULActivator implements BundleActivator {
 		context = bc;
 		logger.debug("CUL transport has been started.");
 		CULManager.registerHandlerClass("serial", CULSerialHandlerImpl.class);
+		CULManager.registerHandlerClass("network", CULNetworkHandlerImpl.class);
 	}
 
 	@Override
