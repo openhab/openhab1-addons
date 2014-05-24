@@ -88,3 +88,58 @@ then
 		}		
 	}
 end
+
+rule "Periodically check presence"
+when
+    Time cron "0 */5 * * * ?"
+then
+        if (Presence.state == ON)
+        {
+                if(gMobiles.members.filter(s | s.state == ON).size == 0) {
+                        logInfo("PresenceCheck", "No phone within reach, checking for flapping")
+                        if(gMobiles.members.filter(s | s.changedSince(now.minusMinutes(5))).size == 0) {
+                                logInfo("PresenceCheck", "Nobody is at home")
+                                sendCommand(Presence, OFF)
+                        }
+                }
+        }
+        else
+        {
+                //For initialization. If Presence is undefined or off, although it should be on.
+                if(gMobiles.members.filter(s | s.state == ON).size > 0) {
+                        sendCommand(Presence, ON)
+                }
+                else if (Presence.state == Undefined || Presence.state == Uninitialized) {
+                        sendCommand(Presence, OFF)
+                }
+        }
+
+end
+
+rule "Coming home"
+when
+        Item gMobiles changed
+then
+        if (Presence.state != ON) {
+                if(gMobiles.members.filter(s | s.state == ON).size > 0) {
+                        logInfo("PresenceCheck", "Somebody is home")
+                        sendCommand(Presence, ON)
+                }
+        }
+end
+
+// Rule for handling presence
+rule "Presence action rule"
+when
+	Item Presence received update
+then
+	if(Presence.state==ON)
+	{
+		notifyMyAndroid("Presence detected", "Aanwezigheid gedetecteerd in huis")
+	}
+	
+	if(Presence.state==OFF)
+	{
+		notifyMyAndroid("No presence detected", "Niemand in huis meer gedetecteerd")
+	}
+end
