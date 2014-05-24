@@ -133,6 +133,13 @@ public class MaxCulBindingConfig implements BindingConfig {
 			this.loadStoredConfig();
 	}
 
+	void setPairedInfo(String dstAddr)
+	{
+		this.dstAddr = dstAddr;
+		this.paired = true;
+		saveStoredConfig();
+	}
+
 	private String generateConfigFilename()
 	{
 		String base = "etc/maxcul";
@@ -144,7 +151,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 	 * Load the stored configuration information if it exists. This information
 	 * is established during the pairing process.
 	 */
-	void loadStoredConfig()
+	private void loadStoredConfig()
 	{
 		File cfgFile = new File(generateConfigFilename());
 
@@ -174,7 +181,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 	 * Save the stored configuration information. Will update it if it already exists.
 	 * The information is primarily established during the pairing process.
 	 */
-	void saveStoredConfig()
+	private void saveStoredConfig()
 	{
 		if (this.paired)
 		{
