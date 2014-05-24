@@ -18,11 +18,11 @@ import org.slf4j.LoggerFactory;
  * @since 1.5.0
  */
 public class MaxCulBindingConfig implements BindingConfig {
-	MaxCulDevice deviceType;
-	MaxCulFeature feature;
-	String serialNumber;
-	String dstAddr = null;
-	boolean paired = false;
+	public MaxCulDevice deviceType;
+	public MaxCulFeature feature;
+	public String serialNumber;
+	public String dstAddr = null;
+	public boolean paired = false;
 
 	private static final Logger logger =
 			LoggerFactory.getLogger(MaxCulBindingConfig.class);
@@ -151,7 +151,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 	 * Load the stored configuration information if it exists. This information
 	 * is established during the pairing process.
 	 */
-	private void loadStoredConfig()
+	public void loadStoredConfig()
 	{
 		File cfgFile = new File(generateConfigFilename());
 

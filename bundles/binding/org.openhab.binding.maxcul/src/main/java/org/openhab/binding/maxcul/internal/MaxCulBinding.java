@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.maxcul.internal;
 
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.openhab.binding.maxcul.MaxCulBindingProvider;
-import org.openhab.binding.maxcul.internal.MaxCulCommandHelper.MaxPacket;
+import org.openhab.binding.maxcul.internal.messages.BaseMsg;
+import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -66,6 +68,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	 * This sets the address of the controller i.e. us!
 	 */
 	private String srcAddr = "010203";
+	private final String BROADCAST_ADDRESS = "000000";
 
 	/**
 	 * Flag to indicate if we are in pairing mode. Default timeout
@@ -241,12 +244,35 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 		if (data.startsWith("Z"))
 		{
 			logger.debug("Received command "+data);
-			MaxPacket pkt = MaxCulCommandHelper.parsePacket(data);
-			if (pkt == null) return; /* error processing packet, already logged issue */
-			/* TODO it's a MAX! command so process it */
-			if (pairMode && pkt.msgType == MaxCulMsgType.PAIR_PING)
+			MaxCulMsgType msgType = BaseMsg.getMsgType(data);
+			if (pairMode && msgType == MaxCulMsgType.PAIR_PING)
 			{
-				/* TODO handle pair mode here */
+				/* process packet */
+				PairPingMsg pkt = new PairPingMsg(data);
+				/* is it valid? and is this for us? or a broadcast? */
+				if (pkt.len > 0 && (pkt.dstAddrStr == this.srcAddr || pkt.dstAddrStr == BROADCAST_ADDRESS))
+				{
+					/* Match serial number to binding configuration */
+					Collection<MaxCulBindingConfig> bindingConfigs = null;
+					for (MaxCulBindingProvider provider : super.providers) {
+						bindingConfigs = provider.getConfigsForSerialNumber(pkt.serial);
+						if (bindingConfigs != null) {
+							break;
+						}
+					}
+					if (bindingConfigs == null)
+					{
+						logger.error("Unable to find configuration for serial "+pkt.serial+". Do you have a binding for it?");
+						return;
+					}
+					/* Set pairing information */
+					for (MaxCulBindingConfig bc : bindingConfigs)
+						bc.setPairedInfo(pkt.dstAddrStr);
+
+					/* TODO send PairPong to complete pairing */
+				} else {
+					logger.debug("Got pairing message for another controller");
+				}
 			}
 			else
 			{
