@@ -255,16 +255,16 @@ public class BticinoDevice implements IBticinoEventListener
 			// Get the Item out of the config
 			Item l_item = l_binding_config.getItem();
 
-			logger.debug("Gateway [" + m_gateway_id
-					+ "], RECEIVED EVENT FOR Item [" + l_item.getName()
-					+ "], TRANSLATE TO OPENHAB BUS EVENT");
-
 			if (l_item instanceof SwitchItem)
 			{
 				// Lights
 				if (p_protocol_read.getProperty("messageType")
 						.equalsIgnoreCase("lighting"))
 				{
+					logger.debug("Gateway [" + m_gateway_id
+							+ "], RECEIVED EVENT FOR SwitchItem [" + l_item.getName()
+							+ "], TRANSLATE TO OPENHAB BUS EVENT");
+					
 					if (p_protocol_read.getProperty("messageDescription")
 							.equalsIgnoreCase("Light ON"))
 					{
@@ -279,49 +279,65 @@ public class BticinoDevice implements IBticinoEventListener
 					}
 				}
 				// CENs
-				if (p_protocol_read.getProperty("messageType")
+				else if (p_protocol_read.getProperty("messageType")
 						.equalsIgnoreCase("CEN Basic and Evolved"))
 				{
 					// Pushbutton virtual address must match
 					if (l_binding_config.what.equalsIgnoreCase(p_protocol_read
 							.getProperty("what")))
 					{
+						logger.debug("Gateway [" + m_gateway_id
+								+ "], RECEIVED EVENT FOR SwitchItem [" + l_item.getName()
+								+ "], TRANSLATE TO OPENHAB BUS EVENT");
+						
 						if (p_protocol_read.getProperty("messageDescription")
 								.equalsIgnoreCase("Virtual pressure"))
 						{
-							eventPublisher.postUpdate(l_item.getName(),
-									OnOffType.ON);
-							eventPublisher.postUpdate(l_item.getName(),
-									OnOffType.OFF);
+							// only returns when finished
+							eventPublisher.sendCommand(l_item.getName(), OnOffType.ON);
+							//eventPublisher.postUpdate(l_item.getName(),
+							//		OnOffType.ON);
+							//eventPublisher.postUpdate(l_item.getName(),
+							//		OnOffType.OFF);
 						} else if (p_protocol_read.getProperty(
 								"messageDescription").equalsIgnoreCase(
 								"Virtual release after short pressure"))
 						{
-							eventPublisher.postUpdate(l_item.getName(),
-									OnOffType.ON);
-							eventPublisher.postUpdate(l_item.getName(),
-									OnOffType.OFF);
+							// only returns when finished
+							eventPublisher.sendCommand(l_item.getName(), OnOffType.ON);
+							//eventPublisher.postUpdate(l_item.getName(),
+							//		OnOffType.ON);
+							//eventPublisher.postUpdate(l_item.getName(),
+							//		OnOffType.OFF);
 						} else if (p_protocol_read.getProperty(
 								"messageDescription").equalsIgnoreCase(
 								"Virtual release after an extended pressure"))
 						{
-							eventPublisher.postUpdate(l_item.getName(),
-									OnOffType.ON);
-							eventPublisher.postUpdate(l_item.getName(),
-									OnOffType.OFF);
+							// only returns when finished
+							eventPublisher.sendCommand(l_item.getName(), OnOffType.ON);
+							//eventPublisher.postUpdate(l_item.getName(),
+							//		OnOffType.ON);
+							//eventPublisher.postUpdate(l_item.getName(),
+							//		OnOffType.OFF);
 						} else if (p_protocol_read.getProperty(
 								"messageDescription").equalsIgnoreCase(
 								"Virtual extended pressure"))
 						{
-							eventPublisher.postUpdate(l_item.getName(),
-									OnOffType.ON);
-							eventPublisher.postUpdate(l_item.getName(),
-									OnOffType.OFF);
+							// only returns when finished
+							eventPublisher.sendCommand(l_item.getName(), OnOffType.ON);
+							//eventPublisher.postUpdate(l_item.getName(),
+							//		OnOffType.ON);
+							//eventPublisher.postUpdate(l_item.getName(),
+							//		OnOffType.OFF);
 						}
 					}
 				}
 			} else if (l_item instanceof RollershutterItem)
 			{
+				logger.debug("Gateway [" + m_gateway_id
+						+ "], RECEIVED EVENT FOR RollershutterItem [" + l_item.getName()
+						+ "], TRANSLATE TO OPENHAB BUS EVENT");
+				
 				if (p_protocol_read.getProperty("messageType")
 						.equalsIgnoreCase("automation"))
 				{

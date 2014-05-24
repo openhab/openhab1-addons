@@ -29,6 +29,7 @@ Group:Contact:OR(OPEN, CLOSED) 	Windows 	"Open windows [(%d)]"				<contact>		(Al
 
 /* Lights Bticino */
 Switch Light_GF_Corridor_Ceiling 	"Ceiling" 		(GF_Corridor, Lights) { bticino="if=default;who=1;what=1;where=21" }
+Switch Light_GF_Corridor_BEL 	"Deurbel" 		(GF_Corridor, Lights) { bticino="if=default;who=1;what=1;where=24" }
 
 Switch Light_GF_Living_1x_LED "LED spot" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=23" }
 Switch Light_GF_Living_4x_LED "Spots zetel" (GF_Living, Lights) { bticino="if=default;who=1;what=1;where=46" }

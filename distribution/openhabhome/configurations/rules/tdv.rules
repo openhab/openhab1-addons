@@ -36,6 +36,8 @@ then
 	if(Light_DOORBEL_98_BTN1.state==ON)
 	{
 		notifyMyAndroid("Doorbel", "Deurbelknop ingedrukt - sending image")
+		sendMail("devlaminck.tom@gmail.com", "OpenHAB Deurbel", "Deurbel ingedrukt", "http://10.0.6.11/lastsnap.jpg")
+		sendMail("els.carnol@gmail.com", "OpenHAB Deurbel", "Deurbel ingedrukt", "http://10.0.6.11/lastsnap.jpg")		
 		
 		var Number idx=0
 		// number of rings
@@ -50,10 +52,7 @@ then
 	       	sendCommand(Light_FF_Bed_LED_Spot, OFF)
 	        Thread::sleep(1500)
 			idx = idx + 1
-		}
-			
-		sendMail("devlaminck.tom@gmail.com", "OpenHAB Deurbel", "Deurbel ingedrukt", "http://10.0.6.11/lastsnap.jpg")
-		sendMail("els.carnol@gmail.com", "OpenHAB Deurbel", "Deurbel ingedrukt", "http://10.0.6.11/lastsnap.jpg")		
+		}			
 	}
 end
 
