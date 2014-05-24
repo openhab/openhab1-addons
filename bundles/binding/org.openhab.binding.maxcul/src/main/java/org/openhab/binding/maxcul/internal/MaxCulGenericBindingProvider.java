@@ -72,7 +72,7 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		case WALL_THERMOSTAT:
 			if (config.feature == MaxCulFeature.TEMPERATURE && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'temperature' can only be a Number");
-			if (config.feature == MaxCulFeature.TEMPERATURE && !(item instanceof NumberItem))
+			if (config.feature == MaxCulFeature.THERMOSTAT && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'thermostat' can only be a Number");
 			if (config.feature == MaxCulFeature.BATTERY && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Number");
