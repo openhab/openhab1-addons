@@ -23,8 +23,12 @@ when
 then
 	if(Light_GF_Corridor_Ceiling.state==ON)
 	{
-		notifyMyAndroid("Movement detected", "Licht in de gang is aan als gevolg van IR detectie")
-		//sendMail("tom_de_vlaminck@hotmail.com", "Movement detected", "Licht in de gang is aan als gevolg van IR detectie")
+		// only send a message after 60 secs of inactivity
+		if (Light_GF_Corridor_Ceiling.changedSince(now.minusSeconds(60)))
+		{
+			notifyMyAndroid("Movement detected", "Licht in de gang is aan als gevolg van IR detectie")
+			//sendMail("tom_de_vlaminck@hotmail.com", "Movement detected", "Licht in de gang is aan als gevolg van IR detectie")
+		}
 	}
 end
 
