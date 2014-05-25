@@ -236,6 +236,7 @@ implements ManagedService {
 											.build();
 
 							try {
+								logger.debug("Adding a poll job {} for {}",job.getKey(),itemName);
 								sched.scheduleJob(job, trigger);
 							} catch (SchedulerException e) {
 								logger.error("An exception occurred while scheduling a Quartz Job");
@@ -249,6 +250,7 @@ implements ManagedService {
 								if(group.equals("Oceanic-"+provider.toString())) {
 									for(JobKey jobKey : sched.getJobKeys(jobGroupEquals(group))) {
 										if(findFirstMatchingBindingProvider(jobKey.getName().split("-")[0]) == null) {
+											logger.debug("Removing a poll job {} for {}",jobKey,itemName);
 											sched.deleteJob(jobKey);
 										}
 									}
@@ -269,6 +271,7 @@ implements ManagedService {
 				Set<String> itemNames = contextMap.get(serialPort);
 				if(itemNames == null || itemNames.size()==0 ) {
 					contextMap.remove(serialPort);
+					logger.debug("Closing the serial port {}",serialPort);
 					serialDevice.close();
 					serialDevices.remove(serialPort);						
 				}
