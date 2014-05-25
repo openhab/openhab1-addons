@@ -18,6 +18,8 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -47,6 +49,9 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		return "maxcul";
 	}
 
+	private static final Logger logger =
+			LoggerFactory.getLogger(MaxCulGenericBindingProvider.class);
+
 	/**
 	 * @{inheritDoc}
 	 */
@@ -72,8 +77,8 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		case WALL_THERMOSTAT:
 			if (config.feature == MaxCulFeature.TEMPERATURE && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'temperature' can only be a Number");
-			if (config.feature == MaxCulFeature.THERMOSTAT && !(item instanceof NumberItem))
-				throw new BindingConfigParseException("Invalid item type. Feature 'thermostat' can only be a Number");
+			if (config.feature == MaxCulFeature.THERMOSTAT && !((item instanceof NumberItem) || (item instanceof SwitchItem)))
+				throw new BindingConfigParseException("Invalid item type. Feature 'thermostat' can only be a Number or a Switch");
 			if (config.feature == MaxCulFeature.BATTERY && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Number");
 			if (config.feature == MaxCulFeature.MODE && !(item instanceof NumberItem))
@@ -89,6 +94,7 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
+		logger.debug("Processing item "+item.getName());
 		MaxCulBindingConfig config = new MaxCulBindingConfig(bindingConfig);
 
 		addBindingConfig(item, config);

@@ -83,12 +83,18 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	}
 
 	public void activate() {
+		super.activate();
+		setProperlyConfigured(false);
 		logger.debug("Activating MaxCul binding");
 	}
 
 	public void deactivate() {
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
+		if (cul != null)
+		{
+			cul.unregisterListener(this);
+		}
 	}
 
 	/**
@@ -198,10 +204,11 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		logger.debug("MaxCUL Reading config");
 		if (config != null) {
 
 			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
+			// parameter to openhab.cfg like maxcul:refresh=<intervalInMs>
 			String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
@@ -210,6 +217,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			// read further config parameters here ...
 			String deviceString = (String) config.get("device");
 			if (StringUtils.isNotBlank(deviceString)) {
+				logger.debug("Setting up device "+deviceString);
 				setupDevice(deviceString);
 				if (cul == null)
 					throw new ConfigurationException("device", "Configuration failed. Unable to access CUL device " + deviceString);
