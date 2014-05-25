@@ -21,8 +21,10 @@ public class MaxCulBindingConfig implements BindingConfig {
 	public MaxCulDevice deviceType;
 	public MaxCulFeature feature;
 	public String serialNumber;
-	public String dstAddr = null;
+	public String devAddr = null;
 	public boolean paired = false;
+
+	private final String CONFIG_PROPERTIES_BASE = "etc/maxcul";
 
 	private static final Logger logger =
 			LoggerFactory.getLogger(MaxCulBindingConfig.class);
@@ -59,10 +61,11 @@ public class MaxCulBindingConfig implements BindingConfig {
 		}
 
 		/* handle serial number */
+		logger.debug("Part 1/"+(configParts.length-1)+" -> "+configParts[1]);
 		this.serialNumber = configParts[1];
 
 		/* handle feature if set */
-		if (configParts.length >= 2) {
+		if (configParts.length > 2) {
 			if (configParts[2].compareTo("thermostat") == 0) {
 				if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
 						|| this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS
@@ -122,14 +125,14 @@ public class MaxCulBindingConfig implements BindingConfig {
 
 	void setPairedInfo(String dstAddr)
 	{
-		this.dstAddr = dstAddr;
+		this.devAddr = dstAddr;
 		this.paired = true;
 		saveStoredConfig();
 	}
 
 	private String generateConfigFilename()
 	{
-		String base = "etc/maxcul";
+		String base = CONFIG_PROPERTIES_BASE;
 		String filename = String.format("%s/%s.properties", base, this.serialNumber);
 		return filename;
 	}
@@ -149,7 +152,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 				Properties propertiesFile = new Properties();
 				propertiesFile.load(fiStream);
 
-				this.dstAddr = propertiesFile.getProperty("dstAddr");
+				this.devAddr = propertiesFile.getProperty("devAddr");
 				this.paired = true;
 
 				fiStream.close();
@@ -158,6 +161,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 				this.paired = false;
 				return;
 			}
+			logger.debug("Successfully loaded pairing info for "+this.serialNumber);
 		} else {
 			logger.warn("Unable to locate information for "+this.deviceType+" "+this.serialNumber+" it may not yet be paired");
 			this.paired = false;
@@ -173,11 +177,12 @@ public class MaxCulBindingConfig implements BindingConfig {
 		if (this.paired)
 		{
 			File cfgFile = new File(generateConfigFilename());
+			File cfgDir = new File( CONFIG_PROPERTIES_BASE );
 
 			if (!cfgFile.exists())
 			{
 				try {
-					cfgFile.mkdirs();
+					if (!cfgDir.exists()) cfgDir.mkdirs();
 					cfgFile.createNewFile();
 				} catch (IOException e) {
 					logger.warn("Unable to create new properties file for "+this.deviceType+" "+this.serialNumber+". Data won't be saved so pairing will be lost. Error was "+e.getMessage());
@@ -186,7 +191,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 			}
 
 			Properties propertiesFile = new Properties();
-			propertiesFile.setProperty("dstAddr", this.dstAddr);
+			propertiesFile.setProperty("devAddr", this.devAddr);
 
 			try {
 				FileOutputStream foStream = new FileOutputStream(cfgFile);
@@ -199,6 +204,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 				this.paired = false;
 				return;
 			}
+			logger.debug("Successfully wrote pairing info for "+this.serialNumber);
 		} else logger.error("Tried saving configuration for "+this.serialNumber+" which is not paired.");
 	}
 }

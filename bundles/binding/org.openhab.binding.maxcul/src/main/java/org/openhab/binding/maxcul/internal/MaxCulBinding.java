@@ -277,7 +277,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 					}
 					/* Set pairing information */
 					for (MaxCulBindingConfig bc : bindingConfigs)
-						bc.setPairedInfo(pkt.dstAddrStr);
+						bc.setPairedInfo(pkt.srcAddrStr); /* where it came from gives the addr of the device */
 
 					/* TODO send PairPong to complete pairing */
 				} else {

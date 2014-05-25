@@ -127,8 +127,12 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		for (BindingConfig c : super.bindingConfigs.values() )
 		{
 			MaxCulBindingConfig config = (MaxCulBindingConfig)c;
-			if (config.serialNumber == serial)
-				configs.add(config);
+			if (config.serialNumber != null) /* could be PairMode device which has no serial */
+			{
+				logger.debug("Comparing '"+config.serialNumber+"' with '"+serial+"'");
+				if (config.serialNumber.compareToIgnoreCase(serial) == 0)
+					configs.add(config);
+			}
 		}
 		if (configs.isEmpty())
 			return null;
