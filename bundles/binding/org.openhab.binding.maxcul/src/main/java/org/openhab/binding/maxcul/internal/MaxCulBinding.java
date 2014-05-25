@@ -17,6 +17,9 @@ import java.util.TimerTask;
 
 import org.openhab.binding.maxcul.MaxCulBindingProvider;
 import org.openhab.binding.maxcul.internal.messages.BaseMsg;
+import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcessor;
+import org.openhab.binding.maxcul.internal.messages.MaxCulMsgHandler;
+import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
 
 import org.apache.commons.lang.StringUtils;
@@ -42,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Paul Hampson (cyclingengineer)
  * @since 1.5.0
  */
-public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> implements ManagedService, CULListener {
+public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> implements ManagedService, MaxCulBindingMessageProcessor {
 
 	private static final Logger logger =
 		LoggerFactory.getLogger(MaxCulBinding.class);
@@ -79,6 +82,8 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 
 	private Map<String,Timer> timers = new HashMap<String,Timer>();
 
+	MaxCulMsgHandler messageHandler;
+
 	public MaxCulBinding() {
 	}
 
@@ -93,7 +98,6 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 		// should be reset when activating this binding again
 		if (cul != null)
 		{
-			cul.unregisterListener(this);
 			CULManager.close(cul);
 		}
 	}
@@ -239,7 +243,8 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			accessDevice = device;
 			logger.debug("Opening CUL device on " + accessDevice);
 			cul = CULManager.getOpenCULHandler(accessDevice, CULMode.MAX);
-			cul.registerListener(this);
+			messageHandler = new MaxCulMsgHandler(this.srcAddr,cul);
+			messageHandler.registerMaxCulBindingMessageProcessor(this);
 		} catch (CULDeviceException e) {
 			logger.error("Cannot open CUL device", e);
 			cul = null;
@@ -247,13 +252,11 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 		}
 	}
 
-
 	@Override
-	public void dataReceived(String data) {
+	public void MaxCulMsgReceived(String data) {
 		logger.debug("Received data from CUL: "+data);
 		if (data.startsWith("Z"))
 		{
-//			logger.debug("Received command "+data);
 			MaxCulMsgType msgType = BaseMsg.getMsgType(data);
 			if (pairMode && msgType == MaxCulMsgType.PAIR_PING)
 			{
@@ -279,7 +282,8 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 					for (MaxCulBindingConfig bc : bindingConfigs)
 						bc.setPairedInfo(pkt.srcAddrStr); /* where it came from gives the addr of the device */
 
-					/* TODO send PairPong to complete pairing */
+					/* send response to unit */
+					messageHandler.sendPairPong(pkt.srcAddrStr);
 				} else {
 					logger.debug("Got pairing message for another controller");
 				}
@@ -289,12 +293,5 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 				/* TODO handle all other incoming messages */
 			}
 		}
-	}
-
-
-	@Override
-	public void error(Exception e) {
-		logger.error("CUL error: "+e.getMessage());
-		// TODO add some specific error handling as necessary
 	}
 }
