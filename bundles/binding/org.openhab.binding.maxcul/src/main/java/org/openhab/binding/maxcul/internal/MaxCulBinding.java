@@ -94,6 +94,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 		if (cul != null)
 		{
 			cul.unregisterListener(this);
+			CULManager.close(cul);
 		}
 	}
 
@@ -249,16 +250,17 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 
 	@Override
 	public void dataReceived(String data) {
+		logger.debug("Received data from CUL: "+data);
 		if (data.startsWith("Z"))
 		{
-			logger.debug("Received command "+data);
+//			logger.debug("Received command "+data);
 			MaxCulMsgType msgType = BaseMsg.getMsgType(data);
 			if (pairMode && msgType == MaxCulMsgType.PAIR_PING)
 			{
 				/* process packet */
 				PairPingMsg pkt = new PairPingMsg(data);
 				/* is it valid? and is this for us? or a broadcast? */
-				if (pkt.len > 0 && (pkt.dstAddrStr == this.srcAddr || pkt.dstAddrStr == BROADCAST_ADDRESS))
+				if (pkt.len > 0 && (pkt.dstAddrStr.compareToIgnoreCase(this.srcAddr) == 0 || (pkt.dstAddrStr.compareToIgnoreCase(BROADCAST_ADDRESS) == 0)))
 				{
 					/* Match serial number to binding configuration */
 					Collection<MaxCulBindingConfig> bindingConfigs = null;
