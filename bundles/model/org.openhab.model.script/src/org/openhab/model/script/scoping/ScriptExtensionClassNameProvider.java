@@ -26,6 +26,8 @@ import org.openhab.model.script.actions.LogAction;
 import org.openhab.model.script.actions.ScriptExecution;
 import org.openhab.model.script.internal.ScriptActivator;
 import org.openhab.model.script.lib.NumberExtensions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Multimap;
 import com.google.inject.Singleton;
@@ -42,14 +44,21 @@ import com.google.inject.Singleton;
 @Singleton
 public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider {
 
+	private final static Logger logger = LoggerFactory.getLogger(ScriptExtensionClassNameProvider.class);
+	
 	private int trackingCount = -1;
 	
 	@Override
-	protected Collection<String> getLiteralClassNames() {
+	protected synchronized Collection<String> getLiteralClassNames() {
 		int currentTrackingCount = ScriptActivator.actionServiceTracker.getTrackingCount();
 		
 		// if something has changed about the tracked services, recompute the list
 		if(trackingCount != currentTrackingCount) {
+			String actions = "";
+			for(Object obj : ScriptActivator.actionServiceTracker.getServices()) {
+				actions += obj.getClass().getSimpleName() + ", ";
+			}
+			logger.debug("Script actions have changed: " + actions);
 			trackingCount = currentTrackingCount;
 			return computeLiteralClassNames();
 		} else {
