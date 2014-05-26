@@ -10,6 +10,7 @@ package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceType;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
@@ -52,7 +53,7 @@ public class GetControllerCapabilitiesMessageClass extends ZWaveCommandProcessor
 
 		logger.debug("Controller is secondary = {}", isSecondary);
 		logger.debug("Controller is on other network = {}", isOnOtherNetwork);
-		logger.debug("Controller is server present = {}", isServerPresent);
+		logger.debug("Node ID Server is present = {}", isServerPresent);
 		logger.debug("Controller is real primary = {}", isRealPrimary);
 		logger.debug("Controller is SUC = {}", isSUC);
 
@@ -75,5 +76,16 @@ public class GetControllerCapabilitiesMessageClass extends ZWaveCommandProcessor
 	}
 	public boolean getIsSUC() {
 		return isSUC;
+	}
+	public ZWaveDeviceType getDeviceType() {
+		if(isSecondary) {
+			return ZWaveDeviceType.SECONDARY;
+		}
+		else {
+			if(isSUC)
+				return ZWaveDeviceType.SUC;
+			else
+				return ZWaveDeviceType.PRIMARY;
+		}
 	}
 }
