@@ -135,6 +135,10 @@ public class MaxCulMsgHandler implements CULListener {
 	                	if (enoughCredit(topItem.msg.requiredCredit()))
 	                	{
 	                		logger.debug("Sending item from queue. Message is "+topItem.msg.msgType+" => "+topItem.msg.rawMsg);
+	                		if (topItem.msg.msgType == MaxCulMsgType.TIME_INFO)
+	                		{
+	                			((TimeInfoMsg) topItem.msg).updateTime();
+	                		}
 	                		transmitMessage(topItem.msg);
 	                	} else {
 	                		logger.error("Not enough credit after waiting. This is bad. Queued command is discarded");
@@ -193,7 +197,7 @@ public class MaxCulMsgHandler implements CULListener {
 			if (msgType == MaxCulMsgType.ACK)
 			{
 				AckMsg msg = new AckMsg(data);
-				if (pendingAckQueue.containsKey(msg.msgCount))
+				if (pendingAckQueue.containsKey(msg.msgCount) && msg.dstAddrStr.compareTo(srcAddr) == 0)
 				{
 					SenderQueueItem qi = pendingAckQueue.remove(msg.msgCount);
 					/* verify ack */
@@ -209,7 +213,13 @@ public class MaxCulMsgHandler implements CULListener {
 
 							}
 				} else logger.info("Got ACK for message "+msg.msgCount+" but it wasn't in the queue");
+			} else if (msgType == MaxCulMsgType.TIME_INFO)
+			{
+				TimeInfoMsg msg = new TimeInfoMsg(data);
+				if (msg.dstAddrStr.compareTo(srcAddr) == 0)
+					sendTimeInfo(msg.srcAddrStr);
 			}
+
 			/* TODO look for any messages that have a matching entry in the callback register */
 
 			/* pass data to binding for processing */
@@ -232,6 +242,12 @@ public class MaxCulMsgHandler implements CULListener {
 	{
 		PairPongMsg pp = new PairPongMsg(getMessageCount(), (byte)0, (byte) 0, this.srcAddr, dstAddr);
 		sendMessage(pp);
+	}
+
+	public void sendTimeInfo(String dstAddr)
+	{
+		TimeInfoMsg msg = new TimeInfoMsg(getMessageCount(), (byte)0x04, (byte) 0, this.srcAddr, dstAddr);
+		sendMessage(msg);
 	}
 
 

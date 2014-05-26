@@ -15,21 +15,19 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.maxcul.MaxCulBindingProvider;
 import org.openhab.binding.maxcul.internal.messages.BaseMsg;
 import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcessor;
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgHandler;
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
-
-import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.CULHandler;
-import org.openhab.io.transport.cul.CULListener;
 import org.openhab.io.transport.cul.CULManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
