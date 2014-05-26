@@ -91,7 +91,7 @@ public class MaxCulMsgHandler implements CULListener {
 	private void transmitMessage( BaseMsg data )
 	{
 		try {
-			cul.send(data.rawMsg.toUpperCase());
+			cul.send(data.rawMsg);
 		} catch (CULCommunicationException e) {
 			logger.error("Unable to send CUL message "+data+" because: "+e.getMessage());
 		}

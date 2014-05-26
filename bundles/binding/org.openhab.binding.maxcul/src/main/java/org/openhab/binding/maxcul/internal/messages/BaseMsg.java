@@ -83,57 +83,6 @@ public class BaseMsg {
 	}
 
 	/**
-	 * This constructor creates a raw message ready for sending.
-	 * @param msgCount Message Counter
-	 * @param msgFlag Message flag
-	 * @param msgType the message type
-	 * @param groupId Group ID
-	 * @param srcAddr Source address of controller
-	 * @param dstAddr Dest addr of device
-	 * @param payload payload of message
-	 */
-	public BaseMsg(byte msgCount, byte msgFlag, MaxCulMsgType msgType, byte groupId, String srcAddr, String dstAddr, byte[] payload)
-	{
-		StringBuilder sb = new StringBuilder();
-
-		this.msgCount = msgCount;
-		sb.append(String.format("%02x", msgCount));
-
-		this.msgFlag = msgFlag;
-		sb.append(String.format("%02x", msgFlag));
-
-		this.msgType = msgType;
-		this.msgTypeRaw = this.msgType.toByte();
-		sb.append(String.format("%02x", this.msgTypeRaw));
-
-		this.srcAddrStr = srcAddr;
-		this.srcAddr[0] = (byte) (Integer.parseInt(srcAddr.substring(0,2),16) & 0xFF);
-		this.srcAddr[1] = (byte) (Integer.parseInt(srcAddr.substring(2,4),16) & 0xFF);
-		this.srcAddr[2] = (byte) (Integer.parseInt(srcAddr.substring(4,6),16) & 0xFF);
-		sb.append(srcAddr);
-
-		this.dstAddrStr = dstAddr;
-		this.dstAddr[0] = (byte) (Integer.parseInt(dstAddr.substring(0,2),16) & 0xFF);
-		this.dstAddr[1] = (byte) (Integer.parseInt(dstAddr.substring(2,4),16) & 0xFF);
-		this.dstAddr[2] = (byte) (Integer.parseInt(dstAddr.substring(4,6),16) & 0xFF);
-		sb.append(dstAddr);
-
-		this.payload = payload;
-		for (int byteIdx = 0; byteIdx < payload.length; byteIdx++) {
-			sb.append(String.format("%02x", payload[byteIdx]));
-		}
-
-		/* prepend length & Z command */
-		byte len = (byte) ((sb.length() / 2) & 0xFF);
-		if ((int)len * 2 != sb.length())
-			logger.error("Unable to build raw message. Length is not correct");
-		sb.insert(0, String.format("Z%02x", len));
-
-		this.rawMsg = sb.toString();
-		this.flgReadyToSend = true;
-	}
-
-	/**
 	 * This constructor creates an incomplete raw message ready for sending. Payload must be set before sending.
 	 * @param msgCount Message Counter
 	 * @param msgFlag Message flag
@@ -147,42 +96,64 @@ public class BaseMsg {
 		StringBuilder sb = new StringBuilder();
 
 		this.msgCount = msgCount;
-		sb.append(String.format("%02x", msgCount));
+		sb.append(String.format("%02x", msgCount).toUpperCase());
 
 		this.msgFlag = msgFlag;
-		sb.append(String.format("%02x", msgFlag));
+		sb.append(String.format("%02x", msgFlag).toUpperCase());
 
 		this.msgType = msgType;
 		this.msgTypeRaw = this.msgType.toByte();
-		sb.append(String.format("%02x", this.msgTypeRaw));
+		sb.append(String.format("%02x", this.msgTypeRaw).toUpperCase());
 
 		this.srcAddrStr = srcAddr;
 		this.srcAddr[0] = (byte) (Integer.parseInt(srcAddr.substring(0,2),16) & 0xFF);
 		this.srcAddr[1] = (byte) (Integer.parseInt(srcAddr.substring(2,4),16) & 0xFF);
 		this.srcAddr[2] = (byte) (Integer.parseInt(srcAddr.substring(4,6),16) & 0xFF);
-		sb.append(srcAddr);
+		sb.append(srcAddr.toUpperCase());
 
 		this.dstAddrStr = dstAddr;
 		this.dstAddr[0] = (byte) (Integer.parseInt(dstAddr.substring(0,2),16) & 0xFF);
 		this.dstAddr[1] = (byte) (Integer.parseInt(dstAddr.substring(2,4),16) & 0xFF);
 		this.dstAddr[2] = (byte) (Integer.parseInt(dstAddr.substring(4,6),16) & 0xFF);
-		sb.append(dstAddr);
+		sb.append(dstAddr.toUpperCase());
+
+		this.groupid = groupId;
+		sb.append(String.format("%02x", this.groupid).toUpperCase());
+
 		this.rawMsg = sb.toString();
 	}
+
+	/**
+	 * This constructor creates a raw message ready for sending.
+	 * @param msgCount Message Counter
+	 * @param msgFlag Message flag
+	 * @param msgType the message type
+	 * @param groupId Group ID
+	 * @param srcAddr Source address of controller
+	 * @param dstAddr Dest addr of device
+	 * @param payload payload of message
+	 */
+	public BaseMsg(byte msgCount, byte msgFlag, MaxCulMsgType msgType, byte groupId, String srcAddr, String dstAddr, byte[] payload)
+	{
+		this(msgCount,msgFlag, msgType, groupId, srcAddr, dstAddr);
+		appendPayload(payload);
+	}
+
+
 
 	protected void appendPayload(byte[] payload)
 	{
 		StringBuilder sb = new StringBuilder(this.rawMsg);
 		this.payload = payload;
 		for (int byteIdx = 0; byteIdx < payload.length; byteIdx++) {
-			sb.append(String.format("%02x", payload[byteIdx]));
+			sb.append(String.format("%02X", payload[byteIdx]).toUpperCase());
 		}
 
 		/* prepend length & Z command */
 		byte len = (byte) ((sb.length() / 2) & 0xFF);
 		if ((int)len * 2 != sb.length())
 			logger.error("Unable to build raw message. Length is not correct");
-		sb.insert(0, String.format("Z%02x", len));
+		sb.insert(0, String.format("Zs%02X", len));
 
 		this.rawMsg = sb.toString();
 		this.flgReadyToSend = true;

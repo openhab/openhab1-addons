@@ -2,7 +2,7 @@ package org.openhab.binding.maxcul.internal.messages;
 
 public class PairPongMsg extends BaseMsg {
 
-	final static private int PAIR_PONG_PAYLOAD_LEN = 5; /* in bytes */
+	final static private int PAIR_PONG_PAYLOAD_LEN = 1; /* in bytes */
 
 	public PairPongMsg(byte msgCount, byte msgFlag, MaxCulMsgType msgType,
 			byte groupId, String srcAddr, String dstAddr) {
@@ -10,7 +10,7 @@ public class PairPongMsg extends BaseMsg {
 
 		byte[] payload = new byte[PAIR_PONG_PAYLOAD_LEN];
 
-
+		payload[0] = 0x00;
 
 		super.appendPayload(payload);
 	}
