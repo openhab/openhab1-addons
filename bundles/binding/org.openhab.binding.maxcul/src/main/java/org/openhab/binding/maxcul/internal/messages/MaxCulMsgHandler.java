@@ -7,9 +7,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.openhab.binding.maxcul.internal.messages.BaseMsg;
-import org.openhab.binding.maxcul.internal.messages.PairPongMsg;
-import org.openhab.core.library.types.OnOffType;
 import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULHandler;
 import org.openhab.io.transport.cul.CULListener;
@@ -43,8 +40,11 @@ public class MaxCulMsgHandler implements CULListener {
 	private String srcAddr;
 	private HashMap<Integer, BaseMsg> callbackRegister;
 	private LinkedList<SenderQueueItem> sendQueue;
+	private HashMap<Byte, SenderQueueItem> pendingAckQueue;
 	private MaxCulBindingMessageProcessor mcbmp = null;
 	private Map<SenderQueueItem, Timer> timers = new HashMap<SenderQueueItem,Timer>();
+
+	private final int MESSAGE_EXPIRY_PERIOD = 30000;
 
 	public MaxCulMsgHandler(String srcAddr, CULHandler cul)
 	{
@@ -53,6 +53,7 @@ public class MaxCulMsgHandler implements CULListener {
 		this.srcAddr = srcAddr;
 		this.callbackRegister = new HashMap<Integer, BaseMsg>();
 		this.sendQueue = new LinkedList<SenderQueueItem>();
+		this.pendingAckQueue = new HashMap<Byte, SenderQueueItem>();
 		this.lastTransmit = new Date(); /* init as now */
 		this.endOfQueueTransmit = this.lastTransmit;
 	}
@@ -103,6 +104,13 @@ public class MaxCulMsgHandler implements CULListener {
 			/* hit a time after the queue finished tx'ing */
 			this.endOfQueueTransmit = this.lastTransmit;
 		}
+
+		/* awaiting ack now */
+		// TODO different behaviour if callback
+		SenderQueueItem qi = new SenderQueueItem();
+		qi.msg = data;
+		qi.expiry = new Date(this.lastTransmit.getTime()+MESSAGE_EXPIRY_PERIOD);
+		this.pendingAckQueue.put(qi.msg.msgCount, qi);
 	}
 
 	private void sendMessage( BaseMsg msg )
@@ -128,7 +136,6 @@ public class MaxCulMsgHandler implements CULListener {
 	                	{
 	                		logger.debug("Sending item from queue. Message is "+topItem.msg.msgType+" => "+topItem.msg.rawMsg);
 	                		transmitMessage(topItem.msg);
-
 	                	} else {
 	                		logger.error("Not enough credit after waiting. This is bad. Queued command is discarded");
 	                	}
@@ -162,14 +169,18 @@ public class MaxCulMsgHandler implements CULListener {
 			logger.error("Tried to associate a second MaxCulBindingMessageProcessor!");
 	}
 
-	/**
-	 * Send response to PairPing
-	 * @param dstAddr Address of device to respond to
-	 */
-	public void sendPairPong(String dstAddr)
+	public void checkPendingAcks()
 	{
-		PairPongMsg pp = new PairPongMsg(getMessageCount(), (byte)0, MaxCulMsgType.PAIR_PONG, (byte) 0, this.srcAddr, dstAddr);
-		sendMessage(pp);
+		Date now = new Date();
+
+		for (SenderQueueItem qi : pendingAckQueue.values())
+		{
+			if (now.after(qi.expiry))
+			{
+				logger.error("Packet lost - timeout");
+				pendingAckQueue.remove(qi.msg.msgCount);
+			}
+		}
 	}
 
 	@Override
@@ -177,6 +188,28 @@ public class MaxCulMsgHandler implements CULListener {
 		logger.debug("MaxCulSender Received "+data);
 		if (data.startsWith("Z"))
 		{
+			/* Handle ACKs */
+			MaxCulMsgType msgType = BaseMsg.getMsgType(data);
+			if (msgType == MaxCulMsgType.ACK)
+			{
+				AckMsg msg = new AckMsg(data);
+				if (pendingAckQueue.containsKey(msg.msgCount))
+				{
+					SenderQueueItem qi = pendingAckQueue.remove(msg.msgCount);
+					/* verify ack */
+					if ((qi.msg.dstAddrStr.compareToIgnoreCase(msg.srcAddrStr) == 0) &&
+							(qi.msg.srcAddrStr.compareToIgnoreCase(msg.dstAddrStr) == 0))
+							{
+								if (msg.getIsNack())
+								{
+									/* NAK'd! */
+									// TODO resend?
+									logger.error("Message was NAK'd, packet lost");
+								} else logger.debug("Message "+msg.msgCount+" ACK'd ok!");
+
+							}
+				} else logger.info("Got ACK for message "+msg.msgCount+" but it wasn't in the queue");
+			}
 			/* TODO look for any messages that have a matching entry in the callback register */
 
 			/* pass data to binding for processing */
@@ -190,5 +223,17 @@ public class MaxCulMsgHandler implements CULListener {
 		 * TODO lookup error cases
 		 */
 	}
+
+	/**
+	 * Send response to PairPing
+	 * @param dstAddr Address of device to respond to
+	 */
+	public void sendPairPong(String dstAddr)
+	{
+		PairPongMsg pp = new PairPongMsg(getMessageCount(), (byte)0, MaxCulMsgType.PAIR_PONG, (byte) 0, this.srcAddr, dstAddr);
+		sendMessage(pp);
+	}
+
+
 
 }

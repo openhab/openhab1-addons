@@ -123,8 +123,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
+		messageHandler.checkPendingAcks();
 	}
 
 	/**
