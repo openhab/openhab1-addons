@@ -13,7 +13,7 @@ package org.openhab.binding.iec6205621meter.internal;
  * Class defining the config parameter for metering device
  * 
  * @author Peter Kreutzer
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class MeterDevice {
 

@@ -21,11 +21,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is responsible for parsing the binding configuration.
+ * <p>This class is responsible for parsing the binding configuration.
  * 
+ * <p>Here are some examples for valid binding configuration strings:
+ * 
+ * <ul>
+ * 	<li><code>{ iec6205621meter="meter1:1.8.1" }</code> - shows the tarif 1 counter value of 'meter1'</li>
+ * 	<li><code>{ iec6205621meter="meter1:1.8.2" }</code> - shows the tarif 1 counter value of 'meter1'</li>
+ * 	<li><code>{  iec6205621meter="meter2:16.7" }</code> - shows the current power usage value of 'meter2'</li>
+ * </ul>
  * @author Peter Kreutzer
  * @author Günter Speckhofer
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class Iec6205621MeterGenericBindingProvider extends
 		AbstractGenericBindingProvider implements Iec6205621MeterBindingProvider {

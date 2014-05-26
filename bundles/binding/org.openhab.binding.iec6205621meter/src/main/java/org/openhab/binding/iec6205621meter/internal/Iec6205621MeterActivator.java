@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Peter Kreutzer
- * @since 1.4.0
+ * @since 1.5.0
  */
 public final class Iec6205621MeterActivator implements BundleActivator {
 

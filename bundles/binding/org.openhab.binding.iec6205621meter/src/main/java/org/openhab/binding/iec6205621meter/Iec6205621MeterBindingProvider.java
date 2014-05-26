@@ -14,7 +14,7 @@ import org.openhab.core.items.Item;
 /**
  * @author Peter Kreutzer
  * @author Günter Speckhofer
- * @since 1.4.0
+ * @since 1.5.0
  */
 public interface Iec6205621MeterBindingProvider extends BindingProvider {
 

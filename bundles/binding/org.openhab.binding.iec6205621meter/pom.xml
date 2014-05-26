@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.4.0-SNAPSHOT</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -21,7 +21,14 @@
 
 	<packaging>eclipse-plugin</packaging>
 
-	<version>1.4.0-SNAPSHOT</version>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 	<description>This binding is used to communicate to metering devices supporting serial communication according mode C master. It can be used to read metering data from slaves such as gas, water, heat, or electricity meters.</description>
 </project>

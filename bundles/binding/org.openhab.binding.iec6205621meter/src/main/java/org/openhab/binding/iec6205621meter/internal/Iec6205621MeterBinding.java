@@ -35,12 +35,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * iec 62056-21 meter binding implementation
  * 
  * @author Peter Kreutzer
  * @author Günter Speckhofer
- * @since 1.4.0
+ * @since 1.5.0
  */
 public class Iec6205621MeterBinding extends
 		AbstractActiveBinding<Iec6205621MeterBindingProvider> implements
@@ -54,9 +53,7 @@ public class Iec6205621MeterBinding extends
 	private final Pattern METER_CONFIG_PATTERN = Pattern
 			.compile("^(.*?)\\.(serialPort|baudRateChangeDelay|echoHandling)$");
 
-	private static final long DEFAULT_REFRESH_INTERVAL = 60 * 10; // 10 minutes
-																	// in
-																	// seconds
+	private static final long DEFAULT_REFRESH_INTERVAL = 60000;
 
 	/**
 	 * the refresh interval which is used to poll values from the IEC 62056-21 Meter
@@ -83,7 +80,7 @@ public class Iec6205621MeterBinding extends
 	 */
 	@Override
 	protected long getRefreshInterval() {
-		return refreshInterval * 1000;
+		return refreshInterval;
 	}
 
 	/**
@@ -98,11 +95,7 @@ public class Iec6205621MeterBinding extends
 			MeterDeviceConfig config) {
 
 		MeterReader reader = null;
-		if (System.getProperty("Iec6205621MeterSimulate") != null) {
-			reader = new SimulateIec6205621MeterReader(name, config);
-		} else {
-			reader = new MeterReaderImpl(name, config);
-		}
+		reader = new MeterReader(name, config);
 		return reader;
 	}
 
@@ -145,7 +138,6 @@ public class Iec6205621MeterBinding extends
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
@@ -156,7 +148,6 @@ public class Iec6205621MeterBinding extends
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
@@ -217,6 +208,11 @@ public class Iec6205621MeterBinding extends
 		}
 	}
 
+	/**
+	 * Analyze configuration to get meter names
+	 * 
+	 * @return set of String of meter names
+	 */
 	private Set<String> getNames(Dictionary<String, ?> config) {
 		Set<String> set = new HashSet<String>();
 
