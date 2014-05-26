@@ -230,7 +230,7 @@ public class MaxCulMsgHandler implements CULListener {
 	 */
 	public void sendPairPong(String dstAddr)
 	{
-		PairPongMsg pp = new PairPongMsg(getMessageCount(), (byte)0, MaxCulMsgType.PAIR_PONG, (byte) 0, this.srcAddr, dstAddr);
+		PairPongMsg pp = new PairPongMsg(getMessageCount(), (byte)0, (byte) 0, this.srcAddr, dstAddr);
 		sendMessage(pp);
 	}
 
