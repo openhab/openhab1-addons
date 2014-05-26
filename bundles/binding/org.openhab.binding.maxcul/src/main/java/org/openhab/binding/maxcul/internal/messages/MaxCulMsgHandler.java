@@ -34,6 +34,7 @@ public class MaxCulMsgHandler implements CULListener {
 		int retryCount = 0;
 	}
 
+	private int surplusCredit = 0;
 	private Date lastTransmit;
 	private Date endOfQueueTransmit;
 
@@ -65,22 +66,37 @@ public class MaxCulMsgHandler implements CULListener {
 
 	private boolean enoughCredit(int requiredCredit)
 	{
+		return enoughCredit(requiredCredit, false);
+	}
+
+	private boolean enoughCredit(int requiredCredit, boolean updateSurplus)
+	{
 		Date now = new Date();
 		/* units are accumulated as 1% of time elapsed with no TX */
-		long credit = (now.getTime() - this.lastTransmit.getTime())/100;
+		long credit = ((now.getTime() - this.lastTransmit.getTime())/100)+this.surplusCredit;
 
 		/* assume we need preamble which is 100 credits (1000ms) */
 		// TODO handle 'fast sending' if device is awake
-		return (credit > (requiredCredit+100));
+		boolean result = (credit > (requiredCredit+100));
+		if (result && updateSurplus)
+		{
+			this.surplusCredit = (int)credit - (requiredCredit+100);
+			/* accumulate a max of 1hr credit */
+			if (this.surplusCredit > 360) this.surplusCredit = 360;
+		}
+
+		return result;
 	}
 
-	private void transmitMessage( String data )
+	private void transmitMessage( BaseMsg data )
 	{
 		try {
-			cul.send(data);
+			cul.send(data.rawMsg.toUpperCase());
 		} catch (CULCommunicationException e) {
 			logger.error("Unable to send CUL message "+data+" because: "+e.getMessage());
 		}
+		/* update surplus credit value */
+		enoughCredit(data.requiredCredit(),true);
 		this.lastTransmit = new Date();
 		if (this.endOfQueueTransmit.before(this.lastTransmit))
 		{
@@ -99,7 +115,7 @@ public class MaxCulMsgHandler implements CULListener {
 			{
 				/* send message as we have enough credit and nothing is on the queue waiting */
 				logger.debug("Sending message immediately. Message is "+msg.msgType+" => "+msg.rawMsg);
-        		transmitMessage(msg.rawMsg);
+        		transmitMessage(msg);
 			} else {
 				/* messages ahead of us so queue up the item and schedule a task to process it */
 				SenderQueueItem qi = new SenderQueueItem();
@@ -111,7 +127,7 @@ public class MaxCulMsgHandler implements CULListener {
 	                	if (enoughCredit(topItem.msg.requiredCredit()))
 	                	{
 	                		logger.debug("Sending item from queue. Message is "+topItem.msg.msgType+" => "+topItem.msg.rawMsg);
-	                		transmitMessage(topItem.msg.rawMsg);
+	                		transmitMessage(topItem.msg);
 
 	                	} else {
 	                		logger.error("Not enough credit after waiting. This is bad. Queued command is discarded");
@@ -140,7 +156,7 @@ public class MaxCulMsgHandler implements CULListener {
 		if (this.mcbmp == null)
 		{
 			this.mcbmp = mcbmp;
-			logger.error("Associated MaxCulBindingMessageProcessor");
+			logger.debug("Associated MaxCulBindingMessageProcessor");
 		}
 		else
 			logger.error("Tried to associate a second MaxCulBindingMessageProcessor!");
