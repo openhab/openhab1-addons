@@ -260,6 +260,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			MaxCulMsgType msgType = BaseMsg.getMsgType(data);
 			if (pairMode && msgType == MaxCulMsgType.PAIR_PING)
 			{
+				logger.debug("Got PAIR_PING message");
 				/* process packet */
 				PairPingMsg pkt = new PairPingMsg(data);
 				/* is it valid? and is this for us? or a broadcast? */
