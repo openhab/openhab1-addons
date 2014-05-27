@@ -73,7 +73,6 @@ public class Iec6205621MeterGenericBindingProvider extends
 			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 		Iec6205621MeterBindingConfig config = new Iec6205621MeterBindingConfig();
-		// TODO add own config parser class
 		StringTokenizer tokenizer = new StringTokenizer(bindingConfig.trim(),
 				":");
 		String[] tokens = new String[tokenizer.countTokens()];

@@ -62,7 +62,7 @@ public class Iec6205621MeterBinding extends
 	private long refreshInterval = DEFAULT_REFRESH_INTERVAL;
 
 	// configured meter devices - keyed by meter device name
-	private final Map<String, MeterReader> meterDevices = new HashMap<String, MeterReader>();
+	private final Map<String, Meter> meterDeviceConfigurtions = new HashMap<String, Meter>();
 
 	public Iec6205621MeterBinding() {
 	}
@@ -72,7 +72,7 @@ public class Iec6205621MeterBinding extends
 	}
 
 	public void deactivate() {
-		meterDevices.clear();
+		meterDeviceConfigurtions.clear();
 	}
 
 	/**
@@ -91,11 +91,11 @@ public class Iec6205621MeterBinding extends
 		return "iec6205621meter Refresh Service";
 	}
 
-	private final MeterReader createIec6205621MeterReader(String name,
-			MeterDeviceConfig config) {
+	private final Meter createIec6205621MeterConfig(String name,
+			MeterConfig config) {
 
-		MeterReader reader = null;
-		reader = new MeterReader(name, config);
+		Meter reader = null;
+		reader = new Meter(name, config);
 		return reader;
 	}
 
@@ -106,8 +106,8 @@ public class Iec6205621MeterBinding extends
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
 
-		for (Entry<String, MeterReader> entry : meterDevices.entrySet()) {
-			MeterReader reader = entry.getValue();
+		for (Entry<String, Meter> entry : meterDeviceConfigurtions.entrySet()) {
+			Meter reader = entry.getValue();
 
 			Map<String, DataSet> dataSets = reader.read();
 
@@ -173,26 +173,26 @@ public class Iec6205621MeterBinding extends
 
 			String value = (String) config.get(name + ".serialPort");
 			String serialPort = value != null ? value
-					: MeterDeviceConfig.DEFAULT_SERIAL_PORT;
+					: MeterConfig.DEFAULT_SERIAL_PORT;
 
 			value = (String) config.get(name + ".baudRateChangeDelay");
 			int baudRateChangeDelay = value != null ? Integer.valueOf(value)
-					: MeterDeviceConfig.DEFAULT_BAUD_RATE_CHANGE_DELAY;
+					: MeterConfig.DEFAULT_BAUD_RATE_CHANGE_DELAY;
 
 			value = (String) config.get(name + ".echoHandling");
 			boolean echoHandling = value != null ? Boolean.valueOf(value)
-					: MeterDeviceConfig.DEFAULT_ECHO_HANDLING;
+					: MeterConfig.DEFAULT_ECHO_HANDLING;
 
-			MeterReader reader = createIec6205621MeterReader(name,
-					new MeterDeviceConfig(serialPort, baudRateChangeDelay,
+			Meter meterConfig = createIec6205621MeterConfig(name,
+					new MeterConfig(serialPort, baudRateChangeDelay,
 							echoHandling));
 
-			if (meterDevices.put(reader.getName(), reader) != null) {
-				logger.info("Recreated reader {} with  {}!", reader.getName(),
-						reader.getConfig());
+			if (meterDeviceConfigurtions.put(meterConfig.getName(), meterConfig) != null) {
+				logger.info("Recreated reader {} with  {}!", meterConfig.getName(),
+						meterConfig.getConfig());
 			} else {
-				logger.info("Created reader {} with  {}!", reader.getName(),
-						reader.getConfig());
+				logger.info("Created reader {} with  {}!", meterConfig.getName(),
+						meterConfig.getConfig());
 			}
 		}
 

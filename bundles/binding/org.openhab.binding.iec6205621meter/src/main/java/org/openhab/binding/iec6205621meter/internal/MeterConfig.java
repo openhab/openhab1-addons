@@ -1,5 +1,3 @@
-package org.openhab.binding.iec6205621meter.internal;
-
 /**
  * Copyright (c) 2010-2013, openHAB.org and others.
  *
@@ -8,15 +6,16 @@ package org.openhab.binding.iec6205621meter.internal;
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
+package org.openhab.binding.iec6205621meter.internal;
 
 /**
- * Class defining the config parameter for dmls metering device
+ * Class defining the communication configuration parameter for metering device
  * 
  * @author Peter Kreutzer
  * @author Günter Speckhofer
  * @since 1.5.0
  */
-public class MeterDeviceConfig {
+public class MeterConfig {
 
 	// configuration defaults for optional properties
 	static final int DEFAULT_BAUD_RATE_CHANGE_DELAY = 0;
@@ -27,7 +26,7 @@ public class MeterDeviceConfig {
 	private final int baudRateChangeDelay;
 	private final boolean echoHandling;
 
-	public MeterDeviceConfig(String serialPort, int baudRateChangeDelay,
+	public MeterConfig(String serialPort, int baudRateChangeDelay,
 			boolean echoHandling) {
 		this.serialPort = serialPort;
 		this.baudRateChangeDelay = baudRateChangeDelay;
