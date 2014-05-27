@@ -21,15 +21,15 @@ Bundle-ClassPath: lib/jackson-core-asl-1.9.2.jar,
  lib/atmosphere-compat-tomcat-2.0.1.jar,
  lib/atmosphere-compat-tomcat7-2.0.1.jar,
  lib/atmosphere-annotations-2.0.3.jar,
- lib/atmosphere-jersey-2.0.3.jar,
- lib/atmosphere-runtime-2.0.3.jar
+ lib/atmosphere-annotations-2.1.4.jar,
+ lib/atmosphere-jersey-2.1.4.jar,
+ lib/atmosphere-runtime-2.1.4.jar
 Import-Package: com.sun.jersey.api.core,
  com.sun.jersey.api.json,
  com.sun.jersey.core.osgi,
  com.sun.jersey.core.util,
  javax.servlet,
  javax.servlet.http,
- org.atmosphere,
  org.atmosphere.annotation,
  org.atmosphere.cache,
  org.atmosphere.cpr,
@@ -41,7 +41,7 @@ DynamicImport-Package: *
 Export-Package: com.sun.jersey.api.client,com.sun.jersey.api.core,com.
  sun.jersey.api.core.servlet,com.sun.jersey.api.json,com.sun.jersey.co
  re.osgi,com.sun.jersey.core.util,com.sun.jersey.spi.container,javax.w
- s.rs,javax.ws.rs.core,javax.ws.rs.ext,org.atmosphere,org.atmosphere.a
+ s.rs,javax.ws.rs.core,javax.ws.rs.ext,org.atmosphere.a
  nnotation,org.atmosphere.cache,org.atmosphere.cpr,org.atmosphere.jers
  ey,org.atmosphere.util,org.codehaus.jackson;version="1.9.2",org.codeh
  aus.jackson.annotate;version="1.9.2",org.codehaus.jackson.map;version
