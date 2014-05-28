@@ -100,10 +100,10 @@ public class FritzahaGenericBindingProvider extends AbstractGenericBindingProvid
 					config = new FritzahaQueryscriptMeter(configParts[0], configParts[1], MeterType.POWER);
 				} else if ("energy".equalsIgnoreCase(configParts[2])) {
 					if(configParts.length > 3) {
-						if(configParts[3].equalsIgnoreCase("mins")) timedef = TimeDef.MINUTES;
-						else if (configParts[3].equalsIgnoreCase("day")) timedef = TimeDef.DAY;
-						else if (configParts[3].equalsIgnoreCase("month")) timedef = TimeDef.MONTH;
-						else if (configParts[3].equalsIgnoreCase("year")) timedef = TimeDef.YEAR;
+						if("mins".equalsIgnoreCase(configParts[3])) timedef = TimeDef.MINUTES;
+						else if ("day".equalsIgnoreCase(configParts[3])) timedef = TimeDef.DAY;
+						else if ("month".equalsIgnoreCase(configParts[3])) timedef = TimeDef.MONTH;
+						else if ("year".equalsIgnoreCase(configParts[3])) timedef = TimeDef.YEAR;
 						else { 
 							timedef = TimeDef.YEAR;
 							logger.warn("Timedef of item " + item + "is set to default YEAR. " + 
