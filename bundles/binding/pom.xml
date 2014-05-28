@@ -106,6 +106,7 @@
 	<module>org.openhab.binding.k8055</module>
     <module>org.openhab.binding.withings</module>
     <module>org.openhab.binding.rme</module>
+	<module>org.openhab.binding.iec6205621meter</module>
   </modules>
 
 </project>
