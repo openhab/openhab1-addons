@@ -41,7 +41,7 @@ public class FritzahaQueryscriptMeter implements FritzahaOutletMeter {
 	 * The month interval 
 	 * 
 	 * @author the78mole
-	 * @since 2014-05-28
+	 * 
 	 */
 	TimeDef timedef;
 
@@ -107,6 +107,9 @@ public class FritzahaQueryscriptMeter implements FritzahaOutletMeter {
 		this.timedef = null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public FritzahaQueryscriptMeter(String host, String id, MeterType type, TimeDef timedef) {
 		this.host = host;
 		this.id = id;
