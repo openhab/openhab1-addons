@@ -535,6 +535,10 @@
 		<Product>
 			<Reference>
 				<Type>0400</Type>
+				<Id>0102</Id>
+			</Reference>
+			<Reference>
+				<Type>0400</Type>
 				<Id>0104</Id>
 			</Reference>
 			<Reference>
