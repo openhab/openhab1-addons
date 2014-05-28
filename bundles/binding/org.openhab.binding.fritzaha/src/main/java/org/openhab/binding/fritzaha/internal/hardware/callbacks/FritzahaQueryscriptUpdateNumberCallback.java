@@ -107,9 +107,6 @@ public class FritzahaQueryscriptUpdateNumberCallback extends FritzahaReauthCallb
 				if(Long.parseLong(deviceData.get("EnStats_timer_type")) == 10)
 					// 10 Minute values are given in mWh, so scale to Wh
 					meterValueScaled = meterValue.scaleByPowerOfTen(-6);
-//				else if(Long.parseLong(deviceData.get("EnStats_timer_type")) == 900)
-//					// Day values are given in Wh, keep it to get a nice number
-//					meterValueScaled = meterValue;
 				else 
 					// Other values are given in Wh, so scale to kWh
 					meterValueScaled = meterValue.scaleByPowerOfTen(-3);
@@ -127,9 +124,6 @@ public class FritzahaQueryscriptUpdateNumberCallback extends FritzahaReauthCallb
 				case POWER:
 					meterValueScaled = meterValue.scaleByPowerOfTen(-2);
 					break;
-//				case ENERGY:
-//					meterValueScaled = meterValue.scaleByPowerOfTen(-3);
-//					break;
 				default:
 					meterValueScaled = meterValue;
 				}
