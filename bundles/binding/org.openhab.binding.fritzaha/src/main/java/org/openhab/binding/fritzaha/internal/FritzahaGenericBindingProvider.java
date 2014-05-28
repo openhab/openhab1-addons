@@ -79,6 +79,9 @@ public class FritzahaGenericBindingProvider extends AbstractGenericBindingProvid
 			if (configParts.length < 3 || configParts.length > 4) {
 				throw new BindingConfigParseException(
 						"FritzAHA meters must be of format <hostID>,<deviceID/AIN>,<valueToMeasure>[,timespec]");
+			} else if (configParts.length == 4 &&  ! "energy".equalsIgnoreCase(configParts[2])) {
+					throw new BindingConfigParseException(
+							"FritzAHA non-energy meters must be of format <hostID>,<deviceID/AIN>,<valueToMeasure>");
 			} else if (configParts[1].length() > 8) {
 				if ("power".equalsIgnoreCase(configParts[2])) {
 					config = new FritzahaWebserviceMeter(configParts[0], configParts[1], MeterType.POWER);
