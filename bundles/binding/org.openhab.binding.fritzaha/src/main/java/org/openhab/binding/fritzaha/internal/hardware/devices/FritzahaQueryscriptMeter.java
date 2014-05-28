@@ -73,7 +73,6 @@ public class FritzahaQueryscriptMeter implements FritzahaOutletMeter {
 	 */
 	public void updateMeterValue(String itemName, FritzahaWebInterface webIface) {
 		if (type == MeterType.ENERGY) {
-			// TODO
 			if (timedef != null) {
 				logger.debug("Getting meter data for Device ID " + id);
 				String path = "net/home_auto_query.lua";

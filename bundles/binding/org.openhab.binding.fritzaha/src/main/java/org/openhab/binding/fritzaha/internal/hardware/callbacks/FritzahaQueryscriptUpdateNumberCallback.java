@@ -94,7 +94,6 @@ public class FritzahaQueryscriptUpdateNumberCallback extends FritzahaReauthCallb
 				return;
 			}
 			if (type == MeterType.ENERGY) {
-				// TODO
 				String ValIdent = "EnStats_watt_value_";
 				long valCount=Long.parseLong(deviceData.get("EnStats_count"));
 				BigDecimal meterValue = new BigDecimal(0);
