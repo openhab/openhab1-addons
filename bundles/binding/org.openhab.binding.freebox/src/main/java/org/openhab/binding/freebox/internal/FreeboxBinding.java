@@ -18,16 +18,11 @@ import java.util.List;
 import org.openhab.binding.freebox.FreeboxBindingProvider;
 import org.openhab.binding.freebox.FreeboxBindingConfig;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.library.items.StringItem;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.DateTimeItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.openhab.core.items.Item;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -43,14 +38,16 @@ import org.matmaul.freeboxos.system.SystemConfiguration;
 import org.matmaul.freeboxos.call.CallEntry;
 import org.matmaul.freeboxos.wifi.*;
 
-
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
+ * Freebox binding for openHAB
+ * This implements needed behaviour in order to get connected to the Freebox
+ * using ad-hoc connection procedure and then enables uses FreeboxAPI to
+ * gather meaningfull informations or execute actions
  * 
  * @author clinique
  * @since 1.5.0
  */
+
 public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider> implements ManagedService {
 	private static final Logger logger = LoggerFactory.getLogger(FreeboxBinding.class);
 	private static String appVersion;
@@ -72,23 +69,7 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 	 * the refresh interval which is used to poll values from the Freebox
 	 * server (optional, defaults to 60000ms)
 	 */
-	private long refreshInterval = 20000;
-	
-	
-	public FreeboxBinding() {}
-	
-	public void activate() {
-		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		appVersion = String.format("%d.%d",bundle.getVersion().getMajor(),bundle.getVersion().getMinor()); // something like 1.5
-		appID = bundle.getSymbolicName();																// org.openhab.binding.freebox
-		appName = bundle.getHeaders().get("Bundle-Name");												// "openHAB Freebox Binding"
-	}
-	
-	public void deactivate() {
-		// deallocate resources here that are no longer needed and 
-		// should be reset when activating this binding again
-	}
-
+	private long refreshInterval = 60000;
 	
 	/**
 	 * @{inheritDoc}
@@ -106,68 +87,31 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 		return "Freebox Refresh Service";
 	}
 	
+	public void activate() {
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
+		appVersion = String.format("%d.%d",bundle.getVersion().getMajor(),bundle.getVersion().getMinor()); // something like 1.5
+		appID = bundle.getSymbolicName();																// org.openhab.binding.freebox
+		appName = bundle.getHeaders().get("Bundle-Name");												// "openHAB Freebox Binding"
+	}
+	
+	private void setItemValue(Item item, boolean value) {
+			eventPublisher.postUpdate(item.getName(), value ? OnOffType.ON : OnOffType.OFF);
+	}
+	
 	private void setItemValue(Item item, String value) {
-		
-			StringType stValue = new StringType(value);
-			if (!item.getState().equals(stValue)) {
-				synchronized (item) {
-					eventPublisher.postUpdate(item.getName(), stValue);
-					((StringItem)item).setState(stValue);
-				}
-			}			
-	}
-
-	private void setItemValue(Item genItem, boolean value) {
-		SwitchItem item = (SwitchItem) genItem;
-			OnOffType status = ( value ? OnOffType.ON : OnOffType.OFF);
-			if (!item.getState().equals(status)) {
-				synchronized (item) {
-					eventPublisher.postUpdate(item.getName(), status);
-					item.setState(status);
-				}
-			}				
-				
+				eventPublisher.postUpdate(item.getName(), new StringType(value));
 	}
 	
-	private void setItemValue(Item genItem, Long value) {
-		NumberItem item = (NumberItem) genItem;
-			DecimalType dtValue = new DecimalType(value);
-			if (!item.getState().equals(dtValue)) {
-				synchronized (item) {
-					eventPublisher.postUpdate(item.getName(), dtValue);
-					item.setState(dtValue);
-				}
-			}				
-				
+	private void setItemValue(Item item, Long value) {
+			eventPublisher.postUpdate(item.getName(), new DecimalType(value));					
 	}
 	
-	private void setDateTimeValue(Item genItem, long value) {
-		DateTimeItem item = (DateTimeItem) genItem;
-		
+	private void setDateTimeValue(Item item, long value) {
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(value * 1000);
-	    
-		DateTimeType dtValue = new DateTimeType(c);
-		if (!item.getState().equals(dtValue)) {
-			synchronized (item) {
-				eventPublisher.postUpdate(item.getName(), dtValue);
-				item.setState(dtValue);
-			}
-		}	
-		
+		eventPublisher.postUpdate(item.getName(), new DateTimeType(c));
 	}
 
-	private void setItemValue(Item genItem, int value) {
-		NumberItem item = (NumberItem) genItem;
-			DecimalType dtValue = new DecimalType(value);
-			if (!item.getState().equals(dtValue)) {
-				synchronized (item) {
-					eventPublisher.postUpdate(item.getName(), dtValue);
-					item.setState(dtValue);
-				}
-			}				
-				
-	}
 	
 	/**
 	 * @{inheritDoc}
@@ -175,9 +119,15 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 	@SuppressWarnings("incomplete-switch")
 	@Override
 	protected void execute() {
-		if (!loginManager.isConnected())
-			return;
-		
+		if ((loginManager == null) || (!loginManager.isConnected())) {
+			try {
+				authorize();
+			} catch (FreeboxException e) {
+				logger.error(e.getMessage());
+				setProperlyConfigured(false);
+			}
+		}
+			
 		try {
 			
 			sc = fbClient.getSystemManager().getConfiguration();
@@ -195,7 +145,7 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 							switch (bindingConfig.commandType) {
 							case CALLSTATUS : setItemValue(bindingConfig.item, call.getType());
 								break;
-							case CALLDURATION: setItemValue(bindingConfig.item, call.getDuration());
+							case CALLDURATION: setItemValue(bindingConfig.item, (long)call.getDuration());
 								break;
 							case CALLNUMBER: setItemValue(bindingConfig.item, call.getNumber());
 								break;
@@ -212,15 +162,17 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 					FreeboxBindingConfig bindingConfig = provider.getConfig(itemName);
 					
 					switch (bindingConfig.commandType) {
+						case REBOOT: setItemValue(bindingConfig.item,false);
+							break;
 						case BYTESDOWN: setItemValue(bindingConfig.item,cs.getBytes_down());
 							break;
 						case BYTESUP: setItemValue(bindingConfig.item,cs.getBytes_up());
 							break;
-						case CPUB: setItemValue(bindingConfig.item,sc.getTemp_cpub());
+						case CPUB: setItemValue(bindingConfig.item,(long)sc.getTemp_cpub());
 							break;
-						case CPUM: setItemValue(bindingConfig.item,sc.getTemp_cpum());
+						case CPUM: setItemValue(bindingConfig.item,(long)sc.getTemp_cpum());
 							break;
-						case FAN: setItemValue(bindingConfig.item,sc.getFan_rpm());
+						case FAN: setItemValue(bindingConfig.item,(long)sc.getFan_rpm());
 							break;
 						case FWVERSION: setItemValue(bindingConfig.item,sc.getFirmware_version());
 							break;
@@ -232,7 +184,7 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 							break;
 						case RATEUP: setItemValue(bindingConfig.item,cs.getRate_up());
 							break;
-						case SW: setItemValue(bindingConfig.item,sc.getTemp_sw());
+						case SW: setItemValue(bindingConfig.item,(long)sc.getTemp_sw());
 							break;
 						case UPTIME: setItemValue(bindingConfig.item,sc.getUptimeVal());
 							break;
@@ -240,7 +192,6 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 							break;
 						default:
 							break;
-					
 					}
 				}
 																									
@@ -268,18 +219,14 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 					logger.error(e.toString());
 				}
 			}
+			if (config.commandType == CommandType.REBOOT) {
+				try {
+					fbClient.getSystemManager().Reboot();
+				} catch (FreeboxException e) {
+					logger.error(e.toString());
+				}
+			}
 		}
-	}
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate() is called!");
 	}
 		
 	/**
@@ -304,23 +251,16 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 			if (isBlank(serverAddress)) serverAddress = "mafreebox.freebox.fr";
 			
 			appToken = (String) config.get("apptoken");	
-			try {
-				start();
-				setProperlyConfigured(true);
-			} catch (FreeboxException e) {
-				logger.error(e.getMessage());
-				setProperlyConfigured(false);
-			}
-			
+			setProperlyConfigured(true);			
 		}
 	}
-
+	
 	/**
 	 * Handles connection to the Freebox, including validation of the Apptoken
 	 * if none is provided in 'openhab.cfg'
 	 * @throws FreeboxException
 	 */
-	private void start() throws FreeboxException {
+	private void authorize() throws FreeboxException {
 		logger.debug("Appname : " + appName);
 		logger.debug("AppVersion : " + appVersion);
 		logger.debug("DeviceName : " + deviceName);

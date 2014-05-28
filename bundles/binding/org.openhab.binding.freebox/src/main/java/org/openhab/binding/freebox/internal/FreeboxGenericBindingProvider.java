@@ -23,6 +23,11 @@ import org.openhab.binding.freebox.FreeboxBindingConfig;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
+ * The syntax of the binding configuration strings accepted is the following: <br>
+ * freebox="commandtype" <br>
+ * where "commandtype" matches one of the enumerated commands present in
+ * org.openhab.binding.freebox.internal.CommandType
+ * 
  * @author clinique
  * @since 1.5.0
  */

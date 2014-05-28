@@ -10,7 +10,9 @@ Bundle-Activator: org.openhab.binding.freebox.internal.FreeboxActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Freebox binding of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Import-Package: org.apache.commons.io;version="2.0.1",
+ org.apache.commons.lang,
+ org.apache.commons.logging;version="1.1.1",
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -28,9 +30,6 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
- lib/commons-codec-1.6.jar,
- lib/commons-io-2.4.jar,
- lib/commons-logging-1.1.3.jar,
  lib/guava-15.0.jar,
  lib/httpclient-4.3.1.jar,
  lib/httpcore-4.3.2.jar,
@@ -38,4 +37,5 @@ Bundle-ClassPath: .,
  lib/jackson-core-asl-1.9.13.jar,
  lib/jackson-mapper-asl-1.9.13.jar,
  lib/json_simple-1.1.jar,
- lib/freeboxos.jar
+ lib/freeboxos-0.2.0.jar,
+ lib/commons-codec-1.6.jar

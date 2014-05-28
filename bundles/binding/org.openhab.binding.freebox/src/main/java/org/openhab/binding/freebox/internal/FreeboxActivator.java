@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
  * @author clinique
  * @since 1.5.0
  */
+
 public final class FreeboxActivator implements BundleActivator {
 
 	private static Logger logger = LoggerFactory.getLogger(FreeboxActivator.class); 

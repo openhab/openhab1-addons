@@ -17,6 +17,7 @@ public enum CommandType {
 	CPUB("temp_cpub"),
 	SW("temp_sw"),
 	FAN("fan"),
+	REBOOT("reboot"),
 	
 	// Connection Status commands
 	LINESTATUS("line_status"),

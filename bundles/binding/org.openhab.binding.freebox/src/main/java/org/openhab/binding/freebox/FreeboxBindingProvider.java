@@ -9,13 +9,15 @@
 package org.openhab.binding.freebox;
 
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.items.Item;
-
 
 /**
  * @author clinique
  * @since 1.5.0
  */
 public interface FreeboxBindingProvider extends BindingProvider {
+	
+    /**
+     * @return the binding config to the given <code>itemName</code>
+     */
 	public FreeboxBindingConfig getConfig(String itemName);
 }
