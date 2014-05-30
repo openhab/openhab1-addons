@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang.StringUtils;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
+import org.influxdb.dto.Pong;
 import org.influxdb.dto.Serie;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
@@ -43,6 +44,8 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import retrofit.RetrofitError;
+
 /**
  * This is the implementation of the InfluxDB {@link PersistenceService}. It persists item values
  * using the <a href="http://influxdb.org">InfluxDB</a> time series database. The states (
@@ -50,12 +53,19 @@ import org.slf4j.LoggerFactory;
  * the item. All values are stored using integers or doubles, {@link OnOffType} and
  * {@link OpenClosedType} are stored using 0 or 1.
  * 
+ * The defaults for the database name, the database user and the database url are "openhab",
+ * "openhab" and "http://127.0.0.1:8086".
+ * 
  * @author Theo Weiss - Initial Contribution
  * @since 1.5.0
  */
 public class InfluxDBPersistenceService implements QueryablePersistenceService, ManagedService {
 
 
+  private static final String DEFAULT_URL = "http://127.0.0.1:8086";
+  private static final String DEFAULT_DB = "openhab";
+  private static final String DEFAULT_USER = "openhab";
+  private static final String OK_STATUS = "ok";
   private static final String DIGITAL_VALUE_OFF = "0";
   private static final String DIGITAL_VALUE_ON = "1";
   private static final String VALUE_COLUMN_NAME = "value";
@@ -69,6 +79,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private String password;
   private boolean isProperlyConfigured;
   private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+  private boolean connected;
 
   public void setItemRegistry(ItemRegistry itemRegistry) {
     this.itemRegistry = itemRegistry;
@@ -88,15 +99,46 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   }
 
   private void connect() {
-    influxDB = InfluxDBFactory.connect(url, user, password);
+    if (influxDB == null) {
+      // reuse an existing InfluxDB object because it has no state concerning the database
+      // connection
+      influxDB = InfluxDBFactory.connect(url, user, password);
+    }
+    connected = true;
+  }
+
+  private boolean checkConnection() {
+    boolean dbStatus = false;
+    if (! connected) {
+      logger.error("checkConnection: database is not connected");
+      dbStatus = false;
+    } else {
+      try {
+        Pong pong = influxDB.ping();
+        if (pong.getStatus().equalsIgnoreCase(OK_STATUS)) {
+          dbStatus = true;
+          logger.debug("database status is OK");
+        } else {
+          logger.error("database connection failed with status: \"{}\" response time was \"{}\"",
+              pong.getStatus(), pong.getResponseTime());
+          dbStatus = false;
+        }
+      } catch (RuntimeException e) {
+        dbStatus = false;
+        logger.error("database connection failed throwing an exception");
+        handleDatabaseException(e);
+      }
+    }
+    return dbStatus;
   }
 
   private void disconnect() {
     influxDB = null;
+    connected = false;
   }
 
   private boolean isConnected() {
-    return influxDB != null;
+    return connected;
   }
 
   @Override
@@ -119,22 +161,15 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     }
 
     if (!isProperlyConfigured) {
-      logger.error("Configuration for influxdb is missing or not yet loaded");
+      logger.error("Configuration for influxdb not yet loaded or broken.");
       return;
     }
 
     if (!isConnected()) {
-      connect();
-    }
-
-    // If we still didn't manage to connect, then return!
-    if (!isConnected()) {
-      logger
-          .error(
-              "influxdb: No connection to database. Can not persist item '{}'! Will retry connecting to database next time.",
-              item);
+      logger.error("InfluxDB is not yet? connected");
       return;
     }
+
     String realName = item.getName();
     String name = (alias != null) ? alias : realName;
     Object value = stateToObject(item.getState());
@@ -148,11 +183,31 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     Object[] point = new Object[] {value};
     serie.setPoints(new Object[][] {point});
     Serie[] series = new Serie[] {serie};
-    influxDB.write(dbName, series, TimeUnit.MILLISECONDS);
+    try {
+      influxDB.write(dbName, series, TimeUnit.MILLISECONDS);
+    } catch (RuntimeException e) {
+      logger.error("storing failed with exception for item: {}", name);
+      handleDatabaseException(e);
+    }
+  }
+
+  private void handleDatabaseException(Exception e) {
+    if (e instanceof RetrofitError) {
+      // e.g. raised if influxdb is not running
+      logger.error("database connection error {}", e.getMessage());
+    } else if (e instanceof RuntimeException) {
+      // e.g. raised by authentication errors
+      logger
+          .error(
+              "database connection error may be wrong password, username or dbname: {}",
+              e);
+    }
   }
 
   @Override
   public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+    disconnect();
+
     if (config == null) {
       throw new ConfigurationException("influxdb",
           "The configuration for influxdb is missing fix openhab.cfg");
@@ -160,14 +215,14 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
 
     url = (String) config.get("url");
     if (StringUtils.isBlank(url)) {
-      throw new ConfigurationException("influxdb:url",
-          "The database URL is missing - please configure the url parameter in openhab.cfg");
+      url = DEFAULT_URL;
+      logger.debug("using default url {}", DEFAULT_URL);
     }
 
     user = (String) config.get("user");
     if (StringUtils.isBlank(user)) {
-      throw new ConfigurationException("influxdb:user",
-          "The user is missing - please configure the user parameter in openhab.cfg");
+      user = DEFAULT_USER;
+      logger.debug("using default user {}", DEFAULT_USER);
     }
 
     password = (String) config.get("password");
@@ -178,13 +233,18 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
 
     dbName = (String) config.get("db");
     if (StringUtils.isBlank(dbName)) {
-      throw new ConfigurationException("influxdb:db",
-          "The db name is missing. To specify a db name configure the db parameter in openhab.cfg.");
+      dbName = DEFAULT_DB;
+      logger.debug("using default db name {}", DEFAULT_DB);
     }
 
-    disconnect();
-    connect();
     isProperlyConfigured = true;
+
+    connect();
+
+    // check connection; errors will only be logged, hoping the connection will work at a later time. 
+    if ( ! checkConnection()){
+      logger.error("database connection does not work for now, will retry to use the database.");
+    }
   }
 
   @Override
@@ -192,16 +252,18 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     Integer pageSize = null;
     Integer pageNumber = null;
     logger.debug("got a query");
+
     if (!isProperlyConfigured) {
+      logger.error("Configuration for influxdb not yet loaded or broken.");
       return Collections.emptyList();
-    }
-    if (!isConnected()) {
-      connect();
     }
 
     if (!isConnected()) {
+      logger.error("InfluxDB is not yet? connected");
       return Collections.emptyList();
     }
+
+    List<HistoricItem> historicItems = new ArrayList<HistoricItem>();
 
     StringBuffer query = new StringBuffer();
     query.append("select ");
@@ -272,8 +334,13 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       }
     }
     logger.debug("query string: {}", query.toString());
-    List<Serie> results = influxDB.Query(dbName, query.toString(), TimeUnit.MILLISECONDS);
-    List<HistoricItem> historicItems = new ArrayList<HistoricItem>();
+    List<Serie> results = Collections.emptyList();
+    try {
+      results = influxDB.Query(dbName, query.toString(), TimeUnit.MILLISECONDS);
+    } catch (RuntimeException e) {
+      logger.error("query failed with database error");
+      handleDatabaseException(e);
+    }
     for (Serie result : results) {
       String historicItemName = result.getName();
       logger.trace("item name ", historicItemName);
@@ -304,6 +371,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
             ((Double) objects[timeColumnNum]).longValue())));;
       }
     }
+
     return historicItems;
   }
 
@@ -330,8 +398,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
    * Converts {@link State} to objects fitting into influxdb values.
    * 
    * @param state to be converted
-   * @return integer or double value for DecimalType and PercentType, an integer for DateTimeType and
-   *         0 or 1 for OnOffType and OpenClosedType.
+   * @return integer or double value for DecimalType and PercentType, an integer for DateTimeType
+   *         and 0 or 1 for OnOffType and OpenClosedType.
    */
   private Object stateToObject(State state) {
     Object value;
