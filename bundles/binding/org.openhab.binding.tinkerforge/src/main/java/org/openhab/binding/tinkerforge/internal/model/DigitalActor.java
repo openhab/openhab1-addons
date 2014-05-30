@@ -191,9 +191,9 @@ public interface DigitalActor extends IODevice, MTFConfigConsumer<TFIOActorConfi
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @model dataType="org.openhab.binding.tinkerforge.internal.model.DigitalValue" unique="false"
+   * @model
    * @generated
    */
-  HighLowValue fetchDigitalValue();
+  void fetchDigitalValue();
 
 } // DigitalActor

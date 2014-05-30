@@ -99,13 +99,15 @@
     <module>org.openhab.binding.hdanywhere</module>
     <module>org.openhab.binding.omnilink</module>
     <module>org.openhab.binding.freeswitch</module>
-	<module>org.openhab.binding.neohub</module>
-	<module>org.openhab.binding.gpio</module>
-	<module>org.openhab.binding.irtrans</module>
-	<module>org.openhab.binding.astro</module>
-	<module>org.openhab.binding.k8055</module>
+    <module>org.openhab.binding.neohub</module>
+    <module>org.openhab.binding.gpio</module>
+    <module>org.openhab.binding.irtrans</module>
+    <module>org.openhab.binding.astro</module>
+    <module>org.openhab.binding.k8055</module>
     <module>org.openhab.binding.withings</module>
     <module>org.openhab.binding.rme</module>
+    <module>org.openhab.binding.iec6205621meter</module>
+    <module>org.openhab.binding.freebox</module>
   </modules>
 
 </project>

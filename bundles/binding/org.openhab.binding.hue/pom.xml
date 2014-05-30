@@ -15,7 +15,7 @@
 		<bundle.symbolicName>org.openhab.binding.hue</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.hue</bundle.namespace>
 		<deb.name>openhab-addon-binding-hue</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

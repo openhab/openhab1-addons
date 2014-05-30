@@ -17,8 +17,14 @@
 		<Group>
 			<Index>1</Index>
 			<Maximum>5</Maximum>
-			<Label lang="en">Control Command</Label>
-			<Help lang="en"><![CDATA[Control Command when trip]]></Help>
+			<Label lang="en">Group 1</Label>
+			<Help lang="en"><![CDATA[ ]]></Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 2</Label>
+			<Help lang="en"><![CDATA[ ]]></Help>
 		</Group>
 	</Associations>
 </Product>
