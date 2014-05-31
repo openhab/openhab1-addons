@@ -15,6 +15,8 @@ import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -24,6 +26,9 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 1.5.0
  */
 public class EcoTouchGenericBindingProvider extends AbstractGenericBindingProvider implements EcoTouchBindingProvider {
+
+	private static final Logger logger = 
+			LoggerFactory.getLogger(EcoTouchGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
@@ -37,6 +42,7 @@ public class EcoTouchGenericBindingProvider extends AbstractGenericBindingProvid
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+		logger.debug("validateItemType() method is called!");
 		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
 		//	throw new BindingConfigParseException("item '" + item.getName()
 		//			+ "' is of type '" + item.getClass().getSimpleName()
@@ -53,6 +59,7 @@ public class EcoTouchGenericBindingProvider extends AbstractGenericBindingProvid
 		EcoTouchBindingConfig config = new EcoTouchBindingConfig();
 		
 		//parse bindingconfig here ...
+		logger.debug("processBindingConfiguration() method is called!");
 		
 		addBindingConfig(item, config);		
 	}

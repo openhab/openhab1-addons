@@ -47,11 +47,13 @@ public class EcoTouchBinding extends AbstractActiveBinding<EcoTouchBindingProvid
 		
 	
 	public void activate() {
+		logger.debug("activate() method is called!");
 	}
 	
 	public void deactivate() {
 		// deallocate resources here that are no longer needed and 
 		// should be reset when activating this binding again
+		logger.debug("deactivate() method is called!");
 	}
 
 	
@@ -107,6 +109,7 @@ public class EcoTouchBinding extends AbstractActiveBinding<EcoTouchBindingProvid
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		logger.debug("updated() is called!");
 		if (config != null) {
 			
 			// to override the default refresh interval one has to add a 
