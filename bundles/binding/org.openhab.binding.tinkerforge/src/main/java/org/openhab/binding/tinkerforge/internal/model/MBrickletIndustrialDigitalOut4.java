@@ -11,9 +11,9 @@ import com.tinkerforge.BrickletIndustrialDigitalOut4;
  *
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletIndustrialDigitalOut4()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletIndustrialDigitalOut4> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOut4> org.openhab.binding.tinkerforge.internal.model.InterruptListener org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletIndustrialDigitalOut4> org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4>"
  * @generated
  */
-public interface MBrickletIndustrialDigitalOut4 extends MDevice<BrickletIndustrialDigitalOut4>, MSubDeviceHolder<IndustrialDigitalOut4>, InterruptListener, MTFConfigConsumer<TFInterruptListenerConfiguration>
+public interface MBrickletIndustrialDigitalOut4 extends MDevice<BrickletIndustrialDigitalOut4>, MSubDeviceHolder<DigitalActorDigitalOut4>
 {
 } // MBrickletIndustrialDigitalOut4

@@ -158,13 +158,13 @@ public interface ModelFactory extends EFactory
   MBrickletIndustrialDigitalOut4 createMBrickletIndustrialDigitalOut4();
 
   /**
-   * Returns a new object of class '<em>Industrial Digital Out4</em>'.
+   * Returns a new object of class '<em>Digital Actor Digital Out4</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Industrial Digital Out4</em>'.
+   * @return a new object of class '<em>Digital Actor Digital Out4</em>'.
    * @generated
    */
-  IndustrialDigitalOut4 createIndustrialDigitalOut4();
+  DigitalActorDigitalOut4 createDigitalActorDigitalOut4();
 
   /**
    * Returns a new object of class '<em>Digital Actor IO16</em>'.

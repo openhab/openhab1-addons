@@ -272,9 +272,9 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMBrickletIndustrialDigitalOut4Adapter();
       }
       @Override
-      public Adapter caseIndustrialDigitalOut4(IndustrialDigitalOut4 object)
+      public Adapter caseDigitalActorDigitalOut4(DigitalActorDigitalOut4 object)
       {
-        return createIndustrialDigitalOut4Adapter();
+        return createDigitalActorDigitalOut4Adapter();
       }
       @Override
       public Adapter caseDigitalActor(DigitalActor object)
@@ -914,16 +914,16 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOut4 <em>Industrial Digital Out4</em>}'.
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4 <em>Digital Actor Digital Out4</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOut4
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4
    * @generated
    */
-  public Adapter createIndustrialDigitalOut4Adapter()
+  public Adapter createDigitalActorDigitalOut4Adapter()
   {
     return null;
   }

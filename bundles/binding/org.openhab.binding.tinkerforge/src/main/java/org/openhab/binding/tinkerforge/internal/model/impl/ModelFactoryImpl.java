@@ -159,7 +159,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4: return createMBrickletIndustrialDigitalIn4();
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN: return createMIndustrialDigitalIn();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4: return createMBrickletIndustrialDigitalOut4();
-      case ModelPackage.INDUSTRIAL_DIGITAL_OUT4: return createIndustrialDigitalOut4();
+      case ModelPackage.DIGITAL_ACTOR_DIGITAL_OUT4: return createDigitalActorDigitalOut4();
       case ModelPackage.DIGITAL_ACTOR_IO16: return createDigitalActorIO16();
       case ModelPackage.MBRICKLET_IO16: return createMBrickletIO16();
       case ModelPackage.DIGITAL_SENSOR: return createDigitalSensor();
@@ -604,10 +604,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public IndustrialDigitalOut4 createIndustrialDigitalOut4()
+  public DigitalActorDigitalOut4 createDigitalActorDigitalOut4()
   {
-    IndustrialDigitalOut4Impl industrialDigitalOut4 = new IndustrialDigitalOut4Impl();
-    return industrialDigitalOut4;
+    DigitalActorDigitalOut4Impl digitalActorDigitalOut4 = new DigitalActorDigitalOut4Impl();
+    return digitalActorDigitalOut4;
   }
 
   /**

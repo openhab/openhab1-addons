@@ -256,13 +256,11 @@ class MIndustrialDigitalIn extends MSubDevice<MBrickletIndustrialDigitalIn4>,
 }
 
 class MBrickletIndustrialDigitalOut4 extends MDevice<MTinkerBrickletIndustrialDigitalOut4>,
-        MSubDeviceHolder<IndustrialDigitalOut4>,
-        InterruptListener, MTFConfigConsumer<TFInterruptListenerConfiguration>{
-    
+        MSubDeviceHolder<DigitalActorDigitalOut4>{
 }
 
-class IndustrialDigitalOut4 extends MSubDevice<MBrickletIndustrialDigitalOut4> {
-    
+class DigitalActorDigitalOut4 extends DigitalActor, MSubDevice<MBrickletIndustrialDigitalOut4> {
+    int pin
 }
 
 interface DigitalActor {

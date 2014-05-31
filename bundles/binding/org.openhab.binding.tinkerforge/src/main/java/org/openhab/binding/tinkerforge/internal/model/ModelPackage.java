@@ -3204,31 +3204,13 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES = MDEVICE_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Debounce Period</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEBOUNCE_PERIOD = MDEVICE_FEATURE_COUNT + 1;
-
-  /**
-   * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TF_CONFIG = MDEVICE_FEATURE_COUNT + 2;
-
-  /**
    * The number of structural features of the '<em>MBricklet Industrial Digital Out4</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_INDUSTRIAL_DIGITAL_OUT4_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 3;
+  int MBRICKLET_INDUSTRIAL_DIGITAL_OUT4_FEATURE_COUNT = MDEVICE_FEATURE_COUNT + 1;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -3274,115 +3256,6 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int MBRICKLET_INDUSTRIAL_DIGITAL_OUT4_OPERATION_COUNT = MDEVICE_OPERATION_COUNT + 1;
-
-  /**
-   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDigitalOut4Impl <em>Industrial Digital Out4</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDigitalOut4Impl
-   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDigitalOut4()
-   * @generated
-   */
-  int INDUSTRIAL_DIGITAL_OUT4 = 28;
-
-  /**
-   * The feature id for the '<em><b>Logger</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INDUSTRIAL_DIGITAL_OUT4__LOGGER = MSUB_DEVICE__LOGGER;
-
-  /**
-   * The feature id for the '<em><b>Uid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INDUSTRIAL_DIGITAL_OUT4__UID = MSUB_DEVICE__UID;
-
-  /**
-   * The feature id for the '<em><b>Poll</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INDUSTRIAL_DIGITAL_OUT4__POLL = MSUB_DEVICE__POLL;
-
-  /**
-   * The feature id for the '<em><b>Enabled A</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INDUSTRIAL_DIGITAL_OUT4__ENABLED_A = MSUB_DEVICE__ENABLED_A;
-
-  /**
-   * The feature id for the '<em><b>Sub Id</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INDUSTRIAL_DIGITAL_OUT4__SUB_ID = MSUB_DEVICE__SUB_ID;
-
-  /**
-   * The feature id for the '<em><b>Mbrick</b></em>' container reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INDUSTRIAL_DIGITAL_OUT4__MBRICK = MSUB_DEVICE__MBRICK;
-
-  /**
-   * The number of structural features of the '<em>Industrial Digital Out4</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INDUSTRIAL_DIGITAL_OUT4_FEATURE_COUNT = MSUB_DEVICE_FEATURE_COUNT + 0;
-
-  /**
-   * The operation id for the '<em>Init</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INDUSTRIAL_DIGITAL_OUT4___INIT = MSUB_DEVICE___INIT;
-
-  /**
-   * The operation id for the '<em>Enable</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INDUSTRIAL_DIGITAL_OUT4___ENABLE = MSUB_DEVICE___ENABLE;
-
-  /**
-   * The operation id for the '<em>Disable</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INDUSTRIAL_DIGITAL_OUT4___DISABLE = MSUB_DEVICE___DISABLE;
-
-  /**
-   * The number of operations of the '<em>Industrial Digital Out4</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int INDUSTRIAL_DIGITAL_OUT4_OPERATION_COUNT = MSUB_DEVICE_OPERATION_COUNT + 0;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor <em>Digital Actor</em>}' class.
@@ -3438,6 +3311,151 @@ public interface ModelPackage extends EPackage
    * @ordered
    */
   int DIGITAL_ACTOR_OPERATION_COUNT = 2;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl <em>Digital Actor Digital Out4</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalActorDigitalOut4()
+   * @generated
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4 = 28;
+
+  /**
+   * The feature id for the '<em><b>Digital State</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4__DIGITAL_STATE = DIGITAL_ACTOR__DIGITAL_STATE;
+
+  /**
+   * The feature id for the '<em><b>Logger</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4__LOGGER = DIGITAL_ACTOR_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Uid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4__UID = DIGITAL_ACTOR_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Poll</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4__POLL = DIGITAL_ACTOR_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Enabled A</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4__ENABLED_A = DIGITAL_ACTOR_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Sub Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4__SUB_ID = DIGITAL_ACTOR_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Mbrick</b></em>' container reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4__MBRICK = DIGITAL_ACTOR_FEATURE_COUNT + 5;
+
+  /**
+   * The feature id for the '<em><b>Pin</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4__PIN = DIGITAL_ACTOR_FEATURE_COUNT + 6;
+
+  /**
+   * The number of structural features of the '<em>Digital Actor Digital Out4</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4_FEATURE_COUNT = DIGITAL_ACTOR_FEATURE_COUNT + 7;
+
+  /**
+   * The operation id for the '<em>Turn Digital</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4___TURN_DIGITAL__HIGHLOWVALUE = DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE;
+
+  /**
+   * The operation id for the '<em>Fetch Digital Value</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4___FETCH_DIGITAL_VALUE = DIGITAL_ACTOR___FETCH_DIGITAL_VALUE;
+
+  /**
+   * The operation id for the '<em>Init</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4___INIT = DIGITAL_ACTOR_OPERATION_COUNT + 0;
+
+  /**
+   * The operation id for the '<em>Enable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4___ENABLE = DIGITAL_ACTOR_OPERATION_COUNT + 1;
+
+  /**
+   * The operation id for the '<em>Disable</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4___DISABLE = DIGITAL_ACTOR_OPERATION_COUNT + 2;
+
+  /**
+   * The number of operations of the '<em>Digital Actor Digital Out4</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DIGITAL_ACTOR_DIGITAL_OUT4_OPERATION_COUNT = DIGITAL_ACTOR_OPERATION_COUNT + 3;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO16Impl <em>Digital Actor IO16</em>}' class.
@@ -13226,14 +13244,25 @@ public interface ModelPackage extends EPackage
   EClass getMBrickletIndustrialDigitalOut4();
 
   /**
-   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOut4 <em>Industrial Digital Out4</em>}'.
+   * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4 <em>Digital Actor Digital Out4</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Industrial Digital Out4</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOut4
+   * @return the meta object for class '<em>Digital Actor Digital Out4</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4
    * @generated
    */
-  EClass getIndustrialDigitalOut4();
+  EClass getDigitalActorDigitalOut4();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4#getPin <em>Pin</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Pin</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4#getPin()
+   * @see #getDigitalActorDigitalOut4()
+   * @generated
+   */
+  EAttribute getDigitalActorDigitalOut4_Pin();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor <em>Digital Actor</em>}'.
@@ -16969,14 +16998,22 @@ public interface ModelPackage extends EPackage
     EClass MBRICKLET_INDUSTRIAL_DIGITAL_OUT4 = eINSTANCE.getMBrickletIndustrialDigitalOut4();
 
     /**
-     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDigitalOut4Impl <em>Industrial Digital Out4</em>}' class.
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl <em>Digital Actor Digital Out4</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDigitalOut4Impl
-     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIndustrialDigitalOut4()
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorDigitalOut4Impl
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalActorDigitalOut4()
      * @generated
      */
-    EClass INDUSTRIAL_DIGITAL_OUT4 = eINSTANCE.getIndustrialDigitalOut4();
+    EClass DIGITAL_ACTOR_DIGITAL_OUT4 = eINSTANCE.getDigitalActorDigitalOut4();
+
+    /**
+     * The meta object literal for the '<em><b>Pin</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DIGITAL_ACTOR_DIGITAL_OUT4__PIN = eINSTANCE.getDigitalActorDigitalOut4_Pin();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor <em>Digital Actor</em>}' class.

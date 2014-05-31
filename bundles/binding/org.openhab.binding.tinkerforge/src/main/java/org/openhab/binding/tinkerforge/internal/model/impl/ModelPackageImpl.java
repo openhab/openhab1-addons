@@ -30,6 +30,7 @@ import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfig
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
@@ -43,7 +44,6 @@ import org.openhab.binding.tinkerforge.internal.model.IO4Device;
 import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOut4;
 import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
 import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
 import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
@@ -317,7 +317,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass industrialDigitalOut4EClass = null;
+  private EClass digitalActorDigitalOut4EClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2093,9 +2093,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getIndustrialDigitalOut4()
+  public EClass getDigitalActorDigitalOut4()
   {
-    return industrialDigitalOut4EClass;
+    return digitalActorDigitalOut4EClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDigitalActorDigitalOut4_Pin()
+  {
+    return (EAttribute)digitalActorDigitalOut4EClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -5056,7 +5066,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     mBrickletIndustrialDigitalOut4EClass = createEClass(MBRICKLET_INDUSTRIAL_DIGITAL_OUT4);
 
-    industrialDigitalOut4EClass = createEClass(INDUSTRIAL_DIGITAL_OUT4);
+    digitalActorDigitalOut4EClass = createEClass(DIGITAL_ACTOR_DIGITAL_OUT4);
+    createEAttribute(digitalActorDigitalOut4EClass, DIGITAL_ACTOR_DIGITAL_OUT4__PIN);
 
     digitalActorEClass = createEClass(DIGITAL_ACTOR);
     createEAttribute(digitalActorEClass, DIGITAL_ACTOR__DIGITAL_STATE);
@@ -5545,19 +5556,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mBrickletIndustrialDigitalOut4EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSubDeviceHolder());
-    g2 = createEGenericType(this.getIndustrialDigitalOut4());
+    g2 = createEGenericType(this.getDigitalActorDigitalOut4());
     g1.getETypeArguments().add(g2);
     mBrickletIndustrialDigitalOut4EClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getInterruptListener());
-    mBrickletIndustrialDigitalOut4EClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMTFConfigConsumer());
-    g2 = createEGenericType(this.getTFInterruptListenerConfiguration());
-    g1.getETypeArguments().add(g2);
-    mBrickletIndustrialDigitalOut4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getDigitalActor());
+    digitalActorDigitalOut4EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSubDevice());
     g2 = createEGenericType(this.getMBrickletIndustrialDigitalOut4());
     g1.getETypeArguments().add(g2);
-    industrialDigitalOut4EClass.getEGenericSuperTypes().add(g1);
+    digitalActorDigitalOut4EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getDigitalActor());
     digitalActorIO16EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getIODevice());
@@ -6120,7 +6127,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(mBrickletIndustrialDigitalOut4EClass, MBrickletIndustrialDigitalOut4.class, "MBrickletIndustrialDigitalOut4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-    initEClass(industrialDigitalOut4EClass, IndustrialDigitalOut4.class, "IndustrialDigitalOut4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEClass(digitalActorDigitalOut4EClass, DigitalActorDigitalOut4.class, "DigitalActorDigitalOut4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDigitalActorDigitalOut4_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, DigitalActorDigitalOut4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(digitalActorEClass, DigitalActor.class, "DigitalActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDigitalActor_DigitalState(), this.getDigitalValue(), "digitalState", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

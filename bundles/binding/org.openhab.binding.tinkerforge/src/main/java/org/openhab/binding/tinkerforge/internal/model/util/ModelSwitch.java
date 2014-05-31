@@ -365,18 +365,17 @@ public class ModelSwitch<T> extends Switch<T>
         T result = caseMBrickletIndustrialDigitalOut4(mBrickletIndustrialDigitalOut4);
         if (result == null) result = caseMDevice(mBrickletIndustrialDigitalOut4);
         if (result == null) result = caseMSubDeviceHolder(mBrickletIndustrialDigitalOut4);
-        if (result == null) result = caseInterruptListener(mBrickletIndustrialDigitalOut4);
-        if (result == null) result = caseMTFConfigConsumer(mBrickletIndustrialDigitalOut4);
         if (result == null) result = caseMBaseDevice(mBrickletIndustrialDigitalOut4);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case ModelPackage.INDUSTRIAL_DIGITAL_OUT4:
+      case ModelPackage.DIGITAL_ACTOR_DIGITAL_OUT4:
       {
-        IndustrialDigitalOut4 industrialDigitalOut4 = (IndustrialDigitalOut4)theEObject;
-        T result = caseIndustrialDigitalOut4(industrialDigitalOut4);
-        if (result == null) result = caseMSubDevice(industrialDigitalOut4);
-        if (result == null) result = caseMBaseDevice(industrialDigitalOut4);
+        DigitalActorDigitalOut4 digitalActorDigitalOut4 = (DigitalActorDigitalOut4)theEObject;
+        T result = caseDigitalActorDigitalOut4(digitalActorDigitalOut4);
+        if (result == null) result = caseDigitalActor(digitalActorDigitalOut4);
+        if (result == null) result = caseMSubDevice(digitalActorDigitalOut4);
+        if (result == null) result = caseMBaseDevice(digitalActorDigitalOut4);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1371,17 +1370,17 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Industrial Digital Out4</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Digital Actor Digital Out4</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Industrial Digital Out4</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Digital Actor Digital Out4</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseIndustrialDigitalOut4(IndustrialDigitalOut4 object)
+  public T caseDigitalActorDigitalOut4(DigitalActorDigitalOut4 object)
   {
     return null;
   }

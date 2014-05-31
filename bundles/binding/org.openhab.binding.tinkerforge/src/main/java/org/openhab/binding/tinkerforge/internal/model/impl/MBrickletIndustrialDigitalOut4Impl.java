@@ -2,41 +2,33 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import com.tinkerforge.BrickletIndustrialDigitalOut4;
-import com.tinkerforge.IPConnection;
-
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.Collection;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
-
-import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOut4;
-import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
-import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
-
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletIndustrialDigitalOut4;
+import com.tinkerforge.IPConnection;
 
 /**
  * <!-- begin-user-doc -->
@@ -57,8 +49,6 @@ import org.slf4j.Logger;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getMsubdevices <em>Msubdevices</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getDebouncePeriod <em>Debounce Period</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getTfConfig <em>Tf Config</em>}</li>
  * </ul>
  * </p>
  *
@@ -264,37 +254,7 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
    * @generated
    * @ordered
    */
-  protected EList<IndustrialDigitalOut4> msubdevices;
-
-  /**
-   * The default value of the '{@link #getDebouncePeriod() <em>Debounce Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDebouncePeriod()
-   * @generated
-   * @ordered
-   */
-  protected static final long DEBOUNCE_PERIOD_EDEFAULT = 100L;
-
-  /**
-   * The cached value of the '{@link #getDebouncePeriod() <em>Debounce Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDebouncePeriod()
-   * @generated
-   * @ordered
-   */
-  protected long debouncePeriod = DEBOUNCE_PERIOD_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTfConfig()
-   * @generated
-   * @ordered
-   */
-  protected TFInterruptListenerConfiguration tfConfig;
+  protected EList<DigitalActorDigitalOut4> msubdevices;
 
   /**
    * <!-- begin-user-doc -->
@@ -597,11 +557,11 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<IndustrialDigitalOut4> getMsubdevices()
+  public EList<DigitalActorDigitalOut4> getMsubdevices()
   {
     if (msubdevices == null)
     {
-      msubdevices = new EObjectContainmentWithInverseEList<IndustrialDigitalOut4>(MSubDevice.class, this, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+      msubdevices = new EObjectContainmentWithInverseEList<DigitalActorDigitalOut4>(MSubDevice.class, this, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
     }
     return msubdevices;
   }
@@ -609,120 +569,55 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
-  public long getDebouncePeriod()
-  {
-    return debouncePeriod;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setDebouncePeriod(long newDebouncePeriod)
-  {
-    long oldDebouncePeriod = debouncePeriod;
-    debouncePeriod = newDebouncePeriod;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEBOUNCE_PERIOD, oldDebouncePeriod, debouncePeriod));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public TFInterruptListenerConfiguration getTfConfig()
-  {
-    return tfConfig;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetTfConfig(TFInterruptListenerConfiguration newTfConfig, NotificationChain msgs)
-  {
-    TFInterruptListenerConfiguration oldTfConfig = tfConfig;
-    tfConfig = newTfConfig;
-    if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TF_CONFIG, oldTfConfig, newTfConfig);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setTfConfig(TFInterruptListenerConfiguration newTfConfig)
-  {
-    if (newTfConfig != tfConfig)
-    {
-      NotificationChain msgs = null;
-      if (tfConfig != null)
-        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TF_CONFIG, null, msgs);
-      if (newTfConfig != null)
-        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TF_CONFIG, null, msgs);
-      msgs = basicSetTfConfig(newTfConfig, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TF_CONFIG, newTfConfig, newTfConfig));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void initSubDevices()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    ModelFactory factory = ModelFactory.eINSTANCE;
+    for (int i = 0; i < 4; i++) {
+      DigitalActorDigitalOut4 out4 = factory.createDigitalActorDigitalOut4();
+      out4.setUid(getUid());
+      String subId = "out" + String.valueOf(i);
+      logger.debug("addSubDevice: {}", subId);
+      out4.setSubId(subId);
+      out4.setPin(i);
+      out4.init();
+      out4.setMbrick(this);
+      getMsubdevices().add(out4);
+    }
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void init()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MBrickletIndustrialDigitalOut4Impl.class);
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void enable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    logger.debug("{} enable called on MBrickletIndustrialDigitalOut4",
+      LoggerConstants.TFINIT);
+    tinkerforgeDevice = new BrickletIndustrialDigitalOut4(getUid(), getIpConnection());
   }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
+   * @generated NOT
    */
   public void disable()
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    tinkerforgeDevice = null;
   }
 
   /**
@@ -760,8 +655,6 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
         return basicSetBrickd(null, msgs);
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         return ((InternalEList<?>)getMsubdevices()).basicRemove(otherEnd, msgs);
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TF_CONFIG:
-        return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -816,10 +709,6 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
         return getBrickd();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         return getMsubdevices();
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEBOUNCE_PERIOD:
-        return getDebouncePeriod();
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TF_CONFIG:
-        return getTfConfig();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -870,13 +759,7 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
         return;
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         getMsubdevices().clear();
-        getMsubdevices().addAll((Collection<? extends IndustrialDigitalOut4>)newValue);
-        return;
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEBOUNCE_PERIOD:
-        setDebouncePeriod((Long)newValue);
-        return;
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TF_CONFIG:
-        setTfConfig((TFInterruptListenerConfiguration)newValue);
+        getMsubdevices().addAll((Collection<? extends DigitalActorDigitalOut4>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -928,12 +811,6 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         getMsubdevices().clear();
         return;
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEBOUNCE_PERIOD:
-        setDebouncePeriod(DEBOUNCE_PERIOD_EDEFAULT);
-        return;
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TF_CONFIG:
-        setTfConfig((TFInterruptListenerConfiguration)null);
-        return;
     }
     super.eUnset(featureID);
   }
@@ -972,10 +849,6 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
         return getBrickd() != null;
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         return msubdevices != null && !msubdevices.isEmpty();
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEBOUNCE_PERIOD:
-        return debouncePeriod != DEBOUNCE_PERIOD_EDEFAULT;
-      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TF_CONFIG:
-        return tfConfig != null;
     }
     return super.eIsSet(featureID);
   }
@@ -993,22 +866,6 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
       switch (derivedFeatureID)
       {
         case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES: return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
-        default: return -1;
-      }
-    }
-    if (baseClass == InterruptListener.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEBOUNCE_PERIOD: return ModelPackage.INTERRUPT_LISTENER__DEBOUNCE_PERIOD;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
         default: return -1;
       }
     }
@@ -1031,22 +888,6 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
         default: return -1;
       }
     }
-    if (baseClass == InterruptListener.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.INTERRUPT_LISTENER__DEBOUNCE_PERIOD: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEBOUNCE_PERIOD;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TF_CONFIG;
-        default: return -1;
-      }
-    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -1063,20 +904,6 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
       switch (baseOperationID)
       {
         case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4___INIT_SUB_DEVICES;
-        default: return -1;
-      }
-    }
-    if (baseClass == InterruptListener.class)
-    {
-      switch (baseOperationID)
-      {
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (baseOperationID)
-      {
         default: return -1;
       }
     }
@@ -1140,8 +967,6 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
-    result.append(", debouncePeriod: ");
-    result.append(debouncePeriod);
     result.append(')');
     return result.toString();
   }

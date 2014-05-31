@@ -55,6 +55,7 @@ import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
+import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletMoisture;
@@ -870,6 +871,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletHallEffect");
               mDevice = factory.createMBrickletHallEffect();
               mDevice.setDeviceIdentifier(BrickletHallEffect.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletIndustrialDigitalOut4.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletIndustrilaDigitalOut4");
+              mDevice = factory.createMBrickletIndustrialDigitalOut4();
+              mDevice.setDeviceIdentifier(BrickletIndustrialDigitalOut4.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());
