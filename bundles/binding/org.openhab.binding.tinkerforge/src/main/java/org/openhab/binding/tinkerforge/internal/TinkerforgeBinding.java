@@ -688,7 +688,8 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                   command.toString());
             }
           } else
-            logger.error("{} no tinkerforge device found for command", LoggerConstants.COMMAND);
+            logger.error("{} no tinkerforge device found for command for item uid: {} subId: {}",
+                LoggerConstants.COMMAND, deviceUid, deviceSubId);
         }
       }
     }
