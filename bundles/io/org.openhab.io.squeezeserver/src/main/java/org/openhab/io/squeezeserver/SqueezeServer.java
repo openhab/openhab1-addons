@@ -50,6 +50,7 @@ public class SqueezeServer implements ManagedService {
 	// configuration defaults for optional properties
 	private static final int DEFAULT_CLI_PORT = 9090;
 	private static final int DEFAULT_WEB_PORT = 9000;
+	private static final String DEFAULT_LANGUAGE = "en";
 
 	// / regEx to validate SqueezeServer config
 	// <code>'^(squeeze:)(host|cliport|webport)=.+$'</code>
@@ -60,6 +61,11 @@ public class SqueezeServer implements ManagedService {
 	private static final Pattern PLAYER_CONFIG_PATTERN = Pattern
 			.compile("^(.*?)\\.(id)$");
 
+	// / regEx to select the googleSpeak Language
+	// <code>'^(language)$'</code>
+	private static final Pattern LANGUAGE_CONFIG_PATTERN = Pattern
+			.compile("^(language)$");
+	
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
 	// the value by which the volume is changed by each INCREASE or
@@ -79,6 +85,9 @@ public class SqueezeServer implements ManagedService {
 	private final Map<String, SqueezePlayer> playersById = new ConcurrentHashMap<String, SqueezePlayer>();
 	private final Map<String, SqueezePlayer> playersByMacAddress = new ConcurrentHashMap<String, SqueezePlayer>();
 
+	// language properties
+	private String language;
+	
 	public synchronized boolean isConnected() {
 		if (clientSocket == null)
 			return false;
@@ -276,6 +285,10 @@ public class SqueezeServer implements ManagedService {
 		sendCommand(player.getMacAddress() + " show line1:" + line1 + " line2:"
 				+ line2 + " duration:" + String.valueOf(duration));
 	}
+	
+	public String language() {
+		return language;
+	}
 
 	/**
 	 * Send a command to the Squeeze Server.
@@ -313,6 +326,7 @@ public class SqueezeServer implements ManagedService {
 		host = null;
 		cliPort = DEFAULT_CLI_PORT;
 		webPort = DEFAULT_WEB_PORT;
+		language = DEFAULT_LANGUAGE;
 
 		playersById.clear();
 		playersByMacAddress.clear();
@@ -335,16 +349,17 @@ public class SqueezeServer implements ManagedService {
 
 			Matcher serverMatcher = SERVER_CONFIG_PATTERN.matcher(key);
 			Matcher playerMatcher = PLAYER_CONFIG_PATTERN.matcher(key);
+			Matcher languageMatcher = LANGUAGE_CONFIG_PATTERN.matcher(key);
 
 			String value = (String) config.get(key);
 
 			if (serverMatcher.matches()) {
 				String serverConfig = serverMatcher.group(2);
-				if (serverConfig.equals("host")) {
+				if (serverConfig.equals("host") && StringUtils.isNotBlank(value)) {
 					host = value;
-				} else if (serverConfig.equals("cliport")) {
+				} else if (serverConfig.equals("cliport") && StringUtils.isNotBlank(value)) {
 					cliPort = Integer.valueOf(value);
-				} else if (serverConfig.equals("webport")) {
+				} else if (serverConfig.equals("webport") && StringUtils.isNotBlank(value)) {
 					webPort = Integer.valueOf(value);
 				}
 			} else if (playerMatcher.matches()) {
@@ -354,7 +369,9 @@ public class SqueezeServer implements ManagedService {
 
 				playersById.put(playerId, player);
 				playersByMacAddress.put(macAddress, player);
-			} else {
+			}  else if (languageMatcher.matches() && StringUtils.isNotBlank(value)) {
+				language=value;
+			}else {
 				logger.warn("Unexpected or unsupported configuration: " + key
 						+ ". Ignoring.");
 			}
