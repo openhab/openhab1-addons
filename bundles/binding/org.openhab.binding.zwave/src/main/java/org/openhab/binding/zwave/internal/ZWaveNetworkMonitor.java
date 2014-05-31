@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
  * Rational
  * ========
  * # Ping the node to see if it's awake
+ * # Set the SUC return route (if there's an SUC)
  * # Update all the neighbors so that all nodes know who is around them
  * # Update the associations so that we know which nodes need to talk to others
  * # Update the routes between devices that have associations set
@@ -80,7 +81,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	private long networkHealNextTime = Long.MAX_VALUE;
 	private long networkHealNightlyTime = Long.MAX_VALUE;
 	private long pingNodeTime = Long.MAX_VALUE;
-	
+
 	private boolean initialised = false;
 
 	Map<Integer, HealNode> healNodes = new HashMap<Integer, HealNode>();
@@ -89,7 +90,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		INITIALIZING, WAITING, PING, SETSUCROUTE, UPDATENEIGHBORS, GETASSOCIATIONS, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, PINGEND, SAVE, DONE, FAILED;
 
 		public boolean isActive() {
-			switch(this) {
+			switch (this) {
 			case INITIALIZING:
 			case DONE:
 			case FAILED:
@@ -110,27 +111,29 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	}
 
 	/**
-	 * Set the hour that a daily network heal is performed 
-	 * @param time the hour of the heal (0-23)
+	 * Set the hour that a daily network heal is performed
+	 * 
+	 * @param time
+	 *            the hour of the heal (0-23)
 	 */
 	public void setHealTime(Integer time) {
-		if(time == null)
+		if (time == null)
 			networkHealNightlyHour = -1;
 		else
 			networkHealNightlyHour = time;
-		
+
 		// Sanity check
-		if(networkHealNightlyHour > 23)
+		if (networkHealNightlyHour > 23)
 			networkHealNightlyHour = -1;
-		if(networkHealNightlyHour < 0)
+		if (networkHealNightlyHour < 0)
 			networkHealNightlyHour = -1;
-		
-		if(initialised == false)
+
+		if (initialised == false)
 			return;
 
 		// Calculate the next heal time
 		networkHealNightlyTime = calculateNextHeal();
-		networkHealNextTime = networkHealNightlyTime;		
+		networkHealNextTime = networkHealNightlyTime;
 	}
 
 	public String getNodeState(int nodeId) {
@@ -160,9 +163,11 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	}
 
 	/**
-	 * Returns true if the node is currently in a healing state
-	 * or scheduled for a heal.
-	 * @param nodeId node to check
+	 * Returns true if the node is currently in a healing state or scheduled for
+	 * a heal.
+	 * 
+	 * @param nodeId
+	 *            node to check
 	 * @return true if healing is ongoing. false if waiting or failed.
 	 */
 	public boolean isNodeHealing(int nodeId) {
@@ -180,13 +185,15 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
 	/**
 	 * Perform an immediate heal on the specified node
-	 * @param nodeId Node to perform the heal on
+	 * 
+	 * @param nodeId
+	 *            Node to perform the heal on
 	 * @return true if the heal is scheduled
 	 */
 	public boolean healNode(int nodeId) {
@@ -203,7 +210,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		heal.routeList = null;
 		heal.state = HealState.WAITING;
 		heal.lastChange = Calendar.getInstance().getTime();
-		
+
 		// Find out if this is a listening device
 		if (node.isListening())
 			heal.listening = true;
@@ -226,13 +233,14 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// Build a list of devices that we need to heal
 		// The list is built multiple times since it seems that in order to
 		// fully optimize the network, this is required
-		for(ZWaveNode node : zController.getNodes()) {
-			// Ignore devices that haven't initialized yet - unless they are DEAD.
-			if(node.isInitializationComplete() == false && node.isDead() == false) {
+		for (ZWaveNode node : zController.getNodes()) {
+			// Ignore devices that haven't initialized yet - unless they are
+			// DEAD.
+			if (node.isInitializationComplete() == false && node.isDead() == false) {
 				logger.debug("NODE {}: Initialisation NOT yet complete. Skipping heal.", node.getNodeId());
 				continue;
 			}
-			
+
 			healNode(node.getNodeId());
 		}
 
@@ -249,31 +257,31 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	 */
 	public void execute() {
 		// Don't start the next node if there's a queue
-		if(zController.getSendQueueLength() > 1) {
-			logger.debug("Queue length is {} - deferring HEAL.");
+		if (zController.getSendQueueLength() > 1) {
+			logger.debug("Queue length is {} - deferring HEAL.", zController.getSendQueueLength());
 			return;
 		}
 
-		if(pingNodeTime < System.currentTimeMillis()) {
+		if (pingNodeTime < System.currentTimeMillis()) {
 			// Update the time and send a ping...
 			pingNodeTime = System.currentTimeMillis() + PING_PERIOD;
-			
-			// Find the node that we haven't communicated with for the longest time
+
+			// Find the node that we haven't communicated with for the longest
+			// time
 			ZWaveNode oldestNode = null;
-			for(ZWaveNode node : zController.getNodes()) {
+			for (ZWaveNode node : zController.getNodes()) {
 				// Ignore the controller and nodes that aren't listening
-				if(node.getNodeId() == zController.getOwnNodeId() || node.isListening() == false)
+				if (node.getNodeId() == zController.getOwnNodeId() || node.isListening() == false)
 					continue;
-				if(oldestNode == null) {
+				if (oldestNode == null) {
 					oldestNode = node;
-				}
-				else if(node.getLastUpdated().getTime() < oldestNode.getLastUpdated().getTime()) {
+				} else if (node.getLastUpdated().getTime() < oldestNode.getLastUpdated().getTime()) {
 					oldestNode = node;
 				}
 			}
 
 			// We now have the oldest node that we've heard from - ping it!
-			if(oldestNode != null) {
+			if (oldestNode != null) {
 				logger.debug("NODE {}: Sending periodic PING.", oldestNode.getNodeId());
 
 				// Reset the resend count - also resets the lastUpdate timer
@@ -284,8 +292,9 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				if (zwaveCommandClass != null)
 					zController.sendData(zwaveCommandClass.getNoOperationMessage());
 			}
-			
-			// To reduce congestion, we don't do anything else during this period
+
+			// To reduce congestion, we don't do anything else during this
+			// period
 			return;
 		}
 
@@ -322,27 +331,28 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				return;
 			}
 		}
-		
+
 		// There's nothing more to do
 		networkHealNextTime = networkHealNightlyTime;
 	}
 
 	/**
-	 * Perform the next step in the heal process.
-	 * This function also handles the retries. Each time through the loop
-	 * it increments the retry counter. If the max retries is exceeded then
-	 * the failed state is saved and we return to allow other nodes to continue.
+	 * Perform the next step in the heal process. This function also handles the
+	 * retries. Each time through the loop it increments the retry counter. If
+	 * the max retries is exceeded then the failed state is saved and we return
+	 * to allow other nodes to continue.
 	 * 
-	 * @param healing The node on which to perform the heal
+	 * @param healing
+	 *            The node on which to perform the heal
 	 */
 	private void nextHealStage(HealNode healing) {
 		// Don't do anything if it's failed already
-		if(healing.state == HealState.FAILED)
+		if (healing.state == HealState.FAILED)
 			return;
 
 		healing.lastChange = Calendar.getInstance().getTime();
 
-		// Set the ping time into the future. 
+		// Set the ping time into the future.
 		// This holds off the routine ping when there's a heal in progress
 		// to avoid congestion and false timeouts.
 		pingNodeTime = System.currentTimeMillis() + HEAL_TIMEOUT_PERIOD + 20000;
@@ -364,11 +374,6 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		case WAITING:
 			logger.debug("NODE {}: NETWORK HEAL - STARTING", healing.nodeId);
 
-			// If the node is dead, we need to make it alive otherwise nothing gets sent
-//			if(healing.node.isDead()) {
-//				healing.node.setAlive();
-//				logger.debug("NODE {}: Was dead, setting alive", healing.nodeId);
-//			}
 			// Reset the resend count.
 			// This also resets the time so that we cycle through all the nodes
 			healing.node.resetResendCount();
@@ -381,24 +386,21 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				if (zwaveCommandClass == null)
 					break;
 				zController.sendData(zwaveCommandClass.getNoOperationMessage());
+				healing.stateNext = HealState.SETSUCROUTE;
+				break;
+			}
+			healing.state = HealState.SETSUCROUTE;
+		case SETSUCROUTE:
+			// Only set the route if this is not the controller and there is an SUC in the network
+			if (healing.nodeId != zController.getOwnNodeId() && zController.getSucId() != 0) {
+				// Update the route to the controller
+				logger.debug("NODE {}: Heal is setting SUC route.", healing.nodeId);
+				healing.event = ZWaveNetworkEvent.Type.AssignSucReturnRoute;
 				healing.stateNext = HealState.UPDATENEIGHBORS;
+				zController.requestAssignSucReturnRoute(healing.nodeId);
 				break;
 			}
 			healing.state = HealState.UPDATENEIGHBORS;
-
-			// Skip over SUC Route - it seems to fail!
-			/*
-			 * case SETSUCROUTE: // Only set the route if this is not the
-			 * controller if (healing.nodeId != zController.getOwnNodeId()) { //
-			 * Update the route to the controller
-			 * logger.debug("NODE {}: Heal is setting SUC route.",
-			 * healing.nodeId); healing.event =
-			 * ZWaveNetworkEvent.Type.AssignSucReturnRoute; healing.event =
-			 * ZWaveNetworkEvent.Type.NodeRoutingInfo; healing.stateNext =
-			 * HealState.UPDATENEIGHBORS;
-			 * zController.requestNodeRoutingInfo(healing.nodeId); //
-			 * zController.requestAssignSucReturnRoute(healing.nodeId); break; }
-			 */
 		case UPDATENEIGHBORS:
 			logger.debug("NODE {}: Heal is updating node neighbors.", healing.nodeId);
 			healing.event = ZWaveNetworkEvent.Type.NodeNeighborUpdate;
@@ -491,11 +493,11 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	}
 
 	/**
-	 * Capture events that might be useful during the heal process
-	 * We need to know when a network event happens - these are specific
-	 * events that are used in the heal process (routing etc).
-	 * We need to know if a device wakes up so we can heal it (if needed)
-	 * We need to know when a PING transaction completes.
+	 * Capture events that might be useful during the heal process We need to
+	 * know when a network event happens - these are specific events that are
+	 * used in the heal process (routing etc). We need to know if a device wakes
+	 * up so we can heal it (if needed) We need to know when a PING transaction
+	 * completes.
 	 */
 	@Override
 	public void ZWaveIncomingEvent(ZWaveEvent event) {
@@ -533,11 +535,12 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		} else if (event instanceof ZWaveTransactionCompletedEvent) {
 			SerialMessage serialMessage = ((ZWaveTransactionCompletedEvent) event).getCompletedMessage();
 
-			if (serialMessage.getMessageClass() != SerialMessageClass.SendData && serialMessage.getMessageType() != SerialMessageType.Request)
+			if (serialMessage.getMessageClass() != SerialMessageClass.SendData
+					&& serialMessage.getMessageType() != SerialMessageType.Request)
 				return;
 
 			byte[] payload = serialMessage.getMessagePayload();
-			if(payload.length < 3)
+			if (payload.length < 3)
 				return;
 
 			HealNode node = healNodes.get(payload[0] & 0xFF);
@@ -545,7 +548,8 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				return;
 
 			// See if this node is waiting for a PING
-			if ((node.state == HealState.PING || node.state == HealState.PINGEND) && payload.length >= 3 && (payload[2] & 0xFF) == ZWaveCommandClass.CommandClass.NO_OPERATION.getKey()) {
+			if ((node.state == HealState.PING || node.state == HealState.PINGEND) && payload.length >= 3
+					&& (payload[2] & 0xFF) == ZWaveCommandClass.CommandClass.NO_OPERATION.getKey()) {
 				node.state = node.stateNext;
 				node.retryCnt = 0;
 				nextHealStage(node);
@@ -553,17 +557,17 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			}
 		} else if (event instanceof ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) {
 			// We only care about the wake-up notification
-			if(((ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) event).getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_NOTIFICATION)
+			if (((ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) event).getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_NOTIFICATION)
 				return;
 
 			// A wakeup event is received. Find the node in the node list
 			HealNode node = healNodes.get(event.getNodeId());
 			if (node == null)
 				return;
-			
+
 			// Check to see the state of this node
 			// and only process if there's something to do
-			if(!node.state.isActive())
+			if (!node.state.isActive())
 				return;
 
 			logger.debug("NODE {}: Heal WakeUp EVENT {}", node.nodeId, node.state);
@@ -576,26 +580,26 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			switch (statusEvent.getState()) {
 			case Dead:
 				ZWaveNode node = zController.getNode(statusEvent.getNodeId());
-				if(node == null) {
+				if (node == null) {
 					logger.error("NODE {}: Status event received, but node not found.", statusEvent.getNodeId());
 					return;
 				}
 
 				// The node is dead, but we may have already started a Heal
 				// If so, don't start it again!
-				if(!isNodeHealing(node.getNodeId())) {
+				if (!isNodeHealing(node.getNodeId())) {
 					logger.debug("NODE {}: DEAD node - requesting network heal.", node.getNodeId());
 
 					healNode(node.getNodeId());
 
 					// Reset the node stage to PING.
-					// This will also set the state back to DONE in resetResendCount if the node
+					// This will also set the state back to DONE in
+					// resetResendCount if the node
 					// has already completed initialisation.
-//					node.setNodeStage(NodeStage.PING);
+					// node.setNodeStage(NodeStage.PING);
 
 					node.resetResendCount();
-				}
-				else {
+				} else {
 					logger.debug("NODE {}: DEAD node - already healing.", node.getNodeId());
 				}
 				break;

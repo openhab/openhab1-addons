@@ -174,8 +174,10 @@ public class ZWaveNode {
 	 * @return
 	 */
 	public void setAlive(){
-		if(this.nodeStageAdvancer.isInitializationComplete())
+		if(this.nodeStageAdvancer.isInitializationComplete()) {
+			logger.debug("NODE {}: Node is now ALIVE", this.nodeId);
 			this.nodeStage = NodeStage.DONE;
+		}
 		else {
 			this.nodeStage = NodeStage.DYNAMIC;
 			this.nodeStageAdvancer.advanceNodeStage(NodeStage.DONE);

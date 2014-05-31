@@ -57,7 +57,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 
 		// close any open connections
 		for (XbmcConnector connector : connectors.values()) {
-			if (connector.isOpen()) {
+			if (connector.isConnected()) {
 				connector.close();
 			}
 		}
@@ -128,7 +128,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			connector.addItem(itemName, property);
 			
 			// update the player status so any current value is initialised
-			if (connector.isOpen())
+			if (connector.isConnected())
 				connector.updatePlayerStatus();
 		}
 	}
@@ -223,19 +223,20 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 	 */
 	@Override
 	protected void execute() {
-		logger.trace("Checking for broken connections...");
-
-		// check each of our connections, if failed then attempt to reconnect
 		for (Map.Entry<String, XbmcConnector> entry : connectors.entrySet()) {
 			XbmcConnector connector = entry.getValue();
-			if (!connector.isOpen()) {
+			if (connector.isConnected()) {
+				// we are still connected but send a ping to make sure
+				connector.ping();
+			} else {
+				// broken connection so attempt to reconnect
 				logger.debug("Broken connection found for '{}', attempting to reconnect...", entry.getKey());
 				try {
 					connector.open();
 				} catch (Exception e) {
-					logger.debug("Connection failed for '{}', will retry in {}s", entry.getKey(), refreshInterval / 1000);
+					logger.debug("Reconnect failed for '{}', will retry in {}s", entry.getKey(), refreshInterval / 1000);
 				}
-			}
+			} 
 		}
 	}
 
@@ -260,7 +261,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 				logger.warn("Received command ({}) for item {} but no XBMC connector found for {}, ignoring", command.toString(), itemName, xbmcInstance);
 				return;
 			}
-			if (!connector.isOpen()) {
+			if (!connector.isConnected()) {
 				logger.warn("Received command ({}) for item {} but the connection to the XBMC instance {} is down, ignoring", command.toString(), itemName, xbmcInstance);
 				return;
 			}
@@ -292,7 +293,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 				logger.warn("Received update ({}) for item {} but no XBMC connector found for {}, ignoring", newState.toString(), itemName, xbmcInstance);
 				return;
 			}
-			if (!connector.isOpen()) {
+			if (!connector.isConnected()) {
 				logger.warn("Received update ({}) for item {} but the connection to the XBMC instance {} is down, ignoring", newState.toString(), itemName, xbmcInstance);
 				return;
 			}

@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.TreeSet;
 
 import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
-import org.openhab.binding.insteonplm.internal.message.XMLMessageReader.ParsingException;
 import org.openhab.binding.insteonplm.internal.utils.Utils;
+import org.openhab.binding.insteonplm.internal.utils.Utils.ParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -34,8 +34,11 @@ public class DimmableDevice extends Device implements DimmableDeviceIntf {
 		if (level < 0 || level > 255)
 			throw new IllegalArgumentException("Dim levels must be between 0 and 255.");
 		int status = JNA.CLibrary.INSTANCE.tdDim(getId(), level);
-		if (status != TELLSTICK_SUCCESS)
+		if (status == TELLSTICK_SUCCESS) {
+			this.setData(Integer.toString(level));
+		} else {
 			throw new TellstickException(this, status);
+		}
 	}
 
 	/**

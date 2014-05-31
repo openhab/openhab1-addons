@@ -25,13 +25,13 @@ import org.slf4j.LoggerFactory;
 public class AssignReturnRouteMessageClass extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(AssignReturnRouteMessageClass.class);
 
-	public SerialMessage doRequest(int nodeId, int destinationId) {
+	public SerialMessage doRequest(int nodeId, int destinationId, int callbackId) {
 		logger.debug("NODE {}: Assigning return route to node {}", nodeId, destinationId);
 
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.AssignReturnRoute, SerialMessageType.Request,
 				SerialMessageClass.AssignReturnRoute, SerialMessagePriority.High);
-		byte[] newPayload = { (byte) nodeId, (byte) destinationId };
+		byte[] newPayload = { (byte) nodeId, (byte) destinationId, (byte) callbackId };
 		newMessage.setMessagePayload(newPayload);
     	return newMessage;
 	}
