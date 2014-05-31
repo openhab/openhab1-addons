@@ -242,7 +242,7 @@ public class Squeezebox {
 		}
 		
 		// clear the player playlist
-		//squeezeServer.clearPlaylist(playerId);
+		squeezeServer.clearPlaylist(playerId);
 		
 		// restore the player state
 		if (volume != -1) {
