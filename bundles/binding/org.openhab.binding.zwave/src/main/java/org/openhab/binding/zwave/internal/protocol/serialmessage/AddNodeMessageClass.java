@@ -10,6 +10,7 @@ package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessage.SerialMessageClass.AddNodeToNetwork, SerialMessage.SerialMessageType.Request,
 				SerialMessage.SerialMessageClass.AddNodeToNetwork, SerialMessage.SerialMessagePriority.High);
-		byte[] newPayload = { (byte) ADD_NODE_ANY };
+		byte[] newPayload = { (byte) ADD_NODE_ANY, (byte)255 };
 		if(highPower == true)
 			newPayload[0] |= OPTION_HIGH_POWER;
 
@@ -66,44 +67,43 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 
 	@Override
 	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		switch(incomingMessage.getMessagePayloadByte(0)) {
+		switch(incomingMessage.getMessagePayloadByte(1)) {
 		case ADD_NODE_STATUS_LEARN_READY:
 			logger.debug("Learn ready.");
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeStart));
 			break;
 		case ADD_NODE_STATUS_NODE_FOUND:
-			logger.debug("Node found.");
+			logger.debug("New node found.");
 			break;
 		case ADD_NODE_STATUS_ADDING_SLAVE:
-			logger.debug("Adding slave {}.", incomingMessage.getMessagePayloadByte(1));
+			logger.debug("NODE {}: Adding slave.", incomingMessage.getMessagePayloadByte(2));
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeSlaveFound, incomingMessage.getMessagePayloadByte(2)));
 			break;
 		case ADD_NODE_STATUS_ADDING_CONTROLLER:
-			logger.debug("Adding controller {}.", incomingMessage.getMessagePayloadByte(1));
+			logger.debug("NODE {}: Adding controller.", incomingMessage.getMessagePayloadByte(2));
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeControllerFound, incomingMessage.getMessagePayloadByte(2)));
 			break;
 		case ADD_NODE_STATUS_PROTOCOL_DONE:
 			logger.debug("Protocol done.");
-			doRequestStop();
 			break;
 		case ADD_NODE_STATUS_DONE:
 			logger.debug("Done.");
+			zController.sendData(doRequestStop());
+			// If the node ID is 0, ignore!
+			if(incomingMessage.getMessagePayloadByte(2) != 0)
+				zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeDone, incomingMessage.getMessagePayloadByte(2)));
 			break;
 		case ADD_NODE_STATUS_FAILED:
 			logger.debug("Failed.");
-			doRequestStop();
+			zController.sendData(doRequestStop());
+			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeFail));
 			break;
 		default:
-			logger.debug("Unknown request ({}).", incomingMessage.getMessagePayloadByte(0));
+			logger.debug("Unknown request ({}).", incomingMessage.getMessagePayloadByte(1));
 			break;
 		}
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 
 		return transactionComplete;
-	}
-
-	@Override
-	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		logger.debug("handleResponse.");
-		checkTransactionComplete(lastSentMessage, incomingMessage);
-		
-		return true;
 	}
 }

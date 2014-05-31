@@ -65,12 +65,21 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 		switch (status) {
 		case COMPLETE_OK:
 			ZWaveNode node = zController.getNode(originalMessage.getMessageNode());
+			if(node == null)
+				break;
 
-			node.resetResendCount();
-			// in case we received a ping response and the node is alive, we
-			// proceed with the next node stage for this node.
-			if (node != null && node.getNodeStage() == NodeStage.PING) {
-				node.advanceNodeStage(NodeStage.DETAILS);
+			// If the node is DEAD, but we've just received a message from it, then it's not dead!
+			if(node.isDead()) {
+				node.setAlive();
+				logger.debug("NODE {}: Node has risen from the DEAD. Set stage to {}.", node.getNodeId(), node.getNodeStage());			
+			}
+			else {
+				node.resetResendCount();
+				// in case we received a ping response and the node is alive, we
+				// proceed with the next node stage for this node.
+				if (node.getNodeStage() == NodeStage.PING) {
+					node.advanceNodeStage(NodeStage.DETAILS);
+				}
 			}
 			checkTransactionComplete(lastSentMessage, incomingMessage);
 			return true;
