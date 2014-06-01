@@ -1,15 +1,8 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -24,58 +17,44 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
-import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
-import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
-import org.openhab.binding.tinkerforge.internal.model.IODevice;
-import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
-import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tinkerforge.BrickletIO16;
+import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.IPConnection;
-import com.tinkerforge.NotConnectedException;
-import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>MBricklet IO16</b></em>'.
- *
- * @author Theo Weiss
- * @since 1.4.0
-<!-- end-user-doc -->
+ * An implementation of the model object '<em><b>MBricklet Industrial Digital Out4</b></em>'.
+ * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getLogger <em>Logger</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getUid <em>Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#isPoll <em>Poll</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getEnabledA <em>Enabled A</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getIpConnection <em>Ip Connection</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getConnectedUid <em>Connected Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getPosition <em>Position</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getDeviceIdentifier <em>Device Identifier</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getName <em>Name</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getBrickd <em>Brickd</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getMsubdevices <em>Msubdevices</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getDebouncePeriod <em>Debounce Period</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getTfConfig <em>Tf Config</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIO16Impl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getLogger <em>Logger</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#isPoll <em>Poll</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getEnabledA <em>Enabled A</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getIpConnection <em>Ip Connection</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getConnectedUid <em>Connected Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getPosition <em>Position</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getDeviceIdentifier <em>Device Identifier</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getName <em>Name</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getBrickd <em>Brickd</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getMsubdevices <em>Msubdevices</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements MBrickletIO16
+public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Container implements MBrickletIndustrialDigitalOut4
 {
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -165,7 +144,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
    * @generated
    * @ordered
    */
-  protected BrickletIO16 tinkerforgeDevice;
+  protected BrickletIndustrialDigitalOut4 tinkerforgeDevice;
 
   /**
    * The default value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
@@ -275,64 +254,14 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
    * @generated
    * @ordered
    */
-  protected EList<IODevice> msubdevices;
-
-  /**
-   * The default value of the '{@link #getDebouncePeriod() <em>Debounce Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDebouncePeriod()
-   * @generated
-   * @ordered
-   */
-  protected static final long DEBOUNCE_PERIOD_EDEFAULT = 100L;
-
-  /**
-   * The cached value of the '{@link #getDebouncePeriod() <em>Debounce Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDebouncePeriod()
-   * @generated
-   * @ordered
-   */
-  protected long debouncePeriod = DEBOUNCE_PERIOD_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTfConfig()
-   * @generated
-   * @ordered
-   */
-  protected TFInterruptListenerConfiguration tfConfig;
-
-  /**
-   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDeviceType()
-   * @generated
-   * @ordered
-   */
-  protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_io16";
-
-  /**
-   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDeviceType()
-   * @generated
-   * @ordered
-   */
-  protected String deviceType = DEVICE_TYPE_EDEFAULT;
+  protected EList<DigitalActorDigitalOut4> msubdevices;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected MBrickletIO16Impl()
+  protected MBrickletIndustrialDigitalOut4Impl()
   {
     super();
   }
@@ -345,7 +274,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
   @Override
   protected EClass eStaticClass()
   {
-    return ModelPackage.Literals.MBRICKLET_IO16;
+    return ModelPackage.Literals.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4;
   }
 
   /**
@@ -368,7 +297,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     Logger oldLogger = logger;
     logger = newLogger;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__LOGGER, oldLogger, logger));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__LOGGER, oldLogger, logger));
   }
 
   /**
@@ -391,7 +320,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     String oldUid = uid;
     uid = newUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__UID, oldUid, uid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__UID, oldUid, uid));
   }
 
   /**
@@ -414,7 +343,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     boolean oldPoll = poll;
     poll = newPoll;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__POLL, oldPoll, poll));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__POLL, oldPoll, poll));
   }
 
   /**
@@ -437,7 +366,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     AtomicBoolean oldEnabledA = enabledA;
     enabledA = newEnabledA;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__ENABLED_A, oldEnabledA, enabledA));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__ENABLED_A, oldEnabledA, enabledA));
   }
 
   /**
@@ -445,7 +374,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
    * <!-- end-user-doc -->
    * @generated
    */
-  public BrickletIO16 getTinkerforgeDevice()
+  public BrickletIndustrialDigitalOut4 getTinkerforgeDevice()
   {
     return tinkerforgeDevice;
   }
@@ -455,12 +384,12 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setTinkerforgeDevice(BrickletIO16 newTinkerforgeDevice)
+  public void setTinkerforgeDevice(BrickletIndustrialDigitalOut4 newTinkerforgeDevice)
   {
-    BrickletIO16 oldTinkerforgeDevice = tinkerforgeDevice;
+    BrickletIndustrialDigitalOut4 oldTinkerforgeDevice = tinkerforgeDevice;
     tinkerforgeDevice = newTinkerforgeDevice;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
   }
 
   /**
@@ -483,7 +412,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     IPConnection oldIpConnection = ipConnection;
     ipConnection = newIpConnection;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__IP_CONNECTION, oldIpConnection, ipConnection));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__IP_CONNECTION, oldIpConnection, ipConnection));
   }
 
   /**
@@ -506,7 +435,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     String oldConnectedUid = connectedUid;
     connectedUid = newConnectedUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__CONNECTED_UID, oldConnectedUid, connectedUid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__CONNECTED_UID, oldConnectedUid, connectedUid));
   }
 
   /**
@@ -529,7 +458,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     char oldPosition = position;
     position = newPosition;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__POSITION, oldPosition, position));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__POSITION, oldPosition, position));
   }
 
   /**
@@ -552,7 +481,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     int oldDeviceIdentifier = deviceIdentifier;
     deviceIdentifier = newDeviceIdentifier;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
   }
 
   /**
@@ -575,7 +504,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__NAME, oldName, name));
   }
 
   /**
@@ -585,7 +514,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
    */
   public MBrickd getBrickd()
   {
-    if (eContainerFeatureID() != ModelPackage.MBRICKLET_IO16__BRICKD) return null;
+    if (eContainerFeatureID() != ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__BRICKD) return null;
     return (MBrickd)eContainer();
   }
 
@@ -596,7 +525,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
    */
   public NotificationChain basicSetBrickd(MBrickd newBrickd, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newBrickd, ModelPackage.MBRICKLET_IO16__BRICKD, msgs);
+    msgs = eBasicSetContainer((InternalEObject)newBrickd, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__BRICKD, msgs);
     return msgs;
   }
 
@@ -607,7 +536,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
    */
   public void setBrickd(MBrickd newBrickd)
   {
-    if (newBrickd != eInternalContainer() || (eContainerFeatureID() != ModelPackage.MBRICKLET_IO16__BRICKD && newBrickd != null))
+    if (newBrickd != eInternalContainer() || (eContainerFeatureID() != ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__BRICKD && newBrickd != null))
     {
       if (EcoreUtil.isAncestor(this, newBrickd))
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -620,7 +549,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__BRICKD, newBrickd, newBrickd));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__BRICKD, newBrickd, newBrickd));
   }
 
   /**
@@ -628,11 +557,11 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<IODevice> getMsubdevices()
+  public EList<DigitalActorDigitalOut4> getMsubdevices()
   {
     if (msubdevices == null)
     {
-      msubdevices = new EObjectContainmentWithInverseEList<IODevice>(MSubDevice.class, this, ModelPackage.MBRICKLET_IO16__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
+      msubdevices = new EObjectContainmentWithInverseEList<DigitalActorDigitalOut4>(MSubDevice.class, this, ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
     }
     return msubdevices;
   }
@@ -640,128 +569,23 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
-  public long getDebouncePeriod()
-  {
-    return debouncePeriod;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setDebouncePeriod(long newDebouncePeriod)
-  {
-    long oldDebouncePeriod = debouncePeriod;
-    debouncePeriod = newDebouncePeriod;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__DEBOUNCE_PERIOD, oldDebouncePeriod, debouncePeriod));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public TFInterruptListenerConfiguration getTfConfig()
-  {
-    return tfConfig;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetTfConfig(TFInterruptListenerConfiguration newTfConfig, NotificationChain msgs)
-  {
-    TFInterruptListenerConfiguration oldTfConfig = tfConfig;
-    tfConfig = newTfConfig;
-    if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__TF_CONFIG, oldTfConfig, newTfConfig);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setTfConfig(TFInterruptListenerConfiguration newTfConfig)
-  {
-    if (newTfConfig != tfConfig)
-    {
-      NotificationChain msgs = null;
-      if (tfConfig != null)
-        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_IO16__TF_CONFIG, null, msgs);
-      if (newTfConfig != null)
-        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_IO16__TF_CONFIG, null, msgs);
-      msgs = basicSetTfConfig(newTfConfig, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_IO16__TF_CONFIG, newTfConfig, newTfConfig));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String getDeviceType()
-  {
-    return deviceType;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated NOT
    */
-	public void initSubDevices() {
-		ModelFactory factory = ModelFactory.eINSTANCE;
-		ArrayList<String> portList = new ArrayList<String>(2);
-		portList.add("a");
-		portList.add("b");
-		char[] a = {'a', 'b'};
-		for (int j = 0; j < a.length; j++) {
-			char port = a[j];
-			for (int i = 0; i < 8; i++) {
-				DigitalSensor sensor = factory.createDigitalSensor();
-				sensor.setUid(getUid());
-				String genericDeviceId = port + String.valueOf(i);
-				String subId = "in" + genericDeviceId;
-				sensor.setSubId(subId);
-				sensor.setPin(i);
-				sensor.setPort(port);
-				sensor.setGenericDeviceId(genericDeviceId);
-				sensor.init();
-				sensor.setMbrick(this);
-				logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT,
-						subId);
-			}
-			for (int i = 0; i < 8; i++) {
-				DigitalActorIO16 actor = factory.createDigitalActorIO16();
-				actor.setUid(getUid());
-				String genericDeviceId = port + String.valueOf(i);
-				String subId = "out" + genericDeviceId;
-				actor.setSubId(subId);
-				actor.setPin(i);
-				actor.setPort(port);
-				actor.setGenericDeviceId(genericDeviceId);
-				actor.init();
-				actor.setMbrick(this);
-				logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT,
-						subId);
-			}
-			
-		}
-	}
+  public void initSubDevices()
+  {
+    ModelFactory factory = ModelFactory.eINSTANCE;
+    for (int i = 0; i < 4; i++) {
+      DigitalActorDigitalOut4 out4 = factory.createDigitalActorDigitalOut4();
+      out4.setUid(getUid());
+      String subId = "out" + String.valueOf(i);
+      logger.debug("addSubDevice: {}", subId);
+      out4.setSubId(subId);
+      out4.setPin(i);
+      out4.init();
+      out4.setMbrick(this);
+      getMsubdevices().add(out4);
+    }
+  }
 
   /**
    * <!-- begin-user-doc -->
@@ -770,8 +594,8 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
    */
   public void init()
   {
-		setEnabledA(new AtomicBoolean());
-		logger = LoggerFactory.getLogger(MBrickletIO16Impl.class);
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MBrickletIndustrialDigitalOut4Impl.class);
   }
 
   /**
@@ -779,30 +603,12 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	public void enable() {
-		tinkerforgeDevice = new BrickletIO16(getUid(), getIpConnection());
-		if (tfConfig != null) {
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"debouncePeriod"))) {
-				setDebouncePeriod(tfConfig.getDebouncePeriod());
-			}
-		}
-		// enable interrupts for all pins
-		try {
-			tinkerforgeDevice.setResponseExpectedAll(true);
-			logger.debug("{} BrickletIO16 setting debouncePeriod to {}", LoggerConstants.TFINIT,
-					getDebouncePeriod());
-			tinkerforgeDevice.setDebouncePeriod(getDebouncePeriod());
-			tinkerforgeDevice.setPortInterrupt('a', (short) 255);
-			tinkerforgeDevice.setPortInterrupt('b', (short) 255);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-	}
+  public void enable()
+  {
+    logger.debug("{} enable called on MBrickletIndustrialDigitalOut4",
+      LoggerConstants.TFINIT);
+    tinkerforgeDevice = new BrickletIndustrialDigitalOut4(getUid(), getIpConnection());
+  }
 
   /**
    * <!-- begin-user-doc -->
@@ -811,8 +617,8 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
    */
   public void disable()
   {
-	  tinkerforgeDevice = null;
-   }
+    tinkerforgeDevice = null;
+  }
 
   /**
    * <!-- begin-user-doc -->
@@ -825,11 +631,11 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_IO16__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__BRICKD:
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
         return basicSetBrickd((MBrickd)otherEnd, msgs);
-      case ModelPackage.MBRICKLET_IO16__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         return ((InternalEList<InternalEObject>)(InternalEList<?>)getMsubdevices()).basicAdd(otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -845,12 +651,10 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_IO16__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__BRICKD:
         return basicSetBrickd(null, msgs);
-      case ModelPackage.MBRICKLET_IO16__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         return ((InternalEList<?>)getMsubdevices()).basicRemove(otherEnd, msgs);
-      case ModelPackage.MBRICKLET_IO16__TF_CONFIG:
-        return basicSetTfConfig(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -865,7 +669,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
   {
     switch (eContainerFeatureID())
     {
-      case ModelPackage.MBRICKLET_IO16__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__BRICKD:
         return eInternalContainer().eInverseRemove(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class, msgs);
     }
     return super.eBasicRemoveFromContainerFeature(msgs);
@@ -881,36 +685,30 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_IO16__LOGGER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__LOGGER:
         return getLogger();
-      case ModelPackage.MBRICKLET_IO16__UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__UID:
         return getUid();
-      case ModelPackage.MBRICKLET_IO16__POLL:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__POLL:
         return isPoll();
-      case ModelPackage.MBRICKLET_IO16__ENABLED_A:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__ENABLED_A:
         return getEnabledA();
-      case ModelPackage.MBRICKLET_IO16__TINKERFORGE_DEVICE:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TINKERFORGE_DEVICE:
         return getTinkerforgeDevice();
-      case ModelPackage.MBRICKLET_IO16__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__IP_CONNECTION:
         return getIpConnection();
-      case ModelPackage.MBRICKLET_IO16__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__CONNECTED_UID:
         return getConnectedUid();
-      case ModelPackage.MBRICKLET_IO16__POSITION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__POSITION:
         return getPosition();
-      case ModelPackage.MBRICKLET_IO16__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEVICE_IDENTIFIER:
         return getDeviceIdentifier();
-      case ModelPackage.MBRICKLET_IO16__NAME:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__NAME:
         return getName();
-      case ModelPackage.MBRICKLET_IO16__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__BRICKD:
         return getBrickd();
-      case ModelPackage.MBRICKLET_IO16__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         return getMsubdevices();
-      case ModelPackage.MBRICKLET_IO16__DEBOUNCE_PERIOD:
-        return getDebouncePeriod();
-      case ModelPackage.MBRICKLET_IO16__TF_CONFIG:
-        return getTfConfig();
-      case ModelPackage.MBRICKLET_IO16__DEVICE_TYPE:
-        return getDeviceType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -926,48 +724,42 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_IO16__LOGGER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__LOGGER:
         setLogger((Logger)newValue);
         return;
-      case ModelPackage.MBRICKLET_IO16__UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__UID:
         setUid((String)newValue);
         return;
-      case ModelPackage.MBRICKLET_IO16__POLL:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__POLL:
         setPoll((Boolean)newValue);
         return;
-      case ModelPackage.MBRICKLET_IO16__ENABLED_A:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
         return;
-      case ModelPackage.MBRICKLET_IO16__TINKERFORGE_DEVICE:
-        setTinkerforgeDevice((BrickletIO16)newValue);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TINKERFORGE_DEVICE:
+        setTinkerforgeDevice((BrickletIndustrialDigitalOut4)newValue);
         return;
-      case ModelPackage.MBRICKLET_IO16__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__IP_CONNECTION:
         setIpConnection((IPConnection)newValue);
         return;
-      case ModelPackage.MBRICKLET_IO16__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__CONNECTED_UID:
         setConnectedUid((String)newValue);
         return;
-      case ModelPackage.MBRICKLET_IO16__POSITION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__POSITION:
         setPosition((Character)newValue);
         return;
-      case ModelPackage.MBRICKLET_IO16__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEVICE_IDENTIFIER:
         setDeviceIdentifier((Integer)newValue);
         return;
-      case ModelPackage.MBRICKLET_IO16__NAME:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__NAME:
         setName((String)newValue);
         return;
-      case ModelPackage.MBRICKLET_IO16__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__BRICKD:
         setBrickd((MBrickd)newValue);
         return;
-      case ModelPackage.MBRICKLET_IO16__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         getMsubdevices().clear();
-        getMsubdevices().addAll((Collection<? extends IODevice>)newValue);
-        return;
-      case ModelPackage.MBRICKLET_IO16__DEBOUNCE_PERIOD:
-        setDebouncePeriod((Long)newValue);
-        return;
-      case ModelPackage.MBRICKLET_IO16__TF_CONFIG:
-        setTfConfig((TFInterruptListenerConfiguration)newValue);
+        getMsubdevices().addAll((Collection<? extends DigitalActorDigitalOut4>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -983,47 +775,41 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_IO16__LOGGER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_IO16__UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__UID:
         setUid(UID_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_IO16__POLL:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__POLL:
         setPoll(POLL_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_IO16__ENABLED_A:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_IO16__TINKERFORGE_DEVICE:
-        setTinkerforgeDevice((BrickletIO16)null);
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TINKERFORGE_DEVICE:
+        setTinkerforgeDevice((BrickletIndustrialDigitalOut4)null);
         return;
-      case ModelPackage.MBRICKLET_IO16__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__IP_CONNECTION:
         setIpConnection(IP_CONNECTION_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_IO16__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__CONNECTED_UID:
         setConnectedUid(CONNECTED_UID_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_IO16__POSITION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__POSITION:
         setPosition(POSITION_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_IO16__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEVICE_IDENTIFIER:
         setDeviceIdentifier(DEVICE_IDENTIFIER_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_IO16__NAME:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_IO16__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__BRICKD:
         setBrickd((MBrickd)null);
         return;
-      case ModelPackage.MBRICKLET_IO16__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         getMsubdevices().clear();
-        return;
-      case ModelPackage.MBRICKLET_IO16__DEBOUNCE_PERIOD:
-        setDebouncePeriod(DEBOUNCE_PERIOD_EDEFAULT);
-        return;
-      case ModelPackage.MBRICKLET_IO16__TF_CONFIG:
-        setTfConfig((TFInterruptListenerConfiguration)null);
         return;
     }
     super.eUnset(featureID);
@@ -1039,36 +825,30 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_IO16__LOGGER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-      case ModelPackage.MBRICKLET_IO16__UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-      case ModelPackage.MBRICKLET_IO16__POLL:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__POLL:
         return poll != POLL_EDEFAULT;
-      case ModelPackage.MBRICKLET_IO16__ENABLED_A:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-      case ModelPackage.MBRICKLET_IO16__TINKERFORGE_DEVICE:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__TINKERFORGE_DEVICE:
         return tinkerforgeDevice != null;
-      case ModelPackage.MBRICKLET_IO16__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__IP_CONNECTION:
         return IP_CONNECTION_EDEFAULT == null ? ipConnection != null : !IP_CONNECTION_EDEFAULT.equals(ipConnection);
-      case ModelPackage.MBRICKLET_IO16__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__CONNECTED_UID:
         return CONNECTED_UID_EDEFAULT == null ? connectedUid != null : !CONNECTED_UID_EDEFAULT.equals(connectedUid);
-      case ModelPackage.MBRICKLET_IO16__POSITION:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__POSITION:
         return position != POSITION_EDEFAULT;
-      case ModelPackage.MBRICKLET_IO16__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__DEVICE_IDENTIFIER:
         return deviceIdentifier != DEVICE_IDENTIFIER_EDEFAULT;
-      case ModelPackage.MBRICKLET_IO16__NAME:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case ModelPackage.MBRICKLET_IO16__BRICKD:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__BRICKD:
         return getBrickd() != null;
-      case ModelPackage.MBRICKLET_IO16__MSUBDEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES:
         return msubdevices != null && !msubdevices.isEmpty();
-      case ModelPackage.MBRICKLET_IO16__DEBOUNCE_PERIOD:
-        return debouncePeriod != DEBOUNCE_PERIOD_EDEFAULT;
-      case ModelPackage.MBRICKLET_IO16__TF_CONFIG:
-        return tfConfig != null;
-      case ModelPackage.MBRICKLET_IO16__DEVICE_TYPE:
-        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
     return super.eIsSet(featureID);
   }
@@ -1085,23 +865,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MBRICKLET_IO16__MSUBDEVICES: return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
-        default: return -1;
-      }
-    }
-    if (baseClass == InterruptListener.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.MBRICKLET_IO16__DEBOUNCE_PERIOD: return ModelPackage.INTERRUPT_LISTENER__DEBOUNCE_PERIOD;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.MBRICKLET_IO16__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
+        case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES: return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
         default: return -1;
       }
     }
@@ -1120,23 +884,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES: return ModelPackage.MBRICKLET_IO16__MSUBDEVICES;
-        default: return -1;
-      }
-    }
-    if (baseClass == InterruptListener.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.INTERRUPT_LISTENER__DEBOUNCE_PERIOD: return ModelPackage.MBRICKLET_IO16__DEBOUNCE_PERIOD;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_IO16__TF_CONFIG;
+        case ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4__MSUBDEVICES;
         default: return -1;
       }
     }
@@ -1155,21 +903,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     {
       switch (baseOperationID)
       {
-        case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES: return ModelPackage.MBRICKLET_IO16___INIT_SUB_DEVICES;
-        default: return -1;
-      }
-    }
-    if (baseClass == InterruptListener.class)
-    {
-      switch (baseOperationID)
-      {
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (baseOperationID)
-      {
+        case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES: return ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4___INIT_SUB_DEVICES;
         default: return -1;
       }
     }
@@ -1186,16 +920,16 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
   {
     switch (operationID)
     {
-      case ModelPackage.MBRICKLET_IO16___INIT_SUB_DEVICES:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4___INIT_SUB_DEVICES:
         initSubDevices();
         return null;
-      case ModelPackage.MBRICKLET_IO16___INIT:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4___INIT:
         init();
         return null;
-      case ModelPackage.MBRICKLET_IO16___ENABLE:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4___ENABLE:
         enable();
         return null;
-      case ModelPackage.MBRICKLET_IO16___DISABLE:
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4___DISABLE:
         disable();
         return null;
     }
@@ -1233,12 +967,8 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
-    result.append(", debouncePeriod: ");
-    result.append(debouncePeriod);
-    result.append(", deviceType: ");
-    result.append(deviceType);
     result.append(')');
     return result.toString();
   }
 
-} //MBrickletIO16Impl
+} //MBrickletIndustrialDigitalOut4Impl

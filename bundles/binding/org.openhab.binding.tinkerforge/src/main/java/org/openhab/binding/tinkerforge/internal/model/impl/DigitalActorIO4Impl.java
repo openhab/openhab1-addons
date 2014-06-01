@@ -17,7 +17,10 @@ import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
 import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
+import org.openhab.binding.tinkerforge.internal.model.IO4Device;
+import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
@@ -37,6 +40,7 @@ import com.tinkerforge.TimeoutException;
  * <p>
  * The following features are implemented:
  * <ul>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getDigitalState <em>Digital State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getUid <em>Uid</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#isPoll <em>Poll</em>}</li>
@@ -46,7 +50,6 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getGenericDeviceId <em>Generic Device Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getDigitalState <em>Digital State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getPin <em>Pin</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#getDefaultState <em>Default State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DigitalActorIO4Impl#isKeepOnReconnect <em>Keep On Reconnect</em>}</li>
@@ -57,6 +60,26 @@ import com.tinkerforge.TimeoutException;
  */
 public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements DigitalActorIO4
 {
+  /**
+   * The default value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDigitalState()
+   * @generated
+   * @ordered
+   */
+  protected static final HighLowValue DIGITAL_STATE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDigitalState()
+   * @generated
+   * @ordered
+   */
+  protected HighLowValue digitalState = DIGITAL_STATE_EDEFAULT;
+
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -208,26 +231,6 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDigitalState()
-   * @generated
-   * @ordered
-   */
-  protected static final HighLowValue DIGITAL_STATE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDigitalState()
-   * @generated
-   * @ordered
-   */
-  protected HighLowValue digitalState = DIGITAL_STATE_EDEFAULT;
-
-  /**
    * The default value of the '{@link #getPin() <em>Pin</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -308,6 +311,29 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
   protected EClass eStaticClass()
   {
     return ModelPackage.Literals.DIGITAL_ACTOR_IO4;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public HighLowValue getDigitalState()
+  {
+    return digitalState;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDigitalState(HighLowValue newDigitalState)
+  {
+    HighLowValue oldDigitalState = digitalState;
+    digitalState = newDigitalState;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__DIGITAL_STATE, oldDigitalState, digitalState));
   }
 
   /**
@@ -549,29 +575,6 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
   public String getDeviceType()
   {
     return deviceType;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public HighLowValue getDigitalState()
-  {
-    return digitalState;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setDigitalState(HighLowValue newDigitalState)
-  {
-    HighLowValue oldDigitalState = digitalState;
-    digitalState = newDigitalState;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DIGITAL_ACTOR_IO4__DIGITAL_STATE, oldDigitalState, digitalState));
   }
 
   /**
@@ -824,6 +827,8 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
   {
     switch (featureID)
     {
+      case ModelPackage.DIGITAL_ACTOR_IO4__DIGITAL_STATE:
+        return getDigitalState();
       case ModelPackage.DIGITAL_ACTOR_IO4__LOGGER:
         return getLogger();
       case ModelPackage.DIGITAL_ACTOR_IO4__UID:
@@ -842,8 +847,6 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
         return getTfConfig();
       case ModelPackage.DIGITAL_ACTOR_IO4__DEVICE_TYPE:
         return getDeviceType();
-      case ModelPackage.DIGITAL_ACTOR_IO4__DIGITAL_STATE:
-        return getDigitalState();
       case ModelPackage.DIGITAL_ACTOR_IO4__PIN:
         return getPin();
       case ModelPackage.DIGITAL_ACTOR_IO4__DEFAULT_STATE:
@@ -864,6 +867,9 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
   {
     switch (featureID)
     {
+      case ModelPackage.DIGITAL_ACTOR_IO4__DIGITAL_STATE:
+        setDigitalState((HighLowValue)newValue);
+        return;
       case ModelPackage.DIGITAL_ACTOR_IO4__LOGGER:
         setLogger((Logger)newValue);
         return;
@@ -888,9 +894,6 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
       case ModelPackage.DIGITAL_ACTOR_IO4__TF_CONFIG:
         setTfConfig((TFIOActorConfiguration)newValue);
         return;
-      case ModelPackage.DIGITAL_ACTOR_IO4__DIGITAL_STATE:
-        setDigitalState((HighLowValue)newValue);
-        return;
       case ModelPackage.DIGITAL_ACTOR_IO4__PIN:
         setPin((Integer)newValue);
         return;
@@ -914,6 +917,9 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
   {
     switch (featureID)
     {
+      case ModelPackage.DIGITAL_ACTOR_IO4__DIGITAL_STATE:
+        setDigitalState(DIGITAL_STATE_EDEFAULT);
+        return;
       case ModelPackage.DIGITAL_ACTOR_IO4__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
@@ -938,9 +944,6 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
       case ModelPackage.DIGITAL_ACTOR_IO4__TF_CONFIG:
         setTfConfig((TFIOActorConfiguration)null);
         return;
-      case ModelPackage.DIGITAL_ACTOR_IO4__DIGITAL_STATE:
-        setDigitalState(DIGITAL_STATE_EDEFAULT);
-        return;
       case ModelPackage.DIGITAL_ACTOR_IO4__PIN:
         setPin(PIN_EDEFAULT);
         return;
@@ -964,6 +967,8 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
   {
     switch (featureID)
     {
+      case ModelPackage.DIGITAL_ACTOR_IO4__DIGITAL_STATE:
+        return DIGITAL_STATE_EDEFAULT == null ? digitalState != null : !DIGITAL_STATE_EDEFAULT.equals(digitalState);
       case ModelPackage.DIGITAL_ACTOR_IO4__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.DIGITAL_ACTOR_IO4__UID:
@@ -982,8 +987,6 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
         return tfConfig != null;
       case ModelPackage.DIGITAL_ACTOR_IO4__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-      case ModelPackage.DIGITAL_ACTOR_IO4__DIGITAL_STATE:
-        return DIGITAL_STATE_EDEFAULT == null ? digitalState != null : !DIGITAL_STATE_EDEFAULT.equals(digitalState);
       case ModelPackage.DIGITAL_ACTOR_IO4__PIN:
         return pin != PIN_EDEFAULT;
       case ModelPackage.DIGITAL_ACTOR_IO4__DEFAULT_STATE:
@@ -1002,11 +1005,38 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
+    if (baseClass == MBaseDevice.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.DIGITAL_ACTOR_IO4__LOGGER: return ModelPackage.MBASE_DEVICE__LOGGER;
+        case ModelPackage.DIGITAL_ACTOR_IO4__UID: return ModelPackage.MBASE_DEVICE__UID;
+        case ModelPackage.DIGITAL_ACTOR_IO4__POLL: return ModelPackage.MBASE_DEVICE__POLL;
+        case ModelPackage.DIGITAL_ACTOR_IO4__ENABLED_A: return ModelPackage.MBASE_DEVICE__ENABLED_A;
+        default: return -1;
+      }
+    }
+    if (baseClass == MSubDevice.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.DIGITAL_ACTOR_IO4__SUB_ID: return ModelPackage.MSUB_DEVICE__SUB_ID;
+        case ModelPackage.DIGITAL_ACTOR_IO4__MBRICK: return ModelPackage.MSUB_DEVICE__MBRICK;
+        default: return -1;
+      }
+    }
     if (baseClass == GenericDevice.class)
     {
       switch (derivedFeatureID)
       {
         case ModelPackage.DIGITAL_ACTOR_IO4__GENERIC_DEVICE_ID: return ModelPackage.GENERIC_DEVICE__GENERIC_DEVICE_ID;
+        default: return -1;
+      }
+    }
+    if (baseClass == IO4Device.class)
+    {
+      switch (derivedFeatureID)
+      {
         default: return -1;
       }
     }
@@ -1029,11 +1059,38 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
+    if (baseClass == MBaseDevice.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MBASE_DEVICE__LOGGER: return ModelPackage.DIGITAL_ACTOR_IO4__LOGGER;
+        case ModelPackage.MBASE_DEVICE__UID: return ModelPackage.DIGITAL_ACTOR_IO4__UID;
+        case ModelPackage.MBASE_DEVICE__POLL: return ModelPackage.DIGITAL_ACTOR_IO4__POLL;
+        case ModelPackage.MBASE_DEVICE__ENABLED_A: return ModelPackage.DIGITAL_ACTOR_IO4__ENABLED_A;
+        default: return -1;
+      }
+    }
+    if (baseClass == MSubDevice.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MSUB_DEVICE__SUB_ID: return ModelPackage.DIGITAL_ACTOR_IO4__SUB_ID;
+        case ModelPackage.MSUB_DEVICE__MBRICK: return ModelPackage.DIGITAL_ACTOR_IO4__MBRICK;
+        default: return -1;
+      }
+    }
     if (baseClass == GenericDevice.class)
     {
       switch (baseFeatureID)
       {
         case ModelPackage.GENERIC_DEVICE__GENERIC_DEVICE_ID: return ModelPackage.DIGITAL_ACTOR_IO4__GENERIC_DEVICE_ID;
+        default: return -1;
+      }
+    }
+    if (baseClass == IO4Device.class)
+    {
+      switch (baseFeatureID)
+      {
         default: return -1;
       }
     }
@@ -1046,6 +1103,55 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
       }
     }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
+  {
+    if (baseClass == MBaseDevice.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.MBASE_DEVICE___INIT: return ModelPackage.DIGITAL_ACTOR_IO4___INIT;
+        case ModelPackage.MBASE_DEVICE___ENABLE: return ModelPackage.DIGITAL_ACTOR_IO4___ENABLE;
+        case ModelPackage.MBASE_DEVICE___DISABLE: return ModelPackage.DIGITAL_ACTOR_IO4___DISABLE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MSubDevice.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == GenericDevice.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == IO4Device.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == MTFConfigConsumer.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
+    return super.eDerivedOperationID(baseOperationID, baseClass);
   }
 
   /**
@@ -1088,7 +1194,9 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (logger: ");
+    result.append(" (digitalState: ");
+    result.append(digitalState);
+    result.append(", logger: ");
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
@@ -1102,8 +1210,6 @@ public class DigitalActorIO4Impl extends MinimalEObjectImpl.Container implements
     result.append(genericDeviceId);
     result.append(", deviceType: ");
     result.append(deviceType);
-    result.append(", digitalState: ");
-    result.append(digitalState);
     result.append(", pin: ");
     result.append(pin);
     result.append(", defaultState: ");
