@@ -39,6 +39,8 @@ import com.tinkerforge.BrickletDistanceUS
 import com.tinkerforge.BrickletVoltageCurrent
 import com.tinkerforge.BrickletTilt
 import com.tinkerforge.BrickletIO4
+import com.tinkerforge.BrickletIndustrialDigitalOut4
+import com.tinkerforge.BrickletHallEffect
 import java.math.BigDecimal
 
 /**
@@ -55,6 +57,7 @@ type MTinkerBrickDC wraps BrickDC
 type MTinkerBrickletDualRelay wraps BrickletDualRelay
 type MTinkerBrickletIndustrialQuadRelay wraps BrickletIndustrialQuadRelay
 type MTinkerBrickletIndustrialDigitalIn4 wraps BrickletIndustrialDigitalIn4
+type MTinkerBrickletIndustrialDigitalOut4 wraps BrickletIndustrialDigitalOut4
 type SwitchState wraps OnOffValue
 type DigitalValue wraps HighLowValue
 type TinkerBrickletIO16 wraps BrickletIO16
@@ -77,6 +80,7 @@ type TinkerBrickletDistanceUS wraps BrickletDistanceUS
 type TinkerBrickletVoltageCurrent wraps BrickletVoltageCurrent
 type TinkerBrickletTilt wraps BrickletTilt
 type TinkerBrickletIO4 wraps BrickletIO4
+type TinkerBrickletHallEffect wraps BrickletHallEffect
 type Enum wraps Enum
 
 class Ecosystem {
@@ -251,11 +255,24 @@ class MIndustrialDigitalIn extends MSubDevice<MBrickletIndustrialDigitalIn4>,
 		MSensor<DigitalValue> {
 }
 
-class DigitalActor extends IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
+class MBrickletIndustrialDigitalOut4 extends MDevice<MTinkerBrickletIndustrialDigitalOut4>,
+        MSubDeviceHolder<DigitalActorDigitalOut4>{
+}
+
+class DigitalActorDigitalOut4 extends DigitalActor, MSubDevice<MBrickletIndustrialDigitalOut4> {
+    int pin
+}
+
+interface DigitalActor {
+    DigitalValue digitalState
+    op void turnDigital(DigitalValue digitalState)
+    op void fetchDigitalValue()
+}
+
+class DigitalActorIO16 extends DigitalActor, IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
 	readonly String deviceType = "io_actuator"
-	DigitalValue digitalState
-	op void turnDigital(DigitalValue digitalState)
-	op void fetchDigitalValue()
+    op void turnDigital(DigitalValue digitalState)
+    op void fetchDigitalValue()
 	char port
 	int pin
 	String defaultState
@@ -292,9 +309,8 @@ class DigitalSensorIO4 extends IO4Device, MSensor<DigitalValue>,
     int pin
 }
 
-class DigitalActorIO4 extends IO4Device, MTFConfigConsumer<TFIOActorConfiguration>{
+class DigitalActorIO4 extends DigitalActor, IO4Device, MTFConfigConsumer<TFIOActorConfiguration>{
     readonly String deviceType = "io4_actuator"
-    DigitalValue digitalState
     op void turnDigital(DigitalValue digitalState)
     op void fetchDigitalValue()
     int pin
@@ -326,6 +342,13 @@ class Proximity extends MultiTouchDevice {
 class MBrickletMotionDetector extends MDevice<TinkerBrickletMotionDetector>,
                  MSensor<DigitalValue>{
     readonly String deviceType = "motion_detector"
+    op void init(){}
+}
+
+class MBrickletHallEffect extends MDevice<TinkerBrickletHallEffect>,
+        MSensor<DigitalValue>, CallbackListener,
+        MTFConfigConsumer<TFBaseConfiguration> {
+    readonly String deviceType = "bricklet_halleffect"
     op void init(){}
 }
 

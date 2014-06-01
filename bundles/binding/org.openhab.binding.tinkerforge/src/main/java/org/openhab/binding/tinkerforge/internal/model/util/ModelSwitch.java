@@ -359,15 +359,43 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4:
+      {
+        MBrickletIndustrialDigitalOut4 mBrickletIndustrialDigitalOut4 = (MBrickletIndustrialDigitalOut4)theEObject;
+        T result = caseMBrickletIndustrialDigitalOut4(mBrickletIndustrialDigitalOut4);
+        if (result == null) result = caseMDevice(mBrickletIndustrialDigitalOut4);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletIndustrialDigitalOut4);
+        if (result == null) result = caseMBaseDevice(mBrickletIndustrialDigitalOut4);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DIGITAL_ACTOR_DIGITAL_OUT4:
+      {
+        DigitalActorDigitalOut4 digitalActorDigitalOut4 = (DigitalActorDigitalOut4)theEObject;
+        T result = caseDigitalActorDigitalOut4(digitalActorDigitalOut4);
+        if (result == null) result = caseDigitalActor(digitalActorDigitalOut4);
+        if (result == null) result = caseMSubDevice(digitalActorDigitalOut4);
+        if (result == null) result = caseMBaseDevice(digitalActorDigitalOut4);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.DIGITAL_ACTOR:
       {
         DigitalActor digitalActor = (DigitalActor)theEObject;
         T result = caseDigitalActor(digitalActor);
-        if (result == null) result = caseIODevice(digitalActor);
-        if (result == null) result = caseMTFConfigConsumer(digitalActor);
-        if (result == null) result = caseMSubDevice(digitalActor);
-        if (result == null) result = caseGenericDevice(digitalActor);
-        if (result == null) result = caseMBaseDevice(digitalActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DIGITAL_ACTOR_IO16:
+      {
+        DigitalActorIO16 digitalActorIO16 = (DigitalActorIO16)theEObject;
+        T result = caseDigitalActorIO16(digitalActorIO16);
+        if (result == null) result = caseDigitalActor(digitalActorIO16);
+        if (result == null) result = caseIODevice(digitalActorIO16);
+        if (result == null) result = caseMTFConfigConsumer(digitalActorIO16);
+        if (result == null) result = caseMSubDevice(digitalActorIO16);
+        if (result == null) result = caseGenericDevice(digitalActorIO16);
+        if (result == null) result = caseMBaseDevice(digitalActorIO16);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -435,6 +463,7 @@ public class ModelSwitch<T> extends Switch<T>
       {
         DigitalActorIO4 digitalActorIO4 = (DigitalActorIO4)theEObject;
         T result = caseDigitalActorIO4(digitalActorIO4);
+        if (result == null) result = caseDigitalActor(digitalActorIO4);
         if (result == null) result = caseIO4Device(digitalActorIO4);
         if (result == null) result = caseMTFConfigConsumer(digitalActorIO4);
         if (result == null) result = caseMSubDevice(digitalActorIO4);
@@ -496,6 +525,18 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMDevice(mBrickletMotionDetector);
         if (result == null) result = caseMSensor(mBrickletMotionDetector);
         if (result == null) result = caseMBaseDevice(mBrickletMotionDetector);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MBRICKLET_HALL_EFFECT:
+      {
+        MBrickletHallEffect mBrickletHallEffect = (MBrickletHallEffect)theEObject;
+        T result = caseMBrickletHallEffect(mBrickletHallEffect);
+        if (result == null) result = caseMDevice(mBrickletHallEffect);
+        if (result == null) result = caseMSensor(mBrickletHallEffect);
+        if (result == null) result = caseCallbackListener(mBrickletHallEffect);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletHallEffect);
+        if (result == null) result = caseMBaseDevice(mBrickletHallEffect);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1313,6 +1354,70 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Industrial Digital Out4</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Industrial Digital Out4</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletIndustrialDigitalOut4(MBrickletIndustrialDigitalOut4 object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Digital Actor Digital Out4</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Digital Actor Digital Out4</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDigitalActorDigitalOut4(DigitalActorDigitalOut4 object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Digital Actor</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Digital Actor</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDigitalActor(DigitalActor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Digital Actor IO16</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Digital Actor IO16</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDigitalActorIO16(DigitalActorIO16 object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>MActor</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1404,22 +1509,6 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTFIOActorConfiguration(TFIOActorConfiguration object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Digital Actor</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Digital Actor</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseDigitalActor(DigitalActor object)
   {
     return null;
   }
@@ -1644,6 +1733,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMBrickletMotionDetector(MBrickletMotionDetector object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Hall Effect</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Hall Effect</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletHallEffect(MBrickletHallEffect object)
   {
     return null;
   }

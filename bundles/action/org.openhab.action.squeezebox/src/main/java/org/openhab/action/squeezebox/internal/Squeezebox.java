@@ -39,7 +39,7 @@ public class Squeezebox {
 	public static SqueezeServer squeezeServer;
 
 	// TODO: could make these properties configurable to support other translation services
-	private final static String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=en&q=";
+	private final static String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=%s&q=";
 	private final static int MAX_SENTENCE_LENGTH = 100;
 
 	@ActionDoc(text = "Turn one of your Squeezebox devices on/off", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
@@ -211,7 +211,7 @@ public class Squeezebox {
 			logger.debug("Encoded sentence " + encodedSentence);
 			
 			// build the URL to send to the Squeezebox to play
-			String url = GOOGLE_TRANSLATE_URL + encodedSentence;
+			String url = String.format(GOOGLE_TRANSLATE_URL,squeezeServer.language()) + encodedSentence;
 			
 			// create an instance of our special listener so we can detect when the sentence is complete
 			SqueezeboxSentenceListener listener = new SqueezeboxSentenceListener(playerId);
