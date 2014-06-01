@@ -28,6 +28,7 @@
     <module>org.openhab.persistence.gcal</module>
     <module>org.openhab.persistence.mqtt</module>
     <module>org.openhab.persistence.mongodb</module>
+    <module>org.openhab.persistence.influxdb</module>
   </modules>
 
 </project>
