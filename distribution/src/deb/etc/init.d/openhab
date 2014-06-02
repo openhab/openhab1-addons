@@ -81,6 +81,9 @@ do_start()
 			chown -R ${USER_AND_GROUP} "${OPENHAB_LOG_DIR}"
 			chown -R ${USER_AND_GROUP} "${OPENHAB_WORKSPACE_DIR}"
 		fi
+		
+		# openhab relies on cwd to be installation directory
+		cd "${OPENHAB_DIR}"
         # Return
         #   0 if daemon has been started
         #   1 if daemon was already running
