@@ -282,6 +282,16 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createDigitalActorAdapter();
       }
       @Override
+      public Adapter caseNumberActor(NumberActor object)
+      {
+        return createNumberActorAdapter();
+      }
+      @Override
+      public Adapter caseMBrickletSegmentDisplay4x7(MBrickletSegmentDisplay4x7 object)
+      {
+        return createMBrickletSegmentDisplay4x7Adapter();
+      }
+      @Override
       public Adapter caseDigitalActorIO16(DigitalActorIO16 object)
       {
         return createDigitalActorIO16Adapter();
@@ -939,6 +949,36 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createDigitalActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.NumberActor <em>Number Actor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.NumberActor
+   * @generated
+   */
+  public Adapter createNumberActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7 <em>MBricklet Segment Display4x7</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7
+   * @generated
+   */
+  public Adapter createMBrickletSegmentDisplay4x7Adapter()
   {
     return null;
   }

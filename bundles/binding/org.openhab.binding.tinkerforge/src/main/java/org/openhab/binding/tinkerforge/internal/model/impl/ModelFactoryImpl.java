@@ -88,6 +88,7 @@ import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletRemoteSwitch;
+import com.tinkerforge.BrickletSegmentDisplay4x7;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
@@ -95,6 +96,7 @@ import com.tinkerforge.BrickletTilt;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
+import java.math.BigDecimal;
 
 /**
  * <!-- begin-user-doc -->
@@ -160,6 +162,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN: return createMIndustrialDigitalIn();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4: return createMBrickletIndustrialDigitalOut4();
       case ModelPackage.DIGITAL_ACTOR_DIGITAL_OUT4: return createDigitalActorDigitalOut4();
+      case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7: return createMBrickletSegmentDisplay4x7();
       case ModelPackage.DIGITAL_ACTOR_IO16: return createDigitalActorIO16();
       case ModelPackage.MBRICKLET_IO16: return createMBrickletIO16();
       case ModelPackage.DIGITAL_SENSOR: return createDigitalSensor();
@@ -326,6 +329,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletIO4FromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_HALL_EFFECT:
         return createTinkerBrickletHallEffectFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_SEGMENT_DISPLAY4X7:
+        return createTinkerBrickletSegmentDisplay4x7FromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -437,6 +442,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletIO4ToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_HALL_EFFECT:
         return convertTinkerBrickletHallEffectToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_SEGMENT_DISPLAY4X7:
+        return convertTinkerBrickletSegmentDisplay4x7ToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -608,6 +615,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     DigitalActorDigitalOut4Impl digitalActorDigitalOut4 = new DigitalActorDigitalOut4Impl();
     return digitalActorDigitalOut4;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletSegmentDisplay4x7 createMBrickletSegmentDisplay4x7()
+  {
+    MBrickletSegmentDisplay4x7Impl mBrickletSegmentDisplay4x7 = new MBrickletSegmentDisplay4x7Impl();
+    return mBrickletSegmentDisplay4x7;
   }
 
   /**
@@ -2088,6 +2106,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletHallEffectToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletSegmentDisplay4x7 createTinkerBrickletSegmentDisplay4x7FromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletSegmentDisplay4x7)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletSegmentDisplay4x7ToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

@@ -36,6 +36,7 @@ import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.NumberActor;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
@@ -682,6 +683,11 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
               logger.trace("{} found string command", LoggerConstants.COMMAND);
               if (mDevice instanceof MTextActor) {
                 ((MTextActor) mDevice).setText(command.toString());
+              }
+            } else if (command instanceof DecimalType){
+              logger.debug("{} found number command", LoggerConstants.COMMAND);
+              if (mDevice instanceof NumberActor) {
+                ((NumberActor) mDevice).setNumber(((DecimalType) command).toBigDecimal());
               }
             } else {
               logger.error("{} got unknown command type: {}", LoggerConstants.COMMAND,

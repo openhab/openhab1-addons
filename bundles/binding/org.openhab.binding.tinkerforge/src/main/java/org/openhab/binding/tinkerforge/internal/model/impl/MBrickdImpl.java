@@ -62,6 +62,7 @@ import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletRemoteSwitch;
+import com.tinkerforge.BrickletSegmentDisplay4x7;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
@@ -875,6 +876,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletIndustrilaDigitalOut4");
               mDevice = factory.createMBrickletIndustrialDigitalOut4();
               mDevice.setDeviceIdentifier(BrickletIndustrialDigitalOut4.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletSegmentDisplay4x7.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletSegmentDisplay4x7");
+              mDevice = factory.createMBrickletSegmentDisplay4x7();
+              mDevice.setDeviceIdentifier(BrickletSegmentDisplay4x7.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

@@ -167,6 +167,15 @@ public interface ModelFactory extends EFactory
   DigitalActorDigitalOut4 createDigitalActorDigitalOut4();
 
   /**
+   * Returns a new object of class '<em>MBricklet Segment Display4x7</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Segment Display4x7</em>'.
+   * @generated
+   */
+  MBrickletSegmentDisplay4x7 createMBrickletSegmentDisplay4x7();
+
+  /**
    * Returns a new object of class '<em>Digital Actor IO16</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
