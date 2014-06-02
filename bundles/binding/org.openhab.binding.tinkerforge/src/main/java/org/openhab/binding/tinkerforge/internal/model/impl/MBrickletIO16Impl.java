@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
 import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
@@ -746,7 +746,7 @@ public class MBrickletIO16Impl extends MinimalEObjectImpl.Container implements M
 						subId);
 			}
 			for (int i = 0; i < 8; i++) {
-				DigitalActor actor = factory.createDigitalActor();
+				DigitalActorIO16 actor = factory.createDigitalActorIO16();
 				actor.setUid(getUid());
 				String genericDeviceId = port + String.valueOf(i);
 				String subId = "out" + genericDeviceId;

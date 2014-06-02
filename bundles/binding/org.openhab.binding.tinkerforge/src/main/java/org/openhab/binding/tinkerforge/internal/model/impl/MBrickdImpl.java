@@ -50,10 +50,12 @@ import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
 import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
+import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletMoisture;
@@ -865,6 +867,14 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletIO4");
               mDevice = factory.createMBrickletIO4();
               mDevice.setDeviceIdentifier(BrickletIO4.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletHallEffect.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletHallEffect");
+              mDevice = factory.createMBrickletHallEffect();
+              mDevice.setDeviceIdentifier(BrickletHallEffect.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletIndustrialDigitalOut4.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletIndustrilaDigitalOut4");
+              mDevice = factory.createMBrickletIndustrialDigitalOut4();
+              mDevice.setDeviceIdentifier(BrickletIndustrialDigitalOut4.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

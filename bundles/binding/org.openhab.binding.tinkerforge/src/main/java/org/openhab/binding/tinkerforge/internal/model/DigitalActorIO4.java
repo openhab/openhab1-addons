@@ -13,7 +13,6 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4#getDigitalState <em>Digital State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4#getPin <em>Pin</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4#getDefaultState <em>Default State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4#isKeepOnReconnect <em>Keep On Reconnect</em>}</li>
@@ -24,7 +23,7 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  * @model
  * @generated
  */
-public interface DigitalActorIO4 extends IO4Device, MTFConfigConsumer<TFIOActorConfiguration>
+public interface DigitalActorIO4 extends DigitalActor, IO4Device, MTFConfigConsumer<TFIOActorConfiguration>
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
@@ -41,32 +40,6 @@ public interface DigitalActorIO4 extends IO4Device, MTFConfigConsumer<TFIOActorC
    * @generated
    */
   String getDeviceType();
-
-  /**
-   * Returns the value of the '<em><b>Digital State</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Digital State</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Digital State</em>' attribute.
-   * @see #setDigitalState(HighLowValue)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDigitalActorIO4_DigitalState()
-   * @model unique="false" dataType="org.openhab.binding.tinkerforge.internal.model.DigitalValue"
-   * @generated
-   */
-  HighLowValue getDigitalState();
-
-  /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4#getDigitalState <em>Digital State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Digital State</em>' attribute.
-   * @see #getDigitalState()
-   * @generated
-   */
-  void setDigitalState(HighLowValue value);
 
   /**
    * Returns the value of the '<em><b>Pin</b></em>' attribute.
