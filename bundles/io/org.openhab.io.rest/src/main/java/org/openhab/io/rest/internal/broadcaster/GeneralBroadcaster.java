@@ -15,7 +15,6 @@ import java.util.WeakHashMap;
 import org.atmosphere.cpr.BroadcasterLifeCyclePolicyListener;
 import org.atmosphere.cpr.Entry;
 import org.atmosphere.jersey.JerseyBroadcaster;
-import org.openhab.io.rest.internal.cache.RestBroadcasterCache;
 import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

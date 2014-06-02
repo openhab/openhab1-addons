@@ -19,7 +19,6 @@ import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
-import org.openhab.io.rest.internal.cache.RestBroadcasterCache;
 import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
 import org.slf4j.Logger;
@@ -50,14 +49,20 @@ public class PollingDelayFilter implements PerRequestBroadcastFilter {
 		try {	
 			// delay first broadcast for long-polling and other polling transports
 			boolean isItemMessage = originalMessage instanceof Item || originalMessage instanceof GroupItem;
-			if(!ResponseTypeHelper.isStreamingTransport(request) && message instanceof PageBean && isItemMessage) {
+			boolean isStreamingTransport = false;
+			try {
+			isStreamingTransport = ResponseTypeHelper.isStreamingTransport(request);
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+				return new BroadcastAction(ACTION.ABORT,  message);				
+			}
+			if(!isStreamingTransport && message instanceof PageBean && isItemMessage) {
 				final String delayedBroadcasterName = resource.getRequest().getPathInfo();
 				Executors.newSingleThreadExecutor().submit(new Runnable() {
 		            public void run() {
 		                try {
 		                    Thread.sleep(300);
 							GeneralBroadcaster delayedBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, delayedBroadcasterName);
-							delayedBroadcaster.getBroadcasterConfig().setBroadcasterCache(new RestBroadcasterCache());
 							delayedBroadcaster.broadcast(message, resource);
 							
 						} catch (Exception e) {

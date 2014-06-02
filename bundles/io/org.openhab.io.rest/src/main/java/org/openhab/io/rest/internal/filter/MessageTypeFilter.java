@@ -40,6 +40,7 @@ public class MessageTypeFilter implements PerRequestBroadcastFilter {
 
 	@Override
 	public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
+//		return new BroadcastAction(ACTION.CONTINUE,  message);
 		final  HttpServletRequest request = resource.getRequest();
 		ResponseTypeHelper responseTypeHelper = new ResponseTypeHelper();
 		String responseType = responseTypeHelper.getResponseType(request);
@@ -52,8 +53,6 @@ public class MessageTypeFilter implements PerRequestBroadcastFilter {
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			return new BroadcastAction(ACTION.ABORT,  message);
-		} 
-		
-		
+		} 	
 	}
 }

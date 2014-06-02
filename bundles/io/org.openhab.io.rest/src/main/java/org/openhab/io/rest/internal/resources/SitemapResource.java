@@ -30,6 +30,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend.SCOPE;
 import org.atmosphere.cache.UUIDBroadcasterCache;
+import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -40,7 +41,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.RESTApplication;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
-import org.openhab.io.rest.internal.cache.RestBroadcasterCache;
 import org.openhab.io.rest.internal.listeners.SitemapStateChangeListener;
 import org.openhab.io.rest.internal.resources.beans.MappingBean;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
@@ -152,14 +152,20 @@ public class SitemapResource {
 		}
 //		if (_sitemapBroadcaster == null) {
 			_sitemapBroadcaster = BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
-			_sitemapBroadcaster.getBroadcasterConfig().setBroadcasterCache(new RestBroadcasterCache());
 			_sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
 //		}
 		GeneralBroadcaster sitemapBroadcaster = (GeneralBroadcaster) _sitemapBroadcaster;
+		boolean resume = false;
+		try {
+		AtmosphereRequest request = resource.getRequest();
+		resume = !ResponseTypeHelper.isStreamingTransport(request);
+		} catch (Exception e) {
+			logger.debug(e.getMessage());
+		}
 
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
 			.scope(SCOPE.REQUEST)
-			.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))
+			.resumeOnBroadcast(resume)
 			.broadcaster(sitemapBroadcaster)
 			.outputComments(true).build(); 
     }
