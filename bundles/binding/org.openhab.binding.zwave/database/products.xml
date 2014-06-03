@@ -683,6 +683,10 @@
       			</Reference>
       			<Reference>
         			<Type>0300</Type>
+        			<Id>0104</Id>
+      			</Reference>
+      			<Reference>
+        			<Type>0300</Type>
         			<Id>0107</Id>
       			</Reference>
       			<Model>FGR221</Model>
