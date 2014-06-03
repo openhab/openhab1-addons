@@ -103,6 +103,10 @@ public class SitemapStateChangeListener extends ResourceStateChangeListener {
 		for(Widget child : children) {
 			if (child instanceof Frame) {
 				Frame frame = (Frame) child;
+				String itemName = frame.getItem();
+				if(itemName!=null) {
+					itemNames.add(itemName);
+				}
 				itemNames.addAll(getRelevantItemNamesForWidgets(frame.getChildren()));
 			} else {
 				String itemName = child.getItem();

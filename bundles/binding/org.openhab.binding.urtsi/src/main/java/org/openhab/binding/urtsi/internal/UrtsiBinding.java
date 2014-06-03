@@ -92,6 +92,7 @@ public class UrtsiBinding extends AbstractBinding<UrtsiBindingProvider>
 		}
 		
 		int channel = provider.getChannel(itemName);
+		int address = provider.getAddress(itemName);
 		
 		if (urtsiDevice != null) {
 			if (logger.isDebugEnabled()) {
@@ -123,7 +124,8 @@ public class UrtsiBinding extends AbstractBinding<UrtsiBindingProvider>
 			}
 			if (actionKey != null) {
 				String channelString = String.format("%02d", channel);
-				String command = "01" + channelString + actionKey;
+				String addressString = String.format("%02d", address);
+				String command = addressString + channelString + actionKey;
 				boolean executedSuccessfully = urtsiDevice.writeString(command);
 				if (!executedSuccessfully) {
 					if (logger.isErrorEnabled()) {
@@ -198,6 +200,7 @@ public class UrtsiBinding extends AbstractBinding<UrtsiBindingProvider>
 							}
 							urtsiDevice = new UrtsiDevice(port);
 							try {
+								System.setProperty("gnu.io.rxtx.SerialPorts", port);
 								urtsiDevice.initialize();
 							} catch (InitializationException e) {
 								throw new ConfigurationException(configKey, 

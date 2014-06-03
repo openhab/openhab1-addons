@@ -44,13 +44,13 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveWakeUpCommandClass.class);
 	private static final int MAX_SUPPORTED_VERSION = 2;
 
-	private static final int WAKE_UP_INTERVAL_SET = 0x04;
-	private static final int WAKE_UP_INTERVAL_GET = 0x05;
-	private static final int WAKE_UP_INTERVAL_REPORT = 0x06;
-	private static final int WAKE_UP_NOTIFICATION = 0x07;
-	private static final int WAKE_UP_NO_MORE_INFORMATION = 0x08;
-	private static final int WAKE_UP_INTERVAL_CAPABILITIES_GET = 0x09;
-	private static final int WAKE_UP_INTERVAL_CAPABILITIES_REPORT = 0x0A;
+	public static final int WAKE_UP_INTERVAL_SET = 0x04;
+	public static final int WAKE_UP_INTERVAL_GET = 0x05;
+	public static final int WAKE_UP_INTERVAL_REPORT = 0x06;
+	public static final int WAKE_UP_NOTIFICATION = 0x07;
+	public static final int WAKE_UP_NO_MORE_INFORMATION = 0x08;
+	public static final int WAKE_UP_INTERVAL_CAPABILITIES_GET = 0x09;
+	public static final int WAKE_UP_INTERVAL_CAPABILITIES_REPORT = 0x0A;
 
 	private static final int MAX_BUFFFER_SIZE = 128;
 
@@ -149,14 +149,13 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
                 int receivedInterval = ((serialMessage.getMessagePayloadByte(offset + 1)) << 16) | ((serialMessage.getMessagePayloadByte(offset + 2)) << 8) | (serialMessage.getMessagePayloadByte(offset + 3));
 				logger.debug(String.format("NODE %d: Wake up interval report, value = %d seconds, targetNodeId = %d", this.getNode().getNodeId(), receivedInterval, targetNodeId));
                 
-				if (targetNodeId != this.getController().getOwnNodeId())
-					return;
-				
 				this.interval = receivedInterval;
 				logger.debug("NODE {}: Wake up interval set", this.getNode().getNodeId());
 				
 				this.initializationComplete = true;
-				
+				ZWaveWakeUpEvent event = new ZWaveWakeUpEvent(getNode().getNodeId(), WAKE_UP_INTERVAL_REPORT);
+				this.getController().notifyEventListeners(event);
+
 				this.getNode().advanceNodeStage(NodeStage.DYNAMIC);
 				break;
 			case WAKE_UP_INTERVAL_CAPABILITIES_REPORT:
@@ -167,11 +166,11 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
                 this.defaultInterval = ((serialMessage.getMessagePayloadByte(offset + 7)) << 16) | ((serialMessage.getMessagePayloadByte(offset + 8)) << 8) | (serialMessage.getMessagePayloadByte(offset + 9));
                 this.intervalStep = ((serialMessage.getMessagePayloadByte(offset + 10)) << 16) | ((serialMessage.getMessagePayloadByte(offset + 11)) << 8) | (serialMessage.getMessagePayloadByte(offset + 12));
 				
-				logger.debug("NODE {}: Wake up interval capabilities report for nodeId = %d", this.getNode().getNodeId());
-				logger.debug("NODE {}: Minimum interval = %d", this.getNode().getNodeId(), this.minInterval);
-				logger.debug("NODE {}: Maximum interval = %d", this.getNode().getNodeId(), this.maxInterval);
-				logger.debug("NODE {}: Default interval = %d", this.getNode().getNodeId(), this.defaultInterval);
-				logger.debug("NODE {}: Interval step = %d", this.getNode().getNodeId(), this.intervalStep);
+				logger.debug("NODE {}: Wake up interval capabilities report", this.getNode().getNodeId());
+				logger.debug("NODE {}: Minimum interval = {}", this.getNode().getNodeId(), this.minInterval);
+				logger.debug("NODE {}: Maximum interval = {}", this.getNode().getNodeId(), this.maxInterval);
+				logger.debug("NODE {}: Default interval = {}", this.getNode().getNodeId(), this.defaultInterval);
+				logger.debug("NODE {}: Interval step = {}", this.getNode().getNodeId(), this.intervalStep);
                 
 				this.initializationComplete = true;
 				this.getNode().advanceNodeStage(NodeStage.DYNAMIC);
@@ -362,7 +361,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				(payload[2] & 0xFF) == this.getCommandClass().getKey() &&
 				(payload[3] & 0xFF) == WAKE_UP_NO_MORE_INFORMATION) {
 			// This is confirmation of our 'go to sleep' message
-			logger.debug("Node {} went to sleep", this.getNode().getNodeId());
+			logger.debug("NODE {}: Went to sleep", this.getNode().getNodeId());
 			this.setAwake(false);
 			return;
 		}
@@ -372,7 +371,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 			serialMessage = this.wakeUpQueue.poll();
 			this.getController().sendData(serialMessage);
 		}
-		else {
+		else if(isAwake() == true){
 			// No more messages in the queue.
 			// Start a timer to send the "Go To Sleep" message
 			// This gives other tasks some time to do something if they want
@@ -398,6 +397,9 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		this.isAwake = isAwake;
 		
 		if(isAwake) {
+			ZWaveWakeUpEvent event = new ZWaveWakeUpEvent(getNode().getNodeId(), WAKE_UP_NOTIFICATION);
+			this.getController().notifyEventListeners(event);
+			
 			logger.debug("NODE {}: Is awake with {} messages in the wake-up queue.", this.getNode().getNodeId(), this.wakeUpQueue.size());
 
 			// Handle the wake-up queue for this node.
@@ -467,6 +469,10 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 
 		@Override
 		public void run() {
+			if(!wakeup.isAwake()) {
+				logger.debug("NODE {}: Already asleep", wakeup.getNode().getNodeId());
+				return;
+			}
 			// Tell the device to back to sleep.
 			logger.debug("NODE {}: No more messages, go back to sleep", wakeup.getNode().getNodeId());
 			wakeup.getController().sendData(wakeup.getNoMoreInformationMessage());
@@ -484,5 +490,30 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 
 		// Start the timer
 		timer.schedule(timerTask, 2000);
+	}
+	
+	/**
+	 * ZWave wake-up event.
+	 * Notifies users that a device has woken up or changed its wakeup parameters
+	 * 
+	 * @author Chris Jackson
+	 * @since 1.5.0
+	 */
+	public class ZWaveWakeUpEvent extends ZWaveEvent {
+		private final int event;
+
+		/**
+		 * Constructor. Creates a new instance of the ZWaveWakeUpEvent
+		 * class.
+		 * @param nodeId the nodeId of the event.
+		 */
+		public ZWaveWakeUpEvent(int nodeId, int event) {
+			super(nodeId, 1);
+			this.event = event;
+		}
+		
+		public int getEvent() {
+			return this.event;
+		}
 	}
 }

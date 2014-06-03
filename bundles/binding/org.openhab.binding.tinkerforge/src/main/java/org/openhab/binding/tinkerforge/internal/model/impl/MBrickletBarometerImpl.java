@@ -9,6 +9,7 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -22,6 +23,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
@@ -34,6 +36,7 @@ import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +58,7 @@ import com.tinkerforge.TimeoutException;
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getIpConnection <em>Ip Connection</em>}</li>
@@ -68,7 +72,6 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getMsubdevices <em>Msubdevices</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getAirPressure <em>Air Pressure</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletBarometerImpl#getThreshold <em>Threshold</em>}</li>
  * </ul>
  * </p>
@@ -116,6 +119,26 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = true;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -318,26 +341,6 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getAirPressure() <em>Air Pressure</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getAirPressure()
-   * @generated
-   * @ordered
-   */
-  protected static final int AIR_PRESSURE_EDEFAULT = 0;
-
-  /**
-   * The cached value of the '{@link #getAirPressure() <em>Air Pressure</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getAirPressure()
-   * @generated
-   * @ordered
-   */
-  protected int airPressure = AIR_PRESSURE_EDEFAULT;
-
-  /**
    * The default value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -345,7 +348,7 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * @generated
    * @ordered
    */
-  protected static final int THRESHOLD_EDEFAULT = 1000;
+  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("1");
 
   /**
    * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
@@ -355,7 +358,9 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * @generated
    * @ordered
    */
-  protected int threshold = THRESHOLD_EDEFAULT;
+  protected BigDecimal threshold = THRESHOLD_EDEFAULT;
+
+  private AirPressureListener listener;
 
   /**
    * <!-- begin-user-doc -->
@@ -422,6 +427,29 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
     uid = newUid;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_BAROMETER__UID, oldUid, uid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_BAROMETER__POLL, oldPoll, poll));
   }
 
   /**
@@ -753,30 +781,7 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public int getAirPressure()
-  {
-    return airPressure;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setAirPressure(int newAirPressure)
-  {
-    int oldAirPressure = airPressure;
-    airPressure = newAirPressure;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_BAROMETER__AIR_PRESSURE, oldAirPressure, airPressure));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public int getThreshold()
+  public BigDecimal getThreshold()
   {
     return threshold;
   }
@@ -786,9 +791,9 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setThreshold(int newThreshold)
+  public void setThreshold(BigDecimal newThreshold)
   {
-    int oldThreshold = threshold;
+    BigDecimal oldThreshold = threshold;
     threshold = newThreshold;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_BAROMETER__THRESHOLD, oldThreshold, threshold));
@@ -799,11 +804,10 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void init()
-  {
-	    setEnabledA(new AtomicBoolean());
-		logger = LoggerFactory.getLogger(MBrickletBarometerImpl.class);
-		logger.debug("init called on MBrickletBarometer");
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MBrickletBarometerImpl.class);
+    logger.debug("init called on MBrickletBarometer");
   }
 
   /**
@@ -811,16 +815,34 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void initSubDevices()
-  {
-		MBarometerTemperature mbarometer_temperature = ModelFactory.eINSTANCE.createMBarometerTemperature();
-		mbarometer_temperature.setUid(uid);
-		String subId = "temperature";
-		mbarometer_temperature.setSubId(subId);
-		logger.debug("addSubDevice " + subId);
-		mbarometer_temperature.init();
-		mbarometer_temperature.setMbrick(this);
-		getMsubdevices().add(mbarometer_temperature);
+  public void initSubDevices() {
+    MBarometerTemperature mbarometer_temperature =
+        ModelFactory.eINSTANCE.createMBarometerTemperature();
+    mbarometer_temperature.setUid(uid);
+    String subId = "temperature";
+    mbarometer_temperature.setSubId(subId);
+    logger.debug("addSubDevice " + subId);
+    mbarometer_temperature.init();
+    mbarometer_temperature.setMbrick(this);
+    getMsubdevices().add(mbarometer_temperature);
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void fetchSensorValue() {
+    try {
+      int airPressure = tinkerforgeDevice.getAirPressure();
+      DecimalValue value = Tools.calculate1000(airPressure);
+      setSensorValue(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
@@ -828,79 +850,62 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	public DecimalValue fetchSensorValue() {
-		try {
-			// TODO do not return anything update model instead: thread safe?
-			return new DecimalValue(tinkerforgeDevice.getAirPressure() / 1000);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		return null;
-	}
+  public void enable() {
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
+        setThreshold(tfConfig.getThreshold());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
+        setCallbackPeriod(tfConfig.getCallbackPeriod());
+      }
+    }
+    tinkerforgeDevice = new BrickletBarometer(uid, ipConnection);
+    try {
+      tinkerforgeDevice.setResponseExpected(
+          BrickletBarometer.FUNCTION_SET_AIR_PRESSURE_CALLBACK_PERIOD, false);
+      tinkerforgeDevice.setAirPressureCallbackPeriod(callbackPeriod);
+      listener = new AirPressureListener();
+      tinkerforgeDevice.addAirPressureListener(listener);
+      fetchSensorValue();
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	public void enable() {
-		if (tfConfig != null) {
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"threshold"))) {
-				setThreshold(tfConfig.getThreshold());
-			}
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"callbackPeriod"))) {
-				setCallbackPeriod(tfConfig.getCallbackPeriod());
-			}
-		}
-		tinkerforgeDevice = new BrickletBarometer(uid, ipConnection);
-		try {
-			tinkerforgeDevice
-					.setResponseExpected(
-							BrickletBarometer.FUNCTION_SET_AIR_PRESSURE_CALLBACK_PERIOD,
-							false);
-			tinkerforgeDevice.setAirPressureCallbackPeriod(callbackPeriod);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		tinkerforgeDevice
-				.addAirPressureListener(new BrickletBarometer.AirPressureListener() {
+  private class AirPressureListener implements BrickletBarometer.AirPressureListener {
 
-					@Override
-					public void airPressure(int newAirPressure) {
-						if (newAirPressure > (airPressure + threshold)
-								|| newAirPressure < (airPressure - threshold)) {
-							setSensorValue(new DecimalValue(
-									newAirPressure / 1000));
-							setAirPressure(newAirPressure);
-						} else {
-							// TODO fix loggers for all devices
-							logger.trace(String.format(
-									"new airPressure: %s, old %s",
-									newAirPressure, airPressure));
-						}
-					}
-				});
-		setSensorValue(fetchSensorValue());
-	}
+    @Override
+    public void airPressure(int airPressure) {
+      DecimalValue newValue = Tools.calculate1000(airPressure);
+      logger.trace("{} got new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+      if (newValue.compareTo(getSensorValue(), getThreshold()) != 0 ) {
+        logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+        setSensorValue(newValue);
+      } else {
+        logger.trace("{} omitting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+      }
+    }
+    
+  }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void disable()
-  {
-	  tinkerforgeDevice = null;
+  public void disable() {
+    if (listener != null) {
+      tinkerforgeDevice.removeAirPressureListener(listener);
+    }
+    tinkerforgeDevice = null;
   }
 
   /**
@@ -974,6 +979,8 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         return getLogger();
       case ModelPackage.MBRICKLET_BAROMETER__UID:
         return getUid();
+      case ModelPackage.MBRICKLET_BAROMETER__POLL:
+        return isPoll();
       case ModelPackage.MBRICKLET_BAROMETER__ENABLED_A:
         return getEnabledA();
       case ModelPackage.MBRICKLET_BAROMETER__TINKERFORGE_DEVICE:
@@ -1000,8 +1007,6 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         return getCallbackPeriod();
       case ModelPackage.MBRICKLET_BAROMETER__DEVICE_TYPE:
         return getDeviceType();
-      case ModelPackage.MBRICKLET_BAROMETER__AIR_PRESSURE:
-        return getAirPressure();
       case ModelPackage.MBRICKLET_BAROMETER__THRESHOLD:
         return getThreshold();
     }
@@ -1024,6 +1029,9 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         return;
       case ModelPackage.MBRICKLET_BAROMETER__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.MBRICKLET_BAROMETER__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.MBRICKLET_BAROMETER__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -1062,11 +1070,8 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
       case ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD:
         setCallbackPeriod((Long)newValue);
         return;
-      case ModelPackage.MBRICKLET_BAROMETER__AIR_PRESSURE:
-        setAirPressure((Integer)newValue);
-        return;
       case ModelPackage.MBRICKLET_BAROMETER__THRESHOLD:
-        setThreshold((Integer)newValue);
+        setThreshold((BigDecimal)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -1087,6 +1092,9 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         return;
       case ModelPackage.MBRICKLET_BAROMETER__UID:
         setUid(UID_EDEFAULT);
+        return;
+      case ModelPackage.MBRICKLET_BAROMETER__POLL:
+        setPoll(POLL_EDEFAULT);
         return;
       case ModelPackage.MBRICKLET_BAROMETER__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
@@ -1124,9 +1132,6 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
       case ModelPackage.MBRICKLET_BAROMETER__CALLBACK_PERIOD:
         setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_BAROMETER__AIR_PRESSURE:
-        setAirPressure(AIR_PRESSURE_EDEFAULT);
-        return;
       case ModelPackage.MBRICKLET_BAROMETER__THRESHOLD:
         setThreshold(THRESHOLD_EDEFAULT);
         return;
@@ -1148,6 +1153,8 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MBRICKLET_BAROMETER__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MBRICKLET_BAROMETER__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.MBRICKLET_BAROMETER__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.MBRICKLET_BAROMETER__TINKERFORGE_DEVICE:
@@ -1174,10 +1181,8 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.MBRICKLET_BAROMETER__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-      case ModelPackage.MBRICKLET_BAROMETER__AIR_PRESSURE:
-        return airPressure != AIR_PRESSURE_EDEFAULT;
       case ModelPackage.MBRICKLET_BAROMETER__THRESHOLD:
-        return threshold != THRESHOLD_EDEFAULT;
+        return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
     }
     return super.eIsSet(featureID);
   }
@@ -1326,7 +1331,8 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
         initSubDevices();
         return null;
       case ModelPackage.MBRICKLET_BAROMETER___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
       case ModelPackage.MBRICKLET_BAROMETER___ENABLE:
         enable();
         return null;
@@ -1352,6 +1358,8 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", tinkerforgeDevice: ");
@@ -1372,8 +1380,6 @@ public class MBrickletBarometerImpl extends MinimalEObjectImpl.Container impleme
     result.append(callbackPeriod);
     result.append(", deviceType: ");
     result.append(deviceType);
-    result.append(", airPressure: ");
-    result.append(airPressure);
     result.append(", threshold: ");
     result.append(threshold);
     result.append(')');

@@ -28,6 +28,6 @@ Import-Package: gnu.io,
 Export-Package: org.openhab.binding.zwave,org.openhab.binding.zwave.in
  ternal.config
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: ., lib/xstream-1.4.6.jar

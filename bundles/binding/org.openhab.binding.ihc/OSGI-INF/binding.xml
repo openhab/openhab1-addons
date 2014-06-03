@@ -16,7 +16,7 @@
       <provide interface="org.osgi.service.event.EventHandler"/>
       <provide interface="org.osgi.service.cm.ManagedService"/>
    </service>
-   <property name="service.pid" type="String" value="org.openhab.ihc.in"/>
+   <property name="service.pid" type="String" value="org.openhab.ihc"/>
    <property name="event.topics" type="String" value="openhab/*"/>
    
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>

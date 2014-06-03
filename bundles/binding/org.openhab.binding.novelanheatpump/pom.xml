@@ -14,7 +14,7 @@
 		<bundle.symbolicName>org.openhab.binding.novelanheatpump</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.novelanheatpump</bundle.namespace>
 		<deb.name>openhab-addon-binding-novelanheatpump</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

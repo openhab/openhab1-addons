@@ -293,7 +293,21 @@
          unpack="false"/>
 
    <plugin
+         id="org.openhab.action.nma"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.openhab.action.prowl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.action.pushover"
          download-size="0"
          install-size="0"
          version="0.0.0"

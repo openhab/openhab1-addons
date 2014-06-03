@@ -515,7 +515,7 @@ implements ManagedService {
 		}
 	}
 
-	private class SonosZonePlayerState {
+	public class SonosZonePlayerState {
 
 		public String transportState;
 		public String volume;
@@ -524,15 +524,10 @@ implements ManagedService {
 		public long track;
 	}
 
-	protected boolean savePlayerState() {
+	protected boolean saveAllPlayerState() {
 
 		synchronized (this) {
-			if (sonosSavedGroupState != null && sonosSavedPlayerState != null) {
-				// TODO issue warning
 
-			}
-
-			sonosSavedPlayerState = new HashMap<String, SonosZonePlayerState>();
 			sonosSavedGroupState = new ArrayList<SonosZoneGroup>();
 
 			for (SonosZoneGroup group : getSonosZoneGroups()) {
@@ -542,131 +537,22 @@ implements ManagedService {
 			for (SonosZoneGroup group : sonosSavedGroupState) {
 				for (String playerName : group.getMembers()) {
 					SonosZonePlayer player = sonosZonePlayerCache.getById(playerName);
-
-					SonosZonePlayerState saveState = new SonosZonePlayerState();
-
-					String currentURI = player.getCurrentURI();
-
-					if (currentURI != null) {
-
-						if (currentURI.contains("x-sonosapi-stream:")) {
-							// we are streaming music
-							SonosMetaData track = player.getTrackMetadata();
-							SonosMetaData current = player
-									.getCurrentURIMetadata();
-							if (track != null) {
-								saveState.entry = new SonosEntry("",
-										current.getTitle(), "", "",
-										track.getAlbumArtUri(), "",
-										current.getUpnpClass(), currentURI);
-							}
-						} else if (currentURI.contains("x-rincon:")) {
-							// we are a slave to some coordinator
-							saveState.entry = new SonosEntry("", "", "", "",
-									"", "", "", currentURI);
-						} else if (currentURI.contains("x-rincon-stream:")) {
-							// we are streaming from the Line In connection
-							saveState.entry = new SonosEntry("", "", "", "",
-									"", "", "", currentURI);
-						} else if (currentURI.contains("x-rincon-queue:")) {
-							// we are playing something that sits in the queue
-							SonosMetaData queued = player
-									.getEnqueuedTransportURIMetaData();
-							if (queued != null) {
-
-								saveState.track = player.getCurrenTrackNr();
-
-								if (queued.getUpnpClass().contains(
-										"object.container.playlistContainer")) {
-									// we are playing a real 'saved' playlist
-									List<SonosEntry> playLists = player
-											.getPlayLists();
-									for (SonosEntry someList : playLists) {
-										if (someList.getTitle().equals(
-												queued.getTitle())) {
-											saveState.entry = new SonosEntry(
-													someList.getId(),
-													someList.getTitle(),
-													someList.getParentId(), "",
-													"", "",
-													someList.getUpnpClass(),
-													someList.getRes());
-											break;
-										}
-									}
-
-								} else if (queued.getUpnpClass().contains(
-										"object.container")) {
-									// we are playing some other sort of
-									// 'container' - we will save that to a
-									// playlist for our convenience
-									logger.debug(
-											"Save State for a container of type {}",
-											queued.getUpnpClass());
-
-									// save the playlist
-									String existingList = "";
-									List<SonosEntry> playLists = player
-											.getPlayLists();
-									for (SonosEntry someList : playLists) {
-										if (someList.getTitle().equals(
-												"openHAB-" + player.getUdn())) {
-											existingList = someList.getId();
-											break;
-										}
-									}
-
-									player.saveQueue(
-											"openHAB-" + player.getUdn(),
-											existingList);
-
-									// get all the playlists and a ref to our
-									// saved list
-									playLists = player.getPlayLists();
-									for (SonosEntry someList : playLists) {
-										if (someList.getTitle().equals(
-												"openHAB-" + player.getUdn())) {
-											saveState.entry = new SonosEntry(
-													someList.getId(),
-													someList.getTitle(),
-													someList.getParentId(), "",
-													"", "",
-													someList.getUpnpClass(),
-													someList.getRes());
-											break;
-										}
-									}
-
-								}
-							} else {
-								saveState.entry = new SonosEntry("", "", "",
-										"", "", "", "", "x-rincon-queue:"
-												+ player.getUdn()
-												.getIdentifierString()
-												+ "#0");
-							}
-						}
-
-						saveState.transportState = player.getTransportState();
-						saveState.volume = player.getCurrentVolume();
-						saveState.relTime = player.getPosition();
-					} else {
-						saveState.entry = null;
-					}
-
-					sonosSavedPlayerState.put(playerName, saveState);
+					player.saveState();
 				}
 			}
+			
 			return true;
 
 		}
 	}
 
-	protected boolean restorePlayerState() {
+
+
+	protected boolean restoreAllPlayerState() {
 
 		synchronized (this) {
 
-			if (sonosSavedGroupState != null && sonosSavedPlayerState != null) {
+			if (sonosSavedGroupState != null) {
 
 				// make every player independent
 				for (SonosZoneGroup group : sonosSavedGroupState) {
@@ -693,69 +579,10 @@ implements ManagedService {
 
 				// put settings back
 				for (SonosZoneGroup group : sonosSavedGroupState) {
-					SonosZonePlayer coordinator = sonosZonePlayerCache.getById(group
-							.getCoordinator());
 					for (String playerName : group.getMembers()) {
 						SonosZonePlayer player = sonosZonePlayerCache.getById(playerName);
 						if (player != null) {
-
-							SonosZonePlayerState saveState = sonosSavedPlayerState
-									.get(playerName);
-
-							player.setVolume(saveState.volume);
-
-							if (player == coordinator) {
-
-								if (player == coordinator) {
-
-									if (saveState.entry != null) {
-
-										// check if we have a playlist to deal
-										// with
-										if (saveState.entry
-												.getUpnpClass()
-												.contains(
-														"object.container.playlistContainer")) {
-
-											player.addURIToQueue(
-													saveState.entry.getRes(),
-													SonosXMLParser
-													.compileMetadataString(saveState.entry),
-													0, true);
-											SonosEntry entry = new SonosEntry(
-													"",
-													"",
-													"",
-													"",
-													"",
-													"",
-													"",
-													"x-rincon-queue:"
-															+ player.getUdn()
-															.getIdentifierString()
-															+ "#0");
-											player.setCurrentURI(entry);
-											player.setPositionTrack(saveState.track);
-
-										} else {
-											player.setCurrentURI(saveState.entry);
-											player.setPosition(saveState.relTime);
-										}
-
-										if (saveState.transportState
-												.equals("PLAYING")) {
-											player.play();
-										} else if (saveState.transportState
-												.equals("STOPPED")) {
-											player.stop();
-										} else if (saveState.transportState
-												.equals("PAUSED_PLAYBACK")) {
-											player.pause();
-										}
-									}
-								}
-							}
-
+							player.restoreState();
 						}
 					}
 				}
@@ -827,17 +654,26 @@ implements ManagedService {
 					result = player.snoozeAlarm(Integer
 							.parseInt(commandAsString));
 					break;
+				case SAVEALL:
+					result = saveAllPlayerState();
+					break;
+				case RESTOREALL:
+					result = restoreAllPlayerState();
+					break;
 				case SAVE:
-					result = savePlayerState();
+					result = player.saveState();
 					break;
 				case RESTORE:
-					result = restorePlayerState();
+					result = player.restoreState();
 					break;
 				case PLAYLIST:
 					result = player.playPlayList(commandAsString);
 					break;
-				case SETURI:
+				case PLAYURI:
 					result = player.playURI(commandAsString);
+					break;
+				case PLAYLINEIN:
+					result = player.playLineIn(commandAsString);
 					break;
 				default:
 					break;
