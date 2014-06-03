@@ -4,7 +4,7 @@ Bundle-Name: openHAB REST libraries Bundle
 Bundle-SymbolicName: org.openhab.io.rest.lib
 Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/jackson-core-asl-1.9.2.jar,
  lib/jackson-jaxrs-1.9.2.jar,
  lib/jackson-mapper-asl-1.9.2.jar,
@@ -22,7 +22,10 @@ Bundle-ClassPath: lib/jackson-core-asl-1.9.2.jar,
  lib/atmosphere-compat-tomcat7-2.0.1.jar,
  lib/atmosphere-annotations-2.1.4.jar,
  lib/atmosphere-jersey-2.1.4.jar,
- lib/atmosphere-runtime-2.1.4.jar
+ lib/atmosphere-runtime-2.1.4.jar,
+ lib/atmosphere-annotations-2.1.5.jar,
+ lib/atmosphere-jersey-2.1.5.jar,
+ lib/atmosphere-runtime-2.1.5.jar
 Import-Package: com.sun.jersey.api.core,
  com.sun.jersey.api.json,
  com.sun.jersey.core.osgi,

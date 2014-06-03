@@ -4,5 +4,14 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="/org.openhab.io.rest.lib/lib/jersey-client-1.17.1.jar"/>
+	<classpathentry kind="lib" path="/org.openhab.io.rest.lib/lib/jersey-core-1.17.1.jar"/>
+	<classpathentry kind="lib" path="/org.openhab.io.rest.lib/lib/jersey-json-1.17.1.jar"/>
+	<classpathentry kind="lib" path="/org.openhab.io.rest.lib/lib/jersey-server-1.17.1.jar"/>
+	<classpathentry kind="lib" path="/org.openhab.io.rest.lib/lib/jackson-core-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/org.openhab.io.rest.lib/lib/jackson-mapper-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/org.openhab.io.rest.lib/lib/atmosphere-annotations-2.1.5.jar"/>
+	<classpathentry kind="lib" path="/org.openhab.io.rest.lib/lib/atmosphere-jersey-2.1.5.jar"/>
+	<classpathentry kind="lib" path="/org.openhab.io.rest.lib/lib/atmosphere-runtime-2.1.5.jar" sourcepath="/Users/thomasee/Dev/Tools/atmosphere-atmosphere-project-2.1.5/modules/cpr/src/main"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
