@@ -7,8 +7,15 @@ import tuwien.auto.calimero.log.LogLevel;
 import tuwien.auto.calimero.log.LogWriter;
 
 /**
- * An adapter that works as a bridge between the logging api of calimero and slf4j.
+ * An adapter that works as a bridge between the logging API of calimero and slf4j.
  * 
+ * Calimero (the KNX I/O library used by this binding) has its own and very specific logging framework, 
+ * which is not compatible with any default logging framework. Thus, this specific adapter is necessary
+ * in order to build a bridge between the calimero logging framework and the API of slf4j.
+ * 
+ * All logging events from calimero are written to a single slf4j logger named <code>tuwien.auto.calimero</code>.
+ * 
+ * @author Martin Renner
  * @since 1.5.0
  */
 public class LogAdapter extends LogWriter {
