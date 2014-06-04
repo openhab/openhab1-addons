@@ -369,9 +369,9 @@ public class SqueezeServer implements ManagedService {
 
 				playersById.put(playerId, player);
 				playersByMacAddress.put(macAddress, player);
-			}  else if (languageMatcher.matches() && StringUtils.isNotBlank(value)) {
+			} else if (languageMatcher.matches() && StringUtils.isNotBlank(value)) {
 				language=value;
-			}else {
+			} else {
 				logger.warn("Unexpected or unsupported configuration: " + key
 						+ ". Ignoring.");
 			}
