@@ -754,6 +754,15 @@
 			<Label lang="en">4 button keyfob</Label>
 			<ConfigFile>zwaveme/kfob.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>WCD2</Model>
+			<Label lang="en">Double Paddle Wall Controller</Label>
+			<ConfigFile>zwaveme/zme_wcd2.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0118</Id>
