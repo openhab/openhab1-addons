@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>ZG8101</Model>
-	<Label lang="en">Flush mountable switch</Label>
+	<Label lang="en">Garage Door Tilt Sensor</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x30</id></Class>

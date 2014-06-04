@@ -15,7 +15,7 @@
 		<bundle.symbolicName>org.openhab.binding.digitalstrom</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.digitalstrom</bundle.namespace>
 		<deb.name>openhab-addon-binding-digitalstrom</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

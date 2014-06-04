@@ -93,6 +93,7 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 						"Missing transformation configuration.");
 			} else {
 				setTransformationRule(config[3].trim());
+				initTransformService();
 			}
 
 		} catch (BindingConfigParseException e) {
@@ -110,6 +111,7 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 		try {
 
 			if (getTransformationServiceName() != null && getTransformationService() == null) {
+				logger.debug("Received message before transformation service '{}' was initialized.");
 				initTransformService();
 			}
 

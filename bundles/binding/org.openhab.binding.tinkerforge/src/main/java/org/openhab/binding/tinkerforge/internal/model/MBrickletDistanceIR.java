@@ -11,6 +11,7 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import com.tinkerforge.BrickletDistanceIR;
+import java.math.BigDecimal;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 
 
@@ -23,7 +24,6 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR#getDistance <em>Distance</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR#getThreshold <em>Threshold</em>}</li>
  * </ul>
  * </p>
@@ -51,32 +51,6 @@ public interface MBrickletDistanceIR extends MDevice<BrickletDistanceIR>, MSenso
   String getDeviceType();
 
   /**
-   * Returns the value of the '<em><b>Distance</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Distance</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Distance</em>' attribute.
-   * @see #setDistance(int)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletDistanceIR_Distance()
-   * @model unique="false"
-   * @generated
-   */
-  int getDistance();
-
-  /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR#getDistance <em>Distance</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Distance</em>' attribute.
-   * @see #getDistance()
-   * @generated
-   */
-  void setDistance(int value);
-
-  /**
    * Returns the value of the '<em><b>Threshold</b></em>' attribute.
    * The default value is <code>"5"</code>.
    * <!-- begin-user-doc -->
@@ -86,12 +60,12 @@ public interface MBrickletDistanceIR extends MDevice<BrickletDistanceIR>, MSenso
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Threshold</em>' attribute.
-   * @see #setThreshold(int)
+   * @see #setThreshold(BigDecimal)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletDistanceIR_Threshold()
    * @model default="5" unique="false"
    * @generated
    */
-  int getThreshold();
+  BigDecimal getThreshold();
 
   /**
    * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR#getThreshold <em>Threshold</em>}' attribute.
@@ -101,7 +75,7 @@ public interface MBrickletDistanceIR extends MDevice<BrickletDistanceIR>, MSenso
    * @see #getThreshold()
    * @generated
    */
-  void setThreshold(int value);
+  void setThreshold(BigDecimal value);
 
   /**
    * <!-- begin-user-doc -->

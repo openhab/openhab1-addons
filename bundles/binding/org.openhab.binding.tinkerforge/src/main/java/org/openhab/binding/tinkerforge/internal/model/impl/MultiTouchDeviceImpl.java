@@ -46,6 +46,7 @@ import com.tinkerforge.TimeoutException;
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceImpl#getMbrick <em>Mbrick</em>}</li>
@@ -99,6 +100,26 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = true;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -269,6 +290,29 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     uid = newUid;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__UID, oldUid, uid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MULTI_TOUCH_DEVICE__POLL, oldPoll, poll));
   }
 
   /**
@@ -484,59 +528,56 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
    * @generated NOT
    */
   private HighLowValue extractValue(int state) {
-      HighLowValue value = HighLowValue.UNDEF;
-      if ((state & mask) == mask) {
-          value = HighLowValue.HIGH;
-      } else {
-          value = HighLowValue.LOW;
-      }
-      return value;
-  }
-
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  public HighLowValue fetchSensorValue()
-  {
     HighLowValue value = HighLowValue.UNDEF;
-    try {
-      value = extractValue(getMbrick().getTinkerforgeDevice().getTouchState());
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this,
-              TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-  } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-              TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-  }
+    if ((state & mask) == mask) {
+      value = HighLowValue.HIGH;
+    } else {
+      value = HighLowValue.LOW;
+    }
     return value;
   }
 
+
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void init()
-  {
+  public void fetchSensorValue() {
+    HighLowValue value = HighLowValue.UNDEF;
+    try {
+      value = extractValue(getMbrick().getTinkerforgeDevice().getTouchState());
+      setSensorValue(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void init() {
     setEnabledA(new AtomicBoolean());
     logger = LoggerFactory.getLogger(MultiTouchDeviceImpl.class);
     mask = 0000000000001 << getPin();
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
   public void enable() {
     if (tfConfig != null) {
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("disableElectrode"))) {
         if (tfConfig.getDisableElectrode()) {
-          logger.debug("{} MultiTouchDevice uid {} subid {} disable electrode {}", LoggerConstants.TFINIT,
-              getUid(), getSubId(), getPin());
+          logger.debug("{} MultiTouchDevice uid {} subid {} disable electrode {}",
+              LoggerConstants.TFINIT, getUid(), getSubId(), getPin());
           setDisableElectrode(true);
         }
       }
@@ -549,7 +590,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
       try {
         BrickletMultiTouch brickletMultiTouch = bricklet.getTinkerforgeDevice();
         if (getDisableElectrode() != null && getDisableElectrode()) {
-          logger.debug("{} MultiTouchDevice uid {} subid {} disabling electrode {}", LoggerConstants.TFINIT, getUid(), getSubId(), getPin());
+          logger.debug("{} MultiTouchDevice uid {} subid {} disabling electrode {}",
+              LoggerConstants.TFINIT, getUid(), getSubId(), getPin());
           getEnabledA().set(false);
           int electrodeConfig = brickletMultiTouch.getElectrodeConfig();
           electrodeConfig &= ~mask;
@@ -559,7 +601,7 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
         setSensorValue(HighLowValue.UNDEF);
         touchListener = new TouchListener();
         brickletMultiTouch.addTouchStateListener(touchListener);
-        setSensorValue(fetchSensorValue());
+        fetchSensorValue();
 
       } catch (TimeoutException e) {
         TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -571,13 +613,12 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void disable()
-  {
-    if (touchListener != null){
+  public void disable() {
+    if (touchListener != null) {
       getMbrick().getTinkerforgeDevice().removeTouchStateListener(touchListener);
     }
   }
@@ -665,6 +706,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
         return getLogger();
       case ModelPackage.MULTI_TOUCH_DEVICE__UID:
         return getUid();
+      case ModelPackage.MULTI_TOUCH_DEVICE__POLL:
+        return isPoll();
       case ModelPackage.MULTI_TOUCH_DEVICE__ENABLED_A:
         return getEnabledA();
       case ModelPackage.MULTI_TOUCH_DEVICE__SUB_ID:
@@ -698,6 +741,9 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
         return;
       case ModelPackage.MULTI_TOUCH_DEVICE__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.MULTI_TOUCH_DEVICE__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.MULTI_TOUCH_DEVICE__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -740,6 +786,9 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
       case ModelPackage.MULTI_TOUCH_DEVICE__UID:
         setUid(UID_EDEFAULT);
         return;
+      case ModelPackage.MULTI_TOUCH_DEVICE__POLL:
+        setPoll(POLL_EDEFAULT);
+        return;
       case ModelPackage.MULTI_TOUCH_DEVICE__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
@@ -779,6 +828,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MULTI_TOUCH_DEVICE__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MULTI_TOUCH_DEVICE__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.MULTI_TOUCH_DEVICE__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.MULTI_TOUCH_DEVICE__SUB_ID:
@@ -888,7 +939,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     switch (operationID)
     {
       case ModelPackage.MULTI_TOUCH_DEVICE___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
       case ModelPackage.MULTI_TOUCH_DEVICE___INIT:
         init();
         return null;
@@ -917,6 +969,8 @@ public class MultiTouchDeviceImpl extends MinimalEObjectImpl.Container implement
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", subId: ");

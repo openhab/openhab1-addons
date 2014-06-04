@@ -149,9 +149,6 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
                 int receivedInterval = ((serialMessage.getMessagePayloadByte(offset + 1)) << 16) | ((serialMessage.getMessagePayloadByte(offset + 2)) << 8) | (serialMessage.getMessagePayloadByte(offset + 3));
 				logger.debug(String.format("NODE %d: Wake up interval report, value = %d seconds, targetNodeId = %d", this.getNode().getNodeId(), receivedInterval, targetNodeId));
                 
-				if (targetNodeId != this.getController().getOwnNodeId())
-					return;
-				
 				this.interval = receivedInterval;
 				logger.debug("NODE {}: Wake up interval set", this.getNode().getNodeId());
 				

@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TooManyListenersException;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.oceanic.OceanicBindingProvider;
@@ -74,7 +76,8 @@ implements ManagedService {
 
 	/** stores information about serial devices / pump gateways in use  */ 
 	private Map<String, SerialDevice> serialDevices = new HashMap<String, SerialDevice>();
-
+	private ReentrantLock serialDevicesLock = new ReentrantLock();
+	
 	/** stores information about the context of items. The map has this content structure: context -> Set of itemNames */ 
 	private Map<String, Set<String>> contextMap = new HashMap<String, Set<String>>();
 
@@ -137,10 +140,10 @@ implements ManagedService {
 
 	@Override
 	protected void execute() {
-		
+
 		//TODO Change binding to AbstractActive type and move code in execute() to 
 		//TODO bindingChanged()
-		
+
 		if(isProperlyConfigured()) {
 
 			Scheduler sched = null;
@@ -199,10 +202,12 @@ implements ManagedService {
 						try {
 							for(String group: sched.getJobGroupNames()) {
 								// enumerate each job in group
-								for(JobKey jobKey : sched.getJobKeys(jobGroupEquals(group))) {
-									if(jobKey.getName().equals(itemName+"-"+provider.getValueSelector(itemName).toString())) {
-										jobExists = true;
-										break;
+								if(group.equals("Oceanic-"+provider.toString())) {
+									for(JobKey jobKey : sched.getJobKeys(jobGroupEquals(group))) {
+										if(jobKey.getName().equals(itemName+"-"+provider.getValueSelector(itemName).toString())) {
+											jobExists = true;
+											break;
+										}
 									}
 								}
 							}
@@ -231,6 +236,7 @@ implements ManagedService {
 											.build();
 
 							try {
+								logger.debug("Adding a poll job {} for {}",job.getKey(),itemName);
 								sched.scheduleJob(job, trigger);
 							} catch (SchedulerException e) {
 								logger.error("An exception occurred while scheduling a Quartz Job");
@@ -241,9 +247,12 @@ implements ManagedService {
 						try {
 							for(String group: sched.getJobGroupNames()) {
 								// enumerate each job in group
-								for(JobKey jobKey : sched.getJobKeys(jobGroupEquals(group))) {
-									if(findFirstMatchingBindingProvider(jobKey.getName().split("-")[0]) == null) {
-										sched.deleteJob(jobKey);
+								if(group.equals("Oceanic-"+provider.toString())) {
+									for(JobKey jobKey : sched.getJobKeys(jobGroupEquals(group))) {
+										if(findFirstMatchingBindingProvider(jobKey.getName().split("-")[0]) == null) {
+											logger.debug("Removing a poll job {} for {}",jobKey,itemName);
+											sched.deleteJob(jobKey);
+										}
 									}
 								}
 							}
@@ -262,6 +271,7 @@ implements ManagedService {
 				Set<String> itemNames = contextMap.get(serialPort);
 				if(itemNames == null || itemNames.size()==0 ) {
 					contextMap.remove(serialPort);
+					logger.debug("Closing the serial port {}",serialPort);
 					serialDevice.close();
 					serialDevices.remove(serialPort);						
 				}
@@ -279,6 +289,14 @@ implements ManagedService {
 			}
 		}
 		return firstMatchingProvider;
+	}
+	
+	public void lockSerialDevices() {
+		serialDevicesLock.lock();
+	}
+	
+	public void unlockSerialDevices() {
+		serialDevicesLock.unlock();
 	}
 
 	@Override
@@ -506,9 +524,12 @@ implements ManagedService {
 			OceanicValueSelector valueSelector = (OceanicValueSelector) dataMap.get("ValueSelector");
 			OceanicBinding theBinding = (OceanicBinding) dataMap.get("Binding");
 
+			theBinding.lockSerialDevices();
 			SerialDevice serialDevice = theBinding.serialDevices.get(serialPort);
 			String response = serialDevice.requestResponse(valueSelector.name());
-
+			logger.debug("Requested '{}' from the oceanic unit, got '{}' back",valueSelector.name(),response);
+			theBinding.unlockSerialDevices();
+			
 			// process response etc
 
 			for (OceanicBindingProvider provider : theBinding.providers) {
