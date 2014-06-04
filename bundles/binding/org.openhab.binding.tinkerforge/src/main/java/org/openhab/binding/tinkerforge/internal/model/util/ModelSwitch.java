@@ -403,6 +403,23 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.COLOR_ACTOR:
+      {
+        ColorActor colorActor = (ColorActor)theEObject;
+        T result = caseColorActor(colorActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MBRICKLET_LED_STRIP:
+      {
+        MBrickletLEDStrip mBrickletLEDStrip = (MBrickletLEDStrip)theEObject;
+        T result = caseMBrickletLEDStrip(mBrickletLEDStrip);
+        if (result == null) result = caseColorActor(mBrickletLEDStrip);
+        if (result == null) result = caseMDevice(mBrickletLEDStrip);
+        if (result == null) result = caseMBaseDevice(mBrickletLEDStrip);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.DIGITAL_ACTOR_IO16:
       {
         DigitalActorIO16 digitalActorIO16 = (DigitalActorIO16)theEObject;
@@ -1430,6 +1447,38 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseNumberActor(NumberActor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Color Actor</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Color Actor</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseColorActor(ColorActor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet LED Strip</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet LED Strip</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletLEDStrip(MBrickletLEDStrip object)
   {
     return null;
   }

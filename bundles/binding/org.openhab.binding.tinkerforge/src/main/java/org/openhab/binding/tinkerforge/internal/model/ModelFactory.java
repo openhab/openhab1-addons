@@ -176,6 +176,15 @@ public interface ModelFactory extends EFactory
   MBrickletSegmentDisplay4x7 createMBrickletSegmentDisplay4x7();
 
   /**
+   * Returns a new object of class '<em>MBricklet LED Strip</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet LED Strip</em>'.
+   * @generated
+   */
+  MBrickletLEDStrip createMBrickletLEDStrip();
+
+  /**
    * Returns a new object of class '<em>Digital Actor IO16</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
