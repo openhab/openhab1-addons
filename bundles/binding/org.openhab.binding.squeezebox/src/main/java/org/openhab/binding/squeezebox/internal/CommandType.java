@@ -9,6 +9,7 @@
 package org.openhab.binding.squeezebox.internal;
 
 import org.apache.commons.lang.StringUtils;
+import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
  * Represents all valid commands which could be processed by this binding
@@ -52,7 +53,7 @@ public enum CommandType {
 		return command;
 	}
 	
-	public static CommandType fromString(String command) {
+	public static CommandType fromString(String command) throws BindingConfigParseException {
 		if (!StringUtils.isEmpty(command)) {
 			for (CommandType commandType : CommandType.values()) {
 				if (commandType.getCommand().equals(command)) {
@@ -61,6 +62,6 @@ public enum CommandType {
 			}
 		}
 		
-		throw new IllegalArgumentException("Invalid command: " + command);
+		throw new BindingConfigParseException("Invalid command: " + command);
 	}
 }
