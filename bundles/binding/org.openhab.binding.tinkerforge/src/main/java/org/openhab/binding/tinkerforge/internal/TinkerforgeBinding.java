@@ -692,7 +692,8 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
               if (command instanceof HSBType) {
                 logger.debug("{} found HSBType command", LoggerConstants.COMMAND);
                 if (mDevice instanceof ColorActor) {
-                  ((ColorActor) mDevice).setColor((HSBType) command);
+                  ((ColorActor) mDevice).setColor((HSBType) command,
+                      provider.getDeviceOptions(itemName));
                 }
               } else {
                 if (mDevice instanceof NumberActor) {

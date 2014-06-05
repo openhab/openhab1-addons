@@ -45,6 +45,7 @@ import com.tinkerforge.BrickletSegmentDisplay4x7
 import com.tinkerforge.BrickletLEDStrip
 import org.openhab.core.library.types.HSBType
 import java.math.BigDecimal
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions
 
 /**
  * @author Theo Weiss
@@ -87,6 +88,7 @@ type TinkerBrickletHallEffect wraps BrickletHallEffect
 type TinkerBrickletSegmentDisplay4x7 wraps BrickletSegmentDisplay4x7
 type TinkerBrickletLEDStrip wraps BrickletLEDStrip
 type HSBType wraps HSBType
+type DeviceOptions wraps DeviceOptions
 type Enum wraps Enum
 
 class Ecosystem {
@@ -284,7 +286,7 @@ class MBrickletSegmentDisplay4x7 extends NumberActor, MDevice<TinkerBrickletSegm
 }
 
 interface ColorActor {
-    op void setColor(HSBType color)
+    op void setColor(HSBType color, DeviceOptions opts)
 }
 
 class MBrickletLEDStrip extends ColorActor, MDevice<TinkerBrickletLEDStrip>{

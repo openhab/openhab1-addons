@@ -3693,7 +3693,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int COLOR_ACTOR___SET_COLOR__HSBTYPE = 0;
+  int COLOR_ACTOR___SET_COLOR__HSBTYPE_DEVICEOPTIONS = 0;
 
   /**
    * The number of operations of the '<em>Color Actor</em>' class.
@@ -3819,7 +3819,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICKLET_LED_STRIP___SET_COLOR__HSBTYPE = COLOR_ACTOR___SET_COLOR__HSBTYPE;
+  int MBRICKLET_LED_STRIP___SET_COLOR__HSBTYPE_DEVICEOPTIONS = COLOR_ACTOR___SET_COLOR__HSBTYPE_DEVICEOPTIONS;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -12705,6 +12705,16 @@ public interface ModelPackage extends EPackage
   int HSB_TYPE = 145;
 
   /**
+   * The meta object id for the '<em>Device Options</em>' data type.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.config.DeviceOptions
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDeviceOptions()
+   * @generated
+   */
+  int DEVICE_OPTIONS = 146;
+
+  /**
    * The meta object id for the '<em>Enum</em>' data type.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -12712,7 +12722,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getEnum()
    * @generated
    */
-  int ENUM = 146;
+  int ENUM = 147;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.TFConfig <em>TF Config</em>}'.
@@ -13766,14 +13776,14 @@ public interface ModelPackage extends EPackage
   EClass getColorActor();
 
   /**
-   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.ColorActor#setColor(org.openhab.core.library.types.HSBType) <em>Set Color</em>}' operation.
+   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.ColorActor#setColor(org.openhab.core.library.types.HSBType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions) <em>Set Color</em>}' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the '<em>Set Color</em>' operation.
-   * @see org.openhab.binding.tinkerforge.internal.model.ColorActor#setColor(org.openhab.core.library.types.HSBType)
+   * @see org.openhab.binding.tinkerforge.internal.model.ColorActor#setColor(org.openhab.core.library.types.HSBType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
    * @generated
    */
-  EOperation getColorActor__SetColor__HSBType();
+  EOperation getColorActor__SetColor__HSBType_DeviceOptions();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip <em>MBricklet LED Strip</em>}'.
@@ -16706,6 +16716,17 @@ public interface ModelPackage extends EPackage
   EDataType getHSBType();
 
   /**
+   * Returns the meta object for data type '{@link org.openhab.binding.tinkerforge.internal.config.DeviceOptions <em>Device Options</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for data type '<em>Device Options</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.config.DeviceOptions
+   * @model instanceClass="org.openhab.binding.tinkerforge.internal.config.DeviceOptions"
+   * @generated
+   */
+  EDataType getDeviceOptions();
+
+  /**
    * Returns the meta object for data type '{@link java.lang.Enum <em>Enum</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -17606,7 +17627,7 @@ public interface ModelPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EOperation COLOR_ACTOR___SET_COLOR__HSBTYPE = eINSTANCE.getColorActor__SetColor__HSBType();
+    EOperation COLOR_ACTOR___SET_COLOR__HSBTYPE_DEVICEOPTIONS = eINSTANCE.getColorActor__SetColor__HSBType_DeviceOptions();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl <em>MBricklet LED Strip</em>}' class.
@@ -20051,6 +20072,16 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EDataType HSB_TYPE = eINSTANCE.getHSBType();
+
+    /**
+     * The meta object literal for the '<em>Device Options</em>' data type.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.config.DeviceOptions
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDeviceOptions()
+     * @generated
+     */
+    EDataType DEVICE_OPTIONS = eINSTANCE.getDeviceOptions();
 
     /**
      * The meta object literal for the '<em>Enum</em>' data type.

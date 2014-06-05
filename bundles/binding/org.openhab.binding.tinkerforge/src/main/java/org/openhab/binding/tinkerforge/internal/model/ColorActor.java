@@ -4,6 +4,7 @@ package org.openhab.binding.tinkerforge.internal.model;
 
 import org.eclipse.emf.ecore.EObject;
 
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.core.library.types.HSBType;
 
 /**
@@ -21,9 +22,9 @@ public interface ColorActor extends EObject
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @model colorDataType="org.openhab.binding.tinkerforge.internal.model.HSBType" colorUnique="false"
+   * @model colorDataType="org.openhab.binding.tinkerforge.internal.model.HSBType" colorUnique="false" optsDataType="org.openhab.binding.tinkerforge.internal.model.DeviceOptions" optsUnique="false"
    * @generated
    */
-  void setColor(HSBType color);
+  void setColor(HSBType color, DeviceOptions opts);
 
 } // ColorActor

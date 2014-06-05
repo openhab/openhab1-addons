@@ -4,8 +4,10 @@ package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -16,6 +18,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
@@ -55,6 +58,10 @@ import com.tinkerforge.TimeoutException;
  */
 public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implements MBrickletLEDStrip
 {
+  private static final String LEDS = "leds";
+
+  private static final String COLOR_MAPPING = "colorMapping";
+
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -244,6 +251,8 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected String name = NAME_EDEFAULT;
+
+  private Pattern rangePattern;
 
   /**
    * <!-- begin-user-doc -->
@@ -560,6 +569,7 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
   public void enable()
   {
     logger.trace("enabling");
+    rangePattern = Pattern.compile("(.+)-(.+)");
     tinkerforgeDevice = new BrickletLEDStrip(getUid(), getIpConnection());
     try {
       tinkerforgeDevice.setFrameDuration(1);
@@ -586,16 +596,37 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void setColor(HSBType color) {
+  public void setColor(HSBType color, DeviceOptions opts) {
     logger.debug("set color called");
+    char[] colorMapping = {'r', 'g', 'b'};
+    String leds = null;
+    
+    // handle options
+    if (opts != null){
+      if (opts.containsKey(COLOR_MAPPING)){
+        logger.debug("custom color mapping {} ", opts.getOption(COLOR_MAPPING));
+        colorMapping = opts.getOption(COLOR_MAPPING).toCharArray();
+      }
+      if (opts.containsKey(LEDS)){
+        leds = opts.getOption(LEDS).trim();
+        logger.debug("leds: {}", leds);
+      } else {
+      }
+    }
+    if (leds == null || leds.length() == 0){
+      logger.error("\"leds\" option missing or empty, items configuration has to be fixed!");
+      return;
+    }
+    
+    // get the rgb values from HSBType
     Color rgbColor = color.toColor();
     short red = (short) rgbColor.getRed();
     short green = (short) rgbColor.getGreen();
     short blue = (short) rgbColor.getBlue();
     logger.debug("rgb is: {}:{}:{}", red, green, blue);
-//    ArrayList<Short> redList = new ArrayList<Short>();
-//    ArrayList<Short> greenList = new ArrayList<Short>();
-//    ArrayList<Short> blueList = new ArrayList<Short>();
+    
+    // construct the values for the setRGBValues call
+    HashMap<Character, short[]> colorMap = new HashMap<Character, short[]>(3);
     short[] reds = {red, red, red, red, red, red, red, red, red, red, red, red, red, red, red, red};
     short[] greens =
         {green, green, green, green, green, green, green, green, green, green, green, green, green,
@@ -603,18 +634,41 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
     short[] blues =
         {blue, blue, blue, blue, blue, blue, blue, blue, blue, blue, blue, blue, blue, blue, blue,
             blue};
-//    for (int i = 0; i < 16; i++) {
-//      redList.add((short) red);
-//      greenList.add((short) green);
-//      blueList.add((short) blue);
-//    }
-
+    colorMap.put('r', reds);
+    colorMap.put('g', greens);
+    colorMap.put('b', blues);
+    
+    // parse leds variable to get the led numbers / range which should be switched.
+    // the config looks like this: 
+    // 1. pipe separated list of led numbers, e.g. "1|2|4|5"
+    // 2. a range of leds: e.g. "1-5"
+    // 3. combination of 1. and 2., e.g. "0|1|4-6|8-9"
     try {
-//      tinkerforgeDevice.setRGBValues(0, (short) 15,
-//          ArrayUtils.toPrimitive(redList.toArray(new Short[redList.size()])),
-//          ArrayUtils.toPrimitive(blueList.toArray(new Short[blueList.size()])),
-//          ArrayUtils.toPrimitive(greenList.toArray(new Short[greenList.size()])));
-      tinkerforgeDevice.setRGBValues(0, (short) 15, reds, blues, greens);
+      String[] tokens = leds.split("\\|");
+      for (int i = 0; i < tokens.length; i++) {
+        String token = tokens[i].trim();
+        logger.trace("led token {}", token);
+        if (token.length() == 0){
+          logger.trace("ignoring empty token");
+          continue;
+        }
+        Matcher matcher = rangePattern.matcher(token);
+        if (matcher.find()) {
+          logger.trace("found range");
+          int startLed = Integer.parseInt(matcher.group(1).trim());
+          logger.debug("found startLed {}", startLed);
+          short range = (short) (Short.parseShort(matcher.group(2).trim()) - startLed + 1);
+          logger.debug("found range {}", range);
+          // TODO if range >16
+          tinkerforgeDevice.setRGBValues(startLed, (short) range, colorMap.get(colorMapping[0]),
+              colorMap.get(colorMapping[1]), colorMap.get(colorMapping[2]));
+        } else {
+          int led = (int) Integer.parseInt(token.trim());
+          logger.debug("found led {}", led);
+          tinkerforgeDevice.setRGBValues(led, (short) 1, colorMap.get(colorMapping[0]),
+              colorMap.get(colorMapping[1]), colorMap.get(colorMapping[2]));
+        }
+      }
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -958,8 +1012,8 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
       case ModelPackage.MBRICKLET_LED_STRIP___DISABLE:
         disable();
         return null;
-      case ModelPackage.MBRICKLET_LED_STRIP___SET_COLOR__HSBTYPE:
-        setColor((HSBType)arguments.get(0));
+      case ModelPackage.MBRICKLET_LED_STRIP___SET_COLOR__HSBTYPE_DEVICEOPTIONS:
+        setColor((HSBType)arguments.get(0), (DeviceOptions)arguments.get(1));
         return null;
     }
     return super.eInvoke(operationID, arguments);
