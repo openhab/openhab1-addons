@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.ecotouch;
 
+import org.openhab.binding.ecotouch.EcoTouchTags;
 import org.openhab.core.binding.BindingProvider;
 
 /**
@@ -15,5 +16,23 @@ import org.openhab.core.binding.BindingProvider;
  * @since 1.5.0
  */
 public interface EcoTouchBindingProvider extends BindingProvider {
+	
+	/**
+	 * Provides an array of all item names of this provider for a given binding type
+	 * @param bindingType the binding type of the items
+	 * @return an array of all item names of this provider for the given binding type
+	 */
+	public String[] getItemNamesForType(EcoTouchTags bindingType);
+	
+	/**
+	 * Provides an array of all active tag names of this provider
+	 * @return an array of all active tag names of this provider
+	 */
+	public String[] getActiveTags();
 
+	/**
+	 * Provides an array of all active items of this provider
+	 * @return an array of all active items of this provider
+	 */
+	public EcoTouchTags[] getActiveItems();
 }
