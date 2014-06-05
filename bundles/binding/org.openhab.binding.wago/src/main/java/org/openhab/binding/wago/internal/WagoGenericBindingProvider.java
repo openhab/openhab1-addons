@@ -70,7 +70,6 @@ public class WagoGenericBindingProvider extends AbstractGenericBindingProvider
 			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
-		// TODO parse bindingconfig here ...
 		if (bindingConfig != null) {
 			WagoBindingConfig config = new WagoBindingConfig(item,
 					bindingConfig);
@@ -95,13 +94,7 @@ public class WagoGenericBindingProvider extends AbstractGenericBindingProvider
 				String attributes[] = conf.split(":");
 
 				couplerName = attributes[0];
-				module = Integer.parseInt(attributes[1]) - 1; // -1 so that the
-																// user can
-																// easily
-																// transfer the
-																// values from
-																// the
-																// EA-config.
+				module = Integer.parseInt(attributes[1]) - 1; // -1 so that the user can just use the values from the EA-config.
 				channel = Integer.parseInt(attributes[2]) - 1;
 			} catch (Exception e) {
 				e.printStackTrace();
