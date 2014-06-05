@@ -145,9 +145,13 @@ public class TclRegaScriptClient {
 	 * Set a variable on the CCU.
 	 */
 	public void setVariable(HmValueItem hmValueItem, Object value) throws CcuClientException {
-		logger.debug("Sending {} with value '{}' to CCU", hmValueItem.getName(), value);
+		String strValue = ObjectUtils.toString(value);
+		if (hmValueItem.isStringValue()) {
+			strValue = "\"" + strValue + "\"";
+		}
+		logger.debug("Sending {} with value '{}' to CCU", hmValueItem.getName(), strValue);
 		HmResult result = sendScriptByName("setVariable", HmResult.class, new String[] { "variable_name",
-				"variable_state" }, new String[] { hmValueItem.getName(), ObjectUtils.toString(value) });
+				"variable_state" }, new String[] { hmValueItem.getName(), strValue });
 		if (!result.isValid()) {
 			throw new CcuClientException("Unable to set CCU variable " + hmValueItem.getName());
 		}

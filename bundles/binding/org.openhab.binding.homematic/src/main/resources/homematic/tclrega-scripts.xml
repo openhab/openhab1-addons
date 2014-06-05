@@ -38,7 +38,7 @@ Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
 Write('<result><valid>')
 object var_obj = dom.GetObject("{variable_name}");
 if (var_obj) {
-  var_obj.State("{variable_state}");
+  var_obj.State({variable_state});
   Write('true');
 }
 else {

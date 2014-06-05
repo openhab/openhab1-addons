@@ -219,6 +219,13 @@ public class HmValueItem {
 	}
 
 	/**
+	 * Checks if the value is from type string.
+	 */
+	public boolean isStringValue() {
+		return value.getClass() == String.class;
+	}
+
+	/**
 	 * Checks if the Homematic valuetype is a boolean.
 	 */
 	private boolean isBooleanValueType() {
