@@ -69,8 +69,6 @@ public class WagoBinding extends AbstractActiveBinding<WagoBindingProvider>
 	}
 
 	public void deactivate() {
-		// deallocate resources here that are no longer needed and
-		// should be reset when activating this binding again
 	}
 
 	/**
@@ -94,7 +92,6 @@ public class WagoBinding extends AbstractActiveBinding<WagoBindingProvider>
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
 		for (FBCoupler coupler : Collections.synchronizedMap(couplers).values()) {
 			coupler.update(this);
 		}
@@ -153,10 +150,6 @@ public class WagoBinding extends AbstractActiveBinding<WagoBindingProvider>
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-
 		for (WagoBindingProvider provider : providers) {
 			if (provider.providesBindingFor(itemName)) {
 				WagoBindingConfig conf = provider.getConfig(itemName);
