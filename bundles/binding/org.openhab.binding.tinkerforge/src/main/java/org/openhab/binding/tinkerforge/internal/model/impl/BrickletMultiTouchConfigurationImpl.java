@@ -2,18 +2,10 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
-import java.util.Collection;
-
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
-import org.eclipse.emf.ecore.util.EDataTypeEList;
-
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 
@@ -161,7 +153,6 @@ public class BrickletMultiTouchConfigurationImpl extends MinimalEObjectImpl.Cont
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {

@@ -207,7 +207,7 @@ public enum OceanicValueSelector {
 		@Override
 		public String convertValue(String value) {
 
-			final SimpleDateFormat IN_DATE_FORMATTER = new SimpleDateFormat("dd.mm.yy HH:mm:ss");
+			final SimpleDateFormat IN_DATE_FORMATTER = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
 			final SimpleDateFormat OUT_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
 

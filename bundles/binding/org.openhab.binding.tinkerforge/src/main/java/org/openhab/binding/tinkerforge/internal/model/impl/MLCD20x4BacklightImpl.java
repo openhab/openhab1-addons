@@ -49,6 +49,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getSwitchState <em>Switch State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl#getMbrick <em>Mbrick</em>}</li>
@@ -119,6 +120,26 @@ public class MLCD20x4BacklightImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = true;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -277,6 +298,29 @@ private BrickletLCD20x4 brickletLCD20x4;
    * <!-- end-user-doc -->
    * @generated
    */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD2_0X4_BACKLIGHT__POLL, oldPoll, poll));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public AtomicBoolean getEnabledA()
   {
     return enabledA;
@@ -374,89 +418,81 @@ private BrickletLCD20x4 brickletLCD20x4;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void init()
-  {
-	    setEnabledA(new AtomicBoolean());
-		logger = LoggerFactory.getLogger(MLCD20x4BacklightImpl.class);
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    poll = true; // don't use the setter to prevent notification
+    logger = LoggerFactory.getLogger(MLCD20x4BacklightImpl.class);
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public void enable() {
-		setSwitchState(OnOffValue.UNDEF);
-		MBrickletLCD20x4 masterBrick = getMbrick();
-		if (masterBrick == null) {
-			logger.error("{} No brick found for Button: {} ",
-					LoggerConstants.TFINIT, subId);
-		} else {
-			brickletLCD20x4 = masterBrick.getTinkerforgeDevice();
-			setSwitchState(fetchSwitchState());
-		}
-	}
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */
-  public void disable()
-  {
+  public void enable() {
+    setSwitchState(OnOffValue.UNDEF);
+    MBrickletLCD20x4 masterBrick = getMbrick();
+    if (masterBrick == null) {
+      logger.error("{} No brick found for Button: {} ", LoggerConstants.TFINIT, subId);
+    } else {
+      brickletLCD20x4 = masterBrick.getTinkerforgeDevice();
+      fetchSwitchState();
+    }
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public void turnSwitch(OnOffValue state)
-  {
-		try {
-			if (state == OnOffValue.OFF) {
-				logger.debug("setSwitchState off");
-				brickletLCD20x4.backlightOff();
-			} else if (state == OnOffValue.ON) {
-				logger.debug("setSwitchState on");
-				brickletLCD20x4.backlightOn();
-			} else {
-				logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
-			}
-			setSwitchState(state);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
+  public void disable() {}
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void turnSwitch(OnOffValue state) {
+    try {
+      if (state == OnOffValue.OFF) {
+        logger.debug("setSwitchState off");
+        brickletLCD20x4.backlightOff();
+      } else if (state == OnOffValue.ON) {
+        logger.debug("setSwitchState on");
+        brickletLCD20x4.backlightOn();
+      } else {
+        logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+      }
+      setSwitchState(state);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-  public OnOffValue fetchSwitchState()
-  {
-		OnOffValue switchValue = OnOffValue.UNDEF;
-		try {
-			switchValue = brickletLCD20x4.isBacklightOn() ? OnOffValue.ON
-					: OnOffValue.OFF;
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-		setSwitchState(switchValue);
-		return switchValue;
+  public void fetchSwitchState() {
+    OnOffValue switchValue = OnOffValue.UNDEF;
+    try {
+      switchValue = brickletLCD20x4.isBacklightOn() ? OnOffValue.ON : OnOffValue.OFF;
+      setSwitchState(switchValue);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+    setSwitchState(switchValue);
   }
 
   /**
@@ -525,6 +561,8 @@ private BrickletLCD20x4 brickletLCD20x4;
         return getLogger();
       case ModelPackage.MLCD2_0X4_BACKLIGHT__UID:
         return getUid();
+      case ModelPackage.MLCD2_0X4_BACKLIGHT__POLL:
+        return isPoll();
       case ModelPackage.MLCD2_0X4_BACKLIGHT__ENABLED_A:
         return getEnabledA();
       case ModelPackage.MLCD2_0X4_BACKLIGHT__SUB_ID:
@@ -555,6 +593,9 @@ private BrickletLCD20x4 brickletLCD20x4;
         return;
       case ModelPackage.MLCD2_0X4_BACKLIGHT__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.MLCD2_0X4_BACKLIGHT__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.MLCD2_0X4_BACKLIGHT__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -588,6 +629,9 @@ private BrickletLCD20x4 brickletLCD20x4;
       case ModelPackage.MLCD2_0X4_BACKLIGHT__UID:
         setUid(UID_EDEFAULT);
         return;
+      case ModelPackage.MLCD2_0X4_BACKLIGHT__POLL:
+        setPoll(POLL_EDEFAULT);
+        return;
       case ModelPackage.MLCD2_0X4_BACKLIGHT__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
@@ -617,6 +661,8 @@ private BrickletLCD20x4 brickletLCD20x4;
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MLCD2_0X4_BACKLIGHT__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MLCD2_0X4_BACKLIGHT__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.MLCD2_0X4_BACKLIGHT__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.MLCD2_0X4_BACKLIGHT__SUB_ID:
@@ -643,6 +689,7 @@ private BrickletLCD20x4 brickletLCD20x4;
       {
         case ModelPackage.MLCD2_0X4_BACKLIGHT__LOGGER: return ModelPackage.MBASE_DEVICE__LOGGER;
         case ModelPackage.MLCD2_0X4_BACKLIGHT__UID: return ModelPackage.MBASE_DEVICE__UID;
+        case ModelPackage.MLCD2_0X4_BACKLIGHT__POLL: return ModelPackage.MBASE_DEVICE__POLL;
         case ModelPackage.MLCD2_0X4_BACKLIGHT__ENABLED_A: return ModelPackage.MBASE_DEVICE__ENABLED_A;
         default: return -1;
       }
@@ -680,6 +727,7 @@ private BrickletLCD20x4 brickletLCD20x4;
       {
         case ModelPackage.MBASE_DEVICE__LOGGER: return ModelPackage.MLCD2_0X4_BACKLIGHT__LOGGER;
         case ModelPackage.MBASE_DEVICE__UID: return ModelPackage.MLCD2_0X4_BACKLIGHT__UID;
+        case ModelPackage.MBASE_DEVICE__POLL: return ModelPackage.MLCD2_0X4_BACKLIGHT__POLL;
         case ModelPackage.MBASE_DEVICE__ENABLED_A: return ModelPackage.MLCD2_0X4_BACKLIGHT__ENABLED_A;
         default: return -1;
       }
@@ -761,7 +809,8 @@ private BrickletLCD20x4 brickletLCD20x4;
         turnSwitch((OnOffValue)arguments.get(0));
         return null;
       case ModelPackage.MLCD2_0X4_BACKLIGHT___FETCH_SWITCH_STATE:
-        return fetchSwitchState();
+        fetchSwitchState();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }
@@ -783,6 +832,8 @@ private BrickletLCD20x4 brickletLCD20x4;
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", subId: ");

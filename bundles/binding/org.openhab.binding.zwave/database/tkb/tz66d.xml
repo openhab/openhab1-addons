@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+        <Model>TZ66D</Model>
+        <Label lang="en">Wall Mounted 3-Wire Dual Switch</Label>
+        <CommandClasses>
+                <Class><id>0x20</id></Class>
+                <Class><id>0x25</id></Class>
+                <Class><id>0x26</id></Class>
+                <Class><id>0x27</id></Class>
+                <Class><id>0x70</id></Class>
+                <Class><id>0x72</id></Class>
+                <Class><id>0x73</id></Class>
+                <Class><id>0x85</id></Class>
+                <Class><id>0x86</id></Class>
+        </CommandClasses>
+        <Configuration>
+                <Parameter>
+                        <Index>1</Index>
+                        <Type>list</Type>
+                        <Default>1</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Ignore start level</Label>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Ignore</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Don't ignore</Label>
+                        </Item>
+                        <Help lang="en"><![CDATA[Ignore start level when transmitting a dim command to the switch]]></Help>
+                </Parameter>
+
+                <Parameter>
+                        <Index>2</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Suspend Group 4</Label>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Transmit to group 4</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Disable transmitting to group 4</Label>
+                        </Item>
+                        <Help lang="en"><![CDATA[Setting this parameter will disable transmitting commands to devices in association group 4]]></Help>
+                </Parameter>
+
+                <Parameter>
+                        <Index>3</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Blue LED light Behavior</Label>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Led on when switch on</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Night light</Label>
+                        </Item>
+                        <Help lang="en"><![CDATA[Defines the behavior of the blue LED. Default is Night Light mode where LED is one when switch is off]]></Help>
+                </Parameter>
+
+                <Parameter>
+                        <Index>4</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Invert Switch</Label>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">ON on top</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">OFF on top</Label>
+                        </Item>
+                        <Help lang="en"><![CDATA[To change the top of the switch to off and the botton to on]]></Help>
+                </Parameter>
+
+                <Parameter>
+                        <Index>14</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Enable Shade Control Group 2</Label>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Inactive</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Shade Control</Label>
+                        </Item>
+                        <Help lang="en"><![CDATA[Enable the control of shade devices in association group 2 when this option is activated]]></Help>
+                </Parameter>
+
+                <Parameter>
+                        <Index>15</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Enable Shade Control Group 3</Label>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Inactive</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Shade Control</Label>
+                        </Item>
+                        <Help lang="en"><![CDATA[Enable the control of shade devices in association group 3 when this option is activated]]></Help>
+                </Parameter>
+
+                <Parameter>
+                        <Index>19</Index>
+                        <Type>list</Type>
+                        <Default>2</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Blue LED light behavior on transmission</Label>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">LED does not blinks on activity</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">LED blinks on activity all the time</Label>
+                        </Item>
+                        <Item>
+                                <Value>2</Value>
+                                <Label lang="en">LED blinks on activity 1 second</Label>
+                        </Item>
+                        <Help lang="en"><![CDATA[Defines the behavior of the blue LED when transmission of data]]></Help>
+                </Parameter>
+
+                <Parameter>
+                        <Index>20</Index>
+                        <Type>byte</Type>
+                        <Default>2</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Poll Group 2 Interval (minutes)</Label>
+                        <Minimum>1</Minimum>
+                        <Maximum>255</Maximum>
+
+                        <Help lang="en"><![CDATA[Polling Interval in minutes (default 2)]]></Help>
+                </Parameter>
+
+                <Parameter>
+                        <Index>22</Index>
+                        <Type>list</Type>
+                        <Default>1</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Poll Group 2</Label>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Disabled</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Enabled</Label>
+                        </Item>
+                        <Help lang="en"><![CDATA[Defines if the device will poll association Group 2 at the interval defined in parameter 20]]></Help>
+                </Parameter>
+
+        </Configuration>
+                <Associations>
+                <Group>
+                        <Index>1</Index>
+                        <Maximum>5</Maximum>
+                        <Label lang="en">Group 1</Label>
+                        <Help lang="en"><![CDATA[Left button press and hold of up/down buttons]]></Help>
+                </Group>
+                <Group>
+                        <Index>2</Index>
+                        <Maximum>5</Maximum>
+                        <Label lang="en">Group 2</Label>
+                        <Help lang="en"><![CDATA[Right button press and hold of up/down buttons]]></Help>
+                </Group>
+                <Group>
+                        <Index>3</Index>
+                        <Maximum>5</Maximum>
+                        <Label lang="en">Group 3</Label>
+                        <Help lang="en"><![CDATA[Right button double-press and hold of up/down buttons]]></Help>
+                </Group>
+                <Group>
+                        <Index>3</Index>
+                        <Maximum>5</Maximum>
+                        <Label lang="en">Group 4</Label>
+                        <SetToController>true</SetToController>
+                        <Help lang="en"><![CDATA[Send Reports on switch state change]]></Help>
+                </Group>
+        </Associations>
+</Product>
+

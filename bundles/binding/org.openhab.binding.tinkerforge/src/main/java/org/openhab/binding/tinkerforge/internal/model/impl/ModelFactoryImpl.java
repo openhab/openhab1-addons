@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
-import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
 import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
@@ -75,16 +74,25 @@ import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
+import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
+import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
+import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
+import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletRemoteSwitch;
+import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
+import com.tinkerforge.BrickletTemperatureIR;
+import com.tinkerforge.BrickletTilt;
+import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
 
@@ -150,14 +158,20 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MINDUSTRIAL_QUAD_RELAY: return createMIndustrialQuadRelay();
       case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_IN4: return createMBrickletIndustrialDigitalIn4();
       case ModelPackage.MINDUSTRIAL_DIGITAL_IN: return createMIndustrialDigitalIn();
-      case ModelPackage.DIGITAL_ACTOR: return createDigitalActor();
+      case ModelPackage.MBRICKLET_INDUSTRIAL_DIGITAL_OUT4: return createMBrickletIndustrialDigitalOut4();
+      case ModelPackage.DIGITAL_ACTOR_DIGITAL_OUT4: return createDigitalActorDigitalOut4();
+      case ModelPackage.DIGITAL_ACTOR_IO16: return createDigitalActorIO16();
       case ModelPackage.MBRICKLET_IO16: return createMBrickletIO16();
       case ModelPackage.DIGITAL_SENSOR: return createDigitalSensor();
+      case ModelPackage.MBRICKLET_IO4: return createMBrickletIO4();
+      case ModelPackage.DIGITAL_SENSOR_IO4: return createDigitalSensorIO4();
+      case ModelPackage.DIGITAL_ACTOR_IO4: return createDigitalActorIO4();
       case ModelPackage.MBRICKLET_MULTI_TOUCH: return createMBrickletMultiTouch();
       case ModelPackage.MULTI_TOUCH_DEVICE: return createMultiTouchDevice();
       case ModelPackage.ELECTRODE: return createElectrode();
       case ModelPackage.PROXIMITY: return createProximity();
       case ModelPackage.MBRICKLET_MOTION_DETECTOR: return createMBrickletMotionDetector();
+      case ModelPackage.MBRICKLET_HALL_EFFECT: return createMBrickletHallEffect();
       case ModelPackage.MDUAL_RELAY: return createMDualRelay();
       case ModelPackage.MBRICKLET_REMOTE_SWITCH: return createMBrickletRemoteSwitch();
       case ModelPackage.REMOTE_SWITCH_A: return createRemoteSwitchA();
@@ -166,9 +180,20 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.MBRICKLET_HUMIDITY: return createMBrickletHumidity();
       case ModelPackage.MBRICKLET_DISTANCE_IR: return createMBrickletDistanceIR();
       case ModelPackage.MBRICKLET_TEMPERATURE: return createMBrickletTemperature();
+      case ModelPackage.MBRICKLET_TEMPERATURE_IR: return createMBrickletTemperatureIR();
+      case ModelPackage.OBJECT_TEMPERATURE: return createObjectTemperature();
+      case ModelPackage.AMBIENT_TEMPERATURE: return createAmbientTemperature();
+      case ModelPackage.MBRICKLET_TILT: return createMBrickletTilt();
+      case ModelPackage.MBRICKLET_VOLTAGE_CURRENT: return createMBrickletVoltageCurrent();
+      case ModelPackage.VC_DEVICE_VOLTAGE: return createVCDeviceVoltage();
+      case ModelPackage.VC_DEVICE_CURRENT: return createVCDeviceCurrent();
+      case ModelPackage.VC_DEVICE_POWER: return createVCDevicePower();
       case ModelPackage.MBRICKLET_BAROMETER: return createMBrickletBarometer();
       case ModelPackage.MBAROMETER_TEMPERATURE: return createMBarometerTemperature();
       case ModelPackage.MBRICKLET_AMBIENT_LIGHT: return createMBrickletAmbientLight();
+      case ModelPackage.MBRICKLET_SOUND_INTENSITY: return createMBrickletSoundIntensity();
+      case ModelPackage.MBRICKLET_MOISTURE: return createMBrickletMoisture();
+      case ModelPackage.MBRICKLET_DISTANCE_US: return createMBrickletDistanceUS();
       case ModelPackage.MBRICKLET_LCD2_0X4: return createMBrickletLCD20x4();
       case ModelPackage.MLCD2_0X4_BACKLIGHT: return createMLCD20x4Backlight();
       case ModelPackage.MLCD2_0X4_BUTTON: return createMLCD20x4Button();
@@ -177,6 +202,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.OH_CONFIG: return createOHConfig();
       case ModelPackage.TF_NULL_CONFIGURATION: return createTFNullConfiguration();
       case ModelPackage.TF_BASE_CONFIGURATION: return createTFBaseConfiguration();
+      case ModelPackage.TF_OBJECT_TEMPERATURE_CONFIGURATION: return createTFObjectTemperatureConfiguration();
+      case ModelPackage.TF_MOISTURE_BRICKLET_CONFIGURATION: return createTFMoistureBrickletConfiguration();
+      case ModelPackage.TF_DISTANCE_US_BRICKLET_CONFIGURATION: return createTFDistanceUSBrickletConfiguration();
+      case ModelPackage.TF_VOLTAGE_CURRENT_CONFIGURATION: return createTFVoltageCurrentConfiguration();
       case ModelPackage.TF_BRICK_DC_CONFIGURATION: return createTFBrickDCConfiguration();
       case ModelPackage.TFIO_ACTOR_CONFIGURATION: return createTFIOActorConfiguration();
       case ModelPackage.TF_INTERRUPT_LISTENER_CONFIGURATION: return createTFInterruptListenerConfiguration();
@@ -217,6 +246,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createBarometerSubIDsFromString(eDataType, initialValue);
       case ModelPackage.IO16_SUB_IDS:
         return createIO16SubIdsFromString(eDataType, initialValue);
+      case ModelPackage.IO4_SUB_IDS:
+        return createIO4SubIdsFromString(eDataType, initialValue);
       case ModelPackage.DUAL_RELAY_SUB_IDS:
         return createDualRelaySubIdsFromString(eDataType, initialValue);
       case ModelPackage.LCD_BUTTON_SUB_IDS:
@@ -225,6 +256,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createLCDBacklightSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MULTI_TOUCH_SUB_IDS:
         return createMultiTouchSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.TEMPERATURE_IR_SUB_IDS:
+        return createTemperatureIRSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.VOLTAGE_CURRENT_SUB_IDS:
+        return createVoltageCurrentSubIdsFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -243,6 +278,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createMTinkerBrickletIndustrialQuadRelayFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4:
         return createMTinkerBrickletIndustrialDigitalIn4FromString(eDataType, initialValue);
+      case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4:
+        return createMTinkerBrickletIndustrialDigitalOut4FromString(eDataType, initialValue);
       case ModelPackage.SWITCH_STATE:
         return createSwitchStateFromString(eDataType, initialValue);
       case ModelPackage.DIGITAL_VALUE:
@@ -273,6 +310,22 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletMotionDetectorFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_MULTI_TOUCH:
         return createTinkerBrickletMultiTouchFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_TEMPERATURE_IR:
+        return createTinkerBrickletTemperatureIRFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_SOUND_INTENSITY:
+        return createTinkerBrickletSoundIntensityFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_MOISTURE:
+        return createTinkerBrickletMoistureFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_DISTANCE_US:
+        return createTinkerBrickletDistanceUSFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_VOLTAGE_CURRENT:
+        return createTinkerBrickletVoltageCurrentFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_TILT:
+        return createTinkerBrickletTiltFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_IO4:
+        return createTinkerBrickletIO4FromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_HALL_EFFECT:
+        return createTinkerBrickletHallEffectFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -304,6 +357,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertBarometerSubIDsToString(eDataType, instanceValue);
       case ModelPackage.IO16_SUB_IDS:
         return convertIO16SubIdsToString(eDataType, instanceValue);
+      case ModelPackage.IO4_SUB_IDS:
+        return convertIO4SubIdsToString(eDataType, instanceValue);
       case ModelPackage.DUAL_RELAY_SUB_IDS:
         return convertDualRelaySubIdsToString(eDataType, instanceValue);
       case ModelPackage.LCD_BUTTON_SUB_IDS:
@@ -312,6 +367,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertLCDBacklightSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MULTI_TOUCH_SUB_IDS:
         return convertMultiTouchSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.TEMPERATURE_IR_SUB_IDS:
+        return convertTemperatureIRSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.VOLTAGE_CURRENT_SUB_IDS:
+        return convertVoltageCurrentSubIdsToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -330,6 +389,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertMTinkerBrickletIndustrialQuadRelayToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4:
         return convertMTinkerBrickletIndustrialDigitalIn4ToString(eDataType, instanceValue);
+      case ModelPackage.MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4:
+        return convertMTinkerBrickletIndustrialDigitalOut4ToString(eDataType, instanceValue);
       case ModelPackage.SWITCH_STATE:
         return convertSwitchStateToString(eDataType, instanceValue);
       case ModelPackage.DIGITAL_VALUE:
@@ -360,6 +421,22 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletMotionDetectorToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_MULTI_TOUCH:
         return convertTinkerBrickletMultiTouchToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_TEMPERATURE_IR:
+        return convertTinkerBrickletTemperatureIRToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_SOUND_INTENSITY:
+        return convertTinkerBrickletSoundIntensityToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_MOISTURE:
+        return convertTinkerBrickletMoistureToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_DISTANCE_US:
+        return convertTinkerBrickletDistanceUSToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_VOLTAGE_CURRENT:
+        return convertTinkerBrickletVoltageCurrentToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_TILT:
+        return convertTinkerBrickletTiltToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_IO4:
+        return convertTinkerBrickletIO4ToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_HALL_EFFECT:
+        return convertTinkerBrickletHallEffectToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -516,10 +593,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public TFIOActorConfiguration createTFIOActorConfiguration()
+  public MBrickletIndustrialDigitalOut4 createMBrickletIndustrialDigitalOut4()
   {
-    TFIOActorConfigurationImpl tfioActorConfiguration = new TFIOActorConfigurationImpl();
-    return tfioActorConfiguration;
+    MBrickletIndustrialDigitalOut4Impl mBrickletIndustrialDigitalOut4 = new MBrickletIndustrialDigitalOut4Impl();
+    return mBrickletIndustrialDigitalOut4;
   }
 
   /**
@@ -527,10 +604,32 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public DigitalActor createDigitalActor()
+  public DigitalActorDigitalOut4 createDigitalActorDigitalOut4()
   {
-    DigitalActorImpl digitalActor = new DigitalActorImpl();
-    return digitalActor;
+    DigitalActorDigitalOut4Impl digitalActorDigitalOut4 = new DigitalActorDigitalOut4Impl();
+    return digitalActorDigitalOut4;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DigitalActorIO16 createDigitalActorIO16()
+  {
+    DigitalActorIO16Impl digitalActorIO16 = new DigitalActorIO16Impl();
+    return digitalActorIO16;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFIOActorConfiguration createTFIOActorConfiguration()
+  {
+    TFIOActorConfigurationImpl tfioActorConfiguration = new TFIOActorConfigurationImpl();
+    return tfioActorConfiguration;
   }
 
   /**
@@ -575,6 +674,39 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     DigitalSensorImpl digitalSensor = new DigitalSensorImpl();
     return digitalSensor;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletIO4 createMBrickletIO4()
+  {
+    MBrickletIO4Impl mBrickletIO4 = new MBrickletIO4Impl();
+    return mBrickletIO4;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DigitalSensorIO4 createDigitalSensorIO4()
+  {
+    DigitalSensorIO4Impl digitalSensorIO4 = new DigitalSensorIO4Impl();
+    return digitalSensorIO4;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DigitalActorIO4 createDigitalActorIO4()
+  {
+    DigitalActorIO4Impl digitalActorIO4 = new DigitalActorIO4Impl();
+    return digitalActorIO4;
   }
 
   /**
@@ -630,6 +762,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletMotionDetectorImpl mBrickletMotionDetector = new MBrickletMotionDetectorImpl();
     return mBrickletMotionDetector;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletHallEffect createMBrickletHallEffect()
+  {
+    MBrickletHallEffectImpl mBrickletHallEffect = new MBrickletHallEffectImpl();
+    return mBrickletHallEffect;
   }
 
   /**
@@ -824,10 +967,142 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public MBrickletTemperatureIR createMBrickletTemperatureIR()
+  {
+    MBrickletTemperatureIRImpl mBrickletTemperatureIR = new MBrickletTemperatureIRImpl();
+    return mBrickletTemperatureIR;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ObjectTemperature createObjectTemperature()
+  {
+    ObjectTemperatureImpl objectTemperature = new ObjectTemperatureImpl();
+    return objectTemperature;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AmbientTemperature createAmbientTemperature()
+  {
+    AmbientTemperatureImpl ambientTemperature = new AmbientTemperatureImpl();
+    return ambientTemperature;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletTilt createMBrickletTilt()
+  {
+    MBrickletTiltImpl mBrickletTilt = new MBrickletTiltImpl();
+    return mBrickletTilt;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletVoltageCurrent createMBrickletVoltageCurrent()
+  {
+    MBrickletVoltageCurrentImpl mBrickletVoltageCurrent = new MBrickletVoltageCurrentImpl();
+    return mBrickletVoltageCurrent;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VCDeviceVoltage createVCDeviceVoltage()
+  {
+    VCDeviceVoltageImpl vcDeviceVoltage = new VCDeviceVoltageImpl();
+    return vcDeviceVoltage;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VCDeviceCurrent createVCDeviceCurrent()
+  {
+    VCDeviceCurrentImpl vcDeviceCurrent = new VCDeviceCurrentImpl();
+    return vcDeviceCurrent;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VCDevicePower createVCDevicePower()
+  {
+    VCDevicePowerImpl vcDevicePower = new VCDevicePowerImpl();
+    return vcDevicePower;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public TFBaseConfiguration createTFBaseConfiguration()
   {
     TFBaseConfigurationImpl tfBaseConfiguration = new TFBaseConfigurationImpl();
     return tfBaseConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFObjectTemperatureConfiguration createTFObjectTemperatureConfiguration()
+  {
+    TFObjectTemperatureConfigurationImpl tfObjectTemperatureConfiguration = new TFObjectTemperatureConfigurationImpl();
+    return tfObjectTemperatureConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFMoistureBrickletConfiguration createTFMoistureBrickletConfiguration()
+  {
+    TFMoistureBrickletConfigurationImpl tfMoistureBrickletConfiguration = new TFMoistureBrickletConfigurationImpl();
+    return tfMoistureBrickletConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFDistanceUSBrickletConfiguration createTFDistanceUSBrickletConfiguration()
+  {
+    TFDistanceUSBrickletConfigurationImpl tfDistanceUSBrickletConfiguration = new TFDistanceUSBrickletConfigurationImpl();
+    return tfDistanceUSBrickletConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TFVoltageCurrentConfiguration createTFVoltageCurrentConfiguration()
+  {
+    TFVoltageCurrentConfigurationImpl tfVoltageCurrentConfiguration = new TFVoltageCurrentConfigurationImpl();
+    return tfVoltageCurrentConfiguration;
   }
 
   /**
@@ -861,6 +1136,39 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickletAmbientLightImpl mBrickletAmbientLight = new MBrickletAmbientLightImpl();
     return mBrickletAmbientLight;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletSoundIntensity createMBrickletSoundIntensity()
+  {
+    MBrickletSoundIntensityImpl mBrickletSoundIntensity = new MBrickletSoundIntensityImpl();
+    return mBrickletSoundIntensity;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletMoisture createMBrickletMoisture()
+  {
+    MBrickletMoistureImpl mBrickletMoisture = new MBrickletMoistureImpl();
+    return mBrickletMoisture;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletDistanceUS createMBrickletDistanceUS()
+  {
+    MBrickletDistanceUSImpl mBrickletDistanceUS = new MBrickletDistanceUSImpl();
+    return mBrickletDistanceUS;
   }
 
   /**
@@ -1115,6 +1423,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public IO4SubIds createIO4SubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    IO4SubIds result = IO4SubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertIO4SubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public DualRelaySubIds createDualRelaySubIdsFromString(EDataType eDataType, String initialValue)
   {
     DualRelaySubIds result = DualRelaySubIds.get(initialValue);
@@ -1194,6 +1524,50 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertMultiTouchSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public TemperatureIRSubIds createTemperatureIRSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    TemperatureIRSubIds result = TemperatureIRSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTemperatureIRSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VoltageCurrentSubIds createVoltageCurrentSubIdsFromString(EDataType eDataType, String initialValue)
+  {
+    VoltageCurrentSubIds result = VoltageCurrentSubIds.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertVoltageCurrentSubIdsToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }
@@ -1563,6 +1937,166 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public BrickletTemperatureIR createTinkerBrickletTemperatureIRFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletTemperatureIR)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletTemperatureIRToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletSoundIntensity createTinkerBrickletSoundIntensityFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletSoundIntensity)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletSoundIntensityToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletMoisture createTinkerBrickletMoistureFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletMoisture)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletMoistureToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletDistanceUS createTinkerBrickletDistanceUSFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletDistanceUS)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletDistanceUSToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletVoltageCurrent createTinkerBrickletVoltageCurrentFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletVoltageCurrent)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletVoltageCurrentToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletTilt createTinkerBrickletTiltFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletTilt)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletTiltToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletIO4 createTinkerBrickletIO4FromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletIO4)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletIO4ToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletHallEffect createTinkerBrickletHallEffectFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletHallEffect)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletHallEffectToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
 	@SuppressWarnings("rawtypes")
 	public Enum createEnumFromString(EDataType eDataType, String initialValue)
   {
@@ -1635,6 +2169,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertMTinkerBrickletIndustrialDigitalIn4ToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletIndustrialDigitalOut4 createMTinkerBrickletIndustrialDigitalOut4FromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletIndustrialDigitalOut4)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertMTinkerBrickletIndustrialDigitalOut4ToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

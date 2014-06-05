@@ -17,35 +17,42 @@ import java.util.Calendar;
  * @since 1.5.0
  */
 public class DayInfo {
-  private Calendar sunrise;
-  private Calendar noon;
-  private Calendar sunset;
+	private Calendar sunrise;
+	private Calendar noon;
+	private Calendar sunset;
 
-  public DayInfo(Calendar sunrise, Calendar noon, Calendar sunset) {
-    this.sunrise = sunrise;
-    this.noon = noon;
-    this.sunset = sunset;
-  }
+	public DayInfo(Calendar sunrise, Calendar sunset) {
+		this.sunrise = sunrise;
+		this.sunset = sunset;
 
-  /**
-   * Returns the sunrise.
-   */
-  public Calendar getSunrise() {
-    return sunrise;
-  }
+		if (sunrise != null && sunset != null) {
+			long diff = sunset.getTimeInMillis() - sunrise.getTimeInMillis();
+			noon = Calendar.getInstance();
+			noon.setTimeInMillis(sunrise.getTimeInMillis() + (diff / 2));
+			noon.set(Calendar.SECOND, 0);
+			noon.set(Calendar.MILLISECOND, 0);
+		}
+	}
 
-  /**
-   * Returns the noon.
-   */
-  public Calendar getNoon() {
-    return noon;
-  }
+	/**
+	 * Returns the sunrise.
+	 */
+	public Calendar getSunrise() {
+		return sunrise;
+	}
 
-  /**
-   * Returns the sunset.
-   */
-  public Calendar getSunset() {
-    return sunset;
-  }
+	/**
+	 * Returns the noon.
+	 */
+	public Calendar getNoon() {
+		return noon;
+	}
+
+	/**
+	 * Returns the sunset.
+	 */
+	public Calendar getSunset() {
+		return sunset;
+	}
 
 }

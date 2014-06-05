@@ -1754,7 +1754,7 @@ class SonosZonePlayer {
 		coordinator.stop();
 
 		// set the
-		coordinator.setCurrentURI("x-rincon-stream:" + remotePlayer.getUdn(), "");
+		coordinator.setCurrentURI("x-rincon-stream:" + remotePlayer.getUdn().getIdentifierString(), "");
 
 		// take the system off mute
 		coordinator.setMute("OFF");

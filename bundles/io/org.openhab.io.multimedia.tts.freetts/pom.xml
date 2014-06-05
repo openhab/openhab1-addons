@@ -15,7 +15,7 @@
 		<bundle.symbolicName>org.openhab.io.multimedia.tts.freetts</bundle.symbolicName>
 		<bundle.namespace>org.openhab.io.multimedia.tts.freetts</bundle.namespace>
 		<deb.name>openhab-addon-io-multimedia-freetts</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

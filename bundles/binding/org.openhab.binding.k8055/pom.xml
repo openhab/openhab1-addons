@@ -12,7 +12,7 @@
 		<bundle.symbolicName>org.openhab.binding.k8055</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.k8055</bundle.namespace>
 		<deb.name>openhab-addon-binding-k8055</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

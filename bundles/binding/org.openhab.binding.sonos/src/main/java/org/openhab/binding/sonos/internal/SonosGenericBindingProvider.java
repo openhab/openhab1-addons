@@ -20,6 +20,7 @@ import org.openhab.binding.sonos.SonosBindingProvider;
 import org.openhab.binding.sonos.internal.Direction;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.types.DecimalType;
@@ -139,12 +140,12 @@ implements SonosBindingProvider {
 				Command command = null;
 				if(commandAsString == null) {
 
-					if(item instanceof NumberItem || item instanceof StringItem){
+					if(item instanceof NumberItem || item instanceof StringItem || item instanceof DimmerItem){
 						command = createCommandFromString(item,Integer.toString(counter));
 						counter++;
 						config.put(command, newElement);
 					} else {
-						logger.warn("Only NumberItem or StringItem can have undefined command types");
+						logger.warn("Only NumberItem, StringItem or DimmerItem can have undefined command types");
 					}								
 				} else { 
 					command = createCommandFromString(item, commandAsString);
