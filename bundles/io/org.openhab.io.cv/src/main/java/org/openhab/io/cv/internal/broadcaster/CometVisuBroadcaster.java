@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.WeakHashMap;
 
 import org.atmosphere.cpr.AtmosphereConfig;
+import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterLifeCyclePolicyListener;
 import org.atmosphere.jersey.JerseyBroadcaster;
 import org.openhab.io.cv.internal.listeners.ResourceStateChangeListener;
@@ -26,12 +27,15 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public class CometVisuBroadcaster extends JerseyBroadcaster {
-	private static final Logger logger = LoggerFactory.getLogger(CometVisuBroadcaster.class);
-	protected Collection<ResourceStateChangeListener> listeners = Collections.newSetFromMap(new WeakHashMap<ResourceStateChangeListener, Boolean>());
 	
-	public CometVisuBroadcaster(String id, AtmosphereConfig config) {
+	private static final Logger logger =
+		LoggerFactory.getLogger(CometVisuBroadcaster.class);
+	
+	protected Collection<ResourceStateChangeListener> listeners = Collections.newSetFromMap(new WeakHashMap<ResourceStateChangeListener, Boolean>());
+
+	
+	public CometVisuBroadcaster() {
 		super();
-		initialize(id, config);
 		
 		this.addBroadcasterLifeCyclePolicyListener(new BroadcasterLifeCyclePolicyListener() {
 			
@@ -55,6 +59,11 @@ public class CometVisuBroadcaster extends JerseyBroadcaster {
 			}
 		});
 	}
+	
+	
+    public Broadcaster initialize(String id, AtmosphereConfig config) {
+        return super.initialize(id, config);
+    }
 	
 	public void addStateChangeListener(final ResourceStateChangeListener listener){
 		synchronized (listeners) {
