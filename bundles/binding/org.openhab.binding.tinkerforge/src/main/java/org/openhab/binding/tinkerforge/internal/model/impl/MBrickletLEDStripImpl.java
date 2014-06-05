@@ -1,4 +1,10 @@
 /**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
@@ -36,6 +42,9 @@ import com.tinkerforge.TimeoutException;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MBricklet LED Strip</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.5.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -659,12 +668,22 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
           logger.debug("found startLed {}", startLed);
           short range = (short) (Short.parseShort(matcher.group(2).trim()) - startLed + 1);
           logger.debug("found range {}", range);
-          // TODO if range >16
+          // the tinkerforge api can only handle 16 leds at the same time
+          short maxRange = 16;
+          while (range > maxRange){
+            logger.trace("cutting down range: {}", range);
+            range = (short) (range - maxRange);
+            logger.trace("new startled {} range {}", startLed, range);
+            tinkerforgeDevice.setRGBValues(startLed, maxRange, colorMap.get(colorMapping[0]),
+              colorMap.get(colorMapping[1]), colorMap.get(colorMapping[2]));
+            startLed = startLed + maxRange;
+          }
+          logger.trace("new startled {} range {}", startLed, range);
           tinkerforgeDevice.setRGBValues(startLed, (short) range, colorMap.get(colorMapping[0]),
               colorMap.get(colorMapping[1]), colorMap.get(colorMapping[2]));
         } else {
           int led = (int) Integer.parseInt(token.trim());
-          logger.debug("found led {}", led);
+          logger.trace("found led {}", led);
           tinkerforgeDevice.setRGBValues(led, (short) 1, colorMap.get(colorMapping[0]),
               colorMap.get(colorMapping[1]), colorMap.get(colorMapping[2]));
         }
