@@ -239,9 +239,10 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			
 			String tvCommandString= null;
 			
-			
+			//first check if we can translate the command directly
 			tvCommandString = provider.getTVCommand(itemName, command.toString());
 			
+			//if not try some special notations
 			if (tvCommandString == null)
 			{
 				if (command instanceof HSBType)
@@ -261,7 +262,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			
 			if (tvCommandString == null)
 			{
-				logger.warn("Unrecognized command \"" + command.toString() + "\"");
+				logger.warn("Unrecognized command \"{}\"", command.toString());
 				return;
 				
 			}
@@ -272,7 +273,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 				String[] commandlist = tvCommandString.split("\\.");
 				if (commandlist.length != 2)
 				{
-					logger.warn("wrong number of arguments for key command \"" + tvCommandString + "\". Should be key.X");
+					logger.warn("wrong number of arguments for key command \"{}\". Should be key.X",tvCommandString );
 					return;
 				}
 				String key = commandlist[1];
@@ -280,12 +281,12 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			}
 			else if (tvCommandString.contains("ambilight"))
 			{
-				logger.debug("Found an ambilight command: " + tvCommandString);
+				logger.debug("Found an ambilight command: {}", tvCommandString);
 				String[] commandlist = tvCommandString.split("\\.");
 				String [] layer = command2LayerString(tvCommandString);
 				if (commandlist.length < 2)
 				{
-					logger.warn("wrong number of arguments for ambilight command \"" + tvCommandString + "\". Should be at least ambilight.color, ambilight.mode.X, etc...");
+					logger.warn("wrong number of arguments for ambilight command \"{}\". Should be at least ambilight.color, ambilight.mode.X, etc...",tvCommandString);
 					return;
 				}
 				if (commandlist[1].contains("color"))
@@ -296,7 +297,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 				{
 					if (commandlist.length != 3)
 					{
-						logger.warn("wrong number of arguments for ambilight.mode command \"" + tvCommandString + "\". Should be ambilight.mode.internal, ambilight.mode.manual, ambilight.mode.expert");
+						logger.warn("wrong number of arguments for ambilight.mode command \"{}\". Should be ambilight.mode.internal, ambilight.mode.manual, ambilight.mode.expert",tvCommandString);
 						return;
 					}
 					setAmbilightMode(commandlist[2], ip+":"+port);
@@ -304,16 +305,16 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			}
 			else if (tvCommandString.contains("volume"))
 			{
-				logger.debug("Found a Volume command: " + tvCommandString);
+				logger.debug("Found a Volume command: {}", tvCommandString);
 				sendVolume(ip + ":" + port, command);
 			}
 			else if (tvCommandString.contains("source"))
 			{
-				logger.debug("Found a Source command: " + tvCommandString);
+				logger.debug("Found a Source command: {}",tvCommandString);
 				String[] commandlist = tvCommandString.split("\\.");
 				if (commandlist.length < 2)
 				{
-					logger.warn("wrong number of arguments for source command \"" + tvCommandString + "\". Should be at least mode.X...");
+					logger.warn("wrong number of arguments for source command \"{}\". Should be at least mode.X...",tvCommandString);
 					return;
 				}
 				sendSource(ip+":" + port, commandlist[1]);
@@ -321,7 +322,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			}
 			else
 			{
-				logger.warn("Unrecognized tv command \"" + tvCommandString + "\". Only key.X or ambilight[].X is supported");
+				logger.warn("Unrecognized tv command \"{}\". Only key.X or ambilight[].X is supported",tvCommandString);
 				return;
 			}
 		}
@@ -343,14 +344,14 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	private Color getAmbilightColor(String host, String[] layers)
 	{
 		
-		logger.debug("Getting ambilight color for host " + host + " for layers " + layers);
+		logger.debug("Getting ambilight color for host {} for layers {}", host, layers);
 		Color retval = new Color(0, 0, 0);
 		String url = "http://" + host + "/1/ambilight/processed";
 		
 		String ambilight_json = HttpUtil.executeUrl("GET", url, IOUtils.toInputStream(""), CONTENT_TYPE_JSON, 1000);
 		if (ambilight_json != null)
 		{
-			logger.trace("TV returned for ambilight request: " + ambilight_json);
+			logger.trace("TV returned for ambilight request: {}", ambilight_json);
 			try
 			{
 				Object obj=JSONValue.parse(ambilight_json);
@@ -360,7 +361,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 					array = (JSONObject) array.get((Object)layer.trim());
 					if (array == null)
 					{
-						logger.warn("Could not find layer " + layer + " in the json string");
+						logger.warn("Could not find layer {} in the json string",layer);
 						return null;
 					}
 				}
@@ -372,13 +373,13 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			}
 			catch(Throwable t)
 			{
-				logger.warn("Could not parse JSON String for ambilight value. Error: " + t.toString());
+				logger.warn("Could not parse JSON String for ambilight value. Error: {}", t.toString());
 			}
 			
 		}
 		else
 		{
-			logger.debug("Could not get ambilight value from JointSpace Server \"" + host + "\"");
+			logger.debug("Could not get ambilight value from JointSpace Server \"{}\"", host);
 			return null;
 		}
 			
@@ -395,10 +396,10 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	{
 		String url = "http://" + host + "/1/sources/current";
 		String source_json = HttpUtil.executeUrl("GET", url, IOUtils.toInputStream(""), CONTENT_TYPE_JSON, 1000);
-		logger.debug("Getting source for host " + host );
+		logger.debug("Getting source for host {}", host );
 		if (source_json != null)
 		{
-			logger.trace("TV returned for source request: " + source_json);
+			logger.trace("TV returned for source request: {}", source_json);
 			try
 			{
 				Object obj=JSONValue.parse(source_json);
@@ -407,13 +408,13 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			}
 			catch(Throwable t)
 			{
-				logger.warn("Could not parse JSON String for source. Error: " + t.toString());
+				logger.warn("Could not parse JSON String for source. Error: {}", t.toString());
 			}
 			
 		}
 		else
 		{
-			logger.debug("Could not get source from JointSpace Server \"" + host + "\"");
+			logger.debug("Could not get source from JointSpace Server \"{}\"",  host);
 		}
 		return null;
 	}
@@ -449,7 +450,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	 */
 	private void sendVolume(String host, Command command) {
 		
-		logger.debug("Sending volume to host " + host + " for command " + command.toString());
+		logger.debug("Sending volume to host {} for command {}" + host,command.toString());
 		volumeConfig conf = getTVVolume(host);
 		String url = "http://" + host + "/1/audio/volume";
 		
@@ -512,7 +513,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			return;
 		}
 		
-		logger.debug("Setting Ambilight color for host " + host + " and layer " + layers + " to "  + command.toString());
+		logger.debug("Setting Ambilight color for host {} and layer {} to {}",  host, layers, command.toString());
 		
 		HSBType hsbcommand = (HSBType) command;
 		String url = "http://" + host + "/1/ambilight/cached";
@@ -544,7 +545,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		
 		content.append("}");
 
-		logger.trace("Trying to post json for ambilight: " + content.toString());
+		logger.trace("Trying to post json for ambilight: {}", content.toString());
 		
 		String retval = HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
 		if (retval == null)
@@ -566,7 +567,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	 */
 	private void sendTVCommand(String key, String host) {
 		
-		logger.debug("Sending Key " + key + " to " + host);
+		logger.debug("Sending Key {} to {}", key, host);
 		String url = "http://" + host + "/1/input/key";
 		
 		StringBuilder content = new StringBuilder();
@@ -616,7 +617,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			}
 			catch(Throwable t)
 			{
-				logger.warn("Could not parse JSON String for volume value. Error: " + t.toString());
+				logger.warn("Could not parse JSON String for volume value. Error: {}", t.toString());
 			}
 			
 		}
