@@ -40,8 +40,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
+ * Binding to handle communication with jointSPACE device.
+ * For items that are configured for polling, the jointspace server is polled every {@code refreshInterval} ms 
  * 
  * @author David Lenz
  * @since 1.5.0
@@ -69,7 +69,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	/**
 	 * The ip of the TV set
 	 */
-	private String ip = "192.168.0.100";
+	private String ip;
 	
 	/**
 	 * The port of the TV set, (optional, defaults to 1925)
@@ -257,7 +257,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 				{
 					tmp = provider.getTVCommand(itemName, "DEC");
 				}
-				else
+				if (tmp == null)
 				{
 					tmp = provider.getTVCommand(itemName, "*");
 				}
@@ -691,6 +691,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			if (StringUtils.isNotBlank(ipString))
 			{
 				ip = ipString;
+				setProperlyConfigured(true);
 			}
 			String portString = (String) config.get("port");
 			if (StringUtils.isNotBlank(portString))
@@ -698,9 +699,6 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 				port = portString;
 			}
 			
-			// read further config parameters here ...
-
-			setProperlyConfigured(true);
 		}
 	}
 }
