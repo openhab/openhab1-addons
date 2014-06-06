@@ -432,11 +432,10 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		
 		String url = "http://" + host + "/1/sources/current";
 		
-		StringBuilder content = new StringBuilder();
-		content.append("{\"id\":\"" + source + "\"}");
-		logger.debug("Switching source of host " + host + " to " + source);
+		String content = "{\"id\":\"" + source + "\"}";
+		logger.debug("Switching source of host {} to {}", host, source);
 		logger.trace(content.toString());
-		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000); 
+		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE_JSON, 1000); 
 	}
 	
 	
@@ -450,11 +449,11 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	 */
 	private void sendVolume(String host, Command command) {
 		
-		logger.debug("Sending volume to host {} for command {}" + host,command.toString());
+		logger.debug("Sending volume to host {} for command {}", host,command.toString());
 		volumeConfig conf = getTVVolume(host);
 		String url = "http://" + host + "/1/audio/volume";
 		
-		StringBuilder content = new StringBuilder();
+		
 		int newvalue = conf.volume;		
 		
 		if (command instanceof DecimalType)
@@ -483,9 +482,9 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		//ensure that we are in the valid range for this device		
 		newvalue = Math.min(newvalue, conf.max);
 		newvalue = Math.max(newvalue, conf.min);
-		content.append("{\"muted\":\"" + conf.mute + "\", \"current\":\""+newvalue+"\"}");
-		logger.trace(content.toString());
-		String retval = HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
+		String content = "{\"muted\":\"" + conf.mute + "\", \"current\":\""+newvalue+"\"}";
+		logger.trace(content);
+		String retval = HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE_JSON, 1000);
 		if (retval == null)
 		{
 			logger.warn("Sending Volume failed");
@@ -570,11 +569,11 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		logger.debug("Sending Key {} to {}", key, host);
 		String url = "http://" + host + "/1/input/key";
 		
-		StringBuilder content = new StringBuilder();
-		content.append("{\"key\":\"" + key + "\"}");
+		String content = "{\"key\":\"" + key + "\"}";
 		
+		logger.trace(content);
         
-		String retval = HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
+		String retval = HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE_JSON, 1000);
 		if (retval == null)
 		{
 			logger.warn("Sending key failed");
@@ -639,10 +638,10 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	{
 		String url = "http://" + host + "/1/ambilight/mode";
 		
-		StringBuilder content = new StringBuilder();
-		content.append("{\"current\":\"" + mode + "\"}");
+		String content = "{\"current\":\"" + mode + "\"}";
         
-		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
+		logger.trace(content);
+		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE_JSON, 1000);
 	}
 
 
