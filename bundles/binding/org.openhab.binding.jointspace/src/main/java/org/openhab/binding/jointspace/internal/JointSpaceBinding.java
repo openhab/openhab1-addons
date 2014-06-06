@@ -484,15 +484,8 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		newvalue = Math.max(newvalue, conf.min);
 		String content = "{\"muted\":\"" + conf.mute + "\", \"current\":\""+newvalue+"\"}";
 		logger.trace(content);
-		String retval = HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE_JSON, 1000);
-		if (retval == null)
-		{
-			logger.warn("Sending Volume failed");
-		}
-		else
-		{
-			logger.debug("Sending Volume successfull");
-		}
+		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE_JSON, 1000);
+		
 	}
 	
 	
@@ -546,15 +539,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 
 		logger.trace("Trying to post json for ambilight: {}", content.toString());
 		
-		String retval = HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
-		if (retval == null)
-		{
-			logger.warn("Sending ambilight color failed");
-		}
-		else
-		{
-			logger.debug("Sending ambilight color successfull");
-		}
+		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content.toString()), CONTENT_TYPE_JSON, 1000);
 	}
 
 	/**
@@ -573,15 +558,8 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		
 		logger.trace(content);
         
-		String retval = HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE_JSON, 1000);
-		if (retval == null)
-		{
-			logger.warn("Sending key failed");
-		}
-		else
-		{
-			logger.debug("Sending key successfull");
-		}
+		HttpUtil.executeUrl("POST", url, IOUtils.toInputStream(content), CONTENT_TYPE_JSON, 1000);
+		
 	}
 	
 	
