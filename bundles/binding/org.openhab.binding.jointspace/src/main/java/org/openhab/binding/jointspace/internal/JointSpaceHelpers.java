@@ -11,9 +11,10 @@ package org.openhab.binding.jointspace.internal;
 
 
 /**
- * @author David Lenz
- * 
  * This class bundles the volume configuration fields that the JointSpace API provides for a GET request
+ * 
+ * @author David Lenz
+ * @since 1.5.0
  */
 class volumeConfig
 {
