@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+	remove)
+		update-rc.d openhab remove > /dev/null 2>&1
+		;;
+	purge)
+		if getent passwd openhab > /dev/null 2>&1; then
+			deluser --quiet openhab
+		fi
+		;;
+	abort-install|abort-upgrade|disappear|failed-upgrade|upgrade)
+		;;
+	*)
+		echo "postrm called with unknown argument \`$1'" >&2
+		exit 1
+		;;
+esac
+
+exit 0
