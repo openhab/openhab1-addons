@@ -1,4 +1,10 @@
 /**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
@@ -39,12 +45,16 @@ import com.tinkerforge.IPConnection;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MBricklet Remote Switch</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.5.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRemoteSwitchImpl#getIpConnection <em>Ip Connection</em>}</li>
@@ -105,6 +115,26 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = true;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -401,6 +431,29 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     uid = newUid;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__UID, oldUid, uid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_REMOTE_SWITCH__POLL, oldPoll, poll));
   }
 
   /**
@@ -922,6 +975,8 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
         return getLogger();
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__UID:
         return getUid();
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__POLL:
+        return isPoll();
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__ENABLED_A:
         return getEnabledA();
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__TINKERFORGE_DEVICE:
@@ -970,6 +1025,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
         return;
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -1031,6 +1089,9 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__UID:
         setUid(UID_EDEFAULT);
         return;
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__POLL:
+        setPoll(POLL_EDEFAULT);
+        return;
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
@@ -1088,6 +1149,8 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MBRICKLET_REMOTE_SWITCH__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.MBRICKLET_REMOTE_SWITCH__TINKERFORGE_DEVICE:
@@ -1266,6 +1329,8 @@ public class MBrickletRemoteSwitchImpl extends MinimalEObjectImpl.Container impl
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", tinkerforgeDevice: ");

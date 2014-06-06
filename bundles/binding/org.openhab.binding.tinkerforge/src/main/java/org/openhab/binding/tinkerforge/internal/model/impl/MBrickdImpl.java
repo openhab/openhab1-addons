@@ -48,16 +48,27 @@ import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
+import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletIO16;
+import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
+import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
+import com.tinkerforge.BrickletLEDStrip;
+import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletRemoteSwitch;
+import com.tinkerforge.BrickletSegmentDisplay4x7;
+import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
+import com.tinkerforge.BrickletTemperatureIR;
+import com.tinkerforge.BrickletTilt;
+import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.IPConnection;
 import com.tinkerforge.NotConnectedException;
 
@@ -830,6 +841,50 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletMultiTouch");
               mDevice = factory.createMBrickletMultiTouch();
               mDevice.setDeviceIdentifier(BrickletMultiTouch.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletTemperatureIR.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletTemperatureIR");
+              mDevice = factory.createMBrickletTemperatureIR();
+              mDevice.setDeviceIdentifier(BrickletTemperatureIR.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletSoundIntensity.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletSoundIntensity");
+              mDevice = factory.createMBrickletSoundIntensity();
+              mDevice.setDeviceIdentifier(BrickletSoundIntensity.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletMoisture.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletMoisture");
+              mDevice = factory.createMBrickletMoisture();
+              mDevice.setDeviceIdentifier(BrickletMoisture.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletDistanceUS.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletDistanceUS");
+              mDevice = factory.createMBrickletDistanceUS();
+              mDevice.setDeviceIdentifier(BrickletDistanceUS.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletVoltageCurrent.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletVoltageCurrent");
+              mDevice = factory.createMBrickletVoltageCurrent();
+              mDevice.setDeviceIdentifier(BrickletVoltageCurrent.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletTilt.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletTilt");
+              mDevice = factory.createMBrickletTilt();
+              mDevice.setDeviceIdentifier(BrickletTilt.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletIO4.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletIO4");
+              mDevice = factory.createMBrickletIO4();
+              mDevice.setDeviceIdentifier(BrickletIO4.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletHallEffect.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletHallEffect");
+              mDevice = factory.createMBrickletHallEffect();
+              mDevice.setDeviceIdentifier(BrickletHallEffect.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletIndustrialDigitalOut4.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletIndustrilaDigitalOut4");
+              mDevice = factory.createMBrickletIndustrialDigitalOut4();
+              mDevice.setDeviceIdentifier(BrickletIndustrialDigitalOut4.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletSegmentDisplay4x7.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletSegmentDisplay4x7");
+              mDevice = factory.createMBrickletSegmentDisplay4x7();
+              mDevice.setDeviceIdentifier(BrickletSegmentDisplay4x7.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletLEDStrip.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletLEDStrip");
+              mDevice = factory.createMBrickletLEDStrip();
+              mDevice.setDeviceIdentifier(BrickletLEDStrip.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

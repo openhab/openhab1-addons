@@ -27,7 +27,7 @@ public class SerialApiGetInitDataMessageClass extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(SerialApiGetInitDataMessageClass.class);
 
 	private ArrayList<Integer>zwaveNodes = new ArrayList<Integer>();
-	
+
 	private static final int NODE_BYTES = 29; // 29 bytes = 232 bits, one for each supported node by Z-Wave;
 	
 	public SerialMessage doRequest() {
@@ -64,11 +64,10 @@ public class SerialApiGetInitDataMessageClass extends ZWaveCommandProcessor {
 		
 		logger.info("ZWave Controller using {} API", ((incomingMessage.getMessagePayloadByte(1) & 0x01) == 1) ? "Slave" : "Controller");
 		logger.info("ZWave Controller is {} Controller", ((incomingMessage.getMessagePayloadByte(1) & 0x04) == 1) ? "Secondary" : "Primary");
-		logger.info("ZWave Controller {} SUC", ((incomingMessage.getMessagePayloadByte(1) & 0x08) == 1) ? "is" : "isn't");
 		logger.info("------------Number of Nodes Found Registered to ZWave Controller------------");
 		logger.info(String.format("# Nodes = %d", zwaveNodes.size()));
 		logger.info("----------------------------------------------------------------------------");
-		
+
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 
 		return true;

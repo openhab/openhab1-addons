@@ -11,19 +11,22 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import com.tinkerforge.BrickletHumidity;
+import java.math.BigDecimal;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 
 
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MBricklet Humidity</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity#getHumiditiy <em>Humiditiy</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity#getThreshold <em>Threshold</em>}</li>
  * </ul>
  * </p>
@@ -62,34 +65,8 @@ public interface MBrickletHumidity extends MSensor<DecimalValue>, MDevice<Brickl
   void setDeviceType(String value);
 
   /**
-   * Returns the value of the '<em><b>Humiditiy</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Humiditiy</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Humiditiy</em>' attribute.
-   * @see #setHumiditiy(int)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletHumidity_Humiditiy()
-   * @model unique="false"
-   * @generated
-   */
-  int getHumiditiy();
-
-  /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity#getHumiditiy <em>Humiditiy</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Humiditiy</em>' attribute.
-   * @see #getHumiditiy()
-   * @generated
-   */
-  void setHumiditiy(int value);
-
-  /**
    * Returns the value of the '<em><b>Threshold</b></em>' attribute.
-   * The default value is <code>"5"</code>.
+   * The default value is <code>"0.5"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Threshold</em>' attribute isn't clear,
@@ -97,12 +74,12 @@ public interface MBrickletHumidity extends MSensor<DecimalValue>, MDevice<Brickl
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Threshold</em>' attribute.
-   * @see #setThreshold(int)
+   * @see #setThreshold(BigDecimal)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletHumidity_Threshold()
-   * @model default="5" unique="false"
+   * @model default="0.5" unique="false"
    * @generated
    */
-  int getThreshold();
+  BigDecimal getThreshold();
 
   /**
    * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity#getThreshold <em>Threshold</em>}' attribute.
@@ -112,7 +89,7 @@ public interface MBrickletHumidity extends MSensor<DecimalValue>, MDevice<Brickl
    * @see #getThreshold()
    * @generated
    */
-  void setThreshold(int value);
+  void setThreshold(BigDecimal value);
 
   /**
    * <!-- begin-user-doc -->

@@ -467,7 +467,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
         }
         logger.debug("Removing callback handler.");
         try {
-            ccu.getConnection().init("", createHomematicId());
+            ccu.getConnection().init("http://" + callbackHost + ":" + callbackPort + "/xmlrpc", "");
             cbServer.stop();
         } catch (Exception e) {
             logger.debug("Error while unregistering callback server. Will be ignored.");

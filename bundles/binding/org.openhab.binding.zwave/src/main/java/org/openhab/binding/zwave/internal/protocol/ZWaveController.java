@@ -35,27 +35,32 @@ import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
-
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AddNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignSucReturnRouteMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.DeleteReturnRouteMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.EnableSucMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.GetControllerCapabilitiesMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.GetSucNodeIdMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.IdentifyNodeMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeNeighborUpdateMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveFailedNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeInfoMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetRoutingInfoMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SendDataMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SerialApiSoftResetMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.SetSucNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.ZWaveCommandProcessor;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetVersionMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.MemoryGetIdMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SerialApiGetCapabilitiesMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SerialApiGetInitDataMessageClass;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +94,10 @@ public class ZWaveController {
 	
 	private final Semaphore transactionCompleted = new Semaphore(1);
 	private volatile SerialMessage lastSentMessage = null;
+	private long lastMessageStartTime = 0;
+	private long longestResponseTime = 0;
 	private SerialPort serialPort;
+	private int zWaveResponseTimeout = ZWAVE_RESPONSE_TIMEOUT;
 	private Timer watchdog;
 	
 	private String zWaveVersion = "Unknown";
@@ -101,6 +109,9 @@ public class ZWaveController {
 	private int deviceId = 0;
 	private int ZWaveLibraryType = 0;
 	private int sentDataPointer = 1;
+	private boolean setSUC = false;
+	private ZWaveDeviceType controllerType = ZWaveDeviceType.UNKNOWN;
+	private int sucID = 0;
 	
 	private int SOFCount = 0;
 	private int CANCount = 0;
@@ -121,8 +132,13 @@ public class ZWaveController {
 	 * communication with the Z-Wave controller stick.
 	 * @throws SerialInterfaceException when a connection error occurs.
 	 */
-	public ZWaveController(final String serialPortName) throws SerialInterfaceException {
+	public ZWaveController(final boolean isSUC, final String serialPortName, final Integer timeout) throws SerialInterfaceException {
 			logger.info("Starting Z-Wave controller");
+			this.setSUC = isSUC;
+			if(timeout != null && timeout >= 1500 && timeout <= 10000) {
+				zWaveResponseTimeout = timeout;
+			}
+			logger.info("Z-Wave timeout is set to {}ms.", zWaveResponseTimeout);
 			connect(serialPortName);
 			this.watchdog = new Timer(true);
 			this.watchdog.schedule(
@@ -237,6 +253,24 @@ public class ZWaveController {
 					node.advanceNodeStage(NodeStage.PROTOINFO);
 				}
 				break;
+			case GetSucNodeId:
+				// Remember the SUC ID
+				this.sucID = ((GetSucNodeIdMessageClass)processor).getSucNodeId();
+				
+				// If we want to be the SUC, enable it here
+				if(this.setSUC == true && this.sucID == 0) {
+					// We want to be SUC
+					this.enqueue(new EnableSucMessageClass().doRequest(EnableSucMessageClass.SUCType.SERVER));
+					this.enqueue(new SetSucNodeMessageClass().doRequest(this.ownNodeId, SetSucNodeMessageClass.SUCType.SERVER));
+				}
+				else if(this.setSUC == false && this.sucID == this.ownNodeId) {
+					// We don't want to be SUC, but we currently are!
+					// Disable SERVER functionality, and set the node to 0
+					this.enqueue(new EnableSucMessageClass().doRequest(EnableSucMessageClass.SUCType.NONE));
+					this.enqueue(new SetSucNodeMessageClass().doRequest(this.ownNodeId, SetSucNodeMessageClass.SUCType.NONE));
+				}
+				this.enqueue(new GetControllerCapabilitiesMessageClass().doRequest());
+				break;
 			case SerialApiGetCapabilities:
 				this.serialAPIVersion = ((SerialApiGetCapabilitiesMessageClass)processor).getSerialAPIVersion();
 				this.manufactureId = ((SerialApiGetCapabilitiesMessageClass)processor).getManufactureId();
@@ -244,6 +278,9 @@ public class ZWaveController {
 				this.deviceType = ((SerialApiGetCapabilitiesMessageClass)processor).getDeviceType();
 				
 				this.enqueue(new SerialApiGetInitDataMessageClass().doRequest());
+				break;
+			case GetControllerCapabilities:
+				this.controllerType = ((GetControllerCapabilitiesMessageClass)processor).getDeviceType();
 				break;
 			default:
 				break;				
@@ -369,6 +406,42 @@ public class ZWaveController {
 			logger.trace("Notifying {}", listener.toString());
 			listener.ZWaveIncomingEvent(event);
 		}
+		
+		// We also need to handle the inclusion internally within the controller
+		if(event instanceof ZWaveInclusionEvent) {
+			ZWaveInclusionEvent incEvent = (ZWaveInclusionEvent)event;
+			switch(incEvent.getEvent()) {
+			case IncludeDone:
+				logger.debug("NODE {}: Including node.", incEvent.getNodeId());
+				// First make sure this isn't an existing node
+				if(getNode(incEvent.getNodeId()) != null) {
+					logger.debug("NODE {}: Newly included node already exists - not initialising.", incEvent.getNodeId());
+					break;
+				}
+				
+				// Initialise the new node
+				ZWaveNode node = new ZWaveNode(this.homeId, incEvent.getNodeId(), this);
+
+				this.zwaveNodes.put(incEvent.getNodeId(), node);
+				node.advanceNodeStage(NodeStage.PROTOINFO);
+				break;
+			case ExcludeDone:
+				logger.debug("NODE {}: Excluding node.", incEvent.getNodeId());
+				// Remove the node from the controller
+				if(getNode(incEvent.getNodeId()) == null) {
+					logger.debug("NODE {}: Excluding node that doesn't exist.", incEvent.getNodeId());
+					break;
+				}
+				this.zwaveNodes.remove(incEvent.getNodeId());
+				
+				// Remove the XML file
+				ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+				nodeSerializer.DeleteNode(event.getNodeId());
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	
 	/**
@@ -378,6 +451,7 @@ public class ZWaveController {
 		this.enqueue(new GetVersionMessageClass().doRequest());
 		this.enqueue(new MemoryGetIdMessageClass().doRequest());
 		this.enqueue(new SerialApiGetCapabilitiesMessageClass().doRequest());
+		this.enqueue(new GetSucNodeIdMessageClass().doRequest());
 	}
 	
 	/**
@@ -499,7 +573,23 @@ public class ZWaveController {
 	}
 
 	/**
-	 * Removes a failed nodes from the network.
+	 * Puts the controller into exclusion mode to remove new nodes
+	 */
+	public void requestRemoveNodesStart()
+	{
+		this.enqueue(new RemoveNodeMessageClass().doRequestStart(true));
+	}
+
+	/**
+	 * Terminates the exclusion mode
+	 */
+	public void requestRemoveNodesStop()
+	{
+		this.enqueue(new RemoveNodeMessageClass().doRequestStop());
+	}
+
+	/**
+	 * Removes a failed node from the network.
 	 * Note that this won't remove nodes that have not failed.
 	 * @param nodeId The address of the node to remove
 	 */
@@ -529,7 +619,7 @@ public class ZWaveController {
 	 */
 	public void requestAssignReturnRoute(int nodeId, int destinationId)
 	{
-		this.enqueue(new AssignReturnRouteMessageClass().doRequest(nodeId, destinationId));
+		this.enqueue(new AssignReturnRouteMessageClass().doRequest(nodeId, destinationId, getCallbackId()));
 	}
 
 	/**
@@ -540,18 +630,21 @@ public class ZWaveController {
 	 */
 	public void requestAssignSucReturnRoute(int nodeId)
 	{
-		this.enqueue(new AssignSucReturnRouteMessageClass().doRequest(nodeId));
+		this.enqueue(new AssignSucReturnRouteMessageClass().doRequest(nodeId, getCallbackId()));
 	}
 
 	/**
-	 * Request the controller is soft reset.
-	 * This resets the controller but doesn't loose the network configuration.
+	 * Returns the next callback ID
+	 * @return callback ID
 	 */
-	public void requestAssignSucReturnRoute()
-	{
-		this.enqueue(new SerialApiSoftResetMessageClass().doRequest());
+	public int getCallbackId() {
+		if (++sentDataPointer > 0xFF)
+			sentDataPointer = 1;
+		logger.debug("Callback ID = {}", sentDataPointer);
+		
+		return sentDataPointer;
 	}
-
+	
 	/**
 	 * Transmits the SerialMessage to a single Z-Wave Node.
 	 * Sets the transmission options as well.
@@ -583,10 +676,7 @@ public class ZWaveController {
 		}
     	
     	serialMessage.setTransmitOptions(TRANSMIT_OPTION_ACK | TRANSMIT_OPTION_AUTO_ROUTE | TRANSMIT_OPTION_EXPLORE);
-    	if (++sentDataPointer > 0xFF)
-    		sentDataPointer = 1;
-    	serialMessage.setCallbackId(sentDataPointer);
-    	logger.debug("Callback ID = {}", sentDataPointer);
+    	serialMessage.setCallbackId(getCallbackId());
     	this.enqueue(serialMessage);
 	}
 	
@@ -612,6 +702,14 @@ public class ZWaveController {
 	 */
 	public String getSerialAPIVersion() {
 		return serialAPIVersion;
+	}
+	
+    /**
+     * Gets the zWave Version of the controller.
+	 * @return the zWaveVersion
+	 */
+	public String getZWaveVersion() {
+		return zWaveVersion;
 	}
 
 	/**
@@ -644,6 +742,22 @@ public class ZWaveController {
 	 */
 	public int getOwnNodeId() {
 		return ownNodeId;
+	}
+
+	/**
+	 * Gets the device type of the controller.
+	 * @return the device type
+	 */
+	public ZWaveDeviceType getControllerType() {
+		return controllerType;
+	}
+
+	/**
+	 * Gets the networks SUC controller ID.
+	 * @return the device id of the SUC, or 0 if none exists
+	 */
+	public int getSucId() {
+		return sucID;
 	}
 
 	/**
@@ -751,6 +865,9 @@ public class ZWaveController {
 				if (lastSentMessage == null)
 					continue;
 				
+				// If this message is a data packet to a node
+				// then make sure the node is not a battery device.
+				// If it's a battery device, it needs to be awake, or we queue the frame until it is.
 				if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 					ZWaveNode node = getNode(lastSentMessage.getMessageNode());
 					
@@ -764,10 +881,13 @@ public class ZWaveController {
 					}
 				}
 				
+				// Clear the semaphore used to acknowledge the response.
 				transactionCompleted.drainPermits();
 				
+				// Send the message to the controller
 				byte[] buffer = lastSentMessage.getMessageBuffer();
 				logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
+				lastMessageStartTime = System.currentTimeMillis();
 				try {
 					synchronized (serialPort.getOutputStream()) {
 						serialPort.getOutputStream().write(buffer);
@@ -778,8 +898,9 @@ public class ZWaveController {
 					break;
 				}
 				
+				// Now wait for the response...
 				try {
-					if (!transactionCompleted.tryAcquire(1, ZWAVE_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS)) {
+					if (!transactionCompleted.tryAcquire(1, zWaveResponseTimeout, TimeUnit.MILLISECONDS)) {
 						timeOutCount.incrementAndGet();
 						if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 							
@@ -808,6 +929,10 @@ public class ZWaveController {
 						}
 						continue;
 					}
+					long responseTime = System.currentTimeMillis() - lastMessageStartTime;
+					if(responseTime > longestResponseTime)
+						longestResponseTime = responseTime;
+					logger.debug("Response processed after {}ms/{}ms.", responseTime, longestResponseTime);
 					logger.trace("Acquired. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 				} catch (InterruptedException e) {
 					break;
@@ -874,6 +999,21 @@ public class ZWaveController {
 
 			// Send a NAK to resynchronise communications
 			sendResponse(NAK);
+			
+			// If we want to do a soft reset on the serial interface, do it here.
+			// It seems there's no response to this message, so sending it through
+			// 'normal' channels will cause a timeout.
+			try {
+				synchronized (serialPort.getOutputStream()) {
+					SerialMessage resetMsg = new SerialApiSoftResetMessageClass().doRequest();
+					byte[] buffer = resetMsg.getMessageBuffer();
+
+					serialPort.getOutputStream().write(buffer);
+					serialPort.getOutputStream().flush();
+				}
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+			}
 
 			while (!interrupted()) {
 				int nextByte;

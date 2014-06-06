@@ -2,13 +2,19 @@
 
 set -e
 
-if [  x"$1" = xinstall ]; then
-    if ! getent group openhab >/dev/null; then
-        addgroup --quiet --system openhab
-    fi
+case "$1" in
+	install)
+		if ! getent passwd openhab > /dev/null 2>&1; then
+			adduser --quiet --system --group --no-create-home \
+				--gecos "openHAB runtime user" --home /var/lib/openhab openhab
+		fi
+		;;
+	abort-upgrade|upgrade)
+		;;
+	*)
+		echo "preinst called with unknown argument \`$1'" >&2
+		exit 1
+		;;
+esac
 
-    if ! getent passwd openhab >/dev/null; then
-            adduser --system --ingroup openhab --home /var/lib/openhab openhab \
-        --gecos "openhab runtime user"
-    fi
-fi
+exit 0

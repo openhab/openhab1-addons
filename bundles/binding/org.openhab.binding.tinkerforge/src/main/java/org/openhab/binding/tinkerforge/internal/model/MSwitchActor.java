@@ -15,6 +15,9 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MSwitch Actor</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.4.0
  * <!-- end-user-doc -->
  *
  * <p>
@@ -67,9 +70,9 @@ public interface MSwitchActor extends EObject
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @model dataType="org.openhab.binding.tinkerforge.internal.model.SwitchState" unique="false"
+   * @model
    * @generated
    */
-  OnOffValue fetchSwitchState();
+  void fetchSwitchState();
 
 } // MSwitchActor

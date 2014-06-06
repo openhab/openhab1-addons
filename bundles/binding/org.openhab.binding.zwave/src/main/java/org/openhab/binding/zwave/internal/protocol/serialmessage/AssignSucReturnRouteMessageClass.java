@@ -25,13 +25,16 @@ import org.slf4j.LoggerFactory;
 public class AssignSucReturnRouteMessageClass extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(AssignSucReturnRouteMessageClass.class);
 
-	public SerialMessage doRequest(int nodeId) {
+	public SerialMessage doRequest(int nodeId, int callbackId) {
 		logger.debug("NODE {}: Assigning SUC return route", nodeId);
 
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.AssignSucReturnRoute, SerialMessageType.Request,
 				SerialMessageClass.AssignSucReturnRoute, SerialMessagePriority.High);
-		byte[] newPayload = { (byte) nodeId };
+		byte[] newPayload = {
+				(byte) nodeId,
+				(byte) callbackId
+		};
 		newMessage.setMessagePayload(newPayload);
     	return newMessage;
 	}
@@ -43,13 +46,14 @@ public class AssignSucReturnRouteMessageClass extends ZWaveCommandProcessor {
 		logger.debug("NODE {}: Got AssignSucReturnRoute response.", nodeId);
 
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
-			logger.debug("NODE {}: AssignSucReturnRoute command in progress.", nodeId);
+			logger.debug("NODE {}: AssignSucReturnRoute operation started.", nodeId);
 		} else {
 			logger.error("NODE {}: AssignSucReturnRoute command failed.", nodeId);
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignSucReturnRoute, nodeId,
 					ZWaveNetworkEvent.State.Failure));
 		}
 		
+		checkTransactionComplete(lastSentMessage, incomingMessage);
 		return false;
 	}
 
@@ -61,7 +65,7 @@ public class AssignSucReturnRouteMessageClass extends ZWaveCommandProcessor {
 
 		if (incomingMessage.getMessagePayloadByte(1) != 0x00) {
 			logger.error("NODE {}: Assign SUC return routes failed with error 0x{}.", nodeId,
-					Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+					Integer.toHexString(incomingMessage.getMessagePayloadByte(1)));
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignSucReturnRoute, nodeId,
 					ZWaveNetworkEvent.State.Failure));
 		} else {

@@ -95,6 +95,10 @@ public class MqttService implements ManagedService {
 				conn.setAsync(Boolean.parseBoolean(value));
 			} else if (property.equals("clientId")) {
 				conn.setClientId(value);
+			} else if (property.equals("lwt")) {
+				MqttWillAndTestament will = MqttWillAndTestament.fromString(value);
+				logger.debug("Setting last will: {}", will);
+				conn.setLastWill(will);
 			} else {
 				logger.warn("Unrecognized property: {}", key);
 			}
@@ -140,7 +144,7 @@ public class MqttService implements ManagedService {
 	 *            to look for.
 	 * @return existing connection or new one if it didn't exist yet.
 	 */
-	private MqttBrokerConnection getConnection(String brokerName) {
+	private synchronized MqttBrokerConnection getConnection(String brokerName) {
 
 		MqttBrokerConnection conn = brokerConnections.get(brokerName
 				.toLowerCase());
