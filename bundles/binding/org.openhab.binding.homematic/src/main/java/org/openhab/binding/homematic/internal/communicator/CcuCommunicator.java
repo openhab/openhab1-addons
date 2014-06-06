@@ -65,6 +65,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 				ccuCallbackServer = isBinRpc ? new BinRpcCallbackServer(this) : new XmlRpcCallbackServer(this);
 
 				context.getTclRegaScriptClient().start();
+				context.getStateHolder().init();
 				context.getStateHolder().loadDatapoints();
 				context.getStateHolder().loadVariables();
 

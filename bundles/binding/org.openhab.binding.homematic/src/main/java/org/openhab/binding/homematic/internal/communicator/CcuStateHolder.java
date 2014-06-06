@@ -37,7 +37,7 @@ public class CcuStateHolder {
 
 	private HomematicContext context;
 
-	private ExecutorService reloadExecutorPool = Executors.newCachedThreadPool();
+	private ExecutorService reloadExecutorPool;
 
 	private boolean datapointReloadInProgress = false;
 	private Map<HomematicBindingConfig, Object> refreshCache = new HashMap<HomematicBindingConfig, Object>();
@@ -182,6 +182,13 @@ public class CcuStateHolder {
 		});
 	}
 
+	/**
+	 * Initializes the stateholder by creating a new executor pool.
+	 */
+	public void init() {
+		reloadExecutorPool = Executors.newCachedThreadPool();
+	}
+	
 	/**
 	 * Destroys the cache.
 	 */
