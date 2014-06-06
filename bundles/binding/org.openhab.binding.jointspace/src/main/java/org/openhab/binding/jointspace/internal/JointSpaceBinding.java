@@ -222,9 +222,6 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
 
 		if (itemName != null) {
 			JointSpaceBindingProvider provider = 
@@ -240,55 +237,55 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 					new Object[] { itemName, command.toString(),
 							command.getClass().toString() });
 			
-			String tmp = null;
+			String tvCommandString= null;
 			
 			
-			tmp = provider.getTVCommand(itemName, command.toString());
+			tvCommandString = provider.getTVCommand(itemName, command.toString());
 			
-			if (tmp == null)
+			if (tvCommandString == null)
 			{
 				if (command instanceof HSBType)
 				{
-					tmp = provider.getTVCommand(itemName, "HSB");
+					tvCommandString = provider.getTVCommand(itemName, "HSB");
 				}
 				else if (command instanceof DecimalType)
 				{
-					tmp = provider.getTVCommand(itemName, "DEC");
+					tvCommandString = provider.getTVCommand(itemName, "DEC");
 				}
-				if (tmp == null)
+				if (tvCommandString == null)
 				{
-					tmp = provider.getTVCommand(itemName, "*");
+					tvCommandString = provider.getTVCommand(itemName, "*");
 				}
 			}
 			
 			
-			if (tmp == null)
+			if (tvCommandString == null)
 			{
 				logger.warn("Unrecognized command \"" + command.toString() + "\"");
 				return;
 				
 			}
 			
-			if (tmp.contains("key"))
+			if (tvCommandString.contains("key"))
 			{
-				logger.debug("Found a Key command: " + tmp);
-				String[] commandlist = tmp.split("\\.");
+				logger.debug("Found a Key command: " + tvCommandString);
+				String[] commandlist = tvCommandString.split("\\.");
 				if (commandlist.length != 2)
 				{
-					logger.warn("wrong number of arguments for key command \"" + tmp + "\". Should be key.X");
+					logger.warn("wrong number of arguments for key command \"" + tvCommandString + "\". Should be key.X");
 					return;
 				}
 				String key = commandlist[1];
 				sendTVCommand(key, ip + ":" + port);
 			}
-			else if (tmp.contains("ambilight"))
+			else if (tvCommandString.contains("ambilight"))
 			{
-				logger.debug("Found an ambilight command: " + tmp);
-				String[] commandlist = tmp.split("\\.");
-				String [] layer = command2LayerString(tmp);
+				logger.debug("Found an ambilight command: " + tvCommandString);
+				String[] commandlist = tvCommandString.split("\\.");
+				String [] layer = command2LayerString(tvCommandString);
 				if (commandlist.length < 2)
 				{
-					logger.warn("wrong number of arguments for ambilight command \"" + tmp + "\". Should be at least ambilight.color, ambilight.mode.X, etc...");
+					logger.warn("wrong number of arguments for ambilight command \"" + tvCommandString + "\". Should be at least ambilight.color, ambilight.mode.X, etc...");
 					return;
 				}
 				if (commandlist[1].contains("color"))
@@ -299,24 +296,24 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 				{
 					if (commandlist.length != 3)
 					{
-						logger.warn("wrong number of arguments for ambilight.mode command \"" + tmp + "\". Should be ambilight.mode.internal, ambilight.mode.manual, ambilight.mode.expert");
+						logger.warn("wrong number of arguments for ambilight.mode command \"" + tvCommandString + "\". Should be ambilight.mode.internal, ambilight.mode.manual, ambilight.mode.expert");
 						return;
 					}
 					setAmbilightMode(commandlist[2], ip+":"+port);
 				}
 			}
-			else if (tmp.contains("volume"))
+			else if (tvCommandString.contains("volume"))
 			{
-				logger.debug("Found a Volume command: " + tmp);
+				logger.debug("Found a Volume command: " + tvCommandString);
 				sendVolume(ip + ":" + port, command);
 			}
-			else if (tmp.contains("source"))
+			else if (tvCommandString.contains("source"))
 			{
-				logger.debug("Found a Source command: " + tmp);
-				String[] commandlist = tmp.split("\\.");
+				logger.debug("Found a Source command: " + tvCommandString);
+				String[] commandlist = tvCommandString.split("\\.");
 				if (commandlist.length < 2)
 				{
-					logger.warn("wrong number of arguments for source command \"" + tmp + "\". Should be at least mode.X...");
+					logger.warn("wrong number of arguments for source command \"" + tvCommandString + "\". Should be at least mode.X...");
 					return;
 				}
 				sendSource(ip+":" + port, commandlist[1]);
@@ -324,7 +321,7 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			}
 			else
 			{
-				logger.warn("Unrecognized tv command \"" + tmp + "\". Only key.X or ambilight[].X is supported");
+				logger.warn("Unrecognized tv command \"" + tvCommandString + "\". Only key.X or ambilight[].X is supported");
 				return;
 			}
 		}
