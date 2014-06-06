@@ -656,19 +656,6 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 		return null;
 	}
 	
-
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate() is called!");
-	}
-		
 	/**
 	 * @{inheritDoc}
 	 */
