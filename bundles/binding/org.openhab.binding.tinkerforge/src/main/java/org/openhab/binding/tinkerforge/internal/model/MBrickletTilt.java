@@ -3,7 +3,6 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import com.tinkerforge.BrickletTilt;
-import java.math.BigDecimal;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 
 /**

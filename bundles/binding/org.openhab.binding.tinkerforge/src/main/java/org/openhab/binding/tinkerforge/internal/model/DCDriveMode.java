@@ -18,6 +18,9 @@ import org.eclipse.emf.common.util.Enumerator;
  * <!-- begin-user-doc -->
  * A representation of the literals of the enumeration '<em><b>DC Drive Mode</b></em>',
  * and utility methods for working with them.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDCDriveMode()
  * @model
