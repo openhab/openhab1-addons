@@ -10,19 +10,21 @@ package org.openhab.binding.jointspace;
 
 import org.openhab.core.binding.BindingProvider;
 
-
 /**
  * @author David Lenz
  * @since 1.5.0
  */
 public interface JointSpaceBindingProvider extends BindingProvider {
-	
+
 	/**
-	 * Returns the TV Command string that is stored for given @code itemName in response to a given @code command
+	 * Returns the TV Command string that is stored for given @code itemName in
+	 * response to a given @code command
+	 * 
 	 * @param itemName
 	 * @param command
-	 * @return Stored string, or null if unknown combination of itemName and command
+	 * @return Stored string, or null if unknown combination of itemName and
+	 *         command
 	 */
 	String getTVCommand(String itemName, String command);
-	
+
 }

@@ -9,37 +9,38 @@
 
 package org.openhab.binding.jointspace.internal;
 
-
 /**
- * This class bundles the volume configuration fields that the JointSpace API provides for a GET request
+ * This class bundles the volume configuration fields that the JointSpace API
+ * provides for a GET request
  * 
  * @author David Lenz
  * @since 1.5.0
  */
-class volumeConfig
-{
-	public volumeConfig()
-	{
-		volume = 20; mute = false; min = 0; max = 99;
+class volumeConfig {
+	public volumeConfig() {
+		volume = 20;
+		mute = false;
+		min = 0;
+		max = 99;
 	}
-	/** 
-	 * Volume that should lie within @see min and @see max 
+
+	/**
+	 * Volume that should lie within @see min and @see max
 	 */
 	int volume;
-	
+
 	/**
 	 * Whether TV is mute or not
 	 */
 	boolean mute;
-	
+
 	/**
 	 * The minimal possible value for @see volume
 	 */
 	int min;
-	
+
 	/**
 	 * The maximal possible value for @see volume
 	 */
 	int max;
 }
-

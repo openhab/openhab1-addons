@@ -13,16 +13,10 @@ import java.util.HashMap;
 import org.openhab.binding.jointspace.JointSpaceBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.items.ColorItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
-
 import org.apache.commons.lang.StringUtils;
-
 
 /**
  * This class is responsible for parsing the binding configuration.
@@ -30,10 +24,11 @@ import org.apache.commons.lang.StringUtils;
  * @author David Lenz
  * @since 1.5.0
  */
-public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProvider implements JointSpaceBindingProvider {
+public class JointSpaceGenericBindingProvider extends
+		AbstractGenericBindingProvider implements JointSpaceBindingProvider {
 
 	private jointSpaceBindingConfig pollItemsConfig = new jointSpaceBindingConfig();
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -42,38 +37,45 @@ public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProv
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+	public void validateItemType(Item item, String bindingConfig)
+			throws BindingConfigParseException {
 
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item,
+			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 		jointSpaceBindingConfig config = new jointSpaceBindingConfig();
-		
+
 		parseBindingConfig(bindingConfig, config);
-		
-		addBindingConfig(item, config);		
+
+		addBindingConfig(item, config);
 	}
-	
+
 	/**
-	 * Helper function to parse a config string to a @see jointSpaceBindingConfig
+	 * Helper function to parse a config string to a @see
+	 * jointSpaceBindingConfig
 	 * 
-	 * @param bindingConfigs String containing (possibly multiple) configuration string(s)
-	 * @param config  Config that will be filled in with the parsed @see bindingConfigs
+	 * @param bindingConfigs
+	 *            String containing (possibly multiple) configuration string(s)
+	 * @param config
+	 *            Config that will be filled in with the parsed @see
+	 *            bindingConfigs
 	 * @throws BindingConfigParseException
 	 */
 	protected void parseBindingConfig(String bindingConfigs,
 			jointSpaceBindingConfig config) throws BindingConfigParseException {
 
 		String bindingConfig = StringUtils.substringBefore(bindingConfigs, ",");
-		String bindingConfigTail = StringUtils.substringAfter(bindingConfigs, ",");
+		String bindingConfigTail = StringUtils.substringAfter(bindingConfigs,
+				",");
 
 		String[] configParts = bindingConfig.trim().split(":");
 
@@ -82,10 +84,8 @@ public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProv
 					"JointSpace binding must contain two parts separated by ':', e.g. <command>:<tvcommand>");
 		}
 
-		
 		String command = StringUtils.trim(configParts[0]);
 		String tvCommand = StringUtils.trim(configParts[1]);
-
 
 		// if there are more commands to parse do that recursively ...
 		if (StringUtils.isNotBlank(bindingConfigTail)) {
@@ -93,19 +93,20 @@ public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProv
 		}
 
 		config.put(command, tvCommand);
-		if (command.contains("POLL"))
-		{
+		if (command.contains("POLL")) {
 			pollItemsConfig.put(command, tvCommand);
 		}
 	}
-	
+
 	@Override
 	public String getTVCommand(String itemName, String command) {
-		jointSpaceBindingConfig config = (jointSpaceBindingConfig) bindingConfigs.get(itemName);
+		jointSpaceBindingConfig config = (jointSpaceBindingConfig) bindingConfigs
+				.get(itemName);
 		return config != null ? config.get(command) : null;
 	}
-	
-	class jointSpaceBindingConfig extends HashMap<String, String> implements BindingConfig {
+
+	class jointSpaceBindingConfig extends HashMap<String, String> implements
+			BindingConfig {
 
 		/**
 		 * generated serial version uid
@@ -114,5 +115,4 @@ public class JointSpaceGenericBindingProvider extends AbstractGenericBindingProv
 		// put member fields here which holds the parsed values
 	}
 
-	
 }
