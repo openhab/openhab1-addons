@@ -21,6 +21,30 @@ import org.apache.commons.lang.StringUtils;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
+ * Configuration string should be of the format: <openhab command>:<jointspace command>
+ * multiple of such command combinations can be added as a comma-seperated list
+ * <openhab command> can be for example ON, OFF for switch items, but special treatment is done for commands of type 
+ * 		HSB: for HSBType commands, 
+ * 		DEC: if command should be handled for all decimal types, 
+ * 		*: if all commands execute the jointspace command
+ * 		POLL: poll this item state
+ * <jointspace command> can currently be
+ * 		key.X: sends key like from the remote. possible values for X can be found here: http://jointspace.sourceforge.net/projectdata/documentation/jasonApi/1/doc/API-Method-input-key-POST.html
+ * 		ambilight[layers,optional].color, sets and gets the color of the layer/pixel of the ambilight
+ * 		ambilight.mode.X, where X can be manual, internal, expert
+ * 		volume: sets and gets the volume. possible for NumberItems
+ * 		source: gets the source
+ * 		source.X: sets the source to X, where X can be for example hdmi1, tv, ...
+ * 
+ * Some valid configuration strings are:
+ * 
+ * "ON:key.Mute, OFF:key.Mute, POLL:volume.mute"
+ * "HSB:ambilight.color"
+ * "HSB:ambilight[layer1[left[0]]].color, POLL:ambilight[layer1[left[0]]].color"
+ * "0:ambilight.mode.internal, 1:ambilight.mode.manual, 2:ambilight.mode.expert"
+ * "1:source.tv, 2:source.hdmi1, 3:source.hdmi2, 4:source.hdmi3, 5:source.hdmiside"
+ * "*:volume, POLL:volume"
+ * 
  * @author David Lenz
  * @since 1.5.0
  */
