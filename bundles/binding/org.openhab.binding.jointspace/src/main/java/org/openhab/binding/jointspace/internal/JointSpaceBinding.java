@@ -123,32 +123,29 @@ public class JointSpaceBinding extends AbstractActiveBinding<JointSpaceBindingPr
 			if (success)
 			{
 				logger.debug("established connection [host '{}' port '{}' timeout '{}']", new Object[] {ip, 0, timeout});
+				
+				//After connection is possible, do the actual polling
+				for (JointSpaceBindingProvider provider : providers) {
+					for (String itemName : provider.getItemNames()) {
+						String tvcommand = provider.getTVCommand(itemName, "POLL");
+						if (tvcommand != null)
+						{
+							updateItemState(itemName,tvcommand);
+						}
+					}
+				}
+				
 			}
 			else
 			{
-
 				logger.debug("couldn't establish network connection [host '{}' port '{}' timeout '{}']", new Object[] {ip, 0, timeout});
-				//if TV is not on, then we won't be able to poll it.
-				return;
 			}
 		} 
 		catch (SocketTimeoutException se) {
 			logger.debug("timed out while connecting to host '{}' port '{}' timeout '{}'", new Object[] {ip, 0, timeout});
-			return;
 		}
 		catch (IOException ioe) {
 			logger.debug("couldn't establish network connection [host '{}' port '{}' timeout '{}']", new Object[] {ip, 0, timeout});
-			return;
-		}
-
-		for (JointSpaceBindingProvider provider : providers) {
-			for (String itemName : provider.getItemNames()) {
-				String tvcommand = provider.getTVCommand(itemName, "POLL");
-				if (tvcommand != null)
-				{
-					updateItemState(itemName,tvcommand);
-				}
-			}
 		}
 	}
 	
