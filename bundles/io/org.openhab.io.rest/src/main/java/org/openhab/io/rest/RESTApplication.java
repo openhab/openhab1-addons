@@ -18,7 +18,6 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 import org.atmosphere.cpr.AtmosphereServlet;
-import org.atmosphere.cpr.FrameworkConfig;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
 import org.openhab.io.net.http.SecureHttpContext;
@@ -185,20 +184,19 @@ public class RESTApplication extends Application {
     private Dictionary<String, String> getJerseyServletParams() {
         Dictionary<String, String> jerseyServletParams = new Hashtable<String, String>();
         jerseyServletParams.put("javax.ws.rs.Application", RESTApplication.class.getName());
+        
         jerseyServletParams.put("org.atmosphere.core.servlet-mapping", RESTApplication.REST_SERVLET_ALIAS+"/*");
         jerseyServletParams.put("org.atmosphere.useWebSocket", "true");
         jerseyServletParams.put("org.atmosphere.useNative", "true");
+        
         jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor.disableDefaults", "true");
         // use the default interceptors without PaddingAtmosphereInterceptor
         // see: https://groups.google.com/forum/#!topic/openhab/Z-DVBXdNiYE
         jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor", "org.atmosphere.interceptor.DefaultHeadersInterceptor,org.atmosphere.interceptor.AndroidAtmosphereInterceptor,org.atmosphere.interceptor.SSEAtmosphereInterceptor,org.atmosphere.interceptor.JSONPAtmosphereInterceptor,org.atmosphere.interceptor.JavaScriptProtocol,org.atmosphere.interceptor.OnDisconnectInterceptor");
-        
-//        jerseyServletParams.put("org.atmosphere.cpr.broadcastFilterClasses", "org.atmosphere.client.FormParamFilter");
         jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "IDLE_DESTROY");
         jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "300000");
         
         jerseyServletParams.put("com.sun.jersey.spi.container.ResourceFilter", "org.atmosphere.core.AtmosphereFilter");
-        //jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.atmosphere.cache.SessionBroadcasterCache");
         
         // required because of bug http://java.net/jira/browse/JERSEY-361
         jerseyServletParams.put(FeaturesAndProperties.FEATURE_XMLROOTELEMENT_PROCESSING, "true");
