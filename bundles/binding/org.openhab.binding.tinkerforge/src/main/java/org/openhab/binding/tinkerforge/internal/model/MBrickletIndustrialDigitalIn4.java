@@ -13,6 +13,9 @@ import com.tinkerforge.BrickletIndustrialDigitalIn4;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MBricklet Industrial Digital In4</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.4.0
  * <!-- end-user-doc -->
  *
  * <p>

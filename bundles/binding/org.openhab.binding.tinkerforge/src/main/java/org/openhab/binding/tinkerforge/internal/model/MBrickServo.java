@@ -13,6 +13,9 @@ import com.tinkerforge.BrickServo;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MBrick Servo</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  *
  * <p>

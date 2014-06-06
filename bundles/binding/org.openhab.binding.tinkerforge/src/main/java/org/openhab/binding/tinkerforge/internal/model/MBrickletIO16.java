@@ -13,6 +13,9 @@ import com.tinkerforge.BrickletIO16;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MBricklet IO16</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.4.0
  * <!-- end-user-doc -->
  *
  * <p>
