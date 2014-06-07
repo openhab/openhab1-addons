@@ -31,7 +31,7 @@ public final class EcoTouchActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("EcoTouch binding has been started.");
+		// logger.debug("EcoTouch binding has been started.");
 	}
 
 	/**
@@ -39,7 +39,7 @@ public final class EcoTouchActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
-		logger.debug("EcoTouch binding has been stopped.");
+		// logger.debug("EcoTouch binding has been stopped.");
 	}
 
 	/**

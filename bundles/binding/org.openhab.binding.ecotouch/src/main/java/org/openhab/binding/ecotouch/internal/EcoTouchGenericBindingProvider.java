@@ -47,7 +47,7 @@ public class EcoTouchGenericBindingProvider extends
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		logger.debug("validateItemType() method is called!");
+		// logger.debug("validateItemType() method is called!");
 		// if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
 		// throw new BindingConfigParseException("item '" + item.getName()
 		// + "' is of type '" + item.getClass().getSimpleName()
@@ -64,7 +64,7 @@ public class EcoTouchGenericBindingProvider extends
 			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
-		logger.debug("processBindingConfiguration() method is called!");
+		// logger.debug("processBindingConfiguration() method is called!");
 
 		if (bindingConfig != null) {
 			EcoTouchBindingConfig config = parseBindingConfig(item,

@@ -55,17 +55,17 @@ public class EcoTouchBinding extends
 	}
 
 	public void activate() {
-		logger.debug("activate() method is called!");
+		// logger.debug("activate() method is called!");
 	}
 
 	public void deactivate() {
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
-		logger.debug("deactivate() method is called!");
+		// logger.debug("deactivate() method is called!");
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected long getRefreshInterval() {
@@ -73,7 +73,7 @@ public class EcoTouchBinding extends
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected String getName() {
@@ -81,12 +81,12 @@ public class EcoTouchBinding extends
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
+		// logger.debug("execute() method is called!");
 
 		if (!bindingsExist()) {
 			logger.debug("There is no existing EcoTouch binding configuration => refresh cycle aborted!");
@@ -172,7 +172,7 @@ public class EcoTouchBinding extends
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
+		// logger.debug("internalReceiveCommand() is called!");
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class EcoTouchBinding extends
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
+		// logger.debug("internalReceiveCommand() is called!");
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class EcoTouchBinding extends
 	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
-		logger.debug("updated() is called!");
+		// logger.debug("updated() is called!");
 
 		setProperlyConfigured(false);
 
