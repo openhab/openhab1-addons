@@ -27,7 +27,6 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Implement this class if you are going create an actively polling service like
  * querying a Website/Device.
@@ -66,7 +65,7 @@ public class EcoTouchBinding extends
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected long getRefreshInterval() {
@@ -74,7 +73,7 @@ public class EcoTouchBinding extends
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected String getName() {
@@ -82,7 +81,7 @@ public class EcoTouchBinding extends
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected void execute() {
@@ -105,19 +104,22 @@ public class EcoTouchBinding extends
 			EcoTouchConnector connector = new EcoTouchConnector(ip, username,
 					password, cookies);
 
-			// collect raw values from heat pump 
-			HashMap<String,Integer> rawvalues = new HashMap<String,Integer>();
-		
-			// request values (this could later be handled more efficiently inside connector.getValues(tags))
+			// collect raw values from heat pump
+			HashMap<String, Integer> rawvalues = new HashMap<String, Integer>();
+
+			// request values (this could later be handled more efficiently
+			// inside connector.getValues(tags))
 			for (String tag : tags) {
 				try {
-					int rawvalue = connector.getValue(tag); // raw value from heat pump (needs interpretation)
+					int rawvalue = connector.getValue(tag); // raw value from
+															// heat pump (needs
+															// interpretation)
 					rawvalues.put(tag, rawvalue);
 				} catch (Exception e) {
 					continue;
 				}
 			}
-			
+
 			// post updates to event bus
 			for (EcoTouchBindingProvider provider : providers) {
 				for (EcoTouchTags item : provider.getActiveItems()) {
@@ -160,10 +162,6 @@ public class EcoTouchBinding extends
 				eventPublisher.postUpdate(itemName, state);
 			}
 		}
-	}
-
-	private void handleEventType(org.openhab.core.types.State state, String tag) {
-		handleEventType(state, EcoTouchTags.fromTag(tag));
 	}
 
 	/**

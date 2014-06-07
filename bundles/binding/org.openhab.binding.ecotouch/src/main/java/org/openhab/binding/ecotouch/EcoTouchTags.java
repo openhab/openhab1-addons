@@ -10,7 +10,6 @@ package org.openhab.binding.ecotouch;
 
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.StringItem;
 
 /**
  * Represents all valid commands which could be processed by this binding
@@ -385,7 +384,8 @@ public enum EcoTouchTags {
 		}
 	},
 
-	// German: Status der Wärmepumpenkomponenten: Freigabe Regelung EVD / Magnetventil
+	// German: Status der Wärmepumpenkomponenten: Freigabe Regelung EVD /
+	// Magnetventil
 	TYPE_STATE_EVD {
 		{
 			command = "state_evd";
@@ -501,24 +501,56 @@ public enum EcoTouchTags {
 	 * Represents the heatpump command as it will be used in *.items
 	 * configuration
 	 */
-	String command, tagName;
+	String command;
+	/**
+	 * Represents the internal raw heatpump command as it will be used in
+	 * querying the heat pump
+	 */
+	String tagName;
 	Class<? extends Item> itemClass;
-	public enum Type {Analog,Word,Bitfield};
-	Type type = Type.Analog;
-	int bitnum = 0; 
 
+	/**
+	 * The heatpump always returns 16-bit integers encoded as ASCII. They need
+	 * to be interpreted according to the context.
+	 */
+	public enum Type {
+		Analog, Word, Bitfield
+	};
+
+	/**
+	 * The format of the response of the heat pump
+	 */
+	Type type = Type.Analog;
+	/**
+	 * If \c type is Type.Bitfield, this determines the bit number (0-based)
+	 */
+	int bitnum = 0;
+
+	/**
+	 * @return command name (uses in *.items files)
+	 */
 	public String getCommand() {
 		return command;
 	}
 
+	/**
+	 * @return tag name (raw communication with heat pump)
+	 */
 	public String getTagName() {
 		return tagName;
 	}
 
+	/**
+	 * @return type: how to interprete the response from the heat pump
+	 */
 	public Type getType() {
 		return type;
 	}
 
+	/**
+	 * @return bitnum: if the value is a bit field, this indicates the bit
+	 *         number (0-based)
+	 */
 	public int getBitNum() {
 		return bitnum;
 	}
@@ -530,7 +562,7 @@ public enum EcoTouchTags {
 	/**
 	 * 
 	 * @param bindingConfig
-	 *            command string e.g. state, temperature_solar_storage,..
+	 *            command e.g. TYPE_TEMPERATURE_OUTSIDE,..
 	 * @param itemClass
 	 *            class to validate
 	 * @return true if item class can bound to heatpumpCommand
@@ -548,13 +580,18 @@ public enum EcoTouchTags {
 		return ret;
 	}
 
+	/**
+	 * Searches the available heat pump commands and returns the matching one.
+	 * 
+	 * @param heatpumpCommand
+	 *            command string e.g. "temperature_outside"
+	 * @return matching EcoTouchTags instance, if available
+	 */
 	public static EcoTouchTags fromString(String heatpumpCommand) {
-
 		if ("".equals(heatpumpCommand)) {
 			return null;
 		}
 		for (EcoTouchTags c : EcoTouchTags.values()) {
-
 			if (c.getCommand().equals(heatpumpCommand)) {
 				return c;
 			}
@@ -562,11 +599,17 @@ public enum EcoTouchTags {
 
 		throw new IllegalArgumentException("cannot find EcoTouch tag for '"
 				+ heatpumpCommand + "'");
-
 	}
 
+	/**
+	 * Searches the available heat pump commands and returns the first matching
+	 * one.
+	 * 
+	 * @param tag
+	 *            raw heatpump tag e.g. "A1"
+	 * @return first matching EcoTouchTags instance, if available
+	 */
 	public static EcoTouchTags fromTag(String tag) {
-
 		for (EcoTouchTags c : EcoTouchTags.values()) {
 			if (c.getTagName().equals(tag)) {
 				return c;
@@ -575,7 +618,5 @@ public enum EcoTouchTags {
 
 		throw new IllegalArgumentException("cannot find EcoTouch tag for '"
 				+ tag + "'");
-
 	}
-
 }
