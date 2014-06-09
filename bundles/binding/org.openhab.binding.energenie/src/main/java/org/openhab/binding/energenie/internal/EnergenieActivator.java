@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Extension of the default OSGi bundle activator
  * 
- * @author Hans-Jörg Merk
+ * @author Hans-Joerg Merk
  * @since 1.5.0
  */
 public final class EnergenieActivator implements BundleActivator {

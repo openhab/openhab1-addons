@@ -133,6 +133,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 				url = String.format(url, Calendar.getInstance().getTime());
 
 				Properties headers = provider.getHttpHeaders(itemName);
+				logger.info("http-trace1: http-headers = {}", headers);
 				int refreshInterval = provider.getRefreshInterval(itemName);
 				String transformation = provider.getTransformation(itemName);
 				

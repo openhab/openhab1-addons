@@ -9,11 +9,21 @@
 package org.openhab.binding.energenie;
 
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.binding.energenie.internal.EnergenieBindingConfig;
 
 /**
- * @author Hans-Jörg Merk
+ * @author Hans-Joerg Merk
  * @since 1.5.0
  */
 public interface EnergenieBindingProvider extends BindingProvider {
+
+	/**
+	 * Returns the configuration for the item with the given name.
+	 * 
+	 * @param itemName
+	 * @return the configuration if there is an item with the given name, null otherwise.
+	 */
+	
+	public EnergenieBindingConfig getItemConfig(String itemName);
 
 }

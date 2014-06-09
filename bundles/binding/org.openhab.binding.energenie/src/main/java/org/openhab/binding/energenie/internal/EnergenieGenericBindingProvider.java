@@ -8,22 +8,26 @@
  */
 package org.openhab.binding.energenie.internal;
 
-import org.openhab.binding.energenie.EnergenieBindingProvider;
+import org.openhab.binding.energenie.EnergenieBindingProvider; 
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * This class is responsible for parsing the binding configuration.
  * 
- * @author Hans-Jörg Merk
+ * @author Hans-Joerg Merk
  * @since 1.5.0
  */
 public class EnergenieGenericBindingProvider extends AbstractGenericBindingProvider implements EnergenieBindingProvider {
+
+	static final Logger logger = LoggerFactory
+			.getLogger(EnergenieGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
@@ -37,11 +41,11 @@ public class EnergenieGenericBindingProvider extends AbstractGenericBindingProvi
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-		//	throw new BindingConfigParseException("item '" + item.getName()
-		//			+ "' is of type '" + item.getClass().getSimpleName()
-		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-		//}
+		if (!(item instanceof SwitchItem)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only SwitchItems are allowed - please check your *.items configuration");
+		}
 	}
 	
 	/**
@@ -50,17 +54,32 @@ public class EnergenieGenericBindingProvider extends AbstractGenericBindingProvi
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		EnergenieBindingConfig config = new EnergenieBindingConfig();
 		
-		//parse bindingconfig here ...
+		try {
+			if (bindingConfig != null) {
+				String[] configParts = bindingConfig.split(";");
+				if (configParts.length < 2 || configParts.length >2) {
+					throw new BindingConfigParseException ("energenie binding configuration must have two parts");
+				}
+				BindingConfig energenieBindingConfig = (BindingConfig) new EnergenieBindingConfig(configParts[0], configParts[1]);
+				addBindingConfig(item,energenieBindingConfig);
 		
-		addBindingConfig(item, config);		
+	} else {
+		logger.warn("bindingConfig is NULL (item=" + item
+				+ ") -> processing bindingConfig aborted!");
+		}
+	} catch (ArrayIndexOutOfBoundsException e) {
+		logger.warn("bindingConfig is invalid (item=" + item
+				+ ") -> processing bindingConfig aborted!");
+		}
+	}
+	@Override
+	public EnergenieBindingConfig getItemConfig(String itemName) {
+		return (EnergenieBindingConfig) bindingConfigs.get(itemName);
 	}
 	
+
 	
-	class EnergenieBindingConfig implements BindingConfig {
-		// put member fields here which holds the parsed values
-	}
-	
+
 	
 }
