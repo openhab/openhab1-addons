@@ -144,6 +144,7 @@ public class BaseMsg {
 	protected void appendPayload(byte[] payload)
 	{
 		StringBuilder sb = new StringBuilder(this.rawMsg);
+		this.flgReadyToSend = true;
 		this.payload = payload;
 		for (int byteIdx = 0; byteIdx < payload.length; byteIdx++) {
 			sb.append(String.format("%02X", payload[byteIdx]).toUpperCase());
@@ -152,11 +153,14 @@ public class BaseMsg {
 		/* prepend length & Z command */
 		byte len = (byte) ((sb.length() / 2) & 0xFF);
 		if ((int)len * 2 != sb.length())
+		{
+			this.flgReadyToSend = true;
 			logger.error("Unable to build raw message. Length is not correct");
+		}
 		sb.insert(0, String.format("Zs%02X", len));
 
 		this.rawMsg = sb.toString();
-		this.flgReadyToSend = true;
+		
 	}
 
 	/**
