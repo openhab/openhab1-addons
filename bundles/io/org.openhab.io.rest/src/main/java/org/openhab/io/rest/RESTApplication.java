@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -133,9 +134,11 @@ public class RESTApplication extends Application {
         	
     		httpPort = Integer.parseInt(bundleContext.getProperty("jetty.port"));
     		httpSSLPort = Integer.parseInt(bundleContext.getProperty("jetty.port.ssl"));
+    		
+    		Servlet atmosphereServlet = new AtmosphereServlet();
 
 			httpService.registerServlet(REST_SERVLET_ALIAS,
-				new AtmosphereServlet(), getJerseyServletParams(), createHttpContext());
+				atmosphereServlet, getJerseyServletParams(), createHttpContext());
 
  			logger.info("Started REST API at /rest");
 
@@ -193,8 +196,9 @@ public class RESTApplication extends Application {
         // use the default interceptors without PaddingAtmosphereInterceptor
         // see: https://groups.google.com/forum/#!topic/openhab/Z-DVBXdNiYE
         jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor", "org.atmosphere.interceptor.DefaultHeadersInterceptor,org.atmosphere.interceptor.AndroidAtmosphereInterceptor,org.atmosphere.interceptor.SSEAtmosphereInterceptor,org.atmosphere.interceptor.JSONPAtmosphereInterceptor,org.atmosphere.interceptor.JavaScriptProtocol,org.atmosphere.interceptor.OnDisconnectInterceptor");
-        jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "IDLE_DESTROY");
-        jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "300000");
+        jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.atmosphere.cache.UUIDBroadcasterCache");
+        jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "NEVER");
+        jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "3000000");
         
         jerseyServletParams.put("com.sun.jersey.spi.container.ResourceFilter", "org.atmosphere.core.AtmosphereFilter");
         
