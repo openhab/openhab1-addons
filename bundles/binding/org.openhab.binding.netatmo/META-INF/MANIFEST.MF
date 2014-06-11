@@ -16,9 +16,9 @@ Import-Package: com.google.common.base,
  org.apache.commons.httpclient.util,
  org.apache.commons.lang,
  org.apache.commons.lang.builder,
- org.codehaus.jackson;version="1.9.0",
- org.codehaus.jackson.annotate;version="1.9.0",
- org.codehaus.jackson.map;version="1.9.0",
+ org.codehaus.jackson,
+ org.codehaus.jackson.annotate,
+ org.codehaus.jackson.map,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -37,4 +37,3 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
-Require-Bundle: org.openhab.io.rest.lib
