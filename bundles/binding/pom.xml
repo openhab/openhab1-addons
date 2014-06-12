@@ -108,6 +108,8 @@
     <module>org.openhab.binding.rme</module>
     <module>org.openhab.binding.iec6205621meter</module>
     <module>org.openhab.binding.freebox</module>
+    <module>org.openhab.binding.xbmc</module>
+    <module>org.openhab.binding.daikin</module>
   </modules>
 
 </project>
