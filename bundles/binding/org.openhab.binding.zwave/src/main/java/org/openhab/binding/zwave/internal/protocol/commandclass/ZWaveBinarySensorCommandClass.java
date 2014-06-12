@@ -93,7 +93,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 						}
 						logger.debug("Sensor Type is {}", sensorType);
 					} else {
-						logger.debug("Message payload doesn't contain MessageType. Using UNKNOWN");
+						logger.debug("Message payload doesn't contain SensorType. Using {}", sensorType);
 					}
 				}
 
