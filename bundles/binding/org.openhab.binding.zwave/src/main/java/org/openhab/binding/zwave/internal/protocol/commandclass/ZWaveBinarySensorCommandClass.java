@@ -83,22 +83,28 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 				int value = serialMessage.getMessagePayloadByte(offset + 1);
 
 				SensorType sensorType = SensorType.UNKNOWN;
-				if(this.getVersion() > 1) {
-					logger.debug("Processing Sensor Type {}", serialMessage.getMessagePayloadByte(offset + 2));
-					// For V2, we have the sensor type after the value
-					sensorType = SensorType.getSensorType(serialMessage.getMessagePayloadByte(offset + 2));
-					logger.debug("Sensor Type is {}", sensorType);
-					if(sensorType == null)
-						sensorType = SensorType.UNKNOWN;
+				if (this.getNode().getVersion() > 1) {
+					if (serialMessage.getMessagePayload().length > offset + 2) {
+						logger.debug("Processing Sensor Type {}", serialMessage.getMessagePayloadByte(offset + 2));
+						// For V2, we have the sensor type after the value
+						sensorType = SensorType.getSensorType(serialMessage.getMessagePayloadByte(offset + 2));
+						if (sensorType == null) {
+							sensorType = SensorType.UNKNOWN;
+						}
+						logger.debug("Sensor Type is {}", sensorType);
+					} else {
+						logger.debug("Message payload doesn't contain SensorType. Using {}", sensorType);
+					}
 				}
 
 				logger.debug(String.format("NODE %d: Sensor Binary report, type=%s, value=0x%02X", this.getNode().getNodeId(), sensorType.getLabel(), value));
 
 				ZWaveBinarySensorValueEvent zEvent = new ZWaveBinarySensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, value);
 				this.getController().notifyEventListeners(zEvent);
-				
-				if (this.getNode().getNodeStage() != NodeStage.DONE)
+
+				if (this.getNode().getNodeStage() != NodeStage.DONE) {
 					this.getNode().advanceNodeStage(NodeStage.DONE);
+				}
 				break;
 			default:
 			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).", 
