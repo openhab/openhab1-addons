@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
+
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.maxcube.MaxCubeBindingProvider;
 import org.openhab.binding.maxcube.internal.message.C_Message;
@@ -35,6 +36,7 @@ import org.openhab.binding.maxcube.internal.message.ThermostatModeType;
 import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
@@ -286,8 +288,11 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			String rfAddress = device.getRFAddress();
 			String commandString = null;
 
-			if (command instanceof DecimalType) {
-				DecimalType decimalType = (DecimalType) command;
+			if (command instanceof DecimalType || command instanceof OnOffType) {
+				DecimalType decimalType = new DecimalType(4.5); /* default to 'off' */
+				if (command instanceof DecimalType)	decimalType = (DecimalType) command;
+				else if (command instanceof OnOffType) decimalType = ((OnOffType)command == OnOffType.ON)?new DecimalType(30.5):new DecimalType(4.5);
+
 				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), decimalType.doubleValue());
 				commandString = cmd.getCommandString();
 			} else if (command instanceof StringType) {
