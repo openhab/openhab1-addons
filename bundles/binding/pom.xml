@@ -111,6 +111,7 @@
     <module>org.openhab.binding.xbmc</module>
     <module>org.openhab.binding.daikin</module>
     <module>org.openhab.binding.jointspace</module>
+    <module>org.openhab.binding.oceanic</module>
   </modules>
 
 </project>
