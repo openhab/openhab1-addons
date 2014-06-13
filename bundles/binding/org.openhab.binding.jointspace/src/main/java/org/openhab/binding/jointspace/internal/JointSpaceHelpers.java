@@ -17,6 +17,7 @@ package org.openhab.binding.jointspace.internal;
  * @since 1.5.0
  */
 class volumeConfig {
+	
 	public volumeConfig() {
 		volume = 20;
 		mute = false;
@@ -43,4 +44,5 @@ class volumeConfig {
 	 * The maximal possible value for @see volume
 	 */
 	int max;
+	
 }

@@ -73,8 +73,7 @@ public class JointSpaceGenericBindingProvider extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item,
-			String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 		jointSpaceBindingConfig config = new jointSpaceBindingConfig();
 
@@ -129,14 +128,12 @@ public class JointSpaceGenericBindingProvider extends
 		return config != null ? config.get(command) : null;
 	}
 
-	class jointSpaceBindingConfig extends HashMap<String, String> implements
-			BindingConfig {
+	
+	class jointSpaceBindingConfig extends HashMap<String, String> implements BindingConfig {
 
-		/**
-		 * generated serial version uid
-		 */
+		/** generated serial version uid */
 		private static final long serialVersionUID = -1723443134323559493L;
-		// put member fields here which holds the parsed values
+		
 	}
 
 }
