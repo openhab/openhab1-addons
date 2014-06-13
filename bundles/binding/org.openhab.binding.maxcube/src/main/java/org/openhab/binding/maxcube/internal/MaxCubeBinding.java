@@ -72,12 +72,18 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	/** The refresh interval which is used to poll given MAX!Cube */
 	private static long refreshInterval = 10000;
 
+	/** MaxCube's default off temperature */
+	private static final DecimalType DEFAULT_OFF_TEMPERATURE = new DecimalType(4.5);
+
+	/** MaxCubes default on temperature */
+	private static final DecimalType DEFAULT_ON_TEMPERATURE = new DecimalType(30.5);
+	
 	/**
 	 * Configuration and device lists, kept during the overall lifetime of the
 	 * binding
 	 */
-	private ArrayList<Configuration> configurations = new ArrayList<Configuration>();;
-	private ArrayList<Device> devices = new ArrayList<Device>();;
+	private ArrayList<Configuration> configurations = new ArrayList<Configuration>();
+	private ArrayList<Device> devices = new ArrayList<Device>();
 
 	/**
 	 * {@inheritDoc}
@@ -289,9 +295,12 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			String commandString = null;
 
 			if (command instanceof DecimalType || command instanceof OnOffType) {
-				DecimalType decimalType = new DecimalType(4.5); /* default to 'off' */
-				if (command instanceof DecimalType)	decimalType = (DecimalType) command;
-				else if (command instanceof OnOffType) decimalType = ((OnOffType)command == OnOffType.ON)?new DecimalType(30.5):new DecimalType(4.5);
+				DecimalType decimalType = DEFAULT_OFF_TEMPERATURE;
+				if (command instanceof DecimalType) {
+					decimalType = (DecimalType) command;
+				} else if (command instanceof OnOffType) {
+					decimalType = OnOffType.ON.equals(command) ? DEFAULT_ON_TEMPERATURE : DEFAULT_OFF_TEMPERATURE;
+				}
 
 				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), decimalType.doubleValue());
 				commandString = cmd.getCommandString();
