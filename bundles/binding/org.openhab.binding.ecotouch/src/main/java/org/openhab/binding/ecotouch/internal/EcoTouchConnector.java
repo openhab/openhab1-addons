@@ -22,7 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Network communication with Waterkotte EcoTouch heat pumps
+ * Network communication with Waterkotte EcoTouch heat pumps.
+ * 
+ * The communication protocol was reverse engineered from the Easy-Con Android
+ * app. The meaning of the EcoTouch tags was provided by Waterkotte's technical
+ * service (by an excerpt of a developer manual).
  * 
  * @author Sebastian Held <sebastian.held@gmx.de>
  * @since 1.5.0
@@ -102,7 +106,6 @@ public class EcoTouchConnector {
 				while ((line = reader.readLine()) != null) {
 					body.append(line + "\n");
 				}
-				// logger.debug(body.toString());
 				if (body.toString().contains("#" + tag)) {
 					// succeeded
 					break;
@@ -135,10 +138,6 @@ public class EcoTouchConnector {
 			logger.debug("ill formatted response: '" + body + "'");
 			throw new Exception();
 		}
-
-		// logger.debug(m.group(1));
-		// logger.debug(m.group(2));
-		// logger.debug(m.group(3));
 
 		return Integer.parseInt(m.group(3));
 	}

@@ -55,13 +55,9 @@ public class EcoTouchBinding extends
 	}
 
 	public void activate() {
-		// logger.debug("activate() method is called!");
 	}
 
 	public void deactivate() {
-		// deallocate resources here that are no longer needed and
-		// should be reset when activating this binding again
-		// logger.debug("deactivate() method is called!");
 	}
 
 	/**
@@ -85,9 +81,6 @@ public class EcoTouchBinding extends
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
-		// logger.debug("execute() method is called!");
-
 		if (!bindingsExist()) {
 			logger.debug("There is no existing EcoTouch binding configuration => refresh cycle aborted!");
 			return;
@@ -168,28 +161,6 @@ public class EcoTouchBinding extends
 	 * @{inheritDoc
 	 */
 	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		// logger.debug("internalReceiveCommand() is called!");
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		// logger.debug("internalReceiveCommand() is called!");
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
 		// logger.debug("updated() is called!");
@@ -198,9 +169,6 @@ public class EcoTouchBinding extends
 
 		if (config != null) {
 
-			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like
-			// <bindingName>:refresh=<intervalInMs>
 			String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
@@ -208,19 +176,22 @@ public class EcoTouchBinding extends
 
 			String ip = (String) config.get("ip"); //$NON-NLS-1$
 			if (StringUtils.isBlank(ip)) {
-				return;
+				throw new ConfigurationException("ip",
+						"The ip address must not be empty.");
 			}
 			this.ip = ip;
 
 			String username = (String) config.get("username"); //$NON-NLS-1$
 			if (StringUtils.isBlank(username)) {
-				return;
+				throw new ConfigurationException("username",
+						"The username must not be empty.");
 			}
 			this.username = username;
 
 			String password = (String) config.get("password"); //$NON-NLS-1$
 			if (StringUtils.isBlank(password)) {
-				return;
+				throw new ConfigurationException("password",
+						"The password must not be empty.");
 			}
 			this.password = password;
 
