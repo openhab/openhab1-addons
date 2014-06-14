@@ -32,6 +32,7 @@ import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StopMoveType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -141,7 +142,19 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 				logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
 				return;
 			}
-			
+
+			// Allow inversion of roller shutter UP/DOWN
+			if (command instanceof MultiLevelUpDownCommandConverter) {
+				if ("true".equalsIgnoreCase(arguments.get("invert_state"))) {
+					if(command == UpDownType.UP)
+						command = UpDownType.DOWN;
+					else
+						command = UpDownType.UP;
+				}
+			}
+
+			converter = this.getCommandConverter(command.getClass());				
+
 			Integer value = (Integer)converter.convertFromCommandToValue(item, command);
 			logger.trace("Converted command '{}' to value {} for item = {}, node = {}, endpoint = {}.", command.toString(), value, item.getName(), node.getNodeId(), endpointId);
 
