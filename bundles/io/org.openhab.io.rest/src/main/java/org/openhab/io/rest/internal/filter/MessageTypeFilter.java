@@ -26,10 +26,7 @@ import com.sun.jersey.api.json.JSONWithPadding;
  *  
  * @author Oliver Mazur
  * @since 1.0
- *
- *
  */
-
 public class MessageTypeFilter implements PerRequestBroadcastFilter {
 	private static final Logger logger = LoggerFactory.getLogger(MessageTypeFilter.class);
 	
@@ -45,15 +42,13 @@ public class MessageTypeFilter implements PerRequestBroadcastFilter {
 		String responseType = responseTypeHelper.getResponseType(request);
 		try {	
 			Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-	    			new JSONWithPadding(message, responseTypeHelper.getQueryParam(request, "callback")) : message;  			
-	    	return new BroadcastAction(ACTION.CONTINUE, Response.ok(responseObject, responseType).build());
-			
-		
+    			new JSONWithPadding(message, responseTypeHelper.getQueryParam(request, "callback")) : message;  			
+	    	return new BroadcastAction(
+	    		ACTION.CONTINUE, Response.ok(responseObject, responseType).build());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			return new BroadcastAction(ACTION.ABORT,  message);
-		} 
-		
-		
+		} 	
 	}
+	
 }
