@@ -9,8 +9,10 @@
 package org.openhab.binding.ecotouch.internal;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -37,6 +39,8 @@ public class EcoTouchConnector {
 	private String username;
 	private String password;
 	List<String> cookies;
+	static Pattern response_pattern = Pattern
+			.compile("#(.+)\\s+S_OK[^0-9-]+([0-9-]+)\\s+([0-9-]+)");
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(EcoTouchConnector.class);
@@ -65,15 +69,18 @@ public class EcoTouchConnector {
 
 	private void login() {
 		cookies = null;
+		String url = null;
 		try {
-			String url = "http://" + ip + "/cgi/login?username="
+			url = "http://" + ip + "/cgi/login?username="
 					+ URLEncoder.encode(username, "UTF-8") + "&password="
 					+ URLEncoder.encode(password, "UTF-8");
 			URL loginurl = new URL(url);
 			URLConnection connection = loginurl.openConnection();
 			cookies = connection.getHeaderFields().get("Set-Cookie");
+		} catch (MalformedURLException e) {
+			logger.debug("The URL '" + url + "' is malformed: " + e.toString());
 		} catch (Exception e) {
-			logger.debug("Cannot log into Waterkotte EcoTouch.");
+			logger.debug("Cannot log into Waterkotte EcoTouch: " + e.toString());
 		}
 	}
 
@@ -122,21 +129,19 @@ public class EcoTouchConnector {
 			// failed
 			logger.debug("Cannot get value for tag '" + tag
 					+ "' from Waterkotte EcoTouch.");
-			throw new Exception();
+			throw new Exception("invalid response from EcoTouch");
 		}
 
 		// ok, the body now contains s.th. like
 		// #A30 S_OK
 		// 192 223
 
-		Pattern p = Pattern
-				.compile("#(.+)\\s+S_OK[^0-9-]+([0-9-]+)\\s+([0-9-]+)");
-		Matcher m = p.matcher(body.toString());
+		Matcher m = response_pattern.matcher(body.toString());
 		boolean b = m.find();
 		if (!b) {
 			// ill formatted response
 			logger.debug("ill formatted response: '" + body + "'");
-			throw new Exception();
+			throw new Exception("invalid response from EcoTouch");
 		}
 
 		return Integer.parseInt(m.group(3));

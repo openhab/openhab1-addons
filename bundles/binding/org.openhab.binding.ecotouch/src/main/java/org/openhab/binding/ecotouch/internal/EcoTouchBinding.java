@@ -109,6 +109,9 @@ public class EcoTouchBinding extends
 															// interpretation)
 					rawvalues.put(tag, rawvalue);
 				} catch (Exception e) {
+					// the connector already logged the exception cause
+					// let's ignore it and try the next value (intermittent
+					// network problem?)
 					continue;
 				}
 			}
