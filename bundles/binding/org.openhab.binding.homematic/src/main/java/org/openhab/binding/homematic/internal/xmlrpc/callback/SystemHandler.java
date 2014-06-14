@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.homematic.internal.xmlrpc.callback;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -66,14 +65,14 @@ public class SystemHandler {
     @SuppressWarnings("unchecked")
     public Object[] multicall(Object[] calls) throws XmlRpcException {
 
-        log.debug("multicall: " + Arrays.toString(calls));
+//        log.debug("multicall: " + Arrays.toString(calls));
 
         for (Object obj : calls) {
             Map<String, Object> call = (Map<String, Object>) obj;
             String methodname = call.get("methodName").toString();
             Object[] params = (Object[]) call.get("params");
 
-            log.debug("calls to {} with params {}", methodname, Arrays.toString(calls));
+//            log.debug("calls to {} with params {}", methodname, Arrays.toString(calls));
 
             XmlRpcRequest req = new XmlRpcClientRequestImpl(new XmlRpcRequestConfig() {
 
@@ -93,7 +92,7 @@ public class SystemHandler {
             handler.execute(req);
         }
 
-        log.debug("end of multicall");
+//        log.debug("end of multicall");
 
         return new Object[] {};
     }

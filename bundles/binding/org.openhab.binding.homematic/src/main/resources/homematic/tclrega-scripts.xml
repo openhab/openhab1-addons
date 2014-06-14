@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scripts>
+	<script name="getAllVariables">
+		<data>
+		<![CDATA[
+object var_obj;
+string sys_var_id;
+Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
+Write("<variablelist>\n");
+foreach (sys_var_id, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()) {
+  var_obj = dom.GetObject(sys_var_id);
+  if (var_obj.Visible() == true) {
+    Write("  <variable");
+    Write(" name='"); WriteXML(var_obj.Name());
+    Write("' value='"); WriteXML(var_obj.Value());
+    Write("' valueType='"); WriteXML(var_obj.ValueType());
+    if (var_obj.ValueType() == 16) {
+      Write("' subType='"); WriteXML(var_obj.ValueSubType());
+      Write("' valueList='" # var_obj.ValueList());
+    }
+    if ((var_obj.ValueType() != 2) && (var_obj.ValueType() != 20)) {
+      Write("' min='" # var_obj.ValueMin());
+      Write("' max='" # var_obj.ValueMax());
+    }
+    Write("' writeable='true'");
+    Write(" />\n");
+  }
+}
+Write("</variablelist>");
+		]]>
+		</data>
+	</script>
+
+	<script name="setVariable">
+		<data>
+		<![CDATA[
+Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
+Write('<result><valid>')
+object var_obj = dom.GetObject("{variable_name}");
+if (var_obj) {
+  var_obj.State({variable_state});
+  Write('true');
+}
+else {
+  Write('false');
+}
+Write('</valid></result>');
+		]]>
+		</data>
+	</script>
+
+	<script name="getAllDevices">
+		<data>
+		<![CDATA[
+string dev_id;
+string channel_id;
+string dp_id;
+Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
+Write("<devices>\n");
+foreach (dev_id, root.Devices().EnumUsedIDs()) {
+  object dev_obj = dom.GetObject(dev_id);
+  string dev_interface= dev_obj.Interface();
+  string interface_name = dom.GetObject(dev_interface).Name();
+  boolean is_ready = dev_obj.ReadyConfig();
+  if(is_ready && 
+     (dev_obj.HssType() != "HMW-RCV-50")) {
+
+    Write("  <device");
+    Write(" address='"); WriteXML(dev_obj.Address());
+    Write("' interface='"); WriteXML(interface_name);
+    Write("' type='"); WriteXML(dev_obj.HssType());
+	Write("'>\n");
+    foreach(channel_id, dev_obj.Channels()) {
+      object channel_obj = dom.GetObject(channel_id);
+
+      Write("    <channel");
+      Write(" number='"); WriteXML(channel_obj.Address().StrValueByIndex(":",1));
+      Write("'>\n");
+      
+      object boot_dp = channel_obj.DPByHssDP("BOOT");
+      if (boot_dp) {
+        Write("      <datapoint");
+        Write(" name='BOOT'");
+        Write(" value='false'");
+ 	    Write(" valueType='" # boot_dp.ValueType());
+        Write("' writeable='false'");
+        Write(" />\n");
+      }
+      object work_dp = channel_obj.DPByHssDP("WORKING");
+      if (work_dp) {
+        Write("      <datapoint");
+        Write(" name='WORKING'");
+        Write(" value='false'");
+ 	    Write(" valueType='" # work_dp.ValueType());
+        Write("' writeable='false'");
+        Write(" />\n");
+      }
+      object dir_dp = channel_obj.DPByHssDP("DIRECTION");
+      if (dir_dp) {
+        Write("      <datapoint");
+        Write(" name='DIRECTION'")
+        Write(" value='0'");
+ 	    Write(" valueType='" # dir_dp.ValueType());
+        Write("' subType='"); WriteXML(dir_dp.ValueSubType());
+        Write("' valueList='" # dir_dp.ValueList());
+        Write("' writeable='false'");
+        Write(" />\n");
+      }
+      object install_test_dp = channel_obj.DPByHssDP("INSTALL_TEST");
+      if (install_test_dp) {
+        Write("      <datapoint");
+        Write(" name='INSTALL_TEST'")
+        Write(" value='false'");
+ 	    Write(" valueType='" # install_test_dp.ValueType());
+        Write("' writeable='false'");
+        Write(" />\n");
+      }
+      object press_long_release_dp = channel_obj.DPByHssDP("PRESS_LONG_RELEASE");
+      if (press_long_release_dp) {
+        Write("      <datapoint");
+        Write(" name='PRESS_LONG_RELEASE'")
+        Write(" value='false'");
+ 	    Write(" valueType='" # press_long_release_dp.ValueType());
+        Write("' writeable='false'");
+        Write(" />\n");
+      }
+      object press_cont = channel_obj.DPByHssDP("PRESS_CONT");
+      if (press_cont) {
+        Write("      <datapoint");
+        Write(" name='PRESS_CONT'")
+        Write(" value='false'");
+        Write(" valueType='" # press_cont.ValueType());
+        Write("' writeable='false'");
+        Write(" />\n");
+      }
+
+      foreach(dp_id, channel_obj.DPs().EnumUsedIDs()) {
+        object dp_obj = dom.GetObject(dp_id);
+        if(dp_obj) {
+          string name = dp_obj.Name().StrValueByIndex(".",2);
+          if (name != "") {
+            Write("      <datapoint");
+            Write(" name='"); WriteXML(name);
+            Write("' value='"); WriteXML(dp_obj.Value());
+            Write("' valueType='" # dp_obj.ValueType());
+            if (dp_obj.ValueType() == 16) {
+              Write("' subType='"); WriteXML(dp_obj.ValueSubType());
+              Write("' valueList='" # dp_obj.ValueList());
+            }
+            if ((dp_obj.ValueType() != 2) && (dp_obj.ValueType() != 20)) {
+              Write("' min='" # dp_obj.ValueMin());
+              Write("' max='" # dp_obj.ValueMax());
+            }
+            Write("' writeable='");
+            integer dp_operations = dp_obj.Operations();
+            boolean writeable = dp_operations & OPERATION_WRITE;
+            if (writeable) {
+              Write("true");
+            }
+            else {
+              Write("false");
+            }
+            Write("' />\n");
+          }
+        }
+      }
+      Write("    </channel>\n");
+    }
+    Write("  </device>\n");
+  }
+}
+Write("</devices>");
+		]]>
+		</data>
+	</script>
+
+	<script name="executeProgram">
+		<data>
+		<![CDATA[
+Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
+Write('<result><valid>');
+object prog = dom.GetObject("{program_name}");
+if (prog) {
+  Write(prog.ProgramExecute());
+}
+else {
+  Write('false');
+}
+Write('</valid></result>');
+		]]>
+		</data>
+	</script>
+	<script name="getAllPrograms">
+		<data>
+		<![CDATA[
+object prg_obj;
+string sys_prg_id;
+Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
+Write("<programlist>\n");
+foreach (sys_prg_id, dom.GetObject(ID_PROGRAMS).EnumUsedIDs()) {
+  prg_obj = dom.GetObject(sys_prg_id);
+  if (prg_obj.Visible() == true) {
+    Write("  <program");
+    Write(" name='"); WriteXML(prg_obj.Name());
+    Write("' writeable='true'");
+    Write(" />\n");
+  }
+}
+Write("</programlist>");
+		]]>
+		</data>
+	</script>
+	<script name="setRemoteControlDisplay">
+		<data>
+		<![CDATA[
+Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
+Write('<result><valid>');
+object remote_control_display = dom.GetObject("BidCos-RF.{remote_address}:18.SUBMIT");
+if (remote_control_display) {
+  if ("{text}" != "*NO_STRING*") {
+    dom.GetObject("BidCos-RF.{remote_address}:18.TEXT").State("{text}");
+  }
+  dom.GetObject("BidCos-RF.{remote_address}:18.BEEP").State({beep_value});
+  dom.GetObject("BidCos-RF.{remote_address}:18.UNIT").State({unit_value});
+  dom.GetObject("BidCos-RF.{remote_address}:18.BACKLIGHT").State({backlight_value});
+
+  string symbols = "{symbols}";
+  string symbol;
+  if (symbols != "") {
+    foreach (symbol, symbols) {
+      dom.GetObject("BidCos-RF.KEQ0048285:18." # symbol).State(1);      
+    }
+  }
+
+  remote_control_display.State(1);
+  Write('true');
+}
+else {
+  Write('false');
+}
+Write('</valid></result>');
+		]]>
+		</data>
+	</script>
+</scripts>
