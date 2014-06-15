@@ -122,6 +122,8 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 		SerialMessage serialMessage = null;
 		String restoreLastValue = null;
 		
+		logger.debug("NODE {}: MULTILEVEL COMMAND {}", node.getNodeId(), command);
+
 		if (command instanceof StopMoveType && (StopMoveType)command == StopMoveType.STOP) {
 			// special handling for the STOP command
 			serialMessage = commandClass.stopLevelChangeMessage();
@@ -144,12 +146,15 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 			}
 
 			// Allow inversion of roller shutter UP/DOWN
-			if (command instanceof MultiLevelUpDownCommandConverter) {
+			if (converter instanceof MultiLevelUpDownCommandConverter) {
+				logger.debug("MULTILEVEL Command is UP/DOWN");
 				if ("true".equalsIgnoreCase(arguments.get("invert_state"))) {
+					logger.debug("MULTILEVEL Command is UP/DOWN - INVERT STATE true - {}", command);
 					if(command == UpDownType.UP)
 						command = UpDownType.DOWN;
 					else
 						command = UpDownType.UP;
+					logger.debug("MULTILEVEL Command is UP/DOWN - INVERT STATE true - update - {}", command);
 				}
 			}
 
@@ -157,6 +162,7 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 
 			Integer value = (Integer)converter.convertFromCommandToValue(item, command);
 			logger.trace("Converted command '{}' to value {} for item = {}, node = {}, endpoint = {}.", command.toString(), value, item.getName(), node.getNodeId(), endpointId);
+			logger.debug("Converted command '{}' to value {} for item = {}, node = {}, endpoint = {}.", command.toString(), value, item.getName(), node.getNodeId(), endpointId);
 
 			serialMessage = commandClass.setValueMessage(value);
 		}
