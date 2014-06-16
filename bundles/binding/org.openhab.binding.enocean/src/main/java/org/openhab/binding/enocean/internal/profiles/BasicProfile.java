@@ -11,7 +11,6 @@ package org.openhab.binding.enocean.internal.profiles;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.openhab.binding.enocean.internal.converter.ConverterFactory;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.types.Command;
@@ -28,7 +27,6 @@ public abstract class BasicProfile implements Profile {
 
     protected Set<Item> items = new HashSet<Item>();
     protected EventPublisher eventPublisher;
-    public ConverterFactory converterFactory = new ConverterFactory();
 
     public BasicProfile(Item item, EventPublisher eventPublisher) {
         items.add(item);

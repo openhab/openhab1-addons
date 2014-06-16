@@ -93,22 +93,10 @@ public class EnoceanGenericBindingProvider extends AbstractGenericBindingProvide
         return config != null ? new EnoceanParameterAddress(EnoceanId.fromString(config.id), config.channel, config.parameter) : null;
     }
 
-    //dahingehend erweitert dass nun auch Varianten von EEPs erkannt werden können
     @Override
     public EEPId getEEP(String itemName) {
         EnoceanBindingConfig config = (EnoceanBindingConfig) bindingConfigs.get(itemName);
-        int eepLength = config.eep.length();
-        if(eepLength == 8) {
-        	return config != null ? new EEPId(config.eep) : null;
-        }else if(eepLength > 8)
-        {
-        	String id = config.eep.substring(0, 8);
-        	String variant = config.eep.substring(9, eepLength);
-        	return config != null ? new EEPId(id,variant) : null;
-        }else{
-        	logger.debug("Invalid EEP!");
-        	return config != null ? new EEPId(config.eep) : null;
-        }
+        return config != null ? new EEPId(config.eep) : null;
     }
 
     @Override
