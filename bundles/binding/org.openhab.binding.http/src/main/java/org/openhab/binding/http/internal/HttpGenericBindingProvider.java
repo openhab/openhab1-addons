@@ -401,9 +401,11 @@ public class HttpGenericBindingProvider extends AbstractGenericBindingProvider i
 		
 		@Override
 		public String toString() {
+			logger.info("http-trace0: http-headers = {}", headers);
 			return "HttpBindingConfigElement [httpMethod=" + httpMethod
 					+ ", url=" + url + ", headers=" + headers + ", refreshInterval=" + refreshInterval
 					+ ", transformation=" + transformation + "]";
+
 		}
 		
 	}

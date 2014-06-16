@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>binding</artifactId>
+		<version>1.5.0-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<bundle.symbolicName>org.openhab.binding.wemo</bundle.symbolicName>
+		<bundle.namespace>org.openhab.binding.wemo</bundle.namespace>
+		<deb.name>openhab-addon-binding-Wemo</deb.name>
+		<deb.description>openhab addon binding Wemo</deb.description>
+	</properties>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.binding</groupId>
+	<artifactId>org.openhab.binding.wemo</artifactId>
+
+	<name>openHAB Wemo Binding</name>
+
+	<packaging>eclipse-plugin</packaging>
+
+	<version>1.5.0-SNAPSHOT</version>
+	
+    <repositories>
+        <repository>
+            <id>maven-snapshots</id>
+            <name>Maven Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencies>
+		<dependency>
+			<groupId>com.palominolabs.wemo</groupId>
+			<artifactId>wemo</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+        <dependency>
+            <groupId>com.palominolabs.cyberlink</groupId>
+            <artifactId>upnp-stack</artifactId>
+            <version>2.1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.palomino.wemo</groupId>
+				<artifactId>wemo</artifactId>
+				<version>1.0-SNAPSHOT</version>
+				<scope>provided</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>
