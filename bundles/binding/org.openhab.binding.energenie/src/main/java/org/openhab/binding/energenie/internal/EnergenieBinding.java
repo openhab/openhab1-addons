@@ -31,9 +31,6 @@ import java.net.*;
 	
 
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
- * 
  * @author Hans-Jörg Merk
  * @since 1.6.0
  */

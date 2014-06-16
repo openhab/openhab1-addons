@@ -6,45 +6,40 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.energenie.internal;
-import org.openhab.binding.energenie.EnergenieBindingProvider; 
+package org.openhab.binding.wemo.internal;
+
+import org.openhab.binding.wemo.WemoBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * <p>
- * This class can parse information from the generic binding format. It
- * registers as a {@link EnergenieBindingProvider} service as well.
- * </p>
- * 
- * <p>
- * Here are some examples for valid binding configuration strings:
- * <ul>
- * <li><code>{energenie="pms1;1"}</code> - Controls socket 1 on the first PMS-LAN.
- * </li>
- * <li>
- * <code>{energenie="pms2;3"} - Controls socket 3 on the second PMS-LAN.</code>
- * </ul>
+ * This class is responsible for parsing the binding configuration.
  * 
  * @author Hans-Jörg Merk
- * @since 1.6.0
+ * @since 1.5.0
  */
-public class EnergenieGenericBindingProvider extends AbstractGenericBindingProvider implements EnergenieBindingProvider {
+public class WemoGenericBindingProvider extends AbstractGenericBindingProvider implements WemoBindingProvider {
 
 	static final Logger logger = LoggerFactory
-			.getLogger(EnergenieGenericBindingProvider.class);
+			.getLogger(WemoGenericBindingProvider.class);
 
+	/**
+	 * The friendly name given to your Wemo switch.
+	 */
+	public String wemoFriendlyName;
+
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getBindingType() {
-		return "energenie";
+		return "wemo";
 	}
 
 	/**
@@ -52,10 +47,10 @@ public class EnergenieGenericBindingProvider extends AbstractGenericBindingProvi
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem)) {
+		if (!(item instanceof SwitchItem || item instanceof NumberItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only SwitchItems are allowed - please check your *.items configuration");
+					+ "', only Switch- and NumberItems are allowed - please check your *.items configuration");
 		}
 	}
 	
@@ -65,15 +60,12 @@ public class EnergenieGenericBindingProvider extends AbstractGenericBindingProvi
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		
 		try {
 			if (bindingConfig != null) {
-				String[] configParts = bindingConfig.split(";");
-				if (configParts.length < 2 || configParts.length >2) {
-					throw new BindingConfigParseException ("energenie binding configuration must have two parts");
-				}
-				BindingConfig energenieBindingConfig = (BindingConfig) new EnergenieBindingConfig(configParts[0], configParts[1]);
-				addBindingConfig(item,energenieBindingConfig);
+				WemoBindingConfig config = new WemoBindingConfig();
+				item.getName();
+				config.wemoFriendlyName = bindingConfig;
+				addBindingConfig(item,config);
 		
 	} else {
 		logger.warn("bindingConfig is NULL (item=" + item
@@ -83,14 +75,18 @@ public class EnergenieGenericBindingProvider extends AbstractGenericBindingProvi
 		logger.warn("bindingConfig is invalid (item=" + item
 				+ ") -> processing bindingConfig aborted!");
 		}
-	}
-	@Override
-	public EnergenieBindingConfig getItemConfig(String itemName) {
-		return (EnergenieBindingConfig) bindingConfigs.get(itemName);
+	
 	}
 	
-
+	public String getWemoFriendlyName(String itemName) {
+		WemoBindingConfig config = (WemoBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.wemoFriendlyName : null;
+	}
 	
-
+	static private class WemoBindingConfig implements BindingConfig {
+	
+		public String wemoFriendlyName;
+	
+	}
 	
 }

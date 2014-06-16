@@ -31,10 +31,6 @@ import org.slf4j.LoggerFactory;
 		static final Logger logger = LoggerFactory
 				.getLogger(EnergenieBindingConfig.class);
 
-		public enum BindingType {
-			dummy
-		}
-
 		/**
 		 * The deviceId of the energenie pms-lan (you could have more than one).
 		 */
