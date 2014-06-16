@@ -870,9 +870,6 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 					case AUDIOZONE_TEXT_FIELD3: {
 						AudioZone az = (AudioZone) config.getDevice();
 						az.setAudioSource(audioSourceMap);
-						logger.debug("looking if audio zone matches:"
-								+ az.getProperties().getSource() + "=="
-								+ as.getProperties().getNumber());
 						if (az.getProperties().getSource() == as
 								.getProperties().getNumber()) {
 							az.updateItem(provider.getItem(itemName), config,
