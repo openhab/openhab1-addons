@@ -13,7 +13,6 @@ import org.enocean.java.common.ParameterAddress;
 import org.enocean.java.common.values.Value;
 import org.openhab.binding.enocean.internal.converter.ButtonStateConverter;
 import org.openhab.binding.enocean.internal.converter.ContactStateConverter;
-import org.openhab.binding.enocean.internal.converter.ConverterFactory;
 import org.openhab.binding.enocean.internal.converter.HumidityConverter;
 import org.openhab.binding.enocean.internal.converter.IlluminationConverter;
 import org.openhab.binding.enocean.internal.converter.OnOffStateConverter;
@@ -23,9 +22,12 @@ import org.openhab.binding.enocean.internal.converter.PowerConverter;
 import org.openhab.binding.enocean.internal.converter.StateConverter;
 import org.openhab.binding.enocean.internal.converter.TemperatureNumberWithUnitConverter;
 import org.openhab.binding.enocean.internal.converter.VoltageConverter;
+import org.openhab.binding.enocean.internal.converter.DimValueConverter;
+import org.openhab.binding.enocean.internal.converter.IncreaseDecreasePercentageCommandConverter;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
@@ -44,8 +46,6 @@ public class StandardProfile extends BasicProfile {
 
     private static final Logger logger = LoggerFactory.getLogger(StandardProfile.class);
 
-    private ConverterFactory converterFactory = new ConverterFactory();
-
     public StandardProfile(Item item, EventPublisher eventPublisher) {
         super(item, eventPublisher);
         converterFactory.addStateConverter(Parameter.TEMPERATURE.name(), DecimalType.class, TemperatureNumberWithUnitConverter.class);
@@ -59,6 +59,9 @@ public class StandardProfile extends BasicProfile {
         converterFactory.addStateConverter(Parameter.I.name(), OnOffType.class, ButtonStateConverter.class);
         converterFactory.addStateConverter(Parameter.O.name(), OnOffType.class, ButtonStateConverter.class);
         converterFactory.addStateConverter(Parameter.CONTACT_STATE.name(), OpenClosedType.class, ContactStateConverter.class);
+        converterFactory.addCommandConverter(Parameter.DIM_VALUE_NO_ACK.name(), IncreaseDecreaseType.class, IncreaseDecreasePercentageCommandConverter.class);
+        converterFactory.addStateConverter(Parameter.DIM_VALUE_NO_ACK.name(), PercentType.class, DimValueConverter.class);
+        converterFactory.addStateConverter(Parameter.DIM_VALUE_NO_ACK.name(), OnOffType.class, OnOffStateConverter.class);
     }
 
     @Override

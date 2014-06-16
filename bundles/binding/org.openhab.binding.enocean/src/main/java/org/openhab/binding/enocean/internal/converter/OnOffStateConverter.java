@@ -20,7 +20,7 @@ import org.openhab.core.library.types.OnOffType;
  */
 public class OnOffStateConverter extends StateConverter<OnOffState, OnOffType> {
 
-    @Override
+	@Override
     protected OnOffType convertToImpl(OnOffState source) {
         return OnOffType.valueOf(source.name());
     }

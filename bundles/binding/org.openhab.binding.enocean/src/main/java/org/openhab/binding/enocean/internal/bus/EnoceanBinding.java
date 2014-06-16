@@ -21,22 +21,30 @@ import org.enocean.java.ESP3Host;
 import org.enocean.java.EnoceanSerialConnector;
 import org.enocean.java.address.EnoceanParameterAddress;
 import org.enocean.java.common.EEPId;
+import org.enocean.java.common.Parameter;
 import org.enocean.java.common.ParameterAddress;
 import org.enocean.java.common.ParameterValueChangeListener;
 import org.enocean.java.common.ProtocolConnector;
 import org.enocean.java.common.values.Value;
+import org.enocean.java.eep.EEPSerializerFactory;
+import org.enocean.java.eep.EEPSerializer;
+import org.enocean.java.packets.BasicPacket;
 import org.openhab.binding.enocean.EnoceanBindingProvider;
+import org.openhab.binding.enocean.internal.profiles.BasicProfile;
 import org.openhab.binding.enocean.internal.converter.CommandConverter;
-import org.openhab.binding.enocean.internal.converter.ConverterFactory;
+import org.openhab.binding.enocean.internal.converter.StateConverter;
+import org.openhab.binding.enocean.internal.converter.DataExchangeInterface;
 import org.openhab.binding.enocean.internal.profiles.DimmerOnOffProfile;
 import org.openhab.binding.enocean.internal.profiles.Profile;
 import org.openhab.binding.enocean.internal.profiles.RollershutterProfile;
 import org.openhab.binding.enocean.internal.profiles.StandardProfile;
 import org.openhab.binding.enocean.internal.profiles.SwitchOnOffProfile;
+import org.openhab.binding.enocean.internal.profiles.DimActuatorWithAck;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.GenericItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
@@ -60,16 +68,17 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
 
     private static final String CONFIG_KEY_SERIAL_PORT = "serialPort";
 
-    private ConverterFactory converterFactory = new ConverterFactory();
     private Map<String, Profile> profiles = new HashMap<String, Profile>();
 
     protected EventPublisher eventPublisher = null;
-
+     
     private String serialPort;
 
     private ProtocolConnector connector;
 
     private ESP3Host esp3Host;
+    
+    private EEPSerializerFactory serializer = new EEPSerializerFactory();
 
     public EnoceanBinding() {
     }
@@ -92,32 +101,46 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
 
     @Override
     protected void internalReceiveCommand(String itemName, Command command) {
-        for (EnoceanBindingProvider provider : providers) {
+    	for (EnoceanBindingProvider provider : providers) {
             logger.debug("Checking provider with names {}", provider.getItemNames());
             ParameterAddress parameterAddress = provider.getParameterAddress(itemName);
             State actualState = provider.getItem(itemName).getState();
             String parameterKey = parameterAddress.getParameterId();
-            CommandConverter<?, ?> commandConverter = converterFactory.getCommandConverter(parameterKey, command);
+            DataExchangeInterface.currentItem.setCurrentItemName(itemName);
+            CommandConverter<?, ?> commandConverter = ((BasicProfile) profiles.get(parameterAddress.getDeviceAsString())).converterFactory.getCommandConverter(parameterKey, command);
             if (commandConverter == null) {
                 logger.debug("No command converter found for {}. No command will be executed.", parameterAddress);
                 return;
             }
             State newState = commandConverter.convertFrom(actualState, command);
-            setStateOnDevice(newState, parameterAddress);
+            if(newState == null){
+            	return;
+            }
+            eventPublisher.postUpdate(itemName, newState);
+            ((GenericItem) provider.getItem(itemName)).setState(newState);
+            EEPId eep = provider.getEEP(itemName);
+            setStateOnDevice(newState, parameterAddress, eep);
         }
     }
 
-    @Override
+	@Override
     protected void internalReceiveUpdate(String itemName, State newState) {
         for (EnoceanBindingProvider provider : providers) {
             logger.debug("Checking provider with names {}", provider.getItemNames());
             ParameterAddress parameterAddress = provider.getParameterAddress(itemName);
-            setStateOnDevice(newState, parameterAddress);
+            EEPId eep = provider.getEEP(itemName);
+            setStateOnDevice(newState, parameterAddress, eep);
         }
     }
 
-    private void setStateOnDevice(State newState, ParameterAddress parameterAddress) {
-        // TODO: Set new state on enocean device
+    private void setStateOnDevice(State newState, ParameterAddress parameterAddress, EEPId eep) {
+    	String parameterKey = parameterAddress.getParameterId();
+    	StateConverter<?,?> stateConverter = ((BasicProfile) profiles.get(parameterAddress.getDeviceAsString())).converterFactory.getFromStateConverter(parameterKey, newState);
+    	Value value = (Value) stateConverter.convertFrom(newState);
+    	EEPSerializer eepSerializer = serializer.getSerializerFor(eep);
+    	BasicPacket packet = eepSerializer.createPacket((EnoceanParameterAddress) parameterAddress, value);
+    	esp3Host.sendRadio(packet);
+    	
     }
 
     @Override
@@ -213,14 +236,23 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
                 SwitchOnOffProfile profile = new SwitchOnOffProfile(item, eventPublisher);
                 addProfile(item, parameterAddress, profile);
             }
+        } else if(EEPId.EEP_A5_38_08_eltako.equals(eep)) {
+        	if (parameterAddress.getParameterId().equals(Parameter.DIM_VALUE_ACK.name())){
+        		DimActuatorWithAck profile = new DimActuatorWithAck(item, eventPublisher);
+        		addProfile(item, parameterAddress, profile);
+        	}
+        } else {
+        	StandardProfile profile = new StandardProfile(item, eventPublisher);
+        	addProfile(item, parameterAddress, profile);
         }
     }
 
     private void addProfile(Item item, ParameterAddress parameterAddress, Profile profile) {
-        if (profiles.containsKey(parameterAddress.getAsString())) {
-            profiles.get(parameterAddress.getAsString()).addItem(item);
+        if (profiles.containsKey(parameterAddress.getDeviceAsString())) {
+            profiles.get(parameterAddress.getDeviceAsString()).addItem(item);
         } else {
-            profiles.put(parameterAddress.getAsString(), profile);
+        	String paramString = parameterAddress.getDeviceAsString();
+            profiles.put(parameterAddress.getDeviceAsString(), profile);
         }
     }
 
@@ -267,6 +299,7 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
     public void valueChanged(ParameterAddress parameterAddress, Value valueObject) {
         logger.debug("Received new value {} for device at {}", valueObject, parameterAddress);
         Profile profile = null;
+        String paramString = parameterAddress.getAsString();
         if (profiles.containsKey(parameterAddress.getAsString())) {
             profile = profiles.get(parameterAddress.getAsString());
         } else if (profiles.containsKey(parameterAddress.getChannelAsString())) {
