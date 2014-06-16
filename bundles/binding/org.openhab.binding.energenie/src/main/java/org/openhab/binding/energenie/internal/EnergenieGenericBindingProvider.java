@@ -21,8 +21,8 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
- * @author Hans-Joerg Merk
- * @since 1.5.0
+ * @author Hans-Jörg Merk
+ * @since 1.6.0
  */
 public class EnergenieGenericBindingProvider extends AbstractGenericBindingProvider implements EnergenieBindingProvider {
 

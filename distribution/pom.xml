@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openhab</groupId>
         <artifactId>openhab</artifactId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>distribution</artifactId>
@@ -472,6 +472,12 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.openhab.action</groupId>
+            <artifactId>org.openhab.action.homematic</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
 
         <dependency>
             <groupId>org.openhab.binding</groupId>
@@ -877,6 +883,12 @@
         </dependency>
         <dependency>
             <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.freeswitch</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.gpio</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
@@ -920,6 +932,30 @@
         <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.freebox</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.xbmc</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.daikin</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.jointspace</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.oceanic</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>

@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
+
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.maxcube.MaxCubeBindingProvider;
 import org.openhab.binding.maxcube.internal.message.C_Message;
@@ -35,6 +36,7 @@ import org.openhab.binding.maxcube.internal.message.ThermostatModeType;
 import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
@@ -70,12 +72,18 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	/** The refresh interval which is used to poll given MAX!Cube */
 	private static long refreshInterval = 10000;
 
+	/** MaxCube's default off temperature */
+	private static final DecimalType DEFAULT_OFF_TEMPERATURE = new DecimalType(4.5);
+
+	/** MaxCubes default on temperature */
+	private static final DecimalType DEFAULT_ON_TEMPERATURE = new DecimalType(30.5);
+	
 	/**
 	 * Configuration and device lists, kept during the overall lifetime of the
 	 * binding
 	 */
-	private ArrayList<Configuration> configurations = new ArrayList<Configuration>();;
-	private ArrayList<Device> devices = new ArrayList<Device>();;
+	private ArrayList<Configuration> configurations = new ArrayList<Configuration>();
+	private ArrayList<Device> devices = new ArrayList<Device>();
 
 	/**
 	 * {@inheritDoc}
@@ -286,8 +294,14 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			String rfAddress = device.getRFAddress();
 			String commandString = null;
 
-			if (command instanceof DecimalType) {
-				DecimalType decimalType = (DecimalType) command;
+			if (command instanceof DecimalType || command instanceof OnOffType) {
+				DecimalType decimalType = DEFAULT_OFF_TEMPERATURE;
+				if (command instanceof DecimalType) {
+					decimalType = (DecimalType) command;
+				} else if (command instanceof OnOffType) {
+					decimalType = OnOffType.ON.equals(command) ? DEFAULT_ON_TEMPERATURE : DEFAULT_OFF_TEMPERATURE;
+				}
+
 				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), decimalType.doubleValue());
 				commandString = cmd.getCommandString();
 			} else if (command instanceof StringType) {

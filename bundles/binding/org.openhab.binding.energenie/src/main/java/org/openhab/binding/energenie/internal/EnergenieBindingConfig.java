@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
- * @author Hans-Joerg Merk
- * @since 1.5.0
+ * @author Hans-Jörg Merk
+ * @since 1.6.0
  */
 	
 	public class EnergenieBindingConfig extends HashMap<String, String> implements BindingConfig {
@@ -91,7 +91,7 @@ import org.slf4j.LoggerFactory;
 	}
 
 	/**
-	 * @return The channel number that has been declared in the binding
+	 * @return The socket number that has been declared in the binding
 	 *         configuration.
 	 */
 	public int getSocketNumber() {

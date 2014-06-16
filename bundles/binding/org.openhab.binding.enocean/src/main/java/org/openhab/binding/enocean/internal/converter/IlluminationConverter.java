@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import org.enocean.java.common.values.NumberWithUnit;
 import org.enocean.java.common.values.Unit;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.PercentType;
 
 /**
  * A converter to convert a NumberWithUnit ILLUMINATION to a DecimalType
@@ -31,7 +30,7 @@ public class IlluminationConverter extends StateConverter<NumberWithUnit, Decima
 
     @Override
     protected DecimalType convertToImpl(NumberWithUnit source) {
-        return new PercentType((BigDecimal) source.getValue());
+        return new DecimalType((BigDecimal) source.getValue());
     }
 
 }

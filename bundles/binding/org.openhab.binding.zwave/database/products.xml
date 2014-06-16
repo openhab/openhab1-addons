@@ -454,6 +454,27 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>2002</Type>
+				<Id>0201</Id>
+			</Reference>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0202</Id>
+			</Reference>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0203</Id>
+			</Reference>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0204</Id>
+			</Reference>
+			<Model>ZP3102</Model>
+			<Label lang="en">Motion Sensor</Label>
+			<ConfigFile>vision/zp3102.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>2001</Type>
 				<Id>0102</Id>
 			</Reference>
@@ -490,8 +511,12 @@
 				<Type>0800</Type>
 				<Id>1001</Id>
 			</Reference>
+			<Reference>
+				<Type>0800</Type>
+				<Id>3001</Id>
+			</Reference>
 			<Model>FGMS01</Model>
-			<Label lang="en">Movement Sensor</Label>
+			<Label lang="en">Motion Sensor</Label>
 			<ConfigFile>fibaro/fgms01.xml</ConfigFile>
 		</Product>
 		<Product>

@@ -12,8 +12,8 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.binding.energenie.internal.EnergenieBindingConfig;
 
 /**
- * @author Hans-Joerg Merk
- * @since 1.5.0
+ * @author Hans-Jörg Merk
+ * @since 1.6.0
  */
 public interface EnergenieBindingProvider extends BindingProvider {
 

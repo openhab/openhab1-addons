@@ -34,8 +34,8 @@ import java.net.*;
  * Implement this class if you are going create an actively polling service
  * like querying a Website/Device.
  * 
- * @author Hans-Joerg Merk
- * @since 1.5.0
+ * @author Hans-Jörg Merk
+ * @since 1.6.0
  */
 public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProvider> implements ManagedService {
 
@@ -69,8 +69,6 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 	}
 	
 	public void deactivate() {
-		// deallocate resources here that are no longer needed and 
-		// should be reset when activating this binding again
 	}
 
 	
@@ -95,7 +93,6 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
 		logger.debug("execute() method is called!");
 
 		for (EnergenieBindingProvider provider : providers) {
@@ -130,10 +127,10 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 						wr.close();
 						
 						int responseCode = con.getResponseCode();
-						logger.info("energenie: Login to {} with Password {}", pmsIp, pmsPw);
-						logger.info("energenie: Sending 'POST' request to URL : {}", url);
-						logger.info("energenie: Post parameters : {}", urlParameters);
-						logger.info("energenie: ResponseCode : {}", responseCode);
+						logger.trace("energenie: Login to {} with Password {}", pmsIp, pmsPw);
+						logger.trace("energenie: Sending 'POST' request to URL : {}", url);
+						logger.trace("energenie: Post parameters : {}", urlParameters);
+						logger.trace("energenie: ResponseCode : {}", responseCode);
 						
 						BufferedReader in = new BufferedReader(
 						        new InputStreamReader(con.getInputStream()));
@@ -150,24 +147,24 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 						String stateResponseSearch = "var sockstates = ";
 						int findState=loginResponseString.lastIndexOf(stateResponseSearch);
 						if (findState !=0) {
-							logger.info("energenie: searchstring sockstates found at position {}", findState);
+							logger.trace("energenie: searchstring sockstates found at position {}", findState);
 							
 							String slicedResponse = loginResponseString.substring(findState+18, findState+25);
 							
-							logger.info("energenie: transformed state response = {}", slicedResponse);
+							logger.trace("energenie: transformed state response = {}", slicedResponse);
 
 							try {
 								String [] parts = slicedResponse.split(",");
 								String itemState = parts[pmsSocketId-1];
-								logger.info("energenie: Response for item {} = {}", itemName, itemState);
+								logger.trace("energenie: Response for item {} = {}", itemName, itemState);
 								if (itemState.equals("0")) {
 									State state = OnOffType.valueOf("OFF");
-									logger.info("energenie: transformed state for item {} = {}", itemName, state);
+									logger.trace("energenie: transformed state for item {} = {}", itemName, state);
 									eventPublisher.postUpdate(itemName, state);
 								}
 								if (itemState.equals("1")) {
 									State state = OnOffType.valueOf("ON");
-									logger.info("energenie: transformed state for item {} = {}", itemName, state);
+									logger.trace("energenie: transformed state for item {} = {}", itemName, state);
 									eventPublisher.postUpdate(itemName, state);
 								}
 							
@@ -176,7 +173,7 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 							}
 							
 						} else {
-							logger.info("energenie: searchstring sockstates not found");			
+							logger.trace("energenie: searchstring sockstates not found");			
 						}
 						
 					} catch (Exception e) {
@@ -199,9 +196,6 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand() is called!");
 		
 		EnergenieBindingConfig deviceConfig = getConfigForItemName(itemName);
@@ -248,10 +242,10 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 			wr.close();
 			
 			int responseCode = con.getResponseCode();
-			logger.info("energenie: login to {} with password {}", pmsIp, pmsPw);
-			logger.info("energenie: sending 'POST' request to URL : {}", url);
-			logger.info("energenie: post parameters : {}", urlParameters);
-			logger.info("energenie: responseCode : {}", responseCode);
+			logger.trace("energenie: login to {} with password {}", pmsIp, pmsPw);
+			logger.trace("energenie: sending 'POST' request to URL : {}", url);
+			logger.trace("energenie: post parameters : {}", urlParameters);
+			logger.trace("energenie: responseCode : {}", responseCode);
 			
 			BufferedReader in = new BufferedReader(
 			        new InputStreamReader(con.getInputStream()));
@@ -268,14 +262,14 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 			String stateResponseSearch = "var sockstates = ";
 			int findState=loginResponseString.lastIndexOf(stateResponseSearch);
 			if (findState !=0) {
-				logger.info("energenie: searchstring sockstates found at position {}", findState);
+				logger.trace("energenie: searchstring sockstates found at position {}", findState);
 				
 				String slicedResponse = loginResponseString.substring(findState+18, findState+25);
 				
-				logger.info("energenie: transformed state response = {}", slicedResponse);
+				logger.trace("energenie: transformed state response = {}", slicedResponse);
 				
 			} else {
-				logger.info("energenie: searchstring sockstates not found");			
+				logger.trace("energenie: searchstring sockstates not found");			
 			}
 			
 		} catch (Exception e) {
@@ -306,12 +300,12 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 			wr.close();
 			
 			int responseCode = con.getResponseCode();
-			logger.info("energenie: sending 'POST' request to URL : {}", url);
-			logger.info("energenie: post parameters : {}", urlParameters);
-			logger.info("energenie: responseCode : {}", responseCode);
+			logger.trace("energenie: sending 'POST' request to URL : {}", url);
+			logger.trace("energenie: post parameters : {}", urlParameters);
+			logger.trace("energenie: responseCode : {}", responseCode);
 
 			
-			logger.info("energenie: send command ON to socket {} at host {}", pmsSocketId, pmsIp);
+			logger.trace("energenie: send command ON to socket {} at host {}", pmsSocketId, pmsIp);
 
 			
 		} catch (Exception e) {
@@ -380,8 +374,8 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 			}
 			in.close();
 
-			logger.info("energenie: responseCode : {}", responseCode);
-			logger.info("energenie: logout from ip {}", pmsIp);
+			logger.trace("energenie: responseCode : {}", responseCode);
+			logger.trace("energenie: logout from ip {}", pmsIp);
 			
 		} catch (Exception e) {
 			logger.error("energenie: failed to logout from ip {}", pmsIp);
@@ -394,9 +388,6 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand() is called!");
 
 	}
@@ -466,15 +457,11 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 					throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
 				}
 			}			
-			// to override the default refresh interval one has to add a 
-			// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
 			String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 			
-			// read further config parameters here ...
-
 			setProperlyConfigured(true);
 		}
 	}
