@@ -236,6 +236,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 									}
 									gpioPin.setDirection(newDirection);
 									if (newDirection == GPIOPin.DIRECTION_IN) {
+										gpioPin.setEdgeDetection(GPIOPin.EDGEDETECTION_BOTH);
 										gpioPin.addEventHandler(this);
 									}
 								}
@@ -298,11 +299,12 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 			direction = provider.getDirection(itemName);
 			gpioPin.setDirection(direction);
 
-			gpioPin.setEdgeDetection(GPIOPin.EDGEDETECTION_BOTH);
-
-			/* Debouncing is valid only for input pins */
+			/* Edge detection and debouncing are valid only for input pins */
 			if (direction == GPIOPin.DIRECTION_IN) {
 				long debounceInterval = provider.getDebounceInterval(itemName);
+
+				gpioPin.setEdgeDetection(GPIOPin.EDGEDETECTION_BOTH);
+
 				/* If debounceInterval isn't configured its value is GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED */
 				if (debounceInterval != GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED) {
 					gpioPin.setDebounceInterval(debounceInterval);
