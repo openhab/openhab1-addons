@@ -22,6 +22,36 @@ public class BaseMsg {
 	private static final Logger logger =
 			LoggerFactory.getLogger(BaseMsg.class);
 
+	/* define number of characters per byte */
+	private final static int PKT_CHARS_PER_BYTE = 2;
+
+	/* packet structure in terms of character representations of bytes */
+	private final static int PKT_POS_MSG_LEN = 1; /* Account for 'Z' at start */
+	private final static int PKT_POS_MSG_LEN_LEN = PKT_CHARS_PER_BYTE;
+
+	private final static int PKT_POS_MSG_START = PKT_POS_MSG_LEN+PKT_POS_MSG_LEN_LEN;
+
+	private final static int PKT_POS_MSG_COUNT = PKT_POS_MSG_LEN+PKT_POS_MSG_LEN_LEN;
+	private final static int PKT_POS_MSG_COUNT_LEN = PKT_CHARS_PER_BYTE;
+
+	private final static int PKT_POS_MSG_FLAG = PKT_POS_MSG_COUNT+PKT_POS_MSG_COUNT_LEN;
+	private final static int PKT_POS_MSG_FLAG_LEN = PKT_CHARS_PER_BYTE;
+
+	private final static int PKT_POS_MSG_TYPE  = PKT_POS_MSG_FLAG+PKT_POS_MSG_FLAG_LEN;
+	private final static int PKT_POS_MSG_TYPE_LEN = PKT_CHARS_PER_BYTE;
+
+	private final static int PKT_POS_SRC_ADDR  = PKT_POS_MSG_TYPE+PKT_POS_MSG_TYPE_LEN;
+	private final static int PKT_POS_SRC_ADDR_LEN = 3*PKT_CHARS_PER_BYTE;
+
+	private final static int PKT_POS_DST_ADDR  = PKT_POS_SRC_ADDR+PKT_POS_SRC_ADDR_LEN;
+	private final static int PKT_POS_DST_ADDR_LEN = 3*PKT_CHARS_PER_BYTE;
+
+	private final static int PKT_POS_GROUP_ID  = PKT_POS_DST_ADDR+PKT_POS_DST_ADDR_LEN;
+	private final static int PKT_POS_GROUP_ID_LEN = PKT_CHARS_PER_BYTE;
+
+	private final static int PKT_POS_PAYLOAD_START = PKT_POS_GROUP_ID + PKT_POS_GROUP_ID_LEN;
+
+
 	/**
 	 * Constructor based on received message
 	 * @param rawMsg
@@ -39,46 +69,36 @@ public class BaseMsg {
 			pkt.len = 0; /* indicate not a valid packet */
 			return;
 		}
-		int startIdx = 3;
 
-		pkt.msgCount = (byte) (Integer.parseInt(rawMsg.substring(startIdx,startIdx+2),16) & 0xFF);
-		startIdx += 2;
+		pkt.msgCount = (byte) (Integer.parseInt(rawMsg.substring(PKT_POS_MSG_COUNT,PKT_POS_MSG_COUNT+PKT_POS_MSG_COUNT_LEN),16) & 0xFF);
 
-		pkt.msgFlag = (byte) (Integer.parseInt(rawMsg.substring(startIdx,startIdx+2),16) & 0xFF);
-		startIdx += 2;
+		pkt.msgFlag = (byte) (Integer.parseInt(rawMsg.substring(PKT_POS_MSG_FLAG,PKT_POS_MSG_FLAG+PKT_POS_MSG_FLAG_LEN),16) & 0xFF);
 
-		pkt.msgTypeRaw = (byte) (Integer.parseInt(rawMsg.substring(startIdx,startIdx+2),16) & 0xFF);
-		startIdx += 2;
-
+		pkt.msgTypeRaw = (byte) (Integer.parseInt(rawMsg.substring(PKT_POS_MSG_TYPE,PKT_POS_MSG_TYPE+PKT_POS_MSG_TYPE_LEN),16) & 0xFF);
 		pkt.msgType = MaxCulMsgType.fromByte(pkt.msgTypeRaw);
 
-		pkt.srcAddrStr = rawMsg.substring(startIdx,startIdx+6);
-		pkt.srcAddr[0] = (byte) (Integer.parseInt(rawMsg.substring(startIdx,startIdx+2),16) & 0xFF);
-		startIdx += 2;
-		pkt.srcAddr[1] = (byte) (Integer.parseInt(rawMsg.substring(startIdx,startIdx+2),16) & 0xFF);
-		startIdx += 2;
-		pkt.srcAddr[2] = (byte) (Integer.parseInt(rawMsg.substring(startIdx,startIdx+2),16) & 0xFF);
-		startIdx += 2;
+		pkt.srcAddrStr = rawMsg.substring(PKT_POS_SRC_ADDR,PKT_POS_SRC_ADDR+PKT_POS_SRC_ADDR_LEN);
+		for (int idx = PKT_POS_SRC_ADDR; idx < PKT_POS_SRC_ADDR+PKT_POS_SRC_ADDR_LEN; idx += PKT_CHARS_PER_BYTE)
+		{
+			pkt.srcAddr[(idx-PKT_POS_SRC_ADDR)/PKT_CHARS_PER_BYTE] = (byte) (Integer.parseInt(rawMsg.substring(idx,idx+PKT_CHARS_PER_BYTE),16) & 0xFF);
+		}
 
-		pkt.dstAddrStr = rawMsg.substring(startIdx,startIdx+6);
-		pkt.dstAddr[0] = (byte) (Integer.parseInt(rawMsg.substring(startIdx,startIdx+2),16) & 0xFF);
-		startIdx += 2;
-		pkt.dstAddr[1] = (byte) (Integer.parseInt(rawMsg.substring(startIdx,startIdx+2),16) & 0xFF);
-		startIdx += 2;
-		pkt.dstAddr[2] = (byte) (Integer.parseInt(rawMsg.substring(startIdx,startIdx+2),16) & 0xFF);
-		startIdx += 2;
+		pkt.dstAddrStr = rawMsg.substring(PKT_POS_DST_ADDR,PKT_POS_DST_ADDR+PKT_POS_DST_ADDR_LEN);
+		for (int idx = PKT_POS_DST_ADDR; idx < PKT_POS_DST_ADDR+PKT_POS_DST_ADDR_LEN; idx += PKT_CHARS_PER_BYTE)
+		{
+			pkt.dstAddr[(idx-PKT_POS_DST_ADDR)/PKT_CHARS_PER_BYTE] = (byte) (Integer.parseInt(rawMsg.substring(idx,idx+PKT_CHARS_PER_BYTE),16) & 0xFF);
+		}
 
-		pkt.groupid = (byte) (Integer.parseInt(rawMsg.substring(startIdx,startIdx+2),16) & 0xFF);
-		startIdx += 2;
+		pkt.groupid = (byte) (Integer.parseInt(rawMsg.substring(PKT_POS_GROUP_ID,PKT_POS_GROUP_ID+PKT_POS_GROUP_ID_LEN),16) & 0xFF);
 
-		int payloadStrLen = ((pkt.len)*2)+3-startIdx; /* +3 -> Z and len byte (2 chars) */
-		int payloadByteLen = payloadStrLen / 2;
+		/* pkt.len accounts for message only (i.e. not first 3 chars) - so offset for characters that precede the message */
+		int payloadStrLen = ((pkt.len)*PKT_CHARS_PER_BYTE)+PKT_POS_MSG_START-PKT_POS_PAYLOAD_START;
+		int payloadByteLen = payloadStrLen / PKT_CHARS_PER_BYTE;
 		logger.debug("Payload length = "+payloadStrLen+" => "+(payloadByteLen));
 		pkt.payload = new byte[payloadByteLen];
-		for (int payIdx = 0; payIdx < payloadByteLen; payIdx++ )
+		for (int payIdx = PKT_POS_PAYLOAD_START; payIdx < (PKT_POS_PAYLOAD_START+payloadStrLen); payIdx+=PKT_CHARS_PER_BYTE )
 		{
-			pkt.payload[payIdx] = (byte) (Integer.parseInt(rawMsg.substring(startIdx,startIdx+2),16) & 0xFF);
-			startIdx += 2;
+			pkt.payload[(payIdx-PKT_POS_PAYLOAD_START)/PKT_CHARS_PER_BYTE] = (byte) (Integer.parseInt(rawMsg.substring(payIdx,payIdx+PKT_CHARS_PER_BYTE),16) & 0xFF);
 		}
 	}
 
@@ -139,8 +159,6 @@ public class BaseMsg {
 		appendPayload(payload);
 	}
 
-
-
 	protected void appendPayload(byte[] payload)
 	{
 		StringBuilder sb = new StringBuilder(this.rawMsg);
@@ -151,16 +169,27 @@ public class BaseMsg {
 		}
 
 		/* prepend length & Z command */
-		byte len = (byte) ((sb.length() / 2) & 0xFF);
-		if ((int)len * 2 != sb.length())
+		byte len = (byte) ((sb.length() / PKT_CHARS_PER_BYTE) & 0xFF);
+		if ((int)len * PKT_CHARS_PER_BYTE != sb.length())
 		{
-			this.flgReadyToSend = true;
+			this.flgReadyToSend = false;
 			logger.error("Unable to build raw message. Length is not correct");
 		}
 		sb.insert(0, String.format("Zs%02X", len));
 
 		this.rawMsg = sb.toString();
-		
+		this.flgReadyToSend = true;
+	}
+
+	private static boolean pktLenOk( String rawMsg )
+	{
+		int len = (byte) (Integer.parseInt(rawMsg.substring(PKT_POS_MSG_LEN, PKT_POS_MSG_LEN+PKT_POS_MSG_LEN_LEN),16) & 0xFF); /* length of packet */
+		if (len != ((rawMsg.length()-(PKT_POS_MSG_START+PKT_CHARS_PER_BYTE))/PKT_CHARS_PER_BYTE)) /* account for preceding characters in the message and a byte at the end which i think is a checksum  */
+		{
+			logger.error("Unable to process packet "+rawMsg+". Length is not correct.");
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -170,14 +199,18 @@ public class BaseMsg {
 	 */
 	public static MaxCulMsgType getMsgType(String rawMsg)
 	{
-		int len = (byte) (Integer.parseInt(rawMsg.substring(1, 3),16) & 0xFF); /* length of packet */
-		if (len != ((rawMsg.length()-5)/2)) /* -3 => 'Z' and len byte (2 chars) and check byte, div by two as it is a hex string  */
-		{
-			logger.error("Unable to process packet "+rawMsg+". Length is not correct.");
+		if (pktLenOk(rawMsg) == false)
 			return MaxCulMsgType.UNKNOWN;
-		}
-		int startIdx = 7;
-		return MaxCulMsgType.fromByte(Byte.parseByte(rawMsg.substring(startIdx,startIdx+2),16));
+
+		return MaxCulMsgType.fromByte(Byte.parseByte(rawMsg.substring(PKT_POS_MSG_TYPE,PKT_POS_MSG_TYPE+PKT_POS_MSG_TYPE_LEN),16));
+	}
+
+	public static boolean isForUs(String rawMsg, String addr)
+	{
+		if (pktLenOk(rawMsg) == false)
+			return false; // length is wrong ignore packet
+
+		return addr.equalsIgnoreCase(rawMsg.substring(PKT_POS_DST_ADDR,PKT_POS_DST_ADDR+PKT_POS_DST_ADDR_LEN));
 	}
 
 	public int requiredCredit()

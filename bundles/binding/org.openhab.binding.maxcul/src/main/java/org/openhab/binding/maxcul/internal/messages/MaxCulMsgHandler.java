@@ -189,55 +189,49 @@ public class MaxCulMsgHandler implements CULListener {
 
 	@Override
 	public void dataReceived(String data) {
-		boolean systemMsg = false; /*indicate if a system message like ACK's & Time information */
 		logger.debug("MaxCulSender Received "+data);
 		if (data.startsWith("Z"))
 		{
-			/* Handle ACKs */
-			MaxCulMsgType msgType = BaseMsg.getMsgType(data);
-			if (msgType == MaxCulMsgType.ACK)
+			/* Check message is destined for us */
+			if (BaseMsg.isForUs(data, srcAddr))
 			{
-				systemMsg = true;
-				AckMsg msg = new AckMsg(data);
-				if (msg.dstAddrStr.compareToIgnoreCase(this.srcAddr) != 0)
+				/* Handle Internal Messages */
+				MaxCulMsgType msgType = BaseMsg.getMsgType(data);
+				if (msgType == MaxCulMsgType.ACK)
 				{
-					logger.debug("Message not for us");
-					return;
-				}
-				if (pendingAckQueue.containsKey(msg.msgCount) && msg.dstAddrStr.compareTo(srcAddr) == 0)
-				{
-					SenderQueueItem qi = pendingAckQueue.remove(msg.msgCount);
-					/* verify ack */
-					if ((qi.msg.dstAddrStr.compareToIgnoreCase(msg.srcAddrStr) == 0) &&
-							(qi.msg.srcAddrStr.compareToIgnoreCase(msg.dstAddrStr) == 0))
-							{
-								if (msg.getIsNack())
+					AckMsg msg = new AckMsg(data);
+					if (pendingAckQueue.containsKey(msg.msgCount) && msg.dstAddrStr.compareTo(srcAddr) == 0)
+					{
+						SenderQueueItem qi = pendingAckQueue.remove(msg.msgCount);
+						/* verify ACK */
+						if ((qi.msg.dstAddrStr.compareToIgnoreCase(msg.srcAddrStr) == 0) &&
+								(qi.msg.srcAddrStr.compareToIgnoreCase(msg.dstAddrStr) == 0))
 								{
-									/* NAK'd! */
-									// TODO resend?
-									logger.error("Message was NAK'd, packet lost");
-								} else logger.debug("Message "+msg.msgCount+" ACK'd ok!");
+									if (msg.getIsNack())
+									{
+										/* NAK'd! */
+										// TODO resend?
+										logger.error("Message was NAK'd, packet lost");
+									} else logger.debug("Message "+msg.msgCount+" ACK'd ok!");
 
-							}
-				} else logger.info("Got ACK for message "+msg.msgCount+" but it wasn't in the queue");
-			} else if (msgType == MaxCulMsgType.TIME_INFO)
-			{
-				systemMsg = true;
-				TimeInfoMsg msg = new TimeInfoMsg(data);
-				if (msg.dstAddrStr.compareTo(srcAddr) == 0)
+								}
+					} else logger.info("Got ACK for message "+msg.msgCount+" but it wasn't in the queue");
+				}
+				else if (msgType == MaxCulMsgType.TIME_INFO)
+				{
+					/* send latest time information */
+					TimeInfoMsg msg = new TimeInfoMsg(data);
 					sendTimeInfo(msg.srcAddrStr);
+				}
 				else
 				{
-					logger.debug("Got TimeInfo request not for us");
-					return;
+					/* pass data to binding for processing */
+					this.mcbmp.MaxCulMsgReceived(data);
 				}
+				/* TODO look for any messages that have a matching entry in the callback register */
+
+
 			}
-
-			/* TODO look for any messages that have a matching entry in the callback register */
-
-			/* pass data to binding for processing */
-			if (!systemMsg)
-				this.mcbmp.MaxCulMsgReceived(data);
 		}
 	}
 
