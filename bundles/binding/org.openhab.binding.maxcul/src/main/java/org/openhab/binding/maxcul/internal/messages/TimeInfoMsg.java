@@ -3,9 +3,15 @@ package org.openhab.binding.maxcul.internal.messages;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TimeInfoMsg extends BaseMsg {
 
 	final static private int TIME_INFO_PAYLOAD_LEN = 5; /* in bytes */
+
+	private static final Logger logger =
+			LoggerFactory.getLogger(TimeInfoMsg.class);
 
 	public TimeInfoMsg(String rawMsg) {
 		super(rawMsg);
@@ -28,8 +34,11 @@ public class TimeInfoMsg extends BaseMsg {
 		payload[0] = (byte) (now.get(Calendar.YEAR) - 2000);
 		payload[1] = (byte) now.get(Calendar.DAY_OF_MONTH);
 		payload[2] = (byte) now.get(Calendar.HOUR);
-		payload[3] = (byte) (now.get(Calendar.MINUTE) | ((now.get(Calendar.MONTH) & 0x0C)<<4));
-		payload[4] = (byte) (now.get(Calendar.SECOND) | ((now.get(Calendar.MONTH) & 0x03)<<6));
+		payload[3] = (byte) (now.get(Calendar.MINUTE) | ((now.get(Calendar.MONTH+1) & 0x0C)<<4));
+		payload[4] = (byte) (now.get(Calendar.SECOND) | ((now.get(Calendar.MONTH+1) & 0x03)<<6));
+
+		for (int i=0; i< TIME_INFO_PAYLOAD_LEN; i++)
+			logger.debug("TimeInfo byte["+i+"] => "+payload[i]);
 
 		super.appendPayload(payload);
 	}
