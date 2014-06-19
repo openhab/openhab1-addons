@@ -158,8 +158,6 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 				}
 			}
 
-			converter = this.getCommandConverter(command.getClass());				
-
 			Integer value = (Integer)converter.convertFromCommandToValue(item, command);
 			logger.trace("Converted command '{}' to value {} for item = {}, node = {}, endpoint = {}.", command.toString(), value, item.getName(), node.getNodeId(), endpointId);
 			logger.debug("Converted command '{}' to value {} for item = {}, node = {}, endpoint = {}.", command.toString(), value, item.getName(), node.getNodeId(), endpointId);
