@@ -23,9 +23,8 @@ import org.junit.Test;
 public class DateTimeTypeTest {
 	
 	Calendar calendarCET = Calendar.getInstance(TimeZone.getTimeZone("CET"));
-	Calendar calendarUTC = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 	
-	String inputCET;
+	String input;
 	String inputUTC;
 	String inputWithBrokenTZ;
 	
@@ -35,16 +34,15 @@ public class DateTimeTypeTest {
 	@Before
 	public void setup() {
 		calendarCET.set(2014, 2, 30, 4, 58, 47);
-		calendarUTC.set(2014, 2, 30, 4, 58, 47);
 		
-		inputCET = DateTimeType.DATE_FORMATTER.format(calendarCET.getTime());
-		inputUTC = DateTimeType.DATE_FORMATTER.format(calendarUTC.getTime());
-		inputWithBrokenTZ = "2014-03-30T04:58:47UTS";
+		input = DateTimeType.DATE_FORMATTER.format(calendarCET.getTime());
+		inputUTC = input + "UTC";
+		inputWithBrokenTZ = input + "brokenTZ";
 	}
 
 	@Test
 	public void createDate() {
-		DateTimeType dt = DateTimeType.valueOf(inputCET);
+		DateTimeType dt = DateTimeType.valueOf(input);
 		assertEquals(expectedCET, dt.toString());
 	}
 	
