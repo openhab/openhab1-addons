@@ -196,7 +196,9 @@ public class RESTApplication extends Application {
         // use the default interceptors without PaddingAtmosphereInterceptor
         // see: https://groups.google.com/forum/#!topic/openhab/Z-DVBXdNiYE
         jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor", "org.atmosphere.interceptor.DefaultHeadersInterceptor,org.atmosphere.interceptor.AndroidAtmosphereInterceptor,org.atmosphere.interceptor.SSEAtmosphereInterceptor,org.atmosphere.interceptor.JSONPAtmosphereInterceptor,org.atmosphere.interceptor.JavaScriptProtocol,org.atmosphere.interceptor.OnDisconnectInterceptor");
-        jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.atmosphere.cache.UUIDBroadcasterCache");
+//      The BroadcasterCache is set in ResourceStateChangeListener.registerItems(), because otherwise
+//      it gets somehow overridden by other registered servlets (e.g. the CV-bundle)
+//        jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.atmosphere.cache.UUIDBroadcasterCache");
         jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "NEVER");
         jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "3000000");
         

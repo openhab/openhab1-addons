@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.atmosphere.cache.UUIDBroadcasterCache;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
@@ -66,6 +67,8 @@ abstract public class ResourceStateChangeListener {
 	}
 	
 	public void registerItems(){
+		broadcaster.getBroadcasterConfig().setBroadcasterCache(new UUIDBroadcasterCache());
+		
 		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override
