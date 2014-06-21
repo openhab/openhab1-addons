@@ -287,23 +287,24 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
 		try {
-			// lookup the XBMC instance name and property for this item
-			String xbmcInstance = getXbmcInstance(itemName);
 			String property = getProperty(itemName);
 			
-			XbmcConnector connector = getXbmcConnector(xbmcInstance);
-			if (connector == null) {
-				logger.warn("Received update ({}) for item {} but no XBMC connector found for {}, ignoring", newState.toString(), itemName, xbmcInstance);
-				return;
-			}
-			if (!connector.isConnected()) {
-				logger.warn("Received update ({}) for item {} but the connection to the XBMC instance {} is down, ignoring", newState.toString(), itemName, xbmcInstance);
-				return;
-			}
-	
 			// TODO: handle other updates
-			if (property.equals("GUI.ShowNotification"))
+			if (property.equals("GUI.ShowNotification")) {
+				String xbmcInstance = getXbmcInstance(itemName);
+				XbmcConnector connector = getXbmcConnector(xbmcInstance);
+
+				if (connector == null) {
+					logger.warn("Received update ({}) for item {} but no XBMC connector found for {}, ignoring", newState.toString(), itemName, xbmcInstance);
+					return;
+				}
+				if (!connector.isConnected()) {
+					logger.warn("Received update ({}) for item {} but the connection to the XBMC instance {} is down, ignoring", newState.toString(), itemName, xbmcInstance);
+					return;
+				}
+
 				connector.showNotification("openHAB", newState.toString());
+			}
 		} catch (Exception e) {
 			logger.error("Error handling update", e);
 		}
