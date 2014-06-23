@@ -21,6 +21,11 @@ import org.openhab.core.types.State;
 public abstract class AbstractEnumTypeConverter<T extends State> extends AbstractTypeConverter<T> {
 
 	/**
+	 * Defines all devices where the state datapoint must be inverted.
+	 */
+	private static final String[] stateInvertDevices = new String[] { "HM-SEC-SC", "ZEL STG RM FFK", "HM-SEC-TIS" };
+
+	/**
 	 * Subclasses must implement this method to create the 'false' type of an
 	 * enum.
 	 */
@@ -45,14 +50,18 @@ public abstract class AbstractEnumTypeConverter<T extends State> extends Abstrac
 	}
 
 	/**
-	 * Checks the name and the device of the item, value must be inverted for
-	 * some devices.
+	 * Checks the device if the state value must be inverted.
 	 */
-	protected boolean isNameFromDevice(HmValueItem hmValueItem, String name, String device) {
-		if (hmValueItem.getName().equals(name)) {
+	protected boolean isStateInvertDevice(HmValueItem hmValueItem) {
+		if ("STATE".equals(hmValueItem.getName())) {
 			if (hmValueItem instanceof HmDatapoint) {
 				HmDatapoint dp = (HmDatapoint) hmValueItem;
-				return dp.getChannel().getDevice().getType().toUpperCase().startsWith(device);
+				String deviceType = dp.getChannel().getDevice().getType().toUpperCase();
+				for (String invertDeviceType : stateInvertDevices) {
+					if (deviceType.startsWith(invertDeviceType)) {
+						return true;
+					}
+				}
 			}
 		}
 		return false;
