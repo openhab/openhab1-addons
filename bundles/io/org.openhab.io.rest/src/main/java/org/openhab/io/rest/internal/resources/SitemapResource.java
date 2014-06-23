@@ -165,7 +165,7 @@ public class SitemapResource {
 		if(existing != null) {
 		  try {
 		    existing.close();
-		  }catch(IOException e) {
+		  }catch(Exception e) {
 		    logger.debug("Could not close existing connection",e);
 		  }
 		}
