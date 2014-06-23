@@ -923,7 +923,6 @@ implements ManagedService {
 
 	public void setSonosZoneGroups(List<SonosZoneGroup> sonosZoneGroups) {
 		this.sonosZoneGroups = sonosZoneGroups;
-		logger.debug("The following Zone Groups are in operation {}",sonosZoneGroups.toString());
 	}
 
 	@Override
