@@ -316,6 +316,7 @@ implements ManagedService {
 
 				if (sonosID != null) {
 					if (sonosCommandType != null) {
+						logger.debug("Executing command: item:{}, command:{}, ID:{}, CommandType:{}, commandString:{}",new Object[] {itemName, someCommand, sonosID, sonosCommandType, commandAsString} );
 						executeCommand(itemName, someCommand, sonosID,
 								sonosCommandType, commandAsString);
 					} else {
