@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend.SCOPE;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereResourceFactory;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.cpr.HeaderConfig;
@@ -157,6 +158,16 @@ public class SitemapResource {
 		resume = !ResponseTypeHelper.isStreamingTransport(request);
 		} catch (Exception e) {
 			logger.debug(e.getMessage());
+		}
+		
+		AtmosphereResource existing = new AtmosphereResourceFactory().find(resource.uuid());
+		
+		if(existing != null) {
+		  try {
+		    existing.close();
+		  }catch(IOException e) {
+		    logger.debug("Could not close existing connection",e);
+		  }
 		}
 
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
