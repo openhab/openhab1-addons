@@ -23,7 +23,8 @@ public abstract class AbstractEnumTypeConverter<T extends State> extends Abstrac
 	/**
 	 * Defines all devices where the state datapoint must be inverted.
 	 */
-	private static final String[] stateInvertDevices = new String[] { "HM-SEC-SC", "ZEL STG RM FFK", "HM-SEC-TIS" };
+	private static final String[] stateInvertDevices = new String[] { "HM-SEC-SC", "ZEL STG RM FFK", "HM-SEC-TIS",
+			"HMW-IO-12-SW14-DR" };
 
 	/**
 	 * Subclasses must implement this method to create the 'false' type of an
