@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
  */
 public final class C_Message extends Message {
 
-	private static final Logger logger = LoggerFactory.getLogger(MaxCubeBinding.class);
-
+	private static final Logger logger = LoggerFactory.getLogger(C_Message.class);
+	
 	private String rfAddress = null;
 	private int length = 0;
 	private DeviceType deviceType = null;
@@ -55,7 +55,6 @@ public final class C_Message extends Message {
 
 		byte[] bytes = Base64.decodeBase64(tokens[1].getBytes());
 
-
 		int[] data = new int[bytes.length];
 
 		for (int i = 0; i < bytes.length; i++) {
@@ -75,10 +74,8 @@ public final class C_Message extends Message {
 		deviceType = DeviceType.create(data[4]);
 
 		serialNumber = getSerialNumber(bytes);
-		//logger.trace("Data:" + ParseData (bytes));
 		if (deviceType == DeviceType.HeatingThermostatPlus || deviceType == DeviceType.HeatingThermostat)  ParseHeatingThermostatPlusData (bytes);
-		//if (deviceType.getValue() != 2) logger.debug("Data:" + ParseData (bytes));
-		logger.debug("");
+		if (deviceType == DeviceType.EcoSwitch || deviceType == DeviceType.WallMountedThermostat)  logger.trace("Data:" + ParseData (bytes));
 	}
 
 	private String getSerialNumber(byte[] bytes) {
@@ -98,6 +95,7 @@ public final class C_Message extends Message {
 	}
 
 	private String ParseData(byte[] bytes) {
+		try{
 		int DataStart = 18;
 		byte[] sn = new byte[bytes.length - DataStart];
 
@@ -111,6 +109,11 @@ public final class C_Message extends Message {
 			logger.debug("Cannot encode device string from C message due to encoding issues.");
 		}
 
+	}  catch (Exception e) {
+		logger.debug(e.getMessage());
+		logger.debug(Utils.getStackTrace(e));
+	}
+	
 		return "";
 	}
 
