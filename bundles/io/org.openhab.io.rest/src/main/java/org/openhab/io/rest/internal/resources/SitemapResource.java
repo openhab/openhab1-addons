@@ -197,7 +197,6 @@ public class SitemapResource {
 	      .scope(SCOPE.REQUEST)
 	      .resumeOnBroadcast(resume)
 	      .broadcaster(sitemapBroadcaster)
-	      .addListener(new EventsLogger())
 	      .outputComments(true).build(); 
 	}
 	
