@@ -54,6 +54,11 @@ public class ConverterTest {
 
 	private HmDatapoint getDatapoint(String name, Object value, Number min, Number max, String deviceType)
 			throws Exception {
+		return getDatapoint(name, value, min, max, "1", deviceType);
+	}
+
+	private HmDatapoint getDatapoint(String name, Object value, Number min, Number max, String channelNumber,
+			String deviceType) throws Exception {
 		HmDatapoint dp = new HmDatapoint();
 
 		FieldUtils.writeField(dp, "name", name, true);
@@ -75,6 +80,7 @@ public class ConverterTest {
 
 		HmChannel channel = new HmChannel();
 		FieldUtils.writeField(dp, "channel", channel, true);
+		FieldUtils.writeField(channel, "number", channelNumber, true);
 
 		HmDevice device = new HmDevice();
 		FieldUtils.writeField(device, "type", StringUtils.defaultString(deviceType, ""), true);
@@ -139,9 +145,14 @@ public class ConverterTest {
 				converter.convertFromBinding(getDatapoint("STATE", true, 0, 0, "HM-Sec-TiS")));
 
 		Assert.assertEquals(OnOffType.ON,
-				converter.convertFromBinding(getDatapoint("STATE", false, 0, 0, "HMW-IO-12-Sw14-DR")));
+				converter.convertFromBinding(getDatapoint("STATE", true, 0, 0, "14", "HMW-IO-12-Sw14-DR")));
 		Assert.assertEquals(OnOffType.OFF,
-				converter.convertFromBinding(getDatapoint("STATE", true, 0, 0, "HMW-IO-12-Sw14-DR")));
+				converter.convertFromBinding(getDatapoint("STATE", false, 0, 0, "14", "HMW-IO-12-Sw14-DR")));
+
+		Assert.assertEquals(OnOffType.ON,
+				converter.convertFromBinding(getDatapoint("STATE", false, 0, 0, "15", "HMW-IO-12-Sw14-DR")));
+		Assert.assertEquals(OnOffType.OFF,
+				converter.convertFromBinding(getDatapoint("STATE", true, 0, 0, "15", "HMW-IO-12-Sw14-DR")));
 
 		Assert.assertEquals(OnOffType.ON, converter.convertFromBinding(getDatapoint("LEVEL", "on")));
 		Assert.assertEquals(OnOffType.OFF, converter.convertFromBinding(getDatapoint("LEVEL", "off")));
@@ -200,10 +211,15 @@ public class ConverterTest {
 		Assert.assertEquals(true,
 				converter.convertToBinding(OnOffType.OFF, getDatapoint("STATE", false, 0, 0, "HM-Sec-TiS")));
 
-		Assert.assertEquals(false,
-				converter.convertToBinding(OnOffType.ON, getDatapoint("STATE", true, 0, 0, "HMW-IO-12-Sw14-DR")));
 		Assert.assertEquals(true,
-				converter.convertToBinding(OnOffType.OFF, getDatapoint("STATE", false, 0, 0, "HMW-IO-12-Sw14-DR")));
+				converter.convertToBinding(OnOffType.ON, getDatapoint("STATE", true, 0, 0, "14", "HMW-IO-12-Sw14-DR")));
+		Assert.assertEquals(false, converter.convertToBinding(OnOffType.OFF,
+				getDatapoint("STATE", false, 0, 0, "14", "HMW-IO-12-Sw14-DR")));
+
+		Assert.assertEquals(false,
+				converter.convertToBinding(OnOffType.ON, getDatapoint("STATE", true, 0, 0, "15", "HMW-IO-12-Sw14-DR")));
+		Assert.assertEquals(true, converter.convertToBinding(OnOffType.OFF,
+				getDatapoint("STATE", false, 0, 0, "15", "HMW-IO-12-Sw14-DR")));
 
 		Assert.assertEquals(1.0, converter.convertToBinding(OnOffType.ON, getRollerShutterDatapoint("LEVEL", 0.0)));
 		Assert.assertEquals(0.0, converter.convertToBinding(OnOffType.OFF, getRollerShutterDatapoint("LEVEL", 0.0)));
@@ -242,9 +258,14 @@ public class ConverterTest {
 				converter.convertFromBinding(getDatapoint("STATE", true, 0, 0, "HM-Sec-TiS")));
 
 		Assert.assertEquals(OpenClosedType.CLOSED,
-				converter.convertFromBinding(getDatapoint("STATE", false, 0, 0, "HMW-IO-12-Sw14-DR")));
+				converter.convertFromBinding(getDatapoint("STATE", true, 0, 0, "14", "HMW-IO-12-Sw14-DR")));
 		Assert.assertEquals(OpenClosedType.OPEN,
-				converter.convertFromBinding(getDatapoint("STATE", true, 0, 0, "HMW-IO-12-Sw14-DR")));
+				converter.convertFromBinding(getDatapoint("STATE", false, 0, 0, "14", "HMW-IO-12-Sw14-DR")));
+
+		Assert.assertEquals(OpenClosedType.CLOSED,
+				converter.convertFromBinding(getDatapoint("STATE", false, 0, 0, "15", "HMW-IO-12-Sw14-DR")));
+		Assert.assertEquals(OpenClosedType.OPEN,
+				converter.convertFromBinding(getDatapoint("STATE", true, 0, 0, "15", "HMW-IO-12-Sw14-DR")));
 
 		Assert.assertEquals(OpenClosedType.OPEN, converter.convertFromBinding(getDatapoint("STATE", false)));
 		Assert.assertEquals(OpenClosedType.CLOSED, converter.convertFromBinding(getDatapoint("STATE", true)));
@@ -310,10 +331,23 @@ public class ConverterTest {
 		Assert.assertEquals(true,
 				converter.convertToBinding(OpenClosedType.OPEN, getDatapoint("STATE", false, 0, 0, "HM-Sec-TiS")));
 
-		Assert.assertEquals(false,
-				converter.convertToBinding(OpenClosedType.CLOSED, getDatapoint("STATE", true, 0, 0, "HMW-IO-12-Sw14-DR")));
-		Assert.assertEquals(true,
-				converter.convertToBinding(OpenClosedType.OPEN, getDatapoint("STATE", false, 0, 0, "HMW-IO-12-Sw14-DR")));
+		Assert.assertEquals(
+				true,
+				converter.convertToBinding(OpenClosedType.CLOSED,
+						getDatapoint("STATE", true, 0, 0, "14", "HMW-IO-12-Sw14-DR")));
+		Assert.assertEquals(
+				false,
+				converter.convertToBinding(OpenClosedType.OPEN,
+						getDatapoint("STATE", false, 0, 0, "14", "HMW-IO-12-Sw14-DR")));
+
+		Assert.assertEquals(
+				false,
+				converter.convertToBinding(OpenClosedType.CLOSED,
+						getDatapoint("STATE", true, 0, 0, "15", "HMW-IO-12-Sw14-DR")));
+		Assert.assertEquals(
+				true,
+				converter.convertToBinding(OpenClosedType.OPEN,
+						getDatapoint("STATE", false, 0, 0, "15", "HMW-IO-12-Sw14-DR")));
 
 		Assert.assertEquals(true, converter.convertToBinding(OpenClosedType.CLOSED, getDatapoint("STATE", true)));
 		Assert.assertEquals(false, converter.convertToBinding(OpenClosedType.OPEN, getDatapoint("STATE", false)));
