@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+
+    <persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
+        <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+        <non-jta-data-source/>
+        <class>org.openhab.persistence.jpa.internal.model.JpaPersistentItem</class>
+        <class>org.openhab.persistence.jpa.internal.model.JpaPersistentOtherItem</class>
+        <class>org.openhab.persistence.jpa.internal.model.JpaPersistentStringItem</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://hab.local:5432/housestats"/>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="javax.persistence.jdbc.user" value="hab"/>
+            <property name="javax.persistence.jdbc.password" value=""/>
+            <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>
+            <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="default_test" transaction-type="RESOURCE_LOCAL">
+        <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+        <non-jta-data-source/>
+        <class>org.openhab.persistence.jpa.internal.model.JpaPersistentItem</class>
+        <class>org.openhab.persistence.jpa.internal.model.JpaPersistentOtherItem</class>
+        <class>org.openhab.persistence.jpa.internal.model.JpaPersistentStringItem</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby:data;create=true"/>
+            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+            <property name="javax.persistence.jdbc.user" value="APP"/>
+            <property name="javax.persistence.jdbc.password" value="APP"/>
+            <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='drop,add')"/>
+            <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
+        </properties>
+    </persistence-unit>
+
+</persistence>
