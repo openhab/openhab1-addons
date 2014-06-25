@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
  * <li><code>{ maxcul="RadiatorThermostat:JEQ1234565" }</code> - will return/set the thermostat temperature of radiator thermostat with the serial number JEQ0304492</li>
  * <li><code>{ maxcul="RadiatorThermostat:JEQ1234565:battery" }</code> - will return the battery level of JEQ0304492</li>
  * <li><code>{ maxcul="WallThermostat:JEQ1234566:temperature" }</code> - will return the temperature of a wall mounted thermostat with serial number JEQ0304447</li>
+ * <li><code>{ maxcul="WallThermostat:JEQ1234566:thermostat" }</code> - will set/return the desired temperature of a wall mounted thermostat with serial number JEQ0304447</li>
  * <li><code>{ maxcul="PushButton:JEQ1234567" }</code> - will default to 'switch' mode</li>
  * <li><code>{ maxcul="PairMode" }</code> - Switch only, enables pair mode for 60s</li>
  *
@@ -77,11 +78,11 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		case WALL_THERMOSTAT:
 			if (config.feature == MaxCulFeature.TEMPERATURE && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'temperature' can only be a Number");
-			if (config.feature == MaxCulFeature.THERMOSTAT && !((item instanceof NumberItem) || (item instanceof SwitchItem)))
+			else if (config.feature == MaxCulFeature.THERMOSTAT && !((item instanceof NumberItem) || (item instanceof SwitchItem)))
 				throw new BindingConfigParseException("Invalid item type. Feature 'thermostat' can only be a Number or a Switch");
-			if (config.feature == MaxCulFeature.BATTERY && !(item instanceof NumberItem))
+			else if (config.feature == MaxCulFeature.BATTERY && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Number");
-			if (config.feature == MaxCulFeature.MODE && !(item instanceof NumberItem))
+			else if (config.feature == MaxCulFeature.MODE && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'mode' can only be a Number");
 			break;
 		}
