@@ -247,4 +247,10 @@ public class BaseMsg {
 	{
 		/* Do nothing */
 	}
+
+	public void printDebugPayload() {
+
+		for (int i=0; i< payload.length; i++)
+			logger.debug(this.msgType+" byte["+i+"] => "+payload[i]);
+	}
 }
