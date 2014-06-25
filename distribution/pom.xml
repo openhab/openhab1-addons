@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openhab</groupId>
         <artifactId>openhab</artifactId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>distribution</artifactId>
@@ -87,23 +87,32 @@
                                 <controlDir>${basedir}/src/deb/control-runtime</controlDir>
                                 <deb>${basedir}/target/${deb.name}-${project.version}.deb</deb>
                                 <dataSet>
-                                    <data>
-                                        <src>${basedir}/target/distribution-${project.version}-runtime.zip</src>
-                                        <type>archive</type>
-                                        <excludes>configurations/**,logs/**,etc/**,webapps/static/**</excludes>
-                                        <mapper>
-                                            <type>perm</type>
-                                            <prefix>/opt/openhab</prefix>
-                                            <user>root</user>
-                                            <group>root</group>
-                                            <filemode>644</filemode>
-                                            <dirmode>755</dirmode>
-                                        </mapper>
-                                    </data>
-                                    <data>
+									<data>
                                         <type>template</type>
                                         <paths>
                                             <path>/etc/openhab</path>
+                                            <path>/etc/openhab/configurations</path>
+                                            <path>/etc/openhab/configurations/items</path>
+                                            <path>/etc/openhab/configurations/persistence</path>
+                                            <path>/etc/openhab/configurations/rules</path>
+                                            <path>/etc/openhab/configurations/scripts</path>
+                                            <path>/etc/openhab/configurations/sitemaps</path>
+                                            <path>/etc/openhab/configurations/transform</path>
+                                            <path>/etc/openhab/jetty</path>
+                                            <path>/etc/openhab/jetty/contexts</path>
+                                            <path>/etc/openhab/jetty/etc</path>
+                                            <path>/usr/share/openhab</path>
+                                        </paths>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
+                                    </data>
+									<data>
+                                        <type>template</type>
+                                        <paths>
+                                            <path>/var/lib/openhab</path>
                                         </paths>
                                         <mapper>
                                             <type>perm</type>
@@ -111,21 +120,41 @@
                                             <group>openhab</group>
                                         </mapper>
                                     </data>
-                                    <data>
-                                        <!-- TODO better solution is to change jetty code to search jetty.xml in -Djetty.config -->
-                                        <type>link</type>
-                                        <linkName>/opt/openhab/etc</linkName>
-                                        <linkTarget>/etc/openhab/jetty/etc</linkTarget>
-                                        <symlink>true</symlink>
+									<data>
+                                        <type>template</type>
+                                        <paths>
+                                            <path>/var/lib/openhab/webapps</path>
+                                        </paths>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
                                     </data>
-                                    <data>
-                                        <!-- TODO better solution is to change configurations search strategy -->
-                                        <type>link</type>
-                                        <linkName>/opt/openhab/configurations</linkName>
-                                        <linkTarget>/etc/openhab/configurations</linkTarget>
-                                        <symlink>true</symlink>
+									<data>
+                                        <type>template</type>
+                                        <paths>
+                                            <path>/var/lib/openhab/webapps/static</path>
+                                            <path>/var/lib/openhab/workspace</path>
+                                            <path>/var/log/openhab</path>
+                                        </paths>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <user>root</user>
+                                            <group>openhab</group>
+                                        </mapper>
                                     </data>
-                                    <data>
+									<data>
+                                        <src>${basedir}/src/deb/etc/default/openhab</src>
+                                        <type>file</type>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <prefix>/etc/default</prefix>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
+                                    </data>
+									<data>
                                         <src>${basedir}/src/deb/etc/init.d/openhab</src>
                                         <type>file</type>
                                         <mapper>
@@ -136,130 +165,218 @@
                                             <group>root</group>
                                         </mapper>
                                     </data>
-                                    <data>
-                                        <src>${basedir}/src/deb/etc/default/openhab</src>
-                                        <type>file</type>
-                                        <mapper>
-                                            <type>perm</type>
-                                            <prefix>/etc/default</prefix>
-                                            <filemode>644</filemode>
-                                            <user>root</user>
-                                            <group>root</group>
-                                        </mapper>
-                                    </data>
-                                    <data>
-                                        <src>${basedir}/openhabhome/configurations</src>
-                                        <type>directory</type>
-                                        <includes>**/items/README,**/persistence/README,**/rules/README,**/scripts/README,**/sitemaps/README,**/transform/README,**/contexts/README</includes>
-                                        <mapper>
-                                            <type>perm</type>
-                                            <prefix>/etc/openhab/configurations</prefix>
-                                            <user>openhab</user>
-                                            <group>openhab</group>
-                                        </mapper>
-                                    </data>
-                                    <data>
+									<data>
                                         <src>${basedir}/openhabhome/configurations/logback.xml</src>
                                         <type>file</type>
                                         <mapper>
                                             <type>perm</type>
                                             <prefix>/etc/openhab</prefix>
-                                            <user>openhab</user>
-                                            <group>openhab</group>
+                                            <user>root</user>
+                                            <group>root</group>
                                         </mapper>
                                     </data>
-                                    <data>
+									<data>
                                         <src>${basedir}/openhabhome/configurations/logback_debug.xml</src>
                                         <type>file</type>
                                         <mapper>
                                             <type>perm</type>
                                             <prefix>/etc/openhab</prefix>
-                                            <user>openhab</user>
-                                            <group>openhab</group>
+                                            <user>root</user>
+                                            <group>root</group>
                                         </mapper>
                                     </data>
-                                    <data>
-                                        <src>${basedir}/openhabhome/configurations/openhab_default.cfg</src>
-                                        <type>file</type>
-                                        <mapper>
-                                            <type>perm</type>
-                                            <prefix>/etc/openhab/configurations</prefix>
-                                            <user>openhab</user>
-                                            <group>openhab</group>
-                                        </mapper>
-                                    </data>
-                                    <data>
-                                        <src>${basedir}/openhabhome/configurations/users.cfg</src>
-                                        <type>file</type>
-                                        <mapper>
-                                            <type>perm</type>
-                                            <prefix>/etc/openhab</prefix>
-                                            <user>openhab</user>
-                                            <group>openhab</group>
-                                        </mapper>
-                                    </data>
-                                    <data>
-                                        <src>${basedir}/openhabhome/etc/quartz.properties</src>
-                                        <type>file</type>
-                                        <mapper>
-                                            <type>perm</type>
-                                            <prefix>/etc/openhab</prefix>
-                                            <user>openhab</user>
-                                            <group>openhab</group>
-                                        </mapper>
-                                    </data>
-                                    <data>
+									<data>
                                         <src>${basedir}/openhabhome/etc/login.conf</src>
                                         <type>file</type>
                                         <mapper>
                                             <type>perm</type>
                                             <prefix>/etc/openhab</prefix>
-                                            <user>openhab</user>
-                                            <group>openhab</group>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
+                                    </data>
+									<data>
+                                        <src>${basedir}/openhabhome/etc/quartz.properties</src>
+                                        <type>file</type>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <prefix>/etc/openhab</prefix>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
+                                    </data>
+									<data>
+                                        <src>${basedir}/openhabhome/configurations/items/README</src>
+                                        <type>file</type>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <prefix>/etc/openhab/configurations/items</prefix>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
+                                    </data>
+									<data>
+                                        <src>${basedir}/openhabhome/configurations/persistence/README</src>
+                                        <type>file</type>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <prefix>/etc/openhab/configurations/persistence</prefix>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
+                                    </data>
+									<data>
+                                        <src>${basedir}/openhabhome/configurations/rules/README</src>
+                                        <type>file</type>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <prefix>/etc/openhab/configurations/rules</prefix>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
+                                    </data>
+									<data>
+                                        <src>${basedir}/openhabhome/configurations/scripts/README</src>
+                                        <type>file</type>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <prefix>/etc/openhab/configurations/scripts</prefix>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
+                                    </data>
+									<data>
+                                        <src>${basedir}/openhabhome/configurations/sitemaps/README</src>
+                                        <type>file</type>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <prefix>/etc/openhab/configurations/sitemaps</prefix>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
+                                    </data>
+									<data>
+                                        <src>${basedir}/openhabhome/configurations/transform</src>
+                                        <type>directory</type>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <prefix>/etc/openhab/configurations/transform</prefix>
+                                            <user>root</user>
+                                            <group>root</group>
                                         </mapper>
                                     </data>
                                     <data>
+                                        <src>${basedir}/openhabhome/configurations/openhab_default.cfg</src>
+                                        <dst>/etc/openhab/configurations/openhab.cfg</dst>
+                                        <type>file</type>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
+                                    </data>
+									<data>
+										<!-- TODO better solution is to change configuration in login.conf -->
+                                        <src>${basedir}/openhabhome/configurations/users.cfg</src>
+                                        <type>file</type>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <prefix>/etc/openhab/configurations</prefix>
+                                            <filemode>640</filemode>
+                                            <user>root</user>
+                                            <group>openhab</group>
+                                        </mapper>
+                                    </data>
+									<data>
+                                        <src>${basedir}/openhabhome/contexts/README</src>
+                                        <type>file</type>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <prefix>/etc/openhab/jetty/contexts</prefix>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
+                                    </data>
+									<data>
+                                        <src>${basedir}/openhabhome/etc/README</src>
+                                        <type>file</type>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <prefix>/etc/openhab/jetty/etc</prefix>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </mapper>
+                                    </data>
+									<data>
                                         <src>${basedir}/openhabhome/etc/jetty.xml</src>
                                         <type>file</type>
                                         <mapper>
                                             <type>perm</type>
                                             <prefix>/etc/openhab/jetty/etc</prefix>
-                                            <user>openhab</user>
-                                            <group>openhab</group>
+                                            <user>root</user>
+                                            <group>root</group>
                                         </mapper>
                                     </data>
-                                    <data>
+									<data>
                                         <src>${basedir}/openhabhome/etc/keystore</src>
                                         <type>file</type>
                                         <mapper>
                                             <type>perm</type>
                                             <prefix>/etc/openhab/jetty/etc</prefix>
-                                            <user>openhab</user>
+                                            <filemode>640</filemode>
+                                            <user>root</user>
                                             <group>openhab</group>
                                         </mapper>
                                     </data>
-                                    <data>
+									<data>
                                         <src>${basedir}/openhabhome/etc/webdefault.xml</src>
                                         <type>file</type>
                                         <mapper>
                                             <type>perm</type>
                                             <prefix>/etc/openhab/jetty/etc</prefix>
-                                            <user>openhab</user>
-                                            <group>openhab</group>
+                                            <user>root</user>
+                                            <group>root</group>
                                         </mapper>
                                     </data>
-                                    <data>
-                                        <type>template</type>
-                                        <paths>
-                                            <path>/var/lib/openhab</path>
-                                            <path>/var/log/openhab</path>
-                                            <path>/opt/openhab/webapps/static</path>
-                                        </paths>
+									<data>
+                                        <src>${basedir}/target/distribution-${project.version}-runtime.zip</src>
+                                        <type>archive</type>
+                                        <excludes>configurations/**,contexts/**,etc/**,start.bat,start.sh,start_debug.bat,start_debug.sh</excludes>
                                         <mapper>
                                             <type>perm</type>
-                                            <user>openhab</user>
-                                            <group>openhab</group>
+                                            <prefix>/usr/share/openhab</prefix>
+                                            <user>root</user>
+                                            <group>root</group>
+                                            <filemode>644</filemode>
+                                            <dirmode>755</dirmode>
                                         </mapper>
+                                    </data>
+									<data>
+                                        <!-- TODO better solution is to change configurations search strategy -->
+                                        <type>link</type>
+                                        <linkName>/usr/share/openhab/configurations</linkName>
+                                        <linkTarget>/etc/openhab/configurations</linkTarget>
+                                        <symlink>true</symlink>
+                                    </data>
+									<data>
+                                        <!-- TODO better solution is to change configuration in jetty.xml -->
+                                        <type>link</type>
+                                        <linkName>/usr/share/openhab/contexts</linkName>
+                                        <linkTarget>/etc/openhab/jetty/contexts</linkTarget>
+                                        <symlink>true</symlink>
+                                    </data>
+									<data>
+                                        <!-- TODO better solution is to change jetty code to search jetty.xml in -Djetty.config -->
+                                        <type>link</type>
+                                        <linkName>/usr/share/openhab/etc</linkName>
+                                        <linkTarget>/etc/openhab/jetty/etc</linkTarget>
+                                        <symlink>true</symlink>
+                                    </data>
+									<data>
+                                        <type>link</type>
+                                        <linkName>/usr/share/openhab/webapps/static</linkName>
+                                        <linkTarget>/var/lib/openhab/webapps/static</linkTarget>
+                                        <symlink>true</symlink>
                                     </data>
                                 </dataSet>
                             </configuration>
@@ -352,6 +469,12 @@
         <dependency>
             <groupId>org.openhab.action</groupId>
             <artifactId>org.openhab.action.pushover</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.action</groupId>
+            <artifactId>org.openhab.action.homematic</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
@@ -760,6 +883,12 @@
         </dependency>
         <dependency>
             <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.freeswitch</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.gpio</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
@@ -803,6 +932,42 @@
         <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.freebox</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.xbmc</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.daikin</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.jointspace</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.oceanic</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.omnilink</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+ 	<dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.freeswitch</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>

@@ -5,12 +5,14 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.5.0-SNAPSHOT</version>
+		<version>1.6.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.iec6205621meter</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.iec6205621meter</bundle.namespace>
+		<deb.name>openhab-addon-binding-iec6205621meter</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

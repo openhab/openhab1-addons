@@ -5,12 +5,14 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.5.0-SNAPSHOT</version>
+		<version>1.6.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.omnilink</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.omnilink</bundle.namespace>
+		<deb.name>openhab-addon-binding-omnilink</deb.name>
+                <deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -21,6 +23,14 @@
 
 	<packaging>eclipse-plugin</packaging>
 
-	<version>1.5.0-SNAPSHOT</version>
+	 <build>
+                <plugins>
+                        <plugin>
+                                <groupId>org.vafer</groupId>
+                                <artifactId>jdeb</artifactId>
+                        </plugin>
+                </plugins>
+        </build>
 
-</project>
+
+	</project>

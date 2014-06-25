@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.homematic.genericbindingprovider">
-   <implementation class="org.openhab.binding.homematic.internal.config.HomematicGenericBindingProvider"/>
+   <implementation class="org.openhab.binding.homematic.internal.bus.HomematicGenericBindingProvider"/>
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
       <provide interface="org.openhab.binding.homematic.HomematicBindingProvider"/>
