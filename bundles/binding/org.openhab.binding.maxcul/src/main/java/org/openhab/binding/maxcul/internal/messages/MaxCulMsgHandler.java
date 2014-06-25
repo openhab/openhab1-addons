@@ -105,12 +105,15 @@ public class MaxCulMsgHandler implements CULListener {
 			this.endOfQueueTransmit = this.lastTransmit;
 		}
 
-		/* awaiting ack now */
-		// TODO different behaviour if callback
-		SenderQueueItem qi = new SenderQueueItem();
-		qi.msg = data;
-		qi.expiry = new Date(this.lastTransmit.getTime()+MESSAGE_EXPIRY_PERIOD);
-		this.pendingAckQueue.put(qi.msg.msgCount, qi);
+		if (data.msgType != MaxCulMsgType.ACK)
+		{
+			/* awaiting ack now */
+			// TODO different behaviour if callback
+			SenderQueueItem qi = new SenderQueueItem();
+			qi.msg = data;
+			qi.expiry = new Date(this.lastTransmit.getTime()+MESSAGE_EXPIRY_PERIOD);
+			this.pendingAckQueue.put(qi.msg.msgCount, qi);
+		}
 	}
 
 	private void sendMessage( BaseMsg msg )
