@@ -22,6 +22,8 @@ import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcesso
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgHandler;
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
+import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
+import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -253,43 +255,64 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	@Override
 	public void MaxCulMsgReceived(String data) {
 		logger.debug("Received data from CUL: "+data);
-		if (data.startsWith("Z"))
-		{
-			MaxCulMsgType msgType = BaseMsg.getMsgType(data);
-			if (pairMode && msgType == MaxCulMsgType.PAIR_PING)
-			{
-				logger.debug("Got PAIR_PING message");
-				/* process packet */
-				PairPingMsg pkt = new PairPingMsg(data);
-				/* is it valid? and is this for us? or a broadcast? */
-				if (pkt.len > 0 && (pkt.dstAddrStr.compareToIgnoreCase(this.srcAddr) == 0 || (pkt.dstAddrStr.compareToIgnoreCase(BROADCAST_ADDRESS) == 0)))
-				{
-					/* Match serial number to binding configuration */
-					Collection<MaxCulBindingConfig> bindingConfigs = null;
-					for (MaxCulBindingProvider provider : super.providers) {
-						bindingConfigs = provider.getConfigsForSerialNumber(pkt.serial);
-						if (bindingConfigs != null) {
-							break;
-						}
-					}
-					if (bindingConfigs == null)
-					{
-						logger.error("Unable to find configuration for serial "+pkt.serial+". Do you have a binding for it?");
-						return;
-					}
-					/* Set pairing information */
-					for (MaxCulBindingConfig bc : bindingConfigs)
-						bc.setPairedInfo(pkt.srcAddrStr); /* where it came from gives the addr of the device */
 
-					/* send response to unit */
-					messageHandler.sendPairPong(pkt.srcAddrStr);
-				} else {
-					logger.debug("Got pairing message for another controller");
-				}
-			}
-			else
+		MaxCulMsgType msgType = BaseMsg.getMsgType(data);
+		/* Check if it's broadcast and we're in pair mode or a PAIR_PING message directly for us */
+		if (((pairMode && BaseMsg.isForUs(data, this.BROADCAST_ADDRESS))
+				|| BaseMsg.isForUs(data, this.srcAddr))
+				&& msgType == MaxCulMsgType.PAIR_PING)
+		{
+			logger.debug("Got PAIR_PING message");
+			/* process packet */
+			PairPingMsg pkt = new PairPingMsg(data);
+			/* is it valid? and is this for us? or a broadcast? */
+			if (pkt.len > 0 && (pkt.dstAddrStr.compareToIgnoreCase(this.srcAddr) == 0 || (pkt.dstAddrStr.compareToIgnoreCase(BROADCAST_ADDRESS) == 0)))
 			{
-				/* TODO handle all other incoming messages */
+				/* Match serial number to binding configuration */
+				Collection<MaxCulBindingConfig> bindingConfigs = null;
+				for (MaxCulBindingProvider provider : super.providers) {
+					bindingConfigs = provider.getConfigsForSerialNumber(pkt.serial);
+					if (bindingConfigs != null) {
+						break;
+					}
+				}
+				if (bindingConfigs == null)
+				{
+					logger.error("Unable to find configuration for serial "+pkt.serial+". Do you have a binding for it?");
+					return;
+				}
+				/* Set pairing information */
+				for (MaxCulBindingConfig bc : bindingConfigs)
+					bc.setPairedInfo(pkt.srcAddrStr); /* where it came from gives the addr of the device */
+
+				/* send response to unit */
+				messageHandler.sendPairPong(pkt.srcAddrStr);
+			} else {
+				logger.debug("Got pairing message for another controller");
+			}
+		}
+		else
+		{
+			switch (msgType)
+			{
+			/* TODO handle all other incoming messages */
+			case WALL_THERMOSTAT_CONTROL:
+				WallThermostatControlMsg wallThemCtrlMsg = new WallThermostatControlMsg(data);
+				wallThemCtrlMsg.debugPrint();
+				/* TODO dispatch update to any appropriate binding */
+				this.messageHandler.sendAck(wallThemCtrlMsg);
+				break;
+			case SET_TEMPERATURE:
+				SetTemperatureMsg setTempMsg = new SetTemperatureMsg(data);
+				setTempMsg.debugPrint();
+				/* TODO dispatch update to any appropriate binding */
+				/* respond to device */
+				this.messageHandler.sendAck(setTempMsg);
+				break;
+			default:
+				logger.debug("Unhandled message type "+msgType.toString() );
+				break;
+
 			}
 		}
 	}

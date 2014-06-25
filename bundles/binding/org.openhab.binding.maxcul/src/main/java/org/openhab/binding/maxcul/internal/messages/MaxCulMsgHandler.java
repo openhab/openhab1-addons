@@ -231,9 +231,23 @@ public class MaxCulMsgHandler implements CULListener {
 					/* pass data to binding for processing */
 					this.mcbmp.MaxCulMsgReceived(data);
 				}
+
 				/* TODO look for any messages that have a matching entry in the callback register */
+			}
+			else if (BaseMsg.isForUs(data, "000000"))
+			{
+				switch (BaseMsg.getMsgType(data))
+				{
+				case PAIR_PING:
+				case WALL_THERMOSTAT_STATE:
+					this.mcbmp.MaxCulMsgReceived(data);
+					break;
+				default:
+					/* TODO handle broadcast */
+					logger.debug("Unhandled broadcast message of type "+BaseMsg.getMsgType(data).toString());
+					break;
 
-
+				}
 			}
 		}
 	}
@@ -255,10 +269,34 @@ public class MaxCulMsgHandler implements CULListener {
 		sendMessage(pp);
 	}
 
+	/**
+	 * Send time information to device that has requested it
+	 * @param dstAddr Address of device to respond to
+	 */
 	public void sendTimeInfo(String dstAddr)
 	{
 		TimeInfoMsg msg = new TimeInfoMsg(getMessageCount(), (byte)0x04, (byte) 0, this.srcAddr, dstAddr);
 		sendMessage(msg);
+	}
+
+	/**
+	 * Send an ACK response to a message
+	 * @param msg Message we are acking
+	 */
+	public void sendAck(BaseMsg msg)
+	{
+		AckMsg ackMsg = new AckMsg(msg.msgCount, (byte) 0x0, msg.groupid, this.srcAddr, msg.srcAddrStr, false);
+		sendMessage(ackMsg);
+	}
+
+	/**
+	 * Send an NACK response to a message
+	 * @param msg Message we are nacking
+	 */
+	public void sendNack(BaseMsg msg)
+	{
+		AckMsg nackMsg = new AckMsg(msg.msgCount, (byte) 0x0, msg.groupid, this.srcAddr, msg.srcAddrStr, false);
+		sendMessage(nackMsg);
 	}
 
 
