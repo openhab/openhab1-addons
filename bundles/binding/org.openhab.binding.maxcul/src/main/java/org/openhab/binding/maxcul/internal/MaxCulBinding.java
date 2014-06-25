@@ -96,6 +96,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 		// should be reset when activating this binding again
 		if (cul != null)
 		{
+			cul.unregisterListener(messageHandler);
 			CULManager.close(cul);
 		}
 	}
