@@ -8,6 +8,9 @@
  */
 package org.openhab.binding.homematic.internal.converter.state;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.openhab.core.types.State;
@@ -23,7 +26,14 @@ public abstract class AbstractEnumTypeConverter<T extends State> extends Abstrac
 	/**
 	 * Defines all devices where the state datapoint must be inverted.
 	 */
-	private static final String[] stateInvertDevices = new String[] { "HM-SEC-SC", "ZEL STG RM FFK", "HM-SEC-TIS" };
+	private static final List<StateInvertInfo> stateInvertDevices = new ArrayList<StateInvertInfo>(3);
+
+	static {
+		stateInvertDevices.add(new StateInvertInfo("HM-SEC-SC"));
+		stateInvertDevices.add(new StateInvertInfo("ZEL STG RM FFK"));
+		stateInvertDevices.add(new StateInvertInfo("HM-SEC-TIS"));
+		stateInvertDevices.add(new StateInvertInfo("HMW-IO-12-SW14-DR", 15, 26));
+	}
 
 	/**
 	 * Subclasses must implement this method to create the 'false' type of an
@@ -56,9 +66,8 @@ public abstract class AbstractEnumTypeConverter<T extends State> extends Abstrac
 		if ("STATE".equals(hmValueItem.getName())) {
 			if (hmValueItem instanceof HmDatapoint) {
 				HmDatapoint dp = (HmDatapoint) hmValueItem;
-				String deviceType = dp.getChannel().getDevice().getType().toUpperCase();
-				for (String invertDeviceType : stateInvertDevices) {
-					if (deviceType.startsWith(invertDeviceType)) {
+				for (StateInvertInfo stateInvertInfo : stateInvertDevices) {
+					if (stateInvertInfo.isToInvert(dp)) {
 						return true;
 					}
 				}
