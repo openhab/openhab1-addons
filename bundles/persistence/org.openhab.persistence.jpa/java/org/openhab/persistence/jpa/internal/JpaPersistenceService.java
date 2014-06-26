@@ -11,7 +11,6 @@ package org.openhab.persistence.jpa.internal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +59,6 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 	private String dbPassword = "";
 	
 	private EntityManagerFactory emf;
-	private EntityManager em;
 	
 	public void activate() {
 		
@@ -131,16 +129,20 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 		pItem.setRealName(item.getName());
 		pItem.setTimestamp(new Date());
 
+		EntityManager em = emf.createEntityManager();
 		try {
 			logger.debug("Persisting item...");
-			beginTransaction();
+			// In RESOURCE_LOCAL calls to EntityManager require a begin/commit			
+			em.getTransaction().begin();
 			em.persist(pItem);
-			commitTransaction();
+			em.getTransaction().commit();
 			logger.debug("Persisting item...done");
 		} catch (Exception e) {
 			logger.error("Error on persisting item! Rolling back!");
 			logger.error(e.getMessage());
-			rollbackTransaction();
+			em.getTransaction().rollback();
+		} finally {
+			em.close();
 		}
 		
 	}
@@ -192,7 +194,12 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 		
 		logger.debug("The query: " + queryString);
 
+		EntityManager em = emf.createEntityManager();
 		try {
+			// In RESOURCE_LOCAL calls to EntityManager require a begin/commit
+			em.getTransaction().begin();
+			
+			logger.debug("Creating query...");
 			Query query = em.createQuery(queryString);
 			query.setParameter("itemName", item.getName());
 			if(hasBeginDate) query.setParameter("beginDate", filter.getBeginDate());
@@ -200,18 +207,24 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 			
 			query.setFirstResult(filter.getPageNumber() * filter.getPageSize());
 			query.setMaxResults(filter.getPageSize());
+			logger.debug("Creating query...done");
 
-			beginTransaction();
+			logger.debug("Retrieving result list...");
 			@SuppressWarnings("unchecked")
 			List<JpaPersistentItem> result = (List<JpaPersistentItem>)query.getResultList();
-			commitTransaction();
+			logger.debug("Retrieving result list...done");
 			
-			return JpaHistoricItem.fromResultList(result, item);
+			List<HistoricItem> historicList = JpaHistoricItem.fromResultList(result, item);
+			em.getTransaction().commit();
+			
+			return historicList;
 			
 		} catch (Exception e) {
 			logger.error("Error on querying database!");
-			logger.error(e.getMessage());
-			rollbackTransaction();
+			logger.error(e.getMessage(), e);
+			em.getTransaction().rollback();
+		} finally {
+			em.close();
 		}
 		
 		return Collections.emptyList();			
@@ -224,13 +237,6 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 		if(properties == null) {
 			logger.error("Got a null properties object!");
 			return;
-		}
-		
-		Enumeration keys = properties.keys();
-		while(keys.hasMoreElements()) {
-			String key = (String) keys.nextElement();
-			String value = (String) properties.get(key);
-			logger.debug("key=" + key + ", value=" + value);
 		}
 		
 		String param = (String)properties.get(DB_CONNECTION_URL);
@@ -298,10 +304,9 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 	}
 	
 	protected void initializeDbConnection() {
-		logger.debug("Opening db connection/creating PersistenceEntity objects...");
+		logger.debug("Initializing EntityManagerFactory...");
 		emf = newEntityManagerFactory();
-		em = newPersistenceManager();		
-		logger.debug("Opening db connection/creating PersistenceEntity objects...done");
+		logger.debug("Initializing EntityManagerFactory...done");
 	}
 	
 	protected String getPersistenceUnitName() {
@@ -309,10 +314,6 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 	}
 
 	protected void closeDbConnection() {
-		logger.debug("Closing down entity objects...");
-		if(em != null) {
-			em.close();
-		}
 		if(emf != null) {
 			emf.close();
 		}
@@ -320,25 +321,9 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 	}
 	
 	protected boolean isDbConnectionOpen() {
-		return em != null && em.isOpen();
+		return emf != null && emf.isOpen();
 	}
 
-	private void beginTransaction() {
-		if(!em.getTransaction().isActive()) {
-			em.getTransaction().begin();
-		}
-	}
-	
-	private void commitTransaction() {
-		em.getTransaction().commit();
-	}
-	
-	private void rollbackTransaction() {
-		if(em.getTransaction().isActive()) {
-			em.getTransaction().rollback();
-		}
-	}
-	
 	private Item getItemFromRegistry(String itemName) {
 		Item item = null;
 		try {
