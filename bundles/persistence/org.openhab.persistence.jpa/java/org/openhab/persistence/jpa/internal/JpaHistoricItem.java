@@ -61,9 +61,9 @@ public class JpaHistoricItem implements HistoricItem {
 		return DateFormat.getDateTimeInstance().format(timestamp) + ": " + name + " -> "+ state.toString();
 	}
 
-	public static List<HistoricItem> fromResultList(List<JpaPersistentItem> result, Item item) {
+	public static List<HistoricItem> fromResultList(List<JpaPersistentItem> jpaQueryResult, Item item) {
 		List<HistoricItem> ret = new ArrayList<HistoricItem>();
-		for(JpaPersistentItem i : result) {
+		for(JpaPersistentItem i : jpaQueryResult) {
 			
 			State state;
 			if (item instanceof NumberItem) {

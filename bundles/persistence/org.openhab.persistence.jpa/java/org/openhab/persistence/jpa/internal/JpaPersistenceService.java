@@ -48,10 +48,10 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 	private boolean initialized = false;
 	protected ItemRegistry itemRegistry;
 
-	private final String DB_CONNECTION_URL = "url";
-	private final String DB_DRIVER_CLASS = "driver";
-	private final String DB_USERNAME = "user";
-	private final String DB_PASSWORD = "password";
+	private static final String CFG_CONNECTION_URL = "url";
+	private static final String CFG_DRIVER_CLASS = "driver";
+	private static final String CFG_USERNAME = "user";
+	private static final String CFG_PASSWORD = "password";
 	
 	private String dbConnectionUrl = "";
 	private String dbDriverClass = "";
@@ -66,7 +66,7 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 
 	public void deactivate() {
 		logger.debug("JPA persistence bundle stopping.");
-		closeDbConnection();
+		closeEntityManagerFactory();
 	}
 
 	public void setItemRegistry(ItemRegistry itemRegistry) {
@@ -98,9 +98,9 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 			return;
 		}
 
-		if (!isDbConnectionOpen()) {
+		if (!isEntityManagerFactoryOpen()) {
 			try {
-				initializeDbConnection();				
+				initializeEntityManagerFactory();				
 			} catch (Exception e) {
 				logger.error("Error while initializing database connection!");
 				logger.error(e.getMessage());
@@ -155,9 +155,9 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 			return Collections.emptyList();			
 		}
 
-		if (!isDbConnectionOpen()) {
+		if (!isEntityManagerFactoryOpen()) {
 			try {
-				initializeDbConnection();				
+				initializeEntityManagerFactory();				
 			} catch (Exception e) {
 				logger.error("Error while initializing database connection!");
 				logger.error(e.getMessage());
@@ -239,46 +239,55 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 			return;
 		}
 		
-		String param = (String)properties.get(DB_CONNECTION_URL);
-		logger.debug("url: " + param);
-		if(param == null) {
-			logger.error("Connection url is required in openhab.cfg!");
-			throw new ConfigurationException(DB_CONNECTION_URL, "Connection url is required in openhab.cfg!");
-		}
-		if(StringUtils.isBlank(param)) {
-			logger.error("Empty connection url in openhab.cfg!");
-			throw new ConfigurationException(DB_CONNECTION_URL, "Empty connection url in openhab.cfg!");
-		}
-		dbConnectionUrl = (String)param;
-
-		param = (String)properties.get(DB_DRIVER_CLASS);
-		logger.debug("driver: " + param);
-		if(param == null) {
-			throw new ConfigurationException(DB_DRIVER_CLASS, "Driver class is required in openhab.cfg!");
-		}
-		if(StringUtils.isBlank(param)) {
-			throw new ConfigurationException(DB_DRIVER_CLASS, "Empty driver class in openhab.cfg!");
-		}
-		dbDriverClass = (String)param;
-		
-		if(properties.get(DB_USERNAME) == null) {
-			logger.info(DB_USERNAME + " was not specified!");
-		}
-		dbUserName = (String)properties.get(DB_USERNAME);
-		
-		if(properties.get(DB_PASSWORD) == null) {
-			logger.info(DB_PASSWORD + " was not specified!");
-		}
-		dbPassword = (String)properties.get(DB_PASSWORD);
+		updateConfigSettings(properties);
 
 		// re-init connection
-		closeDbConnection();
+		closeEntityManagerFactory();
 		try {
-			initializeDbConnection();			
+			initializeEntityManagerFactory();			
 			initialized = true;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
+	}
+	
+	/**
+	 * Reads config entries and sets the instance fields
+	 * @param properties
+	 * @throws ConfigurationException
+	 */
+	private void updateConfigSettings(Dictionary<String, ?> properties) throws ConfigurationException {
+		String param = (String)properties.get(CFG_CONNECTION_URL);
+		logger.debug("url: " + param);
+		if(param == null) {
+			logger.error("Connection url is required in openhab.cfg!");
+			throw new ConfigurationException(CFG_CONNECTION_URL, "Connection url is required in openhab.cfg!");
+		}
+		if(StringUtils.isBlank(param)) {
+			logger.error("Empty connection url in openhab.cfg!");
+			throw new ConfigurationException(CFG_CONNECTION_URL, "Empty connection url in openhab.cfg!");
+		}
+		dbConnectionUrl = (String)param;
+
+		param = (String)properties.get(CFG_DRIVER_CLASS);
+		logger.debug("driver: " + param);
+		if(param == null) {
+			throw new ConfigurationException(CFG_DRIVER_CLASS, "Driver class is required in openhab.cfg!");
+		}
+		if(StringUtils.isBlank(param)) {
+			throw new ConfigurationException(CFG_DRIVER_CLASS, "Empty driver class in openhab.cfg!");
+		}
+		dbDriverClass = (String)param;
+		
+		if(properties.get(CFG_USERNAME) == null) {
+			logger.info(CFG_USERNAME + " was not specified!");
+		}
+		dbUserName = (String)properties.get(CFG_USERNAME);
+		
+		if(properties.get(CFG_PASSWORD) == null) {
+			logger.info(CFG_PASSWORD + " was not specified!");
+		}
+		dbPassword = (String)properties.get(CFG_PASSWORD);		
 	}
 
 	protected EntityManagerFactory newEntityManagerFactory() {
@@ -296,32 +305,25 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 		return fac;
 	}
 	
-	protected EntityManager newPersistenceManager() {
-		logger.debug("Creating EntityManager...");
-		EntityManager tempEm = emf.createEntityManager();
-		logger.debug("Creating EntityManager...done");
-		return tempEm;
-	}
-	
-	protected void initializeDbConnection() {
+	protected void initializeEntityManagerFactory() {
 		logger.debug("Initializing EntityManagerFactory...");
 		emf = newEntityManagerFactory();
 		logger.debug("Initializing EntityManagerFactory...done");
 	}
 	
-	protected String getPersistenceUnitName() {
-		return "default";
-	}
-
-	protected void closeDbConnection() {
+	protected void closeEntityManagerFactory() {
 		if(emf != null) {
 			emf.close();
 		}
 		logger.debug("Closing down entity objects...done");
 	}
 	
-	protected boolean isDbConnectionOpen() {
+	protected boolean isEntityManagerFactoryOpen() {
 		return emf != null && emf.isOpen();
+	}
+
+	protected String getPersistenceUnitName() {
+		return "default";
 	}
 
 	private Item getItemFromRegistry(String itemName) {
