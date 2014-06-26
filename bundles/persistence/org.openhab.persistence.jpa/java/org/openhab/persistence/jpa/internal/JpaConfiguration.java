@@ -16,6 +16,8 @@ public class JpaConfiguration implements ManagedService {
 	private static final String CFG_USERNAME = "user";
 	private static final String CFG_PASSWORD = "password";
 	
+	public static boolean isInitialized = false;
+	
 	public static String dbConnectionUrl = "";
 	public static String dbDriverClass = "";
 	public static String dbUserName = "";
@@ -62,6 +64,7 @@ public class JpaConfiguration implements ManagedService {
 		}
 		dbPassword = (String)properties.get(CFG_PASSWORD);		
 
+		isInitialized = true;
 		logger.debug("Update config...done");
 	}	
 

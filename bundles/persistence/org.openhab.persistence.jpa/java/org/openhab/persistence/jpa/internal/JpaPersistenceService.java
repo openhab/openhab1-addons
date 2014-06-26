@@ -28,8 +28,6 @@ import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.types.UnDefType;
 import org.openhab.persistence.jpa.internal.model.JpaPersistentItem;
-import org.openhab.persistence.jpa.internal.model.JpaPersistentOtherItem;
-import org.openhab.persistence.jpa.internal.model.JpaPersistentStringItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,23 +89,26 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		if (item.getState() instanceof UnDefType) {
 			return;
 		}
-
+		
+		if(!JpaConfiguration.isInitialized) {
+			logger.warn("Trying to create EntityManagerFactory but we don't have configuration yet!");
+			return;
+		}
+		
 		// determine item name to be stored
 		String name = (alias != null) ? alias : item.getName();
 		
-		JpaPersistentItem pItem;
+		JpaPersistentItem pItem = new JpaPersistentItem();
 		if(StateHelper.isOtherStateType(item.getState())) {
-			pItem = new JpaPersistentOtherItem();
 			try {
-				((JpaPersistentOtherItem)pItem).setValue(StateHelper.toOther(item.getState()));
+				pItem.setValue(StateHelper.toOther(item.getState()));
 			} catch (Exception e) {
 				logger.error("Error on converting item value type: " + item.getState() + " to string!");
 				logger.error(e.getMessage());
 				return;
 			}
 		} else {
-			pItem = new JpaPersistentStringItem();
-			((JpaPersistentStringItem)pItem).setValue(StateHelper.toString(item.getState()));
+			pItem.setValue(StateHelper.toString(item.getState()));
 		}
 		pItem.setName(name);
 		pItem.setRealName(item.getName());
@@ -123,7 +124,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 			logger.debug("Persisting item...done");
 		} catch (Exception e) {
 			logger.error("Error on persisting item! Rolling back!");
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			em.getTransaction().rollback();
 		} finally {
 			em.close();
@@ -136,23 +137,21 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 	public Iterable<HistoricItem> query(FilterCriteria filter) {
 		logger.debug("querying for historic item: " + filter.getItemName());
 		
+		if(!JpaConfiguration.isInitialized) {
+			logger.warn("Trying to create EntityManagerFactory but we don't have configuration yet!");
+			return Collections.emptyList();
+		}
+
 		String itemName = filter.getItemName();
 		Item item = getItemFromRegistry(itemName);
 		
-		String entityName;
-		if(StateHelper.isOtherStateType(item.getState())) {
-			entityName = JpaPersistentOtherItem.class.getSimpleName();
-		} else {
-			entityName = JpaPersistentStringItem.class.getSimpleName();
-		}
-
 		String sortOrder;
 		if(filter.getOrdering() == Ordering.ASCENDING) sortOrder = "ASC";
 		else sortOrder = "DESC";
 
 		boolean hasBeginDate = false;
 		boolean hasEndDate = false;
-		String queryString = "SELECT n FROM " + entityName + " n WHERE n.realName = :itemName";
+		String queryString = "SELECT n FROM " + JpaPersistentItem.class.getSimpleName() + " n WHERE n.realName = :itemName";
 		if(filter.getBeginDate() != null) {
 			queryString += " AND n.timestamp >= :beginDate";
 			hasBeginDate = true;

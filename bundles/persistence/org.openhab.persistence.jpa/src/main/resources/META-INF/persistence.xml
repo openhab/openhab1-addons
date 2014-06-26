@@ -5,8 +5,6 @@
         <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
         <non-jta-data-source/>
         <class>org.openhab.persistence.jpa.internal.model.JpaPersistentItem</class>
-        <class>org.openhab.persistence.jpa.internal.model.JpaPersistentOtherItem</class>
-        <class>org.openhab.persistence.jpa.internal.model.JpaPersistentStringItem</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://hab.local:5432/housestats"/>
@@ -22,8 +20,6 @@
         <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
         <non-jta-data-source/>
         <class>org.openhab.persistence.jpa.internal.model.JpaPersistentItem</class>
-        <class>org.openhab.persistence.jpa.internal.model.JpaPersistentOtherItem</class>
-        <class>org.openhab.persistence.jpa.internal.model.JpaPersistentStringItem</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:derby:data;create=true"/>
