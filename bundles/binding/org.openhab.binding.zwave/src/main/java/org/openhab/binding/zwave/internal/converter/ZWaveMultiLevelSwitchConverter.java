@@ -30,7 +30,9 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiLevelS
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
@@ -108,8 +110,21 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
 			return;
 		}
-		
+
 		State state = converter.convertFromValueToState(event.getValue());
+		if ("true".equalsIgnoreCase(arguments.get("invert_state"))) {
+			// Support inversion of roller shutter UP/DOWN and percentages
+			if (converter instanceof IntegerUpDownTypeConverter) {
+				if(state == UpDownType.UP)
+					state = UpDownType.DOWN;
+				else
+					state = UpDownType.UP;
+			}
+			if (converter instanceof IntegerPercentTypeConverter) {
+				state = new PercentType(100 - ((DecimalType)state).intValue());
+			}
+		}
+
 		this.getEventPublisher().postUpdate(item.getName(), state);
 	}
 
@@ -121,8 +136,6 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 			ZWaveMultiLevelSwitchCommandClass commandClass, int endpointId, Map<String,String> arguments) {
 		SerialMessage serialMessage = null;
 		String restoreLastValue = null;
-		
-		logger.debug("NODE {}: MULTILEVEL COMMAND {}", node.getNodeId(), command);
 
 		if (command instanceof StopMoveType && (StopMoveType)command == StopMoveType.STOP) {
 			// special handling for the STOP command
