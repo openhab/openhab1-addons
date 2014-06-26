@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB JPA Persistence bundle
-Bundle-SymbolicName: org.openhab.persistence.jpa
+Bundle-SymbolicName: org.openhab.persistence.jpa;singleton:=true
 Bundle-Version: 1.7.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -22,6 +22,6 @@ Bundle-ClassPath: .,
  lib/derbyclient.jar,
  lib/mysql-connector-java-5.1.26-bin.jar,
  lib/openjpa-all-2.3.0.jar
-Service-Component: OSGI-INF/jpa.xml
+Service-Component: OSGI-INF/jpa.xml, OSGI-INF/configuration.xml
 Meta-Persistence: META-INF/persistence.xml
 Bundle-Activator: org.openhab.persistence.jpa.internal.JpaPersistenceServiceActivator

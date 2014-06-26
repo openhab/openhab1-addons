@@ -13,9 +13,8 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.persistence.jpa">
    <implementation class="org.openhab.persistence.jpa.internal.JpaPersistenceService"/>
    <service>
-      <provide interface="org.osgi.service.cm.ManagedService"/>
       <provide interface="org.openhab.core.persistence.PersistenceService"/>
+      <provide interface="org.openhab.core.persistence.QueryablePersistenceService"/>
    </service>
    <reference bind="setItemRegistry" cardinality="0..1" interface="org.openhab.core.items.ItemRegistry" name="ItemRegistry" policy="dynamic" unbind="unsetItemRegistry"/>
-   <property name="service.pid" type="String" value="org.openhab.jpa"/>
 </scr:component>

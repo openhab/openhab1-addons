@@ -10,7 +10,6 @@ package org.openhab.persistence.jpa.internal;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
@@ -32,8 +30,6 @@ import org.openhab.core.types.UnDefType;
 import org.openhab.persistence.jpa.internal.model.JpaPersistentItem;
 import org.openhab.persistence.jpa.internal.model.JpaPersistentOtherItem;
 import org.openhab.persistence.jpa.internal.model.JpaPersistentStringItem;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,32 +37,33 @@ import org.slf4j.LoggerFactory;
  * @author Manfred Bergmann
  * @since 1.6.0
  */
-public class JpaPersistenceService implements QueryablePersistenceService, ManagedService {
-
+public class JpaPersistenceService implements QueryablePersistenceService {
 	private static final Logger logger = LoggerFactory.getLogger(JpaPersistenceService.class);
 
-	private boolean initialized = false;
 	protected ItemRegistry itemRegistry;
-
-	private static final String CFG_CONNECTION_URL = "url";
-	private static final String CFG_DRIVER_CLASS = "driver";
-	private static final String CFG_USERNAME = "user";
-	private static final String CFG_PASSWORD = "password";
 	
-	private String dbConnectionUrl = "";
-	private String dbDriverClass = "";
-	private String dbUserName = "";
-	private String dbPassword = "";
+	private EntityManagerFactory emf = null;
 	
-	private EntityManagerFactory emf;
+	/**
+	 * lazy loading because update() is called after activate()
+	 * @return
+	 */
+	protected EntityManagerFactory getEntityManagerFactory() {
+		if(emf == null) {
+			emf = newEntityManagerFactory();
+		}
+		return emf;
+	}
 	
 	public void activate() {
-		
+		logger.debug("Activating jpa binding...");		
+		logger.debug("Activating jpa binding...done");
 	}
 
 	public void deactivate() {
-		logger.debug("JPA persistence bundle stopping.");
+		logger.debug("Deactivating jpa binding...");
 		closeEntityManagerFactory();
+		logger.debug("Deactivating jpa binding...done");
 	}
 
 	public void setItemRegistry(ItemRegistry itemRegistry) {
@@ -89,23 +86,10 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 
 	@Override
 	public void store(Item item, String alias) {
+		logger.debug("Storing item: " + item.getName());
+		
 		if (item.getState() instanceof UnDefType) {
 			return;
-		}
-
-		if (initialized == false) {
-			logger.warn("Jpa not initialized");
-			return;
-		}
-
-		if (!isEntityManagerFactoryOpen()) {
-			try {
-				initializeEntityManagerFactory();				
-			} catch (Exception e) {
-				logger.error("Error while initializing database connection!");
-				logger.error(e.getMessage());
-				return;			
-			}
 		}
 
 		// determine item name to be stored
@@ -129,7 +113,7 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 		pItem.setRealName(item.getName());
 		pItem.setTimestamp(new Date());
 
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManagerFactory().createEntityManager();
 		try {
 			logger.debug("Persisting item...");
 			// In RESOURCE_LOCAL calls to EntityManager require a begin/commit			
@@ -145,26 +129,13 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 			em.close();
 		}
 		
+		logger.debug("Storing item...done");
 	}
 
 	@Override
 	public Iterable<HistoricItem> query(FilterCriteria filter) {
 		logger.debug("querying for historic item: " + filter.getItemName());
 		
-		if (!initialized) {
-			return Collections.emptyList();			
-		}
-
-		if (!isEntityManagerFactoryOpen()) {
-			try {
-				initializeEntityManagerFactory();				
-			} catch (Exception e) {
-				logger.error("Error while initializing database connection!");
-				logger.error(e.getMessage());
-				return Collections.emptyList();			
-			}
-		}
-
 		String itemName = filter.getItemName();
 		Item item = getItemFromRegistry(itemName);
 		
@@ -194,7 +165,7 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 		
 		logger.debug("The query: " + queryString);
 
-		EntityManager em = emf.createEntityManager();
+		EntityManager em = getEntityManagerFactory().createEntityManager();
 		try {
 			// In RESOURCE_LOCAL calls to EntityManager require a begin/commit
 			em.getTransaction().begin();
@@ -230,74 +201,14 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 		return Collections.emptyList();			
 	}
 	
-	@Override
-	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
-		logger.debug("Update config...");
-		
-		if(properties == null) {
-			logger.error("Got a null properties object!");
-			return;
-		}
-		
-		updateConfigSettings(properties);
-
-		// re-init connection
-		closeEntityManagerFactory();
-		try {
-			initializeEntityManagerFactory();			
-			initialized = true;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
-	}
-	
-	/**
-	 * Reads config entries and sets the instance fields
-	 * @param properties
-	 * @throws ConfigurationException
-	 */
-	private void updateConfigSettings(Dictionary<String, ?> properties) throws ConfigurationException {
-		String param = (String)properties.get(CFG_CONNECTION_URL);
-		logger.debug("url: " + param);
-		if(param == null) {
-			logger.error("Connection url is required in openhab.cfg!");
-			throw new ConfigurationException(CFG_CONNECTION_URL, "Connection url is required in openhab.cfg!");
-		}
-		if(StringUtils.isBlank(param)) {
-			logger.error("Empty connection url in openhab.cfg!");
-			throw new ConfigurationException(CFG_CONNECTION_URL, "Empty connection url in openhab.cfg!");
-		}
-		dbConnectionUrl = (String)param;
-
-		param = (String)properties.get(CFG_DRIVER_CLASS);
-		logger.debug("driver: " + param);
-		if(param == null) {
-			throw new ConfigurationException(CFG_DRIVER_CLASS, "Driver class is required in openhab.cfg!");
-		}
-		if(StringUtils.isBlank(param)) {
-			throw new ConfigurationException(CFG_DRIVER_CLASS, "Empty driver class in openhab.cfg!");
-		}
-		dbDriverClass = (String)param;
-		
-		if(properties.get(CFG_USERNAME) == null) {
-			logger.info(CFG_USERNAME + " was not specified!");
-		}
-		dbUserName = (String)properties.get(CFG_USERNAME);
-		
-		if(properties.get(CFG_PASSWORD) == null) {
-			logger.info(CFG_PASSWORD + " was not specified!");
-		}
-		dbPassword = (String)properties.get(CFG_PASSWORD);		
-	}
-
 	protected EntityManagerFactory newEntityManagerFactory() {
 		logger.debug("Creating EntityManagerFactory...");
 		
 		Map<String, String> properties = new HashMap<String, String>();
-		properties.put("javax.persistence.jdbc.url", dbConnectionUrl);
-		properties.put("javax.persistence.jdbc.driver", dbDriverClass);
-		properties.put("javax.persistence.jdbc.user", dbUserName);
-		properties.put("javax.persistence.jdbc.password", dbPassword);
+		properties.put("javax.persistence.jdbc.url", JpaConfiguration.dbConnectionUrl);
+		properties.put("javax.persistence.jdbc.driver", JpaConfiguration.dbDriverClass);
+		properties.put("javax.persistence.jdbc.user", JpaConfiguration.dbUserName);
+		properties.put("javax.persistence.jdbc.password", JpaConfiguration.dbPassword);
 		
 		EntityManagerFactory fac = Persistence.createEntityManagerFactory(getPersistenceUnitName(), properties);
 		logger.debug("Creating EntityManagerFactory...done");
@@ -305,15 +216,10 @@ public class JpaPersistenceService implements QueryablePersistenceService, Manag
 		return fac;
 	}
 	
-	protected void initializeEntityManagerFactory() {
-		logger.debug("Initializing EntityManagerFactory...");
-		emf = newEntityManagerFactory();
-		logger.debug("Initializing EntityManagerFactory...done");
-	}
-	
 	protected void closeEntityManagerFactory() {
 		if(emf != null) {
 			emf.close();
+			emf = null;
 		}
 		logger.debug("Closing down entity objects...done");
 	}
