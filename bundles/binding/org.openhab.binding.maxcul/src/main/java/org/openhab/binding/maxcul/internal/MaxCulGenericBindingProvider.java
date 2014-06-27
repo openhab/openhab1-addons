@@ -36,8 +36,8 @@ import org.slf4j.LoggerFactory;
  * <li><code>{ maxcul="WallThermostat:JEQ1234566:temperature" }</code> - will return the temperature of a wall mounted thermostat with serial number JEQ0304447</li>
  * <li><code>{ maxcul="WallThermostat:JEQ1234566:thermostat" }</code> - will set/return the desired temperature of a wall mounted thermostat with serial number JEQ0304447</li>
  * <li><code>{ maxcul="PushButton:JEQ1234567" }</code> - will default to 'switch' mode</li>
- * <li><code>{ maxcul="PairMode" }</code> - Switch only, enables pair mode for 60s</li>
- *
+ * <li><code>{ maxcul="PairMode" }</code> - Switch only, enables pair mode for 60s. Will automatically switch off after this time.</li>
+ * <li><code>{ maxcul="ListenMode" }</code> - Switch only, doesn't process messages - just listens to traffic, parses and outputs it.</li>
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
@@ -63,8 +63,9 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		switch (config.deviceType)
 		{
 		case PAIR_MODE:
+		case LISTEN_MODE:
 			if (!(item instanceof SwitchItem))
-				throw new BindingConfigParseException("Invalid item type. PairMode can only be a switch");
+				throw new BindingConfigParseException("Invalid item type. PairMode/ListenMode can only be a switch");
 			break;
 		case PUSH_BUTTON:
 		case SHUTTER_CONTACT:

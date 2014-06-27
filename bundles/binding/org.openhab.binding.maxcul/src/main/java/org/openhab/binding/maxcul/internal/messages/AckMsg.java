@@ -45,4 +45,9 @@ public class AckMsg extends BaseMsg {
 		return isNack;
 	}
 
+	@Override
+	protected void printFormattedPayload()
+	{
+		logger.debug("Is ACK? => "+(!this.isNack));
+	}
 }

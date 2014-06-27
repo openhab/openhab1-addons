@@ -20,4 +20,8 @@ public class PairPongMsg extends BaseMsg {
 		super.appendPayload(payload);
 	}
 
+	public PairPongMsg(String data) {
+		super(data);
+	}
+
 }

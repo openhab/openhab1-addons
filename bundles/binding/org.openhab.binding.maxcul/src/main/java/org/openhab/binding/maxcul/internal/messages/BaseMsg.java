@@ -182,6 +182,7 @@ public class BaseMsg {
 		}
 		sb.insert(0, String.format("Zs%02X", len));
 
+		this.len = len;
 		this.rawMsg = sb.toString();
 		this.flgReadyToSend = true;
 	}
@@ -207,7 +208,7 @@ public class BaseMsg {
 		if (pktLenOk(rawMsg) == false)
 			return MaxCulMsgType.UNKNOWN;
 
-		return MaxCulMsgType.fromByte(Byte.parseByte(rawMsg.substring(PKT_POS_MSG_TYPE,PKT_POS_MSG_TYPE+PKT_POS_MSG_TYPE_LEN),16));
+		return MaxCulMsgType.fromByte((byte)(Integer.parseInt(rawMsg.substring(PKT_POS_MSG_TYPE,PKT_POS_MSG_TYPE+PKT_POS_MSG_TYPE_LEN),16)&0xff));
 	}
 
 	public static boolean isForUs(String rawMsg, String addr)
@@ -253,9 +254,43 @@ public class BaseMsg {
 		/* Do nothing */
 	}
 
-	public void printDebugPayload() {
-
+	/**
+	 * Print the payload out for debug
+	 */
+	protected void printDebugPayload()
+	{
 		for (int i=0; i< payload.length; i++)
-			logger.debug(this.msgType+" byte["+i+"] => "+payload[i]);
+			logger.debug("\t"+this.msgType+" byte["+i+"] => 0x"+Integer.toHexString((int)(0xff&payload[i])));
+	}
+
+	protected void printMessageHeader()
+	{
+		logger.debug("Raw Message: "+this.rawMsg);
+		logger.debug("\tLength    => "+Integer.toString((int)(0xff&this.len)));
+		logger.debug("\tMsg Count => 0x"+Integer.toHexString((int)(0xff&this.msgCount)));
+		logger.debug("\tMsg Flag  => 0x"+Integer.toHexString((int)(0xff&this.msgFlag)));
+		logger.debug("\tMsg Type  => "+this.msgType);
+		logger.debug("\tSrc Addr  => "+this.srcAddrStr);
+		logger.debug("\tDst Addr  => "+this.dstAddrStr);
+		logger.debug("\tGroup ID  => "+Integer.toString((int)(0xff&this.groupid)));
+	}
+
+	/**
+	 * Print output as decoded fields
+	 */
+	protected void printFormattedPayload()
+	{
+		logger.debug("\tPrinting raw payload:");
+		printDebugPayload();
+	}
+
+	/**
+	 * Print the full message out to debug
+	 */
+	public void printMessage()
+	{
+		printMessageHeader();
+		printFormattedPayload();
+
 	}
 }

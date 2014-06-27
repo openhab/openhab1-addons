@@ -37,10 +37,10 @@ public class WallThermostatControlMsg extends BaseMsg {
 
 	}
 
-	public void debugPrint()
+	@Override
+	protected void printFormattedPayload()
 	{
-		logger.debug("Wall Thermostat State Message:");
-		logger.debug("\tDesired Temperature => "+desiredTemperature);
+		logger.debug("\tDesired Temperature  => "+desiredTemperature);
 		logger.debug("\tMeasured Temperature => "+measuredTemperature);
 	}
 

@@ -39,13 +39,6 @@ public class SetTemperatureMsg extends BaseMsg {
 
 	}
 
-	public void debugPrint()
-	{
-		logger.debug("Set Temperature Message:");
-		logger.debug("\tDesired Temperature => "+desiredTemperature);
-		logger.debug("\tControl Mode => "+ctrlMode);
-	}
-
 	public double getDesiredTemperature()
 	{
 		return desiredTemperature;
@@ -54,5 +47,15 @@ public class SetTemperatureMsg extends BaseMsg {
 	public ThermostatControlMode getControlMode()
 	{
 		return ctrlMode;
+	}
+
+	/**
+	 * Print output as decoded fields
+	 */
+	@Override
+	protected void printFormattedPayload()
+	{
+		logger.debug("\tDesired Temperature => "+desiredTemperature);
+		logger.debug("\tControl Mode => "+ctrlMode);
 	}
 }

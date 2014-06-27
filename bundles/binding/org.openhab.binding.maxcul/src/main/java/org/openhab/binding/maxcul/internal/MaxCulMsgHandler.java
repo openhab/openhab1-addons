@@ -1,4 +1,4 @@
-package org.openhab.binding.maxcul.internal.messages;
+package org.openhab.binding.maxcul.internal;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -7,6 +7,15 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.openhab.binding.maxcul.internal.messages.AckMsg;
+import org.openhab.binding.maxcul.internal.messages.BaseMsg;
+import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcessor;
+import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
+import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
+import org.openhab.binding.maxcul.internal.messages.PairPongMsg;
+import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
+import org.openhab.binding.maxcul.internal.messages.TimeInfoMsg;
+import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
 import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULHandler;
 import org.openhab.io.transport.cul.CULListener;
@@ -44,7 +53,11 @@ public class MaxCulMsgHandler implements CULListener {
 	private MaxCulBindingMessageProcessor mcbmp = null;
 	private Map<SenderQueueItem, Timer> timers = new HashMap<SenderQueueItem,Timer>();
 
+	private boolean listenMode = false;
+
 	private final int MESSAGE_EXPIRY_PERIOD = 30000;
+
+	private String tzStr;
 
 	public MaxCulMsgHandler(String srcAddr, CULHandler cul)
 	{
@@ -190,11 +203,63 @@ public class MaxCulMsgHandler implements CULListener {
 		}
 	}
 
+	private  void listenModeHandler(String data)
+	{
+		switch (BaseMsg.getMsgType(data))
+		{
+		case WALL_THERMOSTAT_CONTROL:
+			new WallThermostatControlMsg(data).printMessage();
+			break;
+		case TIME_INFO:
+			new TimeInfoMsg(data).printMessage();
+			break;
+		case SET_TEMPERATURE:
+			new SetTemperatureMsg(data).printMessage();
+			break;
+		case ACK:
+			new AckMsg(data).printMessage();
+			break;
+		case PAIR_PING:
+			new PairPingMsg(data).printMessage();
+			break;
+		case PAIR_PONG:
+			new PairPongMsg(data).printMessage();
+			break;
+		case WALL_THERMOSTAT_STATE:
+		case ADD_LINK_PARTNER:
+		case CONFIG_TEMPERATURES:
+		case CONFIG_VALVE:
+		case CONFIG_WEEK_PROFILE:
+		case PUSH_BUTTON_STATE:
+		case REMOVE_GROUP_ID:
+		case REMOVE_LINK_PARTNER:
+		case RESET:
+		case SET_COMFORT_TEMPERATURE:
+		case SET_DISPLAY_ACTUAL_TEMP:
+		case SET_ECO_TEMPERATURE:
+		case SET_GROUP_ID:
+		case SHUTTER_CONTACT_STATE:
+		case WAKEUP:
+		case THERMOSTAT_STATE:
+		case UNKNOWN:
+		default:
+			BaseMsg baseMsg = new BaseMsg(data);
+			baseMsg.printMessage();
+			break;
+
+		}
+	}
+
 	@Override
 	public void dataReceived(String data) {
 		logger.debug("MaxCulSender Received "+data);
 		if (data.startsWith("Z"))
 		{
+			if (listenMode)
+			{
+				listenModeHandler(data);
+				return;
+			}
 			/* Check message is destined for us */
 			if (BaseMsg.isForUs(data, srcAddr))
 			{
@@ -224,7 +289,7 @@ public class MaxCulMsgHandler implements CULListener {
 				{
 					/* send latest time information */
 					TimeInfoMsg msg = new TimeInfoMsg(data);
-					sendTimeInfo(msg.srcAddrStr);
+					sendTimeInfo(msg.srcAddrStr, this.tzStr);
 				}
 				else
 				{
@@ -272,10 +337,11 @@ public class MaxCulMsgHandler implements CULListener {
 	/**
 	 * Send time information to device that has requested it
 	 * @param dstAddr Address of device to respond to
+	 * @param tzStr Time Zone String
 	 */
-	public void sendTimeInfo(String dstAddr)
+	public void sendTimeInfo(String dstAddr, String tzStr)
 	{
-		TimeInfoMsg msg = new TimeInfoMsg(getMessageCount(), (byte)0x04, (byte) 0, this.srcAddr, dstAddr);
+		TimeInfoMsg msg = new TimeInfoMsg(getMessageCount(), (byte)0x0, (byte) 0, this.srcAddr, dstAddr, tzStr);
 		sendMessage(msg);
 	}
 
@@ -299,6 +365,20 @@ public class MaxCulMsgHandler implements CULListener {
 		sendMessage(nackMsg);
 	}
 
+	/**
+	 * Set listen mode status. Doing this will stop proper message processing and will
+	 * just turn this message handler into a snooper.
+	 * @param listenModeOn TRUE sets listen mode to ON
+	 */
+	public void setListenMode(boolean listenModeOn)
+	{
+		listenMode = listenModeOn;
+		logger.debug("Listen Mode is "+(listenMode?"ON":"OFF"));
+	}
 
+	public void setTz( String tzStr )
+	{
+		this.tzStr = tzStr;
+	}
 
 }

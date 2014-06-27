@@ -19,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.maxcul.MaxCulBindingProvider;
 import org.openhab.binding.maxcul.internal.messages.BaseMsg;
 import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcessor;
-import org.openhab.binding.maxcul.internal.messages.MaxCulMsgHandler;
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
 import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
@@ -83,6 +82,9 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	private Map<String,Timer> timers = new HashMap<String,Timer>();
 
 	MaxCulMsgHandler messageHandler;
+
+
+	private String tzStr;
 
 	public MaxCulBinding() {
 	}
@@ -187,6 +189,10 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 						break;
 				}
 			}
+			else if (bindingConfig.deviceType == MaxCulDevice.LISTEN_MODE && (command instanceof OnOffType))
+			{
+				this.messageHandler.setListenMode(((OnOffType)command == OnOffType.ON));
+			}
 			else if ((bindingConfig.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT ||
 					bindingConfig.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT_PLUS ||
 					bindingConfig.deviceType == MaxCulDevice.WALL_THERMOSTAT) &&
@@ -219,7 +225,15 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 
-			// read further config parameters here ...
+			// handle timezone configuration
+			String timezoneString = (String) config.get("timezone");
+			if (StringUtils.isNotBlank(timezoneString)) {
+				this.tzStr = timezoneString;
+			} else {
+				this.tzStr = "Europe/London";
+			}
+
+			// handle device config
 			String deviceString = (String) config.get("device");
 			if (StringUtils.isNotBlank(deviceString)) {
 				logger.debug("Setting up device "+deviceString);
@@ -230,6 +244,8 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 				setProperlyConfigured(false);
 				throw new ConfigurationException("device", "No device set - please set one");
 			}
+
+
 			setProperlyConfigured(true);
 		}
 	}
@@ -245,6 +261,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			cul = CULManager.getOpenCULHandler(accessDevice, CULMode.MAX);
 			messageHandler = new MaxCulMsgHandler(this.srcAddr,cul);
 			messageHandler.registerMaxCulBindingMessageProcessor(this);
+			messageHandler.setTz(this.tzStr);
 		} catch (CULDeviceException e) {
 			logger.error("Cannot open CUL device", e);
 			cul = null;
@@ -270,11 +287,11 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			{
 				/* Match serial number to binding configuration */
 				Collection<MaxCulBindingConfig> bindingConfigs = null;
-				for (MaxCulBindingProvider provider : super.providers) {
+				for (MaxCulBindingProvider provider : super.providers)
+				{
 					bindingConfigs = provider.getConfigsForSerialNumber(pkt.serial);
-					if (bindingConfigs != null) {
+					if (bindingConfigs != null)
 						break;
-					}
 				}
 				if (bindingConfigs == null)
 				{
@@ -298,13 +315,13 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			/* TODO handle all other incoming messages */
 			case WALL_THERMOSTAT_CONTROL:
 				WallThermostatControlMsg wallThemCtrlMsg = new WallThermostatControlMsg(data);
-				wallThemCtrlMsg.debugPrint();
+				wallThemCtrlMsg.printMessage();
 				/* TODO dispatch update to any appropriate binding */
 				this.messageHandler.sendAck(wallThemCtrlMsg);
 				break;
 			case SET_TEMPERATURE:
 				SetTemperatureMsg setTempMsg = new SetTemperatureMsg(data);
-				setTempMsg.debugPrint();
+				setTempMsg.printMessage();
 				/* TODO dispatch update to any appropriate binding */
 				/* respond to device */
 				this.messageHandler.sendAck(setTempMsg);

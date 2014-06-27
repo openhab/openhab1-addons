@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Class to hold configuration for binding
  *
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
@@ -33,9 +34,18 @@ public class MaxCulBindingConfig implements BindingConfig {
 			throws BindingConfigParseException {
 		String[] configParts = bindingConfig.trim().split(":");
 
-		if (bindingConfig.startsWith("PairMode")) {
-				this.deviceType = MaxCulDevice.PAIR_MODE;
-				return;
+		if (bindingConfig.startsWith("PairMode"))
+		{
+			logger.debug("Pair Mode switch found");
+			this.deviceType = MaxCulDevice.PAIR_MODE;
+			return;
+		}
+
+		if (bindingConfig.startsWith("ListenMode"))
+		{
+			logger.debug("Listen Mode switch found");
+			this.deviceType = MaxCulDevice.LISTEN_MODE;
+			return;
 		}
 
 		if (configParts.length < 2) {
@@ -43,6 +53,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 					"MaxCul configuration requires a configuration of at least the format <device_type>:<serial_num> for a MAX! device.");
 		}
 
+		logger.debug("Found real device");
 		/* handle device type */
 		logger.debug("Part 0/"+(configParts.length-1)+" -> "+configParts[0]);
 		if (configParts[0].compareTo("RadiatorThermostat") == 0){
@@ -116,6 +127,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 				this.feature = MaxCulFeature.THERMOSTAT;
 				break;
 			case PAIR_MODE:
+			case LISTEN_MODE:
 				break;
 			}
 		}
