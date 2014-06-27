@@ -17,6 +17,7 @@ import org.openhab.binding.xbmc.XbmcBindingProvider;
 import org.openhab.binding.xbmc.rpc.XbmcConnector;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -273,6 +274,8 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 				connector.playerStop();
 			if (property.equals("GUI.ShowNotification"))
 				connector.showNotification("openHAB", command.toString());
+			if (property.equals("System.Shutdown") && command == OnOffType.OFF)
+				connector.systemShutdown();
 		} catch (Exception e) {
 			logger.error("Error handling command", e);
 		}
@@ -284,23 +287,24 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
 		try {
-			// lookup the XBMC instance name and property for this item
-			String xbmcInstance = getXbmcInstance(itemName);
 			String property = getProperty(itemName);
 			
-			XbmcConnector connector = getXbmcConnector(xbmcInstance);
-			if (connector == null) {
-				logger.warn("Received update ({}) for item {} but no XBMC connector found for {}, ignoring", newState.toString(), itemName, xbmcInstance);
-				return;
-			}
-			if (!connector.isConnected()) {
-				logger.warn("Received update ({}) for item {} but the connection to the XBMC instance {} is down, ignoring", newState.toString(), itemName, xbmcInstance);
-				return;
-			}
-	
 			// TODO: handle other updates
-			if (property.equals("GUI.ShowNotification"))
+			if (property.equals("GUI.ShowNotification")) {
+				String xbmcInstance = getXbmcInstance(itemName);
+				XbmcConnector connector = getXbmcConnector(xbmcInstance);
+
+				if (connector == null) {
+					logger.warn("Received update ({}) for item {} but no XBMC connector found for {}, ignoring", newState.toString(), itemName, xbmcInstance);
+					return;
+				}
+				if (!connector.isConnected()) {
+					logger.warn("Received update ({}) for item {} but the connection to the XBMC instance {} is down, ignoring", newState.toString(), itemName, xbmcInstance);
+					return;
+				}
+
 				connector.showNotification("openHAB", newState.toString());
+			}
 		} catch (Exception e) {
 			logger.error("Error handling update", e);
 		}

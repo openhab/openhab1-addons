@@ -36,13 +36,12 @@ public class OpenClosedTypeConverter extends AbstractEnumTypeConverter<OpenClose
 	}
 
 	/**
-	 * Invert only boolean values which are not from a sensor or a state from a
-	 * window shutter contact.
+	 * Invert only boolean values which are not from a sensor or a state from
+	 * some devices.
 	 */
 	@Override
 	protected boolean isInvert(HmValueItem hmValueItem) {
-		return !isName(hmValueItem, "SENSOR") && !isNameFromDevice(hmValueItem, "STATE", "HM-SEC-SC")
-				&& hmValueItem.isBooleanValue();
+		return !isName(hmValueItem, "SENSOR") && !isStateInvertDevice(hmValueItem) && hmValueItem.isBooleanValue();
 	}
 
 }
