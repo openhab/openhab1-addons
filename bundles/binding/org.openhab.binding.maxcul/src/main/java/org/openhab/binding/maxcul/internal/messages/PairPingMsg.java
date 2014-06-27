@@ -2,6 +2,11 @@ package org.openhab.binding.maxcul.internal.messages;
 
 import java.util.Arrays;
 
+/**
+ * Message class to handle Ping message in pairing
+ * @author Paul Hampson (cyclingengineer)
+ * @since 1.6.0
+ */
 public class PairPingMsg extends BaseMsg{
 
 	public int firmwareMajor;

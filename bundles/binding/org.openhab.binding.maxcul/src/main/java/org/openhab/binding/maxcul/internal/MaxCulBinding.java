@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * like querying a Website/Device.
  *
  * @author Paul Hampson (cyclingengineer)
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> implements ManagedService, MaxCulBindingMessageProcessor {
 

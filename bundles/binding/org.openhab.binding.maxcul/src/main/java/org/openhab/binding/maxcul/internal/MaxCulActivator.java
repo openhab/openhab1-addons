@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Extension of the default OSGi bundle activator
- * 
+ *
  * @author Paul Hampson (cyclingengineer)
- * @since 1.5.0
+ * @since 1.6.0
  */
 public final class MaxCulActivator implements BundleActivator {
 
@@ -41,7 +41,7 @@ public final class MaxCulActivator implements BundleActivator {
 		context = null;
 		logger.debug("MaxCul binding has been stopped.");
 	}
-	
+
 	/**
 	 * Returns the bundle context of this bundle
 	 * @return the bundle context

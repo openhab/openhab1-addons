@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * <li><code>{ maxcul="PairMode" }</code> - Switch only, enables pair mode for 60s</li>
  *
  * @author Paul Hampson (cyclingengineer)
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider implements MaxCulBindingProvider {
 

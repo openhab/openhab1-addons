@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * responses first before passing on valid MAX! messages to the binding itself for processing.
  *
  * @author Paul Hampson (cyclingengineer)
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class MaxCulMsgHandler implements CULListener {
 

@@ -3,6 +3,11 @@ package org.openhab.binding.maxcul.internal.messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Basic Message Class
+ * @author Paul Hampson (cyclingengineer)
+ * @since 1.6.0
+ */
 public class BaseMsg {
 	public byte len;
 	public byte msgCount;

@@ -6,6 +6,11 @@ import java.util.GregorianCalendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Message class to handle time information
+ * @author Paul Hampson (cyclingengineer)
+ * @since 1.6.0
+ */
 public class TimeInfoMsg extends BaseMsg {
 
 	final static private int TIME_INFO_PAYLOAD_LEN = 5; /* in bytes */

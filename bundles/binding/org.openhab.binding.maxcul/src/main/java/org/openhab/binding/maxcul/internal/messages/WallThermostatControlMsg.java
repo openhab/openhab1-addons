@@ -3,6 +3,11 @@ package org.openhab.binding.maxcul.internal.messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Message class to handle Wall Thermostat Control messages
+ * @author Paul Hampson (cyclingengineer)
+ * @since 1.6.0
+ */
 public class WallThermostatControlMsg extends BaseMsg {
 
 	final static private int WALL_THERMOSTAT_CONTROL_PAYLOAD_LEN = 2; /* in bytes */

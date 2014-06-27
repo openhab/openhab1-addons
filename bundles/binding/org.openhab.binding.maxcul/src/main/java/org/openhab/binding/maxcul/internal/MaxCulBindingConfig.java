@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author Paul Hampson (cyclingengineer)
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class MaxCulBindingConfig implements BindingConfig {
 	public MaxCulDevice deviceType;
