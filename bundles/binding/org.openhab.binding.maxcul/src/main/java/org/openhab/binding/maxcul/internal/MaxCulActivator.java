@@ -22,10 +22,10 @@ import org.slf4j.LoggerFactory;
  */
 public final class MaxCulActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(MaxCulActivator.class); 
-	
+	private static Logger logger = LoggerFactory.getLogger(MaxCulActivator.class);
+
 	private static BundleContext context;
-	
+
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
@@ -49,5 +49,5 @@ public final class MaxCulActivator implements BundleActivator {
 	public static BundleContext getContext() {
 		return context;
 	}
-	
+
 }
