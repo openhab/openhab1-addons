@@ -99,16 +99,12 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		String name = (alias != null) ? alias : item.getName();
 		
 		JpaPersistentItem pItem = new JpaPersistentItem();
-		if(StateHelper.isOtherStateType(item.getState())) {
-			try {
-				pItem.setValue(StateHelper.toOther(item.getState()));
-			} catch (Exception e) {
-				logger.error("Error on converting item value type: " + item.getState() + " to string!");
-				logger.error(e.getMessage());
-				return;
-			}
-		} else {
+		try {
 			pItem.setValue(StateHelper.toString(item.getState()));
+		} catch (Exception e1) {
+			logger.error("Error on converting state value to string!");
+			logger.error(e1.getMessage(), e1);
+			return;
 		}
 		pItem.setName(name);
 		pItem.setRealName(item.getName());
