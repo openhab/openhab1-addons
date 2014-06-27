@@ -10,6 +10,7 @@ package org.openhab.binding.maxcul.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.openhab.binding.maxcul.MaxCulBindingProvider;
 import org.openhab.core.binding.BindingConfig;
@@ -111,6 +112,23 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		return config;
 	}
 
+	public String getItemNameForConfig(MaxCulBindingConfig bc)
+	{
+		String itemName = null;
+		if (super.bindingConfigs.containsValue(bc))
+		{
+			for (Entry<String,BindingConfig> entry : super.bindingConfigs.entrySet())
+			{
+				if (entry.getValue().equals(bc))
+				{
+					itemName = entry.getKey();
+					break;
+				}
+			}
+		}
+		return itemName;
+	}
+
 	@Override
 	public MaxCulBindingConfig getConfigForSerialNumber(String serial) {
 		MaxCulBindingConfig config = null;
@@ -129,10 +147,29 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		for (BindingConfig c : super.bindingConfigs.values() )
 		{
 			MaxCulBindingConfig config = (MaxCulBindingConfig)c;
-			if (config.serialNumber != null) /* could be PairMode device which has no serial */
+			if (config.serialNumber != null) /* could be PairMode/ListenMode device which has no serial */
 			{
 				logger.debug("Comparing '"+config.serialNumber+"' with '"+serial+"'");
 				if (config.serialNumber.compareToIgnoreCase(serial) == 0)
+					configs.add(config);
+			}
+		}
+		if (configs.isEmpty())
+			return null;
+		else
+			return configs;
+	}
+
+	@Override
+	public List<MaxCulBindingConfig> getConfigsForRadioAddr(String addr) {
+		List<MaxCulBindingConfig> configs = new ArrayList<MaxCulBindingConfig>();
+		for (BindingConfig c : super.bindingConfigs.values() )
+		{
+			MaxCulBindingConfig config = (MaxCulBindingConfig)c;
+			if (config.serialNumber != null) /* could be PairMode/ListenMode device which has no serial */
+			{
+				logger.debug("Comparing '"+config.devAddr+"' with '"+addr+"'");
+				if (config.devAddr.equalsIgnoreCase(addr))
 					configs.add(config);
 			}
 		}

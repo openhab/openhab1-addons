@@ -304,7 +304,7 @@ public class MaxCulMsgHandler implements CULListener {
 				switch (BaseMsg.getMsgType(data))
 				{
 				case PAIR_PING:
-				case WALL_THERMOSTAT_STATE:
+				case WALL_THERMOSTAT_CONTROL:
 					this.mcbmp.MaxCulMsgReceived(data);
 					break;
 				default:

@@ -15,10 +15,15 @@ import org.openhab.core.binding.BindingProvider;
 
 /**
  * @author Paul Hampson (cyclingengineer)
- * @since 1.5.0
+ * @since 1.6.0
  */
 public interface MaxCulBindingProvider extends BindingProvider {
 
+	/**
+	 * This will return the binding configuration associated with an itemName
+	 * @param itemName Name of item
+	 * @return Binding configuration for itemName
+	 */
 	MaxCulBindingConfig getConfigForItemName(String itemName);
 
 	/**
@@ -34,4 +39,18 @@ public interface MaxCulBindingProvider extends BindingProvider {
 	 * @return All configurations found, null if none are found
 	 */
 	List<MaxCulBindingConfig> getConfigsForSerialNumber(String serial);
+
+	/**
+	 * This will return a collection of configs for a particular radio address
+	 * @param addr Address of device
+	 * @return List of configs associated with radio address
+	 */
+	List<MaxCulBindingConfig> getConfigsForRadioAddr(String addr);
+
+	/**
+	 * Get an item name from a configuration
+	 * @param bc Configuration to look for
+	 * @return Item Name string
+	 */
+	String getItemNameForConfig(MaxCulBindingConfig bc);
 }

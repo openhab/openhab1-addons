@@ -269,6 +269,23 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 		}
 	}
 
+	private Collection<MaxCulBindingConfig> getBindingsBySerial(String serial)
+	{
+		Collection<MaxCulBindingConfig> bindingConfigs = null;
+		for (MaxCulBindingProvider provider : super.providers)
+		{
+			bindingConfigs = provider.getConfigsForSerialNumber(serial);
+			if (bindingConfigs != null)
+				break;
+		}
+		if (bindingConfigs == null)
+		{
+			logger.error("Unable to find configuration for serial "+serial+". Do you have a binding for it?");
+			return null;
+		}
+		return bindingConfigs;
+	}
+
 	@Override
 	public void MaxCulMsgReceived(String data) {
 		logger.debug("Received data from CUL: "+data);
@@ -286,18 +303,8 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			if (pkt.len > 0 && (pkt.dstAddrStr.compareToIgnoreCase(this.srcAddr) == 0 || (pkt.dstAddrStr.compareToIgnoreCase(BROADCAST_ADDRESS) == 0)))
 			{
 				/* Match serial number to binding configuration */
-				Collection<MaxCulBindingConfig> bindingConfigs = null;
-				for (MaxCulBindingProvider provider : super.providers)
-				{
-					bindingConfigs = provider.getConfigsForSerialNumber(pkt.serial);
-					if (bindingConfigs != null)
-						break;
-				}
-				if (bindingConfigs == null)
-				{
-					logger.error("Unable to find configuration for serial "+pkt.serial+". Do you have a binding for it?");
-					return;
-				}
+				Collection<MaxCulBindingConfig> bindingConfigs = getBindingsBySerial(pkt.serial);
+
 				/* Set pairing information */
 				for (MaxCulBindingConfig bc : bindingConfigs)
 					bc.setPairedInfo(pkt.srcAddrStr); /* where it came from gives the addr of the device */
@@ -314,15 +321,29 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			{
 			/* TODO handle all other incoming messages */
 			case WALL_THERMOSTAT_CONTROL:
-				WallThermostatControlMsg wallThemCtrlMsg = new WallThermostatControlMsg(data);
-				wallThemCtrlMsg.printMessage();
+				WallThermostatControlMsg wallThermCtrlMsg = new WallThermostatControlMsg(data);
+				wallThermCtrlMsg.printMessage();
 				/* TODO dispatch update to any appropriate binding */
-				this.messageHandler.sendAck(wallThemCtrlMsg);
+
+				/* reply only if not broadcast */
+				if (BaseMsg.isForUs(data, this.srcAddr))
+					this.messageHandler.sendAck(wallThermCtrlMsg);
 				break;
 			case SET_TEMPERATURE:
 				SetTemperatureMsg setTempMsg = new SetTemperatureMsg(data);
 				setTempMsg.printMessage();
-				/* TODO dispatch update to any appropriate binding */
+				for (MaxCulBindingProvider provider : super.providers)
+				{
+					Collection<MaxCulBindingConfig> bindingConfigs = provider.getConfigsForRadioAddr(setTempMsg.srcAddrStr);
+					for (MaxCulBindingConfig bc : bindingConfigs)
+					{
+						if (bc.feature == MaxCulFeature.THERMOSTAT)
+						{
+							String itemName = provider.getItemNameForConfig(bc);
+							eventPublisher.postUpdate(itemName, new DecimalType(setTempMsg.getDesiredTemperature()));
+						}
+					}
+				}
 				/* respond to device */
 				this.messageHandler.sendAck(setTempMsg);
 				break;
