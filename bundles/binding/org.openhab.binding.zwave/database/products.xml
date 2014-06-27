@@ -788,6 +788,15 @@
 			<Label lang="en">Double Paddle Wall Controller</Label>
 			<ConfigFile>zwaveme/zme_wcd2.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>1000</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>ZME_064435</Model>
+			<Label lang="en">Single Paddle Wall Controller</Label>
+			<ConfigFile>zwaveme/zme_064435.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0118</Id>
