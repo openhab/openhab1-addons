@@ -11,7 +11,6 @@ package org.openhab.binding.maxcube.internal.message;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
-import org.openhab.binding.maxcube.internal.MaxCubeBinding;
 import org.openhab.binding.maxcube.internal.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,27 +24,26 @@ import org.slf4j.LoggerFactory;
 public final class C_Message extends Message {
 
 	private static final Logger logger = LoggerFactory.getLogger(C_Message.class);
-	
+
 	private String rfAddress = null;
 	private int length = 0;
 	private DeviceType deviceType = null;
 	private String serialNumber = null;
+	private String tempComfort= null;
+	private String tempEco = null;
+	private String tempSetpointMax= null;
+	private String tempSetpointMin= null;
+	private String tempOffset = null;
+	private String tempOpenWindow = null;
+	private String durationOpenWindow = null;
+	private String decalcification = null;
+	private String valveMaximum = null;
+	private String valveOffset = null;
+	private String programData = null;
+	private String boostDuration = null;
+	private String boostValve = null;
 
-	private String TempComfort= null;
-	private String TempEco = null;
-	private String TempSetpointMax= null;
-	private String TempSetpointMin= null;
-	private String TempOffset = null;
-	private String TempOpenWindow = null;
-	private String DurationOpenWindow = null;
-	private String Decalcification = null;
-	private String ValveMaximum = null;
-	private String ValveOffset = null;
-	private String ProgramData = null;
-	private String BoostDuration = null;
-	private String BoostValve = null;
 
-	
 	public C_Message(String raw) {
 		super(raw);
 		logger.debug(" *** C-Message ***");
@@ -74,8 +72,8 @@ public final class C_Message extends Message {
 		deviceType = DeviceType.create(data[4]);
 
 		serialNumber = getSerialNumber(bytes);
-		if (deviceType == DeviceType.HeatingThermostatPlus || deviceType == DeviceType.HeatingThermostat)  ParseHeatingThermostatPlusData (bytes);
-		if (deviceType == DeviceType.EcoSwitch || deviceType == DeviceType.WallMountedThermostat)  logger.trace("Data:" + ParseData (bytes));
+		if (deviceType == DeviceType.HeatingThermostatPlus || deviceType == DeviceType.HeatingThermostat || deviceType == DeviceType.WallMountedThermostat)  parseHeatingThermostatData (bytes);
+		if (deviceType == DeviceType.EcoSwitch || deviceType == DeviceType.ShutterContact)  logger.trace("Data:" + parseData (bytes));
 	}
 
 	private String getSerialNumber(byte[] bytes) {
@@ -94,74 +92,83 @@ public final class C_Message extends Message {
 		return "";
 	}
 
-	private String ParseData(byte[] bytes) {
+	private String parseData(byte[] bytes) {
 		try{
-		int DataStart = 18;
-		byte[] sn = new byte[bytes.length - DataStart];
+			int DataStart = 18;
+			byte[] sn = new byte[bytes.length - DataStart];
 
-		for (int i = 0; i < sn.length; i++) {
-			sn[i] = (byte) bytes[i + DataStart];
-		}
-		logger.debug("DataBytes: " + Utils.getHex(sn));
-		try {
-			return new String(sn, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			logger.debug("Cannot encode device string from C message due to encoding issues.");
+			for (int i = 0; i < sn.length; i++) {
+				sn[i] = (byte) bytes[i + DataStart];
+			}
+			logger.debug("DataBytes: " + Utils.getHex(sn));
+			try {
+				return new String(sn, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				logger.debug("Cannot encode device string from C message due to encoding issues.");
+			}
+
+		}  catch (Exception e) {
+			logger.debug(e.getMessage());
+			logger.debug(Utils.getStackTrace(e));
 		}
 
-	}  catch (Exception e) {
-		logger.debug(e.getMessage());
-		logger.debug(Utils.getStackTrace(e));
-	}
-	
 		return "";
 	}
 
-	private void ParseHeatingThermostatPlusData(byte[] bytes) {
+	private void parseHeatingThermostatData(byte[] bytes) {
 		try{
-			int PlusDataStart = 18;
-			TempComfort= Float.toString( bytes[PlusDataStart ]/2);
-			TempEco = Float.toString( bytes[PlusDataStart + 1]/2);
-			TempSetpointMax=  Float.toString( bytes[PlusDataStart + 2]/2);
-			TempSetpointMin=  Float.toString( bytes[PlusDataStart + 3]/2);
-			TempOffset =  Double.toString( (bytes[PlusDataStart +4 ]/2) - 3.5);
-			TempOpenWindow =  Float.toString( bytes[PlusDataStart + 5]/2);
-			DurationOpenWindow =  Float.toString( bytes[PlusDataStart + 6]);
-			BoostDuration =  Float.toString( bytes[PlusDataStart + 7]&0xFF >> 5 );
-			BoostValve =  Float.toString( (bytes[PlusDataStart + 7]&0x1F)*5);
-			Decalcification =  Float.toString( bytes[PlusDataStart + 8]);
-			ValveMaximum = Float.toString( bytes[PlusDataStart + 9]&0xFF * 100 / 255);
-			ValveOffset = Float.toString( bytes[PlusDataStart+ 10]&0xFF * 100 / 255 );
-
-			ProgramData = "";
+			int plusDataStart = 18;
+			int programDataStart = 11;
+			tempComfort= Float.toString( bytes[plusDataStart ]/2);
+			tempEco = Float.toString( bytes[plusDataStart + 1]/2);
+			tempSetpointMax=  Float.toString( bytes[plusDataStart + 2]/2);
+			tempSetpointMin=  Float.toString( bytes[plusDataStart + 3]/2);
+			if (bytes.length < 211) {
+				// Device is a WallMountedThermostat
+				programDataStart = 7;
+				logger.debug("WallThermo byte 4:     {}", Float.toString( bytes[plusDataStart + 4]&0xFF));
+				logger.debug("WallThermo byte 5:     {}", Float.toString( bytes[plusDataStart + 5]&0xFF));
+				logger.debug("WallThermo byte 6:     {}", Float.toString( bytes[plusDataStart + 6]&0xFF));
+			} else
+			{
+				// Device is a HeatingThermostat(+)
+				tempOffset =  Double.toString( (bytes[plusDataStart +4 ]/2) - 3.5);
+				tempOpenWindow =  Float.toString( bytes[plusDataStart + 5]/2);
+				durationOpenWindow =  Float.toString( bytes[plusDataStart + 6]);
+				boostDuration =  Float.toString( bytes[plusDataStart + 7]&0xFF >> 5 );
+				boostValve =  Float.toString( (bytes[plusDataStart + 7]&0x1F)*5);
+				decalcification =  Float.toString( bytes[plusDataStart + 8]);
+				valveMaximum = Float.toString( bytes[plusDataStart + 9]&0xFF * 100 / 255);
+				valveOffset = Float.toString( bytes[plusDataStart+ 10]&0xFF * 100 / 255 );
+			}
+			programData = "";
 			int ln = 13 * 6; //first day = Sat 
-			String StartTime = "00:00h";
-			for (int char_idx = PlusDataStart + 11; char_idx < bytes.length; char_idx++) {
-				if (ln % 13 == 0 ) { ProgramData += "\r\n Day " + Integer.toString((ln / 13) % 7 ) + ": "; StartTime = "00:00h"; }
-				//ProgramData += Double.toString(bytes[char_idx] /4) + "C till ";
+			String startTime = "00:00h";
+			for (int char_idx = plusDataStart + programDataStart; char_idx < bytes.length; char_idx++) {
+				if (ln % 13 == 0 ) { programData += "\r\n Day " + Integer.toString((ln / 13) % 7 ) + ": "; startTime = "00:00h"; }
 				int ptime =  (bytes[char_idx+1]&0xFF ) * 5 + (bytes[char_idx]&0x01 ) * 1280 ;
 				int pm = ptime % 60;
 				int ph = (ptime - pm ) / 60;
-				String EndTime = Integer.toString(ph) + ":" + String.format("%02d", pm) + "h";
-				ProgramData += StartTime + "-" + EndTime + " " + Double.toString(bytes[char_idx] /4) + "C  ";
-				StartTime = EndTime;
+				String endTime = Integer.toString(ph) + ":" + String.format("%02d", pm) + "h";
+				programData += startTime + "-" + endTime + " " + Double.toString(bytes[char_idx] /4) + "C  ";
+				startTime = endTime;
 				char_idx++;
 				ln++;
 			}
 
-			logger.debug("Temp Comfort:         " + TempComfort);
-			logger.debug("TempEco:              " + TempEco);
-			logger.debug("Temp Setpoint Max:    " + TempSetpointMax);
-			logger.debug("Temp Setpoint Min:    " + TempSetpointMin);
-			logger.debug("Temp Offset:          " + TempOffset);
-			logger.debug("Temp Open Window:     " + TempOpenWindow );
-			logger.debug("Duration Open Window: " + DurationOpenWindow  );
-			logger.debug("Duration Boost:       " + BoostDuration );
-			logger.debug("Boost Valve Pos:      " + BoostValve);
-			logger.debug("Decalcification:      " + Decalcification);
-			logger.debug("ValveMaximum:         " + ValveMaximum );
-			logger.debug("ValveOffset:          " + ValveOffset );
-			logger.debug("ProgramData:          " + ProgramData);
+			logger.debug("Temp Comfort:         {}", tempComfort);
+			logger.debug("TempEco:              {}", tempEco);
+			logger.debug("Temp Setpoint Max:    {}", tempSetpointMax);
+			logger.debug("Temp Setpoint Min:    {}", tempSetpointMin);
+			logger.debug("Temp Offset:          {}", tempOffset);
+			logger.debug("Temp Open Window:     {}", tempOpenWindow );
+			logger.debug("Duration Open Window: {}", durationOpenWindow  );
+			logger.debug("Duration Boost:       {}", boostDuration );
+			logger.debug("Boost Valve Pos:      {}", boostValve);
+			logger.debug("Decalcification:      {}", decalcification);
+			logger.debug("ValveMaximum:         {}", valveMaximum );
+			logger.debug("ValveOffset:          {}", valveOffset );
+			logger.debug("ProgramData:          {}", programData);
 		}  catch (Exception e) {
 			logger.debug(e.getMessage());
 			logger.debug(Utils.getStackTrace(e));

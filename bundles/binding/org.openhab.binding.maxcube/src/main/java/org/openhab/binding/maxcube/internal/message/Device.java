@@ -108,7 +108,9 @@ public abstract class Device {
 		device.setPanelLocked(bits2[5]);
 		device.setLinkStatusError(bits2[6]);
 		device.setBatteryLow(bits2[7]);
-
+		int b = raw.length;
+		logger.trace ("Device {} L Message length: {} content: {}", rfAddress,raw.length,Utils.getHex(raw));
+		logger.trace ("values {} = {}, {} = {}, {} = {} ",  b-3, (raw[b-3] & 0xFF),b-2, (raw[b-2] & 0xFF), b-1, (raw[b-1] & 0xFF));
 		// TODO move the device specific readings into the sub classes
 		switch (device.getType()) {
 		case WallMountedThermostat:
@@ -139,9 +141,18 @@ public abstract class Device {
 			int timeValue = raw[10] & 0xFF;
 			Date date = Utils.resolveDateTime(dateValue, timeValue);
 			heatingThermostat.setDateSetpoint(date);
+			
+			if (device.getType() == DeviceType.WallMountedThermostat) {
+			logger.debug ("Actual Temperature WallMountedThermostat: {}",  (double)(( (raw[raw.length -3] & 0xFF ) * 256 )+ (raw[raw.length -2] & 0xFF )) / 10);
+			heatingThermostat.setTemperatureActual( ( (raw[raw.length -2] & 0xFF ) * 256 ) + ( raw[raw.length -1] & 0xFF ));
+			logger.debug ("Actual Temperature: {}", heatingThermostat.getTemperatureActual().toString());
+			} else {
+			logger.debug ("Actual Temperature: {}",  (double)(( (raw[raw.length -3] & 0xFF ) * 256 )+ (raw[raw.length -2] & 0xFF )) / 10);
+			heatingThermostat.setTemperatureActual( ( (raw[raw.length -3] & 0xFF ) * 256 ) + ( raw[raw.length -2] & 0xFF ));
+			logger.debug ("Actual Temperature: {}", heatingThermostat.getTemperatureActual().toString());
+			}
 			break;
 		case EcoSwitch:
-			
 			String eCoSwitch = Utils.toHex(raw[3] & 0xFF, raw[4] & 0xFF, raw[5] & 0xFF);
 			logger.debug ("EcoSwitch Device {} status bytes : {}", rfAddress, eCoSwitch);
 			break;
@@ -160,6 +171,7 @@ public abstract class Device {
 
 			break;
 		default:
+			logger.debug("Unhandled Device. DataBytes: " + Utils.getHex(raw));
 			break;
 
 		}

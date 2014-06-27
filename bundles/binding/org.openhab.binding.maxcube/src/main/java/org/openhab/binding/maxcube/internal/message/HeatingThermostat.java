@@ -8,12 +8,10 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
-import org.openhab.binding.maxcube.internal.Utils;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
@@ -28,11 +26,14 @@ public class HeatingThermostat extends Device {
 	private ThermostatModeType mode;
 
 	/** Valve position in % */
-	private int valuvePosition;
+	private int valvePosition;
 
 	/** Temperature setpoint in degrees celcius */
 	private double temperatureSetpoint;
 
+	/** Actual Temperature in degrees celcius */
+	private double temperatureActual;
+	
 	/** Date setpoint until the termperature setpoint is valid */
 	private Date dateSetpoint;
 
@@ -80,7 +81,7 @@ public class HeatingThermostat extends Device {
 	 * @param valvePosition the valve position as provided by the L message
 	 */
 	public void setValvePosition(int valvePosition) {
-		this.valuvePosition = valvePosition;
+		this.valvePosition = valvePosition;
 	}
 	
 	/**
@@ -90,13 +91,32 @@ public class HeatingThermostat extends Device {
 	 * 			the valve position as <code>DecimalType</code>
 	 */
 	public DecimalType getValvePosition() {
-		return new DecimalType(this.valuvePosition);
+		return new DecimalType(this.valvePosition);
 	}
 
 	public void setDateSetpoint(Date date) {
 		this.dateSetpoint = date;
 	}
 
+	/**
+	 * Sets the actual temperature for this thermostat. 
+	 * @param value the actual temperature raw value as provided by the L message
+	 */
+	public void setTemperatureActual(int value) {
+		this.temperatureActual = (double)value / 10;
+	}
+	
+	/**
+	 * Returns the measured temperature  of this thermostat. 
+	 * 0°C is displayed if no actual is measured. Temperature is only updated after valve position changes
+	 *
+	 * @return 
+	 * 			the actual temperature as <code>DecimalType</code>
+	 */
+	public State getTemperatureActual() {
+		return new DecimalType(this.temperatureActual);
+	}
+	
 	/**
 	 * Sets the setpoint temperature for this thermostat. 
 	 * @param value the setpoint temperature raw value as provided by the L message
