@@ -113,7 +113,7 @@ public class DimmerOnOffProfile extends BasicProfile {
 
     private class DimmerThread extends Thread {
 
-        private static final int MAX_LOOPS = 10;
+        private static final int MAX_LOOPS = 80;
 
         private static final long SLEEP_PERIOD_MS = 300;
 
@@ -134,6 +134,7 @@ public class DimmerOnOffProfile extends BasicProfile {
         @Override
         public void run() {
             while (mayRun()) {
+            	currentLoop++;
                 try {
                     Thread.sleep(SLEEP_PERIOD_MS);
                 } catch (InterruptedException e) {
@@ -142,13 +143,13 @@ public class DimmerOnOffProfile extends BasicProfile {
                 if (!mayRun()) {
                     return;
                 }
-                logger.debug("Post new value {} for items {}", command, items);
+                logger.debug("Post new value {} for items {}.", command, items);
                 postCommand(command);
             }
         }
 
         private boolean mayRun() {
-            return running && (currentLoop++ <= MAX_LOOPS);
+            return running && (currentLoop <= MAX_LOOPS);
         }
 
     }
