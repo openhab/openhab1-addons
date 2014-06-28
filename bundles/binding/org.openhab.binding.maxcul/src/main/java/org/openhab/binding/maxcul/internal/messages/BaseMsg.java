@@ -120,6 +120,27 @@ public class BaseMsg {
 	 */
 	public BaseMsg(byte msgCount, byte msgFlag, MaxCulMsgType msgType, byte groupId, String srcAddr, String dstAddr)
 	{
+		buildHeader(msgCount,msgFlag, msgType, groupId, srcAddr, dstAddr);
+	}
+
+	/**
+	 * This constructor creates a raw message ready for sending.
+	 * @param msgCount Message Counter
+	 * @param msgFlag Message flag
+	 * @param msgType the message type
+	 * @param groupId Group ID
+	 * @param srcAddr Source address of controller
+	 * @param dstAddr Dest addr of device
+	 * @param payload payload of message
+	 */
+	public BaseMsg(byte msgCount, byte msgFlag, MaxCulMsgType msgType, byte groupId, String srcAddr, String dstAddr, byte[] payload)
+	{
+		this(msgCount,msgFlag, msgType, groupId, srcAddr, dstAddr);
+		appendPayload(payload);
+	}
+
+	private void buildHeader (byte msgCount, byte msgFlag, MaxCulMsgType msgType, byte groupId, String srcAddr, String dstAddr)
+	{
 		StringBuilder sb = new StringBuilder();
 
 		this.msgCount = msgCount;
@@ -150,24 +171,14 @@ public class BaseMsg {
 		this.rawMsg = sb.toString();
 	}
 
-	/**
-	 * This constructor creates a raw message ready for sending.
-	 * @param msgCount Message Counter
-	 * @param msgFlag Message flag
-	 * @param msgType the message type
-	 * @param groupId Group ID
-	 * @param srcAddr Source address of controller
-	 * @param dstAddr Dest addr of device
-	 * @param payload payload of message
-	 */
-	public BaseMsg(byte msgCount, byte msgFlag, MaxCulMsgType msgType, byte groupId, String srcAddr, String dstAddr, byte[] payload)
+	synchronized protected void appendPayload(byte[] payload)
 	{
-		this(msgCount,msgFlag, msgType, groupId, srcAddr, dstAddr);
-		appendPayload(payload);
-	}
-
-	protected void appendPayload(byte[] payload)
-	{
+		if (this.flgReadyToSend)
+		{
+			/* clear out old payload - we're updating */
+			this.flgReadyToSend = false;
+			this.buildHeader(msgCount,msgFlag, msgType, groupid, srcAddrStr, dstAddrStr);
+		}
 		StringBuilder sb = new StringBuilder(this.rawMsg);
 		this.flgReadyToSend = true;
 		this.payload = payload;

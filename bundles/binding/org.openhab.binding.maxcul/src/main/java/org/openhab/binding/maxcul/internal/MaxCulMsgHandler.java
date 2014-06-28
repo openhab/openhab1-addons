@@ -171,8 +171,8 @@ public class MaxCulMsgHandler implements CULListener {
 
 				timer = new Timer();
 				timers.put(qi, timer);
-				/* calculate when we want to TX this item in the queue, with a margin of 2 credits*/
-				this.endOfQueueTransmit = new Date(this.endOfQueueTransmit.getTime() + ((msg.requiredCredit()+2)*10));
+				/* calculate when we want to TX this item in the queue, with a margin of 2 credits. x1000 as we accumulate 1 x 10ms credit every 1000ms */
+				this.endOfQueueTransmit = new Date(this.endOfQueueTransmit.getTime() + ((msg.requiredCredit()+2)*1000));
 				timer.schedule(task, this.endOfQueueTransmit);
 				this.sendQueue.add(qi);
 
