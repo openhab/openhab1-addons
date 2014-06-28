@@ -8,6 +8,11 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The configuration required for Jpa binding.
+ * @author mbergmann
+ *
+ */
 public class JpaConfiguration implements ManagedService {
 	private static final Logger logger = LoggerFactory.getLogger(JpaConfiguration.class);
 

@@ -32,6 +32,11 @@ import org.openhab.persistence.jpa.internal.model.JpaPersistentItem;
  *
  */
 
+/**
+ * The historic item as returned when querying the service.
+ * @author mbergmann
+ *
+ */
 public class JpaHistoricItem implements HistoricItem {
 
 	final private String name;
@@ -61,6 +66,12 @@ public class JpaHistoricItem implements HistoricItem {
 		return DateFormat.getDateTimeInstance().format(timestamp) + ": " + name + " -> "+ state.toString();
 	}
 
+	/**
+	 * This method maps a jpa result item to this historic item.
+	 * @param jpaQueryResult the result which jpa items
+	 * @param item used for query information, like the state (State)
+	 * @return list of historic items
+	 */
 	public static List<HistoricItem> fromResultList(List<JpaPersistentItem> jpaQueryResult, Item item) {
 		List<HistoricItem> ret = new ArrayList<HistoricItem>();
 		for(JpaPersistentItem i : jpaQueryResult) {

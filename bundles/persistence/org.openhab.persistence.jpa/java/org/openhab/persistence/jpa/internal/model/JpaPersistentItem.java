@@ -16,6 +16,7 @@ import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.types.State;
 
 /**
+ * This is the DAO object used for storing and retrieving to and from database.
  * 
  * @author Manfred Bergmann
  * @since 1.6.0
@@ -34,7 +35,7 @@ public class JpaPersistentItem implements HistoricItem {
 	private String realName;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timestamp;
-	@Column(length = 200000)
+	@Column(length = 32672) // 32k
 	private String value;
 
 	public Long getId() {

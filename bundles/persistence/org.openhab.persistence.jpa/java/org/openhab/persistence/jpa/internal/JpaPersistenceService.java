@@ -58,6 +58,9 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		logger.debug("Activating jpa binding...done");
 	}
 
+	/**
+	 * Closes the EntityPersistenceFactory
+	 */
 	public void deactivate() {
 		logger.debug("Deactivating jpa binding...");
 		closeEntityManagerFactory();
@@ -196,6 +199,10 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		return Collections.emptyList();			
 	}
 	
+	/**
+	 * Creates a new EntityManagerFactory with properties read from openhab.cfg via JpaConfiguration.
+	 * @return initialized EntityManagerFactory
+	 */
 	protected EntityManagerFactory newEntityManagerFactory() {
 		logger.debug("Creating EntityManagerFactory...");
 		
@@ -211,6 +218,9 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		return fac;
 	}
 	
+	/**
+	 * Closes EntityManagerFactory
+	 */
 	protected void closeEntityManagerFactory() {
 		if(emf != null) {
 			emf.close();
@@ -219,14 +229,27 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		logger.debug("Closing down entity objects...done");
 	}
 	
+	/**
+	 * Checks if EntityManagerFactory is open
+	 * @return true when open, false otherwise
+	 */
 	protected boolean isEntityManagerFactoryOpen() {
 		return emf != null && emf.isOpen();
 	}
 
+	/**
+	 * Return the persistence unit as in persistence.xml file.
+	 * @return the persistence unit name
+	 */
 	protected String getPersistenceUnitName() {
 		return "default";
 	}
 
+	/**
+	 * Retrieves the item for the given name from the item registry
+	 * @param itemName
+	 * @return
+	 */
 	private Item getItemFromRegistry(String itemName) {
 		Item item = null;
 		try {

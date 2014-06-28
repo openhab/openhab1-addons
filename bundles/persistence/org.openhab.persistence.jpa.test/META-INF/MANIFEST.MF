@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for the JPA Persistence Bundle
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-SymbolicName: org.openhab.persistence.jpa.test
+Bundle-Version: 1.6.0.qualifier
+Bundle-Vendor: openHAB.org
+Fragment-Host: org.openhab.persistence.jpa
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit;bundle-version="4.8.1"
+Import-Package: org.apache.commons.io
+Bundle-ClassPath: lib/derby.jar,
+ .
