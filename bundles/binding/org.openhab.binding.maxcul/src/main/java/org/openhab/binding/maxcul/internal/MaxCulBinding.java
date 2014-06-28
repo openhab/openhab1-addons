@@ -17,6 +17,7 @@ import java.util.TimerTask;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.maxcul.MaxCulBindingProvider;
+import org.openhab.binding.maxcul.internal.message.sequencers.PairingInitialisationSequence;
 import org.openhab.binding.maxcul.internal.messages.BaseMsg;
 import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcessor;
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
@@ -69,8 +70,9 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	/**
 	 * This sets the address of the controller i.e. us!
 	 */
-	private String srcAddr = "010203";
+	private final String srcAddr = "010203";
 	private final String BROADCAST_ADDRESS = "000000";
+	private final byte DEFAULT_GROUP_ID = 0x1;
 
 	/**
 	 * Flag to indicate if we are in pairing mode. Default timeout
@@ -152,61 +154,71 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 		if (bindingConfig != null) {
 			logger.debug("Found config for "+itemName);
 
-			if (bindingConfig.deviceType == MaxCulDevice.PAIR_MODE && (command instanceof OnOffType))
+			switch (bindingConfig.deviceType)
 			{
-				switch ((OnOffType)command)
-				{
-					case ON:
-						/* turn on pair mode and schedule disabling of pairing mode */
-						pairMode = true;
-						TimerTask task = new TimerTask() {
-                            public void run() {
-                            	logger.debug(itemName+" pairMode time out executed");
-                                pairMode = false;
-                                eventPublisher.postUpdate(itemName, OnOffType.OFF);
-                            }
-						};
-						timer = timers.get(itemName);
-						if(timer!=null) {
-                            timer.cancel();
-                            timers.remove(itemName);
+				case PAIR_MODE:
+					if ((command instanceof OnOffType))
+					{
+						switch ((OnOffType)command)
+						{
+						case ON:
+							/* turn on pair mode and schedule disabling of pairing mode */
+							pairMode = true;
+							TimerTask task = new TimerTask() {
+								public void run() {
+									logger.debug(itemName+" pairMode time out executed");
+									pairMode = false;
+									eventPublisher.postUpdate(itemName, OnOffType.OFF);
+								}
+							};
+							timer = timers.get(itemName);
+							if(timer!=null) {
+								timer.cancel();
+								timers.remove(itemName);
+							}
+							timer = new Timer();
+							timers.put(itemName, timer);
+							timer.schedule(task, pairModeTimeout);
+							logger.debug(itemName+" pairMode enabled & timeout scheduled");
+							break;
+						case OFF:
+							/* we are manually disabling, so clear the timer and the flag */
+							pairMode = false;
+							timer = timers.get(itemName);
+							if(timer!=null) {
+								logger.debug(itemName+" pairMode timer cancelled");
+								timer.cancel();
+								timers.remove(itemName);
+							}
+							logger.debug(itemName+" pairMode cleared");
+							break;
 						}
-						timer = new Timer();
-						timers.put(itemName, timer);
-						timer.schedule(task, pairModeTimeout);
-						logger.debug(itemName+" pairMode enabled & timeout scheduled");
-						break;
-					case OFF:
-						/* we are manually disabling, so clear the timer and the flag */
-						pairMode = false;
-						timer = timers.get(itemName);
-						if(timer!=null) {
-							logger.debug(itemName+" pairMode timer cancelled");
-                            timer.cancel();
-                            timers.remove(itemName);
+					} else logger.warn("Command not handled for "+bindingConfig.deviceType+" that is not OnOffType");
+					break;
+				case LISTEN_MODE:
+					if (command instanceof OnOffType)
+					{
+						this.messageHandler.setListenMode(((OnOffType)command == OnOffType.ON));
+					} else logger.warn("Command not handled for "+bindingConfig.deviceType+" that is not OnOffType");
+					break;
+				case RADIATOR_THERMOSTAT:
+				case RADIATOR_THERMOSTAT_PLUS:
+				case WALL_THERMOSTAT:
+					if (bindingConfig.feature == MaxCulFeature.THERMOSTAT)
+					{
+						if (command instanceof OnOffType)
+						{
+							// TODO handle setting thermostat to On or Off
+						} else if (command instanceof DecimalType)
+						{
+							// TODO handle sending temperature to device
 						}
-						logger.debug(itemName+" pairMode cleared");
-						break;
-				}
+					} else logger.warn("Command not handled for "+bindingConfig.deviceType+" that is not OnOffType or DecimalType");
+					break;
+				default:
+					logger.warn("Command not handled for "+bindingConfig.deviceType);
+					break;
 			}
-			else if (bindingConfig.deviceType == MaxCulDevice.LISTEN_MODE && (command instanceof OnOffType))
-			{
-				this.messageHandler.setListenMode(((OnOffType)command == OnOffType.ON));
-			}
-			else if ((bindingConfig.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT ||
-					bindingConfig.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT_PLUS ||
-					bindingConfig.deviceType == MaxCulDevice.WALL_THERMOSTAT) &&
-					bindingConfig.feature == MaxCulFeature.THERMOSTAT)
-			{
-				if (command instanceof OnOffType)
-				{
-					// TODO handle setting thermostat to On or Off
-				} else if (command instanceof DecimalType)
-				{
-					// TODO handle sending temperature to device
-				}
-			}
-			else logger.warn("Command ignored as it doesn't make sense");
 		}
 	}
 
@@ -287,33 +299,29 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	}
 
 	@Override
-	public void MaxCulMsgReceived(String data) {
+	public void MaxCulMsgReceived(String data, boolean isBroadcast) {
 		logger.debug("Received data from CUL: "+data);
 
 		MaxCulMsgType msgType = BaseMsg.getMsgType(data);
 		/* Check if it's broadcast and we're in pair mode or a PAIR_PING message directly for us */
-		if (((pairMode && BaseMsg.isForUs(data, this.BROADCAST_ADDRESS))
+		if (((pairMode && isBroadcast)
 				|| BaseMsg.isForUs(data, this.srcAddr))
 				&& msgType == MaxCulMsgType.PAIR_PING)
 		{
 			logger.debug("Got PAIR_PING message");
 			/* process packet */
 			PairPingMsg pkt = new PairPingMsg(data);
-			/* is it valid? and is this for us? or a broadcast? */
-			if (pkt.len > 0 && (pkt.dstAddrStr.compareToIgnoreCase(this.srcAddr) == 0 || (pkt.dstAddrStr.compareToIgnoreCase(BROADCAST_ADDRESS) == 0)))
-			{
-				/* Match serial number to binding configuration */
-				Collection<MaxCulBindingConfig> bindingConfigs = getBindingsBySerial(pkt.serial);
 
-				/* Set pairing information */
-				for (MaxCulBindingConfig bc : bindingConfigs)
-					bc.setPairedInfo(pkt.srcAddrStr); /* where it came from gives the addr of the device */
+			/* Match serial number to binding configuration */
+			Collection<MaxCulBindingConfig> bindingConfigs = getBindingsBySerial(pkt.serial);
 
-				/* send response to unit */
-				messageHandler.sendPairPong(pkt.srcAddrStr);
-			} else {
-				logger.debug("Got pairing message for another controller");
-			}
+			/* Set pairing information */
+			for (MaxCulBindingConfig bc : bindingConfigs)
+				bc.setPairedInfo(pkt.srcAddrStr); /* where it came from gives the addr of the device */
+
+			/* start the initialisation sequence */
+			PairingInitialisationSequence ps = new PairingInitialisationSequence(this.DEFAULT_GROUP_ID, this.tzStr, messageHandler);
+			messageHandler.startSequence(ps, pkt);
 		}
 		else
 		{

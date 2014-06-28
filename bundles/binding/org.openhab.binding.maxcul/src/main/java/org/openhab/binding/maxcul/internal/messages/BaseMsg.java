@@ -1,5 +1,6 @@
 package org.openhab.binding.maxcul.internal.messages;
 
+import org.openhab.binding.maxcul.internal.message.sequencers.MessageSequencer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +57,7 @@ public class BaseMsg {
 
 	private final static int PKT_POS_PAYLOAD_START = PKT_POS_GROUP_ID + PKT_POS_GROUP_ID_LEN;
 
+	private MessageSequencer msgSequencer = null;
 
 	/**
 	 * Constructor based on received message
@@ -243,17 +245,6 @@ public class BaseMsg {
 		return this.flgReadyToSend;
 	}
 
-	public boolean requireCallback;
-
-	/**
-	 * Function called when requireCallback is set and a response is received associated with
-	 * this message
-	 */
-	public void callBack()
-	{
-		/* Do nothing */
-	}
-
 	/**
 	 * Print the payload out for debug
 	 */
@@ -292,5 +283,32 @@ public class BaseMsg {
 		printMessageHeader();
 		printFormattedPayload();
 
+	}
+
+	/**
+	 * Set this message to be part of a message sequence
+	 * @param msgSeq MessageSequence to associate with message
+	 */
+	public void setMessageSequencer(MessageSequencer msgSeq)
+	{
+		msgSequencer = msgSeq;
+	}
+
+	/**
+	 * Get the Message Sequencer associated with this message
+	 * @return MessageSequencer associated with message
+	 */
+	public MessageSequencer getMessageSequencer()
+	{
+		return msgSequencer;
+	}
+
+	/**
+	 * Check if this message is part of a sequence
+	 * @return true if part of sequence
+	 */
+	public boolean isPartOfSequence()
+	{
+		return (msgSequencer != null);
 	}
 }

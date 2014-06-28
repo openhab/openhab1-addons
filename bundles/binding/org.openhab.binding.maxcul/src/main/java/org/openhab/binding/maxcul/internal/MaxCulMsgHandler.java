@@ -13,9 +13,13 @@ import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcesso
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
 import org.openhab.binding.maxcul.internal.messages.PairPongMsg;
+import org.openhab.binding.maxcul.internal.messages.SetGroupIdMsg;
 import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
 import org.openhab.binding.maxcul.internal.messages.TimeInfoMsg;
+import org.openhab.binding.maxcul.internal.messages.WakeupMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
+import org.openhab.binding.maxcul.internal.message.sequencers.MessageSequencer;
+import org.openhab.binding.maxcul.internal.message.sequencers.PairingInitialisationSequence;
 import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULHandler;
 import org.openhab.io.transport.cul.CULListener;
@@ -47,7 +51,7 @@ public class MaxCulMsgHandler implements CULListener {
 	private int msgCount = 0;
 	private CULHandler cul = null;
 	private String srcAddr;
-	private HashMap<Integer, BaseMsg> callbackRegister;
+	private HashMap<Byte, MessageSequencer> sequenceRegister;
 	private LinkedList<SenderQueueItem> sendQueue;
 	private HashMap<Byte, SenderQueueItem> pendingAckQueue;
 	private MaxCulBindingMessageProcessor mcbmp = null;
@@ -64,7 +68,7 @@ public class MaxCulMsgHandler implements CULListener {
 		this.cul = cul;
 		cul.registerListener(this);
 		this.srcAddr = srcAddr;
-		this.callbackRegister = new HashMap<Integer, BaseMsg>();
+		this.sequenceRegister = new HashMap<Byte, MessageSequencer>();
 		this.sendQueue = new LinkedList<SenderQueueItem>();
 		this.pendingAckQueue = new HashMap<Byte, SenderQueueItem>();
 		this.lastTransmit = new Date(); /* init as now */
@@ -121,7 +125,6 @@ public class MaxCulMsgHandler implements CULListener {
 		if (data.msgType != MaxCulMsgType.ACK)
 		{
 			/* awaiting ack now */
-			// TODO different behaviour if callback
 			SenderQueueItem qi = new SenderQueueItem();
 			qi.msg = data;
 			qi.expiry = new Date(this.lastTransmit.getTime()+MESSAGE_EXPIRY_PERIOD);
@@ -129,7 +132,11 @@ public class MaxCulMsgHandler implements CULListener {
 		}
 	}
 
-	private void sendMessage( BaseMsg msg )
+	/**
+	 * Send a raw Base Message
+	 * @param msg Base message to send
+	 */
+	public void sendMessage( BaseMsg msg )
 	{
 		Timer timer = null;
 
@@ -171,6 +178,13 @@ public class MaxCulMsgHandler implements CULListener {
 
 				logger.debug("Added message to queue to be TX'd at "+this.endOfQueueTransmit.toString());
 			}
+
+			if (msg.isPartOfSequence())
+			{
+				/* add to sequence register if part of a sequence */
+				logger.debug("Message "+msg.msgCount+" is part of sequence. Adding to register.");
+				sequenceRegister.put(msg.msgCount, msg.getMessageSequencer());
+			}
 		} else logger.debug("Tried to send a message that wasn't ready!");
 	}
 
@@ -197,8 +211,13 @@ public class MaxCulMsgHandler implements CULListener {
 		{
 			if (now.after(qi.expiry))
 			{
-				logger.error("Packet lost - timeout");
-				pendingAckQueue.remove(qi.msg.msgCount);
+				logger.error("Packet "+qi.msg.msgCount+" ("+qi.msg.msgType+") lost - timeout");
+				pendingAckQueue.remove(qi.msg.msgCount); // remove from ACK queue
+				if (sequenceRegister.containsKey(qi.msg.msgCount))
+				{
+					sequenceRegister.get(qi.msg.msgCount).packetLost(qi.msg);
+					sequenceRegister.remove(qi.msg.msgCount);
+				}
 			}
 		}
 	}
@@ -272,8 +291,8 @@ public class MaxCulMsgHandler implements CULListener {
 					{
 						SenderQueueItem qi = pendingAckQueue.remove(msg.msgCount);
 						/* verify ACK */
-						if ((qi.msg.dstAddrStr.compareToIgnoreCase(msg.srcAddrStr) == 0) &&
-								(qi.msg.srcAddrStr.compareToIgnoreCase(msg.dstAddrStr) == 0))
+						if ((qi.msg.dstAddrStr.equalsIgnoreCase(msg.srcAddrStr)) &&
+								(qi.msg.srcAddrStr.equalsIgnoreCase(msg.dstAddrStr)))
 								{
 									if (msg.getIsNack())
 									{
@@ -284,6 +303,14 @@ public class MaxCulMsgHandler implements CULListener {
 
 								}
 					} else logger.info("Got ACK for message "+msg.msgCount+" but it wasn't in the queue");
+
+					if (sequenceRegister.containsKey(new BaseMsg(data).msgCount))
+					{
+						/* message found in sequence register, so it will be handled by the sequence */
+						BaseMsg bMsg = new BaseMsg(data);
+						logger.debug("Message "+bMsg.msgCount+" is part of sequence. Running next step in sequence.");
+						sequenceRegister.get(bMsg.msgCount).runSequencer(bMsg);
+					}
 				}
 				else if (msgType == MaxCulMsgType.TIME_INFO)
 				{
@@ -291,10 +318,17 @@ public class MaxCulMsgHandler implements CULListener {
 					TimeInfoMsg msg = new TimeInfoMsg(data);
 					sendTimeInfo(msg.srcAddrStr, this.tzStr);
 				}
+				else if (sequenceRegister.containsKey(new BaseMsg(data).msgCount))
+				{
+					/* message found in sequence register, so it will be handled by the sequence */
+					BaseMsg bMsg = new BaseMsg(data);
+					logger.debug("Message "+bMsg.msgCount+" is part of sequence. Running next step in sequence.");
+					sequenceRegister.get(bMsg.msgCount).runSequencer(bMsg);
+				}
 				else
 				{
 					/* pass data to binding for processing */
-					this.mcbmp.MaxCulMsgReceived(data);
+					this.mcbmp.MaxCulMsgReceived(data, false);
 				}
 
 				/* TODO look for any messages that have a matching entry in the callback register */
@@ -305,10 +339,10 @@ public class MaxCulMsgHandler implements CULListener {
 				{
 				case PAIR_PING:
 				case WALL_THERMOSTAT_CONTROL:
-					this.mcbmp.MaxCulMsgReceived(data);
+					this.mcbmp.MaxCulMsgReceived(data, true);
 					break;
 				default:
-					/* TODO handle broadcast */
+					/* TODO handle other broadcast */
 					logger.debug("Unhandled broadcast message of type "+BaseMsg.getMsgType(data).toString());
 					break;
 
@@ -325,13 +359,44 @@ public class MaxCulMsgHandler implements CULListener {
 	}
 
 	/**
-	 * Send response to PairPing
+	 * Send response to PairPing as part of a message sequence
 	 * @param dstAddr Address of device to respond to
+	 * @param msgSeq Message sequence to associate
 	 */
-	public void sendPairPong(String dstAddr)
+	public void sendPairPong(String dstAddr, MessageSequencer msgSeq)
 	{
 		PairPongMsg pp = new PairPongMsg(getMessageCount(), (byte)0, (byte) 0, this.srcAddr, dstAddr);
+		pp.setMessageSequencer(msgSeq);
 		sendMessage(pp);
+	}
+
+	public void sendPairPong(String dstAddr)
+	{
+		sendPairPong(dstAddr,null);
+	}
+
+	/**
+	 * Send a wakeup message as part of a message sequence
+	 * @param dstAddr Address of device to respond to
+	 * @param msgSeq Message sequence to associate
+	 */
+	public void sendWakeup(String devAddr, MessageSequencer msgSeq) {
+		WakeupMsg msg = new WakeupMsg(getMessageCount(), (byte)0x0, (byte) 0, this.srcAddr, devAddr);
+		msg.setMessageSequencer(msgSeq);
+		sendMessage(msg);
+	}
+
+	/**
+	 * Send time information to device that has requested it as part of a message sequence
+	 * @param dstAddr Address of device to respond to
+	 * @param tzStr Time Zone String
+	 * @param msgSeq Message sequence to associate
+	 */
+	public void sendTimeInfo(String dstAddr, String tzStr, MessageSequencer msgSeq)
+	{
+		TimeInfoMsg msg = new TimeInfoMsg(getMessageCount(), (byte)0x0, (byte) 0, this.srcAddr, dstAddr, tzStr);
+		msg.setMessageSequencer(msgSeq);
+		sendMessage(msg);
 	}
 
 	/**
@@ -341,7 +406,18 @@ public class MaxCulMsgHandler implements CULListener {
 	 */
 	public void sendTimeInfo(String dstAddr, String tzStr)
 	{
-		TimeInfoMsg msg = new TimeInfoMsg(getMessageCount(), (byte)0x0, (byte) 0, this.srcAddr, dstAddr, tzStr);
+		sendTimeInfo(dstAddr, tzStr, null);
+	}
+
+	/**
+	 * Set the group ID on a device
+	 * @param devAddr Address of device to set group ID on
+	 * @param group_id Group id to set
+	 * @param msgSeq Message sequence to associate
+	 */
+	public void sendSetGroupId(String devAddr, byte group_id, MessageSequencer msgSeq) {
+		SetGroupIdMsg msg = new SetGroupIdMsg(getMessageCount(), (byte)0x0, this.srcAddr, devAddr, group_id);
+		msg.setMessageSequencer(msgSeq);
 		sendMessage(msg);
 	}
 
@@ -380,5 +456,14 @@ public class MaxCulMsgHandler implements CULListener {
 	{
 		this.tzStr = tzStr;
 	}
+
+	public void startSequence(PairingInitialisationSequence ps, BaseMsg msg)
+	{
+		ps.runSequencer(msg);
+	}
+
+
+
+
 
 }

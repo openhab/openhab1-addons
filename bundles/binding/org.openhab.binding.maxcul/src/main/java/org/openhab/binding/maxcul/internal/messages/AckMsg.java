@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AckMsg extends BaseMsg {
 
-	final static private int ACK_MSG_PAYLOAD_LEN = 1;
+	final static private int ACK_MSG_PAYLOAD_LEN = 2;
 	private boolean isNack;
 
 	private static final Logger logger =
@@ -48,6 +48,7 @@ public class AckMsg extends BaseMsg {
 	@Override
 	protected void printFormattedPayload()
 	{
-		logger.debug("Is ACK? => "+(!this.isNack));
+		logger.debug("\tIs ACK?                  => "+(!this.isNack));
+		logger.debug("\tUnknown ACK payload byte => "+this.payload[1]);
 	}
 }
