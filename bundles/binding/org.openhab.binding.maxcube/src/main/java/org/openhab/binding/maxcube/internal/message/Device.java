@@ -62,12 +62,17 @@ public abstract class Device {
 				switch (c.getDeviceType()) {
 				case HeatingThermostatPlus:
 				case HeatingThermostat:
-					return new HeatingThermostat(c);
+					HeatingThermostat thermostat = new HeatingThermostat(c);
+					thermostat.setType(c.getDeviceType());
+					return thermostat;
 				case EcoSwitch:
+					return new EcoSwitch(c);
 				case ShutterContact:
 					return new ShutterContact(c);
 				case WallMountedThermostat:
-					return new WallMountedThermostat(c);
+					WallMountedThermostat wallThermostat = new WallMountedThermostat(c);
+					wallThermostat.setType(c.getDeviceType());
+					return wallThermostat;
 				default:
 					return new UnsupportedDevice(c);
 				}
@@ -108,9 +113,9 @@ public abstract class Device {
 		device.setPanelLocked(bits2[5]);
 		device.setLinkStatusError(bits2[6]);
 		device.setBatteryLow(bits2[7]);
-		int b = raw.length;
+
 		logger.trace ("Device {} L Message length: {} content: {}", rfAddress,raw.length,Utils.getHex(raw));
-		logger.trace ("values {} = {}, {} = {}, {} = {} ",  b-3, (raw[b-3] & 0xFF),b-2, (raw[b-2] & 0xFF), b-1, (raw[b-1] & 0xFF));
+
 		// TODO move the device specific readings into the sub classes
 		switch (device.getType()) {
 		case WallMountedThermostat:
@@ -141,21 +146,27 @@ public abstract class Device {
 			int timeValue = raw[10] & 0xFF;
 			Date date = Utils.resolveDateTime(dateValue, timeValue);
 			heatingThermostat.setDateSetpoint(date);
-			
+
+			logger.debug ("Yeah I'm a {}" , device.getType().toString() );
+			int actualTemp = 0;
 			if (device.getType() == DeviceType.WallMountedThermostat) {
-			logger.debug ("Actual Temperature WallMountedThermostat: {}",  (double)(( (raw[raw.length -3] & 0xFF ) * 256 )+ (raw[raw.length -2] & 0xFF )) / 10);
-			heatingThermostat.setTemperatureActual( ( (raw[raw.length -2] & 0xFF ) * 256 ) + ( raw[raw.length -1] & 0xFF ));
-			logger.debug ("Actual Temperature: {}", heatingThermostat.getTemperatureActual().toString());
+				actualTemp = (raw[11] & 0xFF);
+				if ( actualTemp < 100 ) actualTemp += 256;
 			} else {
-			logger.debug ("Actual Temperature: {}",  (double)(( (raw[raw.length -3] & 0xFF ) * 256 )+ (raw[raw.length -2] & 0xFF )) / 10);
-			heatingThermostat.setTemperatureActual( ( (raw[raw.length -3] & 0xFF ) * 256 ) + ( raw[raw.length -2] & 0xFF ));
-			logger.debug ("Actual Temperature: {}", heatingThermostat.getTemperatureActual().toString());
+				if ( heatingThermostat.getMode() != ThermostatModeType.VACATION && 
+						heatingThermostat.getMode() != ThermostatModeType.BOOST){
+					actualTemp = (raw[8] & 0xFF ) * 256  + ( raw[9] & 0xFF );
+				} else{
+					logger.debug ("No temperature reading in {} mode", heatingThermostat.getMode()) ;
+				}
 			}
+			heatingThermostat.setTemperatureActual(actualTemp);
+			logger.debug ("Actual Temperature : {}",  (double)actualTemp / 10);
+			logger.debug ("Actual Temperature: {}", heatingThermostat.getTemperatureActual().toString());
 			break;
 		case EcoSwitch:
-			String eCoSwitch = Utils.toHex(raw[3] & 0xFF, raw[4] & 0xFF, raw[5] & 0xFF);
-			logger.debug ("EcoSwitch Device {} status bytes : {}", rfAddress, eCoSwitch);
-			break;
+			String eCoSwitchData = Utils.toHex(raw[3] & 0xFF, raw[4] & 0xFF, raw[5] & 0xFF);
+			logger.trace ("EcoSwitch Device {} status bytes : {}", rfAddress, eCoSwitchData);
 		case ShutterContact:
 			ShutterContact shutterContact = (ShutterContact) device;
 			// xxxx xx10 = shutter open, xxxx xx00 = shutter closed

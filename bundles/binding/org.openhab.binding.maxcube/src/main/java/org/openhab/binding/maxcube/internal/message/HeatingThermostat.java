@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
-import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -33,9 +32,12 @@ public class HeatingThermostat extends Device {
 
 	/** Actual Temperature in degrees celcius */
 	private double temperatureActual;
-	
+
 	/** Date setpoint until the termperature setpoint is valid */
 	private Date dateSetpoint;
+
+	/** Device type for this thermostat **/
+	private DeviceType deviceType = DeviceType.HeatingThermostat;
 
 	public HeatingThermostat(Configuration c) {
 		super(c);
@@ -43,8 +45,17 @@ public class HeatingThermostat extends Device {
 
 	@Override
 	public DeviceType getType() {
-		return DeviceType.HeatingThermostat;
+		return deviceType;
 	}
+
+	/**
+	 * Sets the DeviceType for this thermostat.
+	 * @param DeviceType the valve position as provided by the L message
+	 */
+	void setType (DeviceType type) {
+		this.deviceType = type;
+	}
+
 
 	@Override
 	public String getName() {
@@ -64,14 +75,14 @@ public class HeatingThermostat extends Device {
 	public StringType getModeString() {
 		return new StringType (this.mode.toString());
 	}
-	
+
 	/**
 	 * Returns the current mode of the thermostat.
 	 */
 	public ThermostatModeType getMode() {
 		return (ThermostatModeType) this.mode;
 	}
-	
+
 	void setMode(ThermostatModeType mode) {
 		this.mode = mode;
 	}
@@ -83,7 +94,7 @@ public class HeatingThermostat extends Device {
 	public void setValvePosition(int valvePosition) {
 		this.valvePosition = valvePosition;
 	}
-	
+
 	/**
 	 * Returns the current valve position  of this thermostat in percent. 
 	 *
@@ -105,7 +116,7 @@ public class HeatingThermostat extends Device {
 	public void setTemperatureActual(int value) {
 		this.temperatureActual = (double)value / 10;
 	}
-	
+
 	/**
 	 * Returns the measured temperature  of this thermostat. 
 	 * 0�C is displayed if no actual is measured. Temperature is only updated after valve position changes
@@ -116,7 +127,7 @@ public class HeatingThermostat extends Device {
 	public State getTemperatureActual() {
 		return new DecimalType(this.temperatureActual);
 	}
-	
+
 	/**
 	 * Sets the setpoint temperature for this thermostat. 
 	 * @param value the setpoint temperature raw value as provided by the L message
@@ -124,7 +135,7 @@ public class HeatingThermostat extends Device {
 	public void setTemperatureSetpoint(int value) {
 		this.temperatureSetpoint = value / 2.0;
 	}
-	
+
 	/**
 	 * Returns the setpoint temperature  of this thermostat. 
 	 * 4.5°C is displayed as OFF, 30.5°C is displayed as On at the thermostat display.
