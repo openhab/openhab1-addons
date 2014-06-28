@@ -70,9 +70,7 @@ public abstract class Device {
 				case ShutterContact:
 					return new ShutterContact(c);
 				case WallMountedThermostat:
-					WallMountedThermostat wallThermostat = new WallMountedThermostat(c);
-					wallThermostat.setType(c.getDeviceType());
-					return wallThermostat;
+					return new WallMountedThermostat(c);
 				default:
 					return new UnsupportedDevice(c);
 				}

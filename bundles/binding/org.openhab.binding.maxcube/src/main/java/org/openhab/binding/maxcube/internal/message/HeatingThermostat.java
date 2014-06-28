@@ -50,7 +50,7 @@ public class HeatingThermostat extends Device {
 
 	/**
 	 * Sets the DeviceType for this thermostat.
-	 * @param DeviceType the valve position as provided by the L message
+	 * @param DeviceType as provided by the C message
 	 */
 	void setType (DeviceType type) {
 		this.deviceType = type;
