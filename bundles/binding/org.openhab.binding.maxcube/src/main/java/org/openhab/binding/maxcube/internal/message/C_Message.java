@@ -73,7 +73,7 @@ public final class C_Message extends Message {
 
 		serialNumber = getSerialNumber(bytes);
 		if (deviceType == DeviceType.HeatingThermostatPlus || deviceType == DeviceType.HeatingThermostat || deviceType == DeviceType.WallMountedThermostat)  parseHeatingThermostatData (bytes);
-		if (deviceType == DeviceType.EcoSwitch || deviceType == DeviceType.ShutterContact)  logger.trace("Data:" + parseData (bytes));
+		if (deviceType == DeviceType.EcoSwitch || deviceType == DeviceType.ShutterContact)  logger.trace("Device {} type {} Data:",  rfAddress, deviceType.toString() , parseData (bytes));
 	}
 
 	private String getSerialNumber(byte[] bytes) {
@@ -117,6 +117,7 @@ public final class C_Message extends Message {
 
 	private void parseHeatingThermostatData(byte[] bytes) {
 		try{
+
 			int plusDataStart = 18;
 			int programDataStart = 11;
 			tempComfort= Float.toString( bytes[plusDataStart ]/2);
@@ -125,10 +126,10 @@ public final class C_Message extends Message {
 			tempSetpointMin=  Float.toString( bytes[plusDataStart + 3]/2);
 			if (bytes.length < 211) {
 				// Device is a WallMountedThermostat
-				programDataStart = 7;
-				logger.debug("WallThermo byte 4:     {}", Float.toString( bytes[plusDataStart + 4]&0xFF));
-				logger.debug("WallThermo byte 5:     {}", Float.toString( bytes[plusDataStart + 5]&0xFF));
-				logger.debug("WallThermo byte 6:     {}", Float.toString( bytes[plusDataStart + 6]&0xFF));
+				programDataStart = 4;
+				logger.trace("WallThermostat byte {}: {}", bytes.length -3, Float.toString( bytes[bytes.length -3]&0xFF));
+				logger.trace("WallThermostat byte {}: {}", bytes.length -2, Float.toString( bytes[bytes.length -2]&0xFF));
+				logger.trace("WallThermostat byte {}: {}", bytes.length -1, Float.toString( bytes[bytes.length -1]&0xFF));
 			} else
 			{
 				// Device is a HeatingThermostat(+)
@@ -156,18 +157,20 @@ public final class C_Message extends Message {
 				ln++;
 			}
 
+			logger.debug("DeviceType:           {}", deviceType.toString());
+			logger.debug("RFAddress:            {}", rfAddress);
 			logger.debug("Temp Comfort:         {}", tempComfort);
 			logger.debug("TempEco:              {}", tempEco);
 			logger.debug("Temp Setpoint Max:    {}", tempSetpointMax);
 			logger.debug("Temp Setpoint Min:    {}", tempSetpointMin);
 			logger.debug("Temp Offset:          {}", tempOffset);
 			logger.debug("Temp Open Window:     {}", tempOpenWindow );
-			logger.debug("Duration Open Window: {}", durationOpenWindow  );
-			logger.debug("Duration Boost:       {}", boostDuration );
+			logger.debug("Duration Open Window: {}", durationOpenWindow);
+			logger.debug("Duration Boost:       {}", boostDuration);
 			logger.debug("Boost Valve Pos:      {}", boostValve);
 			logger.debug("Decalcification:      {}", decalcification);
-			logger.debug("ValveMaximum:         {}", valveMaximum );
-			logger.debug("ValveOffset:          {}", valveOffset );
+			logger.debug("ValveMaximum:         {}", valveMaximum);
+			logger.debug("ValveOffset:          {}", valveOffset);
 			logger.debug("ProgramData:          {}", programData);
 		}  catch (Exception e) {
 			logger.debug(e.getMessage());
@@ -196,9 +199,9 @@ public final class C_Message extends Message {
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== C_Message === ");
-		logger.trace("\tRAW:        " + this.getPayload());
-		logger.debug("DeviceType:   " + deviceType.toString());
-		logger.debug("SerialNumber: " + serialNumber);
-		logger.debug("RFAddress:    " + rfAddress);
+		logger.trace("\tRAW:        {}", this.getPayload());
+		logger.debug("DeviceType:   {}" , deviceType.toString());
+		logger.debug("SerialNumber: {}" , serialNumber);
+		logger.debug("RFAddress:    {}" , rfAddress);
 	}
 }
