@@ -173,9 +173,6 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 					configs.add(config);
 			}
 		}
-		if (configs.isEmpty())
-			return null;
-		else
-			return configs;
+		return configs;
 	}
 }

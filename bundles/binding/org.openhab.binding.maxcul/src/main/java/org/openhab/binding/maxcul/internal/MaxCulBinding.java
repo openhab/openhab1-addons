@@ -37,23 +37,22 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
+ * Implement this class if you are going create an actively polling service like
+ * querying a Website/Device.
  *
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
-public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> implements ManagedService, MaxCulBindingMessageProcessor {
+public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
+		implements ManagedService, MaxCulBindingMessageProcessor {
 
-	private static final Logger logger =
-		LoggerFactory.getLogger(MaxCulBinding.class);
-
+	private static final Logger logger = LoggerFactory
+			.getLogger(MaxCulBinding.class);
 
 	/**
-	 * the refresh interval which is used to poll values from the MaxCul
-	 * server (optional, defaults to 60000ms)
+	 * the refresh interval which is used to poll values from the MaxCul server
+	 * (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
 
@@ -75,16 +74,15 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	private final byte DEFAULT_GROUP_ID = 0x1;
 
 	/**
-	 * Flag to indicate if we are in pairing mode. Default timeout
-	 * is 60 seconds.
+	 * Flag to indicate if we are in pairing mode. Default timeout is 60
+	 * seconds.
 	 */
 	private boolean pairMode = false;
 	private int pairModeTimeout = 60000;
 
-	private Map<String,Timer> timers = new HashMap<String,Timer>();
+	private Map<String, Timer> timers = new HashMap<String, Timer>();
 
 	MaxCulMsgHandler messageHandler;
-
 
 	private String tzStr;
 
@@ -100,15 +98,16 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 	public void deactivate() {
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
-		if (cul != null)
-		{
+		logger.debug("De-Activating MaxCul binding");
+		if (cul != null) {
 			cul.unregisterListener(messageHandler);
 			CULManager.close(cul);
+			logger.debug("CUL IO should now be closed");
 		}
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected long getRefreshInterval() {
@@ -149,84 +148,98 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 				break;
 			}
 		}
-		logger.debug("Received command " + command.toString()
-				+ " for item " + itemName);
+		logger.debug("Received command " + command.toString() + " for item "
+				+ itemName);
 		if (bindingConfig != null) {
-			logger.debug("Found config for "+itemName);
+			logger.debug("Found config for " + itemName);
 
-			switch (bindingConfig.deviceType)
-			{
-				case PAIR_MODE:
-					if ((command instanceof OnOffType))
-					{
-						switch ((OnOffType)command)
-						{
-						case ON:
-							/* turn on pair mode and schedule disabling of pairing mode */
-							pairMode = true;
-							TimerTask task = new TimerTask() {
-								public void run() {
-									logger.debug(itemName+" pairMode time out executed");
-									pairMode = false;
-									eventPublisher.postUpdate(itemName, OnOffType.OFF);
-								}
-							};
-							timer = timers.get(itemName);
-							if(timer!=null) {
-								timer.cancel();
-								timers.remove(itemName);
+			switch (bindingConfig.deviceType) {
+			case PAIR_MODE:
+				if ((command instanceof OnOffType)) {
+					switch ((OnOffType) command) {
+					case ON:
+						/*
+						 * turn on pair mode and schedule disabling of pairing
+						 * mode
+						 */
+						pairMode = true;
+						TimerTask task = new TimerTask() {
+							public void run() {
+								logger.debug(itemName
+										+ " pairMode time out executed");
+								pairMode = false;
+								eventPublisher.postUpdate(itemName,
+										OnOffType.OFF);
 							}
-							timer = new Timer();
-							timers.put(itemName, timer);
-							timer.schedule(task, pairModeTimeout);
-							logger.debug(itemName+" pairMode enabled & timeout scheduled");
-							break;
-						case OFF:
-							/* we are manually disabling, so clear the timer and the flag */
-							pairMode = false;
-							timer = timers.get(itemName);
-							if(timer!=null) {
-								logger.debug(itemName+" pairMode timer cancelled");
-								timer.cancel();
-								timers.remove(itemName);
-							}
-							logger.debug(itemName+" pairMode cleared");
-							break;
+						};
+						timer = timers.get(itemName);
+						if (timer != null) {
+							timer.cancel();
+							timers.remove(itemName);
 						}
-					} else logger.warn("Command not handled for "+bindingConfig.deviceType+" that is not OnOffType");
-					break;
-				case LISTEN_MODE:
-					if (command instanceof OnOffType)
-					{
-						this.messageHandler.setListenMode(((OnOffType)command == OnOffType.ON));
-					} else logger.warn("Command not handled for "+bindingConfig.deviceType+" that is not OnOffType");
-					break;
-				case RADIATOR_THERMOSTAT:
-				case RADIATOR_THERMOSTAT_PLUS:
-				case WALL_THERMOSTAT:
-					if (bindingConfig.feature == MaxCulFeature.THERMOSTAT)
-					{
-						if (command instanceof OnOffType)
-						{
-							// TODO handle setting thermostat to On or Off
-						} else if (command instanceof DecimalType)
-						{
-							// TODO handle sending temperature to device
+						timer = new Timer();
+						timers.put(itemName, timer);
+						timer.schedule(task, pairModeTimeout);
+						logger.debug(itemName
+								+ " pairMode enabled & timeout scheduled");
+						break;
+					case OFF:
+						/*
+						 * we are manually disabling, so clear the timer and the
+						 * flag
+						 */
+						pairMode = false;
+						timer = timers.get(itemName);
+						if (timer != null) {
+							logger.debug(itemName + " pairMode timer cancelled");
+							timer.cancel();
+							timers.remove(itemName);
 						}
-					} else logger.warn("Command not handled for "+bindingConfig.deviceType+" that is not OnOffType or DecimalType");
-					break;
-				default:
-					logger.warn("Command not handled for "+bindingConfig.deviceType);
-					break;
+						logger.debug(itemName + " pairMode cleared");
+						break;
+					}
+				} else
+					logger.warn("Command not handled for "
+							+ bindingConfig.deviceType
+							+ " that is not OnOffType");
+				break;
+			case LISTEN_MODE:
+				if (command instanceof OnOffType) {
+					this.messageHandler
+							.setListenMode(((OnOffType) command == OnOffType.ON));
+				} else
+					logger.warn("Command not handled for "
+							+ bindingConfig.deviceType
+							+ " that is not OnOffType");
+				break;
+			case RADIATOR_THERMOSTAT:
+			case RADIATOR_THERMOSTAT_PLUS:
+			case WALL_THERMOSTAT:
+				if (bindingConfig.feature == MaxCulFeature.THERMOSTAT) {
+					if (command instanceof OnOffType) {
+						// TODO handle setting thermostat to On or Off
+					} else if (command instanceof DecimalType) {
+						// TODO handle sending temperature to device
+					}
+				} else
+					logger.warn("Command not handled for "
+							+ bindingConfig.deviceType
+							+ " that is not OnOffType or DecimalType");
+				break;
+			default:
+				logger.warn("Command not handled for "
+						+ bindingConfig.deviceType);
+				break;
 			}
 		}
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+	public void updated(Dictionary<String, ?> config)
+			throws ConfigurationException {
 		logger.debug("MaxCUL Reading config");
 		if (config != null) {
 
@@ -248,22 +261,23 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			// handle device config
 			String deviceString = (String) config.get("device");
 			if (StringUtils.isNotBlank(deviceString)) {
-				logger.debug("Setting up device "+deviceString);
+				logger.debug("Setting up device " + deviceString);
 				setupDevice(deviceString);
 				if (cul == null)
-					throw new ConfigurationException("device", "Configuration failed. Unable to access CUL device " + deviceString);
+					throw new ConfigurationException("device",
+							"Configuration failed. Unable to access CUL device "
+									+ deviceString);
 			} else {
 				setProperlyConfigured(false);
-				throw new ConfigurationException("device", "No device set - please set one");
+				throw new ConfigurationException("device",
+						"No device set - please set one");
 			}
-
 
 			setProperlyConfigured(true);
 		}
 	}
 
-	private void setupDevice(String device)
-	{
+	private void setupDevice(String device) {
 		if (cul != null) {
 			CULManager.close(cul);
 		}
@@ -271,7 +285,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			accessDevice = device;
 			logger.debug("Opening CUL device on " + accessDevice);
 			cul = CULManager.getOpenCULHandler(accessDevice, CULMode.MAX);
-			messageHandler = new MaxCulMsgHandler(this.srcAddr,cul);
+			messageHandler = new MaxCulMsgHandler(this.srcAddr, cul);
 			messageHandler.registerMaxCulBindingMessageProcessor(this);
 			messageHandler.setTz(this.tzStr);
 		} catch (CULDeviceException e) {
@@ -281,18 +295,16 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 		}
 	}
 
-	private Collection<MaxCulBindingConfig> getBindingsBySerial(String serial)
-	{
+	private Collection<MaxCulBindingConfig> getBindingsBySerial(String serial) {
 		Collection<MaxCulBindingConfig> bindingConfigs = null;
-		for (MaxCulBindingProvider provider : super.providers)
-		{
+		for (MaxCulBindingProvider provider : super.providers) {
 			bindingConfigs = provider.getConfigsForSerialNumber(serial);
 			if (bindingConfigs != null)
 				break;
 		}
-		if (bindingConfigs == null)
-		{
-			logger.error("Unable to find configuration for serial "+serial+". Do you have a binding for it?");
+		if (bindingConfigs == null) {
+			logger.error("Unable to find configuration for serial " + serial
+					+ ". Do you have a binding for it?");
 			return null;
 		}
 		return bindingConfigs;
@@ -300,14 +312,15 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 
 	@Override
 	public void MaxCulMsgReceived(String data, boolean isBroadcast) {
-		logger.debug("Received data from CUL: "+data);
+		logger.debug("Received data from CUL: " + data);
 
 		MaxCulMsgType msgType = BaseMsg.getMsgType(data);
-		/* Check if it's broadcast and we're in pair mode or a PAIR_PING message directly for us */
-		if (((pairMode && isBroadcast)
-				|| BaseMsg.isForUs(data, this.srcAddr))
-				&& msgType == MaxCulMsgType.PAIR_PING)
-		{
+		/*
+		 * Check if it's broadcast and we're in pair mode or a PAIR_PING message
+		 * directly for us
+		 */
+		if (((pairMode && isBroadcast) || BaseMsg.isForUs(data, this.srcAddr))
+				&& msgType == MaxCulMsgType.PAIR_PING) {
 			logger.debug("Got PAIR_PING message");
 			/* process packet */
 			PairPingMsg pkt = new PairPingMsg(data);
@@ -317,19 +330,21 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 
 			/* Set pairing information */
 			for (MaxCulBindingConfig bc : bindingConfigs)
-				bc.setPairedInfo(pkt.srcAddrStr); /* where it came from gives the addr of the device */
+				bc.setPairedInfo(pkt.srcAddrStr); /*
+												 * where it came from gives the
+												 * addr of the device
+												 */
 
 			/* start the initialisation sequence */
-			PairingInitialisationSequence ps = new PairingInitialisationSequence(this.DEFAULT_GROUP_ID, this.tzStr, messageHandler);
+			PairingInitialisationSequence ps = new PairingInitialisationSequence(
+					this.DEFAULT_GROUP_ID, this.tzStr, messageHandler);
 			messageHandler.startSequence(ps, pkt);
-		}
-		else
-		{
-			switch (msgType)
-			{
+		} else {
+			switch (msgType) {
 			/* TODO handle all other incoming messages */
 			case WALL_THERMOSTAT_CONTROL:
-				WallThermostatControlMsg wallThermCtrlMsg = new WallThermostatControlMsg(data);
+				WallThermostatControlMsg wallThermCtrlMsg = new WallThermostatControlMsg(
+						data);
 				wallThermCtrlMsg.printMessage();
 				/* TODO dispatch update to any appropriate binding */
 
@@ -340,15 +355,16 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 			case SET_TEMPERATURE:
 				SetTemperatureMsg setTempMsg = new SetTemperatureMsg(data);
 				setTempMsg.printMessage();
-				for (MaxCulBindingProvider provider : super.providers)
-				{
-					Collection<MaxCulBindingConfig> bindingConfigs = provider.getConfigsForRadioAddr(setTempMsg.srcAddrStr);
-					for (MaxCulBindingConfig bc : bindingConfigs)
-					{
-						if (bc.feature == MaxCulFeature.THERMOSTAT)
-						{
+				for (MaxCulBindingProvider provider : super.providers) {
+					Collection<MaxCulBindingConfig> bindingConfigs = provider
+							.getConfigsForRadioAddr(setTempMsg.srcAddrStr);
+					for (MaxCulBindingConfig bc : bindingConfigs) {
+						if (bc.feature == MaxCulFeature.THERMOSTAT) {
 							String itemName = provider.getItemNameForConfig(bc);
-							eventPublisher.postUpdate(itemName, new DecimalType(setTempMsg.getDesiredTemperature()));
+							eventPublisher.postUpdate(
+									itemName,
+									new DecimalType(setTempMsg
+											.getDesiredTemperature()));
 						}
 					}
 				}
@@ -356,7 +372,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider> 
 				this.messageHandler.sendAck(setTempMsg);
 				break;
 			default:
-				logger.debug("Unhandled message type "+msgType.toString() );
+				logger.debug("Unhandled message type " + msgType.toString());
 				break;
 
 			}
