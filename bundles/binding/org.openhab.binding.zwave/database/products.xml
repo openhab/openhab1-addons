@@ -353,6 +353,15 @@
 		<Product>
 			<Reference>
 				<Type>0003</Type>
+				<Id>0018</Id>
+			</Reference>
+			<Model>DSC24</Model>
+			<Label lang="en">Smart Energy Switch v2</Label>
+			<ConfigFile>aeon/dsc24.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
 				<Id>0008</Id>
 			</Reference>
 			<Model>Smart Dimmer</Model>
