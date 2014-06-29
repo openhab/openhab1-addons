@@ -335,8 +335,6 @@ public class MaxCulMsgHandler implements CULListener {
 					/* pass data to binding for processing */
 					this.mcbmp.MaxCulMsgReceived(data, false);
 				}
-
-				/* TODO look for any messages that have a matching entry in the callback register */
 			}
 			else if (BaseMsg.isForUs(data, "000000"))
 			{
