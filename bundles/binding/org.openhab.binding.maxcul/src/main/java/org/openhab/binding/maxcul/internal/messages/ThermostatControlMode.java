@@ -6,8 +6,22 @@ package org.openhab.binding.maxcul.internal.messages;
  * @since 1.6.0
  */
 public enum ThermostatControlMode {
-	AUTO,
-	MANUAL,
-	TEMPORARY,
-	BOOST;
+	AUTO(0x0),
+	MANUAL(0x1),
+	TEMPORARY(0x2),
+	BOOST(0x3);
+
+	private final int controlMode;
+
+	ThermostatControlMode(int mode) {
+		this.controlMode = mode;
+	}
+
+	ThermostatControlMode(byte mode) {
+		this.controlMode = mode;
+	}
+
+	public byte toByte() {
+		return (byte) controlMode;
+	}
 }

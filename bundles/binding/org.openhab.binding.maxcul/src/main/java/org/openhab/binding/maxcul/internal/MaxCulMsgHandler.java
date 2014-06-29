@@ -15,6 +15,7 @@ import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
 import org.openhab.binding.maxcul.internal.messages.PairPongMsg;
 import org.openhab.binding.maxcul.internal.messages.SetGroupIdMsg;
 import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
+import org.openhab.binding.maxcul.internal.messages.ThermostatControlMode;
 import org.openhab.binding.maxcul.internal.messages.TimeInfoMsg;
 import org.openhab.binding.maxcul.internal.messages.WakeupMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
@@ -444,6 +445,17 @@ public class MaxCulMsgHandler implements CULListener {
 		AckMsg nackMsg = new AckMsg(msg.msgCount, (byte) 0x0, msg.groupid, this.srcAddr, msg.srcAddrStr, false);
 		nackMsg.setFastSend(true); // all NACKs are sent to waiting device.
 		sendMessage(nackMsg);
+	}
+
+	/**
+	 * Send a set temperature message
+	 * @param devAddr Radio addr of device
+	 * @param temp Temperature value to send
+	 */
+	public void sendSetTemperature(String devAddr, double temp)
+	{
+		SetTemperatureMsg msg = new SetTemperatureMsg(getMessageCount(), (byte) 0x0, (byte) 0x0, this.srcAddr, devAddr, temp, ThermostatControlMode.MANUAL);
+		sendMessage(msg);
 	}
 
 	/**

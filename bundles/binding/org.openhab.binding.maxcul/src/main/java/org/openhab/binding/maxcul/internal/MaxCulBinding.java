@@ -50,6 +50,9 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 	private static final Logger logger = LoggerFactory
 			.getLogger(MaxCulBinding.class);
 
+	private static final double THERMOSTAT_ON_VALUE = 30.5;
+	private static final double THERMOSTAT_OFF_VALUE = 4.5;
+
 	/**
 	 * the refresh interval which is used to poll values from the MaxCul server
 	 * (optional, defaults to 60000ms)
@@ -216,10 +219,14 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 			case RADIATOR_THERMOSTAT_PLUS:
 			case WALL_THERMOSTAT:
 				if (bindingConfig.feature == MaxCulFeature.THERMOSTAT) {
+					/* TODO queue these up to stop flooding */
 					if (command instanceof OnOffType) {
-						// TODO handle setting thermostat to On or Off
+						if (((OnOffType)command) == OnOffType.ON)
+							messageHandler.sendSetTemperature(bindingConfig.devAddr, SetTemperatureMsg.TEMPERATURE_ON);
+						else if (((OnOffType)command) == OnOffType.OFF)
+							messageHandler.sendSetTemperature(bindingConfig.devAddr, SetTemperatureMsg.TEMPERATURE_OFF);
 					} else if (command instanceof DecimalType) {
-						// TODO handle sending temperature to device
+						messageHandler.sendSetTemperature(bindingConfig.devAddr, ((DecimalType)command).doubleValue());
 					}
 				} else
 					logger.warn("Command not handled for "

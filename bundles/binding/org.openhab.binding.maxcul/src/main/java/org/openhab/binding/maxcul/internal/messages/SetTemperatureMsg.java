@@ -18,6 +18,12 @@ public class SetTemperatureMsg extends BaseMsg {
 	private double desiredTemperature;
 	private ThermostatControlMode ctrlMode;
 
+	private static final double TEMPERATURE_MAX = 30.5;
+	private static final double TEMPERATURE_MIN = 4.5;
+
+	public static double TEMPERATURE_ON = 30.5;
+	public static double TEMPERATURE_OFF = 4.5;
+
 	public SetTemperatureMsg(String rawMsg) {
 		super(rawMsg);
 		logger.debug(this.msgType+" Payload Len -> "+this.payload.length);
@@ -33,10 +39,16 @@ public class SetTemperatureMsg extends BaseMsg {
 	}
 
 	public SetTemperatureMsg(byte msgCount, byte msgFlag,
-			byte groupId, String srcAddr, String dstAddr) {
+			byte groupId, String srcAddr, String dstAddr, double temperature, ThermostatControlMode mode) {
 		super(msgCount, msgFlag, MaxCulMsgType.SET_TEMPERATURE, groupId, srcAddr, dstAddr);
 
+		desiredTemperature = temperature;
+		ctrlMode = mode;
 
+		byte[] payload = new byte[SET_TEMPERATURE_PAYLOAD_LEN];
+		payload[0] = (byte)(temperature * 2.0);
+		payload[0] |= ((mode.toByte()&0x3)<<6);
+		super.appendPayload(payload);
 	}
 
 	public double getDesiredTemperature()
