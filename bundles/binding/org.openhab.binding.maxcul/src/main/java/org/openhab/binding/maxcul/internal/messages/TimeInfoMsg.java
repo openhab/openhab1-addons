@@ -51,14 +51,25 @@ public class TimeInfoMsg extends BaseMsg {
 	public void updateTime()
 	{
 		byte[] payload = new byte[TIME_INFO_PAYLOAD_LEN];
-
+		byte tmp;
 		Calendar now = new GregorianCalendar(tz);
 
 		payload[0] = (byte) (now.get(Calendar.YEAR) - 2000);
 		payload[1] = (byte) now.get(Calendar.DAY_OF_MONTH);
 		payload[2] = (byte) now.get(Calendar.HOUR_OF_DAY); // TODO ?? can set DST flag in bit[6] to advance time by 1hour, but java handles this
-		payload[3] = (byte) ((now.get(Calendar.MINUTE)&0x3f) | ((now.get(Calendar.MONTH+1) & 0x0C)<<4));
-		payload[4] = (byte) ((now.get(Calendar.SECOND)&0x3f) | ((now.get(Calendar.MONTH+1) & 0x03)<<6));
+		/* build byte 3. [0:5] contain minute, [6:7] contain bits [2:3] of month */
+		tmp = (byte) (now.get(Calendar.MONTH)+1);
+		tmp &= 0x0c;
+		tmp <<= 4;
+		tmp |= (byte) (now.get(Calendar.MINUTE)&0x3f);
+		payload[3] = tmp;
+
+		/* build byte 3. [0:5] contain seconds, [6:7] contain bits [0:1] of month */
+		tmp = (byte) (now.get(Calendar.MONTH)+1);
+		tmp &= 0x03;
+		tmp <<= 6;
+		tmp |= (byte) (now.get(Calendar.SECOND)&0x3f);
+		payload[4] = tmp;
 
 		super.appendPayload(payload);
 		super.printDebugPayload();
