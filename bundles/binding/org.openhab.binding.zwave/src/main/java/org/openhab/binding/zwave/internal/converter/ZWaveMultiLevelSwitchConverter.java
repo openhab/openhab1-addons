@@ -110,19 +110,25 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
 			return;
 		}
+		logger.debug("Multilevel Switch Received {}", event.getValue().toString());
 
 		State state = converter.convertFromValueToState(event.getValue());
+		logger.debug("Multilevel Switch Received State {}", state.toString());
 		if ("true".equalsIgnoreCase(arguments.get("invert_state"))) {
+			logger.debug("Multilevel Switch inverted");
 			// Support inversion of roller shutter UP/DOWN and percentages
 			if (converter instanceof IntegerUpDownTypeConverter) {
+				logger.debug("Multilevel Switch inverted UPDN");
 				if(state == UpDownType.UP)
 					state = UpDownType.DOWN;
 				else
 					state = UpDownType.UP;
 			}
 			if (converter instanceof IntegerPercentTypeConverter) {
+				logger.debug("Multilevel Switch inverted Percent");
 				state = new PercentType(100 - ((DecimalType)state).intValue());
 			}
+			logger.debug("Multilevel Switch inverted: {}", state.toString());
 		}
 
 		this.getEventPublisher().postUpdate(item.getName(), state);
@@ -136,11 +142,12 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 			ZWaveMultiLevelSwitchCommandClass commandClass, int endpointId, Map<String,String> arguments) {
 		SerialMessage serialMessage = null;
 		String restoreLastValue = null;
-
+logger.debug("Multilevel Switch COMMAND: {}", command.toString());
 		if (command instanceof StopMoveType && (StopMoveType)command == StopMoveType.STOP) {
 			// special handling for the STOP command
 			serialMessage = commandClass.stopLevelChangeMessage();
 		} else {
+			logger.debug("Multilevel Switch ELSE");
 			ZWaveCommandConverter<?,?> converter = null;
 			if (command instanceof OnOffType) {
 				restoreLastValue = arguments.get("restore_last_value");
@@ -160,11 +167,14 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 
 			// Allow inversion of roller shutter UP/DOWN
 			if (converter instanceof MultiLevelUpDownCommandConverter) {
+				logger.debug("Multilevel Switch MultiLevelUpDownCommandConverter");
 				if ("true".equalsIgnoreCase(arguments.get("invert_state"))) {
+					logger.debug("Multilevel Switch MultiLevelUpDownCommandConverter - invert");
 					if(command == UpDownType.UP)
 						command = UpDownType.DOWN;
 					else
 						command = UpDownType.UP;
+					logger.debug("Multilevel Switch MultiLevelUpDownCommandConverter - inverted: {}", command);
 				}
 			}
 
