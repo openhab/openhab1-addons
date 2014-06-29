@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.zwave.internal.converter;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.converter.state.BigDecimalDecimalTypeConverter;
@@ -88,18 +89,29 @@ public class ZWaveMeterConverter extends ZWaveCommandClassConverter<ZWaveMeterCo
 	public void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String,String> arguments) {
 		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
 		String meterScale = arguments.get("meter_scale");
+		String meterZero = arguments.get("meter_zero");
 		ZWaveMeterValueEvent meterEvent = (ZWaveMeterValueEvent)event;
 
 		if (converter == null) {
 			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
 			return;
 		}
-		
+
 		// Don't trigger event if this item is bound to another sensor type
 		if (meterScale != null && MeterScale.getMeterScale(meterScale) != meterEvent.getMeterScale())
 			return;
-		
-		State state = converter.convertFromValueToState(event.getValue());
+
+		Object val = event.getValue();
+
+		// If we've set a zero, then anything below this value needs to be considered ZERO
+		if (meterZero != null && MeterScale.getMeterScale(meterScale) != meterEvent.getMeterScale()){
+			logger.debug("Meter - zero conversion - {}", val.toString());
+			if(((BigDecimal)val).doubleValue() <= Double.parseDouble(meterZero))
+				val = BigDecimal.ZERO;
+			logger.debug("Meter - zero conversion - {}", val.toString());
+		}
+
+		State state = converter.convertFromValueToState(val);
 		this.getEventPublisher().postUpdate(item.getName(), state);
 	}
 
