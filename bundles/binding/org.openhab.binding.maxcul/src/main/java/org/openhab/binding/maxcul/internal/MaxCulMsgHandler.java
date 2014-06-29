@@ -82,20 +82,20 @@ public class MaxCulMsgHandler implements CULListener {
 		return (byte)this.msgCount;
 	}
 
-	private boolean enoughCredit(int requiredCredit)
+	private boolean enoughCredit(int requiredCredit, boolean fastSend)
 	{
-		return enoughCredit(requiredCredit, false);
+		return enoughCredit(requiredCredit, fastSend, false);
 	}
 
-	private boolean enoughCredit(int requiredCredit, boolean updateSurplus)
+	private boolean enoughCredit(int requiredCredit, boolean fastSend, boolean updateSurplus)
 	{
 		Date now = new Date();
 		/* units are accumulated as 1% of time elapsed with no TX */
 		long credit = ((now.getTime() - this.lastTransmit.getTime())/100)+this.surplusCredit;
 
-		/* assume we need preamble which is 100 credits (1000ms) */
-		// TODO handle 'fast sending' if device is awake
-		boolean result = (credit > (requiredCredit+100));
+		/* if device isn't awake we need long preamble for wakeup, otherwise we don't */
+		int preambleCredit = fastSend?0:100;
+		boolean result = (credit > (requiredCredit+preambleCredit));
 		if (result && updateSurplus)
 		{
 			this.surplusCredit = (int)credit - (requiredCredit+100);
@@ -114,7 +114,12 @@ public class MaxCulMsgHandler implements CULListener {
 			logger.error("Unable to send CUL message "+data+" because: "+e.getMessage());
 		}
 		/* update surplus credit value */
-		enoughCredit(data.requiredCredit(),true);
+		boolean fastSend = false;
+		if (data.isPartOfSequence())
+		{
+			fastSend = data.getMessageSequencer().useFastSend();
+		}
+		enoughCredit(data.requiredCredit(), fastSend, true);
 		this.lastTransmit = new Date();
 		if (this.endOfQueueTransmit.before(this.lastTransmit))
 		{
@@ -142,7 +147,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 		if (msg.readyToSend())
 		{
-			if (enoughCredit(msg.requiredCredit()) && this.sendQueue.isEmpty())
+			if (enoughCredit(msg.requiredCredit(), msg.isFastSend()) && this.sendQueue.isEmpty())
 			{
 				/* send message as we have enough credit and nothing is on the queue waiting */
 				logger.debug("Sending message immediately. Message is "+msg.msgType+" => "+msg.rawMsg);
@@ -155,7 +160,7 @@ public class MaxCulMsgHandler implements CULListener {
 	                public void run() {
 	                	SenderQueueItem topItem = sendQueue.remove();
 	                	logger.debug("Checking credit");
-	                	if (enoughCredit(topItem.msg.requiredCredit()))
+	                	if (enoughCredit(topItem.msg.requiredCredit(), topItem.msg.isFastSend()))
 	                	{
 	                		logger.debug("Sending item from queue. Message is "+topItem.msg.msgType+" => "+topItem.msg.rawMsg);
 	                		if (topItem.msg.msgType == MaxCulMsgType.TIME_INFO)

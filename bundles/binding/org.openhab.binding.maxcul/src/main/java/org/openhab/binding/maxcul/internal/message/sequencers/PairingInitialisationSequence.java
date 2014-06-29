@@ -162,4 +162,10 @@ public class PairingInitialisationSequence implements MessageSequencer {
 		}
 	}
 
+	@Override
+	public boolean useFastSend() {
+		// always use fast send - device just sent us a ping to start with!
+		return true;
+	}
+
 }

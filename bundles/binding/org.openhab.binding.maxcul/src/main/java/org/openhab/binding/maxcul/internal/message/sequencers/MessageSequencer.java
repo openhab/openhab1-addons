@@ -26,4 +26,11 @@ public interface MessageSequencer {
 	 * @return true of is completed and can be discarded
 	 */
 	boolean isComplete();
+
+	/**
+	 * Returns true if we are at a point in the sequence where we
+	 * can use fast send (i.e. no wakeup)
+	 * @return true if we can use fast send
+	 */
+	boolean useFastSend();
 }
