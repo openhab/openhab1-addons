@@ -433,6 +433,7 @@ public class MaxCulMsgHandler implements CULListener {
 	public void sendAck(BaseMsg msg)
 	{
 		AckMsg ackMsg = new AckMsg(msg.msgCount, (byte) 0x0, msg.groupid, this.srcAddr, msg.srcAddrStr, false);
+		ackMsg.setFastSend(true); // all ACKs are sent to waiting device.
 		sendMessage(ackMsg);
 	}
 
@@ -443,6 +444,7 @@ public class MaxCulMsgHandler implements CULListener {
 	public void sendNack(BaseMsg msg)
 	{
 		AckMsg nackMsg = new AckMsg(msg.msgCount, (byte) 0x0, msg.groupid, this.srcAddr, msg.srcAddrStr, false);
+		nackMsg.setFastSend(true); // all NACKs are sent to waiting device.
 		sendMessage(nackMsg);
 	}
 
