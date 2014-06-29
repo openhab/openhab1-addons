@@ -103,7 +103,7 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 		Object val = event.getValue();
 		// Perform a scale conversion if needed
 		if (sensorScale != null && Integer.parseInt(sensorScale) != sensorEvent.getSensorScale()) {
-			logger.debug("MultiLevel - scale conversion");
+			logger.debug("MultiLevel - scale conversion - in  - {}", val);
 			switch(SensorType.getSensorType(Integer.parseInt(sensorType))) {
 			case TEMPERATURE:
 				logger.debug("MultiLevel - scale conversion - temperature - {}", sensorEvent.getSensorScale());
@@ -118,12 +118,13 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 					double f = ((BigDecimal)val).doubleValue();
 					val = new BigDecimal((f - 32.0) * 5.0 / 9.0 );					
 				}
+				logger.debug("MultiLevel - scale conversion - out - {}", val);
 				break;
 			default:
 				break;
 			}
 		}
-		
+
 		State state = converter.convertFromValueToState(val);
 		this.getEventPublisher().postUpdate(item.getName(), state);
 	}
