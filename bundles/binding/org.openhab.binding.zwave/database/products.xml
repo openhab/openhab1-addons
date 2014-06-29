@@ -236,6 +236,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>5001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064459</Model>
+			<Label lang="en">Düwi Remote Control</Label>
+			<ConfigFile>reitz/064459.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>1001</Type>
 				<Id>0000</Id>
 			</Reference>
@@ -787,6 +796,15 @@
 			<Model>WCD2</Model>
 			<Label lang="en">Double Paddle Wall Controller</Label>
 			<ConfigFile>zwaveme/zme_wcd2.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1000</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>ZME_064435</Model>
+			<Label lang="en">Single Paddle Wall Controller</Label>
+			<ConfigFile>zwaveme/zme_064435.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
