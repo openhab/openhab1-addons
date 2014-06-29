@@ -104,11 +104,9 @@ public class ZWaveMeterConverter extends ZWaveCommandClassConverter<ZWaveMeterCo
 		Object val = event.getValue();
 
 		// If we've set a zero, then anything below this value needs to be considered ZERO
-		if (meterZero != null && MeterScale.getMeterScale(meterScale) != meterEvent.getMeterScale()){
-			logger.debug("Meter - zero conversion - {}", val.toString());
+		if (meterZero != null) {
 			if(((BigDecimal)val).doubleValue() <= Double.parseDouble(meterZero))
 				val = BigDecimal.ZERO;
-			logger.debug("Meter - zero conversion - {}", val.toString());
 		}
 
 		State state = converter.convertFromValueToState(val);
