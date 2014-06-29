@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0150</Id>
+		<Name>Cooper Wiring Devices</Name>
+		<Product>
+			<Reference>
+				<Type>00F9</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>RF9540-N</Model>
+			<Label lang="en">Single-Pole Multi-Location Master Dimmer Light Switch</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0005</Id>
 		<Name>Intermatic</Name>
 		<Product>
