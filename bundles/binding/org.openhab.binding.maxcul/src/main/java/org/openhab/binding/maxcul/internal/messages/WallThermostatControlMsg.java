@@ -10,22 +10,28 @@ import org.slf4j.LoggerFactory;
  */
 public class WallThermostatControlMsg extends BaseMsg {
 
-	final static private int WALL_THERMOSTAT_CONTROL_PAYLOAD_LEN = 2; /* in bytes */
+	final static private int WALL_THERMOSTAT_CONTROL_SET_POINT_AND_MEASURED_PAYLOAD_LEN = 2; /* in bytes */
+	final static private int WALL_THERMOSTAT_CONTROL_SET_POINT_ONLY_PAYLOAD_LEN = 1; /* in bytes */
 
 	private static final Logger logger =
 			LoggerFactory.getLogger(WallThermostatControlMsg.class);
 
-	private double desiredTemperature;
-	private double measuredTemperature;
+	private Double desiredTemperature;
+	private Double measuredTemperature;
 
 	public WallThermostatControlMsg(String rawMsg) {
 		super(rawMsg);
 		logger.debug(this.msgType+" Payload Len -> "+this.payload.length);
 
-		if (this.payload.length == WALL_THERMOSTAT_CONTROL_PAYLOAD_LEN)
+		if (this.payload.length == WALL_THERMOSTAT_CONTROL_SET_POINT_AND_MEASURED_PAYLOAD_LEN)
 		{
 			desiredTemperature = (this.payload[0] & 0x7F)/2.0;
 			measuredTemperature = (((this.payload[0] & 0x80)<<1) + this.payload[1])/10.0; // temperature over 25.5 uses extra bit in desiredTemperature byte
+		}
+		if (this.payload.length == WALL_THERMOSTAT_CONTROL_SET_POINT_ONLY_PAYLOAD_LEN)
+		{
+			desiredTemperature = (this.payload[0] & 0x7F)/2.0;
+			measuredTemperature = null;
 		}
 		else logger.error("Got "+this.msgType+" message with incorrect length!");
 	}
@@ -44,11 +50,11 @@ public class WallThermostatControlMsg extends BaseMsg {
 		logger.debug("\tMeasured Temperature => "+measuredTemperature);
 	}
 
-	public double getMeasuredTemperature() {
+	public Double getMeasuredTemperature() {
 		return measuredTemperature;
 	}
 
-	public double getDesiredTemperature() {
+	public Double getDesiredTemperature() {
 		return desiredTemperature;
 	}
 }

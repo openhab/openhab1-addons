@@ -118,6 +118,7 @@ public class PairingInitialisationSequence implements MessageSequencer {
 				AckMsg ack = new AckMsg(msg.rawMsg);
 				if (!ack.getIsNack())
 				{
+					// TODO sent temps for comfort/eco/night etc
 					state = PairingInitialisationState.FINISHED;
 				} else {
 					logger.error("SET_GROUP_ID was nacked. Ending sequence");

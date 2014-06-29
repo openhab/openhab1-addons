@@ -346,7 +346,23 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 				WallThermostatControlMsg wallThermCtrlMsg = new WallThermostatControlMsg(
 						data);
 				wallThermCtrlMsg.printMessage();
-				/* TODO dispatch update to any appropriate binding */
+				for (MaxCulBindingProvider provider : super.providers) {
+					Collection<MaxCulBindingConfig> bindingConfigs = provider
+							.getConfigsForRadioAddr(wallThermCtrlMsg.srcAddrStr);
+					for (MaxCulBindingConfig bc : bindingConfigs) {
+						if (bc.feature == MaxCulFeature.THERMOSTAT) {
+							String itemName = provider.getItemNameForConfig(bc);
+							eventPublisher.postUpdate(
+									itemName,
+									new DecimalType(wallThermCtrlMsg.getDesiredTemperature()));
+						} else if (bc.feature == MaxCulFeature.TEMPERATURE && wallThermCtrlMsg.getMeasuredTemperature() != null ) {
+							String itemName = provider.getItemNameForConfig(bc);
+							eventPublisher.postUpdate(
+									itemName,
+									new DecimalType(wallThermCtrlMsg.getMeasuredTemperature()));
+						}
+					}
+				}
 
 				/* reply only if not broadcast */
 				if (BaseMsg.isForUs(data, this.srcAddr))
@@ -363,8 +379,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 							String itemName = provider.getItemNameForConfig(bc);
 							eventPublisher.postUpdate(
 									itemName,
-									new DecimalType(setTempMsg
-											.getDesiredTemperature()));
+									new DecimalType(setTempMsg.getDesiredTemperature()));
 						}
 					}
 				}
