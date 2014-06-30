@@ -48,18 +48,20 @@ public class RefreshTokenRequest extends AbstractRequest {
 
 	@Override
 	public RefreshTokenResponse execute() {
+		String json = null;
+
 		try {
 			final String content = String.format(CONTENT, this.refreshToken,
 					this.clientId, this.clientSecret);
 
-			final String json = executeQuery(content);
+			json = executeQuery(content);
 
 			final RefreshTokenResponse response = JSON.readValue(json,
 					RefreshTokenResponse.class);
 
 			return response;
 		} catch (final Exception e) {
-			throw new NetatmoException("Could not refresh access token!", e);
+			throw newException("Could not refresh access token!", e, URL, json);
 		}
 	}
 
