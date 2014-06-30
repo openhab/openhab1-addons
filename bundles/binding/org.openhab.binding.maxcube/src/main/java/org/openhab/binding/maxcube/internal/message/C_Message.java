@@ -93,6 +93,7 @@ public final class C_Message extends Message {
 	}
 
 	private String parseData(byte[] bytes) {
+		if (bytes.length <= 18) return "";
 		try{
 			int DataStart = 18;
 			byte[] sn = new byte[bytes.length - DataStart];
@@ -100,7 +101,7 @@ public final class C_Message extends Message {
 			for (int i = 0; i < sn.length; i++) {
 				sn[i] = (byte) bytes[i + DataStart];
 			}
-			logger.debug("DataBytes: " + Utils.getHex(sn));
+			logger.trace("DataBytes: " + Utils.getHex(sn));
 			try {
 				return new String(sn, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
@@ -124,6 +125,14 @@ public final class C_Message extends Message {
 			tempEco = Float.toString( bytes[plusDataStart + 1]/2);
 			tempSetpointMax=  Float.toString( bytes[plusDataStart + 2]/2);
 			tempSetpointMin=  Float.toString( bytes[plusDataStart + 3]/2);
+
+			logger.debug("DeviceType:             {}", deviceType.toString());
+			logger.debug("RFAddress:              {}", rfAddress);
+			logger.debug("Temp Comfort:           {}", tempComfort);
+			logger.debug("TempEco:                {}", tempEco);
+			logger.debug("Temp Setpoint Max:      {}", tempSetpointMax);
+			logger.debug("Temp Setpoint Min:      {}", tempSetpointMin);			
+
 			if (bytes.length < 211) {
 				// Device is a WallMountedThermostat
 				programDataStart = 4;
@@ -141,37 +150,31 @@ public final class C_Message extends Message {
 				decalcification =  Float.toString( bytes[plusDataStart + 8]);
 				valveMaximum = Float.toString( bytes[plusDataStart + 9]&0xFF * 100 / 255);
 				valveOffset = Float.toString( bytes[plusDataStart+ 10]&0xFF * 100 / 255 );
+				logger.debug("Temp Offset:            {}", tempOffset);
+				logger.debug("Temp Open Window:       {}", tempOpenWindow );
+				logger.debug("Duration Open Window:   {}", durationOpenWindow);
+				logger.debug("Duration Boost:         {}", boostDuration);
+				logger.debug("Boost Valve Pos:        {}", boostValve);
+				logger.debug("Decalcification:        {}", decalcification);
+				logger.debug("ValveMaximum:           {}", valveMaximum);
+				logger.debug("ValveOffset:            {}", valveOffset);
 			}
 			programData = "";
 			int ln = 13 * 6; //first day = Sat 
 			String startTime = "00:00h";
-			for (int char_idx = plusDataStart + programDataStart; char_idx < bytes.length; char_idx++) {
+			for (int char_idx = plusDataStart + programDataStart; char_idx < (plusDataStart + programDataStart +  26*7); char_idx++) {
 				if (ln % 13 == 0 ) { programData += "\r\n Day " + Integer.toString((ln / 13) % 7 ) + ": "; startTime = "00:00h"; }
-				int ptime =  (bytes[char_idx+1]&0xFF ) * 5 + (bytes[char_idx]&0x01 ) * 1280 ;
-				int pm = ptime % 60;
-				int ph = (ptime - pm ) / 60;
-				String endTime = Integer.toString(ph) + ":" + String.format("%02d", pm) + "h";
+				int progTime =  (bytes[char_idx+1]&0xFF ) * 5 + (bytes[char_idx]&0x01 ) * 1280 ;
+				int progMinutes = progTime % 60;
+				int progHours = (progTime - progMinutes ) / 60;
+				String endTime = Integer.toString(progHours) + ":" + String.format("%02d", progMinutes) + "h";
 				programData += startTime + "-" + endTime + " " + Double.toString(bytes[char_idx] /4) + "C  ";
 				startTime = endTime;
 				char_idx++;
 				ln++;
 			}
-
-			logger.debug("DeviceType:           {}", deviceType.toString());
-			logger.debug("RFAddress:            {}", rfAddress);
-			logger.debug("Temp Comfort:         {}", tempComfort);
-			logger.debug("TempEco:              {}", tempEco);
-			logger.debug("Temp Setpoint Max:    {}", tempSetpointMax);
-			logger.debug("Temp Setpoint Min:    {}", tempSetpointMin);
-			logger.debug("Temp Offset:          {}", tempOffset);
-			logger.debug("Temp Open Window:     {}", tempOpenWindow );
-			logger.debug("Duration Open Window: {}", durationOpenWindow);
-			logger.debug("Duration Boost:       {}", boostDuration);
-			logger.debug("Boost Valve Pos:      {}", boostValve);
-			logger.debug("Decalcification:      {}", decalcification);
-			logger.debug("ValveMaximum:         {}", valveMaximum);
-			logger.debug("ValveOffset:          {}", valveOffset);
 			logger.debug("ProgramData:          {}", programData);
+
 		}  catch (Exception e) {
 			logger.debug(e.getMessage());
 			logger.debug(Utils.getStackTrace(e));

@@ -145,7 +145,6 @@ public abstract class Device {
 			Date date = Utils.resolveDateTime(dateValue, timeValue);
 			heatingThermostat.setDateSetpoint(date);
 
-			logger.debug ("Yeah I'm a {}" , device.getType().toString() );
 			int actualTemp = 0;
 			if (device.getType() == DeviceType.WallMountedThermostat) {
 				actualTemp = (raw[11] & 0xFF);
@@ -158,9 +157,8 @@ public abstract class Device {
 					logger.debug ("No temperature reading in {} mode", heatingThermostat.getMode()) ;
 				}
 			}
-			heatingThermostat.setTemperatureActual(actualTemp);
 			logger.debug ("Actual Temperature : {}",  (double)actualTemp / 10);
-			logger.debug ("Actual Temperature: {}", heatingThermostat.getTemperatureActual().toString());
+			heatingThermostat.setTemperatureActual((double)actualTemp / 10);
 			break;
 		case EcoSwitch:
 			String eCoSwitchData = Utils.toHex(raw[3] & 0xFF, raw[4] & 0xFF, raw[5] & 0xFF);

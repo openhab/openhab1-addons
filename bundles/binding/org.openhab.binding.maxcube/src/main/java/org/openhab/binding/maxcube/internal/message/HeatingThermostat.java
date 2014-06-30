@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.maxcube.internal.message;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -113,8 +114,8 @@ public class HeatingThermostat extends Device {
 	 * Sets the actual temperature for this thermostat. 
 	 * @param value the actual temperature raw value as provided by the L message
 	 */
-	public void setTemperatureActual(int value) {
-		this.temperatureActual = (double)value / 10;
+	public void setTemperatureActual(double value) {
+		this.temperatureActual = value ;
 	}
 
 	/**
