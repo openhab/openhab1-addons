@@ -139,14 +139,9 @@ implements SonosBindingProvider {
 
 				Command command = null;
 				if(commandAsString == null) {
-
-					if(item instanceof NumberItem || item instanceof StringItem || item instanceof DimmerItem){
-						command = createCommandFromString(item,Integer.toString(counter));
-						counter++;
-						config.put(command, newElement);
-					} else {
-						logger.warn("Only NumberItem, StringItem or DimmerItem can have undefined command types");
-					}								
+					command = createCommandFromString(item,Integer.toString(counter));
+					counter++;
+					config.put(command, newElement);								
 				} else { 
 					command = createCommandFromString(item, commandAsString);
 					config.put(command, newElement);

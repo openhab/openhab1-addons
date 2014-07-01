@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0150</Id>
+		<Name>Cooper Wiring Devices</Name>
+		<Product>
+			<Reference>
+				<Type>00F9</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>RF9540-N</Model>
+			<Label lang="en">Single-Pole Multi-Location Master Dimmer Light Switch</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0005</Id>
 		<Name>Intermatic</Name>
 		<Product>
@@ -236,6 +248,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>5001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064459</Model>
+			<Label lang="en">Düwi Remote Control</Label>
+			<ConfigFile>reitz/064459.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>1001</Type>
 				<Id>0000</Id>
 			</Reference>
@@ -328,6 +349,15 @@
 			<Model>DSB06</Model>
 			<Label lang="en">Smart Energy Switch</Label>
 			<ConfigFile>aeon/dsb06.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0018</Id>
+			</Reference>
+			<Model>DSC24</Model>
+			<Label lang="en">Smart Energy Switch v2</Label>
+			<ConfigFile>aeon/dsc24.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -787,6 +817,23 @@
 			<Model>WCD2</Model>
 			<Label lang="en">Double Paddle Wall Controller</Label>
 			<ConfigFile>zwaveme/zme_wcd2.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1000</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>ZME_064435</Model>
+			<Label lang="en">Single Paddle Wall Controller</Label>
+			<ConfigFile>zwaveme/zme_064435.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>ZME_Z-StickC</Model>
+			<Label lang="en">Z-Wave USB Controller</Label>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>

@@ -87,16 +87,18 @@ public class MeasurementRequest extends AbstractRequest {
 
 	@Override
 	public MeasurementResponse execute() {
+		final String url = buildQueryString();
+		String json = null;
+
 		try {
-			final String url = buildQueryString();
-			final String json = executeQuery(url);
+			json = executeQuery(url);
 
 			final MeasurementResponse response = JSON.readValue(json,
 					MeasurementResponse.class);
 
 			return response;
 		} catch (final Exception e) {
-			throw new NetatmoException("Could not get measurements!", e);
+			throw newException("Could not get measurements!", e, url, json);
 		}
 	}
 
