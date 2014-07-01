@@ -827,6 +827,14 @@
 			<Label lang="en">Single Paddle Wall Controller</Label>
 			<ConfigFile>zwaveme/zme_064435.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>ZME_Z-StickC</Model>
+			<Label lang="en">Z-Wave USB Controller</Label>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0118</Id>
