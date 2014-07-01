@@ -936,6 +936,16 @@
 			<Label lang="de">NorthQ Stromzähler</Label>
 			<ConfigFile>northq/nq9021.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>NQ-9022</Model>
+			<Label lang="en">NorthQ Electrical Meter</Label>
+			<Label lang="de">NorthQ Stromzähler</Label>
+			<ConfigFile>northq/nq9021.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0039</Id>
