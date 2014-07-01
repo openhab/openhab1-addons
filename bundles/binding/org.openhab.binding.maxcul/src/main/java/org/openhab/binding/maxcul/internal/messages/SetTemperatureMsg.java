@@ -45,6 +45,11 @@ public class SetTemperatureMsg extends BaseMsg {
 		desiredTemperature = temperature;
 		ctrlMode = mode;
 
+		if (temperature > TEMPERATURE_MAX)
+			temperature = TEMPERATURE_MAX;
+		else if (temperature < TEMPERATURE_MIN)
+			temperature = TEMPERATURE_MIN;
+
 		byte[] payload = new byte[SET_TEMPERATURE_PAYLOAD_LEN];
 		payload[0] = (byte)(temperature * 2.0);
 		payload[0] |= ((mode.toByte()&0x3)<<6);
