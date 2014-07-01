@@ -999,21 +999,6 @@ public class ZWaveController {
 
 			// Send a NAK to resynchronise communications
 			sendResponse(NAK);
-			
-			// If we want to do a soft reset on the serial interface, do it here.
-			// It seems there's no response to this message, so sending it through
-			// 'normal' channels will cause a timeout.
-			try {
-				synchronized (serialPort.getOutputStream()) {
-					SerialMessage resetMsg = new SerialApiSoftResetMessageClass().doRequest();
-					byte[] buffer = resetMsg.getMessageBuffer();
-
-					serialPort.getOutputStream().write(buffer);
-					serialPort.getOutputStream().flush();
-				}
-			} catch (IOException e) {
-				logger.error(e.getMessage());
-			}
 
 			while (!interrupted()) {
 				int nextByte;
