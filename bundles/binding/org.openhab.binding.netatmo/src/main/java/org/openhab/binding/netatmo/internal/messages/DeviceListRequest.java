@@ -44,17 +44,18 @@ public class DeviceListRequest extends AbstractRequest {
 
 	@Override
 	public DeviceListResponse execute() {
+		final String url = prepare();
+		String json = null;
+
 		try {
-			final String url = prepare();
-			final String json = executeQuery(url);
+			json = executeQuery(url);
 
 			final DeviceListResponse response = JSON.readValue(json,
 					DeviceListResponse.class);
 
 			return response;
 		} catch (final Exception e) {
-			throw new NetatmoException(
-					"Could not execute device list request!", e);
+			throw newException("Could not execute device list request!", e, url, json);
 		}
 	}
 
