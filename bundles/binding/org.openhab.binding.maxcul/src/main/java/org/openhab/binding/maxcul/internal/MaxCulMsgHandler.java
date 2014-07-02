@@ -329,7 +329,7 @@ public class MaxCulMsgHandler implements CULListener {
 				{
 					/* send latest time information */
 					TimeInfoMsg msg = new TimeInfoMsg(data);
-					sendTimeInfo(msg.srcAddrStr, this.tzStr);
+					sendTimeInfoFast(msg.srcAddrStr, this.tzStr);
 				}
 				else if (sequenceRegister.containsKey(new BaseMsg(data).msgCount))
 				{
@@ -408,6 +408,19 @@ public class MaxCulMsgHandler implements CULListener {
 	{
 		TimeInfoMsg msg = new TimeInfoMsg(getMessageCount(), (byte)0x0, (byte) 0, this.srcAddr, dstAddr, tzStr);
 		msg.setMessageSequencer(msgSeq);
+		sendMessage(msg);
+	}
+
+	/**
+	 * Send time information to device in fast mode
+	 * @param dstAddr Address of device to respond to
+	 * @param tzStr Time Zone String
+	 * @param msgSeq Message sequence to associate
+	 */
+	public void sendTimeInfoFast(String dstAddr, String tzStr)
+	{
+		TimeInfoMsg msg = new TimeInfoMsg(getMessageCount(), (byte)0x0, (byte) 0, this.srcAddr, dstAddr, tzStr);
+		msg.setFastSend(true);
 		sendMessage(msg);
 	}
 
