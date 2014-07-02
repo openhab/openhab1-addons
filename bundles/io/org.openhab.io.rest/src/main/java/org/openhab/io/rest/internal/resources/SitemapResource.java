@@ -11,6 +11,7 @@ package org.openhab.io.rest.internal.resources;
 import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -29,8 +30,10 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend.SCOPE;
+import org.atmosphere.cache.UUIDBroadcasterCache;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereResourceFactory;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.cpr.HeaderConfig;
@@ -126,45 +129,76 @@ public class SitemapResource {
 		}
     }
 
-    @GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
+	@GET @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
 	@Produces( { MediaType.WILDCARD })
-    public SuspendResponse<Response> getPageData(
-    		@Context HttpHeaders headers,
-    		@PathParam("sitemapname") String sitemapname,
-    		@PathParam("pageid") String pageId,
-    		@QueryParam("type") String type, 
-    		@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
-    		@HeaderParam(HeaderConfig.X_ATMOSPHERE_TRANSPORT) String atmosphereTransport,
-    		@Context AtmosphereResource resource) {
-		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		if(atmosphereTransport==null || atmosphereTransport.isEmpty()) {
-			String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
-			if(responseType!=null) {
-		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-		    			new JSONWithPadding(getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build()), callback) : getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build());
-		    	throw new WebApplicationException(Response.ok(responseObject, responseType).build());
-			} else {
-				throw new WebApplicationException(Response.notAcceptable(null).build());
-			}
-		}
-		
-		GeneralBroadcaster sitemapBroadcaster = BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
-		sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
-		
-		boolean resume = false;
-		try {
-		AtmosphereRequest request = resource.getRequest();
-		resume = !ResponseTypeHelper.isStreamingTransport(request);
-		} catch (Exception e) {
-			logger.debug(e.getMessage());
-		}
+	public SuspendResponse<Response> getPageData(
+	    @Context HttpHeaders headers,
+	    @PathParam("sitemapname") String sitemapname,
+	    @PathParam("pageid") String pageId,
+	    @QueryParam("type") String type, 
+	    @QueryParam("jsoncallback") @DefaultValue("callback") String callback,
+	    @HeaderParam(HeaderConfig.X_ATMOSPHERE_TRANSPORT) String atmosphereTransport,
+	    @Context AtmosphereResource resource) {
 
-		return new SuspendResponse.SuspendResponseBuilder<Response>()
-			.scope(SCOPE.REQUEST)
-			.resumeOnBroadcast(resume)
-			.broadcaster(sitemapBroadcaster)
-			.outputComments(true).build(); 
-    }
+	  logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
+
+	  if(atmosphereTransport==null || atmosphereTransport.isEmpty()) {
+	    String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+	    if(responseType!=null) {
+	      Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
+	          new JSONWithPadding(getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build()), callback) : getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build());
+
+	          throw new WebApplicationException(Response.ok(responseObject, responseType).build());
+	    } else {
+	      throw new WebApplicationException(Response.notAcceptable(null).build());
+	    }
+	  }
+
+	  /*
+	   * Check to see if the server has an existing connection for this UUID,
+	   * this supports servers like jetty who may not hear about a 
+	   * disconnect. 
+	   */
+	  AtmosphereResource existing = new AtmosphereResourceFactory().find(resource.uuid());
+	  
+	  if(existing != null) {
+	    try {
+	      //close the other session
+	      existing.close();
+	    }catch(Exception e) {
+	      logger.debug("Could not close existing connection",e);
+	    }
+	  }
+	  
+	  GeneralBroadcaster sitemapBroadcaster = BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
+          sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
+
+	  Map<String, Long> clients = ((UUIDBroadcasterCache) sitemapBroadcaster.getBroadcasterConfig().getBroadcasterCache()).activeClients();
+	 
+	  /*
+	   * If this ID is not in our cache, then we need to populate the
+	   * most up to date data, this supports reconnects with the same
+	   * atmosphere UUID
+	   */
+	  if(!clients.containsKey(atmosphereTransport)) {
+	    clients.put(resource.uuid(),  System.currentTimeMillis());
+	    sitemapBroadcaster.broadcast(getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build()));
+	  }
+
+	  boolean resume = false;
+	  try {
+	    AtmosphereRequest request = resource.getRequest();
+	    resume = !ResponseTypeHelper.isStreamingTransport(request);
+	  } catch (Exception e) {
+	    logger.debug(e.getMessage());
+	  }
+
+	  return new SuspendResponse.SuspendResponseBuilder<Response>()
+	      .scope(SCOPE.REQUEST)
+	      .resumeOnBroadcast(resume)
+	      .broadcaster(sitemapBroadcaster)
+	      .outputComments(true).build(); 
+	}
 	
     static public PageBean getPageBean(String sitemapName, String pageId, URI uri) {
 		ItemUIRegistry itemUIRegistry = RESTApplication.getItemUIRegistry();
