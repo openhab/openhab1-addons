@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0000</Id>
+		<Name>Sigma Designs</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>UZB</Model>
+			<Label lang="en">ACC-UZB</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0150</Id>
 		<Name>Cooper Wiring Devices</Name>
 		<Product>
