@@ -10,5 +10,6 @@ public enum MaxCulFeature {
 	TEMPERATURE,
 	BATTERY,
 	MODE,
-	SWITCH;
+	SWITCH,
+	VALVE_POS;
 }

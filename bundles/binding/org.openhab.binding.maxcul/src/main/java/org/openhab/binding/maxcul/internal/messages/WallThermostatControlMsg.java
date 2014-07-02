@@ -26,9 +26,12 @@ public class WallThermostatControlMsg extends BaseMsg {
 		if (this.payload.length == WALL_THERMOSTAT_CONTROL_SET_POINT_AND_MEASURED_PAYLOAD_LEN)
 		{
 			desiredTemperature = (this.payload[0] & 0x7F)/2.0;
-			measuredTemperature = (((this.payload[0] & 0x80)<<1) + this.payload[1])/10.0; // temperature over 25.5 uses extra bit in desiredTemperature byte
+			int mTemp = (this.payload[0]&0x80);
+			mTemp <<= 1;
+			mTemp |= (((int)this.payload[1])&0xff);
+			measuredTemperature = mTemp/10.0; // temperature over 25.5 uses extra bit in desiredTemperature byte
 		}
-		if (this.payload.length == WALL_THERMOSTAT_CONTROL_SET_POINT_ONLY_PAYLOAD_LEN)
+		else if (this.payload.length == WALL_THERMOSTAT_CONTROL_SET_POINT_ONLY_PAYLOAD_LEN)
 		{
 			desiredTemperature = (this.payload[0] & 0x7F)/2.0;
 			measuredTemperature = null;

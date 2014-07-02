@@ -23,6 +23,7 @@ import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcesso
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
 import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
+import org.openhab.binding.maxcul.internal.messages.ThermostatStateMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
@@ -49,9 +50,6 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(MaxCulBinding.class);
-
-	private static final double THERMOSTAT_ON_VALUE = 30.5;
-	private static final double THERMOSTAT_OFF_VALUE = 4.5;
 
 	/**
 	 * the refresh interval which is used to poll values from the MaxCul server
@@ -392,6 +390,34 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 				}
 				/* respond to device */
 				this.messageHandler.sendAck(setTempMsg);
+				break;
+			case THERMOSTAT_STATE:
+				ThermostatStateMsg thermStateMsg = new ThermostatStateMsg(data);
+				thermStateMsg.printMessage();
+				for (MaxCulBindingProvider provider : super.providers) {
+					Collection<MaxCulBindingConfig> bindingConfigs = provider
+							.getConfigsForRadioAddr(thermStateMsg.srcAddrStr);
+					for (MaxCulBindingConfig bc : bindingConfigs) {
+						String itemName = provider.getItemNameForConfig(bc);
+						if (bc.feature == MaxCulFeature.THERMOSTAT) {
+							eventPublisher.postUpdate(
+									itemName,
+									new DecimalType(thermStateMsg.getDesiredTemperature()));
+						} else if (bc.feature == MaxCulFeature.TEMPERATURE)
+						{
+							eventPublisher.postUpdate(
+									itemName,
+									new DecimalType(thermStateMsg.getMeasuredTemperature()));
+						} else if (bc.feature == MaxCulFeature.BATTERY) {
+							eventPublisher.postUpdate(
+									itemName,
+									thermStateMsg.getBatteryLow()?OnOffType.ON:OnOffType.OFF);
+						}
+					}
+				}
+				/* respond to device */
+				if (BaseMsg.isForUs(data, this.srcAddr))
+					this.messageHandler.sendAck(thermStateMsg);
 				break;
 			default:
 				logger.debug("Unhandled message type " + msgType.toString());

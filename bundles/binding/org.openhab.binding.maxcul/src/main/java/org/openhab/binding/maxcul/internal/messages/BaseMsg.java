@@ -217,6 +217,18 @@ public class BaseMsg {
 	}
 
 	/**
+	 * Extract flag from a byte
+	 * @param b Byte to look at
+	 * @param pos Zero indexed position
+	 * @return true if bit is 1, false if it is 0, false if pos>7
+	 */
+	protected boolean extractBitFromByte( byte b, int pos)
+	{
+		if (pos>7) return false;
+		return (((b&(0x1<<pos))>>pos)==1);
+	}
+
+	/**
 	 * Return the type of message that has been received given the message string
 	 * @param rawMsg Message string from CUL device
 	 * @return MaxCulMsgType extracted from the message

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * and registering the {@link MaxCulBindingProvider}.
  *
  * The following devices have the following valid types:
- * <li>RadiatorThermostat - thermostat,temperature,battery</li>
+ * <li>RadiatorThermostat - thermostat,temperature,battery,valvepos</li>
  * <li>WallThermostat - thermostat,temperature,battery</li>
  *
  * Examples:
@@ -80,6 +80,8 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		case WALL_THERMOSTAT:
 			if (config.feature == MaxCulFeature.TEMPERATURE && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'temperature' can only be a Number");
+			else if (config.feature == MaxCulFeature.VALVE_POS && !(item instanceof NumberItem))
+				throw new BindingConfigParseException("Invalid item type. Feature 'valvepos' can only be a Number");
 			else if (config.feature == MaxCulFeature.THERMOSTAT && !((item instanceof NumberItem) || (item instanceof SwitchItem)))
 				throw new BindingConfigParseException("Invalid item type. Feature 'thermostat' can only be a Number or a Switch");
 			else if (config.feature == MaxCulFeature.BATTERY && !(item instanceof NumberItem))

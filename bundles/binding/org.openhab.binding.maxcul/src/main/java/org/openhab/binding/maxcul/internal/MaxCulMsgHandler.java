@@ -16,6 +16,7 @@ import org.openhab.binding.maxcul.internal.messages.PairPongMsg;
 import org.openhab.binding.maxcul.internal.messages.SetGroupIdMsg;
 import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
 import org.openhab.binding.maxcul.internal.messages.ThermostatControlMode;
+import org.openhab.binding.maxcul.internal.messages.ThermostatStateMsg;
 import org.openhab.binding.maxcul.internal.messages.TimeInfoMsg;
 import org.openhab.binding.maxcul.internal.messages.WakeupMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
@@ -343,6 +344,7 @@ public class MaxCulMsgHandler implements CULListener {
 				{
 				case PAIR_PING:
 				case WALL_THERMOSTAT_CONTROL:
+				case THERMOSTAT_STATE:
 					this.mcbmp.MaxCulMsgReceived(data, true);
 					break;
 				default:

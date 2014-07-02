@@ -107,6 +107,12 @@ public class MaxCulBindingConfig implements BindingConfig {
 						throw new BindingConfigParseException(
 								"Invalid device feature. Can only use 'switch' on PushButton or ShutterContact. This is a "+this.deviceType);
 					this.feature = MaxCulFeature.TEMPERATURE;
+				} else if (configParts[2].compareTo("valvepos") == 0) {
+					if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
+							&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS)
+									throw new BindingConfigParseException(
+											"Invalid device feature. Can only use 'switch' on RadiatorThermostat or RadiatorThermostatPlus. This is a "+this.deviceType);
+					this.feature = MaxCulFeature.VALVE_POS;
 				}
 			} else {
 				/* use defaults - handle all device types */
