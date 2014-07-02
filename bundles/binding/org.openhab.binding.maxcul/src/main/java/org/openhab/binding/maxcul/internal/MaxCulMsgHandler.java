@@ -251,6 +251,15 @@ public class MaxCulMsgHandler implements CULListener {
 		case PAIR_PONG:
 			new PairPongMsg(data).printMessage();
 			break;
+		case THERMOSTAT_STATE:
+			new ThermostatStateMsg(data).printMessage();
+			break;
+		case SET_GROUP_ID:
+			new SetGroupIdMsg(data).printMessage();
+			break;
+		case WAKEUP:
+			new WakeupMsg(data).printMessage();
+			break;
 		case WALL_THERMOSTAT_STATE:
 		case ADD_LINK_PARTNER:
 		case CONFIG_TEMPERATURES:
@@ -263,10 +272,7 @@ public class MaxCulMsgHandler implements CULListener {
 		case SET_COMFORT_TEMPERATURE:
 		case SET_DISPLAY_ACTUAL_TEMP:
 		case SET_ECO_TEMPERATURE:
-		case SET_GROUP_ID:
 		case SHUTTER_CONTACT_STATE:
-		case WAKEUP:
-		case THERMOSTAT_STATE:
 		case UNKNOWN:
 		default:
 			BaseMsg baseMsg = new BaseMsg(data);
