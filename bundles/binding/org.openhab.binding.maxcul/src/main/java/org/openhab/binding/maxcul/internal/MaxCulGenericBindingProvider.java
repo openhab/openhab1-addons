@@ -70,8 +70,8 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 			break;
 		case PUSH_BUTTON:
 		case SHUTTER_CONTACT:
-			if (config.feature == MaxCulFeature.BATTERY && !(item instanceof NumberItem))
-				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Number");
+			if (config.feature == MaxCulFeature.BATTERY && !(item instanceof SwitchItem))
+				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Switch");
 			if (config.feature == MaxCulFeature.SWITCH && !(item instanceof SwitchItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'switch' can only be a Switch");
 			break;
@@ -84,8 +84,8 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 				throw new BindingConfigParseException("Invalid item type. Feature 'valvepos' can only be a Number");
 			else if (config.feature == MaxCulFeature.THERMOSTAT && !((item instanceof NumberItem) || (item instanceof SwitchItem)))
 				throw new BindingConfigParseException("Invalid item type. Feature 'thermostat' can only be a Number or a Switch");
-			else if (config.feature == MaxCulFeature.BATTERY && !(item instanceof NumberItem))
-				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Number");
+			else if (config.feature == MaxCulFeature.BATTERY && !(item instanceof SwitchItem))
+				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Switch");
 			else if (config.feature == MaxCulFeature.MODE && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'mode' can only be a Number");
 			break;
