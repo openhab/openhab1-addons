@@ -35,7 +35,7 @@ public class JpaPersistentItem implements HistoricItem {
 	private String realName;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timestamp;
-	@Column(length = 32672) // 32k
+	@Column(length = 32672) // 32k, max varchar for apache derby
 	private String value;
 
 	public Long getId() {

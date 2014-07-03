@@ -30,7 +30,6 @@
     <module>org.openhab.persistence.mongodb</module>
     <module>org.openhab.persistence.influxdb</module>
     <module>org.openhab.persistence.jpa</module>
-    <module>org.openhab.persistence.jpa.test</module>
   </modules>
 
 </project>
