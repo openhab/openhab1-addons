@@ -36,8 +36,6 @@ import org.openhab.binding.homematic.internal.model.HmChannel;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmDevice;
 import org.openhab.binding.homematic.internal.model.HmDeviceList;
-import org.openhab.binding.homematic.internal.model.HmProgram;
-import org.openhab.binding.homematic.internal.model.HmProgramList;
 import org.openhab.binding.homematic.internal.model.HmRemoteControlOptions;
 import org.openhab.binding.homematic.internal.model.HmResult;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
@@ -120,13 +118,6 @@ public class TclRegaScriptClient {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Retrieves all programs from the CCU.
-	 */
-	public List<HmProgram> getAllPrograms() throws HomematicClientException {
-		return sendScriptByName("getAllPrograms", HmProgramList.class).getPrograms();
 	}
 
 	/**

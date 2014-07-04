@@ -190,26 +190,6 @@ Write('</valid></result>');
 		]]>
 		</data>
 	</script>
-	<script name="getAllPrograms">
-		<data>
-		<![CDATA[
-object prg_obj;
-string sys_prg_id;
-Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
-Write("<programlist>\n");
-foreach (sys_prg_id, dom.GetObject(ID_PROGRAMS).EnumUsedIDs()) {
-  prg_obj = dom.GetObject(sys_prg_id);
-  if (prg_obj.Visible() == true) {
-    Write("  <program");
-    Write(" name='"); WriteXML(prg_obj.Name());
-    Write("' writeable='true'");
-    Write(" />\n");
-  }
-}
-Write("</programlist>");
-		]]>
-		</data>
-	</script>
 	<script name="setRemoteControlDisplay">
 		<data>
 		<![CDATA[
