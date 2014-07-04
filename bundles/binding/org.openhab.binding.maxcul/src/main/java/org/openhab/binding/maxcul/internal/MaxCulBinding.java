@@ -421,6 +421,10 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 							eventPublisher.postUpdate(
 									itemName,
 									new DecimalType(thermStateMsg.getControlMode().toInt()));
+						} else if (bc.feature == MaxCulFeature.VALVE_POS) {
+							eventPublisher.postUpdate(
+									itemName,
+									new DecimalType(thermStateMsg.getValvePos()));
 						}
 					}
 				}

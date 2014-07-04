@@ -100,6 +100,11 @@ public class ThermostatStateMsg extends BaseMsg {
 		return measuredTemperature;
 	}
 
+	public int getValvePos()
+	{
+		return (valvePos&0xff);
+	}
+
 	public boolean getBatteryLow()
 	{
 		return batteryLow;
