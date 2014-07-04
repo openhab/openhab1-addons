@@ -90,12 +90,12 @@ public class ThermostatStateMsg extends BaseMsg {
 			logger.debug("\tUntil DateTime      => "+untilDateTime.get(Calendar.YEAR)+"-"+(untilDateTime.get(Calendar.MONTH)+1)+"-"+untilDateTime.get(Calendar.DAY_OF_MONTH)+" "+untilDateTime.get(Calendar.HOUR_OF_DAY)+":"+untilDateTime.get(Calendar.MINUTE)+":"+untilDateTime.get(Calendar.SECOND));
 	}
 
-	public double getDesiredTemperature()
+	public Double getDesiredTemperature()
 	{
 		return desiredTemperature;
 	}
 
-	public double getMeasuredTemperature()
+	public Double getMeasuredTemperature()
 	{
 		return measuredTemperature;
 	}
