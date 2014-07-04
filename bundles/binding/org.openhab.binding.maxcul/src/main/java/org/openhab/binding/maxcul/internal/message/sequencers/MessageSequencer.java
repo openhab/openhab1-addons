@@ -18,6 +18,7 @@ public interface MessageSequencer {
 
 	/**
 	 * Handle case where packet is lost
+	 * @param msg Message to retransmit
 	 */
 	void packetLost(BaseMsg msg);
 

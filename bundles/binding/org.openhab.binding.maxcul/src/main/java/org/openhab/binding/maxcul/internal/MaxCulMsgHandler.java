@@ -22,7 +22,6 @@ import org.openhab.binding.maxcul.internal.messages.WakeupMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatStateMsg;
 import org.openhab.binding.maxcul.internal.message.sequencers.MessageSequencer;
-import org.openhab.binding.maxcul.internal.message.sequencers.PairingInitialisationSequence;
 import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULHandler;
 import org.openhab.io.transport.cul.CULListener;
@@ -63,8 +62,6 @@ public class MaxCulMsgHandler implements CULListener {
 	private boolean listenMode = false;
 
 	private final int MESSAGE_EXPIRY_PERIOD = 30000;
-
-	private String tzStr;
 
 	public MaxCulMsgHandler(String srcAddr, CULHandler cul)
 	{
@@ -295,13 +292,16 @@ public class MaxCulMsgHandler implements CULListener {
 				listenModeHandler(data);
 				return;
 			}
+
 			/* Check message is destined for us */
 			if (BaseMsg.isForUs(data, srcAddr))
 			{
+				boolean passToBinding = true;
 				/* Handle Internal Messages */
 				MaxCulMsgType msgType = BaseMsg.getMsgType(data);
 				if (msgType == MaxCulMsgType.ACK)
 				{
+					passToBinding = false;
 					AckMsg msg = new AckMsg(data);
 					if (pendingAckQueue.containsKey(msg.msgCount) && msg.dstAddrStr.compareTo(srcAddr) == 0)
 					{
@@ -319,29 +319,18 @@ public class MaxCulMsgHandler implements CULListener {
 
 								}
 					} else logger.info("Got ACK for message "+msg.msgCount+" but it wasn't in the queue");
+				}
 
-					if (sequenceRegister.containsKey(new BaseMsg(data).msgCount))
-					{
-						/* message found in sequence register, so it will be handled by the sequence */
-						BaseMsg bMsg = new BaseMsg(data);
-						logger.debug("Message "+bMsg.msgCount+" is part of sequence. Running next step in sequence.");
-						sequenceRegister.get(bMsg.msgCount).runSequencer(bMsg);
-					}
-				}
-				else if (msgType == MaxCulMsgType.TIME_INFO)
+				if (sequenceRegister.containsKey(new BaseMsg(data).msgCount))
 				{
-					/* send latest time information */
-					TimeInfoMsg msg = new TimeInfoMsg(data);
-					sendTimeInfoFast(msg.srcAddrStr, this.tzStr);
-				}
-				else if (sequenceRegister.containsKey(new BaseMsg(data).msgCount))
-				{
+					passToBinding = false;
 					/* message found in sequence register, so it will be handled by the sequence */
 					BaseMsg bMsg = new BaseMsg(data);
 					logger.debug("Message "+bMsg.msgCount+" is part of sequence. Running next step in sequence.");
 					sequenceRegister.get(bMsg.msgCount).runSequencer(bMsg);
 				}
-				else
+
+				if (passToBinding)
 				{
 					/* pass data to binding for processing */
 					this.mcbmp.MaxCulMsgReceived(data, false);
@@ -494,18 +483,8 @@ public class MaxCulMsgHandler implements CULListener {
 		logger.debug("Listen Mode is "+(listenMode?"ON":"OFF"));
 	}
 
-	public void setTz( String tzStr )
-	{
-		this.tzStr = tzStr;
-	}
-
-	public void startSequence(PairingInitialisationSequence ps, BaseMsg msg)
+	public void startSequence(MessageSequencer ps, BaseMsg msg)
 	{
 		ps.runSequencer(msg);
 	}
-
-
-
-
-
 }

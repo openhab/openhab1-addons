@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PairingInitialisationSequence implements MessageSequencer {
 
-	enum PairingInitialisationState
+	private enum PairingInitialisationState
 	{
 		INITIAL_PING,
 		PONG_ACKED,
@@ -58,7 +58,7 @@ public class PairingInitialisationSequence implements MessageSequencer {
 		switch (state)
 		{
 		case INITIAL_PING:
-			/* Send PONG */
+			/* Send PONG - assumes PING is checked*/
 			logger.debug("Sending PONG");
 			this.devAddr = msg.srcAddrStr;
 			messageHandler.sendPairPong(devAddr, this);
