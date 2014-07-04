@@ -293,7 +293,6 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 			cul = CULManager.getOpenCULHandler(accessDevice, CULMode.MAX);
 			messageHandler = new MaxCulMsgHandler(this.srcAddr, cul);
 			messageHandler.registerMaxCulBindingMessageProcessor(this);
-			messageHandler.setTz(this.tzStr);
 		} catch (CULDeviceException e) {
 			logger.error("Cannot open CUL device", e);
 			cul = null;
@@ -356,7 +355,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 					Collection<MaxCulBindingConfig> bindingConfigs = provider
 							.getConfigsForRadioAddr(wallThermCtrlMsg.srcAddrStr);
 					for (MaxCulBindingConfig bc : bindingConfigs) {
-						if (bc.feature == MaxCulFeature.THERMOSTAT) {
+						if (bc.feature == MaxCulFeature.THERMOSTAT && wallThermCtrlMsg.getDesiredTemperature() != null) {
 							String itemName = provider.getItemNameForConfig(bc);
 							eventPublisher.postUpdate(
 									itemName,
@@ -401,11 +400,11 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 							.getConfigsForRadioAddr(thermStateMsg.srcAddrStr);
 					for (MaxCulBindingConfig bc : bindingConfigs) {
 						String itemName = provider.getItemNameForConfig(bc);
-						if (bc.feature == MaxCulFeature.THERMOSTAT) {
+						if (bc.feature == MaxCulFeature.THERMOSTAT && thermStateMsg.getDesiredTemperature() != null) {
 							eventPublisher.postUpdate(
 									itemName,
 									new DecimalType(thermStateMsg.getDesiredTemperature()));
-						} else if (bc.feature == MaxCulFeature.TEMPERATURE)
+						} else if (bc.feature == MaxCulFeature.TEMPERATURE && thermStateMsg.getMeasuredTemperature() != null)
 						{
 							eventPublisher.postUpdate(
 									itemName,
@@ -414,6 +413,10 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 							eventPublisher.postUpdate(
 									itemName,
 									thermStateMsg.getBatteryLow()?OnOffType.ON:OnOffType.OFF);
+						} else if (bc.feature == MaxCulFeature.MODE) {
+							eventPublisher.postUpdate(
+									itemName,
+									new DecimalType(thermStateMsg.getControlMode().toInt()));
 						}
 					}
 				}
