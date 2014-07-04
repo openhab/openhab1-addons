@@ -20,6 +20,7 @@ import org.openhab.binding.maxcul.internal.messages.ThermostatStateMsg;
 import org.openhab.binding.maxcul.internal.messages.TimeInfoMsg;
 import org.openhab.binding.maxcul.internal.messages.WakeupMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
+import org.openhab.binding.maxcul.internal.messages.WallThermostatStateMsg;
 import org.openhab.binding.maxcul.internal.message.sequencers.MessageSequencer;
 import org.openhab.binding.maxcul.internal.message.sequencers.PairingInitialisationSequence;
 import org.openhab.io.transport.cul.CULCommunicationException;
@@ -261,6 +262,8 @@ public class MaxCulMsgHandler implements CULListener {
 			new WakeupMsg(data).printMessage();
 			break;
 		case WALL_THERMOSTAT_STATE:
+			new WallThermostatStateMsg(data).printMessage();
+			break;
 		case ADD_LINK_PARTNER:
 		case CONFIG_TEMPERATURES:
 		case CONFIG_VALVE:
@@ -351,6 +354,7 @@ public class MaxCulMsgHandler implements CULListener {
 				case PAIR_PING:
 				case WALL_THERMOSTAT_CONTROL:
 				case THERMOSTAT_STATE:
+				case WALL_THERMOSTAT_STATE:
 					this.mcbmp.MaxCulMsgReceived(data, true);
 					break;
 				default:

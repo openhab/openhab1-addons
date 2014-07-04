@@ -24,4 +24,8 @@ public enum ThermostatControlMode {
 	public byte toByte() {
 		return (byte) controlMode;
 	}
+
+	public int toInt() {
+		return controlMode;
+	}
 }

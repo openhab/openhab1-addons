@@ -25,6 +25,7 @@ import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
 import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
 import org.openhab.binding.maxcul.internal.messages.ThermostatStateMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
+import org.openhab.binding.maxcul.internal.messages.WallThermostatStateMsg;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -370,7 +371,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 				}
 
 				/* reply only if not broadcast */
-				if (BaseMsg.isForUs(data, this.srcAddr))
+				if (isBroadcast == false)
 					this.messageHandler.sendAck(wallThermCtrlMsg);
 				break;
 			case SET_TEMPERATURE:
@@ -389,7 +390,8 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 					}
 				}
 				/* respond to device */
-				this.messageHandler.sendAck(setTempMsg);
+				if (isBroadcast == false)
+					this.messageHandler.sendAck(setTempMsg);
 				break;
 			case THERMOSTAT_STATE:
 				ThermostatStateMsg thermStateMsg = new ThermostatStateMsg(data);
@@ -416,8 +418,40 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 					}
 				}
 				/* respond to device */
-				if (BaseMsg.isForUs(data, this.srcAddr))
+				if (isBroadcast == false)
 					this.messageHandler.sendAck(thermStateMsg);
+				break;
+			case WALL_THERMOSTAT_STATE:
+				WallThermostatStateMsg wallThermStateMsg = new WallThermostatStateMsg(data);
+				wallThermStateMsg.printMessage();
+				for (MaxCulBindingProvider provider : super.providers) {
+					Collection<MaxCulBindingConfig> bindingConfigs = provider
+							.getConfigsForRadioAddr(wallThermStateMsg.srcAddrStr);
+					for (MaxCulBindingConfig bc : bindingConfigs) {
+						String itemName = provider.getItemNameForConfig(bc);
+						if (bc.feature == MaxCulFeature.THERMOSTAT && wallThermStateMsg.getDesiredTemperature()!=null) {
+							eventPublisher.postUpdate(
+									itemName,
+									new DecimalType(wallThermStateMsg.getDesiredTemperature()));
+						} else if (bc.feature == MaxCulFeature.TEMPERATURE && wallThermStateMsg.getMeasuredTemperature()!=null)
+						{
+							eventPublisher.postUpdate(
+									itemName,
+									new DecimalType(wallThermStateMsg.getMeasuredTemperature()));
+						} else if (bc.feature == MaxCulFeature.BATTERY) {
+							eventPublisher.postUpdate(
+									itemName,
+									wallThermStateMsg.getBatteryLow()?OnOffType.ON:OnOffType.OFF);
+						} else if (bc.feature == MaxCulFeature.MODE) {
+							eventPublisher.postUpdate(
+									itemName,
+									new DecimalType(wallThermStateMsg.getControlMode().toInt()));
+						}
+					}
+				}
+				/* respond to device */
+				if (isBroadcast == false)
+					this.messageHandler.sendAck(wallThermStateMsg);
 				break;
 			default:
 				logger.debug("Unhandled message type " + msgType.toString());
