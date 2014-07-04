@@ -74,7 +74,10 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 	 * This sets the address of the controller i.e. us!
 	 */
 	private final String srcAddr = "010203";
-	private final String BROADCAST_ADDRESS = "000000";
+
+	/**
+	 * Set default group ID
+	 */
 	private final byte DEFAULT_GROUP_ID = 0x1;
 
 	/**
@@ -83,8 +86,10 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 	 */
 	private boolean pairMode = false;
 	private int pairModeTimeout = 60000;
+	private int PACED_TRANSMIT_TIME = 10000;
 
 	private Map<String, Timer> timers = new HashMap<String, Timer>();
+	private Map<MaxCulBindingConfig, Timer> pacedBindingTransmitTimers = new HashMap<MaxCulBindingConfig, Timer>();
 
 	MaxCulMsgHandler messageHandler;
 
@@ -142,8 +147,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
-		Timer timer = null;
+		Timer pairModeTimer = null;
 
 		MaxCulBindingConfig bindingConfig = null;
 		for (MaxCulBindingProvider provider : super.providers) {
@@ -176,14 +180,14 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 										OnOffType.OFF);
 							}
 						};
-						timer = timers.get(itemName);
-						if (timer != null) {
-							timer.cancel();
+						pairModeTimer = timers.get(itemName);
+						if (pairModeTimer != null) {
+							pairModeTimer.cancel();
 							timers.remove(itemName);
 						}
-						timer = new Timer();
-						timers.put(itemName, timer);
-						timer.schedule(task, pairModeTimeout);
+						pairModeTimer = new Timer();
+						timers.put(itemName, pairModeTimer);
+						pairModeTimer.schedule(task, pairModeTimeout);
 						logger.debug(itemName
 								+ " pairMode enabled & timeout scheduled");
 						break;
@@ -193,10 +197,10 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 						 * flag
 						 */
 						pairMode = false;
-						timer = timers.get(itemName);
-						if (timer != null) {
+						pairModeTimer = timers.get(itemName);
+						if (pairModeTimer != null) {
 							logger.debug(itemName + " pairMode timer cancelled");
-							timer.cancel();
+							pairModeTimer.cancel();
 							timers.remove(itemName);
 						}
 						logger.debug(itemName + " pairMode cleared");
@@ -220,15 +224,16 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 			case RADIATOR_THERMOSTAT_PLUS:
 			case WALL_THERMOSTAT:
 				if (bindingConfig.feature == MaxCulFeature.THERMOSTAT) {
-					/* TODO queue these up to stop flooding */
-					if (command instanceof OnOffType) {
-						if (((OnOffType)command) == OnOffType.ON)
-							messageHandler.sendSetTemperature(bindingConfig.devAddr, SetTemperatureMsg.TEMPERATURE_ON);
-						else if (((OnOffType)command) == OnOffType.OFF)
-							messageHandler.sendSetTemperature(bindingConfig.devAddr, SetTemperatureMsg.TEMPERATURE_OFF);
-					} else if (command instanceof DecimalType) {
-						messageHandler.sendSetTemperature(bindingConfig.devAddr, ((DecimalType)command).doubleValue());
+					/* clear out old pacing timer */
+					if (pacedBindingTransmitTimers.containsKey(bindingConfig))
+					{
+						pacedBindingTransmitTimers.get(bindingConfig).cancel();
+						pacedBindingTransmitTimers.remove(bindingConfig);
 					}
+					/* schedule new timer */
+					Timer pacingTimer = new Timer();
+					pacedBindingTransmitTimers.put(bindingConfig, pacingTimer);
+					pacingTimer.schedule(new MaxCulPacedThermostatTransmitTask(command, bindingConfig, messageHandler), PACED_TRANSMIT_TIME);
 				} else
 					logger.warn("Command not handled for "
 							+ bindingConfig.deviceType
@@ -337,10 +342,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 
 			/* Set pairing information */
 			for (MaxCulBindingConfig bc : bindingConfigs)
-				bc.setPairedInfo(pkt.srcAddrStr); /*
-												 * where it came from gives the
-												 * addr of the device
-												 */
+				bc.setPairedInfo(pkt.srcAddrStr); /* where it came from gives the addr of the device */
 
 			/* start the initialisation sequence */
 			PairingInitialisationSequence ps = new PairingInitialisationSequence(
