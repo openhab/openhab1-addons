@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.homematic.internal.communicator;
 
-import org.openhab.binding.homematic.internal.communicator.client.CcuClientException;
+import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 
@@ -19,22 +19,22 @@ import org.openhab.binding.homematic.internal.model.HmInterface;
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public interface CcuClient {
+public interface HomematicClient {
 
 	/**
-	 * Register a callback for the specified interface where the CCU can send
-	 * their events.
+	 * Register a callback for the specified interface where the Homematic
+	 * server can send their events.
 	 */
-	public void init(HmInterface hmInterface) throws CcuClientException;
+	public void init(HmInterface hmInterface) throws HomematicClientException;
 
 	/**
 	 * Release a callback.
 	 */
-	public void release(HmInterface hmInterface) throws CcuClientException;
+	public void release(HmInterface hmInterface) throws HomematicClientException;
 
 	/**
 	 * Set the value of a datapoint.
 	 */
-	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws CcuClientException;
+	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException;
 
 }

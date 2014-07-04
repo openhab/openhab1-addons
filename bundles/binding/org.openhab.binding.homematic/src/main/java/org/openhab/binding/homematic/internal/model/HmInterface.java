@@ -34,7 +34,7 @@ public enum HmInterface {
 	}
 
 	/**
-	 * Returns the CCU ports of the interfaces.
+	 * Returns the Homematic server ports of the interfaces.
 	 */
 	public int getPort() {
 		switch (this) {

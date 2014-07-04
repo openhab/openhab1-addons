@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
-import org.openhab.binding.homematic.internal.communicator.CcuClient;
+import org.openhab.binding.homematic.internal.communicator.HomematicClient;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnection;
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public class XmlRpcClient implements CcuClient {
+public class XmlRpcClient implements HomematicClient {
 	private final static Logger logger = LoggerFactory.getLogger(XmlRpcClient.class);
 	private HomematicConfig config = HomematicContext.getInstance().getConfig();
 
@@ -45,7 +45,7 @@ public class XmlRpcClient implements CcuClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void init(HmInterface hmInterface) throws CcuClientException {
+	public void init(HmInterface hmInterface) throws HomematicClientException {
 		xmlRpcConnections.get(hmInterface).init(config.getXmlRpcCallbackUrl(), hmInterface.toString());
 	}
 
@@ -53,7 +53,7 @@ public class XmlRpcClient implements CcuClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void release(HmInterface hmInterface) throws CcuClientException {
+	public void release(HmInterface hmInterface) throws HomematicClientException {
 		xmlRpcConnections.get(hmInterface).init(config.getXmlRpcCallbackUrl(), "");
 	}
 
@@ -61,7 +61,7 @@ public class XmlRpcClient implements CcuClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws CcuClientException {
+	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException {
 		HmInterface hmInterface = dp.getChannel().getDevice().getHmInterface();
 		String address = dp.getChannel().getAddress();
 		if (dp.isIntegerValue() && value instanceof Double) {
@@ -70,7 +70,7 @@ public class XmlRpcClient implements CcuClient {
 		try {
 			xmlRpcConnections.get(hmInterface).setValue(address, datapointName, value);
 		} catch (Exception ex) {
-			throw new CcuClientException(ex.getMessage(), ex);
+			throw new HomematicClientException(ex.getMessage(), ex);
 		}
 	}
 

@@ -18,19 +18,19 @@ import org.openhab.binding.homematic.internal.binrpc.BinRpcRequest;
 import org.openhab.binding.homematic.internal.binrpc.BinRpcResponse;
 import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
-import org.openhab.binding.homematic.internal.communicator.CcuClient;
+import org.openhab.binding.homematic.internal.communicator.HomematicClient;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Client implementation for sending messages via binrpc to the CCU.
+ * Client implementation for sending messages via BIN-RPC to the Homematic server.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public class BinRpcClient implements CcuClient {
+public class BinRpcClient implements HomematicClient {
 	private final static Logger logger = LoggerFactory.getLogger(BinRpcClient.class);
 	private final static boolean TRACE_ENABLED = logger.isTraceEnabled();
 
@@ -44,7 +44,7 @@ public class BinRpcClient implements CcuClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void init(HmInterface hmInterface) throws CcuClientException {
+	public void init(HmInterface hmInterface) throws HomematicClientException {
 		BinRpcRequest request = new BinRpcRequest("init");
 		request.addArg(config.getBinRpcCallbackUrl());
 		request.addArg(hmInterface.toString());
@@ -55,7 +55,7 @@ public class BinRpcClient implements CcuClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void release(HmInterface hmInterface) throws CcuClientException {
+	public void release(HmInterface hmInterface) throws HomematicClientException {
 		BinRpcRequest request = new BinRpcRequest("init");
 		request.addArg(config.getBinRpcCallbackUrl());
 		sendMessage(hmInterface, request);
@@ -65,7 +65,7 @@ public class BinRpcClient implements CcuClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws CcuClientException {
+	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException {
 		HmInterface hmInterface = dp.getChannel().getDevice().getHmInterface();
 		String address = dp.getChannel().getAddress();
 		if (dp.isIntegerValue() && value instanceof Double) {
@@ -83,7 +83,7 @@ public class BinRpcClient implements CcuClient {
 	 * Sends a BIN-RPC message and parses the response to see if there was an
 	 * error.
 	 */
-	private synchronized void sendMessage(HmInterface hmInterface, BinRpcRequest request) throws CcuClientException {
+	private synchronized void sendMessage(HmInterface hmInterface, BinRpcRequest request) throws HomematicClientException {
 		Socket socket = null;
 		try {
 			if (TRACE_ENABLED) {
@@ -115,7 +115,7 @@ public class BinRpcClient implements CcuClient {
 		} catch (ConnectException cex) {
 			logger.info("Can't connect to interface {}", hmInterface);
 		} catch (Exception ex) {
-			throw new CcuClientException(ex.getMessage() + "(sending " + request + ")", ex);
+			throw new HomematicClientException(ex.getMessage() + "(sending " + request + ")", ex);
 		} finally {
 			try {
 				if (socket != null) {

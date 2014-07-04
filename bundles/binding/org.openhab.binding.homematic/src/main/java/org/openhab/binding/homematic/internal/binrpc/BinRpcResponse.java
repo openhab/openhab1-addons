@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Decodes a BIN-RPC message from the CCU.
+ * Decodes a BIN-RPC message from the Homematic server.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0

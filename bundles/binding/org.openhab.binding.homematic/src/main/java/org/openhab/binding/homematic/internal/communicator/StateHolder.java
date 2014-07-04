@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.ProviderItemIterator.ProviderItemIteratorCallback;
-import org.openhab.binding.homematic.internal.communicator.client.CcuClientException;
+import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
 import org.openhab.binding.homematic.internal.communicator.client.TclRegaScriptClient.TclIteratorCallback;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.converter.state.Converter;
@@ -26,14 +26,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class which (re-)loads and holds the cached values from the CCU.
+ * Class which (re-)loads and holds the cached values from a Homematic server.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0
  */
 
-public class CcuStateHolder {
-	private static final Logger logger = LoggerFactory.getLogger(CcuStateHolder.class);
+public class StateHolder {
+	private static final Logger logger = LoggerFactory.getLogger(StateHolder.class);
 
 	private HomematicContext context;
 
@@ -41,10 +41,10 @@ public class CcuStateHolder {
 
 	private boolean datapointReloadInProgress = false;
 	private Map<HomematicBindingConfig, Object> refreshCache = new HashMap<HomematicBindingConfig, Object>();
-	private Map<HomematicBindingConfig, HmValueItem> ccuDatapoints = new HashMap<HomematicBindingConfig, HmValueItem>();
-	private Map<HomematicBindingConfig, HmValueItem> ccuVariables = new HashMap<HomematicBindingConfig, HmValueItem>();
+	private Map<HomematicBindingConfig, HmValueItem> datapoints = new HashMap<HomematicBindingConfig, HmValueItem>();
+	private Map<HomematicBindingConfig, HmValueItem> variables = new HashMap<HomematicBindingConfig, HmValueItem>();
 
-	public CcuStateHolder(HomematicContext context) {
+	public StateHolder(HomematicContext context) {
 		this.context = context;
 	}
 	
@@ -57,7 +57,7 @@ public class CcuStateHolder {
 
 	/**
 	 * A datapoint reload takes some seconds, this method is called when a event
-	 * receives from the CCU during the reload.
+	 * receives from the Homematic server during the reload.
 	 */
 	public void addToRefreshCache(HomematicBindingConfig bindingConfig, Object value) {
 		refreshCache.put(bindingConfig, value);
@@ -67,31 +67,31 @@ public class CcuStateHolder {
 	 * Returns the cached HmValueItem.
 	 */
 	public HmValueItem getState(HomematicBindingConfig bindingConfig) {
-		HmValueItem hmValueItem = ccuDatapoints.get(bindingConfig);
+		HmValueItem hmValueItem = datapoints.get(bindingConfig);
 		if (hmValueItem == null) {
-			hmValueItem = ccuVariables.get(bindingConfig);
+			hmValueItem = variables.get(bindingConfig);
 		}
 		return hmValueItem;
 	}
 
 	/**
-	 * Loads all datapoints from the CCU, only executed at startup.
+	 * Loads all datapoints from the Homematic server, only executed at startup.
 	 */
-	public void loadDatapoints() throws CcuClientException {
-		logger.info("Loading CCU datapoints");
+	public void loadDatapoints() throws HomematicClientException {
+		logger.info("Loading Homematic datapoints");
 
 		context.getTclRegaScriptClient().iterateAllDatapoints(new TclIteratorCallback() {
 
 			@Override
 			public void iterate(HomematicBindingConfig bindingConfig, HmValueItem hmValueItem) {
-				ccuDatapoints.put(bindingConfig, hmValueItem);
+				datapoints.put(bindingConfig, hmValueItem);
 			}
 		});
-		logger.info("Finished loading {} CCU datapoints", ccuDatapoints.size());
+		logger.info("Finished loading {} Homematic datapoints", datapoints.size());
 	}
 
 	/**
-	 * Reloads all datapoints from the CCU and publishes only changed values to
+	 * Reloads all datapoints from the Homematic server and publishes only changed values to
 	 * the openHAB bus.
 	 */
 	public void reloadDatapoints() {
@@ -101,14 +101,14 @@ public class CcuStateHolder {
 			public void run() {
 
 				try {
-					logger.debug("Reloading CCU datapoints");
+					logger.debug("Reloading Homematic server datapoints");
 					datapointReloadInProgress = true;
 					context.getTclRegaScriptClient().iterateAllDatapoints(new TclIteratorCallback() {
 						@Override
 						public void iterate(HomematicBindingConfig bindingConfig, HmValueItem hmValueItem) {
-							if (!ccuDatapoints.containsKey(bindingConfig)) {
+							if (!datapoints.containsKey(bindingConfig)) {
 								logger.info("Adding new {}", bindingConfig);
-								ccuDatapoints.put(bindingConfig, hmValueItem);
+								datapoints.put(bindingConfig, hmValueItem);
 							} else {
 								Object cachedValue = refreshCache.get(bindingConfig);
 								if (cachedValue != null) {
@@ -117,15 +117,15 @@ public class CcuStateHolder {
 									hmValueItem.setValue(cachedValue);
 								}
 
-								if (hasChanged(bindingConfig, ccuDatapoints.get(bindingConfig), hmValueItem)) {
-									ccuDatapoints.put(bindingConfig, hmValueItem);
+								if (hasChanged(bindingConfig, datapoints.get(bindingConfig), hmValueItem)) {
+									datapoints.put(bindingConfig, hmValueItem);
 									publish(bindingConfig, hmValueItem);
 								}
 							}
 						}
 					});
-					logger.debug("Finished reloading {} CCU datapoints", ccuDatapoints.size());
-				} catch (CcuClientException ex) {
+					logger.debug("Finished reloading {} Homematic server datapoints", datapoints.size());
+				} catch (HomematicClientException ex) {
 					logger.error(ex.getMessage(), ex);
 				} finally {
 					datapointReloadInProgress = false;
@@ -137,23 +137,23 @@ public class CcuStateHolder {
 	}
 
 	/**
-	 * Loads all variables from the CCU, only executed at startup.
+	 * Loads all variables from the Homematic server, only executed at startup.
 	 */
-	public void loadVariables() throws CcuClientException {
-		logger.info("Loading CCU variables");
+	public void loadVariables() throws HomematicClientException {
+		logger.info("Loading Homematic Server variables");
 
 		context.getTclRegaScriptClient().iterateAllVariables(new TclIteratorCallback() {
 
 			@Override
 			public void iterate(HomematicBindingConfig bindingConfig, HmValueItem variable) {
-				ccuVariables.put(bindingConfig, variable);
+				variables.put(bindingConfig, variable);
 			}
 		});
-		logger.info("Finished loading {} CCU variables", ccuVariables.size());
+		logger.info("Finished loading {} Homematic server variables", variables.size());
 	}
 
 	/**
-	 * Reloads all variables from the CCU and publishes only changed values to
+	 * Reloads all variables from the Homematic server and publishes only changed values to
 	 * the openHAB bus.
 	 */
 	public void reloadVariables() {
@@ -161,21 +161,21 @@ public class CcuStateHolder {
 
 			@Override
 			public void run() {
-				logger.debug("Reloading CCU variables");
+				logger.debug("Reloading Homematic server variables");
 
 				try {
 					context.getTclRegaScriptClient().iterateAllVariables(new TclIteratorCallback() {
 
 						@Override
 						public void iterate(HomematicBindingConfig bindingConfig, HmValueItem variable) {
-							if (hasChanged(bindingConfig, ccuVariables.get(bindingConfig), variable)) {
-								ccuVariables.put(bindingConfig, variable);
+							if (hasChanged(bindingConfig, variables.get(bindingConfig), variable)) {
+								variables.put(bindingConfig, variable);
 								publish(bindingConfig, variable);
 							}
 						}
 					});
-					logger.debug("Finished reloading {} CCU variables", ccuVariables.size());
-				} catch (CcuClientException ex) {
+					logger.debug("Finished reloading {} Homematic server variables", variables.size());
+				} catch (HomematicClientException ex) {
 					logger.error(ex.getMessage(), ex);
 				}
 			}
@@ -194,8 +194,8 @@ public class CcuStateHolder {
 	 */
 	public void destroy() {
 		datapointReloadInProgress = false;
-		ccuDatapoints.clear();
-		ccuVariables.clear();
+		datapoints.clear();
+		variables.clear();
 		reloadExecutorPool.shutdownNow();
 	}
 

@@ -8,9 +8,9 @@
  */
 package org.openhab.binding.homematic.internal.communicator;
 
-import org.openhab.binding.homematic.internal.config.binding.ValueBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.ProgramConfig;
+import org.openhab.binding.homematic.internal.config.binding.ValueBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.VariableConfig;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
@@ -23,7 +23,7 @@ import org.openhab.core.types.Type;
 
 /**
  * Common Event class for Homematic and openHAB events.
- * Used by the CcuCommunicator.
+ * Used by the HomematicCommunicator.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0
@@ -36,7 +36,7 @@ public class Event {
 	private Object newValue;
 
 	/**
-	 * Creates a new event received from the CCU.
+	 * Creates a new event received from the Homematic server.
 	 */
 	public Event(HomematicBindingConfig bindingConfig, Object newValue) {
 		this.bindingConfig = bindingConfig;

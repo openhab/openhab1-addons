@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.openhab.binding.homematic.internal.binrpc.BinRpcRequest;
 import org.openhab.binding.homematic.internal.binrpc.BinRpcResponse;
-import org.openhab.binding.homematic.internal.communicator.CcuCallbackReceiver;
+import org.openhab.binding.homematic.internal.communicator.HomematicCallbackReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,15 +35,15 @@ public class BinRpcCallbackHandler implements Runnable {
 	private static final byte BIN_EMPTY_ARRAY[] = { 'B', 'i', 'n', 0, 0, 0, 0, 8, 0, 0, 1, 0, 0, 0, 0, 0 };
 
 	private Socket socket;
-	private CcuCallbackReceiver callbackReceiver;
+	private HomematicCallbackReceiver callbackReceiver;
 
-	public BinRpcCallbackHandler(Socket socket, CcuCallbackReceiver callbackReceiver) {
+	public BinRpcCallbackHandler(Socket socket, HomematicCallbackReceiver callbackReceiver) {
 		this.socket = socket;
 		this.callbackReceiver = callbackReceiver;
 	}
 
 	/**
-	 * Reads the event from the CCU and handles the method call.
+	 * Reads the event from the Homematic server and handles the method call.
 	 */
 	@Override
 	public void run() {
@@ -70,7 +70,7 @@ public class BinRpcCallbackHandler implements Runnable {
 	}
 
 	/**
-	 * Returns a valid result of the method called by the CCU.
+	 * Returns a valid result of the method called by the Homematic server.
 	 */
 	private byte[] handleMethodCall(String methodName, List<?> responseData) throws Exception {
 		if ("event".equals(methodName)) {
@@ -94,13 +94,13 @@ public class BinRpcCallbackHandler implements Runnable {
 			}
 			return createEmptyMessage();
 		} else {
-			logger.warn("Unknown method called by CCU: " + methodName);
+			logger.warn("Unknown method called by Homematic server: " + methodName);
 			return createEmptyMessage();
 		}
 	}
 
 	/**
-	 * Creates an empty message for sending back to the CCU.
+	 * Creates an empty message for sending back to the Homematic server.
 	 */
 	private byte[] createEmptyMessage() {
 		BinRpcRequest request = new BinRpcRequest(null);

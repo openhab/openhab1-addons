@@ -75,7 +75,7 @@ public class TclRegaScriptClient {
 	/**
 	 * Starts the TclRegaScriptClient.
 	 */
-	public void start() throws CcuClientException {
+	public void start() throws HomematicClientException {
 		logger.info("Starting {}", TclRegaScriptClient.class.getSimpleName());
 
 		tclregaScripts = loadTclRegaScripts();
@@ -98,7 +98,7 @@ public class TclRegaScriptClient {
 	/**
 	 * Retrieves all variables from the CCU.
 	 */
-	public void iterateAllVariables(TclIteratorCallback callback) throws CcuClientException {
+	public void iterateAllVariables(TclIteratorCallback callback) throws HomematicClientException {
 		List<HmVariable> variables = sendScriptByName("getAllVariables", HmVariableList.class).getVariables();
 		for (HmVariable variable : variables) {
 			VariableConfig bindingConfig = new VariableConfig(variable.getName());
@@ -109,7 +109,7 @@ public class TclRegaScriptClient {
 	/**
 	 * Retrieves all datapoints from the CCU.
 	 */
-	public void iterateAllDatapoints(TclIteratorCallback callback) throws CcuClientException {
+	public void iterateAllDatapoints(TclIteratorCallback callback) throws HomematicClientException {
 		List<HmDevice> devices = sendScriptByName("getAllDevices", HmDeviceList.class).getDevices();
 		for (HmDevice device : devices) {
 			for (HmChannel channel : device.getChannels()) {
@@ -125,26 +125,26 @@ public class TclRegaScriptClient {
 	/**
 	 * Retrieves all programs from the CCU.
 	 */
-	public List<HmProgram> getAllPrograms() throws CcuClientException {
+	public List<HmProgram> getAllPrograms() throws HomematicClientException {
 		return sendScriptByName("getAllPrograms", HmProgramList.class).getPrograms();
 	}
 
 	/**
 	 * Execute a program on the CCU.
 	 */
-	public void executeProgram(String programName) throws CcuClientException {
+	public void executeProgram(String programName) throws HomematicClientException {
 		logger.debug("Executing program on CCU: {}", programName);
 		HmResult result = sendScriptByName("executeProgram", HmResult.class, new String[] { "program_name" },
 				new String[] { programName });
 		if (!result.isValid()) {
-			throw new CcuClientException("Unable to start CCU program " + programName);
+			throw new HomematicClientException("Unable to start CCU program " + programName);
 		}
 	}
 
 	/**
 	 * Set a variable on the CCU.
 	 */
-	public void setVariable(HmValueItem hmValueItem, Object value) throws CcuClientException {
+	public void setVariable(HmValueItem hmValueItem, Object value) throws HomematicClientException {
 		String strValue = ObjectUtils.toString(value);
 		if (hmValueItem.isStringValue()) {
 			strValue = "\"" + strValue + "\"";
@@ -153,7 +153,7 @@ public class TclRegaScriptClient {
 		HmResult result = sendScriptByName("setVariable", HmResult.class, new String[] { "variable_name",
 				"variable_state" }, new String[] { hmValueItem.getName(), strValue });
 		if (!result.isValid()) {
-			throw new CcuClientException("Unable to set CCU variable " + hmValueItem.getName());
+			throw new HomematicClientException("Unable to set CCU variable " + hmValueItem.getName());
 		}
 	}
 
@@ -162,7 +162,7 @@ public class TclRegaScriptClient {
 	 * remote control. Used in the Homematic action.
 	 */
 	public void setRemoteControlDisplay(String remoteControlAddress, String text, String options)
-			throws CcuClientException {
+			throws HomematicClientException {
 
 		RemoteControlOptionParser rcParameterParser = new RemoteControlOptionParser();
 		HmRemoteControlOptions rco = rcParameterParser.parse(remoteControlAddress, options);
@@ -176,7 +176,7 @@ public class TclRegaScriptClient {
 						rco.getUnitAsString(), StringUtils.join(rco.getSymbols(), "\t") });
 
 		if (!result.isValid()) {
-			throw new CcuClientException("Failed to set remote control with address " + remoteControlAddress);
+			throw new HomematicClientException("Failed to set remote control with address " + remoteControlAddress);
 		}
 	}
 
@@ -187,12 +187,12 @@ public class TclRegaScriptClient {
 		return tclregaScripts != null;
 	}
 
-	private <T> T sendScriptByName(String scriptName, Class<T> clazz) throws CcuClientException {
+	private <T> T sendScriptByName(String scriptName, Class<T> clazz) throws HomematicClientException {
 		return sendScript(getTclRegaScript(scriptName), clazz);
 	}
 
 	private <T> T sendScriptByName(String scriptName, Class<T> clazz, String[] variableNames, String[] values)
-			throws CcuClientException {
+			throws HomematicClientException {
 		String script = getTclRegaScript(scriptName);
 		for (int i = 0; i < variableNames.length; i++) {
 			script = StringUtils.replace(script, "{" + variableNames[i] + "}", values[i]);
@@ -200,9 +200,9 @@ public class TclRegaScriptClient {
 		return sendScript(script, clazz);
 	}
 
-	private String getTclRegaScript(String scriptName) throws CcuClientException {
+	private String getTclRegaScript(String scriptName) throws HomematicClientException {
 		if (! isStarted()) {
-			throw new CcuClientException(TclRegaScriptClient.class.getSimpleName() + " is not configured!");
+			throw new HomematicClientException(TclRegaScriptClient.class.getSimpleName() + " is not configured!");
 		}
 		return tclregaScripts.get(scriptName);
 	}
@@ -211,7 +211,7 @@ public class TclRegaScriptClient {
 	 * Main method for sending a TclRega script and parsing the XML result.
 	 */
 	@SuppressWarnings("unchecked")
-	private synchronized <T> T sendScript(String script, Class<T> clazz) throws CcuClientException {
+	private synchronized <T> T sendScript(String script, Class<T> clazz) throws HomematicClientException {
 		PostMethod post = null;
 		try {
 			script = StringUtils.trim(script);
@@ -237,7 +237,7 @@ public class TclRegaScriptClient {
 			um.setListener(new CommonUnmarshallerListener());
 			return (T) um.unmarshal(new StringReader(result));
 		} catch (Exception ex) {
-			throw new CcuClientException(ex.getMessage(), ex);
+			throw new HomematicClientException(ex.getMessage(), ex);
 		} finally {
 			if (post != null) {
 				post.releaseConnection();
@@ -248,7 +248,7 @@ public class TclRegaScriptClient {
 	/**
 	 * Load predefined scripts from an XML file.
 	 */
-	private Map<String, String> loadTclRegaScripts() throws CcuClientException {
+	private Map<String, String> loadTclRegaScripts() throws HomematicClientException {
 		try {
 			Unmarshaller um = JAXBContext.newInstance(TclScripts.class).createUnmarshaller();
 			InputStream stream = Thread.currentThread().getContextClassLoader()
@@ -261,7 +261,7 @@ public class TclRegaScriptClient {
 			}
 			return result;
 		} catch (JAXBException ex) {
-			throw new CcuClientException(ex.getMessage(), ex);
+			throw new HomematicClientException(ex.getMessage(), ex);
 		}
 	}
 

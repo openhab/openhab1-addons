@@ -12,8 +12,8 @@ import java.net.InetAddress;
 
 import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
-import org.openhab.binding.homematic.internal.communicator.CcuCallbackReceiver;
-import org.openhab.binding.homematic.internal.communicator.CcuCallbackServer;
+import org.openhab.binding.homematic.internal.communicator.HomematicCallbackReceiver;
+import org.openhab.binding.homematic.internal.communicator.HomematicCallbackServer;
 import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackHandler;
 import org.openhab.binding.homematic.internal.xmlrpc.callback.CallbackServer;
 import org.slf4j.Logger;
@@ -27,15 +27,15 @@ import org.slf4j.LoggerFactory;
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public class XmlRpcCallbackServer implements CcuCallbackServer {
+public class XmlRpcCallbackServer implements HomematicCallbackServer {
 	private final static Logger logger = LoggerFactory.getLogger(XmlRpcCallbackServer.class);
 
 	private HomematicConfig config = HomematicContext.getInstance().getConfig();
 
-	private CcuCallbackReceiver callbackReceiver;
+	private HomematicCallbackReceiver callbackReceiver;
 	private CallbackServer callbackServer;
 
-	public XmlRpcCallbackServer(CcuCallbackReceiver callbackReceiver) {
+	public XmlRpcCallbackServer(HomematicCallbackReceiver callbackReceiver) {
 		this.callbackReceiver = callbackReceiver;
 	}
 
