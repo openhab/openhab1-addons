@@ -18,12 +18,14 @@ import java.util.TimerTask;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.maxcul.MaxCulBindingProvider;
 import org.openhab.binding.maxcul.internal.message.sequencers.PairingInitialisationSequence;
+import org.openhab.binding.maxcul.internal.message.sequencers.TimeUpdateRequestSequence;
 import org.openhab.binding.maxcul.internal.messages.BaseMsg;
 import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcessor;
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
 import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
 import org.openhab.binding.maxcul.internal.messages.ThermostatStateMsg;
+import org.openhab.binding.maxcul.internal.messages.TimeInfoMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatStateMsg;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -455,6 +457,12 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 				/* respond to device */
 				if (isBroadcast == false)
 					this.messageHandler.sendAck(wallThermStateMsg);
+				break;
+			case TIME_INFO:
+				TimeInfoMsg timeMsg = new TimeInfoMsg(data);
+				timeMsg.printMessage();
+				TimeUpdateRequestSequence timeSeq = new TimeUpdateRequestSequence(this.tzStr, messageHandler);
+				messageHandler.startSequence(timeSeq, timeMsg);
 				break;
 			default:
 				logger.debug("Unhandled message type " + msgType.toString());

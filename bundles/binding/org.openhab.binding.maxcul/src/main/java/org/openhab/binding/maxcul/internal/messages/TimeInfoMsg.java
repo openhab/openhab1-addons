@@ -25,19 +25,23 @@ public class TimeInfoMsg extends BaseMsg {
 	public TimeInfoMsg(String rawMsg) {
 		super(rawMsg);
 
-		logger.debug("Year  => "+(this.payload[0]+2000));
-		logger.debug("Month => "+(((this.payload[3]&0xC0)>>4)|((this.payload[4]&0xC0)>>6)));
-		logger.debug("DoM   => "+this.payload[1]);
-		logger.debug("Hour  => "+(this.payload[2] & 0x3F));
-		logger.debug("Min   => "+(this.payload[3] & 0x3F));
-		logger.debug("Sec   => "+(this.payload[4] & 0x3F));
+		if (this.payload.length == TIME_INFO_PAYLOAD_LEN)
+		{
+			logger.debug("Year  => "+(this.payload[0]+2000));
+			logger.debug("Month => "+(((this.payload[3]&0xC0)>>4)|((this.payload[4]&0xC0)>>6)));
+			logger.debug("DoM   => "+this.payload[1]);
+			logger.debug("Hour  => "+(this.payload[2] & 0x3F));
+			logger.debug("Min   => "+(this.payload[3] & 0x3F));
+			logger.debug("Sec   => "+(this.payload[4] & 0x3F));
 
-		messageTimeInfo = new GregorianCalendar(this.payload[0]+2000, // year
+			messageTimeInfo = new GregorianCalendar(this.payload[0]+2000, // year
 											    (((this.payload[3]&0xC0)>>4)|((this.payload[4]&0xC0)>>6))-1, // month
 												this.payload[1], // day of month
 												(this.payload[2] & 0x3F), // hour of day
 												(this.payload[3] & 0x3F), // minute
 												(this.payload[4] & 0x3F)); // seconds
+		} else
+			logger.error("TimeInfoMsg raw packet was of incorrect length to parse! Expect "+TIME_INFO_PAYLOAD_LEN+" got "+payload.length);
 	}
 
 	public TimeInfoMsg(byte msgCount, byte msgFlag,
@@ -81,5 +85,10 @@ public class TimeInfoMsg extends BaseMsg {
 		super.printDebugPayload();
 		logger.debug("\tDecoded Time: "+this.messageTimeInfo.get(Calendar.YEAR)+"-"+this.messageTimeInfo.get(Calendar.MONTH+1)+"-"+this.messageTimeInfo.get(Calendar.DAY_OF_MONTH)
 									   +" "+this.messageTimeInfo.get(Calendar.HOUR_OF_DAY)+":"+this.messageTimeInfo.get(Calendar.MINUTE)+":"+this.messageTimeInfo.get(Calendar.SECOND));
+	}
+
+	public Calendar getTimeInfo()
+	{
+		return messageTimeInfo;
 	}
 }
