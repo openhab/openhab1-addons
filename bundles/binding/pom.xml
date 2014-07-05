@@ -113,6 +113,7 @@
     <module>org.openhab.binding.jointspace</module>
     <module>org.openhab.binding.oceanic</module>
     <module>org.openhab.binding.ecotouch</module>
+    <module>org.openhab.binding.yamahareceiver</module>
   </modules>
 
 </project>

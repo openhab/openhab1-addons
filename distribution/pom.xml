@@ -971,9 +971,15 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
- 	<dependency>
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.freeswitch</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.yamahareceiver</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
