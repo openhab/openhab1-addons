@@ -2,7 +2,7 @@
 <Manufacturers>
 	<Manufacturer>
 		<Id>0150</Id>
-		<Name>Cooper Wiring Devices</Name>
+		<Name>Cooper Wiring Devices (!!0150!!)</Name>
 		<Product>
 			<Reference>
 				<Type>00F9</Type>
@@ -10,6 +10,18 @@
 			</Reference>
 			<Model>RF9540-N</Model>
 			<Label lang="en">Single-Pole Multi-Location Master Dimmer Light Switch</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0001A</Id>
+		<Name>Cooper Wiring Devices</Name>
+		<Product>
+			<Reference>
+				<Type>0000</Type>
+				<Id>14de</Id>
+			</Reference>
+			<Model>RF9500</Model>
+			<Label lang="en">Battery Switch</Label>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
