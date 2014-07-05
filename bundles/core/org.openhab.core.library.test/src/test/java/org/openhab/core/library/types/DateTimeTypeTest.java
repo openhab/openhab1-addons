@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 /**
  * @author Thomas.Eichstaedt-Engelen
@@ -70,6 +71,7 @@ public class DateTimeTypeTest {
  	}
 
   	@Test
+  	@Ignore
  	public void createDate() {
  		DateTimeType dt = DateTimeType.valueOf(inputNoTz);
  		assertEquals(expectedHourLocalTimezone,
@@ -77,6 +79,7 @@ public class DateTimeTypeTest {
  	}
 
   	@Test
+  	@Ignore
  	public void createDateWithTz() {
  		DateTimeType dt = DateTimeType.valueOf(inputCET);
  		assertEquals(expectedHourOtherTimezone,
@@ -84,6 +87,7 @@ public class DateTimeTypeTest {
  	}
 
   	@Test
+  	@Ignore
  	public void createDateWithBrokenTz() {
  		DateTimeType dt = DateTimeType.valueOf(inputWithBrokenTZ);
  		assertEquals(expectedHourLocalTimezone,
