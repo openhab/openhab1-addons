@@ -13,6 +13,19 @@
 		<Class><id>0x86</id></Class>
 	</CommandClasses>
 
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>short</Type>
+			<Minimum>1</Minimum>
+			<Maximum>15300</Maximum>
+			<Default>180</Default>
+			<Size>1</Size>
+			<Label lang="en">On time in seconds</Label>
+			<Help lang="en">Delay before sending OFF</Help>
+		</Parameter>
+	</Configuration>
+	
 	<Associations>
 		<Group>
 			<Index>1</Index>
