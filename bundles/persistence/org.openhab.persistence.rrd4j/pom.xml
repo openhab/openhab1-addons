@@ -16,6 +16,7 @@
 		<bundle.namespace>org.openhab.persistence.rrd4j</bundle.namespace>
 		<deb.name>openhab-addon-persistence-rrd4j</deb.name>
 		<deb.description>${project.name}</deb.description>
+  		<deb.depends>openhab-runtime</deb.depends>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -29,6 +30,60 @@
 			<plugin>
 				<groupId>org.vafer</groupId>
 				<artifactId>jdeb</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jdeb</goal>
+						</goals>
+						<configuration>
+							<controlDir combine.self="override">${basedir}/src/deb/control</controlDir>
+							<dataSet combine.self="override">
+								<data>
+									<src>${basedir}/src/deb/etc/openhab/configurations/persistence/rrd4j.persist</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/etc/openhab/configurations/persistence</prefix>
+										<user>root</user>
+										<group>root</group>
+										<filemode>644</filemode>
+									</mapper>
+								</data>
+								<data>
+									<src>${basedir}/target/${project.artifactId}-${project.version}.jar</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/openhab/addons</prefix>
+										<user>root</user>
+										<group>root</group>
+										<filemode>644</filemode>
+									</mapper>
+								</data>
+								<data>
+									<type>directory</type>
+									<src>${basedir}/src/deb/var/lib/openhab/persistence</src>
+									<excludes>**/.gitignore</excludes>
+									<mapper>
+										<type>perm</type>
+										<prefix>/var/lib/openhab/persistence</prefix>
+										<user>root</user>
+										<group>openhab</group>
+										<dirmode>2775</dirmode>
+									</mapper>
+								</data>
+								<data>
+									<!-- TODO better solution is to change rrd4j code to not save data files into configuration directory -->
+									<type>link</type>
+									<linkName>/etc/openhab/jetty/etc/rrd4j</linkName>
+									<linkTarget>/var/lib/openhab/persistence/rrd4j</linkTarget>
+									<symlink>true</symlink>
+								</data>
+							</dataSet>
+                        </configuration>
+                   </execution>
+                </executions>
 			</plugin>
 		</plugins>
 	</build>
