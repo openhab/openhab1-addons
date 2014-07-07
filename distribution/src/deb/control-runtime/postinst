@@ -2,14 +2,8 @@
 
 set -e
 
-DIRS="/var/lib/openhab/webapps/static /var/lib/openhab/workspace \
-	/var/log/openhab"
-
 case "$1" in
 	configure)
-		for DIR in ${DIRS}; do
-			chmod g+ws "${DIR}"
-		done
 		update-rc.d openhab defaults > /dev/null 2>&1
 		;;
 	abort-deconfigure|abort-remove|abort-upgrade)
