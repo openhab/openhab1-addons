@@ -14,13 +14,15 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MBarometer Temperature</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature#getTemperature <em>Temperature</em>}</li>
  * </ul>
  * </p>
  *
@@ -45,32 +47,6 @@ public interface MBarometerTemperature extends MSensor<DecimalValue>, MSubDevice
    * @generated
    */
   String getDeviceType();
-
-  /**
-   * Returns the value of the '<em><b>Temperature</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Temperature</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Temperature</em>' attribute.
-   * @see #setTemperature(short)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBarometerTemperature_Temperature()
-   * @model unique="false"
-   * @generated
-   */
-  short getTemperature();
-
-  /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature#getTemperature <em>Temperature</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Temperature</em>' attribute.
-   * @see #getTemperature()
-   * @generated
-   */
-  void setTemperature(short value);
 
   /**
    * <!-- begin-user-doc -->

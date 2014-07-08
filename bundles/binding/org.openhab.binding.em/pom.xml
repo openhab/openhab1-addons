@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.5.0-SNAPSHOT</version>
+		<version>1.6.0-SNAPSHOT</version>
 	</parent>
 
 	<name>openHAB EM Binding</name>
@@ -15,6 +15,7 @@
 		<bundle.namespace>org.openhab.binding.em</bundle.namespace>
 		<deb.name>openhab-addon-binding-em</deb.name>
 		<deb.description>${project.name}</deb.description>
+		<deb.depends>openhab-addon-io-cul</deb.depends>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

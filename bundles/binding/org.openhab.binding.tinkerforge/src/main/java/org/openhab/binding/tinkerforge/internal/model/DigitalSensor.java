@@ -13,6 +13,9 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Digital Sensor</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.4.0
  * <!-- end-user-doc -->
  *
  * <p>

@@ -63,7 +63,7 @@ public class MapTransformationService implements TransformationService {
 			reader = new FileReader(path);
 			properties.load(reader);
 			String target = properties.getProperty(source);
-			if(target!=null) {
+			if (target!=null) {
 				logger.debug("transformation resulted in '{}'", target);
 				return target;
 			} else {

@@ -55,7 +55,7 @@ public class Pushover {
 	private final static int API_MAX_MESSAGE_LENGTH = 512;
 	private final static int API_MAX_URL_LENGTH = 512;
 	private final static int API_MAX_URL_TITLE_LENGTH = 100;
-	private final static int[] API_VALID_PRIORITY_LIST = {-1, 0, 1, 2};
+	private final static int[] API_VALID_PRIORITY_LIST = {-2, -1, 0, 1, 2};
 	
 	public static final String MESSAGE_KEY_API_KEY = "token";
 	public static final String MESSAGE_KEY_USER = "user";

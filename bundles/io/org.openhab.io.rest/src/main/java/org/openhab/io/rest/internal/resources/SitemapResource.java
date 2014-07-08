@@ -29,6 +29,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend.SCOPE;
+import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -86,7 +87,7 @@ public class SitemapResource {
     protected static final String SITEMAP_FILEEXT = ".sitemap";
 
 	public static final String PATH_SITEMAPS = "sitemaps";
-    
+	
 	@Context UriInfo uriInfo;
 	@Context Broadcaster sitemapBroadcaster;
 
@@ -146,11 +147,21 @@ public class SitemapResource {
 				throw new WebApplicationException(Response.notAcceptable(null).build());
 			}
 		}
-		GeneralBroadcaster sitemapBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
+		
+		GeneralBroadcaster sitemapBroadcaster = BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
 		sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
+		
+		boolean resume = false;
+		try {
+		AtmosphereRequest request = resource.getRequest();
+		resume = !ResponseTypeHelper.isStreamingTransport(request);
+		} catch (Exception e) {
+			logger.debug(e.getMessage());
+		}
+
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
 			.scope(SCOPE.REQUEST)
-			.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))
+			.resumeOnBroadcast(resume)
 			.broadcaster(sitemapBroadcaster)
 			.outputComments(true).build(); 
     }

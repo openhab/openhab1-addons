@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0000</Id>
+		<Name>Sigma Designs</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>UZB</Model>
+			<Label lang="en">ACC-UZB</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0150</Id>
+		<Name>Cooper Wiring Devices (!!0150!!)</Name>
+		<Product>
+			<Reference>
+				<Type>00F9</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>RF9540-N</Model>
+			<Label lang="en">Single-Pole Multi-Location Master Dimmer Light Switch</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0001A</Id>
+		<Name>Cooper Wiring Devices</Name>
+		<Product>
+			<Reference>
+				<Type>0000</Type>
+				<Id>14de</Id>
+			</Reference>
+			<Model>RF9500</Model>
+			<Label lang="en">Battery Switch</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0005</Id>
 		<Name>Intermatic</Name>
 		<Product>
@@ -120,6 +156,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>AN157</Model>
+			<Label lang="en">Switch Plugin</Label>
+			<ConfigFile>everspring/an157.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0101</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -218,6 +263,33 @@
 		<Name>Reitz Group</Name>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>054336</Model>
+			<Label lang="en">One Paddle Wall Dimmer Insert</Label>
+			<ConfigFile>reitz/054336.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>5001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064459</Model>
+			<Label lang="en">Düwi Remote Control</Label>
+			<ConfigFile>reitz/064459.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064394</Model>
+			<Label lang="en">Schuko Plug Dimmer</Label>
+			<ConfigFile>reitz/064394.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>2001</Type>
 				<Id>0000</Id>
 			</Reference>
@@ -301,6 +373,15 @@
 			<Model>DSB06</Model>
 			<Label lang="en">Smart Energy Switch</Label>
 			<ConfigFile>aeon/dsb06.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0018</Id>
+			</Reference>
+			<Model>DSC24</Model>
+			<Label lang="en">Smart Energy Switch v2</Label>
+			<ConfigFile>aeon/dsc24.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -427,6 +508,27 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>2002</Type>
+				<Id>0201</Id>
+			</Reference>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0202</Id>
+			</Reference>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0203</Id>
+			</Reference>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0204</Id>
+			</Reference>
+			<Model>ZP3102</Model>
+			<Label lang="en">Motion Sensor</Label>
+			<ConfigFile>vision/zp3102.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>2001</Type>
 				<Id>0102</Id>
 			</Reference>
@@ -463,8 +565,12 @@
 				<Type>0800</Type>
 				<Id>1001</Id>
 			</Reference>
+			<Reference>
+				<Type>0800</Type>
+				<Id>3001</Id>
+			</Reference>
 			<Model>FGMS01</Model>
-			<Label lang="en">Movement Sensor</Label>
+			<Label lang="en">Motion Sensor</Label>
 			<ConfigFile>fibaro/fgms01.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -506,6 +612,10 @@
 			<ConfigFile>fibaro/fgd211.xml</ConfigFile>
 		</Product>
 		<Product>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0102</Id>
+			</Reference>
 			<Reference>
 				<Type>0400</Type>
 				<Id>0104</Id>
@@ -633,6 +743,10 @@
 				<Type>0900</Type>
 				<Id>4000</Id>
 			</Reference>
+			<Reference>
+				<Type>0900</Type>
+				<Id>1000</Id>
+			</Reference>
 			<Model>FGRGBW</Model>
 			<Label lang="en">Fibaro RGBW Controller</Label>
 			<ConfigFile>fibaro/fgrgbw.xml</ConfigFile>
@@ -645,6 +759,10 @@
       			<Reference>
         			<Type>0300</Type>
         			<Id>0106</Id>
+      			</Reference>
+      			<Reference>
+        			<Type>0300</Type>
+        			<Id>0104</Id>
       			</Reference>
       			<Reference>
         			<Type>0300</Type>
@@ -666,6 +784,15 @@
 			<Model>DWZWAVE1</Model>
 			<Label lang="en">Z-Wave Door/Window Sensor</Label>
 			<ConfigFile>eco/dwzwave1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>TILTZWAVE1</Model>
+			<Label lang="en">Z-Wave Garage Door Sensor</Label>
+			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>	
 	<Manufacturer>
@@ -706,10 +833,54 @@
 			<Label lang="en">4 button keyfob</Label>
 			<ConfigFile>zwaveme/kfob.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>WCD2</Model>
+			<Label lang="en">Double Paddle Wall Controller</Label>
+			<ConfigFile>zwaveme/zme_wcd2.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1000</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>ZME_064435</Model>
+			<Label lang="en">Single Paddle Wall Controller</Label>
+			<ConfigFile>zwaveme/zme_064435.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>ZME_Z-StickC</Model>
+			<Label lang="en">Z-Wave USB Controller</Label>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0118</Id>
 		<Name>Wenzhou TKB Control System</Name>
+		<Product>
+			<Reference>
+				<Type>0808</Type>
+				<Id>0808</Id>
+			</Reference>
+			<Model>TZ65D</Model>
+			<Label lang="en">Dual Paddle Wall Dimmer</Label>
+			<ConfigFile>tkb/tz65d.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0102</Type>
+				<Id>1020</Id>
+			</Reference>
+			<Model>TZ66D</Model>
+			<Label lang="en">Dual Paddle Wall Switch</Label>
+			<ConfigFile>tkb/tz66d.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0202</Type>
@@ -785,6 +956,16 @@
 				<Id>0001</Id>
 			</Reference>
 			<Model>NQ-9021</Model>
+			<Label lang="en">NorthQ Electrical Meter</Label>
+			<Label lang="de">NorthQ Stromzähler</Label>
+			<ConfigFile>northq/nq9021.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>NQ-9022</Model>
 			<Label lang="en">NorthQ Electrical Meter</Label>
 			<Label lang="de">NorthQ Stromzähler</Label>
 			<ConfigFile>northq/nq9021.xml</ConfigFile>

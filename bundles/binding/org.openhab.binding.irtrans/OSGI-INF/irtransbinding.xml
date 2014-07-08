@@ -31,7 +31,7 @@
 -->
 
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.irtrans">
-   <implementation class="org.openhab.binding.irtrans.internal.IrTransBinding"/>
+   <implementation class="org.openhab.binding.irtrans.internal.IRtransBinding"/>
    
    <service>
       <provide interface="org.osgi.service.cm.ManagedService"/>
@@ -42,5 +42,5 @@
    <property name="event.topics" type="String" value="openhab/*"/>
    
    <reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher" policy="dynamic" unbind="unsetEventPublisher"/>
-   <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.irtrans.IrTransBindingProvider" name="IrTransBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
+   <reference bind="addBindingProvider" cardinality="1..n" interface="org.openhab.binding.irtrans.IRtransBindingProvider" name="IRtransBindingProvider" policy="dynamic" unbind="removeBindingProvider"/>
 </scr:component>

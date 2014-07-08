@@ -205,7 +205,7 @@ public abstract class AbstractMqttMessagePubSub implements BindingConfig {
 	 */
 	protected void initTransformService() {
 
-		if (getTransformationService() != null) {
+		if (getTransformationService() != null || StringUtils.isBlank(getTransformationServiceName())) {
 			return;
 		}
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>binding</artifactId>
+		<version>1.6.0-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<bundle.symbolicName>org.openhab.binding.iec6205621meter</bundle.symbolicName>
+		<bundle.namespace>org.openhab.binding.iec6205621meter</bundle.namespace>
+		<deb.name>openhab-addon-binding-iec6205621meter</deb.name>
+		<deb.description>${project.name}</deb.description>
+	</properties>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.binding</groupId>
+	<artifactId>org.openhab.binding.iec6205621meter</artifactId>
+
+	<name>openHAB IEC 62056-21 Meter Binding</name>
+
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<description>This binding is used to communicate to metering devices supporting serial communication according mode C master. It can be used to read metering data from slaves such as gas, water, heat, or electricity meters.</description>
+</project>

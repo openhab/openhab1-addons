@@ -6,6 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
+@GenModel(literalsInterface="true", loadInitialization="false")
 package org.openhab.binding.tinkerforge.internal.model
 
 import com.tinkerforge.Device
@@ -31,6 +32,20 @@ import com.tinkerforge.BrickletIO16
 import com.tinkerforge.BrickletRemoteSwitch
 import com.tinkerforge.BrickletMotionDetector
 import com.tinkerforge.BrickletMultiTouch
+import com.tinkerforge.BrickletTemperatureIR
+import com.tinkerforge.BrickletSoundIntensity
+import com.tinkerforge.BrickletMoisture
+import com.tinkerforge.BrickletDistanceUS
+import com.tinkerforge.BrickletVoltageCurrent
+import com.tinkerforge.BrickletTilt
+import com.tinkerforge.BrickletIO4
+import com.tinkerforge.BrickletIndustrialDigitalOut4
+import com.tinkerforge.BrickletHallEffect
+import com.tinkerforge.BrickletSegmentDisplay4x7
+import com.tinkerforge.BrickletLEDStrip
+import org.openhab.core.library.types.HSBType
+import java.math.BigDecimal
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions
 
 /**
  * @author Theo Weiss
@@ -46,6 +61,7 @@ type MTinkerBrickDC wraps BrickDC
 type MTinkerBrickletDualRelay wraps BrickletDualRelay
 type MTinkerBrickletIndustrialQuadRelay wraps BrickletIndustrialQuadRelay
 type MTinkerBrickletIndustrialDigitalIn4 wraps BrickletIndustrialDigitalIn4
+type MTinkerBrickletIndustrialDigitalOut4 wraps BrickletIndustrialDigitalOut4
 type SwitchState wraps OnOffValue
 type DigitalValue wraps HighLowValue
 type TinkerBrickletIO16 wraps BrickletIO16
@@ -61,6 +77,18 @@ type MTinkerBrickletLCD20x4 wraps BrickletLCD20x4
 type TinkerBrickletRemoteSwitch wraps BrickletRemoteSwitch
 type TinkerBrickletMotionDetector wraps BrickletMotionDetector
 type TinkerBrickletMultiTouch wraps BrickletMultiTouch
+type TinkerBrickletTemperatureIR wraps BrickletTemperatureIR
+type TinkerBrickletSoundIntensity wraps BrickletSoundIntensity
+type TinkerBrickletMoisture wraps BrickletMoisture
+type TinkerBrickletDistanceUS wraps BrickletDistanceUS
+type TinkerBrickletVoltageCurrent wraps BrickletVoltageCurrent
+type TinkerBrickletTilt wraps BrickletTilt
+type TinkerBrickletIO4 wraps BrickletIO4
+type TinkerBrickletHallEffect wraps BrickletHallEffect
+type TinkerBrickletSegmentDisplay4x7 wraps BrickletSegmentDisplay4x7
+type TinkerBrickletLEDStrip wraps BrickletLEDStrip
+type HSBType wraps HSBType
+type DeviceOptions wraps DeviceOptions
 type Enum wraps Enum
 
 class Ecosystem {
@@ -101,6 +129,10 @@ interface MTFConfigConsumer<TFC>{
 interface MBaseDevice{
 	MLogger logger
 	String uid
+	// for now poll all devices because at startup time
+	// updates are missed by the ui, because binding start
+	// can happen before ui start.
+	boolean poll = "true"
 	MAtomicBoolean enabledA
 	op void init()
 	op void enable()
@@ -128,7 +160,7 @@ interface MActor{
 interface MSwitchActor {
 	SwitchState switchState
 	op void turnSwitch(SwitchState state)
-	op SwitchState fetchSwitchState()
+	op void fetchSwitchState()
 }
 
 interface MOutSwitchActor extends MSwitchActor{
@@ -159,7 +191,7 @@ interface InterruptListener {
 
 interface MSensor<DeviceValue extends MTinkerforgeValue> {
 	DeviceValue sensorValue
-	op DeviceValue fetchSensorValue()
+	op void fetchSensorValue()
 }
 
 interface MTextActor{
@@ -231,11 +263,40 @@ class MIndustrialDigitalIn extends MSubDevice<MBrickletIndustrialDigitalIn4>,
 		MSensor<DigitalValue> {
 }
 
-class DigitalActor extends IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
+class MBrickletIndustrialDigitalOut4 extends MDevice<MTinkerBrickletIndustrialDigitalOut4>,
+        MSubDeviceHolder<DigitalActorDigitalOut4>{
+}
+
+class DigitalActorDigitalOut4 extends DigitalActor, MSubDevice<MBrickletIndustrialDigitalOut4> {
+    int pin
+}
+
+interface DigitalActor {
+    DigitalValue digitalState
+    op void turnDigital(DigitalValue digitalState)
+    op void fetchDigitalValue()
+}
+
+interface NumberActor {
+    op void setNumber(BigDecimal value)
+}
+
+class MBrickletSegmentDisplay4x7 extends NumberActor, MDevice<TinkerBrickletSegmentDisplay4x7>{
+    
+}
+
+interface ColorActor {
+    op void setColor(HSBType color, DeviceOptions opts)
+}
+
+class MBrickletLEDStrip extends ColorActor, MDevice<TinkerBrickletLEDStrip>{
+    
+}
+
+class DigitalActorIO16 extends DigitalActor, IODevice, MTFConfigConsumer<TFIOActorConfiguration>{
 	readonly String deviceType = "io_actuator"
-	DigitalValue digitalState
-	op void turnDigital(DigitalValue digitalState)
-	op DigitalValue fetchDigitalValue()
+    op void turnDigital(DigitalValue digitalState)
+    op void fetchDigitalValue()
 	char port
 	int pin
 	String defaultState
@@ -254,6 +315,31 @@ class DigitalSensor extends IODevice, MSensor<DigitalValue>,
 	boolean pullUpResistorEnabled
 	char port
 	int pin
+}
+
+class MBrickletIO4 extends MDevice<TinkerBrickletIO4>,
+        MSubDeviceHolder<IO4Device>, InterruptListener,
+        MTFConfigConsumer<TFInterruptListenerConfiguration> {
+   readonly String deviceType = "bricklet_io4"
+}
+
+interface IO4Device extends MSubDevice<MBrickletIO4>, GenericDevice {
+}
+
+class DigitalSensorIO4 extends IO4Device, MSensor<DigitalValue>, 
+        MTFConfigConsumer<TFIOSensorConfiguration> {
+    readonly String deviceType = "io4sensor"
+    boolean pullUpResistorEnabled
+    int pin
+}
+
+class DigitalActorIO4 extends DigitalActor, IO4Device, MTFConfigConsumer<TFIOActorConfiguration>{
+    readonly String deviceType = "io4_actuator"
+    op void turnDigital(DigitalValue digitalState)
+    op void fetchDigitalValue()
+    int pin
+    String defaultState
+    boolean keepOnReconnect = "false"
 }
 
 class MBrickletMultiTouch extends MDevice<TinkerBrickletMultiTouch>,
@@ -277,8 +363,16 @@ class Proximity extends MultiTouchDevice {
     readonly String deviceType = "proximity"
 }
 
-class MBrickletMotionDetector extends MDevice<TinkerBrickletMotionDetector>, MSensor<DigitalValue>{
+class MBrickletMotionDetector extends MDevice<TinkerBrickletMotionDetector>,
+                 MSensor<DigitalValue>{
     readonly String deviceType = "motion_detector"
+    op void init(){}
+}
+
+class MBrickletHallEffect extends MDevice<TinkerBrickletHallEffect>,
+        MSensor<DigitalValue>, CallbackListener,
+        MTFConfigConsumer<TFBaseConfiguration> {
+    readonly String deviceType = "bricklet_halleffect"
     op void init(){}
 }
 
@@ -324,8 +418,7 @@ class MBrickletHumidity extends MSensor<MDecimalValue>,
 		MDevice<MTinkerBrickletHumidity>, 
 		MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
 	String deviceType = "bricklet_humidity"
-	int humiditiy
-	int threshold = "5"
+	BigDecimal threshold = "0.5"
 	op void init(){}
 }
 
@@ -333,8 +426,7 @@ class MBrickletDistanceIR extends MDevice<MTinkerBrickletDistanceIR>,
 		MSensor<MDecimalValue>, 
 		MTFConfigConsumer<TFBaseConfiguration>, CallbackListener {
 	readonly String deviceType = "bricklet_distance_ir"
-	int distance
-	int threshold = "5"
+	BigDecimal threshold = "5"
 	op void init(){}
 }
 
@@ -342,24 +434,76 @@ class MBrickletTemperature extends MDevice<MTinkerBrickletTemperature>,
 		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
 		CallbackListener {
 	readonly String deviceType = "bricklet_temperature"
-	short temperature
-	int threshold = "10"
+	BigDecimal threshold = "0.1"
 	op void init(){}
+}
+
+class MBrickletTemperatureIR extends MDevice<TinkerBrickletTemperatureIR>,
+        MSubDeviceHolder<MTemperatureIRDevice> {
+    readonly String deviceType = "bricklet_temperatureIR"
+}
+
+interface MTemperatureIRDevice extends MSensor<MDecimalValue>, 
+        MSubDevice<MBrickletTemperatureIR>, CallbackListener {
+    BigDecimal threshold = "0.1"
+}
+
+class ObjectTemperature extends MTemperatureIRDevice, 
+        MTFConfigConsumer<TFObjectTemperatureConfiguration> {
+    readonly String deviceType = "object_temperature"
+    int emissivity = "65535"
+}
+
+class AmbientTemperature extends MTemperatureIRDevice, 
+        MTFConfigConsumer<TFBaseConfiguration>{
+    readonly String deviceType = "ambient_temperature"
+}
+
+class MBrickletTilt extends MDevice<TinkerBrickletTilt>,
+    MSensor<MDecimalValue>{
+    readonly String deviceType = "bricklet_tilt"
+}
+
+class MBrickletVoltageCurrent extends MDevice<TinkerBrickletVoltageCurrent>,
+         MSubDeviceHolder<VoltageCurrentDevice>, 
+         MTFConfigConsumer<TFVoltageCurrentConfiguration> {
+    readonly String deviceType = "bricklet_voltageCurrent"
+    Short averaging = "3"
+    Short voltageConversionTime = "4"
+    Short currentConversionTime = "4"
+}
+
+interface VoltageCurrentDevice extends MSensor<MDecimalValue>, 
+        MSubDevice<MBrickletVoltageCurrent>, CallbackListener,
+        MTFConfigConsumer<TFBaseConfiguration>{
+}
+
+class VCDeviceVoltage extends VoltageCurrentDevice {
+    readonly String deviceType = "voltageCurrent_voltage"
+    BigDecimal threshold = "20"
+}
+
+class VCDeviceCurrent extends VoltageCurrentDevice {
+    readonly String deviceType = "voltageCurrent_current"
+    BigDecimal threshold = "10"
+}
+
+class VCDevicePower extends VoltageCurrentDevice {
+    readonly String deviceType = "voltageCurrent_power"
+    BigDecimal threshold = "50"
 }
 
 class MBrickletBarometer extends MDevice<MTinkerBrickletBarometer>, 
 		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
 		MSubDeviceHolder<MBarometerTemperature>, CallbackListener {
 	readonly String deviceType = "bricklet_barometer"
-	int airPressure
-	int threshold = "1000"
+	BigDecimal threshold = "1"
 	op void init(){}
 }
 
 class MBarometerTemperature extends MSensor<MDecimalValue>, 
 		MSubDevice<MBrickletBarometer>{
 	readonly String deviceType = "barometer_temperature"
-	short temperature
 	op void init(){}
 }
 
@@ -367,9 +511,34 @@ class MBrickletAmbientLight extends MDevice<MTinkerBrickletAmbientLight>,
 		MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>, 
 		CallbackListener {
 	readonly String deviceType = "bricklet_ambient_light"
-	int illuminance
-	int threshold = "10"
+	BigDecimal threshold = "1"
 	op void init(){}
+}
+
+class MBrickletSoundIntensity extends MDevice<TinkerBrickletSoundIntensity>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFBaseConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_soundintensity"
+    BigDecimal threshold = "0"
+    op void init(){}
+}
+
+class MBrickletMoisture extends MDevice<TinkerBrickletMoisture>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFMoistureBrickletConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_moisture"
+    BigDecimal threshold = "0"
+    Short movingAverage = "100"
+    op void init(){}
+}
+
+class MBrickletDistanceUS extends MDevice<TinkerBrickletDistanceUS>,
+        MSensor<MDecimalValue>, MTFConfigConsumer<TFDistanceUSBrickletConfiguration>,
+        CallbackListener {
+    readonly String deviceType = "bricklet_distanceUS"
+    BigDecimal threshold = "0"
+    Short movingAverage = "100"
+    op void init(){}
 }
 
 class MBrickletLCD20x4 extends MDevice<MTinkerBrickletLCD20x4>, MTextActor, 
@@ -386,10 +555,9 @@ class MLCD20x4Backlight extends MInSwitchActor, MLCDSubDevice{
 	readonly String deviceType = "backlight"
 }
 
-class MLCD20x4Button extends MOutSwitchActor, MLCDSubDevice{
+class MLCD20x4Button extends MOutSwitchActor, MLCDSubDevice, CallbackListener{
 	readonly String deviceType = "lcd_button"
 	short buttonNum
-	int callbackPeriod
 }
 
 // configuration model
@@ -429,8 +597,26 @@ class TFNullConfiguration extends TFConfig {
 }
 
 class TFBaseConfiguration extends TFConfig {
-	int threshold
+	BigDecimal threshold
 	int callbackPeriod
+}
+
+class TFObjectTemperatureConfiguration extends TFBaseConfiguration {
+    int emissivity
+}
+
+class TFMoistureBrickletConfiguration extends TFBaseConfiguration {
+    Short movingAverage
+}
+
+class TFDistanceUSBrickletConfiguration extends TFBaseConfiguration {
+    Short movingAverage
+}
+
+class TFVoltageCurrentConfiguration extends TFConfig {
+    Short averaging
+    Short voltageConversionTime
+    Short currentConversionTime
 }
 
 class TFBrickDCConfiguration extends TFConfig{
@@ -527,6 +713,10 @@ enum IO16SubIds {
 	OUTB0, OUTB1, OUTB2, OUTB3, OUTB4, OUTB5, OUTB6, OUTB7
 }
 
+enum IO4SubIds {
+    IN0, IN1, IN2, IN3, OUT0, OUT1, OUT2, OUT3
+}
+
 enum DualRelaySubIds {
 	RELAY1, RELAY2
 }
@@ -543,4 +733,12 @@ enum MultiTouchSubIds {
     ELECTRODE0, ELECTRODE1, ELECTRODE2, ELECTRODE3, ELECTRODE4,
     ELECTRODE5, ELECTRODE6, ELECTRODE7, ELECTRODE8, ELECTRODE9,
     ELECTRODE10, ELECTRODE11, PROXIMITY
+}
+
+enum TemperatureIRSubIds {
+    OBJECT_TEMPERATURE, AMBIENT_TEMPERATURE
+}
+
+enum VoltageCurrentSubIds {
+    VOLTAGECURRENT_VOLTAGE, VOLTAGECURRENT_CURRENT, VOLTAGECURRENT_POWER
 }

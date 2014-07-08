@@ -60,19 +60,17 @@ public class DecimalType extends Number implements PrimitiveType, State,
 	}
 
 	public String format(String pattern) {
-		if (value.scale() == 0) {
-			// The value is an integer value. Convert to BigInteger in order to
-			// have access to more conversion formats.
-			try {
-				return String.format(pattern, value.toBigIntegerExact());
-			} catch (ArithmeticException ae) {
-				// Could not convert to integer value without loss of
-				// information. Fall through to default behavior.
-			} catch (IllegalFormatConversionException ifce) {
-				// The conversion is not valid for the type BigInteger. This
-				// happens, if the format is like "%.1f" but the value is an
-				// integer. Fall through to default behavior.
-			}
+		// The value could be an integer value. Try to convert to BigInteger in
+		// order to have access to more conversion formats.
+		try {
+			return String.format(pattern, value.toBigIntegerExact());
+		} catch (ArithmeticException ae) {
+			// Could not convert to integer value without loss of
+			// information. Fall through to default behavior.
+		} catch (IllegalFormatConversionException ifce) {
+			// The conversion is not valid for the type BigInteger. This
+			// happens, if the format is like "%.1f" but the value is an
+			// integer. Fall through to default behavior.
 		}
 
 		return String.format(pattern, value);

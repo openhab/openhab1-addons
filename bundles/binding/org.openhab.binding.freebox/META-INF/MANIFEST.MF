@@ -1,0 +1,41 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.freebox.internal
+Ignore-Package: org.openhab.binding.freebox.internal
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB Freebox Binding
+Bundle-SymbolicName: org.openhab.binding.freebox
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.6.0.qualifier
+Bundle-Activator: org.openhab.binding.freebox.internal.FreeboxActivator
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the Freebox binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.apache.commons.io;version="2.0.1",
+ org.apache.commons.lang,
+ org.apache.commons.logging;version="1.1.1",
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Export-Package: org.openhab.binding.freebox
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .,
+ lib/guava-15.0.jar,
+ lib/httpclient-4.3.1.jar,
+ lib/httpcore-4.3.2.jar,
+ lib/httpmime-4.3.1.jar,
+ lib/jackson-core-asl-1.9.13.jar,
+ lib/jackson-mapper-asl-1.9.13.jar,
+ lib/json_simple-1.1.jar,
+ lib/freeboxos-0.2.0.jar,
+ lib/commons-codec-1.6.jar

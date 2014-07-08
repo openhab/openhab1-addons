@@ -1,4 +1,10 @@
 /**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
@@ -6,6 +12,8 @@ import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMotionDetector.DetectionCycleEndedListener;
 import com.tinkerforge.BrickletMotionDetector.MotionDetectedListener;
 import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -25,6 +33,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
@@ -38,12 +47,16 @@ import org.slf4j.LoggerFactory;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MBricklet Motion Detector</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.5.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletMotionDetectorImpl#getIpConnection <em>Ip Connection</em>}</li>
@@ -100,6 +113,26 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = true;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -330,6 +363,29 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     uid = newUid;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOTION_DETECTOR__UID, oldUid, uid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_MOTION_DETECTOR__POLL, oldPoll, poll));
   }
 
   /**
@@ -587,9 +643,24 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public HighLowValue fetchSensorValue()
+  public void fetchSensorValue()
   {
-    return getSensorValue();
+    HighLowValue value = HighLowValue.UNDEF;
+    try {
+      short motionDetected = tinkerforgeDevice.getMotionDetected();
+      if (motionDetected == 1){
+        value = HighLowValue.HIGH;
+      }
+      else {
+        value = HighLowValue.LOW;
+      }
+      setSensorValue(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
@@ -618,6 +689,7 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
       }
     };
     tinkerforgeDevice.addDetectionCycleEndedListener(detectionCycleEndedListener);
+    fetchSensorValue();
   }
 
   /**
@@ -699,6 +771,8 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
         return getLogger();
       case ModelPackage.MBRICKLET_MOTION_DETECTOR__UID:
         return getUid();
+      case ModelPackage.MBRICKLET_MOTION_DETECTOR__POLL:
+        return isPoll();
       case ModelPackage.MBRICKLET_MOTION_DETECTOR__ENABLED_A:
         return getEnabledA();
       case ModelPackage.MBRICKLET_MOTION_DETECTOR__TINKERFORGE_DEVICE:
@@ -738,6 +812,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
         return;
       case ModelPackage.MBRICKLET_MOTION_DETECTOR__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.MBRICKLET_MOTION_DETECTOR__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.MBRICKLET_MOTION_DETECTOR__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -786,6 +863,9 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
       case ModelPackage.MBRICKLET_MOTION_DETECTOR__UID:
         setUid(UID_EDEFAULT);
         return;
+      case ModelPackage.MBRICKLET_MOTION_DETECTOR__POLL:
+        setPoll(POLL_EDEFAULT);
+        return;
       case ModelPackage.MBRICKLET_MOTION_DETECTOR__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
@@ -831,6 +911,8 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MBRICKLET_MOTION_DETECTOR__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MBRICKLET_MOTION_DETECTOR__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.MBRICKLET_MOTION_DETECTOR__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.MBRICKLET_MOTION_DETECTOR__TINKERFORGE_DEVICE:
@@ -926,7 +1008,8 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
         init();
         return null;
       case ModelPackage.MBRICKLET_MOTION_DETECTOR___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
       case ModelPackage.MBRICKLET_MOTION_DETECTOR___ENABLE:
         enable();
         return null;
@@ -952,6 +1035,8 @@ public class MBrickletMotionDetectorImpl extends MinimalEObjectImpl.Container im
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", tinkerforgeDevice: ");

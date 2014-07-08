@@ -63,11 +63,11 @@ public class ZWaveNode {
 	private String location;
 	
 	@XStreamConverter(HexToIntegerConverter.class)
-	private int manufacturer;
+	private int manufacturer = -1;
 	@XStreamConverter(HexToIntegerConverter.class)
-	private int deviceId;
+	private int deviceId = -1;
 	@XStreamConverter(HexToIntegerConverter.class)
-	private int deviceType;
+	private int deviceType = -1;
 	
 	private boolean listening;			 // i.e. sleeping
 	private boolean frequentlyListening; 
@@ -174,8 +174,10 @@ public class ZWaveNode {
 	 * @return
 	 */
 	public void setAlive(){
-		if(this.nodeStageAdvancer.isInitializationComplete())
+		if(this.nodeStageAdvancer.isInitializationComplete()) {
+			logger.debug("NODE {}: Node is now ALIVE", this.nodeId);
 			this.nodeStage = NodeStage.DONE;
+		}
 		else {
 			this.nodeStage = NodeStage.DYNAMIC;
 			this.nodeStageAdvancer.advanceNodeStage(NodeStage.DONE);

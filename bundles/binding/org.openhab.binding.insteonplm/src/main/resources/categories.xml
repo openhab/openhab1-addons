@@ -221,6 +221,14 @@ Example:
   <name>Access Control</name>
   <description>Doors, Gates, Windows Locks</description>
   <devCat>0x0F</devCat>
+  <subcategory>
+	<name>MorningLinc RF Lock Controller</name>
+    	<description>2458-A1</description>
+    	<subCat>0x06</subCat>
+    	<productKey name="F00.00.09">
+    	  <feature name="switch">GenericSwitch</feature>
+    	</productKey>
+    </subcategory>
 </category>
 <category>
   <name>Security/Health/Saftey Control</name>
@@ -232,6 +240,15 @@ Example:
     	<subCat>0x01</subCat>
     	<productKey name="0x00004A">
     	  <feature name="contact">MotionSensorContact</feature>
+    	  <feature name="lastheardfrom">GenericLastTime</feature>
+    	</productKey>
+    </subcategory>
+    <subcategory>
+	<name>Wireless Open/Close Sensor</name>
+    	<description>2843-222</description>
+    	<subCat>0x02</subCat>
+    	<productKey name="0x000049">
+    	  <feature name="contact">GenericContact</feature>
     	  <feature name="lastheardfrom">GenericLastTime</feature>
     	</productKey>
     </subcategory>

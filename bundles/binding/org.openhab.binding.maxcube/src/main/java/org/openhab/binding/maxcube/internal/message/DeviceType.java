@@ -16,7 +16,7 @@ package org.openhab.binding.maxcube.internal.message;
 */
 public enum DeviceType {
 	Invalid(256), Cube (0), HeatingThermostat(1), HeatingThermostatPlus(2), WallMountedThermostat(
-			3), ShutterContact(4), PushButton(5);
+			3), ShutterContact(4), EcoSwitch(5);
 
 	private int value;
 
@@ -41,7 +41,7 @@ public enum DeviceType {
 		case 4: 
 			return ShutterContact;
 		case 5:
-			return PushButton;
+			return EcoSwitch;
 		default:
 			return Invalid;
 		}
@@ -60,7 +60,7 @@ public enum DeviceType {
 	    case 4: 
 	      return "Shutter Contact";
 	    case 5:
-	      return "Push Button";
+	      return "Eco Switch";
 	    default:
 	      return "Invalid";
 	    }
