@@ -17,8 +17,8 @@
 		<Name>Cooper Wiring Devices</Name>
 		<Product>
 			<Reference>
-				<Type>0000</Type>
-				<Id>14de</Id>
+				<Type>14de</Type>
+				<Id>0000</Id>
 			</Reference>
 			<Model>RF9500</Model>
 			<Label lang="en">Battery Switch</Label>
