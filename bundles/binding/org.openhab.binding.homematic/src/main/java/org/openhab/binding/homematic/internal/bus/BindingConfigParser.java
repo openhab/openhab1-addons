@@ -62,9 +62,8 @@ public class BindingConfigParser {
 
 			// convert entry id to device if necessary
 			if ("id".equalsIgnoreCase(key)) {
-				// logger.info("Please change the Homematic binding with the attribute 'id' to 'address' in entry: "
-				// + entry + " -> " + StringUtils.replace(entry, "id=",
-				// "address="));
+				logger.info("Please change the Homematic binding with the attribute 'id' to 'address' in entry: "
+						+ entry + " -> " + StringUtils.replace(entry, "id=", "address="));
 				key = "address";
 			}
 			String value = StringUtils.trim(entryParts[1]);

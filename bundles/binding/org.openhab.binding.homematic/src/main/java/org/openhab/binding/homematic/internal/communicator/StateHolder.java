@@ -15,8 +15,8 @@ import java.util.concurrent.Executors;
 
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.ProviderItemIterator.ProviderItemIteratorCallback;
+import org.openhab.binding.homematic.internal.communicator.client.CcuClient.HmValueItemIteratorCallback;
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
-import org.openhab.binding.homematic.internal.communicator.client.TclRegaScriptClient.TclIteratorCallback;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.converter.state.Converter;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
@@ -47,7 +47,7 @@ public class StateHolder {
 	public StateHolder(HomematicContext context) {
 		this.context = context;
 	}
-	
+
 	/**
 	 * If a datapoint reload is currently running, this returns true.
 	 */
@@ -79,8 +79,7 @@ public class StateHolder {
 	 */
 	public void loadDatapoints() throws HomematicClientException {
 		logger.info("Loading Homematic datapoints");
-
-		context.getTclRegaScriptClient().iterateAllDatapoints(new TclIteratorCallback() {
+		context.getHomematicClient().iterateAllDatapoints(new HmValueItemIteratorCallback() {
 
 			@Override
 			public void iterate(HomematicBindingConfig bindingConfig, HmValueItem hmValueItem) {
@@ -91,8 +90,8 @@ public class StateHolder {
 	}
 
 	/**
-	 * Reloads all datapoints from the Homematic server and publishes only changed values to
-	 * the openHAB bus.
+	 * Reloads all datapoints from the Homematic server and publishes only
+	 * changed values to the openHAB bus.
 	 */
 	public void reloadDatapoints() {
 		reloadExecutorPool.execute(new Runnable() {
@@ -103,7 +102,7 @@ public class StateHolder {
 				try {
 					logger.debug("Reloading Homematic server datapoints");
 					datapointReloadInProgress = true;
-					context.getTclRegaScriptClient().iterateAllDatapoints(new TclIteratorCallback() {
+					context.getHomematicClient().iterateAllDatapoints(new HmValueItemIteratorCallback() {
 						@Override
 						public void iterate(HomematicBindingConfig bindingConfig, HmValueItem hmValueItem) {
 							if (!datapoints.containsKey(bindingConfig)) {
@@ -140,46 +139,51 @@ public class StateHolder {
 	 * Loads all variables from the Homematic server, only executed at startup.
 	 */
 	public void loadVariables() throws HomematicClientException {
-		logger.info("Loading Homematic Server variables");
+		if (context.getHomematicClient().supportsVariables()) {
+			logger.info("Loading Homematic Server variables");
 
-		context.getTclRegaScriptClient().iterateAllVariables(new TclIteratorCallback() {
+			context.getHomematicClient().iterateAllVariables(new HmValueItemIteratorCallback() {
 
-			@Override
-			public void iterate(HomematicBindingConfig bindingConfig, HmValueItem variable) {
-				variables.put(bindingConfig, variable);
-			}
-		});
-		logger.info("Finished loading {} Homematic server variables", variables.size());
+				@Override
+				public void iterate(HomematicBindingConfig bindingConfig, HmValueItem variable) {
+					variables.put(bindingConfig, variable);
+				}
+			});
+			logger.info("Finished loading {} Homematic server variables", variables.size());
+		}
 	}
 
 	/**
-	 * Reloads all variables from the Homematic server and publishes only changed values to
-	 * the openHAB bus.
+	 * Reloads all variables from the Homematic server and publishes only
+	 * changed values to the openHAB bus.
 	 */
 	public void reloadVariables() {
-		reloadExecutorPool.execute(new Runnable() {
+		if (context.getHomematicClient().supportsVariables()) {
 
-			@Override
-			public void run() {
-				logger.debug("Reloading Homematic server variables");
+			reloadExecutorPool.execute(new Runnable() {
 
-				try {
-					context.getTclRegaScriptClient().iterateAllVariables(new TclIteratorCallback() {
+				@Override
+				public void run() {
+					logger.debug("Reloading Homematic server variables");
 
-						@Override
-						public void iterate(HomematicBindingConfig bindingConfig, HmValueItem variable) {
-							if (hasChanged(bindingConfig, variables.get(bindingConfig), variable)) {
-								variables.put(bindingConfig, variable);
-								publish(bindingConfig, variable);
+					try {
+						context.getHomematicClient().iterateAllVariables(new HmValueItemIteratorCallback() {
+
+							@Override
+							public void iterate(HomematicBindingConfig bindingConfig, HmValueItem variable) {
+								if (hasChanged(bindingConfig, variables.get(bindingConfig), variable)) {
+									variables.put(bindingConfig, variable);
+									publish(bindingConfig, variable);
+								}
 							}
-						}
-					});
-					logger.debug("Finished reloading {} Homematic server variables", variables.size());
-				} catch (HomematicClientException ex) {
-					logger.error(ex.getMessage(), ex);
+						});
+						logger.debug("Finished reloading {} Homematic server variables", variables.size());
+					} catch (HomematicClientException ex) {
+						logger.error(ex.getMessage(), ex);
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	/**
@@ -188,15 +192,18 @@ public class StateHolder {
 	public void init() {
 		reloadExecutorPool = Executors.newCachedThreadPool();
 	}
-	
+
 	/**
 	 * Destroys the cache.
 	 */
 	public void destroy() {
 		datapointReloadInProgress = false;
+		if (reloadExecutorPool != null) {
+			reloadExecutorPool.shutdownNow();
+			reloadExecutorPool = null;
+		}
 		datapoints.clear();
 		variables.clear();
-		reloadExecutorPool.shutdownNow();
 	}
 
 	/**

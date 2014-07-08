@@ -16,7 +16,7 @@ package org.openhab.binding.homematic.internal.model;
  */
 
 public enum HmInterface {
-	RF, WIRED, CUXD, TCL;
+	RF, WIRED, CUXD, TCL, HOMEGEAR;
 
 	@Override
 	public String toString() {
@@ -29,6 +29,8 @@ public enum HmInterface {
 			return "CUxD";
 		case TCL:
 			return "Tcl-Rega";
+		case HOMEGEAR:
+			return "Homegear";
 		}
 		return "";
 	}
@@ -39,6 +41,7 @@ public enum HmInterface {
 	public int getPort() {
 		switch (this) {
 		case RF:
+		case HOMEGEAR:
 			return 2001;
 		case WIRED:
 			return 2000;
@@ -62,10 +65,11 @@ public enum HmInterface {
 			return WIRED;
 		} else if (CUXD.toString().equals(interfaceType)) {
 			return CUXD;
+		} else if (HOMEGEAR.toString().equals(interfaceType)) {
+			return HOMEGEAR;
 		} else {
 			return null;
 		}
-
 	}
 
 }

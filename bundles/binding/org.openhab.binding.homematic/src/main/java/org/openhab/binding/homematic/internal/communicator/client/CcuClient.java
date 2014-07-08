@@ -28,6 +28,8 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.RemoteControlOptionParser;
+import org.openhab.binding.homematic.internal.communicator.client.interfaces.HomematicClient;
+import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.VariableConfig;
@@ -36,6 +38,7 @@ import org.openhab.binding.homematic.internal.model.HmChannel;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmDevice;
 import org.openhab.binding.homematic.internal.model.HmDeviceList;
+import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.openhab.binding.homematic.internal.model.HmRemoteControlOptions;
 import org.openhab.binding.homematic.internal.model.HmResult;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
@@ -47,34 +50,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A client to execute TclRega scripts on the CCU. It's mainly used for
- * metadata/value retrieval, getting and setting variables and executing
- * programs.
+ * HomematicClient implementation for a CCU including TclRega script executer.
  * 
  * @author Gerhard Riegler
- * @since 1.5.0
+ * @since 1.5.1
  */
-public class TclRegaScriptClient {
-	private static final Logger logger = LoggerFactory.getLogger(TclRegaScriptClient.class);
+public class CcuClient implements HomematicClient {
+	private static final Logger logger = LoggerFactory.getLogger(CcuClient.class);
 	private static final boolean TRACE_ENABLED = logger.isTraceEnabled();
 
 	private Map<String, String> tclregaScripts;
 	private HttpClient httpClient;
+	private RpcClient rpcClient;
 
-	private HomematicContext context;
+	private HomematicContext context = HomematicContext.getInstance();
 
-	/**
-	 * Creates the TclRegaScriptClient.
-	 */
-	public TclRegaScriptClient(HomematicContext context) {
-		this.context = context;
+	public CcuClient(RpcClient rpcClient) {
+		this.rpcClient = rpcClient;
 	}
 
 	/**
-	 * Starts the TclRegaScriptClient.
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void start() throws HomematicClientException {
-		logger.info("Starting {}", TclRegaScriptClient.class.getSimpleName());
+		logger.info("Starting {}", CcuClient.class.getSimpleName());
+		rpcClient.start();
 
 		tclregaScripts = loadTclRegaScripts();
 
@@ -86,28 +87,42 @@ public class TclRegaScriptClient {
 	}
 
 	/**
-	 * Destroys the TclRegaScriptClient.
+	 * {@inheritDoc}
 	 */
-	public void shutdown() {
+	@Override
+	public void shutdown() throws HomematicClientException {
+		rpcClient.shutdown();
 		tclregaScripts = null;
 		httpClient = null;
 	}
 
 	/**
-	 * Retrieves all variables from the CCU.
+	 * {@inheritDoc}
 	 */
-	public void iterateAllVariables(TclIteratorCallback callback) throws HomematicClientException {
-		List<HmVariable> variables = sendScriptByName("getAllVariables", HmVariableList.class).getVariables();
-		for (HmVariable variable : variables) {
-			VariableConfig bindingConfig = new VariableConfig(variable.getName());
-			callback.iterate(bindingConfig, variable);
-		}
+	@Override
+	public void registerCallback() throws HomematicClientException {
+		rpcClient.init(HmInterface.RF);
+		rpcClient.init(HmInterface.WIRED);
 	}
 
 	/**
-	 * Retrieves all datapoints from the CCU.
+	 * {@inheritDoc}
 	 */
-	public void iterateAllDatapoints(TclIteratorCallback callback) throws HomematicClientException {
+	@Override
+	public void releaseCallback() throws HomematicClientException {
+		rpcClient.release(HmInterface.RF);
+		rpcClient.release(HmInterface.WIRED);
+	}
+
+	@Override
+	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException {
+		rpcClient.setDatapointValue(dp, datapointName, value);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void iterateAllDatapoints(HmValueItemIteratorCallback callback) throws HomematicClientException {
 		List<HmDevice> devices = sendScriptByName("getAllDevices", HmDeviceList.class).getDevices();
 		for (HmDevice device : devices) {
 			for (HmChannel channel : device.getChannels()) {
@@ -121,7 +136,18 @@ public class TclRegaScriptClient {
 	}
 
 	/**
-	 * Execute a program on the CCU.
+	 * {@inheritDoc}
+	 */
+	public void iterateAllVariables(HmValueItemIteratorCallback callback) throws HomematicClientException {
+		List<HmVariable> variables = sendScriptByName("getAllVariables", HmVariableList.class).getVariables();
+		for (HmVariable variable : variables) {
+			VariableConfig bindingConfig = new VariableConfig(variable.getName());
+			callback.iterate(bindingConfig, variable);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
 	 */
 	public void executeProgram(String programName) throws HomematicClientException {
 		logger.debug("Executing program on CCU: {}", programName);
@@ -133,7 +159,7 @@ public class TclRegaScriptClient {
 	}
 
 	/**
-	 * Set a variable on the CCU.
+	 * {@inheritDoc}
 	 */
 	public void setVariable(HmValueItem hmValueItem, Object value) throws HomematicClientException {
 		String strValue = ObjectUtils.toString(value);
@@ -149,8 +175,7 @@ public class TclRegaScriptClient {
 	}
 
 	/**
-	 * Sends a message and sets properties for the display of a 19 key Homematic
-	 * remote control. Used in the Homematic action.
+	 * {@inheritDoc}
 	 */
 	public void setRemoteControlDisplay(String remoteControlAddress, String text, String options)
 			throws HomematicClientException {
@@ -172,16 +197,15 @@ public class TclRegaScriptClient {
 	}
 
 	/**
-	 * Returns true, if the client is started.
+	 * Sends a TclRega script to the CCU.
 	 */
-	public boolean isStarted() {
-		return tclregaScripts != null;
-	}
-
 	private <T> T sendScriptByName(String scriptName, Class<T> clazz) throws HomematicClientException {
 		return sendScript(getTclRegaScript(scriptName), clazz);
 	}
 
+	/**
+	 * Sends a TclRega script with the specified variables to the CCU.
+	 */
 	private <T> T sendScriptByName(String scriptName, Class<T> clazz, String[] variableNames, String[] values)
 			throws HomematicClientException {
 		String script = getTclRegaScript(scriptName);
@@ -192,10 +216,34 @@ public class TclRegaScriptClient {
 	}
 
 	private String getTclRegaScript(String scriptName) throws HomematicClientException {
-		if (! isStarted()) {
-			throw new HomematicClientException(TclRegaScriptClient.class.getSimpleName() + " is not configured!");
+		if (!isStarted()) {
+			throw new HomematicClientException(CcuClient.class.getSimpleName() + " is not configured!");
 		}
 		return tclregaScripts.get(scriptName);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isStarted() {
+		return tclregaScripts != null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean supportsVariables() {
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean supportsRemoteControls() {
+		return true;
 	}
 
 	/**
@@ -259,10 +307,11 @@ public class TclRegaScriptClient {
 	/**
 	 * Callback interface to iterate through all Homematic valueItems.
 	 */
-	public interface TclIteratorCallback {
+	public interface HmValueItemIteratorCallback {
 		/**
 		 * Called for every Homematic valueItem after loading from the CCU.
 		 */
 		public void iterate(HomematicBindingConfig bindingConfig, HmValueItem hmValueItem);
 	}
+
 }

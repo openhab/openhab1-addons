@@ -11,33 +11,45 @@ package org.openhab.binding.homematic.internal.communicator.client;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.util.List;
 import java.util.Map;
 
 import org.openhab.binding.homematic.internal.binrpc.BinRpcRequest;
 import org.openhab.binding.homematic.internal.binrpc.BinRpcResponse;
 import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
-import org.openhab.binding.homematic.internal.communicator.HomematicClient;
+import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Client implementation for sending messages via BIN-RPC to the Homematic server.
+ * Client implementation for sending messages via BIN-RPC to the Homematic
+ * server.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public class BinRpcClient implements HomematicClient {
+public class BinRpcClient implements RpcClient {
 	private final static Logger logger = LoggerFactory.getLogger(BinRpcClient.class);
 	private final static boolean TRACE_ENABLED = logger.isTraceEnabled();
 
 	private HomematicConfig config = HomematicContext.getInstance().getConfig();
 
-	public BinRpcClient() {
-		logger.info("Starting {}", this.getClass().getSimpleName());
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void start() throws HomematicClientException {
+		logger.debug("Starting {}", this.getClass().getSimpleName());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void shutdown() throws HomematicClientException {
+		// nothing todo
 	}
 
 	/**
@@ -64,6 +76,24 @@ public class BinRpcClient implements HomematicClient {
 	/**
 	 * {@inheritDoc}
 	 */
+	public Object[] getAllValues(HmInterface hmInterface) throws HomematicClientException {
+		BinRpcRequest request = new BinRpcRequest("getAllValues");
+		return (Object[]) sendMessage(hmInterface, request)[0];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ServerId getServerId(HmInterface hmInterface) throws HomematicClientException {
+		BinRpcRequest request = new BinRpcRequest("getVersion");
+		Object[] result = sendMessage(hmInterface, request);
+		return new ServerId(result[0].toString());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException {
 		HmInterface hmInterface = dp.getChannel().getDevice().getHmInterface();
@@ -80,10 +110,21 @@ public class BinRpcClient implements HomematicClient {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void executeProgram(HmInterface hmInterface, String programName) throws HomematicClientException {
+		BinRpcRequest request = new BinRpcRequest("runScript");
+		request.addArg(programName);
+		sendMessage(hmInterface, request);
+	}
+
+	/**
 	 * Sends a BIN-RPC message and parses the response to see if there was an
 	 * error.
 	 */
-	private synchronized void sendMessage(HmInterface hmInterface, BinRpcRequest request) throws HomematicClientException {
+	private synchronized Object[] sendMessage(HmInterface hmInterface, BinRpcRequest request)
+			throws HomematicClientException {
 		Socket socket = null;
 		try {
 			if (TRACE_ENABLED) {
@@ -97,25 +138,30 @@ public class BinRpcClient implements HomematicClient {
 			if (TRACE_ENABLED) {
 				logger.trace("Client BinRpcResponse: {}", resp.toString());
 			}
-			List<Object> data = resp.getResponseData();
-			if (data.size() > 0) {
-				Object response = data.get(0);
-				if (response instanceof String) {
-					if (!"".equals((String) response)) {
-						throw new IOException("Unknown Result: " + response);
-					}
-				} else if (response instanceof Map) {
+			Object[] data = resp.getResponseData();
+			if (data != null && data.length > 0) {
+				Object responseData = data[0];
+				if (responseData instanceof Map) {
 					@SuppressWarnings("unchecked")
-					Map<String, Object> map = (Map<String, Object>) response;
-					Object faultCode = map.get("faultCode");
-					Object faultString = map.get("faultString");
-					throw new IOException(faultCode + " " + faultString);
+					Map<String, Object> map = (Map<String, Object>) responseData;
+					if (map.containsKey("faultCode")) {
+						Object faultCode = map.get("faultCode");
+						Object faultString = map.get("faultString");
+						throw new IOException(faultCode + " " + faultString);
+					}
 				}
+				return data;
 			}
+			throw new IOException("Unknown Result: " + data);
 		} catch (ConnectException cex) {
-			logger.info("Can't connect to interface {}", hmInterface);
+			if (HmInterface.WIRED == hmInterface) {
+				logger.info("Interface {} not available, disabling support.", hmInterface);
+				return null;
+			}
+			throw new HomematicClientException("Can't connect to interface " + hmInterface + ": " + cex.getMessage(),
+					cex);
 		} catch (Exception ex) {
-			throw new HomematicClientException(ex.getMessage() + "(sending " + request + ")", ex);
+			throw new HomematicClientException(ex.getMessage() + " (sending " + request + ")", ex);
 		} finally {
 			try {
 				if (socket != null) {

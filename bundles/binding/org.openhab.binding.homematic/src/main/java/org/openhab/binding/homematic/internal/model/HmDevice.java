@@ -71,4 +71,11 @@ public class HmDevice {
 	public List<HmChannel> getChannels() {
 		return channels;
 	}
+
+	/**
+	 * Adds a channel to this device.
+	 */
+	public void addChannel(HmChannel channel) {
+		channels.add(channel);
+	}
 }

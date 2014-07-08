@@ -13,8 +13,13 @@ import java.util.TimerTask;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.ProviderItemIterator.ProviderItemIteratorCallback;
 import org.openhab.binding.homematic.internal.communicator.client.BinRpcClient;
+import org.openhab.binding.homematic.internal.communicator.client.CcuClient;
+import org.openhab.binding.homematic.internal.communicator.client.HomegearClient;
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
+import org.openhab.binding.homematic.internal.communicator.client.ServerId;
 import org.openhab.binding.homematic.internal.communicator.client.XmlRpcClient;
+import org.openhab.binding.homematic.internal.communicator.client.interfaces.HomematicClient;
+import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.communicator.server.BinRpcCallbackServer;
 import org.openhab.binding.homematic.internal.communicator.server.XmlRpcCallbackServer;
 import org.openhab.binding.homematic.internal.config.BindingAction;
@@ -64,20 +69,25 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 				boolean isBinRpc = context.getConfig().isBinRpc();
 				homematicCallbackServer = isBinRpc ? new BinRpcCallbackServer(this) : new XmlRpcCallbackServer(this);
 
-				context.getTclRegaScriptClient().start();
-				context.getStateHolder().init();
-				context.getStateHolder().loadDatapoints();
-				context.getStateHolder().loadVariables();
-
 				itemDisabler = new ItemDisabler();
 				itemDisabler.start();
 				newDevicesCounter = 0;
 
-				homematicCallbackServer.start();
+				RpcClient rpcClient = isBinRpc ? new BinRpcClient() : new XmlRpcClient();
 
-				homematicClient = isBinRpc ? new BinRpcClient() : new XmlRpcClient();
-				homematicClient.init(HmInterface.RF);
-				homematicClient.init(HmInterface.WIRED);
+				ServerId serverId = rpcClient.getServerId(HmInterface.RF);
+				logger.info("Homematic {}", serverId);
+				homematicClient = serverId.isHomegear() ? new HomegearClient(rpcClient) : new CcuClient(rpcClient);
+
+				context.setHomematicClient(homematicClient);
+				homematicClient.start();
+
+				context.getStateHolder().init();
+				context.getStateHolder().loadDatapoints();
+				context.getStateHolder().loadVariables();
+
+				homematicCallbackServer.start();
+				homematicClient.registerCallback();
 
 				scheduleFirstRefresh();
 			} catch (Exception e) {
@@ -114,13 +124,16 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 				homematicCallbackServer.shutdown();
 				if (homematicClient != null) {
 					try {
-						homematicClient.release(HmInterface.RF);
-						homematicClient.release(HmInterface.WIRED);
+						homematicClient.releaseCallback();
+					} catch (HomematicClientException e) {
+						// ignore
+					}
+					try {
+						homematicClient.shutdown();
 					} catch (HomematicClientException e) {
 						// ignore
 					}
 				}
-				context.getTclRegaScriptClient().shutdown();
 				if (itemDisabler != null) {
 					itemDisabler.stop();
 				}
@@ -278,7 +291,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 
 		else {
 			if (event.isVariable()) {
-				context.getTclRegaScriptClient().setVariable(event.getHmValueItem(), event.getNewValue());
+				homematicClient.setVariable(event.getHmValueItem(), event.getNewValue());
 			} else {
 				homematicClient.setDatapointValue((HmDatapoint) event.getHmValueItem(), event.getHmValueItem()
 						.getName(), event.getNewValue());
@@ -312,7 +325,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 	 */
 	private void executeProgram(Event event) {
 		try {
-			context.getTclRegaScriptClient().executeProgram(((ProgramConfig) event.getBindingConfig()).getName());
+			homematicClient.executeProgram(((ProgramConfig) event.getBindingConfig()).getName());
 		} catch (HomematicClientException ex) {
 			logger.error(ex.getMessage(), ex);
 		} finally {

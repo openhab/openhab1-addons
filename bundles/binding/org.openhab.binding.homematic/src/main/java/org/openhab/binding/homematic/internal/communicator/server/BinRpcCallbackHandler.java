@@ -72,7 +72,7 @@ public class BinRpcCallbackHandler implements Runnable {
 	/**
 	 * Returns a valid result of the method called by the Homematic server.
 	 */
-	private byte[] handleMethodCall(String methodName, List<?> responseData) throws Exception {
+	private byte[] handleMethodCall(String methodName, Object[] responseData) throws Exception {
 		if ("event".equals(methodName)) {
 			handleEvent(responseData);
 			return BIN_EMPTY_STRING;
@@ -86,10 +86,10 @@ public class BinRpcCallbackHandler implements Runnable {
 		} else if ("system.listMethods".equals(methodName)) {
 			return createEmptyMessage();
 		} else if ("system.multicall".equals(methodName)) {
-			for (Object o : (List<?>) responseData.get(0)) {
+			for (Object o : (Object[]) responseData[0]) {
 				Map<?, ?> call = (Map<?, ?>) o;
 				String method = call.get("methodName").toString();
-				List<?> data = (List<?>) call.get("params");
+				Object[] data = (Object[]) call.get("params");
 				handleMethodCall(method, data);
 			}
 			return createEmptyMessage();
@@ -113,11 +113,11 @@ public class BinRpcCallbackHandler implements Runnable {
 	/**
 	 * Populates the extracted event to the callbackReceiver.
 	 */
-	private void handleEvent(List<?> parms) {
-		String interfaceId = parms.get(0).toString();
-		String address = parms.get(1).toString();
-		String attribute = parms.get(2).toString();
-		Object value = parms.get(3);
+	private void handleEvent(Object[] parms) {
+		String interfaceId = parms[0].toString();
+		String address = parms[1].toString();
+		String attribute = parms[2].toString();
+		Object value = parms[3];
 
 		callbackReceiver.event(interfaceId, address, attribute, value);
 	}
