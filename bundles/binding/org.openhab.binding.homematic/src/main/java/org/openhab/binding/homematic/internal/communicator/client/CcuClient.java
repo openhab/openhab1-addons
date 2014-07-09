@@ -26,12 +26,8 @@ import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openhab.binding.homematic.internal.common.HomematicContext;
-import org.openhab.binding.homematic.internal.communicator.RemoteControlOptionParser;
-import org.openhab.binding.homematic.internal.communicator.client.interfaces.HomematicClient;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
-import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.VariableConfig;
 import org.openhab.binding.homematic.internal.model.CommonUnmarshallerListener;
 import org.openhab.binding.homematic.internal.model.HmChannel;
@@ -39,7 +35,6 @@ import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmDevice;
 import org.openhab.binding.homematic.internal.model.HmDeviceList;
 import org.openhab.binding.homematic.internal.model.HmInterface;
-import org.openhab.binding.homematic.internal.model.HmRemoteControlOptions;
 import org.openhab.binding.homematic.internal.model.HmResult;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.openhab.binding.homematic.internal.model.HmVariable;
@@ -55,18 +50,23 @@ import org.slf4j.LoggerFactory;
  * @author Gerhard Riegler
  * @since 1.5.1
  */
-public class CcuClient implements HomematicClient {
+public class CcuClient extends BaseHomematicClient {
 	private static final Logger logger = LoggerFactory.getLogger(CcuClient.class);
 	private static final boolean TRACE_ENABLED = logger.isTraceEnabled();
 
 	private Map<String, String> tclregaScripts;
 	private HttpClient httpClient;
-	private RpcClient rpcClient;
-
-	private HomematicContext context = HomematicContext.getInstance();
 
 	public CcuClient(RpcClient rpcClient) {
-		this.rpcClient = rpcClient;
+		super(rpcClient);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HmInterface getDefaultInterface() {
+		return HmInterface.RF;
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class CcuClient implements HomematicClient {
 	@Override
 	public void start() throws HomematicClientException {
 		logger.info("Starting {}", CcuClient.class.getSimpleName());
-		rpcClient.start();
+		super.start();
 
 		tclregaScripts = loadTclRegaScripts();
 
@@ -91,7 +91,7 @@ public class CcuClient implements HomematicClient {
 	 */
 	@Override
 	public void shutdown() throws HomematicClientException {
-		rpcClient.shutdown();
+		super.shutdown();
 		tclregaScripts = null;
 		httpClient = null;
 	}
@@ -101,7 +101,7 @@ public class CcuClient implements HomematicClient {
 	 */
 	@Override
 	public void registerCallback() throws HomematicClientException {
-		rpcClient.init(HmInterface.RF);
+		rpcClient.init(getDefaultInterface());
 		rpcClient.init(HmInterface.WIRED);
 	}
 
@@ -110,13 +110,8 @@ public class CcuClient implements HomematicClient {
 	 */
 	@Override
 	public void releaseCallback() throws HomematicClientException {
-		rpcClient.release(HmInterface.RF);
+		rpcClient.release(getDefaultInterface());
 		rpcClient.release(HmInterface.WIRED);
-	}
-
-	@Override
-	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException {
-		rpcClient.setDatapointValue(dp, datapointName, value);
 	}
 
 	/**
@@ -175,28 +170,6 @@ public class CcuClient implements HomematicClient {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public void setRemoteControlDisplay(String remoteControlAddress, String text, String options)
-			throws HomematicClientException {
-
-		RemoteControlOptionParser rcParameterParser = new RemoteControlOptionParser();
-		HmRemoteControlOptions rco = rcParameterParser.parse(remoteControlAddress, options);
-		rco.setText(text);
-
-		logger.debug("Sending to remote control {}: {}", remoteControlAddress, rco);
-
-		HmResult result = sendScriptByName("setRemoteControlDisplay", HmResult.class, new String[] { "remote_address",
-				"text", "beep_value", "backlight_value", "unit_value", "symbols" },
-				new String[] { remoteControlAddress, rco.getText(), rco.getBeepAsString(), rco.getBacklightAsString(),
-						rco.getUnitAsString(), StringUtils.join(rco.getSymbols(), "\t") });
-
-		if (!result.isValid()) {
-			throw new HomematicClientException("Failed to set remote control with address " + remoteControlAddress);
-		}
-	}
-
-	/**
 	 * Sends a TclRega script to the CCU.
 	 */
 	private <T> T sendScriptByName(String scriptName, Class<T> clazz) throws HomematicClientException {
@@ -235,14 +208,6 @@ public class CcuClient implements HomematicClient {
 	 */
 	@Override
 	public boolean supportsVariables() {
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean supportsRemoteControls() {
 		return true;
 	}
 
@@ -303,15 +268,4 @@ public class CcuClient implements HomematicClient {
 			throw new HomematicClientException(ex.getMessage(), ex);
 		}
 	}
-
-	/**
-	 * Callback interface to iterate through all Homematic valueItems.
-	 */
-	public interface HmValueItemIteratorCallback {
-		/**
-		 * Called for every Homematic valueItem after loading from the CCU.
-		 */
-		public void iterate(HomematicBindingConfig bindingConfig, HmValueItem hmValueItem);
-	}
-
 }

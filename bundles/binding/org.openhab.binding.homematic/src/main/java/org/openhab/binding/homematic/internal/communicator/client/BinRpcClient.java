@@ -102,6 +102,14 @@ public class BinRpcClient implements RpcClient {
 			value = ((Number) value).intValue();
 		}
 
+		setDatapointValue(hmInterface, address, datapointName, value);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setDatapointValue(HmInterface hmInterface, String address, String datapointName, Object value)
+			throws HomematicClientException {
 		BinRpcRequest request = new BinRpcRequest("setValue");
 		request.addArg(address);
 		request.addArg(datapointName);

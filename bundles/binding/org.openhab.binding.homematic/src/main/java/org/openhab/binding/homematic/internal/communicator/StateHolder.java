@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.ProviderItemIterator.ProviderItemIteratorCallback;
-import org.openhab.binding.homematic.internal.communicator.client.CcuClient.HmValueItemIteratorCallback;
+import org.openhab.binding.homematic.internal.communicator.client.BaseHomematicClient.HmValueItemIteratorCallback;
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.converter.state.Converter;

@@ -13,8 +13,6 @@ import java.util.Map;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
-import org.openhab.binding.homematic.internal.communicator.client.CcuClient.HmValueItemIteratorCallback;
-import org.openhab.binding.homematic.internal.communicator.client.interfaces.HomematicClient;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.model.HmChannel;
@@ -32,17 +30,21 @@ import org.slf4j.LoggerFactory;
  * @author Gerhard Riegler
  * @since 1.5.1
  */
-public class HomegearClient implements HomematicClient {
+public class HomegearClient extends BaseHomematicClient {
 	private static final Logger logger = LoggerFactory.getLogger(HomegearClient.class);
 
 	private RpcClient rpcClient;
 	private boolean started;
 
 	public HomegearClient(RpcClient rpcClient) {
-		this.rpcClient = rpcClient;
+		super(rpcClient);
 	}
 
-	protected HmInterface getInterface() {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HmInterface getDefaultInterface() {
 		return HmInterface.HOMEGEAR;
 	}
 
@@ -52,7 +54,7 @@ public class HomegearClient implements HomematicClient {
 	@Override
 	public void start() throws HomematicClientException {
 		logger.info("Starting {}", HomegearClient.class.getSimpleName());
-		rpcClient.start();
+		super.start();
 		started = true;
 	}
 
@@ -61,7 +63,7 @@ public class HomegearClient implements HomematicClient {
 	 */
 	@Override
 	public void shutdown() throws HomematicClientException {
-		rpcClient.shutdown();
+		super.shutdown();
 		started = false;
 	}
 
@@ -70,7 +72,7 @@ public class HomegearClient implements HomematicClient {
 	 */
 	@Override
 	public void registerCallback() throws HomematicClientException {
-		rpcClient.init(getInterface());
+		rpcClient.init(getDefaultInterface());
 	}
 
 	/**
@@ -78,15 +80,7 @@ public class HomegearClient implements HomematicClient {
 	 */
 	@Override
 	public void releaseCallback() throws HomematicClientException {
-		rpcClient.release(getInterface());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException {
-		rpcClient.setDatapointValue(dp, datapointName, value);
+		rpcClient.release(getDefaultInterface());
 	}
 
 	/**
@@ -120,7 +114,9 @@ public class HomegearClient implements HomematicClient {
 	 */
 	@Override
 	public void executeProgram(String programName) throws HomematicClientException {
-		rpcClient.executeProgram(getInterface(), programName);
+		logger.debug("Executing script on Homegear: {}", programName);
+
+		rpcClient.executeProgram(getDefaultInterface(), programName);
 	}
 
 	/**
@@ -128,7 +124,7 @@ public class HomegearClient implements HomematicClient {
 	 */
 	@Override
 	public void iterateAllVariables(HmValueItemIteratorCallback callback) throws HomematicClientException {
-		logger.warn("iterateAllVariables not supported on interface " + getInterface().toString());
+		logger.warn("iterateAllVariables not supported on interface " + getDefaultInterface().toString());
 	}
 
 	/**
@@ -136,17 +132,9 @@ public class HomegearClient implements HomematicClient {
 	 */
 	@Override
 	public void setVariable(HmValueItem hmValueItem, Object value) throws HomematicClientException {
-		logger.warn("setVariable not supported on interface " + getInterface().toString());
+		logger.warn("setVariable not supported on interface " + getDefaultInterface().toString());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setRemoteControlDisplay(String remoteControlAddress, String text, String options)
-			throws HomematicClientException {
-		logger.warn("setRemoteControlDisplay not supported on interface " + getInterface().toString());
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -161,14 +149,6 @@ public class HomegearClient implements HomematicClient {
 	 */
 	@Override
 	public boolean supportsVariables() {
-		return false;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean supportsRemoteControls() {
 		return false;
 	}
 

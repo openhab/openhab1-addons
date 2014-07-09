@@ -37,6 +37,12 @@ public interface RpcClient {
 	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException;
 
 	/**
+	 * Set the value of a device specified by address.
+	 */
+	public void setDatapointValue(HmInterface hmInterface, String address, String datapointName, Object value)
+			throws HomematicClientException;
+
+	/**
 	 * Register a callback for the specified interface where the Homematic
 	 * server can send its events.
 	 */

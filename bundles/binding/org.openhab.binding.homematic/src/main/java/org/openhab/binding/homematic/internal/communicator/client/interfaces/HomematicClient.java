@@ -8,9 +8,10 @@
  */
 package org.openhab.binding.homematic.internal.communicator.client.interfaces;
 
-import org.openhab.binding.homematic.internal.communicator.client.CcuClient.HmValueItemIteratorCallback;
+import org.openhab.binding.homematic.internal.communicator.client.BaseHomematicClient.HmValueItemIteratorCallback;
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
+import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 
 /**
@@ -84,7 +85,8 @@ public interface HomematicClient {
 	public boolean supportsVariables();
 
 	/**
-	 * Returns true, if the client supports commands to a remote control.
+	 * Returns the default interface to communicate with the Homematic server.
 	 */
-	public boolean supportsRemoteControls();
+	public HmInterface getDefaultInterface();
+
 }

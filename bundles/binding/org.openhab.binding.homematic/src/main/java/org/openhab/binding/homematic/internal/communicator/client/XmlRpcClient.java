@@ -83,6 +83,9 @@ public class XmlRpcClient implements RpcClient {
 				+ (result == null ? "null" : result.getClass()));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ServerId getServerId(HmInterface hmInterface) throws HomematicClientException {
 		Object result = getConnection(hmInterface).getVersion();
@@ -111,6 +114,15 @@ public class XmlRpcClient implements RpcClient {
 		if (dp.isIntegerValue() && value instanceof Double) {
 			value = ((Number) value).intValue();
 		}
+		setDatapointValue(hmInterface, address, datapointName, value);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setDatapointValue(HmInterface hmInterface, String address, String datapointName, Object value)
+			throws HomematicClientException {
 		try {
 			getConnection(hmInterface).setValue(address, datapointName, value);
 		} catch (Exception ex) {

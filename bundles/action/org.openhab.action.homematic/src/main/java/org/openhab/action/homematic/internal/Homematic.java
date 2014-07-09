@@ -53,9 +53,6 @@ public class Homematic {
 		if (!context.getHomematicClient().isStarted()) {
 			logger.warn("The Homematic client is not started, ignoring action sendHomematicDisplay!");
 			return false;
-		} else if (!context.getHomematicClient().supportsRemoteControls()) {
-			logger.warn("The Homematic client does not support remote controls, ignoring action sendHomematicDisplay!");
-			return false;
 		} else {
 			try {
 				context.getHomematicClient().setRemoteControlDisplay(remoteControlAddress, text, options);
