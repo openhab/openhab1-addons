@@ -473,10 +473,10 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         String subDeviceId = provider.getSubId(itemName);
         String deviceName = provider.getName(itemName);
         if (deviceName != null) {
-          logger.trace("found item for command: name {}", deviceName);
           OHTFDevice<?, ?> ohtfDevice = ohConfig.getConfigByOHId(deviceName);
           deviceUid = ohtfDevice.getUid();
-          deviceName = ohtfDevice.getSubid();
+          subDeviceId = ohtfDevice.getSubid();
+          logger.trace("found deviceName {}, uid={}, subId {}", deviceName, deviceUid, subDeviceId);
         }
         if (uid.equals(deviceUid)) {
           if (subId == null && subDeviceId == null) {
@@ -633,7 +633,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
    *         subid as second element as {@code String} or {@code null}.
    */
   private String[] getDeviceIdsForDeviceName(String deviceName) {
-    logger.trace("found item for command: name {}", deviceName);
+    logger.trace("searching ids for name {}", deviceName);
     OHTFDevice<?, ?> ohtfDevice = ohConfig.getConfigByOHId(deviceName);
     String[] ids = {ohtfDevice.getUid(), ohtfDevice.getSubid()};
     return ids;
