@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>064459</Model>
+	<Label lang="en">Düwi Remote Control</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+	</CommandClasses>
+</Product>
