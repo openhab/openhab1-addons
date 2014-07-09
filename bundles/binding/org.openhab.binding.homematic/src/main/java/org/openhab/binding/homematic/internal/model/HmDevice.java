@@ -76,6 +76,7 @@ public class HmDevice {
 	 * Adds a channel to this device.
 	 */
 	public void addChannel(HmChannel channel) {
+		channel.setDevice(this);
 		channels.add(channel);
 	}
 }

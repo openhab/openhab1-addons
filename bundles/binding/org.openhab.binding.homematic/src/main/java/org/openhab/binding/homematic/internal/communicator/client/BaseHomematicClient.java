@@ -9,12 +9,17 @@
 package org.openhab.binding.homematic.internal.communicator.client;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.RemoteControlOptionParser;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.HomematicClient;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
+import org.openhab.binding.homematic.internal.model.HmBattery;
+import org.openhab.binding.homematic.internal.model.HmBatteryInfoProvider;
+import org.openhab.binding.homematic.internal.model.HmChannel;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
+import org.openhab.binding.homematic.internal.model.HmDevice;
 import org.openhab.binding.homematic.internal.model.HmRemoteControlOptions;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.slf4j.Logger;
@@ -86,6 +91,47 @@ public abstract class BaseHomematicClient implements HomematicClient {
 		}
 
 		rpcClient.setDatapointValue(getDefaultInterface(), address, "SUBMIT", Boolean.TRUE);
+	}
+
+	/**
+	 * Adds the battery info datapoint to the specified device if the device has
+	 * batteries.
+	 */
+	protected void addBatteryInfo(HmDevice device) throws HomematicClientException {
+		HmBattery battery = HmBatteryInfoProvider.getBatteryInfo(device.getType());
+		if (battery != null) {
+			for (HmChannel channel : device.getChannels()) {
+				if ("0".equals(channel.getNumber())) {
+					try {
+						logger.debug("Adding battery info to device {}: {}", device.getType(), battery.getInfo());
+						HmDatapoint dp = new HmDatapoint();
+						writeField(dp, "name", "BATTERY_INFO", String.class);
+						writeField(dp, "writeable", Boolean.FALSE, Boolean.class);
+						writeField(dp, "valueType", 20, Integer.class);
+						dp.setValue(battery.getInfo());
+						channel.addDatapoint(dp);
+					} catch (IllegalAccessException ex) {
+						throw new HomematicClientException(ex.getMessage(), ex);
+					}
+				}
+			}
+		}
+	}
+
+	protected void writeField(Object target, String fieldName, Object value, Class<?> type)
+			throws IllegalAccessException {
+		if (value == null) {
+			throw new IllegalArgumentException("Field " + fieldName + " is required for target "
+					+ target.getClass().getSimpleName());
+		}
+
+		if (type.getName().equals(value.getClass().getName())) {
+			FieldUtils.writeField(target, fieldName, value, true);
+		} else {
+			throw new IllegalArgumentException("Value '" + value + "' (" + value.getClass().getName()
+					+ ") is not from type (" + type.getName() + ") in fieldName '" + fieldName + "' of class '"
+					+ target.getClass().getName() + "'");
+		}
 	}
 
 	/**

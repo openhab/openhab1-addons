@@ -10,9 +10,6 @@ package org.openhab.binding.homematic.internal.communicator.client;
 
 import java.util.Map;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.reflect.FieldUtils;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.model.HmChannel;
@@ -95,6 +92,7 @@ public class HomegearClient extends BaseHomematicClient {
 				@SuppressWarnings("unchecked")
 				Map<String, ?> entryMap = (Map<String, ?>) result[i];
 				HmDevice device = parseDevice(entryMap);
+				addBatteryInfo(device);
 
 				for (HmChannel channel : device.getChannels()) {
 					for (HmDatapoint dp : channel.getDatapoints()) {
@@ -134,7 +132,6 @@ public class HomegearClient extends BaseHomematicClient {
 	public void setVariable(HmValueItem hmValueItem, Object value) throws HomematicClientException {
 		logger.warn("setVariable not supported on interface " + getDefaultInterface().toString());
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -211,8 +208,8 @@ public class HomegearClient extends BaseHomematicClient {
 
 		Object value = dpData.get("VALUE");
 		if (value instanceof Number) {
-			writeDatapointFieldIfNotEmpty(dpData.get("MIN"), "minValue", dp);
-			writeDatapointFieldIfNotEmpty(dpData.get("MAX"), "maxValue", dp);
+			writeField(dp, "minValue", dpData.get("MIN"), value.getClass());
+			writeField(dp, "maxValue", dpData.get("MAX"), value.getClass());
 		}
 
 		if (value instanceof Boolean) {
@@ -225,31 +222,6 @@ public class HomegearClient extends BaseHomematicClient {
 
 		dp.setValue(value);
 		return dp;
-	}
-
-	private void writeDatapointFieldIfNotEmpty(Object value, String fieldName, HmDatapoint dp)
-			throws IllegalAccessException {
-		if (StringUtils.isBlank(ObjectUtils.toString(value))) {
-			logger.warn("{} for datapoint {} for device {} is empty!", fieldName, dp.getName(), dp.getChannel()
-					.getDevice().getAddress());
-		} else {
-			writeField(dp, fieldName, value, value.getClass());
-		}
-	}
-
-	private void writeField(Object target, String fieldName, Object value, Class<?> type) throws IllegalAccessException {
-		if (value == null) {
-			throw new IllegalArgumentException("Field " + fieldName + " is required for target "
-					+ target.getClass().getSimpleName());
-		}
-
-		if (type.getName().equals(value.getClass().getName())) {
-			FieldUtils.writeField(target, fieldName, value, true);
-		} else {
-			throw new IllegalArgumentException("Value '" + value + "' (" + value.getClass().getName()
-					+ ") is not from type (" + type.getName() + ") in fieldName '" + fieldName + "' of class '"
-					+ target.getClass().getName() + "'");
-		}
 	}
 
 }

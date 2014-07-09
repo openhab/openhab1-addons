@@ -120,6 +120,8 @@ public class CcuClient extends BaseHomematicClient {
 	public void iterateAllDatapoints(HmValueItemIteratorCallback callback) throws HomematicClientException {
 		List<HmDevice> devices = sendScriptByName("getAllDevices", HmDeviceList.class).getDevices();
 		for (HmDevice device : devices) {
+			addBatteryInfo(device);
+
 			for (HmChannel channel : device.getChannels()) {
 				for (HmDatapoint dp : channel.getDatapoints()) {
 					DatapointConfig bindingConfig = new DatapointConfig(device.getAddress(), channel.getNumber(),
