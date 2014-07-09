@@ -742,6 +742,19 @@
 		</Product>
 	</Manufacturer>	
 	<Manufacturer>
+		<Id>0330</Id>
+		<Name>Ecolink</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>DWZWAVE2</Model>
+			<Label lang="en">Z-Wave Door/Window Sensor</Label>
+			<ConfigFile>eco/dwzwave2.xml</ConfigFile>
+		</Product>
+	</Manufacturer>	
+	<Manufacturer>
 		<Id>001E</Id>
 		<Name>Homeseer</Name>
 		<Product>
