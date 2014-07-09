@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openhab</groupId>
         <artifactId>openhab</artifactId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.5.0</version>
     </parent>
 
     <artifactId>distribution</artifactId>
@@ -691,6 +691,12 @@
         </dependency>
         <dependency>
             <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.openpaths</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.urtsi</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
@@ -965,9 +971,15 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
- 	<dependency>
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.freeswitch</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.neohub</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
