@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Gerhard Riegler
  * @since 1.5.1
  */
-public class HmBatteryInfoProvider {
+public class HmBatteryTypeProvider {
 	private static Map<String, HmBattery> batteries = new HashMap<String, HmBattery>();
 
 	static {
@@ -85,7 +85,7 @@ public class HmBatteryInfoProvider {
 	/**
 	 * Returns the battery info of the specified device type.
 	 */
-	public static HmBattery getBatteryInfo(String deviceType) {
+	public static HmBattery getBatteryType(String deviceType) {
 		return batteries.get(deviceType.toUpperCase());
 	}
 }

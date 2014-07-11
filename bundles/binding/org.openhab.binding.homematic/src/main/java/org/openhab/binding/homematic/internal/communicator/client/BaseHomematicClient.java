@@ -16,7 +16,7 @@ import org.openhab.binding.homematic.internal.communicator.client.interfaces.Hom
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.model.HmBattery;
-import org.openhab.binding.homematic.internal.model.HmBatteryInfoProvider;
+import org.openhab.binding.homematic.internal.model.HmBatteryTypeProvider;
 import org.openhab.binding.homematic.internal.model.HmChannel;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmDevice;
@@ -98,14 +98,14 @@ public abstract class BaseHomematicClient implements HomematicClient {
 	 * batteries.
 	 */
 	protected void addBatteryInfo(HmDevice device) throws HomematicClientException {
-		HmBattery battery = HmBatteryInfoProvider.getBatteryInfo(device.getType());
+		HmBattery battery = HmBatteryTypeProvider.getBatteryType(device.getType());
 		if (battery != null) {
 			for (HmChannel channel : device.getChannels()) {
 				if ("0".equals(channel.getNumber())) {
 					try {
-						logger.debug("Adding battery info to device {}: {}", device.getType(), battery.getInfo());
+						logger.debug("Adding battery type to device {}: {}", device.getType(), battery.getInfo());
 						HmDatapoint dp = new HmDatapoint();
-						writeField(dp, "name", "BATTERY_INFO", String.class);
+						writeField(dp, "name", "BATTERY_TYPE", String.class);
 						writeField(dp, "writeable", Boolean.FALSE, Boolean.class);
 						writeField(dp, "valueType", 20, Integer.class);
 						dp.setValue(battery.getInfo());
