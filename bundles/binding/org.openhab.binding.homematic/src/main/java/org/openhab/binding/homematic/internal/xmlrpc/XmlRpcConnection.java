@@ -92,6 +92,11 @@ public abstract class XmlRpcConnection {
 		return executeRPC("getAllValues", null);
 	}
 
+	public Object getAllSystemVariables() {
+		log.debug("called getAllSystemVariables");
+		return executeRPC("getAllSystemVariables", null);
+	}
+
 	public Object getVersion() {
 		log.debug("called getVersion");
 		return executeRPC("getVersion", null);
@@ -119,6 +124,12 @@ public abstract class XmlRpcConnection {
 		executeRPC("setValue", params);
 	}
 
+	public void setSystemVariable(String name, Object value) {
+		log.debug("called setSystemVariable: " + name + ", " + value);
+		Object[] params = { name, value };
+		executeRPC("setSystemVariable", params);
+	}
+
 	protected Object executeRPC(String methodName, Object[] params) {
 		try {
 			TimingOutCallback callback = new TimingOutCallback(5 * 1000);
@@ -138,4 +149,5 @@ public abstract class XmlRpcConnection {
 			throw new HomematicBindingException("Throwable catched");
 		}
 	}
+
 }

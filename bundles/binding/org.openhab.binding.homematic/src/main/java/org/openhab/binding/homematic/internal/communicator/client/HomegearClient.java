@@ -12,11 +12,13 @@ import java.util.Map;
 
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
+import org.openhab.binding.homematic.internal.config.binding.VariableConfig;
 import org.openhab.binding.homematic.internal.model.HmChannel;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmDevice;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
+import org.openhab.binding.homematic.internal.model.HmVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +32,6 @@ import org.slf4j.LoggerFactory;
 public class HomegearClient extends BaseHomematicClient {
 	private static final Logger logger = LoggerFactory.getLogger(HomegearClient.class);
 
-	private RpcClient rpcClient;
 	private boolean started;
 
 	public HomegearClient(RpcClient rpcClient) {
@@ -85,7 +86,7 @@ public class HomegearClient extends BaseHomematicClient {
 	 */
 	@Override
 	public void iterateAllDatapoints(HmValueItemIteratorCallback callback) throws HomematicClientException {
-		Object[] result = rpcClient.getAllValues(HmInterface.HOMEGEAR);
+		Object[] result = rpcClient.getAllValues(getDefaultInterface());
 
 		try {
 			for (int i = 0; i < result.length; i++) {
@@ -122,7 +123,12 @@ public class HomegearClient extends BaseHomematicClient {
 	 */
 	@Override
 	public void iterateAllVariables(HmValueItemIteratorCallback callback) throws HomematicClientException {
-		logger.warn("iterateAllVariables not supported on interface " + getDefaultInterface().toString());
+		Map<String, ?> result = rpcClient.getAllSystemVariables(getDefaultInterface());
+		for (String variableName : result.keySet()) {
+			HmVariable variable = createVariable(variableName, result.get(variableName));
+			VariableConfig bindingConfig = new VariableConfig(variable.getName());
+			callback.iterate(bindingConfig, variable);
+		}
 	}
 
 	/**
@@ -130,7 +136,7 @@ public class HomegearClient extends BaseHomematicClient {
 	 */
 	@Override
 	public void setVariable(HmValueItem hmValueItem, Object value) throws HomematicClientException {
-		logger.warn("setVariable not supported on interface " + getDefaultInterface().toString());
+		rpcClient.setSystemVariable(getDefaultInterface(), hmValueItem.getName(), value);
 	}
 
 	/**
@@ -146,7 +152,7 @@ public class HomegearClient extends BaseHomematicClient {
 	 */
 	@Override
 	public boolean supportsVariables() {
-		return false;
+		return true;
 	}
 
 	/**
@@ -192,7 +198,7 @@ public class HomegearClient extends BaseHomematicClient {
 	private HmDatapoint parseDatapoint(HmChannel channel, String name, Map<String, ?> dpData)
 			throws IllegalAccessException {
 		HmDatapoint dp = new HmDatapoint();
-		writeField(dp, "name", name, String.class);
+		dp.setName(name);
 		writeField(dp, "channel", channel, HmChannel.class);
 		writeField(dp, "writeable", dpData.get("WRITEABLE"), Boolean.class);
 
@@ -212,16 +218,33 @@ public class HomegearClient extends BaseHomematicClient {
 			writeField(dp, "maxValue", dpData.get("MAX"), value.getClass());
 		}
 
-		if (value instanceof Boolean) {
-			writeField(dp, "valueType", 2, Integer.class);
-		} else if (value instanceof Number) {
-			writeField(dp, "valueType", 8, Integer.class);
-		} else {
-			writeField(dp, "valueType", 20, Integer.class);
-		}
-
+		setValueType(dp, value);
 		dp.setValue(value);
 		return dp;
 	}
 
+	/**
+	 * Creates a writeable HmVariable object.
+	 */
+	private HmVariable createVariable(String name, Object value) {
+		HmVariable var = new HmVariable();
+		var.setName(name);
+		var.setWriteable(true);
+		setValueType(var, value);
+		var.setValue(value);
+		return var;
+	}
+
+	/**
+	 * Sets the valueType of a valueItem.
+	 */
+	private void setValueType(HmValueItem valueItem, Object value) {
+		if (value instanceof Boolean) {
+			valueItem.setValueType(2);
+		} else if (value instanceof Number) {
+			valueItem.setValueType(8);
+		} else {
+			valueItem.setValueType(20);
+		}
+	}
 }

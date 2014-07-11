@@ -83,6 +83,18 @@ public class XmlRpcClient implements RpcClient {
 				+ (result == null ? "null" : result.getClass()));
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, ?> getAllSystemVariables(HmInterface hmInterface) throws HomematicClientException {
+		Object result = getConnection(hmInterface).getAllSystemVariables();
+		if (result instanceof Map) {
+			return (Map<String, ?>) result;
+		}
+
+		throw new HomematicClientException("getAllSystemVariables returns unknown result type: "
+				+ (result == null ? "null" : result.getClass()));
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -125,6 +137,18 @@ public class XmlRpcClient implements RpcClient {
 			throws HomematicClientException {
 		try {
 			getConnection(hmInterface).setValue(address, datapointName, value);
+		} catch (Exception ex) {
+			throw new HomematicClientException(ex.getMessage(), ex);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setSystemVariable(HmInterface hmInterface, String name, Object value) throws HomematicClientException {
+		try {
+			getConnection(hmInterface).setSystemVariable(name, value);
 		} catch (Exception ex) {
 			throw new HomematicClientException(ex.getMessage(), ex);
 		}

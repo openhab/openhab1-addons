@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.homematic.internal.communicator.client.interfaces;
 
+import java.util.Map;
+
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
 import org.openhab.binding.homematic.internal.communicator.client.ServerId;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
@@ -57,6 +59,16 @@ public interface RpcClient {
 	 * Returns all metadata and values from the Homematic server.
 	 */
 	public Object[] getAllValues(HmInterface hmInterface) throws HomematicClientException;
+
+	/**
+	 * Returns all metadata and values from the Homematic server.
+	 */
+	public Map<String, ?> getAllSystemVariables(HmInterface hmInterface) throws HomematicClientException;
+
+	/**
+	 * Set the value of a system variable.
+	 */
+	public void setSystemVariable(HmInterface hmInterface, String name, Object value) throws HomematicClientException;
 
 	/**
 	 * Executes a program/script on the Homematic server.

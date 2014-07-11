@@ -84,6 +84,16 @@ public class BinRpcClient implements RpcClient {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, ?> getAllSystemVariables(HmInterface hmInterface) throws HomematicClientException {
+		BinRpcRequest request = new BinRpcRequest("getAllSystemVariables");
+		return (Map<String, ?>) sendMessage(hmInterface, request)[0];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ServerId getServerId(HmInterface hmInterface) throws HomematicClientException {
 		BinRpcRequest request = new BinRpcRequest("getVersion");
@@ -113,6 +123,17 @@ public class BinRpcClient implements RpcClient {
 		BinRpcRequest request = new BinRpcRequest("setValue");
 		request.addArg(address);
 		request.addArg(datapointName);
+		request.addArg(value);
+		sendMessage(hmInterface, request);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setSystemVariable(HmInterface hmInterface, String name, Object value) throws HomematicClientException {
+		BinRpcRequest request = new BinRpcRequest("setSystemVariable");
+		request.addArg(name);
 		request.addArg(value);
 		sendMessage(hmInterface, request);
 	}

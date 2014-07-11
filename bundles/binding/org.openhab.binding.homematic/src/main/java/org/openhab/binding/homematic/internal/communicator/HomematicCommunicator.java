@@ -26,6 +26,7 @@ import org.openhab.binding.homematic.internal.config.BindingAction;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.ProgramConfig;
+import org.openhab.binding.homematic.internal.config.binding.VariableConfig;
 import org.openhab.binding.homematic.internal.converter.state.Converter;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmInterface;
@@ -152,8 +153,14 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 	 */
 	@Override
 	public void event(String interfaceId, String addressWithChannel, String parameter, Object value) {
-		final DatapointConfig bindingConfig = new DatapointConfig(HmInterface.parse(interfaceId), addressWithChannel,
-				parameter);
+		boolean isVariable = "".equals(addressWithChannel);
+
+		HomematicBindingConfig bindingConfig = null;
+		if (isVariable) {
+			bindingConfig = new VariableConfig(parameter);
+		} else {
+			bindingConfig = new DatapointConfig(HmInterface.parse(interfaceId), addressWithChannel, parameter);
+		}
 
 		String className = value == null ? "Unknown" : value.getClass().getSimpleName();
 		logger.debug("Received new ({}) value '{}' for {}", className, value, bindingConfig);
@@ -161,7 +168,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 
 		final Event event = new Event(bindingConfig, value);
 
-		if (context.getStateHolder().isDatapointReloadInProgress()) {
+		if (context.getStateHolder().isDatapointReloadInProgress() && !isVariable) {
 			context.getStateHolder().addToRefreshCache(event.getBindingConfig(), event.getNewValue());
 		}
 
