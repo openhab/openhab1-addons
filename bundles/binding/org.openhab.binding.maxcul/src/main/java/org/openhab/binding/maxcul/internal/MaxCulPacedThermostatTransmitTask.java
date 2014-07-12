@@ -24,11 +24,11 @@ public class MaxCulPacedThermostatTransmitTask extends TimerTask {
 	public void run() {
 		if (command instanceof OnOffType) {
 			if (((OnOffType)command) == OnOffType.ON)
-				messageHandler.sendSetTemperature(bindingConfig.devAddr, SetTemperatureMsg.TEMPERATURE_ON);
+				messageHandler.sendSetTemperature(bindingConfig.getDevAddr(), SetTemperatureMsg.TEMPERATURE_ON);
 			else if (((OnOffType)command) == OnOffType.OFF)
-				messageHandler.sendSetTemperature(bindingConfig.devAddr, SetTemperatureMsg.TEMPERATURE_OFF);
+				messageHandler.sendSetTemperature(bindingConfig.getDevAddr(), SetTemperatureMsg.TEMPERATURE_OFF);
 		} else if (command instanceof DecimalType) {
-			messageHandler.sendSetTemperature(bindingConfig.devAddr, ((DecimalType)command).doubleValue());
+			messageHandler.sendSetTemperature(bindingConfig.getDevAddr(), ((DecimalType)command).doubleValue());
 		}
 	}
 

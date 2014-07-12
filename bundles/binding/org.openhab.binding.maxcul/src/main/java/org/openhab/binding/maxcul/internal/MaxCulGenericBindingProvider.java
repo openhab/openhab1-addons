@@ -61,7 +61,7 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		MaxCulBindingConfig config = new MaxCulBindingConfig(bindingConfig);
 
-		switch (config.deviceType)
+		switch (config.getDeviceType())
 		{
 		case PAIR_MODE:
 		case LISTEN_MODE:
@@ -70,25 +70,27 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 			break;
 		case PUSH_BUTTON:
 		case SHUTTER_CONTACT:
-			if (config.feature == MaxCulFeature.BATTERY && !(item instanceof SwitchItem))
+			if (config.getFeature() == MaxCulFeature.BATTERY && !(item instanceof SwitchItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Switch");
-			if (config.feature == MaxCulFeature.SWITCH && !(item instanceof SwitchItem))
+			if (config.getFeature() == MaxCulFeature.SWITCH && !(item instanceof SwitchItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'switch' can only be a Switch");
 			break;
 		case RADIATOR_THERMOSTAT:
 		case RADIATOR_THERMOSTAT_PLUS:
 		case WALL_THERMOSTAT:
-			if (config.feature == MaxCulFeature.TEMPERATURE && !(item instanceof NumberItem))
+			if (config.getFeature() == MaxCulFeature.TEMPERATURE && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'temperature' can only be a Number");
-			else if (config.feature == MaxCulFeature.VALVE_POS && !(item instanceof NumberItem))
+			else if (config.getFeature() == MaxCulFeature.VALVE_POS && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'valvepos' can only be a Number");
-			else if (config.feature == MaxCulFeature.THERMOSTAT && !((item instanceof NumberItem) || (item instanceof SwitchItem)))
+			else if (config.getFeature() == MaxCulFeature.THERMOSTAT && !((item instanceof NumberItem) || (item instanceof SwitchItem)))
 				throw new BindingConfigParseException("Invalid item type. Feature 'thermostat' can only be a Number or a Switch");
-			else if (config.feature == MaxCulFeature.BATTERY && !(item instanceof SwitchItem))
+			else if (config.getFeature() == MaxCulFeature.BATTERY && !(item instanceof SwitchItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Switch");
-			else if (config.feature == MaxCulFeature.MODE && !(item instanceof NumberItem))
+			else if (config.getFeature() == MaxCulFeature.MODE && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'mode' can only be a Number");
 			break;
+		default:
+			throw new BindingConfigParseException("Invalid config device type. Wasn't expecting "+config.getDeviceType());
 		}
 	}
 
@@ -103,6 +105,8 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		MaxCulBindingConfig config = new MaxCulBindingConfig(bindingConfig);
 
 		addBindingConfig(item, config);
+
+		// TODO detect updated binding configuration for temperatures and send CONFIG_TEMPERATURES message?
 	}
 
 	@Override
@@ -137,7 +141,7 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		for (BindingConfig c : super.bindingConfigs.values() )
 		{
 			config = (MaxCulBindingConfig)c;
-			if (config.serialNumber == serial)
+			if (config.getSerialNumber() == serial)
 				return config;
 		}
 		return null;
@@ -149,10 +153,10 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		for (BindingConfig c : super.bindingConfigs.values() )
 		{
 			MaxCulBindingConfig config = (MaxCulBindingConfig)c;
-			if (config.serialNumber != null) /* could be PairMode/ListenMode device which has no serial */
+			if (config.getSerialNumber() != null) /* could be PairMode/ListenMode device which has no serial */
 			{
-				logger.debug("Comparing '"+config.serialNumber+"' with '"+serial+"'");
-				if (config.serialNumber.compareToIgnoreCase(serial) == 0)
+				logger.debug("Comparing '"+config.getSerialNumber()+"' with '"+serial+"'");
+				if (config.getSerialNumber().compareToIgnoreCase(serial) == 0)
 					configs.add(config);
 			}
 		}
@@ -168,13 +172,25 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		for (BindingConfig c : super.bindingConfigs.values() )
 		{
 			MaxCulBindingConfig config = (MaxCulBindingConfig)c;
-			if (config.serialNumber != null) /* could be PairMode/ListenMode device which has no serial */
+			if (config.getSerialNumber() != null) /* could be PairMode/ListenMode device which has no serial */
 			{
-				logger.debug("Comparing '"+config.devAddr+"' with '"+addr+"'");
-				if (config.devAddr.equalsIgnoreCase(addr))
+				logger.debug("Comparing '"+config.getDevAddr()+"' with '"+addr+"'");
+				if (config.getDevAddr().equalsIgnoreCase(addr))
 					configs.add(config);
 			}
 		}
 		return configs;
+	}
+
+	@Override
+	public void buildAssociationMap() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public List<MaxCulBindingConfig> getAssociations(String deviceSerial) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -1,9 +1,12 @@
 package org.openhab.binding.maxcul.internal.message.sequencers;
 
+import org.openhab.binding.maxcul.internal.MaxCulBindingConfig;
+import org.openhab.binding.maxcul.internal.MaxCulDevice;
 import org.openhab.binding.maxcul.internal.MaxCulMsgHandler;
 import org.openhab.binding.maxcul.internal.messages.AckMsg;
 import org.openhab.binding.maxcul.internal.messages.BaseMsg;
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
+import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,12 +43,15 @@ public class PairingInitialisationSequence implements MessageSequencer {
 	private String tzStr;
 	private MaxCulMsgHandler messageHandler;
 	private int pktLostCount = 0;
+	private MaxCulDevice deviceType = MaxCulDevice.UNKNOWN;
+	private MaxCulBindingConfig config;
 
-	public PairingInitialisationSequence(byte group_id, String tzStr, MaxCulMsgHandler messageHandler)
+	public PairingInitialisationSequence(byte group_id, String tzStr, MaxCulMsgHandler messageHandler, MaxCulBindingConfig cfg)
 	{
 		this.group_id = group_id;
 		this.tzStr = tzStr;
 		this.messageHandler = messageHandler;
+		this.config = cfg;
 	}
 
 	@Override
@@ -58,6 +64,9 @@ public class PairingInitialisationSequence implements MessageSequencer {
 		switch (state)
 		{
 		case INITIAL_PING:
+			/* get device type */
+			PairPingMsg ppMsg = new PairPingMsg(msg.rawMsg);
+			this.deviceType = MaxCulDevice.getDeviceTypeFromInt(ppMsg.type);
 			/* Send PONG - assumes PING is checked*/
 			logger.debug("Sending PONG");
 			this.devAddr = msg.srcAddrStr;
@@ -70,10 +79,20 @@ public class PairingInitialisationSequence implements MessageSequencer {
 				AckMsg ack = new AckMsg(msg.rawMsg);
 				if (!ack.getIsNack())
 				{
-					/* send a wake up packet */
-					logger.debug("Sending WAKEUP");
-					messageHandler.sendWakeup(devAddr, this);
-					state = PairingInitialisationState.WAKEUP_ACKED;
+					if (this.deviceType == MaxCulDevice.PUSH_BUTTON)
+					{
+						/* for a push button send group id */
+						logger.debug("Sending GROUP_ID");
+						messageHandler.sendSetGroupId(devAddr, group_id, this);
+						state = PairingInitialisationState.GROUP_ID_ACKED;
+					}
+					else
+					{
+						/* send a wake up packet */
+						logger.debug("Sending WAKEUP");
+						messageHandler.sendWakeup(devAddr, this);
+						state = PairingInitialisationState.WAKEUP_ACKED;
+					}
 				} else {
 					logger.error("PONG was nacked. Ending sequence");
 					state = PairingInitialisationState.FINISHED;
@@ -116,9 +135,15 @@ public class PairingInitialisationSequence implements MessageSequencer {
 			if (msg.msgType == MaxCulMsgType.ACK)
 			{
 				AckMsg ack = new AckMsg(msg.rawMsg);
-				if (!ack.getIsNack())
+				if (!ack.getIsNack() &&
+						(this.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT ||
+						 this.deviceType == MaxCulDevice.WALL_THERMOSTAT ||
+						 this.deviceType == MaxCulDevice.RADIATOR_THERMOSTAT_PLUS))
 				{
-					// TODO sent temps for comfort/eco/night etc
+					// send temps for comfort/eco etc
+					messageHandler.sendConfigTemperatures(devAddr, this, config.getComfortTemp(), config.getEcoTemp(),
+							config.getMaxTemp(), config.getMinTemp(),
+							config.getMeasurementOffset(), config.getWindowOpenTemperature(), config.getWindowOpenDuration());
 					state = PairingInitialisationState.FINISHED;
 				} else {
 					logger.error("SET_GROUP_ID was nacked. Ending sequence");

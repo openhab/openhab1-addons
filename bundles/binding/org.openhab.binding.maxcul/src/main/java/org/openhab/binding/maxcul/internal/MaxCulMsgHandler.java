@@ -9,6 +9,7 @@ import java.util.TimerTask;
 
 import org.openhab.binding.maxcul.internal.messages.AckMsg;
 import org.openhab.binding.maxcul.internal.messages.BaseMsg;
+import org.openhab.binding.maxcul.internal.messages.ConfigTemperaturesMsg;
 import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcessor;
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
@@ -470,6 +471,29 @@ public class MaxCulMsgHandler implements CULListener {
 	{
 		SetTemperatureMsg msg = new SetTemperatureMsg(getMessageCount(), (byte) 0x0, (byte) 0x0, this.srcAddr, devAddr, temp, ThermostatControlMode.MANUAL);
 		sendMessage(msg);
+	}
+
+	/**
+	 * Send temperature configuration message
+	 * @param devAddr Radio addr of device
+	 * @param msgSeq Message sequencer to associate with this message
+	 * @param comfortTemp comfort temperature value
+	 * @param ecoTemp Eco temperature value
+	 * @param maxTemp Maximum Temperature value
+	 * @param minTemp Minimum temperature value
+	 * @param offset Offset Temperature value
+	 * @param windowOpenTemp Window open temperature value
+	 * @param windowOpenTime Window open time value
+	 */
+	public void sendConfigTemperatures(String devAddr, MessageSequencer msgSeq,
+			double comfortTemp, double ecoTemp, double maxTemp, double minTemp,
+			double offset, double windowOpenTemp, double windowOpenTime)
+	{
+		ConfigTemperaturesMsg cfgTempMsg = new ConfigTemperaturesMsg(getMessageCount(), (byte)0, (byte)0, this.srcAddr, devAddr,
+				comfortTemp, ecoTemp, maxTemp, minTemp,
+				offset, windowOpenTemp, windowOpenTime);
+		cfgTempMsg.setMessageSequencer(msgSeq);
+		sendMessage(cfgTempMsg);
 	}
 
 	/**
