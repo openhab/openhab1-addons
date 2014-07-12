@@ -53,4 +53,14 @@ public interface MaxCulBindingProvider extends BindingProvider {
 	 * @return Item Name string
 	 */
 	String getItemNameForConfig(MaxCulBindingConfig bc);
+
+	/**
+	 * Build a map of associations for devices
+	 */
+	void buildAssociationMap();
+
+	/**
+	 * Get an association related to a specific device specified by serial number
+	 */
+	List<MaxCulBindingConfig> getAssociations(String deviceSerial);
 }
