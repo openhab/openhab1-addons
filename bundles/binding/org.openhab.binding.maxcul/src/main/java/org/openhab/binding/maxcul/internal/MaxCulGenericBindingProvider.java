@@ -191,13 +191,11 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		return configs;
 	}
 
-	@Override
 	public void buildAssociationMap() {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
 	public List<MaxCulBindingConfig> getAssociations(String deviceSerial) {
 		// TODO Auto-generated method stub
 		return null;
