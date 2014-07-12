@@ -81,10 +81,8 @@ public class PairingInitialisationSequence implements MessageSequencer {
 				{
 					if (this.deviceType == MaxCulDevice.PUSH_BUTTON)
 					{
-						/* for a push button send group id */
-						logger.debug("Sending GROUP_ID");
-						messageHandler.sendSetGroupId(devAddr, group_id, this);
-						state = PairingInitialisationState.GROUP_ID_ACKED;
+						/* for a push button we're done now */
+						state = PairingInitialisationState.FINISHED;
 					}
 					else
 					{
