@@ -23,6 +23,8 @@ import org.openhab.binding.maxcul.internal.messages.BaseMsg;
 import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcessor;
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
+import org.openhab.binding.maxcul.internal.messages.PushButtonMsg;
+import org.openhab.binding.maxcul.internal.messages.PushButtonMsg.PushButtonMode;
 import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
 import org.openhab.binding.maxcul.internal.messages.ThermostatStateMsg;
 import org.openhab.binding.maxcul.internal.messages.TimeInfoMsg;
@@ -384,6 +386,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 									itemName,
 									new DecimalType(wallThermCtrlMsg.getMeasuredTemperature()));
 						}
+						// TODO switch mode?
 					}
 				}
 
@@ -404,6 +407,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 									itemName,
 									new DecimalType(setTempMsg.getDesiredTemperature()));
 						}
+						//TODO switch mode?
 					}
 				}
 				/* respond to device */
@@ -440,6 +444,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 									itemName,
 									new DecimalType(thermStateMsg.getValvePos()));
 						}
+						// TODO switch mode?
 					}
 				}
 				/* respond to device */
@@ -484,6 +489,31 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 				TimeUpdateRequestSequence timeSeq = new TimeUpdateRequestSequence(this.tzStr, messageHandler);
 				messageHandler.startSequence(timeSeq, timeMsg);
 				break;
+			case PUSH_BUTTON_STATE:
+				PushButtonMsg pbMsg = new PushButtonMsg(data);
+				pbMsg.printMessage();
+				for (MaxCulBindingProvider provider : super.providers) {
+					Collection<MaxCulBindingConfig> bindingConfigs = provider
+							.getConfigsForRadioAddr(pbMsg.srcAddrStr);
+					for (MaxCulBindingConfig bc : bindingConfigs) {
+						String itemName = provider.getItemNameForConfig(bc);
+						if (bc.getFeature() == MaxCulFeature.SWITCH)
+						{
+							// ON maps to 'AUTO'
+							if (pbMsg.getMode() == PushButtonMode.AUTO)
+								eventPublisher.postUpdate(
+										itemName,
+										OnOffType.ON);
+							// OFF maps to 'ECO'
+							else if (pbMsg.getMode() == PushButtonMode.ECO)
+								eventPublisher.postUpdate(
+										itemName,
+										OnOffType.OFF);
+						}
+					}
+				}
+				if (isBroadcast == false)
+					this.messageHandler.sendAck(pbMsg);
 			default:
 				logger.debug("Unhandled message type " + msgType.toString());
 				break;
