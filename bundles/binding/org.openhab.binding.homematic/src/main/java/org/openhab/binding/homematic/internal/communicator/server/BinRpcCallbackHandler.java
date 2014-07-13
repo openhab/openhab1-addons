@@ -11,11 +11,8 @@ package org.openhab.binding.homematic.internal.communicator.server;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import org.openhab.binding.homematic.internal.binrpc.BinRpcRequest;
 import org.openhab.binding.homematic.internal.binrpc.BinRpcResponse;
 import org.openhab.binding.homematic.internal.communicator.HomematicCallbackReceiver;
 import org.slf4j.Logger;
@@ -31,8 +28,10 @@ public class BinRpcCallbackHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(BinRpcCallbackHandler.class);
 	private final static boolean TRACE_ENABLED = logger.isTraceEnabled();
 
-	private static final byte BIN_EMPTY_STRING[] = { 'B', 'i', 'n', 0, 0, 0, 0, 8, 0, 0, 0, 3, 0, 0, 0, 0 };
-	private static final byte BIN_EMPTY_ARRAY[] = { 'B', 'i', 'n', 0, 0, 0, 0, 8, 0, 0, 1, 0, 0, 0, 0, 0 };
+	private static final byte BIN_EMPTY_STRING[] = { 'B', 'i', 'n', 1, 0, 0, 0, 8, 0, 0, 0, 3, 0, 0, 0, 0 };
+	private static final byte BIN_EMPTY_ARRAY[] = { 'B', 'i', 'n', 1, 0, 0, 0, 8, 0, 0, 1, 0, 0, 0, 0, 0 };
+	private static final byte BIN_EMPTY_EVENT_LIST[] = { 'B', 'i', 'n', 1, 0, 0, 0, 21, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0,
+			0, 3, 0, 0, 0, 5, 'e', 'v', 'e', 'n', 't' };
 
 	private Socket socket;
 	private HomematicCallbackReceiver callbackReceiver;
@@ -84,7 +83,7 @@ public class BinRpcCallbackHandler implements Runnable {
 			callbackReceiver.newDevices(null, null);
 			return BIN_EMPTY_ARRAY;
 		} else if ("system.listMethods".equals(methodName)) {
-			return createEmptyMessage();
+			return BIN_EMPTY_EVENT_LIST;
 		} else if ("system.multicall".equals(methodName)) {
 			for (Object o : (Object[]) responseData[0]) {
 				Map<?, ?> call = (Map<?, ?>) o;
@@ -92,22 +91,11 @@ public class BinRpcCallbackHandler implements Runnable {
 				Object[] data = (Object[]) call.get("params");
 				handleMethodCall(method, data);
 			}
-			return createEmptyMessage();
+			return BIN_EMPTY_EVENT_LIST;
 		} else {
 			logger.warn("Unknown method called by Homematic server: " + methodName);
-			return createEmptyMessage();
+			return BIN_EMPTY_EVENT_LIST;
 		}
-	}
-
-	/**
-	 * Creates an empty message for sending back to the Homematic server.
-	 */
-	private byte[] createEmptyMessage() {
-		BinRpcRequest request = new BinRpcRequest(null);
-		List<Object> result = new ArrayList<Object>();
-		result.add("event");
-		request.addArg(result);
-		return request.createMessage();
 	}
 
 	/**
