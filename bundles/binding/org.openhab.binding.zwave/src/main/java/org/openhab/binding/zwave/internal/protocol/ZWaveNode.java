@@ -63,11 +63,11 @@ public class ZWaveNode {
 	private String location;
 	
 	@XStreamConverter(HexToIntegerConverter.class)
-	private int manufacturer;
+	private int manufacturer = -1;
 	@XStreamConverter(HexToIntegerConverter.class)
-	private int deviceId;
+	private int deviceId = -1;
 	@XStreamConverter(HexToIntegerConverter.class)
-	private int deviceType;
+	private int deviceType = -1;
 	
 	private boolean listening;			 // i.e. sleeping
 	private boolean frequentlyListening; 

@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0000</Id>
+		<Name>Sigma Designs</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>UZB</Model>
+			<Label lang="en">ACC-UZB</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0150</Id>
-		<Name>Cooper Wiring Devices</Name>
+		<Name>Cooper Wiring Devices (!!0150!!)</Name>
 		<Product>
 			<Reference>
 				<Type>00F9</Type>
@@ -10,6 +22,18 @@
 			</Reference>
 			<Model>RF9540-N</Model>
 			<Label lang="en">Single-Pole Multi-Location Master Dimmer Light Switch</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0001A</Id>
+		<Name>Cooper Wiring Devices</Name>
+		<Product>
+			<Reference>
+				<Type>14de</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>RF9500</Model>
+			<Label lang="en">Battery Switch</Label>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
