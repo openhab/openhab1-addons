@@ -185,18 +185,21 @@ public class MaxCulBindingConfig implements BindingConfig {
 	void parseConfigTemp(String configPart) throws BindingConfigParseException
 	{
 		String[] configKeyValueSplit = configPart.split("=");
-		String[] configParts = configKeyValueSplit[1].split("/");
-		if (configParts.length == 7)
+		if (configKeyValueSplit.length == 2)
 		{
-			// <comfortTemp>/<ecoTemp>/<maxTemp>/<minTemp>/<windowOpenTemperature>/<windowOpenDuration>/<measurementOffset>
-			this.comfortTemp = Double.parseDouble(configParts[0]);
-			this.ecoTemp = Double.parseDouble(configParts[1]);
-			this.maxTemp = Double.parseDouble(configParts[2]);
-			this.minTemp = Double.parseDouble(configParts[3]);
-			this.windowOpenTemperature = Double.parseDouble(configParts[4]);
-			this.windowOpenDuration = Double.parseDouble(configParts[5]);
-			this.measurementOffset = Double.parseDouble(configParts[6]);
-			temperatureConfigSet = true;
+			String[] configParts = configKeyValueSplit[1].split("/");
+			if (configParts.length == 7)
+			{
+				// <comfortTemp>/<ecoTemp>/<maxTemp>/<minTemp>/<windowOpenTemperature>/<windowOpenDuration>/<measurementOffset>
+				this.comfortTemp = Double.parseDouble(configParts[0]);
+				this.ecoTemp = Double.parseDouble(configParts[1]);
+				this.maxTemp = Double.parseDouble(configParts[2]);
+				this.minTemp = Double.parseDouble(configParts[3]);
+				this.windowOpenTemperature = Double.parseDouble(configParts[4]);
+				this.windowOpenDuration = Double.parseDouble(configParts[5]);
+				this.measurementOffset = Double.parseDouble(configParts[6]);
+				temperatureConfigSet = true;
+			} else throw new BindingConfigParseException("Temperature configuration should be of form 'configTemp=<comfortTemp>/<ecoTemp>/<maxTemp>/<minTemp>/<windowOpenTemperature>/<windowOpenDuration>/<measurementOffset>'");
 		} else throw new BindingConfigParseException("Temperature configuration should be of form 'configTemp=<comfortTemp>/<ecoTemp>/<maxTemp>/<minTemp>/<windowOpenTemperature>/<windowOpenDuration>/<measurementOffset>'");
 	}
 
