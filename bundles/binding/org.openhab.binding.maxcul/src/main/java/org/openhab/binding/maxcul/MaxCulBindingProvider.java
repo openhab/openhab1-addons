@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.maxcul;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.openhab.binding.maxcul.internal.MaxCulBindingConfig;
@@ -55,12 +56,7 @@ public interface MaxCulBindingProvider extends BindingProvider {
 	String getItemNameForConfig(MaxCulBindingConfig bc);
 
 	/**
-	 * Build a map of associations for devices
-	 */
-	void buildAssociationMap();
-
-	/**
 	 * Get an association related to a specific device specified by serial number
 	 */
-	List<MaxCulBindingConfig> getAssociations(String deviceSerial);
+	HashSet<MaxCulBindingConfig> getAssociations(String deviceSerial);
 }

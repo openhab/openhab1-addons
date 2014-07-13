@@ -5,7 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.openhab.binding.maxcul.internal.messages.ConfigTemperaturesMsg;
 import org.openhab.core.binding.BindingConfig;
@@ -34,6 +37,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 	private double windowOpenDuration = ConfigTemperaturesMsg.DEFAULT_WINDOW_OPEN_TIME;
 	private double measurementOffset = ConfigTemperaturesMsg.DEFAULT_OFFSET;
 	private boolean temperatureConfigSet = false;
+	private HashSet<String> associatedSerialNum = new HashSet<String>();
 
 	private final String CONFIG_PROPERTIES_BASE = "etc/maxcul";
 
@@ -79,11 +83,14 @@ public class MaxCulBindingConfig implements BindingConfig {
 				// parts 3 onwards
 				for (int idx=3; idx<configParts.length; idx++)
 				{
+					logger.debug("Part "+idx+"/"+(configParts.length-1)+" -> "+configParts[2]);
 					if (configParts[idx].startsWith("configTemp"))
 					{
 						this.parseConfigTemp(configParts[idx]);
+					} else if (configParts[idx].startsWith("associate"))
+					{
+						this.parseAssociation(configParts[idx]);
 					}
-
 				}
 			} else {
 				/* use defaults - handle all device types */
@@ -191,6 +198,22 @@ public class MaxCulBindingConfig implements BindingConfig {
 			this.measurementOffset = Double.parseDouble(configParts[6]);
 			temperatureConfigSet = true;
 		} else throw new BindingConfigParseException("Temperature configuration should be of form 'configTemp=<comfortTemp>/<ecoTemp>/<maxTemp>/<minTemp>/<windowOpenTemperature>/<windowOpenDuration>/<measurementOffset>'");
+	}
+
+	void parseAssociation(String configPart) throws BindingConfigParseException
+	{
+		String[] configKeyValueSplit = configPart.split("=");
+		if (configKeyValueSplit.length == 2)
+		{
+			String[] associations = configKeyValueSplit[1].split(",");
+			associatedSerialNum.clear();
+			for (int idx = 0; idx < associations.length; idx++)
+			{
+				associatedSerialNum.add(associations[idx]);
+			}
+		}
+		else
+			throw new BindingConfigParseException("Format of association configuration is incorrect! must be 'association=<serialNum>[,<serialNum>,[...]]'");
 	}
 
 	public double getComfortTemp() {
@@ -328,5 +351,9 @@ public class MaxCulBindingConfig implements BindingConfig {
 
 	public boolean isPaired() {
 		return paired;
+	}
+
+	public HashSet<String> getAssociatedSerialNum() {
+		return associatedSerialNum;
 	}
 }

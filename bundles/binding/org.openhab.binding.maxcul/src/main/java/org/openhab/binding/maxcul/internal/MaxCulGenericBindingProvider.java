@@ -10,11 +10,14 @@ package org.openhab.binding.maxcul.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.openhab.binding.maxcul.MaxCulBindingProvider;
+import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingConfig;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.SwitchItem;
@@ -61,7 +64,7 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 	private static final Logger logger =
 			LoggerFactory.getLogger(MaxCulGenericBindingProvider.class);
 
-	private HashMap<String,MaxCulBindingConfig> associationMap = new HashMap<String,MaxCulBindingConfig>();
+	private HashMap<String,HashSet<MaxCulBindingConfig>> associationMap = new HashMap<String,HashSet<MaxCulBindingConfig>>();
 
 	/**
 	 * @{inheritDoc}
@@ -110,12 +113,33 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
-		logger.debug("Processing item "+item.getName());
-		MaxCulBindingConfig config = new MaxCulBindingConfig(bindingConfig);
+		final String itemName = item.getName();
+
+		logger.debug("Processing item "+itemName);
+		final MaxCulBindingConfig config = new MaxCulBindingConfig(bindingConfig);
 
 		addBindingConfig(item, config);
+		buildAssociationMap(); // update association map
 
-		// TODO detect updated binding configuration for temperatures and send CONFIG_TEMPERATURES message?
+		addBindingChangeListener(new BindingChangeListener() {
+
+			@Override
+			public void bindingChanged(BindingProvider provider, String itemName) {
+				/* binding changed so update the association map */
+				buildAssociationMap();
+				// TODO check if config temperatures are set and flag that they should be sent the device because they might have changed?
+			}
+
+			@Override
+			public void allBindingsChanged(BindingProvider provider) {
+				if (!provider.providesBindingFor(itemName))
+				{
+					// TODO get serial number of itemName
+					// then check if we still interact with that device, if not then
+					// deassociate and send a reset to it
+				}
+			}
+		});
 	}
 
 	@Override
@@ -150,7 +174,7 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		for (BindingConfig c : super.bindingConfigs.values() )
 		{
 			config = (MaxCulBindingConfig)c;
-			if (config.getSerialNumber() == serial)
+			if (config.getSerialNumber().equalsIgnoreCase(serial))
 				return config;
 		}
 		return null;
@@ -191,13 +215,88 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		return configs;
 	}
 
-	public void buildAssociationMap() {
-		// TODO Auto-generated method stub
+	private void buildAssociationMap() {
+		/* loop over all bindings finding their associated devices and create entries for
+		 * each one. So end up with something like (psuedo binding code):
+		 * Step 1:
+		 *  dev A { assoc=B,C }
+		 * 	result:
+		 * 		A -> B,C
+		 * Step 2:
+		 * dev B { assoc=C }
+		 *  result:
+		 * 		A -> B,C
+		 * 		B -> C
+		 * Step 3:
+		 * dev B { assoc=D }
+		 *  result:
+		 * 		A -> B,C
+		 * 		B -> C,D
+		 */
+		if (super.bindingConfigs.values().isEmpty() == false)
+		{
+			logger.debug("Found "+super.bindingConfigs.values().size()+" binding configs to process in association map");
+			for (BindingConfig c : super.bindingConfigs.values())
+			{
+				MaxCulBindingConfig config = (MaxCulBindingConfig)c;
+				logger.debug("Processing "+config.getSerialNumber()+" with "+config.getAssociatedSerialNum().size()+" associations");
+				if (associationMap.containsKey(config.getSerialNumber()) && config.getAssociatedSerialNum().isEmpty() == false)
+				{
+					/* serial number already exists in the map so check
+					 * if we need to add any devices to the association
+					 */
+					HashSet<MaxCulBindingConfig> set = associationMap.get(config.getSerialNumber());
+					logger.debug("Found "+config.getSerialNumber()+" in map already with "+set.size()+" entrys");
+					for (String serial : config.getAssociatedSerialNum())
+					{
+						MaxCulBindingConfig bc = getConfigForSerialNumber(serial);
+						if (bc != null && set.contains(bc) == false)
+						{
+							set.add(bc);
+						}
+					}
+				}
+				else if (config.getAssociatedSerialNum().isEmpty() == false)
+				{
+					/* new serial number, add it and it's associations */
+					HashSet<MaxCulBindingConfig> set = new HashSet<MaxCulBindingConfig>();
+					for (String serial : config.getAssociatedSerialNum())
+					{
+						/* add first config for this serial number. This is enough to give us
+						 * device type and destination address which is all we need.
+						 */
+						MaxCulBindingConfig bc = getConfigForSerialNumber(serial);
+						if (bc != null)
+						{
+							logger.debug("Adding "+serial+" to set for "+config.getSerialNumber());
+							set.add(bc);
+						}
+					}
+					/* only add if it has entries */
+					if (!set.isEmpty())
+						associationMap.put(config.getSerialNumber(), set);
+				}
+			}
 
+			/* debug print of association map */
+			if (!associationMap.isEmpty())
+			{
+				for (String serialKey : associationMap.keySet())
+				{
+					if (serialKey != null)
+					{
+						logger.debug("Device "+serialKey+" associated with:");
+						for (MaxCulBindingConfig bc : associationMap.get(serialKey))
+						{
+							logger.debug("\t=> "+bc.getSerialNumber());
+						}
+					}
+				}
+			}
+		}
 	}
 
-	public List<MaxCulBindingConfig> getAssociations(String deviceSerial) {
-		// TODO Auto-generated method stub
-		return null;
+	public HashSet<MaxCulBindingConfig> getAssociations(String deviceSerial) {
+		return associationMap.get(deviceSerial);
 	}
 }
