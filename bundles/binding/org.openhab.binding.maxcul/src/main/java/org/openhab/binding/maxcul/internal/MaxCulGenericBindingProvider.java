@@ -250,9 +250,20 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 					for (String serial : config.getAssociatedSerialNum())
 					{
 						MaxCulBindingConfig bc = getConfigForSerialNumber(serial);
-						if (bc != null && set.contains(bc) == false)
+						if (bc != null)
 						{
-							set.add(bc);
+							boolean deviceInSet = false;
+							for (MaxCulBindingConfig bcInSet : set)
+							{
+								if (bcInSet.getSerialNumber().equalsIgnoreCase(bc.getSerialNumber()))
+									deviceInSet |= true;
+							}
+							if (!deviceInSet)
+							{
+								logger.debug("Adding "+serial+" to set for "+config.getSerialNumber());
+								set.add(bc);
+							}
+
 						}
 					}
 				}
@@ -268,8 +279,17 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 						MaxCulBindingConfig bc = getConfigForSerialNumber(serial);
 						if (bc != null)
 						{
-							logger.debug("Adding "+serial+" to set for "+config.getSerialNumber());
-							set.add(bc);
+							boolean deviceInSet = false;
+							for (MaxCulBindingConfig bcInSet : set)
+							{
+								if (bcInSet.getSerialNumber().equalsIgnoreCase(bc.getSerialNumber()))
+									deviceInSet |= true;
+							}
+							if (!deviceInSet)
+							{
+								logger.debug("Adding "+serial+" to set for "+config.getSerialNumber());
+								set.add(bc);
+							}
 						}
 					}
 					/* only add if it has entries */

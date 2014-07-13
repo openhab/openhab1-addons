@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.openhab.binding.maxcul.internal.messages.AckMsg;
+import org.openhab.binding.maxcul.internal.messages.AddLinkPartnerMsg;
 import org.openhab.binding.maxcul.internal.messages.BaseMsg;
 import org.openhab.binding.maxcul.internal.messages.ConfigTemperaturesMsg;
 import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcessor;
@@ -494,6 +495,20 @@ public class MaxCulMsgHandler implements CULListener {
 				offset, windowOpenTemp, windowOpenTime);
 		cfgTempMsg.setMessageSequencer(msgSeq);
 		sendMessage(cfgTempMsg);
+	}
+
+	/**
+	 * Link one device to another
+	 * @param devAddr Destination device address
+	 * @param msgSeq Associated message sequencer
+	 * @param partnerAddr Radio address of partner
+	 * @param devType Type of device
+	 */
+	public void sendAddLinkPartner(String devAddr, MessageSequencer msgSeq, String partnerAddr, MaxCulDevice devType)
+	{
+		AddLinkPartnerMsg addLinkMsg = new AddLinkPartnerMsg(getMessageCount(), (byte)0,(byte)0, this.srcAddr, devAddr, partnerAddr, devType);
+		addLinkMsg.setMessageSequencer(msgSeq);
+		sendMessage(addLinkMsg);
 	}
 
 	/**

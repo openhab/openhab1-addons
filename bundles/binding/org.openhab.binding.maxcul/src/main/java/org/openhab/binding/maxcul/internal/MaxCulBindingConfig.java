@@ -6,10 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Properties;
-import java.util.Set;
-
 import org.openhab.binding.maxcul.internal.messages.ConfigTemperaturesMsg;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -23,10 +20,10 @@ import org.slf4j.LoggerFactory;
  * @since 1.6.0
  */
 public class MaxCulBindingConfig implements BindingConfig {
-	private MaxCulDevice deviceType;
-	private MaxCulFeature feature;
-	private String serialNumber;
-	private String devAddr = null;
+	private MaxCulDevice deviceType = MaxCulDevice.UNKNOWN;
+	private MaxCulFeature feature = MaxCulFeature.UNKNOWN;
+	private String serialNumber = "";
+	private String devAddr = "";
 	private boolean paired = false;
 
 	private double comfortTemp = ConfigTemperaturesMsg.DEFAULT_COMFORT_TEMP;
@@ -76,20 +73,21 @@ public class MaxCulBindingConfig implements BindingConfig {
 			logger.debug("Part 1/"+(configParts.length-1)+" -> "+configParts[1]);
 			this.serialNumber = configParts[1];
 
-			/* handle feature if set */
+			/* handle optional config items */
 			if (configParts.length > 2) {
-				logger.debug("Part 2/"+(configParts.length-1)+" -> "+configParts[2]);
-				this.parseDeviceFeature(configParts[2]);
 				// parts 3 onwards
-				for (int idx=3; idx<configParts.length; idx++)
+				for (int idx=2; idx<configParts.length; idx++)
 				{
-					logger.debug("Part "+idx+"/"+(configParts.length-1)+" -> "+configParts[2]);
+					logger.debug("Part "+idx+"/"+(configParts.length-1)+" -> "+configParts[idx]);
 					if (configParts[idx].startsWith("configTemp"))
 					{
 						this.parseConfigTemp(configParts[idx]);
 					} else if (configParts[idx].startsWith("associate"))
 					{
 						this.parseAssociation(configParts[idx]);
+					} else if (configParts[idx].startsWith("feature"))
+					{
+						this.parseDeviceFeature(configParts[idx]);
 					}
 				}
 			} else {
@@ -142,43 +140,48 @@ public class MaxCulBindingConfig implements BindingConfig {
 		}
 	}
 
-	private void parseDeviceFeature(String configPart) throws BindingConfigParseException
+	private void parseDeviceFeature(String configParts) throws BindingConfigParseException
 	{
-		if (configPart.compareTo("thermostat") == 0) {
-			if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
-					&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS
-					&& this.deviceType != MaxCulDevice.WALL_THERMOSTAT)
-				throw new BindingConfigParseException(
-						"Invalid device feature. Can only use 'thermostat' on radiator or wall thermostats. This is a "+this.deviceType);
-			this.feature = MaxCulFeature.THERMOSTAT;
-		} else if (configPart.compareTo("temperature") == 0) {
-			if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
-					&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS
-					&& this.deviceType != MaxCulDevice.WALL_THERMOSTAT)
-				throw new BindingConfigParseException(
-						"Invalid device feature. Can only use 'temperature' on radiator or wall thermostats. This is a "+this.deviceType);
-			this.feature = MaxCulFeature.TEMPERATURE;
-		} else if (configPart.compareTo("battery") == 0) {
-			this.feature = MaxCulFeature.BATTERY;
-		} else if (configPart.compareTo("mode") == 0) {
-			if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
-					&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS
-					&& this.deviceType != MaxCulDevice.WALL_THERMOSTAT)
-				throw new BindingConfigParseException(
-						"Invalid device feature. Can only use 'temperature' on radiator or wall thermostats. This is a "+this.deviceType);
-			this.feature = MaxCulFeature.MODE;
-		} else if (configPart.compareTo("switch") == 0) {
-			if (this.deviceType != MaxCulDevice.PUSH_BUTTON
-					&& this.deviceType != MaxCulDevice.SHUTTER_CONTACT)
-				throw new BindingConfigParseException(
-						"Invalid device feature. Can only use 'switch' on PushButton or ShutterContact. This is a "+this.deviceType);
-			this.feature = MaxCulFeature.TEMPERATURE;
-		} else if (configPart.compareTo("valvepos") == 0) {
-			if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
-					&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS)
-							throw new BindingConfigParseException(
-									"Invalid device feature. Can only use 'switch' on RadiatorThermostat or RadiatorThermostatPlus. This is a "+this.deviceType);
-			this.feature = MaxCulFeature.VALVE_POS;
+		String[] configPartArray = configParts.split("=");
+		if (configPartArray.length == 2)
+		{
+			String configPart = configPartArray[1];
+			if (configPart.compareTo("thermostat") == 0) {
+				if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
+						&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS
+						&& this.deviceType != MaxCulDevice.WALL_THERMOSTAT)
+					throw new BindingConfigParseException(
+							"Invalid device feature. Can only use 'thermostat' on radiator or wall thermostats. This is a "+this.deviceType);
+				this.feature = MaxCulFeature.THERMOSTAT;
+			} else if (configPart.compareTo("temperature") == 0) {
+				if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
+						&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS
+						&& this.deviceType != MaxCulDevice.WALL_THERMOSTAT)
+					throw new BindingConfigParseException(
+							"Invalid device feature. Can only use 'temperature' on radiator or wall thermostats. This is a "+this.deviceType);
+				this.feature = MaxCulFeature.TEMPERATURE;
+			} else if (configPart.compareTo("battery") == 0) {
+				this.feature = MaxCulFeature.BATTERY;
+			} else if (configPart.compareTo("mode") == 0) {
+				if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
+						&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS
+						&& this.deviceType != MaxCulDevice.WALL_THERMOSTAT)
+					throw new BindingConfigParseException(
+							"Invalid device feature. Can only use 'temperature' on radiator or wall thermostats. This is a "+this.deviceType);
+				this.feature = MaxCulFeature.MODE;
+			} else if (configPart.compareTo("switch") == 0) {
+				if (this.deviceType != MaxCulDevice.PUSH_BUTTON
+						&& this.deviceType != MaxCulDevice.SHUTTER_CONTACT)
+					throw new BindingConfigParseException(
+							"Invalid device feature. Can only use 'switch' on PushButton or ShutterContact. This is a "+this.deviceType);
+				this.feature = MaxCulFeature.TEMPERATURE;
+			} else if (configPart.compareTo("valvepos") == 0) {
+				if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
+						&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS)
+								throw new BindingConfigParseException(
+										"Invalid device feature. Can only use 'switch' on RadiatorThermostat or RadiatorThermostatPlus. This is a "+this.deviceType);
+				this.feature = MaxCulFeature.VALVE_POS;
+			}
 		}
 	}
 

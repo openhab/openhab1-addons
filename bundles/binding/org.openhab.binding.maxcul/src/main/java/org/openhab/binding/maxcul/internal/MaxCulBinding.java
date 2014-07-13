@@ -11,6 +11,7 @@ package org.openhab.binding.maxcul.internal;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -358,9 +359,17 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 				if (configWithTempsConfig == null)
 					configWithTempsConfig = (MaxCulBindingConfig) bindingConfigs.toArray()[0];
 
+				/* get device associations */
+				HashSet<MaxCulBindingConfig> associations = null;
+				for (MaxCulBindingProvider provider : super.providers) {
+					associations = provider.getAssociations(configWithTempsConfig.getSerialNumber());
+					if (associations.isEmpty() == false) break;
+				}
+
 				/* start the initialisation sequence */
 				PairingInitialisationSequence ps = new PairingInitialisationSequence(
-						this.DEFAULT_GROUP_ID, this.tzStr, messageHandler, configWithTempsConfig );
+						this.DEFAULT_GROUP_ID, this.tzStr, messageHandler,
+						configWithTempsConfig, associations );
 				messageHandler.startSequence(ps, pkt);
 			}
 			else logger.error("Pairing failed: Unable to find binding config for device "+pkt.serial);

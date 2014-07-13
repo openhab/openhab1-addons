@@ -11,5 +11,6 @@ public enum MaxCulFeature {
 	BATTERY,
 	MODE,
 	SWITCH,
-	VALVE_POS;
+	VALVE_POS,
+	UNKNOWN;
 }
