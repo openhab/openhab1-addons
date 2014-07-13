@@ -24,7 +24,7 @@ public class SetGroupIdMsg extends BaseMsg {
 		this.groupIdToSet = groupIdToSet;
 		byte[] payload = new byte[SET_GROUP_ID_PAYLOAD_LEN];
 
-		payload[0] = groupIdToSet; // no idea what this means, just always 0x3f?
+		payload[0] = groupIdToSet;
 
 		super.appendPayload(payload);
 	}
