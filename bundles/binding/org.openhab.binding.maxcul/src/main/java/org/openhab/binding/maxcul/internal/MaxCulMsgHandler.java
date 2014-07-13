@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.openhab.binding.maxcul.internal.messages.AckMsg;
 import org.openhab.binding.maxcul.internal.messages.AddLinkPartnerMsg;
@@ -57,13 +58,13 @@ public class MaxCulMsgHandler implements CULListener {
 	private String srcAddr;
 	private HashMap<Byte, MessageSequencer> sequenceRegister;
 	private LinkedList<SenderQueueItem> sendQueue;
-	private HashMap<Byte, SenderQueueItem> pendingAckQueue;
+	private ConcurrentHashMap<Byte, SenderQueueItem> pendingAckQueue;
 	private MaxCulBindingMessageProcessor mcbmp = null;
 	private Map<SenderQueueItem, Timer> timers = new HashMap<SenderQueueItem,Timer>();
 
 	private boolean listenMode = false;
 
-	private final int MESSAGE_EXPIRY_PERIOD = 30000;
+	private final int MESSAGE_EXPIRY_PERIOD = 10000;
 
 	public MaxCulMsgHandler(String srcAddr, CULHandler cul)
 	{
@@ -72,7 +73,7 @@ public class MaxCulMsgHandler implements CULListener {
 		this.srcAddr = srcAddr;
 		this.sequenceRegister = new HashMap<Byte, MessageSequencer>();
 		this.sendQueue = new LinkedList<SenderQueueItem>();
-		this.pendingAckQueue = new HashMap<Byte, SenderQueueItem>();
+		this.pendingAckQueue = new ConcurrentHashMap<Byte, SenderQueueItem>();
 		this.lastTransmit = new Date(); /* init as now */
 		this.endOfQueueTransmit = this.lastTransmit;
 	}
@@ -192,7 +193,7 @@ public class MaxCulMsgHandler implements CULListener {
 				logger.debug("Message "+msg.msgCount+" is part of sequence. Adding to register.");
 				sequenceRegister.put(msg.msgCount, msg.getMessageSequencer());
 			}
-		} else logger.debug("Tried to send a message that wasn't ready!");
+		} else logger.error("Tried to send a message that wasn't ready!");
 	}
 
 	/**
