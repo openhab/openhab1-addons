@@ -109,6 +109,7 @@
     <module>org.openhab.binding.iec6205621meter</module>
     <module>org.openhab.binding.freebox</module>
     <module>org.openhab.binding.xbmc</module>
+    <module>org.openhab.binding.mios</module>
     <module>org.openhab.binding.daikin</module>
     <module>org.openhab.binding.jointspace</module>
     <module>org.openhab.binding.oceanic</module>
