@@ -1,0 +1,2 @@
+ContinuousOn=urn:upnp-org:serviceId:HVAC_FanOperatingMode1/SetMode(NewMode=ContinuousOn)
+Auto=urn:upnp-org:serviceId:HVAC_FanOperatingMode1/SetMode(NewMode=Auto)
