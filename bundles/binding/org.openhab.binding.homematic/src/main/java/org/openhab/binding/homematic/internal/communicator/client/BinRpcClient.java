@@ -18,7 +18,6 @@ import org.openhab.binding.homematic.internal.binrpc.BinRpcResponse;
 import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
-import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,20 +98,6 @@ public class BinRpcClient implements RpcClient {
 		BinRpcRequest request = new BinRpcRequest("getVersion");
 		Object[] result = sendMessage(hmInterface, request);
 		return new ServerId(result[0].toString());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException {
-		HmInterface hmInterface = dp.getChannel().getDevice().getHmInterface();
-		String address = dp.getChannel().getAddress();
-		if (dp.isIntegerValue() && value instanceof Double) {
-			value = ((Number) value).intValue();
-		}
-
-		setDatapointValue(hmInterface, address, datapointName, value);
 	}
 
 	/**

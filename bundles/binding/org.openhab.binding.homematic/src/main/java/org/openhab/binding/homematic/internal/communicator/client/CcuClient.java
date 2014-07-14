@@ -155,6 +155,29 @@ public class CcuClient extends BaseHomematicClient {
 		}
 	}
 
+	@Override
+	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException {
+		HmInterface hmInterface = dp.getChannel().getDevice().getHmInterface();
+		if (hmInterface == HmInterface.VIRTUALDEVICES) {
+			String groupName = HmInterface.VIRTUALDEVICES + "." + dp.getChannel().getAddress() + "." + datapointName;
+			if (dp.isIntegerValue() && value instanceof Double) {
+				value = ((Number) value).intValue();
+			}
+			String strValue = ObjectUtils.toString(value);
+			if (dp.isStringValue()) {
+				strValue = "\"" + strValue + "\"";
+			}
+
+			HmResult result = sendScriptByName("setVirtualGroup", HmResult.class, new String[] { "group_name",
+					"group_state" }, new String[] { groupName, strValue });
+			if (!result.isValid()) {
+				throw new HomematicClientException("Unable to set CCU group " + groupName);
+			}
+		} else {
+			super.setDatapointValue(dp, datapointName, value);
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

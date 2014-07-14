@@ -12,7 +12,6 @@ import java.util.Map;
 
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
 import org.openhab.binding.homematic.internal.communicator.client.ServerId;
-import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 
 /**
@@ -32,11 +31,6 @@ public interface RpcClient {
 	 * Stops the client.
 	 */
 	public void shutdown() throws HomematicClientException;
-
-	/**
-	 * Set the value of a datapoint.
-	 */
-	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException;
 
 	/**
 	 * Set the value of a device specified by address.

@@ -20,6 +20,7 @@ import org.openhab.binding.homematic.internal.model.HmBatteryTypeProvider;
 import org.openhab.binding.homematic.internal.model.HmChannel;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmDevice;
+import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.openhab.binding.homematic.internal.model.HmRemoteControlOptions;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.slf4j.Logger;
@@ -62,7 +63,13 @@ public abstract class BaseHomematicClient implements HomematicClient {
 	 */
 	@Override
 	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException {
-		rpcClient.setDatapointValue(dp, datapointName, value);
+		HmInterface hmInterface = dp.getChannel().getDevice().getHmInterface();
+		String address = dp.getChannel().getAddress();
+		if (dp.isIntegerValue() && value instanceof Double) {
+			value = ((Number) value).intValue();
+		}
+
+		rpcClient.setDatapointValue(hmInterface, address, datapointName, value);
 	}
 
 	/**

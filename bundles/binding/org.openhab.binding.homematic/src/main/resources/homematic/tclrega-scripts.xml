@@ -30,7 +30,6 @@ Write("</variablelist>");
 		]]>
 		</data>
 	</script>
-
 	<script name="setVariable">
 		<data>
 		<![CDATA[
@@ -48,6 +47,23 @@ Write('</valid></result>');
 		]]>
 		</data>
 	</script>
+    <script name="setVirtualGroup">
+      <data>
+      <![CDATA[
+Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
+Write('<result><valid>')
+object var_obj = dom.GetObject("{group_name}");
+if (var_obj) {
+  var_obj.State({group_state});
+  Write('true');
+}
+else {
+  Write('false');
+}
+Write('</valid></result>');
+      ]]>
+      </data>
+    </script>
 
 	<script name="getAllDevices">
 		<data>

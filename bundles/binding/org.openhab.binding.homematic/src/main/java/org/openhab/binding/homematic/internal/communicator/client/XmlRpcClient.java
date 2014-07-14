@@ -14,7 +14,6 @@ import java.util.Map;
 import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
-import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnection;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnectionRF;
@@ -114,19 +113,6 @@ public class XmlRpcClient implements RpcClient {
 	@Override
 	public void executeProgram(HmInterface hmInterface, String programName) throws HomematicClientException {
 		getConnection(hmInterface).executeProgram(programName);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setDatapointValue(HmDatapoint dp, String datapointName, Object value) throws HomematicClientException {
-		HmInterface hmInterface = dp.getChannel().getDevice().getHmInterface();
-		String address = dp.getChannel().getAddress();
-		if (dp.isIntegerValue() && value instanceof Double) {
-			value = ((Number) value).intValue();
-		}
-		setDatapointValue(hmInterface, address, datapointName, value);
 	}
 
 	/**
