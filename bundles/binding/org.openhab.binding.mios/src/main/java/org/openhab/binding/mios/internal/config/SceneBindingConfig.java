@@ -29,11 +29,11 @@ public class SceneBindingConfig extends MiosBindingConfig {
 
 	public static final MiosBindingConfig create(String context,
 			String unitName, int id, String stuff,
-			Class<? extends Item> itemType, String outType, String outStuff,
+			Class<? extends Item> itemType, String commandThing, String updateThing,
 			String inTransform, String outTransform)
 			throws BindingConfigParseException {
 		MiosBindingConfig c = new SceneBindingConfig(context, unitName, id,
-				stuff, itemType, outType, outStuff, inTransform, outTransform);
+				stuff, itemType, commandThing, updateThing, inTransform, outTransform);
 
 		c.initialize();
 		return c;
@@ -48,7 +48,6 @@ public class SceneBindingConfig extends MiosBindingConfig {
 			throws TransformationException {
 		String key = command.toString();
 
-		// TODO: Don't do this on the fly...
 		String cThing = getCommandThing();
 		if (cThing == null || "".equals(cThing)) {
 			return key;
