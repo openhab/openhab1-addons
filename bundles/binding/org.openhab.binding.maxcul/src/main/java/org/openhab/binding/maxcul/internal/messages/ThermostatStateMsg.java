@@ -62,6 +62,8 @@ public class ThermostatStateMsg extends BaseMsg {
 					mTemp |= (((int)this.payload[4])&0xff);
 					logger.debug("mTemp => "+mTemp);
 					measuredTemperature = mTemp/10.0; // temperature over 25.5 uses extra bit in desiredTemperature byte
+					if (measuredTemperature < 4.5)
+						measuredTemperature = null;
 				}
 			} else if (this.payload.length == THERMOSTAT_STATE_TIME_PAYLOAD_LEN)
 			{
