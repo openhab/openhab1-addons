@@ -354,7 +354,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 
 		if (commandTransformationService == null) {
 
-			logger.debug(
+			logger.warn(
 					"Transformation Service (command) '{}' not found for declaration '{}'.",
 					name, getCommandThing());
 		}
