@@ -346,7 +346,7 @@
 			</Reference>
 			<Model>SmartPower</Model>
 			<Label lang="en">RAone SmartPower</Label>
-			<ConfigFile>innovus/walldimmer.xml</ConfigFile>
+			<ConfigFile>innovus/smartpower.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
