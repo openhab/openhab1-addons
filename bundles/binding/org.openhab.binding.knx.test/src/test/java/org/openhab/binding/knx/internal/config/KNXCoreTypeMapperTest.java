@@ -814,7 +814,7 @@ public class KNXCoreTypeMapperTest {
 	 * 
 	 * @throws KNXFormatException
 	 */
-	@Test(expected = NumberFormatException.class)
+	@Test
 	public void testTypeMapping4ByteFloat_14_MAX() throws KNXFormatException {
 		DPT dpt =DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR;
 
@@ -829,8 +829,7 @@ public class KNXCoreTypeMapperTest {
 		 * The following test case tests that the erroneous Exception is thrown.
 		 */
 		Type type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		Float f=Float.MAX_VALUE;	
-		testToDPTValue(dpt, type, f.toString());
+		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
 	}
 
 	/**
@@ -840,7 +839,7 @@ public class KNXCoreTypeMapperTest {
 	 * 
 	 * @throws KNXFormatException
 	 */
-	@Test(expected = NumberFormatException.class)
+	@Test
 	public void testTypeMapping4ByteFloat_14_MIN() throws KNXFormatException {
 		DPT dpt =DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR;
 
@@ -854,9 +853,13 @@ public class KNXCoreTypeMapperTest {
 		 * 
 		 * The following test case tests that the erroneous Exception is thrown.
 		 */
+		try {
 		Type type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		Float f=Float.MAX_VALUE;	
-		testToDPTValue(dpt, type, "-"+f.toString());
+		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -1090,6 +1093,8 @@ public class KNXCoreTypeMapperTest {
 	 * @throws KNXFormatException
 	 */
 	private Datapoint createDP(String dpt) throws KNXFormatException {
-		return new CommandDP(new GroupAddress("1/2/3"), "test", 0, dpt);
+		int mainNumber=Integer.parseInt(dpt.substring(0, dpt.indexOf('.')));
+		
+		return new CommandDP(new GroupAddress("1/2/3"), "test", mainNumber, dpt);
 	}
 }
