@@ -188,7 +188,6 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 			MaxCulBindingConfig config = (MaxCulBindingConfig)c;
 			if (config.getSerialNumber() != null) /* could be PairMode/ListenMode device which has no serial */
 			{
-				logger.debug("Comparing '"+config.getSerialNumber()+"' with '"+serial+"'");
 				if (config.getSerialNumber().compareToIgnoreCase(serial) == 0)
 					configs.add(config);
 			}
@@ -207,7 +206,6 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 			MaxCulBindingConfig config = (MaxCulBindingConfig)c;
 			if (config.getSerialNumber() != null) /* could be PairMode/ListenMode device which has no serial */
 			{
-				logger.debug("Comparing '"+config.getDevAddr()+"' with '"+addr+"'");
 				if (config.getDevAddr().equalsIgnoreCase(addr))
 					configs.add(config);
 			}
