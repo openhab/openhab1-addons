@@ -33,6 +33,14 @@ import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
 import tuwien.auto.calimero.dptxlator.DPTXlatorTime;
 
+/**
+ * This class provides test of the KNXCoreTyperMapper .
+ * Tests datapoint types according KNX Association System Specification AS v1.07.00
+ * 
+ * @author Kai Kreuzer
+ * @author Volker Daube
+ * 
+ */
 public class KNXCoreTypeMapperTest {
 
 	private KNXCoreTypeMapper knxCoreTypeMapper;
@@ -72,7 +80,7 @@ public class KNXCoreTypeMapperTest {
 
 		//Test mapping of org.openhab.core.library.types.PercentType
 		assertEquals("KNXCoreTypeMapper.toDPTid returned datapoint type for class  \""+PercentType.class+"\"",
-				DPTXlator8BitUnsigned.DPT_PERCENT_U8.getID(), KNXCoreTypeMapper.toDPTid(PercentType.class));
+				DPTXlator8BitUnsigned.DPT_SCALING.getID(), KNXCoreTypeMapper.toDPTid(PercentType.class));
 
 		//Test mapping of org.openhab.core.library.types.DecimalType
 		assertEquals("KNXCoreTypeMapper.toDPTid returned datapoint type for class  \""+DecimalType.class+"\"",
@@ -284,6 +292,30 @@ public class KNXCoreTypeMapperTest {
 
 		type=testToType(dpt, new byte[] { (byte) 0xFF }, PercentType.class);
 		testToDPTValue(dpt, type, "100");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType()for type “8-Bit Unsigned Value" KNX ID: 5.004 DPT_PERCENT_U8 (previously name DPT_RelPos_Valve)
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping8BitUnsigned_5_004() throws KNXFormatException {
+		DPT dpt =DPTXlator8BitUnsigned.DPT_PERCENT_U8;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		Type type=testToType(dpt, new byte[] { 0 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { 50 }, DecimalType.class);
+		testToDPTValue(dpt, type, "50");
+		
+		type=testToType(dpt, new byte[] { 100 }, DecimalType.class);
+		testToDPTValue(dpt, type, "100");
+
+		type=testToType(dpt, new byte[] { (byte) 255 }, DecimalType.class);
+		testToDPTValue(dpt, type, "255");
 	}
 
 	/**
