@@ -841,57 +841,6 @@ public class KNXCoreTypeMapperTest {
 	}
 
 	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14
-	 * Tested is if the maximum value according to KNX Spec (and IEEE 754) is handled correctly
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test(expected = NumberFormatException.class)
-	public void testTypeMapping4ByteFloat_14_MAX() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		/*
-		 * Test the maximum positive value
-		 * 
-		 * FIXME: There seems to be a bug in how openhab treats Floats according IEEE 754. The maximum value is given by
-		 * Float.MAX_VALUE which represented by 0x7f7ffffff, but openhab throws a NumberFormatException in DecimalType
-		 * 
-		 * The following test case tests that the erroneous Exception is thrown.
-		 */
-		Type type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		Float f=Float.MAX_VALUE;	
-		testToDPTValue(dpt, type, f.toString());
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.
-	 * Tested is if the minimum value according to KNX Spec (and IEEE 754) is handled correctly
-	 * 
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test(expected = NumberFormatException.class)
-	public void testTypeMapping4ByteFloat_14_MIN() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		/*
-		 * Test the maximum negative value
-		 * 
-		 * FIXME: There seems to be a bug in how openhab treats Floats according IEEE 754. The minimum value is given by
-		 * -Float.MAX_VALUE which represented by 0xff7ffffff, but openhab throws a NumberFormatException in DecimalType
-		 * 
-		 * The following test case tests that the erroneous Exception is thrown.
-		 */
-		Type type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		Float f=Float.MAX_VALUE;	
-		testToDPTValue(dpt, type, "-"+f.toString());
-	}
-
-	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.001 DPT_ACCELERATION_ANGULAR
 	 * 
 	 * @throws KNXFormatException
@@ -912,6 +861,18 @@ public class KNXCoreTypeMapperTest {
 		// Test the smallest negative value 
 		type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
 		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
+
+		/*
+		 * Test the maximum positive value
+		 */
+		type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
+
+		/*
+		 * Test the maximum negative value
+		 */
+		type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
 	}
 
 	/**
@@ -935,6 +896,18 @@ public class KNXCoreTypeMapperTest {
 		// Test the smallest negative value 
 		type=testToType(DPTXlator4ByteFloat.DPT_ANGLE_DEG, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
 		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
+
+		/*
+		 * Test the maximum positive value
+		 */
+		type=testToType(DPTXlator4ByteFloat.DPT_ANGLE_DEG, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
+
+		/*
+		 * Test the maximum negative value
+		 */
+		type=testToType(DPTXlator4ByteFloat.DPT_ANGLE_DEG, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
 	}
 
 	/**
@@ -958,6 +931,18 @@ public class KNXCoreTypeMapperTest {
 		// Test the smallest negative value 
 		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
 		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
+
+		/*
+		 * Test the maximum positive value
+		 */
+		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
+
+		/*
+		 * Test the maximum negative value
+		 */
+		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
 	}
 
 	/**
@@ -981,6 +966,18 @@ public class KNXCoreTypeMapperTest {
 		// Test the smallest negative value 
 		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
 		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
+
+		/*
+		 * Test the maximum positive value
+		 */
+		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
+
+		/*
+		 * Test the maximum negative value
+		 */
+		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
 	}
 
 	/**
@@ -1004,6 +1001,18 @@ public class KNXCoreTypeMapperTest {
 		// Test the smallest negative value 
 		type=testToType(DPTXlator4ByteFloat.DPT_FREQUENCY, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
 		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
+
+		/*
+		 * Test the maximum positive value
+		 */
+		type=testToType(DPTXlator4ByteFloat.DPT_FREQUENCY, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
+
+		/*
+		 * Test the maximum negative value
+		 */
+		type=testToType(DPTXlator4ByteFloat.DPT_FREQUENCY, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
 	}
 
 	/**
@@ -1027,6 +1036,18 @@ public class KNXCoreTypeMapperTest {
 		// Test the smallest negative value 
 		type=testToType(DPTXlator4ByteFloat.DPT_POWER, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
 		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
+
+		/*
+		 * Test the maximum positive value
+		 */
+		type=testToType(DPTXlator4ByteFloat.DPT_POWER, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
+
+		/*
+		 * Test the maximum negative value
+		 */
+		type=testToType(DPTXlator4ByteFloat.DPT_POWER, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
 	}
 
 	/**
@@ -1122,6 +1143,6 @@ public class KNXCoreTypeMapperTest {
 	 * @throws KNXFormatException
 	 */
 	private Datapoint createDP(String dpt) throws KNXFormatException {
-		return new CommandDP(new GroupAddress("1/2/3"), "test", 0, dpt);
-	}
+		int mainNumber=Integer.parseInt(dpt.substring(0, dpt.indexOf('.')));
+		return new CommandDP(new GroupAddress("1/2/3"), "test", mainNumber, dpt);	}
 }

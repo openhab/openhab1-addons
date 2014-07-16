@@ -164,8 +164,19 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			logger.trace("toType datapoint DPT = " + datapoint.getDPT());
 			logger.trace("toType datapoint getMainNumber = " + datapoint.getMainNumber());
 			if(datapoint.getMainNumber()==9) id = DPTXlator2ByteFloat.DPT_TEMPERATURE.getID(); // we do not care about the unit of a value, so map everything to 9.001
-			if(datapoint.getMainNumber()==14) id = DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR.getID(); // we do not care about the unit of a value, so map everything to 14.001
-			Class<? extends Type> typeClass = toTypeClass(id);
+			if(datapoint.getMainNumber()==14) {
+				id = DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR.getID(); // we do not care about the unit of a value, so map everything to 14.001
+				/*
+				* FIXME: Workaround for a bug in Calimero
+				* DPTXlator4ByteFloat.makeString(). The locale is being used when
+				* translating a float to String. It could happen the a ',' is used a separator, such as 3,14159E20
+				* Openhab expects this to be in US format an expects '.': 3.14159E20
+				* There is no issue with DPTXlator2ByteFloat since calimero is using a non-localized translation.
+				*/
+				if (value.contains(",")) {
+				value=value.replaceFirst(",", "\\.");
+				}
+				}			Class<? extends Type> typeClass = toTypeClass(id);
 			if (typeClass == null) {
 				return null;
 			}
