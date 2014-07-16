@@ -21,6 +21,7 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
@@ -435,20 +436,29 @@ public class MiosBinding extends AbstractActiveBinding<MiosBindingProvider>
 	 *         or a {@link StringType} if <code>item</code> is <code>null</code>
 	 */
 	private State createState(Class<? extends Item> itemType, String value) {
+		State result;
 		try {
 			if (itemType.isAssignableFrom(NumberItem.class)) {
-				return DecimalType.valueOf(value);
+				result = DecimalType.valueOf(value);
 			} else if (itemType.isAssignableFrom(ContactItem.class)) {
-				return OpenClosedType.valueOf(value);
+				result = OpenClosedType.valueOf(value);
 			} else if (itemType.isAssignableFrom(SwitchItem.class)) {
-				return OnOffType.valueOf(value);
+				result = OnOffType.valueOf(value);
+			} else if (itemType.isAssignableFrom(DimmerItem.class)) {
+				result = PercentType.valueOf(value);
 			} else if (itemType.isAssignableFrom(RollershutterItem.class)) {
-				return PercentType.valueOf(value);
+				result = PercentType.valueOf(value);
 			} else if (itemType.isAssignableFrom(DateTimeItem.class)) {
-				return DateTimeType.valueOf(value);
+				result = DateTimeType.valueOf(value);
 			} else {
-				return StringType.valueOf(value);
+				result = StringType.valueOf(value);
 			}
+
+			logger.trace(
+					"createState: Converted '{}' to '{}', bound to '{}'",
+					new Object[] { value, result.getClass().getName(), itemType });
+
+			return result;
 		} catch (Exception e) {
 			logger.debug("Couldn't create state of type '{}' for value '{}'",
 					itemType, value);
