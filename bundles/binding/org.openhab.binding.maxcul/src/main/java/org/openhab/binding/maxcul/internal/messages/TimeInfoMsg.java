@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 public class TimeInfoMsg extends BaseMsg {
 
 	final static private int TIME_INFO_PAYLOAD_LEN = 5; /* in bytes */
+	final static private int TIME_INFO_REQUEST_PAYLOAD_LEN = 0;
 
 	private static final Logger logger =
 			LoggerFactory.getLogger(TimeInfoMsg.class);
@@ -40,7 +41,13 @@ public class TimeInfoMsg extends BaseMsg {
 												(this.payload[2] & 0x3F), // hour of day
 												(this.payload[3] & 0x3F), // minute
 												(this.payload[4] & 0x3F)); // seconds
-		} else
+		} else if (this.payload.length == TIME_INFO_REQUEST_PAYLOAD_LEN)
+		{
+			/* set time to the beginning of history - this will trigger time update */
+			messageTimeInfo = new GregorianCalendar(0,0,1);
+			logger.debug("Received Time request - setting time to 1/1/0");
+		}
+		else
 			logger.error("TimeInfoMsg raw packet was of incorrect length to parse! Expect "+TIME_INFO_PAYLOAD_LEN+" got "+payload.length);
 	}
 
