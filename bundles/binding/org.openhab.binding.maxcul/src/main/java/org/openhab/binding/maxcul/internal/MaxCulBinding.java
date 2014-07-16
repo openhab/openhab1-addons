@@ -236,7 +236,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 					/* schedule new timer */
 					Timer pacingTimer = new Timer();
 					pacedBindingTransmitTimers.put(bindingConfig, pacingTimer);
-					pacingTimer.schedule(new MaxCulPacedThermostatTransmitTask(command, bindingConfig, messageHandler), PACED_TRANSMIT_TIME);
+					pacingTimer.schedule(new MaxCulPacedThermostatTransmitTask(command, bindingConfig, messageHandler, super.providers), PACED_TRANSMIT_TIME);
 				} else
 					logger.warn("Command not handled for "
 							+ bindingConfig.getDeviceType()
