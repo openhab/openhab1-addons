@@ -37,6 +37,7 @@ import tuwien.auto.calimero.dptxlator.DPTXlator2ByteUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator3BitControlled;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteFloat;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteSigned;
+import tuwien.auto.calimero.dptxlator.DPTXlator4ByteUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
@@ -162,8 +163,8 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			String id = translator.getType().getID();
 			logger.trace("toType datapoint DPT = " + datapoint.getDPT());
 			logger.trace("toType datapoint getMainNumber = " + datapoint.getMainNumber());
-			if(datapoint.getMainNumber()==9) id = "9.001"; // we do not care about the unit of a value, so map everything to 9.001
-			if(datapoint.getMainNumber()==14) id = "14.001"; // we do not care about the unit of a value, so map everything to 14.001
+			if(datapoint.getMainNumber()==9) id = DPTXlator2ByteFloat.DPT_TEMPERATURE.getID(); // we do not care about the unit of a value, so map everything to 9.001
+			if(datapoint.getMainNumber()==14) id = DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR.getID(); // we do not care about the unit of a value, so map everything to 14.001
 			Class<? extends Type> typeClass = toTypeClass(id);
 			if (typeClass == null) {
 				return null;
@@ -198,9 +199,9 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		 * or 17.001, we need to do exceptional handling
 		 */
 		logger.trace("toTypeClass looking for dptId = " + dptId);
-		if ("12.001".equals(dptId)) { 
+		if (DPTXlator4ByteUnsigned.DPT_VALUE_4_UCOUNT.getID().equals(dptId)) { 
 			return DecimalType.class;
-		} else if ("14.001".equals(dptId)) {
+		} else if (DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR.getID().equals(dptId)) {
 			return DecimalType.class;
 		} else if (DPTXlatorSceneNumber.DPT_SCENE_NUMBER.getID().equals(dptId)) {
 			return DecimalType.class;
