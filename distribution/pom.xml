@@ -48,12 +48,12 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <artifactId>jdeb</artifactId>
                 <groupId>org.vafer</groupId>
             </plugin>
-            
+
             <plugin>
                 <artifactId>apt-repo</artifactId>
                 <groupId>org.m1theo</groupId>
@@ -67,9 +67,9 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
         </plugins>
-        
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -90,18 +90,21 @@
 									<data>
                                         <type>template</type>
                                         <paths>
-                                            <path>/etc/openhab</path>
-                                            <path>/etc/openhab/configurations</path>
-                                            <path>/etc/openhab/configurations/items</path>
-                                            <path>/etc/openhab/configurations/persistence</path>
-                                            <path>/etc/openhab/configurations/rules</path>
-                                            <path>/etc/openhab/configurations/scripts</path>
-                                            <path>/etc/openhab/configurations/sitemaps</path>
-                                            <path>/etc/openhab/configurations/transform</path>
-                                            <path>/etc/openhab/jetty</path>
-                                            <path>/etc/openhab/jetty/contexts</path>
-                                            <path>/etc/openhab/jetty/etc</path>
-                                            <path>/usr/share/openhab</path>
+                                            <path>etc/openhab</path>
+                                            <path>etc/openhab/configurations</path>
+                                            <path>etc/openhab/configurations/items</path>
+                                            <path>etc/openhab/configurations/persistence</path>
+                                            <path>etc/openhab/configurations/rules</path>
+                                            <path>etc/openhab/configurations/scripts</path>
+                                            <path>etc/openhab/configurations/sitemaps</path>
+                                            <path>etc/openhab/configurations/transform</path>
+                                            <path>etc/openhab/jetty</path>
+                                            <path>etc/openhab/jetty/contexts</path>
+                                            <path>etc/openhab/jetty/etc</path>
+                                            <path>usr/share/openhab</path>
+                                            <path>var/lib/openhab</path>
+                                            <path>var/lib/openhab/persistence</path>
+                                            <path>var/lib/openhab/webapps</path>
                                         </paths>
                                         <mapper>
                                             <type>perm</type>
@@ -110,39 +113,40 @@
                                         </mapper>
                                     </data>
 									<data>
-                                        <type>template</type>
-                                        <paths>
-                                            <path>/var/lib/openhab</path>
-                                        </paths>
-                                        <mapper>
-                                            <type>perm</type>
-                                            <user>openhab</user>
-                                            <group>openhab</group>
-                                        </mapper>
+                                        <type>directory</type>
+                                        <src>${basedir}/src/deb/var/lib/openhab/webapps</src>
+										<excludes>**/.gitignore</excludes>
+										<mapper>
+											<type>perm</type>
+											<prefix>/var/lib/openhab/webapps</prefix>
+											<user>root</user>
+											<group>openhab</group>
+											<dirmode>2775</dirmode>
+										</mapper>
                                     </data>
 									<data>
-                                        <type>template</type>
-                                        <paths>
-                                            <path>/var/lib/openhab/webapps</path>
-                                        </paths>
-                                        <mapper>
-                                            <type>perm</type>
-                                            <user>root</user>
-                                            <group>root</group>
-                                        </mapper>
+                                        <type>directory</type>
+                                        <src>${basedir}/src/deb/var/lib/openhab</src>
+										<excludes>webapps/**,**/.gitignore</excludes>
+										<mapper>
+											<type>perm</type>
+											<prefix>/var/lib/openhab</prefix>
+											<user>root</user>
+											<group>openhab</group>
+											<dirmode>2775</dirmode>
+										</mapper>
                                     </data>
 									<data>
-                                        <type>template</type>
-                                        <paths>
-                                            <path>/var/lib/openhab/webapps/static</path>
-                                            <path>/var/lib/openhab/workspace</path>
-                                            <path>/var/log/openhab</path>
-                                        </paths>
-                                        <mapper>
-                                            <type>perm</type>
-                                            <user>root</user>
-                                            <group>openhab</group>
-                                        </mapper>
+                                        <type>directory</type>
+                                        <src>${basedir}/src/deb/var/log</src>
+										<excludes>**/.gitignore</excludes>
+										<mapper>
+											<type>perm</type>
+											<prefix>/var/log</prefix>
+											<user>root</user>
+											<group>openhab</group>
+											<dirmode>2775</dirmode>
+										</mapper>
                                     </data>
 									<data>
                                         <src>${basedir}/src/deb/etc/default/openhab</src>
@@ -267,7 +271,7 @@
                                     </data>
                                     <data>
                                         <src>${basedir}/openhabhome/configurations/openhab_default.cfg</src>
-                                        <dst>/etc/openhab/configurations/openhab.cfg</dst>
+                                        <dst>etc/openhab/configurations/openhab.cfg</dst>
                                         <type>file</type>
                                         <mapper>
                                             <type>perm</type>
@@ -973,12 +977,6 @@
         </dependency>
         <dependency>
             <groupId>org.openhab.binding</groupId>
-            <artifactId>org.openhab.binding.freeswitch</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.neohub</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
@@ -989,7 +987,7 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-
+		
         <dependency>
             <groupId>org.openhab.io</groupId>
             <artifactId>org.openhab.io.cv</artifactId>
@@ -1013,7 +1011,7 @@
             <artifactId>org.openhab.io.multimedia.tts.macintalk</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>org.openhab.io</groupId>
             <artifactId>org.openhab.io.multimedia.tts.marytts</artifactId>
