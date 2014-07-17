@@ -830,7 +830,7 @@
 	</Manufacturer>
 	<Manufacturer>
 		<Id>011F</Id>
-		<Name>Ecolink</Name>
+		<Name>Ecolink(Schlage)</Name>
 		<Product>
 			<Reference>
 				<Type>0001</Type>
@@ -849,6 +849,18 @@
 			<Label lang="en">Z-Wave Garage Door Sensor</Label>
 			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
 		</Product>
+	</Manufacturer>	
+	<Manufacturer>
+		<Id>014A</Id>
+		<Name>Ecolink</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>DWZWAVE2</Model>
+			<Label lang="en">Z-Wave Door/Window Sensor</Label>
+			<ConfigFile>eco/dwzwave2.xml</ConfigFile>
 	</Manufacturer>	
 	<Manufacturer>
 		<Id>001E</Id>

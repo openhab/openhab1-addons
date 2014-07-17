@@ -35,6 +35,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * Handles the Thermostat Setpoint command class.
  * @author Matthew Bowman
  * @author Jan-Willem Spuij
+ * @author Dave Hock
  * @since 1.4.0
  */
 @XStreamAlias("thermostatSetpointCommandClass")
@@ -145,9 +146,10 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 			int endpoint) {
 		
 		int setpointTypeCode = serialMessage.getMessagePayloadByte(offset + 1);
+		int scale = (serialMessage.getMessagePayloadByte(offset + 2) >> 3) & 0x03;
 		BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
 		
-		logger.debug(String.format("Thermostat Setpoint report from nodeId = %d", this.getNode().getNodeId()));
+		logger.debug(String.format("Thermostat Setpoint report from nodeId = %d, Scale = %d", this.getNode().getNodeId(), scale));
 		logger.debug(String.format("Thermostat Setpoint Value = (%f)", value));
 		
 		SetpointType setpointType = SetpointType.getSetpointType(setpointTypeCode);
@@ -164,7 +166,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 		logger.debug(String.format("Setpoint Type = %s (0x%02x)", setpointType.getLabel(), setpointTypeCode));
 		
 		logger.debug(String.format("Thermostat Setpoint Report from Node ID = %d, value = %s", this.getNode().getNodeId(), value.toPlainString()));
-		ZWaveThermostatSetpointValueEvent zEvent = new ZWaveThermostatSetpointValueEvent(this.getNode().getNodeId(), endpoint, setpointType, value);
+		ZWaveThermostatSetpointValueEvent zEvent = new ZWaveThermostatSetpointValueEvent(this.getNode().getNodeId(), endpoint, setpointType, scale, value);
 		this.getController().notifyEventListeners(zEvent);
 	}
 	
@@ -243,7 +245,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 	 */
 	@Override
 	public SerialMessage setValueMessage(int value) {
-			return setMessage(new BigDecimal(value));
+			return setMessage(0, new BigDecimal(value));
 	}
 	
 	/**
@@ -251,9 +253,9 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 	 * @param setpoint the setpoint to set.
 	 * @return the serial message
 	 */
-	public SerialMessage setMessage(BigDecimal setpoint) {
+	public SerialMessage setMessage(int scale, BigDecimal setpoint) {
 		for (SetpointType setpointType : this.setpointTypes) {
-			return setMessage(setpointType, setpoint);
+			return setMessage(scale, setpointType, setpoint);
 		}
 		
 		// in case there are no supported setpoint types, get them.
@@ -266,7 +268,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 	 * @param setpoint the setpoint to set.
 	 * @return the serial message
 	 */
-	public SerialMessage setMessage(SetpointType setpointType, BigDecimal setpoint) {
+	public SerialMessage setMessage(int scale, SetpointType setpointType, BigDecimal setpoint) {
 		logger.debug("Creating new message for application command THERMOSTAT_SETPOINT_SET for node {}", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
 
@@ -369,6 +371,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 	public class ZWaveThermostatSetpointValueEvent extends ZWaveCommandClassValueEvent {
 
 		private SetpointType setpointType;
+		private int scale;
 		
 		/**
 		 * Constructor. Creates a instance of the ZWaveThermostatSetpointValueEvent class.
@@ -378,9 +381,10 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 		 * @param value the value for the event.
 		 */
 		private ZWaveThermostatSetpointValueEvent(int nodeId, int endpoint,
-				SetpointType setpointType, Object value) {
+				SetpointType setpointType, int scale, Object value) {
 			super(nodeId, endpoint, CommandClass.THERMOSTAT_SETPOINT, value);
 			this.setpointType = setpointType;
+			this.scale = scale;
 		}
 
 		/**
@@ -388,6 +392,13 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 		 */
 		public SetpointType getSetpointType() {
 			return setpointType;
+		}
+
+		/**
+		 * Gets the scale for this event
+		 */
+		public int getScale() {
+			return this.scale;
 		}
 	}
 }
