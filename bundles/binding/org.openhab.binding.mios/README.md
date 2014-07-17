@@ -246,8 +246,8 @@ _&lt;InlineCommandMap>_ is _&lt;openHABCommandMap>_ { `|` _&lt;openHABCommandMap
 _&lt;openHABCommandMap>_ is _&lt;openHABCommand>_ { `=` _&lt;UPnPAction>_ }<br>
 _&lt;openHABCommand>_ is `ON`, `OFF`, `INCREASE`, `DECREASE`, etc or the special value `_defaultCommand`<br>
 
-_&lt;UPnPAction>_ is { &lt;ServiceName>` `/` } _&lt;ServiceAction>_ `(` { _&lt;ServiceParam>_ { `=` _&lt;ServiceValue>_ | `=` _&lt;BoundValue>_} } `)` OR;<br>
-_&lt;UPnPAction>_ is { &lt;ServiceAlias>` `/` } _&lt;ServiceAction>_ `(` { _&lt;ServiceParam>_ { `=` _&lt;ServiceValue>_ | `=` _&lt;BoundValue>_} } `)`<br>
+_&lt;UPnPAction>_ is { _&lt;ServiceName>_ `/` } _&lt;ServiceAction>_ `(` { _&lt;ServiceParam>_ { `=` _&lt;ServiceValue>_ | `=` _&lt;BoundValue>_} } `)` OR;<br>
+_&lt;UPnPAction>_ is { _&lt;ServiceAlias>_ `/` } _&lt;ServiceAction>_ `(` { _&lt;ServiceParam>_ { `=` _&lt;ServiceValue>_ | `=` _&lt;BoundValue>_} } `)`<br>
 
 _&lt;UPnPVariable>_ is _&lt;ServiceName>_ `/` _&lt;ServiceVariable>_ OR;<br>
 _&lt;UPnPVariable>_ is _&lt;ServiceAlias>_ `/` _&lt;ServiceVariable>_<br>
