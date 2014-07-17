@@ -18,19 +18,20 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class SystemBindingConfig extends MiosBindingConfig {
 
-	private SystemBindingConfig(String context, String unitName, String stuff,
-			Class<? extends Item> itemType, String inTransform,
-			String outTransform) {
-		super(context, unitName, 0, stuff, itemType, null, null, inTransform,
-				outTransform);
+	private SystemBindingConfig(String context, String itemName,
+			String unitName, String stuff, Class<? extends Item> itemType,
+			String inTransform, String outTransform) {
+		super(context, itemName, unitName, 0, stuff, itemType, null, null,
+				inTransform, outTransform);
 	}
 
-	public static final MiosBindingConfig create(String context, String unitName,
-			String stuff, Class<? extends Item> itemType, String inTransform,
+	public static final MiosBindingConfig create(String context,
+			String itemName, String unitName, String stuff,
+			Class<? extends Item> itemType, String inTransform,
 			String outTransform) throws BindingConfigParseException {
-		MiosBindingConfig c = new SystemBindingConfig(context, unitName,
-				stuff, itemType, inTransform, outTransform);
-		
+		MiosBindingConfig c = new SystemBindingConfig(context, itemName,
+				unitName, stuff, itemType, inTransform, outTransform);
+
 		c.initialize();
 		return c;
 	}

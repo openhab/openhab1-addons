@@ -29,6 +29,8 @@ import org.osgi.framework.BundleContext;
  */
 public class DeviceBindingConfig extends MiosBindingConfig {
 
+	private static final String DEFAULT_COMMAND_TRANSFORM = "_defaultCommand";
+
 	private static Map<String, String> COMMAND_DEFAULTS = new HashMap<String, String>();
 
 	static {
@@ -140,15 +142,16 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 
 	private TransformationService commandTransformationService;
 
-	private DeviceBindingConfig(String context, String unitName, int id,
-			String stuff, Class<? extends Item> itemType, String commandThing,
+	private DeviceBindingConfig(String context, String itemName,
+			String unitName, int id, String stuff,
+			Class<? extends Item> itemType, String commandThing,
 			String updateThing, String inTransform, String outTransform) {
-		super(context, unitName, id, stuff, itemType, commandThing,
+		super(context, itemName, unitName, id, stuff, itemType, commandThing,
 				updateThing, inTransform, outTransform);
 	}
 
 	public static final MiosBindingConfig create(String context,
-			String unitName, int id, String inStuff,
+			String itemName, String unitName, int id, String inStuff,
 			Class<? extends Item> itemType, String commandThing,
 			String updateThing, String inTransform, String outTransform)
 			throws BindingConfigParseException {
@@ -277,9 +280,9 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 					new Object[] { newInStuff, newUpdateThing, iName, iVar,
 							uName, uAction, uParam });
 
-			DeviceBindingConfig c = new DeviceBindingConfig(context, unitName,
-					id, newInStuff, itemType, newCommandThing, newUpdateThing,
-					inTransform, outTransform);
+			DeviceBindingConfig c = new DeviceBindingConfig(context, itemName,
+					unitName, id, newInStuff, itemType, newCommandThing,
+					newUpdateThing, inTransform, outTransform);
 			c.initialize();
 
 			c.inServiceName = iName;
@@ -365,26 +368,49 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 	public String transformCommand(Command command)
 			throws TransformationException {
 		TransformationService ts = getCommandTransformationService();
+		String result;
 
 		String key = command.toString();
 		if (ts != null) {
-			return ts.transform(getCommandTransformParam(), key);
+			result = ts.transform(getCommandTransformParam(), key);
+
+			// If we don't have a transform, look for a special one called
+			// "_default".
+			if (result == null || "".equals(result)) {
+				result = ts.transform(getCommandTransformParam(),
+						DEFAULT_COMMAND_TRANSFORM);
+			}
 		} else {
 			Map<String, String> map = getCommandMap();
 			if (map != null) {
 				String value = map.get(key);
 				if (value != null) {
-					return value;
+					result = value;
 				} else { // Attempt to provide a default Mapping for it.
 					if (map.containsKey(key)) {
-						return COMMAND_DEFAULTS.get(key);
+						result = COMMAND_DEFAULTS.get(key);
 					} else {
-						return key;
+						result = key;
 					}
 				}
 			} else {
-				return COMMAND_DEFAULTS.get(key);
+				result = COMMAND_DEFAULTS.get(key);
 			}
 		}
+
+		// FIXME - Hardcode until we know how to get the value
+		int itemValue = 50;
+		// Perform item-value substitution on the resulting string.
+		if (result.contains("?++")) {
+			result = result.replace("?++", String.valueOf(itemValue + 20));
+		} else if (result.contains("?--")) {
+			result = result.replace("?--", String.valueOf(itemValue - 20));
+		} else if (result.contains("??")) {
+			result = result.replace("??", key);
+		} else if (result.contains("?")) {
+			result = result.replace("?", String.valueOf(itemValue));
+		}
+
+		return result;
 	}
 }

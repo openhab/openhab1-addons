@@ -157,18 +157,18 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 		// Inline a factory for now...
 		// FIXME
 		if (inType.equals("device")) {
-			return DeviceBindingConfig.create(context, unitName,
+			return DeviceBindingConfig.create(context, item.getName(), unitName,
 					Integer.parseInt(inId), inStuff, item.getClass(),
 					commandThing, updateThing, inTrans, outTrans);
 		} else if (inType.equals("scene")) {
-			return SceneBindingConfig.create(context, unitName,
+			return SceneBindingConfig.create(context, item.getName(), unitName,
 					Integer.parseInt(inId), inStuff, item.getClass(),
 					commandThing, updateThing, inTrans, outTrans);
 		} else if (inType.equals("system")) {
-			return SystemBindingConfig.create(context, unitName, inStuff,
+			return SystemBindingConfig.create(context, item.getName(), unitName, inStuff,
 					item.getClass(), inTrans, outTrans);
 		} else if (inType.equals("room")) {
-			return RoomBindingConfig.create(context, unitName,
+			return RoomBindingConfig.create(context, item.getName(), unitName,
 					Integer.parseInt(inId), inStuff, item.getClass(), inTrans,
 					outTrans);
 		} else

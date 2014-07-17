@@ -47,6 +47,7 @@ public abstract class MiosBindingConfig implements BindingConfig {
 
 	private int id;
 	private String context;
+	private String itemName;
 	private String unitName;
 	private String inStuff;
 	private String cachedProperty;
@@ -66,12 +67,15 @@ public abstract class MiosBindingConfig implements BindingConfig {
 	private TransformationService inTransformationService;
 	private TransformationService outTransformationService;
 
-	public MiosBindingConfig(String context, String unitName, int id,
-			String stuff, Class<? extends Item> itemType, String commandThing,
-			String updateThing, String inTransform, String outTransform) {
+	public MiosBindingConfig(String context, String itemName, String unitName,
+			int id, String stuff, Class<? extends Item> itemType,
+			String commandThing, String updateThing, String inTransform,
+			String outTransform) {
 		// Crude parameter validations
 		assert (id >= 0);
 
+		this.context = context;
+		this.itemName = itemName;
 		this.unitName = unitName;
 		this.id = id;
 		this.inStuff = stuff;
@@ -117,6 +121,10 @@ public abstract class MiosBindingConfig implements BindingConfig {
 
 	public String getContext() {
 		return this.context;
+	}
+
+	public String getItemName() {
+		return this.itemName;
 	}
 
 	/*

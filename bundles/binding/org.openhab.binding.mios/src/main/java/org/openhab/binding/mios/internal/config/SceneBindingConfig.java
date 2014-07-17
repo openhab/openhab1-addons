@@ -20,20 +20,22 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  */
 public class SceneBindingConfig extends MiosBindingConfig {
 
-	private SceneBindingConfig(String context, String unitName, int id,
-			String stuff, Class<? extends Item> itemType, String outType,
-			String outStuff, String inTransform, String outTransform) {
-		super(context, unitName, id, stuff, itemType, outType, outStuff,
-				inTransform, outTransform);
+	private SceneBindingConfig(String context, String itemName,
+			String unitName, int id, String stuff,
+			Class<? extends Item> itemType, String outType, String outStuff,
+			String inTransform, String outTransform) {
+		super(context, itemName, unitName, id, stuff, itemType, outType,
+				outStuff, inTransform, outTransform);
 	}
 
 	public static final MiosBindingConfig create(String context,
-			String unitName, int id, String stuff,
-			Class<? extends Item> itemType, String commandThing, String updateThing,
-			String inTransform, String outTransform)
+			String itemName, String unitName, int id, String stuff,
+			Class<? extends Item> itemType, String commandThing,
+			String updateThing, String inTransform, String outTransform)
 			throws BindingConfigParseException {
-		MiosBindingConfig c = new SceneBindingConfig(context, unitName, id,
-				stuff, itemType, commandThing, updateThing, inTransform, outTransform);
+		MiosBindingConfig c = new SceneBindingConfig(context, itemName,
+				unitName, id, stuff, itemType, commandThing, updateThing,
+				inTransform, outTransform);
 
 		c.initialize();
 		return c;
@@ -56,11 +58,11 @@ public class SceneBindingConfig extends MiosBindingConfig {
 
 			for (int i = 0; i < cThing.length(); i++) {
 				if (key.equals(commands[i])) {
-                    return key;
+					return key;
 				}
 			}
 		}
-		
+
 		return null;
 	}
 }
