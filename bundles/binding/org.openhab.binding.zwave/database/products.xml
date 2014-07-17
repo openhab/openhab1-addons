@@ -322,6 +322,52 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+		<Id>0077</Id>
+		<Name>INNOVUS</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SmoothRemote</Model>
+			<Label lang="en">SmoothRemote Controller</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>WallSwitch</Model>
+			<Label lang="en">RAone SmartPower Wall Appliance Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>WallDimmer</Model>
+			<Label lang="en">RAone SmartDimmer Wall Dimmer Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0010</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SmartPower</Model>
+			<Label lang="en">RAone SmartPower</Label>
+			<ConfigFile>innovus/smartpower.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0011</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SmartDimmer</Model>
+			<Label lang="en">RAone SmartDimmer</Label>
+			<ConfigFile>innovus/smartdimmer.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0086</Id>
 		<Name>Aeon Labs</Name>
 		<Product>
