@@ -257,6 +257,15 @@
 			<Label lang="en">Fluorescent Light &amp; Appliance Module</Label>
 			<ConfigFile>ge/relay.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>5252</Type>
+				<Id>3530</Id>
+			</Reference>
+			<Model>45605</Model>
+			<Label lang="en">Duplex Receptacle</Label>
+			<ConfigFile>ge/relay.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0064</Id>
@@ -310,6 +319,52 @@
 			<Model>506004</Model>
 			<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
 			<ConfigFile>merten/506004.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0077</Id>
+		<Name>INNOVUS</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SmoothRemote</Model>
+			<Label lang="en">SmoothRemote Controller</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>WallSwitch</Model>
+			<Label lang="en">RAone SmartPower Wall Appliance Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>WallDimmer</Model>
+			<Label lang="en">RAone SmartDimmer Wall Dimmer Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0010</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SmartPower</Model>
+			<Label lang="en">RAone SmartPower</Label>
+			<ConfigFile>innovus/smartpower.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0011</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SmartDimmer</Model>
+			<Label lang="en">RAone SmartDimmer</Label>
+			<ConfigFile>innovus/smartdimmer.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -775,7 +830,7 @@
 	</Manufacturer>
 	<Manufacturer>
 		<Id>011F</Id>
-		<Name>Ecolink</Name>
+		<Name>Ecolink(Schlage)</Name>
 		<Product>
 			<Reference>
 				<Type>0001</Type>
@@ -794,6 +849,18 @@
 			<Label lang="en">Z-Wave Garage Door Sensor</Label>
 			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
 		</Product>
+	</Manufacturer>	
+	<Manufacturer>
+		<Id>014A</Id>
+		<Name>Ecolink</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>DWZWAVE2</Model>
+			<Label lang="en">Z-Wave Door/Window Sensor</Label>
+			<ConfigFile>eco/dwzwave2.xml</ConfigFile>
 	</Manufacturer>	
 	<Manufacturer>
 		<Id>001E</Id>

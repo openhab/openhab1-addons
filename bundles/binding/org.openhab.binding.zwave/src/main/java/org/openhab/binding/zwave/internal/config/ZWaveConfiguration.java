@@ -245,7 +245,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				
 				// If we can't find the product, then try and find just the
 				// manufacturer
-				if (node.getManufacturer() == 0) {
+				if (node.getManufacturer() == Integer.MAX_VALUE) {
 				} else if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
 					if (database.FindManufacturer(node.getManufacturer()) == false) {
 						record.value = "Manufacturer:" + node.getManufacturer() + " [ID:"
