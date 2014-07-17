@@ -298,11 +298,13 @@ To do this, we introduce the _&lt;BoundValue>_ parameter that, when present in t
 
 Additionally, since _&lt;PCTNumber>_ is just a value, it won't match any of the entries in our Mapping file, so we introduce a magic key `_defaultCommand`.  We first attempt to do a literal mapping and, if that doesn't find a match, we go look for this magic key and use it's entry.
 
-Using this, a MiOS Dimmer, for Volume Controls, Dimming Lights, Fans etc looks like...
+#### A Dimmer, Volume Control, Speed controlled Fan...
 
     Dimmer   MasterCeilingFanLoadLevelStatus "Master Ceiling Fan [%d]%" <slider> (GDimmer) {mios="unit:house,device:101/service/Dimming1/LoadLevelStatus,command:MAP(miosDimmerCommand.map)"}
 
-Since Dimmer Items in openHAB can be sent `INCREASE`, `DECREASE` or _&lt;PCTNumber>_ as the command, the mapping file must account for both the static commands (INCREASE, DECREASE) as well as the possibility of a _Command Value_ being sent.  The `examples/transform/miosDimmerCommand.map` file has a definition that handles this situation:
+Since Dimmer Items in openHAB can be sent `INCREASE`, `DECREASE` or _&lt;PCTNumber>_ as the command, the mapping file must account for both the static commands (`INCREASE`, `DECREASE`) as well as the possibility of a _Command Value_ being sent.
+
+The `examples/transform/miosDimmerCommand.map` file has a definition that handles this situation:
 
     INCREASE=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=?++)
     DECREASE=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=?--)
@@ -320,7 +322,7 @@ For MiOS Scenes, the `command:` parameter has a simpler form:
 With definitions as:
 
 _&lt;CommandList>_ is _&lt;blank>_ OR;<br>
-_&lt;CommandList>_ is _&lt;openHABCommand>_ { | _&lt;openHABCommand>_ }*
+_&lt;CommandList>_ is _&lt;openHABCommand>_ { `|` _&lt;openHABCommand>_ }*
 
 _&lt;openHABCommand>_ is `ON`, `OFF`, `INCREASE`, `DECREASE`, `TOGGLE` etc
 
