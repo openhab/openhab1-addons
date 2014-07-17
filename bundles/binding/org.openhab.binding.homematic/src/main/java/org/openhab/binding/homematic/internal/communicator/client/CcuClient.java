@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * HomematicClient implementation for a CCU including TclRega script executer.
  * 
  * @author Gerhard Riegler
- * @since 1.5.1
+ * @since 1.6.0
  */
 public class CcuClient extends BaseHomematicClient {
 	private static final Logger logger = LoggerFactory.getLogger(CcuClient.class);

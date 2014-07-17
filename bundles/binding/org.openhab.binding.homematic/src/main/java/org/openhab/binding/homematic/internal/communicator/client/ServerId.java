@@ -16,7 +16,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * Simple info object to hold server specific informations.
  * 
  * @author Gerhard Riegler
- * @since 1.5.1
+ * @since 1.6.0
  */
 public class ServerId {
 	private String name;

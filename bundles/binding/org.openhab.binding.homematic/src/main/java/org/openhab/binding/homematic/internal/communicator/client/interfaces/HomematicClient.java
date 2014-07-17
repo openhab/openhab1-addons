@@ -18,7 +18,7 @@ import org.openhab.binding.homematic.internal.model.HmValueItem;
  * The interface for all Homematic server clients.
  * 
  * @author Gerhard Riegler
- * @since 1.5.1
+ * @since 1.6.0
  */
 public interface HomematicClient {
 

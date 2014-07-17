@@ -15,7 +15,7 @@ import java.util.Map;
  * Provides battery infos for all Homematic devices.
  * 
  * @author Gerhard Riegler
- * @since 1.5.1
+ * @since 1.6.0
  */
 public class HmBatteryTypeProvider {
 	private static Map<String, HmBattery> batteries = new HashMap<String, HmBattery>();

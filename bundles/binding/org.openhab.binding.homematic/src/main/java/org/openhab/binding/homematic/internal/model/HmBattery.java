@@ -12,7 +12,7 @@ package org.openhab.binding.homematic.internal.model;
  * Object that represents a battery info.
  * 
  * @author Gerhard Riegler
- * @since 1.5.1
+ * @since 1.6.0
  */
 public class HmBattery {
 	private HmBatteryType type;

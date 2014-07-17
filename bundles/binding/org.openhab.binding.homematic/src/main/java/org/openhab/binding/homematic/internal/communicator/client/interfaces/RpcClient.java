@@ -18,7 +18,7 @@ import org.openhab.binding.homematic.internal.model.HmInterface;
  * The interface with the common methods for XML-RPC and BIN-RPC communication.
  * 
  * @author Gerhard Riegler
- * @since 1.5.1
+ * @since 1.6.0
  */
 public interface RpcClient {
 

@@ -12,7 +12,7 @@ package org.openhab.binding.homematic.internal.model;
  * Definition of the different battery types.
  * 
  * @author Gerhard Riegler
- * @since 1.5.1
+ * @since 1.6.0
  */
 public enum HmBatteryType {
 	AA, AAA, CR2032, CR2016, LR44, WINMATIC_ACCU;

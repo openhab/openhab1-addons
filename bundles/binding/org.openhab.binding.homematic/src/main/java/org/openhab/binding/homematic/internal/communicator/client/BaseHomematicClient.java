@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * Base class for all Homematic clients with common methods.
  * 
  * @author Gerhard Riegler
- * @since 1.5.1
+ * @since 1.6.0
  */
 public abstract class BaseHomematicClient implements HomematicClient {
 	private static final Logger logger = LoggerFactory.getLogger(BaseHomematicClient.class);
