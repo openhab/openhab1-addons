@@ -257,6 +257,15 @@
 			<Label lang="en">Fluorescent Light &amp; Appliance Module</Label>
 			<ConfigFile>ge/relay.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>5252</Type>
+				<Id>3530</Id>
+			</Reference>
+			<Model>45605</Model>
+			<Label lang="en">Duplex Receptacle</Label>
+			<ConfigFile>ge/relay.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0064</Id>
