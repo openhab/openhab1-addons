@@ -321,22 +321,22 @@ TODO: Not finished yet!
     Number   ThermostatUpstairsId "ID [%d]" {mios="unit:house,device:335/id"}
     String   ThermostatUpstairsDeviceStatus "Device Status [%s]" (GThermostatUpstairs) {mios="unit:house,device:335/status,in:MAP(miosStatus.map)"}
     Number   ThermostatUpstairsCurrentTemperature "Upstairs Temperature [%.1f °F]" <temperature> (GThermostatUpstairs, GTemperature) {mios="unit:house,device:335/service/TemperatureSensor1/CurrentTemperature"}
-    Number   ThermostatUpstairsHeatCurrentSetpoint "Heat Setpoint [%.1f °F]" <temperature> (GThermostatUpstairs) {mios="unit:house,device:335/service/TemperatureSetpoint1_Heat/CurrentSetpoint"}
-    Number   ThermostatUpstairsCoolCurrentSetpoint "Cool Setpoint [%.1f °F]" <temperature> (GThermostatUpstairs) {mios="unit:house,device:335/service/TemperatureSetpoint1_Cool/CurrentSetpoint"}
+    Number   ThermostatUpstairsHeatCurrentSetpoint "Heat Setpoint [%.1f °F]" <temperature> (GThermostatUpstairs) {mios="unit:house,device:335/service/TemperatureSetpoint1_Heat/CurrentSetpoint,command:MAP(miosTStatSetpointHeat.map)"}
+    Number   ThermostatUpstairsCoolCurrentSetpoint "Cool Setpoint [%.1f °F]" <temperature> (GThermostatUpstairs) {mios="unit:house,device:335/service/TemperatureSetpoint1_Cool/CurrentSetpoint,command:MAP(miosTStatSetpointCool.map)"}
     String   ThermostatUpstairsFanMode "Fan Mode" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_FanOperatingMode1/Mode,command:MAP(miosTStatFanOperatingModeCommand.map)"}
     String   ThermostatUpstairsFanStatus "Fan Status [%s]" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_FanOperatingMode1/FanStatus"}
     String   ThermostatUpstairsModeStatus "Mode Status" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_UserOperatingMode1/ModeStatus,command:MAP(miosTStatModeStatusCommand.map)"}
     String   ThermostatUpstairsModeState "Mode State [%s]" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_OperatingState1/ModeState"}
     Number   ThermostatUpstairsBatteryLevel "Battery Level [%d] %" (GThermostatUpstairs) {mios="unit:house,device:335/service/HaDevice1/BatteryLevel"}
-    DateTime ThermostatUpstairsBatteryDate "Battery Date [%1$ta, %1$tm/%1$te %1$tR]" <calendar> (GThermostatUpstairs) {mios="unit:house,device:335/service/HaDevice1/BatteryDate"} 
+    DateTime ThermostatUpstairsBatteryDate "Battery Date [%1$ta, %1$tm/%1$te %1$tR]" <calendar> (GThermostatUpstairs) {mios="unit:house,device:335/service/HaDevice1/BatteryDate"}
     DateTime ThermostatUpstairsLastUpdate "Last Update [%1$ta, %1$tm/%1$te %1$tR]" <calendar> (GThermostatUpstairs) {mios="unit:house,device:335/service/HaDevice1/LastUpdate"}
 
 and these need to be paired with similar items in the `*.sitemap` file:
 
     Text     item=ThermostatUpstairsCurrentTemperature {
         Text     item=ThermostatHumidityUpstairsCurrentLevel
-        Text     item=ThermostatUpstairsHeatCurrentSetpoint
-        Text     item=ThermostatUpstairsCoolCurrentSetpoint
+        Setpoint item=ThermostatUpstairsHeatCurrentSetpoint minValue=40 maxValue=80
+        Setpoint item=ThermostatUpstairsCoolCurrentSetpoint minValue=40 maxValue=80
         Switch   item=ThermostatUpstairsFanMode mappings=[ContinuousOn="On", Auto="Auto"]
         Text     item=ThermostatUpstairsFanStatus
         Switch   item=ThermostatUpstairsModeStatus mappings=[HeatOn="Heat", CoolOn="Cool", AutoChangeOver="Auto", Off="Off"]
