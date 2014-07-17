@@ -285,7 +285,7 @@ or more simply, just use the internal defaults:
     Switch   GarageDeadboltDStatus "Garage Deadbolt" (GLock,GSwitch) {mios="unit:house,device:189/service/DoorLock1/Status,command:MAP(miosLockCommand.map),in:MAP(miosSwitchIn.map)"}
 
 
-#### Device Command Binding Examples (Paramerized)
+#### Device Command Binding Examples (Parameterized)
 
 For some Commands, in order to pass this information to the remote MiOS Unit, we need to know either the current value of the _Item_, or we need to know the current value of the _Command_.
 
