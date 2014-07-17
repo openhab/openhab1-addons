@@ -41,11 +41,6 @@ public class YamahaReceiverProxy {
 	public static final int VOLUME_MIN = -80;
 	public static final int VOLUME_MAX = 16;
 
-	public static final String[] SOUND_PROGRAMS_RX_V573 = new String[] {
-			"Music Video", "Standard", "Spectacle", "Sci-Fi", "Adventure",
-			"Drama", "Mono Movie", "Surrender Decoder", "2ch Stereo",
-			"7ch Stereo", "Straight" };
-
 	private final DocumentBuilderFactory dbf = DocumentBuilderFactory
 			.newInstance();
 	
