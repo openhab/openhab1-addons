@@ -150,6 +150,7 @@ public class HueBulb {
 	 */
 	
 	public boolean switchOn(boolean powerOn) {
+		this.isOn = powerOn;
 		if(powerOn) {
 			executeMessage("{\"on\":true}");
 		} else {
