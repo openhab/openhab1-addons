@@ -298,7 +298,8 @@ To do this, we introduce the _&lt;BoundValue>_ parameter that, when present in t
 
 Additionally, since _&lt;PCTNumber>_ is just a value, it won't match any of the entries in our Mapping file, so we introduce a magic key `_defaultCommand`.  We first attempt to do a literal mapping and, if that doesn't find a match, we go look for this magic key and use it's entry.
 
-#### A Dimmer, Volume Control, Speed controlled Fan...
+
+##### A Dimmer, Volume Control, Speed controlled Fan...
 
     Dimmer   MasterCeilingFanLoadLevelStatus "Master Ceiling Fan [%d]%" <slider> (GDimmer) {mios="unit:house,device:101/service/Dimming1/LoadLevelStatus,command:MAP(miosDimmerCommand.map)"}
 
@@ -310,7 +311,8 @@ The `examples/transform/miosDimmerCommand.map` file has a definition that handle
     DECREASE=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=?--)
     _defaultCommand=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=??)
 
-#### A Thermostat...
+
+##### A Thermostat...
 
 A Thermostat is composed of a number of pieces.  Each piece must be first bound to openHAB Items, and then a number of mappings must be put in place.
 TODO: Not finished yet!
@@ -360,6 +362,8 @@ _&lt;CommandList>_ is _&lt;openHABCommand>_ { `|` _&lt;openHABCommand>_ }*
 _&lt;openHABCommand>_ is `ON`, `OFF`, `INCREASE`, `DECREASE`, `TOGGLE` etc
 
 _&lt;SceneAttribute>_ is `status` | `active`
+
+#### Scene Command Binding Examples
 
 In general Scenes tend to look like:
 
