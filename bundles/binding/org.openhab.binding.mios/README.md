@@ -310,6 +310,39 @@ The `examples/transform/miosDimmerCommand.map` file has a definition that handle
     DECREASE=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=?--)
     _defaultCommand=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=??)
 
+#### A Thermostat...
+
+A Thermostat is composed of a number of pieces.  Each piece must be first bound to openHAB Items, and then a number of mappings must be put in place.
+TODO: Not finished yet!
+
+    /* Thermostat Upstairs */
+    Number   ThermostatUpstairsId "ID [%d]" {mios="unit:house,device:335/id"}
+    String   ThermostatUpstairsDeviceStatus "Device Status [%s]" (GThermostatUpstairs) {mios="unit:house,device:335/status,in:MAP(miosStatus.map)"}
+    Number   ThermostatUpstairsCurrentTemperature "Upstairs Temperature [%.1f °F]" <temperature> (GThermostatUpstairs, GTemperature) {mios="unit:house,device:335/service/TemperatureSensor1/CurrentTemperature"}
+    Number   ThermostatUpstairsHeatCurrentSetpoint "Heat Setpoint [%.1f °F]" <temperature> (GThermostatUpstairs) {mios="unit:house,device:335/service/TemperatureSetpoint1_Heat/CurrentSetpoint"}
+    Number   ThermostatUpstairsCoolCurrentSetpoint "Cool Setpoint [%.1f °F]" <temperature> (GThermostatUpstairs) {mios="unit:house,device:335/service/TemperatureSetpoint1_Cool/CurrentSetpoint"}
+    String   ThermostatUpstairsFanMode "Fan Mode" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_FanOperatingMode1/Mode,command:MAP(miosTStatFanOperatingModeCommand.map)"}
+    String   ThermostatUpstairsFanStatus "Fan Status [%s]" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_FanOperatingMode1/FanStatus"}
+    String   ThermostatUpstairsModeStatus "Mode Status" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_UserOperatingMode1/ModeStatus,command:MAP(miosTStatModeStatusCommand.map)"}
+    String   ThermostatUpstairsModeState "Mode State [%s]" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_OperatingState1/ModeState"}
+    Number   ThermostatUpstairsBatteryLevel "Battery Level [%d] %" (GThermostatUpstairs) {mios="unit:house,device:335/service/HaDevice1/BatteryLevel"}
+    DateTime ThermostatUpstairsBatteryDate "Battery Date [%1$ta, %1$tm/%1$te %1$tR]" <calendar> (GThermostatUpstairs) {mios="unit:house,device:335/service/HaDevice1/BatteryDate"} 
+    DateTime ThermostatUpstairsLastUpdate "Last Update [%1$ta, %1$tm/%1$te %1$tR]" <calendar> (GThermostatUpstairs) {mios="unit:house,device:335/service/HaDevice1/LastUpdate"}
+
+and these need to be paired with similar items in the `*.sitemap` file:
+
+    Text     item=ThermostatUpstairsCurrentTemperature {
+        Text     item=ThermostatHumidityUpstairsCurrentLevel
+        Text     item=ThermostatUpstairsHeatCurrentSetpoint
+        Text     item=ThermostatUpstairsCoolCurrentSetpoint
+        Switch   item=ThermostatUpstairsFanMode mappings=[ContinuousOn="On", Auto="Auto"]
+        Text     item=ThermostatUpstairsFanStatus
+        Switch   item=ThermostatUpstairsModeStatus mappings=[HeatOn="Heat", CoolOn="Cool", AutoChangeOver="Auto", Off="Off"]
+        Text     item=ThermostatUpstairsModeState
+        Text     item=ThermostatUpstairsBatteryLevel
+        Text     item=ThermostatUpstairsBatteryDate
+    }
+
 
 ### Item : MiOS Scene Binding - Commands (Reacting)
 
