@@ -367,11 +367,11 @@ _&lt;SceneAttribute>_ is `status` | `active`
 
 In general Scenes tend to look like:
 
-    Switch   SceneMasterClosetLights "Master Closet Lights Scene" <sofa> (GScene) {mios="unit:house,scene:109/status,command:,in:MAP(miosStatus.map)", autoupdate="false"}
+    String   SceneMasterClosetLights "Master Closet Lights Scene" <sofa> (GScene) {mios="unit:house,scene:109/status,command:,in:MAP(miosStatus.map)", autoupdate="false"}
 
 Or if you want the Scene executed upon receipt of `ON` or `TOGGLE` Commands:
 
-    Switch   SceneMasterClosetLights "Master Closet Lights Scene" <sofa> (GScene) {mios="unit:house,scene:109/status,command:ON|TOGGLE,in:MAP(miosStatus.map)", autoupdate="false"}
+    String   SceneMasterClosetLights "Master Closet Lights Scene" <sofa> (GScene) {mios="unit:house,scene:109/status,command:ON|TOGGLE,in:MAP(miosStatus.map)", autoupdate="false"}
 
 
 NOTE: Here we've added an additional configuration to the binding declaration, `autoupdate="false"`, to ensure the Switch no longer has the `ON` and `OFF` States automatically managed, and instead just looks like a Button.
