@@ -584,6 +584,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 				if (item instanceof NumberItem)
 					state = new DecimalType(rs.getDouble(2));
+				else if (item instanceof ColorItem)
+					state = new HSBType(rs.getString(2));
 				else if (item instanceof DimmerItem)
 					state = new PercentType(rs.getInt(2));
 				else if (item instanceof SwitchItem)
@@ -592,8 +594,6 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 					state = OpenClosedType.valueOf(rs.getString(2));
 				else if (item instanceof RollershutterItem)
 					state = new PercentType(rs.getInt(2));
-				else if (item instanceof ColorItem)
-					state = new HSBType(rs.getString(2));
 				else if (item instanceof DateTimeItem) {
 					Calendar calendar = Calendar.getInstance();
 					calendar.setTimeInMillis(rs.getTimestamp(2).getTime());
