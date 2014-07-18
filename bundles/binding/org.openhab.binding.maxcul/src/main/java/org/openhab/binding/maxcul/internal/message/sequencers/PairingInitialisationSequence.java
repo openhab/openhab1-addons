@@ -27,13 +27,12 @@ public class PairingInitialisationSequence implements MessageSequencer {
 	{
 		INITIAL_PING,
 		PONG_ACKED,
-		WAKEUP_ACKED,
-		TIME_ACKED,
 		GROUP_ID_ACKED,
 		CONFIG_TEMPS_ACKED,
 		SENDING_ASSOCIATIONS,
 		SENDING_ASSOCIATIONS_ACKED,
 		SENDING_WEEK_PROFILE,
+		RETX_WAKEUP_ACK,
 		FINISHED;
 	}
 
@@ -44,18 +43,22 @@ public class PairingInitialisationSequence implements MessageSequencer {
 
 	private String devAddr;
 	private byte group_id;
-	private String tzStr;
 	private MaxCulMsgHandler messageHandler;
 	private int pktLostCount = 0;
 	private MaxCulDevice deviceType = MaxCulDevice.UNKNOWN;
 	private MaxCulBindingConfig config;
 	private HashSet<MaxCulBindingConfig> associations;
 	private Iterator<MaxCulBindingConfig> assocIter;
+	private boolean useFast = true;
 
-	public PairingInitialisationSequence(byte group_id, String tzStr, MaxCulMsgHandler messageHandler, MaxCulBindingConfig cfg, HashSet<MaxCulBindingConfig> associations)
+	/* place to keep stuff when going through ReTx */
+	private BaseMsg reTxMsg;
+	private PairingInitialisationState reTxState;
+
+
+	public PairingInitialisationSequence(byte group_id, MaxCulMsgHandler messageHandler, MaxCulBindingConfig cfg, HashSet<MaxCulBindingConfig> associations)
 	{
 		this.group_id = group_id;
-		this.tzStr = tzStr;
 		this.messageHandler = messageHandler;
 		this.config = cfg;
 		this.associations = associations;
@@ -65,9 +68,11 @@ public class PairingInitialisationSequence implements MessageSequencer {
 	public void runSequencer(BaseMsg msg)
 	{
 		/* This sequence is taken from observations of activity between the
-		 * MAX! Cube and a wall thermostat
+		 * MAX! Cube and a wall thermostat and refined using some experimentation :)
 		 */
-		pktLostCount = 0; // reset counter - ack received
+		if (state != PairingInitialisationState.RETX_WAKEUP_ACK)
+			pktLostCount = 0; // reset counter - ack received
+
 		logger.debug("Sequence State: "+state);
 		switch (state)
 		{
@@ -94,45 +99,13 @@ public class PairingInitialisationSequence implements MessageSequencer {
 					}
 					else
 					{
-						/* send a wake up packet */
-						logger.debug("Sending WAKEUP");
-						messageHandler.sendWakeup(devAddr, this);
-						state = PairingInitialisationState.WAKEUP_ACKED;
+						/* send group id information */
+						logger.debug("Sending GROUP_ID");
+						messageHandler.sendSetGroupId(devAddr, group_id, this);
+						state = PairingInitialisationState.GROUP_ID_ACKED;
 					}
 				} else {
-					logger.error("PONG was nacked. Ending sequence");
-					state = PairingInitialisationState.FINISHED;
-				}
-			} else logger.error("Received "+msg.msgType+" when expecting ACK");
-			break;
-		case WAKEUP_ACKED:
-			if (msg.msgType == MaxCulMsgType.ACK)
-			{
-				AckMsg ack = new AckMsg(msg.rawMsg);
-				if (!ack.getIsNack())
-				{
-					/* send time information */
-					logger.debug("Sending TIME_INFO");
-					messageHandler.sendTimeInfo(devAddr, tzStr, this);
-					state = PairingInitialisationState.TIME_ACKED;
-				} else {
-					logger.error("WAKEUP was nacked. Ending sequence");
-					state = PairingInitialisationState.FINISHED;
-				}
-			} else logger.error("Received "+msg.msgType+" when expecting ACK");
-			break;
-		case TIME_ACKED:
-			if (msg.msgType == MaxCulMsgType.ACK)
-			{
-				AckMsg ack = new AckMsg(msg.rawMsg);
-				if (!ack.getIsNack())
-				{
-					/* send time information */
-					logger.debug("Sending GROUP_ID");
-					messageHandler.sendSetGroupId(devAddr, group_id, this);
-					state = PairingInitialisationState.GROUP_ID_ACKED;
-				} else {
-					logger.error("TIME_INFO was nacked. Ending sequence");
+					logger.error("PAIR_PONG was nacked. Ending sequence");
 					state = PairingInitialisationState.FINISHED;
 				}
 			} else logger.error("Received "+msg.msgType+" when expecting ACK");
@@ -163,22 +136,21 @@ public class PairingInitialisationSequence implements MessageSequencer {
 				AckMsg ack = new AckMsg(msg.rawMsg);
 				if (!ack.getIsNack())
 				{
+
+					/* associate device with us so we get updates - we pretend to be the MAX! Cube */
+					messageHandler.sendAddLinkPartner(devAddr, this, msg.dstAddrStr, MaxCulDevice.CUBE);
+
+					/* if there are more associations to come then set up iterator
+					 * and goto state to transmit more associations */
 					if (associations.isEmpty() == false)
 					{
-						/* send first association message */
 						assocIter = associations.iterator();
-						MaxCulBindingConfig partnerCfg = assocIter.next();
-						messageHandler.sendAddLinkPartner(devAddr, this, partnerCfg.getDevAddr(), partnerCfg.getDeviceType());
-						/* if it's the last association message then wait for ACK, otherwise keep going */
-						if (assocIter.hasNext())
-							state = PairingInitialisationState.SENDING_ASSOCIATIONS;
-						else
-							state = PairingInitialisationState.SENDING_ASSOCIATIONS_ACKED;
+						state = PairingInitialisationState.SENDING_ASSOCIATIONS;
 					}
 					else
 					{
-						logger.debug("No associations");
-						state = PairingInitialisationState.FINISHED;
+						logger.debug("No user configured associations");
+						state = PairingInitialisationState.SENDING_ASSOCIATIONS_ACKED;
 					}
 				} else {
 					logger.error("CONFIG_TEMPERATURES was nacked. Ending sequence");
@@ -223,6 +195,23 @@ public class PairingInitialisationSequence implements MessageSequencer {
 		case FINISHED:
 			/* done, do nothing */
 			break;
+		case RETX_WAKEUP_ACK:
+			/* here are waiting for an ACK after sending a wakeup message */
+			if (msg.msgType == MaxCulMsgType.ACK)
+			{
+				AckMsg ack = new AckMsg(msg.rawMsg);
+				if (!ack.getIsNack())
+				{
+					logger.debug("Attempt retransmission - resuming");
+					this.useFast = true;
+					messageHandler.sendMessage(reTxMsg);
+					state = reTxState; // resume back to previous state
+				} else {
+					logger.error("WAKEUP for ReTx was nacked. Ending sequence");
+					state = PairingInitialisationState.FINISHED;
+				}
+			} else logger.error("Received "+msg.msgType+" when expecting ACK");
+			break;
 		default:
 			logger.error("Invalid state for PairingInitialisation Message Sequence!");
 			break;
@@ -240,8 +229,17 @@ public class PairingInitialisationSequence implements MessageSequencer {
 		logger.debug("Lost "+pktLostCount+" packets");
 		if (pktLostCount < 3)
 		{
-			logger.debug("Attempt retransmission");
-			messageHandler.sendMessage(msg);
+			/* send WAKEUP to allow us to send messages in fast mode */
+			logger.debug("Attempt retransmission - first wakeup device");
+			this.useFast = false;
+			messageHandler.sendWakeup(msg.dstAddrStr, this);
+			/* save current state, but avoid overwriting on second attempt */
+			if (this.state != PairingInitialisationState.RETX_WAKEUP_ACK)
+			{
+				this.reTxMsg = msg;
+				this.reTxState = state;
+			}
+			state = PairingInitialisationState.RETX_WAKEUP_ACK;
 		} else {
 			logger.error("Lost "+pktLostCount+" packets. Ending Sequence in state "+this.state);
 			state = PairingInitialisationState.FINISHED;
@@ -250,8 +248,8 @@ public class PairingInitialisationSequence implements MessageSequencer {
 
 	@Override
 	public boolean useFastSend() {
-		// always use fast send - device just sent us a ping to start with!
-		return true;
+		// only use fast send when not sending the wakup msg in PONG_ACKED
+		return (useFast);
 	}
 
 }

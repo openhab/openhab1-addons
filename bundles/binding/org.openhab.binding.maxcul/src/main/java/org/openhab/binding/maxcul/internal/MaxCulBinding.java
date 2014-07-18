@@ -372,7 +372,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 
 				/* start the initialisation sequence */
 				PairingInitialisationSequence ps = new PairingInitialisationSequence(
-						this.DEFAULT_GROUP_ID, this.tzStr, messageHandler,
+						this.DEFAULT_GROUP_ID, messageHandler,
 						configWithTempsConfig, associations );
 				messageHandler.startSequence(ps, pkt);
 			}
