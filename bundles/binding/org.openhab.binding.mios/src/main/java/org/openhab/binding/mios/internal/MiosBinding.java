@@ -19,6 +19,7 @@ import org.openhab.binding.mios.internal.config.MiosBindingConfig;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
@@ -285,16 +286,27 @@ public class MiosBinding extends AbstractActiveBinding<MiosBindingProvider>
 
 			for (BindingProvider provider : providers) {
 				if (provider instanceof MiosBindingProvider) {
-					MiosBindingConfig config = ((MiosBindingProviderImpl) provider)
+					MiosBindingProviderImpl miosProvider = (MiosBindingProviderImpl) provider;
+					MiosBindingConfig config = miosProvider
 							.getMiosBindingConfig(itemName);
 
 					// TODO: Work out how to retrieve an Item's current state,
 					// so it can be referenced in the invokeCommand.
 					if (config != null) {
-						connector.invokeCommand(config, command, null);
+						ItemRegistry reg = miosProvider.getItemRegistry();
+
+						if (reg != null) {
+							Item item = reg.getItem(config.getItemName());
+							State state = item.getState();
+							connector.invokeCommand(config, command, state);
+						} else {
+							logger.warn(
+									"internalReceiveCommand: Missing ItemRegistry for item '{}' command '{}'",
+									itemName, command);
+						}
 					} else {
 						logger.trace(
-								"internalReceiveCommand: Found null BindingConfig for item '{}' command '{}'",
+								"internalReceiveCommand: Missing BindingConfig for item '{}' command '{}'",
 								itemName, command);
 					}
 				}
@@ -310,47 +322,13 @@ public class MiosBinding extends AbstractActiveBinding<MiosBindingProvider>
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
-		try {
-			logger.trace(
-					"internalReceiveUpdate: itemName '{}', newState '{}', class '{}'",
-					new Object[] { itemName, newState, newState.getClass() });
+		logger.trace(
+				"internalReceiveUpdate: itemName '{}', newState '{}', class '{}'",
+				new Object[] { itemName, newState, newState.getClass() });
 
-			// Lookup the MiOS Unit name and property for this item
-			String unitName = getMiosUnitName(itemName);
-
-			MiosConnector connector = getMiosConnector(unitName);
-			if (connector == null) {
-				logger.warn(
-						"Received update '{}' for item '{}' but no connector found for MiOS Unit '{}', ignoring",
-						new Object[] { newState.toString(), itemName, unitName });
-				return;
-			}
-
-			if (!connector.isConnected()) {
-				logger.warn(
-						"Received update '{}' for item '{}' but the connection to the MiOS Unit '{}' is down, ignoring",
-						new Object[] { newState.toString(), itemName, unitName });
-				return;
-			}
-
-			// TODO: Once we have Bindings that have values that go "back" to
-			// MiOS we need to implement this method. At that time, we'll also
-			// need to work out which direction(s) the Binding can handle and
-			// not send stuff back to the MiOS Unit when we just got it from the
-			// MiOS Unit. In this case, it may be simpler not to register
-			// interest in this callback if we know that the specific MiOS
-			// BindingConfig cannot support it.
-			//
-			// ie. Ask the MiOSBindingConfig whether we need to do anything.
-			//
-			// The other use-case is some sort of data-type coercion. If the
-			// Item being bound is "DecimalType" and we get a "String" (as is
-			// COMMON in MiOS) then we can attempt to convert it before
-			// "stuffing it back down".
-
-		} catch (Exception e) {
-			logger.error("Error handling update", e);
-		}
+		// No need to implement this for MiOS Bridge Binding since anything
+		// that needs to be sent back to the MiOS System will be done via a
+		// Command.
 	}
 
 	/**

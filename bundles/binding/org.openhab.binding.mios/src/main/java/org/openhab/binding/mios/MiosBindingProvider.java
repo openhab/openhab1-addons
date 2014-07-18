@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemRegistry;
 
 /**
  * Binding provider interface. Defines how to get properties from a binding
@@ -28,10 +29,22 @@ public interface MiosBindingProvider extends BindingProvider {
 	/**
 	 * Returns the Type of the Item identified by {@code itemName}
 	 * 
-	 * @param itemName the name of the item to find the type for
+	 * @param itemName
+	 *            the name of the item to find the type for
 	 * @return the type of the Item identified by {@code itemName}
 	 */
 	Class<? extends Item> getItemType(String itemName);
 
 	public List<String> getItemsForProperty(String property);
+
+	/**
+	 * Return the ItemRegistry (catalog) used by this BindingProvider.
+	 * 
+	 * The ItemRegistry is injected into the MiosBindingProvider through OSGi
+	 * configuration. This method providers read-only access to the
+	 * ItemRegistry, which is the catalog of Items in use by this system.
+	 * 
+	 * @return the ItemRegistry associated with this BindingProvider.
+	 */
+	public ItemRegistry getItemRegistry();
 }

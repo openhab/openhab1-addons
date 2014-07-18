@@ -132,8 +132,8 @@ public class MiosConnector {
 	private void callDevice(DeviceBindingConfig config, String upnpAction,
 			State state) {
 		logger.debug(
-				"callDevice: Need to remote-invoke Device '{}' action '{}')",
-				new Object[] { config.toProperty(), upnpAction });
+				"callDevice: Need to remote-invoke Device '{}' action '{}' and current state '{}')",
+				new Object[] { config.toProperty(), upnpAction, state });
 
 		Matcher matcher = DEVICE_PATTERN.matcher(upnpAction);
 
@@ -152,10 +152,8 @@ public class MiosConnector {
 								serviceParam, serviceValue });
 
 				// If the parameters to the URL are specified, then we need to
-				// build
-				// the parameter section of the URL, encoding parameter names
-				// and
-				// values... trust no-one 8)
+				// build the parameter section of the URL, encoding parameter
+				// names and values... trust no-one 8)
 				String p;
 				if (serviceParam != null) {
 					if (serviceValue == null || serviceValue.equals('?')) {

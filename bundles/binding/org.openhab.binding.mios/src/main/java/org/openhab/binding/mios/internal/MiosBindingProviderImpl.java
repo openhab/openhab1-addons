@@ -22,6 +22,7 @@ import org.openhab.binding.mios.internal.config.SceneBindingConfig;
 import org.openhab.binding.mios.internal.config.SystemBindingConfig;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -70,6 +71,27 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(MiosBindingProviderImpl.class);
+
+	// Injected by the OSGi Container through the setItemRegistry and
+	// unsetItemRegistry methods.
+	private ItemRegistry itemRegistry;
+
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		logger.debug("setItemRegistry: called");
+		this.itemRegistry = itemRegistry;
+	}
+
+	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+		logger.debug("unsetItemRegistry: called");
+		this.itemRegistry = null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ItemRegistry getItemRegistry() {
+		return this.itemRegistry;
+	}
 
 	public String getBindingType() {
 		return "mios";
@@ -157,16 +179,16 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 		// Inline a factory for now...
 		// FIXME
 		if (inType.equals("device")) {
-			return DeviceBindingConfig.create(context, item.getName(), unitName,
-					Integer.parseInt(inId), inStuff, item.getClass(),
+			return DeviceBindingConfig.create(context, item.getName(),
+					unitName, Integer.parseInt(inId), inStuff, item.getClass(),
 					commandThing, updateThing, inTrans, outTrans);
 		} else if (inType.equals("scene")) {
 			return SceneBindingConfig.create(context, item.getName(), unitName,
 					Integer.parseInt(inId), inStuff, item.getClass(),
 					commandThing, updateThing, inTrans, outTrans);
 		} else if (inType.equals("system")) {
-			return SystemBindingConfig.create(context, item.getName(), unitName, inStuff,
-					item.getClass(), inTrans, outTrans);
+			return SystemBindingConfig.create(context, item.getName(),
+					unitName, inStuff, item.getClass(), inTrans, outTrans);
 		} else if (inType.equals("room")) {
 			return RoomBindingConfig.create(context, item.getName(), unitName,
 					Integer.parseInt(inId), inStuff, item.getClass(), inTrans,
