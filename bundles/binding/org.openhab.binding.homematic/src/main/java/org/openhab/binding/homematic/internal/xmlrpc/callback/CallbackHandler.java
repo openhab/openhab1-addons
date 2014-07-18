@@ -14,7 +14,7 @@ package org.openhab.binding.homematic.internal.xmlrpc.callback;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.openhab.binding.homematic.internal.communicator.CcuCallbackReceiver;
+import org.openhab.binding.homematic.internal.communicator.HomematicCallbackReceiver;
 
 /**
  * The CallbackHandler itself only dispatches calls to registered instances of
@@ -32,14 +32,14 @@ import org.openhab.binding.homematic.internal.communicator.CcuCallbackReceiver;
  */
 public class CallbackHandler {
 
-    private Set<CcuCallbackReceiver> receivers;
+    private Set<HomematicCallbackReceiver> receivers;
 
     public CallbackHandler() {
-        receivers = new HashSet<CcuCallbackReceiver>();
+        receivers = new HashSet<HomematicCallbackReceiver>();
     }
 
     public String event(String interfaceId, String address, String parameterKey, Object value) {
-        for (CcuCallbackReceiver rcv : receivers) {
+        for (HomematicCallbackReceiver rcv : receivers) {
             rcv.event(interfaceId, address, parameterKey, value);
         }
 
@@ -58,7 +58,7 @@ public class CallbackHandler {
     }
 
     public Object[] newDevices(String interfaceId, Object[] deviceDescriptions) {
-        for (CcuCallbackReceiver rcv : receivers) {
+        for (HomematicCallbackReceiver rcv : receivers) {
             rcv.newDevices(interfaceId, deviceDescriptions);
         }
 
@@ -85,11 +85,11 @@ public class CallbackHandler {
      * Allow CallbackInterface instances to register for updates
      */
 
-    public void registerCallbackReceiver(CcuCallbackReceiver receiver) {
+    public void registerCallbackReceiver(HomematicCallbackReceiver receiver) {
         receivers.add(receiver);
     }
 
-    public void unregisterCallbackReceiver(CcuCallbackReceiver receiver) {
+    public void unregisterCallbackReceiver(HomematicCallbackReceiver receiver) {
         receivers.remove(receiver);
     }
 

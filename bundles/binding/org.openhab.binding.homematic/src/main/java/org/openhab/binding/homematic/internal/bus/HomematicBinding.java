@@ -13,7 +13,7 @@ import java.util.TimerTask;
 
 import org.openhab.binding.homematic.HomematicBindingProvider;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
-import org.openhab.binding.homematic.internal.communicator.CcuCommunicator;
+import org.openhab.binding.homematic.internal.communicator.HomematicCommunicator;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.util.BindingChangedDelayedExecutor;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -38,11 +38,11 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
 	private static final Logger logger = LoggerFactory.getLogger(HomematicBinding.class);
 
 	private HomematicContext context = HomematicContext.getInstance();
-	private CcuCommunicator communicator = new CcuCommunicator();
+	private HomematicCommunicator communicator = new HomematicCommunicator();
 	private BindingChangedDelayedExecutor delayedExecutor = new BindingChangedDelayedExecutor(communicator);
 
 	/**
-	 * Adding shudown hook to stop the CCU communicator.
+	 * Adding shudown hook to stop the Homematic server communicator.
 	 */
 	public HomematicBinding() {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -158,7 +158,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
 	}
 
 	/**
-	 * Receives a command and send it to the CCU communicator.
+	 * Receives a command and send it to the Homematic communicator.
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
@@ -170,7 +170,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
 	}
 
 	/**
-	 * Receives a state and send it to the CCU communicator.
+	 * Receives a state and send it to the Homematic communicator.
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
@@ -182,14 +182,14 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
 	}
 
 	/**
-	 * Restarts the CCU communicator if no messages arrive within a configured
-	 * time.
+	 * Restarts the Homematic communicator if no messages arrive within a
+	 * configured time.
 	 */
 	@Override
 	protected void execute() {
 		long timeSinceLastEvent = (System.currentTimeMillis() - communicator.getLastEventTime()) / 1000;
 		if (timeSinceLastEvent > context.getConfig().getAliveInterval()) {
-			logger.info("No event since {} seconds, refreshing CCU connections", timeSinceLastEvent);
+			logger.info("No event since {} seconds, refreshing Homematic server connections", timeSinceLastEvent);
 			communicator.stop();
 			communicator.start();
 		}
@@ -208,7 +208,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
 	 */
 	@Override
 	protected String getName() {
-		return "CCU keep alive thread";
+		return "Homematic server keep alive thread";
 	}
 
 }

@@ -9,6 +9,7 @@
 package org.openhab.binding.homematic.internal.xmlrpc;
 
 import org.apache.xmlrpc.client.XmlRpcClient;
+import org.openhab.binding.homematic.internal.model.HmInterface;
 
 /**
  * This class adds Wired specific methods of the CCU interface. It connects to
@@ -41,7 +42,7 @@ public class XmlRpcConnectionWired extends XmlRpcConnection {
 
 	@Override
 	public Integer getPort() {
-		return 2000;
+		return HmInterface.WIRED.getPort();
 	}
 
 }

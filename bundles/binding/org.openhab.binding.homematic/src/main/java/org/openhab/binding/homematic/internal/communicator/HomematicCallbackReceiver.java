@@ -9,22 +9,21 @@
 package org.openhab.binding.homematic.internal.communicator;
 
 /**
- * The server interface with the common methods for XML-RPC and BIN-RPC
- * communication.
+ * CallbackReceiver defines those methods invoked by a Homematic server.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public interface CcuCallbackServer {
+public interface HomematicCallbackReceiver {
 
 	/**
-	 * Starts the CCU callback server.
+	 * Called when the Homematic server is sending a multicall message.
 	 */
-	public void start() throws Exception;
+	public void event(String interfaceId, String address, String parameterKey, Object value);
 
 	/**
-	 * Stops the CCU callback server.
+	 * Called when the Homematic server detects a new device.
 	 */
-	public void shutdown();
+	public void newDevices(String interfaceId, Object[] deviceDescriptions);
 
 }
