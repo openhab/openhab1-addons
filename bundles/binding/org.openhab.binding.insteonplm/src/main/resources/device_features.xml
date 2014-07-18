@@ -2,6 +2,7 @@
 
 <feature name="GenericSwitch">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x11">LightOnSwitchHandler</message-handler>
 	<message-handler cmd="0x13">LightOffHandler</message-handler>
 	<message-handler cmd="0x19">LightStateSwitchHandler</message-handler>
@@ -15,6 +16,7 @@
 </feature>
 <feature name="GenericDimmer">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x11">LightOnDimmerHandler</message-handler>
 	<message-handler cmd="0x13">LightOffHandler</message-handler>
@@ -27,6 +29,7 @@
 </feature>
 <feature name="IOLincContact">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x11">OpenedContactHandler</message-handler>
 	<message-handler cmd="0x13">ClosedContactHandler</message-handler>
@@ -36,6 +39,7 @@
 </feature>
 <feature name="IOLincSwitch">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x11">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x13">NoOpMsgHandler</message-handler>
@@ -45,6 +49,7 @@
 </feature>
 <feature name="MotionSensorContact">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x11">OpenedContactHandler</message-handler>
 	<message-handler cmd="0x13">ClosedContactHandler</message-handler>
@@ -53,6 +58,7 @@
 </feature>
 <feature name="GenericContact">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x11">OpenedContactHandler</message-handler>
 	<message-handler cmd="0x13">ClosedContactHandler</message-handler>
