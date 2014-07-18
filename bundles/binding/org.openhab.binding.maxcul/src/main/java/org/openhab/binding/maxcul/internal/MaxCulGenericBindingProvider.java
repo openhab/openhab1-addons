@@ -79,13 +79,17 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		case LISTEN_MODE:
 			if (!(item instanceof SwitchItem))
 				throw new BindingConfigParseException("Invalid item type. PairMode/ListenMode can only be a switch");
+			else if (config.getFeature() == MaxCulFeature.RESET && !(item instanceof SwitchItem))
+				throw new BindingConfigParseException("Invalid item type. Feature 'reset' can only be a Switch");
 			break;
 		case PUSH_BUTTON:
 		case SHUTTER_CONTACT:
 			if (config.getFeature() == MaxCulFeature.BATTERY && !(item instanceof SwitchItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Switch");
-			if (config.getFeature() == MaxCulFeature.SWITCH && !(item instanceof SwitchItem))
+			else if (config.getFeature() == MaxCulFeature.SWITCH && !(item instanceof SwitchItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'switch' can only be a Switch");
+			else if (config.getFeature() == MaxCulFeature.RESET && !(item instanceof SwitchItem))
+				throw new BindingConfigParseException("Invalid item type. Feature 'reset' can only be a Switch");
 			break;
 		case RADIATOR_THERMOSTAT:
 		case RADIATOR_THERMOSTAT_PLUS:
@@ -100,6 +104,8 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Switch");
 			else if (config.getFeature() == MaxCulFeature.MODE && !(item instanceof NumberItem))
 				throw new BindingConfigParseException("Invalid item type. Feature 'mode' can only be a Number");
+			else if (config.getFeature() == MaxCulFeature.RESET && !(item instanceof SwitchItem))
+				throw new BindingConfigParseException("Invalid item type. Feature 'reset' can only be a Switch");
 			break;
 		default:
 			throw new BindingConfigParseException("Invalid config device type. Wasn't expecting "+config.getDeviceType());
