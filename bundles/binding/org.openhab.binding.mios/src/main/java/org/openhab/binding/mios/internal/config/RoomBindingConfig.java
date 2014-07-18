@@ -9,6 +9,8 @@
 package org.openhab.binding.mios.internal.config;
 
 import org.openhab.core.items.Item;
+import org.openhab.core.transform.TransformationException;
+import org.openhab.core.types.Command;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
@@ -21,7 +23,7 @@ public class RoomBindingConfig extends MiosBindingConfig {
 	private RoomBindingConfig(String context, String itemName, String unitName,
 			int id, String stuff, Class<? extends Item> itemType,
 			String inTransform, String outTransform) {
-		super(context, itemName, unitName, id, stuff, itemType, null, null,
+		super(context, itemName, unitName, id, stuff, itemType, null,
 				inTransform, outTransform);
 	}
 
@@ -39,5 +41,11 @@ public class RoomBindingConfig extends MiosBindingConfig {
 	@Override
 	public String getType() {
 		return "room";
+	}
+
+	@Override
+	public String transformCommand(Command command)
+			throws TransformationException {
+		throw new TransformationException("Room attributes don't support Command Transformations");
 	}
 }

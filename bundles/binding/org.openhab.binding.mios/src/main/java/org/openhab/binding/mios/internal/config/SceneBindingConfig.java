@@ -22,20 +22,20 @@ public class SceneBindingConfig extends MiosBindingConfig {
 
 	private SceneBindingConfig(String context, String itemName,
 			String unitName, int id, String stuff,
-			Class<? extends Item> itemType, String outType, String outStuff,
+			Class<? extends Item> itemType, String commandThing,
 			String inTransform, String outTransform) {
-		super(context, itemName, unitName, id, stuff, itemType, outType,
-				outStuff, inTransform, outTransform);
+		super(context, itemName, unitName, id, stuff, itemType, commandThing,
+				inTransform, outTransform);
 	}
 
 	public static final MiosBindingConfig create(String context,
 			String itemName, String unitName, int id, String stuff,
 			Class<? extends Item> itemType, String commandThing,
-			String updateThing, String inTransform, String outTransform)
+			String inTransform, String outTransform)
 			throws BindingConfigParseException {
 		MiosBindingConfig c = new SceneBindingConfig(context, itemName,
-				unitName, id, stuff, itemType, commandThing, updateThing,
-				inTransform, outTransform);
+				unitName, id, stuff, itemType, commandThing, inTransform,
+				outTransform);
 
 		c.initialize();
 		return c;
@@ -46,6 +46,7 @@ public class SceneBindingConfig extends MiosBindingConfig {
 		return "scene";
 	}
 
+	@Override
 	public String transformCommand(Command command)
 			throws TransformationException {
 		String key = command.toString();

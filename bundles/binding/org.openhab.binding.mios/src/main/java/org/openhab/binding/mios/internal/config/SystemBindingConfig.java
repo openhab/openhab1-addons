@@ -9,6 +9,8 @@
 package org.openhab.binding.mios.internal.config;
 
 import org.openhab.core.items.Item;
+import org.openhab.core.transform.TransformationException;
+import org.openhab.core.types.Command;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
@@ -21,7 +23,7 @@ public class SystemBindingConfig extends MiosBindingConfig {
 	private SystemBindingConfig(String context, String itemName,
 			String unitName, String stuff, Class<? extends Item> itemType,
 			String inTransform, String outTransform) {
-		super(context, itemName, unitName, 0, stuff, itemType, null, null,
+		super(context, itemName, unitName, 0, stuff, itemType, null,
 				inTransform, outTransform);
 	}
 
@@ -39,5 +41,11 @@ public class SystemBindingConfig extends MiosBindingConfig {
 	@Override
 	public String getType() {
 		return "system";
+	}
+
+	@Override
+	public String transformCommand(Command command)
+			throws TransformationException {
+		throw new TransformationException("System attributes don't support Command Transformations");
 	}
 }

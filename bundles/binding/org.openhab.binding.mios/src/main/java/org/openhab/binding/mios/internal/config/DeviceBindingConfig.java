@@ -120,9 +120,6 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 	private static final Pattern SERVICE_IN_PATTERN = Pattern
 			.compile("service/(?<serviceName>.+)/(?<serviceVar>.+)");
 
-	private static final Pattern SERVICE_UPDATE_PATTERN = Pattern
-			.compile("((?<serviceName>.+)/)?(?<serviceAction>.+)(\\((?<serviceParam>)\\))?");
-
 	private static final Pattern SERVICE_COMMAND_TRANSFORM_PATTERN = Pattern
 			.compile("(?<transform>(?<transformCommand>[a-zA-Z]+)\\((?<transformParam>.*)\\))");
 
@@ -131,10 +128,6 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 
 	private String inServiceName;
 	private String inServiceVariable;
-
-	private String updateServiceName;
-	private String updateServiceAction;
-	private String updateServiceParam;
 
 	private String commandTransformName;
 	private String commandTransformParam;
@@ -145,22 +138,21 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 	private DeviceBindingConfig(String context, String itemName,
 			String unitName, int id, String stuff,
 			Class<? extends Item> itemType, String commandThing,
-			String updateThing, String inTransform, String outTransform) {
+			String inTransform, String outTransform) {
 		super(context, itemName, unitName, id, stuff, itemType, commandThing,
-				updateThing, inTransform, outTransform);
+				inTransform, outTransform);
 	}
 
 	public static final MiosBindingConfig create(String context,
 			String itemName, String unitName, int id, String inStuff,
 			Class<? extends Item> itemType, String commandThing,
-			String updateThing, String inTransform, String outTransform)
+			String inTransform, String outTransform)
 			throws BindingConfigParseException {
 		try {
 			// Before we initialize, normalize the serviceId string used in any
 			// outgoing stuff.
 			String newInStuff = inStuff;
 			String newCommandThing = commandThing;
-			String newUpdateThing = updateThing;
 
 			// String newOutStuff = outStuff;
 
@@ -186,45 +178,6 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 
 				// Rebuild, since we've normalized the name.
 				newInStuff = "service/" + iName + '/' + iVar;
-			}
-
-			// Extract and Map the outbound names (if present)
-			String uName = null;
-			String uAction = null;
-			String uParam = null;
-
-			if (newUpdateThing != null && !newUpdateThing.equals("")) {
-				matcher = SERVICE_UPDATE_PATTERN.matcher(newUpdateThing);
-
-				if (matcher.matches()) {
-					uName = matcher.group("serviceName");
-					uAction = matcher.group("serviceAction");
-					uParam = matcher.group("serviceParam");
-
-					// If it's null, because the user didn't specify the
-					// Parameter section, then we set it to the empty string.
-					// This will normalize the result to have "()" as the
-					// parameter section.
-					uParam = (uParam == null) ? "" : uParam;
-
-					// If the ServiceName hasn't been specified, then use the
-					// same
-					// one that's used for the inBound binding.
-					if (uName == null) {
-						uName = iName;
-					} else {
-						tmp = aliasMap.get(uName);
-						if (tmp != null) {
-							uName = tmp;
-						}
-					}
-
-					// Rebuild, since we've normalized the name.
-					newUpdateThing = uName + '/' + uAction + '(' + uParam + ')';
-				} else {
-					throw new BindingConfigParseException(
-							"Binding parameter 'update:' doesn't follow the required pattern");
-				}
 			}
 
 			String cTransform = null;
@@ -275,22 +228,16 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 				}
 			}
 
-			logger.trace(
-					"newInStuff '{}', newUpdateThing '{}', iName '{}', iVar '{}', uName '{}', uAction '{}', uParam '{}'",
-					new Object[] { newInStuff, newUpdateThing, iName, iVar,
-							uName, uAction, uParam });
+			logger.trace("newInStuff '{}', iName '{}', iVar '{}'",
+					new Object[] { newInStuff, iName, iVar });
 
 			DeviceBindingConfig c = new DeviceBindingConfig(context, itemName,
 					unitName, id, newInStuff, itemType, newCommandThing,
-					newUpdateThing, inTransform, outTransform);
+					inTransform, outTransform);
 			c.initialize();
 
 			c.inServiceName = iName;
 			c.inServiceVariable = iVar;
-
-			c.updateServiceName = uName;
-			c.updateServiceAction = uAction;
-			c.updateServiceParam = uParam;
 
 			c.commandTransformName = cTransform;
 			c.commandTransformParam = cParam;
@@ -313,18 +260,6 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 
 	public String getInServiceVariable() {
 		return inServiceVariable;
-	}
-
-	private String getUpdateServiceName() {
-		return updateServiceName;
-	}
-
-	private String getUpdateServiceAction() {
-		return updateServiceAction;
-	}
-
-	private String getUpdateServiceParam() {
-		return updateServiceParam;
 	}
 
 	private String getCommandTransformName() {
@@ -365,6 +300,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 		return commandTransformationService;
 	}
 
+	@Override
 	public String transformCommand(Command command)
 			throws TransformationException {
 		TransformationService ts = getCommandTransformationService();
@@ -396,19 +332,6 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 			} else {
 				result = COMMAND_DEFAULTS.get(key);
 			}
-		}
-
-		// FIXME - Hardcode until we know how to get the value
-		int itemValue = 50;
-		// Perform item-value substitution on the resulting string.
-		if (result.contains("?++")) {
-			result = result.replace("?++", String.valueOf(itemValue + 20));
-		} else if (result.contains("?--")) {
-			result = result.replace("?--", String.valueOf(itemValue - 20));
-		} else if (result.contains("??")) {
-			result = result.replace("??", key);
-		} else if (result.contains("?")) {
-			result = result.replace("?", String.valueOf(itemValue));
 		}
 
 		return result;

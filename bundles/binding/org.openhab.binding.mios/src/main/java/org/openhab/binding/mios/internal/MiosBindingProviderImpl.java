@@ -61,7 +61,6 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 			.compile("(unit:(?<unit>[a-zA-Z]+[a-zA-Z0-9]*),)"
 					+ "(?<inThing>[^,]+)"
 					+ "(,command:(?<command>[^,]*))?"
-					+ "(,update:(?<update>[^,]*))?"
 					+ "(,in:(?<inTransform>[a-zA-Z]+[a-zA-Z0-9]*\\([^,]*\\)))?"
 					+ "(,out:(?<outTransform>[a-zA-Z]+[a-zA-Z0-9]*\\([^,]*\\)))?");
 
@@ -150,7 +149,6 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 
 		String inThing = matcher.group("inThing");
 		String commandThing = matcher.group("command");
-		String updateThing = matcher.group("update");
 
 		String inTrans = matcher.group("inTransform");
 		String outTrans = matcher.group("outTransform");
@@ -173,19 +171,19 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 		String inStuff = matcher.group("inStuff");
 
 		logger.trace(
-				"parseBindingConfig: in: (Type '{}' id '{}' Stuff '{}'), command: ('{}'), update: ('{}')",
-				new Object[] { inType, inId, inStuff, commandThing, updateThing });
+				"parseBindingConfig: in: (Type '{}' id '{}' Stuff '{}'), command: ('{}')",
+				new Object[] { inType, inId, inStuff, commandThing });
 
 		// Inline a factory for now...
 		// FIXME
 		if (inType.equals("device")) {
 			return DeviceBindingConfig.create(context, item.getName(),
 					unitName, Integer.parseInt(inId), inStuff, item.getClass(),
-					commandThing, updateThing, inTrans, outTrans);
+					commandThing, inTrans, outTrans);
 		} else if (inType.equals("scene")) {
 			return SceneBindingConfig.create(context, item.getName(), unitName,
 					Integer.parseInt(inId), inStuff, item.getClass(),
-					commandThing, updateThing, inTrans, outTrans);
+					commandThing, inTrans, outTrans);
 		} else if (inType.equals("system")) {
 			return SystemBindingConfig.create(context, item.getName(),
 					unitName, inStuff, item.getClass(), inTrans, outTrans);

@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import org.openhab.binding.mios.internal.config.DeviceBindingConfig;
 import org.openhab.binding.mios.internal.config.MiosBindingConfig;
 import org.openhab.binding.mios.internal.config.SceneBindingConfig;
+import org.openhab.core.transform.TransformationException;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -119,6 +120,11 @@ public class MiosConnector {
 		logger.trace("pollUnit: Idly doing nothing");
 	}
 
+	private static final String BIND_COMMAND_VALUE = "??";
+	private static final String BIND_ITEM_INCREMENT = "?++";
+	private static final String BIND_ITEM_DECREMENT = "?--";
+	private static final String BIND_ITEM_VALUE = "?";
+
 	private static final String SCENE_URL = "http://%s:%d/data_request?id=action&serviceId=urn:micasaverde-com:serviceId:HomeAutomationGateway1&action=RunScene&SceneNum=%d";
 
 	private static final String DEVICE_URL = "http://%s:%d/data_request?id=action&DeviceNum=%d&serviceId=%s&action=%s";
@@ -129,13 +135,46 @@ public class MiosConnector {
 					+ "(?<serviceAction>.+)"
 					+ "\\(((?<serviceParam>[a-zA-Z]+[a-zA-Z0-9]*)(=(?<serviceValue>.+))?)?\\)");
 
-	private void callDevice(DeviceBindingConfig config, String upnpAction,
-			State state) {
+	private static String toBindValue(String value, Command command, State state) {
+		// TODO: Allow for more complex Bind expressions, to allow for different
+		// increment/decrement values, and various other transformations that
+		// may be required.
+
+		// Perform a simple item-value substitution on the resulting string.
+		if (value == null) {
+			return state.toString();
+		} else if (value.contains(BIND_COMMAND_VALUE)) {
+			return value.replace(BIND_COMMAND_VALUE, command.toString());
+		} else if (value.contains(BIND_ITEM_INCREMENT)) {
+			String tmp = String.valueOf(Integer.parseInt(state.toString()) + 1);
+			return value.replace(BIND_ITEM_INCREMENT, tmp);
+		} else if (value.contains(BIND_ITEM_DECREMENT)) {
+			String tmp = String.valueOf(Integer.parseInt(state.toString()) - 1);
+			return value.replace(BIND_ITEM_DECREMENT, tmp);
+		} else if (value.contains(BIND_ITEM_VALUE)) {
+			return value.replace(BIND_ITEM_VALUE, state.toString());
+		} else {
+			return value;
+		}
+	}
+
+	private void callDevice(DeviceBindingConfig config, Command command,
+			State state) throws TransformationException {
+
 		logger.debug(
 				"callDevice: Need to remote-invoke Device '{}' action '{}' and current state '{}')",
-				new Object[] { config.toProperty(), upnpAction, state });
+				new Object[] { config.toProperty(), command, state });
 
-		Matcher matcher = DEVICE_PATTERN.matcher(upnpAction);
+		String newCommand = config.transformCommand(command);
+		if (newCommand == null) {
+			logger.debug(
+					"invokeCommand: Need to remote-invoke Device '{}', but no action determined for Command '{}' ('{}')",
+					new Object[] { config.toProperty(), command.toString(),
+							command.getClass() });
+			return;
+		}
+
+		Matcher matcher = DEVICE_PATTERN.matcher(newCommand);
 
 		if (matcher.matches()) {
 			try {
@@ -151,31 +190,30 @@ public class MiosConnector {
 						new Object[] { serviceName, serviceAction,
 								serviceParam, serviceValue });
 
+				// Perform any necessary bind-variable style transformations on
+				// the value, before we put it into the URL.
+				serviceValue = toBindValue(serviceValue, command, state);
+
 				// If the parameters to the URL are specified, then we need to
 				// build the parameter section of the URL, encoding parameter
 				// names and values... trust no-one 8)
-				String p;
 				if (serviceParam != null) {
-					if (serviceValue == null || serviceValue.equals('?')) {
-						p = URLEncoder.encode(serviceParam, ENCODING_CHARSET)
-								+ '='
-								+ URLEncoder.encode(state.toString(),
-										ENCODING_CHARSET);
-					} else {
-						p = URLEncoder.encode(serviceParam, ENCODING_CHARSET)
-								+ '='
-								+ URLEncoder.encode(serviceValue,
-										ENCODING_CHARSET);
-					}
+					String p = URLEncoder
+							.encode(serviceParam, ENCODING_CHARSET)
+							+ '='
+							+ URLEncoder.encode(serviceValue, ENCODING_CHARSET);
+					callMios(String.format(DEVICE_URL_PARAMS, u.getHostname(),
+							u.getPort(), config.getId(),
+							URLEncoder.encode(serviceName, ENCODING_CHARSET),
+							URLEncoder.encode(serviceAction, ENCODING_CHARSET),
+							p));
 				} else {
-					p = null;
+					callMios(String.format(DEVICE_URL, u.getHostname(),
+							u.getPort(), config.getId(),
+							URLEncoder.encode(serviceName, ENCODING_CHARSET),
+							URLEncoder.encode(serviceAction, ENCODING_CHARSET)));
 				}
 
-				callMios(String.format((p == null) ? DEVICE_URL
-						: DEVICE_URL_PARAMS, u.getHostname(), u.getPort(),
-						config.getId(), URLEncoder.encode(serviceName,
-								ENCODING_CHARSET), URLEncoder.encode(
-								serviceAction, ENCODING_CHARSET), p));
 			} catch (UnsupportedEncodingException uee) {
 				logger.debug(
 						"Really, trust me, this won't happen ;)   exception='{}'",
@@ -184,18 +222,28 @@ public class MiosConnector {
 		} else {
 			logger.error(
 					"callDevice: The parameter is in the wrong format.  BindingConfig '{}', UPnP Action '{}'",
-					config, upnpAction);
+					config, newCommand);
 		}
 
 	}
 
-	private void callScene(SceneBindingConfig config) {
+	private void callScene(SceneBindingConfig config, Command command,
+			State state) throws TransformationException {
 		logger.debug("callScene: Need to remote-invoke Scene '{}'",
 				config.toProperty());
 
-		MiosUnit u = getUnit();
-		callMios(String.format(SCENE_URL, u.getHostname(), u.getPort(),
-				config.getId()));
+		String newCommand = config.transformCommand(command);
+
+		if (newCommand != null) {
+			MiosUnit u = getUnit();
+			callMios(String.format(SCENE_URL, u.getHostname(), u.getPort(),
+					config.getId()));
+		} else {
+			logger.debug(
+					"invokeScene: Command type not supported for Scenes '{}'",
+					command.getClass());
+		}
+
 	}
 
 	private void callMios(String url) {
@@ -222,19 +270,6 @@ public class MiosConnector {
 		}
 	}
 
-	public void invokeUpdate(MiosBindingConfig config, State newState)
-			throws Exception {
-		if (!config.supportsUpdates()) {
-			logger.debug(
-					"invokeUpdate: Received new state ({}), for config '{}', but it's not configured to handle them.",
-					newState, config);
-
-			return;
-		}
-
-		// TODO: Implement
-	}
-
 	public void invokeCommand(MiosBindingConfig config, Command command,
 			State state) throws Exception {
 		// If we don't support OutBound transmission, then bail out early.
@@ -246,29 +281,10 @@ public class MiosConnector {
 			return;
 		}
 
-		// TODO: Hardcode to only take the ON Command, but externalize and make
-		// more flexible.
 		if (config instanceof SceneBindingConfig) {
-			String newCommand = config.transformCommand(command);
-
-			if (newCommand != null) {
-				callScene((SceneBindingConfig) config);
-			} else {
-				logger.debug(
-						"invokeScene: Command type not supported for Scenes '{}'",
-						command.getClass());
-			}
+			callScene((SceneBindingConfig) config, command, state);
 		} else if (config instanceof DeviceBindingConfig) {
-			String newCommand = config.transformCommand(command);
-
-			if (newCommand != null) {
-				callDevice((DeviceBindingConfig) config, newCommand, state);
-			} else {
-				logger.debug(
-						"invokeCommand: Need to remote-invoke Device '{}', but no action determined for Command '{}' ('{}')",
-						new Object[] { config.toProperty(), command.toString(),
-								command.getClass() });
-			}
+			callDevice((DeviceBindingConfig) config, command, state);
 		} else {
 			logger.warn(
 					"Unhandled command execution for Command ('{}') on binding '{}'",

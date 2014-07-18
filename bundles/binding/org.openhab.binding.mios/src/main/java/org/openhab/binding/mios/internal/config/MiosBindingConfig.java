@@ -54,7 +54,6 @@ public abstract class MiosBindingConfig implements BindingConfig {
 	private String cachedBinding;
 	private Class<? extends Item> itemType;
 	private String commandThing;
-	private String updateThing;
 	private String inTransform;
 	private String outTransform;
 
@@ -69,7 +68,7 @@ public abstract class MiosBindingConfig implements BindingConfig {
 
 	public MiosBindingConfig(String context, String itemName, String unitName,
 			int id, String stuff, Class<? extends Item> itemType,
-			String commandThing, String updateThing, String inTransform,
+			String commandThing, String inTransform,
 			String outTransform) {
 		// Crude parameter validations
 		assert (id >= 0);
@@ -81,7 +80,6 @@ public abstract class MiosBindingConfig implements BindingConfig {
 		this.inStuff = stuff;
 		this.itemType = itemType;
 		this.commandThing = commandThing;
-		this.updateThing = updateThing;
 		this.inTransform = inTransform;
 		this.outTransform = outTransform;
 
@@ -191,15 +189,6 @@ public abstract class MiosBindingConfig implements BindingConfig {
 	public boolean supportsInbound() {
 		// All of the current Configs support inbound data
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.openhab.binding.mios.MiosBindingConfig#supportsOutbound()
-	 */
-	public boolean supportsUpdates() {
-		return (getUpdateThing() != null);
 	}
 
 	public boolean supportsCommands() {
@@ -314,10 +303,8 @@ public abstract class MiosBindingConfig implements BindingConfig {
 		return transformOut(value);
 	}
 
-	public String transformCommand(Command value)
-			throws TransformationException {
-		return null;
-	}
+	public abstract String transformCommand(Command command)
+			throws TransformationException;
 
 	// public abstract TransformationService getOutTransformationService();
 
@@ -351,11 +338,6 @@ public abstract class MiosBindingConfig implements BindingConfig {
 			result.append(",command:").append(tmp);
 		}
 
-		tmp = getUpdateThing();
-		if (tmp != null) {
-			result.append(",update:").append(tmp);
-		}
-
 		tmp = getInTransform();
 		if (tmp != null) {
 			result.append(",in:").append(tmp);
@@ -372,10 +354,6 @@ public abstract class MiosBindingConfig implements BindingConfig {
 	public String getCommandThing() {
 		return commandThing;
 	};
-
-	public String getUpdateThing() {
-		return updateThing;
-	}
 
 	/**
 	 * So we can use it in logger.*() calls with deferred evaluation.
