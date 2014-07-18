@@ -12,5 +12,6 @@ public enum MaxCulFeature {
 	MODE,
 	SWITCH,
 	VALVE_POS,
+	RESET,
 	UNKNOWN;
 }

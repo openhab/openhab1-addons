@@ -16,6 +16,7 @@ import org.openhab.binding.maxcul.internal.messages.MaxCulBindingMessageProcesso
 import org.openhab.binding.maxcul.internal.messages.MaxCulMsgType;
 import org.openhab.binding.maxcul.internal.messages.PairPingMsg;
 import org.openhab.binding.maxcul.internal.messages.PairPongMsg;
+import org.openhab.binding.maxcul.internal.messages.ResetMsg;
 import org.openhab.binding.maxcul.internal.messages.SetGroupIdMsg;
 import org.openhab.binding.maxcul.internal.messages.SetTemperatureMsg;
 import org.openhab.binding.maxcul.internal.messages.ThermostatControlMode;
@@ -510,6 +511,16 @@ public class MaxCulMsgHandler implements CULListener {
 		AddLinkPartnerMsg addLinkMsg = new AddLinkPartnerMsg(getMessageCount(), (byte)0,(byte)0, this.srcAddr, devAddr, partnerAddr, devType);
 		addLinkMsg.setMessageSequencer(msgSeq);
 		sendMessage(addLinkMsg);
+	}
+
+	/**
+	 * Send a reset message to device
+	 * @param devAddr Address of device to reset
+	 */
+	public void sendReset(String devAddr)
+	{
+		ResetMsg resetMsg = new ResetMsg(getMessageCount(), (byte)0, (byte)0, this.srcAddr, devAddr);
+		sendMessage(resetMsg);
 	}
 
 	/**

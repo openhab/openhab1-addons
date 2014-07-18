@@ -237,10 +237,14 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 					Timer pacingTimer = new Timer();
 					pacedBindingTransmitTimers.put(bindingConfig, pacingTimer);
 					pacingTimer.schedule(new MaxCulPacedThermostatTransmitTask(command, bindingConfig, messageHandler, super.providers), PACED_TRANSMIT_TIME);
+				} else if (bindingConfig.getFeature() == MaxCulFeature.RESET) {
+					messageHandler.sendReset(bindingConfig.getDevAddr());
 				} else
+				{
 					logger.warn("Command not handled for "
 							+ bindingConfig.getDeviceType()
 							+ " that is not OnOffType or DecimalType");
+				}
 				break;
 			default:
 				logger.warn("Command not handled for "

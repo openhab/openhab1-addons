@@ -181,6 +181,8 @@ public class MaxCulBindingConfig implements BindingConfig {
 								throw new BindingConfigParseException(
 										"Invalid device feature. Can only use 'switch' on RadiatorThermostat or RadiatorThermostatPlus. This is a "+this.deviceType);
 				this.feature = MaxCulFeature.VALVE_POS;
+			} else if (configPart.compareTo("reset") == 0) {
+				this.feature = MaxCulFeature.RESET;
 			}
 		}
 	}
