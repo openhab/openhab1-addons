@@ -254,9 +254,9 @@ public class BaseMsg {
 		/* length in bits = amount of credit needed
 		 * length in bits = num chars * 4
 		 * This is because each char represents 4 bits of a hex number. RawMsg length
-		 * is decremented by one to account for the 'Z'
+		 * is decremented by one to account for the 'Z[s|f]'
 		 */
-		int credit = (this.rawMsg.length()-1)*4;
+		int credit = (this.rawMsg.length()-2)*4;
 
 		/* credit is in 10ms units, round up */
 		credit = (int)Math.ceil(credit/10.0);

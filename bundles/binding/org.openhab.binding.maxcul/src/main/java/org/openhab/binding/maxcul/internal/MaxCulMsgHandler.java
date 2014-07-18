@@ -51,7 +51,7 @@ public class MaxCulMsgHandler implements CULListener {
 	}
 
 	private int surplusCredit = 0;
-	private Date lastTransmit;
+	private Date lastTransmit = new Date();
 	private Date endOfQueueTransmit;
 
 	private int msgCount = 0;
@@ -102,9 +102,9 @@ public class MaxCulMsgHandler implements CULListener {
 		boolean result = (credit > (requiredCredit+preambleCredit));
 		if (result && updateSurplus)
 		{
-			this.surplusCredit = (int)credit - (requiredCredit+100);
-			/* accumulate a max of 1hr credit */
-			if (this.surplusCredit > 360) this.surplusCredit = 360;
+			this.surplusCredit = (int)credit - (requiredCredit+preambleCredit);
+			/* match MAX_CREDIT in culfw */
+			if (this.surplusCredit > 900) this.surplusCredit = 900;
 		}
 
 		return result;
@@ -156,8 +156,16 @@ public class MaxCulMsgHandler implements CULListener {
 				/* send message as we have enough credit and nothing is on the queue waiting */
 				logger.debug("Sending message immediately. Message is "+msg.msgType+" => "+msg.rawMsg);
         		transmitMessage(msg);
+        		logger.debug("Credit required "+msg.requiredCredit()+", surplus credit remaining after TX "+this.surplusCredit);
 			} else {
-				/* messages ahead of us so queue up the item and schedule a task to process it */
+				/* message is going on the queue - this means that the device may well go to
+				 * standby before it receives it so change into long slow send format with big
+				 * preamble
+				 */
+				msg.setFastSend(false);
+				/* don't have enough credit or there are messages ahead of us so queue
+				 * up the item and schedule a task to process it
+				 */
 				SenderQueueItem qi = new SenderQueueItem();
 				qi.msg = msg;
 				TimerTask task = new TimerTask() {
@@ -181,7 +189,8 @@ public class MaxCulMsgHandler implements CULListener {
 				timer = new Timer();
 				timers.put(qi, timer);
 				/* calculate when we want to TX this item in the queue, with a margin of 2 credits. x1000 as we accumulate 1 x 10ms credit every 1000ms */
-				this.endOfQueueTransmit = new Date(this.endOfQueueTransmit.getTime() + ((msg.requiredCredit()+2)*1000));
+				int requiredCredit = msg.isFastSend()?0:100 + msg.requiredCredit() + 2;
+				this.endOfQueueTransmit = new Date(this.endOfQueueTransmit.getTime() + (requiredCredit*1000));
 				timer.schedule(task, this.endOfQueueTransmit);
 				this.sendQueue.add(qi);
 
@@ -224,8 +233,9 @@ public class MaxCulMsgHandler implements CULListener {
 				pendingAckQueue.remove(qi.msg.msgCount); // remove from ACK queue
 				if (sequenceRegister.containsKey(qi.msg.msgCount))
 				{
-					sequenceRegister.get(qi.msg.msgCount).packetLost(qi.msg);
-					sequenceRegister.remove(qi.msg.msgCount);
+					MessageSequencer msgSeq = sequenceRegister.get(qi.msg.msgCount);
+					sequenceRegister.remove(qi.msg.msgCount); // remove from register first as packetLost could add it again
+					msgSeq.packetLost(qi.msg);
 				}
 			}
 		}
@@ -332,6 +342,7 @@ public class MaxCulMsgHandler implements CULListener {
 					BaseMsg bMsg = new BaseMsg(data);
 					logger.debug("Message "+bMsg.msgCount+" is part of sequence. Running next step in sequence.");
 					sequenceRegister.get(bMsg.msgCount).runSequencer(bMsg);
+					sequenceRegister.remove(bMsg.msgCount);
 				}
 
 				if (passToBinding)
