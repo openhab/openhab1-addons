@@ -17,6 +17,7 @@ import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.io.net.http.HttpUtil;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.*;
-import java.net.*;
+import java.nio.charset.Charset;
 
 	
 
@@ -46,6 +47,9 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 	 */
 	private long refreshInterval = 60000;
 	
+	/** the timeout to use for connecting to a given host (defaults to 5000 milliseconds) */
+	private int timeout = 6000;
+
 	/** RegEx to validate a config <code>'^(.*?)\\.(host|port)$'</code> */
 	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host|password)$");
 
@@ -56,11 +60,8 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
     
     protected Map<String, String> pmsPasswordConfig = new HashMap<String, String>();
     
-    private final String USER_AGENT = "Mozilla/5.0";
-    
 	public EnergenieBinding() {
 	}
-		
 	
 	public void activate() {
 	}
@@ -68,7 +69,6 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 	public void deactivate() {
 	}
 
-	
 	/**
 	 * @{inheritDoc}
 	 */
@@ -105,63 +105,34 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 					String pmsIp = pmsIpConfig.get(pmsId);
 					String pmsPw = pmsPasswordConfig.get(pmsId);
 					String url = "http://"+pmsIp+"/login.html";
+					String urlParameters = "pw="+pmsPw;
+					InputStream urlContent = new ByteArrayInputStream(urlParameters.getBytes(Charset.forName("UTF-8")));
+					String loginResponseString = null;
 					
 					try {
-						URL obj = new URL(url);
-						HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-						
-						//add request header
-						con.setRequestProperty("User-Agent", USER_AGENT);
-						con.setRequestMethod("GET");
-						
-						String urlParameters = "pw="+pmsPw;
-						
-						// Send get request
-						con.setDoOutput(true);
-						DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-						wr.writeBytes(urlParameters);
-						wr.flush();
-						wr.close();
-						
-						int responseCode = con.getResponseCode();
-						logger.trace("energenie: Login to {} with Password {}", pmsIp, pmsPw);
-						logger.trace("energenie: Sending 'POST' request to URL : {}", url);
-						logger.trace("energenie: Post parameters : {}", urlParameters);
-						logger.trace("energenie: ResponseCode : {}", responseCode);
-						
-						BufferedReader in = new BufferedReader(
-						        new InputStreamReader(con.getInputStream()));
-						String inputLine;
-						StringBuffer responseString = new StringBuffer();
-				 
-						while ((inputLine = in.readLine()) != null) {
-							responseString.append(inputLine);
-						}
-						in.close();
-				 
-						String loginResponseString = responseString.toString();
+						loginResponseString = HttpUtil.executeUrl("POST", url, urlContent, "TEXT/PLAIN", timeout);
 						
 						String stateResponseSearch = "var sockstates = ";
 						int findState=loginResponseString.lastIndexOf(stateResponseSearch);
 						if (findState !=0) {
-							logger.trace("energenie: searchstring sockstates found at position {}", findState);
+							logger.trace("searchstring sockstates found at position {}", findState);
 							
 							String slicedResponse = loginResponseString.substring(findState+18, findState+25);
 							
-							logger.trace("energenie: transformed state response = {}", slicedResponse);
+							logger.trace("transformed state response = {}", slicedResponse);
 
 							try {
 								String [] parts = slicedResponse.split(",");
 								String itemState = parts[pmsSocketId-1];
-								logger.trace("energenie: Response for item {} = {}", itemName, itemState);
+								logger.trace("Response for item {} = {}", itemName, itemState);
 								if (itemState.equals("0")) {
 									State state = OnOffType.valueOf("OFF");
-									logger.trace("energenie: transformed state for item {} = {}", itemName, state);
+									logger.trace("transformed state for item {} = {}", itemName, state);
 									eventPublisher.postUpdate(itemName, state);
 								}
 								if (itemState.equals("1")) {
 									State state = OnOffType.valueOf("ON");
-									logger.trace("energenie: transformed state for item {} = {}", itemName, state);
+									logger.trace("transformed state for item {} = {}", itemName, state);
 									eventPublisher.postUpdate(itemName, state);
 								}
 							
@@ -170,18 +141,18 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 							}
 							
 						} else {
-							logger.trace("energenie: searchstring sockstates not found");			
+							logger.trace("searchstring sockstates not found");			
 						}
 						
 					} catch (Exception e) {
-						logger.error("energenie: Failed to logout from ip {}", pmsIp);
+						logger.error("Failed to logout from ip {}", pmsIp);
 					}
 
 
 					sendLogOut(pmsId);
 			
 				} catch (Exception e) {
-					logger.error("energenie: failed to read state", e);
+					logger.error("failed to read state", e);
 				}
 
 			}
@@ -220,93 +191,35 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 		String pmsIp = pmsIpConfig.get(pmsId);
 		String pmsPw = pmsPasswordConfig.get(pmsId);
 		String url = "http://"+pmsIp+"/login.html";
+		String urlParameters = "pw="+pmsPw;
+		InputStream urlContent = new ByteArrayInputStream(urlParameters.getBytes(Charset.forName("UTF-8")));
 		
 		try {
-			URL obj = new URL(url);
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-			
-			//add request header
-			con.setRequestProperty("User-Agent", USER_AGENT);
-			con.setRequestMethod("GET");
-			
-			String urlParameters = "pw="+pmsPw;
-			
-			// Send get request
-			con.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			wr.writeBytes(urlParameters);
-			wr.flush();
-			wr.close();
-			
-			int responseCode = con.getResponseCode();
-			logger.trace("energenie: login to {} with password {}", pmsIp, pmsPw);
-			logger.trace("energenie: sending 'POST' request to URL : {}", url);
-			logger.trace("energenie: post parameters : {}", urlParameters);
-			logger.trace("energenie: responseCode : {}", responseCode);
-			
-			BufferedReader in = new BufferedReader(
-			        new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer responseString = new StringBuffer();
-	 
-			while ((inputLine = in.readLine()) != null) {
-				responseString.append(inputLine);
-			}
-			in.close();
-	 
-			String loginResponseString = responseString.toString();
-			
-			String stateResponseSearch = "var sockstates = ";
-			int findState=loginResponseString.lastIndexOf(stateResponseSearch);
-			if (findState !=0) {
-				logger.trace("energenie: searchstring sockstates found at position {}", findState);
-				
-				String slicedResponse = loginResponseString.substring(findState+18, findState+25);
-				
-				logger.trace("energenie: transformed state response = {}", slicedResponse);
-				
-			} else {
-				logger.trace("energenie: searchstring sockstates not found");			
-			}
+			HttpUtil.executeUrl("POST", url, urlContent, "TEXT/PLAIN", timeout);
+
+			logger.trace("sendlogin to {} with password {}", pmsIp, pmsPw);
+			logger.trace("sending 'POST' request to URL : {}", url);
 			
 		} catch (Exception e) {
-			logger.error("energenie: failed to logout from ip {}", pmsIp);
+			logger.error("energenie: failed to login to ip {}", pmsIp);
 		}
-
 	}
 
 	private void sendOn(String pmsId, int pmsSocketId) {
 		String pmsIp = pmsIpConfig.get(pmsId);
 		String url = "http://"+pmsIp;
+		String urlParameters = "cte"+pmsSocketId+"=1";
+		InputStream urlContent = new ByteArrayInputStream(urlParameters.getBytes(Charset.forName("UTF-8")));
 		
 		try {
-			URL obj = new URL(url);
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-			
-			// add request header
-			con.setRequestProperty("User-Agent", USER_AGENT);
-			con.setRequestMethod("POST");
-			
-			String urlParameters = "cte"+pmsSocketId+"=1";
-			
-			// Send post request
-			con.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			wr.writeBytes(urlParameters);
-			wr.flush();
-			wr.close();
-			
-			int responseCode = con.getResponseCode();
-			logger.trace("energenie: sending 'POST' request to URL : {}", url);
-			logger.trace("energenie: post parameters : {}", urlParameters);
-			logger.trace("energenie: responseCode : {}", responseCode);
+			HttpUtil.executeUrl("POST", url, urlContent, "TEXT/PLAIN", timeout);
 
-			
-			logger.trace("energenie: send command ON to socket {} at host {}", pmsSocketId, pmsIp);
+			logger.trace("sending 'POST' request to URL : {}", url);
+			logger.trace("send command ON to socket {} at host {}", pmsSocketId, pmsIp);
 
 			
 		} catch (Exception e) {
-			logger.error("energenie: failed so send command ON to socket {} at ip {}", pmsIp, pmsSocketId);
+			logger.error("failed so send command ON to socket {} at ip {}", pmsIp, pmsSocketId);
 		}
 		
 	}
@@ -314,35 +227,18 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 	private void sendOff(String pmsId, int pmsSocketId) {
 		String pmsIp = pmsIpConfig.get(pmsId);
 		String url = "http://"+pmsIp;
+		String urlParameters = "cte"+pmsSocketId+"=0";
+		InputStream urlContent = new ByteArrayInputStream(urlParameters.getBytes(Charset.forName("UTF-8")));
 		
 		try {
-			URL obj = new URL(url);
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-			
-			// add request header
-			con.setRequestProperty("User-Agent", USER_AGENT);
-			con.setRequestMethod("POST");
-			
-			String urlParameters = "cte"+pmsSocketId+"=0";
-			
-			// Send post request
-			con.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			wr.writeBytes(urlParameters);
-			wr.flush();
-			wr.close();
-			
-			int responseCode = con.getResponseCode();
-			logger.info("energenie: sending 'POST' request to URL : {}", url);
-			logger.info("energenie: post parameters : {}", urlParameters);
-			logger.info("energenie: responseCode : {}", responseCode);
+			HttpUtil.executeUrl("POST", url, urlContent, "TEXT/PLAIN", timeout);
 
-			
-			logger.info("energenie: send command OFF to socket {} at host {}", pmsSocketId, pmsIp);
+			logger.trace("sending 'POST' request to URL : {}", url);
+			logger.trace("send command OFF to socket {} at host {}", pmsSocketId, pmsIp);
 
 			
 		} catch (Exception e) {
-			logger.error("energenie: failed so send command OFF to socket {} at ip {}", pmsIp, pmsSocketId);
+			logger.error("failed so send command OFF to socket {} at ip {}", pmsIp, pmsSocketId);
 		}
 		
 	}
@@ -352,30 +248,12 @@ public class EnergenieBinding extends AbstractActiveBinding<EnergenieBindingProv
 		String url = "http://"+pmsIp;
 
 		try {
-			URL obj = new URL(url);
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-			
-			// add request header
-			con.setRequestProperty("User-Agent", USER_AGENT);
-			con.setRequestMethod("GET");
-			
-			// Send get request
-			int responseCode = con.getResponseCode();
-			BufferedReader in = new BufferedReader(
-			        new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
-	 
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
-			}
-			in.close();
+			HttpUtil.executeUrl("POST", url, timeout);
 
-			logger.trace("energenie: responseCode : {}", responseCode);
-			logger.trace("energenie: logout from ip {}", pmsIp);
+			logger.trace("logout from ip {}", pmsIp);
 			
 		} catch (Exception e) {
-			logger.error("energenie: failed to logout from ip {}", pmsIp);
+			logger.error("failed to logout from ip {}", pmsIp);
 		}
 
 	}
