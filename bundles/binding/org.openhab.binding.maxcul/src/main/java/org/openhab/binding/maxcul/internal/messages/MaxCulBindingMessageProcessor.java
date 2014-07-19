@@ -9,7 +9,8 @@ public interface MaxCulBindingMessageProcessor {
 
 	/**
 	 * Process filtered CUL message in MAX! mode
-	 * @param data
+	 * @param data Raw data of packet
+	 * @param broadcast True if a broadcast packet or is snooped and has a valid dest addr, false if is addressed to us
 	 */
-	void MaxCulMsgReceived( String data, boolean broadcast );
+	void MaxCulMsgReceived( String data, boolean broadcast);
 }

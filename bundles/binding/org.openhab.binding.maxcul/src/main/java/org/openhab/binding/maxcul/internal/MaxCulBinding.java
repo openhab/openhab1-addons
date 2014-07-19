@@ -305,7 +305,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 			accessDevice = device;
 			logger.debug("Opening CUL device on " + accessDevice);
 			cul = CULManager.getOpenCULHandler(accessDevice, CULMode.MAX);
-			messageHandler = new MaxCulMsgHandler(this.srcAddr, cul);
+			messageHandler = new MaxCulMsgHandler(this.srcAddr, cul, super.providers);
 			messageHandler.registerMaxCulBindingMessageProcessor(this);
 		} catch (CULDeviceException e) {
 			logger.error("Cannot open CUL device", e);

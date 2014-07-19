@@ -1,5 +1,8 @@
 package org.openhab.binding.maxcul.internal;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -8,6 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.openhab.binding.maxcul.MaxCulBindingProvider;
 import org.openhab.binding.maxcul.internal.messages.AckMsg;
 import org.openhab.binding.maxcul.internal.messages.AddLinkPartnerMsg;
 import org.openhab.binding.maxcul.internal.messages.BaseMsg;
@@ -62,12 +66,13 @@ public class MaxCulMsgHandler implements CULListener {
 	private ConcurrentHashMap<Byte, SenderQueueItem> pendingAckQueue;
 	private MaxCulBindingMessageProcessor mcbmp = null;
 	private Map<SenderQueueItem, Timer> timers = new HashMap<SenderQueueItem,Timer>();
+	private Collection<MaxCulBindingProvider> providers;
 
 	private boolean listenMode = false;
 
 	private final int MESSAGE_EXPIRY_PERIOD = 10000;
 
-	public MaxCulMsgHandler(String srcAddr, CULHandler cul)
+	public MaxCulMsgHandler(String srcAddr, CULHandler cul, Collection<MaxCulBindingProvider> providers)
 	{
 		this.cul = cul;
 		cul.registerListener(this);
@@ -77,6 +82,7 @@ public class MaxCulMsgHandler implements CULListener {
 		this.pendingAckQueue = new ConcurrentHashMap<Byte, SenderQueueItem>();
 		this.lastTransmit = new Date(); /* init as now */
 		this.endOfQueueTransmit = this.lastTransmit;
+		this.providers = providers;
 	}
 
 	private byte getMessageCount()
@@ -335,6 +341,7 @@ public class MaxCulMsgHandler implements CULListener {
 					} else logger.info("Got ACK for message "+msg.msgCount+" but it wasn't in the queue");
 				}
 
+
 				if (sequenceRegister.containsKey(new BaseMsg(data).msgCount))
 				{
 					passToBinding = false;
@@ -344,6 +351,7 @@ public class MaxCulMsgHandler implements CULListener {
 					sequenceRegister.get(bMsg.msgCount).runSequencer(bMsg);
 					sequenceRegister.remove(bMsg.msgCount);
 				}
+
 
 				if (passToBinding)
 				{
@@ -366,6 +374,40 @@ public class MaxCulMsgHandler implements CULListener {
 					logger.debug("Unhandled broadcast message of type "+BaseMsg.getMsgType(data).toString());
 					break;
 
+				}
+			} else {
+				// TODO associated devices send messages that tell of their status to the associated
+				// device. We need to spy on devices we know about to extract useful data
+				boolean passToBinding = false;
+				BaseMsg bMsg = new BaseMsg(data);
+				for (MaxCulBindingProvider provider : providers)
+				{
+					// look up source device configs
+					List<MaxCulBindingConfig> configs = provider.getConfigsForRadioAddr(bMsg.srcAddrStr);
+					if (!configs.isEmpty())
+					{
+						// get asssociated devices with source device
+						String serialNum = ((MaxCulBindingConfig)configs.get(0)).getSerialNumber();
+						HashSet<MaxCulBindingConfig> assocDevs = provider.getAssociations(serialNum);
+						if (!assocDevs.isEmpty())
+						{
+							// check for matches with associated devices and the message dest
+							for (MaxCulBindingConfig device : assocDevs)
+							{
+								if (device.getDevAddr().equalsIgnoreCase(bMsg.dstAddrStr))
+								{
+									passToBinding = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				if (passToBinding && BaseMsg.getMsgType(data) != MaxCulMsgType.PAIR_PING)
+				{
+					/* pass data to binding for processing - pretend it is broadcast so as not to ACK */
+					this.mcbmp.MaxCulMsgReceived(data, true);
 				}
 			}
 		}
