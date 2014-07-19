@@ -28,7 +28,6 @@ public class WallThermostatStateMsg extends BaseMsg {
 	private boolean displayMeasuredTemp;
 
 	private Double measuredTemperature = null;
-	private Double pairedRadThermTemp = null;
 	private GregorianCalendar untilDateTime = null;
 
 
@@ -61,8 +60,12 @@ public class WallThermostatStateMsg extends BaseMsg {
 			/* handle longer packet */
 			if (this.payload.length == WALL_THERMOSTAT_STATE_PAIR_THERM_PAYLOAD_LEN)
 			{
-				/* TODO extract paired heater temperature from bytes 3/4
-				 * Currently not used - rather pointless */
+				int mTemp = this.payload[3];
+				mTemp &= 0x01;
+				mTemp <<= 8;
+				mTemp |= (this.payload[4]&0xff);
+				this.measuredTemperature  = mTemp/10.0;
+
 			} else if (this.payload.length == WALL_THERMOSTAT_STATE_UNTIL_PAYLOAD_LEN)
 			{
 				// TODO extract Date/Time if payload is WALL_THERMOSTAT_STATE_UNTIL_PAYLOAD_LEN
@@ -97,7 +100,6 @@ public class WallThermostatStateMsg extends BaseMsg {
 		logger.debug("\tPanel locked        => "+lockedForManualSetPoint);
 		logger.debug("\tRF Error            => "+rfError);
 		logger.debug("\tBattery Low         => "+batteryLow);
-		logger.debug("\tPaired Rad Therm tmp=> "+pairedRadThermTemp);
 		if (untilDateTime != null)
 			logger.debug("\tUntil DateTime      => "+untilDateTime.get(Calendar.YEAR)+"-"+(untilDateTime.get(Calendar.MONTH)+1)+"-"+untilDateTime.get(Calendar.DAY_OF_MONTH)+" "+untilDateTime.get(Calendar.HOUR_OF_DAY)+":"+untilDateTime.get(Calendar.MINUTE)+":"+untilDateTime.get(Calendar.SECOND));
 	}
