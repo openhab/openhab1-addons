@@ -459,6 +459,7 @@ public class MaxCulMsgHandler implements CULListener {
 		/* Ignore errors for now - not sure what I would need to handle here at the moment
 		 * TODO lookup error cases
 		 */
+		logger.error("Received CUL Error", e);
 	}
 
 	/**
