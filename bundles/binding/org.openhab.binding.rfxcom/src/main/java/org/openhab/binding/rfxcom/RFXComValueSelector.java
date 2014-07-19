@@ -30,7 +30,7 @@ public enum RFXComValueSelector {
 	RAW_DATA ("RawData", StringItem.class),
 	SHUTTER ("Shutter", RollershutterItem.class),
 	COMMAND ("Command", SwitchItem.class),
-	MOOD ("Mood", StringItem.class),
+	MOOD ("Mood", NumberItem.class),
 	SIGNAL_LEVEL ("SignalLevel", NumberItem.class),
 	DIMMING_LEVEL ("DimmingLevel", DimmerItem.class),
 	TEMPERATURE ("Temperature", NumberItem.class),
