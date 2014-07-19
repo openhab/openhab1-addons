@@ -233,6 +233,29 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 
 				state = new DecimalType(signalLevel);
 
+			} else if (valueSelector == RFXComValueSelector.MOOD) {
+				switch (command) {
+				case GROUP_OFF:
+					state = new DecimalType(0);
+					break;
+				case MOOD1:
+					state = new DecimalType(1);
+					break;
+				case MOOD2:
+					state = new DecimalType(2);
+					break;
+				case MOOD3:
+					state = new DecimalType(3);
+					break;
+				case MOOD4:
+					state = new DecimalType(4);
+					break;
+				case MOOD5:
+					state = new DecimalType(5);					
+					break;
+				default:
+					throw new RFXComException("Unexpected mood: " + command);
+				}
 			} else {
 				throw new RFXComException("Can't convert "
 						+ valueSelector + " to NumberItem");
@@ -304,8 +327,6 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 			if (valueSelector == RFXComValueSelector.RAW_DATA) {
 				state = new StringType(
 						DatatypeConverter.printHexBinary(rawMessage));
-			} else if (valueSelector == RFXComValueSelector.MOOD) {
-				state = new StringType(command.toString());
 			} else {
 				throw new RFXComException("Can't convert "
 						+ valueSelector + " to StringItem");
