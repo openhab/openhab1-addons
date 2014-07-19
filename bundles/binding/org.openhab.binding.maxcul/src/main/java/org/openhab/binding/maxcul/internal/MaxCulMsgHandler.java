@@ -56,6 +56,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	private int surplusCredit = 0;
 	private Date lastTransmit = new Date();
+	private Date lastCreditUpdateTime = new Date();
 	private Date endOfQueueTransmit;
 
 	private int msgCount = 0;
@@ -100,8 +101,8 @@ public class MaxCulMsgHandler implements CULListener {
 	private boolean enoughCredit(int requiredCredit, boolean fastSend, boolean updateSurplus)
 	{
 		Date now = new Date();
-		/* units are accumulated as 1% of time elapsed with no TX */
-		long credit = ((now.getTime() - this.lastTransmit.getTime())/100)+this.surplusCredit;
+		/* units are accumulated as 1% of time elapsed with no TX - so 1x10ms credit per second */
+		long credit = ((now.getTime() - this.lastCreditUpdateTime.getTime())/1000)+this.surplusCredit;
 
 		/* if device isn't awake we need long preamble for wakeup, otherwise we don't */
 		int preambleCredit = fastSend?0:100;
@@ -111,6 +112,7 @@ public class MaxCulMsgHandler implements CULListener {
 			this.surplusCredit = (int)credit - (requiredCredit+preambleCredit);
 			/* match MAX_CREDIT in culfw */
 			if (this.surplusCredit > 900) this.surplusCredit = 900;
+			lastCreditUpdateTime = new Date();
 		}
 
 		return result;
