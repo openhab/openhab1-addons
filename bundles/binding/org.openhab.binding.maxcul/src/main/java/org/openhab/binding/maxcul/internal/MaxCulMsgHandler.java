@@ -65,7 +65,7 @@ public class MaxCulMsgHandler implements CULListener {
 	private LinkedList<SenderQueueItem> sendQueue;
 	private ConcurrentHashMap<Byte, SenderQueueItem> pendingAckQueue;
 	private MaxCulBindingMessageProcessor mcbmp = null;
-	private Map<SenderQueueItem, Timer> timers = new HashMap<SenderQueueItem,Timer>();
+	private Map<SenderQueueItem, Timer> sendQueueTimers = new HashMap<SenderQueueItem,Timer>();
 	private Collection<MaxCulBindingProvider> providers;
 
 	private boolean listenMode = false;
@@ -116,7 +116,7 @@ public class MaxCulMsgHandler implements CULListener {
 		return result;
 	}
 
-	private void transmitMessage( BaseMsg data )
+	private void transmitMessage( BaseMsg data,  SenderQueueItem queueItem)
 	{
 		try {
 			cul.send(data.rawMsg);
@@ -140,18 +140,38 @@ public class MaxCulMsgHandler implements CULListener {
 		if (data.msgType != MaxCulMsgType.ACK)
 		{
 			/* awaiting ack now */
-			SenderQueueItem qi = new SenderQueueItem();
-			qi.msg = data;
+			SenderQueueItem qi = queueItem;
+			if (qi == null)
+			{
+				qi = new SenderQueueItem();
+				qi.msg = data;
+			}
+
 			qi.expiry = new Date(this.lastTransmit.getTime()+MESSAGE_EXPIRY_PERIOD);
 			this.pendingAckQueue.put(qi.msg.msgCount, qi);
+
+			/* schedule a check of pending acks */
+			TimerTask ackCheckTask = new TimerTask() {
+                public void run() {
+                	checkPendingAcks();
+                }
+			};
+			Timer timer = new Timer();
+			timer.schedule(ackCheckTask, qi.expiry);
 		}
+	}
+
+	public void sendMessage( BaseMsg msg )
+	{
+		sendMessage( msg, null );
 	}
 
 	/**
 	 * Send a raw Base Message
 	 * @param msg Base message to send
+	 * @param queueItem queue item (used for retransmission)
 	 */
-	public void sendMessage( BaseMsg msg )
+	private void sendMessage( BaseMsg msg, SenderQueueItem queueItem )
 	{
 		Timer timer = null;
 
@@ -161,7 +181,7 @@ public class MaxCulMsgHandler implements CULListener {
 			{
 				/* send message as we have enough credit and nothing is on the queue waiting */
 				logger.debug("Sending message immediately. Message is "+msg.msgType+" => "+msg.rawMsg);
-        		transmitMessage(msg);
+        		transmitMessage(msg, queueItem);
         		logger.debug("Credit required "+msg.requiredCredit()+", surplus credit remaining after TX "+this.surplusCredit);
 			} else {
 				/* message is going on the queue - this means that the device may well go to
@@ -172,8 +192,13 @@ public class MaxCulMsgHandler implements CULListener {
 				/* don't have enough credit or there are messages ahead of us so queue
 				 * up the item and schedule a task to process it
 				 */
-				SenderQueueItem qi = new SenderQueueItem();
-				qi.msg = msg;
+				SenderQueueItem qi = queueItem;
+				if (qi == null)
+				{
+					qi = new SenderQueueItem();
+					qi.msg = msg;
+				}
+
 				TimerTask task = new TimerTask() {
 	                public void run() {
 	                	SenderQueueItem topItem = sendQueue.remove();
@@ -185,7 +210,7 @@ public class MaxCulMsgHandler implements CULListener {
 	                		{
 	                			((TimeInfoMsg) topItem.msg).updateTime();
 	                		}
-	                		transmitMessage(topItem.msg);
+	                		transmitMessage(topItem.msg, topItem);
 	                	} else {
 	                		logger.error("Not enough credit after waiting. This is bad. Queued command is discarded");
 	                	}
@@ -193,7 +218,7 @@ public class MaxCulMsgHandler implements CULListener {
 				};
 
 				timer = new Timer();
-				timers.put(qi, timer);
+				sendQueueTimers.put(qi, timer);
 				/* calculate when we want to TX this item in the queue, with a margin of 2 credits. x1000 as we accumulate 1 x 10ms credit every 1000ms */
 				int requiredCredit = msg.isFastSend()?0:100 + msg.requiredCredit() + 2;
 				this.endOfQueueTransmit = new Date(this.endOfQueueTransmit.getTime() + (requiredCredit*1000));
@@ -227,6 +252,9 @@ public class MaxCulMsgHandler implements CULListener {
 			logger.error("Tried to associate a second MaxCulBindingMessageProcessor!");
 	}
 
+	/**
+	 * Check the ACK queue for any pending acks that have expired
+	 */
 	public void checkPendingAcks()
 	{
 		Date now = new Date();
@@ -239,9 +267,18 @@ public class MaxCulMsgHandler implements CULListener {
 				pendingAckQueue.remove(qi.msg.msgCount); // remove from ACK queue
 				if (sequenceRegister.containsKey(qi.msg.msgCount))
 				{
+					/* message sequencer handles failed packet */
 					MessageSequencer msgSeq = sequenceRegister.get(qi.msg.msgCount);
 					sequenceRegister.remove(qi.msg.msgCount); // remove from register first as packetLost could add it again
 					msgSeq.packetLost(qi.msg);
+				} else if (qi.retryCount < 3){
+					/* retransmit */
+					qi.retryCount++;
+					logger.debug("Retransmitting packet "+qi.msg.msgCount+" attempt "+qi.retryCount);
+					sendMessage(qi.msg, qi);
+				} else
+				{
+					logger.error("Transmission of packet "+qi.msg.msgCount+" failed 3 times");
 				}
 			}
 		}

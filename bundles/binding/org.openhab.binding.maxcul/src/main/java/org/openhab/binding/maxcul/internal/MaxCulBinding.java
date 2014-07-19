@@ -139,7 +139,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 	 */
 	@Override
 	protected void execute() {
-		messageHandler.checkPendingAcks();
+		// Nothing is polled in this binding
 	}
 
 	/**
