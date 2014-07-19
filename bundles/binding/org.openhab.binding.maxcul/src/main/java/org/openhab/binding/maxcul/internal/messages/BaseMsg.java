@@ -103,7 +103,6 @@ public class BaseMsg {
 		/* pkt.len accounts for message only (i.e. not first 3 chars) - so offset for characters that precede the message */
 		int payloadStrLen = ((pkt.len)*PKT_CHARS_PER_BYTE)+PKT_POS_MSG_START-PKT_POS_PAYLOAD_START;
 		int payloadByteLen = payloadStrLen / PKT_CHARS_PER_BYTE;
-		logger.debug("Payload length = "+payloadStrLen+" => "+(payloadByteLen));
 		pkt.payload = new byte[payloadByteLen];
 		for (int payIdx = PKT_POS_PAYLOAD_START; payIdx < (PKT_POS_PAYLOAD_START+payloadStrLen); payIdx+=PKT_CHARS_PER_BYTE )
 		{

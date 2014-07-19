@@ -376,7 +376,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 				}
 			} else {
-				// TODO associated devices send messages that tell of their status to the associated
+				// Associated devices send messages that tell of their status to the associated
 				// device. We need to spy on devices we know about to extract useful data
 				boolean passToBinding = false;
 				BaseMsg bMsg = new BaseMsg(data);
@@ -404,7 +404,9 @@ public class MaxCulMsgHandler implements CULListener {
 					}
 				}
 
-				if (passToBinding && BaseMsg.getMsgType(data) != MaxCulMsgType.PAIR_PING)
+				if (passToBinding &&
+						(BaseMsg.getMsgType(data) != MaxCulMsgType.PAIR_PING &&
+						BaseMsg.getMsgType(data) != MaxCulMsgType.ACK ))
 				{
 					/* pass data to binding for processing - pretend it is broadcast so as not to ACK */
 					this.mcbmp.MaxCulMsgReceived(data, true);
