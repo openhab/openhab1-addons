@@ -861,6 +861,7 @@
 			<Model>DWZWAVE2</Model>
 			<Label lang="en">Z-Wave Door/Window Sensor</Label>
 			<ConfigFile>eco/dwzwave2.xml</ConfigFile>
+		</Product>
 	</Manufacturer>	
 	<Manufacturer>
 		<Id>001E</Id>
@@ -1074,6 +1075,19 @@
 			<Model>EUR_STELLAZ</Model>
 			<Label lang="en">Thermostatic Valve</Label>
 			<ConfigFile>eurotronic/stellaz.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0111</Id>
+		<Name>Airline Mechanical</Name>
+		<Product>
+			<Reference>
+				<Type>8200</Type>
+				<Id>0200</Id>
+			</Reference>
+			<Model>ZDS-UD10</Model>
+			<Label lang="en">Dimming Switch Module</Label>
+			<ConfigFile>amc/zds-ud10.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>
