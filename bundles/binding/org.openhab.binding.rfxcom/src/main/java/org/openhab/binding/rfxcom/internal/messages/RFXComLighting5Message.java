@@ -35,11 +35,11 @@ import org.openhab.core.types.UnDefType;
 /**
  * RFXCOM data class for lighting5 message.
  * 
- * @author Paul Hampson
+ * @author Paul Hampson, Neil Renaud
  * @since 1.3.0
  */
 public class RFXComLighting5Message extends RFXComBaseMessage {
-	
+
 	public enum SubType {
 		LIGHTWAVERF(0),
 		EMW100(1),
@@ -105,6 +105,7 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 			.asList(RFXComValueSelector.RAW_DATA,
 					RFXComValueSelector.SIGNAL_LEVEL,
 					RFXComValueSelector.COMMAND,
+					RFXComValueSelector.MOOD,
 					RFXComValueSelector.DIMMING_LEVEL);
 
 	public SubType subType = SubType.LIGHTWAVERF;
@@ -300,17 +301,15 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 			}
 
 		} else if (valueSelector.getItemClass() == StringItem.class) {
-
 			if (valueSelector == RFXComValueSelector.RAW_DATA) {
-
 				state = new StringType(
 						DatatypeConverter.printHexBinary(rawMessage));
-
+			} else if (valueSelector == RFXComValueSelector.MOOD) {
+				state = new StringType(command.toString());
 			} else {
 				throw new RFXComException("Can't convert "
 						+ valueSelector + " to StringItem");
 			}
-
 		} else {
 
 			throw new RFXComException("Can't convert " + valueSelector

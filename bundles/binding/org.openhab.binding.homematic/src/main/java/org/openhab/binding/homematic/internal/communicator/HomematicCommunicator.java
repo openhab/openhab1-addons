@@ -13,14 +13,20 @@ import java.util.TimerTask;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.ProviderItemIterator.ProviderItemIteratorCallback;
 import org.openhab.binding.homematic.internal.communicator.client.BinRpcClient;
-import org.openhab.binding.homematic.internal.communicator.client.CcuClientException;
+import org.openhab.binding.homematic.internal.communicator.client.CcuClient;
+import org.openhab.binding.homematic.internal.communicator.client.HomegearClient;
+import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
+import org.openhab.binding.homematic.internal.communicator.client.ServerId;
 import org.openhab.binding.homematic.internal.communicator.client.XmlRpcClient;
+import org.openhab.binding.homematic.internal.communicator.client.interfaces.HomematicClient;
+import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.communicator.server.BinRpcCallbackServer;
 import org.openhab.binding.homematic.internal.communicator.server.XmlRpcCallbackServer;
 import org.openhab.binding.homematic.internal.config.BindingAction;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.ProgramConfig;
+import org.openhab.binding.homematic.internal.config.binding.VariableConfig;
 import org.openhab.binding.homematic.internal.converter.state.Converter;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmInterface;
@@ -35,21 +41,21 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The heart of the Homematic binding, this class handles the complete
- * communication between the CCU and openHAB.
+ * communication between a Homematic server and openHAB.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public class CcuCommunicator implements CcuCallbackReceiver {
-	private static final Logger logger = LoggerFactory.getLogger(CcuCommunicator.class);
+public class HomematicCommunicator implements HomematicCallbackReceiver {
+	private static final Logger logger = LoggerFactory.getLogger(HomematicCommunicator.class);
 
 	private HomematicContext context = HomematicContext.getInstance();
 	private DelayedExecutor delayedExecutor = new DelayedExecutor();
 
 	private int newDevicesCounter;
 
-	private CcuCallbackServer ccuCallbackServer;
-	private CcuClient ccuClient;
+	private HomematicCallbackServer homematicCallbackServer;
+	private HomematicClient homematicClient;
 	private ItemDisabler itemDisabler;
 
 	private long lastEventTime = System.currentTimeMillis();
@@ -58,30 +64,35 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 	 * Starts the communicator and initializes everything.
 	 */
 	public void start() {
-		if (ccuCallbackServer == null) {
-			logger.info("Starting CCU communicator");
+		if (homematicCallbackServer == null) {
+			logger.info("Starting Homematic communicator");
 			try {
 				boolean isBinRpc = context.getConfig().isBinRpc();
-				ccuCallbackServer = isBinRpc ? new BinRpcCallbackServer(this) : new XmlRpcCallbackServer(this);
-
-				context.getTclRegaScriptClient().start();
-				context.getStateHolder().init();
-				context.getStateHolder().loadDatapoints();
-				context.getStateHolder().loadVariables();
+				homematicCallbackServer = isBinRpc ? new BinRpcCallbackServer(this) : new XmlRpcCallbackServer(this);
 
 				itemDisabler = new ItemDisabler();
 				itemDisabler.start();
 				newDevicesCounter = 0;
 
-				ccuCallbackServer.start();
+				RpcClient rpcClient = isBinRpc ? new BinRpcClient() : new XmlRpcClient();
 
-				ccuClient = isBinRpc ? new BinRpcClient() : new XmlRpcClient();
-				ccuClient.init(HmInterface.RF);
-				ccuClient.init(HmInterface.WIRED);
+				ServerId serverId = rpcClient.getServerId(HmInterface.RF);
+				logger.info("Homematic {}", serverId);
+				homematicClient = serverId.isHomegear() ? new HomegearClient(rpcClient) : new CcuClient(rpcClient);
+
+				context.setHomematicClient(homematicClient);
+				homematicClient.start();
+
+				context.getStateHolder().init();
+				context.getStateHolder().loadDatapoints();
+				context.getStateHolder().loadVariables();
+
+				homematicCallbackServer.start();
+				homematicClient.registerCallback();
 
 				scheduleFirstRefresh();
 			} catch (Exception e) {
-				logger.error("Could not start CCU communicator: " + e.getMessage(), e);
+				logger.error("Could not start Homematic communicator: " + e.getMessage(), e);
 				stop();
 			}
 		}
@@ -97,7 +108,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 
 			@Override
 			public void run() {
-				logger.debug("Initial CCU datapoints reload");
+				logger.debug("Initial Homematic datapoints reload");
 				context.getStateHolder().reloadDatapoints();
 			}
 		}, 60000);
@@ -107,20 +118,23 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 	 * Stops the communicator.
 	 */
 	public void stop() {
-		if (ccuCallbackServer != null) {
-			logger.info("Shutting down CCU communicator");
+		if (homematicCallbackServer != null) {
+			logger.info("Shutting down Homematic communicator");
 			try {
 				delayedExecutor.cancel();
-				ccuCallbackServer.shutdown();
-				if (ccuClient != null) {
+				homematicCallbackServer.shutdown();
+				if (homematicClient != null) {
 					try {
-						ccuClient.release(HmInterface.RF);
-						ccuClient.release(HmInterface.WIRED);
-					} catch (CcuClientException e) {
+						homematicClient.releaseCallback();
+					} catch (HomematicClientException e) {
+						// ignore
+					}
+					try {
+						homematicClient.shutdown();
+					} catch (HomematicClientException e) {
 						// ignore
 					}
 				}
-				context.getTclRegaScriptClient().shutdown();
 				if (itemDisabler != null) {
 					itemDisabler.stop();
 				}
@@ -128,18 +142,25 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 					context.getStateHolder().destroy();
 				}
 			} finally {
-				ccuCallbackServer = null;
+				homematicCallbackServer = null;
 			}
 		}
 	}
 
 	/**
-	 * Receives a message from the CCU and publishes the state to openHAB.
+	 * Receives a message from the Homematic server and publishes the state to
+	 * openHAB.
 	 */
 	@Override
 	public void event(String interfaceId, String addressWithChannel, String parameter, Object value) {
-		final DatapointConfig bindingConfig = new DatapointConfig(HmInterface.parse(interfaceId), addressWithChannel,
-				parameter);
+		boolean isVariable = "".equals(addressWithChannel);
+
+		HomematicBindingConfig bindingConfig = null;
+		if (isVariable) {
+			bindingConfig = new VariableConfig(parameter);
+		} else {
+			bindingConfig = new DatapointConfig(HmInterface.parse(interfaceId), addressWithChannel, parameter);
+		}
 
 		String className = value == null ? "Unknown" : value.getClass().getSimpleName();
 		logger.debug("Received new ({}) value '{}' for {}", className, value, bindingConfig);
@@ -147,7 +168,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 
 		final Event event = new Event(bindingConfig, value);
 
-		if (context.getStateHolder().isDatapointReloadInProgress()) {
+		if (context.getStateHolder().isDatapointReloadInProgress() && !isVariable) {
 			context.getStateHolder().addToRefreshCache(event.getBindingConfig(), event.getNewValue());
 		}
 
@@ -195,7 +216,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 	}
 
 	/**
-	 * Receives a update from openHAB and sends it to the CCU.
+	 * Receives a update from openHAB and sends it to the Homematic server.
 	 */
 	public void receiveUpdate(Item item, State newState, HomematicBindingConfig bindingConfig) {
 		logger.debug("Received update {} for item {}", newState, item.getName());
@@ -204,7 +225,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 	}
 
 	/**
-	 * Receives a command from openHAB and sends it to the CCU.
+	 * Receives a command from openHAB and sends it to the Homematic server.
 	 */
 	public void receiveCommand(Item item, Command command, HomematicBindingConfig bindingConfig) {
 		logger.debug("Received command {} for item {}", command, item.getName());
@@ -213,7 +234,8 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 	}
 
 	/**
-	 * Receives updates/commands from openHAB and sends messages to the CCU.
+	 * Receives updates/commands from openHAB and sends messages to the
+	 * Homematic server.
 	 */
 	public void receiveType(Event event) {
 		if (event.isProgram()) {
@@ -224,11 +246,11 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 			event.setHmValueItem(context.getStateHolder().getState(event.getBindingConfig()));
 
 			if (event.getHmValueItem() == null) {
-				logger.warn("Can't find {}, value is not published to CCU!", event.getBindingConfig());
+				logger.warn("Can't find {}, value is not published to Homematic server!", event.getBindingConfig());
 			} else {
 				try {
 					if (event.isStopLevelDatapoint()) {
-						ccuClient.setDatapointValue((HmDatapoint) event.getHmValueItem(), "STOP", true);
+						homematicClient.setDatapointValue((HmDatapoint) event.getHmValueItem(), "STOP", true);
 					} else {
 						Converter<?> converter = context.getConverterFactory().createConverter(event.getItem(),
 								event.getBindingConfig());
@@ -236,7 +258,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 							if (!event.isStopLevelDatapoint()) {
 								event.setNewValue(converter.convertToBinding(event.getType(), event.getHmValueItem()));
 							}
-							publishToCcu(event);
+							publishToHomematicServer(event);
 							publishToAllBindings(event);
 
 							if (event.isOnType()) {
@@ -257,29 +279,29 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 	}
 
 	/**
-	 * Sends the event to the CCU.
+	 * Sends the event to the Homematic server.
 	 */
-	private void publishToCcu(Event event) throws CcuClientException {
+	private void publishToHomematicServer(Event event) throws HomematicClientException {
 		if (event.isPressValueItem()) {
-			logger.debug("PRESS_* items are not published to the CCU: {}", event.getBindingConfig());
+			logger.debug("PRESS_* items are not published to the Homematic server: {}", event.getBindingConfig());
 		}
 
 		else if (!event.getHmValueItem().isWriteable()) {
-			logger.warn("Datapoint/Variable is not writeable, item is not published to the CCU: {}",
+			logger.warn("Datapoint/Variable is not writeable, item is not published to the Homematic server: {}",
 					event.getBindingConfig());
 		}
 
 		else if (event.isNewValueEqual()) {
-			logger.debug("Value '{}' equals cached CCU value '{}' and forceUpdate is false, ignoring {}", event
-					.getHmValueItem().getValue(), event.getNewValue(), event.getBindingConfig());
+			logger.debug("Value '{}' equals cached Homematic server value '{}' and forceUpdate is false, ignoring {}",
+					event.getHmValueItem().getValue(), event.getNewValue(), event.getBindingConfig());
 		}
 
 		else {
 			if (event.isVariable()) {
-				context.getTclRegaScriptClient().setVariable(event.getHmValueItem(), event.getNewValue());
+				homematicClient.setVariable(event.getHmValueItem(), event.getNewValue());
 			} else {
-				ccuClient.setDatapointValue((HmDatapoint) event.getHmValueItem(), event.getHmValueItem().getName(),
-						event.getNewValue());
+				homematicClient.setDatapointValue((HmDatapoint) event.getHmValueItem(), event.getHmValueItem()
+						.getName(), event.getNewValue());
 			}
 			event.getHmValueItem().setValue(event.getNewValue());
 		}
@@ -306,12 +328,12 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 	}
 
 	/**
-	 * Executes a program on the CCU.
+	 * Executes a program on the Homematic server.
 	 */
 	private void executeProgram(Event event) {
 		try {
-			context.getTclRegaScriptClient().executeProgram(((ProgramConfig) event.getBindingConfig()).getName());
-		} catch (CcuClientException ex) {
+			homematicClient.executeProgram(((ProgramConfig) event.getBindingConfig()).getName());
+		} catch (HomematicClientException ex) {
 			logger.error(ex.getMessage(), ex);
 		} finally {
 			itemDisabler.add(event.getBindingConfig());
@@ -334,8 +356,8 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 	}
 
 	/**
-	 * Called when the CCU detects a new device, datapoints are refreshed to
-	 * have the new device in the cache.
+	 * Called when the Homematic server detects a new device, datapoints are
+	 * refreshed to have the new device in the cache.
 	 */
 	@Override
 	public void newDevices(String interfaceId, Object[] deviceDescriptions) {
@@ -351,7 +373,7 @@ public class CcuCommunicator implements CcuCallbackReceiver {
 	}
 
 	/**
-	 * Returns the timestamp from the last CCU event.
+	 * Returns the timestamp from the last Homematic server event.
 	 */
 	public long getLastEventTime() {
 		return lastEventTime;

@@ -16,13 +16,13 @@ import java.util.concurrent.Executors;
 
 import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
-import org.openhab.binding.homematic.internal.communicator.CcuCallbackReceiver;
+import org.openhab.binding.homematic.internal.communicator.HomematicCallbackReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Waits for a message from the CCU and starts the BinRpcCallbackHandler to
- * handle the message.
+ * Waits for a message from the Homematic server and starts the
+ * BinRpcCallbackHandler to handle the message.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0
@@ -33,12 +33,12 @@ public class BinRpcNetworkService implements Runnable {
 	private ServerSocket serverSocket;
 	private final ExecutorService pool = Executors.newCachedThreadPool();
 	private boolean accept = true;
-	private CcuCallbackReceiver callbackReceiver;
+	private HomematicCallbackReceiver callbackReceiver;
 
 	/**
-	 * Creates the socket for listening to events from the CCU.
+	 * Creates the socket for listening to events from the Homematic server.
 	 */
-	public BinRpcNetworkService(CcuCallbackReceiver callbackReceiver) throws Exception {
+	public BinRpcNetworkService(HomematicCallbackReceiver callbackReceiver) throws Exception {
 		this.callbackReceiver = callbackReceiver;
 
 		HomematicConfig config = HomematicContext.getInstance().getConfig();
@@ -54,8 +54,8 @@ public class BinRpcNetworkService implements Runnable {
 		while (accept) {
 			try {
 				Socket cs = serverSocket.accept();
-				BinRpcCallbackHandler ccuHandler = new BinRpcCallbackHandler(cs, callbackReceiver);
-				pool.execute(ccuHandler);
+				BinRpcCallbackHandler rpcHandler = new BinRpcCallbackHandler(cs, callbackReceiver);
+				pool.execute(rpcHandler);
 			} catch (IOException ex) {
 				// ignore
 			}
