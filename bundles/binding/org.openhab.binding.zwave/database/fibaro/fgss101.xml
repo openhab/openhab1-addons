@@ -130,6 +130,17 @@ In the case of alarm frames the alarm priority is specified. Possible parameter 
 			<Help lang="en"><![CDATA[Transmitting the alarm or control frame in "broadcast" mode (i.e. to all devices within range), information sent in this mode is not repeated by the mesh network.<BR/><B>NOTE:</B> If the broadcast mode of information transmission is activated for a given channel, then transmission of information in singlecast mode to devices assigned to the association group of this channel is deactivated.]]></Help>
 		</Parameter>
 		<Parameter>
+			<Index>73</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Minimum>-1000</Minimum>
+			<Maximum>1000</Maximum>
+			<Label lang="en">Temperature measurement compensation</Label>
+			<Help lang="en"><![CDATA[Temperature value to be added to or deducted from the current measured temperature<BR/>
+			-1000 0,1°C - 1000 0,1°C]]></Help>
+		</Parameter>
+		<Parameter>
 			<Index>80</Index>
 			<Type>byte</Type>
 			<Default>1</Default>
@@ -137,6 +148,15 @@ In the case of alarm frames the alarm priority is specified. Possible parameter 
 			<Label lang="en">Z-Wave range test interval</Label>
 			<Help lang="en"><![CDATA[Time period between the consecutive Z-Wave network range tests.<BR/>
 			0 10min[10min-24h] - 17 10min[10min-24h]	   ->  	0 – Z-Wave network range test inactive]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>81</Index>
+			<Type>byte</Type>
+			<Default>54</Default>
+			<Size>1</Size>
+			<Label lang="en">Temperature alarm threshold</Label>
+			<Help lang="en"><![CDATA[0	   ->  	0 – temperature alarm inactive<BR/>
+			2 °C - 100 °C	   ->  Temperature]]></Help>
 		</Parameter>
 		<Parameter>
 			<Index>82</Index>
