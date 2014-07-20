@@ -143,6 +143,15 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			if(datapoint.getMainNumber()==9) id = "9.001"; // we do not care about the unit of a value, so map everything to 9.001
 			if(datapoint.getMainNumber()==14) id = "14.001"; // we do not care about the unit of a value, so map everything to 14.001
 			Class<? extends Type> typeClass = toTypeClass(id);
+			if(datapoint.getDPT().equals("3.007")) {
+				// if the stepcode of a 3 Bit Controlled value is zero we assume that is a "break" being signalled
+				// and therefore we ingore the control value (which, is the DPTXlatorBoolean.DPT_STEP value returned by
+				// default by the DPTXlator3BitControlled class.
+				// when the stepcode is different from zero, then the control flag must be a valid INCREASE of DECREASE
+				if(((DPTXlator3BitControlled)translator).getStepCode()==0) {
+					typeClass=null;
+				}
+			}
 			if (typeClass == null) {
 				return null;
 			}
