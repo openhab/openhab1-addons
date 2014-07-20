@@ -34,6 +34,7 @@
 			</Reference>
 			<Model>RF9500</Model>
 			<Label lang="en">Battery Switch</Label>
+			<ConfigFile>cooper/9500.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
