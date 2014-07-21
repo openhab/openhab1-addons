@@ -25,15 +25,16 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
-		<Id>0001A</Id>
+		<Id>001A</Id>
 		<Name>Cooper Wiring Devices</Name>
 		<Product>
 			<Reference>
-				<Type>14de</Type>
+				<Type>5342</Type>
 				<Id>0000</Id>
 			</Reference>
 			<Model>RF9500</Model>
 			<Label lang="en">Battery Switch</Label>
+			<ConfigFile>cooper/9500.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
