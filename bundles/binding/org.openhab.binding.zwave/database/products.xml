@@ -861,6 +861,7 @@
 			<Model>DWZWAVE2</Model>
 			<Label lang="en">Z-Wave Door/Window Sensor</Label>
 			<ConfigFile>eco/dwzwave2.xml</ConfigFile>
+		</Product>
 	</Manufacturer>	
 	<Manufacturer>
 		<Id>001E</Id>
