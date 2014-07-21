@@ -204,10 +204,12 @@ public class OWServerBinding extends
 					String response = null;
 					if(needsUpdate == true) {
 						String address;
-						if(server.user == null)
+						if(server.user == null) {
 							address = "http://"+server.host+"/details.xml";
-						else
+						}
+						else {
 							address = "http://"+server.user+ ":" + server.password + "@" + server.host+"/details.xml";
+						}
 						logger.debug("Getting OWSERVER data from "+address);
 						response = HttpUtil.executeUrl("GET", address, timeout);
 						server.cache = response;
@@ -316,10 +318,10 @@ public class OWServerBinding extends
 				if ("host".equals(configKey)) {
 					deviceConfig.host = value;
 				}
-				if ("user".equals(configKey)) {
+				else if ("user".equals(configKey)) {
 					deviceConfig.user = value;
 				}
-				if ("password".equals(configKey)) {
+				else if ("password".equals(configKey)) {
 					deviceConfig.password = value;
 				}
 			}
