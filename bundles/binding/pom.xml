@@ -114,6 +114,7 @@
     <module>org.openhab.binding.oceanic</module>
     <module>org.openhab.binding.ecotouch</module>
     <module>org.openhab.binding.yamahareceiver</module>
+    <module>org.openhab.binding.energenie</module>
   </modules>
 
 </project>
