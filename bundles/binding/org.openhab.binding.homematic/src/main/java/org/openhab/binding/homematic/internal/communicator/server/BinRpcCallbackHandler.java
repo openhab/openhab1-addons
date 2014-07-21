@@ -32,8 +32,9 @@ public class BinRpcCallbackHandler implements Runnable {
 	private static final byte BIN_EMPTY_ARRAY[] = { 'B', 'i', 'n', 1, 0, 0, 0, 8, 0, 0, 1, 0, 0, 0, 0, 0 };
 	private static final byte BIN_EMPTY_EVENT_LIST[] = { 'B', 'i', 'n', 1, 0, 0, 0, 21, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0,
 			0, 3, 0, 0, 0, 5, 'e', 'v', 'e', 'n', 't' };
-	private static final byte BIN_MULTICALL[] = { 'B', 'i', 'n', 1, 0, 0, 0, 32, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 3, 0,
-			0, 0, 16, 's', 'y', 's', 't', 'e', 'm', '.', 'm', 'u', 'l', 't', 'i', 'c', 'a', 'l', 'l' };
+	private static final byte BIN_LIST_METHODS_RESPONSE[] = { 'B', 'i', 'n', 1, 0, 0, 0, 45, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0,
+			0, 0, 16, 's', 'y', 's', 't', 'e', 'm', '.', 'm', 'u', 'l', 't', 'i', 'c', 'a', 'l', 'l', 0, 0, 0, 3, 0, 0,
+			0, 5, 'e', 'v', 'e', 'n', 't' };
 
 	private Socket socket;
 	private HomematicCallbackReceiver callbackReceiver;
@@ -85,7 +86,7 @@ public class BinRpcCallbackHandler implements Runnable {
 			callbackReceiver.newDevices(null, null);
 			return BIN_EMPTY_ARRAY;
 		} else if ("system.listMethods".equals(methodName)) {
-			return BIN_MULTICALL;
+			return BIN_LIST_METHODS_RESPONSE;
 		} else if ("system.multicall".equals(methodName)) {
 			for (Object o : (Object[]) responseData[0]) {
 				Map<?, ?> call = (Map<?, ?>) o;
