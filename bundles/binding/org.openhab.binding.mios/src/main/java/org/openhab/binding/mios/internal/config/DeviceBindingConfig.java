@@ -8,8 +8,10 @@
  */
 package org.openhab.binding.mios.internal.config;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,73 +50,23 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 				"urn:upnp-org:serviceId:Dimming1/StepDown()");
 	}
 
-	// TODO: Externalize this, and it's initialization, into a file and/or
-	// openhab.cfg
-	private static Map<String, String> aliasMap = new HashMap<String, String>();
+	private static Properties aliasMap = new Properties();
+	private static String SERVICE_ALIASES = "org/openhab/binding/mios/internal/config/ServiceAliases.properties";
 
 	static {
-		// UPnP Service Name mappings
-		aliasMap.put("SwitchPower1", "urn:upnp-org:serviceId:SwitchPower1");
-		aliasMap.put("Dimming1", "urn:upnp-org:serviceId:Dimming1");
-		aliasMap.put("TemperatureSensor1",
-				"urn:upnp-org:serviceId:TemperatureSensor1");
-		aliasMap.put("HVAC_FanOperatingMode1",
-				"urn:upnp-org:serviceId:HVAC_FanOperatingMode1");
-		aliasMap.put("HVAC_UserOperatingMode1",
-				"urn:upnp-org:serviceId:HVAC_UserOperatingMode1");
-		aliasMap.put("TemperatureSetpoint1_Heat",
-				"urn:upnp-org:serviceId:TemperatureSetpoint1_Heat");
-		aliasMap.put("TemperatureSetpoint1_Cool",
-				"urn:upnp-org:serviceId:TemperatureSetpoint1_Cool");
-		aliasMap.put("AVTransport", "urn:upnp-org:serviceId:AVTransport");
-		aliasMap.put("RenderingControl",
-				"urn:upnp-org:serviceId:RenderingControl");
-		aliasMap.put("DeviceProperties",
-				"urn:upnp-org:serviceId:DeviceProperties");
-		aliasMap.put("HouseStatus1", "urn:upnp-org:serviceId:HouseStatus1");
-		aliasMap.put("ContentDirectory",
-				"urn:upnp-org:serviceId:ContentDirectory");
-		aliasMap.put("AudioIn", "urn:upnp-org:serviceId:AudioIn");
+		InputStream input = DeviceBindingConfig.class.getClassLoader()
+				.getResourceAsStream(SERVICE_ALIASES);
 
-		// MiCasaVerde mappings
-		aliasMap.put("ZWaveDevice1",
-				"urn:micasaverde-com:serviceId:ZWaveDevice1");
-		aliasMap.put("ZWaveNetwork1",
-				"urn:micasaverde-com:serviceId:ZWaveNetwork1");
-		aliasMap.put("HaDevice1", "urn:micasaverde-com:serviceId:HaDevice1");
-		aliasMap.put("SceneControllerLED1",
-				"urn:micasaverde-com:serviceId:SceneControllerLED1");
-		aliasMap.put("SecuritySensor1",
-				"urn:micasaverde-com:serviceId:SecuritySensor1");
-		aliasMap.put("HumiditySensor1",
-				"urn:micasaverde-com:serviceId:HumiditySensor1");
-		aliasMap.put("EnergyMetering1",
-				"urn:micasaverde-com:serviceId:EnergyMetering1");
-		aliasMap.put("SceneController1",
-				"urn:micasaverde-com:serviceId:SceneController1");
-		aliasMap.put("HVAC_OperatingState1",
-				"urn:micasaverde-com:serviceId:HVAC_OperatingState1");
-		aliasMap.put("SerialPort1", "urn:micasaverde-org:serviceId:SerialPort1");
-		aliasMap.put("DoorLock1", "urn:micasaverde-com:serviceId:DoorLock1");
-		aliasMap.put("AlarmPartition2",
-				"urn:micasaverde-com:serviceId:AlarmPartition2");
-		aliasMap.put("Camera1", "urn:micasaverde-com:serviceId:Camera1");
-
-		// Misc Plugin mappings
-		aliasMap.put("SystemMonitor",
-				"urn:cd-jackson-com:serviceId:SystemMonitor");
-		aliasMap.put("WPSwitch1", "urn:garrettwp-com:serviceId:WPSwitch1");
-		aliasMap.put("Nest1", "urn:watou-com:serviceId:Nest1");
-		aliasMap.put("NestStructure1", "urn:watou-com:serviceId:NestStructure1");
-		aliasMap.put("Weather1", "urn:upnp-micasaverde-com:serviceId:Weather1");
-		aliasMap.put("PingSensor1",
-				"urn:demo-ted-striker:serviceId:PingSensor1");
-		aliasMap.put("Sonos1", "urn:micasaverde-com:serviceId:Sonos1");
-		aliasMap.put("ParadoxSecurityEVO1",
-				"urn:demo-paradox-com:serviceId:ParadoxSecurityEVO1");
-		aliasMap.put("LiftMasterOpener1",
-				"urn:macrho-com:serviceId:LiftMasterOpener1");
-		aliasMap.put("DirecTVDVR1", "urn:directv-com:serviceId:DVR1");
+		try {
+			aliasMap.load(input);
+			logger.debug(
+					"Successfully loaded UPnP Service Aliases from '{}', entries '{}'",
+					SERVICE_ALIASES, aliasMap.size());
+		} catch (Exception e) {
+			// Pre-shipped with the Binding, so it should never error out.
+			logger.error("Failed to load Service Alias file '{}', Exception",
+					SERVICE_ALIASES, e);
+		}
 	}
 
 	private static final Pattern SERVICE_IN_PATTERN = Pattern
@@ -171,7 +123,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 				iVar = matcher.group("serviceVar");
 
 				// Handle service name aliases.
-				tmp = aliasMap.get(iName);
+				tmp = (String) aliasMap.get(iName);
 				if (tmp != null) {
 					iName = tmp;
 				}
