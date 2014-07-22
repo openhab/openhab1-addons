@@ -16,9 +16,12 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.event,
  org.slf4j
 Bundle-ClassPath: .,
- lib/influxdb-java-1.0.jar,
- lib/retrofit-1.5.1.jar,
  lib/gson-2.2.4.jar,
- lib/guava-17.0.jar
+ lib/guava-17.0.jar,
+ lib/influxdb-java-1.3-SNAPSHOT.jar,
+ lib/okhttp-2.0.0.jar,
+ lib/okhttp-urlconnection-2.0.0.jar,
+ lib/retrofit-1.6.1.jar,
+ lib/okio-1.0.0.jar
 Service-Component: OSGI-INF/influxdb.xml
 Bundle-Activator: org.openhab.persistence.influxdb.internal.InfluxDBPersistenceServiceActivator
