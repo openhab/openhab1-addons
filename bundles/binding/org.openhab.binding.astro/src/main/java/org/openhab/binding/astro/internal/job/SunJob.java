@@ -13,27 +13,25 @@ import java.util.Calendar;
 import org.openhab.binding.astro.internal.calc.SunCalc;
 import org.openhab.binding.astro.internal.model.PlanetName;
 import org.openhab.binding.astro.internal.model.Sun;
-import org.openhab.binding.astro.internal.model.SunPosition;
 import org.quartz.JobDataMap;
 
 /**
- * Calculates and publishes the current azimuth and elevation.
+ * Calculates and publishes the Sun data.
  * 
  * @author Gerhard Riegler
- * @since 1.5.0
+ * @since 1.6.0
  */
-public class SunPositionJob extends AbstractBaseJob {
+public class SunJob extends AbstractBaseJob {
 
 	@Override
 	protected void executeJob(JobDataMap jobDataMap) {
 		SunCalc sunCalc = new SunCalc();
-		SunPosition sp = sunCalc.getSunPosition(Calendar.getInstance(), context.getConfig().getLatitude(), context
-				.getConfig().getLongitude());
+		Sun sun = sunCalc.getSunInfo(Calendar.getInstance(), context.getConfig().getLatitude(), context.getConfig()
+				.getLongitude());
 
-		Sun sun = (Sun) context.getPlanet(PlanetName.SUN);
-		sun.setPosition(sp);
+		context.setPlanet(PlanetName.SUN, sun);
 
-		planetPublisher.publish(PlanetName.SUN, true);
+		planetPublisher.publish(PlanetName.SUN, false);
 	}
 
 }
