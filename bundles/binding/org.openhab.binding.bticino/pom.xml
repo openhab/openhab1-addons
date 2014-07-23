@@ -25,4 +25,12 @@
   <packaging>eclipse-plugin</packaging>
   <description>openHAB binding for Bticino Domotica / Legrand.</description>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>
