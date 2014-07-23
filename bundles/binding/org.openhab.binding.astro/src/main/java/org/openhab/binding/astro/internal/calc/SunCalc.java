@@ -190,7 +190,7 @@ public class SunCalc {
 	 * Returns the julian date from the calendar object.
 	 */
 	public static double plainDateToJulianDate(Calendar calendar) {
-		return calendar.getTimeInMillis() / MILLISECONDS_PER_DAY - 0.5 + J1970;
+		return calendar.getTimeInMillis() / MILLISECONDS_PER_DAY + J1970;
 	}
 
 	/**
