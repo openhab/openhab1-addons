@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.openhab.binding.mios.MiosBindingProvider;
 import org.openhab.binding.mios.internal.config.MiosBindingConfig;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemRegistry;
@@ -50,8 +50,8 @@ import org.slf4j.LoggerFactory;
  * @author Mark Clark
  * @since 1.6.0
  */
-public class MiosBinding extends AbstractActiveBinding<MiosBindingProvider>
-		implements ManagedService {
+public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
+		ManagedService {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(MiosBinding.class);
@@ -59,14 +59,15 @@ public class MiosBinding extends AbstractActiveBinding<MiosBindingProvider>
 	private Map<String, MiosConnector> connectors = new HashMap<String, MiosConnector>();
 	private Map<String, MiosUnit> nameUnitMapper = null;
 
+	private String getName() {
+		return "MiosBinding";
+	}
+
 	/**
 	 * The refresh interval used to check for lost connections.
 	 */
-	private long refreshInterval = 10000;
-
 	public void activate() {
 		logger.debug(getName() + " activate()");
-		setProperlyConfigured(true);
 	}
 
 	public void deactivate() {
@@ -78,22 +79,6 @@ public class MiosBinding extends AbstractActiveBinding<MiosBindingProvider>
 				connector.close();
 			}
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getName() {
-		return "MiOS Refresh Service";
 	}
 
 	/**
@@ -242,25 +227,6 @@ public class MiosBinding extends AbstractActiveBinding<MiosBindingProvider>
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void execute() {
-		for (Map.Entry<String, MiosConnector> entry : connectors.entrySet()) {
-			MiosConnector connector = entry.getValue();
-
-			if (!connector.isConnected()) {
-				// broken connection so attempt to reconnect
-				logger.debug(
-						"Broken connection found for '{}', attempting to reconnect...",
-						entry.getKey());
-			}
-
-			connector.pollUnit();
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
 		try {
 			logger.debug("internalReceiveCommand: itemName '{}', command '{}'",
@@ -290,8 +256,6 @@ public class MiosBinding extends AbstractActiveBinding<MiosBindingProvider>
 					MiosBindingConfig config = miosProvider
 							.getMiosBindingConfig(itemName);
 
-					// TODO: Work out how to retrieve an Item's current state,
-					// so it can be referenced in the invokeCommand.
 					if (config != null) {
 						ItemRegistry reg = miosProvider.getItemRegistry();
 
@@ -337,7 +301,7 @@ public class MiosBinding extends AbstractActiveBinding<MiosBindingProvider>
 	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
-		logger.trace(getName() + " updated()");
+		logger.trace(getName() + "Mios updated()");
 
 		Map<String, MiosUnit> units = new HashMap<String, MiosUnit>();
 

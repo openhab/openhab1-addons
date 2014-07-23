@@ -116,10 +116,6 @@ public class MiosConnector {
 		return running;
 	}
 
-	public void pollUnit() {
-		logger.trace("pollUnit: Idly doing nothing");
-	}
-
 	private static final String BIND_COMMAND_VALUE = "??";
 	private static final String BIND_ITEM_INCREMENT = "?++";
 	private static final String BIND_ITEM_DECREMENT = "?--";
