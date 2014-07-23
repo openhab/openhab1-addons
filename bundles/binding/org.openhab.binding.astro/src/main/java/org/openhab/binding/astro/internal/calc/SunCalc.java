@@ -179,7 +179,7 @@ public class SunCalc {
 		}
 		else {
 			Sun sunTomorrow = getSunInfo(addDays(calendar, 1), latitude, longitude, true);
-			sun.setNight(new Range(eveningNightRange.getStart(), sunTomorrow.getAstroDawn().getStart()));
+			sun.setNight(new Range(sun.getAstroDusk().getEnd(), sunTomorrow.getAstroDawn().getStart()));
 		}
 		
 		return sun;
