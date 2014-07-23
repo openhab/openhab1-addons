@@ -323,6 +323,8 @@ public class OWServerBinding extends
 				}
 				else if ("password".equals(configKey)) {
 					deviceConfig.password = value;
+				} else {
+					throw new ConfigurationException(configKey, "The given OWServer configKey '" + configKey + "' is unknown");
 				}
 			}
 
