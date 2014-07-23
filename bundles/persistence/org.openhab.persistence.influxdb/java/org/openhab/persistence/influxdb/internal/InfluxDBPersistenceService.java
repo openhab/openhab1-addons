@@ -303,7 +303,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
         query.append(" ");
         query.append(TIME_COLUMN_NAME);
         query.append(" > ");
-        query.append(filter.getBeginDate().getTime());
+        query.append(getTimeFilter(filter.getBeginDate()));
         query.append(" ");
       }
 
@@ -314,10 +314,12 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
         query.append(" ");
         query.append(TIME_COLUMN_NAME);
         query.append(" < ");
-        query.append(filter.getEndDate().getTime());
+        query.append(getTimeFilter(filter.getEndDate()));
         query.append(" ");
       }
 
+      // InfluxDB returns results in DESCENDING order by default
+      // http://influxdb.com/docs/v0.7/api/query_language.html#select-and-time-ranges
       if (filter.getOrdering() == Ordering.ASCENDING) {
         query.append(" order asc");
       }
@@ -353,21 +355,30 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
           break;
         }
         
-        Double time = (Double) row.get(TIME_COLUMN_NAME);
-        String value = String.valueOf(row.get(VALUE_COLUMN_NAME));
-        
+        Double rawTime = (Double) row.get(TIME_COLUMN_NAME);
+        Object rawValue = row.get(VALUE_COLUMN_NAME);
+                
         logger.trace("adding historic item {}: time {} value {}", 
-        		historicItemName, time, value);
+        		historicItemName, rawTime, rawValue);
         
-        historicItems.add(new InfluxdbItem(historicItemName, 
-        		stringToState(value, historicItemName), 
-        		new Date(time.longValue())));
+        Date time = new Date(rawTime.longValue());
+        State value = objectToState(rawValue, historicItemName);
+        
+        historicItems.add(new InfluxdbItem(historicItemName, value, time));
       }
     }
 
     return historicItems;
   }
 
+  private String getTimeFilter(Date time) {
+	  // for some reason we need to query using 'seconds' only
+	  // passing milli seconds causes no results to be returned
+	  long milliSeconds = time.getTime();
+	  long seconds = milliSeconds / 1000;
+	  return seconds + "s";
+  }
+  
   /**
    * This method returns an integer if possible if not a double is returned. This is an optimization
    * for influxdb because integers have less overhead.
@@ -442,21 +453,22 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
    * @param itemName name of the {@link Item} to get the {@link State} for
    * @return
    */
-  private State stringToState(String value, String itemName) {
+  private State objectToState(Object value, String itemName) {
+	String valueStr = String.valueOf(value);
     if (itemRegistry != null) {
       try {
         Item item = itemRegistry.getItem(itemName);
         if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
-          return value.equals(DIGITAL_VALUE_OFF) ? OnOffType.OFF : OnOffType.ON;
+          return valueStr.equals(DIGITAL_VALUE_OFF) ? OnOffType.OFF : OnOffType.ON;
         } else if (item instanceof ContactItem) {
-          return value.equals(DIGITAL_VALUE_OFF) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+          return valueStr.equals(DIGITAL_VALUE_OFF) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
         }
       } catch (ItemNotFoundException e) {
         logger.warn("Could not find item '{}' in registry", itemName);
       }
     }
     // just return a DecimalType as a fallback
-    return new DecimalType(value);
+    return new DecimalType(valueStr);
   }
 
 }
