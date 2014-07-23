@@ -57,7 +57,7 @@ public class SunCalc {
 		double lw = -longitude * DEG2RAD;
 		double phi = latitude * DEG2RAD;
 
-		double j = plainDateToJulianDate(calendar);
+		double j = dateToJulianDate(calendar);
 		double m = getSolarMeanAnomaly(j);
 		double c = getEquationOfCenter(m);
 		double lsun = getEclipticLongitude(m, c);
@@ -188,6 +188,13 @@ public class SunCalc {
 
 	/**
 	 * Returns the julian date from the calendar object.
+	 */
+	public static double dateToJulianDate(Calendar calendar) {
+		return calendar.getTimeInMillis() / MILLISECONDS_PER_DAY - 0.5 + J1970;
+	}
+
+	/**
+	 * Returns the plain julian date from the calendar object.
 	 */
 	public static double plainDateToJulianDate(Calendar calendar) {
 		return calendar.getTimeInMillis() / MILLISECONDS_PER_DAY + J1970;
