@@ -36,6 +36,15 @@ Example:
     	<feature name="lastheardfrom">GenericLastTime</feature>
     </productKey>
   </subcategory>
+   <subcategory>
+    <name>LED Dimmer</name>
+    <description>2672-422</description>
+    <subCat>0x3A</subCat>
+    <productKey name="0x000000">
+    	<feature name="dimmer">GenericDimmer</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
   <subcategory>
     <name>KeypadLinc Dimmer</name>
     <description>2486DWH8</description>

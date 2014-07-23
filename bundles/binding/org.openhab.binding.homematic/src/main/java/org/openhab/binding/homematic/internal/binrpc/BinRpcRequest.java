@@ -20,7 +20,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
- * A BIN-RPC request for sending data to the CCU.
+ * A BIN-RPC request for sending data to the Homematic server.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0

@@ -82,7 +82,7 @@ public class OWServerBinding extends
 	/**
 	 *  RegEx to validate a config <code>'^(.*?)\\.(host|port)$'</code> 
 	 */
-	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(host)$");
+	private static final Pattern EXTRACT_CONFIG_PATTERN = Pattern.compile("^(.*?)\\.(.*?)$");
 
 	private Map<String, Long> lastUpdateMap = new HashMap<String, Long>();
 
@@ -203,7 +203,13 @@ public class OWServerBinding extends
 
 					String response = null;
 					if(needsUpdate == true) {
-						String address = "http://"+server.host+"/details.xml";
+						String address;
+						if(server.user == null) {
+							address = "http://"+server.host+"/details.xml";
+						}
+						else {
+							address = "http://"+server.user+ ":" + server.password + "@" + server.host+"/details.xml";
+						}
 						logger.debug("Getting OWSERVER data from "+address);
 						response = HttpUtil.executeUrl("GET", address, timeout);
 						server.cache = response;
@@ -311,6 +317,12 @@ public class OWServerBinding extends
 
 				if ("host".equals(configKey)) {
 					deviceConfig.host = value;
+				}
+				else if ("user".equals(configKey)) {
+					deviceConfig.user = value;
+				}
+				else if ("password".equals(configKey)) {
+					deviceConfig.password = value;
 				} else {
 					throw new ConfigurationException(configKey, "The given OWServer configKey '" + configKey + "' is unknown");
 				}
@@ -342,6 +354,8 @@ public class OWServerBinding extends
 	 */
 	static class OWServerConfig {
 		public String host;
+		public String user;
+		public String password;
 		public Long lastUpdate;
 		public String cache;
 

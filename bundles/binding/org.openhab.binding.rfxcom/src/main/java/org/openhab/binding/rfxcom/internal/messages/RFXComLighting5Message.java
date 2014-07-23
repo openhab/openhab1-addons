@@ -35,11 +35,11 @@ import org.openhab.core.types.UnDefType;
 /**
  * RFXCOM data class for lighting5 message.
  * 
- * @author Paul Hampson
+ * @author Paul Hampson, Neil Renaud
  * @since 1.3.0
  */
 public class RFXComLighting5Message extends RFXComBaseMessage {
-	
+
 	public enum SubType {
 		LIGHTWAVERF(0),
 		EMW100(1),
@@ -105,6 +105,7 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 			.asList(RFXComValueSelector.RAW_DATA,
 					RFXComValueSelector.SIGNAL_LEVEL,
 					RFXComValueSelector.COMMAND,
+					RFXComValueSelector.MOOD,
 					RFXComValueSelector.DIMMING_LEVEL);
 
 	public SubType subType = SubType.LIGHTWAVERF;
@@ -232,6 +233,29 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 
 				state = new DecimalType(signalLevel);
 
+			} else if (valueSelector == RFXComValueSelector.MOOD) {
+				switch (command) {
+				case GROUP_OFF:
+					state = new DecimalType(0);
+					break;
+				case MOOD1:
+					state = new DecimalType(1);
+					break;
+				case MOOD2:
+					state = new DecimalType(2);
+					break;
+				case MOOD3:
+					state = new DecimalType(3);
+					break;
+				case MOOD4:
+					state = new DecimalType(4);
+					break;
+				case MOOD5:
+					state = new DecimalType(5);					
+					break;
+				default:
+					throw new RFXComException("Unexpected mood: " + command);
+				}
 			} else {
 				throw new RFXComException("Can't convert "
 						+ valueSelector + " to NumberItem");
@@ -300,17 +324,13 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 			}
 
 		} else if (valueSelector.getItemClass() == StringItem.class) {
-
 			if (valueSelector == RFXComValueSelector.RAW_DATA) {
-
 				state = new StringType(
 						DatatypeConverter.printHexBinary(rawMessage));
-
 			} else {
 				throw new RFXComException("Can't convert "
 						+ valueSelector + " to StringItem");
 			}
-
 		} else {
 
 			throw new RFXComException("Can't convert " + valueSelector

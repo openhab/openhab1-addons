@@ -196,6 +196,11 @@ public class HttpUtil {
 		try {
 			
 			int statusCode = client.executeMethod(method);
+			if (statusCode == HttpStatus.SC_NO_CONTENT) {
+				// perfectly fine but we cannot expect any answer...
+				return null;
+			}
+			
 			if (statusCode != HttpStatus.SC_OK) {
 				logger.warn("Method failed: " + method.getStatusLine());
 			}
