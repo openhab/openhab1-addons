@@ -42,8 +42,7 @@ public class SunCalc {
 	private static final double SUN_DIAMETER = 0.53 * DEG2RAD; // sun diameter
 	private static final double H0 = SUN_ANGLE * DEG2RAD;
 	private static final double H1 = -6.0 * DEG2RAD; // nautical twilight angle
-	private static final double H2 = -12.0 * DEG2RAD; // astronomical twilight
-														// angle
+	private static final double H2 = -12.0 * DEG2RAD; // astronomical twilight angle
 	private static final double H3 = -18.0 * DEG2RAD; // darkness angle
 	private static final double MINUTES_PER_DAY = 60 * 24;
 	private static final double MILLISECONDS_PER_DAY = 1000 * 60 * MINUTES_PER_DAY;
@@ -96,7 +95,7 @@ public class SunCalc {
 	private Sun getSunInfo(Calendar calendar, double latitude, double longitude, boolean onlyAstro) {
 		double lw = -longitude * DEG2RAD;
 		double phi = latitude * DEG2RAD;
-		double j = plainDateToJulianDate(calendar);
+		double j = midnightDateToJulianDate(calendar);
 		double n = getJulianCycle(j, lw);
 		double js = getApproxSolarTransit(0, lw, n);
 		double m = getSolarMeanAnomaly(js);
@@ -189,15 +188,15 @@ public class SunCalc {
 	/**
 	 * Returns the julian date from the calendar object.
 	 */
-	public static double dateToJulianDate(Calendar calendar) {
+	public double dateToJulianDate(Calendar calendar) {
 		return calendar.getTimeInMillis() / MILLISECONDS_PER_DAY - 0.5 + J1970;
 	}
 
 	/**
-	 * Returns the plain julian date from the calendar object.
+	 * Returns the midnight julian date from the calendar object.
 	 */
-	public static double plainDateToJulianDate(Calendar calendar) {
-		return calendar.getTimeInMillis() / MILLISECONDS_PER_DAY + J1970;
+	public double midnightDateToJulianDate(Calendar calendar) {
+		return truncateToMidnight(calendar).getTimeInMillis() / MILLISECONDS_PER_DAY + J1970;
 	}
 
 	/**
