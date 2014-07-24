@@ -2,9 +2,9 @@ package be.devlaminck.openwebnet;
 
 /**
  * ProtocolRead for OpenWebNet - OpenHab binding Based on code from Mauro Cicolella
- * (as part of the FREEDOMOTIC connector)
- * (https://code.google.com/p/freedomotic/
- * source/browse/plugins/devices/openwebnet) and on code of Flavio Fcrisciani
+ * (as part of the FREEDOMOTIC framework)
+ * (https://github.com/freedomotic/freedomotic/tree/master/plugins/devices/openwebnet) 
+ * and on code of Flavio Fcrisciani
  * (https://github.com/fcrisciani/java-myhome-library)
  * 
  * @author Tom De Vlaminck
