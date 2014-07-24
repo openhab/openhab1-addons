@@ -263,7 +263,8 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 	}
 	
 	/**
-	 * Gets a SerialMessage with the THERMOSTAT_SETPOINT_SET command 
+	 * Gets a SerialMessage with the THERMOSTAT_SETPOINT_SET command
+	 * @param scale the scale (DegC or DegF)
 	 * @param setpointType the setpoint type to set
 	 * @param setpoint the setpoint to set.
 	 * @return the serial message
@@ -286,6 +287,9 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 				}, 
 				encodedValue
 			);
+			// Add the scale
+			payload[5] += (byte)(scale << 3);
+			
 			result.setMessagePayload(payload);
     	return result;
 		} catch (ArithmeticException e) {
