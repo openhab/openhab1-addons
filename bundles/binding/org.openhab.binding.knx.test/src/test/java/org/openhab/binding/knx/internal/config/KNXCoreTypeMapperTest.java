@@ -26,6 +26,7 @@ import tuwien.auto.calimero.dptxlator.DPTXlator2ByteUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator3BitControlled;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteFloat;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteSigned;
+import tuwien.auto.calimero.dptxlator.DPTXlator4ByteUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
@@ -1037,6 +1038,32 @@ public class KNXCoreTypeMapperTest {
 		// Test roll over (which is actually not in the KNX spec)
 		type=testToType(dpt, new byte[] { 31, 0x02, 0x00 }, DateTimeType.class);
 		testToDPTValue(dpt, type, "2000-03-02");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Unsigned Value" KNX ID: 12.001 DPT_VALUE_4_UCOUNT
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping4ByteUnsigned_12_001() throws KNXFormatException {
+		DPT dpt =DPTXlator4ByteUnsigned.DPT_VALUE_4_UCOUNT;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		Type type=testToType(dpt, new byte[] {  (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF , (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "4294967295");
+
+		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "4294967295");
 	}
 
 	/**

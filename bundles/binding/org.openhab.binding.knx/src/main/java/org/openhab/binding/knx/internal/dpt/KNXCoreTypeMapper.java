@@ -114,6 +114,9 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		// Datapoint Types “Date”", Main number 11
 		dptTypeMap.put(DPTXlatorDate.DPT_DATE.getID(), DateTimeType.class);
 
+		// Datapoint Types "4-Octet Unsigned Value", Main number 12
+		dptTypeMap.put(DPTXlator4ByteUnsigned.DPT_VALUE_4_UCOUNT.getID(), DecimalType.class);
+
 		// Datapoint Types "4-Octet Signed Value", Main number 13
 		dptTypeMap.put(DPTXlator4ByteSigned.DPT_COUNT.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY.getID(), DecimalType.class);
@@ -198,7 +201,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 					logger.error("toType couldn't identify main number in dptID: {}",dptID);
 				}
 			}
-			logger.trace("toType datapoint getMainNumber = " + datapoint.getMainNumber());
+			logger.trace("toType datapoint getMainNumber = {}", datapoint.getMainNumber());
 
 			if(datapoint.getMainNumber()==9) id = DPTXlator2ByteFloat.DPT_TEMPERATURE.getID(); // we do not care about the unit of a value, so map everything to 9.001
 			if(datapoint.getMainNumber()==14) {
@@ -251,13 +254,11 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 */
 	static public Class<? extends Type> toTypeClass(String dptId) {
 		/*
-		 * DecimalType is by default associated to 9.001, so for 12.001, 14.001 
+		 * DecimalType is by default associated to 14.001 
 		 * or 17.001, we need to do exceptional handling
 		 */
 		logger.trace("toTypeClass looking for dptId = " + dptId);
-		if (DPTXlator4ByteUnsigned.DPT_VALUE_4_UCOUNT.getID().equals(dptId)) { 
-			return DecimalType.class;
-		} else if (DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR.getID().equals(dptId)) {
+		if (DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR.getID().equals(dptId)) {
 			return DecimalType.class;
 		} else if (DPTXlatorSceneNumber.DPT_SCENE_NUMBER.getID().equals(dptId)) {
 			return DecimalType.class;
