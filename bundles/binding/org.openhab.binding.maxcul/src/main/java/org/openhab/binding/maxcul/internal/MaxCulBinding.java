@@ -32,6 +32,7 @@ import org.openhab.binding.maxcul.internal.messages.TimeInfoMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatStateMsg;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
@@ -45,13 +46,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * This binding allows integration of the MAX! devices via the CUL device - so without
+ * the need for the Max!Cube device.
  *
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
-public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
+public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 		implements ManagedService, MaxCulBindingMessageProcessor {
 
 	private static final Logger logger = LoggerFactory
@@ -103,13 +104,10 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 
 	public void activate() {
 		super.activate();
-		setProperlyConfigured(false);
 		logger.debug("Activating MaxCul binding");
 	}
 
 	public void deactivate() {
-		// deallocate resources here that are no longer needed and
-		// should be reset when activating this binding again
 		logger.debug("De-Activating MaxCul binding");
 		if (cul != null) {
 			cul.unregisterListener(messageHandler);
@@ -119,37 +117,10 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected String getName() {
-		return "MaxCul Refresh Service";
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void execute() {
-		// Nothing is polled in this binding
-	}
-
-	/**
 	 * @{inheritDoc}
 	 */
 	@Override
 	protected void internalReceiveCommand(final String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
 		Timer pairModeTimer = null;
 
 		MaxCulBindingConfig bindingConfig = null;
@@ -288,12 +259,9 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 							"Configuration failed. Unable to access CUL device "
 									+ deviceString);
 			} else {
-				setProperlyConfigured(false);
 				throw new ConfigurationException("device",
 						"No device set - please set one");
 			}
-
-			setProperlyConfigured(true);
 		}
 	}
 
@@ -330,7 +298,7 @@ public class MaxCulBinding extends AbstractActiveBinding<MaxCulBindingProvider>
 	}
 
 	@Override
-	public void MaxCulMsgReceived(String data, boolean isBroadcast) {
+	public void maxCulMsgReceived(String data, boolean isBroadcast) {
 		logger.debug("Received data from CUL: " + data);
 
 		MaxCulMsgType msgType = BaseMsg.getMsgType(data);

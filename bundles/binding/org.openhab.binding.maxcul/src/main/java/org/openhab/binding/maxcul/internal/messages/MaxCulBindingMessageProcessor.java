@@ -12,5 +12,5 @@ public interface MaxCulBindingMessageProcessor {
 	 * @param data Raw data of packet
 	 * @param broadcast True if a broadcast packet or is snooped and has a valid dest addr, false if is addressed to us
 	 */
-	void MaxCulMsgReceived( String data, boolean broadcast);
+	void maxCulMsgReceived( String data, boolean broadcast);
 }

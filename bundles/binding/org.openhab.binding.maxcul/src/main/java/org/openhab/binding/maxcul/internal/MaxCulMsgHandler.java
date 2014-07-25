@@ -395,7 +395,7 @@ public class MaxCulMsgHandler implements CULListener {
 				if (passToBinding)
 				{
 					/* pass data to binding for processing */
-					this.mcbmp.MaxCulMsgReceived(data, false);
+					this.mcbmp.maxCulMsgReceived(data, false);
 				}
 			}
 			else if (BaseMsg.isForUs(data, "000000"))
@@ -406,7 +406,7 @@ public class MaxCulMsgHandler implements CULListener {
 				case WALL_THERMOSTAT_CONTROL:
 				case THERMOSTAT_STATE:
 				case WALL_THERMOSTAT_STATE:
-					this.mcbmp.MaxCulMsgReceived(data, true);
+					this.mcbmp.maxCulMsgReceived(data, true);
 					break;
 				default:
 					/* TODO handle other broadcast */
@@ -448,7 +448,7 @@ public class MaxCulMsgHandler implements CULListener {
 						BaseMsg.getMsgType(data) != MaxCulMsgType.ACK ))
 				{
 					/* pass data to binding for processing - pretend it is broadcast so as not to ACK */
-					this.mcbmp.MaxCulMsgReceived(data, true);
+					this.mcbmp.maxCulMsgReceived(data, true);
 				}
 			}
 		}
