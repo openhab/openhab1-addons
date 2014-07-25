@@ -375,6 +375,7 @@ public class KNXCoreTypeMapperTest {
 		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, DecimalType.class);
 		testToDPTValue(dpt, type, "360");
 	}
+
 	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType()for type “8-Bit Unsigned Value" KNX ID: 5.004 DPT_PERCENT_U8 (previously name DPT_RelPos_Valve)
 	 * 
@@ -489,6 +490,151 @@ public class KNXCoreTypeMapperTest {
 	}
 
 	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.002 DPT_TIMEPERIOD
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteUnsigned_7_002() throws KNXFormatException {
+		DPT dpt =DPTXlator2ByteUnsigned.DPT_TIMEPERIOD;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "65280");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.003 DPT_TIMEPERIOD_10
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteUnsigned_7_003() throws KNXFormatException {
+		DPT dpt =DPTXlator2ByteUnsigned.DPT_TIMEPERIOD_10;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "652800");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "655350");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "655350");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests for method typeMapper.toType() type “2-Octet Unsigned Value" KNX ID: 7.004 DPT_TIMEPERIOD_100
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteUnsigned_7_004() throws KNXFormatException {
+		DPT dpt =DPTXlator2ByteUnsigned.DPT_TIMEPERIOD_100;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "6528000");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "6553500");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "6553500");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.005 DPT_TIMEPERIOD_SEC
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteUnsigned_7_005() throws KNXFormatException {
+		DPT dpt =DPTXlator2ByteUnsigned.DPT_TIMEPERIOD_SEC;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "65280");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.006 DPT_TIMEPERIOD_MIN
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteUnsigned_7_006() throws KNXFormatException {
+		DPT dpt =DPTXlator2ByteUnsigned.DPT_TIMEPERIOD_MIN;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "65280");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+	}
+
+	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.007 DPT_TIMEPERIOD_HOURS
 	 * 
 	 * @throws KNXFormatException
@@ -496,6 +642,35 @@ public class KNXCoreTypeMapperTest {
 	@Test
 	public void testTypeMapping2ByteUnsigned_7_007() throws KNXFormatException {
 		DPT dpt =DPTXlator2ByteUnsigned.DPT_TIMEPERIOD_HOURS;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "65280");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.011 DPT_LENGTH
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteUnsigned_7_011() throws KNXFormatException {
+		DPT dpt =DPTXlator2ByteUnsigned.DPT_LENGTH;
 
 		testToTypeClass(dpt, DecimalType.class);
 
