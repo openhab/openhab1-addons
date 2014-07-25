@@ -9,6 +9,7 @@
 package org.openhab.binding.astro.internal.common;
 
 import java.util.Dictionary;
+import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -123,7 +124,7 @@ public class AstroConfig {
 		String intervallMessage = (interval == 0 ? "disabled" : String.valueOf(interval));
 
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("latitude", latitude)
-				.append("longitude", longitude).append("interval", intervallMessage).toString();
+				.append("longitude", longitude).append("interval", intervallMessage)
+				.append("systemTimezone", TimeZone.getDefault().getID()).toString();
 	}
-
 }
