@@ -807,31 +807,6 @@ public class KNXCoreTypeMapperTest {
 	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
 	 * 
-	 * Test case all bytes 0, representing no-day, 00:00:00
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test (expected = IllegalArgumentException.class)
-	public void testTypeMappingTime_10_001_fail() throws KNXFormatException {
-		DPT dpt =DPTXlatorTime.DPT_TIMEOFDAY;
-
-		testToTypeClass(dpt, DateTimeType.class);
-
-		/*
-		 * Set day to no day, 0 hours, 0 minutes and 0 seconds
-		 * 
-		 * FIXME: This is permissible according KNX Spec but causes an IllegalArgumentException in org.openhab.core.library.types.DateTimeType.<init> caused by
-		 * a java.text.ParseException: Unparseable date: ""
-		 * 
-		 * Root cause seems to be that the most significant 3 bits of the most significant byte specifying "day of week" cannot be all 0 indicating "no day"
-		 */
-		Type type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00 }, DateTimeType.class);
-		testToDPTValue(dpt, type, "no-day, 00:00:00");
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
-	 * 
 	 * Test case: positive tests
 	 * 
 	 * @throws KNXFormatException
@@ -849,6 +824,13 @@ public class KNXCoreTypeMapperTest {
 		// Use a too long byte array expecting that additional bytes will be ignored
 		Type type=testToType(dpt, new byte[] { 0x20, 0x00, 0x00, (byte) 0xFF }, DateTimeType.class);
 		testToDPTValue(dpt, type, "Mon, 00:00:00");
+
+		/*
+		 * Set day to no day, 0 hours, 0 minutes and 0 seconds
+		 * 
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "00:00:00");
 
 		/*
 		 * Set day to Monday, 0 hours, 0 minutes and 0 seconds January 5th, 1970 was a Monday
@@ -920,7 +902,7 @@ public class KNXCoreTypeMapperTest {
 	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
 	 * 
-	 * Test case: Set day to Monday, 24 hours, 59 minutes and 59 sec(expected = KNXIllegalArgumentException.class)onds This should throw an KNXIllegalArgumentException
+	 * Test case: Set day to Monday, 24 hours, 59 minutes and 59 seconds
 	 * 
 	 * @throws KNXFormatException
 	 */
@@ -937,7 +919,7 @@ public class KNXCoreTypeMapperTest {
 	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
 	 * 
-	 * Set day to Monday, 23 hours, 60 minutes and 59 seconds This should throw an KNXIllegalArgumentException
+	 * Set day to Monday, 23 hours, 60 minutes and 59 seconds
 	 * 
 	 * @throws KNXFormatException
 	 */
@@ -954,7 +936,7 @@ public class KNXCoreTypeMapperTest {
 	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
 	 * 
-	 * Set day to Monday, 23 hours, 59 minutes and 60 seconds This should throw an KNXIllegalArgumentException
+	 * Set day to Monday, 23 hours, 59 minutes and 60 seconds
 	 * 
 	 * @throws KNXFormatException
 	 */

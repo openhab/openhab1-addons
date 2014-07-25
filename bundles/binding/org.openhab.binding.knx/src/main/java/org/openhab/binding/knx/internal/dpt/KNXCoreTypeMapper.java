@@ -10,6 +10,7 @@ package org.openhab.binding.knx.internal.dpt;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -61,7 +62,8 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	
 	static private final Logger logger = LoggerFactory.getLogger(KNXCoreTypeMapper.class);
 	
-	private final static SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("EEE, HH:mm:ss", Locale.US);
+	private final static SimpleDateFormat TIME_DAY_FORMATTER = new SimpleDateFormat("EEE, HH:mm:ss", Locale.US);
+	private final static SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("HH:mm:ss", Locale.US);
 	private final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 	
 	/** stores the openHAB type class for all (supported) KNX datapoint types */
@@ -72,6 +74,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	
 	static {
 		dptTypeMap = new HashMap<String, Class<? extends Type>>();
+
 		// Datapoint Types "B1", Main number 1
 		dptTypeMap.put(DPTXlatorBoolean.DPT_SWITCH.getID(), OnOffType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_STEP.getID(), IncreaseDecreaseType.class);
@@ -171,6 +174,30 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			
 			String id = translator.getType().getID();
 			logger.trace("toType datapoint DPT = " + datapoint.getDPT());
+			/*
+			 * We cannot rely on datapoint.getMainNumber() since 0 value is an acceptable value, when
+			 * the datapoint's DPTid uniquely identifies a calimero DPTXlator.
+			 * (see {@link tuwien.auto.calimero.datapoint.Datapoint.setDPT()})
+			 */
+			int mainNumber=datapoint.getMainNumber();
+			if (mainNumber==0) {
+				String dptID =datapoint.getDPT();
+				int dptSepratorPosition = dptID.indexOf('.');
+				if (dptSepratorPosition>0) {
+					try {
+						mainNumber=Integer.parseInt(dptID.substring(0, dptSepratorPosition));
+					}
+					catch (NumberFormatException nfe) {
+						logger.error("toType couldn't identify main number in dptID (NumberFormatException): {}",dptID);
+					}
+					catch (IndexOutOfBoundsException ioobe) {
+						logger.error("toType couldn't identify main number in dptID (IndexOutOfBoundsException): {}",dptID);
+					}
+				}
+				else {
+					logger.error("toType couldn't identify main number in dptID: {}",dptID);
+				}
+			}
 			logger.trace("toType datapoint getMainNumber = " + datapoint.getMainNumber());
 
 			if(datapoint.getMainNumber()==9) id = DPTXlator2ByteFloat.DPT_TEMPERATURE.getID(); // we do not care about the unit of a value, so map everything to 9.001
@@ -267,7 +294,28 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 				date = DATE_FORMATTER.parse(value);
 			}
 			else if (DPTXlatorTime.DPT_TIMEOFDAY.getID().equals(dpt)) {
-				date = TIME_FORMATTER.parse(value);
+				if (value.contains("no-day, ")) {
+					/* 
+					 * KNX "no-day" needs special treatment since openHAB's DateTimeType doesn't support "no-day".
+					 * Workaround: remove the "no-day" String, parse the remaining time string, which will result in a date of "1970-01-01".
+					 * Increase the month value as a marker, that "no-day" was in the KNX message. This shouldn't matter since year, month and day
+					 * haven't been set anyways.
+					 */
+					StringBuffer stb = new StringBuffer(value);
+					int start =stb.indexOf("no-day, ");
+					int end =start+"no-day, ".length();
+					stb.delete(start, end);
+					value = stb.toString();
+					
+					date = TIME_FORMATTER.parse(value);
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(date);
+					cal.set(Calendar.MONTH, 2);
+					date = cal.getTime();
+				}
+				else {
+					date = TIME_DAY_FORMATTER.parse(value);
+				}
 			}
 		}
 		catch (ParseException pe) {
@@ -285,8 +333,9 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 * @param dateType
 	 * @param dpt the target datapoint type 
 	 * 
-	 * @return a String which contains either an ISO8601 formatted date (yyyy-mm-dd) or
-	 * a formatted 24-hour clock with the day of week prepended (Mon, 12:00:00)
+	 * @return a String which contains either an ISO8601 formatted date (yyyy-mm-dd),
+	 * a formatted 24-hour clock with the day of week prepended (Mon, 12:00:00) or
+	 * a formatted 24-hour clock (12:00:00)
 	 * 
 	 * @throws IllegalArgumentException if none of the datapoint types DPT_DATE or
 	 * DPT_TIMEOFDAY has been used.
@@ -296,7 +345,17 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			return dateType.format("%tF");
 		}
 		else if (DPTXlatorTime.DPT_TIMEOFDAY.getID().equals(dpt)) {
-			return dateType.format(Locale.US, "%1$ta, %1$tT");
+			/*
+			 * Check if the calendar's month was set to February. This is "marker" indicating
+			 * that actually "no-day" was set. (see {@link private String formatDateTime(String value, String dpt)} above)
+			 */
+			Calendar cal=dateType.getCalendar();
+			if (cal.get(Calendar.MONTH)==2) {
+				return dateType.format(Locale.US, "%1$tT");
+			}
+			else {
+				return dateType.format(Locale.US, "%1$ta, %1$tT");
+			}
 		}
 		else {
 			throw new IllegalArgumentException("Could not format date to datapoint type '" + dpt + "'");
