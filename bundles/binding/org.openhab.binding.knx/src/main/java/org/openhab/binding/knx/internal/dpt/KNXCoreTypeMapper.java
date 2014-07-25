@@ -44,6 +44,7 @@ import tuwien.auto.calimero.dptxlator.DPTXlator4ByteUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
+import tuwien.auto.calimero.dptxlator.DPTXlatorDateTime;
 import tuwien.auto.calimero.dptxlator.DPTXlatorSceneNumber;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
 import tuwien.auto.calimero.dptxlator.DPTXlatorTime;
@@ -135,7 +136,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		dptTypeMap.put(DPTXlator4ByteFloat.DPT_POWER.getID(), DecimalType.class);
 
 		// Datapoint Types "String", Main number 16
-		dptTypeMap.put(DPTXlatorString.DPT_STRING_8859_1.getID(),StringType.class);
+		dptTypeMap.put(DPTXlatorString.DPT_STRING_8859_1.getID(), StringType.class);
+
+		// Datapoint Types "Scene Number", Main number 17
+		dptTypeMap.put(DPTXlatorSceneNumber.DPT_SCENE_NUMBER.getID(), DecimalType.class);
+
+		// Datapoint Types "DateTime", Main number 19
+		dptTypeMap.put(DPTXlatorDateTime.DPT_DATE_TIME.getID(), DateTimeType.class);
 
 		defaultDptMap = new HashMap<Class<? extends Type>, String>();
 		defaultDptMap.put(OnOffType.class, DPTXlatorBoolean.DPT_SWITCH.getID());
@@ -153,7 +160,6 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 
 		defaultDptMap.put(StringType.class,	DPTXlatorString.DPT_STRING_8859_1.getID());
 	}
-
 
 	public String toDPTValue(Type type, String dpt) {
 
@@ -225,6 +231,51 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 				}
 				value = Math.abs(f) < 100000 ? String.valueOf(f) : dcf.format(f);
 				break;
+			case 19:
+				DPTXlatorDateTime translatorDateTime = (DPTXlatorDateTime) translator;
+				if (translatorDateTime.isFaultyClock()) {
+					//Not supported: faulty clock
+					logger.debug("toType: KNX clock msg ignored: clock faulty bit set, which is not supported");
+					return null;
+				}
+				else if (!translatorDateTime.isValidField(DPTXlatorDateTime.YEAR) && translatorDateTime.isValidField(DPTXlatorDateTime.DATE)){
+					//Not supported: "/1/1" (month and day without year)
+					logger.debug("toType: KNX clock msg ignored: no year, but day and month, which is not supported");
+					return null;
+				}
+				else if (translatorDateTime.isValidField(DPTXlatorDateTime.YEAR) && !translatorDateTime.isValidField(DPTXlatorDateTime.DATE)){
+					//Not supported: "1900" (year without month and day)
+					logger.debug("toType: KNX clock msg ignored: no day and month, but year, which is not supported");
+					return null;
+				}
+				else if (!translatorDateTime.isValidField(DPTXlatorDateTime.YEAR)
+						&& !translatorDateTime.isValidField(DPTXlatorDateTime.DATE)
+						&& !translatorDateTime.isValidField(DPTXlatorDateTime.TIME)) {
+					// Not supported: No year, no date and no time
+					logger.debug("toType: KNX clock msg ignored: no day and month or year, which is not supported");
+					return null;
+				}				
+				
+				Calendar cal = Calendar.getInstance();
+				if (translatorDateTime.isValidField(DPTXlatorDateTime.YEAR) && !translatorDateTime.isValidField(DPTXlatorDateTime.TIME)) {
+					// Pure date format, no time information
+					cal.setTimeInMillis(translatorDateTime.getValueMilliseconds());
+					value=DateTimeType.DATE_FORMATTER.format(cal.getTime());
+				}
+				else if (!translatorDateTime.isValidField(DPTXlatorDateTime.YEAR) && translatorDateTime.isValidField(DPTXlatorDateTime.TIME)) {
+					// Pure time format, no date information
+					cal.clear();
+					cal.set(Calendar.HOUR_OF_DAY, translatorDateTime.getHour());
+					cal.set(Calendar.MINUTE, translatorDateTime.getHour());
+					cal.set(Calendar.SECOND, translatorDateTime.getSecond());
+					value=DateTimeType.DATE_FORMATTER.format(cal.getTime());
+				}
+				else if (translatorDateTime.isValidField(DPTXlatorDateTime.YEAR) && translatorDateTime.isValidField(DPTXlatorDateTime.TIME)) {
+					// Date format and time information
+					cal.setTimeInMillis(translatorDateTime.getValueMilliseconds());
+					value=DateTimeType.DATE_FORMATTER.format(cal.getTime());
+				}
+				break;
 			}
 
 			Class<? extends Type> typeClass = toTypeClass(id);
@@ -240,7 +291,22 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			if(typeClass.equals(StringType.class)) return StringType.valueOf(value);
 			if(typeClass.equals(OpenClosedType.class)) return OpenClosedType.valueOf(value.toUpperCase());
 			if(typeClass.equals(StopMoveType.class)) return value.equals("start")?StopMoveType.MOVE:StopMoveType.STOP;
-			if(typeClass.equals(DateTimeType.class)) return DateTimeType.valueOf(formatDateTime(value, datapoint.getDPT()));
+
+			if(typeClass.equals(DateTimeType.class)) {
+				if (mainNumber == 19) {
+					return DateTimeType.valueOf(value);
+				}
+				else {
+					String date=formatDateTime(value, datapoint.getDPT());
+					if ((date == null) || (date.isEmpty())) {
+						logger.debug("toType: KNX clock msg ignored: no day and month or year, which is not supported");
+						return null;
+					}
+					else {
+						return DateTimeType.valueOf(date);
+					}
+				}
+			}
 		}
 		catch (KNXFormatException kfe) {
 			logger.info("Translator couldn't parse data for datapoint type ‘{}‘ (KNXFormatException).", datapoint.getDPT());
@@ -262,18 +328,8 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 * @return the openHAB type (command or state) class or {@code null} if the datapoint type id is not supported.
 	 */
 	static public Class<? extends Type> toTypeClass(String dptId) {
-		/*
-		 * DecimalType is by default associated to 14.001 
-		 * or 17.001, we need to do exceptional handling
-		 */
 		logger.trace("toTypeClass looking for dptId = " + dptId);
-		if (DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR.getID().equals(dptId)) {
-			return DecimalType.class;
-		} else if (DPTXlatorSceneNumber.DPT_SCENE_NUMBER.getID().equals(dptId)) {
-			return DecimalType.class;
-		} else {
-			return dptTypeMap.get(dptId);
-		}
+		return dptTypeMap.get(dptId);
 	}
 
 	/**
@@ -366,6 +422,9 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			else {
 				return dateType.format(Locale.US, "%1$ta, %1$tT");
 			}
+		}
+		else if (DPTXlatorDateTime.DPT_DATE_TIME.getID().equals(dpt)) {
+			return dateType.format(Locale.US, "%tF %1$tT");
 		}
 		else {
 			throw new IllegalArgumentException("Could not format date to datapoint type '" + dpt + "'");

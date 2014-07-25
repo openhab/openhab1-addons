@@ -32,6 +32,8 @@ import tuwien.auto.calimero.dptxlator.DPTXlator4ByteUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
+import tuwien.auto.calimero.dptxlator.DPTXlatorDateTime;
+import tuwien.auto.calimero.dptxlator.DPTXlatorSceneNumber;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
 import tuwien.auto.calimero.dptxlator.DPTXlatorTime;
 
@@ -1350,6 +1352,157 @@ public class KNXCoreTypeMapperTest {
 		 */
 		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, StringType.class);
 		testToDPTValue(dpt, type, "");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Scene Number" KNX ID: 17.001 DPT_SCENE_NUMBER
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingSceneNumber_17_001() throws KNXFormatException {
+		DPT dpt =DPTXlatorSceneNumber.DPT_SCENE_NUMBER;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		Type type=testToType(dpt, new byte[] {  (byte) 0xFF, 0 }, DecimalType.class);
+		testToDPTValue(dpt, type, "63");
+
+		type=testToType(dpt, new byte[] { 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { 0x3F }, DecimalType.class);
+		testToDPTValue(dpt, type, "63");
+
+		//Test that the 2 msb (reserved) are ignored
+		type=testToType(dpt, new byte[] { (byte) 0xC0 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		//Test that the 2 msb (reserved) are ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "63");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Date Time" KNX ID: 19.001 DPT_DATE_TIME
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingDateTime_19_001() throws KNXFormatException {
+		DPT dpt =DPTXlatorDateTime.DPT_DATE_TIME;
+
+		testToTypeClass(dpt, DateTimeType.class);
+
+		assertNull("KNXCoreTypeMapper.toType() should return null (no-day)",
+				testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00 }, DateTimeType.class));
+
+		assertNull("KNXCoreTypeMapper.toType() should return null (illegal date)",
+				testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, DateTimeType.class));
+
+		
+		/* 
+		 * Reference testcase
+		 * Monday, January 1st, 1900 00:00:00, Fault: Normal (no fault), Working Day: Bank day (No working day), Working Day Field: valid,
+		 * Year Field valid, Months and Day fields valid, Day of week field valid, Hour of day, Minutes and Seconds fields valid,
+		 * Standard Summer Time: Time = UT+X, Quality of Clock: clock without ext. sync signal
+		 */
+		Type type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x00, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+
+		/* 
+		 * Reference testcase + Fault: Fault => not supported
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (faulty clock)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x80, 0x00 }, DateTimeType.class));
+
+		/* 
+		 * Reference testcase + Year Field invalid => not supported
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (date but no year)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x10, 0x00 }, DateTimeType.class));
+		/* 
+		 * Reference testcase + Months and Day fields invalid => not supported
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (date but no day and month)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x08, 0x00 }, DateTimeType.class));
+		/* 
+		 * Reference testcase + Year Field invalid + Months and Day fields invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x18, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1970-01-01 00:00:00");
+		/* 
+		 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x1C, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1970-01-01 00:00:00");
+		/* 
+		 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
+		 * Working day field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3C, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1970-01-01 00:00:00");
+		/* 
+		 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
+		 * Working day field invalid + Hour of day, Minutes and Seconds fields invalid
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (neither date nor time)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3E, 0x00 }, DateTimeType.class));
+
+		/* 
+		 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
+		 * Working day field invalid + Hour of day, Minutes and Seconds fields invalid, Standard Summer Time: Time = UT+X+1
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (neither date nor time, but summertime flag)", type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3F, 0x00 }, DateTimeType.class));
+		/* 
+		 * Reference testcase + day of week=Any day, Day of week field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+		/* 
+		 * Reference testcase + Day of week field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x04, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+		/* 
+		 * Reference testcase + day of week=Any day, Day of week field invalid, working day, working day field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x60, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+
+		/*
+		 * FIXME: Calimero lib (Version 2.2.0) seems to have a bug when dealing with DaylightSavingsTime.
+		 * Setting the DST field will always result in a rejection of the data.
+		 * 
+		 * The following test case tests the erroneous behavior. 
+		 * Reference testcase + day of week=Any day, daylight saving
+		 */
+		assertNull(testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x01, (byte) 0x00 }, DateTimeType.class));
+
+		/* 
+		 * December 31st, 2155 day of week=Any day, Day of week field invalid
+		 */
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x0C, 0x1F, 0x17, 0x3B, 0x3B, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "2155-12-31 23:59:59");
+		/* 
+		 * December 31st, 2155, 24:00:00, day of week=Any day, Day of week field invalid
+		 * 
+		 * TODO: this test case should test for "2155-12-31 24:00:00" since that is what the (valid) KNX bytes represent.
+		 * Nevertheless, calimero is "cheating" by using the milliseconds such that "23:59:59.999" is interpreted as "23:59:59"
+		 * OpenHAB's DateTimeType doesn't support milliseconds (at least not when parsing from a String), hence 24:00:00 cannot be mapped.
+		 */
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x0C, 0x1F, 0x18, 0x00, 0x00, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "2155-12-31 23:59:59");
+		/* 
+		 * December 31st, 2014 24:00:00, day of week=Any day, Day of week field invalid
+		 * 
+		 * TODO: this test case should test for "2155-12-31 24:00:00" since that is what the (valid) KNX bytes represent.
+		 * Nevertheless, calimero is "cheating" by using the milliseconds such that "23:59:59.999" is interpreted as "23:59:59"
+		 * OpenHAB's DateTimeType doesn't support milliseconds (at least not when parsing from a String), hence 24:00:00 cannot be mapped.
+		 */
+		type=testToType(dpt, new byte[] { (byte) 0x72, 0x0C, 0x1F, 0x18, 0x00, 0x00, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "2014-12-31 23:59:59");
 	}
 
 	/**
