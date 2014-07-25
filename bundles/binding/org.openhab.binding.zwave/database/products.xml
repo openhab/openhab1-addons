@@ -612,6 +612,14 @@
 			<Label lang="en">Battery Siren</Label>
 			<ConfigFile>vision/zm1601.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>1001</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>ZU1401</Model>
+			<Label lang="en">USB Controller</Label>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>010F</Id>
