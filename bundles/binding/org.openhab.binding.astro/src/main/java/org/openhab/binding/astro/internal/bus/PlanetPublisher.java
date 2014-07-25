@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.WordUtils;
 import org.openhab.binding.astro.internal.common.AstroContext;
 import org.openhab.binding.astro.internal.config.AstroBindingConfig;
 import org.openhab.binding.astro.internal.model.Planet;
@@ -65,7 +66,7 @@ public class PlanetPublisher {
 	public void clear() {
 		itemCache.clear();
 	}
-	
+
 	/**
 	 * Iterates through all items and publishes the states.
 	 */
@@ -131,6 +132,18 @@ public class PlanetPublisher {
 			} else {
 				logger.warn("Unsupported type for item {}, only DecimalType supported!", item.getName());
 			}
+		} else if (value instanceof String || value instanceof Enum) {
+			if (item.getAcceptedDataTypes().contains(StringType.class)) {
+				if (value instanceof Enum) {
+					context.getEventPublisher().postUpdate(item.getName(),
+							new StringType(WordUtils.capitalizeFully(value.toString())));
+				} else {
+					context.getEventPublisher().postUpdate(item.getName(), new StringType(value.toString()));
+				}
+			} else {
+				logger.warn("Unsupported type for item {}, only String supported!", item.getName());
+			}
+
 		} else {
 			logger.warn("Unsupported value type {}", value.getClass().getSimpleName());
 		}

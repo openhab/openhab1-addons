@@ -14,6 +14,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.openhab.binding.astro.internal.model.Range;
 import org.openhab.binding.astro.internal.model.Sun;
 import org.openhab.binding.astro.internal.model.SunPosition;
+import org.openhab.binding.astro.internal.util.DateTimeUtils;
 
 /**
  * Calculates the SunPosition (azimuth, elevation) and Sun data.
@@ -42,7 +43,8 @@ public class SunCalc {
 	private static final double SUN_DIAMETER = 0.53 * DEG2RAD; // sun diameter
 	private static final double H0 = SUN_ANGLE * DEG2RAD;
 	private static final double H1 = -6.0 * DEG2RAD; // nautical twilight angle
-	private static final double H2 = -12.0 * DEG2RAD; // astronomical twilight angle
+	private static final double H2 = -12.0 * DEG2RAD; // astronomical twilight
+														// angle
 	private static final double H3 = -18.0 * DEG2RAD; // darkness angle
 	private static final double MINUTES_PER_DAY = 60 * 24;
 	private static final double MILLISECONDS_PER_DAY = 1000 * 60 * MINUTES_PER_DAY;
@@ -74,7 +76,7 @@ public class SunCalc {
 	 * Returns true, if the sun is up all day (no rise and set).
 	 */
 	private boolean isSunUpAllDay(Calendar calendar, double latitude, double longitude) {
-		Calendar cal = truncateToMidnight(calendar);
+		Calendar cal = DateTimeUtils.truncateToMidnight(calendar);
 		for (int minutes = 0; minutes <= MINUTES_PER_DAY; minutes += CURVE_TIME_INTERVAL) {
 			double elevation = getSunPosition(cal, latitude, longitude).getElevation();
 			if (elevation < SUN_ANGLE) {
@@ -139,12 +141,13 @@ public class SunCalc {
 		sun.setNauticDusk(new Range(julianDateToDate(jnau), julianDateToDate(jastro)));
 
 		boolean isSunUpAllDay = isSunUpAllDay(calendar, latitude, longitude);
-		
+
 		// daylight
 		Range daylightRange = new Range();
 		if (sun.getRise().getStart() == null && sun.getRise().getEnd() == null) {
 			if (isSunUpAllDay) {
-				daylightRange = new Range(truncateToMidnight(calendar), truncateToMidnight(addDays(calendar, 1)));
+				daylightRange = new Range(DateTimeUtils.truncateToMidnight(calendar),
+						DateTimeUtils.truncateToMidnight(addDays(calendar, 1)));
 			}
 		} else {
 			daylightRange = new Range(sun.getRise().getEnd(), sun.getSet().getStart());
@@ -160,14 +163,15 @@ public class SunCalc {
 		} else if (isSunUpAllDay) {
 			morningNightRange = new Range();
 		} else {
-			morningNightRange = new Range(truncateToMidnight(calendar), sun.getAstroDawn().getStart());
+			morningNightRange = new Range(DateTimeUtils.truncateToMidnight(calendar), sun.getAstroDawn().getStart());
 		}
 		sun.setMorningNight(morningNightRange);
 
 		// evening night
 		Range eveningNightRange = null;
 		if (sun.getAstroDusk().getEnd() != null && DateUtils.isSameDay(sun.getAstroDusk().getEnd(), calendar)) {
-			eveningNightRange = new Range(sun.getAstroDusk().getEnd(), truncateToMidnight(addDays(calendar, 1)));
+			eveningNightRange = new Range(sun.getAstroDusk().getEnd(), DateTimeUtils.truncateToMidnight(addDays(
+					calendar, 1)));
 		} else {
 			eveningNightRange = new Range();
 		}
@@ -176,12 +180,11 @@ public class SunCalc {
 		// night
 		if (isSunUpAllDay) {
 			sun.setNight(new Range());
-		}
-		else {
+		} else {
 			Sun sunTomorrow = getSunInfo(addDays(calendar, 1), latitude, longitude, true);
 			sun.setNight(new Range(sun.getAstroDusk().getEnd(), sunTomorrow.getAstroDawn().getStart()));
 		}
-		
+
 		return sun;
 	}
 
@@ -196,7 +199,7 @@ public class SunCalc {
 	 * Returns the midnight julian date from the calendar object.
 	 */
 	public double midnightDateToJulianDate(Calendar calendar) {
-		return truncateToMidnight(calendar).getTimeInMillis() / MILLISECONDS_PER_DAY + J1970;
+		return DateTimeUtils.truncateToMidnight(calendar).getTimeInMillis() / MILLISECONDS_PER_DAY + J1970;
 	}
 
 	/**
@@ -213,13 +216,6 @@ public class SunCalc {
 	}
 
 	/**
-	 * Truncates the time from the calendar object.
-	 */
-	private Calendar truncateToMidnight(Calendar calendar) {
-		return DateUtils.truncate(calendar, Calendar.DAY_OF_MONTH);
-	}
-
-	/**
 	 * Adds the specified days to the calendar.
 	 */
 	private Calendar addDays(Calendar calendar, int days) {
@@ -228,7 +224,8 @@ public class SunCalc {
 		return cal;
 	}
 
-	// all the following methods are translated to java based on the javascript calculations of http://www.suncalc.net
+	// all the following methods are translated to java based on the javascript
+	// calculations of http://www.suncalc.net
 	private double getJulianCycle(double j, double lw) {
 		return Math.round(j - J2000 - J0 - lw / (2 * Math.PI));
 	}

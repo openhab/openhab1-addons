@@ -34,7 +34,9 @@ public class Sun extends RiseSet {
 	private Range night = new Range();
 
 	private SunPosition position = new SunPosition();
-
+	
+	private Zodiac zodiac = new Zodiac(null, null);
+	
 	/**
 	 * Returns the astro dawn range.
 	 */
@@ -203,6 +205,20 @@ public class Sun extends RiseSet {
 		this.position = position;
 	}
 
+	/**
+	 * Returns the zodiac.
+	 */
+	public Zodiac getZodiac() {
+		return zodiac;
+	}
+	
+	/**
+	 * Sets the zodiac.
+	 */
+	public void setZodiac(Zodiac zodiac) {
+		this.zodiac = zodiac;
+	}
+	
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("sunrise", getRise())
