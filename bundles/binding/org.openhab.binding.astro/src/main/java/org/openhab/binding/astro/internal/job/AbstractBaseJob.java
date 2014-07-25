@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractBaseJob implements Job {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractBaseJob.class);
 	protected AstroContext context = AstroContext.getInstance();
-	protected PlanetPublisher planetPublisher = new PlanetPublisher();
+	protected PlanetPublisher planetPublisher = PlanetPublisher.getInstance();
 
 	@Override
 	public void execute(JobExecutionContext jobContext) throws JobExecutionException {

@@ -13,6 +13,7 @@ import java.util.Calendar;
 import org.openhab.binding.astro.internal.calc.SunCalc;
 import org.openhab.binding.astro.internal.model.PlanetName;
 import org.openhab.binding.astro.internal.model.Sun;
+import org.openhab.binding.astro.internal.model.SunPosition;
 import org.quartz.JobDataMap;
 
 /**
@@ -29,9 +30,12 @@ public class SunJob extends AbstractBaseJob {
 		Sun sun = sunCalc.getSunInfo(Calendar.getInstance(), context.getConfig().getLatitude(), context.getConfig()
 				.getLongitude());
 
+		SunPosition sp = sunCalc.getSunPosition(Calendar.getInstance(), context.getConfig().getLatitude(), context
+				.getConfig().getLongitude());
+
+		sun.setPosition(sp);
 		context.setPlanet(PlanetName.SUN, sun);
 
-		planetPublisher.publish(PlanetName.SUN, false);
+		planetPublisher.publish(PlanetName.SUN);
 	}
-
 }

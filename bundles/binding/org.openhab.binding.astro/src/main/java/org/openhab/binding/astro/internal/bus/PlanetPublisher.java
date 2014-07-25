@@ -13,7 +13,10 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.openhab.binding.astro.internal.common.AstroContext;
 import org.openhab.binding.astro.internal.config.AstroBindingConfig;
 import org.openhab.binding.astro.internal.model.Planet;
@@ -38,30 +41,62 @@ import org.slf4j.LoggerFactory;
  */
 public class PlanetPublisher {
 	private static final Logger logger = LoggerFactory.getLogger(PlanetPublisher.class);
-	protected AstroContext context = AstroContext.getInstance();
+	private AstroContext context = AstroContext.getInstance();
+	private Map<String, Object> itemCache = new HashMap<String, Object>();
 
+	private static PlanetPublisher instance = null;
+
+	private PlanetPublisher() {
+	}
+
+	/**
+	 * Returns the singleton instance of PlanetPublisher.
+	 */
+	public static PlanetPublisher getInstance() {
+		if (instance == null) {
+			instance = new PlanetPublisher();
+		}
+		return instance;
+	}
+
+	/**
+	 * Clears the item cache.
+	 */
+	public void clear() {
+		itemCache.clear();
+	}
+	
 	/**
 	 * Iterates through all items and publishes the states.
 	 */
-	public void publish(final PlanetName planetName, final boolean position) {
+	public void publish(final PlanetName planetName) {
 		final Planet planet = context.getPlanet(planetName);
 		new ItemIterator().iterate(new ItemIteratorCallback() {
 
 			@Override
 			public void next(AstroBindingConfig bindingConfig, Item item) {
 				if (planetName == bindingConfig.getPlanetName()) {
-					boolean isPositionProperty = bindingConfig.getPlanetProperty().startsWith("position");
-					if (position == isPositionProperty) {
-						try {
-							Object value = PropertyUtils.getPropertyValue(planet, bindingConfig.getPlanetProperty());
+					try {
+						Object value = PropertyUtils.getPropertyValue(planet, bindingConfig.getPlanetProperty());
+						if (!equalsCachedValue(value, item)) {
 							publishValue(item, value, bindingConfig);
-						} catch (Exception ex) {
-							logger.warn(ex.getMessage(), ex);
+							itemCache.put(item.getName(), value);
 						}
+					} catch (Exception ex) {
+						logger.warn(ex.getMessage(), ex);
 					}
 				}
 			}
 		});
+	}
+
+	/**
+	 * Returns true, if the cached value is equal to the new value.
+	 */
+	private boolean equalsCachedValue(Object value, Item item) {
+		int cachedValueHashCode = ObjectUtils.hashCode(itemCache.get(item.getName()));
+		int valueHashCode = ObjectUtils.hashCode(value);
+		return cachedValueHashCode == valueHashCode;
 	}
 
 	/**

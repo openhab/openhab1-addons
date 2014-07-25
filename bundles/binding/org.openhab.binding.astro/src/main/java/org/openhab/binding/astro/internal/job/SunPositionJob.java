@@ -32,8 +32,6 @@ public class SunPositionJob extends AbstractBaseJob {
 
 		Sun sun = (Sun) context.getPlanet(PlanetName.SUN);
 		sun.setPosition(sp);
-
-		planetPublisher.publish(PlanetName.SUN, true);
+		planetPublisher.publish(PlanetName.SUN);
 	}
-
 }

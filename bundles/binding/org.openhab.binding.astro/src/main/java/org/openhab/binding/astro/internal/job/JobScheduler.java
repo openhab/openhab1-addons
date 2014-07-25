@@ -15,9 +15,11 @@ import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimerTask;
 
 import org.openhab.binding.astro.AstroBindingProvider;
+import org.openhab.binding.astro.internal.bus.PlanetPublisher;
 import org.openhab.binding.astro.internal.common.AstroConfig;
 import org.openhab.binding.astro.internal.common.AstroContext;
 import org.openhab.binding.astro.internal.config.AstroBindingConfig;
@@ -85,7 +87,7 @@ public class JobScheduler {
 
 		if (isBindingForSunPositionAvailable()) {
 			if (context.getConfig().getInterval() > 0) {
-				startAndScheduleSunPositionJob();
+				scheduleSunPositionJob();
 			} else {
 				logger.warn("Azimuth/Elevation binding available, but configuration is disabled (interval = 0)!");
 			}
@@ -93,7 +95,7 @@ public class JobScheduler {
 	}
 
 	/**
-	 * Stops all scheduled jobs.
+	 * Stops all scheduled jobs and clears the PlanetPublisher cache.
 	 */
 	public void stop() {
 		try {
@@ -104,6 +106,7 @@ public class JobScheduler {
 		} catch (SchedulerException ex) {
 			logger.error(ex.getMessage(), ex);
 		}
+		PlanetPublisher.getInstance().clear();
 	}
 
 	/**
@@ -140,11 +143,12 @@ public class JobScheduler {
 	 * Schedules SunPosition with the specified interval and starts it
 	 * immediately.
 	 */
-	public void startAndScheduleSunPositionJob() {
+	public void scheduleSunPositionJob() {
 		AstroConfig config = context.getConfig();
 
 		String jobName = SunPositionJob.class.getSimpleName();
-		Trigger trigger = newTrigger().withIdentity(jobName + "-Trigger", JOB_GROUP).startNow()
+		Date start = new Date(System.currentTimeMillis() + (config.getInterval()) * 1000);
+		Trigger trigger = newTrigger().withIdentity(jobName + "-Trigger", JOB_GROUP).startAt(start)
 				.withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(config.getInterval())).build();
 
 		schedule(jobName, SunPositionJob.class, trigger, new JobDataMap());
