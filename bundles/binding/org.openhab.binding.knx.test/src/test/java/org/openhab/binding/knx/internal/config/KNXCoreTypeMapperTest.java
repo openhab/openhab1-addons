@@ -10,6 +10,8 @@ package org.openhab.binding.knx.internal.config;
 
 import static org.junit.Assert.*;
 
+import java.util.Locale;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.binding.knx.internal.dpt.KNXCoreTypeMapper;
@@ -371,7 +373,7 @@ public class KNXCoreTypeMapperTest {
 
 		type=testToType(dpt, new byte[] { (byte) 0xFF }, DecimalType.class);
 		testToDPTValue(dpt, type, "360");
-		
+
 		// Use a too long byte array expecting that additional bytes will be ignored
 		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, DecimalType.class);
 		testToDPTValue(dpt, type, "360");
@@ -1226,261 +1228,82 @@ public class KNXCoreTypeMapperTest {
 	}
 
 	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.001 DPT_ACCELERATION_ANGULAR
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14
 	 * 
 	 * @throws KNXFormatException
 	 */
 	@Test
-	public void testTypeMapping4ByteFloat_14_001() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR;
+	public void testTypeMapping4ByteFloat_14() throws KNXFormatException {
+		Locale[] locales = {Locale.getDefault(), Locale.ENGLISH, Locale.GERMAN};
+		DPT[] dpts = {DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, DPTXlator4ByteFloat.DPT_ANGLE_DEG,
+				DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT, DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL, DPTXlator4ByteFloat.DPT_FREQUENCY,
+				DPTXlator4ByteFloat.DPT_POWER};
+		// Iterate over the locales
+		for (Locale locale : locales) {
+			//Iterate over the subtypes to be tested
+			for (DPT dpt : dpts) {
+				Locale.setDefault(locale);
 
-		testToTypeClass(dpt, DecimalType.class);
+				testToTypeClass(dpt, DecimalType.class);
 
-		// Use a too short byte array
-		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
-				testToType(dpt, new byte[] { }, DecimalType.class));
+				// Use a too short byte array
+				assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+						testToType(dpt, new byte[] { }, DecimalType.class));
 
-		// Use a too long byte array expecting that additional bytes will be ignored
-		Type type=testToType(dpt, new byte[] {   (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
+				try {
+					// Use a too long byte array expecting that additional bytes will be ignored
+					Type type=testToType(dpt, new byte[] {   (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+					testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
+				}
+				catch (NumberFormatException nfe) {
+					fail("DptId: "+dpt.getID()+", locale: "+locale+", NumberFormatException. Expecting 0.0");
+				}
 
-		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0");
+				try {
+					Type type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
+					testToDPTValue(dpt, type, "0.0");
+				}
+				catch (NumberFormatException nfe) {
+					fail("DptId: "+dpt.getID()+", locale: "+locale+", NumberFormatException. Expecting 0.0");
+				}
 
-		// Test the smallest positive value 
-		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
+				try {
+					// Test the smallest positive value 
+					Type type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
+					testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
+				}
+				catch (NumberFormatException nfe) {
+					fail("DptId: "+dpt.getID()+", locale: "+locale+", NumberFormatException. Expecting 0.0000000000000000000000000000000000000000000014");
+				}
 
-		// Test the smallest negative value 
-		type=testToType(dpt, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
+				try {
+					// Test the smallest negative value 
+					Type type=testToType(dpt, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
+					testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
+				}
+				catch (NumberFormatException nfe) {
+					fail("DptId: "+dpt.getID()+", locale: "+locale+", NumberFormatException. Expecting -0.0000000000000000000000000000000000000000000014");
+				}
 
-		/*
-		 * Test the maximum positive value
-		 */
-		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
+				try {
+					// Test the maximum positive value
+					Type type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+					testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
+				}
+				catch (NumberFormatException nfe) {
+					fail("DptId: "+dpt.getID()+", locale: "+locale+", NumberFormatException. Expecting 340282000000000000000000000000000000000");
+				}
 
-		/*
-		 * Test the maximum negative value
-		 */
-		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.007 DPT_ANGLE_DEG
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test
-	public void testTypeMapping4ByteFloat_14_007() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_ANGLE_DEG;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		// Use a too short byte array
-		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
-				testToType(dpt, new byte[] { }, DecimalType.class));
-
-		// Use a too long byte array expecting that additional bytes will be ignored
-		Type type=testToType(dpt, new byte[] {   (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0");
-
-		// Test the smallest positive value 
-		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
-
-		// Test the smallest negative value 
-		type=testToType(dpt, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
-
-		/*
-		 * Test the maximum positive value
-		 */
-		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		/*
-		 * Test the maximum negative value
-		 */
-		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.019 DPT_ELECTRIC_CURRENT
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test
-	public void testTypeMapping4ByteFloat_14_019() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		// Use a too short byte array
-		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
-				testToType(dpt, new byte[] { }, DecimalType.class));
-
-		// Use a too long byte array expecting that additional bytes will be ignored
-		Type type=testToType(dpt, new byte[] {   (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0");
-
-		// Test the smallest positive value 
-		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
-
-		// Test the smallest negative value 
-		type=testToType(dpt, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
-
-		/*
-		 * Test the maximum positive value
-		 */
-		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		/*
-		 * Test the maximum negative value
-		 */
-		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.027 DPT_ELECTRIC_POTENTIAL
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test
-	public void testTypeMapping4ByteFloat_14_027() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		// Use a too short byte array
-		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
-				testToType(dpt, new byte[] { }, DecimalType.class));
-
-		// Use a too long byte array expecting that additional bytes will be ignored
-		Type type=testToType(dpt, new byte[] {   (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0");
-
-		// Test the smallest positive value 
-		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
-
-		// Test the smallest negative value 
-		type=testToType(dpt, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
-
-		/*
-		 * Test the maximum positive value
-		 */
-		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		/*
-		 * Test the maximum negative value
-		 */
-		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.033 DPT_FREQUENCY
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test
-	public void testTypeMapping4ByteFloat_14_033() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_FREQUENCY;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		// Use a too short byte array
-		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
-				testToType(dpt, new byte[] { }, DecimalType.class));
-
-		// Use a too long byte array expecting that additional bytes will be ignored
-		Type type=testToType(dpt, new byte[] {   (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0");
-
-		// Test the smallest positive value 
-		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
-
-		// Test the smallest negative value 
-		type=testToType(dpt, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
-
-		/*
-		 * Test the maximum positive value
-		 */
-		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		/*
-		 * Test the maximum negative value
-		 */
-		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.056 DPT_POWER
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test
-	public void testTypeMapping4ByteFloat_14_056() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_POWER;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		// Use a too short byte array
-		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
-				testToType(dpt, new byte[] { }, DecimalType.class));
-
-		// Use a too long byte array expecting that additional bytes will be ignored
-		Type type=testToType(dpt, new byte[] {   (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0");
-
-		// Test the smallest positive value 
-		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
-
-		// Test the smallest negative value 
-		type=testToType(dpt, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
-
-		/*
-		 * Test the maximum positive value
-		 */
-		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		/*
-		 * Test the maximum negative value
-		 */
-		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
+				try {
+					// Test the maximum negative value
+					Type type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+					testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
+				}
+				catch (NumberFormatException nfe) {
+					fail("DptId: "+dpt.getID()+", locale: "+locale+", NumberFormatException. Expecting -340282000000000000000000000000000000000");
+				}
+			} 
+		}
 	}
 
 	/**

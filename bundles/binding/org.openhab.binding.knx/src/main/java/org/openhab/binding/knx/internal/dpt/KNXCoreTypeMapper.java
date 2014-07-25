@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.knx.internal.dpt;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -59,19 +61,19 @@ import tuwien.auto.calimero.exception.KNXIllegalArgumentException;
  *
  */
 public class KNXCoreTypeMapper implements KNXTypeMapper {
-	
+
 	static private final Logger logger = LoggerFactory.getLogger(KNXCoreTypeMapper.class);
-	
+
 	private final static SimpleDateFormat TIME_DAY_FORMATTER = new SimpleDateFormat("EEE, HH:mm:ss", Locale.US);
 	private final static SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("HH:mm:ss", Locale.US);
 	private final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
-	
+
 	/** stores the openHAB type class for all (supported) KNX datapoint types */
 	static private Map<String, Class<? extends Type>> dptTypeMap;
 
 	/** stores the default KNX DPT to use for each openHAB type */
 	static private Map<Class<? extends Type>, String> defaultDptMap;
-	
+
 	static {
 		dptTypeMap = new HashMap<String, Class<? extends Type>>();
 
@@ -151,10 +153,10 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 
 		defaultDptMap.put(StringType.class,	DPTXlatorString.DPT_STRING_8859_1.getID());
 	}
-	
+
 
 	public String toDPTValue(Type type, String dpt) {
-		
+
 		if(type instanceof OnOffType) return type.toString().toLowerCase();
 		if(type instanceof UpDownType) return type.toString().toLowerCase();
 		if(type instanceof IncreaseDecreaseType) return type.toString().toLowerCase() + " 5";
@@ -174,7 +176,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			DPTXlator translator = TranslatorTypes.createTranslator(datapoint.getMainNumber(), datapoint.getDPT());
 			translator.setData(data);
 			String value = translator.getValue();
-			
+
 			String id = translator.getType().getID();
 			logger.trace("toType datapoint DPT = " + datapoint.getDPT());
 			/*
@@ -203,26 +205,33 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			}
 			logger.trace("toType datapoint getMainNumber = {}", datapoint.getMainNumber());
 
-			if(datapoint.getMainNumber()==9) id = DPTXlator2ByteFloat.DPT_TEMPERATURE.getID(); // we do not care about the unit of a value, so map everything to 9.001
-			if(datapoint.getMainNumber()==14) {
-				id = DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR.getID(); // we do not care about the unit of a value, so map everything to 14.001
+			/*
+			 *  Following code section deals with specific mapping of values from KNX to openHAB types were the String
+			 *  received from the DPTXlator is not sufficient to set the openHAB type or has bugs    
+			 */
+			switch (mainNumber) {
+			case 14:
 				/*
-				* FIXME: Workaround for a bug in Calimero
-				* DPTXlator4ByteFloat.makeString(). The locale is being used when
-				* translating a float to String. It could happen the a ',' is used a separator, such as 3,14159E20
-				* Openhab expects this to be in US format an expects '.': 3.14159E20
-				* There is no issue with DPTXlator2ByteFloat since calimero is using a non-localized translation.
-				*/
-				if (value.contains(",")) {
-					value=value.replaceFirst(",", "\\.");
+				 * FIXME: Workaround for a bug in Calimero / Openhab DPTXlator4ByteFloat.makeString(): is using a locale when
+				 * translating a Float to String. It could happen the a ',' is used as separator, such as 3,14159E20.
+				 * Openhab's DecimalType expects this to be in US format and expects '.': 3.14159E20.
+				 * There is no issue with DPTXlator2ByteFloat since calimero is using a non-localized translation there.
+				 */
+				DPTXlator4ByteFloat translator4ByteFloat = (DPTXlator4ByteFloat) translator;
+				Float f=translator4ByteFloat.getValueFloat();
+				NumberFormat dcf = NumberFormat.getInstance(Locale.US);
+				if (dcf instanceof DecimalFormat) {
+					((DecimalFormat) dcf).applyPattern("0.#####E0");
 				}
+				value = Math.abs(f) < 100000 ? String.valueOf(f) : dcf.format(f);
+				break;
 			}
-			
+
 			Class<? extends Type> typeClass = toTypeClass(id);
 			if (typeClass == null) {
 				return null;
 			}
-	
+
 			if(typeClass.equals(UpDownType.class)) return UpDownType.valueOf(value.toUpperCase());
 			if(typeClass.equals(IncreaseDecreaseType.class)) return IncreaseDecreaseType.valueOf(StringUtils.substringBefore(value.toUpperCase(), " "));
 			if(typeClass.equals(OnOffType.class)) return OnOffType.valueOf(value.toUpperCase());
@@ -242,10 +251,10 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		catch (KNXException e) {
 			logger.warn("Failed creating a translator for datapoint type ‘{}‘.", datapoint.getDPT(), e);
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Converts a datapoint type id into an openHAB type class
 	 * 
@@ -289,7 +298,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 	 */
 	private String formatDateTime(String value, String dpt) {
 		Date date = null;
-		
+
 		try {
 			if (DPTXlatorDate.DPT_DATE.getID().equals(dpt)) {
 				date = DATE_FORMATTER.parse(value);
@@ -307,7 +316,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 					int end =start+"no-day, ".length();
 					stb.delete(start, end);
 					value = stb.toString();
-					
+
 					date = TIME_FORMATTER.parse(value);
 					Calendar cal = Calendar.getInstance();
 					cal.setTime(date);
@@ -362,6 +371,6 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			throw new IllegalArgumentException("Could not format date to datapoint type '" + dpt + "'");
 		}
 	}
-	
-	
+
+
 }
