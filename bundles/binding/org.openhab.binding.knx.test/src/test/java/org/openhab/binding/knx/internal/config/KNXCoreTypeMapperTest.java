@@ -342,6 +342,40 @@ public class KNXCoreTypeMapperTest {
 	}
 
 	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 5.003 DPT_ANGLE
+	 * 
+	 * This data type is a “Multi-state” type, according KNX spec. No exact linear conversion from value to byte(s) and reverse is required, since rounding is
+	 * involved.
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping8BitUnsigned_5_003() throws KNXFormatException {
+		DPT dpt = DPTXlator8BitUnsigned.DPT_ANGLE;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0x7F }, DecimalType.class);
+		testToDPTValue(dpt, type, "179");
+
+		type=testToType(dpt, new byte[] { (byte) 0x80 }, DecimalType.class);
+		testToDPTValue(dpt, type, "181");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "360");
+		
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, DecimalType.class);
+		testToDPTValue(dpt, type, "360");
+	}
+	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType()for type “8-Bit Unsigned Value" KNX ID: 5.004 DPT_PERCENT_U8 (previously name DPT_RelPos_Valve)
 	 * 
 	 * @throws KNXFormatException
