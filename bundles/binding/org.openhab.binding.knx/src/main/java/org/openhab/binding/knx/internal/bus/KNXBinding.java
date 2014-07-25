@@ -215,7 +215,8 @@ implements ProcessListener, KNXConnectionListener {
 						}
 						else {
 							final char[] hexCode = "0123456789ABCDEF".toCharArray();
-					        StringBuilder sb = new StringBuilder(asdu.length * 2);
+					        StringBuilder sb = new StringBuilder(2+asdu.length * 2);
+					        sb.append("0x");
 					        for (byte b : asdu) {
 					            sb.append(hexCode[(b >> 4) & 0xF]);
 					            sb.append(hexCode[(b & 0xF)]);

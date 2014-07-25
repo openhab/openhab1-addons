@@ -46,6 +46,8 @@ import tuwien.auto.calimero.dptxlator.DPTXlatorString;
 import tuwien.auto.calimero.dptxlator.DPTXlatorTime;
 import tuwien.auto.calimero.dptxlator.TranslatorTypes;
 import tuwien.auto.calimero.exception.KNXException;
+import tuwien.auto.calimero.exception.KNXFormatException;
+import tuwien.auto.calimero.exception.KNXIllegalArgumentException;
 
 /** 
  * This class provides type mapping between all openHAB core types and KNX data point types.
@@ -194,7 +196,13 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			if(typeClass.equals(OpenClosedType.class)) return OpenClosedType.valueOf(value.toUpperCase());
 			if(typeClass.equals(StopMoveType.class)) return value.equals("start")?StopMoveType.MOVE:StopMoveType.STOP;
 			if(typeClass.equals(DateTimeType.class)) return DateTimeType.valueOf(formatDateTime(value, datapoint.getDPT()));
-		} 
+		}
+		catch (KNXFormatException kfe) {
+			logger.info("Translator couldn't parse data for datapoint type ‘{}‘ (KNXFormatException).", datapoint.getDPT());
+		}
+		catch (KNXIllegalArgumentException kiae) {
+			logger.info("Translator couldn't parse data for datapoint type ‘{}‘ (KNXIllegalArgumentException).", datapoint.getDPT());
+		}
 		catch (KNXException e) {
 			logger.warn("Failed creating a translator for datapoint type ‘{}‘.", datapoint.getDPT(), e);
 		}
