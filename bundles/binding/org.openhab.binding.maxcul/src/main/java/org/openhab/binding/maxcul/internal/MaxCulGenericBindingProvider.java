@@ -183,24 +183,26 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 		return configs;
 	}
 
+	/**
+	 * Loop over all bindings finding their associated devices and create entries for
+	 * each one. So end up with something like (psuedo binding code):
+	 * Binding 1:
+	 *  dev A { assoc=B,C }
+	 * 	result:
+	 * 		A -> B,C
+	 * Binding 2:
+	 * dev B { assoc=C }
+	 *  result:
+	 * 		A -> B,C
+	 * 		B -> C
+	 * Binding 3:
+	 * dev B { assoc=D }
+	 *  result:
+	 * 		A -> B,C
+	 * 		B -> C,D
+	 */
 	private void buildAssociationMap() {
-		/* loop over all bindings finding their associated devices and create entries for
-		 * each one. So end up with something like (psuedo binding code):
-		 * Step 1:
-		 *  dev A { assoc=B,C }
-		 * 	result:
-		 * 		A -> B,C
-		 * Step 2:
-		 * dev B { assoc=C }
-		 *  result:
-		 * 		A -> B,C
-		 * 		B -> C
-		 * Step 3:
-		 * dev B { assoc=D }
-		 *  result:
-		 * 		A -> B,C
-		 * 		B -> C,D
-		 */
+
 		if (super.bindingConfigs.values().isEmpty() == false)
 		{
 			logger.debug("Found "+super.bindingConfigs.values().size()+" binding configs to process in association map");
