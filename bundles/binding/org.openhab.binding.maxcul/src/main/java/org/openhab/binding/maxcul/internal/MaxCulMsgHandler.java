@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.maxcul.internal;
 
 import java.util.HashSet;
@@ -236,7 +244,9 @@ public class MaxCulMsgHandler implements CULListener {
 				logger.debug("Message "+msg.msgCount+" is part of sequence. Adding to register.");
 				sequenceRegister.put(msg.msgCount, msg.getMessageSequencer());
 			}
-		} else logger.error("Tried to send a message that wasn't ready!");
+		} else {
+			logger.error("Tried to send a message that wasn't ready!");
+		}
 	}
 
 	/**
@@ -251,7 +261,9 @@ public class MaxCulMsgHandler implements CULListener {
 			logger.debug("Associated MaxCulBindingMessageProcessor");
 		}
 		else
+		{
 			logger.error("Tried to associate a second MaxCulBindingMessageProcessor!");
+		}
 	}
 
 	/**
@@ -374,7 +386,9 @@ public class MaxCulMsgHandler implements CULListener {
 										/* NAK'd! */
 										// TODO resend?
 										logger.error("Message was NAK'd, packet lost");
-									} else logger.debug("Message "+msg.msgCount+" ACK'd ok!");
+									} else {
+										logger.debug("Message "+msg.msgCount+" ACK'd ok!");
+									}
 
 								}
 					} else logger.info("Got ACK for message "+msg.msgCount+" but it wasn't in the queue");
