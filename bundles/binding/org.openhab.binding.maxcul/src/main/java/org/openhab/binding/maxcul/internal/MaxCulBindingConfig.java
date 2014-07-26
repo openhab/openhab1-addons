@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class to parse and hold configuration for binding
+ * Parse and hold the configuration information for the Max!CUL bindings.
  *
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
@@ -43,186 +43,11 @@ public class MaxCulBindingConfig implements BindingConfig {
 
 	MaxCulBindingConfig(String bindingConfig)
 			throws BindingConfigParseException {
-		String[] configParts = bindingConfig.trim().split(":");
 
-		if (bindingConfig.startsWith("PairMode"))
-		{
-			logger.debug("Pair Mode switch found");
-			this.deviceType = MaxCulDevice.PAIR_MODE;
-			return;
-		}
-		else if (bindingConfig.startsWith("ListenMode"))
-		{
-			logger.debug("Listen Mode switch found");
-			this.deviceType = MaxCulDevice.LISTEN_MODE;
-			return;
-		}
-		else if (configParts.length < 2) {
-			throw new BindingConfigParseException(
-					"MaxCul configuration requires a configuration of at least the format <device_type>:<serial_num> for a MAX! device.");
-		}
-		else
-		{
-
-			logger.debug("Found real device");
-			/* handle device type */
-			logger.debug("Part 0/"+(configParts.length-1)+" -> "+configParts[0]);
-			this.parseDeviceCategory(configParts[0]);
-
-			/* handle serial number */
-			logger.debug("Part 1/"+(configParts.length-1)+" -> "+configParts[1]);
-			this.serialNumber = configParts[1];
-
-			/* handle optional config items */
-			if (configParts.length > 2) {
-				// parts 3 onwards
-				for (int idx=2; idx<configParts.length; idx++)
-				{
-					logger.debug("Part "+idx+"/"+(configParts.length-1)+" -> "+configParts[idx]);
-					if (configParts[idx].startsWith("configTemp"))
-					{
-						this.parseConfigTemp(configParts[idx]);
-					} else if (configParts[idx].startsWith("associate"))
-					{
-						this.parseAssociation(configParts[idx]);
-					} else if (configParts[idx].startsWith("feature"))
-					{
-						this.parseDeviceFeature(configParts[idx]);
-					}
-				}
-			} else {
-				/* use defaults - handle all device types */
-				switch (this.deviceType) {
-				case PUSH_BUTTON:
-					this.feature = MaxCulFeature.SWITCH;
-					break;
-				case RADIATOR_THERMOSTAT:
-					this.feature = MaxCulFeature.THERMOSTAT;
-					break;
-				case RADIATOR_THERMOSTAT_PLUS:
-					this.feature = MaxCulFeature.THERMOSTAT;
-					break;
-				case SHUTTER_CONTACT:
-					this.feature = MaxCulFeature.SWITCH;
-					break;
-				case WALL_THERMOSTAT:
-					this.feature = MaxCulFeature.THERMOSTAT;
-					break;
-				case PAIR_MODE:
-				case LISTEN_MODE:
-				case CUBE:
-				case UNKNOWN:
-					break;
-				}
-			}
-			/* load stored configuration from pairing (if present) except on pair mode switch binding */
-			if (this.deviceType != MaxCulDevice.PAIR_MODE)
-				this.loadStoredConfig();
-		}
+		MaxCulBindingConfigParser.parseMaxCulBindingString(bindingConfig, this);
 	}
 
-	private void parseDeviceCategory(String configPart) throws BindingConfigParseException
-	{
 
-		if (configPart.compareTo("RadiatorThermostat") == 0){
-			this.deviceType = MaxCulDevice.RADIATOR_THERMOSTAT;
-		} else if (configPart.compareTo("RadiatorThermostatPlus") == 0) {
-			this.deviceType = MaxCulDevice.RADIATOR_THERMOSTAT_PLUS;
-		} else if (configPart.compareTo("WallThermostat") == 0) {
-			this.deviceType = MaxCulDevice.WALL_THERMOSTAT;
-		} else if (configPart.compareTo("PushButton") == 0) {
-			this.deviceType = MaxCulDevice.PUSH_BUTTON;
-		} else if (configPart.compareTo("ShutterContact") == 0) {
-			this.deviceType = MaxCulDevice.SHUTTER_CONTACT;
-		} else {
-			throw new BindingConfigParseException(
-					"Invalid device type. Use RadiatorThermostat / RadiatorThermostatPlus / WallThermostat / PushButton / ShutterContact");
-		}
-	}
-
-	private void parseDeviceFeature(String configParts) throws BindingConfigParseException
-	{
-		String[] configPartArray = configParts.split("=");
-		if (configPartArray.length == 2)
-		{
-			String configPart = configPartArray[1];
-			if (configPart.compareTo("thermostat") == 0) {
-				if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
-						&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS
-						&& this.deviceType != MaxCulDevice.WALL_THERMOSTAT)
-					throw new BindingConfigParseException(
-							"Invalid device feature. Can only use 'thermostat' on radiator or wall thermostats. This is a "+this.deviceType);
-				this.feature = MaxCulFeature.THERMOSTAT;
-			} else if (configPart.compareTo("temperature") == 0) {
-				if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
-						&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS
-						&& this.deviceType != MaxCulDevice.WALL_THERMOSTAT)
-					throw new BindingConfigParseException(
-							"Invalid device feature. Can only use 'temperature' on radiator or wall thermostats. This is a "+this.deviceType);
-				this.feature = MaxCulFeature.TEMPERATURE;
-			} else if (configPart.compareTo("battery") == 0) {
-				this.feature = MaxCulFeature.BATTERY;
-			} else if (configPart.compareTo("mode") == 0) {
-				if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
-						&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS
-						&& this.deviceType != MaxCulDevice.WALL_THERMOSTAT)
-					throw new BindingConfigParseException(
-							"Invalid device feature. Can only use 'temperature' on radiator or wall thermostats. This is a "+this.deviceType);
-				this.feature = MaxCulFeature.MODE;
-			} else if (configPart.compareTo("switch") == 0) {
-				if (this.deviceType != MaxCulDevice.PUSH_BUTTON
-						&& this.deviceType != MaxCulDevice.SHUTTER_CONTACT)
-					throw new BindingConfigParseException(
-							"Invalid device feature. Can only use 'switch' on PushButton or ShutterContact. This is a "+this.deviceType);
-				this.feature = MaxCulFeature.TEMPERATURE;
-			} else if (configPart.compareTo("valvepos") == 0) {
-				if (this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT
-						&& this.deviceType != MaxCulDevice.RADIATOR_THERMOSTAT_PLUS)
-								throw new BindingConfigParseException(
-										"Invalid device feature. Can only use 'switch' on RadiatorThermostat or RadiatorThermostatPlus. This is a "+this.deviceType);
-				this.feature = MaxCulFeature.VALVE_POS;
-			} else if (configPart.compareTo("reset") == 0) {
-				this.feature = MaxCulFeature.RESET;
-			}
-		}
-	}
-
-	void parseConfigTemp(String configPart) throws BindingConfigParseException
-	{
-		String[] configKeyValueSplit = configPart.split("=");
-		if (configKeyValueSplit.length == 2)
-		{
-			String[] configParts = configKeyValueSplit[1].split("/");
-			if (configParts.length == 7)
-			{
-				// <comfortTemp>/<ecoTemp>/<maxTemp>/<minTemp>/<windowOpenTemperature>/<windowOpenDuration>/<measurementOffset>
-				this.comfortTemp = Double.parseDouble(configParts[0]);
-				this.ecoTemp = Double.parseDouble(configParts[1]);
-				this.maxTemp = Double.parseDouble(configParts[2]);
-				this.minTemp = Double.parseDouble(configParts[3]);
-				this.windowOpenTemperature = Double.parseDouble(configParts[4]);
-				this.windowOpenDuration = Double.parseDouble(configParts[5]);
-				this.measurementOffset = Double.parseDouble(configParts[6]);
-				temperatureConfigSet = true;
-			} else throw new BindingConfigParseException("Temperature configuration should be of form 'configTemp=<comfortTemp>/<ecoTemp>/<maxTemp>/<minTemp>/<windowOpenTemperature>/<windowOpenDuration>/<measurementOffset>'");
-		} else throw new BindingConfigParseException("Temperature configuration should be of form 'configTemp=<comfortTemp>/<ecoTemp>/<maxTemp>/<minTemp>/<windowOpenTemperature>/<windowOpenDuration>/<measurementOffset>'");
-	}
-
-	void parseAssociation(String configPart) throws BindingConfigParseException
-	{
-		String[] configKeyValueSplit = configPart.split("=");
-		if (configKeyValueSplit.length == 2)
-		{
-			String[] associations = configKeyValueSplit[1].split(",");
-			associatedSerialNum.clear();
-			for (int idx = 0; idx < associations.length; idx++)
-			{
-				associatedSerialNum.add(associations[idx]);
-			}
-		}
-		else
-			throw new BindingConfigParseException("Format of association configuration is incorrect! must be 'association=<serialNum>[,<serialNum>,[...]]'");
-	}
 
 	public double getComfortTemp() {
 		return comfortTemp;
@@ -266,7 +91,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 	private String generateConfigFilename()
 	{
 		String base = CONFIG_PROPERTIES_BASE;
-		String filename = String.format("%s/%s.properties", base, this.serialNumber);
+		String filename = String.format("%s/%s.properties", base, this.getSerialNumber());
 		return filename;
 	}
 
@@ -290,13 +115,13 @@ public class MaxCulBindingConfig implements BindingConfig {
 
 				fiStream.close();
 			} catch (IOException e) {
-				logger.warn("Unable to load information for "+this.deviceType+" "+this.serialNumber+" it may not yet be paired. Error was "+e.getMessage());
+				logger.warn("Unable to load information for "+this.getDeviceType()+" "+this.getSerialNumber()+" it may not yet be paired. Error was "+e.getMessage());
 				this.paired = false;
 				return;
 			}
-			logger.debug("Successfully loaded pairing info for "+this.serialNumber);
+			logger.debug("Successfully loaded pairing info for "+this.getSerialNumber());
 		} else {
-			logger.warn("Unable to locate information for "+this.deviceType+" "+this.serialNumber+" it may not yet be paired");
+			logger.warn("Unable to locate information for "+this.getDeviceType()+" "+this.getSerialNumber()+" it may not yet be paired");
 			this.paired = false;
 		}
 	}
@@ -318,7 +143,7 @@ public class MaxCulBindingConfig implements BindingConfig {
 					if (!cfgDir.exists()) cfgDir.mkdirs();
 					cfgFile.createNewFile();
 				} catch (IOException e) {
-					logger.warn("Unable to create new properties file for "+this.deviceType+" "+this.serialNumber+". Data won't be saved so pairing will be lost. Error was "+e.getMessage());
+					logger.warn("Unable to create new properties file for "+this.getDeviceType()+" "+this.getSerialNumber()+". Data won't be saved so pairing will be lost. Error was "+e.getMessage());
 					return;
 				}
 			}
@@ -333,12 +158,12 @@ public class MaxCulBindingConfig implements BindingConfig {
 				this.paired = true;
 				foStream.close();
 			} catch (IOException e) {
-				logger.warn("Unable to load information for "+this.deviceType+" "+this.serialNumber+" it may not yet be paired. Error was "+e.getMessage());
+				logger.warn("Unable to load information for "+this.getDeviceType()+" "+this.getSerialNumber()+" it may not yet be paired. Error was "+e.getMessage());
 				this.paired = false;
 				return;
 			}
-			logger.debug("Successfully wrote pairing info for "+this.serialNumber);
-		} else logger.error("Tried saving configuration for "+this.serialNumber+" which is not paired.");
+			logger.debug("Successfully wrote pairing info for "+this.getSerialNumber());
+		} else logger.error("Tried saving configuration for "+this.getSerialNumber()+" which is not paired.");
 	}
 
 	public MaxCulDevice getDeviceType() {
@@ -363,5 +188,79 @@ public class MaxCulBindingConfig implements BindingConfig {
 
 	public HashSet<String> getAssociatedSerialNum() {
 		return associatedSerialNum;
+	}
+
+
+
+	public void setDeviceType(MaxCulDevice deviceType) {
+		this.deviceType = deviceType;
+	}
+
+
+
+	public void setFeature(MaxCulFeature feature) {
+		this.feature = feature;
+	}
+
+
+
+	public void setTemperatureConfigSet(boolean temperatureConfigSet) {
+		this.temperatureConfigSet = temperatureConfigSet;
+	}
+
+
+
+	public void setMeasurementOffset(double measurementOffset) {
+		this.measurementOffset = measurementOffset;
+	}
+
+
+
+	public void setWindowOpenDuration(double windowOpenDuration) {
+		this.windowOpenDuration = windowOpenDuration;
+	}
+
+
+
+	public void setWindowOpenTemperature(double windowOpenTemperature) {
+		this.windowOpenTemperature = windowOpenTemperature;
+	}
+
+
+
+	public void setMinTemp(double minTemp) {
+		this.minTemp = minTemp;
+	}
+
+
+
+	public void setMaxTemp(double maxTemp) {
+		this.maxTemp = maxTemp;
+	}
+
+
+
+	public void setEcoTemp(double ecoTemp) {
+		this.ecoTemp = ecoTemp;
+	}
+
+
+
+	public void setComfortTemp(double comfortTemp) {
+		this.comfortTemp = comfortTemp;
+	}
+
+
+
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+
+	public void clearAssociatedSerialNum() {
+		this.associatedSerialNum.clear();
+	}
+
+	public void addAssociatedSerialNum(String assocDeviceSerial) {
+		this.associatedSerialNum.add(assocDeviceSerial);
 	}
 }
