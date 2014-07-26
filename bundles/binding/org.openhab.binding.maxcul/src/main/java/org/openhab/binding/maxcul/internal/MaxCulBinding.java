@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This binding allows integration of the MAX! devices via the CUL device - so
  * without the need for the Max!Cube device.
- * 
+ *
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
@@ -322,6 +322,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 			 * binding config
 			 */
 			if (bindingConfigs != null) {
+				logger.debug("Found "+bindingConfigs.size()+" configs for "+pkt.serial);
 				for (MaxCulBindingConfig bc : bindingConfigs) {
 					/* Set pairing information */
 					bc.setPairedInfo(pkt.srcAddrStr); /*
@@ -329,14 +330,17 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 													 * the addr of the device
 													 */
 					if (bc.isTemperatureConfigSet()
-							&& configWithTempsConfig == null)
+							&& configWithTempsConfig == null) {
 						configWithTempsConfig = bc;
+					}
 				}
 
 				/* if none have values set then send default from first config */
-				if (configWithTempsConfig == null)
+				if (configWithTempsConfig == null) {
+					logger.debug("Using default temperature configuration from config 0");
 					configWithTempsConfig = (MaxCulBindingConfig) bindingConfigs
 							.toArray()[0];
+				}
 
 				/* get device associations */
 				HashSet<MaxCulBindingConfig> associations = null;
@@ -344,18 +348,24 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 					associations = provider
 							.getAssociations(configWithTempsConfig
 									.getSerialNumber());
-					if (associations.isEmpty() == false)
+					if (associations != null && associations.isEmpty() == false)
+					{
+						logger.debug("Found associations");
 						break;
+					}
 				}
 
 				/* start the initialisation sequence */
+				logger.debug("Creating pairing sequencer");
 				PairingInitialisationSequence ps = new PairingInitialisationSequence(
 						this.DEFAULT_GROUP_ID, messageHandler,
 						configWithTempsConfig, associations);
 				messageHandler.startSequence(ps, pkt);
 			} else
+			{
 				logger.error("Pairing failed: Unable to find binding config for device "
 						+ pkt.serial);
+			}
 		} else {
 			switch (msgType) {
 			/* TODO handle all other incoming messages */

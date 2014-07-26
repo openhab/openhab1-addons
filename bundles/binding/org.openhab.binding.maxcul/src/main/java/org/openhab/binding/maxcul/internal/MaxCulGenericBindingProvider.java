@@ -29,17 +29,17 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is responsible for parsing the binding configuration and
  * registering the {@link MaxCulBindingProvider}.
- * 
+ *
  * The following devices have the following valid types: <li>RadiatorThermostat
  * - thermostat,temperature,battery,valvepos</li> <li>WallThermostat -
  * thermostat,temperature,battery</li>
- * 
+ *
  * The generic binding configuration format is (optional arguments in []):
  * <code>{ maxcul="&lt;deviceType&gt;:&lt;serialNum&gt;:[bindingType]:[configTemp=&lt;comfortTemp&gt;/&lt;ecoTemp&gt;/&lt;maxTemp&gt;/&lt;minTemp&gt;/&lt;windowOpenTemperature&gt;/&lt;windowOpenDuration&gt;/&lt;measurementOffset&gt;]:[assoc=&lt;serialNum&gt;]
- * 
+ *
  * Not setting configTemp will use whatever is already programmed into the device. Setting windowOpenTemp to anything other than 'Off' will enable detection of a window being opened using temperature. This would result in the thermostat turning off for windowOpenDuration minutes(?)
  * Setting assoc will associate the device specified with the one in the binding. This means that they will communicate directly changes in setpoint etc.
- * 
+ *
  * Examples:
  * <li><code>{ maxcul="RadiatorThermostat:JEQ1234565" }</code> - will return/set
  * the thermostat temperature of radiator thermostat with the serial number
@@ -55,12 +55,14 @@ import org.slf4j.LoggerFactory;
  * Switch only, enables pair mode for 60s. Will automatically switch off after
  * this time.</li> <li><code>{ maxcul="ListenMode" }</code> - Switch only,
  * doesn't process messages - just listens to traffic, parses and outputs it.</li>
- * 
+ *
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
 public class MaxCulGenericBindingProvider extends
 		AbstractGenericBindingProvider implements MaxCulBindingProvider {
+
+	private boolean associationsMapBuilt = false;
 
 	/**
 	 * {@inheritDoc}
@@ -101,14 +103,13 @@ public class MaxCulGenericBindingProvider extends
 				bindingConfig);
 
 		addBindingConfig(item, config);
-		buildAssociationMap(); // update association map
 
 		addBindingChangeListener(new BindingChangeListener() {
 
 			@Override
 			public void bindingChanged(BindingProvider provider, String itemName) {
 				/* binding changed so update the association map */
-				buildAssociationMap();
+				associationsMapBuilt = false;
 				// TODO check if config temperatures are set and flag that they
 				// should be sent the device because they might have changed?
 			}
@@ -272,6 +273,8 @@ public class MaxCulGenericBindingProvider extends
 				}
 			}
 
+			associationsMapBuilt = true;
+
 			/* debug print of association map */
 			if (!associationMap.isEmpty()) {
 				for (String serialKey : associationMap.keySet()) {
@@ -289,6 +292,9 @@ public class MaxCulGenericBindingProvider extends
 	}
 
 	public HashSet<MaxCulBindingConfig> getAssociations(String deviceSerial) {
+		if (associationsMapBuilt == false) {
+			buildAssociationMap();
+		}
 		return associationMap.get(deviceSerial);
 	}
 }

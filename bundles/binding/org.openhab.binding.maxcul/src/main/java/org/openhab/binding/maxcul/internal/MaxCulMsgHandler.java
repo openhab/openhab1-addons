@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * Handle messages going to and from the CUL device. Make sure to intercept
  * control command responses first before passing on valid MAX! messages to the
  * binding itself for processing.
- * 
+ *
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
@@ -182,7 +182,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send a raw Base Message
-	 * 
+	 *
 	 * @param msg
 	 *            Base message to send
 	 * @param queueItem
@@ -272,7 +272,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Associate binding processor with this message handler
-	 * 
+	 *
 	 * @param mcbmp
 	 *            Binding processor to associate with this message handler
 	 */
@@ -504,7 +504,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send response to PairPing as part of a message sequence
-	 * 
+	 *
 	 * @param dstAddr
 	 *            Address of device to respond to
 	 * @param msgSeq
@@ -523,7 +523,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send a wakeup message as part of a message sequence
-	 * 
+	 *
 	 * @param dstAddr
 	 *            Address of device to respond to
 	 * @param msgSeq
@@ -539,7 +539,7 @@ public class MaxCulMsgHandler implements CULListener {
 	/**
 	 * Send time information to device that has requested it as part of a
 	 * message sequence
-	 * 
+	 *
 	 * @param dstAddr
 	 *            Address of device to respond to
 	 * @param tzStr
@@ -557,7 +557,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send time information to device in fast mode
-	 * 
+	 *
 	 * @param dstAddr
 	 *            Address of device to respond to
 	 * @param tzStr
@@ -574,7 +574,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send time information to device that has requested it
-	 * 
+	 *
 	 * @param dstAddr
 	 *            Address of device to respond to
 	 * @param tzStr
@@ -586,7 +586,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Set the group ID on a device
-	 * 
+	 *
 	 * @param devAddr
 	 *            Address of device to set group ID on
 	 * @param group_id
@@ -604,7 +604,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send an ACK response to a message
-	 * 
+	 *
 	 * @param msg
 	 *            Message we are acking
 	 */
@@ -617,7 +617,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send an NACK response to a message
-	 * 
+	 *
 	 * @param msg
 	 *            Message we are nacking
 	 */
@@ -630,7 +630,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send a set temperature message
-	 * 
+	 *
 	 * @param devAddr
 	 *            Radio addr of device
 	 * @param temp
@@ -645,7 +645,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send temperature configuration message
-	 * 
+	 *
 	 * @param devAddr
 	 *            Radio addr of device
 	 * @param msgSeq
@@ -678,7 +678,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Link one device to another
-	 * 
+	 *
 	 * @param devAddr
 	 *            Destination device address
 	 * @param msgSeq
@@ -698,7 +698,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send a reset message to device
-	 * 
+	 *
 	 * @param devAddr
 	 *            Address of device to reset
 	 */
@@ -711,7 +711,7 @@ public class MaxCulMsgHandler implements CULListener {
 	/**
 	 * Set listen mode status. Doing this will stop proper message processing
 	 * and will just turn this message handler into a snooper.
-	 * 
+	 *
 	 * @param listenModeOn
 	 *            TRUE sets listen mode to ON
 	 */
@@ -721,6 +721,7 @@ public class MaxCulMsgHandler implements CULListener {
 	}
 
 	public void startSequence(MessageSequencer ps, BaseMsg msg) {
+		logger.debug("Starting sequence");
 		ps.runSequencer(msg);
 	}
 }
