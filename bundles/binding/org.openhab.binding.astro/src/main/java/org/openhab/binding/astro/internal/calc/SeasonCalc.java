@@ -28,27 +28,35 @@ public class SeasonCalc {
 	/**
 	 * Returns the seasons of the year of the specified calendar.
 	 */
-	public Season getSeason(Calendar calendar) {
+	public Season getSeason(Calendar calendar, double latitude) {
 		int year = calendar.get(Calendar.YEAR);
+		boolean isSouthernHemisphere = latitude < 0.0;
 		Season season = currentSeason;
 		if (currentYear != year) {
 			season = new Season();
-			season.setSpring(calcEquiSol(0, year));
-			season.setSummer(calcEquiSol(1, year));
-			season.setAutumn(calcEquiSol(2, year));
-			season.setWinter(calcEquiSol(3, year));
+			if (!isSouthernHemisphere) {
+				season.setSpring(calcEquiSol(0, year));
+				season.setSummer(calcEquiSol(1, year));
+				season.setAutumn(calcEquiSol(2, year));
+				season.setWinter(calcEquiSol(3, year));
+			} else {
+				season.setSpring(calcEquiSol(2, year));
+				season.setSummer(calcEquiSol(3, year));
+				season.setAutumn(calcEquiSol(0, year));
+				season.setWinter(calcEquiSol(1, year));
+			}
 			currentSeason = season;
 			currentYear = year;
 		}
 
-		season.setName(getCurrentSeasonName(calendar));
+		season.setName(!isSouthernHemisphere ? getCurrentSeasonNameNorthern(calendar) : getCurrentSeasonNameSouthern(calendar));
 		return season;
 	}
 
 	/**
-	 * Returns the current season name.
+	 * Returns the current season name for the northern hemisphere.
 	 */
-	private SeasonName getCurrentSeasonName(Calendar calendar) {
+	private SeasonName getCurrentSeasonNameNorthern(Calendar calendar) {
 		long currentMillis = calendar.getTimeInMillis();
 		if (currentMillis < currentSeason.getSpring().getTimeInMillis()
 				|| currentMillis >= currentSeason.getWinter().getTimeInMillis()) {
@@ -62,6 +70,27 @@ public class SeasonCalc {
 		} else if (currentMillis >= currentSeason.getAutumn().getTimeInMillis()
 				&& currentMillis < currentSeason.getWinter().getTimeInMillis()) {
 			return SeasonName.AUTUMN;
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the current season name for the southern hemisphere.
+	 */
+	private SeasonName getCurrentSeasonNameSouthern(Calendar calendar) {
+		long currentMillis = calendar.getTimeInMillis();
+		if (currentMillis < currentSeason.getAutumn().getTimeInMillis()
+				|| currentMillis >= currentSeason.getSummer().getTimeInMillis()) {
+			return SeasonName.SUMMER;
+		} else if (currentMillis >= currentSeason.getAutumn().getTimeInMillis()
+				&& currentMillis < currentSeason.getWinter().getTimeInMillis()) {
+			return SeasonName.AUTUMN;
+		} else if (currentMillis >= currentSeason.getWinter().getTimeInMillis()
+				&& currentMillis < currentSeason.getSpring().getTimeInMillis()) {
+			return SeasonName.WINTER;
+		} else if (currentMillis >= currentSeason.getSpring().getTimeInMillis()
+				&& currentMillis < currentSeason.getSummer().getTimeInMillis()) {
+			return SeasonName.SPRING;
 		}
 		return null;
 	}

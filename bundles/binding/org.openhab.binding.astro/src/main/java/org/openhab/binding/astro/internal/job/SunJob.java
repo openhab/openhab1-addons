@@ -42,7 +42,7 @@ public class SunJob extends AbstractBaseJob {
 		sun.setZodiac(zodiacCalc.getZodiac(now));
 
 		SeasonCalc seasonCalc = new SeasonCalc();
-		sun.setSeason(seasonCalc.getSeason(now));
+		sun.setSeason(seasonCalc.getSeason(now, context.getConfig().getLatitude()));
 		context.getJobScheduler().scheduleSeasonJobs(sun.getSeason());
 
 		context.setPlanet(PlanetName.SUN, sun);
