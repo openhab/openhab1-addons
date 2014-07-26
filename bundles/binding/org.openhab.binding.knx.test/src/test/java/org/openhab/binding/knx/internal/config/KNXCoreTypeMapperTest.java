@@ -292,14 +292,16 @@ public class KNXCoreTypeMapperTest {
 		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
 				testToType(dpt, new byte[] { }, IncreaseDecreaseType.class));
 
-		Type type=testToType(dpt, new byte[] { 0x00 }, IncreaseDecreaseType.class);
-		testToDPTValue(dpt, type, "decrease 5");
+		// 3 lsb set to 0 indicate a break. oenHAB doesn't support this state or command
+		assertNull("KNXCoreTypeMapper.toType() should return null (decrease break control needs to be ignored)",
+				testToType(dpt, new byte[] { 0x00 }, IncreaseDecreaseType.class));
 
-		type=testToType(dpt, new byte[] { 0x01 }, IncreaseDecreaseType.class);
-		testToDPTValue(dpt, type, "decrease 5");
+		// 3 lsb set to 0 indicate a break. oenHAB doesn't support this state or command
+		assertNull("KNXCoreTypeMapper.toType() should return null (increase break control needs to be ignored)",
+				testToType(dpt, new byte[] { 0x08 }, IncreaseDecreaseType.class));
 
-		type=testToType(dpt, new byte[] { 0x08 }, IncreaseDecreaseType.class);
-		testToDPTValue(dpt, type, "increase 5");
+		Type type=testToType(dpt, new byte[] { 0x01 }, IncreaseDecreaseType.class);
+		testToDPTValue(dpt, type, "decrease 5");
 
 		type=testToType(dpt, new byte[] { 0x0F }, IncreaseDecreaseType.class);
 		testToDPTValue(dpt, type, "increase 5");

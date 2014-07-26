@@ -216,6 +216,14 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			 *  received from the DPTXlator is not sufficient to set the openHAB type or has bugs    
 			 */
 			switch (mainNumber) {
+			case 3:
+				DPTXlator3BitControlled translator3BitControlled = (DPTXlator3BitControlled) translator;
+				if (translator3BitControlled.getStepCode()==0) {
+					// Not supported: break
+					logger.debug("toType: KNX DPT_Control_Dimming: break ignored.");
+					return null;
+				}
+				break;
 			case 14:
 				/*
 				 * FIXME: Workaround for a bug in Calimero / Openhab DPTXlator4ByteFloat.makeString(): is using a locale when
@@ -225,11 +233,16 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 				 */
 				DPTXlator4ByteFloat translator4ByteFloat = (DPTXlator4ByteFloat) translator;
 				Float f=translator4ByteFloat.getValueFloat();
-				NumberFormat dcf = NumberFormat.getInstance(Locale.US);
-				if (dcf instanceof DecimalFormat) {
-					((DecimalFormat) dcf).applyPattern("0.#####E0");
+				if (Math.abs(f) < 100000) {
+					value=String.valueOf(f);
 				}
-				value = Math.abs(f) < 100000 ? String.valueOf(f) : dcf.format(f);
+				else {
+					NumberFormat dcf = NumberFormat.getInstance(Locale.US);
+					if (dcf instanceof DecimalFormat) {
+						((DecimalFormat) dcf).applyPattern("0.#####E0");
+					}
+					value = dcf.format(f);
+				}
 				break;
 			case 19:
 				DPTXlatorDateTime translatorDateTime = (DPTXlatorDateTime) translator;
@@ -255,7 +268,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 					logger.debug("toType: KNX clock msg ignored: no day and month or year, which is not supported");
 					return null;
 				}				
-				
+
 				Calendar cal = Calendar.getInstance();
 				if (translatorDateTime.isValidField(DPTXlatorDateTime.YEAR) && !translatorDateTime.isValidField(DPTXlatorDateTime.TIME)) {
 					// Pure date format, no time information
