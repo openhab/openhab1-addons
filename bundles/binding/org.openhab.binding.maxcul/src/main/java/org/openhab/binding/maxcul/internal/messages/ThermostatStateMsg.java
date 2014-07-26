@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.maxcul.internal.messages;
 
 import java.util.Calendar;
@@ -6,6 +14,11 @@ import java.util.GregorianCalendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Thermostate State message
+ * @author Paul Hampson (cyclingengineer)
+ * @since 1.6.0
+ */
 public class ThermostatStateMsg extends BaseMsg {
 
 	final static private int THERMOSTAT_STATE_TIME_PAYLOAD_LEN = 6; /* in bytes */
@@ -69,7 +82,9 @@ public class ThermostatStateMsg extends BaseMsg {
 				// TODO extract Date/Time if payload is THERMOSTAT_STATE_TIME_PAYLOAD_LEN
 			}
 		}
-		else logger.error("Got "+this.msgType+" message with incorrect length!");
+		else {
+			logger.error("Got "+this.msgType+" message with incorrect length!");
+		}
 	}
 
 	/**

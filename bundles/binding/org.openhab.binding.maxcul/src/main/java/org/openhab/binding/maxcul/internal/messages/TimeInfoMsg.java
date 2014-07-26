@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.maxcul.internal.messages;
 
 import java.util.Calendar;
@@ -47,8 +55,9 @@ public class TimeInfoMsg extends BaseMsg {
 			messageTimeInfo = new GregorianCalendar(0,0,1);
 			logger.debug("Received Time request - setting time to 1/1/0");
 		}
-		else
+		else {
 			logger.error("TimeInfoMsg raw packet was of incorrect length to parse! Expect "+TIME_INFO_PAYLOAD_LEN+" got "+payload.length);
+		}
 	}
 
 	public TimeInfoMsg(byte msgCount, byte msgFlag,

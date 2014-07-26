@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.maxcul.internal.message.sequencers;
 
 import java.util.HashSet;
@@ -70,8 +78,9 @@ public class PairingInitialisationSequence implements MessageSequencer {
 		/* This sequence is taken from observations of activity between the
 		 * MAX! Cube and a wall thermostat and refined using some experimentation :)
 		 */
-		if (state != PairingInitialisationState.RETX_WAKEUP_ACK)
+		if (state != PairingInitialisationState.RETX_WAKEUP_ACK) {
 			pktLostCount = 0; // reset counter - ack received
+		}
 
 		logger.debug("Sequence State: "+state);
 		switch (state)
@@ -108,7 +117,9 @@ public class PairingInitialisationSequence implements MessageSequencer {
 					logger.error("PAIR_PONG was nacked. Ending sequence");
 					state = PairingInitialisationState.FINISHED;
 				}
-			} else logger.error("Received "+msg.msgType+" when expecting ACK");
+			} else {
+				logger.error("Received "+msg.msgType+" when expecting ACK");
+			}
 			break;
 		case GROUP_ID_ACKED:
 			if (msg.msgType == MaxCulMsgType.ACK)
@@ -128,7 +139,9 @@ public class PairingInitialisationSequence implements MessageSequencer {
 					logger.error("SET_GROUP_ID was nacked. Ending sequence");
 					state = PairingInitialisationState.FINISHED;
 				}
-			} else logger.error("Received "+msg.msgType+" when expecting ACK");
+			} else {
+				logger.error("Received "+msg.msgType+" when expecting ACK");
+			}
 			break;
 		case CONFIG_TEMPS_ACKED:
 			if (msg.msgType == MaxCulMsgType.ACK)
@@ -156,7 +169,9 @@ public class PairingInitialisationSequence implements MessageSequencer {
 					logger.error("CONFIG_TEMPERATURES was nacked. Ending sequence");
 					state = PairingInitialisationState.FINISHED;
 				}
-			} else logger.error("Received "+msg.msgType+" when expecting ACK");
+			} else {
+				logger.error("Received "+msg.msgType+" when expecting ACK");
+			}
 			break;
 		case SENDING_ASSOCIATIONS:
 			if (msg.msgType == MaxCulMsgType.ACK)
@@ -169,10 +184,11 @@ public class PairingInitialisationSequence implements MessageSequencer {
 						MaxCulBindingConfig partnerCfg = assocIter.next();
 						messageHandler.sendAddLinkPartner(this.devAddr, this, partnerCfg.getDevAddr(), partnerCfg.getDeviceType());
 						/* if it's the last association message then wait for last ACK */
-						if (assocIter.hasNext())
+						if (assocIter.hasNext()) {
 							state = PairingInitialisationState.SENDING_ASSOCIATIONS;
-						else
+						} else {
 							state = PairingInitialisationState.SENDING_ASSOCIATIONS_ACKED;
+						}
 					}
 					else
 					{
@@ -183,7 +199,9 @@ public class PairingInitialisationSequence implements MessageSequencer {
 					logger.error("SENDING_ASSOCIATIONS was nacked. Ending sequence");
 					state = PairingInitialisationState.FINISHED;
 				}
-			} else logger.error("Received "+msg.msgType+" when expecting ACK");
+			} else {
+				logger.error("Received "+msg.msgType+" when expecting ACK");
+			}
 			break;
 		case SENDING_ASSOCIATIONS_ACKED:
 			state = PairingInitialisationState.FINISHED;
@@ -210,7 +228,9 @@ public class PairingInitialisationSequence implements MessageSequencer {
 					logger.error("WAKEUP for ReTx was nacked. Ending sequence");
 					state = PairingInitialisationState.FINISHED;
 				}
-			} else logger.error("Received "+msg.msgType+" when expecting ACK");
+			} else {
+				logger.error("Received "+msg.msgType+" when expecting ACK");
+			}
 			break;
 		default:
 			logger.error("Invalid state for PairingInitialisation Message Sequence!");

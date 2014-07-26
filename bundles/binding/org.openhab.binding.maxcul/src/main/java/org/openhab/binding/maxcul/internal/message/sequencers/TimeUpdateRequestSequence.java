@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.maxcul.internal.message.sequencers;
 
 import java.util.Calendar;
@@ -48,7 +56,7 @@ public class TimeUpdateRequestSequence implements MessageSequencer {
 	 * @param t Tolerance in milliseconds
 	 * @return true if within tolerance
 	 */
-	private boolean isTimeOk(Calendar a, Calendar b, long t)
+	private boolean isValidDeviation(Calendar a, Calendar b, long t)
 	{
 		return (Math.abs(a.getTimeInMillis() - b.getTimeInMillis())<=t);
 	}
@@ -62,7 +70,7 @@ public class TimeUpdateRequestSequence implements MessageSequencer {
 			if (BaseMsg.getMsgType(msg.rawMsg) == MaxCulMsgType.TIME_INFO)
 			{
 				TimeInfoMsg timeMsg = new TimeInfoMsg(msg.rawMsg);
-				if (isTimeOk(timeMsg.getTimeInfo(), new GregorianCalendar(), TIME_TOLERANCE))
+				if (isValidDeviation(timeMsg.getTimeInfo(), new GregorianCalendar(), TIME_TOLERANCE))
 				{
 					messageHandler.sendAck(msg);
 					state = TimeUpdateRequestState.FINISHED;

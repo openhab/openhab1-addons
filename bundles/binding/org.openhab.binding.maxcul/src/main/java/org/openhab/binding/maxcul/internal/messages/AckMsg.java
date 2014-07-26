@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.maxcul.internal.messages;
 
 import org.slf4j.Logger;
@@ -22,7 +30,9 @@ public class AckMsg extends BaseMsg {
 		{
 			isNack = (this.payload[0] == 0x81);
 		}
-		else logger.error("Got "+this.msgType+" message with incorrect length!");
+		else {
+			logger.error("Got "+this.msgType+" message with incorrect length!");
+		}
 		/* TODO should probably check if it's a 0x01 for ACK */
 	}
 

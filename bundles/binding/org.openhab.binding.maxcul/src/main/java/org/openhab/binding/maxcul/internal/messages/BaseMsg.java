@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.maxcul.internal.messages;
 
 import org.openhab.binding.maxcul.internal.message.sequencers.MessageSequencer;
@@ -5,7 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Basic Message Class
+ * Base Message Class acts as the parent to messages sent and received
+ * by the CUL device to communicate with the Max! devices.
+ *
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */

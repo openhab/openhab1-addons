@@ -1,8 +1,23 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.maxcul.internal.messages;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Send temperature configuration to the device, setting comfort,
+ * eco, max, min, measurement offset and window parameters.
+ *
+ * @author Paul Hampson (cyclingengineer)
+ * @since 1.6.0
+ */
 public class ConfigTemperaturesMsg extends BaseMsg {
 
 	final static private int CONFIG_TEMPERATURES_PAYLOAD_LEN = 7; /* in bytes */
@@ -40,7 +55,9 @@ public class ConfigTemperaturesMsg extends BaseMsg {
 			this.windowOpenTemp = payload[5]/2.0;
 			this.windowOpenTime = payload[6]*5.0;
 		}
-		else logger.error("Got "+this.msgType+" message with incorrect length!");
+		else {
+			logger.error("Got "+this.msgType+" message with incorrect length!");
+		}
 	}
 
 	private byte[] buildPayload()
@@ -51,7 +68,7 @@ public class ConfigTemperaturesMsg extends BaseMsg {
 		payload[2] = (byte) (maxTemp*2.0);
 		payload[3] = (byte) (minTemp*2.0);
 
-		if (offset<-3.5) offset = -3.5; // cap offset
+		if (offset < -3.5) offset = -3.5; // cap offset
 		payload[4] = (byte) ((offset+3.5)*2.0);
 		payload[5] = (byte) (windowOpenTemp * 2.0);
 		payload[6] = (byte) (windowOpenTime / 5.0);
