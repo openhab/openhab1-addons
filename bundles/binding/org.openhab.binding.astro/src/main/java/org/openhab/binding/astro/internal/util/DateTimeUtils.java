@@ -11,6 +11,7 @@ package org.openhab.binding.astro.internal.util;
 import java.util.Calendar;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.openhab.binding.astro.internal.calc.SunCalc;
 import org.openhab.binding.astro.internal.model.Range;
 
 /**
@@ -46,6 +47,19 @@ public class DateTimeUtils {
 		end.set(Calendar.MILLISECOND, 999);
 
 		return new Range(start, end);
+	}
+
+	/**
+	 * Returns a calendar object from a julian date.
+	 */
+	public static Calendar toCalendar(double julianDate) {
+		if (Double.compare(julianDate, Double.NaN) == 0) {
+			return null;
+		}
+		long millis = (long) ((julianDate + 0.5 - SunCalc.J1970) * SunCalc.MILLISECONDS_PER_DAY);
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(millis);
+		return DateUtils.truncate(cal, Calendar.MINUTE);
 	}
 
 }

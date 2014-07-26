@@ -10,6 +10,7 @@ package org.openhab.binding.astro.internal.job;
 
 import java.util.Calendar;
 
+import org.openhab.binding.astro.internal.calc.SeasonCalc;
 import org.openhab.binding.astro.internal.calc.SunCalc;
 import org.openhab.binding.astro.internal.calc.ZodiacCalc;
 import org.openhab.binding.astro.internal.model.PlanetName;
@@ -28,8 +29,8 @@ public class SunJob extends AbstractBaseJob {
 	@Override
 	protected void executeJob(JobDataMap jobDataMap) {
 		Calendar now = Calendar.getInstance();
-		SunCalc sunCalc = new SunCalc();
 
+		SunCalc sunCalc = new SunCalc();
 		Sun sun = sunCalc.getSunInfo(now, context.getConfig().getLatitude(), context.getConfig().getLongitude());
 
 		SunPosition sp = sunCalc.getSunPosition(now, context.getConfig().getLatitude(), context.getConfig()
@@ -39,6 +40,10 @@ public class SunJob extends AbstractBaseJob {
 
 		ZodiacCalc zodiacCalc = new ZodiacCalc();
 		sun.setZodiac(zodiacCalc.getZodiac(now));
+
+		SeasonCalc seasonCalc = new SeasonCalc();
+		sun.setSeason(seasonCalc.getSeason(now));
+		context.getJobScheduler().scheduleSeasonJobs(sun.getSeason());
 
 		context.setPlanet(PlanetName.SUN, sun);
 		planetPublisher.publish(PlanetName.SUN);

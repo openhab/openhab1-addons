@@ -24,7 +24,7 @@ import org.openhab.binding.astro.internal.util.DateTimeUtils;
  * @see based on the calculations of http://www.suncalc.net
  */
 public class SunCalc {
-	private static final double J1970 = 2440588.0;
+	public static final double J1970 = 2440588.0;
 	private static final double J2000 = 2451545.0;
 	private static final double DEG2RAD = Math.PI / 180;
 	private static final double M0 = 357.5291 * DEG2RAD;
@@ -43,11 +43,10 @@ public class SunCalc {
 	private static final double SUN_DIAMETER = 0.53 * DEG2RAD; // sun diameter
 	private static final double H0 = SUN_ANGLE * DEG2RAD;
 	private static final double H1 = -6.0 * DEG2RAD; // nautical twilight angle
-	private static final double H2 = -12.0 * DEG2RAD; // astronomical twilight
-														// angle
+	private static final double H2 = -12.0 * DEG2RAD; // astronomical twilight angle
 	private static final double H3 = -18.0 * DEG2RAD; // darkness angle
 	private static final double MINUTES_PER_DAY = 60 * 24;
-	private static final double MILLISECONDS_PER_DAY = 1000 * 60 * MINUTES_PER_DAY;
+	public static final double MILLISECONDS_PER_DAY = 1000 * 60 * MINUTES_PER_DAY;
 	private static final int CURVE_TIME_INTERVAL = 20; // 20 minutes
 	private static final double JD_ONE_MINUTE_FRACTION = 1.0 / 60 / 24;
 
@@ -123,22 +122,23 @@ public class SunCalc {
 		double jastro2 = getSunriseJulianDate(jtransit, jdark);
 
 		Sun sun = new Sun();
-		sun.setAstroDawn(new Range(julianDateToDate(jastro2), julianDateToDate(jnau2)));
-		sun.setAstroDusk(new Range(julianDateToDate(jastro), julianDateToDate(jdark)));
+		sun.setAstroDawn(new Range(DateTimeUtils.toCalendar(jastro2), DateTimeUtils.toCalendar(jnau2)));
+		sun.setAstroDusk(new Range(DateTimeUtils.toCalendar(jastro), DateTimeUtils.toCalendar(jdark)));
 
 		if (onlyAstro) {
 			return sun;
 		}
 
-		sun.setNoon(new Range(julianDateToDate(jtransit), julianDateToDate(jtransit + JD_ONE_MINUTE_FRACTION)));
-		sun.setRise(new Range(julianDateToDate(jrise), julianDateToDate(jriseend)));
-		sun.setSet(new Range(julianDateToDate(jsetstart), julianDateToDate(jset)));
+		sun.setNoon(new Range(DateTimeUtils.toCalendar(jtransit), DateTimeUtils.toCalendar(jtransit
+				+ JD_ONE_MINUTE_FRACTION)));
+		sun.setRise(new Range(DateTimeUtils.toCalendar(jrise), DateTimeUtils.toCalendar(jriseend)));
+		sun.setSet(new Range(DateTimeUtils.toCalendar(jsetstart), DateTimeUtils.toCalendar(jset)));
 
-		sun.setCivilDawn(new Range(julianDateToDate(Jciv2), julianDateToDate(jrise)));
-		sun.setCivilDusk(new Range(julianDateToDate(jset), julianDateToDate(jnau)));
+		sun.setCivilDawn(new Range(DateTimeUtils.toCalendar(Jciv2), DateTimeUtils.toCalendar(jrise)));
+		sun.setCivilDusk(new Range(DateTimeUtils.toCalendar(jset), DateTimeUtils.toCalendar(jnau)));
 
-		sun.setNauticDawn(new Range(julianDateToDate(jnau2), julianDateToDate(Jciv2)));
-		sun.setNauticDusk(new Range(julianDateToDate(jnau), julianDateToDate(jastro)));
+		sun.setNauticDawn(new Range(DateTimeUtils.toCalendar(jnau2), DateTimeUtils.toCalendar(Jciv2)));
+		sun.setNauticDusk(new Range(DateTimeUtils.toCalendar(jnau), DateTimeUtils.toCalendar(jastro)));
 
 		boolean isSunUpAllDay = isSunUpAllDay(calendar, latitude, longitude);
 
@@ -200,19 +200,6 @@ public class SunCalc {
 	 */
 	public double midnightDateToJulianDate(Calendar calendar) {
 		return DateTimeUtils.truncateToMidnight(calendar).getTimeInMillis() / MILLISECONDS_PER_DAY + J1970;
-	}
-
-	/**
-	 * Returns a calendar object from a julian date.
-	 */
-	private Calendar julianDateToDate(double julianDate) {
-		if (Double.compare(julianDate, Double.NaN) == 0) {
-			return null;
-		}
-		long millis = (long) ((julianDate + 0.5 - J1970) * MILLISECONDS_PER_DAY);
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(millis);
-		return DateUtils.truncate(cal, Calendar.MINUTE);
 	}
 
 	/**

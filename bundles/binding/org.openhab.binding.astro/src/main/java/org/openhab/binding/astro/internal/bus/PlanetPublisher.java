@@ -117,7 +117,7 @@ public class PlanetPublisher {
 			if (item.getAcceptedDataTypes().contains(DateTimeType.class)) {
 				context.getEventPublisher().postUpdate(item.getName(), new DateTimeType(calendar));
 			} else if (item.getAcceptedCommandTypes().contains(OnOffType.class)) {
-				context.getJobScheduler().schedule(calendar, item.getName());
+				context.getJobScheduler().scheduleItem(calendar, item.getName());
 			} else {
 				logger.warn("Unsupported type for item {}, only DateTimeType and OnOffType supported!", item.getName());
 			}

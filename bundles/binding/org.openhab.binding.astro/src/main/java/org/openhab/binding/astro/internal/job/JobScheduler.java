@@ -24,6 +24,7 @@ import org.openhab.binding.astro.internal.common.AstroConfig;
 import org.openhab.binding.astro.internal.common.AstroContext;
 import org.openhab.binding.astro.internal.config.AstroBindingConfig;
 import org.openhab.binding.astro.internal.model.PlanetName;
+import org.openhab.binding.astro.internal.model.Season;
 import org.openhab.binding.astro.internal.util.DelayedExecutor;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -156,9 +157,43 @@ public class JobScheduler {
 	}
 
 	/**
+	 * Schedules Season jobs, but only if they don't exist.
+	 */
+	public void scheduleSeasonJobs(Season season) {
+		int year = season.getSpring().get(Calendar.YEAR);
+		scheduleIfNotAvailable(season.getSpring(), "season-" + year + "-spring");
+		scheduleIfNotAvailable(season.getSummer(), "season-" + year + "-summmer");
+		scheduleIfNotAvailable(season.getAutumn(), "season-" + year + "-autumn");
+		scheduleIfNotAvailable(season.getWinter(), "season-" + year + "-winter");
+	}
+
+	/**
+	 * Schedules a job at the specified date/time only if it does not exist.
+	 */
+	private void scheduleIfNotAvailable(Calendar calendar, String jobName) {
+		if (System.currentTimeMillis() < calendar.getTimeInMillis()) {
+			try {
+				if (scheduler.getJobDetail(new JobKey(jobName, JOB_GROUP)) == null) {
+					Trigger trigger = newTrigger().withIdentity(jobName + "-Trigger", JOB_GROUP)
+							.startAt(calendar.getTime()).build();
+					schedule(jobName, SeasonJob.class, trigger, new JobDataMap());
+					logger.debug("Scheduled job with name {} at {}", jobName, calendar.getTime(),
+							sdf.format(calendar.getTime()));
+				} else {
+					logger.debug("Skipping job with name {}, already scheduled", jobName);
+				}
+			} catch (SchedulerException ex) {
+				logger.error(ex.getMessage(), ex);
+			}
+		} else {
+			logger.debug("Skipping job with name {}, starttime is in the past", jobName);
+		}
+	}
+
+	/**
 	 * Schedules a job at the specified date/time from the calendar object.
 	 */
-	public void schedule(Calendar calendar, String itemName) {
+	public void scheduleItem(Calendar calendar, String itemName) {
 		if (System.currentTimeMillis() < calendar.getTimeInMillis()) {
 			Trigger trigger = newTrigger().withIdentity(itemName + "-Trigger", JOB_GROUP).startAt(calendar.getTime())
 					.build();

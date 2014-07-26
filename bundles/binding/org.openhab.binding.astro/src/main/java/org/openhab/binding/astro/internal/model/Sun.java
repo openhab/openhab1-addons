@@ -37,6 +37,8 @@ public class Sun extends RiseSet {
 	
 	private Zodiac zodiac = new Zodiac(null, null);
 	
+	private Season season = new Season();
+	
 	/**
 	 * Returns the astro dawn range.
 	 */
@@ -217,6 +219,20 @@ public class Sun extends RiseSet {
 	 */
 	public void setZodiac(Zodiac zodiac) {
 		this.zodiac = zodiac;
+	}
+	
+	/**
+	 * Returns the seasons.
+	 */
+	public Season getSeason() {
+		return season;
+	}
+	
+	/**
+	 * Sets the seasons.
+	 */
+	public void setSeason(Season season) {
+		this.season = season;
 	}
 	
 	@Override
