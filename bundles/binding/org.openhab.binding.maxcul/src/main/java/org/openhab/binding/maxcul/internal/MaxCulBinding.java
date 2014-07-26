@@ -31,7 +31,6 @@ import org.openhab.binding.maxcul.internal.messages.ThermostatStateMsg;
 import org.openhab.binding.maxcul.internal.messages.TimeInfoMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatControlMsg;
 import org.openhab.binding.maxcul.internal.messages.WallThermostatStateMsg;
-import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -57,12 +56,6 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(MaxCulBinding.class);
-
-	/**
-	 * the refresh interval which is used to poll values from the MaxCul server
-	 * (optional, defaults to 60000ms)
-	 */
-	private long refreshInterval = 60000;
 
 	/**
 	 * The device that is used to access the CUL hardware
@@ -234,14 +227,8 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 		logger.debug("MaxCUL Reading config");
 		if (config != null) {
 
-			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like maxcul:refresh=<intervalInMs>
-			String refreshIntervalString = (String) config.get("refresh");
-			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				refreshInterval = Long.parseLong(refreshIntervalString);
-			}
-
 			// handle timezone configuration
+			// maxcul:timezone=Europe/London
 			String timezoneString = (String) config.get("timezone");
 			if (StringUtils.isNotBlank(timezoneString)) {
 				this.tzStr = timezoneString;
@@ -250,6 +237,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 			}
 
 			// handle device config
+			// maxcul:device=/dev/cul
 			String deviceString = (String) config.get("device");
 			if (StringUtils.isNotBlank(deviceString)) {
 				logger.debug("Setting up device " + deviceString);

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Message to associate devices with each other
- * 
+ *
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
@@ -42,5 +42,12 @@ public class AddLinkPartnerMsg extends BaseMsg {
 		payload[2] = (byte) (Integer.parseInt(partnerAddr.substring(4, 6), 16) & 0xff);
 		payload[3] = (byte) devType.getDeviceTypeInt();
 		super.appendPayload(payload);
+	}
+
+	@Override
+	protected void printFormattedPayload() {
+		super.printFormattedPayload();
+		logger.debug("\tDevice Type  => " + this.devType);
+		logger.debug("\tPartner Addr => " + this.partnerAddr);
 	}
 }
