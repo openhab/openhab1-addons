@@ -108,6 +108,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	private boolean enoughCredit(int requiredCredit, boolean fastSend, boolean updateSurplus)
 	{
+		// TODO - should this be handled by the io.transport.cul bundle?
 		Date now = new Date();
 		/* units are accumulated as 1% of time elapsed with no TX - so 1x10ms credit per second */
 		long credit = ((now.getTime() - this.lastCreditUpdateTime.getTime())/1000)+this.surplusCredit;
