@@ -71,45 +71,9 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		MaxCulBindingConfig config = new MaxCulBindingConfig(bindingConfig);
-
-		switch (config.getDeviceType())
-		{
-		case PAIR_MODE:
-		case LISTEN_MODE:
-			if (!(item instanceof SwitchItem))
-				throw new BindingConfigParseException("Invalid item type. PairMode/ListenMode can only be a switch");
-			else if (config.getFeature() == MaxCulFeature.RESET && !(item instanceof SwitchItem))
-				throw new BindingConfigParseException("Invalid item type. Feature 'reset' can only be a Switch");
-			break;
-		case PUSH_BUTTON:
-		case SHUTTER_CONTACT:
-			if (config.getFeature() == MaxCulFeature.BATTERY && !(item instanceof SwitchItem))
-				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Switch");
-			else if (config.getFeature() == MaxCulFeature.SWITCH && !(item instanceof SwitchItem))
-				throw new BindingConfigParseException("Invalid item type. Feature 'switch' can only be a Switch");
-			else if (config.getFeature() == MaxCulFeature.RESET && !(item instanceof SwitchItem))
-				throw new BindingConfigParseException("Invalid item type. Feature 'reset' can only be a Switch");
-			break;
-		case RADIATOR_THERMOSTAT:
-		case RADIATOR_THERMOSTAT_PLUS:
-		case WALL_THERMOSTAT:
-			if (config.getFeature() == MaxCulFeature.TEMPERATURE && !(item instanceof NumberItem))
-				throw new BindingConfigParseException("Invalid item type. Feature 'temperature' can only be a Number");
-			else if (config.getFeature() == MaxCulFeature.VALVE_POS && !(item instanceof NumberItem))
-				throw new BindingConfigParseException("Invalid item type. Feature 'valvepos' can only be a Number");
-			else if (config.getFeature() == MaxCulFeature.THERMOSTAT && !((item instanceof NumberItem) || (item instanceof SwitchItem)))
-				throw new BindingConfigParseException("Invalid item type. Feature 'thermostat' can only be a Number or a Switch");
-			else if (config.getFeature() == MaxCulFeature.BATTERY && !(item instanceof SwitchItem))
-				throw new BindingConfigParseException("Invalid item type. Feature 'battery' can only be a Switch");
-			else if (config.getFeature() == MaxCulFeature.MODE && !(item instanceof NumberItem))
-				throw new BindingConfigParseException("Invalid item type. Feature 'mode' can only be a Number");
-			else if (config.getFeature() == MaxCulFeature.RESET && !(item instanceof SwitchItem))
-				throw new BindingConfigParseException("Invalid item type. Feature 'reset' can only be a Switch");
-			break;
-		default:
-			throw new BindingConfigParseException("Invalid config device type. Wasn't expecting "+config.getDeviceType());
-		}
+		/* only switch items or number items are valid */
+		if (!(item instanceof NumberItem) && !(item instanceof SwitchItem))
+			throw new BindingConfigParseException("Invalid item type. Bindings can only be Number or Switch");
 	}
 
 	/**
