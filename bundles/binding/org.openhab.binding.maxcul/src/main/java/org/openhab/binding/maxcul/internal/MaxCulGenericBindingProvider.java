@@ -202,7 +202,7 @@ public class MaxCulGenericBindingProvider extends AbstractGenericBindingProvider
 	 * 		B -> C,D
 	 */
 	private void buildAssociationMap() {
-
+		// TODO refactor into it's own class e.g. AssociationMap extends HashMap
 		if (super.bindingConfigs.values().isEmpty() == false)
 		{
 			logger.debug("Found "+super.bindingConfigs.values().size()+" binding configs to process in association map");
