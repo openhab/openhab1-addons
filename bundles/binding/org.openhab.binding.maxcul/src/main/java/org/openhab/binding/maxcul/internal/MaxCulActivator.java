@@ -13,16 +13,16 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Extension of the default OSGi bundle activator
- *
+ * 
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
 public final class MaxCulActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(MaxCulActivator.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(MaxCulActivator.class);
 
 	private static BundleContext context;
 
@@ -44,6 +44,7 @@ public final class MaxCulActivator implements BundleActivator {
 
 	/**
 	 * Returns the bundle context of this bundle
+	 * 
 	 * @return the bundle context
 	 */
 	public static BundleContext getContext() {

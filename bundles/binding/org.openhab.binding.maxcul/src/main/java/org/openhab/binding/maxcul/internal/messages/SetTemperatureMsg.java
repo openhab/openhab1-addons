@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Message class to handle desired temperature updates
+ * 
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
@@ -20,8 +21,8 @@ public class SetTemperatureMsg extends BaseMsg {
 
 	final static private int SET_TEMPERATURE_PAYLOAD_LEN = 1; /* in bytes */
 
-	private static final Logger logger =
-			LoggerFactory.getLogger(SetTemperatureMsg.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(SetTemperatureMsg.class);
 
 	private double desiredTemperature;
 	private ThermostatControlMode ctrlMode;
@@ -34,23 +35,24 @@ public class SetTemperatureMsg extends BaseMsg {
 
 	public SetTemperatureMsg(String rawMsg) {
 		super(rawMsg);
-		logger.debug(this.msgType+" Payload Len -> "+this.payload.length);
+		logger.debug(this.msgType + " Payload Len -> " + this.payload.length);
 
-		if (this.payload.length == SET_TEMPERATURE_PAYLOAD_LEN)
-		{
+		if (this.payload.length == SET_TEMPERATURE_PAYLOAD_LEN) {
 			/* extract temperature information */
 			desiredTemperature = (this.payload[0] & 0x3f) / 2.0;
 			/* extract control mode */
-			ctrlMode = ThermostatControlMode.values()[(this.payload[0]>>6)];
-		}
-		else {
-			logger.error("Got "+this.msgType+" message with incorrect length!");
+			ctrlMode = ThermostatControlMode.values()[(this.payload[0] >> 6)];
+		} else {
+			logger.error("Got " + this.msgType
+					+ " message with incorrect length!");
 		}
 	}
 
-	public SetTemperatureMsg(byte msgCount, byte msgFlag,
-			byte groupId, String srcAddr, String dstAddr, double temperature, ThermostatControlMode mode) {
-		super(msgCount, msgFlag, MaxCulMsgType.SET_TEMPERATURE, groupId, srcAddr, dstAddr);
+	public SetTemperatureMsg(byte msgCount, byte msgFlag, byte groupId,
+			String srcAddr, String dstAddr, double temperature,
+			ThermostatControlMode mode) {
+		super(msgCount, msgFlag, MaxCulMsgType.SET_TEMPERATURE, groupId,
+				srcAddr, dstAddr);
 
 		desiredTemperature = temperature;
 		ctrlMode = mode;
@@ -61,18 +63,16 @@ public class SetTemperatureMsg extends BaseMsg {
 			temperature = TEMPERATURE_MIN;
 
 		byte[] payload = new byte[SET_TEMPERATURE_PAYLOAD_LEN];
-		payload[0] = (byte)(temperature * 2.0);
-		payload[0] |= ((mode.toByte()&0x3)<<6);
+		payload[0] = (byte) (temperature * 2.0);
+		payload[0] |= ((mode.toByte() & 0x3) << 6);
 		super.appendPayload(payload);
 	}
 
-	public double getDesiredTemperature()
-	{
+	public double getDesiredTemperature() {
 		return desiredTemperature;
 	}
 
-	public ThermostatControlMode getControlMode()
-	{
+	public ThermostatControlMode getControlMode() {
 		return ctrlMode;
 	}
 
@@ -80,9 +80,8 @@ public class SetTemperatureMsg extends BaseMsg {
 	 * Print output as decoded fields
 	 */
 	@Override
-	protected void printFormattedPayload()
-	{
-		logger.debug("\tDesired Temperature => "+desiredTemperature);
-		logger.debug("\tControl Mode => "+ctrlMode);
+	protected void printFormattedPayload() {
+		logger.debug("\tDesired Temperature => " + desiredTemperature);
+		logger.debug("\tControl Mode => " + ctrlMode);
 	}
 }

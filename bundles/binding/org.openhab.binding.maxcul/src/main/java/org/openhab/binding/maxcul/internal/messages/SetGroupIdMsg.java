@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * SetGroupId Message
+ * 
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
@@ -20,14 +21,15 @@ public class SetGroupIdMsg extends BaseMsg {
 
 	final private int SET_GROUP_ID_PAYLOAD_LEN = 1;
 
-	private static final Logger logger =
-			LoggerFactory.getLogger(SetGroupIdMsg.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(SetGroupIdMsg.class);
 
 	private byte groupIdToSet;
 
-	public SetGroupIdMsg(byte msgCount, byte msgFlag,
-			String srcAddr, String dstAddr, byte groupIdToSet) {
-		super(msgCount, msgFlag, MaxCulMsgType.SET_GROUP_ID, (byte) 0x0, srcAddr, dstAddr);
+	public SetGroupIdMsg(byte msgCount, byte msgFlag, String srcAddr,
+			String dstAddr, byte groupIdToSet) {
+		super(msgCount, msgFlag, MaxCulMsgType.SET_GROUP_ID, (byte) 0x0,
+				srcAddr, dstAddr);
 
 		this.groupIdToSet = groupIdToSet;
 		byte[] payload = new byte[SET_GROUP_ID_PAYLOAD_LEN];
@@ -37,8 +39,7 @@ public class SetGroupIdMsg extends BaseMsg {
 		super.appendPayload(payload);
 	}
 
-	public SetGroupIdMsg(String rawmsg)
-	{
+	public SetGroupIdMsg(String rawmsg) {
 		super(rawmsg);
 		groupIdToSet = this.payload[0];
 	}
@@ -47,8 +48,7 @@ public class SetGroupIdMsg extends BaseMsg {
 	 * Print output as decoded fields
 	 */
 	@Override
-	protected void printFormattedPayload()
-	{
-		logger.debug("\t Group ID => "+this.groupIdToSet);
+	protected void printFormattedPayload() {
+		logger.debug("\t Group ID => " + this.groupIdToSet);
 	}
 }

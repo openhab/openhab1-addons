@@ -16,22 +16,21 @@ public class MaxCulPacedThermostatTransmitTask extends TimerTask {
 	private MaxCulBindingConfig bindingConfig;
 	private Collection<MaxCulBindingProvider> providers;
 
-	public MaxCulPacedThermostatTransmitTask( Command cmd, MaxCulBindingConfig cfg, MaxCulMsgHandler msgHandler, Collection<MaxCulBindingProvider> providers)
-	{
+	public MaxCulPacedThermostatTransmitTask(Command cmd,
+			MaxCulBindingConfig cfg, MaxCulMsgHandler msgHandler,
+			Collection<MaxCulBindingProvider> providers) {
 		command = cmd;
 		bindingConfig = cfg;
-		messageHandler=msgHandler;
-		this.providers=providers;
+		messageHandler = msgHandler;
+		this.providers = providers;
 	}
 
-	private void sendToDevices(double temp)
-	{
+	private void sendToDevices(double temp) {
 		messageHandler.sendSetTemperature(bindingConfig.getDevAddr(), temp);
 		/* send temperature to associated devices */
-		for (MaxCulBindingProvider provider : providers)
-		{
-			for (MaxCulBindingConfig bc : provider.getAssociations(bindingConfig.getSerialNumber()))
-			{
+		for (MaxCulBindingProvider provider : providers) {
+			for (MaxCulBindingConfig bc : provider
+					.getAssociations(bindingConfig.getSerialNumber())) {
 				messageHandler.sendSetTemperature(bc.getDevAddr(), temp);
 			}
 		}
@@ -40,12 +39,12 @@ public class MaxCulPacedThermostatTransmitTask extends TimerTask {
 	@Override
 	public void run() {
 		if (command instanceof OnOffType) {
-			if (((OnOffType)command) == OnOffType.ON)
+			if (((OnOffType) command) == OnOffType.ON)
 				sendToDevices(SetTemperatureMsg.TEMPERATURE_ON);
-			else if (((OnOffType)command) == OnOffType.OFF)
+			else if (((OnOffType) command) == OnOffType.OFF)
 				sendToDevices(SetTemperatureMsg.TEMPERATURE_OFF);
 		} else if (command instanceof DecimalType) {
-			sendToDevices(((DecimalType)command).doubleValue());
+			sendToDevices(((DecimalType) command).doubleValue());
 		}
 	}
 

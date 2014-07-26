@@ -22,20 +22,18 @@ import org.slf4j.LoggerFactory;
 /**
  * Handle Time Update requests. Very simple sequence that simply responds to a
  * time request and then handles the response
+ * 
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
 public class TimeUpdateRequestSequence implements MessageSequencer {
 
-	private enum TimeUpdateRequestState
-	{
-		RESPOND_TO_REQUEST,
-		HANDLE_RESPONSE,
-		FINISHED
+	private enum TimeUpdateRequestState {
+		RESPOND_TO_REQUEST, HANDLE_RESPONSE, FINISHED
 	}
 
-	private static final Logger logger =
-			LoggerFactory.getLogger(TimeUpdateRequestSequence.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(TimeUpdateRequestSequence.class);
 
 	private static final long TIME_TOLERANCE = 30000; // 30s margin
 	TimeUpdateRequestState state = TimeUpdateRequestState.RESPOND_TO_REQUEST;
@@ -43,61 +41,55 @@ public class TimeUpdateRequestSequence implements MessageSequencer {
 	private int pktLostCount = 0;
 	private String tzStr;
 
-	public TimeUpdateRequestSequence(String tz, MaxCulMsgHandler messageHandler)
-	{
+	public TimeUpdateRequestSequence(String tz, MaxCulMsgHandler messageHandler) {
 		this.tzStr = tz;
 		this.messageHandler = messageHandler;
 	}
 
 	/**
 	 * Compare two times and check they are within a certain tolerance
-	 * @param a Time A
-	 * @param b Time B
-	 * @param t Tolerance in milliseconds
+	 * 
+	 * @param a
+	 *            Time A
+	 * @param b
+	 *            Time B
+	 * @param t
+	 *            Tolerance in milliseconds
 	 * @return true if within tolerance
 	 */
-	private boolean isValidDeviation(Calendar a, Calendar b, long t)
-	{
-		return (Math.abs(a.getTimeInMillis() - b.getTimeInMillis())<=t);
+	private boolean isValidDeviation(Calendar a, Calendar b, long t) {
+		return (Math.abs(a.getTimeInMillis() - b.getTimeInMillis()) <= t);
 	}
 
 	@Override
 	public void runSequencer(BaseMsg msg) {
 		pktLostCount = 0;
-		switch (state)
-		{
+		switch (state) {
 		case RESPOND_TO_REQUEST:
-			if (BaseMsg.getMsgType(msg.rawMsg) == MaxCulMsgType.TIME_INFO)
-			{
+			if (BaseMsg.getMsgType(msg.rawMsg) == MaxCulMsgType.TIME_INFO) {
 				TimeInfoMsg timeMsg = new TimeInfoMsg(msg.rawMsg);
-				if (isValidDeviation(timeMsg.getTimeInfo(), new GregorianCalendar(), TIME_TOLERANCE))
-				{
+				if (isValidDeviation(timeMsg.getTimeInfo(),
+						new GregorianCalendar(), TIME_TOLERANCE)) {
 					messageHandler.sendAck(msg);
 					state = TimeUpdateRequestState.FINISHED;
-				}
-				else
-				{
+				} else {
 					messageHandler.sendTimeInfo(msg.srcAddrStr, tzStr, this);
 					state = TimeUpdateRequestState.HANDLE_RESPONSE;
 				}
-			}
-			else
-			{
+			} else {
 				state = TimeUpdateRequestState.FINISHED;
 				logger.debug("Got invalid message type for Time Update Sequence");
 			}
 			break;
 		case HANDLE_RESPONSE:
 			/* check for ACK */
-			if (msg.msgType == MaxCulMsgType.ACK)
-			{
+			if (msg.msgType == MaxCulMsgType.ACK) {
 				AckMsg ack = new AckMsg(msg.rawMsg);
-				if (ack.getIsNack())
-				{
+				if (ack.getIsNack()) {
 					logger.error("TIME_INFO was nacked. Ending sequence");
 					state = TimeUpdateRequestState.FINISHED;
-				}
-				else state = TimeUpdateRequestState.FINISHED;
+				} else
+					state = TimeUpdateRequestState.FINISHED;
 			}
 			state = TimeUpdateRequestState.FINISHED;
 			break;
@@ -114,13 +106,13 @@ public class TimeUpdateRequestSequence implements MessageSequencer {
 	@Override
 	public void packetLost(BaseMsg msg) {
 		pktLostCount++;
-		logger.debug("Lost "+pktLostCount+" packets");
-		if (pktLostCount < 3)
-		{
+		logger.debug("Lost " + pktLostCount + " packets");
+		if (pktLostCount < 3) {
 			logger.debug("Attempt retransmission");
 			messageHandler.sendMessage(msg);
 		} else {
-			logger.error("Lost "+pktLostCount+" packets. Ending Sequence in state "+this.state);
+			logger.error("Lost " + pktLostCount
+					+ " packets. Ending Sequence in state " + this.state);
 			state = TimeUpdateRequestState.FINISHED;
 		}
 	}

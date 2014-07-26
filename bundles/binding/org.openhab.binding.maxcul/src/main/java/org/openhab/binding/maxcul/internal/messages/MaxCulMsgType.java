@@ -10,30 +10,22 @@ package org.openhab.binding.maxcul.internal.messages;
 
 /**
  * Enumerate the different message types and their identifiers
+ * 
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
 public enum MaxCulMsgType {
-	PAIR_PING(0x00),
-	PAIR_PONG(0x01),
-	ACK(0x02),
-	TIME_INFO(0x03),
+	PAIR_PING(0x00), PAIR_PONG(0x01), ACK(0x02), TIME_INFO(0x03),
 
-	CONFIG_WEEK_PROFILE(0x10),
-	CONFIG_TEMPERATURES(0x11),
-	CONFIG_VALVE(0x12),
+	CONFIG_WEEK_PROFILE(0x10), CONFIG_TEMPERATURES(0x11), CONFIG_VALVE(0x12),
 
-	ADD_LINK_PARTNER(0x20),
-	REMOVE_LINK_PARTNER(0x21),
-	SET_GROUP_ID(0x22),
-	REMOVE_GROUP_ID(0x23),
+	ADD_LINK_PARTNER(0x20), REMOVE_LINK_PARTNER(0x21), SET_GROUP_ID(0x22), REMOVE_GROUP_ID(
+			0x23),
 
 	SHUTTER_CONTACT_STATE(0x30),
 
-	SET_TEMPERATURE(0x40),
-	WALL_THERMOSTAT_CONTROL(0x42),
-	SET_COMFORT_TEMPERATURE(0x43),
-	SET_ECO_TEMPERATURE(0x44),
+	SET_TEMPERATURE(0x40), WALL_THERMOSTAT_CONTROL(0x42), SET_COMFORT_TEMPERATURE(
+			0x43), SET_ECO_TEMPERATURE(0x44),
 
 	PUSH_BUTTON_STATE(0x50),
 
@@ -43,8 +35,7 @@ public enum MaxCulMsgType {
 
 	SET_DISPLAY_ACTUAL_TEMP(0x82),
 
-	WAKEUP(0xF1),
-	RESET(0xF0),
+	WAKEUP(0xF1), RESET(0xF0),
 
 	UNKNOWN(0xFF);
 
@@ -62,10 +53,8 @@ public enum MaxCulMsgType {
 		return (byte) msgType;
 	}
 
-	public static MaxCulMsgType fromByte( byte b )
-	{
-		for (MaxCulMsgType m : values())
-		{
+	public static MaxCulMsgType fromByte(byte b) {
+		for (MaxCulMsgType m : values()) {
 			if (m.toByte() == b)
 				return m;
 		}
