@@ -1091,4 +1091,16 @@
 			<ConfigFile>amc/zds-ud10.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0001</Id>
+		<Name>ACT</Name>
+		<Product>
+			<Reference>
+				<Type>4450</Type>
+				<Id>3030</Id>
+			</Reference>
+			<Model>ZDP100</Model>
+			<Label lang="en">Plugin Lamp Module</Label>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
