@@ -292,6 +292,15 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			}
 
 			Class<? extends Type> typeClass = toTypeClass(id);
+			if(datapoint.getDPT().equals("3.007")) {
+				// if the stepcode of a 3 Bit Controlled value is zero we assume that is a "break" being signalled
+				// and therefore we ingore the control value (which, is the DPTXlatorBoolean.DPT_STEP value returned by
+				// default by the DPTXlator3BitControlled class.
+				// when the stepcode is different from zero, then the control flag must be a valid INCREASE of DECREASE
+				if(((DPTXlator3BitControlled)translator).getStepCode()==0) {
+					typeClass=null;
+				}
+			}
 			if (typeClass == null) {
 				return null;
 			}
