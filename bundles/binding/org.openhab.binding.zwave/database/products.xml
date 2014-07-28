@@ -621,6 +621,14 @@
 			<Label lang="en">AC/DC Siren</Label>
 			<ConfigFile>vision/zm1602.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>1001</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>ZU1401</Model>
+			<Label lang="en">USB Controller</Label>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>010F</Id>
