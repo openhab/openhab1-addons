@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HDanywhere
 Bundle-SymbolicName: org.openhab.binding.hdanywhere
-Bundle-Version: 1.5.0
+Bundle-Version: 1.5.1
 Bundle-Activator: org.openhab.binding.hdanywhere.internal.HDanywhereActivator
 Bundle-Vendor: openHAB
 Bundle-DocURL: http://www.openhab.org
