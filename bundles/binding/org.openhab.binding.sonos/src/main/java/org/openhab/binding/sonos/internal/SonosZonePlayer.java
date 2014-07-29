@@ -1182,7 +1182,12 @@ class SonosZonePlayer {
 
 				} else {
 					if(currentTrack != null) {
-						if(!currentTrack.getTitle().contains("x-sonosapi-stream")) {
+						if(currentTrack.getResource().contains("x-rincon-stream")) {
+							title = currentTrack.getTitle();
+							album = " ";
+							artist = " ";
+							resultString = title;
+						} else if(!currentTrack.getResource().contains("x-sonosapi-stream")) {
 							if (currentTrack.getAlbumArtist().equals("")) {
 								resultString = currentTrack.getCreator() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
 								artist = currentTrack.getCreator();
@@ -1193,18 +1198,26 @@ class SonosZonePlayer {
 
 							album = currentTrack.getAlbum();
 							title = currentTrack.getTitle();
-						}
+							
+							if(album.equals("")) {
+								album= " ";
+							}
 
+							if(artist.equals("")) {
+								artist= " ";
+							}
+						}
 					} else {
-						resultString = "";
+						title=" ";
+						album = " ";
+						artist = " ";
+						resultString = " ";
 					}
 				}
 
 				StateVariable newVariable = new StateVariable("CurrentURIFormatted",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
 				StateVariableValue newValue = new StateVariableValue(newVariable, resultString);
-
 				processStateVariableValue(newVariable.getName(),newValue);		
-
 
 				// update individual variables
 				newVariable = new StateVariable("CurrentArtist",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
