@@ -1106,7 +1106,7 @@ class SonosZonePlayer {
 	}
 
 	public boolean updateCurrentURIFormatted() {
-
+		
 		if(stateMap != null && isConfigured()) {
 
 			String currentURI = null;
@@ -1160,9 +1160,10 @@ class SonosZonePlayer {
 						if(fields != null) {
 
 							resultString = new String();
-							// radio name should be first field
-							title = fields.get(0);
 
+							artist = fields.get(0);
+							title = fields.get(1);
+							
 							Iterator<String> listIterator = fields.listIterator();
 							while(listIterator.hasNext()){
 								String field = listIterator.next();
@@ -1175,6 +1176,7 @@ class SonosZonePlayer {
 					} else {
 						resultString = stateMap.get("CurrentURIFormatted").getValue().toString();
 						title = stateMap.get("CurrentTitle").getValue().toString();
+						artist = stateMap.get("CurrentArtist").getValue().toString();
 					}
 
 
