@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.openhab</groupId>
         <artifactId>openhab</artifactId>
-        <version>1.6.0-qualifier</version>
+        <version>1.5.0</version>
     </parent>
 
     <artifactId>distribution</artifactId>
