@@ -5,7 +5,11 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the Test-Bundle for the Google Calendar enhancement
  of the open Home Automation Bus (openHAB)
 Bundle-SymbolicName: org.openhab.io.gcal.test
+<<<<<<< HEAD
 Bundle-Version: 1.5.1
+=======
+Bundle-Version: 1.6.0.qualifier
+>>>>>>> master
 Fragment-Host: org.openhab.io.gcal
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.junit;bundle-version="4.8.2"

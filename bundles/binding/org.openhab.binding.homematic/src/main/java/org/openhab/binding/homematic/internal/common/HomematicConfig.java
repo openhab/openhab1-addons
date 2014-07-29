@@ -21,10 +21,10 @@ import org.osgi.service.cm.ConfigurationException;
  * <pre>
  * ############################## Homematic Binding ##############################
  * #
- * # Hostname / IP address of the Homematic CCU
+ * # Hostname / IP address of the Homematic CCU or Homegear server
  * homematic:host=
  *
- * # The communication with the CCU. xml for xmlrpc or bin for the lightweight binrpc, (optional, default is bin).
+ * # The communication with the Homematic server. xml for xmlrpc or bin for the lightweight binrpc, (optional, default is bin).
  * # homematic:rpc=
  * 
  * # Hostname / IP address for the callback server (optional, default is auto-discovery)
@@ -34,8 +34,8 @@ import org.osgi.service.cm.ConfigurationException;
  * # Port number for the callback server. (optional, default is 9123)
  * # homematic:callback.port=
  * 
- * # The interval in seconds to check if the communication with the CCU is still alive.
- * # If no message receives from the CCU, the binding restarts. (optional, default is 300)
+ * # The interval in seconds to check if the communication with the Homematic server is still alive.
+ * # If no message receives from the Homematic server, the binding restarts. (optional, default is 300)
  * # homematic:alive.interval
  * </pre>
  * 
@@ -43,7 +43,7 @@ import org.osgi.service.cm.ConfigurationException;
  * @since 1.5.0
  */
 public class HomematicConfig {
-	private static final String CONFIG_KEY_CCU_HOST = "host";
+	private static final String CONFIG_KEY_HOMEMATIC_HOST = "host";
 	private static final String CONFIG_KEY_CALLBACK_HOST = "callback.host";
 	private static final String CONFIG_KEY_CALLBACK_PORT = "callback.port";
 	private static final String CONFIG_KEY_ALIVE_INTERVAL = "alive.interval";
@@ -65,7 +65,7 @@ public class HomematicConfig {
 	public void parse(Dictionary<String, ?> properties) throws ConfigurationException {
 		valid = false;
 
-		host = (String) properties.get(CONFIG_KEY_CCU_HOST);
+		host = (String) properties.get(CONFIG_KEY_HOMEMATIC_HOST);
 		if (StringUtils.isBlank(host)) {
 			throw new ConfigurationException("homematic",
 					"Parameter host is mandatory and must be configured. Please check your openhab.cfg!");
@@ -108,7 +108,7 @@ public class HomematicConfig {
 	}
 
 	/**
-	 * Returns the CCU host.
+	 * Returns the Homematic server host.
 	 */
 	public String getHost() {
 		return host;

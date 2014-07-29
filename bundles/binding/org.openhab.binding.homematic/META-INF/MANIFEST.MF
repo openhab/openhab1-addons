@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB homematic Binding
 Bundle-SymbolicName: org.openhab.binding.homematic;singleton:=true
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.5.1
+Bundle-Version: 1.6.0.qualifier
 Bundle-Activator: org.openhab.binding.homematic.internal.bus.HomematicActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the homematic binding of the open Home Aut
@@ -18,6 +18,7 @@ Import-Package: javax.xml.bind,
  org.apache.commons.lang,
  org.apache.commons.lang.builder,
  org.apache.commons.lang.math,
+ org.apache.commons.lang.reflect,
  org.apache.commons.logging,
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -31,8 +32,9 @@ Import-Package: javax.xml.bind,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.homematic.internal.common,org.open
- hab.binding.homematic.internal.communicator.client
+Export-Package: org.openhab.binding.homematic.internal.common,
+ org.openhab.binding.homematic.internal.communicator.client,
+ org.openhab.binding.homematic.internal.communicator.client.interfaces
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/homematicbinding.xml, OSGI-INF/genericbindingprovider.xml

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>064435</Model>
+	<Label lang="en">Single Paddle Wall Controller</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x2b</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x77</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8e</id></Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Default>50</Default>
+			<Size>1</Size>
+			<Label lang="en">Typical click timeout</Label>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Help lang="en"><![CDATA[Typical time used to differentiate click, hold, double and triple clicks<BR/>Defined in 10ms ticks.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert buttons</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On, Off and dim using Basic Set</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Scenes</Label>
+			</Item>
+			<Label lang="en">Action on button single press or hold</Label>
+			<Help lang="en">Defines which command should be sent on button single press or hold. Basic and Scene commands are sent to Association group. Switch All commands are sent broadcast. Scenes have following meaning: Up = 1, Down = 2, Dim Up = 3, Dim Down = 4, Dim Up Stop = 5, Dim Down Stop = 6.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On, Off and dim using Basic Set</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Scenes</Label>
+			</Item>
+			<Label lang="en">Action on button double press or hold</Label>
+			<Help lang="en">Defines which command should be sent on button double press or press-hold. Basic and Scene commands are sent to Association group. Switch All commands are sent broadcast. If not disabled, the device will wait for a click timeout to see if the second click would be pressed. This will introduce a small delay for single click commands. Scenes have following meaning: Up = 11, Down = 12, Dim Up = 13, Dim Down = 14, Dim Up Stop = 15, Dim Down Stop = 16.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>list</Type>
+			<Size>1</Size>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch OFF Only</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch OFF Only</Label>
+			</Item>
+			<Item>
+				<Value>-1</Value>
+				<Label lang="en">Switch all on and off</Label>
+			</Item>
+			<Label lang="en">Send the following Switch All commands</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>20</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Send unsolicited Battery Report on Wake Up</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">To same node as wake up notification</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Broadcast to neighbours</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Single Press</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Double Press</Label>
+		</Group>
+	</Associations>
+</Product>

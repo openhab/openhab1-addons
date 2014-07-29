@@ -33,7 +33,7 @@ public class RefreshTokenRequest extends AbstractRequest {
 			+ CHARSET;
 
 	private static final String URL = "https://api.netatmo.net/oauth2/token";
-	private static final String CONTENT = "grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s";
+	private static final String CONTENT = "grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s&scope=read_station";
 
 	private final String clientId;
 	private final String clientSecret;

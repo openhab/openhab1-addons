@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZDS-UD10</Model>
+	<Label lang="en">Dimming Switch Module</Label>
+	<CommandClasses>
+		<Class><id>0x00</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+</Product>
+

@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB neohub Binding
 Bundle-SymbolicName: org.openhab.binding.neohub
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.5.1
+Bundle-Version: 1.6.0.qualifier
 Bundle-Activator: org.openhab.binding.neohub.internal.NeoHubActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the neohub binding of the open Home Aut

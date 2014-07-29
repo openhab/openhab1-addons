@@ -238,6 +238,8 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getModeString());
 						} else if (provider.getBindingType(itemName) == BindingType.BATTERY) {
 							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getBatteryLow());
+						} else if (provider.getBindingType(itemName) == BindingType.ACTUAL) {
+							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureActual());
 						} else {
 							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureSetpoint());
 						}
@@ -250,7 +252,15 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 						}
 						break;
 					case WallMountedThermostat:
+						if (provider.getBindingType(itemName) == BindingType.ACTUAL) {
+							eventPublisher.postUpdate(itemName, ((WallMountedThermostat) device).getTemperatureActual());
+						} else if (provider.getBindingType(itemName) == BindingType.MODE) {
+							eventPublisher.postUpdate(itemName, ((WallMountedThermostat) device).getModeString());
+						} else if (provider.getBindingType(itemName) == BindingType.BATTERY) {
+							eventPublisher.postUpdate(itemName, ((WallMountedThermostat) device).getBatteryLow());
+						} else {
 						eventPublisher.postUpdate(itemName, ((WallMountedThermostat) device).getTemperatureSetpoint());
+						}
 						break;
 					default:
 						// no further devices supported yet
@@ -371,9 +381,10 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			return new C_Message(raw);
 		} else if (raw.startsWith("L:")) {
 			return new L_Message(raw);
+		} else {
+			logger.debug("Unknown message block: '{}'",raw);
 		}
-
-		return null;
+			return null;
 	}
 
 	/**

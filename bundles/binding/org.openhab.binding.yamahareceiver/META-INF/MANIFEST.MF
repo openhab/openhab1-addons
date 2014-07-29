@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB YamahaReceiver Binding
+Bundle-SymbolicName: org.openhab.binding.yamahareceiver
+Bundle-Version: 1.5.0.qualifier
+Bundle-ClassPath: .
+Bundle-Activator: org.openhab.binding.yamahareceiver.internal.YamahaReceiverActivator
+Bundle-Vendor: openHAB.org
+Export-Package: org.openhab.binding.yamahareceiver
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-DocURL: http://www.openhab.org
+Ignore-Package: org.openhab.binding.yamahareceiver.internal
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Private-Package: org.openhab.binding.yamahareceiver.internal
+Bundle-Description: This is the YamahaReceiver binding of the open Home Automation Bus (openHAB)
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html

@@ -30,7 +30,7 @@ public class DatapointConfig extends ValueBindingConfig {
 	private String parameter;
 
 	/**
-	 * Creates a datapoint config from an CCU event.
+	 * Creates a datapoint config from an Homematic server event.
 	 */
 	public DatapointConfig(HmInterface hmInterface, String addressWithChannel, String parameter) {
 		this.hmInterface = hmInterface;

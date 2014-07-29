@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>bundles</artifactId>
-    <version>1.5.1</version>
+    <version>1.6.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -113,6 +113,8 @@
     <module>org.openhab.binding.jointspace</module>
     <module>org.openhab.binding.oceanic</module>
     <module>org.openhab.binding.ecotouch</module>
+    <module>org.openhab.binding.yamahareceiver</module>
+    <module>org.openhab.binding.energenie</module>
   </modules>
 
 </project>
