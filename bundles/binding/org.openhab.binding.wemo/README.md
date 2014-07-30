@@ -18,7 +18,7 @@ In order to bind an item to the device, you need to provide configuration settin
     wemo="<friendlyName>"
 
 The friendlyName is given to your device during initial setup with your Android or IOS device.
-If not shure about the friendlyNames of your devices, define loglevel "trace" for Wemo Binding and it will show up the found friendlyNames on startup.
+If not shure about the friendlyNames of your devices, take a look in your openhab.log. The discovered devices are listed.
 
 Examples, how to configure your items in your items file:
 

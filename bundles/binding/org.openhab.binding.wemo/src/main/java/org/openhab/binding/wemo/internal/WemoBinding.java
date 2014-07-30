@@ -37,8 +37,13 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
+ * This binding allows you to switch your Belkin Wemo Switches on or Off
+ * and refreshs itemState by polling every 60 Seconds.
+ * The Binding does a discovery at startup to find all your Wemo switches in your installations and stores their
+ * friendlyNames and location (IP-Address) in a internal map.
+ * If location of a found device changes due to a dhcp lease renewal, rediscovery is started to find new location.
+ * 
  * @author Hans-Jörg Merk
  * @since 1.6.0
  */
@@ -47,7 +52,8 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 	private static final Logger logger = 
 		LoggerFactory.getLogger(WemoBinding.class);
 
-	protected Map<String, String> wemoConfigMap = new HashMap<String, String>();
+	// wemoConfigMap stores the values wemoFriendlyName and their according location (IP-Address:Port) found during discovery.
+		protected Map<String, String> wemoConfigMap = new HashMap<String, String>();
 	
 	
 	/** 
@@ -103,19 +109,8 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 					String state = resp.replaceAll(
 							"[\\d\\D]*<BinaryState>(.*)</BinaryState>[\\d\\D]*", "$1");
 
-					isOn = state.equals("1") ? true : false;
-					logger.trace("{} state on = {}", itemName, isOn);
-					
-					if (state.equals("0")) {
-						State itemState = OnOffType.valueOf("OFF");
-						logger.trace("Transformed state for item {} = {}", itemName, state);
-						eventPublisher.postUpdate(itemName, itemState);
-					}
-					if (state.equals("1")) {
-						State itemState = OnOffType.valueOf("ON");
-						logger.trace("Transformed state for item {} = {}", itemName, state);
-						eventPublisher.postUpdate(itemName, itemState);
-					}
+					State itemState = state.equals("1") ? OnOffType.ON : OnOffType.OFF;
+					eventPublisher.postUpdate(itemName,  itemState);
 
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -140,11 +135,11 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 			if (OnOffType.ON.equals(command)) {
 				logger.trace("Command ON is about to be send to item '{}'",itemName );
 				boolean onOff = true;
-				setOn(itemName, onOff);
+				sendCommand(itemName, onOff);
 			} else if (OnOffType.OFF.equals(command)) {
 				logger.trace("Command OFF is about to be send to item '{}'",itemName );
 				boolean onOff = false;
-				setOn(itemName, onOff);
+				sendCommand(itemName, onOff);
 			}
 		} catch (Exception e) {
 			logger.error("Failed to send {} command", command, e);
@@ -152,14 +147,6 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 	}			
 
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		logger.debug("internalReceiveCommand() is called!");
-	}
-		
 	public void wemoDiscovery() {
 		logger.debug("wemoDiscovery() is called!");
 		try {
@@ -241,7 +228,7 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 									int findStart=friendlyNameResponse.lastIndexOf(findFriendlyNameStart); 
 									int findEnd=friendlyNameResponse.lastIndexOf(findFriendlyNameEnd);
 									String slicedFriendlyName=friendlyNameResponse.substring(findStart+14, findEnd);
-									logger.trace("Wemo friendlyName '{}' found at '{}'", slicedFriendlyName, slicedMessage);
+									logger.info("Wemo friendlyName '{}' found at '{}'", slicedFriendlyName, slicedMessage);
 									wemoConfigMap.put(slicedFriendlyName, slicedMessage);
 									
 								} catch (Exception te) {
@@ -268,7 +255,7 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 		}
 		
 	}
-	public void setOn(String itemName, boolean onOff) throws IOException {
+	public void sendCommand(String itemName, boolean onOff) throws IOException {
 		logger.trace("setOn ={}", onOff);
 		String wemoCallResponse = wemoCall(itemName,
 				"urn:Belkin:service:basicevent:1#SetBinaryState",
@@ -280,7 +267,7 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 		isOn = onOff;
 	}
 
-	private String wemoCall(String itemName, String soapCall, String content) {
+	private String wemoCall(String itemName, String soapMethod, String content) {
 		try {
 			
 			String endpoint = "/upnp/control/basicevent1";
@@ -301,7 +288,7 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 					wemoStringBuffer.append("POST " + url + " HTTP/1.1\r\n");
 					wemoStringBuffer.append("Content-Type: text/xml; charset=utf-8\r\n");
 					wemoStringBuffer.append("Content-Length: " + content.getBytes().length + "\r\n");
-					wemoStringBuffer.append("SOAPACTION: \"" + soapCall + "\"\r\n");
+					wemoStringBuffer.append("SOAPACTION: \"" + soapMethod + "\"\r\n");
 					wemoStringBuffer.append("\r\n");
 					wemoOutputStream.write(wemoStringBuffer.toString().getBytes());
 					wemoOutputStream.write(content.getBytes());
