@@ -88,14 +88,20 @@ public class ZWaveMeterConverter extends ZWaveCommandClassConverter<ZWaveMeterCo
 	@Override
 	public void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String,String> arguments) {
 		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
-		String meterScale = arguments.get("meter_scale");
-		String meterZero = arguments.get("meter_zero");
-		ZWaveMeterValueEvent meterEvent = (ZWaveMeterValueEvent)event;
-
+		
 		if (converter == null) {
 			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
 			return;
 		}
+		
+		// we ignore any meter reports for item bindings configured with 'meter_reset=true' 
+		// since we don't want to be updating the 'reset' switch
+		if ("true".equalsIgnoreCase(arguments.get("meter_reset")))
+			return;
+
+		String meterScale = arguments.get("meter_scale");
+		String meterZero = arguments.get("meter_zero");
+		ZWaveMeterValueEvent meterEvent = (ZWaveMeterValueEvent)event;
 
 		// Don't trigger event if this item is bound to another sensor type
 		if (meterScale != null && MeterScale.getMeterScale(meterScale) != meterEvent.getMeterScale())
