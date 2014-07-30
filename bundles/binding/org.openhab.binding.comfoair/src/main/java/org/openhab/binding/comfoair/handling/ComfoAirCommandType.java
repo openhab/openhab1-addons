@@ -136,6 +136,16 @@ public enum ComfoAirCommandType {
 		}
 	},
 
+	EWT_TEMPERATUR {
+		{
+			key = "ewt_temperatur";
+			data_type = DataTypeTemperature.class;
+			read_command = 0xd1;
+			read_reply_command = 0xd2;
+			read_reply_data_pos = new int[] { 6 };
+		}
+	},
+
 	BYPASS_MODE {
 		{
 			key = "bypass_mode";
