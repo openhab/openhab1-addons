@@ -23,4 +23,13 @@
 
 	<packaging>eclipse-plugin</packaging>
 
-	</project>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
