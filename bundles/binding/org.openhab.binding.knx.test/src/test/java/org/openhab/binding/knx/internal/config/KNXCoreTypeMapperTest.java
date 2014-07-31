@@ -135,6 +135,181 @@ public class KNXCoreTypeMapperTest {
 	}
 
 	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 1.001 DPT_BOOL
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingB1_1_002() throws KNXFormatException {
+		DPT dpt = DPTXlatorBoolean.DPT_BOOL;
+
+		testToTypeClass(dpt, OnOffType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, OnOffType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00 }, OnOffType.class);
+		testToDPTValue(dpt, type, "false");
+
+		type=testToType(dpt, new byte[] { 0x01 }, OnOffType.class);
+		testToDPTValue(dpt, type, "true");
+
+		type=testToType(dpt, new byte[] { 0x02 }, OnOffType.class);
+		testToDPTValue(dpt, type, "false");
+
+		type=testToType(dpt, new byte[] { 0x03 }, OnOffType.class);
+		testToDPTValue(dpt, type, "true");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, OnOffType.class);
+		testToDPTValue(dpt, type, "true");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, OnOffType.class);
+		testToDPTValue(dpt, type, "true");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 1.003 DPT_ENABLE
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingB1_1_003() throws KNXFormatException {
+		DPT dpt = DPTXlatorBoolean.DPT_ENABLE;
+
+		testToTypeClass(dpt, OnOffType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, OnOffType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00 }, OnOffType.class);
+		testToDPTValue(dpt, type, "disable");
+
+		type=testToType(dpt, new byte[] { 0x01 }, OnOffType.class);
+		testToDPTValue(dpt, type, "enable");
+
+		type=testToType(dpt, new byte[] { 0x02 }, OnOffType.class);
+		testToDPTValue(dpt, type, "disable");
+
+		type=testToType(dpt, new byte[] { 0x03 }, OnOffType.class);
+		testToDPTValue(dpt, type, "enable");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, OnOffType.class);
+		testToDPTValue(dpt, type, "enable");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, OnOffType.class);
+		testToDPTValue(dpt, type, "enable");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 1.004 DPT_RAMP
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingB1_1_004() throws KNXFormatException {
+		DPT dpt = DPTXlatorBoolean.DPT_RAMP;
+
+		testToTypeClass(dpt, OnOffType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, OnOffType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00 }, OnOffType.class);
+		testToDPTValue(dpt, type, "no ramp");
+
+		type=testToType(dpt, new byte[] { 0x01 }, OnOffType.class);
+		testToDPTValue(dpt, type, "ramp");
+
+		type=testToType(dpt, new byte[] { 0x02 }, OnOffType.class);
+		testToDPTValue(dpt, type, "no ramp");
+
+		type=testToType(dpt, new byte[] { 0x03 }, OnOffType.class);
+		testToDPTValue(dpt, type, "ramp");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, OnOffType.class);
+		testToDPTValue(dpt, type, "ramp");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, OnOffType.class);
+		testToDPTValue(dpt, type, "ramp");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 1.005 DPT_ALARM
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingB1_1_005() throws KNXFormatException {
+		DPT dpt = DPTXlatorBoolean.DPT_ALARM;
+
+		testToTypeClass(dpt, OnOffType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, OnOffType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00 }, OnOffType.class);
+		testToDPTValue(dpt, type, "no alarm");
+
+		type=testToType(dpt, new byte[] { 0x01 }, OnOffType.class);
+		testToDPTValue(dpt, type, "alarm");
+
+		type=testToType(dpt, new byte[] { 0x02 }, OnOffType.class);
+		testToDPTValue(dpt, type, "no alarm");
+
+		type=testToType(dpt, new byte[] { 0x03 }, OnOffType.class);
+		testToDPTValue(dpt, type, "alarm");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, OnOffType.class);
+		testToDPTValue(dpt, type, "alarm");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, OnOffType.class);
+		testToDPTValue(dpt, type, "alarm");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 1.006 DPT_BINARYVALUE
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingB1_1_006() throws KNXFormatException {
+		DPT dpt = DPTXlatorBoolean.DPT_BINARYVALUE;
+
+		testToTypeClass(dpt, OnOffType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, OnOffType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00 }, OnOffType.class);
+		testToDPTValue(dpt, type, "low");
+
+		type=testToType(dpt, new byte[] { 0x01 }, OnOffType.class);
+		testToDPTValue(dpt, type, "high");
+
+		type=testToType(dpt, new byte[] { 0x02 }, OnOffType.class);
+		testToDPTValue(dpt, type, "low");
+
+		type=testToType(dpt, new byte[] { 0x03 }, OnOffType.class);
+		testToDPTValue(dpt, type, "high");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, OnOffType.class);
+		testToDPTValue(dpt, type, "high");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, OnOffType.class);
+		testToDPTValue(dpt, type, "high");
+	}
+
+	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 1.007 DPT_STEP
 	 * 
 	 * @throws KNXFormatException
@@ -203,6 +378,42 @@ public class KNXCoreTypeMapperTest {
 		// Use a too long byte array expecting that additional bytes will be ignored
 		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, UpDownType.class);
 		testToDPTValue(dpt, type, "down");
+
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 1.008 DPT_UPDOWN
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingB1_1_009() throws KNXFormatException {
+		DPT dpt = DPTXlatorBoolean.DPT_OPENCLOSE;
+
+		testToTypeClass(dpt, OpenClosedType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, OpenClosedType.class));
+
+		Type type=testToType(dpt, new byte[] { 0 }, OpenClosedType.class);
+		testToDPTValue(dpt, type, "open");
+
+		type=testToType(dpt, new byte[] { 1 }, OpenClosedType.class);
+		testToDPTValue(dpt, type, "close");
+
+		type=testToType(dpt, new byte[] { 2 }, OpenClosedType.class);
+		testToDPTValue(dpt, type, "open");
+
+		type=testToType(dpt, new byte[] { 3 }, OpenClosedType.class);
+		testToDPTValue(dpt, type, "close");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, OpenClosedType.class);
+		testToDPTValue(dpt, type, "close");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, OpenClosedType.class);
+		testToDPTValue(dpt, type, "close");
 
 	}
 
