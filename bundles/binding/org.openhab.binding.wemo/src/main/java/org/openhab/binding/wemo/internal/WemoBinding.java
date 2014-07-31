@@ -134,16 +134,6 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 			logger.trace("Command '{}' is about to be send to item '{}'",command, itemName );
 			sendCommand(itemName, command);
 			
-			
-//			if (OnOffType.ON.equals(command)) {
-//				logger.trace("Command ON is about to be send to item '{}'",itemName );
-//				boolean onOff = true;
-//				sendCommand(itemName, onOff);
-//			} else if (OnOffType.OFF.equals(command)) {
-//				logger.trace("Command OFF is about to be send to item '{}'",itemName );
-//				boolean onOff = false;
-//				sendCommand(itemName, onOff);
-//			}
 		} catch (Exception e) {
 			logger.error("Failed to send {} command", command, e);
 		}
