@@ -10,10 +10,14 @@ package org.openhab.binding.knx.internal.config;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assume.*;
 import org.openhab.binding.knx.internal.dpt.KNXCoreTypeMapper;
 import org.openhab.core.library.types.*;
 import org.openhab.core.types.Type;
@@ -1238,7 +1242,9 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping4ByteFloat_14() throws KNXFormatException {
-		Locale[] locales = {Locale.getDefault(), Locale.ENGLISH, Locale.GERMAN};
+		Locale defaultLocale = Locale.getDefault();
+		
+		Locale[] locales = {defaultLocale, Locale.ENGLISH, Locale.GERMAN};
 		DPT[] dpts = {DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, DPTXlator4ByteFloat.DPT_ANGLE_DEG,
 				DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT, DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL, DPTXlator4ByteFloat.DPT_FREQUENCY,
 				DPTXlator4ByteFloat.DPT_POWER};
@@ -1308,6 +1314,8 @@ public class KNXCoreTypeMapperTest {
 				}
 			} 
 		}
+		
+		Locale.setDefault(defaultLocale);
 	}
 
 	/**
@@ -1473,15 +1481,6 @@ public class KNXCoreTypeMapperTest {
 		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x60, 0x00 }, DateTimeType.class);
 		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
 
-		/*
-		 * FIXME: Calimero lib (Version 2.2.0) seems to have a bug when dealing with DaylightSavingsTime.
-		 * Setting the DST field will always result in a rejection of the data.
-		 * 
-		 * The following test case tests the erroneous behavior. 
-		 * Reference testcase + day of week=Any day, daylight saving
-		 */
-		assertNull(testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x01, (byte) 0x00 }, DateTimeType.class));
-
 		/* 
 		 * December 31st, 2155 day of week=Any day, Day of week field invalid
 		 */
@@ -1505,6 +1504,85 @@ public class KNXCoreTypeMapperTest {
 		 */
 		type=testToType(dpt, new byte[] { (byte) 0x72, 0x0C, 0x1F, 0x18, 0x00, 0x00, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
 		testToDPTValue(dpt, type, "2014-12-31 23:59:59");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Date Time" KNX ID: 19.001 DPT_DATE_TIME
+	 * Testcase tests handling of Daylight Savings Time flag (DST).
+	 * Interpretation of DST is depending on default timezone, hence we're trying to test using
+	 * different timezones: default, New York, Berlin and Shanghai. Shanghai not having a DST.
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingDateTime_19_001_DST() throws KNXFormatException {
+		DPT dpt =DPTXlatorDateTime.DPT_DATE_TIME;
+
+		//2014-07-31 00:00:00 DST flag set
+		byte[] testDataDST   = new byte[] { 0x72, 0x07, 0x1F, 0x00, 0x00, 0x00, (byte) 0x05, (byte) 0x00 };
+		//2014-07-31 00:00:00 DST flag cleared
+		byte[] testDataNoDST = new byte[] { 0x72, 0x07, 0x1F, 0x00, 0x00, 0x00, (byte) 0x04, (byte) 0x00 };
+
+		testToTypeClass(dpt, DateTimeType.class);
+
+		TimeZone defaultTimeZone = TimeZone.getDefault();
+
+		TimeZone[] timeZones = {defaultTimeZone, TimeZone.getTimeZone("America/New_York"), TimeZone.getTimeZone("Europe/Berlin"), TimeZone.getTimeZone("Asia/Shanghai")};
+
+		try {
+			Field field = DPTXlatorDateTime.class.getDeclaredField("c");
+			field.setAccessible(true);
+
+			for (TimeZone timeZone : timeZones) {
+				/*
+				 *  DPTXlatorDateTime initialized it's calendar in a static method only once, including timezone.
+				 *  Crude solution: we're trying to reset that classes static private field, such that the default timezone will be evaluated again.
+				 *  Should this throw a NoSuchFieldException, IllegalAccessException or SecurityException, then we'll just skip this test.  
+				 */
+				field.set(null, null);
+
+				TimeZone.setDefault(timeZone);
+
+				Calendar c = Calendar.getInstance();
+				c.set(2014, 7, 31);
+
+				if (c.get(Calendar.DST_OFFSET)>0) {
+					//Should be null since we have a DST timezone but non-DST data: should be rejected
+					assertNull(testToType(dpt, testDataNoDST, DateTimeType.class));
+					
+					Type type = testToType(dpt, testDataDST, DateTimeType.class);
+					testToDPTValue(dpt, type, "2014-07-31 00:00:00");
+				}
+				else {
+					//Should be null since we don't have a non-DST timezone but DST data: should be rejected
+					assertNull(testToType(dpt, testDataDST, DateTimeType.class));
+					
+					Type type = testToType(dpt, testDataNoDST, DateTimeType.class);
+					testToDPTValue(dpt, type, "2014-07-31 00:00:00");
+				}
+			}
+		}
+		catch (IllegalArgumentException e) {
+			//Shouldn't be thrown, since field.set()
+			fail();
+			}
+		catch (IllegalAccessException e) {
+			//Stop test and ignore if the field is not existing anymore
+			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: IllegalAccessException");
+			assumeNoException(e);
+			}
+		catch (NoSuchFieldException e) {
+			//Stop test and ignore if the field is not existing anymore
+			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: NoSuchFieldException");
+			assumeNoException(e);
+		}
+		catch (SecurityException e) {
+			//Stop test and ignore if the field is not existing anymore
+			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: SecurityException");
+			assumeNoException(e);
+			}
+
+		TimeZone.setDefault(defaultTimeZone);
 	}
 
 	/**
