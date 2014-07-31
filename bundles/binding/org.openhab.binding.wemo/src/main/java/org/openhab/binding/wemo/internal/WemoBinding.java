@@ -62,7 +62,6 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 	private long refreshInterval = 60000;
 
 	public InetAddress address;
-	public boolean isOn;
 	
 	public void activate() {
 		//Start device discovery, each time the binding start.
@@ -132,15 +131,19 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 		    logger.info("item '{}' is configured as '{}'",itemName, switchFriendlyName);
 			}
 		try {
-			if (OnOffType.ON.equals(command)) {
-				logger.trace("Command ON is about to be send to item '{}'",itemName );
-				boolean onOff = true;
-				sendCommand(itemName, onOff);
-			} else if (OnOffType.OFF.equals(command)) {
-				logger.trace("Command OFF is about to be send to item '{}'",itemName );
-				boolean onOff = false;
-				sendCommand(itemName, onOff);
-			}
+			logger.trace("Command '{}' is about to be send to item '{}'",command, itemName );
+			sendCommand(itemName, command);
+			
+			
+//			if (OnOffType.ON.equals(command)) {
+//				logger.trace("Command ON is about to be send to item '{}'",itemName );
+//				boolean onOff = true;
+//				sendCommand(itemName, onOff);
+//			} else if (OnOffType.OFF.equals(command)) {
+//				logger.trace("Command OFF is about to be send to item '{}'",itemName );
+//				boolean onOff = false;
+//				sendCommand(itemName, onOff);
+//			}
 		} catch (Exception e) {
 			logger.error("Failed to send {} command", command, e);
 		}
@@ -255,8 +258,10 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 		}
 		
 	}
-	public void sendCommand(String itemName, boolean onOff) throws IOException {
-		logger.trace("setOn ={}", onOff);
+	public void sendCommand(String itemName, Command command) throws IOException {
+		
+		boolean onOff = OnOffType.ON.equals(command);
+		logger.trace("command '{}' transformed to '{}'", command, onOff); 
 		String wemoCallResponse = wemoCall(itemName,
 				"urn:Belkin:service:basicevent:1#SetBinaryState",
 				IOUtils.toString(
@@ -264,7 +269,6 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 						.replace("{{state}}", onOff ? "1" : "0"));
 
 		logger.trace("setOn ={}", wemoCallResponse);
-		isOn = onOff;
 	}
 
 	private String wemoCall(String itemName, String soapMethod, String content) {
