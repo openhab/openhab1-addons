@@ -1563,11 +1563,11 @@ public class KNXCoreTypeMapperTest {
 			}
 		}
 		catch (IllegalArgumentException e) {
-			//Shouldn't be thrown, since field.set()
+			//Shouldn't be thrown, since field.set() set's a static field
 			fail();
 			}
 		catch (IllegalAccessException e) {
-			//Stop test and ignore if the field is not existing anymore
+			//Stop test and ignore
 			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: IllegalAccessException");
 			assumeNoException(e);
 			}
@@ -1577,7 +1577,7 @@ public class KNXCoreTypeMapperTest {
 			assumeNoException(e);
 		}
 		catch (SecurityException e) {
-			//Stop test and ignore if the field is not existing anymore
+			//Stop test and ignore
 			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: SecurityException");
 			assumeNoException(e);
 			}
