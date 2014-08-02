@@ -301,7 +301,8 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 		try {
 			statement = connection.createStatement();
 			sqlCmd = new String("INSERT INTO " + tableName + " (TIME, VALUE) VALUES(NOW(),'"
-					+ item.getState().toString() + "');");
+					+ item.getState().toString() + "') ON DUPLICATE KEY UPDATE VALUE='"
+					+ item.getState().toString() + "';");
 			statement.executeUpdate(sqlCmd);
 
 			logger.debug("mySQL: Stored item '{}' as '{}'[{}] in SQL database at {}.", item.getName(), item.getState()
