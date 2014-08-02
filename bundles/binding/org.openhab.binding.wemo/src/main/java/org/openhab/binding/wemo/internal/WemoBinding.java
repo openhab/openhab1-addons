@@ -207,10 +207,12 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 						new Thread(new Runnable() {
 							@Override
 							public void run() {
-								String messageSearch = "LOCATION:";
-								int findString=message.lastIndexOf(messageSearch);
-								if (findString !=0) {
-								String slicedMessage = message.substring(findString+10, findString+36);
+								String locationStart = "LOCATION:";
+								String locationEnd = "/setup.xml";
+								int findStringStart=message.lastIndexOf(locationStart);
+								if (findStringStart !=0) {
+									int findStringEnd=message.lastIndexOf(locationEnd);
+								String slicedMessage = message.substring(findStringStart+10, findStringEnd);
 								logger.trace("Wemo found at URL '{}'", slicedMessage);
 								
 								try {
