@@ -10,8 +10,14 @@ package org.openhab.binding.knx.internal.config;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assume.*;
 import org.openhab.binding.knx.internal.dpt.KNXCoreTypeMapper;
 import org.openhab.core.library.types.*;
 import org.openhab.core.types.Type;
@@ -20,16 +26,18 @@ import tuwien.auto.calimero.GroupAddress;
 import tuwien.auto.calimero.datapoint.CommandDP;
 import tuwien.auto.calimero.datapoint.Datapoint;
 import tuwien.auto.calimero.exception.KNXFormatException;
-import tuwien.auto.calimero.exception.KNXIllegalArgumentException;
 import tuwien.auto.calimero.dptxlator.DPT;
 import tuwien.auto.calimero.dptxlator.DPTXlator2ByteFloat;
 import tuwien.auto.calimero.dptxlator.DPTXlator2ByteUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator3BitControlled;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteFloat;
 import tuwien.auto.calimero.dptxlator.DPTXlator4ByteSigned;
+import tuwien.auto.calimero.dptxlator.DPTXlator4ByteUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
+import tuwien.auto.calimero.dptxlator.DPTXlatorDateTime;
+import tuwien.auto.calimero.dptxlator.DPTXlatorSceneNumber;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
 import tuwien.auto.calimero.dptxlator.DPTXlatorTime;
 
@@ -106,6 +114,10 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, OnOffType.class);
 
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, OnOffType.class));
+
 		Type type=testToType(dpt, new byte[] { 0x00 }, OnOffType.class);
 		testToDPTValue(dpt, type, "off");
 
@@ -121,6 +133,7 @@ public class KNXCoreTypeMapperTest {
 		type=testToType(dpt, new byte[] { (byte) 0xFF }, OnOffType.class);
 		testToDPTValue(dpt, type, "on");
 
+		// Use a too long byte array expecting that additional bytes will be ignored
 		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, OnOffType.class);
 		testToDPTValue(dpt, type, "on");
 	}
@@ -135,6 +148,10 @@ public class KNXCoreTypeMapperTest {
 		DPT dpt = DPTXlatorBoolean.DPT_STEP;
 
 		testToTypeClass(dpt, IncreaseDecreaseType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, IncreaseDecreaseType.class));
 
 		Type type=testToType(dpt, new byte[] { 0x00 }, IncreaseDecreaseType.class);
 		testToDPTValue(dpt, type, "decrease 5");
@@ -151,6 +168,7 @@ public class KNXCoreTypeMapperTest {
 		type=testToType(dpt, new byte[] { (byte) 0xFF }, IncreaseDecreaseType.class);
 		testToDPTValue(dpt, type, "increase 5");
 
+		// Use a too long byte array expecting that additional bytes will be ignored
 		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, IncreaseDecreaseType.class);
 		testToDPTValue(dpt, type, "increase 5");
 
@@ -167,6 +185,10 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, UpDownType.class);
 
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, UpDownType.class));
+
 		Type type=testToType(dpt, new byte[] { 0 }, UpDownType.class);
 		testToDPTValue(dpt, type, "up");
 
@@ -182,6 +204,7 @@ public class KNXCoreTypeMapperTest {
 		type=testToType(dpt, new byte[] { (byte) 0xFF }, UpDownType.class);
 		testToDPTValue(dpt, type, "down");
 
+		// Use a too long byte array expecting that additional bytes will be ignored
 		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, UpDownType.class);
 		testToDPTValue(dpt, type, "down");
 
@@ -198,6 +221,10 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, StopMoveType.class);
 
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, StopMoveType.class));
+
 		Type type=testToType(dpt, new byte[] { 0 }, StopMoveType.class);
 		testToDPTValue(dpt, type, "stop");
 
@@ -213,6 +240,7 @@ public class KNXCoreTypeMapperTest {
 		type=testToType(dpt, new byte[] { (byte) 0xFF }, StopMoveType.class);
 		testToDPTValue(dpt, type, "start");
 
+		// Use a too long byte array expecting that additional bytes will be ignored
 		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, StopMoveType.class);
 		testToDPTValue(dpt, type, "start");
 	}
@@ -227,6 +255,10 @@ public class KNXCoreTypeMapperTest {
 		DPT dpt = DPTXlatorBoolean.DPT_WINDOW_DOOR;
 
 		testToTypeClass(dpt, OpenClosedType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, OpenClosedType.class));
 
 		Type type=testToType(dpt, new byte[] { 0 }, OpenClosedType.class);
 		testToDPTValue(dpt, type, "closed");
@@ -243,6 +275,7 @@ public class KNXCoreTypeMapperTest {
 		type=testToType(dpt, new byte[] { (byte) 0xFF }, OpenClosedType.class);
 		testToDPTValue(dpt, type, "open");
 
+		// Use a too long byte array expecting that additional bytes will be ignored
 		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, OpenClosedType.class);
 		testToDPTValue(dpt, type, "open");
 
@@ -259,13 +292,30 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, IncreaseDecreaseType.class);
 
-		Type type=testToType(dpt, new byte[] { 0x00 }, IncreaseDecreaseType.class);
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, IncreaseDecreaseType.class));
+
+		// 3 lsb set to 0 indicate a break. oenHAB doesn't support this state or command
+		assertNull("KNXCoreTypeMapper.toType() should return null (decrease break control needs to be ignored)",
+				testToType(dpt, new byte[] { 0x00 }, IncreaseDecreaseType.class));
+
+		// 3 lsb set to 0 indicate a break. oenHAB doesn't support this state or command
+		assertNull("KNXCoreTypeMapper.toType() should return null (increase break control needs to be ignored)",
+				testToType(dpt, new byte[] { 0x08 }, IncreaseDecreaseType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x01 }, IncreaseDecreaseType.class);
 		testToDPTValue(dpt, type, "decrease 5");
 
-		type=testToType(dpt, new byte[] { 0x01 }, IncreaseDecreaseType.class);
-		testToDPTValue(dpt, type, "decrease 5");
+		type=testToType(dpt, new byte[] { 0x0F }, IncreaseDecreaseType.class);
+		testToDPTValue(dpt, type, "increase 5");
 
-		type=testToType(dpt, new byte[] { 0x08 }, IncreaseDecreaseType.class);
+		// Check that additional bit (4 msb) will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, IncreaseDecreaseType.class);
+		testToDPTValue(dpt, type, "increase 5");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0x0F, 0 }, IncreaseDecreaseType.class);
 		testToDPTValue(dpt, type, "increase 5");
 
 	}
@@ -284,6 +334,10 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, PercentType.class);
 
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, PercentType.class));
+
 		Type type=testToType(dpt, new byte[] { 0x0 }, PercentType.class);
 		testToDPTValue(dpt, type, "0");
 
@@ -292,6 +346,45 @@ public class KNXCoreTypeMapperTest {
 
 		type=testToType(dpt, new byte[] { (byte) 0xFF }, PercentType.class);
 		testToDPTValue(dpt, type, "100");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, PercentType.class);
+		testToDPTValue(dpt, type, "100");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “8-Bit Unsigned Value" KNX ID: 5.003 DPT_ANGLE
+	 * 
+	 * This data type is a “Multi-state” type, according KNX spec. No exact linear conversion from value to byte(s) and reverse is required, since rounding is
+	 * involved.
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping8BitUnsigned_5_003() throws KNXFormatException {
+		DPT dpt = DPTXlator8BitUnsigned.DPT_ANGLE;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0x7F }, DecimalType.class);
+		testToDPTValue(dpt, type, "179");
+
+		type=testToType(dpt, new byte[] { (byte) 0x80 }, DecimalType.class);
+		testToDPTValue(dpt, type, "181");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "360");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, DecimalType.class);
+		testToDPTValue(dpt, type, "360");
 	}
 
 	/**
@@ -305,16 +398,24 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
 		Type type=testToType(dpt, new byte[] { 0 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0");
 
 		type=testToType(dpt, new byte[] { 50 }, DecimalType.class);
 		testToDPTValue(dpt, type, "50");
-		
+
 		type=testToType(dpt, new byte[] { 100 }, DecimalType.class);
 		testToDPTValue(dpt, type, "100");
 
-		type=testToType(dpt, new byte[] { (byte) 255 }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "255");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, DecimalType.class);
 		testToDPTValue(dpt, type, "255");
 	}
 
@@ -329,10 +430,18 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] {  }, DecimalType.class));
+
 		Type type=testToType(dpt, new byte[] { 0 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0");
 
-		type=testToType(dpt, new byte[] { (byte) 255 }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "255");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, DecimalType.class);
 		testToDPTValue(dpt, type, "255");
 	}
 
@@ -347,10 +456,18 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
 		Type type=testToType(dpt, new byte[] { 0 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0");
 
-		type=testToType(dpt, new byte[] { (byte) 255 }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "255");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0 }, DecimalType.class);
 		testToDPTValue(dpt, type, "255");
 	}
 
@@ -365,6 +482,10 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
 		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0");
 
@@ -372,6 +493,155 @@ public class KNXCoreTypeMapperTest {
 		testToDPTValue(dpt, type, "65280");
 
 		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.002 DPT_TIMEPERIOD
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteUnsigned_7_002() throws KNXFormatException {
+		DPT dpt =DPTXlator2ByteUnsigned.DPT_TIMEPERIOD;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "65280");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.003 DPT_TIMEPERIOD_10
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteUnsigned_7_003() throws KNXFormatException {
+		DPT dpt =DPTXlator2ByteUnsigned.DPT_TIMEPERIOD_10;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "652800");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "655350");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "655350");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests for method typeMapper.toType() type “2-Octet Unsigned Value" KNX ID: 7.004 DPT_TIMEPERIOD_100
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteUnsigned_7_004() throws KNXFormatException {
+		DPT dpt =DPTXlator2ByteUnsigned.DPT_TIMEPERIOD_100;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "6528000");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "6553500");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "6553500");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.005 DPT_TIMEPERIOD_SEC
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteUnsigned_7_005() throws KNXFormatException {
+		DPT dpt =DPTXlator2ByteUnsigned.DPT_TIMEPERIOD_SEC;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "65280");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.006 DPT_TIMEPERIOD_MIN
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteUnsigned_7_006() throws KNXFormatException {
+		DPT dpt =DPTXlator2ByteUnsigned.DPT_TIMEPERIOD_MIN;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "65280");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
 		testToDPTValue(dpt, type, "65535");
 	}
 
@@ -386,6 +656,10 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
 		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0");
 
@@ -393,6 +667,39 @@ public class KNXCoreTypeMapperTest {
 		testToDPTValue(dpt, type, "65280");
 
 		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Unsigned Value" KNX ID: 7.011 DPT_LENGTH
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteUnsigned_7_011() throws KNXFormatException {
+		DPT dpt =DPTXlator2ByteUnsigned.DPT_LENGTH;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "65280");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
 		testToDPTValue(dpt, type, "65535");
 	}
 
@@ -407,6 +714,10 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
 		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0");
 
@@ -414,6 +725,10 @@ public class KNXCoreTypeMapperTest {
 		testToDPTValue(dpt, type, "65280");
 
 		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
 		testToDPTValue(dpt, type, "65535");
 	}
 
@@ -428,6 +743,10 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
 		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0");
 
@@ -435,6 +754,10 @@ public class KNXCoreTypeMapperTest {
 		testToDPTValue(dpt, type, "65280");
 
 		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "65535");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF  }, DecimalType.class);
 		testToDPTValue(dpt, type, "65535");
 	}
 
@@ -449,7 +772,11 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
-		Type type=testToType(DPTXlator2ByteFloat.DPT_TEMPERATURE, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0.0");
 
 		/*
@@ -482,38 +809,17 @@ public class KNXCoreTypeMapperTest {
 		 */
 		type=testToType(dpt, new byte[] { (byte) 0xF8, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "-671088.6");
-	}
 
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
-	 * 
-	 * Test case all bytes 0, representing no-day, 00:00:00
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test (expected = IllegalArgumentException.class)
-	public void testTypeMappingTime_10_001_fail() throws KNXFormatException {
-		DPT dpt =DPTXlatorTime.DPT_TIMEOFDAY;
-
-		testToTypeClass(dpt, DateTimeType.class);
-
-		/*
-		 * Set day to no day, 0 hours, 0 minutes and 0 seconds
-		 * 
-		 * FIXME: This is permissible according KNX Spec but causes an IllegalArgumentException in org.openhab.core.library.types.DateTimeType.<init> caused by
-		 * a java.text.ParseException: Unparseable date: ""
-		 * 
-		 * Root cause seems to be that the most significant 3 bits of the most significant byte specifying "day of week" cannot be all 0 indicating "no day"
-		 */
-		Type type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00 }, DateTimeType.class);
-		testToDPTValue(dpt, type, "no-day, 00:00:00");
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xF8, (byte) 0x00, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "-671088.6");
 	}
 
 	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
 	 * 
 	 * Test case: positive tests
-	 * 1970-01-05T
+	 * 
 	 * @throws KNXFormatException
 	 */
 	@Test
@@ -522,10 +828,25 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DateTimeType.class);
 
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DateTimeType.class));
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		Type type=testToType(dpt, new byte[] { 0x20, 0x00, 0x00, (byte) 0xFF }, DateTimeType.class);
+		testToDPTValue(dpt, type, "Mon, 00:00:00");
+
+		/*
+		 * Set day to no day, 0 hours, 0 minutes and 0 seconds
+		 * 
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "00:00:00");
+
 		/*
 		 * Set day to Monday, 0 hours, 0 minutes and 0 seconds January 5th, 1970 was a Monday
 		 */
-		Type type=testToType(dpt, new byte[] { 0x20, 0x00, 0x00 }, DateTimeType.class);
+		type=testToType(dpt, new byte[] { 0x20, 0x00, 0x00 }, DateTimeType.class);
 		testToDPTValue(dpt, type, "Mon, 00:00:00");
 
 		/*
@@ -592,52 +913,52 @@ public class KNXCoreTypeMapperTest {
 	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
 	 * 
-	 * Test case: Set day to Monday, 24 hours, 59 minutes and 59 seconds This should throw an KNXIllegalArgumentException
+	 * Test case: Set day to Monday, 24 hours, 59 minutes and 59 seconds
 	 * 
 	 * @throws KNXFormatException
 	 */
-	@Test(expected = KNXIllegalArgumentException.class)
+	@Test
 	public void testTypeMappingTime_10_001_HoursOutOfBounds() throws KNXFormatException {
 		DPT dpt =DPTXlatorTime.DPT_TIMEOFDAY;
 
 		testToTypeClass(dpt, DateTimeType.class);
 
-		Type type=testToType(dpt, new byte[] { 0x38, 59, 59 }, DateTimeType.class);
-		testToDPTValue(dpt, type, "1970-01-05T01:59:59");
+		assertNull("KNXCoreTypeMapper.toType() should return null",
+				testToType(dpt, new byte[] { 0x38, 59, 59 }, DateTimeType.class));
 	}
 
 	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
 	 * 
-	 * Set day to Monday, 23 hours, 60 minutes and 59 seconds This should throw an KNXIllegalArgumentException
+	 * Set day to Monday, 23 hours, 60 minutes and 59 seconds
 	 * 
 	 * @throws KNXFormatException
 	 */
-	@Test(expected = KNXIllegalArgumentException.class)
+	@Test
 	public void testTypeMappingTime_10_001_MinutesOutOfBounds() throws KNXFormatException {
 		DPT dpt =DPTXlatorTime.DPT_TIMEOFDAY;
 
 		testToTypeClass(dpt, DateTimeType.class);
 
-		Type type=testToType(dpt, new byte[] { 0x37, 60, 59 }, DateTimeType.class);
-		testToDPTValue(dpt, type, "1970-01-05T01:59:59");
+		assertNull("KNXCoreTypeMapper.toType() should return null",
+				testToType(dpt, new byte[] { 0x37, 60, 59 }, DateTimeType.class));
 	}
 
 	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Time" KNX ID: 10.001 DPT_TIMEOFDAY
 	 * 
-	 * Set day to Monday, 23 hours, 59 minutes and 60 seconds This should throw an KNXIllegalArgumentException
+	 * Set day to Monday, 23 hours, 59 minutes and 60 seconds
 	 * 
 	 * @throws KNXFormatException
 	 */
-	@Test(expected = KNXIllegalArgumentException.class)
+	@Test
 	public void testTypeMappingTime_10_001_SecondsOutOfBounds() throws KNXFormatException {
 		DPT dpt =DPTXlatorTime.DPT_TIMEOFDAY;
 
 		testToTypeClass(dpt, DateTimeType.class);
 
-		Type type=testToType(dpt, new byte[] { 0x37, 59, 60 }, DateTimeType.class);
-		testToDPTValue(dpt, type, "1970-01-05T01:59:59");
+		assertNull("KNXCoreTypeMapper.toType() should return null",
+				testToType(dpt, new byte[] { 0x37, 59, 60 }, DateTimeType.class));
 	}
 
 	/**
@@ -647,14 +968,14 @@ public class KNXCoreTypeMapperTest {
 	 * 
 	 * @throws KNXFormatException
 	 */
-	@Test(expected = KNXIllegalArgumentException.class)
+	@Test
 	public void testTypeMappingDate_11_001_ZeroDay() throws KNXFormatException {
 		DPT dpt =DPTXlatorDate.DPT_DATE;
 
 		testToTypeClass(dpt, DateTimeType.class);
 
-		Type type=testToType(DPTXlatorDate.DPT_DATE, new byte[] { 0x00, 0x00, 0x00 }, DateTimeType.class);
-		testToDPTValue(dpt, type, "0");
+		assertNull("KNXCoreTypeMapper.toType() should return null",
+				testToType(dpt, new byte[] { 0x00, 0x00, 0x00 }, DateTimeType.class));
 	}
 
 	/**
@@ -664,14 +985,14 @@ public class KNXCoreTypeMapperTest {
 	 * 
 	 * @throws KNXFormatException
 	 */
-	@Test(expected = KNXIllegalArgumentException.class)
+	@Test
 	public void testTypeMappingDate_11_001__DayZero() throws KNXFormatException {
 		DPT dpt =DPTXlatorDate.DPT_DATE;
 
 		testToTypeClass(dpt, DateTimeType.class);
 
-		Type type=testToType(DPTXlatorDate.DPT_DATE, new byte[] { 0x00, 0x01, 0x00 }, DateTimeType.class);
-		testToDPTValue(dpt, type, "0");
+		assertNull("KNXCoreTypeMapper.toType() should return null",
+				testToType(dpt, new byte[] { 0x00, 0x01, 0x00 }, DateTimeType.class));
 	}
 
 	/**
@@ -681,14 +1002,14 @@ public class KNXCoreTypeMapperTest {
 	 * 
 	 * @throws KNXFormatException
 	 */
-	@Test(expected = KNXIllegalArgumentException.class)
+	@Test
 	public void testTypeMappingDate_11_001__ZeroMonth() throws KNXFormatException {
 		DPT dpt =DPTXlatorDate.DPT_DATE;
 
 		testToTypeClass(dpt, DateTimeType.class);
 
-		Type type=testToType(DPTXlatorDate.DPT_DATE, new byte[] { 0x01, 0x00, 0x00 }, DateTimeType.class);
-		testToDPTValue(dpt, type, "0");
+		assertNull("KNXCoreTypeMapper.toType() should return null",
+				testToType(dpt, new byte[] { 0x01, 0x00, 0x00 }, DateTimeType.class));
 	}
 
 	/**
@@ -704,21 +1025,55 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DateTimeType.class);
 
-		Type type=testToType(DPTXlatorDate.DPT_DATE, new byte[] { 0x01, 0x01, 0x00 }, DateTimeType.class);
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DateTimeType.class));
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		Type type=testToType(dpt, new byte[] {  0x01, 0x01, 0x00, (byte) 0xFF }, DateTimeType.class);
 		testToDPTValue(dpt, type, "2000-01-01");
 
-		type=testToType(DPTXlatorDate.DPT_DATE, new byte[] { 0x01, 0x01, 99 }, DateTimeType.class);
+		type=testToType(dpt, new byte[] { 0x01, 0x01, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "2000-01-01");
+
+		type=testToType(dpt, new byte[] { 0x01, 0x01, 99 }, DateTimeType.class);
 		testToDPTValue(dpt, type, "1999-01-01");
 
-		type=testToType(DPTXlatorDate.DPT_DATE, new byte[] { 0x01, 0x01, 90 }, DateTimeType.class);
+		type=testToType(dpt, new byte[] { 0x01, 0x01, 90 }, DateTimeType.class);
 		testToDPTValue(dpt, type, "1990-01-01");
 
-		type=testToType(DPTXlatorDate.DPT_DATE, new byte[] { 0x01, 0x01, 89 }, DateTimeType.class);
+		type=testToType(dpt, new byte[] { 0x01, 0x01, 89 }, DateTimeType.class);
 		testToDPTValue(dpt, type, "2089-01-01");
 
 		// Test roll over (which is actually not in the KNX spec)
-		type=testToType(DPTXlatorDate.DPT_DATE, new byte[] { 31, 0x02, 0x00 }, DateTimeType.class);
+		type=testToType(dpt, new byte[] { 31, 0x02, 0x00 }, DateTimeType.class);
 		testToDPTValue(dpt, type, "2000-03-02");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Unsigned Value" KNX ID: 12.001 DPT_VALUE_4_UCOUNT
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping4ByteUnsigned_12_001() throws KNXFormatException {
+		DPT dpt =DPTXlator4ByteUnsigned.DPT_VALUE_4_UCOUNT;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		Type type=testToType(dpt, new byte[] {  (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF , (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "4294967295");
+
+		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "4294967295");
 	}
 
 	/**
@@ -732,16 +1087,24 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
-		Type type=testToType(DPTXlator4ByteSigned.DPT_COUNT, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		Type type=testToType(dpt, new byte[] {  (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF , (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "2147483647");
+
+		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_COUNT, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
 		testToDPTValue(dpt, type, "-1");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_COUNT, new byte[] { (byte) 0x80, 0x00, 0x00, 0x00 }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0x80, 0x00, 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "-2147483648");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_COUNT, new byte[] { (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
 		testToDPTValue(dpt, type, "2147483647");
 	}
 
@@ -756,16 +1119,24 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
-		Type type=testToType(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		Type type=testToType(dpt, new byte[] {  (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF , (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "2147483647");
+
+		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
 		testToDPTValue(dpt, type, "-1");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY, new byte[] { (byte) 0x80, 0x00, 0x00, 0x00 }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0x80, 0x00, 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "-2147483648");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY, new byte[] { (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
 		testToDPTValue(dpt, type, "2147483647");
 	}
 
@@ -780,16 +1151,24 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
-		Type type=testToType(DPTXlator4ByteSigned.DPT_APPARENT_ENERGY, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		Type type=testToType(dpt, new byte[] {  (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF , (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "2147483647");
+
+		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_APPARENT_ENERGY, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
 		testToDPTValue(dpt, type, "-1");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_APPARENT_ENERGY, new byte[] { (byte) 0x80, 0x00, 0x00, 0x00 }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0x80, 0x00, 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "-2147483648");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_APPARENT_ENERGY, new byte[] { (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
 		testToDPTValue(dpt, type, "2147483647");
 	}
 
@@ -804,16 +1183,24 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
-		Type type=testToType(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY_KWH, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		Type type=testToType(dpt, new byte[] {  (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF , (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "2147483647");
+
+		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY_KWH, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
 		testToDPTValue(dpt, type, "-1");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY_KWH, new byte[] { (byte) 0x80, 0x00, 0x00, 0x00 }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0x80, 0x00, 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "-2147483648");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_ACTIVE_ENERGY_KWH, new byte[] { (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
 		testToDPTValue(dpt, type, "2147483647");
 	}
 
@@ -828,281 +1215,107 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, DecimalType.class);
 
-		Type type=testToType(DPTXlator4ByteSigned.DPT_APPARENT_ENERGY_KVAH, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		Type type=testToType(dpt, new byte[] {  (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF , (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "2147483647");
+
+		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0");
-		type=testToType(DPTXlator4ByteSigned.DPT_APPARENT_ENERGY_KVAH, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
 		testToDPTValue(dpt, type, "-1");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_APPARENT_ENERGY_KVAH, new byte[] { (byte) 0x80, 0x00, 0x00, 0x00 }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0x80, 0x00, 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "-2147483648");
 
-		type=testToType(DPTXlator4ByteSigned.DPT_APPARENT_ENERGY_KVAH, new byte[] { (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
 		testToDPTValue(dpt, type, "2147483647");
 	}
 
 	/**
-<<<<<<< HEAD
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14
-	 * Tested is if the maximum value according to KNX Spec (and IEEE 754) is handled correctly
 	 * 
 	 * @throws KNXFormatException
 	 */
 	@Test
-	public void testTypeMapping4ByteFloat_14_MAX() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR;
+	public void testTypeMapping4ByteFloat_14() throws KNXFormatException {
+		Locale defaultLocale = Locale.getDefault();
+		
+		Locale[] locales = {defaultLocale, Locale.ENGLISH, Locale.GERMAN};
+		DPT[] dpts = {DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, DPTXlator4ByteFloat.DPT_ANGLE_DEG,
+				DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT, DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL, DPTXlator4ByteFloat.DPT_FREQUENCY,
+				DPTXlator4ByteFloat.DPT_POWER};
+		// Iterate over the locales
+		for (Locale locale : locales) {
+			//Iterate over the subtypes to be tested
+			for (DPT dpt : dpts) {
+				Locale.setDefault(locale);
 
-		testToTypeClass(dpt, DecimalType.class);
+				testToTypeClass(dpt, DecimalType.class);
 
-		/*
-		 * Test the maximum positive value
-		 * 
-		 * FIXME: There seems to be a bug in how openhab treats Floats according IEEE 754. The maximum value is given by
-		 * Float.MAX_VALUE which represented by 0x7f7ffffff, but openhab throws a NumberFormatException in DecimalType
-		 * 
-		 * The following test case tests that the erroneous Exception is thrown.
-		 */
-		Type type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-	}
+				// Use a too short byte array
+				assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+						testToType(dpt, new byte[] { }, DecimalType.class));
 
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.
-	 * Tested is if the minimum value according to KNX Spec (and IEEE 754) is handled correctly
-	 * 
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test
-	public void testTypeMapping4ByteFloat_14_MIN() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR;
+				try {
+					// Use a too long byte array expecting that additional bytes will be ignored
+					Type type=testToType(dpt, new byte[] {   (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+					testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
+				}
+				catch (NumberFormatException nfe) {
+					fail("DptId: "+dpt.getID()+", locale: "+locale+", NumberFormatException. Expecting 0.0");
+				}
 
-		testToTypeClass(dpt, DecimalType.class);
+				try {
+					Type type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
+					testToDPTValue(dpt, type, "0.0");
+				}
+				catch (NumberFormatException nfe) {
+					fail("DptId: "+dpt.getID()+", locale: "+locale+", NumberFormatException. Expecting 0.0");
+				}
 
-		/*
-		 * Test the maximum negative value
-		 * 
-		 * FIXME: There seems to be a bug in how openhab treats Floats according IEEE 754. The minimum value is given by
-		 * -Float.MAX_VALUE which represented by 0xff7ffffff, but openhab throws a NumberFormatException in DecimalType
-		 * 
-		 * The following test case tests that the erroneous Exception is thrown.
-		 */
-		try {
-		Type type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
+				try {
+					// Test the smallest positive value 
+					Type type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
+					testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
+				}
+				catch (NumberFormatException nfe) {
+					fail("DptId: "+dpt.getID()+", locale: "+locale+", NumberFormatException. Expecting 0.0000000000000000000000000000000000000000000014");
+				}
+
+				try {
+					// Test the smallest negative value 
+					Type type=testToType(dpt, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
+					testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
+				}
+				catch (NumberFormatException nfe) {
+					fail("DptId: "+dpt.getID()+", locale: "+locale+", NumberFormatException. Expecting -0.0000000000000000000000000000000000000000000014");
+				}
+
+				try {
+					// Test the maximum positive value
+					Type type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+					testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
+				}
+				catch (NumberFormatException nfe) {
+					fail("DptId: "+dpt.getID()+", locale: "+locale+", NumberFormatException. Expecting 340282000000000000000000000000000000000");
+				}
+
+				try {
+					// Test the maximum negative value
+					Type type=testToType(dpt, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
+					testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
+				}
+				catch (NumberFormatException nfe) {
+					fail("DptId: "+dpt.getID()+", locale: "+locale+", NumberFormatException. Expecting -340282000000000000000000000000000000000");
+				}
+			} 
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.001 DPT_ACCELERATION_ANGULAR
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test
-	public void testTypeMapping4ByteFloat_14_001() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		Type type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0");
-
-		// Test the smallest positive value 
-		type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
-
-		// Test the smallest negative value 
-		type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
-
-		/*
-		 * Test the maximum positive value
-		 */
-		type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		/*
-		 * Test the maximum negative value
-		 */
-		type=testToType(DPTXlator4ByteFloat.DPT_ACCELERATION_ANGULAR, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.007 DPT_ANGLE_DEG
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test
-	public void testTypeMapping4ByteFloat_14_007() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_ANGLE_DEG;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		Type type=testToType(DPTXlator4ByteFloat.DPT_ANGLE_DEG, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0");
-
-		// Test the smallest positive value 
-		type=testToType(DPTXlator4ByteFloat.DPT_ANGLE_DEG, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
-
-		// Test the smallest negative value 
-		type=testToType(DPTXlator4ByteFloat.DPT_ANGLE_DEG, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
-
-		/*
-		 * Test the maximum positive value
-		 */
-		type=testToType(DPTXlator4ByteFloat.DPT_ANGLE_DEG, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		/*
-		 * Test the maximum negative value
-		 */
-		type=testToType(DPTXlator4ByteFloat.DPT_ANGLE_DEG, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.019 DPT_ELECTRIC_CURRENT
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test
-	public void testTypeMapping4ByteFloat_14_019() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		Type type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0");
-
-		// Test the smallest positive value 
-		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
-
-		// Test the smallest negative value 
-		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
-
-		/*
-		 * Test the maximum positive value
-		 */
-		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		/*
-		 * Test the maximum negative value
-		 */
-		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_CURRENT, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.027 DPT_ELECTRIC_POTENTIAL
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test
-	public void testTypeMapping4ByteFloat_14_027() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		Type type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0");
-
-		// Test the smallest positive value 
-		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
-
-		// Test the smallest negative value 
-		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
-
-		/*
-		 * Test the maximum positive value
-		 */
-		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		/*
-		 * Test the maximum negative value
-		 */
-		type=testToType(DPTXlator4ByteFloat.DPT_ELECTRIC_POTENTIAL, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.033 DPT_FREQUENCY
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test
-	public void testTypeMapping4ByteFloat_14_033() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_FREQUENCY;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		Type type=testToType(DPTXlator4ByteFloat.DPT_FREQUENCY, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0");
-
-		// Test the smallest positive value 
-		type=testToType(DPTXlator4ByteFloat.DPT_FREQUENCY, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
-
-		// Test the smallest negative value 
-		type=testToType(DPTXlator4ByteFloat.DPT_FREQUENCY, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
-
-		/*
-		 * Test the maximum positive value
-		 */
-		type=testToType(DPTXlator4ByteFloat.DPT_FREQUENCY, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		/*
-		 * Test the maximum negative value
-		 */
-		type=testToType(DPTXlator4ByteFloat.DPT_FREQUENCY, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
-	}
-
-	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “4-Octet Float Value" KNX ID: 14.056 DPT_POWER
-	 * 
-	 * @throws KNXFormatException
-	 */
-	@Test
-	public void testTypeMapping4ByteFloat_14_056() throws KNXFormatException {
-		DPT dpt =DPTXlator4ByteFloat.DPT_POWER;
-
-		testToTypeClass(dpt, DecimalType.class);
-
-		Type type=testToType(DPTXlator4ByteFloat.DPT_POWER, new byte[] { 0x00, 0x00, 0x00, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0");
-
-		// Test the smallest positive value 
-		type=testToType(DPTXlator4ByteFloat.DPT_POWER, new byte[] { 0x00, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "0.0000000000000000000000000000000000000000000014");
-
-		// Test the smallest negative value 
-		type=testToType(DPTXlator4ByteFloat.DPT_POWER, new byte[] { (byte)0x80, 0x00, 0x00, 0x01 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-0.0000000000000000000000000000000000000000000014");
-
-		/*
-		 * Test the maximum positive value
-		 */
-		type=testToType(DPTXlator4ByteFloat.DPT_POWER, new byte[] { (byte) 0x7F, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "340282000000000000000000000000000000000");
-
-		/*
-		 * Test the maximum negative value
-		 */
-		type=testToType(DPTXlator4ByteFloat.DPT_POWER, new byte[] { (byte) 0xFF, (byte) 0x7F, (byte) 0xFF, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "-340282000000000000000000000000000000000");
+		
+		Locale.setDefault(defaultLocale);
 	}
 
 	/**
@@ -1124,7 +1337,7 @@ public class KNXCoreTypeMapperTest {
 		 * 
 		 * Test the erroneous behavior that a too short array results in an empty string. There should be an error logged by calimero lib (V2.2.0).
 		 */
-		Type type=testToType(DPTXlatorString.DPT_STRING_8859_1, new byte[] { 0x61, 0x62 }, StringType.class);
+		Type type=testToType(dpt, new byte[] { 0x61, 0x62 }, StringType.class);
 		testToDPTValue(dpt, type, "");
 
 		/*
@@ -1135,20 +1348,241 @@ public class KNXCoreTypeMapperTest {
 		 * 
 		 * Test the erroneous behavior that a too long arrays result in a cutoff string. There probably won't be an error logged by calimero lib (V2.2.0).
 		 */
-		type=testToType(DPTXlatorString.DPT_STRING_8859_1, new byte[] { 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F }, StringType.class);
+		type=testToType(dpt, new byte[] { 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F }, StringType.class);
 		testToDPTValue(dpt, type, "abcdefghijklmn");
 
 		/*
 		 * Test a 14 byte array.
 		 */
-		type=testToType(DPTXlatorString.DPT_STRING_8859_1, new byte[] { 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E }, StringType.class);
+		type=testToType(dpt, new byte[] { 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E }, StringType.class);
 		testToDPTValue(dpt, type, "abcdefghijklmn");
 
 		/*
 		 * Test that a byte array filled with 0 and correct length is resulting in an empty string.
 		 */
-		type=testToType(DPTXlatorString.DPT_STRING_8859_1, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, StringType.class);
+		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, StringType.class);
 		testToDPTValue(dpt, type, "");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Scene Number" KNX ID: 17.001 DPT_SCENE_NUMBER
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingSceneNumber_17_001() throws KNXFormatException {
+		DPT dpt =DPTXlatorSceneNumber.DPT_SCENE_NUMBER;
+
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		Type type=testToType(dpt, new byte[] {  (byte) 0xFF, 0 }, DecimalType.class);
+		testToDPTValue(dpt, type, "63");
+
+		type=testToType(dpt, new byte[] { 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		type=testToType(dpt, new byte[] { 0x3F }, DecimalType.class);
+		testToDPTValue(dpt, type, "63");
+
+		//Test that the 2 msb (reserved) are ignored
+		type=testToType(dpt, new byte[] { (byte) 0xC0 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0");
+
+		//Test that the 2 msb (reserved) are ignored
+		type=testToType(dpt, new byte[] { (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "63");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Date Time" KNX ID: 19.001 DPT_DATE_TIME
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingDateTime_19_001() throws KNXFormatException {
+		DPT dpt =DPTXlatorDateTime.DPT_DATE_TIME;
+
+		testToTypeClass(dpt, DateTimeType.class);
+
+		assertNull("KNXCoreTypeMapper.toType() should return null (no-day)",
+				testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00 }, DateTimeType.class));
+
+		assertNull("KNXCoreTypeMapper.toType() should return null (illegal date)",
+				testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, DateTimeType.class));
+
+		
+		/* 
+		 * Reference testcase
+		 * Monday, January 1st, 1900 00:00:00, Fault: Normal (no fault), Working Day: Bank day (No working day), Working Day Field: valid,
+		 * Year Field valid, Months and Day fields valid, Day of week field valid, Hour of day, Minutes and Seconds fields valid,
+		 * Standard Summer Time: Time = UT+X, Quality of Clock: clock without ext. sync signal
+		 */
+		Type type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x00, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+
+		/* 
+		 * Reference testcase + Fault: Fault => not supported
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (faulty clock)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x80, 0x00 }, DateTimeType.class));
+
+		/* 
+		 * Reference testcase + Year Field invalid => not supported
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (date but no year)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x10, 0x00 }, DateTimeType.class));
+		/* 
+		 * Reference testcase + Months and Day fields invalid => not supported
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (date but no day and month)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x08, 0x00 }, DateTimeType.class));
+		/* 
+		 * Reference testcase + Year Field invalid + Months and Day fields invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x18, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1970-01-01 00:00:00");
+		/* 
+		 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x1C, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1970-01-01 00:00:00");
+		/* 
+		 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
+		 * Working day field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3C, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1970-01-01 00:00:00");
+		/* 
+		 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
+		 * Working day field invalid + Hour of day, Minutes and Seconds fields invalid
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (neither date nor time)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3E, 0x00 }, DateTimeType.class));
+
+		/* 
+		 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
+		 * Working day field invalid + Hour of day, Minutes and Seconds fields invalid, Standard Summer Time: Time = UT+X+1
+		 */
+		assertNull("KNXCoreTypeMapper.toType() should return null (neither date nor time, but summertime flag)", type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3F, 0x00 }, DateTimeType.class));
+		/* 
+		 * Reference testcase + day of week=Any day, Day of week field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+		/* 
+		 * Reference testcase + Day of week field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x04, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+		/* 
+		 * Reference testcase + day of week=Any day, Day of week field invalid, working day, working day field invalid
+		 */
+		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x60, 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+
+		/* 
+		 * December 31st, 2155 day of week=Any day, Day of week field invalid
+		 */
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x0C, 0x1F, 0x17, 0x3B, 0x3B, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "2155-12-31 23:59:59");
+		/* 
+		 * December 31st, 2155, 24:00:00, day of week=Any day, Day of week field invalid
+		 * 
+		 * TODO: this test case should test for "2155-12-31 24:00:00" since that is what the (valid) KNX bytes represent.
+		 * Nevertheless, calimero is "cheating" by using the milliseconds such that "23:59:59.999" is interpreted as "23:59:59"
+		 * OpenHAB's DateTimeType doesn't support milliseconds (at least not when parsing from a String), hence 24:00:00 cannot be mapped.
+		 */
+		type=testToType(dpt, new byte[] { (byte) 0xFF, 0x0C, 0x1F, 0x18, 0x00, 0x00, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "2155-12-31 23:59:59");
+		/* 
+		 * December 31st, 2014 24:00:00, day of week=Any day, Day of week field invalid
+		 * 
+		 * TODO: this test case should test for "2155-12-31 24:00:00" since that is what the (valid) KNX bytes represent.
+		 * Nevertheless, calimero is "cheating" by using the milliseconds such that "23:59:59.999" is interpreted as "23:59:59"
+		 * OpenHAB's DateTimeType doesn't support milliseconds (at least not when parsing from a String), hence 24:00:00 cannot be mapped.
+		 */
+		type=testToType(dpt, new byte[] { (byte) 0x72, 0x0C, 0x1F, 0x18, 0x00, 0x00, (byte) 0x04, (byte) 0x00 }, DateTimeType.class);
+		testToDPTValue(dpt, type, "2014-12-31 23:59:59");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Date Time" KNX ID: 19.001 DPT_DATE_TIME
+	 * Testcase tests handling of Daylight Savings Time flag (DST).
+	 * Interpretation of DST is depending on default timezone, hence we're trying to test using
+	 * different timezones: default, New York, Berlin and Shanghai. Shanghai not having a DST.
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingDateTime_19_001_DST() throws KNXFormatException {
+		DPT dpt =DPTXlatorDateTime.DPT_DATE_TIME;
+
+		//2014-07-31 00:00:00 DST flag set
+		byte[] testDataDST   = new byte[] { 0x72, 0x07, 0x1F, 0x00, 0x00, 0x00, (byte) 0x05, (byte) 0x00 };
+		//2014-07-31 00:00:00 DST flag cleared
+		byte[] testDataNoDST = new byte[] { 0x72, 0x07, 0x1F, 0x00, 0x00, 0x00, (byte) 0x04, (byte) 0x00 };
+
+		testToTypeClass(dpt, DateTimeType.class);
+
+		TimeZone defaultTimeZone = TimeZone.getDefault();
+
+		TimeZone[] timeZones = {defaultTimeZone, TimeZone.getTimeZone("America/New_York"), TimeZone.getTimeZone("Europe/Berlin"), TimeZone.getTimeZone("Asia/Shanghai")};
+
+		try {
+			Field field = DPTXlatorDateTime.class.getDeclaredField("c");
+			field.setAccessible(true);
+
+			for (TimeZone timeZone : timeZones) {
+				/*
+				 *  DPTXlatorDateTime initialized it's calendar in a static method only once, including timezone.
+				 *  Crude solution: we're trying to reset that classes static private field, such that the default timezone will be evaluated again.
+				 *  Should this throw a NoSuchFieldException, IllegalAccessException or SecurityException, then we'll just skip this test.  
+				 */
+				field.set(null, null);
+
+				TimeZone.setDefault(timeZone);
+
+				Calendar c = Calendar.getInstance();
+				c.set(2014, 7, 31);
+
+				if (c.get(Calendar.DST_OFFSET)>0) {
+					//Should be null since we have a DST timezone but non-DST data: should be rejected
+					assertNull(testToType(dpt, testDataNoDST, DateTimeType.class));
+					
+					Type type = testToType(dpt, testDataDST, DateTimeType.class);
+					testToDPTValue(dpt, type, "2014-07-31 00:00:00");
+				}
+				else {
+					//Should be null since we don't have a non-DST timezone but DST data: should be rejected
+					assertNull(testToType(dpt, testDataDST, DateTimeType.class));
+					
+					Type type = testToType(dpt, testDataNoDST, DateTimeType.class);
+					testToDPTValue(dpt, type, "2014-07-31 00:00:00");
+				}
+			}
+		}
+		catch (IllegalArgumentException e) {
+			//Shouldn't be thrown, since field.set() set's a static field
+			fail();
+			}
+		catch (IllegalAccessException e) {
+			//Stop test and ignore
+			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: IllegalAccessException");
+			assumeNoException(e);
+			}
+		catch (NoSuchFieldException e) {
+			//Stop test and ignore if the field is not existing anymore
+			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: NoSuchFieldException");
+			assumeNoException(e);
+		}
+		catch (SecurityException e) {
+			//Stop test and ignore
+			System.out.println("Warning: Test testTypeMappingDateTime_19_001_DST skipped: SecurityException");
+			assumeNoException(e);
+			}
+
+		TimeZone.setDefault(defaultTimeZone);
 	}
 
 	/**
@@ -1174,7 +1608,9 @@ public class KNXCoreTypeMapperTest {
 	 */
 	private Type testToType(DPT dpt, byte[] data, Class<? extends Type> expectedClass) throws KNXFormatException {
 		Type type = knxCoreTypeMapper.toType(createDP(dpt.getID()), data);
-		assertEquals("KNXCoreTypeMapper.toType() returned object of wrong class for datapoint type \""+dpt.getID()+"\"", expectedClass, type.getClass());
+		if (type != null) {
+			assertEquals("KNXCoreTypeMapper.toType() returned object of wrong class for datapoint type \""+dpt.getID()+"\"", expectedClass, type.getClass());
+		}
 		return type;
 	}
 
@@ -1189,7 +1625,7 @@ public class KNXCoreTypeMapperTest {
 		String value=knxCoreTypeMapper.toDPTValue(type, dpt.getID());
 		assertEquals("KNXCoreTypeMapper.toDPTValue() test failed for datapoint type \"" + dpt.getID() + "\"", expectedStringResult, value);
 	}
-	
+
 	/**
 	 * Convenience method creating a Datapoint
 	 * 
@@ -1201,5 +1637,5 @@ public class KNXCoreTypeMapperTest {
 		int mainNumber=Integer.parseInt(dpt.substring(0, dpt.indexOf('.')));
 		return new CommandDP(new GroupAddress("1/2/3"), "test", mainNumber, dpt);
 	}
-	
+
 }

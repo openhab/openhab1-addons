@@ -115,6 +115,8 @@
     <module>org.openhab.binding.ecotouch</module>
     <module>org.openhab.binding.yamahareceiver</module>
     <module>org.openhab.binding.energenie</module>
+    <module>org.openhab.binding.maxcul</module>
+    <module>org.openhab.binding.wemo</module>
   </modules>
 
 </project>
