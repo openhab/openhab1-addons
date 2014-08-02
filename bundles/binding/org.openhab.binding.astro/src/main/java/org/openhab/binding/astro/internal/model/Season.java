@@ -10,6 +10,8 @@ package org.openhab.binding.astro.internal.model;
 
 import java.util.Calendar;
 
+import org.openhab.binding.astro.internal.util.DateTimeUtils;
+
 /**
  * Holds the season dates of the year and the current name.
  * 
@@ -92,5 +94,12 @@ public class Season {
 	 */
 	public void setName(SeasonName name) {
 		this.name = name;
+	}
+
+	/**
+	 * Returns the next season.
+	 */
+	public Calendar getNextSeason() {
+		return DateTimeUtils.getNext(spring, summer, autumn, winter);
 	}
 }

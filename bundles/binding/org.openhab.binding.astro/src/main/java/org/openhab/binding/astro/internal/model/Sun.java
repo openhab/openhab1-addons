@@ -34,11 +34,13 @@ public class Sun extends RiseSet {
 	private Range night = new Range();
 
 	private SunPosition position = new SunPosition();
-	
+
 	private Zodiac zodiac = new Zodiac(null, null);
-	
+
 	private Season season = new Season();
-	
+
+	private SunEclipse eclipse = new SunEclipse();
+
 	/**
 	 * Returns the astro dawn range.
 	 */
@@ -213,28 +215,42 @@ public class Sun extends RiseSet {
 	public Zodiac getZodiac() {
 		return zodiac;
 	}
-	
+
 	/**
 	 * Sets the zodiac.
 	 */
 	public void setZodiac(Zodiac zodiac) {
 		this.zodiac = zodiac;
 	}
-	
+
 	/**
 	 * Returns the seasons.
 	 */
 	public Season getSeason() {
 		return season;
 	}
-	
+
 	/**
 	 * Sets the seasons.
 	 */
 	public void setSeason(Season season) {
 		this.season = season;
 	}
-	
+
+	/**
+	 * Returns the eclipses.
+	 */
+	public SunEclipse getEclipse() {
+		return eclipse;
+	}
+
+	/**
+	 * Sets the eclipses.
+	 */
+	public void setEclipse(SunEclipse eclipse) {
+		this.eclipse = eclipse;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("sunrise", getRise())
@@ -242,7 +258,7 @@ public class Sun extends RiseSet {
 				.append("morningNight", morningNight).append("astroDawn", astroDawn).append("nauticDawn", nauticDawn)
 				.append("civilDawn", civilDawn).append("civilDusk", civilDusk).append("nauticDusk", nauticDusk)
 				.append("astroDusk", astroDusk).append("daylight", getDaylight())
-				.append("eveningNight", getEveningNight()).toString();
+				.append("eveningNight", getEveningNight()).append("eclipse", eclipse).toString();
 	}
 
 }

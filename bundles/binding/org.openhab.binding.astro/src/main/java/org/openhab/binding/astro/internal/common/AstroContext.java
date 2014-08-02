@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.openhab.binding.astro.AstroBindingProvider;
 import org.openhab.binding.astro.internal.job.JobScheduler;
+import org.openhab.binding.astro.internal.model.Moon;
 import org.openhab.binding.astro.internal.model.Planet;
 import org.openhab.binding.astro.internal.model.PlanetName;
 import org.openhab.binding.astro.internal.model.Sun;
@@ -45,6 +46,7 @@ public class AstroContext {
 		if (instance == null) {
 			instance = new AstroContext();
 			instance.planets.put(PlanetName.SUN, new Sun());
+			instance.planets.put(PlanetName.MOON, new Moon());
 		}
 		return instance;
 	}

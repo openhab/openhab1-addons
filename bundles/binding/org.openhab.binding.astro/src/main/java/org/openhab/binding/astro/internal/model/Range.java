@@ -12,6 +12,7 @@ import java.util.Calendar;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.openhab.binding.astro.internal.util.DateTimeUtils;
 
 /**
  * Range class which holds a start and a end calendar object.
@@ -25,7 +26,7 @@ public class Range {
 
 	public Range() {
 	}
-	
+
 	public Range(Calendar start, Calendar end) {
 		this.start = start;
 		this.end = end;
@@ -62,7 +63,6 @@ public class Range {
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-				.append("start", (start == null ? null : start.getTime()))
-				.append("end", (end == null ? null : end.getTime())).toString();
+				.append("start", DateTimeUtils.getDate(start)).append("end", DateTimeUtils.getDate(end)).toString();
 	}
 }

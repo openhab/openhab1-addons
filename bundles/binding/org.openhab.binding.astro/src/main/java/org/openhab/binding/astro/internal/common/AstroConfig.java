@@ -28,7 +28,7 @@ import org.osgi.service.cm.ConfigurationException;
  * # The longitude
  * astro:longitude=nn.nnnnnn
  * 
- * # Refresh interval for azimuth and elevation calculation in seconds (optional, defaults to disabled)
+ * # Refresh interval for sun azimuth/elevation and moon distance/illumination calculation in seconds (optional, defaults to disabled)
  * astro:interval=nnn
  * </pre>
  * 

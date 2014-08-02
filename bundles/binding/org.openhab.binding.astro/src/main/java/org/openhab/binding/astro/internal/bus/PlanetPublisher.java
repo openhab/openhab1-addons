@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.openhab.binding.astro.internal.common.AstroContext;
 import org.openhab.binding.astro.internal.config.AstroBindingConfig;
@@ -135,8 +136,8 @@ public class PlanetPublisher {
 		} else if (value instanceof String || value instanceof Enum) {
 			if (item.getAcceptedDataTypes().contains(StringType.class)) {
 				if (value instanceof Enum) {
-					context.getEventPublisher().postUpdate(item.getName(),
-							new StringType(WordUtils.capitalizeFully(value.toString())));
+					String enumValue = WordUtils.capitalizeFully(StringUtils.replace(value.toString(), "_", " "));
+					context.getEventPublisher().postUpdate(item.getName(), new StringType(enumValue));
 				} else {
 					context.getEventPublisher().postUpdate(item.getName(), new StringType(value.toString()));
 				}

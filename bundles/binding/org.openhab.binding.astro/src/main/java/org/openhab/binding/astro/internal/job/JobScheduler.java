@@ -14,8 +14,10 @@ import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimerTask;
 
 import org.openhab.binding.astro.AstroBindingProvider;
@@ -84,13 +86,13 @@ public class JobScheduler {
 	 * Start the jobs if a binding is available.
 	 */
 	public void start() {
-		startAndScheduleSunJob();
+		startAndScheduleDailyJob();
 
-		if (isBindingForSunPositionAvailable()) {
+		if (isBindingForIntervalJobAvailable()) {
 			if (context.getConfig().getInterval() > 0) {
-				scheduleSunPositionJob();
+				scheduleIntervalJob();
 			} else {
-				logger.warn("Azimuth/Elevation binding available, but configuration is disabled (interval = 0)!");
+				logger.warn("Sun azimuth/elevation and/or moon distance/illumination binding available, but configuration is disabled (interval = 0)!");
 			}
 		}
 	}
@@ -111,98 +113,95 @@ public class JobScheduler {
 	}
 
 	/**
-	 * Checks if a binding for the SunPosition Job is available.
+	 * Checks if a binding for the IntervalJob is available.
 	 */
-	private boolean isBindingForSunPositionAvailable() {
-		AstroBindingConfig azimuthBindingConfig = new AstroBindingConfig(PlanetName.SUN, "position", "azimuth");
-		AstroBindingConfig elevationBindingConfig = new AstroBindingConfig(PlanetName.SUN, "position", "elevation");
+	private boolean isBindingForIntervalJobAvailable() {
+		List<AstroBindingConfig> intervalBindings = new ArrayList<AstroBindingConfig>();
+		intervalBindings.add(new AstroBindingConfig(PlanetName.SUN, "position", "azimuth"));
+		intervalBindings.add(new AstroBindingConfig(PlanetName.SUN, "position", "elevation"));
+		intervalBindings.add(new AstroBindingConfig(PlanetName.MOON, "distance", "kilometer"));
+		intervalBindings.add(new AstroBindingConfig(PlanetName.MOON, "distance", "miles"));
+		intervalBindings.add(new AstroBindingConfig(PlanetName.MOON, "distance", "date"));
+		intervalBindings.add(new AstroBindingConfig(PlanetName.MOON, "phase", "illumination"));
 
 		for (AstroBindingProvider provider : context.getProviders()) {
-			if (provider.hasBinding(azimuthBindingConfig) || provider.hasBinding(elevationBindingConfig)) {
-				return true;
+			for (AstroBindingConfig astroBindingConfig : intervalBindings) {
+				if (provider.hasBinding(astroBindingConfig)) {
+					return true;
+				}
 			}
 		}
 		return false;
 	}
 
 	/**
-	 * Schedules a daily job at midnight for Sun calculation and starts it
+	 * Schedules a daily job at midnight for astro calculation and starts it
 	 * immediately too.
 	 */
-	public void startAndScheduleSunJob() {
-		String jobName = SunJob.class.getSimpleName();
+	public void startAndScheduleDailyJob() {
+		String jobName = DailyJob.class.getSimpleName();
 		CronTrigger cronTrigger = newTrigger().withIdentity(jobName + "-Trigger", JOB_GROUP).startNow()
 				.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?")).build();
-		schedule(jobName, SunJob.class, cronTrigger, new JobDataMap());
-		logger.info("Scheduled a daily job at midnight for astro sun calculation");
+		schedule(jobName, DailyJob.class, cronTrigger, new JobDataMap());
+		logger.info("Scheduled a daily job at midnight for astro calculation");
 
 		Trigger trigger = newTrigger().withIdentity(jobName + "-StartupTrigger", JOB_GROUP).startNow().build();
-		schedule(jobName + "-Startup", SunJob.class, trigger, new JobDataMap());
+		schedule(jobName + "-Startup", DailyJob.class, trigger, new JobDataMap());
 	}
 
 	/**
-	 * Schedules SunPosition with the specified interval and starts it
+	 * Schedules the IntervalJob with the specified interval and starts it
 	 * immediately.
 	 */
-	public void scheduleSunPositionJob() {
+	public void scheduleIntervalJob() {
 		AstroConfig config = context.getConfig();
 
-		String jobName = SunPositionJob.class.getSimpleName();
+		String jobName = IntervalJob.class.getSimpleName();
 		Date start = new Date(System.currentTimeMillis() + (config.getInterval()) * 1000);
 		Trigger trigger = newTrigger().withIdentity(jobName + "-Trigger", JOB_GROUP).startAt(start)
 				.withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(config.getInterval())).build();
 
-		schedule(jobName, SunPositionJob.class, trigger, new JobDataMap());
-		logger.info("Scheduled astro SunPosition job with interval of {} seconds", config.getInterval());
+		schedule(jobName, IntervalJob.class, trigger, new JobDataMap());
+		logger.info("Scheduled astro job with interval of {} seconds", config.getInterval());
 	}
 
 	/**
-	 * Schedules Season jobs, but only if they don't exist.
+	 * Schedules next Season job.
 	 */
-	public void scheduleSeasonJobs(Season season) {
-		int year = season.getSpring().get(Calendar.YEAR);
-		scheduleIfNotAvailable(season.getSpring(), "season-" + year + "-spring");
-		scheduleIfNotAvailable(season.getSummer(), "season-" + year + "-summmer");
-		scheduleIfNotAvailable(season.getAutumn(), "season-" + year + "-autumn");
-		scheduleIfNotAvailable(season.getWinter(), "season-" + year + "-winter");
+	public void scheduleSeasonJob(Season season) {
+		schedule(season.getNextSeason(), "Season", new JobDataMap());
 	}
 
 	/**
-	 * Schedules a job at the specified date/time only if it does not exist.
+	 * Schedules a item job at the specified date/time from the calendar object.
 	 */
-	private void scheduleIfNotAvailable(Calendar calendar, String jobName) {
+	public void scheduleItem(Calendar calendar, String itemName) {
+		JobDataMap jobDataMap = new JobDataMap();
+		jobDataMap.put("itemName", itemName);
+		schedule(calendar, itemName, jobDataMap);
+	}
+
+	/**
+	 * Schedules a job at the specified date/time, deletes a previously
+	 * scheduled job.
+	 */
+	private void schedule(Calendar calendar, String jobName, JobDataMap jobDataMap) {
 		if (System.currentTimeMillis() < calendar.getTimeInMillis()) {
 			try {
-				if (scheduler.getJobDetail(new JobKey(jobName, JOB_GROUP)) == null) {
-					Trigger trigger = newTrigger().withIdentity(jobName + "-Trigger", JOB_GROUP)
-							.startAt(calendar.getTime()).build();
-					schedule(jobName, SeasonJob.class, trigger, new JobDataMap());
-					logger.debug("Scheduled job with name {} at {}", jobName, calendar.getTime(),
-							sdf.format(calendar.getTime()));
-				} else {
-					logger.debug("Skipping job with name {}, already scheduled", jobName);
+				JobKey jobKey = new JobKey(jobName, JOB_GROUP);
+				if (scheduler.getJobDetail(jobKey) != null) {
+					scheduler.deleteJob(jobKey);
 				}
+				Trigger trigger = newTrigger().withIdentity(jobName + "-Trigger", JOB_GROUP)
+						.startAt(calendar.getTime()).build();
+				JobDetail jobDetail = newJob(ItemJob.class).withIdentity(jobKey).usingJobData(jobDataMap).build();
+				scheduler.scheduleJob(jobDetail, trigger);
+				logger.debug("Scheduled job with name {} at {}", jobName, sdf.format(calendar.getTime()));
 			} catch (SchedulerException ex) {
 				logger.error(ex.getMessage(), ex);
 			}
 		} else {
-			logger.debug("Skipping job with name {}, starttime is in the past", jobName);
-		}
-	}
-
-	/**
-	 * Schedules a job at the specified date/time from the calendar object.
-	 */
-	public void scheduleItem(Calendar calendar, String itemName) {
-		if (System.currentTimeMillis() < calendar.getTimeInMillis()) {
-			Trigger trigger = newTrigger().withIdentity(itemName + "-Trigger", JOB_GROUP).startAt(calendar.getTime())
-					.build();
-			JobDataMap jobDataMap = new JobDataMap();
-			jobDataMap.put("itemName", itemName);
-			schedule(itemName, ItemJob.class, trigger, jobDataMap);
-			logger.debug("Scheduled job for item {} at {}", itemName, sdf.format(calendar.getTime()));
-		} else {
-			logger.debug("Skipping job for item {} for today, starttime is in the past", itemName);
+			logger.debug("Skipping job with name {} for today, starttime is in the past", jobName);
 		}
 	}
 

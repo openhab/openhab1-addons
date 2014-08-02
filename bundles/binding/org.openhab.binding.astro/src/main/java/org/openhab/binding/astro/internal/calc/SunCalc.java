@@ -13,6 +13,7 @@ import java.util.Calendar;
 import org.apache.commons.lang.time.DateUtils;
 import org.openhab.binding.astro.internal.model.Range;
 import org.openhab.binding.astro.internal.model.Sun;
+import org.openhab.binding.astro.internal.model.SunEclipse;
 import org.openhab.binding.astro.internal.model.SunPosition;
 import org.openhab.binding.astro.internal.util.DateTimeUtils;
 
@@ -24,9 +25,8 @@ import org.openhab.binding.astro.internal.util.DateTimeUtils;
  * @see based on the calculations of http://www.suncalc.net
  */
 public class SunCalc {
-	public static final double J1970 = 2440588.0;
 	private static final double J2000 = 2451545.0;
-	private static final double DEG2RAD = Math.PI / 180;
+	public static final double DEG2RAD = Math.PI / 180;
 	private static final double M0 = 357.5291 * DEG2RAD;
 	private static final double M1 = 0.98560028 * DEG2RAD;
 	private static final double J0 = 0.0009;
@@ -46,7 +46,6 @@ public class SunCalc {
 	private static final double H2 = -12.0 * DEG2RAD; // astronomical twilight angle
 	private static final double H3 = -18.0 * DEG2RAD; // darkness angle
 	private static final double MINUTES_PER_DAY = 60 * 24;
-	public static final double MILLISECONDS_PER_DAY = 1000 * 60 * MINUTES_PER_DAY;
 	private static final int CURVE_TIME_INTERVAL = 20; // 20 minutes
 	private static final double JD_ONE_MINUTE_FRACTION = 1.0 / 60 / 24;
 
@@ -57,7 +56,7 @@ public class SunCalc {
 		double lw = -longitude * DEG2RAD;
 		double phi = latitude * DEG2RAD;
 
-		double j = dateToJulianDate(calendar);
+		double j = DateTimeUtils.dateToJulianDate(calendar);
 		double m = getSolarMeanAnomaly(j);
 		double c = getEquationOfCenter(m);
 		double lsun = getEclipticLongitude(m, c);
@@ -96,7 +95,7 @@ public class SunCalc {
 	private Sun getSunInfo(Calendar calendar, double latitude, double longitude, boolean onlyAstro) {
 		double lw = -longitude * DEG2RAD;
 		double phi = latitude * DEG2RAD;
-		double j = midnightDateToJulianDate(calendar);
+		double j = DateTimeUtils.midnightDateToJulianDate(calendar) + 0.5;
 		double n = getJulianCycle(j, lw);
 		double js = getApproxSolarTransit(0, lw, n);
 		double m = getSolarMeanAnomaly(js);
@@ -185,21 +184,18 @@ public class SunCalc {
 			sun.setNight(new Range(sun.getAstroDusk().getEnd(), sunTomorrow.getAstroDawn().getStart()));
 		}
 
+		// eclipse
+		SunEclipse eclipse = sun.getEclipse();
+		MoonCalc mc = new MoonCalc();
+
+		double partial = mc.getEclipse(calendar, MoonCalc.ECLIPSE_TYPE_SUN, j, MoonCalc.ECLIPSE_MODE_PARTIAL);
+		eclipse.setPartial(DateTimeUtils.toCalendar(partial));
+		double ring = mc.getEclipse(calendar, MoonCalc.ECLIPSE_TYPE_SUN, j, MoonCalc.ECLIPSE_MODE_RING);
+		eclipse.setRing(DateTimeUtils.toCalendar(ring));
+		double total = mc.getEclipse(calendar, MoonCalc.ECLIPSE_TYPE_SUN, j, MoonCalc.ECLIPSE_MODE_TOTAL);
+		eclipse.setTotal(DateTimeUtils.toCalendar(total));
+
 		return sun;
-	}
-
-	/**
-	 * Returns the julian date from the calendar object.
-	 */
-	public double dateToJulianDate(Calendar calendar) {
-		return calendar.getTimeInMillis() / MILLISECONDS_PER_DAY - 0.5 + J1970;
-	}
-
-	/**
-	 * Returns the midnight julian date from the calendar object.
-	 */
-	public double midnightDateToJulianDate(Calendar calendar) {
-		return DateTimeUtils.truncateToMidnight(calendar).getTimeInMillis() / MILLISECONDS_PER_DAY + J1970;
 	}
 
 	/**
