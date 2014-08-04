@@ -144,7 +144,7 @@ public class MoonCalc {
 		}
 
 		double moonJd = Math.floor(DateTimeUtils.midnightDateToJulianDate(calendar)) - 2400000.0;
-		moonJd -= ((calendar.getTimeZone().getRawOffset() + calendar.getTimeZone().getDSTSavings()) / 60000.0) / 1440.0;
+		moonJd -= ((calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET)) / 60000.0) / 1440.0;
 
 		double sphi = SN(phi);
 		double cphi = CS(phi);
