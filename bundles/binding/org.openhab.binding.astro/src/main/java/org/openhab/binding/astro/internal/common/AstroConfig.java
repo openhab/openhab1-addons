@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.astro.internal.common;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.TimeZone;
 
@@ -123,8 +125,15 @@ public class AstroConfig {
 	public String toString() {
 		String intervallMessage = (interval == 0 ? "disabled" : String.valueOf(interval));
 
+		TimeZone tz = TimeZone.getDefault();
+		StringBuilder tzInfo = new StringBuilder();
+		tzInfo.append(tz.getID());
+		tzInfo.append(" (").append(tz.getDisplayName(false, TimeZone.SHORT)).append(" ")
+				.append(new SimpleDateFormat("Z").format(Calendar.getInstance().getTime()));
+		tzInfo.append(")");
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("latitude", latitude)
 				.append("longitude", longitude).append("interval", intervallMessage)
-				.append("systemTimezone", TimeZone.getDefault().getID()).toString();
+				.append("systemTimezone", tzInfo.toString()).append("daylightSavings", tz.getDSTSavings() != 0)
+				.toString();
 	}
 }
