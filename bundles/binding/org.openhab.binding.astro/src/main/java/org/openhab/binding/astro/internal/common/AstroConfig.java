@@ -133,7 +133,7 @@ public class AstroConfig {
 		tzInfo.append(")");
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("latitude", latitude)
 				.append("longitude", longitude).append("interval", intervallMessage)
-				.append("systemTimezone", tzInfo.toString()).append("daylightSavings", tz.getDSTSavings() != 0)
-				.toString();
+				.append("systemTimezone", tzInfo.toString())
+				.append("daylightSavings", Calendar.getInstance().get(Calendar.DST_OFFSET) != 0).toString();
 	}
 }
