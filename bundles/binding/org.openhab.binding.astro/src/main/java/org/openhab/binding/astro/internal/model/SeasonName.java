@@ -6,22 +6,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.astro.internal.job;
-
-import org.openhab.binding.astro.internal.common.AstroType;
-import org.openhab.core.library.types.OnOffType;
+package org.openhab.binding.astro.internal.model;
 
 /**
- * Publishes the sunrise event.
+ * All season names.
  * 
  * @author Gerhard Riegler
- * @since 1.5.0
+ * @since 1.6.0
  */
-public class SunriseJob extends AbstractBaseJob {
 
-	@Override
-	protected void executeJob() {
-		publishState(AstroType.SUNRISE, OnOffType.ON);
-	}
-
+public enum SeasonName {
+	SPRING, SUMMER, AUTUMN, WINTER;
 }

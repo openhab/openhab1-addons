@@ -6,22 +6,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.astro.internal.job;
-
-import org.openhab.binding.astro.internal.common.AstroType;
-import org.openhab.core.library.types.OnOffType;
+package org.openhab.binding.astro.internal.model;
 
 /**
- * Publishes the noon event.
+ * All zodiac signs.
  * 
  * @author Gerhard Riegler
- * @since 1.5.0
+ * @since 1.6.0
  */
-public class NoonJob extends AbstractBaseJob {
 
-	@Override
-	protected void executeJob() {
-		publishState(AstroType.NOON, OnOffType.ON);
-	}
-
+public enum ZodiacSign {
+	ARIES, TAURUS, GEMINI, CANCER, LEO, VIRGO, LIBRA, SCORPIO, SAGITTARIUS, CAPRICORN, AQUARIUS, PISCES;
 }

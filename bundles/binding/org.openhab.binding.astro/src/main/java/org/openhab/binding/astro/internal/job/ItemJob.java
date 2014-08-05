@@ -8,20 +8,22 @@
  */
 package org.openhab.binding.astro.internal.job;
 
-import org.openhab.binding.astro.internal.common.AstroType;
 import org.openhab.core.library.types.OnOffType;
+import org.quartz.JobDataMap;
 
 /**
- * Publishes the sunset event.
+ * Publishes the item state ON/OFF for scheduled events.
  * 
  * @author Gerhard Riegler
- * @since 1.5.0
+ * @since 1.6.0
  */
-public class SunsetJob extends AbstractBaseJob {
+public class ItemJob extends AbstractBaseJob {
 
 	@Override
-	protected void executeJob() {
-		publishState(AstroType.SUNSET, OnOffType.ON);
+	protected void executeJob(JobDataMap jobDataMap) {
+		String itemName = jobDataMap.getString("itemName");
+		context.getEventPublisher().postUpdate(itemName, OnOffType.ON);
+		context.getEventPublisher().postUpdate(itemName, OnOffType.OFF);
 	}
 
 }
