@@ -54,6 +54,19 @@ public class MoonCalc {
 		Calendar rise = DateTimeUtils.timeToCalendar(calendar, riseSet[0]);
 		Calendar set = DateTimeUtils.timeToCalendar(calendar, riseSet[1]);
 
+		if (rise == null || set == null) {
+			Calendar tomorrow = (Calendar) calendar.clone();
+			tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+
+			double[] riseSeTomorrow = getRiseSet(tomorrow, latitude, longitude);
+			if (rise == null) {
+				rise = DateTimeUtils.timeToCalendar(tomorrow, riseSeTomorrow[0]);
+			}
+			if (set == null) {
+				set = DateTimeUtils.timeToCalendar(tomorrow, riseSeTomorrow[1]);
+			}			
+		}
+		
 		moon.setRise(new Range(rise, rise));
 		moon.setSet(new Range(set, set));
 
