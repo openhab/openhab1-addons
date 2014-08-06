@@ -515,6 +515,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 				}
 				if (isBroadcast == false)
 					this.messageHandler.sendAck(pbMsg);
+				break;
 			default:
 				logger.debug("Unhandled message type " + msgType.toString());
 				break;
