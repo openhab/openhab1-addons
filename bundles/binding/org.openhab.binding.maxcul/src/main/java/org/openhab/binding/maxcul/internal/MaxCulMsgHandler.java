@@ -411,9 +411,10 @@ public class MaxCulMsgHandler implements CULListener {
 							}
 
 						}
-					} else
+					} else {
 						logger.info("Got ACK for message " + msg.msgCount
 								+ " but it wasn't in the queue");
+					}
 				}
 
 				if (sequenceRegister.containsKey(new BaseMsg(data).msgCount)) {
