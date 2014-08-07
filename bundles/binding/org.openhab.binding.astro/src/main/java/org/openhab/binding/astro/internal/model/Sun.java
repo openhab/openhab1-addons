@@ -33,9 +33,9 @@ public class Sun extends RiseSet {
 	private Range noon = new Range();
 	private Range night = new Range();
 
-	private SunPosition position = new SunPosition();
+	private Position position = new Position();
 
-	private Zodiac zodiac = new Zodiac(null, null);
+	private SunZodiac zodiac = new SunZodiac(null, null);
 
 	private Season season = new Season();
 
@@ -198,28 +198,28 @@ public class Sun extends RiseSet {
 	/**
 	 * Returns the sun position.
 	 */
-	public SunPosition getPosition() {
+	public Position getPosition() {
 		return position;
 	}
 
 	/**
 	 * Sets the sun position.
 	 */
-	public void setPosition(SunPosition position) {
+	public void setPosition(Position position) {
 		this.position = position;
 	}
 
 	/**
 	 * Returns the zodiac.
 	 */
-	public Zodiac getZodiac() {
+	public SunZodiac getZodiac() {
 		return zodiac;
 	}
 
 	/**
 	 * Sets the zodiac.
 	 */
-	public void setZodiac(Zodiac zodiac) {
+	public void setZodiac(SunZodiac zodiac) {
 		this.zodiac = zodiac;
 	}
 

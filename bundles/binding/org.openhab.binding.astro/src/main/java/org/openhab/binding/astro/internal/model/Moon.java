@@ -24,6 +24,8 @@ public class Moon extends RiseSet {
 	private MoonDistance perigee = new MoonDistance();
 	private MoonDistance distance = new MoonDistance();
 	private Eclipse eclipse = new Eclipse();
+	private Position position = new Position();
+	private Zodiac zodiac = new Zodiac(null);
 
 	/**
 	 * Returns the moon phase.
@@ -95,12 +97,40 @@ public class Moon extends RiseSet {
 		this.distance = distance;
 	}
 
+	/**
+	 * Returns the position.
+	 */
+	public Position getPosition() {
+		return position;
+	}
+
+	/**
+	 * Sets the position.
+	 */
+	public void setPosition(Position position) {
+		this.position = position;
+	}
+
+	/**
+	 * Returns the zodiac.
+	 */
+	public Zodiac getZodiac() {
+		return zodiac;
+	}
+
+	/**
+	 * Sets the zodiac.
+	 */
+	public void setZodiac(Zodiac zodiac) {
+		this.zodiac = zodiac;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
 				.append("rise", DateTimeUtils.getDate(getRise().getStart()))
 				.append("set", DateTimeUtils.getDate(getSet().getEnd())).append("phase", phase)
 				.append("apogee", apogee).append("perigee", perigee).append("distance", distance)
-				.append("eclipse", eclipse).toString();
+				.append("eclipse", eclipse).append("position", position).append("zodiac", zodiac).toString();
 	}
 }

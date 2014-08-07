@@ -13,11 +13,11 @@ import java.util.Calendar;
 import org.openhab.binding.astro.internal.calc.MoonCalc;
 import org.openhab.binding.astro.internal.calc.SeasonCalc;
 import org.openhab.binding.astro.internal.calc.SunCalc;
-import org.openhab.binding.astro.internal.calc.ZodiacCalc;
+import org.openhab.binding.astro.internal.calc.SunZodiacCalc;
 import org.openhab.binding.astro.internal.model.Moon;
 import org.openhab.binding.astro.internal.model.PlanetName;
 import org.openhab.binding.astro.internal.model.Sun;
-import org.openhab.binding.astro.internal.model.SunPosition;
+import org.openhab.binding.astro.internal.model.Position;
 import org.quartz.JobDataMap;
 
 /**
@@ -36,12 +36,12 @@ public class DailyJob extends AbstractBaseJob {
 		SunCalc sunCalc = new SunCalc();
 		Sun sun = sunCalc.getSunInfo(now, context.getConfig().getLatitude(), context.getConfig().getLongitude());
 
-		SunPosition sp = sunCalc.getSunPosition(now, context.getConfig().getLatitude(), context.getConfig()
+		Position sp = sunCalc.getSunPosition(now, context.getConfig().getLatitude(), context.getConfig()
 				.getLongitude());
 
 		sun.setPosition(sp);
 
-		ZodiacCalc zodiacCalc = new ZodiacCalc();
+		SunZodiacCalc zodiacCalc = new SunZodiacCalc();
 		sun.setZodiac(zodiacCalc.getZodiac(now));
 
 		SeasonCalc seasonCalc = new SeasonCalc();

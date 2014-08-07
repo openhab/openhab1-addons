@@ -14,7 +14,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.openhab.binding.astro.internal.model.Range;
 import org.openhab.binding.astro.internal.model.Sun;
 import org.openhab.binding.astro.internal.model.SunEclipse;
-import org.openhab.binding.astro.internal.model.SunPosition;
+import org.openhab.binding.astro.internal.model.Position;
 import org.openhab.binding.astro.internal.util.DateTimeUtils;
 
 /**
@@ -27,6 +27,8 @@ import org.openhab.binding.astro.internal.util.DateTimeUtils;
 public class SunCalc {
 	private static final double J2000 = 2451545.0;
 	public static final double DEG2RAD = Math.PI / 180;
+	public static final double RAD2DEG = 180. / Math.PI;
+
 	private static final double M0 = 357.5291 * DEG2RAD;
 	private static final double M1 = 0.98560028 * DEG2RAD;
 	private static final double J0 = 0.0009;
@@ -43,7 +45,8 @@ public class SunCalc {
 	private static final double SUN_DIAMETER = 0.53 * DEG2RAD; // sun diameter
 	private static final double H0 = SUN_ANGLE * DEG2RAD;
 	private static final double H1 = -6.0 * DEG2RAD; // nautical twilight angle
-	private static final double H2 = -12.0 * DEG2RAD; // astronomical twilight angle
+	private static final double H2 = -12.0 * DEG2RAD; // astronomical twilight
+														// angle
 	private static final double H3 = -18.0 * DEG2RAD; // darkness angle
 	private static final double MINUTES_PER_DAY = 60 * 24;
 	private static final int CURVE_TIME_INTERVAL = 20; // 20 minutes
@@ -52,7 +55,7 @@ public class SunCalc {
 	/**
 	 * Calculates the sun position (azimuth and elevation).
 	 */
-	public SunPosition getSunPosition(Calendar calendar, double latitude, double longitude) {
+	public Position getSunPosition(Calendar calendar, double latitude, double longitude) {
 		double lw = -longitude * DEG2RAD;
 		double phi = latitude * DEG2RAD;
 
@@ -67,7 +70,7 @@ public class SunCalc {
 		double azimuth = getAzimuth(th, a, phi, d) / DEG2RAD;
 		double elevation = getElevation(th, a, phi, d) / DEG2RAD;
 
-		return new SunPosition(azimuth + 180, elevation);
+		return new Position(azimuth + 180, elevation);
 	}
 
 	/**
