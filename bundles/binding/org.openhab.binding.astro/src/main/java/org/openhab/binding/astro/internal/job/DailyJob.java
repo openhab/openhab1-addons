@@ -17,7 +17,6 @@ import org.openhab.binding.astro.internal.calc.SunZodiacCalc;
 import org.openhab.binding.astro.internal.model.Moon;
 import org.openhab.binding.astro.internal.model.PlanetName;
 import org.openhab.binding.astro.internal.model.Sun;
-import org.openhab.binding.astro.internal.model.Position;
 import org.quartz.JobDataMap;
 
 /**
@@ -35,11 +34,7 @@ public class DailyJob extends AbstractBaseJob {
 		// sun
 		SunCalc sunCalc = new SunCalc();
 		Sun sun = sunCalc.getSunInfo(now, context.getConfig().getLatitude(), context.getConfig().getLongitude());
-
-		Position sp = sunCalc.getSunPosition(now, context.getConfig().getLatitude(), context.getConfig()
-				.getLongitude());
-
-		sun.setPosition(sp);
+		sunCalc.setSunPosition(now, context.getConfig().getLatitude(), context.getConfig().getLongitude(), sun);
 
 		SunZodiacCalc zodiacCalc = new SunZodiacCalc();
 		sun.setZodiac(zodiacCalc.getZodiac(now));

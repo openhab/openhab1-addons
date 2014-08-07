@@ -11,10 +11,10 @@ package org.openhab.binding.astro.internal.calc;
 import java.util.Calendar;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.openhab.binding.astro.internal.model.Position;
 import org.openhab.binding.astro.internal.model.Range;
 import org.openhab.binding.astro.internal.model.Sun;
 import org.openhab.binding.astro.internal.model.SunEclipse;
-import org.openhab.binding.astro.internal.model.Position;
 import org.openhab.binding.astro.internal.util.DateTimeUtils;
 
 /**
@@ -55,7 +55,7 @@ public class SunCalc {
 	/**
 	 * Calculates the sun position (azimuth and elevation).
 	 */
-	public Position getSunPosition(Calendar calendar, double latitude, double longitude) {
+	public void setSunPosition(Calendar calendar, double latitude, double longitude, Sun sun) {
 		double lw = -longitude * DEG2RAD;
 		double phi = latitude * DEG2RAD;
 
@@ -70,7 +70,9 @@ public class SunCalc {
 		double azimuth = getAzimuth(th, a, phi, d) / DEG2RAD;
 		double elevation = getElevation(th, a, phi, d) / DEG2RAD;
 
-		return new Position(azimuth + 180, elevation);
+		Position position = sun.getPosition();
+		position.setAzimuth(azimuth + 180);
+		position.setElevation(elevation);
 	}
 
 	/**
@@ -78,9 +80,10 @@ public class SunCalc {
 	 */
 	private boolean isSunUpAllDay(Calendar calendar, double latitude, double longitude) {
 		Calendar cal = DateTimeUtils.truncateToMidnight(calendar);
+		Sun sun = new Sun();
 		for (int minutes = 0; minutes <= MINUTES_PER_DAY; minutes += CURVE_TIME_INTERVAL) {
-			double elevation = getSunPosition(cal, latitude, longitude).getElevation();
-			if (elevation < SUN_ANGLE) {
+			setSunPosition(calendar, latitude, longitude, sun);
+			if (sun.getPosition().getElevation() < SUN_ANGLE) {
 				return false;
 			}
 			cal.add(Calendar.MINUTE, CURVE_TIME_INTERVAL);
