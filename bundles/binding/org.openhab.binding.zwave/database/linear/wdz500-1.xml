@@ -28,6 +28,9 @@
 			<id>0x73</id>
 		</Class>
 		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
 			<id>0x86</id>
 		</Class>
 	</CommandClasses>
