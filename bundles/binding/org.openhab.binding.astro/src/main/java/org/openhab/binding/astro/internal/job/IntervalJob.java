@@ -15,7 +15,6 @@ import org.openhab.binding.astro.internal.calc.SunCalc;
 import org.openhab.binding.astro.internal.model.Moon;
 import org.openhab.binding.astro.internal.model.PlanetName;
 import org.openhab.binding.astro.internal.model.Sun;
-import org.openhab.binding.astro.internal.model.SunPosition;
 import org.quartz.JobDataMap;
 
 /**
@@ -33,17 +32,14 @@ public class IntervalJob extends AbstractBaseJob {
 
 		// sun
 		SunCalc sunCalc = new SunCalc();
-		SunPosition sp = sunCalc.getSunPosition(now, context.getConfig().getLatitude(), context.getConfig()
-				.getLongitude());
-
 		Sun sun = (Sun) context.getPlanet(PlanetName.SUN);
-		sun.setPosition(sp);
+		sunCalc.setSunPosition(now, context.getConfig().getLatitude(), context.getConfig().getLongitude(), sun);
 		planetPublisher.publish(PlanetName.SUN);
 
 		// moon
 		MoonCalc moonCalc = new MoonCalc();
 		Moon moon = (Moon) context.getPlanet(PlanetName.MOON);
-		moonCalc.setMoonPosition(now, moon);
+		moonCalc.setMoonPosition(now, context.getConfig().getLatitude(), context.getConfig().getLongitude(), moon);
 		planetPublisher.publish(PlanetName.MOON);
 	}
 }
