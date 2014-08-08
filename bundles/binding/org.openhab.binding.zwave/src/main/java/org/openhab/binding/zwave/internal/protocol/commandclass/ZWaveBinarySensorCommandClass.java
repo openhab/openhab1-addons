@@ -83,7 +83,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 				int value = serialMessage.getMessagePayloadByte(offset + 1);
 
 				SensorType sensorType = SensorType.UNKNOWN;
-				if(this.getVersion() > 1) {
+				if(this.getVersion() > 1 && serialMessage.getMessagePayload().length > offset + 2) {
 					logger.debug("Processing Sensor Type {}", serialMessage.getMessagePayloadByte(offset + 2));
 					// For V2, we have the sensor type after the value
 					sensorType = SensorType.getSensorType(serialMessage.getMessagePayloadByte(offset + 2));
