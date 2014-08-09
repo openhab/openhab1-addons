@@ -22,6 +22,7 @@
 			</Reference>
 			<Model>WD500Z-1</Model>
 			<Label lang="en">Wall Dimmer Switch</Label>
+			<ConfigFile>linear/wdz500-1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
