@@ -112,7 +112,7 @@ public class KNXCoreTypeMapperTest {
 	}
 
 	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.001 DPT_BOOL
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.002 DPT_BOOL
 	 * 
 	 * @throws KNXFormatException
 	 */
@@ -183,7 +183,7 @@ public class KNXCoreTypeMapperTest {
 	}
 
 	/**
-	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.008 DPT_UPDOWN
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.009 DPT_UPDOWN
 	 * 
 	 * @throws KNXFormatException
 	 */
