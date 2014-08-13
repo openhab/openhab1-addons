@@ -10,10 +10,13 @@ package org.openhab.binding.knx.internal.config;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assume.*;
 import org.openhab.binding.knx.internal.dpt.KNXCoreTypeMapper;
 import org.openhab.core.library.types.*;
 import org.openhab.core.types.Type;
@@ -50,10 +53,12 @@ import tuwien.auto.calimero.dptxlator.DPTXlatorTime;
 public class KNXCoreTypeMapperTest {
 
 	private KNXCoreTypeMapper knxCoreTypeMapper;
+	private Map<String, Boolean> bugsFixed = new HashMap<String, Boolean> ();
 
 	@Before
 	public void init() throws KNXFormatException {
 		knxCoreTypeMapper = new KNXCoreTypeMapper();
+		testBugsFixed();
 	}
 
 	/**
@@ -765,7 +770,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_001() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_TEMPERATURE);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.001. DPT_TEMPERATURE
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_001_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_TEMPERATURE);
 	}
 
 	/**
@@ -775,7 +793,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_002() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_TEMPERATURE_DIFFERENCE);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.002. DPT_TEMPERATURE_DIFFERENCE
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_002_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_TEMPERATURE_DIFFERENCE);
 	}
 
 	/**
@@ -785,7 +816,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_003() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_TEMPERATURE_GRADIENT);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.003. DPT_TEMPERATURE_GRADIENT
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_003_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_TEMPERATURE_GRADIENT);
 	}
 
 	/**
@@ -795,7 +839,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_004() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_INTENSITY_OF_LIGHT);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.004. DPT_INTENSITY_OF_LIGHT
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_004_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_INTENSITY_OF_LIGHT);
 	}
 
 	/**
@@ -805,7 +862,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_005() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_WIND_SPEED);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.005. DPT_WIND_SPEED
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_005_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_WIND_SPEED);
 	}
 
 	/**
@@ -815,7 +885,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_006() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_AIR_PRESSURE);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.006. DPT_AIR_PRESSURE
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_006_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_AIR_PRESSURE);
 	}
 
 	/**
@@ -825,7 +908,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_007() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_HUMIDITY);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.007. DPT_HUMIDITY
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_007_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_HUMIDITY);
 	}
 
 	/**
@@ -835,7 +931,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_008() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_AIRQUALITY);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.008. DPT_AIRQUALITY
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_008_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_AIRQUALITY);
 	}
 
 	/**
@@ -845,7 +954,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_010() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_TIME_DIFFERENCE1);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.010. DPT_TIME_DIFFERENCE1
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_010_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_TIME_DIFFERENCE1);
 	}
 
 	/**
@@ -855,7 +977,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_011() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_TIME_DIFFERENCE2);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.011. DPT_TIME_DIFFERENCE2
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_011_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_TIME_DIFFERENCE2);
 	}
 
 	/**
@@ -865,7 +1000,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_020() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_VOLTAGE);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.020. DPT_VOLTAGE
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_020_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_VOLTAGE);
 	}
 
 	/**
@@ -875,7 +1023,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_021() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_ELECTRICAL_CURRENT);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.021. DPT_ELECTRICAL_CURRENT
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_021_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_ELECTRICAL_CURRENT);
 	}
 
 	/**
@@ -885,7 +1046,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_022() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_POWERDENSITY);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.022. DPT_POWERDENSITY
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_022_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_POWERDENSITY);
 	}
 
 	/**
@@ -895,7 +1069,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_023() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_KELVIN_PER_PERCENT);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.023. DPT_KELVIN_PER_PERCENT
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_023_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_KELVIN_PER_PERCENT);
 	}
 
 	/**
@@ -905,7 +1092,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_024() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_POWER);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.024. DPT_POWER
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_024_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_POWER);
 	}
 
 	/**
@@ -915,7 +1115,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_025() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_VOLUME_FLOW);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.025. DPT_VOLUME_FLOW
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_025_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_VOLUME_FLOW);
 	}
 
 	/**
@@ -925,7 +1138,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_026() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_RAIN_AMOUNT);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.026. DPT_RAIN_AMOUNT
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_026_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_RAIN_AMOUNT);
 	}
 
 	/**
@@ -935,7 +1161,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_027() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_TEMP_F);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.027. DPT_TEMP_F
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_027_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_TEMP_F);
 	}
 
 	/**
@@ -945,7 +1184,20 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMapping2ByteFloat_9_028() throws KNXFormatException {
+		assumeTrue(isBugFixed("calimero #5"));
 		testTypeMapping2ByteFloat(DPTXlator2ByteFloat.DPT_WIND_SPEED_KMH);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “2-Octet Float Value". KNX ID: 9.028. DPT_WIND_SPEED_KMH
+	 * TODO: delete this test case once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMapping2ByteFloat_9_028_bug() throws KNXFormatException {
+		assumeTrue(!isBugFixed("calimero #5"));
+		testTypeMapping2ByteFloat_bug(DPTXlator2ByteFloat.DPT_WIND_SPEED_KMH);
 	}
 
 	/**
@@ -1381,6 +1633,63 @@ public class KNXCoreTypeMapperTest {
 	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “String" KNX ID: 16.001 DPT_STRING_8859_1
 	 * 
+	 * This test is skipped until calimero lib is improved.
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingString_Length() throws KNXFormatException {
+		DPT dpt =DPTXlatorString.DPT_STRING_8859_1;
+
+		assumeTrue(isBugFixed("calimero #8"));
+		testToTypeClass(dpt, StringType.class);
+
+		/*
+		 * According to spec the length of this DPT is fixed to 14 bytes. Calimero lib (V 2.2.0) isn't checking this and accepts any byte array
+		 * larger or equal to 14 bytes without error. As a result: anything less then 14 bytes and above a multiple of 14 bytes will be accepted
+		 * but cutoff. Even for the failed check (less then 14 bytes) calimero is not throwing an exception but is logging an error which we
+		 * cannot check for here.
+		 * 
+		 * Test the erroneous behavior that a too short array results in an empty string. There should be an error logged by calimero lib (V2.2.0).
+		 */
+		Type type=testToType(dpt, new byte[] { 0x61, 0x62 }, StringType.class);
+		//Skip this test case if the correct value (null) is returned
+		assumeTrue(type==null);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “String" KNX ID: 16.001 DPT_STRING_8859_1
+	 * 
+	 * This test is skipped once calimero lib is improved.
+	 * TODO: delete this test case once calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingString_bugLength() throws KNXFormatException {
+		DPT dpt =DPTXlatorString.DPT_STRING_8859_1;
+		assumeTrue(!isBugFixed("calimero #8"));
+		
+		testToTypeClass(dpt, StringType.class);
+
+		/*
+		 * According to spec the length of this DPT is fixed to 14 bytes. Calimero lib (V 2.2.0) isn't checking this and accepts any byte array
+		 * larger or equal to 14 bytes without error. As a result: anything less then 14 bytes and above a multiple of 14 bytes will be accepted
+		 * but cutoff. Even for the failed check (less then 14 bytes) calimero is not throwing an exception but is logging an error which we
+		 * cannot check for here.
+		 * 
+		 * Test the erroneous behavior that a too short array results in an empty string. There should be an error logged by calimero lib (V2.2.0).
+		 */
+		Type type=testToType(dpt, new byte[] { 0x61, 0x62 }, StringType.class);
+		assertNotNull(type);
+
+		String value=knxCoreTypeMapper.toDPTValue(type, dpt.getID());
+		assertEquals(value, "");
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “String" KNX ID: 16.001 DPT_STRING_8859_1
+	 * 
 	 * @throws KNXFormatException
 	 */
 	@Test
@@ -1389,26 +1698,10 @@ public class KNXCoreTypeMapperTest {
 
 		testToTypeClass(dpt, StringType.class);
 
-		/*
-		 * FIXME: According to spec the length of this DPT is fixed to 14 bytes. Calimero lib (V 2.2.0) isn't checking this correctly and has a bug in
-		 * tuwien.auto.calimero.dptxlator.DPTXlatorString.toDPT(final byte[] buf, final int offset). Calimero accepts any byte array larger or equal to 14 bytes
-		 * without error. As a result: anything less then 14 bytes and above a multiple of 14 bytes will be accepted but cutoff. Even for the failed check (less
-		 * then 14 bytes) calimero is not throwing an exception but is logging an error which we cannot check for here.
-		 * 
-		 * Test the erroneous behavior that a too short array results in an empty string. There should be an error logged by calimero lib (V2.2.0).
+		/* 
+		 * Test a 15 byte array: result byte cut-off
 		 */
-		Type type=testToType(dpt, new byte[] { 0x61, 0x62 }, StringType.class);
-		testToDPTValue(dpt, type, "");
-
-		/*
-		 * FIXME: According to spec the length of this DPT is fixed to 14 bytes. Calimero lib (V 2.2.0) isn't checking this correctly and has a bug in
-		 * tuwien.auto.calimero.dptxlator.DPTXlatorString.toDPT(final byte[] buf, final int offset). Calimero accepts any byte array larger or equal to 14 bytes
-		 * without error. As a result: anything less then 14 bytes and above a multiple of 14 bytes will be accepted but cutoff. Even for the failed check (less
-		 * then 14 bytes) calimero is not throwing an exception but is logging an error which we cannot check for here.
-		 * 
-		 * Test the erroneous behavior that a too long arrays result in a cutoff string. There probably won't be an error logged by calimero lib (V2.2.0).
-		 */
-		type=testToType(dpt, new byte[] { 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F }, StringType.class);
+		Type type=testToType(dpt, new byte[] { 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F }, StringType.class);
 		testToDPTValue(dpt, type, "abcdefghijklmn");
 
 		/*
@@ -1423,6 +1716,7 @@ public class KNXCoreTypeMapperTest {
 		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, StringType.class);
 		testToDPTValue(dpt, type, "");
 	}
+
 
 	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Scene Number" KNX ID: 17.001 DPT_SCENE_NUMBER
@@ -1574,15 +1868,6 @@ public class KNXCoreTypeMapperTest {
 		 */
 		type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x60, 0x00 }, DateTimeType.class);
 		testToDPTValue(dpt, type, "1900-01-01 00:00:00");
-
-		/*
-		 * FIXME: Calimero lib (Version 2.2.0) seems to have a bug when dealing with DaylightSavingsTime.
-		 * Setting the DST field will always result in a rejection of the data.
-		 * 
-		 * The following test case tests the erroneous behavior. 
-		 * Reference testcase + day of week=Any day, daylight saving
-		 */
-		assertNull(testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, (byte) 0x01, (byte) 0x00 }, DateTimeType.class));
 
 		/* 
 		 * December 31st, 2155 day of week=Any day, Day of week field invalid
@@ -1766,8 +2051,51 @@ public class KNXCoreTypeMapperTest {
 
 		/*
 		 * Test the maximum positive value
+		 */
+		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "670760.96");
+
+		type=testToType(dpt, new byte[] { (byte) 0x07, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "20.47");
+
+		type=testToType(dpt, new byte[] { (byte) 0x87, (byte) 0xFF }, DecimalType.class);
+		testToDPTValue(dpt, type, "-0.01");
+
+		type=testToType(dpt, new byte[] { (byte) 0x80, (byte) 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "-20.48");
+
+		/*
+		 * Test the maximum negative value
+		 */
+		type=testToType(dpt, new byte[] { (byte) 0xF8, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "-671088.64");
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		type=testToType(dpt, new byte[] { (byte) 0xF8, (byte) 0x00, (byte) 0xFF  }, DecimalType.class);
+		testToDPTValue(dpt, type, "-671088.64");
+	}
+
+
+	/**
+	 * Convenience method: testing KNXCoretypeMapper for type “Datapoint Types 2-Byte Float"
+	 * TODO: delete this method and all methods depending on this once the bug in calimero is fixed
+	 * 
+	 * @throws KNXFormatException
+	 */
+	private void testTypeMapping2ByteFloat_bug(DPT dpt) throws KNXFormatException {
+		testToTypeClass(dpt, DecimalType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, DecimalType.class));
+
+		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
+		testToDPTValue(dpt, type, "0.0");
+
+		/*
+		 * Test the maximum positive value
 		 * 
-		 * FIXME: Calimero lib (Version 2.2.0) seems to have a bug in private method: tuwien.auto.calimero.dptxlator.DPTXlator2ByteFloat.fromDPT(final int
+		 * Calimero lib (Version 2.2.0) seems to have a bug in private method: tuwien.auto.calimero.dptxlator.DPTXlator2ByteFloat.fromDPT(final int
 		 * index). The accuracy when calculating the value is Float, which is insufficient and Double should be used instead.
 		 * 
 		 * The following test case tests the erroneous calculation. 0x7FFF should result in 670760.96 but results in 670760.94 due to rounding problems.
@@ -1787,7 +2115,7 @@ public class KNXCoreTypeMapperTest {
 		/*
 		 * Test the maximum negative value
 		 * 
-		 * FIXME: Calimero lib (Version 2.2.0) seems to have a bug in private method: tuwien.auto.calimero.dptxlator.DPTXlator2ByteFloat.fromDPT(final int
+		 * Calimero lib (Version 2.2.0) seems to have a bug in private method: tuwien.auto.calimero.dptxlator.DPTXlator2ByteFloat.fromDPT(final int
 		 * index). The accuracy when calculating the Float value is Float, which is insufficient and Double should be used instead.
 		 * 
 		 * The following test case tests the erroneous calculation. 0xF800 should result in -671088.64 but results in -671088.6 due to rounding problems.
@@ -1799,7 +2127,6 @@ public class KNXCoreTypeMapperTest {
 		type=testToType(dpt, new byte[] { (byte) 0xF8, (byte) 0x00, (byte) 0xFF  }, DecimalType.class);
 		testToDPTValue(dpt, type, "-671088.6");
 	}
-
 
 	/**
 	 * Convenience method: testing KNXCoretypeMapper for type “Datapoint Types 4-Byte Signed"
@@ -1871,4 +2198,22 @@ public class KNXCoreTypeMapperTest {
 		return new CommandDP(new GroupAddress("1/2/3"), "test", mainNumber, dpt);
 	}
 
+	private void testBugsFixed() {
+		try {
+			Type type = testToType(DPTXlator2ByteFloat.DPT_TEMPERATURE, new byte[] { (byte) 0x7F, (byte) 0xFF }, DecimalType.class);
+			String value=knxCoreTypeMapper.toDPTValue(type, DPTXlator2ByteFloat.DPT_TEMPERATURE.getID());
+			bugsFixed.put("calimero #5", "670760.96".equals(value));
+			
+			type=testToType(DPTXlatorString.DPT_STRING_8859_1, new byte[] { 0x61, 0x62 }, StringType.class);
+			bugsFixed.put("calimero #8", type==null);
+
+		} catch (KNXFormatException e) {}
+	}
+	private boolean isBugFixed(String bug) {
+		Boolean fixed=bugsFixed.get(bug);
+		if (fixed==null) {
+			fixed=false;
+		}
+		return fixed;
+	}
 }
