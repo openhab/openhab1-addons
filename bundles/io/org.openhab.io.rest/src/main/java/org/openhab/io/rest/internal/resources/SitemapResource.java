@@ -11,7 +11,6 @@ package org.openhab.io.rest.internal.resources;
 import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -89,10 +88,6 @@ public class SitemapResource {
 
 	public static final String PATH_SITEMAPS = "sitemaps";
 	
-	public static final String ATMOS_TIMEOUT_HEADER = "X-Atmosphere-Timeout";
-	
-	public static final int DEFAULT_TIMEOUT_SECS = 300;
-	
 	@Context UriInfo uriInfo;
 	@Context Broadcaster sitemapBroadcaster;
 
@@ -147,7 +142,7 @@ public class SitemapResource {
 			if(responseType!=null) {
 		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
 		    			new JSONWithPadding(getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build()), callback) : getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build());
-		    	throw new WebApplicationException(Response.ok(responseObject, responseType).header(ATMOS_TIMEOUT_HEADER, DEFAULT_TIMEOUT_SECS + "").build());
+		    	throw new WebApplicationException(Response.ok(responseObject, responseType).build());
 			} else {
 				throw new WebApplicationException(Response.notAcceptable(null).build());
 			}
@@ -168,7 +163,6 @@ public class SitemapResource {
 			.scope(SCOPE.REQUEST)
 			.resumeOnBroadcast(resume)
 			.broadcaster(sitemapBroadcaster)
-			.period(DEFAULT_TIMEOUT_SECS, TimeUnit.SECONDS)
 			.outputComments(true).build(); 
     }
 	
