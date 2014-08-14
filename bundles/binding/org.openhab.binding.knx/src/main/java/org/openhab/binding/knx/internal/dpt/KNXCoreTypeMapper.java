@@ -99,7 +99,7 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		dptTypeMap.put(DPTXlatorBoolean.DPT_OCCUPANCY.getID(), OnOffType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_WINDOW_DOOR.getID(), OpenClosedType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_LOGICAL_FUNCTION.getID(), OnOffType.class);
-		dptTypeMap.put(DPTXlatorBoolean.DPT_SCENE_AB.getID(), OnOffType.class);
+		dptTypeMap.put(DPTXlatorBoolean.DPT_SCENE_AB.getID(), DecimalType.class);
 		dptTypeMap.put(DPTXlatorBoolean.DPT_SHUTTER_BLINDS_MODE.getID(), OnOffType.class);
 
 		// Datapoint Types "B2", Main number 2
@@ -323,6 +323,8 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 					return translatorBoolean.getValueBoolean() ? StopMoveType.MOVE:StopMoveType.STOP;
 				case 19:
 					return translatorBoolean.getValueBoolean() ? OpenClosedType.OPEN:OpenClosedType.CLOSED;
+				case 22:
+					return DecimalType.valueOf(translatorBoolean.getValueBoolean() ? "1": "0");
 				default:
 					return translatorBoolean.getValueBoolean() ? OnOffType.ON:OnOffType.OFF;
 				}

@@ -289,7 +289,7 @@ public class KNXCoreTypeMapperTest {
 	 */
 	@Test
 	public void testTypeMappingB1_1_022() throws KNXFormatException {
-		testTypeMappingB1(DPTXlatorBoolean.DPT_SCENE_AB, OnOffType.class, "scene A", "scene B");
+		testTypeMappingB1(DPTXlatorBoolean.DPT_SCENE_AB, DecimalType.class, "0", "1");
 	}
 
 	/**
