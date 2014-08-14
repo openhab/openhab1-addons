@@ -284,6 +284,7 @@ public class KNXCoreTypeMapperTest {
 
 	/**
 	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “Datapoint Types B1" KNX ID: 1.022 DPT_SCENE_AB
+	 * Remark: mapped to DecimalType
 	 * 
 	 * @throws KNXFormatException
 	 */
