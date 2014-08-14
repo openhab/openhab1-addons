@@ -255,6 +255,9 @@ public class GenericItemProvider implements ItemProvider, ModelRepositoryChangeL
 			case MAX:
 				groupFunction = new ArithmeticGroupFunction.Max();
 				break;
+			case COUNT:
+				groupFunction = new ArithmeticGroupFunction.Count(args.get(0));
+				break;
 			default:
 				logger.error("Unknown group function '"
 					+ function.getName() + "'. Using Equality instead.");

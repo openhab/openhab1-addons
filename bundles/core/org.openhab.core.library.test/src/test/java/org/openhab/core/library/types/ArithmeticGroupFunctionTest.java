@@ -205,6 +205,20 @@ public class ArithmeticGroupFunctionTest {
 		Assert.assertEquals(new DecimalType("234.95"), state);
 	}
 	
+	@Test
+	public void testCountFunction() {
+		items.add(new TestItem("TestItem1", new StringType("TILTED")));
+		items.add(new TestItem("TestItem2", UnDefType.NULL));
+		items.add(new TestItem("TestItem3", new StringType("TILTED")));
+		items.add(new TestItem("TestItem4", new DecimalType("122.41")));
+		items.add(new TestItem("TestItem5", new StringType("CLOSED")));
+		
+		function = new ArithmeticGroupFunction.Count(new StringType("TILTED"));
+		State state = function.calculate(items);
+		
+		Assert.assertEquals(new DecimalType(2), state);
+	}
+
 	class TestItem extends GenericItem {
 
 		public TestItem(String name, State state) {

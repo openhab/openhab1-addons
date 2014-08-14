@@ -18,46 +18,46 @@ import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 
 /**
- * This interface is only a container for functions that require the core type library
- * for its calculations.
+ * This interface is only a container for functions that require the core type
+ * library for its calculations.
  * 
  * @author Kai Kreuzer
  * @since 0.7.0
- *
+ * 
  */
 public interface ArithmeticGroupFunction extends GroupFunction {
 
 	/**
-	 * This does a logical 'and' operation. Only if all items are of 'activeState' this
-	 * is returned, otherwise the 'passiveState' is returned.
+	 * This does a logical 'and' operation. Only if all items are of
+	 * 'activeState' this is returned, otherwise the 'passiveState' is returned.
 	 * 
-	 * Through the getStateAs() method, it can be determined, how many
-	 * items actually are not in the 'activeState'.
+	 * Through the getStateAs() method, it can be determined, how many items
+	 * actually are not in the 'activeState'.
 	 * 
 	 * @author Kai Kreuzer
 	 * @since 0.7.0
-	 *
+	 * 
 	 */
 	static class And implements GroupFunction {
-		
+
 		protected final State activeState;
 		protected final State passiveState;
-		
+
 		public And(State activeValue, State passiveValue) {
-			if(activeValue==null || passiveValue==null) {
+			if (activeValue == null || passiveValue == null) {
 				throw new IllegalArgumentException("Parameters must not be null!");
 			}
 			this.activeState = activeValue;
 			this.passiveState = passiveValue;
 		}
-		
+
 		/**
 		 * @{inheritDoc
 		 */
 		public State calculate(List<Item> items) {
-			if(items!=null && items.size()>0) {
-				for(Item item : items) {
-					if(!activeState.equals(item.getState())) {
+			if (items != null && items.size() > 0) {
+				for (Item item : items) {
+					if (!activeState.equals(item.getState())) {
 						return passiveState;
 					}
 				}
@@ -73,11 +73,11 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		 */
 		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
-			if(stateClass.isInstance(state)) {
+			if (stateClass.isInstance(state)) {
 				return state;
 			} else {
-				if(stateClass == DecimalType.class) {
-					if(items!=null) {
+				if (stateClass == DecimalType.class) {
+					if (items != null) {
 						return new DecimalType(items.size() - count(items, activeState));
 					} else {
 						return DecimalType.ZERO;
@@ -87,39 +87,39 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 				}
 			}
 		}
-		
+
 		private int count(List<Item> items, State state) {
 			int count = 0;
-			if(items!=null && state!=null) {
-				for(Item item : items) {
-					if(state.equals(item.getStateAs(state.getClass()))) {
+			if (items != null && state != null) {
+				for (Item item : items) {
+					if (state.equals(item.getStateAs(state.getClass()))) {
 						count++;
 					}
 				}
 			}
 			return count;
-			
+
 		}
 	}
 
 	/**
-	 * This does a logical 'or' operation. If at least one item is of 'activeState' this
-	 * is returned, otherwise the 'passiveState' is returned.
+	 * This does a logical 'or' operation. If at least one item is of
+	 * 'activeState' this is returned, otherwise the 'passiveState' is returned.
 	 * 
-	 * Through the getStateAs() method, it can be determined, how many
-	 * items actually are in the 'activeState'.
+	 * Through the getStateAs() method, it can be determined, how many items
+	 * actually are in the 'activeState'.
 	 * 
 	 * @author Kai Kreuzer
 	 * @since 0.7.0
-	 *
+	 * 
 	 */
 	static class Or implements GroupFunction {
 
 		protected final State activeState;
 		protected final State passiveState;
-		
+
 		public Or(State activeValue, State passiveValue) {
-			if(activeValue==null || passiveValue==null) {
+			if (activeValue == null || passiveValue == null) {
 				throw new IllegalArgumentException("Parameters must not be null!");
 			}
 			this.activeState = activeValue;
@@ -129,38 +129,38 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		/**
 		 * @{inheritDoc
 		 */
-		public State calculate(List<Item> items) {	
-			if(items!=null) {
-				for(Item item : items) {
-					if(activeState.equals(item.getState())) {
+		public State calculate(List<Item> items) {
+			if (items != null) {
+				for (Item item : items) {
+					if (activeState.equals(item.getState())) {
 						return activeState;
 					}
 				}
 			}
 			return passiveState;
 		}
-		
+
 		/**
 		 * @{inheritDoc
 		 */
 		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
-			if(stateClass.isInstance(state)) {
+			if (stateClass.isInstance(state)) {
 				return state;
 			} else {
-				if(stateClass == DecimalType.class) {
+				if (stateClass == DecimalType.class) {
 					return new DecimalType(count(items, activeState));
 				} else {
 					return null;
 				}
 			}
 		}
-		
+
 		private int count(List<Item> items, State state) {
 			int count = 0;
-			if(items!=null && state!=null) {
-				for(Item item : items) {
-					if(state.equals(item.getStateAs(state.getClass()))) {
+			if (items != null && state != null) {
+				for (Item item : items) {
+					if (state.equals(item.getStateAs(state.getClass()))) {
 						count++;
 					}
 				}
@@ -168,65 +168,64 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			return count;
 		}
 	}
-	
+
 	/**
-	 * This does a logical 'nand' operation. The state is 'calculated' by 
-	 * the normal 'and' operation and than negated by returning the opposite
-	 * value. E.g. when the 'and' operation calculates the activeValue the
-	 * passiveValue will be returned and vice versa. 
+	 * This does a logical 'nand' operation. The state is 'calculated' by the
+	 * normal 'and' operation and than negated by returning the opposite value.
+	 * E.g. when the 'and' operation calculates the activeValue the passiveValue
+	 * will be returned and vice versa.
 	 * 
 	 * @author Thomas.Eichstaedt-Engelen
 	 * @since 1.0.0
 	 */
 	static class NAnd extends And {
-		
+
 		public NAnd(State activeValue, State passiveValue) {
 			super(activeValue, passiveValue);
 		}
 
 		public State calculate(List<Item> items) {
 			State result = super.calculate(items);
-			State notResult = 
-				result.equals(activeState) ? passiveState : activeState;
+			State notResult = result.equals(activeState) ? passiveState : activeState;
 			return notResult;
 		}
-		
+
 	}
 
 	/**
-	 * This does a logical 'nor' operation. The state is 'calculated' by 
-	 * the normal 'or' operation and than negated by returning the opposite
-	 * value. E.g. when the 'or' operation calculates the activeValue the
-	 * passiveValue will be returned and vice versa. 
+	 * This does a logical 'nor' operation. The state is 'calculated' by the
+	 * normal 'or' operation and than negated by returning the opposite value.
+	 * E.g. when the 'or' operation calculates the activeValue the passiveValue
+	 * will be returned and vice versa.
 	 * 
 	 * @author Thomas.Eichstaedt-Engelen
 	 * @since 1.0.0
 	 */
 	static class NOr extends Or {
-		
+
 		public NOr(State activeValue, State passiveValue) {
 			super(activeValue, passiveValue);
 		}
 
 		public State calculate(List<Item> items) {
 			State result = super.calculate(items);
-			State notResult = 
-				result.equals(activeState) ? passiveState : activeState;
+			State notResult = result.equals(activeState) ? passiveState : activeState;
 			return notResult;
 		}
-		
+
 	}
-	
+
 	/**
 	 * This calculates the numeric average over all item states of decimal type.
 	 * 
 	 * @author Kai Kreuzer
 	 * @since 0.7.0
-	 *
+	 * 
 	 */
 	static class Avg implements GroupFunction {
-		
-		public Avg() {}
+
+		public Avg() {
+		}
 
 		/**
 		 * @{inheritDoc
@@ -234,28 +233,28 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		public State calculate(List<Item> items) {
 			BigDecimal sum = BigDecimal.ZERO;
 			int count = 0;
-			if(items!=null) {
-				for(Item item : items) {
+			if (items != null) {
+				for (Item item : items) {
 					DecimalType itemState = (DecimalType) item.getStateAs(DecimalType.class);
-					if(itemState!=null) {
+					if (itemState != null) {
 						sum = sum.add(itemState.toBigDecimal());
 						count++;
 					}
 				}
 			}
-			if(count>0) {
+			if (count > 0) {
 				return new DecimalType(sum.divide(new BigDecimal(count), RoundingMode.HALF_UP));
 			} else {
 				return UnDefType.UNDEF;
 			}
 		}
-		
+
 		/**
 		 * @{inheritDoc
 		 */
 		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
-			if(stateClass.isInstance(state)) {
+			if (stateClass.isInstance(state)) {
 				return state;
 			} else {
 				return null;
@@ -268,67 +267,69 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 	 * 
 	 * @author Thomas.Eichstaedt-Engelen
 	 * @since 1.1.0
-	 *
+	 * 
 	 */
 	static class Sum implements GroupFunction {
-		
-		public Sum() {}
+
+		public Sum() {
+		}
 
 		/**
 		 * @{inheritDoc
 		 */
 		public State calculate(List<Item> items) {
 			BigDecimal sum = BigDecimal.ZERO;
-			if(items!=null) {
-				for(Item item : items) {
+			if (items != null) {
+				for (Item item : items) {
 					DecimalType itemState = (DecimalType) item.getStateAs(DecimalType.class);
-					if(itemState!=null) {
+					if (itemState != null) {
 						sum = sum.add(itemState.toBigDecimal());
 					}
 				}
 			}
 			return new DecimalType(sum);
 		}
-		
+
 		/**
 		 * @{inheritDoc
 		 */
 		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
-			if(stateClass.isInstance(state)) {
+			if (stateClass.isInstance(state)) {
 				return state;
 			} else {
 				return null;
 			}
 		}
 	}
-	
+
 	/**
 	 * This calculates the minimum value of all item states of decimal type.
 	 * 
 	 * @author Kai Kreuzer
 	 * @since 0.7.0
-	 *
+	 * 
 	 */
 	static class Min implements GroupFunction {
-		
-		public Min() {}
+
+		public Min() {
+		}
 
 		/**
 		 * @{inheritDoc
 		 */
 		public State calculate(List<Item> items) {
-			if(items!=null && items.size()>0) {
+			if (items != null && items.size() > 0) {
 				BigDecimal min = null;
-				for(Item item : items) {
+				for (Item item : items) {
 					DecimalType itemState = (DecimalType) item.getStateAs(DecimalType.class);
-					if(itemState!=null) {
-						if(min==null || min.compareTo(itemState.toBigDecimal()) > 0) {
+					if (itemState != null) {
+						if (min == null || min.compareTo(itemState.toBigDecimal()) > 0) {
 							min = itemState.toBigDecimal();
 						}
 					}
 				}
-				if(min!=null) {
+				if (min != null) {
 					return new DecimalType(min);
 				}
 			}
@@ -340,40 +341,41 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		 */
 		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
-			if(stateClass.isInstance(state)) {
+			if (stateClass.isInstance(state)) {
 				return state;
 			} else {
 				return null;
 			}
 		}
-}
+	}
 
 	/**
 	 * This calculates the maximum value of all item states of decimal type.
 	 * 
 	 * @author Kai Kreuzer
 	 * @since 0.7.0
-	 *
+	 * 
 	 */
 	static class Max implements GroupFunction {
-		
-		public Max() {}
+
+		public Max() {
+		}
 
 		/**
 		 * @{inheritDoc
 		 */
 		public State calculate(List<Item> items) {
-			if(items!=null && items.size()>0) {
+			if (items != null && items.size() > 0) {
 				BigDecimal max = null;
-				for(Item item : items) {
+				for (Item item : items) {
 					DecimalType itemState = (DecimalType) item.getStateAs(DecimalType.class);
-					if(itemState!=null) {
-						if(max==null || max.compareTo(itemState.toBigDecimal()) < 0) {
+					if (itemState != null) {
+						if (max == null || max.compareTo(itemState.toBigDecimal()) < 0) {
 							max = itemState.toBigDecimal();
 						}
 					}
 				}
-				if(max!=null) {
+				if (max != null) {
 					return new DecimalType(max);
 				}
 			}
@@ -385,13 +387,57 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		 */
 		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
 			State state = calculate(items);
-			if(stateClass.isInstance(state)) {
+			if (stateClass.isInstance(state)) {
 				return state;
 			} else {
 				return null;
 			}
 		}
 	}
-	
-	
+
+	/**
+	 * This calculates the number of items with the specified state.
+	 * 
+	 * @author Gerhard Riegler
+	 * @since 1.6.0
+	 * 
+	 */
+	static class Count implements GroupFunction {
+		protected final State stateToCount;
+
+		public Count(State stateToCount) {
+			if (stateToCount == null) {
+				throw new IllegalArgumentException("Parameters must not be null!");
+			}
+			this.stateToCount = stateToCount;
+		}
+
+		/**
+		 * @{inheritDoc
+		 */
+		public State calculate(List<Item> items) {
+			long counter = 0;
+			if (items != null) {
+				for (Item item : items) {
+					if (item.getState().equals(stateToCount)) {
+						counter++;
+					}
+				}
+			}
+			return new DecimalType(counter);
+		}
+
+		/**
+		 * @{inheritDoc
+		 */
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
+			State state = calculate(items);
+			if (stateClass.isInstance(state)) {
+				return state;
+			} else {
+				return null;
+			}
+		}
+	}
+
 }
