@@ -168,7 +168,7 @@ public class BinRpcClient implements RpcClient {
 			}
 			throw new IOException("Unknown Result: " + data);
 		} catch (ConnectException cex) {
-			if (HmInterface.WIRED == hmInterface) {
+			if (HmInterface.WIRED == hmInterface || HmInterface.CUXD == hmInterface) {
 				logger.info("Interface {} not available, disabling support.", hmInterface);
 				return null;
 			}
