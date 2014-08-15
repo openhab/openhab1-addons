@@ -168,6 +168,12 @@ public class MiosConnector {
 					new Object[] { config.toProperty(), command.toString(),
 							command.getClass() });
 			return;
+		} else if (newCommand.equals("")) {
+			logger.trace(
+					"invokeCommand: Item '{}' has disabled the use of Command '{}' via it's configuration '{}'",
+					new Object[] { config.getItemName(), command.toString(),
+							config.toProperty() });
+			return;
 		}
 
 		Matcher matcher = DEVICE_PATTERN.matcher(newCommand);
