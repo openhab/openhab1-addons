@@ -22,8 +22,7 @@
 	<name>openHAB ${action-name} Action</name>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<version>${version}-SNAPSHOT</version>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -32,6 +31,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>
