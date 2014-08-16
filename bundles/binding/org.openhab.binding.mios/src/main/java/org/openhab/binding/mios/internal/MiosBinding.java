@@ -59,8 +59,8 @@ import org.slf4j.LoggerFactory;
  * <p>
  * 
  * Overall, the Binding behaves like a "remote control" to a MiOS Unit, and
- * utilizes HTTP-based Long-poll operations to receive updates on changes
- * occurring within that system.
+ * utilizes HTTP-based Long-poll to receive updates on changes occurring within
+ * that system.
  * <p>
  * 
  * All Item updates are received asynchronously via a separate
@@ -522,7 +522,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 						}
 
 						logger.debug(
-								"internalProperyUpdate: About to update itemName '{}' with value '{}'",
+								"internalProperyyUpdate: About to update itemName '{}' with value '{}'",
 								itemName, value);
 
 						eventPublisher.postUpdate(itemName, value);
