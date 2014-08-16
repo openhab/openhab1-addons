@@ -522,7 +522,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 						}
 
 						logger.debug(
-								"internalProperyyUpdate: About to update itemName '{}' with value '{}'",
+								"internalPropertyUpdate: About to update itemName '{}' with value '{}'",
 								itemName, value);
 
 						eventPublisher.postUpdate(itemName, value);
