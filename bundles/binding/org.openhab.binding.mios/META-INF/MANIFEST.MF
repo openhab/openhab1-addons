@@ -29,6 +29,8 @@ Import-Package: org.apache.commons.lang,
 Export-Package: org.openhab.binding.mios
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
+Service-Component: OSGI-INF/activebinding.xml,
+ OSGI-INF/genericbindingprovider.xml,
+ OSGI-INF/genericitemprovider.xml
 Bundle-ClassPath: .,
  lib/async-http-client-1.8.4.jar
