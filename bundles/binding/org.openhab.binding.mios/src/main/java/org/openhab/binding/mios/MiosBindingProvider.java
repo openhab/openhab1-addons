@@ -15,19 +15,38 @@ import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemRegistry;
 
 /**
- * Binding provider interface. Defines how to get properties from a binding
- * configuration.
+ * openHAB Binding Provider interface for MiOS Devices.
+ * 
+ * Defines how to get properties from a MiOS-specific binding configuration.
  * 
  * @author Mark Clark
  * @since 1.6.0
  */
 public interface MiosBindingProvider extends BindingProvider {
+	/**
+	 * Gets the MiOS Unit for the Item {@code itemName}.
+	 * 
+	 * @param itemName
+	 *            the name of the Item.
+	 * 
+	 * @return the name of the MiOS Unit associated with the the Item
+	 *         {@code itemName}
+	 */
 	String getMiosUnitName(String itemName);
 
+	/**
+	 * Gets the Binding property string for the Item {@code itemName}.
+	 * 
+	 * @param itemName
+	 *            the name of the Item.
+	 * 
+	 * @return the property string component for the Binding on the Item
+	 *         {@code itemName}
+	 */
 	String getProperty(String itemName);
 
 	/**
-	 * Returns the Type of the Item identified by {@code itemName}
+	 * Gets the Type of the Item {@code itemName}
 	 * 
 	 * @param itemName
 	 *            the name of the item to find the type for
@@ -38,11 +57,12 @@ public interface MiosBindingProvider extends BindingProvider {
 	public List<String> getItemsForProperty(String property);
 
 	/**
-	 * Return the ItemRegistry (catalog) used by this BindingProvider.
+	 * Gets the ItemRegistry (catalog) used by this BindingProvider.
 	 * 
-	 * The ItemRegistry is injected into the MiosBindingProvider through OSGi
-	 * configuration. This method providers read-only access to the
-	 * ItemRegistry, which is the catalog of Items in use by this system.
+	 * The {@code ItemRegistry} is injected into the {@code MiosBindingProvider}
+	 * through OSGi configuration. This method provider read-only access to the
+	 * {@code ItemRegistry}, which is the catalog of Items in use by this
+	 * system.
 	 * 
 	 * @return the ItemRegistry associated with this BindingProvider.
 	 */

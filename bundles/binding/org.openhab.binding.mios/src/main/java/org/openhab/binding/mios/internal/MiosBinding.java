@@ -41,11 +41,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This refresh service for the MiOS binding is used to periodically check to
- * ensure all MiOS connections are still open and alive.
+ * The MiOS Binding is responsible for the co-ordination of changes to openHAB
+ * Items form the corresponding/bound information from the MiOS Unit.
  * 
- * All item updates are received asynchronously via the web socket All item
- * commands are sent via the web socket
+ * The Binding allows openHAB Items to be bound to the following types of
+ * information from the MiOS Unit:
+ * <p>
+ * 
+ * <ul>
+ * <li>Device Attributes & State Variables
+ * <li>Scene Attributes
+ * <li>System Attributes
+ * </ul>
+ * 
+ * It follows the general principals for interaction outlined in {@link http
+ * ://wiki.micasaverde.com/index.php/UI_Simple MiOS UI Integration}.
+ * <p>
+ * 
+ * Overall, the Binding behaves like a "remote control" to a MiOS Unit, and
+ * utilizes HTTP-based Long-poll operations to receive updates on changes
+ * occurring within that system.
+ * <p>
+ * 
+ * All Item updates are received asynchronously via a separate
+ * {@link MiosPollCall Poll Call} object that has the necessary HTTP Long-Poll
+ * logic using a {@link MiosUnit MiOS Unit} to determine the location of the
+ * MiOS Unit.
  * 
  * @author Mark Clark
  * @since 1.6.0
@@ -64,12 +85,25 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	}
 
 	/**
-	 * The refresh interval used to check for lost connections.
+	 * Invoked by OSGi Framework, once per instance, during the Binding
+	 * activation process.
+	 * 
+	 * OSGi is configured to do this in OSGI-INF/activebinding.xml
 	 */
 	public void activate() {
+
 		logger.debug(getName() + " activate()");
 	}
 
+	/**
+	 * Invoked by the OSGi Framework, once per instance, during the Binding
+	 * deactivation process.
+	 * 
+	 * Internally this is used to close out any resources used by the MiOS
+	 * Binding.
+	 * 
+	 * OSGi is configured to do this in OSGI-INF/activebinding.xml
+	 */
 	public void deactivate() {
 		logger.debug(getName() + " deactivate()");
 
@@ -142,7 +176,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		MiosConnector connector = getMiosConnector(unitName);
 	}
 
-	public String getMiosUnitName(String itemName) {
+	private String getMiosUnitName(String itemName) {
 		logger.trace("getMiosUnitName: start itemName '{}'", itemName);
 
 		for (BindingProvider provider : providers) {
@@ -150,20 +184,6 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 				if (provider.getItemNames().contains(itemName)) {
 					return ((MiosBindingProvider) provider)
 							.getMiosUnitName(itemName);
-				}
-			}
-		}
-		return null;
-	}
-
-	public String getProperty(String itemName) {
-		logger.trace("getProperty: start itemName '{}'", itemName);
-
-		for (BindingProvider provider : providers) {
-			if (provider instanceof MiosBindingProvider) {
-				if (provider.getItemNames().contains(itemName)) {
-					return ((MiosBindingProvider) provider)
-							.getProperty(itemName);
 				}
 			}
 		}
@@ -293,6 +313,9 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		// No need to implement this for MiOS Bridge Binding since anything
 		// that needs to be sent back to the MiOS System will be done via a
 		// Command.
+		//
+		// We leave this here to aid debugging. We get more
+		// information out of the above logger call than we get from openHAB.
 	}
 
 	/**
@@ -411,10 +434,10 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	/**
 	 * Push a value into all openHAB Bindings that match a given MiOS property
 	 * name (from the binding).
-	 * 
+	 * <p>
 	 * In the process, this routine will perform Datatype conversions from Java
 	 * types to openHAB's type system. These conversions are as follows:
-	 * 
+	 * <p>
 	 * <ul>
 	 * <li>String -> StringType
 	 * <li>Integer -> DecimalType

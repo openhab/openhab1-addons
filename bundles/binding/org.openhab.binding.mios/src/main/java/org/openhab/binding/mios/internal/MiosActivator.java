@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Extension of the default OSGi bundle activator
+ * Extension of the default OSGi bundle activator.
  * 
  * @author Mark Clark
  * @since 1.6.0
@@ -26,7 +26,10 @@ public final class MiosActivator implements BundleActivator {
 	private static BundleContext context;
 
 	/**
-	 * Called whenever the OSGi framework starts our bundle
+	 * Called whenever the OSGi framework starts our bundle.
+	 * 
+	 * @param bc
+	 *            the OSGi BundleContext associated with our openHAB Binding.
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
@@ -34,7 +37,10 @@ public final class MiosActivator implements BundleActivator {
 	}
 
 	/**
-	 * Called whenever the OSGi framework stops our bundle
+	 * Called whenever the OSGi framework stops our bundle.
+	 * 
+	 * @param bc
+	 *            the OSGi BundleContext associated with our openHAB Binding.
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
@@ -42,7 +48,12 @@ public final class MiosActivator implements BundleActivator {
 	}
 
 	/**
-	 * Returns the bundle context of this bundle
+	 * Returns the OSGi BundleContext of this bundle.
+	 * 
+	 * The OSGi BundleContext is needed to talk with other services running
+	 * under OSGi.
+	 * <p>
+	 * eg. openHAB's {@code TransformationService}.
 	 * 
 	 * @return the bundle context
 	 */

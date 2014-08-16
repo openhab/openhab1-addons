@@ -63,7 +63,7 @@ public class MiosItemProvider implements ItemProvider {
 	 */
 	public void addItemFactory(ItemFactory factory) {
 		itemFactories.add(factory);
-		dispatchBindingsPerItemType(null, factory.getSupportedItemTypes());
+// TODO		dispatchBindingsPerItemType(null, factory.getSupportedItemTypes());
 	}
 	
 	/**
