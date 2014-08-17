@@ -41,11 +41,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The MiOS Binding is responsible for the co-ordination of changes to openHAB
- * Items form the corresponding/bound information from the MiOS Unit.
+ * The MiOS Binding is responsible for coordinating changes to openHAB Items
+ * from the corresponding/bound information from each configured MiOS Unit.
  * 
- * The Binding allows openHAB Items to be bound to the following types of
- * information from the MiOS Unit:
+ * The Binding allows information from a MiOS Unit to be bound to openHAB Items,
+ * as well a allowing openHAB Commands to be propagated back to the MiOS Unit
+ * under control.
+ * 
+ * The following types of information from a MiOS Unit can be bound to openHAB
+ * Items:
  * <p>
  * 
  * <ul>
@@ -53,20 +57,41 @@ import org.slf4j.LoggerFactory;
  * <li>Scene Attributes
  * <li>System Attributes
  * </ul>
- * 
- * It follows the general principals for interaction outlined in {@link http
- * ://wiki.micasaverde.com/index.php/UI_Simple MiOS UI Integration}.
  * <p>
  * 
- * Overall, the Binding behaves like a "remote control" to a MiOS Unit, and
- * utilizes HTTP-based Long-poll to receive updates on changes occurring within
- * that system.
+ * Similarly, through a configurable set of openHAB Transformations, any
+ * Commands sent to these Items can be proxied back to the corresponding MiOS
+ * Unit.
  * <p>
  * 
- * All Item updates are received asynchronously via a separate
- * {@link MiosPollCall Poll Call} object that has the necessary HTTP Long-Poll
- * logic using a {@link MiosUnit MiOS Unit} to determine the location of the
- * MiOS Unit.
+ * Data flowing between the MiOS Unit and openHAB can be transformed as it flows
+ * between the two systems. This transformation is configurable, and is
+ * expressed in the Item Binding using standard openHAB
+ * {@code TransformationService} expressions.
+ * <p>
+ * 
+ * Example MAP-based Transformation files are provided for commonly required
+ * transformations. <br>
+ * eg. For Switch Data flowing into openHAB {@code MAP(miosSwitchIn.map)}, and
+ * for Switch Commands flowing in to MiOS {@code MAP(miosSwitchOut.map)}
+ * <p>
+ * 
+ * The Binding follows the general interaction principals outlined in the MiOS
+ * {@link <a href="http://wiki.micasaverde.com/index.php/UI_Simple">UI Simple</a>}
+ * documentation.
+ * <p>
+ * 
+ * In effect, the binding behaves like a "remote control" to one or more
+ * configured MiOS Units, utilizing a HTTP-based Long-poll to receive updates
+ * occurring within each Unit, and transforming them into corresponding updates
+ * to the openHAB Items that have been bound.
+ * <p>
+ * 
+ * All updates are received asynchronously from the MiOS Units. This interaction
+ * is managed by a per MiOS Unit {@link MiosPollCall Poll Call} object that
+ * utilized a {@link MiosUnit MiOS Unit} configuration object to determine the
+ * location of the MiOS Unit.
+ * <p>
  * 
  * @author Mark Clark
  * @since 1.6.0
@@ -116,7 +141,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	}
 
 	/**
-	 * @{inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
@@ -322,13 +347,13 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> config)
+	public void updated(Dictionary<String, ?> properties)
 			throws ConfigurationException {
-		logger.trace(getName() + "Mios updated()");
+		logger.trace(getName() + "MiOS updated()");
 
 		Map<String, MiosUnit> units = new HashMap<String, MiosUnit>();
 
-		Enumeration<String> keys = config.keys();
+		Enumeration<String> keys = properties.keys();
 
 		while (keys.hasMoreElements()) {
 			String key = keys.nextElement();
@@ -347,7 +372,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 			// in bindings to make things simpler for single-unit owners.
 			//
 			String unitName = null;
-			String value = ((String) config.get(key)).trim();
+			String value = ((String) properties.get(key)).trim();
 			String[] parts = key.split("\\.", 2);
 
 			if (parts.length != 1) {
@@ -432,24 +457,24 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	}
 
 	/**
-	 * Push a value into all openHAB Bindings that match a given MiOS property
-	 * name (from the binding).
+	 * Push a value into all openHAB Items that match a given MiOS Property name
+	 * (from the Item Binding declaration).
 	 * <p>
 	 * In the process, this routine will perform Datatype conversions from Java
 	 * types to openHAB's type system. These conversions are as follows:
 	 * <p>
 	 * <ul>
-	 * <li>String -> StringType
-	 * <li>Integer -> DecimalType
-	 * <li>Double -> DecimalType
-	 * <li>Boolean -> StringType (true == ON, false == OFF)
-	 * <li>Calendar -> DateTimeType
+	 * <li>{@code String} -> {@code StringType}
+	 * <li>{@code Integer} -> {@code DecimalType}
+	 * <li>{@code Double} -> {@code DecimalType}
+	 * <li>{@code Boolean} -> {@code StringType} (true == ON, false == OFF)
+	 * <li>{@code Calendar} -> {@code DateTimeType}
 	 * </ul>
 	 * 
 	 * @param property
-	 *            the MiOS property name
+	 *            the MiOS Property name
 	 * @param value
-	 *            the value to push, can be Double/String/Calendar (only)
+	 *            the value to push, per the supported types.
 	 * @exception IllegalArgumentException
 	 *                thrown if the value isn't one of the supported types.
 	 */
@@ -479,7 +504,9 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		int bound = 0;
 
 		if (value == null) {
-			logger.trace("Value is null for Property '{}', ignored.", property);
+			logger.trace(
+					"internalPropertyUpdate: Value is null for Property '{}', ignored.",
+					property);
 			return;
 		}
 

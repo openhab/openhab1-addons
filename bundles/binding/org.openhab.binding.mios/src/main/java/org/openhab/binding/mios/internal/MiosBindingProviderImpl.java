@@ -31,30 +31,48 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
+ * Each MiOS Binding declaration consists of a comma-separated list of elements,
+ * of the form <name>:<value>, that are expressed in a specific order.
+ * <p>
+ * 
+ * The order is:
+ * <ul>
+ * <li>{@code unit:}id - the name of the MiOS Unit, declared in the openHAB
+ * configuration. The value is a case-sensitive MiOS Unit "id" [alphaNumeric]
+ * String.
+ * 
+ * <li>{@code <type>:<id>} - the type of entity bound at the MiOS Unit. The
+ * value is a MiOS-specific identifier Integer. Type names include "
+ * {@code device}", " {@code scene}", and "{@code system}" and the corresponding
+ * {@code id} used within the MiOS Unit.
+ * 
+ * <li>{@code command:<transform>} - a Transformation expression to map openHAB
+ * Command data to MiOS UPnP calls.
+ * 
+ * <li>{@code in:<transform>} - a Transformation expression for inbound data
+ * from the MiOS Unit for openHAB.
+ * 
+ * <li>{@code out:<transform>} - a Transformation expression for outbound data
+ * from openHAB for the MiOS Unit.
+ * </ul>
+ * <p>
+ * Example MiOS binding expressions look like the following:
+ * <ul>
+ * <li>
+ * A read-only, binding expression with no mappings applied<br>
+ * {@code mios="unit:house,device:228/service/AlarmPartition2/DetailedArmMode"}
+ * <li>
+ * A read-write, binding expression with input & output value and command
+ * transformations<br>
+ * {@code mios="unit:house,device:6/service/SwitchPower1/Status,command:ON|OFF,in:MAP(miosSwitchIn.map),out:MAP(miosSwitchOut.map)"}
+ * </ul>
+ * 
  * @author Mark Clark
  * @since 1.6.0
  */
 public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 		implements MiosBindingProvider {
 
-	/*
-	 * The Binding declaration consists of the following comma-separated
-	 * elements of the form <name>:<value>, in a specific order.
-	 * 
-	 * The order is unit:id, {type}:id, extraStuff
-	 * 
-	 * "unit" - the name of the MiOS unit, declared in the openHAB
-	 * configuration. The value is a case-sensitive MiOS unit "id"
-	 * [alphaNumeric] String.
-	 * 
-	 * "type" - the type of entity bound at the MiOS unit. The value is a
-	 * MiOS-specific identifier Integer. Type names include "device", "scene",
-	 * "system" and "room".
-	 * 
-	 * "extraStuff" - type-specific content/formatting options for the binding.
-	 * Is an arbitrary value that is passed through for the specific MiOS
-	 * Binding type to interpret.
-	 */
 	// TODO: Fix parsing for system to be tighter. We "opened" the parsing for
 	// the others to permit no "id" field, but that's not value
 	private static final Pattern BINDING_PATTERN = Pattern
@@ -75,11 +93,25 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 	// unsetItemRegistry methods.
 	private ItemRegistry itemRegistry;
 
+	/**
+	 * Invoked by the OSGi Framework.
+	 * 
+	 * This method is invoked by OSGi during the initialization of the
+	 * MiOSBinding, so we have subsequent access to the ItemRegistry (needed to
+	 * get values from Items in openHAB)
+	 */
 	public void setItemRegistry(ItemRegistry itemRegistry) {
 		logger.debug("setItemRegistry: called");
 		this.itemRegistry = itemRegistry;
 	}
 
+	/**
+	 * Invoked by the OSGi Framework.
+	 * 
+	 * This method is invoked by OSGi during the initialization of the
+	 * MiOSBinding, so we have subsequent access to the ItemRegistry (needed to
+	 * get values from Items in openHAB)
+	 */
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
 		logger.debug("unsetItemRegistry: called");
 		this.itemRegistry = null;
@@ -96,15 +128,14 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 		return "mios";
 	}
 
-	// TODO Add per-BindingConfig validation rule for MiOS devices.
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		// Now done at the BindingConfig level, just after parsing the
+		// Validation is done at the BindingConfig level, just after parsing the
 		// bindingConfig String inside processBindingConfiguration.
-		//
-		// This method is pointless, since we only have the string form
-		// of the Binding Config, and it would require us to parse it anyhow.
 	}
 
 	/**
@@ -174,8 +205,7 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 				"parseBindingConfig: in: (Type '{}' id '{}' Stuff '{}'), command: ('{}')",
 				new Object[] { inType, inId, inStuff, commandThing });
 
-		// Inline a factory for now...
-		// FIXME
+		// FIXME: Inline a factory for now...
 		if (inType.equals("device")) {
 			return DeviceBindingConfig.create(context, item.getName(),
 					unitName, Integer.parseInt(inId), inStuff, item.getClass(),
@@ -201,19 +231,26 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 		return (MiosBindingConfig) bindingConfigs.get(itemName);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getMiosUnitName(String itemName) {
 		MiosBindingConfig config = getMiosBindingConfig(itemName);
 		return (config == null) ? null : config.getUnitName();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String getProperty(String itemName) {
 		MiosBindingConfig config = getMiosBindingConfig(itemName);
 		return (config == null) ? null : config.toProperty();
 	}
 
 	/**
-	 * @{inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Class<? extends Item> getItemType(String itemName) {
@@ -221,6 +258,9 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 		return (config == null) ? null : config.getItemType();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<String> getItemsForProperty(String property) {
 		ArrayList<String> result = new ArrayList<String>();
