@@ -33,6 +33,7 @@ public abstract class AbstractEnumTypeConverter<T extends State> extends Abstrac
 		stateInvertDevices.add(new StateInvertInfo("ZEL STG RM FFK"));
 		stateInvertDevices.add(new StateInvertInfo("HM-SEC-TIS"));
 		stateInvertDevices.add(new StateInvertInfo("HMW-IO-12-SW14-DR", 15, 26));
+		stateInvertDevices.add(new StateInvertInfo("BC-SC-RD-WM"));
 	}
 
 	/**
