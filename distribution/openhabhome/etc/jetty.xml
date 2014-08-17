@@ -63,7 +63,23 @@
 		</Arg>
 	</Call>
 	
-    
+
+    <!-- create and configure the redirect handler -->
+    <New id="Rewrite" class="org.eclipse.jetty.rewrite.handler.RewriteHandler">
+      <Set name="rewriteRequestURI">true</Set>
+      <Set name="rewritePathInfo">false</Set>
+      <Set name="originalPathAttribute">requestedPath</Set>
+ 
+      <Call name="addRule">
+        <Arg>
+          <New class="org.eclipse.jetty.rewrite.handler.RedirectRegexRule">
+            <Set name="regex">/$</Set>
+            <Set name="replacement">/static/index.html</Set>
+          </New>
+        </Arg>
+      </Call>
+    </New>
+ 
     <!-- =========================================================== -->
     <!-- Set handler Collection Structure                            --> 
     <!-- =========================================================== -->
@@ -72,6 +88,9 @@
       <New id="Handlers" class="org.eclipse.jetty.server.handler.HandlerCollection">
         <Set name="handlers">
          <Array type="org.eclipse.jetty.server.Handler">
+           <Item>   
+             <Ref id="Rewrite" />
+           </Item>
            <Item>
              <New id="Contexts" class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
            </Item>
@@ -187,5 +206,4 @@
       <Arg>java.naming.factory.url.pkgs</Arg>
       <Arg><Property name="java.naming.factory.url.pkgs" default="org.eclipse.jetty.jndi"/></Arg>
     </Call>
-
 </Configure>
