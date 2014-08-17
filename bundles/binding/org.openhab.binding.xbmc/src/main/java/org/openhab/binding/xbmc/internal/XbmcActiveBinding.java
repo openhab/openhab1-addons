@@ -229,6 +229,8 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			if (connector.isConnected()) {
 				// we are still connected but send a ping to make sure
 				connector.ping();
+				// refresh all players
+				connector.updatePlayerStatus();
 			} else {
 				// broken connection so attempt to reconnect
 				logger.debug("Broken connection found for '{}', attempting to reconnect...", entry.getKey());
