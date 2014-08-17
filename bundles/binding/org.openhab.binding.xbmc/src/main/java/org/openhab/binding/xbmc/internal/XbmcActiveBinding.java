@@ -272,6 +272,8 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			// TODO: handle other commands
 			if (property.equals("Player.PlayPause"))
 				connector.playerPlayPause();
+			if (property.equals("Player.Open"))
+				connector.playerOpen(command.toString());
 			if (property.equals("Player.Stop"))			
 				connector.playerStop();
 			if (property.equals("GUI.ShowNotification"))
