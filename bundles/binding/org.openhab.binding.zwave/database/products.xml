@@ -13,6 +13,19 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+		<Id>014F</Id>
+		<Name>Linear</Name>
+		<Product>
+			<Reference>
+				<Type>4457</Type>
+				<Id>3034</Id>
+			</Reference>
+			<Model>WD500Z-1</Model>
+			<Label lang="en">Wall Dimmer Switch</Label>
+			<ConfigFile>linear/wdz500-1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0150</Id>
 		<Name>Cooper Wiring Devices (!!0150!!)</Name>
 		<Product>
