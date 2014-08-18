@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
  * 
  * The order is:
  * <ul>
- * <li>{@code unit:}id - the name of the MiOS Unit, declared in the openHAB
- * configuration. The value is a case-sensitive MiOS Unit "id" [alphaNumeric]
+ * <li>{@code unit:<name>} - the name of the MiOS Unit, declared in the openHAB
+ * configuration. The value is a case-sensitive MiOS Unit name [alphaNumeric]
  * String.
  * 
  * <li>{@code <type>:<id>} - the type of entity bound at the MiOS Unit. The

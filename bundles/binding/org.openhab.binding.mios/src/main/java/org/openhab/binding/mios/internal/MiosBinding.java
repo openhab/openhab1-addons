@@ -88,8 +88,8 @@ import org.slf4j.LoggerFactory;
  * <p>
  * 
  * All updates are received asynchronously from the MiOS Units. This interaction
- * is managed by a per MiOS Unit {@link MiosPollCall Poll Call} object that
- * utilized a {@link MiosUnit MiOS Unit} configuration object to determine the
+ * is managed by a per MiOS Unit {@link MiosConnector} Polling Thread object that
+ * utilizes a {@link MiosUnit MiOS Unit} configuration object to determine the
  * location of the MiOS Unit.
  * <p>
  * 
