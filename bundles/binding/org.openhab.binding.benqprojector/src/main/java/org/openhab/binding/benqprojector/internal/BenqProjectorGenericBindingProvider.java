@@ -71,7 +71,7 @@ public class BenqProjectorGenericBindingProvider extends AbstractGenericBindingP
 		default:
 			throw new BindingConfigParseException("Unable to parse '"+bindingConfig+"' to create a valid item binding.");
 		}
-		logger.debug("Additing "+item.getName()+" as "+config.mode);
+		logger.debug("Adding "+item.getName()+" as "+config.mode);
 		addBindingConfig(item, config);		
 	}	
 	

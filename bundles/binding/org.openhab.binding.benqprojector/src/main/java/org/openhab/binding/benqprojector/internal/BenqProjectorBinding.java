@@ -21,6 +21,7 @@ import org.openhab.binding.benqprojector.BenqProjectorBindingProvider;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -69,6 +70,11 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 	 */
 	private long refreshInterval = 60000;
 	
+	/**
+	 * Min & Max volume limits
+	 */
+	private final int MAX_VOLUME = 10;
+	private final int MIN_VOLUME = 0;
 	
 	public BenqProjectorBinding() {
 	}
@@ -130,23 +136,17 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
+		for (BenqProjectorBindingProvider binding : super.providers)
+		{	
+			if (binding.providesBindingFor(itemName))
+			{
+				logger.debug("Process command "+command+" for "+itemName);
+				BenqProjectorBindingConfig cfg = binding.getConfigForItemName(itemName);
+				sendCommandToProjector(cfg, command);
+			}
+		}
 	}
 	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
-	}
-		
 	/**
 	 * @{inheritDoc}
 	 */
@@ -186,7 +186,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 		}		
 	}
 	
-	boolean setupConnection()
+	private boolean setupConnection()
 	{		
 		boolean setupOK = false;
 		if (this.projectorSocket == null && this.networkMode)
@@ -224,7 +224,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 	 * @param response
 	 * @return On or Off state. Undefined if invalid.
 	 */
-	State parseOnOffQuery(String response)
+	private State parseOnOffQuery(String response)
 	{
 		if (response.contains("OFF"))
 		{
@@ -237,7 +237,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 		return UnDefType.UNDEF;
 	}
 	
-	State parseNumberQuery(String response)
+	private State parseNumberQuery(String response)
 	{		
 		String[] responseParts = response.split("=");
 		if (responseParts.length == 2)
@@ -251,7 +251,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 	 * Run query on the projector
 	 * @param cfg Configuration of item to run query on
 	 */
-	State queryProjector(BenqProjectorBindingConfig cfg)
+	private State queryProjector(BenqProjectorBindingConfig cfg)
 	{
 		State s = UnDefType.UNDEF;
 		String resp = sendCommandExpectResponse(cfg.mode.getItemModeCommandQueryString());
@@ -268,7 +268,84 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 		return s;
 	}
 	
-	String sendCommandExpectResponse(String cmd)
+	private void sendCommandToProjector(BenqProjectorBindingConfig cfg, Command c)
+	{
+		Boolean cmdSent = false;
+		switch (cfg.mode)
+		{
+		case POWER:
+		case MUTE:
+			if (c instanceof OnOffType)
+			{
+				if ((OnOffType)c == OnOffType.ON)
+				{
+					sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("ON"));
+					cmdSent = true;
+				}
+				else if ((OnOffType)c == OnOffType.OFF)
+				{
+					sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("OFF"));
+					cmdSent = true;
+				}
+			}
+			break;
+		case VOLUME:
+			if (c instanceof DecimalType)
+			{
+				/* get current volume */
+				State currentVolState = queryProjector(cfg);
+				int currentVol = ((DecimalType)currentVolState).intValue();
+				
+				int volLevel = ((DecimalType)c).intValue();
+				if (volLevel > this.MAX_VOLUME)
+				{
+					volLevel = this.MAX_VOLUME;
+				}
+				else if (volLevel < this.MIN_VOLUME)
+				{
+					volLevel = this.MIN_VOLUME;
+				}
+				
+				if (currentVol == volLevel) cmdSent = true;
+				
+				while (currentVol != volLevel)
+				{
+					if (currentVol < volLevel)
+					{
+						sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("+"));
+						currentVol++;
+						cmdSent = true;
+					}
+					else
+					{
+						sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("-"));						
+						currentVol--;
+						cmdSent = true;
+					}
+				}					
+			} else if (c instanceof IncreaseDecreaseType)
+			{
+				if ((IncreaseDecreaseType)c == IncreaseDecreaseType.INCREASE)
+				{
+					sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("+"));
+					cmdSent = true;
+				}
+				else if ((IncreaseDecreaseType)c == IncreaseDecreaseType.DECREASE)
+				{
+					sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("-"));
+					cmdSent = true;
+				}
+			}
+			break;
+		}
+				
+		if (cmdSent == false)
+		{
+			logger.error("Unable to convert item command to projector state: Command="+c);
+		}
+	}
+	
+	private String sendCommandExpectResponse(String cmd)
 	{	
 		String respStr="";
 		String tmp;
