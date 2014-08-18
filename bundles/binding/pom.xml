@@ -119,5 +119,4 @@
     <module>org.openhab.binding.wemo</module>
     <module>org.openhab.binding.lightwaverf</module>
   </modules>
-
 </project>
