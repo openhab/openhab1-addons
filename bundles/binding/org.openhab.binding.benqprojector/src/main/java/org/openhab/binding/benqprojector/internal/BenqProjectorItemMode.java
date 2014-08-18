@@ -18,7 +18,8 @@ package org.openhab.binding.benqprojector.internal;
 public enum BenqProjectorItemMode {
 	
 	POWER("pow"),
-	MUTE("mute");
+	MUTE("mute"),
+	VOLUME("vol");
 	
 	private final String command;
 	

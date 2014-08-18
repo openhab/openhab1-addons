@@ -20,6 +20,7 @@ import org.openhab.binding.benqprojector.BenqProjectorBindingProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -179,7 +180,8 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 					this.networkHost = deviceIdParts[0];
 					this.networkPort = Integer.parseInt(deviceIdParts[1]);
 				}
-				setProperlyConfigured(setupConnection());		
+				setProperlyConfigured(true);
+				setupConnection();
 			}				
 		}		
 	}
@@ -235,6 +237,16 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 		return UnDefType.UNDEF;
 	}
 	
+	State parseNumberQuery(String response)
+	{		
+		String[] responseParts = response.split("=");
+		if (responseParts.length == 2)
+		{
+			return new DecimalType( Integer.parseInt(responseParts[1].substring(0, responseParts[1].length()-1)));
+		}
+		return UnDefType.UNDEF; 
+	}
+	
 	/**
 	 * Run query on the projector
 	 * @param cfg Configuration of item to run query on
@@ -248,6 +260,9 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 		case POWER:
 		case MUTE:
 			s = parseOnOffQuery(resp);
+			break;
+		case VOLUME:
+			s = parseNumberQuery(resp);
 			break;
 		}
 		return s;
