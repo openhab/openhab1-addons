@@ -9,9 +9,7 @@
 package org.openhab.binding.benqprojector.internal;
 
 import org.openhab.binding.benqprojector.BenqProjectorBindingProvider;
-import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -38,11 +36,11 @@ public class BenqProjectorGenericBindingProvider extends AbstractGenericBindingP
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-		//	throw new BindingConfigParseException("item '" + item.getName()
-		//			+ "' is of type '" + item.getClass().getSimpleName()
-		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-		//}
+		if (!(item instanceof SwitchItem )) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only Switch Items are allowed - please check your *.items configuration");
+		}
 	}
 	
 	/**
@@ -53,15 +51,26 @@ public class BenqProjectorGenericBindingProvider extends AbstractGenericBindingP
 		super.processBindingConfiguration(context, item, bindingConfig);
 		BenqProjectorBindingConfig config = new BenqProjectorBindingConfig();
 		
-		//parse bindingconfig here ...
+		switch (bindingConfig.toLowerCase())
+		{
+		case "power":
+			config.mode = BenqProjectorItemMode.POWER;
+			break;
+		case "mute":
+			config.mode = BenqProjectorItemMode.MUTE;
+			break;
+		default:
+			throw new BindingConfigParseException("Unable to parse '"+bindingConfig+"' to create a valid item binding.");
+		}
 		
 		addBindingConfig(item, config);		
+	}	
+	
+	public BenqProjectorBindingConfig getConfigForItemName(String itemName) {
+		BenqProjectorBindingConfig config = null;
+		if (super.bindingConfigs.containsKey(itemName)) {
+			config = (BenqProjectorBindingConfig) super.bindingConfigs.get(itemName);
+		}
+		return config;
 	}
-	
-	
-	class BenqProjectorBindingConfig implements BindingConfig {
-		// put member fields here which holds the parsed values
-	}
-	
-	
 }

@@ -6,16 +6,17 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.benqprojector;
+package org.openhab.binding.benqprojector.internal;
 
-import org.openhab.binding.benqprojector.internal.BenqProjectorBindingConfig;
-import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.binding.BindingConfig;
 
 /**
+ * Hold configuration information for BenQ projector
+ * binding configurations
+ * 
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
-public interface BenqProjectorBindingProvider extends BindingProvider {
-
-	public BenqProjectorBindingConfig getConfigForItemName(String itemName);
+public class BenqProjectorBindingConfig implements BindingConfig {
+	BenqProjectorItemMode mode;
 }
