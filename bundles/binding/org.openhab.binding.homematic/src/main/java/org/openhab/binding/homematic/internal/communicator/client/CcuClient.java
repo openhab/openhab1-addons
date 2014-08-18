@@ -103,6 +103,7 @@ public class CcuClient extends BaseHomematicClient {
 	public void registerCallback() throws HomematicClientException {
 		rpcClient.init(getDefaultInterface());
 		rpcClient.init(HmInterface.WIRED);
+		rpcClient.init(HmInterface.CUXD);
 	}
 
 	/**
@@ -112,6 +113,7 @@ public class CcuClient extends BaseHomematicClient {
 	public void releaseCallback() throws HomematicClientException {
 		rpcClient.release(getDefaultInterface());
 		rpcClient.release(HmInterface.WIRED);
+		rpcClient.release(HmInterface.CUXD);
 	}
 
 	/**
