@@ -8,13 +8,10 @@
  */
 package org.openhab.binding.astro.internal.job;
 
-import org.openhab.binding.astro.AstroBindingProvider;
+import org.openhab.binding.astro.internal.bus.PlanetPublisher;
 import org.openhab.binding.astro.internal.common.AstroContext;
-import org.openhab.binding.astro.internal.common.AstroType;
-import org.openhab.binding.astro.internal.config.AstroBindingConfig;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.types.State;
 import org.quartz.Job;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -28,34 +25,29 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractBaseJob implements Job {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractBaseJob.class);
+	protected AstroContext context = AstroContext.getInstance();
+	protected PlanetPublisher planetPublisher = PlanetPublisher.getInstance();
 
 	@Override
 	public void execute(JobExecutionContext jobContext) throws JobExecutionException {
-		logger.debug("Starting Astro " + this.getClass().getSimpleName());
-		executeJob();
-	}
+		JobDataMap jobDataMap = jobContext.getJobDetail().getJobDataMap();
 
-	/**
-	 * Publishes the State to all AstroType bindings. For sunrise, noon and
-	 * sunset a OFF is published immediately after ON.
-	 */
-	protected void publishState(AstroType publishType, State state) {
-		AstroContext context = AstroContext.getInstance();
-		for (AstroBindingProvider provider : context.getProviders()) {
-			for (String itemName : provider.getItemNames()) {
-				AstroBindingConfig config = provider.getBindingFor(itemName);
-				if (config != null && config.getType() == publishType) {
-					context.getEventPublisher().postUpdate(itemName, state);
-					if (state.getClass() == OnOffType.class) {
-						context.getEventPublisher().postUpdate(itemName, OnOffType.OFF);
-					}
-				}
+		if (logger.isDebugEnabled()) {
+			String itemName = jobDataMap.getString("itemName");
+			if (itemName != null) {
+				logger.debug("Starting Astro {} for item {}", this.getClass().getSimpleName(), itemName);
+			} else {
+				logger.debug("Starting Astro {}", this.getClass().getSimpleName());
+
 			}
 		}
+
+		executeJob(jobDataMap);
 	}
 
 	/**
 	 * Method to override by the different jobs to be executed.
 	 */
-	protected abstract void executeJob();
+	protected abstract void executeJob(JobDataMap jobDataMap);
+
 }

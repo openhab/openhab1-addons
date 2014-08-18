@@ -141,6 +141,23 @@ public class HueBulb {
 		return (int) Math.round((100.0 / 255.0) * this.brightness);
 
 	}
+	
+	/**
+	 * Set bulb ON/OFF without changing the brightness
+	 * @param on
+	 * 			true	turn bulb on
+	 * 			false	turn bulb off
+	 */
+	
+	public boolean switchOn(boolean powerOn) {
+		this.isOn = powerOn;
+		if(powerOn) {
+			executeMessage("{\"on\":true}");
+		} else {
+			executeMessage("{\"on\":false}");
+		}
+		return true;
+	}
 
 	/**
 	 * Increases the color temperature of the bulb by the given amount to a

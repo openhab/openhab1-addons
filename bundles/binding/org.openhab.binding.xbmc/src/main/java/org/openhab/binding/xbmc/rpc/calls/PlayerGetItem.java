@@ -54,6 +54,8 @@ public class PlayerGetItem extends RpcCall {
 		for (String property : properties) {
 			if (property.equals("Player.Type"))
 				continue;
+			if (property.equals("Player.Label"))
+				continue;
 			String paramProperty = getParamProperty(property);
 			paramProperties.add(paramProperty);
 		}

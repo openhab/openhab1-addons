@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>org.openhab.bundles</groupId>
-    <artifactId>binding</artifactId>
-    <version>1.6.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>binding</artifactId>
+		<version>1.6.0-SNAPSHOT</version>
+	</parent>
 
-  <name>openHAB Homematic Binding</name>
+	<name>openHAB Homematic Binding</name>
 
-  <properties>
-    <bundle.symbolicName>org.openhab.binding.homematic</bundle.symbolicName>
-    <bundle.namespace>org.openhab.binding.homematic</bundle.namespace>
-    <deb.name>openhab-addon-binding-homematic</deb.name>
-    <deb.description>${project.name}</deb.description>
-  </properties>
+	<properties>
+		<bundle.symbolicName>org.openhab.binding.homematic</bundle.symbolicName>
+		<bundle.namespace>org.openhab.binding.homematic</bundle.namespace>
+		<deb.name>openhab-addon-binding-homematic</deb.name>
+		<deb.description>${project.name}</deb.description>
+	</properties>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.binding</groupId>
-  <artifactId>org.openhab.binding.homematic</artifactId>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.binding</groupId>
+	<artifactId>org.openhab.binding.homematic</artifactId>
 
-  <packaging>eclipse-plugin</packaging>
+	<packaging>eclipse-plugin</packaging>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.vafer</groupId>
-        <artifactId>jdeb</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

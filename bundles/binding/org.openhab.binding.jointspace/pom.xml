@@ -23,7 +23,6 @@
 
 	<packaging>eclipse-plugin</packaging>
 
-
 	<build>
 		<plugins>
 			<plugin>

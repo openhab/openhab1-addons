@@ -12,7 +12,7 @@
 		<bundle.symbolicName>org.openhab.binding.omnilink</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.omnilink</bundle.namespace>
 		<deb.name>openhab-addon-binding-omnilink</deb.name>
-                <deb.description>${project.name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -23,14 +23,13 @@
 
 	<packaging>eclipse-plugin</packaging>
 
-	 <build>
-                <plugins>
-                        <plugin>
-                                <groupId>org.vafer</groupId>
-                                <artifactId>jdeb</artifactId>
-                        </plugin>
-                </plugins>
-        </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
-
-	</project>
+</project>

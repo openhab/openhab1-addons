@@ -120,7 +120,7 @@ public class DeviceFeature implements StatePublisher {
 	}
 	
 	public String	 	getName()			{ return m_name; }
-	public QueryStatus	getQueryStatus()	{ return m_queryStatus; }
+	public synchronized QueryStatus	getQueryStatus()	{ return m_queryStatus; }
 	public String		getParameter(String p)	{ return m_parameters.get(p); }
 	public InsteonDevice getDevice() 		{ return m_device; }
 	public boolean 	hasListeners() 		{ return !m_listeners.isEmpty(); }
@@ -135,7 +135,7 @@ public class DeviceFeature implements StatePublisher {
 	public void setDefaultMsgHandler(MessageHandler mh) { m_defaultMsgHandler = mh; }
 	public void setParameters(HashMap<String,String> p) { m_parameters = p;	}
 	
-	public void setQueryStatus(QueryStatus status)	{
+	public synchronized void setQueryStatus(QueryStatus status)	{
 		logger.trace("{} set query status to: {}", m_name, status);
 		m_queryStatus = status;
 	}
@@ -684,13 +684,18 @@ public class DeviceFeature implements StatePublisher {
 			int num = d.intValue();
 			if (num != 1) return;
 			Driver dr = m_feature.getDevice().getDriver();
-			HashMap<InsteonAddress, InsteonDevice> devs = dr.getDeviceList(); 
+			HashMap<InsteonAddress, InsteonDevice> devs = dr.getDeviceList();
+			String erasedDevice = null;
 			for (InsteonDevice dev : devs.values()) {
-				if (!dev.isReferenced() && dev.hasLinkRecords()) {
+				if (!dev.isModem() && !dev.isInItemsFile()) {
 					logger.info("ModemCommandHandler: erasing {} from modem link database", dev.getAddress());
 					dev.eraseFromModem();
+					erasedDevice = dev.getAddress().toString();
 					break; // only one at a time
 				}
+			}
+			if (erasedDevice == null) {
+				logger.info("no devices erased from link database");
 			}
 		}
 	}

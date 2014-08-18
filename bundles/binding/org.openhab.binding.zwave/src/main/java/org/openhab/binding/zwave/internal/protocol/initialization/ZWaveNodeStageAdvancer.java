@@ -330,12 +330,12 @@ public class ZWaveNodeStageAdvancer {
 
 		// Sanity check the data from the file
 		if (restoredNode.getVersion() != this.node.getVersion()
-				|| restoredNode.getManufacturer() == 0
+				|| restoredNode.getManufacturer() == Integer.MAX_VALUE
 				|| restoredNode.isListening() != this.node.isListening()
 				|| restoredNode.isFrequentlyListening() != this.node.isFrequentlyListening()
 				|| restoredNode.isRouting() != this.node.isRouting()
 				|| !restoredNode.getDeviceClass().equals(this.node.getDeviceClass())) {
-			logger.warn("NODE {}: Config file differs from controler information, ignoring config.",
+			logger.warn("NODE {}: Config file differs from controller information, ignoring config.",
 					this.node.getNodeId());
 			return false;
 		}

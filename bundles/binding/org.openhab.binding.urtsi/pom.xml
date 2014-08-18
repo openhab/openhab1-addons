@@ -24,18 +24,6 @@
 
 	<packaging>eclipse-plugin</packaging>
 
-	<repositories>
-		<repository>
-			<id>xtend</id>
-			<url>http://build.eclipse.org/common/xtend/maven/</url>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>xtend</id>
-			<url>http://build.eclipse.org/common/xtend/maven/</url>
-		</pluginRepository>
-	</pluginRepositories>
 	<build>
 		<plugins>
 			<plugin>
@@ -92,5 +80,19 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<repositories>
+		<repository>
+			<id>xtend</id>
+			<url>http://build.eclipse.org/common/xtend/maven/</url>
+		</repository>
+	</repositories>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>xtend</id>
+			<url>http://build.eclipse.org/common/xtend/maven/</url>
+		</pluginRepository>
+	</pluginRepositories>
 	
 </project>

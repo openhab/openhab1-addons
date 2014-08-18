@@ -30,7 +30,6 @@ Write("</variablelist>");
 		]]>
 		</data>
 	</script>
-
 	<script name="setVariable">
 		<data>
 		<![CDATA[
@@ -48,6 +47,23 @@ Write('</valid></result>');
 		]]>
 		</data>
 	</script>
+    <script name="setVirtualGroup">
+      <data>
+      <![CDATA[
+Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
+Write('<result><valid>')
+object var_obj = dom.GetObject("{group_name}");
+if (var_obj) {
+  var_obj.State({group_state});
+  Write('true');
+}
+else {
+  Write('false');
+}
+Write('</valid></result>');
+      ]]>
+      </data>
+    </script>
 
 	<script name="getAllDevices">
 		<data>
@@ -182,58 +198,6 @@ Write('<result><valid>');
 object prog = dom.GetObject("{program_name}");
 if (prog) {
   Write(prog.ProgramExecute());
-}
-else {
-  Write('false');
-}
-Write('</valid></result>');
-		]]>
-		</data>
-	</script>
-	<script name="getAllPrograms">
-		<data>
-		<![CDATA[
-object prg_obj;
-string sys_prg_id;
-Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
-Write("<programlist>\n");
-foreach (sys_prg_id, dom.GetObject(ID_PROGRAMS).EnumUsedIDs()) {
-  prg_obj = dom.GetObject(sys_prg_id);
-  if (prg_obj.Visible() == true) {
-    Write("  <program");
-    Write(" name='"); WriteXML(prg_obj.Name());
-    Write("' writeable='true'");
-    Write(" />\n");
-  }
-}
-Write("</programlist>");
-		]]>
-		</data>
-	</script>
-	<script name="setRemoteControlDisplay">
-		<data>
-		<![CDATA[
-Write('<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>\n');
-Write('<result><valid>');
-object remote_control_display = dom.GetObject("BidCos-RF.{remote_address}:18.SUBMIT");
-if (remote_control_display) {
-  if ("{text}" != "*NO_STRING*") {
-    dom.GetObject("BidCos-RF.{remote_address}:18.TEXT").State("{text}");
-  }
-  dom.GetObject("BidCos-RF.{remote_address}:18.BEEP").State({beep_value});
-  dom.GetObject("BidCos-RF.{remote_address}:18.UNIT").State({unit_value});
-  dom.GetObject("BidCos-RF.{remote_address}:18.BACKLIGHT").State({backlight_value});
-
-  string symbols = "{symbols}";
-  string symbol;
-  if (symbols != "") {
-    foreach (symbol, symbols) {
-      dom.GetObject("BidCos-RF.KEQ0048285:18." # symbol).State(1);      
-    }
-  }
-
-  remote_control_display.State(1);
-  Write('true');
 }
 else {
   Write('false');
