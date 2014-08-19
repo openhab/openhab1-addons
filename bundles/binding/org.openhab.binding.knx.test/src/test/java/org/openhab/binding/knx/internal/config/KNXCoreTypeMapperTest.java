@@ -37,6 +37,7 @@ import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDateTime;
+import tuwien.auto.calimero.dptxlator.DPTXlatorRGB;
 import tuwien.auto.calimero.dptxlator.DPTXlatorSceneNumber;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
 import tuwien.auto.calimero.dptxlator.DPTXlatorTime;
@@ -101,6 +102,10 @@ public class KNXCoreTypeMapperTest {
 		//Test mapping of org.openhab.core.library.types.StringType
 		assertEquals("KNXCoreTypeMapper.toDPTid returned datapoint type for class  \""+StringType.class+"\"",
 				DPTXlatorString.DPT_STRING_8859_1.getID(), KNXCoreTypeMapper.toDPTid(StringType.class));
+
+		//Test mapping of org.openhab.core.library.types.HSBType
+		assertEquals("KNXCoreTypeMapper.toDPTid returned datapoint type for class  \""+HSBType.class+"\"",
+				DPTXlatorRGB.DPT_RGB.getID(), KNXCoreTypeMapper.toDPTid(HSBType.class));
 	}
 
 	/**
@@ -1568,6 +1573,46 @@ public class KNXCoreTypeMapperTest {
 			}
 
 		TimeZone.setDefault(defaultTimeZone);
+	}
+
+	/**
+	 * KNXCoreTypeMapper tests method typeMapper.toType() for type “3-byte RGB value" KNX ID: 232.600 DPT_Colour_RGB
+	 * 
+	 * @throws KNXFormatException
+	 */
+	@Test
+	public void testTypeMappingColourRGB_232_600() throws KNXFormatException {
+		DPT dpt =DPTXlatorRGB.DPT_RGB;
+
+		testToTypeClass(dpt, HSBType.class);
+
+		// Use a too short byte array
+		assertNull("KNXCoreTypeMapper.toType() should return null (required data length too short)",
+				testToType(dpt, new byte[] { }, HSBType.class));
+
+		// Use a too long byte array expecting that additional bytes will be ignored
+		Type type=testToType(dpt, new byte[] {  (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, 0 }, HSBType.class);
+		testToDPTValue(dpt, type, "r:255 g:255 b:255");
+
+		// Test max value
+		type=testToType(dpt, new byte[] {  (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, 0 }, HSBType.class);
+		testToDPTValue(dpt, type, "r:255 g:255 b:255");
+
+		// Test min value
+		type=testToType(dpt, new byte[] { 0x00, 0x00, 0x00 }, HSBType.class);
+		testToDPTValue(dpt, type, "r:0 g:0 b:0");
+
+		// Test correct interpretation of r value
+		type=testToType(dpt, new byte[] { (byte)0xff, 0x00, 0x00 }, HSBType.class);
+		testToDPTValue(dpt, type, "r:255 g:0 b:0");
+
+		// Test correct interpretation of g value
+		type=testToType(dpt, new byte[] { 0x00, (byte)0xff, 0x00 }, HSBType.class);
+		testToDPTValue(dpt, type, "r:0 g:255 b:0");
+		
+		// Test correct interpretation of b value
+		type=testToType(dpt, new byte[] { 0x00, 0x00, (byte)0xff }, HSBType.class);
+		testToDPTValue(dpt, type, "r:0 g:0 b:255");
 	}
 
 	/**
