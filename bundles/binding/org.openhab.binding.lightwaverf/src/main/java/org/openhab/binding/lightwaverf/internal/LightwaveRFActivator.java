@@ -16,16 +16,16 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Extension of the default OSGi bundle activator
- * 
+ *
  * @author Neil Renaud
  * @since 1.6
  */
 public final class LightwaveRFActivator implements BundleActivator {
 
 	private static Logger logger = LoggerFactory.getLogger(LightwaveRFActivator.class); 
-	
+
 	private static BundleContext context;
-	
+
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
@@ -41,7 +41,7 @@ public final class LightwaveRFActivator implements BundleActivator {
 		context = null;
 		logger.debug("LightwaveRF binding has been stopped.");
 	}
-	
+
 	/**
 	 * Returns the bundle context of this bundle
 	 * @return the bundle context
@@ -49,5 +49,5 @@ public final class LightwaveRFActivator implements BundleActivator {
 	public static BundleContext getContext() {
 		return context;
 	}
-	
+
 }

@@ -43,7 +43,7 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
 		//}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -51,16 +51,20 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 		LightwaveRFBindingConfig config = new LightwaveRFBindingConfig();
-		
+
 		//parse bindingconfig here ...
-		
-		addBindingConfig(item, config);		
+		String[] splitConfig = bindingConfig.split(":");
+		if(splitConfig.length != 2){
+			throw new BindingConfigParseException("Error parsing LightwaveRF Binding Config: " + bindingConfig);
+		}
+		config.code = splitConfig[0];
+		config.type = splitConfig[1];
+		addBindingConfig(item, config);
 	}
-	
-	
+
 	class LightwaveRFBindingConfig implements BindingConfig {
+		public String code;
+		public String type;
 		// put member fields here which holds the parsed values
 	}
-	
-	
 }
