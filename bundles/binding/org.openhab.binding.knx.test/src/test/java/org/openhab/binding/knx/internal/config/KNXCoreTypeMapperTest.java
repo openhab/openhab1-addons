@@ -779,16 +779,8 @@ public class KNXCoreTypeMapperTest {
 		Type type=testToType(dpt, new byte[] { 0x00, 0x00 }, DecimalType.class);
 		testToDPTValue(dpt, type, "0.0");
 
-		/*
-		 * Test the maximum positive value
-		 * 
-		 * FIXME: Calimero lib (Version 2.2.0) seems to have a bug in private method: tuwien.auto.calimero.dptxlator.DPTXlator2ByteFloat.fromDPT(final int
-		 * index). The accuracy when calculating the value is Float, which is insufficient and Double should be used instead.
-		 * 
-		 * The following test case tests the erroneous calculation. 0x7FFF should result in 670760.96 but results in 670760.94 due to rounding problems.
-		 */
 		type=testToType(dpt, new byte[] { (byte) 0x7F, (byte) 0xFF }, DecimalType.class);
-		testToDPTValue(dpt, type, "670760.94");
+		testToDPTValue(dpt, type, "670760.96");
 
 		type=testToType(dpt, new byte[] { (byte) 0x07, (byte) 0xFF }, DecimalType.class);
 		testToDPTValue(dpt, type, "20.47");
@@ -802,17 +794,13 @@ public class KNXCoreTypeMapperTest {
 		/*
 		 * Test the maximum negative value
 		 * 
-		 * FIXME: Calimero lib (Version 2.2.0) seems to have a bug in private method: tuwien.auto.calimero.dptxlator.DPTXlator2ByteFloat.fromDPT(final int
-		 * index). The accuracy when calculating the Float value is Float, which is insufficient and Double should be used instead.
-		 * 
-		 * The following test case tests the erroneous calculation. 0xF800 should result in -671088.64 but results in -671088.6 due to rounding problems.
 		 */
 		type=testToType(dpt, new byte[] { (byte) 0xF8, 0x00 }, DecimalType.class);
-		testToDPTValue(dpt, type, "-671088.6");
+		testToDPTValue(dpt, type, "-671088.64");
 
 		// Use a too long byte array expecting that additional bytes will be ignored
 		type=testToType(dpt, new byte[] { (byte) 0xF8, (byte) 0x00, (byte) 0xFF  }, DecimalType.class);
-		testToDPTValue(dpt, type, "-671088.6");
+		testToDPTValue(dpt, type, "-671088.64");
 	}
 
 	/**
@@ -1330,15 +1318,12 @@ public class KNXCoreTypeMapperTest {
 		testToTypeClass(dpt, StringType.class);
 
 		/*
-		 * FIXME: According to spec the length of this DPT is fixed to 14 bytes. Calimero lib (V 2.2.0) isn't checking this correctly and has a bug in
-		 * tuwien.auto.calimero.dptxlator.DPTXlatorString.toDPT(final byte[] buf, final int offset). Calimero accepts any byte array larger or equal to 14 bytes
-		 * without error. As a result: anything less then 14 bytes and above a multiple of 14 bytes will be accepted but cutoff. Even for the failed check (less
-		 * then 14 bytes) calimero is not throwing an exception but is logging an error which we cannot check for here.
+		 * According to spec the length of this DPT is fixed to 14 bytes. 
 		 * 
-		 * Test the erroneous behavior that a too short array results in an empty string. There should be an error logged by calimero lib (V2.2.0).
+		 * Test the that a too short array results in an <null> string. There should be an error logged by calimero lib (V2.2.0).
 		 */
 		Type type=testToType(dpt, new byte[] { 0x61, 0x62 }, StringType.class);
-		testToDPTValue(dpt, type, "");
+		testToDPTValue(dpt, type, null);
 
 		/*
 		 * FIXME: According to spec the length of this DPT is fixed to 14 bytes. Calimero lib (V 2.2.0) isn't checking this correctly and has a bug in
