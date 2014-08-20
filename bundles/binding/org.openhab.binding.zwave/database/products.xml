@@ -1133,4 +1133,35 @@
 			<Label lang="en">Plugin Lamp Module</Label>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>001d</Id>
+		<Name>Leviton</Name>
+		<Product>
+			<Reference>
+				<Type>0301</Type>
+				<Id>0209</Id>
+			</Reference>
+			<Model>VRS15-1LZ</Model>
+			<Label lang="en">Scene Capable Push On/Off</Label>
+			<ConfigFile>leviton/vrs15-1lz.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0401</Type>
+				<Id>0209</Id>
+			</Reference>
+			<Model>VRI06-1LZ</Model>
+			<Label lang="en">Scene Capable Push On/Off Dimmer</Label>
+			<ConfigFile>leviton/vri06-1lz.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1c02</Type>
+				<Id>0334</Id>
+			</Reference>
+			<Model>DZS15-1LZ</Model>
+			<Label lang="en">Scene Capable Push On/Off</Label>
+			<ConfigFile>leviton/dzs15-1lz.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
