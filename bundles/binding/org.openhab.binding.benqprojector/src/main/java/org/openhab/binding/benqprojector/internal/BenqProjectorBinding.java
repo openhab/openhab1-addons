@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Dictionary;
 
@@ -76,6 +77,11 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 	private final int MAX_VOLUME = 10;
 	private final int MIN_VOLUME = 0;
 	
+	/**
+	 * Set socket timeout time in milliseconds
+	 */
+	private final int SOCKET_TIMEOUT_MS = 5000;
+	
 	public BenqProjectorBinding() {
 	}
 		
@@ -125,8 +131,14 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 				logger.debug("Polling projector status for "+itemName);
 				BenqProjectorBindingConfig cfg = binding.getConfigForItemName(itemName);
 				State s = queryProjector(cfg);
-				eventPublisher.postUpdate(itemName, s);
-				logger.debug(itemName+" status is "+s);
+				if (!(s instanceof UnDefType))
+				{
+					eventPublisher.postUpdate(itemName, s);
+					logger.debug(itemName+" status is "+s);
+				} else {
+					logger.debug(itemName+" not updated as result was undefined");
+				}
+				
 			}
 		}
 	}
@@ -196,6 +208,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 			{
 				logger.debug("Setting up socket connection to "+this.networkHost+":"+this.networkPort);
 				this.projectorSocket = new Socket(this.networkHost, this.networkPort);
+				this.projectorSocket.setSoTimeout(SOCKET_TIMEOUT_MS);
 				logger.debug("Setup reader/writer");
 				this.projectorReader = new BufferedReader(new InputStreamReader(this.projectorSocket.getInputStream()));
 				this.projectorWriter = new PrintWriter( this.projectorSocket.getOutputStream(), true );
@@ -357,7 +370,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 				tmp = this.projectorReader.readLine();		
 				while (tmp != null)
 				{					
-					if (tmp.startsWith(">")==false && tmp.endsWith("#"))
+					if (tmp.startsWith("*")==true && tmp.endsWith("#"))
 					{						
 						/* got response */
 						logger.debug("Response: '"+tmp+"'");
@@ -366,9 +379,12 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 					}
 					tmp = this.projectorReader.readLine();
 				}
+			} catch (SocketTimeoutException e) {
+				logger.warn("Timed out reading response from projector");
 			} catch (IOException e) {
 				logger.error("IO Exception while reading response from projector: "+e.getMessage());
 			}
+			
 		} else {
 			logger.debug("Not sending command to projector as connection is not configured yet.");
 		}
