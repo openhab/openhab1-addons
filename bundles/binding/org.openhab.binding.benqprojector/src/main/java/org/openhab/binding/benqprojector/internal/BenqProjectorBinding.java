@@ -8,16 +8,11 @@
  */
 package org.openhab.binding.benqprojector.internal;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.Dictionary;
 
 import org.openhab.binding.benqprojector.BenqProjectorBindingProvider;
+import org.openhab.binding.benqprojector.internal.transport.BenqProjectorNetworkTransport;
+import org.openhab.binding.benqprojector.internal.transport.BenqProjectorTransport;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -46,24 +41,9 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 		LoggerFactory.getLogger(BenqProjectorBinding.class);
 
 	/**
-	 * Flag to indicate network vs. serial mode. Default to network
-	 * at the moment as this is the only mode implemented
+	 * Transport for communicating with projector
 	 */
-	private boolean networkMode = true;
-	
-	/**
-	 * Network host to use
-	 */
-	private String networkHost = "";
-	
-	/**
-	 * Network port to use
-	 */
-	private int networkPort = 0;
-	
-	private Socket projectorSocket = null;
-	private PrintWriter projectorWriter = null;
-	private BufferedReader projectorReader = null;
+	BenqProjectorTransport transport;
 	
 	/** 
 	 * the refresh interval which is used to poll values from the BenqProjector
@@ -78,11 +58,6 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 	private final int MAX_VOLUME = 10;
 	private final int MIN_VOLUME = 0;
 	
-	/**
-	 * Set socket timeout time in milliseconds
-	 */
-	private final int SOCKET_TIMEOUT_MS = 5000;
-	
 	public BenqProjectorBinding() {
 	}
 		
@@ -91,16 +66,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 	}
 	
 	public void deactivate() {		
-		try {
-			this.projectorReader.close();
-			this.projectorReader = null;		
-			this.projectorWriter.close();
-			this.projectorReader = null;
-			this.projectorSocket.close();
-		} catch (IOException e) {
-			logger.error("Trying close socket, reader or writer resulted in IO exception: "+e.getMessage());
-		}
-		this.projectorSocket = null;
+		transport.closeConnection();
 	}
 
 	
@@ -175,62 +141,29 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
 			
+			/* decide which transport to use - default is network */			
 			String modeString = (String) config.get("mode");
 			if (StringUtils.isNotBlank(modeString)) 
 			{
 				if (modeString.equalsIgnoreCase("serial"))
 				{
-					networkMode=false;
+					// TODO assign serial transport when implemented
+				} else
+				{
+					/* default to network */
+					transport = new BenqProjectorNetworkTransport();
 				}
+			} else
+			{
+				transport = new BenqProjectorNetworkTransport();
 			}
 			
 			String deviceIdString = (String) config.get("deviceId");
 			if (StringUtils.isNotBlank(deviceIdString))
-			{
-				String[] deviceIdParts = deviceIdString.split(":");
-				if (deviceIdParts.length == 2)
-				{
-					this.networkHost = deviceIdParts[0];
-					this.networkPort = Integer.parseInt(deviceIdParts[1]);
-				}
-				setProperlyConfigured(true);
-				setupConnection();
+			{				
+				setProperlyConfigured(transport.setupConnection(deviceIdString));
 			}				
 		}		
-	}
-	
-	private boolean setupConnection()
-	{		
-		boolean setupOK = false;
-		if (this.projectorSocket == null && this.networkMode)
-		{
-			logger.debug("Running connection setup");
-			try
-			{
-				logger.debug("Setting up socket connection to "+this.networkHost+":"+this.networkPort);
-				this.projectorSocket = new Socket(this.networkHost, this.networkPort);
-				this.projectorSocket.setSoTimeout(SOCKET_TIMEOUT_MS);
-				logger.debug("Setup reader/writer");
-				this.projectorReader = new BufferedReader(new InputStreamReader(this.projectorSocket.getInputStream()));
-				this.projectorWriter = new PrintWriter( this.projectorSocket.getOutputStream(), true );
-				setupOK = true;
-			}
-			catch (UnknownHostException e)
-			{
-				logger.error("Unable to find host: "+this.networkHost);
-			} catch (IOException e) {
-				logger.error("IO Exception: "+e.getMessage());
-			}
-			logger.debug("Network connection setup successfully!");
-		}
-		else if (this.networkMode == false)
-		{
-			logger.error("Non-network mode not implemented yet!");
-		} else
-		{
-			logger.debug("Socket is already setup");
-		}
-		return setupOK;
 	}
 	
 	/**
@@ -239,7 +172,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 	 */
 	private State queryProjector(BenqProjectorBindingConfig cfg)
 	{
-		String resp = sendCommandExpectResponse(cfg.mode.getItemModeCommandQueryString());
+		String resp = transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandQueryString());
 		return cfg.mode.parseResponse(resp);		
 	}
 	
@@ -254,12 +187,12 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 			{
 				if ((OnOffType)c == OnOffType.ON)
 				{
-					sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("ON"));
+					transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("ON"));
 					cmdSent = true;
 				}
 				else if ((OnOffType)c == OnOffType.OFF)
 				{
-					sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("OFF"));
+					transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("OFF"));
 					cmdSent = true;
 				}
 			}
@@ -287,13 +220,13 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 				{
 					if (currentVol < volLevel)
 					{
-						sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("+"));
+						transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("+"));
 						currentVol++;
 						cmdSent = true;
 					}
 					else
 					{
-						sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("-"));						
+						transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("-"));						
 						currentVol--;
 						cmdSent = true;
 					}
@@ -302,12 +235,12 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 			{
 				if ((IncreaseDecreaseType)c == IncreaseDecreaseType.INCREASE)
 				{
-					sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("+"));
+					transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("+"));
 					cmdSent = true;
 				}
 				else if ((IncreaseDecreaseType)c == IncreaseDecreaseType.DECREASE)
 				{
-					sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("-"));
+					transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("-"));
 					cmdSent = true;
 				}
 			}
@@ -322,7 +255,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 				String cmd = BenqProjectorSourceMapping.getStringFromMapping(sourceIdx.intValue());
 				if (cmd.isEmpty() == false)
 				{
-					sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString(cmd));
+					transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString(cmd));
 					cmdSent = true;
 				}
 			}
@@ -334,7 +267,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 				int mappingIdx = BenqProjectorSourceMapping.getMappingFromString(sourceStr.toString());
 				if (mappingIdx != -1) // double check this is a valid mapping
 				{
-					sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString(sourceStr.toString()));
+					transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString(sourceStr.toString()));
 					cmdSent = true;
 				}
 			}
@@ -348,38 +281,5 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 		{
 			logger.error("Unable to convert item command to projector state: Command="+c);
 		}
-	}
-	
-	private String sendCommandExpectResponse(String cmd)
-	{	
-		String respStr="";
-		String tmp;
-		if (this.projectorWriter != null)
-		{
-			this.projectorWriter.printf("%s", cmd);
-			logger.debug("Sent command '"+cmd.replace("\r", "")+"'");
-			try {
-				tmp = this.projectorReader.readLine();		
-				while (tmp != null)
-				{					
-					if (tmp.startsWith("*")==true && tmp.endsWith("#"))
-					{						
-						/* got response */
-						logger.debug("Response: '"+tmp+"'");
-						respStr = tmp;
-						break;
-					}
-					tmp = this.projectorReader.readLine();
-				}
-			} catch (SocketTimeoutException e) {
-				logger.warn("Timed out reading response from projector");
-			} catch (IOException e) {
-				logger.error("IO Exception while reading response from projector: "+e.getMessage());
-			}
-			
-		} else {
-			logger.debug("Not sending command to projector as connection is not configured yet.");
-		}
-		return respStr;
-	}
+	}	
 }
