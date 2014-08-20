@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ML LAS1000</Model>
+	<Label lang="en">Remote Controlled Light Station</Label>
+	<CommandClasses>
+		<Class><id>0020</id></Class>
+		<Class><id>0025</id></Class>
+		<Class><id>0027</id></Class>
+		<Class><id>002b</id></Class>
+		<Class><id>002c</id></Class>
+		<Class><id>0072</id></Class>
+		<Class><id>0077</id></Class>
+		<Class><id>0085</id></Class>
+		<Class><id>0086</id></Class>
+		<Class><id>0091</id></Class>
+	</CommandClasses>
+	
+	<Configuration>
+
+	</Configuration>
+	
+</Product>
+
