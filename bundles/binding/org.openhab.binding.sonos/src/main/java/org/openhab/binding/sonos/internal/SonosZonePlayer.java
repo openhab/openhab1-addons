@@ -1157,12 +1157,9 @@ class SonosZonePlayer {
 							logger.error("Could not parse RadioTime from String {}",response);
 						}
 
-						if(fields != null) {
+						resultString = new String();
 
-							resultString = new String();
-							// radio name should be first field
-							title = fields.get(0);
-
+						if(fields != null && fields.size()>1) {
 							Iterator<String> listIterator = fields.listIterator();
 							while(listIterator.hasNext()){
 								String field = listIterator.next();
