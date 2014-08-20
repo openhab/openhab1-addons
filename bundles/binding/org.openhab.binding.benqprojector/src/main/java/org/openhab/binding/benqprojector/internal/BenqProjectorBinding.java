@@ -24,6 +24,7 @@ import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -233,52 +234,13 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 	}
 	
 	/**
-	 * Parse ON/OFF query responses
-	 * @param response
-	 * @return On or Off state. Undefined if invalid.
-	 */
-	private State parseOnOffQuery(String response)
-	{
-		if (response.contains("OFF"))
-		{
-			return OnOffType.OFF;
-		}
-		if (response.contains("ON"))
-		{
-			return OnOffType.ON;
-		}
-		return UnDefType.UNDEF;
-	}
-	
-	private State parseNumberQuery(String response)
-	{		
-		String[] responseParts = response.split("=");
-		if (responseParts.length == 2)
-		{
-			return new DecimalType( Integer.parseInt(responseParts[1].substring(0, responseParts[1].length()-1)));
-		}
-		return UnDefType.UNDEF; 
-	}
-	
-	/**
 	 * Run query on the projector
 	 * @param cfg Configuration of item to run query on
 	 */
 	private State queryProjector(BenqProjectorBindingConfig cfg)
 	{
-		State s = UnDefType.UNDEF;
 		String resp = sendCommandExpectResponse(cfg.mode.getItemModeCommandQueryString());
-		switch (cfg.mode)
-		{
-		case POWER:
-		case MUTE:
-			s = parseOnOffQuery(resp);
-			break;
-		case VOLUME:
-			s = parseNumberQuery(resp);
-			break;
-		}
-		return s;
+		return cfg.mode.parseResponse(resp);		
 	}
 	
 	private void sendCommandToProjector(BenqProjectorBindingConfig cfg, Command c)
@@ -349,6 +311,36 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 					cmdSent = true;
 				}
 			}
+			break;
+		case LAMP_HOURS:
+			logger.warn("Cannot send command to set lamp hours - not a valid operation!");			
+			break;
+		case SOURCE_NUMBER:
+			if (c instanceof DecimalType)
+			{
+				DecimalType sourceIdx = (DecimalType)c;
+				String cmd = BenqProjectorSourceMapping.getStringFromMapping(sourceIdx.intValue());
+				if (cmd.isEmpty() == false)
+				{
+					sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString(cmd));
+					cmdSent = true;
+				}
+			}
+			break;
+		case SOURCE_STRING:
+			if (c instanceof StringType)
+			{
+				StringType sourceStr = (StringType)c;
+				int mappingIdx = BenqProjectorSourceMapping.getMappingFromString(sourceStr.toString());
+				if (mappingIdx != -1) // double check this is a valid mapping
+				{
+					sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString(sourceStr.toString()));
+					cmdSent = true;
+				}
+			}
+			break;
+		default:
+			logger.error("Unexpected Item Mode!");
 			break;
 		}
 				

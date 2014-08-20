@@ -11,6 +11,7 @@ package org.openhab.binding.benqprojector.internal;
 import org.openhab.binding.benqprojector.BenqProjectorBindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -42,7 +43,7 @@ public class BenqProjectorGenericBindingProvider extends AbstractGenericBindingP
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem ) && !(item instanceof NumberItem)) {
+		if (!(item instanceof SwitchItem ) && !(item instanceof NumberItem) && !(item instanceof StringItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
 					+ "', only Switch or Number Items are allowed - please check your *.items configuration");
@@ -67,6 +68,15 @@ public class BenqProjectorGenericBindingProvider extends AbstractGenericBindingP
 			break;
 		case "volume":
 			config.mode = BenqProjectorItemMode.VOLUME;
+			break;
+		case "lamp_hours":
+			config.mode = BenqProjectorItemMode.LAMP_HOURS;
+			break;
+		case "source_number":
+			config.mode = BenqProjectorItemMode.SOURCE_NUMBER;
+			break;
+		case "source_string":
+			config.mode = BenqProjectorItemMode.SOURCE_STRING;
 			break;
 		default:
 			throw new BindingConfigParseException("Unable to parse '"+bindingConfig+"' to create a valid item binding.");
