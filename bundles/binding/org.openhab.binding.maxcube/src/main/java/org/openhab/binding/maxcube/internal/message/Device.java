@@ -134,7 +134,7 @@ public abstract class Device {
 			}
 
 			heatingThermostat.setValvePosition(raw[6] & 0xFF);
-			heatingThermostat.setTemperatureSetpoint(raw[7] & 0xFF);
+			heatingThermostat.setTemperatureSetpoint(raw[7] & 0x7F);
 
 			// 9 2 858B Date until (05-09-2011) (see Encoding/Decoding
 			// date/time)
@@ -147,8 +147,8 @@ public abstract class Device {
 
 			int actualTemp = 0;
 			if (device.getType() == DeviceType.WallMountedThermostat) {
-				actualTemp = (raw[11] & 0xFF);
-				if ( actualTemp < 100 ) actualTemp += 256;
+				actualTemp = (raw[11] & 0xFF) + (raw[7] & 0x80) * 2 ;
+				
 			} else {
 				if ( heatingThermostat.getMode() != ThermostatModeType.VACATION && 
 						heatingThermostat.getMode() != ThermostatModeType.BOOST){

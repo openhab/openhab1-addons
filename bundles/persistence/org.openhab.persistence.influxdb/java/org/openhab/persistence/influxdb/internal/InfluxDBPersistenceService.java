@@ -8,12 +8,12 @@
 package org.openhab.persistence.influxdb.internal;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
@@ -57,10 +57,10 @@ import retrofit.RetrofitError;
  * "openhab" and "http://127.0.0.1:8086".
  * 
  * @author Theo Weiss - Initial Contribution
+ * @author Ben Jones - Upgraded influxdb-java version
  * @since 1.5.0
  */
 public class InfluxDBPersistenceService implements QueryablePersistenceService, ManagedService {
-
 
   private static final String DEFAULT_URL = "http://127.0.0.1:8086";
   private static final String DEFAULT_DB = "openhab";
@@ -78,7 +78,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private String user;
   private String password;
   private boolean isProperlyConfigured;
-  private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
   private boolean connected;
 
   public void setItemRegistry(ItemRegistry itemRegistry) {
@@ -166,7 +165,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     }
 
     if (!isConnected()) {
-      logger.error("InfluxDB is not yet? connected");
+      logger.error("InfluxDB is not yet connected");
       return;
     }
 
@@ -174,17 +173,17 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     String name = (alias != null) ? alias : realName;
     Object value = stateToObject(item.getState());
     logger.trace("storing {} in influxdb {}", name, value);
-    Serie serie = new Serie(name);
+
     // For now time is calculated by influxdb, may be this should be configurable?
+    Serie serie = new Serie.Builder(name)
+    		.columns(VALUE_COLUMN_NAME)
+    		.values(value)
+    		.build();
     // serie.setColumns(new String[] {"time", VALUE_COLUMN_NAME});
     // Object[] point = new Object[] {System.currentTimeMillis(), value};
 
-    serie.setColumns(new String[] {VALUE_COLUMN_NAME});
-    Object[] point = new Object[] {value};
-    serie.setPoints(new Object[][] {point});
-    Serie[] series = new Serie[] {serie};
     try {
-      influxDB.write(dbName, series, TimeUnit.MILLISECONDS);
+      influxDB.write(dbName, TimeUnit.MILLISECONDS, serie);
     } catch (RuntimeException e) {
       logger.error("storing failed with exception for item: {}", name);
       handleDatabaseException(e);
@@ -259,7 +258,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     }
 
     if (!isConnected()) {
-      logger.error("InfluxDB is not yet? connected");
+      logger.error("InfluxDB is not yet connected");
       return Collections.emptyList();
     }
 
@@ -303,9 +302,9 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
         }
         query.append(" ");
         query.append(TIME_COLUMN_NAME);
-        query.append(" > '");
-        query.append(dateFormat.format(filter.getBeginDate()));
-        query.append("'");
+        query.append(" > ");
+        query.append(getTimeFilter(filter.getBeginDate()));
+        query.append(" ");
       }
 
       if (filter.getEndDate() != null) {
@@ -314,11 +313,13 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
         }
         query.append(" ");
         query.append(TIME_COLUMN_NAME);
-        query.append(" < '");
-        query.append(dateFormat.format(filter.getEndDate().getTime()));
-        query.append("'");
+        query.append(" < ");
+        query.append(getTimeFilter(filter.getEndDate()));
+        query.append(" ");
       }
 
+      // InfluxDB returns results in DESCENDING order by default
+      // http://influxdb.com/docs/v0.7/api/query_language.html#select-and-time-ranges
       if (filter.getOrdering() == Ordering.ASCENDING) {
         query.append(" order asc");
       }
@@ -336,7 +337,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     logger.debug("query string: {}", query.toString());
     List<Serie> results = Collections.emptyList();
     try {
-      results = influxDB.Query(dbName, query.toString(), TimeUnit.MILLISECONDS);
+      results = influxDB.query(dbName, query.toString(), TimeUnit.MILLISECONDS);
     } catch (RuntimeException e) {
       logger.error("query failed with database error");
       handleDatabaseException(e);
@@ -344,37 +345,40 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     for (Serie result : results) {
       String historicItemName = result.getName();
       logger.trace("item name ", historicItemName);
-      String[] columns = result.getColumns();
-      int timeColumnNum = 0;
-      int valueColumnNum = 0;
-      for (int i = 0; i < columns.length; i++) {
-        String column = columns[i];
-        logger.trace("column name: ", column);
-        if (column.equals(TIME_COLUMN_NAME)) {
-          timeColumnNum = i;
-        } else if (column.equals(VALUE_COLUMN_NAME)) {
-          valueColumnNum = i;
-        }
-      }
-      Object[][] points = result.getPoints();
-      for (int i = 0; i < points.length; i++) {
-        if (pageSize != null && pageNumber == null && pageSize < i) {
-          logger.debug("returning no more points pageSize {} pageNumber {} i {}", pageSize,
-              pageNumber, i);
+
+      int pageCount = 0;
+      for (Map<String, Object> row : result.getRows()) {
+    	pageCount++;
+        if (pageSize != null && pageNumber == null && pageSize < pageCount) {
+          logger.debug("returning no more points pageSize {} pageCount {}", 
+        		  pageSize, pageCount);
           break;
         }
-        Object[] objects = points[i];
-        logger.trace("adding historic item {}: time {} value {}", historicItemName,
-            (Double) objects[timeColumnNum], String.valueOf(objects[valueColumnNum]));
-        historicItems.add(new InfluxdbItem(historicItemName, stringToState(
-            String.valueOf(objects[valueColumnNum]), historicItemName), new Date(
-            ((Double) objects[timeColumnNum]).longValue())));;
+        
+        Double rawTime = (Double) row.get(TIME_COLUMN_NAME);
+        Object rawValue = row.get(VALUE_COLUMN_NAME);
+                
+        logger.trace("adding historic item {}: time {} value {}", 
+        		historicItemName, rawTime, rawValue);
+        
+        Date time = new Date(rawTime.longValue());
+        State value = objectToState(rawValue, historicItemName);
+        
+        historicItems.add(new InfluxdbItem(historicItemName, value, time));
       }
     }
 
     return historicItems;
   }
 
+  private String getTimeFilter(Date time) {
+	  // for some reason we need to query using 'seconds' only
+	  // passing milli seconds causes no results to be returned
+	  long milliSeconds = time.getTime();
+	  long seconds = milliSeconds / 1000;
+	  return seconds + "s";
+  }
+  
   /**
    * This method returns an integer if possible if not a double is returned. This is an optimization
    * for influxdb because integers have less overhead.
@@ -449,21 +453,22 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
    * @param itemName name of the {@link Item} to get the {@link State} for
    * @return
    */
-  private State stringToState(String value, String itemName) {
+  private State objectToState(Object value, String itemName) {
+	String valueStr = String.valueOf(value);
     if (itemRegistry != null) {
       try {
         Item item = itemRegistry.getItem(itemName);
         if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
-          return value.equals(DIGITAL_VALUE_OFF) ? OnOffType.OFF : OnOffType.ON;
+          return valueStr.equals(DIGITAL_VALUE_OFF) ? OnOffType.OFF : OnOffType.ON;
         } else if (item instanceof ContactItem) {
-          return value.equals(DIGITAL_VALUE_OFF) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+          return valueStr.equals(DIGITAL_VALUE_OFF) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
         }
       } catch (ItemNotFoundException e) {
         logger.warn("Could not find item '{}' in registry", itemName);
       }
     }
     // just return a DecimalType as a fallback
-    return new DecimalType(value);
+    return new DecimalType(valueStr);
   }
 
 }
