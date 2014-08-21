@@ -43,11 +43,35 @@ public class BenqProjectorNetworkTransport implements BenqProjectorTransport {
 	private Socket projectorSocket = null;
 	private PrintWriter projectorWriter = null;
 	private BufferedReader projectorReader = null;
+	private boolean retryAttempt = false;
 	
 	/**
 	 * Set socket timeout time in milliseconds
 	 */
 	private final int SOCKET_TIMEOUT_MS = 5000;
+	
+	private boolean networkConnect()
+	{
+		logger.debug("Running connection setup");
+		try
+		{
+			logger.debug("Setting up socket connection to "+this.networkHost+":"+this.networkPort);
+			this.projectorSocket = new Socket(this.networkHost, this.networkPort);
+			this.projectorSocket.setSoTimeout(SOCKET_TIMEOUT_MS);
+			logger.debug("Setup reader/writer");
+			this.projectorReader = new BufferedReader(new InputStreamReader(this.projectorSocket.getInputStream()));
+			this.projectorWriter = new PrintWriter( this.projectorSocket.getOutputStream(), true );
+			logger.debug("Network connection setup successfully!");
+			return true;
+		}
+		catch (UnknownHostException e)
+		{
+			logger.error("Unable to find host: "+this.networkHost);
+		} catch (IOException e) {
+			logger.error("IO Exception: "+e.getMessage());
+		}
+		return false;
+	}
 	
 	@Override
 	public boolean setupConnection(String connectionParams) {
@@ -66,24 +90,7 @@ public class BenqProjectorNetworkTransport implements BenqProjectorTransport {
 				return false;
 			}
 			
-			logger.debug("Running connection setup");
-			try
-			{
-				logger.debug("Setting up socket connection to "+this.networkHost+":"+this.networkPort);
-				this.projectorSocket = new Socket(this.networkHost, this.networkPort);
-				this.projectorSocket.setSoTimeout(SOCKET_TIMEOUT_MS);
-				logger.debug("Setup reader/writer");
-				this.projectorReader = new BufferedReader(new InputStreamReader(this.projectorSocket.getInputStream()));
-				this.projectorWriter = new PrintWriter( this.projectorSocket.getOutputStream(), true );
-				setupOK = true;
-			}
-			catch (UnknownHostException e)
-			{
-				logger.error("Unable to find host: "+this.networkHost);
-			} catch (IOException e) {
-				logger.error("IO Exception: "+e.getMessage());
-			}
-			logger.debug("Network connection setup successfully!");
+			setupOK = this.networkConnect();
 		}
 		else 
 		{
@@ -131,11 +138,22 @@ public class BenqProjectorNetworkTransport implements BenqProjectorTransport {
 			} catch (SocketTimeoutException e) {
 				logger.warn("Timed out reading response from projector");
 			} catch (IOException e) {
-				logger.error("IO Exception while reading response from projector: "+e.getMessage());
+				if (retryAttempt == false)
+				{
+					this.closeConnection();
+					if (this.networkConnect())
+					{
+						retryAttempt = true;
+						sendCommandExpectResponse(cmd);
+					} else {
+						logger.error("Attempt to reconnect after IOException failed: "+e.getMessage());
+					}
+				} else {
+					logger.error("IO Exception while reading response from projector: "+e.getMessage());
+				}
 			}
-			
 		} else {
-			logger.debug("Not sending command to projector as connection is not configured yet.");
+			logger.debug("Not sending command to projector as connection is not setup yet.");
 		}
 		return respStr;
 	}
