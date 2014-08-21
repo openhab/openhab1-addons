@@ -57,28 +57,27 @@ public class BenqProjectorGenericBindingProvider extends AbstractGenericBindingP
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 		BenqProjectorBindingConfig config = new BenqProjectorBindingConfig();
-		
-		switch (bindingConfig.toLowerCase())
+				
+		if (bindingConfig.equalsIgnoreCase("power"))
 		{
-		case "power":
 			config.mode = BenqProjectorItemMode.POWER;
-			break;
-		case "mute":
+		} else if (bindingConfig.equalsIgnoreCase("mute"))
+		{
 			config.mode = BenqProjectorItemMode.MUTE;
-			break;
-		case "volume":
+		} else if (bindingConfig.equalsIgnoreCase("volume"))
+		{
 			config.mode = BenqProjectorItemMode.VOLUME;
-			break;
-		case "lamp_hours":
+		} else if (bindingConfig.equalsIgnoreCase("lamp_hours"))
+		{
 			config.mode = BenqProjectorItemMode.LAMP_HOURS;
-			break;
-		case "source_number":
+		} else if (bindingConfig.equalsIgnoreCase("source_number"))
+		{ 
 			config.mode = BenqProjectorItemMode.SOURCE_NUMBER;
-			break;
-		case "source_string":
+		} else if (bindingConfig.equalsIgnoreCase("source_string"))
+		{
 			config.mode = BenqProjectorItemMode.SOURCE_STRING;
-			break;
-		default:
+		}
+		else {
 			throw new BindingConfigParseException("Unable to parse '"+bindingConfig+"' to create a valid item binding.");
 		}
 		logger.debug("Adding "+item.getName()+" as "+config.mode);
