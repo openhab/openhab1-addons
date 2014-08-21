@@ -92,6 +92,21 @@
 			</Item>
 		</Parameter>
 		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Command to send when movement</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Basic Set</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Sensor Binary Report</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
 			<Index>101</Index>
 			<Type>int</Type>
 			<Default>0</Default>
