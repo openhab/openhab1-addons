@@ -35,12 +35,14 @@ import org.openhab.binding.enocean.internal.profiles.Profile;
 import org.openhab.binding.enocean.internal.profiles.RollershutterProfile;
 import org.openhab.binding.enocean.internal.profiles.StandardProfile;
 import org.openhab.binding.enocean.internal.profiles.SwitchOnOffProfile;
+import org.openhab.binding.enocean.internal.profiles.WindowHandleProfile;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.RollershutterItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -202,7 +204,7 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
             } catch (Exception e) {
                 logger.error("Could not create class for profile " + customProfileClass, e);
             }
-        } else if (EEPId.EEP_F6_02_01.equals(eep) || EEPId.EEP_F6_02_01.equals(eep)) {
+        } else if (EEPId.EEP_F6_02_01.equals(eep) || EEPId.EEP_F6_10_00.equals(eep)) {
             if (item.getClass().equals(RollershutterItem.class)) {
                 RollershutterProfile profile = new RollershutterProfile(item, eventPublisher);
                 addProfile(item, parameterAddress, profile);
@@ -213,6 +215,10 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
             }
             if (item.getClass().equals(SwitchItem.class) && parameterAddress.getParameterId() == null) {
                 SwitchOnOffProfile profile = new SwitchOnOffProfile(item, eventPublisher);
+                addProfile(item, parameterAddress, profile);
+            }
+            if (item.getClass().equals(StringItem.class) && EEPId.EEP_F6_10_00.equals(eep)) {
+                WindowHandleProfile profile = new WindowHandleProfile(item, eventPublisher);
                 addProfile(item, parameterAddress, profile);
             }
         }
