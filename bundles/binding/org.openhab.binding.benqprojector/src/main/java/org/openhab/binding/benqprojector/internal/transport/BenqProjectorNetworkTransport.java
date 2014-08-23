@@ -143,8 +143,12 @@ public class BenqProjectorNetworkTransport implements BenqProjectorTransport {
 					this.closeConnection();
 					if (this.networkConnect())
 					{
+						logger.debug("Reconnect successful - retrying transmission");
+						/* set flag to avoid infinite recursion */
 						retryAttempt = true;
 						sendCommandExpectResponse(cmd);
+						/* reset flag */
+						retryAttempt = false;
 					} else {
 						logger.error("Attempt to reconnect after IOException failed: "+e.getMessage());
 					}
@@ -155,6 +159,7 @@ public class BenqProjectorNetworkTransport implements BenqProjectorTransport {
 		} else {
 			logger.debug("Not sending command to projector as connection is not setup yet.");
 		}
+		
 		return respStr;
 	}
 
