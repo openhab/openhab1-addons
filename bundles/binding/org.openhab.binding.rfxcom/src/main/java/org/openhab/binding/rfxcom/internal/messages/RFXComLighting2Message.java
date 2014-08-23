@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -136,12 +136,16 @@ public class RFXComLighting2Message extends RFXComBaseMessage {
 		
 		sensorId = (data[4] & 0xFF) << 24 | (data[5] & 0xFF) << 16
 				| (data[6] & 0xFF) << 8 | (data[7] & 0xFF);
-		unitcode = data[8];
 		
 		try {
 			command = Commands.values()[data[9]];
 		} catch (Exception e) {
 			command = Commands.UNKNOWN;
+		}
+		if ((command == Commands.GROUP_ON) || (command == Commands.GROUP_OFF)) {
+			unitcode = 0;
+		} else {
+			unitcode = data[8];
 		}
 
 		dimmingLevel = data[10];
@@ -316,16 +320,28 @@ public class RFXComLighting2Message extends RFXComBaseMessage {
 	public void convertFromState(RFXComValueSelector valueSelector, String id,
 			Object subType, Type type, byte seqNumber) throws RFXComException {
 		
-		subType = (SubType) subType;
+		boolean group = false;
+		this.subType = ((SubType) subType);
 		seqNbr = seqNumber;
 		String[] ids = id.split("\\.");
 		sensorId = Integer.parseInt(ids[0]);
+
+		// Get unitcode, 0 means group
 		unitcode = Byte.parseByte(ids[1]);
+		if (unitcode == 0)
+		{
+			unitcode = 1;
+			group = true;
+		}
 
 		switch (valueSelector) {
 		case COMMAND:
 			if (type instanceof OnOffType) {
-				command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);
+				if (group) {
+					command = (type == OnOffType.ON ? Commands.GROUP_ON : Commands.GROUP_OFF);
+				} else {
+					command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);
+				}
 				dimmingLevel = 0;
 			} else {
 				throw new RFXComException("Can't convert " + type + " to Command");

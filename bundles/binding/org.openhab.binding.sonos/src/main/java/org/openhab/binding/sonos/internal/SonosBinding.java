@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,22 +8,24 @@
  */
 package org.openhab.binding.sonos.internal;
 
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
+import static org.quartz.TriggerBuilder.newTrigger;
+import static org.quartz.impl.matchers.GroupMatcher.jobGroupEquals;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang.IllegalClassException;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.sonos.SonosBindingProvider;
 import org.openhab.binding.sonos.SonosCommandType;
-import org.openhab.core.binding.AbstractBinding;
-import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
@@ -34,6 +36,16 @@ import org.openhab.core.types.TypeParser;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.quartz.Job;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.teleal.cling.DefaultUpnpServiceConfiguration;
@@ -69,34 +81,85 @@ import org.xml.sax.SAXException;
  * @since 1.1.0
  * 
  */
-public class SonosBinding extends AbstractBinding<SonosBindingProvider>
-		implements ManagedService {
+public class SonosBinding extends AbstractActiveBinding<SonosBindingProvider>
+implements ManagedService {
 
 	private static Logger logger = LoggerFactory.getLogger(SonosBinding.class);
 
 	private static final Pattern EXTRACT_SONOS_CONFIG_PATTERN = Pattern
 			.compile("^(.*?)\\.(udn)$");
 
-	private Map<String, SonosZonePlayer> sonosZonePlayerCache = Collections
-			.synchronizedMap(new HashMap<String, SonosZonePlayer>());
-
-	private List<SonosZoneGroup> sonosZoneGroups = null;
-
 	static protected UpnpService upnpService;
 	static protected SonosBinding self;
 
-	static protected Integer interval = 600;
+	/** the refresh interval which is used to check for changes in the binding configurations */
+	private static long refreshInterval = 5000;
+	/** polling interval in milliseconds for variables that need to be polled */
+	private int pollingPeriod = 1000;
+	/** timeout interval used by the Cling GENA subscriptions */
+	static protected int interval = 600;
+
 	static protected boolean bindingStarted = false;
 
-	private List<String> sonosPlayersFromCfg = null;
-
+	private PlayerCache sonosZonePlayerCache = new PlayerCache();
+	private List<SonosZoneGroup> sonosZoneGroups = null;
 	private Map<String, SonosZonePlayerState> sonosSavedPlayerState = null;
 	private List<SonosZoneGroup> sonosSavedGroupState = null;
 
-	private int pollingPeriod = 1000;
+	private class PlayerCache extends ArrayList<SonosZonePlayer> {
+
+		private static final long serialVersionUID = 7973128806169191738L;
+
+		public boolean contains(String id) {
+			Iterator<SonosZonePlayer> it = this.iterator();
+			while(it.hasNext()){
+				SonosZonePlayer aPlayer = it.next();
+				if (aPlayer.getUdn().getIdentifierString().equals(id) || aPlayer.getId().equals(id)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public SonosZonePlayer getById(String id) {
+			Iterator<SonosZonePlayer> it = this.iterator();
+			while(it.hasNext()){
+				SonosZonePlayer aPlayer = it.next();
+				if (aPlayer.getUdn().getIdentifierString().equals(id) || aPlayer.getId().equals(id)) {
+					return aPlayer;
+				}
+			}
+			return null;	
+		}
+
+		public SonosZonePlayer getByUDN(String udn) {	
+			Iterator<SonosZonePlayer> it = this.iterator();
+			while(it.hasNext()){
+				SonosZonePlayer aPlayer = it.next();
+				if (aPlayer.getUdn().getIdentifierString().equals(udn)) {
+					return aPlayer;
+				}
+			}
+			return null;
+		}
+
+		public SonosZonePlayer getByDevice(RemoteDevice device) {
+			if(device!=null) {
+				Iterator<SonosZonePlayer> it = this.iterator();
+				while(it.hasNext()){
+					SonosZonePlayer aPlayer = it.next();
+					if (aPlayer.getDevice()!=null && aPlayer.getDevice().equals(device)) {
+						return aPlayer;
+					}
+				}
+			}
+			return null;
+		}
+
+	}
 
 	public class SonosUpnpServiceConfiguration extends
-			DefaultUpnpServiceConfiguration {
+	DefaultUpnpServiceConfiguration {
 
 		@SuppressWarnings("rawtypes")
 		@Override
@@ -129,67 +192,40 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 
 		@SuppressWarnings("rawtypes")
 		public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
-			logger.debug("Remote device available: "
-					+ device.getDisplayString());
 
 			// add only Sonos devices
 			if (device.getDetails().getManufacturerDetails().getManufacturer()
 					.toUpperCase().contains("SONOS")) {
 
-				// ignore Zone Bridges
-				if (!device.getDetails().getModelDetails().getModelNumber()
-						.toUpperCase().contains("ZB100")) {
+				UDN udn = device.getIdentity().getUdn();
+				boolean existingDevice = false;
 
-					UDN udn = device.getIdentity().getUdn();
-					boolean existingDevice = false;
+				logger.info("Found a Sonos device ({}) with UDN {}",device.getDetails().getModelDetails().getModelNumber(),udn);
 
-					// Check if we already received a configuration for this
-					// device through the .cfg
-					for (String item : sonosZonePlayerCache.keySet()) {
-						SonosZonePlayer sonosConfig = sonosZonePlayerCache
-								.get(item);
-						if (sonosConfig.getUdn().equals(udn)) {
-							// We already have an (empty) config, populate it
-							logger.debug(
-									"Found UPNP device {} matchig a pre-defined config {}",
-									device, sonosConfig);
-							sonosConfig.setDevice(device);
-							sonosConfig.setService(upnpService);
+				// Check if we already received a configuration for this
+				// device through the .cfg
+				SonosZonePlayer thePlayer = sonosZonePlayerCache.getByUDN(udn.getIdentifierString());
 
-							existingDevice = true;
-						}
-					}
+				if (thePlayer == null) {
+					// Add device to the cached Configs
+					thePlayer = new SonosZonePlayer(udn.getIdentifierString(),self);
+					thePlayer.setUdn(udn);
 
-					if (!existingDevice) {
-						// Add device to the cached Configs
-						SonosZonePlayer newConfig = new SonosZonePlayer(self);
-						newConfig.setUdn(udn);
-						newConfig.setDevice(device);
-						newConfig.setService(upnpService);
-
-						String sonosID = StringUtils.substringAfter(newConfig
-								.getUdn().toString(), ":");
-
-						sonosZonePlayerCache.put(sonosID, newConfig);
-						logger.debug(
-								"Added a new ZonePlayer with ID {} as configuration for device {}",
-								sonosID, newConfig);
-
-					}
-
-					// add GENA service to capture zonegroup information
-					Service service = device.findService(new UDAServiceId(
-							"ZoneGroupTopology"));
-					SonosSubscriptionCallback callback = new SonosSubscriptionCallback(
-							service, interval);
-					upnpService.getControlPoint().execute(callback);
-					// logger.debug("Added a GENA Subscription in the Sonos Binding for service {} on device {}",service,device);
-
-				} else {
-					logger.debug("Ignore ZoneBridges");
+					sonosZonePlayerCache.add(thePlayer);
 				}
+
+				thePlayer.setDevice(device);
+				thePlayer.setService(upnpService);
+				thePlayer.updateCurrentZoneName();
+
+				// add GENA service to capture zonegroup information
+				Service service = device.findService(new UDAServiceId(
+						"ZoneGroupTopology"));
+				SonosSubscriptionCallback callback = new SonosSubscriptionCallback(
+						service, interval);
+				upnpService.getControlPoint().execute(callback);
 			} else {
-				logger.debug("Ignore non Sonos devices");
+				logger.info("A non-Sonos device ({}) is found and will be ignored",device.getDisplayString());
 			}
 		}
 
@@ -224,10 +260,6 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 		self = this;
 	}
 
-	public void activate() {
-		start();
-	}
-
 	/**
 	 * Find the first matching {@link ChannelBindingProvider} according to
 	 * <code>itemName</code>
@@ -249,14 +281,9 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 		}
 		return firstMatchingProvider;
 	}
-	
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void bindingChanged(BindingProvider provider, String itemName) {
-		start();
+	public void activate() {
+		// Nothing to do here. We start the binding when the first item bindigconfig is processed
 	}
 
 	@Override
@@ -278,22 +305,20 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 			for (Command someCommand : commands) {
 
 				String sonosID = provider.getSonosID(itemName, someCommand);
-				Direction direction = provider.getDirection(itemName,
-						someCommand);
-				SonosCommandType sonosCommandType = provider
-						.getSonosCommandType(itemName, someCommand, direction);
+				String sonosCommand = provider.getSonosCommand(itemName,someCommand);
+				SonosCommandType sonosCommandType = null;
 
-				if (sonosID != null && direction != null) {
+				try {
+					sonosCommandType = SonosCommandType.getCommandType(sonosCommand, Direction.OUT);
+				} catch (Exception e) {
+					logger.error("An exception occured while verifying command compatibility ({})",e.getMessage());
+				}
+
+				if (sonosID != null) {
 					if (sonosCommandType != null) {
-						if (direction.equals(Direction.OUT)
-								| direction.equals(Direction.BIDIRECTIONAL)) {
-							executeCommand(itemName, someCommand, sonosID,
-									sonosCommandType, commandAsString);
-						} else {
-							logger.error(
-									"wrong command direction for binding [Item={}, command={}]",
-									itemName, commandAsString);
-						}
+						logger.debug("Executing command: item:{}, command:{}, ID:{}, CommandType:{}, commandString:{}",new Object[] {itemName, someCommand, sonosID, sonosCommandType, commandAsString} );
+						executeCommand(itemName, someCommand, sonosID,
+								sonosCommandType, commandAsString);
 					} else {
 						logger.error(
 								"wrong command type for binding [Item={}, command={}]",
@@ -310,15 +335,13 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 	}
 
 	@SuppressWarnings("unchecked")
-	private Type createStateForType(SonosCommandType ctype, String value)
+	private Type createStateForType(Class<? extends State> ctype, String value)
 			throws BindingConfigParseException {
 
 		if (ctype != null && value != null) {
 
-			Class<? extends Type> typeClass = ctype.getTypeClass();
 			List<Class<? extends State>> stateTypeList = new ArrayList<Class<? extends State>>();
-
-			stateTypeList.add((Class<? extends State>) typeClass);
+			stateTypeList.add(ctype);
 
 			String finalValue = value;
 
@@ -327,13 +350,13 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 			// into ON OFF if the commandTypes allow so. This is a little hack,
 			// but IMHO OnOffType should
 			// be enhanced, or a TrueFalseType should be developed
-			if (typeClass.equals(OnOffType.class)) {
+			if (ctype.equals(OnOffType.class)) {
 				finalValue = StringUtils.upperCase(value);
-				if (finalValue.equals("TRUE")) {
+				if (finalValue.equals("TRUE") || finalValue.equals("1")) {
 					finalValue = "ON";
-				} else if (finalValue.equals("FALSE")) {
+				} else if (finalValue.equals("FALSE") || finalValue.equals("0")) {
 					finalValue = "OFF";
-				}
+				} 
 			}
 
 			State state = TypeParser.parseState(stateTypeList, finalValue);
@@ -365,8 +388,12 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 
 		if (device != null && values != null) {
 
-			// get the device linked to this service linked to this subscription
-			String sonosID = getSonosIDforDevice(device);
+			SonosZonePlayer associatedPlayer  = sonosZonePlayerCache.getByDevice(device);
+
+			if(associatedPlayer == null) {
+				logger.debug("There is no Sonos Player defined matching the device {}",device);
+				return;
+			}
 
 			for (String stateVariable : values.keySet()) {
 
@@ -383,46 +410,41 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 					// the status value in the map
 					Type newState = null;
 					try {
-						newState = createStateForType(sonosCommandType, status
+						newState = createStateForType((Class<? extends State>) sonosCommandType.getTypeClass(), status
 								.getValue().toString());
 					} catch (BindingConfigParseException e) {
 						logger.error(
 								"Error parsing a value {} to a state variable of type {}",
 								status.toString(), sonosCommandType
-										.getTypeClass().toString());
+								.getTypeClass().toString());
 					}
 
 					for (SonosBindingProvider provider : providers) {
-						List<String> qualifiedItems = provider.getItemNames(
-								sonosID, sonosCommandType);
+						List<String> qualifiedItems = provider.getItemNames(sonosZonePlayerCache.getByDevice(device).getId(), sonosCommandType.getSonosCommand());
+						List<String> qualifiedItemsByUDN = provider.getItemNames(sonosZonePlayerCache.getByDevice(device).getUdn().getIdentifierString(), sonosCommandType.getSonosCommand());
+
+						for(String item : qualifiedItemsByUDN) {
+							if(!qualifiedItems.contains(item)) {
+								qualifiedItems.add(item);
+							}
+						}
+
 						for (String anItem : qualifiedItems) {
 							// get the openHAB commands attached to each Item at
 							// this given Provider
-							List<Command> commands = provider.getCommands(
-									anItem, sonosCommandType);
-							for (Command aCommand : commands) {
-								Direction theDirection = provider.getDirection(
-										anItem, aCommand);
-								Direction otherDirection = sonosCommandType
-										.getDirection();
-								if ((theDirection == Direction.IN || theDirection == Direction.BIDIRECTIONAL)
-										&& (otherDirection != Direction.OUT)) {
+							List<Command> commands = provider.getCommands(anItem, sonosCommandType.getSonosCommand());
 
-									if (newState != null) {
-										if (newState.equals((State) aCommand)
-												|| newState instanceof StringType
-												|| newState instanceof DecimalType) {
-											eventPublisher.postUpdate(anItem,
-													(State) newState);
-										}
-									} else {
-										throw new IllegalClassException(
-												"Cannot process update for the command of type "
-														+ sonosCommandType
-																.toString());
-									}
-
+							if( provider.getAcceptedDataTypes(anItem).contains(sonosCommandType.getTypeClass())) {
+								if(newState != null) {
+									eventPublisher.postUpdate(anItem,(State) newState);
+								} else {
+									throw new IllegalClassException(
+											"Cannot process update for the command of type "
+													+ sonosCommandType
+													.toString());
 								}
+							} else {
+								logger.warn("Cannot cast {} to an accepted state type for item {}",sonosCommandType.getTypeClass().toString(),anItem);
 							}
 						}
 					}
@@ -441,7 +463,6 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 		@SuppressWarnings("rawtypes")
 		@Override
 		public void established(GENASubscription sub) {
-			// logger.debug("Established: " + sub.getSubscriptionId());
 		}
 
 		@SuppressWarnings("rawtypes")
@@ -449,7 +470,6 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 		protected void failed(GENASubscription subscription,
 				UpnpResponse responseStatus, Exception exception,
 				String defaultMsg) {
-			logger.error(defaultMsg);
 		}
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -458,6 +478,7 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 			// get the device linked to this service linked to this subscription
 
 			Map<String, StateVariableValue> values = sub.getCurrentValues();
+			Map<String, StateVariableValue> mapToProcess = new HashMap<String, StateVariableValue>();
 
 			// now, lets deal with the specials - some UPNP responses require
 			// some XML parsing
@@ -487,12 +508,15 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 		@Override
 		protected void ended(GENASubscription subscription,
 				CancelReason reason, UpnpResponse responseStatus) {
-			// TODO Auto-generated method stub
+			//rebooting the GENA subscription
+			Service service = subscription.getService();			
+			SonosSubscriptionCallback callback = new SonosSubscriptionCallback(service,interval);
+			upnpService.getControlPoint().execute(callback);
 
 		}
 	}
 
-	private class SonosZonePlayerState {
+	public class SonosZonePlayerState {
 
 		public String transportState;
 		public String volume;
@@ -501,15 +525,10 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 		public long track;
 	}
 
-	protected boolean savePlayerState() {
+	protected boolean saveAllPlayerState() {
 
 		synchronized (this) {
-			if (sonosSavedGroupState != null && sonosSavedPlayerState != null) {
-				// TODO issue warning
 
-			}
-
-			sonosSavedPlayerState = new HashMap<String, SonosZonePlayerState>();
 			sonosSavedGroupState = new ArrayList<SonosZoneGroup>();
 
 			for (SonosZoneGroup group : getSonosZoneGroups()) {
@@ -518,137 +537,28 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 
 			for (SonosZoneGroup group : sonosSavedGroupState) {
 				for (String playerName : group.getMembers()) {
-					SonosZonePlayer player = getPlayerForID(playerName);
-
-					SonosZonePlayerState saveState = new SonosZonePlayerState();
-
-					String currentURI = player.getCurrentURI();
-
-					if (currentURI != null) {
-
-						if (currentURI.contains("x-sonosapi-stream:")) {
-							// we are streaming music
-							SonosMetaData track = player.getTrackMetadata();
-							SonosMetaData current = player
-									.getCurrentURIMetadata();
-							if (track != null) {
-								saveState.entry = new SonosEntry("",
-										current.getTitle(), "", "",
-										track.getAlbumArtUri(), "",
-										current.getUpnpClass(), currentURI);
-							}
-						} else if (currentURI.contains("x-rincon:")) {
-							// we are a slave to some coordinator
-							saveState.entry = new SonosEntry("", "", "", "",
-									"", "", "", currentURI);
-						} else if (currentURI.contains("x-rincon-stream:")) {
-							// we are streaming from the Line In connection
-							saveState.entry = new SonosEntry("", "", "", "",
-									"", "", "", currentURI);
-						} else if (currentURI.contains("x-rincon-queue:")) {
-							// we are playing something that sits in the queue
-							SonosMetaData queued = player
-									.getEnqueuedTransportURIMetaData();
-							if (queued != null) {
-
-								saveState.track = player.getCurrenTrackNr();
-
-								if (queued.getUpnpClass().contains(
-										"object.container.playlistContainer")) {
-									// we are playing a real 'saved' playlist
-									List<SonosEntry> playLists = player
-											.getPlayLists();
-									for (SonosEntry someList : playLists) {
-										if (someList.getTitle().equals(
-												queued.getTitle())) {
-											saveState.entry = new SonosEntry(
-													someList.getId(),
-													someList.getTitle(),
-													someList.getParentId(), "",
-													"", "",
-													someList.getUpnpClass(),
-													someList.getRes());
-											break;
-										}
-									}
-
-								} else if (queued.getUpnpClass().contains(
-										"object.container")) {
-									// we are playing some other sort of
-									// 'container' - we will save that to a
-									// playlist for our convenience
-									logger.debug(
-											"Save State for a container of type {}",
-											queued.getUpnpClass());
-
-									// save the playlist
-									String existingList = "";
-									List<SonosEntry> playLists = player
-											.getPlayLists();
-									for (SonosEntry someList : playLists) {
-										if (someList.getTitle().equals(
-												"openHAB-" + player.getUdn())) {
-											existingList = someList.getId();
-											break;
-										}
-									}
-
-									player.saveQueue(
-											"openHAB-" + player.getUdn(),
-											existingList);
-
-									// get all the playlists and a ref to our
-									// saved list
-									playLists = player.getPlayLists();
-									for (SonosEntry someList : playLists) {
-										if (someList.getTitle().equals(
-												"openHAB-" + player.getUdn())) {
-											saveState.entry = new SonosEntry(
-													someList.getId(),
-													someList.getTitle(),
-													someList.getParentId(), "",
-													"", "",
-													someList.getUpnpClass(),
-													someList.getRes());
-											break;
-										}
-									}
-
-								}
-							} else {
-								saveState.entry = new SonosEntry("", "", "",
-										"", "", "", "", "x-rincon-queue:"
-												+ player.getUdn()
-														.getIdentifierString()
-												+ "#0");
-							}
-						}
-
-						saveState.transportState = player.getTransportState();
-						saveState.volume = player.getCurrentVolume();
-						saveState.relTime = player.getPosition();
-					} else {
-						saveState.entry = null;
-					}
-
-					sonosSavedPlayerState.put(playerName, saveState);
+					SonosZonePlayer player = sonosZonePlayerCache.getById(playerName);
+					player.saveState();
 				}
 			}
+			
 			return true;
 
 		}
 	}
 
-	protected boolean restorePlayerState() {
+
+
+	protected boolean restoreAllPlayerState() {
 
 		synchronized (this) {
 
-			if (sonosSavedGroupState != null && sonosSavedPlayerState != null) {
+			if (sonosSavedGroupState != null) {
 
 				// make every player independent
 				for (SonosZoneGroup group : sonosSavedGroupState) {
 					for (String playerName : group.getMembers()) {
-						SonosZonePlayer player = getPlayerForID(playerName);
+						SonosZonePlayer player = sonosZonePlayerCache.getById(playerName);
 						if (player != null) {
 							player.becomeStandAlonePlayer();
 						}
@@ -657,11 +567,10 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 
 				// re-create the groups
 				for (SonosZoneGroup group : sonosSavedGroupState) {
-					SonosZonePlayer coordinator = getPlayerForID(group
-							.getCoordinator());
+					SonosZonePlayer coordinator = sonosZonePlayerCache.getById(group.getCoordinator());
 					if (coordinator != null) {
 						for (String playerName : group.getMembers()) {
-							SonosZonePlayer player = getPlayerForID(playerName);
+							SonosZonePlayer player = sonosZonePlayerCache.getById(playerName);
 							if (player != null) {
 								coordinator.addMember(player);
 							}
@@ -671,69 +580,10 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 
 				// put settings back
 				for (SonosZoneGroup group : sonosSavedGroupState) {
-					SonosZonePlayer coordinator = getPlayerForID(group
-							.getCoordinator());
 					for (String playerName : group.getMembers()) {
-						SonosZonePlayer player = getPlayerForID(playerName);
+						SonosZonePlayer player = sonosZonePlayerCache.getById(playerName);
 						if (player != null) {
-
-							SonosZonePlayerState saveState = sonosSavedPlayerState
-									.get(playerName);
-
-							player.setVolume(saveState.volume);
-
-							if (player == coordinator) {
-
-								if (player == coordinator) {
-
-									if (saveState.entry != null) {
-
-										// check if we have a playlist to deal
-										// with
-										if (saveState.entry
-												.getUpnpClass()
-												.contains(
-														"object.container.playlistContainer")) {
-
-											player.addURIToQueue(
-													saveState.entry.getRes(),
-													SonosXMLParser
-															.compileMetadataString(saveState.entry),
-													0, true);
-											SonosEntry entry = new SonosEntry(
-													"",
-													"",
-													"",
-													"",
-													"",
-													"",
-													"",
-													"x-rincon-queue:"
-															+ player.getUdn()
-																	.getIdentifierString()
-															+ "#0");
-											player.setCurrentURI(entry);
-											player.setPositionTrack(saveState.track);
-
-										} else {
-											player.setCurrentURI(saveState.entry);
-											player.setPosition(saveState.relTime);
-										}
-
-										if (saveState.transportState
-												.equals("PLAYING")) {
-											player.play();
-										} else if (saveState.transportState
-												.equals("STOPPED")) {
-											player.stop();
-										} else if (saveState.transportState
-												.equals("PAUSED_PLAYBACK")) {
-											player.pause();
-										}
-									}
-								}
-							}
-
+							player.restoreState();
 						}
 					}
 				}
@@ -751,8 +601,8 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 
 		boolean result = false;
 
-		if (sonosID != null) {
-			SonosZonePlayer player = sonosZonePlayerCache.get(sonosID);
+		if (sonosID != null && sonosZonePlayerCache.contains(sonosID)) {
+			SonosZonePlayer player = sonosZonePlayerCache.getById(sonosID);
 			if (player != null) {
 				switch (sonosCommandType) {
 				case SETLED:
@@ -774,17 +624,17 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 				case PREVIOUS:
 					result = player.previous();
 					break;
-				case SETVOLUME:
-					result = player.setVolume(commandAsString);
+				case SETVOLUME:					
+					result = player.setVolume(commandAsString);	
 					break;
 				case GETVOLUME:
 					break;
 				case ADDMEMBER:
-					result = player.addMember(getPlayerForID(commandAsString));
+					result = player.addMember(sonosZonePlayerCache.getById(commandAsString));
 					break;
 				case REMOVEMEMBER:
 					result = player
-							.removeMember(getPlayerForID(commandAsString));
+					.removeMember(sonosZonePlayerCache.getById(commandAsString));
 					break;
 				case BECOMESTANDALONEGROUP:
 					result = player.becomeStandAlonePlayer();
@@ -805,17 +655,26 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 					result = player.snoozeAlarm(Integer
 							.parseInt(commandAsString));
 					break;
+				case SAVEALL:
+					result = saveAllPlayerState();
+					break;
+				case RESTOREALL:
+					result = restoreAllPlayerState();
+					break;
 				case SAVE:
-					result = savePlayerState();
+					result = player.saveState();
 					break;
 				case RESTORE:
-					result = restorePlayerState();
+					result = player.restoreState();
 					break;
 				case PLAYLIST:
 					result = player.playPlayList(commandAsString);
 					break;
-				case SETURI:
+				case PLAYURI:
 					result = player.playURI(commandAsString);
+					break;
+				case PLAYLINEIN:
+					result = player.playLineIn(commandAsString);
 					break;
 				default:
 					break;
@@ -830,121 +689,7 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 				return;
 			}
 		}
-
-		if (result) {
-
-			// create a new State based on the type of Sonos Command and the
-			// status value in the map
-			Type newState = null;
-			try {
-				newState = createStateForType(sonosCommandType, commandAsString);
-			} catch (BindingConfigParseException e) {
-				logger.error(
-						"Error parsing a value {} to a state variable of type {}",
-						commandAsString, sonosCommandType.getTypeClass()
-								.toString());
-			}
-
-			if (newState != null) {
-				if (newState.equals((State) command)
-						|| newState instanceof StringType
-						|| newState instanceof DecimalType) {
-					eventPublisher.postUpdate(itemName, (State) newState);
-				} else {
-					eventPublisher.postUpdate(itemName, (State) command);
-				}
-			} else {
-				throw new IllegalClassException(
-						"Cannot process update for the command of type "
-								+ sonosCommandType.toString());
-			}
-
-		}
-
 	}
-
-	Thread pollingThread = new Thread("Sonos Polling Thread") {
-
-		boolean shutdown = false;
-
-		@Override
-		public void run() {
-
-			logger.debug(getName()
-					+ " has been started with a polling frequency of {} ms",
-					pollingPeriod);
-
-			while (!shutdown && pollingPeriod > 0) {
-
-				try {
-					if (upnpService != null) {
-						// get all the CommandTypes that require polling
-						List<SonosCommandType> supportedCommands = SonosCommandType
-								.getPolling();
-
-						for (SonosCommandType sonosCommandType : supportedCommands) {
-							// loop through all the player and poll for each of
-							// the supportedCommands
-							for (String sonosID : sonosZonePlayerCache.keySet()) {
-								SonosZonePlayer player = sonosZonePlayerCache
-										.get(sonosID);
-
-								// logger.debug("poll command '{}' from device '{}'",
-								// sonosCommandType, sonosID);
-
-								try {
-									if (player != null && player.isConfigured()) {
-										switch (sonosCommandType) {
-										case GETLED:
-											player.updateLed();
-											break;
-										case RUNNINGALARMPROPERTIES:
-											player.updateRunningAlarmProperties();
-											break;
-										case CURRENTTRACK:
-											player.updateCurrentURIFormatted();
-											break;
-										case ZONEINFO:
-											player.updateZoneInfo();
-											break;
-										case MEDIAINFO:
-											player.updateMediaInfo();
-											break;
-										default:
-											break;
-										}
-										;
-									}
-								} catch (Exception e) {
-									logger.debug(
-											"Error occured when poll command '{}' from device '{}' ",
-											sonosCommandType, sonosID);
-								}
-							}
-						}
-
-						try {
-							Thread.sleep(pollingPeriod);
-						} catch (InterruptedException e) {
-							logger.debug("pausing thread " + getName()
-									+ " interrupted");
-
-						}
-					}
-				} catch (Exception e) {
-
-					logger.debug("Error occured during polling", e);
-
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e1) {
-						logger.debug("pausing thread " + getName()
-								+ " interrupted");
-					}
-				}
-			}
-		}
-	};
 
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
@@ -969,7 +714,7 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 				Matcher matcher = EXTRACT_SONOS_CONFIG_PATTERN.matcher(key);
 				if (!matcher.matches()) {
 					logger.debug("given sonos-config-key '"
-						+ key + "' does not follow the expected pattern '<sonosId>.<udn>'");
+							+ key + "' does not follow the expected pattern '<sonosId>.<udn>'");
 					continue;
 				}
 
@@ -978,122 +723,167 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 
 				String sonosID = matcher.group(1);
 
-				SonosZonePlayer sonosConfig = sonosZonePlayerCache.get(sonosID);
+				SonosZonePlayer sonosConfig = sonosZonePlayerCache.getById(sonosID);
 				if (sonosConfig == null) {
-					sonosConfig = new SonosZonePlayer(self);
-					sonosZonePlayerCache.put(sonosID, sonosConfig);
+					sonosConfig = new SonosZonePlayer(sonosID,self);
+					sonosZonePlayerCache.add(sonosConfig);
 				}
 
 				String configKey = matcher.group(2);
 				String value = (String) config.get(key);
 
 				if ("udn".equals(configKey)) {
-
-					if (sonosPlayersFromCfg == null) {
-						sonosPlayersFromCfg = new ArrayList<String>();
-					}
-
-					sonosPlayersFromCfg.add(value);
-
 					sonosConfig.setUdn(new UDN(value));
-
 					logger.debug("Add predefined Sonos device with UDN {}", sonosConfig.getUdn());
-
 				} else {
 					throw new ConfigurationException(configKey,
-						"the given configKey '" + configKey + "' is unknown");
+							"the given configKey '" + configKey + "' is unknown");
 				}
 			}
-			start();
 		}
+
+		setProperlyConfigured(true);
+
 	}
 
-	public void start() {
-		if (bindingStarted) {
-			logger.trace("Tried to start Sonos polling although it is already started!");
-			return;
-		}
+	@Override
+	protected void execute() {
+		if(isProperlyConfigured()) {
 
-		// This will create necessary network resources for UPnP right away
-		upnpService = new UpnpServiceImpl(new SonosUpnpServiceConfiguration(), listener);
+			if(!bindingStarted) {
 
-		try {
-			if (sonosPlayersFromCfg != null) {
-				// Search predefined devices from configuration
-				for (String udn : sonosPlayersFromCfg) {
-					logger.debug("Querying network for predefined Sonos device with UDN '{}'", udn);
+				// This will create necessary network resources for UPnP right away
+				upnpService = new UpnpServiceImpl(new SonosUpnpServiceConfiguration(), listener);
 
-					// Query the network for this UDN
-					upnpService.getControlPoint().search(new UDNHeader(new UDN(udn)));
+				try {
+
+					Iterator<SonosZonePlayer> it = sonosZonePlayerCache.iterator();
+					while(it.hasNext()){
+						SonosZonePlayer aPlayer = it.next();
+						if(aPlayer.getDevice() == null) {
+							logger.info("Querying the network for a predefined Sonos device with UDN {}", aPlayer.getUdn());
+							upnpService.getControlPoint().search(new UDNHeader(aPlayer.getUdn()));
+						}
+					}
+
+					logger.info("Querying the network for any other Sonos device");
+
+					final UDAServiceType udaType = new UDAServiceType("AVTransport");
+					upnpService.getControlPoint().search( new UDAServiceTypeHeader(udaType));
+
+				} catch (Exception e) {
+					logger.warn("An exception occurred while searching the network for Sonos devices: ", e.getMessage());
 				}
+
+				bindingStarted = true;
 			}
 
-			logger.debug("Querying network for Sonos devices");
-
-			// Send a search message to all devices and services, they should
-			// respond soon
-			// upnpService.getControlPoint().search(new STAllHeader());
-
-			// UDADeviceType udaType = new UDADeviceType("ZonePlayer");
-			// upnpService.getControlPoint().search(
-			// new UDADeviceTypeHeader(udaType));
-
-			// Search only dedicated devices
-			final UDAServiceType udaType = new UDAServiceType("AVTransport");
-
-			upnpService.getControlPoint().search( new UDAServiceTypeHeader(udaType));
-		} catch (Exception e) {
-			logger.warn("Error occured when searching UPNP devices", e);
-		}
-
-		// start the thread that will poll some devices
-		pollingThread.setDaemon(true);
-		pollingThread.start();
-		
-		bindingStarted = true;
-		logger.debug("Sonos Binding Discovery has been started.");
-	}
-
-	protected String getSonosIDforDevice(RemoteDevice device) {
-		for (String id : sonosZonePlayerCache.keySet()) {
-			SonosZonePlayer config = sonosZonePlayerCache.get(id);
-			if (config.getDevice() == device) {
-				return id;
+			Scheduler sched = null;
+			try {
+				sched =  StdSchedulerFactory.getDefaultScheduler();
+			} catch (SchedulerException e) {
+				logger.error("An exception occurred while getting a reference to the Quartz Scheduler");
 			}
-		}
-		return null;
-	}
 
-	protected SonosZonePlayer getPlayerForID(String name) {
+			// Cycle through the Items and setup sonos zone players if required
+			for (SonosBindingProvider provider : providers) {
+				for (String itemName : provider.getItemNames()) {
+					for(String sonosID : ((SonosBindingProvider) provider).getSonosID(itemName)) {
+						if(!sonosZonePlayerCache.contains(sonosID)) {
+							// the device is not yet discovered on the network or not defined in the .cfg
 
-		String sonosID = null;
+							//Verify that the sonosID has the format of a valid UDN
+							Pattern SONOS_UDN_PATTERN = Pattern.compile("RINCON_(\\w{17})");
+							Matcher matcher = SONOS_UDN_PATTERN.matcher(sonosID);
+							if(matcher.matches()){
+								// Add device to the cached Configs
+								SonosZonePlayer thePlayer = new SonosZonePlayer(sonosID,self);
+								thePlayer.setUdn(new UDN(sonosID));
 
-		for (String playerName : sonosZonePlayerCache.keySet()) {
-			if (playerName.equals(name)) {
-				sonosID = playerName;
-				break;
-			}
-		}
+								sonosZonePlayerCache.add(thePlayer);
 
-		if (sonosID == null) {
+								//Query the network for this device
+								logger.info("Querying the network for a predefined Sonos device with UDN '{}'", thePlayer.getUdn());
+								upnpService.getControlPoint().search(new UDNHeader(thePlayer.getUdn()));
+							}
 
-			for (String playerName : sonosZonePlayerCache.keySet()) {
-				SonosZonePlayer player = sonosZonePlayerCache.get(playerName);
-				if (player.getUdn().getIdentifierString().equals(name)) {
-					sonosID = playerName;
-					break;
+						}
+					}
 				}
 			}
 
+			// Cycle through the item binding configuration that define polling criteria
+			for (SonosCommandType sonosCommandType : SonosCommandType.getPolling()) {
+				for(SonosBindingProvider provider : providers) {
+					for (String itemName : provider.getItemNames(sonosCommandType.getSonosCommand())) {
+						for(Command aCommand : ((SonosBindingProvider) provider).getCommands(itemName,sonosCommandType.getSonosCommand())) {
+
+							// We are dealing with a valid device
+							SonosZonePlayer thePlayer = sonosZonePlayerCache.getById(provider.getSonosID(itemName, aCommand));
+
+							if(thePlayer != null) {
+
+								RemoteDevice theDevice = thePlayer.getDevice(); 
+
+								// Only set up a polling job if the device supports the given SonosCommandType
+								// Not all Sonos devices have the same capabilities
+								if(	theDevice!=null) {
+									if(theDevice.findService(new UDAServiceId(sonosCommandType.getService())) != null){			
+
+										boolean jobExists = false;
+
+										// enumerate each job group
+										try {
+											for(String group: sched.getJobGroupNames()) {
+												// enumerate each job in group
+												for(JobKey jobKey : sched.getJobKeys(jobGroupEquals(group))) {
+													if(jobKey.getName().equals(provider.getSonosID(itemName, aCommand)+"-"+sonosCommandType.getJobClass().toString())) {
+														jobExists = true;
+														break;
+													}
+												}
+											}
+										} catch (SchedulerException e1) {
+											logger.error("An exception occurred while quering the Quartz Scheduler ({})",e1.getMessage());
+										}
+
+										if(!jobExists) {
+											// set up the Quartz jobs
+											JobDataMap map = new JobDataMap();
+											map.put("Player", thePlayer);
+
+											JobDetail job = newJob(sonosCommandType.getJobClass())
+													.withIdentity(provider.getSonosID(itemName, aCommand)+"-"+sonosCommandType.getJobClass().toString(), "Sonos-"+provider.toString())
+													.usingJobData(map)
+													.build();
+
+											Trigger trigger = newTrigger()
+													.withIdentity(provider.getSonosID(itemName, aCommand)+"-"+sonosCommandType.getJobClass().toString(), "Sonos-"+provider.toString())
+													.startNow()
+													.withSchedule(simpleSchedule()
+															.repeatForever()
+															.withIntervalInMilliseconds(pollingPeriod))            
+															.build();
+
+											try {
+												sched.scheduleJob(job, trigger);
+											} catch (SchedulerException e) {
+												logger.error("An exception occurred while scheduling a Quartz Job ({})",e.getMessage());
+											}
+										}
+									}
+								}
+							}			
+						}
+					}
+				}
+			}
 		}
-
-		return sonosZonePlayerCache.get(sonosID);
-
 	}
 
 	public String getCoordinatorForZonePlayer(String playerName) {
 
-		SonosZonePlayer zonePlayer = sonosZonePlayerCache.get(playerName);
+		SonosZonePlayer zonePlayer = sonosZonePlayerCache.getById(playerName);
 
 		if (zonePlayer == null || getSonosZoneGroups() == null) {
 			return playerName;
@@ -1102,15 +892,14 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 			if (zg.getMembers().contains(
 					zonePlayer.getUdn().getIdentifierString())) {
 				String coordinator = zg.getCoordinator();
-				for (String player : sonosZonePlayerCache.keySet()) {
-					if (sonosZonePlayerCache.get(player).getUdn()
-							.getIdentifierString().equals(coordinator)) {
-						return player;
-					}
-				}
+				return sonosZonePlayerCache.getByUDN(coordinator).getId();
 			}
 		}
 		return playerName;
+	}
+
+	public SonosZonePlayer getPlayerForID(String player) {
+		return sonosZonePlayerCache.getById(player);
 	}
 
 	public SonosZonePlayer getCoordinatorForZonePlayer(
@@ -1123,12 +912,7 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 			if (zg.getMembers().contains(
 					zonePlayer.getUdn().getIdentifierString())) {
 				String coordinator = zg.getCoordinator();
-				for (String player : sonosZonePlayerCache.keySet()) {
-					if (sonosZonePlayerCache.get(player).getUdn()
-							.getIdentifierString().equals(coordinator)) {
-						return sonosZonePlayerCache.get(player);
-					}
-				}
+				return sonosZonePlayerCache.getByUDN(coordinator);
 			}
 		}
 		return zonePlayer;
@@ -1141,5 +925,81 @@ public class SonosBinding extends AbstractBinding<SonosBindingProvider>
 	public void setSonosZoneGroups(List<SonosZoneGroup> sonosZoneGroups) {
 		this.sonosZoneGroups = sonosZoneGroups;
 	}
-	
+
+	@Override
+	protected long getRefreshInterval() {
+		return refreshInterval;
+	}
+
+	@Override
+	protected String getName() {
+		return "Sonos Refresh Service";
+	}
+
+	public static class LedJob implements Job {
+
+		public void execute(JobExecutionContext context)
+				throws JobExecutionException {
+
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			SonosZonePlayer thePlayer = (SonosZonePlayer) dataMap.get("Player");
+
+			thePlayer.getLed();
+
+		}
+	}
+
+	public static class RunningAlarmPropertiesJob implements Job {
+
+		public void execute(JobExecutionContext context)
+				throws JobExecutionException {
+
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			SonosZonePlayer thePlayer = (SonosZonePlayer) dataMap.get("Player");
+
+			thePlayer.updateRunningAlarmProperties();
+
+		}
+	}
+
+	public static class CurrentURIFormattedJob implements Job {
+
+		public void execute(JobExecutionContext context)
+				throws JobExecutionException {
+
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			SonosZonePlayer thePlayer = (SonosZonePlayer) dataMap.get("Player");
+
+			thePlayer.updateCurrentURIFormatted();
+
+		}
+	}
+
+
+	public static class ZoneInfoJob implements Job {
+
+		public void execute(JobExecutionContext context)
+				throws JobExecutionException {
+
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			SonosZonePlayer thePlayer = (SonosZonePlayer) dataMap.get("Player");
+
+			thePlayer.updateZoneInfo();
+
+		}
+	}
+
+	public static class MediaInfoJob implements Job {
+
+		public void execute(JobExecutionContext context)
+				throws JobExecutionException {
+
+			JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+			SonosZonePlayer thePlayer = (SonosZonePlayer) dataMap.get("Player");
+
+			thePlayer.updateMediaInfo();
+
+		}
+	}
+
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -34,6 +34,16 @@ public class FritzahaQueryscriptMeter implements FritzahaOutletMeter {
 	 * Meter type
 	 */
 	MeterType type;
+	/**
+	 * Time definition (year, month, day, 10mins)
+	 * 
+	 * Extension to get energy readings from fritz-AHA for a defined interval.
+	 * The month interval 
+	 * 
+	 * @author the78mole
+	 * 
+	 */
+	TimeDef timedef;
 
 	/**
 	 * {@inheritDoc}
@@ -63,13 +73,28 @@ public class FritzahaQueryscriptMeter implements FritzahaOutletMeter {
 	 */
 	public void updateMeterValue(String itemName, FritzahaWebInterface webIface) {
 		if (type == MeterType.ENERGY) {
-			return;
+			if (timedef != null) {
+				logger.debug("Getting meter data for Device ID " + id);
+				String path = "net/home_auto_query.lua";
+				String timestr;
+				if (timedef == TimeDef.MINUTES)	timestr = "10";
+				else if (timedef == TimeDef.MONTH) timestr = "month";
+				else if (timedef == TimeDef.DAY) timestr = "24h";
+				else timestr = "year"; // 10 minutes
+				String args = "xhr=1&command=EnergyStats_" + timestr + "&id=" + id;
+				webIface.asyncGet(path, args, new FritzahaQueryscriptUpdateNumberCallback(path, args, type, webIface,
+						FritzahaReauthCallback.Method.GET, 1, itemName));
+				
+			} else {
+				return;
+			}
+		} else {
+			logger.debug("Getting meter data for Device ID " + id);
+			String path = "net/home_auto_query.lua";
+			String args = "xhr=1&command=MultiMeterState&id=" + id;
+			webIface.asyncGet(path, args, new FritzahaQueryscriptUpdateNumberCallback(path, args, type, webIface,
+					FritzahaReauthCallback.Method.GET, 1, itemName));
 		}
-		logger.debug("Getting meter data for Device ID " + id);
-		String path = "net/home_auto_query.lua";
-		String args = "xhr=1&command=MultiMeterState&id=" + id;
-		webIface.asyncGet(path, args, new FritzahaQueryscriptUpdateNumberCallback(path, args, type, webIface,
-				FritzahaReauthCallback.Method.GET, 1, itemName));
 	}
 
 	/**
@@ -79,5 +104,16 @@ public class FritzahaQueryscriptMeter implements FritzahaOutletMeter {
 		this.host = host;
 		this.id = id;
 		this.type = type;
+		this.timedef = null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public FritzahaQueryscriptMeter(String host, String id, MeterType type, TimeDef timedef) {
+		this.host = host;
+		this.id = id;
+		this.type = type;
+		this.timedef = timedef;
 	}
 }

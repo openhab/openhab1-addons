@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,7 +30,7 @@ import org.openhab.core.types.UnDefType;
 /**
  * RFXCOM data class for lighting1 message. See X10, ARC, etc..
  * 
- * @author Evert van Es
+ * @author Evert van Es, Cycling Engineer
  * @since 1.2.0
  */
 public class RFXComLighting1Message extends RFXComBaseMessage {
@@ -44,6 +44,7 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 		IMPULS(5),
 		RISINGSUN(6),
 		PHILIPS(7),
+		ENERGENIE(8),
 		
 		UNKNOWN(255);
 
@@ -134,12 +135,17 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 		}
 		
 		sensorId = (char) data[4];
-		unitcode = data[5];
 
 		try {
 			command = Commands.values()[data[6]];
 		} catch (Exception e) {
 			command = Commands.UNKNOWN;
+		}
+
+		if ((command == Commands.GROUP_ON) || (command == Commands.GROUP_OFF)) {
+			unitcode = 0;
+		} else {
+			unitcode = data[5];
 		}
 		
 		signalLevel = (byte) ((data[7] & 0xF0) >> 4);
@@ -204,6 +210,9 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 					break;
 
 				case CHIME:
+					state = OnOffType.ON;
+					break;
+					
 				default:
 					throw new RFXComException("Can't convert "
 							+ command + " to SwitchItem");
@@ -232,6 +241,9 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 					break;
 
 				case CHIME:
+					state = OpenClosedType.CLOSED;
+					break;
+					
 				default:
 					throw new RFXComException("Can't convert "
 							+ command + " to ContactItem");
@@ -268,16 +280,28 @@ public class RFXComLighting1Message extends RFXComBaseMessage {
 	public void convertFromState(RFXComValueSelector valueSelector, String id,
 			Object subType, Type type, byte seqNumber) throws RFXComException {
 
-		subType = (SubType) subType;
+		boolean group = false;
+		this.subType = ((SubType) subType);
 		seqNbr = seqNumber;
 		String[] ids = id.split("\\.");
 		sensorId = ids[0].charAt(0);
+
+		// Get unitcode, 0 means group
 		unitcode = Byte.parseByte(ids[1]);
+		if (unitcode == 0)
+		{
+			unitcode = 1;
+			group = true;
+		}
 
 		switch (valueSelector) {
 		case COMMAND:
 			if (type instanceof OnOffType) {
-				command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);
+				if (group) {
+					command = (type == OnOffType.ON ? Commands.GROUP_ON : Commands.GROUP_OFF);
+				} else {				
+					command = (type == OnOffType.ON ? Commands.ON : Commands.OFF);
+				}
 			} else {
 				throw new RFXComException("Can't convert " + type + " to Command");
 			}

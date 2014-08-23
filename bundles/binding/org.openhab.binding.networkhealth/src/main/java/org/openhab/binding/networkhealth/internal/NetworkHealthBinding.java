@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -51,12 +51,6 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
 	protected long getRefreshInterval() {
 		return refreshInterval;
 	}
-
-	@Override
-	public void activate() {
-		super.activate();
-		setProperlyConfigured(true);
-	}
 	
 	/**
 	 * @{inheritDoc}
@@ -107,8 +101,9 @@ public class NetworkHealthBinding extends AbstractActiveBinding<NetworkHealthBin
 			String refreshIntervalString = (String) config.get("refresh");
 			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
-			}
+			}			
 		}
+		setProperlyConfigured(true);
 	}
 	
 	

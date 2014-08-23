@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -93,6 +93,7 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 						"Missing transformation configuration.");
 			} else {
 				setTransformationRule(config[3].trim());
+				initTransformService();
 			}
 
 		} catch (BindingConfigParseException e) {
@@ -110,6 +111,7 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 		try {
 
 			if (getTransformationServiceName() != null && getTransformationService() == null) {
+				logger.debug("Received message before transformation service '{}' was initialized.");
 				initTransformService();
 			}
 

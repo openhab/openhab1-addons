@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -75,6 +75,8 @@ public class FritzahaQueryscriptUpdateNumberCallback extends FritzahaReauthCallb
 				valueType = "MM_Value_Amp";
 			} else if (type == MeterType.POWER) {
 				valueType = "MM_Value_Power";
+			} else if (type == MeterType.ENERGY) {
+				valueType = "";
 			} else
 				return;
 			ObjectMapper jsonReader = new ObjectMapper();
@@ -91,7 +93,25 @@ public class FritzahaQueryscriptUpdateNumberCallback extends FritzahaReauthCallb
 				logger.error("An I/O error occured while decoding JSON:\n" + response);
 				return;
 			}
-			if (deviceData.containsKey(valueType)) {
+			if (type == MeterType.ENERGY) {
+				String ValIdent = "EnStats_watt_value_";
+				long valCount=Long.parseLong(deviceData.get("EnStats_count"));
+				BigDecimal meterValue = new BigDecimal(0);
+				BigDecimal meterValueScaled;
+				long tmplong;
+				BigDecimal tmpBD;
+				for( int tmpcnt=1; tmpcnt <= valCount; tmpcnt++ ) {
+					tmplong = Long.parseLong(deviceData.get(ValIdent + tmpcnt));
+					meterValue = meterValue.add(new BigDecimal(tmplong));
+				}
+				if(Long.parseLong(deviceData.get("EnStats_timer_type")) == 10)
+					// 10 Minute values are given in mWh, so scale to Wh
+					meterValueScaled = meterValue.scaleByPowerOfTen(-6);
+				else 
+					// Other values are given in Wh, so scale to kWh
+					meterValueScaled = meterValue.scaleByPowerOfTen(-3);
+				webIface.postUpdate(itemName, new DecimalType(meterValueScaled));
+			} else if (deviceData.containsKey(valueType)) {
 				BigDecimal meterValue = new BigDecimal(deviceData.get(valueType));
 				BigDecimal meterValueScaled;
 				switch (type) {

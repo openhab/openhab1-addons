@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,9 @@ import com.tinkerforge.BrickletIndustrialDigitalIn4;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MBricklet Industrial Digital In4</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.4.0
  * <!-- end-user-doc -->
  *
  * <p>

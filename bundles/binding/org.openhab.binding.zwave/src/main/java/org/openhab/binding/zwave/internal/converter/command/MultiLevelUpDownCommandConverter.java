@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,7 +24,7 @@ public class MultiLevelUpDownCommandConverter extends
 	 */
 	@Override
 	protected Integer convert(Item item, UpDownType command) {
-		return command == UpDownType.DOWN ? 0x63 : 0x00;
+		return command != UpDownType.DOWN ? 0x63 : 0x00;
 	}
 
 }

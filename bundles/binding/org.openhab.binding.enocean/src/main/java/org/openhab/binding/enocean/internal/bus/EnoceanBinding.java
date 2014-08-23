@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.enocean.java.ESP3Host;
+import org.enocean.java.EnoceanReceiver;
 import org.enocean.java.EnoceanSerialConnector;
 import org.enocean.java.address.EnoceanParameterAddress;
 import org.enocean.java.common.EEPId;
@@ -25,6 +26,7 @@ import org.enocean.java.common.ParameterAddress;
 import org.enocean.java.common.ParameterValueChangeListener;
 import org.enocean.java.common.ProtocolConnector;
 import org.enocean.java.common.values.Value;
+import org.enocean.java.packets.BasicPacket;
 import org.openhab.binding.enocean.EnoceanBindingProvider;
 import org.openhab.binding.enocean.internal.converter.CommandConverter;
 import org.openhab.binding.enocean.internal.converter.ConverterFactory;
@@ -54,7 +56,7 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @since 1.3.0
  */
-public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> implements ManagedService, ParameterValueChangeListener {
+public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> implements ManagedService, ParameterValueChangeListener, EnoceanReceiver {
 
     private static final Logger logger = LoggerFactory.getLogger(EnoceanBinding.class);
 
@@ -291,6 +293,7 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
         connector.connect(serialPort);
         esp3Host = new ESP3Host(connector);
         esp3Host.addParameterChangeListener(this);
+        esp3Host.addListener(this);
         for (EnoceanBindingProvider provider : providers) {
             initializeAllItemsInProvider(provider);
         }
@@ -304,5 +307,10 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
      */
     public void setEsp3Host(ESP3Host esp3Host) {
         this.esp3Host = esp3Host;
+    }
+
+    @Override
+    public void receivePacket(BasicPacket basicPacket) {
+        logger.debug("Packet received: " + basicPacket.toString());
     }
 }

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>FGS211</Model>
+	<Label lang="en">Relay Switch 1x3kW</Label>
+	<CommandClasses>
+		<Class><id>0x00</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8e</id></Class>
+		<Class><id>0x9c</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable/Disable ALL ON/OFF</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">ALL ON disabled/ ALL OFF disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALL ON disabled/ ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALL ON active / ALL OFF disabled</Label>
+			</Item>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">ALL ON active / ALL OFF active</Label>
+			</Item>
+			<Help lang="en">Activate/Deactive ALL ON/OFF</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable/Disable OFF-delay</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Auto OFF disabled for both relays</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Auto OFF active only for relay 1</Label>
+			</Item>
+			<Help lang="en">Activate/Deactivate Automatic turning off relay after set time</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Default>20</Default>
+			<Size>1</Size>
+			<Label lang="en">Relay 1: OFF-delay time (10ms steps)</Label>			
+			<Help lang="en">Automatic turning off relay 1 after set time, in 10ms increments (default: 200ms)</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>6</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Separation of association sending (key 1)</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Map status to all devices in group 1</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Map OFF status to all devices in group 1, Double click on key 1 will send ON to all devices in group 1, all dimmers set to prev.value</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Map OFF status to all devices in group 1, Double click on key 1 will send ON to all devices in group 1, all dimmers set to 100%</Label>
+			</Item>
+			<Help lang="en">Activate/Deactivate association sending for group
+				1 - Also see param #16</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Inputs behaviour</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Toggle</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Follow switch contact (closed=ON, open=OFF)</Label>
+			</Item>
+			<Help lang="en">In case of bi-stable switches, define their behaviour (toggle
+				or follow)</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Inputs Button/Switch configuration</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Mono-stable input (button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Bi-stable input (switch)</Label>
+			</Item>
+			<Help lang="en">Binary inputs type configuration</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>15</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Dimmer/Roller shutter control</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable Dimmer/Roller shutter control</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable Dimmer/Roller shutter control</Label>
+			</Item>
+			<Help lang="en">Enable/Disable operation of dimmer or roller shutter devices
+				associated to group 1.
+				Available only when using mono-stable inputs (buttons) - Hold button 1 or
+				double-tap for operation</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>16</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Saving state before power failure</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">State NOT saved at power failure, all outputs are set to OFF upon power restore</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">State saved at power failure, all outputs are set to previous state upon power restore</Label>
+			</Item>
+			<Help lang="en">Saving state before power failure</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>30</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Relay 1: Response to General Alarm</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">DEACTIVATION - no response to alarm frames</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALARM RELAY ON - relay will turn ON upon receipt of alarm frame</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALARM RELAY OFF - relay will turn OFF upon receipt of alarm frame</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">ALARM FLASHING - relay will turn ON and OFF periodically (see param.39)</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>31</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">Relay 1: Response to Water Flood Alarm</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">DEACTIVATION - no response to alarm frames</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALARM RELAY ON - relay will turn ON upon receipt of alarm frame</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALARM RELAY OFF - relay will turn OFF upon receipt of alarm frame</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">ALARM FLASHING - relay will turn ON and OFF periodically (see param.39)</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>32</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Relay 1: Response to Smoke, CO, CO2 Alarm</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">DEACTIVATION - no response to alarm frames</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALARM RELAY ON - relay will turn ON upon receipt of alarm frame</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALARM RELAY OFF - relay will turn OFF upon receipt of alarm frame</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">ALARM FLASHING - relay will turn ON and OFF periodically (see param.39)</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>33</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Relay 1: Response to Temperature Alarm</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">DEACTIVATION - no response to alarm frames</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALARM RELAY ON - relay will turn ON upon receipt of alarm frame</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALARM RELAY OFF - relay will turn OFF upon receipt of alarm frame</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">ALARM FLASHING - relay will turn ON and OFF periodically (see param.39)</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>39</Index>
+			<Type>short</Type>
+			<Default>600</Default>
+			<Size>2</Size>
+			<Label lang="en">ALARM FLASHING alarm time</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en"></Label>
+			</Item>
+			<Help lang="en">Amount of time (ms) the device keeps on flashing after receipt of Alarm Frame</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Switch 1</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Switch 2</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Controller Updates</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>
+

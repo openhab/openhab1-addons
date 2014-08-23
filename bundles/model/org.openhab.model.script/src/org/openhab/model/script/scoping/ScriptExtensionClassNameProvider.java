@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,8 @@ import java.net.URLEncoder;
 import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
+import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.scoping.featurecalls.StaticImplicitMethodsFeatureForTypeProvider.ExtensionClassNameProvider;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
@@ -26,6 +28,8 @@ import org.openhab.model.script.actions.LogAction;
 import org.openhab.model.script.actions.ScriptExecution;
 import org.openhab.model.script.internal.ScriptActivator;
 import org.openhab.model.script.lib.NumberExtensions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Multimap;
 import com.google.inject.Singleton;
@@ -38,18 +42,25 @@ import com.google.inject.Singleton;
  * @since 0.9.0
  *
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings({ "restriction", "deprecation" })
 @Singleton
 public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider {
 
+	private final static Logger logger = LoggerFactory.getLogger(ScriptExtensionClassNameProvider.class);
+	
 	private int trackingCount = -1;
 	
 	@Override
-	protected Collection<String> getLiteralClassNames() {
+	protected synchronized Collection<String> getLiteralClassNames() {
 		int currentTrackingCount = ScriptActivator.actionServiceTracker.getTrackingCount();
 		
 		// if something has changed about the tracked services, recompute the list
 		if(trackingCount != currentTrackingCount) {
+			String actions = "";
+			for(Object obj : ScriptActivator.actionServiceTracker.getServices()) {
+				actions += obj.getClass().getSimpleName() + ", ";
+			}
+			logger.debug("Script actions have changed: " + actions);
 			trackingCount = currentTrackingCount;
 			return computeLiteralClassNames();
 		} else {
@@ -59,25 +70,37 @@ public class ScriptExtensionClassNameProvider extends ExtensionClassNameProvider
 
 	@Override
 	protected Collection<String> computeLiteralClassNames() {
-		Collection<String> extensions = super.computeLiteralClassNames();
+
+		// we completely define the content ourselves, but need the collection
+		// instance from the super class as it is a private field
+		Collection<String> literalClassNames = super.getLiteralClassNames();
+		
+		if(literalClassNames==null) {
+			literalClassNames = super.computeLiteralClassNames();
+		}
+
+		literalClassNames.clear();
 		
 		// add all actions that are contributed as OSGi services
 		Object[] services = ScriptActivator.actionServiceTracker.getServices();
 		if(services!=null) {
 			for(Object service : services) {
 				ActionService actionService = (ActionService) service;
-				extensions.add(actionService.getActionClassName());
+				literalClassNames.add(actionService.getActionClassName());
 			}
 		}
 		
-		extensions.add(BusEvent.class.getCanonicalName());
-		extensions.add(ScriptExecution.class.getCanonicalName());
-		extensions.add(LogAction.class.getCanonicalName());
+		literalClassNames.add(CollectionLiterals.class.getName());
+		literalClassNames.add(InputOutput.class.getName());
+
+		literalClassNames.add(BusEvent.class.getCanonicalName());
+		literalClassNames.add(ScriptExecution.class.getCanonicalName());
+		literalClassNames.add(LogAction.class.getCanonicalName());
 
 		// jodatime static functions
-		extensions.add(DateTime.class.getCanonicalName());
-		extensions.add(DateMidnight.class.getCanonicalName());
-		return extensions;
+		literalClassNames.add(DateTime.class.getCanonicalName());
+		literalClassNames.add(DateMidnight.class.getCanonicalName());
+		return literalClassNames;
 	}
 	
 	@Override

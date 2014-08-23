@@ -38,7 +38,6 @@
       	<include>org.openhab.persistence:org.openhab.persistence.rrd4j:jar:*</include>
       	<include>org.openhab.persistence:org.openhab.persistence.logging:jar:*</include>
       	<include>org.openhab.persistence:org.openhab.persistence.exec:jar:*</include>
-      	<include>org.openhab.io:org.openhab.io.multimedia.tts.freetts:jar:*</include>
       </includes>
     </dependencySet>
   </dependencySets>

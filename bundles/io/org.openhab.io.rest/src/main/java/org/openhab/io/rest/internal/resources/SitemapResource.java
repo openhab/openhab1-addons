@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,6 +29,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend.SCOPE;
+import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -86,7 +87,7 @@ public class SitemapResource {
     protected static final String SITEMAP_FILEEXT = ".sitemap";
 
 	public static final String PATH_SITEMAPS = "sitemaps";
-    
+	
 	@Context UriInfo uriInfo;
 	@Context Broadcaster sitemapBroadcaster;
 
@@ -146,11 +147,21 @@ public class SitemapResource {
 				throw new WebApplicationException(Response.notAcceptable(null).build());
 			}
 		}
-		GeneralBroadcaster sitemapBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
+		
+		GeneralBroadcaster sitemapBroadcaster = BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
 		sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
+		
+		boolean resume = false;
+		try {
+		AtmosphereRequest request = resource.getRequest();
+		resume = !ResponseTypeHelper.isStreamingTransport(request);
+		} catch (Exception e) {
+			logger.debug(e.getMessage());
+		}
+
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
 			.scope(SCOPE.REQUEST)
-			.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))
+			.resumeOnBroadcast(resume)
 			.broadcaster(sitemapBroadcaster)
 			.outputComments(true).build(); 
     }
@@ -311,6 +322,9 @@ public class SitemapResource {
 					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
 						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
 					}
+					else {
+						mappingBean.command = mapping.getCmd();
+					}
 				}
 				else {
 					mappingBean.command = mapping.getCmd();
@@ -328,6 +342,9 @@ public class SitemapResource {
 					if(mapping.getCmd().startsWith("\"") && mapping.getCmd().endsWith("\"")) {
 						mappingBean.command = mapping.getCmd().substring(1, mapping.getCmd().length()-1);
 					}
+					else {
+						mappingBean.command = mapping.getCmd();
+					}				
 				}
 				else {
 					mappingBean.command = mapping.getCmd();
@@ -358,7 +375,11 @@ public class SitemapResource {
     		}
     	}
     	if(widget instanceof Video) {
+    		Video videoWidget = (Video) widget;
     		String wId = itemUIRegistry.getWidgetId(widget);
+    		if(videoWidget.getEncoding()!=null) {
+    			bean.encoding = videoWidget.getEncoding();
+    		}
 			if (uri.getPort() < 0 || uri.getPort() == 80) {
 				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
 			} else {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,10 +15,13 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HeaderElement;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
@@ -193,11 +196,30 @@ public class HttpUtil {
 		try {
 			
 			int statusCode = client.executeMethod(method);
+			if (statusCode == HttpStatus.SC_NO_CONTENT) {
+				// perfectly fine but we cannot expect any answer...
+				return null;
+			}
+			
 			if (statusCode != HttpStatus.SC_OK) {
 				logger.warn("Method failed: " + method.getStatusLine());
 			}
 
-			String responseBody = IOUtils.toString(method.getResponseBodyAsStream());
+			InputStream tmpResponseStream = method.getResponseBodyAsStream();
+			Header encodingHeader = method.getResponseHeader("Content-Encoding");
+			if(encodingHeader != null) {
+				for( HeaderElement ehElem : encodingHeader.getElements()) {
+					if(ehElem.toString().matches(".*gzip.*")) {
+						tmpResponseStream = new GZIPInputStream(tmpResponseStream);
+						logger.debug("GZipped InputStream from {}", url);
+					} else if (ehElem.toString().matches(".*deflate.*")) {
+						tmpResponseStream = new InflaterInputStream(tmpResponseStream);
+						logger.debug("Deflated InputStream from {}", url);
+					}
+				}
+			}
+			
+			String responseBody = IOUtils.toString(tmpResponseStream);
 			if (!responseBody.isEmpty()) {
 				logger.debug(responseBody);
 			}

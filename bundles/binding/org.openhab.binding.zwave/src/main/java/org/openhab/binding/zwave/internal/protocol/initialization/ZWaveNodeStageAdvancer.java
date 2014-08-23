@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,7 +25,6 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveManufacture
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNoOperationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,10 +68,12 @@ public class ZWaveNodeStageAdvancer {
 	 */
 	public void advanceNodeStage(NodeStage targetStage) {
 		if (targetStage.getStage() <= this.node.getNodeStage().getStage() && targetStage != NodeStage.DONE) {
-			logger.warn("Already in or beyond node stage, ignoring. current = {}, requested = {}", this.node
-					.getNodeStage().getLabel(), targetStage.getLabel());
+			logger.warn(String.format("NODE %d: Already in or beyond node stage, ignoring. current = %s, requested = %s", this.node.getNodeId(),
+					this.node.getNodeStage().getLabel(), targetStage.getLabel()));
 			return;
 		}
+		logger.debug(String.format("NODE %d: Setting stage. current = %s, requested = %s", this.node.getNodeId(),
+				this.node.getNodeStage().getLabel(), targetStage.getLabel()));
 
 		this.node.setQueryStageTimeStamp(Calendar.getInstance().getTime());
 		switch (this.node.getNodeStage()) {
@@ -81,7 +82,7 @@ public class ZWaveNodeStageAdvancer {
 				this.node.setNodeStage(NodeStage.PROTOINFO);
 				this.controller.identifyNode(this.node.getNodeId());
 			} catch (SerialInterfaceException e) {
-				logger.error("Got error: {}, while identifying node {}", e.getLocalizedMessage(), this.node.getNodeId());
+				logger.error("NODE {}: Got error {}, while identifying node", this.node.getNodeId(), e.getLocalizedMessage());
 			}
 			break;
 		case PROTOINFO:
@@ -94,6 +95,8 @@ public class ZWaveNodeStageAdvancer {
 				this.node.setNodeStage(NodeStage.PING);
 				this.controller.sendData(zwaveCommandClass.getNoOperationMessage());
 			} else {
+				logger.debug("NODE {}: Initialisation complete.", this.node.getNodeId());
+				initializationComplete = true;
 				this.node.setNodeStage(NodeStage.DONE); // nothing
 														// more
 														// to
@@ -128,16 +131,10 @@ public class ZWaveNodeStageAdvancer {
 				break;
 			}
 
-			logger.warn("Node {} does not support MANUFACTURER_SPECIFIC, proceeding to version node stage.",
+			logger.warn("NODE {}: does not support MANUFACTURER_SPECIFIC, proceeding to version node stage.",
 					this.node.getNodeId());
 		case MANSPEC01:
-			this.node.setNodeStage(NodeStage.VERSION); // nothing
-														// more
-														// to
-														// do
-														// for
-														// this
-														// node.
+			this.node.setNodeStage(NodeStage.VERSION);
 			// try and get the version command class.
 			ZWaveVersionCommandClass version = (ZWaveVersionCommandClass) this.node
 					.getCommandClass(CommandClass.VERSION);
@@ -158,13 +155,7 @@ public class ZWaveNodeStageAdvancer {
 									// before continuing.
 				break;
 		case VERSION:
-			this.node.setNodeStage(NodeStage.INSTANCES_ENDPOINTS); // nothing
-																	// more
-																	// to
-																	// do
-																	// for
-																	// this
-																	// node.
+			this.node.setNodeStage(NodeStage.INSTANCES_ENDPOINTS);
 			// try and get the multi instance / channel command class.
 			ZWaveMultiInstanceCommandClass multiInstance = (ZWaveMultiInstanceCommandClass) this.node
 					.getCommandClass(CommandClass.MULTI_INSTANCE);
@@ -174,7 +165,7 @@ public class ZWaveNodeStageAdvancer {
 				break;
 			}
 
-			logger.trace("Node {} does not support MULTI_INSTANCE, proceeding to static node stage.",
+			logger.trace("NODE {}: does not support MULTI_INSTANCE, proceeding to static node stage.",
 					this.node.getNodeId());
 		case INSTANCES_ENDPOINTS:
 			this.node.setNodeStage(NodeStage.STATIC_VALUES);
@@ -182,9 +173,9 @@ public class ZWaveNodeStageAdvancer {
 			if (queriesPending == -1) {
 				queriesPending = 0;
 				for (ZWaveCommandClass zwaveCommandClass : this.node.getCommandClasses()) {
-					logger.trace("Inspecting command class {}", zwaveCommandClass.getCommandClass().getLabel());
+					logger.trace("NODE {}: Inspecting command class {}", this.node.getNodeId(), zwaveCommandClass.getCommandClass().getLabel());
 					if (zwaveCommandClass instanceof ZWaveCommandClassInitialization) {
-						logger.debug("Found initializable command class {}", zwaveCommandClass.getCommandClass()
+						logger.debug("NODE {}: Found initializable command class {}", this.node.getNodeId(), zwaveCommandClass.getCommandClass()
 								.getLabel());
 						ZWaveCommandClassInitialization zcci = (ZWaveCommandClassInitialization) zwaveCommandClass;
 						int instances = zwaveCommandClass.getInstances();
@@ -208,10 +199,10 @@ public class ZWaveNodeStageAdvancer {
 						ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) zwaveCommandClass;
 						for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
 							for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
-								logger.trace("Inspecting command class {} for endpoint {}", endpointCommandClass
-										.getCommandClass().getLabel(), endpoint.getEndpointId());
+								logger.trace(String.format("NODE %d: Inspecting command class %s for endpoint %d", this.node.getNodeId(), endpointCommandClass
+										.getCommandClass().getLabel(), endpoint.getEndpointId()));
 								if (endpointCommandClass instanceof ZWaveCommandClassInitialization) {
-									logger.debug("Found initializable command class {}", endpointCommandClass
+									logger.debug("NODE {}: Found initializable command class {}", this.node.getNodeId(), endpointCommandClass
 											.getCommandClass().getLabel());
 									ZWaveCommandClassInitialization zcci2 = (ZWaveCommandClassInitialization) endpointCommandClass;
 									Collection<SerialMessage> initqueries = zcci2.initialize();
@@ -230,16 +221,16 @@ public class ZWaveNodeStageAdvancer {
 										// initialized.
 				break;
 
-			logger.trace("Done getting static values, proceeding to dynamic node stage.", this.node.getNodeId());
+			logger.trace("NODE {}: Done getting static values, proceeding to dynamic node stage.", this.node.getNodeId());
 			queriesPending = -1;
 			this.node.setNodeStage(NodeStage.DYNAMIC);
 		case DYNAMIC:
 			if (queriesPending == -1) {
 				queriesPending = 0;
 				for (ZWaveCommandClass zwaveCommandClass : this.node.getCommandClasses()) {
-					logger.trace("Inspecting command class {}", zwaveCommandClass.getCommandClass().getLabel());
+					logger.trace("NODE {}: Inspecting command class {}", this.node.getNodeId(), zwaveCommandClass.getCommandClass().getLabel());
 					if (zwaveCommandClass instanceof ZWaveCommandClassDynamicState) {
-						logger.debug("Found dynamic state command class {}", zwaveCommandClass.getCommandClass()
+						logger.debug("NODE {}: Found dynamic state command class {}", this.node.getNodeId(), zwaveCommandClass.getCommandClass()
 								.getLabel());
 						ZWaveCommandClassDynamicState zdds = (ZWaveCommandClassDynamicState) zwaveCommandClass;
 						int instances = zwaveCommandClass.getInstances();
@@ -263,10 +254,10 @@ public class ZWaveNodeStageAdvancer {
 						ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) zwaveCommandClass;
 						for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
 							for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
-								logger.trace("Inspecting command class {} for endpoint {}", endpointCommandClass
-										.getCommandClass().getLabel(), endpoint.getEndpointId());
+								logger.trace(String.format("NODE %d: Inspecting command class %s for endpoint %d", this.node.getNodeId(), endpointCommandClass
+										.getCommandClass().getLabel(), endpoint.getEndpointId()));
 								if (endpointCommandClass instanceof ZWaveCommandClassDynamicState) {
-									logger.debug("Found dynamic state command class {}", endpointCommandClass
+									logger.debug("NODE {}: Found dynamic state command class {}", this.node.getNodeId(), endpointCommandClass
 											.getCommandClass().getLabel());
 									ZWaveCommandClassDynamicState zdds2 = (ZWaveCommandClassDynamicState) endpointCommandClass;
 									Collection<SerialMessage> dynamicQueries = zdds2.getDynamicValues();
@@ -284,7 +275,7 @@ public class ZWaveNodeStageAdvancer {
 			if (queriesPending-- > 0) // there is still something to be
 										// initialized.
 				break;
-			logger.trace("Done getting dynamic values, proceeding to done node stage.", this.node.getNodeId());
+			logger.trace("NODE {}: Done getting dynamic values, proceeding to done node stage.", this.node.getNodeId());
 			queriesPending = -1;
 
 			this.node.setNodeStage(NodeStage.DONE); // nothing
@@ -297,25 +288,14 @@ public class ZWaveNodeStageAdvancer {
 
 			nodeSerializer.SerializeNode(this.node);
 
+			logger.debug("NODE {}: Initialisation complete.", this.node.getNodeId());
 			initializationComplete = true;
-
-			if (this.node.isListening() || this.node.isFrequentlyListening())
-				return;
-
-			ZWaveWakeUpCommandClass wakeup = (ZWaveWakeUpCommandClass) this.node.getCommandClass(CommandClass.WAKE_UP);
-
-			if (wakeup == null)
-				return;
-
-			logger.debug("Node {} is a battery operated device. Tell it to go to sleep.", this.node.getNodeId());
-			this.controller.sendData(wakeup.getNoMoreInformationMessage());
 			break;
 		case DONE:
 		case DEAD:
 			break;
 		default:
-			logger.error("Unknown node state {} encountered on Node {}", this.node.getNodeStage().getLabel(),
-					this.node.getNodeId());
+			logger.error("NODE {}: Unknown node state {} encountered.", this.node.getNodeId(), this.node.getNodeStage().getLabel());
 		}
 	}
 
@@ -348,12 +328,14 @@ public class ZWaveNodeStageAdvancer {
 		if (restoredNode == null)
 			return false;
 
+		// Sanity check the data from the file
 		if (restoredNode.getVersion() != this.node.getVersion()
+				|| restoredNode.getManufacturer() == Integer.MAX_VALUE
 				|| restoredNode.isListening() != this.node.isListening()
 				|| restoredNode.isFrequentlyListening() != this.node.isFrequentlyListening()
 				|| restoredNode.isRouting() != this.node.isRouting()
 				|| !restoredNode.getDeviceClass().equals(this.node.getDeviceClass())) {
-			logger.warn("Config file differs from controler information for node {}, ignoring config.",
+			logger.warn("NODE {}: Config file differs from controller information, ignoring config.",
 					this.node.getNodeId());
 			return false;
 		}
@@ -379,7 +361,7 @@ public class ZWaveNodeStageAdvancer {
 			this.node.addCommandClass(commandClass);
 		}
 
-		logger.debug("Restored node {} from config.", this.node.getNodeId());
+		logger.debug("NODE {}: Restored from config.", this.node.getNodeId());
 		restoredFromConfigfile = true;
 		return true;
 	}

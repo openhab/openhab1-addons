@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,6 +20,8 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveBinarySensorCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveBinarySensorCommandClass.ZWaveBinarySensorValueEvent;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveBinarySensorCommandClass.SensorType;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -33,6 +35,7 @@ import org.slf4j.LoggerFactory;
  * {@link ZWaveBinarySensorConverter}. Implements polling of the binary sensor
  * status and receiving of binary sensor events.
  * @author Jan-Willem Spuij
+ * @author Chris Jackson
  * @since 1.4.0
  */
 public class ZWaveBinarySensorConverter extends ZWaveCommandClassConverter<ZWaveBinarySensorCommandClass> {
@@ -77,11 +80,18 @@ public class ZWaveBinarySensorConverter extends ZWaveCommandClassConverter<ZWave
 	 */
 	@Override
 	public void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String,String> arguments) {
-		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());		
+		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
+		String sensorType = arguments.get("sensor_type");
+		ZWaveBinarySensorValueEvent sensorEvent = (ZWaveBinarySensorValueEvent)event;
+
 		if (converter == null) {
 			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
 			return;
 		}
+		
+		// Don't trigger event if this item is bound to another sensor type
+		if (sensorType != null && SensorType.getSensorType(Integer.parseInt(sensorType)) != sensorEvent.getSensorType())
+			return;
 		
 		State state = converter.convertFromValueToState(event.getValue());
 		this.getEventPublisher().postUpdate(item.getName(), state);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * <ul>
  * <li><code>{ maxcube="JEQ0304492" }</code> - returns the corresponding value of the default attribute based on the MAX device type.</li>
  * <li>{ maxcube="JEQ304492:type=valve" } - returns the corresponding valve position in percentage. Only available for heating thermostats.</li>
- * <li>{ maxcube="JEQ304492:type=battery" } - returns the curent battery state as text.</li>
+ * <li>{ maxcube="JEQ304492:type=battery" } - returns the current battery state as text.</li>
+ * <li>{ maxcube="JEQ304492:type=mode" } - returns the current mode as text.</li>
  * </ul>
  * @author Andreas Heil
  * @since 1.4.0
@@ -61,7 +62,6 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		String[] configParts = bindingConfig.trim().split(":");
@@ -77,10 +77,12 @@ public class MaxCubeGenericBindingProvider extends AbstractGenericBindingProvide
 
 		for (int i = 1; i < configParts.length; i++) {
 			String[] bindingToken = configParts[i].split("=");
-			if (bindingToken[0].equals("type")) {
-				if (bindingToken[1].equals("valve")) {
+			if (bindingToken[0].toLowerCase().equals("type")) {
+				if (bindingToken[1].toLowerCase().equals("valve")) {
 					config.bindingType = BindingType.VALVE;
-				} else if (bindingToken[1].equals("battery")) {
+				} else if (bindingToken[1].toLowerCase().equals("mode")) {
+					config.bindingType = BindingType.MODE;
+				} else if (bindingToken[1].toLowerCase().equals("battery")) {
 					config.bindingType = BindingType.BATTERY;
 				}
 			}

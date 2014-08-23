@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,17 +16,16 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.atmosphere.cache.UUIDBroadcasterCache;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.GenericItem;
-import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.types.State;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
 import org.openhab.io.rest.internal.filter.DuplicateBroadcastProtectionFilter;
-import org.openhab.io.rest.internal.filter.MessageTypeFilter;
 import org.openhab.io.rest.internal.filter.PollingDelayFilter;
 import org.openhab.io.rest.internal.filter.ResponseObjectFilter;
 import org.openhab.io.rest.internal.filter.SendPageUpdateFilter;
@@ -46,7 +45,9 @@ abstract public class ResourceStateChangeListener {
 	private StateChangeListener stateChangeListener;
 	private GeneralBroadcaster broadcaster;
 
-	public ResourceStateChangeListener(){}
+	public ResourceStateChangeListener(){
+		
+	}
 
 
 	public ResourceStateChangeListener(GeneralBroadcaster broadcaster){
@@ -66,18 +67,27 @@ abstract public class ResourceStateChangeListener {
 	}
 	
 	public void registerItems(){
+		broadcaster.getBroadcasterConfig().setBroadcasterCache(new UUIDBroadcasterCache());
+		
 		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override
 			public BroadcastAction filter(Object originalMessage, Object message) {
-				// TODO Auto-generated method stub
 				return new BroadcastAction(ACTION.CONTINUE,  message);
 			}
 
 			@Override
 			public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
-				 HttpServletRequest request = resource.getRequest();
-				 return new BroadcastAction(ACTION.CONTINUE,  getResponseObject(request));
+				HttpServletRequest request = null;
+				BroadcastAction result = null;
+				try {
+				 request = resource.getRequest();
+				 Object responce = getResponseObject(request);
+				 result = new BroadcastAction(ACTION.CONTINUE,  responce);
+				} catch (Exception e) {
+					result = new BroadcastAction(ACTION.ABORT,  getResponseObject(request));					
+				}
+				 return result;
 			}
 		});
 		
@@ -85,33 +95,43 @@ abstract public class ResourceStateChangeListener {
 		broadcaster.getBroadcasterConfig().addFilter(new SendPageUpdateFilter());
 		broadcaster.getBroadcasterConfig().addFilter(new DuplicateBroadcastProtectionFilter());
 		broadcaster.getBroadcasterConfig().addFilter(new ResponseObjectFilter());
-		broadcaster.getBroadcasterConfig().addFilter(new MessageTypeFilter());
-		
-		
 		
 		stateChangeListener = new StateChangeListener() {
 			// don't react on update events
 			public void stateUpdated(Item item, State state) {
+				broadcaster.broadcast(item);
 				// if the group has a base item and thus might calculate its state
 				// as a DecimalType or other, we also consider it to be necessary to
 				// send an update to the client as the label of the item might have changed,
 				// even though its state is yet the same.
-				if(item instanceof GroupItem) {
-					GroupItem gItem = (GroupItem) item;
-					if(gItem.getBaseItem()!=null) {
-						if(!broadcaster.getAtmosphereResources().isEmpty()) {
-							broadcaster.broadcast(item);
-						}
-					}
-				}
+//				if(item instanceof GroupItem) {
+//					GroupItem gItem = (GroupItem) item;
+//					if(gItem.getBaseItem()!=null) {
+//						Collection<AtmosphereResource> resources = broadcaster.getAtmosphereResources();
+//						if(!resources.isEmpty()) {
+//							for (AtmosphereResource resource : resources) {
+//								broadcaster.broadcast(item, resource);
+//							}
+//						}
+//					}
+//				}
 			}
 			
-			public void stateChanged(final Item item, State oldState, State newState) {	
-				if(!broadcaster.getAtmosphereResources().isEmpty()) {
-					broadcaster.broadcast(item);
-				}
+			public void stateChanged(final Item item, State oldState, State newState) {
+				broadcaster.broadcast(item);
+//				Collection<AtmosphereResource> resources = broadcaster.getAtmosphereResources();
+//				if(!resources.isEmpty()) {
+//					for (AtmosphereResource resource : resources) {
+//						broadcaster.broadcast(item, resource);
+//					}
+//				}
+
+//				if(!broadcaster.getAtmosphereResources().isEmpty()) {
+//					broadcaster.broadcast(item);
+//				}
 			}
 		};
+		
 		registerStateChangeListenerOnRelevantItems(broadcaster.getID(), stateChangeListener);
 	}
 	

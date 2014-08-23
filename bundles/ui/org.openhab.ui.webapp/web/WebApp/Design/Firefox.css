@@ -54,7 +54,7 @@
 #waBackButton {
 	-moz-border-radius-topleft:22px;
 	-moz-border-radius-bottomleft:22px;
-	-moz-border-image: url(Img/button-back.png) 0 10 0 15;
+	-moz-border-image: url(Img/button-back.png) 0 10 0 15 fill;
 }
 
 b.iToggle {
@@ -88,7 +88,7 @@ b.iToggle b {
 	border-style:solid;
 	border-color:transparent;
 	-moz-box-sizing:border-box;
-	-moz-border-image:url(Img/bg-head.png) 22 0 1 0;
+	-moz-border-image:url(Img/bg-head.png) 22 0 1 0 fill;
 }
 
 .iLoader, #iLoader {
@@ -98,35 +98,35 @@ b.iToggle b {
 /* Border Image */
 
 .iTab {
-	-moz-border-image:url(Img/button-light.png) 3 16;
+	-moz-border-image:url(Img/button-light.png) 3 16 fill;
 }
 
-.iTab.iInner li.__act:not(.__dis) a { -moz-border-image:url(Img/bg-tab-sel.png) 3 3 }
-.iTab.iInner li:active:not(.__act):not(.__dis) a { 	-moz-border-image:url(Img/bg-tab-touch.png) 3 3 }
+.iTab.iInner li.__act:not(.__dis) a { -moz-border-image:url(Img/bg-tab-sel.png) 3 3 fill }
+.iTab.iInner li:active:not(.__act):not(.__dis) a { 	-moz-border-image:url(Img/bg-tab-touch.png) 3 3 fill }
 
-#waBackButton:active { -moz-border-image: url(Img/button-back-touch.png) 0 10 0 15 }
+#waBackButton:active { -moz-border-image: url(Img/button-back-touch.png) 0 10 0 15 fill }
 
 #waHomeButton:active,
 #waLeftButton:active, #waRightButton:active,
 .iButton:not(.iPush):active, .iLeftButton:active, .iRightButton:active {
-	-moz-border-image: url(Img/button-simple-touch.png) 0 10 0 10 !important
+	-moz-border-image: url(Img/button-simple-touch.png) 0 10 0 10 fill !important
 }
 
 #waHomeButton {
-	-moz-border-image: url(Img/button-simple.png) 0 10 0 10;
+	-moz-border-image: url(Img/button-simple.png) 0 10 0 10 fill;
 }
 
-*:not(.iPush).iBWarn 	{ -moz-border-image: url(Img/button-red.png) 0 10 0 10; }
-*:not(.iPush).iBClassic	{ -moz-border-image: url(Img/button-simple.png) 0 10 0 10; }
-*:not(.iPush).iBAction	{ -moz-border-image: url(Img/button-blue.png) 0 10 0 10; }
+*:not(.iPush).iBWarn 	{ border-style: solid; -moz-border-image: url(Img/button-red.png) 0 10 0 10 fill; }
+*:not(.iPush).iBClassic	{ border-style: solid; -moz-border-image: url(Img/button-simple.png) 0 10 0 10 fill; }
+*:not(.iPush).iBAction	{ border-style: solid; -moz-border-image: url(Img/button-blue.png) 0 10 0 10 fill; }
 
-.iPush:active	{ -moz-border-image:url(Img/big-button-select.png) 0 12 0 12 !important }
-.iPush.iBWarn 	{ -moz-border-image:url(Img/big-button-red.png) 0 12 0 12 }
-.iPush.iBClassic{ -moz-border-image:url(Img/big-button-white.png) 0 12 0 12 }
-.iPush.iBCancel	{ -moz-border-image:url(Img/big-button-grey.png) 0 12 0 12 }
+.iPush:active	{ border-style: solid; -moz-border-image:url(Img/big-button-select.png) 0 12 0 12 fill !important }
+.iPush.iBWarn 	{ border-style: solid; -moz-border-image:url(Img/big-button-red.png) 0 12 0 12 fill }
+.iPush.iBClassic{ border-style: solid; -moz-border-image:url(Img/big-button-white.png) 0 12 0 12 fill }
+.iPush.iBCancel	{ border-style: solid; -moz-border-image:url(Img/big-button-grey.png) 0 12 0 12 fill }
 
 .iForm input[type=text],
 .iForm input[type=password],
 .iForm input[type=search] {
-	-moz-border-image: url(Img/form-input.gif) 3 6;
+	-moz-border-image: url(Img/form-input.gif) 3 6 fill;
 }

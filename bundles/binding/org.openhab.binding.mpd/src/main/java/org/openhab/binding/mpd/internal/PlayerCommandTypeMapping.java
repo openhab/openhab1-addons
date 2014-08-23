@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,7 @@ package org.openhab.binding.mpd.internal;
 
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Type;
 import org.openhab.core.types.UnDefType;
 
@@ -47,7 +48,19 @@ public enum PlayerCommandTypeMapping {
 			command = "volume";
 		}
 	},
-
+	
+	TRACKINFO {
+		{
+			command = "tracktitle";
+		}
+	},
+	
+	TRACKARTIST {
+		{
+			command = "trackartist";
+		}
+	},
+	
 	VOLUME_INCREASE {
 		{
 			command = "volume_increase";

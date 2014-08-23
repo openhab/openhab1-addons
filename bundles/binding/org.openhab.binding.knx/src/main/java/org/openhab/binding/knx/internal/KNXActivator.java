@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,14 +8,13 @@
  */
 package org.openhab.binding.knx.internal;
 
-import org.openhab.binding.knx.internal.connection.KNXConnection;
+import org.openhab.binding.knx.internal.logging.LogAdapter;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import tuwien.auto.calimero.link.KNXNetworkLink;
-import tuwien.auto.calimero.process.ProcessCommunicator;
+import tuwien.auto.calimero.log.LogManager;
 
 /**
  * Extension of the default OSGi bundle activator
@@ -23,18 +22,23 @@ import tuwien.auto.calimero.process.ProcessCommunicator;
 public final class KNXActivator implements BundleActivator {
 
 	private static Logger logger = LoggerFactory.getLogger(KNXActivator.class);
+	private final LogAdapter logAdapter = new LogAdapter();
 
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
 	public void start(BundleContext bc) throws Exception {
 		logger.debug("KNX binding has been started.");
+		// Set global (null) logger for calimero.
+		LogManager.getManager().addWriter(null, logAdapter);
 	}
 
 	/**
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext bc) throws Exception {
+		// Remove global (null) logger for calimero.
+		LogManager.getManager().removeWriter(null, logAdapter);
 		logger.debug("KNX binding has been stopped.");
 	}
 }

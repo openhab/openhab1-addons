@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,6 +7,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -40,6 +43,10 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	public static final int VERSION_COMMAND_CLASS_GET = 0x13;
 	public static final int VERSION_COMMAND_CLASS_REPORT = 0x14;
 	
+	private LibraryType libraryType = LibraryType.LIB_UNKNOWN;
+	private Double protocolVersion;
+	private Double applicationVersion;
+	
 	/**
 	 * Creates a new instance of the ZWaveVersionCommandClass class.
 	 * @param node the node this command class belongs to
@@ -67,7 +74,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
 		logger.trace("Handle Message Version Request");
-		logger.debug(String.format("Received Version Request for Node ID = %d", this.getNode().getNodeId()));
+		logger.debug("NODE {}: Received Version Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 			case VERSION_GET:
@@ -76,19 +83,15 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 				return;
 			case VERSION_REPORT:
 				logger.debug("Process Version Report");
-				int libraryType = serialMessage.getMessagePayloadByte(offset + 1);
-				int protocolVersion = serialMessage.getMessagePayloadByte(offset + 2);
-				int protocolSubVersion = serialMessage.getMessagePayloadByte(offset + 3);
-				int applicationVersion = serialMessage.getMessagePayloadByte(offset + 4);
-				int applicationSubVersion = serialMessage.getMessagePayloadByte(offset + 5);
+				libraryType = LibraryType.getLibraryType(serialMessage.getMessagePayloadByte(offset + 1));
+				protocolVersion = (double)serialMessage.getMessagePayloadByte(offset + 2) +
+					    ((double)serialMessage.getMessagePayloadByte(offset + 3) / 10);
+				applicationVersion = serialMessage.getMessagePayloadByte(offset + 4) +
+						((double)serialMessage.getMessagePayloadByte(offset + 5) / 10);
 				
-				logger.debug(String.format("Node %d Library Type = 0x%02x", this.getNode().getNodeId(), libraryType));
-				logger.debug(String.format("Node %d Protocol Version = 0x%02x", this.getNode().getNodeId(), protocolVersion));
-				logger.debug(String.format("Node %d Protocol Sub Version = 0x%02x", this.getNode().getNodeId(), protocolSubVersion));
-				logger.debug(String.format("Node %d Application Version = 0x%02x", this.getNode().getNodeId(), applicationVersion));
-				logger.debug(String.format("Node %d Application Sub Version = 0x%02x", this.getNode().getNodeId(), applicationSubVersion));
-				
-				// Nothing to do with this info, not exactly useful.
+				logger.debug(String.format("NODE %d: Library Type = 0x%02x", this.getNode().getNodeId(), libraryType));
+				logger.debug(String.format("NODE %d: Protocol Version = %.1f", this.getNode().getNodeId(), protocolVersion));
+				logger.debug(String.format("NODE %d: Application Version = %.1f", this.getNode().getNodeId(), applicationVersion));
 				break;
 			case VERSION_COMMAND_CLASS_REPORT:
 				logger.debug("Process Version Command Class Report");
@@ -101,8 +104,8 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 					return;
 				}
 
-				logger.debug(String.format("Node %d Requested Command Class = %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel() , commandClassCode));
-				logger.debug(String.format("Node %d Version = %d", this.getNode().getNodeId(), commandClassVersion));
+				logger.debug(String.format("NODE %d: Requested Command Class = %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel() , commandClassCode));
+				logger.debug(String.format("NODE %d: Version = %d", this.getNode().getNodeId(), commandClassVersion));
 
 				// The version is set on the command class for this node. By updating the version, extra functionality is unlocked in the command class.
 				// The messages are backwards compatible, so it's not a problem that there is a slight delay when the command class version is queried on the
@@ -115,10 +118,10 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 				
 				if (commandClassVersion > zwaveCommandClass.getMaxVersion()) {
 					zwaveCommandClass.setVersion( zwaveCommandClass.getMaxVersion() );
-					logger.debug(String.format("Node %d Version = %d, version set to maximum supported by the binding. Enabling extra functionality.", this.getNode().getNodeId(), zwaveCommandClass.getMaxVersion()));
+					logger.debug(String.format("NODE %d: Version = %d, version set to maximum supported by the binding. Enabling extra functionality.", this.getNode().getNodeId(), zwaveCommandClass.getMaxVersion()));
 				} else {
 					zwaveCommandClass.setVersion( commandClassVersion );
-					logger.debug(String.format("Node %d Version = %d, version set. Enabling extra functionality.", this.getNode().getNodeId(), commandClassVersion));
+					logger.debug(String.format("NODE %d: Version = %d, version set. Enabling extra functionality.", this.getNode().getNodeId(), commandClassVersion));
 				}
 				
 				for (ZWaveCommandClass zCC : this.getNode().getCommandClasses()) {
@@ -131,7 +134,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 					
 				break;
 			default:
-			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
+				logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
 					command, 
 					this.getCommandClass().getLabel(),
 					this.getCommandClass().getKey()));
@@ -143,7 +146,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage getVersionMessage() {
-		logger.debug("Creating new message for application command VERSION_GET for node {}", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command VERSION_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
@@ -161,7 +164,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage getCommandClassVersionMessage(CommandClass commandClass) {
-	logger.debug("Creating new message for application command VERSION_COMMAND_CLASS_GET for node {} and command class {}", this.getNode().getNodeId(), commandClass.getLabel());
+	logger.debug("NODE {}: Creating new message for application command VERSION_COMMAND_CLASS_GET command class {}", this.getNode().getNodeId(), commandClass.getLabel());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							3, 
@@ -181,7 +184,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 		ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass)this.getNode().getCommandClass(CommandClass.VERSION);
 		
 		if (versionCommandClass == null) {
-			logger.error(String.format("Version command class not supported on node %d," +
+			logger.error(String.format("NODE %d: Version command class not supported," +
 					"reverting to version 1 for command class %s (0x%02x)", 
 					this.getNode().getNodeId(), 
 					commandClass.getCommandClass().getLabel(), 
@@ -191,4 +194,92 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 		
 		this.getController().sendData(versionCommandClass.getCommandClassVersionMessage(commandClass.getCommandClass()));
 	};
+	
+	/**
+	 * Returns the current ZWave library type
+	 */
+	public LibraryType getLibraryType() {
+		return libraryType;
+	}
+
+	/**
+	 * Returns the version of the protocol used by the device
+	 * @return Protocol version as double (version . subversion) 
+	 */
+	public Double getProtocolVersion() {
+		return protocolVersion;
+	}
+	
+	/**
+	 * Returns the version of the firmware used by the device
+	 * @return Application version as double (version . subversion) 
+	 */
+	public Double getApplicationVersion() {
+		return applicationVersion;
+	}
+	
+	public enum LibraryType
+	{
+		LIB_UNKNOWN(0,"Unknown"),
+		LIB_CONTROLLER_STATIC(1,"Static Controller"),
+		LIB_CONTROLLER(2,"Controller"),
+		LIB_SLAVE_ENHANCED(3,"Slave Enhanced"),
+		LIB_SLAVE(4,"Static Controller"),
+		LIB_INSTALLER(5,"Static Controller"),
+		LIB_SLAVE_ROUTING(5,"Static Controller"),
+		LIB_CONTROLLER_BRIDGE(6,"Static Controller"),
+		LIB_TEST(7,"Test");
+		
+		/**
+		 * A mapping between the integer code and its corresponding Library type
+		 * to facilitate lookup by code.
+		 */
+		private static Map<Integer, LibraryType> libraryMapping;
+
+		private int key;
+		private String label;
+
+		private LibraryType(int key, String label) {
+			this.key = key;
+			this.label = label;
+		}
+
+		private static void initMapping() {
+			libraryMapping = new HashMap<Integer, LibraryType>();
+			for (LibraryType s : values()) {
+				libraryMapping.put(s.key, s);
+			}
+		}
+
+		/**
+		 * Lookup function based on the sensor type code.
+		 * Returns null if the code does not exist.
+		 * @param i the code to lookup
+		 * @return enumeration value of the sensor type.
+		 */
+		public static LibraryType getLibraryType(int i) {
+			if (libraryMapping == null) {
+				initMapping();
+			}
+			
+			if(libraryMapping.get(i) == null)
+				return LIB_UNKNOWN;
+
+			return libraryMapping.get(i);
+		}
+
+		/**
+		 * @return the key
+		 */
+		public int getKey() {
+			return key;
+		}
+
+		/**
+		 * @return the label
+		 */
+		public String getLabel() {
+			return label;
+		}
+	}
 }

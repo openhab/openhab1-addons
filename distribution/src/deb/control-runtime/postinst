@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+	configure)
+		update-rc.d openhab defaults > /dev/null 2>&1
+		;;
+	abort-deconfigure|abort-remove|abort-upgrade)
+		;;
+	*)
+		echo "postinst called with unknown argument \`$1'" >&2
+		exit 1
+		;;
+esac
+
+exit 0

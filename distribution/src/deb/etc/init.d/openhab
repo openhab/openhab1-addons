@@ -1,0 +1,171 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          openhab
+# Required-Start:    $all
+# Required-Stop:     $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: openHAB server
+# Description:       Start / Stop openHAB server
+### END INIT INFO
+
+# Author: Theo Weiss <theo.weiss@gmail.com>
+#
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+
+
+DESC="openHAB server"
+NAME=openhab
+OPENHAB_CONF_DIR="/etc/openhab"
+OPENHAB_DIR="/usr/share/openhab"
+OPENHAB_LOG_DIR="/var/log/openhab"
+OPENHAB_WORKSPACE_DIR="/var/lib/openhab/workspace"
+JAVA="/usr/bin/java"
+PIDFILE=/var/run/$NAME.pid
+SCRIPTNAME=/etc/init.d/$NAME
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.2-14) to ensure that this file is present
+# and status_of_proc is working.
+. /lib/lsb/init-functions
+
+LAUNCHER=`ls ${OPENHAB_DIR}/server/plugins/org.eclipse.equinox.launcher_*.jar`
+
+# Exit if the package is not installed
+if [ ! -r "$LAUNCHER" ]; then
+	log_failure_msg "launcher jar is missing"
+	exit 5
+fi
+
+# Read configuration variable file if it is present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+
+if [ x"${OPENHAB_JAVA}" != x ]; then
+	JAVA="${OPENHAB_JAVA}"
+fi
+
+if [ x"${USER_AND_GROUP}" != x ]; then
+
+	USER=`echo ${USER_AND_GROUP} | cut -d ":" -f 1`
+	GROUP=`echo ${USER_AND_GROUP} | cut -d ":" -f 2`
+
+	#Check whether the specified user exists
+	if ! getent passwd "${USER}" > /dev/null 2>&1; then
+		log_failure_msg "runtime user doesn't exists"
+		exit 2
+	fi
+
+	#Check whether the specified group exists
+	if ! getent group "${GROUP}" > /dev/null 2>&1; then
+		log_failure_msg "runtime group doesn't exists"
+		exit 2
+	fi
+
+	# Check whether the specified user is member of "openhab" group
+	USER_ID=`id --user ${USER}`
+	if [ "${USER_ID}" != "0" ]; then
+		MEMBER_OF=`id --groups --name "${USER}" | tr " " "\n"`
+		for MEMBER_OF_GROUP in ${MEMBER_OF}; do
+			if [ "${MEMBER_OF_GROUP}" = "openhab" ]; then
+				IS_MEMBER="true"
+			fi
+		done
+		if [ "${IS_MEMBER}" != "true" ]; then
+			log_failure_msg "runtime user isn't member of 'openhab' group"
+			exit 2
+		fi
+	fi
+
+	EXTRA_ARGS="-c "${USER_AND_GROUP}" --umask 002 --background --make-pidfile --chdir ${OPENHAB_DIR}"
+else
+	EXTRA_ARGS="--umask 002 --background --make-pidfile --chdir ${OPENHAB_DIR}"
+fi
+
+
+# Load the VERBOSE setting and other rcS variables
+. /lib/init/vars.sh
+
+
+JAVA_ARGS_DEFAULT="-Dosgi.clean=true \
+ -Declipse.ignoreApp=true \
+ -Dosgi.noShutdown=true \
+ -Djetty.port=${HTTP_PORT} \
+ -Dopenhab.configfile="${OPENHAB_CONF_DIR}/configurations/openhab.cfg" \
+ -Dopenhab.configdir="${OPENHAB_CONF_DIR}/configurations" \
+ -Dopenhab.logdir="${OPENHAB_LOG_DIR}" \
+ -Djetty.home="${OPENHAB_DIR}" \
+ -Djetty.port.ssl=${HTTPS_PORT} \
+ -Djetty.config="${OPENHAB_CONF_DIR}/jetty" \
+ -Djetty.logs="${OPENHAB_LOG_DIR}" \
+ -Djetty.rundir="${OPENHAB_DIR}" \
+ -Dlogback.configurationFile="${OPENHAB_CONF_DIR}/logback.xml" \
+ -Dfelix.fileinstall.dir="${OPENHAB_DIR}/addons" \
+ -Djava.library.path="${OPENHAB_DIR}/lib" \
+ -Djava.security.auth.login.config="${OPENHAB_CONF_DIR}/login.conf" \
+ -Dorg.quartz.properties="${OPENHAB_CONF_DIR}/quartz.properties" \
+ -Dequinox.ds.block_timeout=240000 \
+ -Dequinox.scr.waitTimeOnBlock=60000 \
+ -Dfelix.fileinstall.active.level=4 \
+ -Djava.awt.headless=true \
+ -jar ${LAUNCHER} \
+ -configuration ${OPENHAB_WORKSPACE_DIR} \
+ -data ${OPENHAB_WORKSPACE_DIR} \
+ -console ${TELNET_PORT}"
+
+if [ x"${JAVA_ARGS}" != x ]; then
+	JAVA_ARGS_DEFAULT="${JAVA_ARGS} ${JAVA_ARGS_DEFAULT}"
+fi
+
+if [ x"${OPENHAB_ARGS}" != x ]; then
+	JAVA_ARGS_DEFAULT="${JAVA_ARGS_DEFAULT} ${OPENHAB_ARGS}"
+fi
+
+
+case "$1" in
+  start)
+        log_daemon_msg "Starting $DESC" "$NAME"
+		if start-stop-daemon --start --quiet --pidfile $PIDFILE $EXTRA_ARGS \
+			--oknodo --exec $JAVA -- $JAVA_ARGS_DEFAULT
+		then
+        	log_end_msg 0
+        else
+        	log_end_msg 1
+		fi
+        ;;
+  stop)
+        log_daemon_msg "Stopping $DESC" "$NAME"
+        if start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 \
+        	--pidfile $PIDFILE --oknodo
+        then
+        	rm -f $PIDFILE
+        	log_end_msg 0
+        else
+        	log_end_msg 1
+		fi
+        ;;
+  status)
+        status_of_proc "$JAVA" "$NAME" && exit 0 || exit $?
+        ;;
+  restart|force-reload)
+        log_daemon_msg "Restarting $DESC" "$NAME"
+        if start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 \
+        	--pidfile $PIDFILE --oknodo
+        then
+        	rm -f $PIDFILE
+        	if start-stop-daemon --start --quiet --pidfile $PIDFILE $EXTRA_ARGS \
+				--oknodo --exec $JAVA -- $JAVA_ARGS_DEFAULT
+			then
+	        	log_end_msg 0
+	        else
+	        	log_end_msg 1
+			fi
+		else
+			log_end_msg 1
+		fi
+        ;;
+  *)
+        echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
+        exit 3
+        ;;
+esac

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,19 +8,25 @@
  */
 package org.openhab.binding.zwave.internal.protocol;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.openhab.binding.zwave.internal.HexToIntegerConverter;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
-import org.openhab.binding.zwave.internal.protocol.initialization.HexToIntegerConverter;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeStageAdvancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +38,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 /**
  * Z-Wave node class. Represents a node in the Z-Wave network.
  * @author Brian Crosby
+ * @author Chris Jackson
  * @since 1.3.0
  */
 @XStreamAlias("node")
@@ -56,24 +63,34 @@ public class ZWaveNode {
 	private String location;
 	
 	@XStreamConverter(HexToIntegerConverter.class)
-	private int manufacturer;
+	private int manufacturer = Integer.MAX_VALUE;
 	@XStreamConverter(HexToIntegerConverter.class)
-	private int deviceId;
+	private int deviceId = Integer.MAX_VALUE;
 	@XStreamConverter(HexToIntegerConverter.class)
-	private int deviceType;
+	private int deviceType = Integer.MAX_VALUE;
 	
 	private boolean listening;			 // i.e. sleeping
 	private boolean frequentlyListening; 
 	private boolean routing;
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
+	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
 	private Date lastUpdated; 
 	private Date queryStageTimeStamp;
 	private volatile NodeStage nodeStage;
-	
+
 	@XStreamOmitField
 	private int resendCount = 0;
-	
+
+	@XStreamOmitField
+	private int sendCount = 0;
+	@XStreamOmitField
+	private int deadCount = 0;
+	@XStreamOmitField
+	private Date deadTime;	
+	@XStreamOmitField
+	private int retryCount = 0;
+
 	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
 	
 	/**
@@ -121,7 +138,7 @@ public class ZWaveNode {
 	 * Frequently listening is responding to a beam signal. Apart from
 	 * increased latency, nothing else is noticeable from the serial api
 	 * side.
-	 * @return boolean indicating whether the node is freqnetly
+	 * @return boolean indicating whether the node is frequently
 	 * listening or not.
 	 */
 	public boolean isFrequentlyListening() {
@@ -133,7 +150,7 @@ public class ZWaveNode {
 	 * Frequently listening is responding to a beam signal. Apart from
 	 * increased latency, nothing else is noticeable from the serial api
 	 * side.
-	 * @param frequentlyListening indicating whether the node is freqnetly
+	 * @param frequentlyListening indicating whether the node is frequently
 	 * listening or not.
 	 */
 	public void setFrequentlyListening(boolean frequentlyListening) {
@@ -150,6 +167,29 @@ public class ZWaveNode {
 			return true;
 		else
 			return false;
+	}
+	
+	/**
+	 * Sets the node to be 'undead'.
+	 * @return
+	 */
+	public void setAlive(){
+		if(this.nodeStageAdvancer.isInitializationComplete()) {
+			logger.debug("NODE {}: Node is now ALIVE", this.nodeId);
+			this.nodeStage = NodeStage.DONE;
+		}
+		else {
+			this.nodeStage = NodeStage.DYNAMIC;
+			this.nodeStageAdvancer.advanceNodeStage(NodeStage.DONE);
+		}
+
+		// Reset the resend counter and remember when we last updated
+		this.resendCount = 0;
+		this.lastUpdated = Calendar.getInstance().getTime();
+
+		// Alert anyone who wants to know...
+		ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeStatusEvent.State.Alive);
+		controller.notifyEventListeners(zEvent);
 	}
 	
 	/**
@@ -260,6 +300,15 @@ public class ZWaveNode {
 	public NodeStage getNodeStage() {
 		return nodeStage;
 	}
+	
+	/**
+	 * Gets the initialization state
+	 * @return true if initialization has been completed
+	 */
+	public boolean isInitializationComplete() {
+		return this.nodeStageAdvancer.isInitializationComplete();
+	}
+	
 
 	/**
 	 * Sets the node stage.
@@ -320,15 +369,29 @@ public class ZWaveNode {
 		this.queryStageTimeStamp = queryStageTimeStamp;
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
-	
+
 	/**
 	 * Increments the resend counter.
 	 * On three increments the node stage is set to DEAD and no
 	 * more messages will be sent.
 	 */
 	public void incrementResendCount() {
-		if (++resendCount >= 3)
+		if (++resendCount >= 3) {
 			this.nodeStage = NodeStage.DEAD;
+			this.deadCount++;
+			this.deadTime = Calendar.getInstance().getTime();
+			this.queryStageTimeStamp = Calendar.getInstance().getTime();
+			logger.debug("NODE {}: Retry count exceeded. Node is DEAD.", this.nodeId);
+
+			if(nodeStageAdvancer.isInitializationComplete() == true) {
+				ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeStatusEvent.State.Dead);
+				controller.notifyEventListeners(zEvent);
+			}
+			else {
+				logger.debug("NODE {}: Initialisation incomplete, not signalling DEAD node.", this.nodeId);				
+			}
+		}
+		this.retryCount++;
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
@@ -336,13 +399,14 @@ public class ZWaveNode {
 	 * Resets the resend counter and possibly resets the
 	 * node stage to DONE when previous initialization was
 	 * complete.
+	 * Note that if the node is DEAD, then the nodeStage stays DEAD
 	 */
 	public void resetResendCount() {
 		this.resendCount = 0;
-		if (this.nodeStageAdvancer.isInitializationComplete())
+		if (this.nodeStageAdvancer.isInitializationComplete() && this.nodeStage != NodeStage.DEAD)
 			this.nodeStage = NodeStage.DONE;
 		this.lastUpdated = Calendar.getInstance().getTime();
-	}	
+	}
 
 	/**
 	 * Returns the device class of the node.
@@ -390,6 +454,7 @@ public class ZWaveNode {
 		CommandClass key = commandClass.getCommandClass();
 		
 		if (!supportedCommandClasses.containsKey(key)) {
+			logger.debug("NODE {}: Adding command class {} to the list of supported command classes.", nodeId, commandClass.getCommandClass().getLabel());
 			supportedCommandClasses.put(key, commandClass);
 			
 			if (commandClass instanceof ZWaveEventListener)
@@ -485,7 +550,7 @@ public class ZWaveNode {
 		multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)this.getCommandClass(CommandClass.MULTI_INSTANCE);
 		
 		if (multiInstanceCommandClass != null) {
-			logger.debug("Encapsulating message for node {}, instance / endpoint {}", this.getNodeId(), endpointId);
+			logger.debug("NODE {}: Encapsulating message, instance / endpoint {}", this.getNodeId(), endpointId);
 			switch (multiInstanceCommandClass.getVersion()) {
 				case 2:
 					if (commandClass.getEndpoint() != null) {
@@ -504,10 +569,124 @@ public class ZWaveNode {
 		}
 
 		if (endpointId != 1) {
-			logger.warn("Encapsulating message for node {}, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
+			logger.warn("NODE {}:Encapsulating message, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
 			return null;
 		}
 		
 		return serialMessage;
+	}
+
+	/**
+	 * Return a list with the nodes neighbors
+	 * @return list of node IDs
+	 */
+	public List<Integer> getNeighbors() {
+		return nodeNeighbors;
+	}
+	
+	/**
+	 * Clear the neighbor list
+	 */
+	public void clearNeighbors() {
+		nodeNeighbors.clear();
+	}
+
+	/**
+	 * Updates a nodes routing information
+	 * Generation of routes uses associations
+	 * @param nodeId
+	 */
+	public ArrayList<Integer> getRoutingList() {
+		logger.debug("NODE {}: Update return routes", nodeId);
+
+		// Create a list of nodes this device is configured to talk to
+    	ArrayList<Integer> routedNodes = new ArrayList<Integer>();
+
+    	// Only update routes if this is a routing node
+    	if(isRouting() == false) {
+    		logger.debug("NODE {}: Node is not a routing node. No routes can be set.", nodeId);
+    		return null;
+    	}
+
+    	// Get the number of association groups reported by this node
+		ZWaveAssociationCommandClass associationCmdClass = (ZWaveAssociationCommandClass) getCommandClass(CommandClass.ASSOCIATION);
+		if(associationCmdClass == null) {
+    		logger.debug("NODE {}: Node has no association class. No routes can be set.", nodeId);
+    		return null;
+    	}
+		
+		int groups = associationCmdClass.getGroupCount();
+		if(groups != 0) {
+			// Loop through each association group and add the node ID to the list
+			for(int group = 1; group <= groups; group++) {
+				for(Integer associationNodeId : associationCmdClass.getGroupMembers(group)) {
+					routedNodes.add(associationNodeId);
+				}
+			}
+		}
+
+		// Add the wakeup destination node to the list for battery devices
+		ZWaveWakeUpCommandClass wakeupCmdClass = (ZWaveWakeUpCommandClass) getCommandClass(CommandClass.WAKE_UP);
+		if(wakeupCmdClass != null) {
+			Integer wakeupNodeId = wakeupCmdClass.getTargetNodeId();
+			routedNodes.add(wakeupNodeId);
+		}
+
+		// Are there any nodes to which we need to set routes?
+		if(routedNodes.size() == 0) {
+    		logger.debug("NODE {}: No return routes required.", nodeId);
+    		return null;
+		}
+		
+		return routedNodes;
+	}
+	
+	/**
+	 * Add a node ID to the neighbor list
+	 * @param nodeId the node to add
+	 */
+	public void addNeighbor(Integer nodeId) {
+		nodeNeighbors.add(nodeId);
+	}
+
+	/**
+	 * Gets the number of times the node has been determined as DEAD
+	 * @return dead count
+	 */
+	public int getDeadCount() {
+		return deadCount;
+	}
+	
+	/**
+	 * Gets the number of times the node has been determined as DEAD
+	 * @return dead count
+	 */
+	public Date getDeadTime() {
+		return deadTime;
+	}
+	
+	/**
+	 * Gets the number of packets that have been resent to the node
+	 * @return retry count
+	 */
+	public int getRetryCount() {
+		return retryCount;
+	}
+
+	/**
+	 * Increments the sent packet counter
+	 * This is simply used for statistical purposes to assess the health
+	 * of a node.
+	 */
+	public void incrementSendCount() {
+		sendCount++;
+	}
+	
+	/**
+	 * Gets the number of packets sent to the node
+	 * @return send count
+	 */
+	public int getSendCount() {
+		return sendCount;
 	}
 }

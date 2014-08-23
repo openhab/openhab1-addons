@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -228,6 +228,12 @@ public abstract class ZWaveCommandClass {
 		int size = buffer[offset] & SIZE_MASK;
 		int precision = (buffer[offset] & PRECISION_MASK) >> PRECISION_SHIFT;
 
+		if((size+offset) >= buffer.length) {
+			logger.error("Error extracting value - length={}, offset={}, size={}.", 
+					new Object[] { buffer.length, offset, size});
+			return BigDecimal.ZERO;
+		}
+		
 		int value = 0;
 		int i;
 		for (i = 0; i < size; ++i) {
@@ -238,7 +244,6 @@ public abstract class ZWaveCommandClass {
 		// Deal with sign extension. All values are signed
 		BigDecimal result;
 		if ((buffer[offset + 1] & 0x80) == 0x80) {
-
 			// MSB is signed
 			if (size == 1) {
 				value |= 0xffffff00;
@@ -253,6 +258,33 @@ public abstract class ZWaveCommandClass {
 		return result.divide(divisor);
 	}
 	
+	/**
+	 * Extract a decimal value from a byte array.
+	 * @param buffer the buffer to be parsed.
+	 * @param offset the offset at which to start reading
+	 * @return the extracted decimal value
+	 */
+	protected int extractValue(byte[] buffer, int offset, int size) {
+		int value = 0;
+		for (int i = 0; i < size; ++i) {
+			value <<= 8;
+			value |= buffer[offset + i] & 0xFF;
+		}
+
+		// Deal with sign extension. All values are signed
+		if ((buffer[offset] & 0x80) == 0x80) {
+			// MSB is signed
+			if (size == 1) {
+				value |= 0xffffff00;
+			} else if (size == 2) {
+				value |= 0xffff0000;
+			}
+		}
+
+		return value;
+	}
+	
+
 	/**
 	 * Encodes a decimal value as a byte array.
 	 * @param value the decimal value to encode
@@ -295,7 +327,7 @@ public abstract class ZWaveCommandClass {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Command class enumeration. Lists all command classes available.
 	 * Unsupported command classes by the binding return null for the command class Class.
@@ -317,7 +349,7 @@ public abstract class ZWaveCommandClass {
 		SWITCH_TOGGLE_BINARY(0x28,"SWITCH_TOGGLE_BINARY",null),
 		SWITCH_TOGGLE_MULTILEVEL(0x29,"SWITCH_TOGGLE_MULTILEVEL",null),
 		CHIMNEY_FAN(0x2A,"CHIMNEY_FAN",null),
-		SCENE_ACTIVATION(0x2B,"SCENE_ACTIVATION",null),
+		SCENE_ACTIVATION(0x2B,"SCENE_ACTIVATION",ZWaveSceneActivationCommandClass.class),
 		SCENE_ACTUATOR_CONF(0x2C,"SCENE_ACTUATOR_CONF",null),
 		SCENE_CONTROLLER_CONF(0x2D,"SCENE_CONTROLLER_CONF",null),
 		ZIP_CLIENT(0x2E,"ZIP_CLIENT",null),
@@ -346,7 +378,7 @@ public abstract class ZWaveCommandClass {
 		MULTI_INSTANCE(0x60,"MULTI_INSTANCE",ZWaveMultiInstanceCommandClass.class),
 		DOOR_LOCK(0x62,"DOOR_LOCK",null),
 		USER_CODE(0x63,"USER_CODE",null),
-		CONFIGURATION(0x70,"CONFIGURATION",null),
+		CONFIGURATION(0x70,"CONFIGURATION",ZWaveConfigurationCommandClass.class),
 		ALARM(0x71,"ALARM",null),
 		MANUFACTURER_SPECIFIC(0x72,"MANUFACTURER_SPECIFIC",ZWaveManufacturerSpecificCommandClass.class),
 		POWERLEVEL(0x73,"POWERLEVEL",null),
@@ -361,7 +393,7 @@ public abstract class ZWaveCommandClass {
 		CLOCK(0x81,"CLOCK",null),
 		HAIL(0x82,"HAIL",ZWaveHailCommandClass.class),
 		WAKE_UP(0x84,"WAKE_UP", ZWaveWakeUpCommandClass.class),
-		ASSOCIATION(0x85,"ASSOCIATION",null),
+		ASSOCIATION(0x85,"ASSOCIATION",ZWaveAssociationCommandClass.class),
 		VERSION(0x86,"VERSION",ZWaveVersionCommandClass.class),
 		INDICATOR(0x87,"INDICATOR",null),
 		PROPRIETARY(0x88,"PROPRIETARY",null),
