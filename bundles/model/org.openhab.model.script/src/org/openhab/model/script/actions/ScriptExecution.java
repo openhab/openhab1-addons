@@ -27,6 +27,9 @@ import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+//Added in 0.9.1 to support from cronScheduler
+import static org.quartz.CronScheduleBuilder.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +40,11 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @since 0.9.0
  *
+ * Extension to also support reschedulable cron timers
+ * 
+ * @author Peter Broucke
+ * @since 0.9.1
+ * 
  */
 @SuppressWarnings("restriction")
 public class ScriptExecution {
@@ -105,4 +113,29 @@ public class ScriptExecution {
 			return null;
 		}
 	}
+	
+	public static Timer createTimer(String cronExpression, Procedure0 closure) {
+		JobKey jobKey = new JobKey("CRON" + cronExpression + ": " + closure.toString());
+	    //Trigger trigger = newTrigger().startAt(instant.toDate()).build();
+		Trigger trigger = newTrigger()
+			.withSchedule(cronSchedule(cronExpression))
+			.build();
+			        
+			Timer timer = new TimerImpl(jobKey, trigger.getKey(), cronExpression);
+			try {
+				JobDataMap dataMap = new JobDataMap();
+				dataMap.put("procedure", closure);
+				dataMap.put("timer", timer);
+		        JobDetail job = newJob(TimerExecutionJob.class)
+		            .withIdentity(jobKey)
+		            .usingJobData(dataMap)
+		            .build();	
+		        TimerImpl.scheduler.scheduleJob(job, trigger);
+				logger.debug("Scheduled code for execution at {}", cronExpression);
+				return timer;
+			} catch(SchedulerException e) {
+				logger.error("Failed to schedule code for execution.", e);
+				return null;
+			}
+		}
 }
