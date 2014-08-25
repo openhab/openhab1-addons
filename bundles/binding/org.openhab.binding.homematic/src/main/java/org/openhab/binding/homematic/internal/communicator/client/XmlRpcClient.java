@@ -16,6 +16,7 @@ import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnection;
+import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnectionCuxd;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnectionRF;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnectionWired;
 import org.slf4j.Logger;
@@ -142,8 +143,14 @@ public class XmlRpcClient implements RpcClient {
 
 	private XmlRpcConnection getConnection(HmInterface hmInterface) {
 		if (xmlRpcConnections.get(hmInterface) == null) {
-			XmlRpcConnection xmlRpcCon = HmInterface.WIRED == hmInterface ? new XmlRpcConnectionWired(config.getHost())
-					: new XmlRpcConnectionRF(config.getHost());
+			XmlRpcConnection xmlRpcCon = null;
+			if (HmInterface.WIRED == hmInterface) {
+				xmlRpcCon = new XmlRpcConnectionWired(config.getHost());
+			} else if (HmInterface.CUXD == hmInterface) {
+				xmlRpcCon = new XmlRpcConnectionCuxd(config.getHost());
+			} else {
+				xmlRpcCon = new XmlRpcConnectionRF(config.getHost());
+			}
 			xmlRpcConnections.put(hmInterface, xmlRpcCon);
 		}
 		return xmlRpcConnections.get(hmInterface);

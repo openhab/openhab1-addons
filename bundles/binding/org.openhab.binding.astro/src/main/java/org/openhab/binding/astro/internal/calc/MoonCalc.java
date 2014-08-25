@@ -16,7 +16,10 @@ import org.openhab.binding.astro.internal.model.Moon;
 import org.openhab.binding.astro.internal.model.MoonDistance;
 import org.openhab.binding.astro.internal.model.MoonPhase;
 import org.openhab.binding.astro.internal.model.MoonPhaseName;
+import org.openhab.binding.astro.internal.model.Position;
 import org.openhab.binding.astro.internal.model.Range;
+import org.openhab.binding.astro.internal.model.Zodiac;
+import org.openhab.binding.astro.internal.model.ZodiacSign;
 import org.openhab.binding.astro.internal.util.DateTimeUtils;
 
 /**
@@ -26,7 +29,8 @@ import org.openhab.binding.astro.internal.util.DateTimeUtils;
  * @author Gerhard Riegler
  * @since 1.6.0
  * @see based on the calculations of
- *      http://www.computus.de/mondphase/mondphase.htm
+ *      http://www.computus.de/mondphase/mondphase.htm azimuth/elevation and
+ *      zodiac based on http://lexikon.astronomie.info/java/sunmoon/
  */
 
 public class MoonCalc {
@@ -54,6 +58,19 @@ public class MoonCalc {
 		Calendar rise = DateTimeUtils.timeToCalendar(calendar, riseSet[0]);
 		Calendar set = DateTimeUtils.timeToCalendar(calendar, riseSet[1]);
 
+		if (rise == null || set == null) {
+			Calendar tomorrow = (Calendar) calendar.clone();
+			tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+
+			double[] riseSeTomorrow = getRiseSet(tomorrow, latitude, longitude);
+			if (rise == null) {
+				rise = DateTimeUtils.timeToCalendar(tomorrow, riseSeTomorrow[0]);
+			}
+			if (set == null) {
+				set = DateTimeUtils.timeToCalendar(tomorrow, riseSeTomorrow[1]);
+			}
+		}
+
 		moon.setRise(new Range(rise, rise));
 		moon.setSet(new Range(set, set));
 
@@ -80,7 +97,7 @@ public class MoonCalc {
 		perigee.setDate(DateTimeUtils.toCalendar(perigeeJd));
 		perigee.setKilometer(getDistance(perigeeJd));
 
-		setMoonPosition(julianDate, moon);
+		setMoonPosition(julianDate, latitude, longitude, moon);
 		setAgeAndPhaseName(calendar, phase);
 		return moon;
 	}
@@ -88,20 +105,21 @@ public class MoonCalc {
 	/**
 	 * Calculates the moon illumination and distance.
 	 */
-	public void setMoonPosition(Calendar calendar, Moon moon) {
-		setMoonPosition(DateTimeUtils.dateToJulianDate(calendar), moon);
+	public void setMoonPosition(Calendar calendar, double latitude, double longitude, Moon moon) {
+		setMoonPosition(DateTimeUtils.dateToJulianDate(calendar), latitude, longitude, moon);
 	}
 
 	/**
 	 * Calculates the moon illumination and distance from the julian date.
 	 */
-	private void setMoonPosition(double julianDate, Moon moon) {
+	private void setMoonPosition(double julianDate, double latitude, double longitude, Moon moon) {
 		MoonPhase phase = moon.getPhase();
 		phase.setIllumination(getIllumination(julianDate));
 
 		MoonDistance distance = moon.getDistance();
 		distance.setDate(Calendar.getInstance());
 		distance.setKilometer(getDistance(julianDate));
+		setAzimuthElevationZodiac(julianDate, latitude, longitude, moon);
 	}
 
 	/**
@@ -469,7 +487,7 @@ public class MoonCalc {
 		return sr;
 	}
 
-	private double[] calcMoon(double t) {
+	public double[] calcMoon(double t) {
 		double p2 = 6.283185307;
 		double arc = 206264.8062;
 		double coseps = .91748;
@@ -625,4 +643,205 @@ public class MoonCalc {
 		return sr;
 	}
 
+	/**
+	 * Sets the azimuth, elevation and zodiac in the moon object.
+	 */
+	private void setAzimuthElevationZodiac(double julianDate, double latitude, double longitude, Moon moon) {
+		double lat = latitude * SunCalc.DEG2RAD;
+		double lon = longitude * SunCalc.DEG2RAD;
+
+		double gmst = toGMST(julianDate);
+		double lmst = toLMST(gmst, lon) * 15. * SunCalc.DEG2RAD;
+
+		double d = julianDate - 2447891.5;
+		double anomalyMean = 360 * SunCalc.DEG2RAD / 365.242191 * d + 4.87650757829735 - 4.935239984568769;
+		double nu = anomalyMean + 360.0 * SunCalc.DEG2RAD / Math.PI * 0.016713 * Math.sin(anomalyMean);
+		double sunLon = mod2Pi(nu + 4.935239984568769);
+
+		double l0 = 318.351648 * SunCalc.DEG2RAD;
+		double p0 = 36.340410 * SunCalc.DEG2RAD;
+		double n0 = 318.510107 * SunCalc.DEG2RAD;
+		double i = 5.145396 * SunCalc.DEG2RAD;
+		double l = 13.1763966 * SunCalc.DEG2RAD * d + l0;
+		double mMoon = l - 0.1114041 * SunCalc.DEG2RAD * d - p0;
+		double n = n0 - 0.0529539 * SunCalc.DEG2RAD * d;
+		double c = l - sunLon;
+		double ev = 1.2739 * SunCalc.DEG2RAD * Math.sin(2 * c - mMoon);
+		double ae = 0.1858 * SunCalc.DEG2RAD * Math.sin(anomalyMean);
+		double a3 = 0.37 * SunCalc.DEG2RAD * Math.sin(anomalyMean);
+		double mMoon2 = mMoon + ev - ae - a3;
+		double ec = 6.2886 * SunCalc.DEG2RAD * Math.sin(mMoon2);
+		double a4 = 0.214 * SunCalc.DEG2RAD * Math.sin(2 * mMoon2);
+		double l2 = l + ev + ec - ae + a4;
+		double v = 0.6583 * SunCalc.DEG2RAD * Math.sin(2 * (l2 - sunLon));
+		double l3 = l2 + v;
+		double n2 = n - 0.16 * SunCalc.DEG2RAD * Math.sin(anomalyMean);
+
+		double moonLon = mod2Pi(n2 + Math.atan2(Math.sin(l3 - n2) * Math.cos(i), Math.cos(l3 - n2)));
+		double moonLat = Math.asin(Math.sin(l3 - n2) * Math.sin(i));
+
+		double raDec[] = ecl2Equ(moonLat, moonLon, julianDate);
+
+		double distance = (1 - 0.00301401) / (1 + 0.054900 * Math.cos(mMoon2 + ec)) * 384401;
+
+		double raDecTopo[] = geoEqu2TopoEqu(raDec, distance, lat, lmst);
+		double azAlt[] = equ2AzAlt(raDecTopo[0], raDecTopo[1], lat, lmst);
+
+		Position position = moon.getPosition();
+		position.setAzimuth(azAlt[0] * SunCalc.RAD2DEG);
+		position.setElevation(azAlt[1] * SunCalc.RAD2DEG + refraction(azAlt[1]));
+
+		// zodiac
+		double idxd = Math.floor(moonLon * SunCalc.RAD2DEG / 30);
+		int idx = 0;
+		if (idxd < 0) {
+			idx = (int) (Math.ceil(idxd));
+		} else
+			idx = (int) (Math.floor(idxd));
+
+		if (idx >= 0 || idx <= ZodiacSign.values().length) {
+			moon.setZodiac(new Zodiac(ZodiacSign.values()[idx]));
+		}
+	}
+
+	private double mod2Pi(double x) {
+		return (mod(x, 2. * Math.PI));
+	}
+
+	private double mod(double a, double b) {
+		return (a - Math.floor(a / b) * b);
+	}
+
+	/**
+	 * Transform equatorial coordinates (ra/dec) to horizonal coordinates
+	 * (azimuth/altitude).
+	 */
+	private double[] equ2AzAlt(double ra, double dec, double geolat, double lmst) {
+		double cosdec = Math.cos(dec);
+		double sindec = Math.sin(dec);
+		double lha = lmst - ra;
+		double coslha = Math.cos(lha);
+		double sinlha = Math.sin(lha);
+		double coslat = Math.cos(geolat);
+		double sinlat = Math.sin(geolat);
+
+		double n = -cosdec * sinlha;
+		double d = sindec * coslat - cosdec * coslha * sinlat;
+		double az = mod2Pi(Math.atan2(n, d));
+		double alt = Math.asin(sindec * sinlat + cosdec * coslha * coslat);
+
+		return new double[] { az, alt };
+	}
+
+	/**
+	 * Transform ecliptical coordinates (lon/lat) to equatorial coordinates
+	 * (ra/dec)
+	 */
+	private double[] ecl2Equ(double lat, double lon, double jd) {
+		double t = (jd - 2451545.0) / 36525.0;
+		double eps = (23. + (26 + 21.45 / 60.) / 60. + t * (-46.815 + t * (-0.0006 + t * 0.00181)) / 3600.)
+				* SunCalc.DEG2RAD;
+		double coseps = Math.cos(eps);
+		double sineps = Math.sin(eps);
+
+		double sinlon = Math.sin(lon);
+		double ra = mod2Pi(Math.atan2((sinlon * coseps - Math.tan(lat) * sineps), Math.cos(lon)));
+		double dec = Math.asin(Math.sin(lat) * coseps + Math.cos(lat) * sineps * sinlon);
+
+		return new double[] { ra, dec };
+	}
+
+	/**
+	 * Transform geocentric equatorial coordinates (rA/dec) to topocentric
+	 * equatorial coordinates.
+	 */
+	private double[] geoEqu2TopoEqu(double[] raDec, double distance, double observerLat, double lmst) {
+		double cosdec = Math.cos(raDec[1]);
+		double sindec = Math.sin(raDec[1]);
+		double coslst = Math.cos(lmst);
+		double sinlst = Math.sin(lmst);
+		double coslat = Math.cos(observerLat);
+		double sinlat = Math.sin(observerLat);
+		double rho = getCenterDistance(observerLat);
+
+		double x = distance * cosdec * Math.cos(raDec[0]) - rho * coslat * coslst;
+		double y = distance * cosdec * Math.sin(raDec[0]) - rho * coslat * sinlst;
+		double z = distance * sindec - rho * sinlat;
+
+		double distanceTopocentric = Math.sqrt(x * x + y * y + z * z);
+		double raTopo = mod2Pi(Math.atan2(y, x));
+		double decTopo = Math.asin(z / distanceTopocentric);
+
+		return new double[] { raTopo, decTopo };
+	}
+
+	/**
+	 * Convert julian date to greenwich mean sidereal time.
+	 */
+	private double toGMST(double jd) {
+		double ut = (jd - 0.5 - Math.floor(jd - 0.5)) * 24.;
+		jd = Math.floor(jd - 0.5) + 0.5;
+		double t = (jd - 2451545.0) / 36525.0;
+		double t0 = 6.697374558 + t * (2400.051336 + t * 0.000025862);
+		return (mod(t0 + ut * 1.002737909, 24.));
+	}
+
+	/**
+	 * Convert greenwich mean sidereal time to local mean sidereal time.
+	 */
+	private double toLMST(double gmst, double lon) {
+		return mod(gmst + SunCalc.RAD2DEG * lon / 15., 24.);
+	}
+
+	/**
+	 * Returns geocentric distance from earth center.
+	 */
+	private double getCenterDistance(double lat) {
+		double co = Math.cos(lat);
+		double si = Math.sin(lat);
+		double fl = 1.0 - 1.0 / 298.257223563;
+		fl = fl * fl;
+		si = si * si;
+		double u = 1.0 / Math.sqrt(co * co + fl * si);
+		double a = 6378.137 * u;
+		double b = 6378.137 * fl * u;
+		return Math.sqrt(a * a * co * co + b * b * si);
+	}
+
+	/**
+	 * Returns altitude increase in altitude in degrees. Rough refraction
+	 * formula using standard atmosphere: 1015 mbar and 10°C.
+	 */
+	private double refraction(double alt) {
+		int pressure = 1015;
+		int temperature = 10;
+		double altdeg = alt * SunCalc.RAD2DEG;
+
+		if (altdeg < -2 || altdeg >= 90)
+			return 0;
+
+		if (altdeg > 15)
+			return 0.00452 * pressure / ((273 + temperature) * Math.tan(alt));
+
+		double y = alt;
+		double d = 0.0;
+		double p = (pressure - 80.0) / 930.0;
+		double q = 0.0048 * (temperature - 10.0);
+		double y0 = y;
+		double d0 = d;
+		double n = 0.0;
+
+		for (int i = 0; i < 3; i++) {
+			n = y + (7.31 / (y + 4.4));
+			n = 1.0 / Math.tan(n * SunCalc.DEG2RAD);
+			d = n * p / (60.0 + q * (n + 39.0));
+			n = y - y0;
+			y0 = d - d0 - n;
+			n = ((n != 0.0) && (y0 != 0.0)) ? y - n * (alt + d - y) / y0 : alt + d;
+			y0 = y;
+			d0 = d;
+			y = n;
+		}
+		return d;
+	}
 }

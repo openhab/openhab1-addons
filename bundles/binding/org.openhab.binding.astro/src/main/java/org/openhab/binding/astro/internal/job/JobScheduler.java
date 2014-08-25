@@ -123,6 +123,9 @@ public class JobScheduler {
 		intervalBindings.add(new AstroBindingConfig(PlanetName.MOON, "distance", "miles"));
 		intervalBindings.add(new AstroBindingConfig(PlanetName.MOON, "distance", "date"));
 		intervalBindings.add(new AstroBindingConfig(PlanetName.MOON, "phase", "illumination"));
+		intervalBindings.add(new AstroBindingConfig(PlanetName.MOON, "zodiac", "sign"));
+		intervalBindings.add(new AstroBindingConfig(PlanetName.MOON, "position", "azimuth"));
+		intervalBindings.add(new AstroBindingConfig(PlanetName.MOON, "position", "elevation"));
 
 		for (AstroBindingProvider provider : context.getProviders()) {
 			for (AstroBindingConfig astroBindingConfig : intervalBindings) {

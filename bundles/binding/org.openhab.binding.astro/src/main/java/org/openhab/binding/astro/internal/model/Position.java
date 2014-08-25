@@ -12,19 +12,19 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
- * Holds the calculated sun azimuth and elevation.
+ * Holds the calculated azimuth and elevation.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public class SunPosition {
+public class Position {
 	private double azimuth;
 	private double elevation;
 
-	public SunPosition() {
+	public Position() {
 	}
 
-	public SunPosition(double azimuth, double elevation) {
+	public Position(double azimuth, double elevation) {
 		this.azimuth = azimuth;
 		this.elevation = elevation;
 	}

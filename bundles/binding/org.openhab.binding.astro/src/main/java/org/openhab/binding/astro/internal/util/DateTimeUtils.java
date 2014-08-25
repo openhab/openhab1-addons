@@ -62,7 +62,7 @@ public class DateTimeUtils {
 		long millis = (long) ((julianDate + 0.5 - J1970) * MILLISECONDS_PER_DAY);
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(millis);
-		return DateUtils.truncate(cal, Calendar.MINUTE);
+		return DateUtils.round(cal, Calendar.MINUTE);
 	}
 
 	/**

@@ -24,6 +24,7 @@ import org.openhab.binding.xbmc.rpc.calls.GUIShowNotification;
 import org.openhab.binding.xbmc.rpc.calls.JSONRPCPing;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetActivePlayers;
 import org.openhab.binding.xbmc.rpc.calls.PlayerGetItem;
+import org.openhab.binding.xbmc.rpc.calls.PlayerOpen;
 import org.openhab.binding.xbmc.rpc.calls.PlayerPlayPause;
 import org.openhab.binding.xbmc.rpc.calls.PlayerStop;
 import org.openhab.binding.xbmc.rpc.calls.SystemShutdown;
@@ -310,6 +311,12 @@ public class XbmcConnector {
 	public void systemShutdown() {
 		final SystemShutdown shutdown = new SystemShutdown(client, httpUri);
 		shutdown.execute();
+	}
+
+	public void playerOpen(String file) {
+		final PlayerOpen playeropen = new PlayerOpen(client, httpUri);		
+		playeropen.setFile(file);
+		playeropen.execute();
 	}
 
 	private void processPlayerStateChanged(String method, Map<String, Object> json) {

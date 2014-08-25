@@ -19,6 +19,7 @@ import java.util.Map;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.openhab.binding.astro.AstroBindingProvider;
 import org.openhab.binding.astro.internal.common.AstroContext;
 import org.openhab.binding.astro.internal.config.AstroBindingConfig;
 import org.openhab.binding.astro.internal.model.Planet;
@@ -66,6 +67,24 @@ public class PlanetPublisher {
 	 */
 	public void clear() {
 		itemCache.clear();
+	}
+
+	/**
+	 * Republish the state of the item.
+	 */
+	public void republishItem(String itemName) {
+		AstroBindingConfig bindingConfig = null;
+		for (AstroBindingProvider provider : context.getProviders()) {
+			if (bindingConfig == null) {
+				bindingConfig = provider.getBindingFor(itemName);
+			}
+		}
+		if (bindingConfig == null) {
+			logger.warn("Astro binding for item {} not found", itemName);
+		} else {
+			itemCache.remove(itemName);
+			publish(bindingConfig.getPlanetName());
+		}
 	}
 
 	/**
