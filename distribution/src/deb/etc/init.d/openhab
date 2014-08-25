@@ -86,6 +86,11 @@ fi
 # Load the VERBOSE setting and other rcS variables
 . /lib/init/vars.sh
 
+DEBUG_ARGS="-Xdebug \
+  -Xnoagent \
+  -Djava.compiler=NONE \
+  -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n \
+  -Dlogback.configurationFile=${OPENHAB_CONF_DIR}/logback_debug.xml"
 
 JAVA_ARGS_DEFAULT="-Dosgi.clean=true \
  -Declipse.ignoreApp=true \
@@ -99,7 +104,6 @@ JAVA_ARGS_DEFAULT="-Dosgi.clean=true \
  -Djetty.config="${OPENHAB_CONF_DIR}/jetty" \
  -Djetty.logs="${OPENHAB_LOG_DIR}" \
  -Djetty.rundir="${OPENHAB_DIR}" \
- -Dlogback.configurationFile="${OPENHAB_CONF_DIR}/logback.xml" \
  -Dfelix.fileinstall.dir="${OPENHAB_DIR}/addons" \
  -Djava.library.path="${OPENHAB_DIR}/lib" \
  -Djava.security.auth.login.config="${OPENHAB_CONF_DIR}/login.conf" \
@@ -121,6 +125,11 @@ if [ x"${OPENHAB_ARGS}" != x ]; then
 	JAVA_ARGS_DEFAULT="${JAVA_ARGS_DEFAULT} ${OPENHAB_ARGS}"
 fi
 
+if (echo ${DEBUG} | grep -qi "^yes$"); then
+	JAVA_ARGS_DEFAULT="${DEBUG_ARGS} ${JAVA_ARGS_DEFAULT}"
+else
+	JAVA_ARGS_DEFAULT="-Dlogback.configurationFile=${OPENHAB_CONF_DIR}/logback.xml ${JAVA_ARGS_DEFAULT}"
+fi
 
 case "$1" in
   start)
