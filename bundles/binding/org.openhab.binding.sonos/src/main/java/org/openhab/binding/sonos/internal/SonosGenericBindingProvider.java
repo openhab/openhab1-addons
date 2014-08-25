@@ -170,16 +170,16 @@ implements SonosBindingProvider {
 	 */
 	private Command createCommandFromString(Item item, String commandAsString) throws BindingConfigParseException {
 
-		List<Class<? extends Command>> acceptedType = new ArrayList<Class<? extends Command>>();
+		List<Class<? extends Command>> acceptedTypes = new ArrayList<Class<? extends Command>>();
 
 		if(item!=null) {
-			acceptedType = item.getAcceptedCommandTypes();
+			acceptedTypes = item.getAcceptedCommandTypes();
 		}
 		else {
-			acceptedType.add(StringType.class);
+			acceptedTypes.add(StringType.class);
 		}
 		
-		Command command = TypeParser.parseCommand(acceptedType, commandAsString);
+		Command command = TypeParser.parseCommand(acceptedTypes, commandAsString);
 
 		if (command == null) {
 			throw new BindingConfigParseException("couldn't create Command from '" + commandAsString + "' ");
