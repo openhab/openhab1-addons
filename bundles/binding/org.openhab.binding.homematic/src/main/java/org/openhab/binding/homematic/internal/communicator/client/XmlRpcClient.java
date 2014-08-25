@@ -11,6 +11,7 @@ package org.openhab.binding.homematic.internal.communicator.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
@@ -100,12 +101,16 @@ public class XmlRpcClient implements RpcClient {
 	 */
 	@Override
 	public ServerId getServerId(HmInterface hmInterface) throws HomematicClientException {
-		Object result = getConnection(hmInterface).getVersion();
-		if (result instanceof String) {
-			return new ServerId((String) result);
+		Object result = getConnection(hmInterface).getDeviceDescription();
+
+		String firmwareVersion = null;
+		if (result instanceof Map) {
+			@SuppressWarnings("unchecked")
+			Map<?, String> map = (Map<?, String>) result;
+			firmwareVersion = map.get("FIRMWARE");
 		}
-		throw new HomematicClientException("getVersion returns unknown result type: "
-				+ (result == null ? "null" : result.getClass()));
+		
+		return new ServerId(StringUtils.defaultIfBlank(firmwareVersion, "unknown"));
 	}
 
 	/**

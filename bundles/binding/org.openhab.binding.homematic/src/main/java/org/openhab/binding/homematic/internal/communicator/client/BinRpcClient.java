@@ -13,6 +13,7 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematic.internal.binrpc.BinRpcRequest;
 import org.openhab.binding.homematic.internal.binrpc.BinRpcResponse;
 import org.openhab.binding.homematic.internal.common.HomematicConfig;
@@ -95,9 +96,18 @@ public class BinRpcClient implements RpcClient {
 	 */
 	@Override
 	public ServerId getServerId(HmInterface hmInterface) throws HomematicClientException {
-		BinRpcRequest request = new BinRpcRequest("getVersion");
+		BinRpcRequest request = new BinRpcRequest("getDeviceDescription");
+		request.addArg("BidCoS-RF");
 		Object[] result = sendMessage(hmInterface, request);
-		return new ServerId(result[0].toString());
+
+		String firmwareVersion = null;
+		if (result != null && result.length > 0 && result[0] instanceof Map) {
+			@SuppressWarnings("unchecked")
+			Map<?, String> map = (Map<?, String>) result[0];
+			firmwareVersion = map.get("FIRMWARE");
+		}
+
+		return new ServerId(StringUtils.defaultIfBlank(firmwareVersion, "unknown"));
 	}
 
 	/**
