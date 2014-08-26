@@ -18,6 +18,7 @@ Import-Package: javax.xml.bind,
  org.apache.commons.lang,
  org.apache.commons.lang.builder,
  org.apache.commons.lang.math,
+ org.apache.commons.lang.reflect,
  org.apache.commons.logging,
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -31,8 +32,9 @@ Import-Package: javax.xml.bind,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.homematic.internal.common,org.open
- hab.binding.homematic.internal.communicator.client
+Export-Package: org.openhab.binding.homematic.internal.common,
+ org.openhab.binding.homematic.internal.communicator.client,
+ org.openhab.binding.homematic.internal.communicator.client.interfaces
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/homematicbinding.xml, OSGI-INF/genericbindingprovider.xml

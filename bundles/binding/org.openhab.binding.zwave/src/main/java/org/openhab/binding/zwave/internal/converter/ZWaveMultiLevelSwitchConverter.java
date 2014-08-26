@@ -120,11 +120,10 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 				else
 					state = UpDownType.UP;
 			}
-			if (converter instanceof IntegerPercentTypeConverter) {
-				state = new PercentType(100 - ((DecimalType)state).intValue());
-			}
 		}
-
+		if ("true".equalsIgnoreCase(arguments.get("invert_percent")) &&	converter instanceof IntegerPercentTypeConverter) {
+			state = new PercentType(100 - ((DecimalType)state).intValue());
+		}
 		this.getEventPublisher().postUpdate(item.getName(), state);
 	}
 
@@ -140,7 +139,6 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 			// special handling for the STOP command
 			serialMessage = commandClass.stopLevelChangeMessage();
 		} else {
-			logger.debug("Multilevel Switch ELSE");
 			ZWaveCommandConverter<?,?> converter = null;
 			if (command instanceof OnOffType) {
 				restoreLastValue = arguments.get("restore_last_value");
@@ -170,6 +168,17 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 					logger.debug("Multilevel Switch MultiLevelUpDownCommandConverter - inverted: {}", command);
 				}
 			}
+			
+			// Alloe inversion of roller shutter PERCENT value
+			if(converter instanceof MultiLevelPercentCommandConverter){
+				logger.debug("Multilevel Switch MultiLevelPercentCommandConverter");
+				if ("true".equalsIgnoreCase(arguments.get("invert_percent"))) {
+					logger.debug("Multilevel Switch MultiLevelPercentCommandConverter - invert");
+					command = new PercentType(100 - ((DecimalType)command).intValue());
+					logger.debug("Multilevel Switch MultiLevelPercentCommandConverter - inverted: {}", command);
+				}
+			}
+			
 
 			Integer value = (Integer)converter.convertFromCommandToValue(item, command);
 			logger.trace("Converted command '{}' to value {} for item = {}, node = {}, endpoint = {}.", command.toString(), value, item.getName(), node.getNodeId(), endpointId);

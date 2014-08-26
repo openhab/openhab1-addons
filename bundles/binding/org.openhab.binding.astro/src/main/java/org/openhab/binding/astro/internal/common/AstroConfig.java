@@ -8,7 +8,10 @@
  */
 package org.openhab.binding.astro.internal.common;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Dictionary;
+import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -27,7 +30,7 @@ import org.osgi.service.cm.ConfigurationException;
  * # The longitude
  * astro:longitude=nn.nnnnnn
  * 
- * # Refresh interval for azimuth and elevation calculation in seconds (optional, defaults to disabled)
+ * # Refresh interval for sun azimuth/elevation and moon distance/illumination calculation in seconds (optional, defaults to disabled)
  * astro:interval=nnn
  * </pre>
  * 
@@ -122,8 +125,15 @@ public class AstroConfig {
 	public String toString() {
 		String intervallMessage = (interval == 0 ? "disabled" : String.valueOf(interval));
 
+		TimeZone tz = TimeZone.getDefault();
+		StringBuilder tzInfo = new StringBuilder();
+		tzInfo.append(tz.getID());
+		tzInfo.append(" (").append(tz.getDisplayName(false, TimeZone.SHORT)).append(" ")
+				.append(new SimpleDateFormat("Z").format(Calendar.getInstance().getTime()));
+		tzInfo.append(")");
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("latitude", latitude)
-				.append("longitude", longitude).append("interval", intervallMessage).toString();
+				.append("longitude", longitude).append("interval", intervallMessage)
+				.append("systemTimezone", tzInfo.toString())
+				.append("daylightSavings", Calendar.getInstance().get(Calendar.DST_OFFSET) != 0).toString();
 	}
-
 }

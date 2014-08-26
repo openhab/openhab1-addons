@@ -104,7 +104,7 @@ public class HueBinding extends AbstractBinding<HueBindingProvider> implements M
 		}
 
 		if (command instanceof OnOffType) {
-			bulb.setOnAtFullBrightness(OnOffType.ON.equals(command));
+			bulb.switchOn(OnOffType.ON.equals(command));
 		}
 
 		if (command instanceof HSBType) {
