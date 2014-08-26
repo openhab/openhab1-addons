@@ -51,7 +51,7 @@ import org.openhab.core.types.UnDefType;
  * RFXCOM data class for RFY (Somfy RTS) message.
  * 
  * @author Jürgen Richtsfeld
- * @since TODO
+ * @since 1.6
  */
 public class RFXComRfyMessage extends RFXComBaseMessage {
 
