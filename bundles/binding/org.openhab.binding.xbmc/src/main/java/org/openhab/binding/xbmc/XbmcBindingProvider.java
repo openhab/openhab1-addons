@@ -20,4 +20,5 @@ public interface XbmcBindingProvider extends BindingProvider {
 	String getXbmcInstance(String itemname);
 	String getProperty(String itemname);
 	boolean isInBound(String itemname);
+	boolean isOutBound(String itemname);
 }
