@@ -120,7 +120,7 @@ public class RFXComGenericBindingProvider extends
 
 			} catch (Exception e) {
 				throw new BindingConfigParseException("Invalid sub type '"
-						+ types[1] + "'!");
+						+ types[1] + "' in type '" + config.packetType + "'!");
 			}
 
 			valueSelectorString = configParts[2].trim();
