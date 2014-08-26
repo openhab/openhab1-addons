@@ -17,10 +17,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.awt.Color;
 
 import org.openhab.binding.knx.config.KNXTypeMapper;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
@@ -46,6 +48,7 @@ import tuwien.auto.calimero.dptxlator.DPTXlator8BitUnsigned;
 import tuwien.auto.calimero.dptxlator.DPTXlatorBoolean;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDate;
 import tuwien.auto.calimero.dptxlator.DPTXlatorDateTime;
+import tuwien.auto.calimero.dptxlator.DPTXlatorRGB;
 import tuwien.auto.calimero.dptxlator.DPTXlatorSceneControl;
 import tuwien.auto.calimero.dptxlator.DPTXlatorSceneNumber;
 import tuwien.auto.calimero.dptxlator.DPTXlatorString;
@@ -201,6 +204,9 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		// Datapoint Types "DateTime", Main number 19
 		dptTypeMap.put(DPTXlatorDateTime.DPT_DATE_TIME.getID(), DateTimeType.class);
 
+		// Datapoint Types "RGB Color", Main number 232
+		dptTypeMap.put(DPTXlatorRGB.DPT_RGB.getID(), HSBType.class);
+
 		defaultDptMap = new HashMap<Class<? extends Type>, String>();
 		defaultDptMap.put(OnOffType.class, DPTXlatorBoolean.DPT_SWITCH.getID());
 		defaultDptMap.put(UpDownType.class, DPTXlatorBoolean.DPT_UPDOWN.getID());
@@ -216,6 +222,8 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 		defaultDptMap.put(DateTimeType.class, DPTXlatorTime.DPT_TIMEOFDAY.getID());
 
 		defaultDptMap.put(StringType.class,	DPTXlatorString.DPT_STRING_8859_1.getID());
+
+		defaultDptMap.put(HSBType.class, DPTXlatorRGB.DPT_RGB.getID());
 	}
 
 	/* (non-Javadoc)
@@ -239,7 +247,12 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 			return null;
 		}
 
-		if(type instanceof OnOffType) {
+		//check for HSBType first, because it extends PercentType as well
+		if(type instanceof HSBType) {
+			Color color = ((HSBType)type).toColor();
+		
+			return "r:" + Integer.toString(color.getRed()) + " g:" + Integer.toString(color.getGreen()) + " b:" + Integer.toString(color.getBlue());
+		} else if(type instanceof OnOffType) {
 			return type.equals(OnOffType.OFF)?dpt.getLowerValue():dpt.getUpperValue();
 		} else if(type instanceof UpDownType) {
 			return type.equals(UpDownType.UP)?dpt.getLowerValue():dpt.getUpperValue();
@@ -444,6 +457,16 @@ public class KNXCoreTypeMapper implements KNXTypeMapper {
 				else {
 					return DateTimeType.valueOf(date);
 				}
+			}
+
+			if(typeClass.equals(HSBType.class)) {
+				//value has format of "r:<red value> g:<green value> b:<blue value>"
+				int r = Integer.parseInt (value.split(" ")[0].split(":")[1]);
+				int g = Integer.parseInt (value.split(" ")[1].split(":")[1]);
+				int b = Integer.parseInt (value.split(" ")[2].split(":")[1]);
+
+				Color color = new Color (r, g, b);
+				return new HSBType(color);
 			}
 		}
 		catch (KNXFormatException kfe) {
