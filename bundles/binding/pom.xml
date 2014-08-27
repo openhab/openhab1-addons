@@ -117,6 +117,7 @@
     <module>org.openhab.binding.energenie</module>
     <module>org.openhab.binding.maxcul</module>
     <module>org.openhab.binding.wemo</module>
+    <module>org.openhab.binding.ehealth</module>
   </modules>
 
 </project>
