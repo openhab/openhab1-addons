@@ -138,14 +138,18 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 			if (!this.meterScales.contains(scale))
 				this.meterScales.add(scale);
 
+			try {
+				BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
+				logger.debug(String.format("Meter Value = (%f)", value));
+	
+				ZWaveMeterValueEvent zEvent = new ZWaveMeterValueEvent(this.getNode().getNodeId(), endpoint, 
+						meterType, scale, value);
+				this.getController().notifyEventListeners(zEvent);
+			}
+			catch (NumberFormatException e) {
+				return;
+			}
 
-			BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
-			logger.debug(String.format("Meter Value = (%f)", value));
-
-			ZWaveMeterValueEvent zEvent = new ZWaveMeterValueEvent(this.getNode().getNodeId(), endpoint, 
-					meterType, scale, value);
-			this.getController().notifyEventListeners(zEvent);
-			
 			if (this.getNode().getNodeStage() != NodeStage.DONE)
 				this.getNode().advanceNodeStage(NodeStage.DONE);
 			break;
