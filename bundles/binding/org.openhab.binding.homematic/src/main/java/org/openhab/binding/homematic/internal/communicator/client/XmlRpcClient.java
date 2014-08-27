@@ -11,17 +11,13 @@ package org.openhab.binding.homematic.internal.communicator.client;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
-import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnection;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnectionCuxd;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnectionRF;
 import org.openhab.binding.homematic.internal.xmlrpc.XmlRpcConnectionWired;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Client implementation for sending messages via XML-RPC to the CCU. It's a
@@ -31,19 +27,10 @@ import org.slf4j.LoggerFactory;
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public class XmlRpcClient implements RpcClient {
-	private final static Logger logger = LoggerFactory.getLogger(XmlRpcClient.class);
+public class XmlRpcClient extends BaseRpcClient {
 	private HomematicConfig config = HomematicContext.getInstance().getConfig();
 
 	private Map<HmInterface, XmlRpcConnection> xmlRpcConnections = new HashMap<HmInterface, XmlRpcConnection>(2);
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void start() throws HomematicClientException {
-		logger.debug("Starting {}", this.getClass().getSimpleName());
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -99,18 +86,26 @@ public class XmlRpcClient implements RpcClient {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public ServerId getServerId(HmInterface hmInterface) throws HomematicClientException {
-		Object result = getConnection(hmInterface).getDeviceDescription();
-
-		String firmwareVersion = null;
-		if (result instanceof Map) {
-			@SuppressWarnings("unchecked")
-			Map<?, String> map = (Map<?, String>) result;
-			firmwareVersion = map.get("FIRMWARE");
+	public String getVersion(HmInterface hmInterface) throws HomematicClientException {
+		Object result = getConnection(hmInterface).getVersion();
+		if (result instanceof String) {
+			return (String) result;
 		}
-		
-		return new ServerId(StringUtils.defaultIfBlank(firmwareVersion, "unknown"));
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, String> getDeviceDescription(HmInterface hmInterface, String address)
+			throws HomematicClientException {
+		Object result = getConnection(hmInterface).getDeviceDescription(address);
+		if (result instanceof Map) {
+			return (Map<String, String>) result;
+		}
+		return null;
 	}
 
 	/**

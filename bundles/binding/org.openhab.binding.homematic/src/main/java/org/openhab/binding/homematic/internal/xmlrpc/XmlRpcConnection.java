@@ -97,9 +97,14 @@ public abstract class XmlRpcConnection {
 		return executeRPC("getAllSystemVariables", null);
 	}
 
-	public Object getDeviceDescription() {
+	public Object getVersion() {
+		log.debug("called getVersion");
+		return executeRPC("getVersion", null);
+	}
+
+	public Object getDeviceDescription(String address) {
 		log.debug("called getDeviceDescription");
-		Object[] params = { "BidCoS-RF" };
+		Object[] params = { address };
 		return executeRPC("getDeviceDescription", params);
 	}
 
