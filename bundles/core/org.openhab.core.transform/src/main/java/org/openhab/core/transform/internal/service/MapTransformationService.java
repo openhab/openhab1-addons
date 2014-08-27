@@ -65,7 +65,7 @@ public class MapTransformationService implements TransformationService {
 		
 		String path = basePath + filename;
 		// eg : /home/sysadmin/projects/openhab/distribution/openhabhome/configurations/transform/test.map
-		String alternatePath = basePath + basename + "-" + locale + "." + extension;
+		String alternatePath = basePath + basename + "_" + locale + "." + extension;
 		// eg : /home/sysadmin/projects/openhab/distribution/openhabhome/configurations/transform/test-en.map
 		
 		File f = new File(alternatePath);
