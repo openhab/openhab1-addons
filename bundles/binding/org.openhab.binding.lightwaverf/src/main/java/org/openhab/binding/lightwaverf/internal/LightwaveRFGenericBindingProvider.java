@@ -11,10 +11,10 @@ package org.openhab.binding.lightwaverf.internal;
 import org.openhab.binding.lightwaverf.LightwaveRFBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -24,6 +24,8 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 1.6
  */
 public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingProvider implements LightwaveRFBindingProvider {
+
+	private static Logger logger = LoggerFactory.getLogger(LightwaveRFGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
@@ -52,13 +54,14 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		super.processBindingConfiguration(context, item, bindingConfig);
 		LightwaveRFBindingConfig config = new LightwaveRFBindingConfig();
 
-		//parse bindingconfig here ...
+		//parse binding config here ...
 		String[] splitConfig = bindingConfig.split(":");
 		if(splitConfig.length != 2){
 			throw new BindingConfigParseException("Error parsing LightwaveRF Binding Config: " + bindingConfig);
 		}
 		config.code = splitConfig[0];
 		config.type = splitConfig[1];
+		logger.info(bindingConfig + "Code["+ config.code + "] Type[" + config.type + "]");
 		addBindingConfig(item, config);
 	}
 

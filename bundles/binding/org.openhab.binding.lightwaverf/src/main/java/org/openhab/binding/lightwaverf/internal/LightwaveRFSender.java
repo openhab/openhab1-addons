@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 
 public class LightwaveRFSender implements Runnable {
 	private static Logger logger = LoggerFactory.getLogger(LightwaveRFSender.class);
-	private static final int LightwavePortIn = 9760; // Port into Lightwave Wifi hub.
-	private static final String BroadcastAddress = "255.255.255.255";  // Broadcast UDP address.
+	private static final int LIGHTWAVE_PORT_IN = 9760; // Port into Lightwave Wifi hub.
+	private static final String BROADCAST_ADDRESS = "255.255.255.255";  // Broadcast UDP address.
 	private final ScheduledExecutorService scheduler;
 	private static final long POLL_TIME = 1;
 	private static final long INITIAL_POLL_DELAY = 0;
@@ -24,7 +24,7 @@ public class LightwaveRFSender implements Runnable {
 	private int messageCount = 0;
 	private DatagramSocket transmitSocket; // Socket for UDP transmission to LWRF port 9760
 	private BlockingQueue<String> queue; // Simple queue to queue up UDP transmission that could be from a polling thread, or direct commands through API  	
-
+	private boolean running = false;
 	/*
 	 * Constructor defaults to logging every 30 seconds
 	 */
@@ -46,15 +46,20 @@ public class LightwaveRFSender implements Runnable {
 	}
 
  	public void start(){
+ 		running = true;
 		scheduler.scheduleWithFixedDelay(this, INITIAL_POLL_DELAY, POLL_TIME, TimeUnit.SECONDS);
  	}
 
+	public void stop() {
+		running = false;
+	} 	
 	/*
 	 * Run thread, pulling off any items from the UDP commands buffer, then send across network
 	 * (non-Javadoc)
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
+		logger.info("Running");
 		try{
 			netsendUDP(queue.take());
 		}
@@ -84,9 +89,9 @@ public class LightwaveRFSender implements Runnable {
 		try {
 			logger.info("Sending command[" + command + "]");
 			byte[] sendData = new byte[1024];
-			sendData = Command.getBytes();
-			InetAddress IPAddress =  InetAddress.getByName(BroadcastAddress);
-			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, LightwavePortIn); //Send broadcast UDP to 9760 port
+			sendData = command.getBytes();
+			InetAddress ipAddress =  InetAddress.getByName(BROADCAST_ADDRESS);
+			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, LIGHTWAVE_PORT_IN); //Send broadcast UDP to 9760 port
 			transmitSocket.send(sendPacket);
 		}
 		catch (IOException e) {
