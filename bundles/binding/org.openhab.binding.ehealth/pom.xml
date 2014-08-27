@@ -8,12 +8,12 @@
 		<version>1.6.0-SNAPSHOT</version>
 	</parent>
 
-	<name>openHAB Swegon ventilation Binding</name>
+	<name>openHAB Libelium eHealth Binding</name>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.ehealth</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.ehealth</bundle.namespace>
-		<deb.name>openhab-addon-binding-sensfloor</deb.name>
+		<deb.name>openhab-addon-binding-ehealth</deb.name>
 		<deb.description>${project.name}</deb.description>
 	</properties>
 
