@@ -37,5 +37,5 @@ Bundle-ClassPath: .,
  lib/jackson-core-asl-1.9.13.jar,
  lib/jackson-mapper-asl-1.9.13.jar,
  lib/json_simple-1.1.jar,
- lib/freeboxos-0.2.0.jar,
- lib/commons-codec-1.6.jar
+ lib/commons-codec-1.6.jar,
+ lib/freeboxos-0.3.1.jar
