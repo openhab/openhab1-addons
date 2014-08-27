@@ -3,8 +3,11 @@ package org.openhab.binding.lightwaverf.internal;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LightwaveRFReceiver implements Runnable {
+	private static Logger logger = LoggerFactory.getLogger(LightwaveRFReceiver.class);
 	private static final int port = 9761;
 	private boolean running = true;
 	private DatagramSocket receiveSocket;
@@ -18,19 +21,20 @@ public class LightwaveRFReceiver implements Runnable {
 		try{
 			receiveSocket = new DatagramSocket(port);
    		} catch (IOException e){
-			e.printStackTrace();
+			logger.error("Error initalising socket", e);
 		}
 	}
 
  	public void stop(){
-		running = true;
+		running = false;
 	}
 
 	public void run() {
 		while(running) {
-			receiveUDP();
+			String message = receiveUDP();
+			logger.info("Message received: " + message);
 		}
-		System.out.println("Stopping LightwaveRFServer");
+		logger.info("Stopping LightwaveRFReceiver");
  	}
 
  	//Network sockets to deal with receiving UDP responses from LightwaveRF box.  UDP response is specific to LightwaveRF
@@ -43,7 +47,7 @@ public class LightwaveRFReceiver implements Runnable {
 			receivedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
  		}
 		catch (IOException e) {
-			e.printStackTrace(); // Display if something went wrong
+			logger.error("Error receiving message", e);
 		}
 		return receivedMessage;
 	}

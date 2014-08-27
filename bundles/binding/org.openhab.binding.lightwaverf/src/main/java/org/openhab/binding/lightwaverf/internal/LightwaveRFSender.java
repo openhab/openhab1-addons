@@ -10,15 +10,18 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LightwaveRFSender implements Runnable {
+	private static Logger logger = LoggerFactory.getLogger(LightwaveRFSender.class);
 	private static final int LightwavePortIn = 9760; // Port into Lightwave Wifi hub.
 	private static final String BroadcastAddress = "255.255.255.255";  // Broadcast UDP address.
 	private final ScheduledExecutorService scheduler;
 	private static final long POLL_TIME = 1;
 	private static final long INITIAL_POLL_DELAY = 0;
 
-	private int MessageCount = 0;
+	private int messageCount = 0;
 	private DatagramSocket transmitSocket; // Socket for UDP transmission to LWRF port 9760
 	private BlockingQueue<String> queue; // Simple queue to queue up UDP transmission that could be from a polling thread, or direct commands through API  	
 
@@ -38,7 +41,7 @@ public class LightwaveRFSender implements Runnable {
 		try{
 			transmitSocket = new DatagramSocket();
 		} catch (IOException e){
-			e.printStackTrace();
+			logger.error("Error initalising socket", e);
 		}
 	}
 
@@ -56,29 +59,30 @@ public class LightwaveRFSender implements Runnable {
 			netsendUDP(queue.take());
 		}
 		catch(InterruptedException e){
-			e.printStackTrace();
+			logger.error("Error waiting on queue", e);
 		}
 	}
 
      	/*
  	 * Add UDP commands to a buffer.
   	 */
-	public void sendUDP(String Command){
+	public void sendUDP(String command){
 		try{
-			queue.put(Command);
+			queue.put(command);
 		}
 		catch(InterruptedException e){
-			e.printStackTrace();
+			logger.error("Error adding command[" + command + "] to queue", e);
 		}
 	}
 
 	/*
 	 * Send the UDP commands from the buffer, waiting a period of time before sending next, so as not to flood UDP socket on LWRF 9760 port
 	 */
-	public void netsendUDP(String Command){
-		Command = MessageCount + Command;
+	public void netsendUDP(String command){
+		command = messageCount + command;
 		incrementMessageCount();
 		try {
+			logger.info("Sending command[" + command + "]");
 			byte[] sendData = new byte[1024];
 			sendData = Command.getBytes();
 			InetAddress IPAddress =  InetAddress.getByName(BroadcastAddress);
@@ -86,7 +90,7 @@ public class LightwaveRFSender implements Runnable {
 			transmitSocket.send(sendPacket);
 		}
 		catch (IOException e) {
-			e.printStackTrace(); // Display if something went wrong
+			logger.error("Error sending command[" + command + "]", e);
 		}
 	}
 
@@ -95,7 +99,7 @@ public class LightwaveRFSender implements Runnable {
 	 * Important for getting corresponding OK acknowledgements from port 9761 tagged with the same counter value
 	 */
 	private void incrementMessageCount(){
-		if (MessageCount <=998) MessageCount++;
-		else MessageCount = 000;
+		if (messageCount <=998) messageCount++;
+		else messageCount = 000;
 	}
 }
