@@ -67,7 +67,7 @@ abstract public class ResourceStateChangeListener {
 	}
 	
 	public void registerItems(){
-		broadcaster.getBroadcasterConfig().setBroadcasterCache(new UUIDBroadcasterCache());
+		//broadcaster.getBroadcasterConfig().setBroadcasterCache(new UUIDBroadcasterCache());
 		
 		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			

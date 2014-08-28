@@ -198,7 +198,7 @@ public class RESTApplication extends Application {
         jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor", "org.atmosphere.interceptor.DefaultHeadersInterceptor,org.atmosphere.interceptor.AndroidAtmosphereInterceptor,org.atmosphere.interceptor.SSEAtmosphereInterceptor,org.atmosphere.interceptor.JSONPAtmosphereInterceptor,org.atmosphere.interceptor.JavaScriptProtocol,org.atmosphere.interceptor.OnDisconnectInterceptor");
 //      The BroadcasterCache is set in ResourceStateChangeListener.registerItems(), because otherwise
 //      it gets somehow overridden by other registered servlets (e.g. the CV-bundle)
-//        jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.atmosphere.cache.UUIDBroadcasterCache");
+        jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.atmosphere.cache.UUIDBroadcasterCache");
         jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "IDLE_DESTROY");
         jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "3000000");
         
