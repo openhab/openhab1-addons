@@ -105,7 +105,6 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 				} else {
 					logger.debug(itemName+" not updated as result was undefined");
 				}
-				
 			}
 		}
 	}
@@ -121,7 +120,15 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 			{
 				logger.debug("Process command "+command+" for "+itemName);
 				BenqProjectorBindingConfig cfg = binding.getConfigForItemName(itemName);
-				sendCommandToProjector(cfg, command);
+				String resp = sendCommandToProjector(cfg, command);
+				State s = cfg.mode.parseResponse(resp);
+				if (!(s instanceof UnDefType))
+				{
+					eventPublisher.postUpdate(itemName, s);
+					logger.debug(itemName+" status is "+s);
+				} else {
+					logger.debug(itemName+" not updated as result was undefined");
+				}
 			}
 		}
 	}
@@ -176,9 +183,16 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 		return cfg.mode.parseResponse(resp);		
 	}
 	
-	private void sendCommandToProjector(BenqProjectorBindingConfig cfg, Command c)
+	/**
+	 * Send the command to the projector via configured transport and return the response string
+	 * @param cfg Item binding configuration
+	 * @param c command to be sent
+	 * @return Response string from projector
+	 */
+	private String sendCommandToProjector(BenqProjectorBindingConfig cfg, Command c)
 	{
 		Boolean cmdSent = false;
+		String response = "";
 		switch (cfg.mode)
 		{
 		case POWER:
@@ -187,12 +201,12 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 			{
 				if ((OnOffType)c == OnOffType.ON)
 				{
-					transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("ON"));
+					response = transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("ON"));
 					cmdSent = true;
 				}
 				else if ((OnOffType)c == OnOffType.OFF)
 				{
-					transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("OFF"));
+					response = transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString("OFF"));
 					cmdSent = true;
 				}
 			}
@@ -244,6 +258,8 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 					cmdSent = true;
 				}
 			}
+			/* get final volume */
+			response = transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandQueryString());
 			break;
 		case LAMP_HOURS:
 			logger.warn("Cannot send command to set lamp hours - not a valid operation!");			
@@ -255,7 +271,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 				String cmd = BenqProjectorSourceMapping.getStringFromMapping(sourceIdx.intValue());
 				if (cmd.isEmpty() == false)
 				{
-					transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString(cmd));
+					response = transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString(cmd));
 					cmdSent = true;
 				}
 			}
@@ -267,7 +283,7 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 				int mappingIdx = BenqProjectorSourceMapping.getMappingFromString(sourceStr.toString());
 				if (mappingIdx != -1) // double check this is a valid mapping
 				{
-					transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString(sourceStr.toString()));
+					response = transport.sendCommandExpectResponse(cfg.mode.getItemModeCommandSetString(sourceStr.toString()));
 					cmdSent = true;
 				}
 			}
@@ -281,5 +297,6 @@ public class BenqProjectorBinding extends AbstractActiveBinding<BenqProjectorBin
 		{
 			logger.error("Unable to convert item command to projector state: Command="+c);
 		}
+		return response;
 	}	
 }

@@ -38,6 +38,11 @@ public enum BenqProjectorSourceMapping {
 		this.index = value;
 	}
 	
+	/**
+	 * Convert string representation of source to integer
+	 * @param s String representation (e.g. hdmi2)
+	 * @return Numerical mapping of source
+	 */
 	public static int getMappingFromString(String s)
 	{
 		for (BenqProjectorSourceMapping mapping : BenqProjectorSourceMapping.values())
@@ -48,12 +53,17 @@ public enum BenqProjectorSourceMapping {
 		return -1;
 	}
 	
+	/**
+	 * Convert integer mapping to string
+	 * @param idx
+	 * @return String representation of source 
+	 */
 	public static String getStringFromMapping(int idx)
 	{
 		if (idx > 0 && idx < BenqProjectorSourceMapping.values().length)
 			return BenqProjectorSourceMapping.values()[idx].commandString;
 		else
 			return "";
-	}
+	}	
 	
 }
