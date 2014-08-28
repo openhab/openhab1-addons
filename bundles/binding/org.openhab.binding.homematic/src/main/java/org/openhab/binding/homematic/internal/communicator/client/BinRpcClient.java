@@ -17,7 +17,6 @@ import org.openhab.binding.homematic.internal.binrpc.BinRpcRequest;
 import org.openhab.binding.homematic.internal.binrpc.BinRpcResponse;
 import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
-import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,19 +28,11 @@ import org.slf4j.LoggerFactory;
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public class BinRpcClient implements RpcClient {
+public class BinRpcClient extends BaseRpcClient {
 	private final static Logger logger = LoggerFactory.getLogger(BinRpcClient.class);
 	private final static boolean TRACE_ENABLED = logger.isTraceEnabled();
 
 	private HomematicConfig config = HomematicContext.getInstance().getConfig();
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void start() throws HomematicClientException {
-		logger.debug("Starting {}", this.getClass().getSimpleName());
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -93,11 +84,26 @@ public class BinRpcClient implements RpcClient {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public ServerId getServerId(HmInterface hmInterface) throws HomematicClientException {
+	public String getVersion(HmInterface hmInterface) throws HomematicClientException {
 		BinRpcRequest request = new BinRpcRequest("getVersion");
 		Object[] result = sendMessage(hmInterface, request);
-		return new ServerId(result[0].toString());
+		return result[0].toString();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, String> getDeviceDescription(HmInterface hmInterface, String address)
+			throws HomematicClientException {
+		BinRpcRequest request = new BinRpcRequest("getDeviceDescription");
+		request.addArg(address);
+		Object[] result = sendMessage(hmInterface, request);
+		if (result != null && result.length > 0 && result[0] instanceof Map) {
+			return (Map<String, String>) result[0];
+		}
+		return null;
 	}
 
 	/**
