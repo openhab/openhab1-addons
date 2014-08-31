@@ -78,6 +78,7 @@ public class HmBatteryTypeProvider {
 		batteries.put("HM-SEC-SCO", new HmBattery(HmBatteryType.AAA, 1));
 		batteries.put("HM-TC-IT-WM-W-EU", new HmBattery(HmBatteryType.AAA, 2));
 		batteries.put("HM-WDS30-TO", new HmBattery(HmBatteryType.AAA, 2));
+		batteries.put("HM-SEC-SCO", new HmBattery(HmBatteryType.AAA, 1));
 
 		batteries.put("HM-Sec-Win", new HmBattery(HmBatteryType.WINMATIC_ACCU, 1));
 	}
