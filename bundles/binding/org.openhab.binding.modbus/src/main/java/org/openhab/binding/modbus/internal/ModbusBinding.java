@@ -116,7 +116,6 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 					}
 
 					State currentState = config.getItemState();
-					logger.info("currentState = " + currentState.toString());
 					if (! newState.equals(currentState))
 						eventPublisher.postUpdate(itemName, newState);
 				}
