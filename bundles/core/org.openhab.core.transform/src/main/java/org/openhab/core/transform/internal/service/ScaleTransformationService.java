@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The implementation of {@link TransformationService} which transforms the
- * input by command line.
+ * input by matching it between limits in a scale file
  * 
  * @author Gaël L'hopital
  * @since 1.6.0
