@@ -1,15 +1,12 @@
 package org.openhab.binding.lightwaverf.internal;
 
 import java.io.IOException;
-import java.lang.InterruptedException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,21 +14,14 @@ public class LightwaveRFSender implements Runnable {
 	private static Logger logger = LoggerFactory.getLogger(LightwaveRFSender.class);
 	private static final int LIGHTWAVE_PORT_IN = 9760; // Port into Lightwave Wifi hub.
 	private static final String BROADCAST_ADDRESS = "255.255.255.255";  // Broadcast UDP address.
-	private final ScheduledExecutorService scheduler;
-	private static final long POLL_TIME = 1;
-	private static final long INITIAL_POLL_DELAY = 0;
-
+	private static final String STOP_MESSAGE = "StopMessage";
 	private int messageCount = 0;
 	private DatagramSocket transmitSocket; // Socket for UDP transmission to LWRF port 9760
 	private BlockingQueue<String> queue; // Simple queue to queue up UDP transmission that could be from a polling thread, or direct commands through API  	
 	private boolean running = false;
-	/*
-	 * Constructor defaults to logging every 30 seconds
-	 */
+	
 	public LightwaveRFSender() {
 		queue = new LinkedBlockingQueue<String>();
-		initialiseSockets();
-		scheduler = Executors.newScheduledThreadPool(1);
 	}
 
 	/*
@@ -47,11 +37,13 @@ public class LightwaveRFSender implements Runnable {
 
  	public void start(){
  		running = true;
-		scheduler.scheduleWithFixedDelay(this, INITIAL_POLL_DELAY, POLL_TIME, TimeUnit.SECONDS);
+		initialiseSockets();
+		new Thread(this).start();
  	}
 
 	public void stop() {
 		running = false;
+		addStopMessage();
 	} 	
 	/*
 	 * Run thread, pulling off any items from the UDP commands buffer, then send across network
@@ -59,16 +51,25 @@ public class LightwaveRFSender implements Runnable {
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
-		logger.info("Running");
-		try{
-			netsendUDP(queue.take());
+		logger.info("LightwaveRF Sender Running");
+		while(running){
+			try{
+				String commandToSend = queue.take();
+				if(commandToSend.equals(STOP_MESSAGE)){
+					netsendUDP(commandToSend);
+				}
+				else{
+					transmitSocket.close();
+				}
+			}
+			catch(InterruptedException e){
+				logger.error("Error waiting on queue", e);
+			}
 		}
-		catch(InterruptedException e){
-			logger.error("Error waiting on queue", e);
-		}
+		logger.info("LightwaveRF Sender Stopping");
 	}
 
-     	/*
+    /**
  	 * Add UDP commands to a buffer.
   	 */
 	public void sendUDP(String command){
@@ -79,11 +80,19 @@ public class LightwaveRFSender implements Runnable {
 			logger.error("Error adding command[" + command + "] to queue", e);
 		}
 	}
+	
+	private void addStopMessage(){
+		try {
+			queue.put(STOP_MESSAGE);
+		} catch (InterruptedException e) {
+			logger.error("Error stoping LightwaveRFSender", e);
+		}
+	}
 
 	/*
 	 * Send the UDP commands from the buffer, waiting a period of time before sending next, so as not to flood UDP socket on LWRF 9760 port
 	 */
-	public void netsendUDP(String command){
+	private void netsendUDP(String command){
 		command = messageCount + command;
 		incrementMessageCount();
 		try {
@@ -99,7 +108,7 @@ public class LightwaveRFSender implements Runnable {
 		}
 	}
 
- 	/*
+ 	/**
 	 * Increment message counter, so different messages have different IDs
 	 * Important for getting corresponding OK acknowledgements from port 9761 tagged with the same counter value
 	 */
