@@ -9,11 +9,13 @@
 package org.openhab.binding.modbus.internal;
 
 import org.openhab.binding.modbus.ModbusBindingProvider;
+import org.openhab.binding.modbus.internal.ModbusGenericBindingProvider.ModbusBindingConfig;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.State;
@@ -78,6 +80,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+		
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		if (bindingConfig != null) {
@@ -86,6 +89,11 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 		}
 		else {
 			logger.warn("bindingConfig is NULL (item=" + item + ") -> processing bindingConfig aborted!");
+		}
+		
+		logger.debug("Item added:" + item);
+		for (String i : bindingConfigs.keySet()) {
+			logger.debug(i);
 		}
 	}
 
@@ -115,7 +123,39 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 	 * @author dbkrasn
 	 * @since 1.1.0
 	 */
+	public interface ModbusStateTranslator {
+		State translate(int value);
+	};
+
 	public class ModbusBindingConfig implements BindingConfig {
+		
+		public class ModbusStateSwitch implements ModbusStateTranslator {
+			@Override
+			public State translate(int value) {
+				if (value > 0) {
+					return OnOffType.ON;
+				}
+				return OnOffType.OFF;
+			}
+		};
+		
+		public class ModbusStateContact implements ModbusStateTranslator {
+			@Override
+			public State translate(int value) {
+				if (value > 0) {
+					return OpenClosedType.CLOSED;
+				}
+				return OpenClosedType.CLOSED;
+			}
+		};
+		
+		public class ModbusStateNumber implements ModbusStateTranslator {
+			@Override
+			public State translate(int value) {
+				return new DecimalType(value);
+			}
+		};
+		
 
 		/**
 		 * readRegister and writeRegister store references to the register in device data space
@@ -130,52 +170,59 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 		/**
 		 * OpenHAB Item to be configured 
 		 */
-		private Item item = null;
+//		private Item item = null;
+//		
+//		public Item getItem() {
+//			return item;
+//		}
 		
-		public Item getItem() {
-			return item;
-		}
+		private State cachedState = UnDefType.UNDEF;
+		private ModbusStateTranslator translator = null;
 		
-		State getItemState() {
-			return item.getState();
+		State getCachedState() {
+			return cachedState;
 		}
 	
-		/**
-		 * Calculates new item state based on the new boolean value, current item state and item class
-		 * Used with item bound to "coil" type slaves
-		 * 
-		 * @param b new boolean value
-		 * @param c class of the current item state
-		 * @param itemClass class of the item
-		 * 
-		 * @return new item state
-		 */
-		protected State translateBoolean2State(boolean b) {
-			
-			Class<? extends State> c = item.getState().getClass();
-			Class<? extends Item> itemClass = item.getClass();
-			
-			if (c == UnDefType.class && itemClass == SwitchItem.class) {
-				return b ? OnOffType.ON : OnOffType.OFF;
-			}
-			else if (c == UnDefType.class && itemClass == ContactItem.class) {
-				return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-			}
-			else if (c == OnOffType.class && itemClass == SwitchItem.class) {
-				return b ? OnOffType.ON : OnOffType.OFF;
-			}
-			else if (c == OpenClosedType.class && itemClass == SwitchItem.class) {
-				return b ? OnOffType.ON : OnOffType.OFF;
-			}
-			else if (c == OnOffType.class && itemClass == ContactItem.class) {
-				return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-			}
-			else if (c == OpenClosedType.class && itemClass == ContactItem.class) {
-				return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-			} else {
-				return UnDefType.UNDEF;
-			}
+		void setCachedState(State state) {
+			cachedState = state;
 		}
+	
+//		/**
+//		 * Calculates new item state based on the new boolean value, current item state and item class
+//		 * Used with item bound to "coil" type slaves
+//		 * 
+//		 * @param b new boolean value
+//		 * @param c class of the current item state
+//		 * @param itemClass class of the item
+//		 * 
+//		 * @return new item state
+//		 */
+//		protected State translateBoolean2State(boolean b) {
+//			
+//			Class<? extends State> c = item.getState().getClass();
+//			Class<? extends Item> itemClass = item.getClass();
+//			
+//			if (c == UnDefType.class && itemClass == SwitchItem.class) {
+//				return b ? OnOffType.ON : OnOffType.OFF;
+//			}
+//			else if (c == UnDefType.class && itemClass == ContactItem.class) {
+//				return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
+//			}
+//			else if (c == OnOffType.class && itemClass == SwitchItem.class) {
+//				return b ? OnOffType.ON : OnOffType.OFF;
+//			}
+//			else if (c == OpenClosedType.class && itemClass == SwitchItem.class) {
+//				return b ? OnOffType.ON : OnOffType.OFF;
+//			}
+//			else if (c == OnOffType.class && itemClass == ContactItem.class) {
+//				return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
+//			}
+//			else if (c == OpenClosedType.class && itemClass == ContactItem.class) {
+//				return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
+//			} else {
+//				return UnDefType.UNDEF;
+//			}
+//		}
 
 		/**
 		 * Constructor for config object
@@ -184,7 +231,18 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 		 * @throws BindingConfigParseException if 
 		 */
 		ModbusBindingConfig(Item item, String config) throws BindingConfigParseException {
-			this.item = item;
+			
+			logger.debug("Creating ModbusBindingConfig for " + item + "->" + System.identityHashCode(item));
+			
+			if (item instanceof SwitchItem) {
+				translator = new ModbusStateSwitch();
+			} else if (item instanceof ContactItem) {
+				translator = new ModbusStateContact();
+			} else if (item instanceof NumberItem) {
+				translator = new ModbusStateNumber();
+			} else {
+				throw new BindingConfigParseException("Invalid item type:" + item.getClass().getName());
+			}
 			
 			try {
 				String [] items = config.split(":");
@@ -218,12 +276,12 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 				throw new BindingConfigParseException("Register references should be either :X or :<X:>Y");			
 			}
 		}
+		
+		public State getState(int value) {
+			return translator.translate(value);
+		}
 
 	}
 
-	@Override
-	public void removeConfigurations(String context) {
-		super.removeConfigurations(context);
-	}
 
 }
