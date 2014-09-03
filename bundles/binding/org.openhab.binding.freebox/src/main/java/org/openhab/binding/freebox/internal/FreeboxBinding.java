@@ -37,6 +37,8 @@ import org.matmaul.freeboxos.connection.ConnectionStatus;
 import org.matmaul.freeboxos.system.SystemConfiguration;
 import org.matmaul.freeboxos.call.CallEntry;
 import org.matmaul.freeboxos.wifi.*;
+import org.matmaul.freeboxos.lcd.*;
+import org.matmaul.freeboxos.connection.xDslStatus;
 
 /**
  * Freebox binding for openHAB
@@ -64,6 +66,8 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 	private static SystemConfiguration sc;
 	private static ConnectionStatus cs;
 	private static WifiGlobalConfig wc;
+	private static LCDConfig lcd;
+	private static xDslStatus xdsl;
 
 	/** 
 	 * the refresh interval which is used to poll values from the Freebox
@@ -133,6 +137,9 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 			sc = fbClient.getSystemManager().getConfiguration();
 			cs = fbClient.getConnectionManager().getStatus();
 			wc = fbClient.getWifiManager().getGlobalConfig();
+			lcd = fbClient.getLCDManager().getLCDConfig();
+			xdsl = fbClient.getConnectionManager().getxDslStatus();
+			
 			List<CallEntry> appels = fbClient.getCallManager().getCallEntries();
 	
 			for (FreeboxBindingProvider provider : providers) {
@@ -190,6 +197,14 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 							break;
 						case WIFISTATUS : setItemValue(bindingConfig.item,wc.getEnabled());
 							break;
+						case LCDBRIGHTNESS : setItemValue(bindingConfig.item,(long)lcd.getBrightness());
+							break;
+						case LCDORIENTATION : setItemValue(bindingConfig.item,(long)lcd.getOrientation());
+							break;
+						case LCDFORCED : setItemValue(bindingConfig.item,lcd.getOrientationForced());
+							break;
+						case XDSLSTATUS : setItemValue(bindingConfig.item,xdsl.getStatus());
+							break;
 						default:
 							break;
 					}
@@ -204,27 +219,45 @@ public class FreeboxBinding extends AbstractActiveBinding<FreeboxBindingProvider
 	/**
 	 * @{inheritDoc}
 	 */
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
 		for (FreeboxBindingProvider provider : providers) {
 			FreeboxBindingConfig config = provider.getConfig(itemName);
 			if (config == null) continue;
-			
-			if (config.commandType == CommandType.WIFISTATUS) {
-				try {
-					wc = fbClient.getWifiManager().getGlobalConfig();
-					wc.setEnabled(command.equals(OnOffType.ON) ? true : false);						
-					fbClient.getWifiManager().setGlobalConfig(wc);
-				} catch (FreeboxException e) {
-					logger.error(e.toString());
+			try {
+				switch (config.commandType) {
+					case LCDBRIGHTNESS : if (command instanceof DecimalType) {
+						lcd = fbClient.getLCDManager().getLCDConfig();
+						int valeur = ((DecimalType)command).intValue();						
+						lcd.setBrightness(new Integer(valeur));
+						fbClient.getLCDManager().setLCDConfig(lcd);
+						}
+						break;
+					case LCDORIENTATION : if (command instanceof DecimalType) {
+						lcd = fbClient.getLCDManager().getLCDConfig();
+						int valeur = ((DecimalType)command).intValue();						
+						lcd.setOrientation(new Integer(valeur));
+						lcd.setOrientationForced(true);
+						fbClient.getLCDManager().setLCDConfig(lcd);
+						}
+						break;
+					case LCDFORCED :
+						lcd = fbClient.getLCDManager().getLCDConfig();
+						lcd.setOrientationForced(command.equals(OnOffType.ON) ? true : false);
+						fbClient.getLCDManager().setLCDConfig(lcd);
+						break;
+					case WIFISTATUS :
+						wc = fbClient.getWifiManager().getGlobalConfig();
+						wc.setEnabled(command.equals(OnOffType.ON) ? true : false);						
+						fbClient.getWifiManager().setGlobalConfig(wc);
+						break;
+					case REBOOT : 
+						fbClient.getSystemManager().Reboot();
+						break;
 				}
-			}
-			if (config.commandType == CommandType.REBOOT) {
-				try {
-					fbClient.getSystemManager().Reboot();
-				} catch (FreeboxException e) {
-					logger.error(e.toString());
-				}
+			} catch (Exception e) {
+				logger.error(e.toString());
 			}
 		}
 	}

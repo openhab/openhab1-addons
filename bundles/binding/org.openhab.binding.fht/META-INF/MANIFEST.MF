@@ -25,6 +25,7 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.event,
  org.quartz,
  org.quartz.impl,
+ org.quartz.utils,
  org.slf4j
 Export-Package: org.openhab.binding.fht
 Bundle-DocURL: http://www.openhab.org

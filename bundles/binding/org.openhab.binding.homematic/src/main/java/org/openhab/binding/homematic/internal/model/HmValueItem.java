@@ -61,6 +61,13 @@ public class HmValueItem {
 	}
 
 	/**
+	 * Sets the name.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	/**
 	 * Returns the value.
 	 */
 	public Object getValue() {
@@ -145,6 +152,13 @@ public class HmValueItem {
 	}
 
 	/**
+	 * True if the valueItem is writeable.
+	 */
+	public void setWriteable(boolean writeable) {
+		this.writeable = writeable;
+	}
+	
+	/**
 	 * Validates the values after unmarshaling or setting a new value.
 	 */
 	protected void validate() {
@@ -188,6 +202,13 @@ public class HmValueItem {
 	 */
 	public Integer getValueType() {
 		return valueType;
+	}
+	
+	/**
+	 * Sets the valueType.
+	 */
+	public void setValueType(Integer valueType) {
+		this.valueType = valueType;
 	}
 	
 	/**

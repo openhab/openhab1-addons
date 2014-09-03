@@ -245,7 +245,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				
 				// If we can't find the product, then try and find just the
 				// manufacturer
-				if (node.getManufacturer() == 0) {
+				if (node.getManufacturer() == Integer.MAX_VALUE) {
 				} else if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
 					if (database.FindManufacturer(node.getManufacturer()) == false) {
 						record.value = "Manufacturer:" + node.getManufacturer() + " [ID:"
@@ -332,50 +332,52 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				record.value = node.getLocation();
 				records.add(record);
 
-				if (database.FindManufacturer(node.getManufacturer()) == false) {
-					record = new OpenHABConfigurationRecord(domain, "ManufacturerID", "Manufacturer ID", true);
-					record.value = Integer.toHexString(node.getManufacturer());
-					records.add(record);
-				} else {
-					record = new OpenHABConfigurationRecord(domain, "Manufacturer", "Manufacturer", true);
-					record.value = database.getManufacturerName();
-					records.add(record);
-				}
-
-				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
-					record = new OpenHABConfigurationRecord(domain, "DeviceId", "Device ID", true);
-					record.value = Integer.toHexString(node.getDeviceId());
-					records.add(record);
-
-					record = new OpenHABConfigurationRecord(domain, "DeviceType", "Device Type", true);
-					record.value = Integer.toHexString(node.getDeviceType());
-					records.add(record);
-					
-					record = new OpenHABConfigurationRecord(domain, "Version", "Version", true);
-					record.value = Integer.toString(node.getVersion());
-					records.add(record);
-				} else {
-					record = new OpenHABConfigurationRecord(domain, "Product", "Product", true);
-					record.value = database.getProductName();
-					records.add(record);
-
-					// Add links to configuration if the node supports the various command classes
-					if(database.doesProductImplementCommandClass(ZWaveCommandClass.CommandClass.CONFIGURATION.getKey()) == true) {
-						record = new OpenHABConfigurationRecord(domain + "parameters/", "Configuration Parameters");
-						record.addAction("Refresh", "Refresh");
+				if(node.getManufacturer() != Integer.MAX_VALUE) {
+					if (database.FindManufacturer(node.getManufacturer()) == false) {
+						record = new OpenHABConfigurationRecord(domain, "ManufacturerID", "Manufacturer ID", true);
+						record.value = Integer.toHexString(node.getManufacturer());
+						records.add(record);
+					} else {
+						record = new OpenHABConfigurationRecord(domain, "Manufacturer", "Manufacturer", true);
+						record.value = database.getManufacturerName();
 						records.add(record);
 					}
-
-					if(database.doesProductImplementCommandClass(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey()) == true) {
-						record = new OpenHABConfigurationRecord(domain + "associations/", "Association Groups");
-						record.addAction("Refresh", "Refresh");
+	
+					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+						record = new OpenHABConfigurationRecord(domain, "DeviceId", "Device ID", true);
+						record.value = Integer.toHexString(node.getDeviceId());
 						records.add(record);
-					}
-
-					if(database.doesProductImplementCommandClass(ZWaveCommandClass.CommandClass.WAKE_UP.getKey()) == true) {
-						record = new OpenHABConfigurationRecord(domain + "wakeup/", "Wakeup Period");
-						record.addAction("Refresh", "Refresh");
+	
+						record = new OpenHABConfigurationRecord(domain, "DeviceType", "Device Type", true);
+						record.value = Integer.toHexString(node.getDeviceType());
 						records.add(record);
+						
+						record = new OpenHABConfigurationRecord(domain, "Version", "Version", true);
+						record.value = Integer.toString(node.getVersion());
+						records.add(record);
+					} else {
+						record = new OpenHABConfigurationRecord(domain, "Product", "Product", true);
+						record.value = database.getProductName();
+						records.add(record);
+	
+						// Add links to configuration if the node supports the various command classes
+						if(database.doesProductImplementCommandClass(ZWaveCommandClass.CommandClass.CONFIGURATION.getKey()) == true) {
+							record = new OpenHABConfigurationRecord(domain + "parameters/", "Configuration Parameters");
+							record.addAction("Refresh", "Refresh");
+							records.add(record);
+						}
+	
+						if(database.doesProductImplementCommandClass(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey()) == true) {
+							record = new OpenHABConfigurationRecord(domain + "associations/", "Association Groups");
+							record.addAction("Refresh", "Refresh");
+							records.add(record);
+						}
+	
+						if(database.doesProductImplementCommandClass(ZWaveCommandClass.CommandClass.WAKE_UP.getKey()) == true) {
+							record = new OpenHABConfigurationRecord(domain + "wakeup/", "Wakeup Period");
+							record.addAction("Refresh", "Refresh");
+							records.add(record);
+						}
 					}
 				}
 

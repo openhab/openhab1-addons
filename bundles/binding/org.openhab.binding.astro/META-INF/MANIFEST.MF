@@ -11,6 +11,7 @@ Bundle-Description: This is the Astro binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.lang,
  org.apache.commons.lang.builder,
+ org.apache.commons.lang.time,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
@@ -31,8 +32,6 @@ Import-Package: org.apache.commons.lang,
 Bundle-SymbolicName: org.openhab.binding.astro
 Bundle-DocURL: http://www.openhab.org
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .,
- lib/astrolib-1.1.5ws.jar
-Export-Package: org.openhab.binding.astro
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

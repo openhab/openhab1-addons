@@ -68,6 +68,8 @@ public class Driver {
 	public void addMsgListener(MsgListener listener, String port) {
 		if (m_ports.keySet().contains(port)) {
 			m_ports.get(port).addListener(listener);
+		} else {
+			logger.error("referencing unknown port {}!", port);
 		}
 	}
 	

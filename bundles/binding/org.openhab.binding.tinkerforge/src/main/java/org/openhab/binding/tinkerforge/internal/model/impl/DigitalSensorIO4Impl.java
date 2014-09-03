@@ -40,10 +40,10 @@ import com.tinkerforge.TimeoutException;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Digital Sensor IO4</b></em>'.
- * <!-- end-user-doc -->
- * 
+
  * @author Theo Weiss
  * @since 1.3.0
+ * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>

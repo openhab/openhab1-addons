@@ -63,11 +63,11 @@ public class ZWaveNode {
 	private String location;
 	
 	@XStreamConverter(HexToIntegerConverter.class)
-	private int manufacturer;
+	private int manufacturer = Integer.MAX_VALUE;
 	@XStreamConverter(HexToIntegerConverter.class)
-	private int deviceId;
+	private int deviceId = Integer.MAX_VALUE;
 	@XStreamConverter(HexToIntegerConverter.class)
-	private int deviceType;
+	private int deviceType = Integer.MAX_VALUE;
 	
 	private boolean listening;			 // i.e. sleeping
 	private boolean frequentlyListening; 

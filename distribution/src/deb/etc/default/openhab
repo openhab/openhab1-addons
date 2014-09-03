@@ -1,7 +1,29 @@
+# Execution account and group. The user account should be member of group
+# "openhab" if it's different than "root" and "openhab".
+# Note that some bindings may require "root" access to the system.
+# Default value if isn't specified - "root:root".
 USER_AND_GROUP=openhab:openhab
+
+# Web server's listening ports (plain and SSL). Note that if execution account
+# is different than "root" the port numbers should be greater than 1024.
+# Default value if isn't specified - none, must be specified.
 HTTP_PORT=8080
 HTTPS_PORT=8443
+
+# Console's listening port, same restriction as this for web server's ports.
+# Default value if isn't specified - none, must be specified.
 TELNET_PORT=5555
+
+# Extra arguments passed to Java
 JAVA_ARGS=
+
+# Extra arguments passed to openHAB
 OPENHAB_ARGS=
+
+# Use non-default Java VM.
+# Default value if isn't specified - system default Java VM.
 #OPENHAB_JAVA=/usr/bin/java
+
+# To enable debugging set to "yes" (case insensitive).
+# Default value if isn't specified - debugging is disabled. 
+DEBUG=no

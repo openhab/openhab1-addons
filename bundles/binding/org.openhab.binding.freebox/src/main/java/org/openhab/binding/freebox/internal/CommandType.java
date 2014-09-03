@@ -32,8 +32,13 @@ public enum CommandType {
 	CALLNUMBER("call_number"),
 	CALLDURATION("call_duration"),
 	CALLTIMESTAMP("call_timestamp"),
-	CALLSTATUS("call_status");
-	
+	CALLSTATUS("call_status"),
+	// xDSL Status
+	XDSLSTATUS("xdsl_status"),
+	// LCD Configuration
+	LCDBRIGHTNESS("lcd_brightness"),
+	LCDORIENTATION("lcd_orientation"),
+	LCDFORCED("lcd_forced");
 	
 
 	String command;
