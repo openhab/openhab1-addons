@@ -59,6 +59,7 @@ public class ZWaveConverterHandler {
 
 		// add converters here
 		converters.put(CommandClass.THERMOSTAT_SETPOINT, new ZWaveThermostatSetpointConverter(controller, eventPublisher));
+		converters.put(CommandClass.THERMOSTAT_MODE, new ZWaveThermostatModeConverter(controller, eventPublisher));
 		converters.put(CommandClass.BATTERY, new ZWaveBatteryConverter(controller, eventPublisher));
 		converters.put(CommandClass.SWITCH_BINARY, new ZWaveBinarySwitchConverter(controller, eventPublisher));
 		converters.put(CommandClass.SWITCH_MULTILEVEL, new ZWaveMultiLevelSwitchConverter(controller, eventPublisher));
