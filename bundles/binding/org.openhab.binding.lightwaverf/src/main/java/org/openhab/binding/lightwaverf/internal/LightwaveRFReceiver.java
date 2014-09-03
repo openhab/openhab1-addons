@@ -1,9 +1,9 @@
 package org.openhab.binding.lightwaverf.internal;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,7 @@ public class LightwaveRFReceiver implements Runnable {
 	private static Logger logger = LoggerFactory.getLogger(LightwaveRFReceiver.class);
 	private static final int PORT = 9760;
 	
-	private final CopyOnWriteArrayList<LightwaveRFMessageListener> listeners = new CopyOnWriteArrayList<>();
+	private final CopyOnWriteArrayList<LightwaveRFMessageListener> listeners = new CopyOnWriteArrayList<LightwaveRFMessageListener>();
 
 	private boolean running = true;
 	private DatagramSocket receiveSocket;
