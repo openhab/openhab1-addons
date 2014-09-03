@@ -97,11 +97,6 @@ public abstract class XmlRpcConnection {
 		return executeRPC("getAllSystemVariables", null);
 	}
 
-	public Object getVersion() {
-		log.debug("called getVersion");
-		return executeRPC("getVersion", null);
-	}
-
 	public Object getDeviceDescription(String address) {
 		log.debug("called getDeviceDescription");
 		Object[] params = { address };
