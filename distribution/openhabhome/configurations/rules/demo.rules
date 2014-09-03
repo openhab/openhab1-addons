@@ -169,5 +169,12 @@ rule "Records last weather update time"
 when
   Item Weather_Temperature received update
 then
+	println("**********")	
+	if (Weather_Temperature.lastUpdate != null) {
+
+	println("*** Last update of Weather_Temperature :" + Weather_Temperature.lastUpdate)
+}
+	println("**********")	
+
   postUpdate(Weather_LastUpdate, new DateTimeType())
 end
