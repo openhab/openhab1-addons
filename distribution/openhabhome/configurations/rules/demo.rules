@@ -160,3 +160,18 @@ when
 then
   postUpdate(Weather_LastUpdate, new DateTimeType())
 end
+
+/** 
+ * This rule will be used to test Scale transformation service
+ */
+rule "Compute humidex"
+when Item Temperature_FF_Office changed
+then
+	var Number T = Temperature_FF_Office.state as DecimalType
+	// fixed arbitrary humidity level for the needs of testing
+	var Number H = 76	
+	var Number x = 7.5 * T/(237.7 + T)
+	var Number e = 6.112 * Math::pow(10, x.doubleValue) * H/100
+	var Number humidex = T + (new Double(5) / new Double(9)) * (e - 10)
+	Humidex.postUpdate(humidex)
+end
