@@ -244,7 +244,7 @@ public class ZWaveThermostatModeCommandClass extends ZWaveCommandClass
 		if(modeTypes.isEmpty())
 			return this.getSupportedMessage();
 		
-		if(modeTypes.contains(ModeType.getModeType(value))){
+		if(!modeTypes.contains(ModeType.getModeType(value))){
 			logger.error("Unsupported mode type {} for node {}", value, this.getNode().getNodeId());
 			return null;
 		}

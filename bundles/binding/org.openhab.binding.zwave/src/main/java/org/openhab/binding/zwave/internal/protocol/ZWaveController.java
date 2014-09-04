@@ -403,7 +403,8 @@ public class ZWaveController {
 	 */
 	public void notifyEventListeners(ZWaveEvent event) {
 		logger.debug("Notifying event listeners");
-		for (ZWaveEventListener listener : this.zwaveEventListeners) {
+		ArrayList<ZWaveEventListener> copy = new ArrayList<ZWaveEventListener>(this.zwaveEventListeners);
+		for (ZWaveEventListener listener : copy) {
 			logger.trace("Notifying {}", listener.toString());
 			listener.ZWaveIncomingEvent(event);
 		}
