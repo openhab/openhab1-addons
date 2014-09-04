@@ -9,7 +9,7 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.core.transform.processor.xpath">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.core.transform.processor.jsonpath">
    <implementation class="org.openhab.core.transform.internal.service.JSonPathTransformationService"/>
    
    <service>
