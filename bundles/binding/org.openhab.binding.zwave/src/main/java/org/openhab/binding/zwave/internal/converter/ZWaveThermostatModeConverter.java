@@ -1,5 +1,6 @@
 package org.openhab.binding.zwave.internal.converter;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.converter.command.DecimalCommandConverter;
@@ -86,12 +87,16 @@ public class ZWaveThermostatModeConverter extends
 			return;
 		}
 		
-		SerialMessage serialMessage = node.encapsulate(commandClass.setValueMessage((Integer)converter.convertFromCommandToValue(item, command)), commandClass, endpointId);
+		logger.debug("receiveCommand with converter {} ", converter.getClass());
 		
+		SerialMessage serialMessage = node.encapsulate(commandClass.setValueMessage(((BigDecimal)converter.convertFromCommandToValue(item, command)).intValue()), commandClass, endpointId);
+		logger.debug("receiveCommand sending message {} ", serialMessage); 
 		if (serialMessage == null) {
 			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
 			return;
 		}
+		
+		
 		
 		this.getController().sendData(serialMessage);
 		
