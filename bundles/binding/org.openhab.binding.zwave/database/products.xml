@@ -49,6 +49,24 @@
 			<Label lang="en">Battery Switch</Label>
 			<ConfigFile>cooper/9500.xml</ConfigFile>
 		</Product>
+                <Product>
+                        <Reference>
+                                <Type>4449</Type>
+                                <Id>0101</Id>
+                        </Reference>
+                        <Model>RF9540-N</Model>
+                        <Label lang="en">All Load Dimmer Light Switch</Label>
+                        <ConfigFile>cooper/rf9540n.xml</ConfigFile>
+                </Product>
+                <Product>
+                        <Reference>
+                                <Type>534C</Type>
+                                <Id>0000</Id>
+                        </Reference>
+                        <Model>RF9501</Model>
+                        <Label lang="en">15A Light Switch</Label>
+                        <ConfigFile>cooper/rf9501.xml</ConfigFile>
+                </Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0005</Id>
