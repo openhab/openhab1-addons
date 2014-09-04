@@ -160,3 +160,13 @@ when
 then
   postUpdate(Weather_LastUpdate, new DateTimeType())
 end
+
+// Test JSONPath
+rule "Test JSONPath"
+when
+	Time cron "0 * * * * ?"
+then
+	var String json = '{"store":{"book":[{"category":"reference","author":"Nigel Rees","title": "Sayings of the Century", "price": 8.95  } ],  "bicycle": { "color": "red",  "price": 19.95} }}' 
+    var test = transform("JSONPATH","$.store.book[0].author",json)
+    println(test)
+end
