@@ -447,13 +447,13 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 			// IRTrans devices return a string starting with RCV_HEX each time it captures an
 			// infrared sequence from a remote control
 			if(message.contains("RCV_HEX")){
-				parseHexMessage(itemName,message);
+				parseHexMessage(itemName,message, aCommand);
 			}
 
 			// IRTrans devices return a string starting with RCV_COM each time it captures an
 			// infrared sequence from a remote control that is stored in the device's internal dB
 			if(message.contains("RCV_COM")){
-				parseIRDBMessage(itemName,message);
+				parseIRDBMessage(itemName,message, aCommand);
 			}
 		} else {
 			logger.warn("Received some non-compliant garbage ({})- Parsing is skipped",byteBuffer.toString());
@@ -468,8 +468,10 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 	 *            the qualified items
 	 * @param message
 	 *            the message
+	 * @param ohCommand
+	 * 			  the openHAB command
 	 */
-	protected void parseHexMessage(String itemName,String message){
+	protected void parseHexMessage(String itemName,String message, Command ohCommand){
 
 		Pattern HEX_PATTERN = Pattern.compile("RCV_HEX (.*)");
 		Matcher matcher = HEX_PATTERN.matcher(message);
@@ -480,7 +482,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 			IrCommand theCommand =  getIrCommand(command);
 
 			if(theCommand != null ) {
-				parseDecodedCommand(itemName,theCommand);
+				parseDecodedCommand(itemName,theCommand,ohCommand);
 			} else {
 				logger.error("{} does not match any know IRtrans command",command);
 			}
@@ -491,7 +493,7 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 	}
 
 
-	protected void parseIRDBMessage(String itemName,String message){
+	protected void parseIRDBMessage(String itemName,String message, Command ohCommand){
 
 		Pattern IRDB_PATTERN = Pattern.compile("RCV_COM (.*),(.*),(.*),(.*)");
 		Matcher matcher = IRDB_PATTERN.matcher(message);
@@ -502,14 +504,14 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 			theCommand.remote = matcher.group(1);
 			theCommand.command = matcher.group(2);		
 
-			parseDecodedCommand(itemName,theCommand);
+			parseDecodedCommand(itemName,theCommand,ohCommand);
 
 		} else {
-			logger.error("{} does not match the IRDB IRtrans message formet ({})",message,matcher.pattern());
+			logger.error("{} does not match the IRDB IRtrans message format ({})",message,matcher.pattern());
 		}
 	}
 
-	protected void parseDecodedCommand(String itemName, IrCommand theCommand) {
+	protected void parseDecodedCommand(String itemName, IrCommand theCommand, Command ohCommand) {
 
 		if(theCommand != null) {
 			//traverse the providers, for each provider, check each binding if it matches theCommand
@@ -525,25 +527,27 @@ public class IRtransBinding extends AbstractSocketChannelBinding<IRtransBindingP
 						providerCommand.remote = provider.getRemote(itemName,aCommand);
 						providerCommand.command = provider.getIrCommand(itemName, aCommand);
 
-						if(providerCommand.matches(theCommand)){
+						if(aCommand==ohCommand) {
+							if(providerCommand.matches(theCommand)){
 
-							List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName,aCommand);
-							State newState = null;
+								List<Class<? extends State>> stateTypeList = provider.getAcceptedDataTypes(itemName,aCommand);
+								State newState = null;
 
-							if(aCommand instanceof DecimalType) {
-								newState = createStateFromString(stateTypeList,theCommand.remote+","+theCommand.command);
-							} else {
-								newState = createStateFromString(stateTypeList,aCommand.toString());
+								if(aCommand instanceof DecimalType) {
+									newState = createStateFromString(stateTypeList,theCommand.remote+","+theCommand.command);
+								} else {
+									newState = createStateFromString(stateTypeList,aCommand.toString());
+								}
+
+								if(newState != null) {
+									eventPublisher.postUpdate(itemName, newState);							        						
+								} else {
+									logger.warn("Can not create an Item State to match command {} on item {}  ",aCommand,itemName);
+								}
 							}
-
-							if(newState != null) {
-								eventPublisher.postUpdate(itemName, newState);							        						
-							} else {
-								logger.warn("Can not create an Item State to match command {} on item {}  ",aCommand,itemName);
+							else {
+								logger.info("The IRtrans command '{},{}' does not match the command '{}' of the binding configuration for item '{}'",new Object[] {theCommand.remote,theCommand.command,ohCommand,itemName});
 							}
-						}
-						else {
-							logger.warn("The IRtrans command does not match the command of the binding configuration for {}",itemName);
 						}
 					}
 				}

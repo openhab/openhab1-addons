@@ -102,6 +102,12 @@ public abstract class XmlRpcConnection {
 		return executeRPC("getVersion", null);
 	}
 
+	public Object getDeviceDescription(String address) {
+		log.debug("called getDeviceDescription");
+		Object[] params = { address };
+		return executeRPC("getDeviceDescription", params);
+	}
+
 	public void executeProgram(String programName) {
 		log.debug("called executeProgram");
 		Object[] params = { programName };
