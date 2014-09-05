@@ -585,6 +585,8 @@ public class XbmcConnector {
 					continue;
 				} else if (property.equals("Player.Label")) {
 					properties.add(property);
+				} else if (property.equals("Player.Title")) {
+					properties.add(property);
 				}
 			}
 		} else {
