@@ -30,8 +30,12 @@ import org.openhab.binding.xbmc.rpc.calls.PlayerGetItem;
 import org.openhab.binding.xbmc.rpc.calls.PlayerOpen;
 import org.openhab.binding.xbmc.rpc.calls.PlayerPlayPause;
 import org.openhab.binding.xbmc.rpc.calls.PlayerStop;
+import org.openhab.binding.xbmc.rpc.calls.SystemHibernate;
+import org.openhab.binding.xbmc.rpc.calls.SystemReboot;
 import org.openhab.binding.xbmc.rpc.calls.SystemShutdown;
+import org.openhab.binding.xbmc.rpc.calls.SystemSuspend;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 
@@ -186,6 +190,7 @@ public class XbmcConnector {
 			connected = true;
 			requestApplicationUpdate();
 			updatePlayerStatus();
+			updateProperty("System.State", OnOffType.ON);
 		}
 		
 		@Override
@@ -204,6 +209,7 @@ public class XbmcConnector {
 			logger.warn("[{}]: Websocket closed", xbmc.getHostname());
 			webSocket = null;
 			connected = false;
+			updateProperty("System.State", OnOffType.OFF);
 		}
 		
 		@Override
@@ -231,9 +237,10 @@ public class XbmcConnector {
 					String method = (String)json.get("method");
 					if (method.startsWith("Player.On")) {
 						processPlayerStateChanged(method, json);
-					} 
-					else if (method.startsWith("Application.On")) {
+					} else if (method.startsWith("Application.On")) {
 						processApplicationStateChanged(method, json);
+					} else if (method.startsWith("System.On")) {
+						processSystemStateChanged(method, json);
 					}
 				}
 			} catch (Exception e) {
@@ -346,6 +353,21 @@ public class XbmcConnector {
 		shutdown.execute();
 	}
 
+	public void systemSuspend() {
+		final SystemSuspend suspend = new SystemSuspend(client, httpUri);
+		suspend.execute();
+	}
+
+	public void systemHibernate() {
+		final SystemHibernate hibernate = new SystemHibernate(client, httpUri);
+		hibernate.execute();
+	}
+
+	public void systemReboot() {
+		final SystemReboot reboot = new SystemReboot(client, httpUri);
+		reboot.execute();
+	}
+
 	public void playerOpen(String file) {
 		final PlayerOpen playeropen = new PlayerOpen(client, httpUri);		
 		playeropen.setFile(file);
@@ -431,6 +453,15 @@ public class XbmcConnector {
 			this.volume = new BigDecimal(volume.intValue());
 		}
 
+	}
+
+	private void processSystemStateChanged(String method, Map<String, Object> json) {
+		if ("System.OnQuit".equals(method) ||
+				"System.OnSleep".equals(method) ||
+				"System.OnRestart".equals(method) 
+				) {
+			updateProperty("System.State", OnOffType.OFF);
+		} 	
 	}
 
 	private void updateState(State state) {
@@ -556,6 +587,17 @@ public class XbmcConnector {
 			}
 		}
 	}
+
+	private void updateProperty(String property, OnOffType value) {
+		value = (value == null ?  OnOffType.OFF : value);
+		
+		for (Entry<String, String> e : watches.entrySet()) {
+			if (property.equals(e.getValue())) {
+				eventPublisher.postUpdate(e.getKey(), value);
+			}
+		}
+	}
+
 
 	/**
 	 * get a distinct list of player properties we have items configured for
