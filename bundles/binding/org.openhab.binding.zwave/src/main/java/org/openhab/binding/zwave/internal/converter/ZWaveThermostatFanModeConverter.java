@@ -10,7 +10,7 @@ import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveThermostatModeCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveThermostatFanModeCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -24,13 +24,13 @@ import org.slf4j.LoggerFactory;
  *  @author Dan Cunningham
  *	@since 1.6.0
  */
-public class ZWaveThermostatModeConverter extends
-		ZWaveCommandClassConverter<ZWaveThermostatModeCommandClass> {
+public class ZWaveThermostatFanModeConverter extends
+		ZWaveCommandClassConverter<ZWaveThermostatFanModeCommandClass> {
 
-	private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatModeConverter.class);
+	private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatFanModeConverter.class);
 	private static final int REFRESH_INTERVAL = 0; // refresh interval in seconds for the thermostat setpoint;
 
-	public ZWaveThermostatModeConverter(ZWaveController controller,
+	public ZWaveThermostatFanModeConverter(ZWaveController controller,
 			EventPublisher eventPublisher) {
 		super(controller, eventPublisher);
 		this.addCommandConverter(new DecimalCommandConverter());
@@ -42,7 +42,7 @@ public class ZWaveThermostatModeConverter extends
 	 */
 	@Override
 	void executeRefresh(ZWaveNode node,
-			ZWaveThermostatModeCommandClass commandClass, int endpointId,
+			ZWaveThermostatFanModeCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
 		logger.debug("Generating poll message for {} for node {} endpoint {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
 		SerialMessage serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
@@ -78,7 +78,7 @@ public class ZWaveThermostatModeConverter extends
 	 */
 	@Override
 	void receiveCommand(Item item, Command command, ZWaveNode node,
-			ZWaveThermostatModeCommandClass commandClass, int endpointId,
+			ZWaveThermostatFanModeCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
 		ZWaveCommandConverter<?,?> converter = this.getCommandConverter(command.getClass());
 		
@@ -95,7 +95,6 @@ public class ZWaveThermostatModeConverter extends
 			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
 			return;
 		}
-		
 		
 		this.getController().sendData(serialMessage);
 		

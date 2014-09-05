@@ -31,32 +31,32 @@ import org.slf4j.LoggerFactory;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
- * Handles the Thermostat Mode command class.
+ * Handles the Thermostat FanMode command class.
  * @author Dan Cunningham
  * @since 1.6.0
  */
-@XStreamAlias("thermostatModeCommandClass")
-public class ZWaveThermostatModeCommandClass extends ZWaveCommandClass
+@XStreamAlias("thermostatFanModeCommandClass")
+public class ZWaveThermostatFanModeCommandClass extends ZWaveCommandClass
 implements ZWaveBasicCommands, ZWaveCommandClassInitialization,
 ZWaveCommandClassDynamicState {
 
-	private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatModeCommandClass.class);
+	private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatFanModeCommandClass.class);
 
-	private static final byte THERMOSTAT_MODE_SET              = 0x1;
-	private static final byte THERMOSTAT_MODE_GET              = 0x2;
-	private static final byte THERMOSTAT_MODE_REPORT           = 0x3;
-	private static final byte THERMOSTAT_MODE_SUPPORTED_GET    = 0x4;
-	private static final byte THERMOSTAT_MODE_SUPPORTED_REPORT = 0x5;
+	private static final byte THERMOSTAT_FAN_MODE_SET              = 0x1;
+	private static final byte THERMOSTAT_FAN_MODE_GET              = 0x2;
+	private static final byte THERMOSTAT_FAN_MODE_REPORT           = 0x3;
+	private static final byte THERMOSTAT_FAN_MODE_SUPPORTED_GET    = 0x4;
+	private static final byte THERMOSTAT_FAN_MODE_SUPPORTED_REPORT = 0x5;
 
-	private final Set<ModeType> modeTypes = new HashSet<ModeType>();
+	private final Set<FanModeType> fanModeTypes = new HashSet<FanModeType>();
 
 	/**
-	 * Creates a new instance of the ZWaveThermostatModeCommandClass class.
+	 * Creates a new instance of the ZWaveThermostatFanModeCommandClass class.
 	 * @param node the node this command class belongs to
 	 * @param controller the controller to use
 	 * @param endpoint the endpoint this Command class belongs to
 	 */
-	public ZWaveThermostatModeCommandClass(ZWaveNode node,
+	public ZWaveThermostatFanModeCommandClass(ZWaveNode node,
 			ZWaveController controller, ZWaveEndpoint endpoint) {
 		super(node, controller, endpoint);
 	}
@@ -66,7 +66,7 @@ ZWaveCommandClassDynamicState {
 	 */
 	@Override
 	public CommandClass getCommandClass() {
-		return CommandClass.THERMOSTAT_MODE;
+		return CommandClass.THERMOSTAT_FAN_MODE;
 	}
 
 	/**
@@ -83,18 +83,18 @@ ZWaveCommandClassDynamicState {
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
-		logger.trace("Handle Message Thermostat Mode Request");
-		logger.debug(String.format("Received Thermostat Mode Request for Node ID = %d", this.getNode().getNodeId()));
+		logger.trace("Handle Message Thermostat Fan Mode Request");
+		logger.debug(String.format("Received Thermostat Fan Mode Request for Node ID = %d", this.getNode().getNodeId()));
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
-		case THERMOSTAT_MODE_SET:
-		case THERMOSTAT_MODE_GET:
-		case THERMOSTAT_MODE_SUPPORTED_GET:
+		case THERMOSTAT_FAN_MODE_SET:
+		case THERMOSTAT_FAN_MODE_GET:
+		case THERMOSTAT_FAN_MODE_SUPPORTED_GET:
 			logger.warn(String.format("Command 0x%02X not implemented.", 
 					command));
 			return;
-		case THERMOSTAT_MODE_SUPPORTED_REPORT:
-			logger.debug("Process Thermostat Supported Mode Report");
+		case THERMOSTAT_FAN_MODE_SUPPORTED_REPORT:
+			logger.debug("Process Thermostat Supported Fan Mode Report");
 
 			int payloadLength = serialMessage.getMessagePayload().length;
 
@@ -105,22 +105,22 @@ ZWaveCommandClassDynamicState {
 						continue;
 
 					int index = ((i - (offset + 1)) * 8 ) + bit;             
-					if(index >= ModeType.values().length)
+					if(index >= FanModeType.values().length)
 						continue;
 
-					logger.debug(String.format("looking up mode type %d", index));
-					// (n)th bit is set. n is the index for the mode type enumeration.
-					ModeType modeTypeToAdd = ModeType.getModeType(index);
-					this.modeTypes.add(modeTypeToAdd);
-					logger.debug(String.format("Added mode type %s (0x%02x)", modeTypeToAdd.getLabel(), index));
+					logger.debug(String.format("looking up Fan Mode type %d", index));
+					// (n)th bit is set. n is the index for the fanMode type enumeration.
+					FanModeType fanModeTypeToAdd = FanModeType.getFanModeType(index);
+					this.fanModeTypes.add(fanModeTypeToAdd);
+					logger.debug(String.format("Added Fan Mode type %s (0x%02x)", fanModeTypeToAdd.getLabel(), index));
 				}
 			}
 
 			this.getNode().advanceNodeStage(NodeStage.DYNAMIC);
 			break;
-		case THERMOSTAT_MODE_REPORT:
-			logger.trace("Process Thermostat Mode Report");
-			processThermostatModeReport(serialMessage, offset, endpoint);
+		case THERMOSTAT_FAN_MODE_REPORT:
+			logger.trace("Process Thermostat Fan Mode Report");
+			processThermostatFanModeReport(serialMessage, offset, endpoint);
 
 			if (this.getNode().getNodeStage() != NodeStage.DONE)
 				this.getNode().advanceNodeStage(NodeStage.DONE);
@@ -135,30 +135,30 @@ ZWaveCommandClassDynamicState {
 	}
 
 	/**
-	 * Processes a THERMOSTAT_MODE_REPORT message.
+	 * Processes a THERMOSTAT_FAN_MODE_REPORT message.
 	 * @param serialMessage the incoming message to process.
 	 * @param offset the offset position from which to start message processing.
 	 * @param endpoint the endpoint or instance number this message is meant for.
 	 */
-	protected void processThermostatModeReport(SerialMessage serialMessage, int offset,
+	protected void processThermostatFanModeReport(SerialMessage serialMessage, int offset,
 			int endpoint) {
 
 		int value = serialMessage.getMessagePayloadByte(offset + 1); 
 
-		logger.debug(String.format("Thermostat Mode report from nodeId = %d,  value = 0x%02X", this.getNode().getNodeId(), value));
+		logger.debug(String.format("Thermostat Fan Mode report from nodeId = %d,  value = 0x%02X", this.getNode().getNodeId(), value));
 
-		ModeType modeType = ModeType.getModeType(value);
+		FanModeType fanModeType = FanModeType.getFanModeType(value);
 
-		if (modeType == null) {
-			logger.error(String.format("Unknown Mode Type = 0x%02x, ignoring report.", value));
+		if (fanModeType == null) {
+			logger.error(String.format("Unknown Fan Mode Type = 0x%02x, ignoring report.", value));
 			return;
 		}
 
-		// mode type seems to be supported, add it to the list.
-		if (!this.modeTypes.contains(modeType))
-			this.modeTypes.add(modeType);
+		// fanMode type seems to be supported, add it to the list.
+		if (!this.fanModeTypes.contains(fanModeType))
+			this.fanModeTypes.add(fanModeType);
 
-		logger.debug(String.format("Thermostat Mode Report from Node ID = %d, value = %s", this.getNode().getNodeId(), modeType.getLabel()));
+		logger.debug(String.format("Thermostat Fan Mode Report from Node ID = %d, value = %s", this.getNode().getNodeId(), fanModeType.getLabel()));
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
 		this.getController().notifyEventListeners(zEvent);
 	}
@@ -188,30 +188,30 @@ ZWaveCommandClassDynamicState {
 	 */
 	@Override
 	public SerialMessage getValueMessage() {
-		logger.debug("Creating new message for application command THERMOSTAT_MODE_GET for node {}", this.getNode().getNodeId());
+		logger.debug("Creating new message for application command THERMOSTAT_FAN_MODE_GET for node {}", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Get);
 		byte[] payload = {
 				(byte) this.getNode().getNodeId(),
 				2,
 				(byte) getCommandClass().getKey(),
-				THERMOSTAT_MODE_GET
+				THERMOSTAT_FAN_MODE_GET
 		};
 		result.setMessagePayload(payload);
 		return result;
 	}
 
 	/**
-	 * Gets a SerialMessage with the THERMOSTAT_MODE_SUPPORTED_GET command 
+	 * Gets a SerialMessage with the THERMOSTAT_FAN_MODE_SUPPORTED_GET command 
 	 * @return the serial message, or null if the supported command is not supported.
 	 */
 	public SerialMessage getSupportedMessage() {
-		logger.debug("Creating new message for application command THERMOSTAT_MODE_SUPPORTED_GET for node {}", this.getNode().getNodeId());
+		logger.debug("Creating new message for application command THERMOSTAT_FAN_MODE_SUPPORTED_GET for node {}", this.getNode().getNodeId());
 
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.High);
 		byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
 				2, 
 				(byte) getCommandClass().getKey(), 
-				(byte) THERMOSTAT_MODE_SUPPORTED_GET };
+				(byte) THERMOSTAT_FAN_MODE_SUPPORTED_GET };
 		result.setMessagePayload(newPayload);
 		return result;		
 	}
@@ -223,25 +223,22 @@ ZWaveCommandClassDynamicState {
 	@Override
 	public SerialMessage setValueMessage(int value) {
 
-		logger.debug("setValueMessage {} , modeTypy empty {}", value, modeTypes.isEmpty());
-
-		//if we do not have any mode types yet, get them
-		if(modeTypes.isEmpty())
+		if(fanModeTypes.isEmpty())
 			return this.getSupportedMessage();
 
-		if(!modeTypes.contains(ModeType.getModeType(value))){
-			logger.error("Unsupported mode type {} for node {}", value, this.getNode().getNodeId());
-
+		if(!fanModeTypes.contains(FanModeType.getFanModeType(value))){
+			logger.error("Unsupported fanMode type {} for node {}", value, this.getNode().getNodeId());
+			
 			return null;
 		}
 
-		logger.debug("Creating new message for application command THERMOSTAT_MODE_SET for node {}", this.getNode().getNodeId());
+		logger.debug("Creating new message for application command THERMOSTAT_FAN_MODE_SET for node {}", this.getNode().getNodeId());
 
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
 		byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
 				3, 
 				(byte) getCommandClass().getKey(), 
-				(byte) THERMOSTAT_MODE_SET,
+				(byte) THERMOSTAT_FAN_MODE_SET,
 				(byte) value
 		};
 		result.setMessagePayload(newPayload);
@@ -249,62 +246,54 @@ ZWaveCommandClassDynamicState {
 	}
 
 	/**
-	 * Z-Wave ModeType enumeration. The mode type indicates the type
-	 * of mode that is reported.
+	 * Z-Wave FanModeType enumeration. The fanMode type indicates the type
+	 * of fanMode that is reported.
 	 * @author Dan Cunningham
 	 * @since 1.6.0
 	 */
-	@XStreamAlias("modeType")
-	public enum ModeType
+	@XStreamAlias("fanModeType")
+	public enum FanModeType
 	{
-
-		OFF(0,"Off"),
-		HEAT(1,"Heat"),
-		COOL(2,"Cool"),
-		AUTO(3,"Auto"),
-		AUX_HEAT(4,"Aux Heat"),
-		RESUME(5,"Resume"),
-		FAN_ONLY(6,"Fan Only"),
-		FURNANCE(7,"Furnace"),
-		DRY_AIR(8,"Dry Air"),
-		MOIST_AIR(9,"Moist Air"),
-		AUTO_CHANGEOVER(10,"Auto Changeover"),
-		HEAT_ECON(11,"Heat Econ"),
-		COOL_ECON(12,"Cool Econ"),
-		AWAY(13,"Away");
+		AUTO_LOW(0,"Auto Low"),
+		ON_LOW(1,"On Low"),
+		AUTO_HIGH(2,"Auto High"),
+		ON_HIGH(2,"On High"),
+		UNKNOWN_4(3,"Unknown 4"),
+		UNKNOWN_5(4,"Unknown 5"),
+		CIRCULATE(5,"Circulate");
 
 		/**
-		 * A mapping between the integer code and its corresponding mode type
+		 * A mapping between the integer code and its corresponding fan mode type
 		 * to facilitate lookup by code.
 		 */
-		private static Map<Integer, ModeType> codeToModeTypeMapping;
+		private static Map<Integer, FanModeType> codeToFanModeTypeMapping;
 
 		private int key;
 		private String label;
 
-		private ModeType(int key, String label) {
+		private FanModeType(int key, String label) {
 			this.key = key;
 			this.label = label;
 		}
 
 		private static void initMapping() {
-			codeToModeTypeMapping = new HashMap<Integer, ModeType>();
-			for (ModeType s : values()) {
-				codeToModeTypeMapping.put(s.key, s);
+			codeToFanModeTypeMapping = new HashMap<Integer, FanModeType>();
+			for (FanModeType s : values()) {
+				codeToFanModeTypeMapping.put(s.key, s);
 			}
 		}
 
 		/**
-		 * Lookup function based on the mode type code.
+		 * Lookup function based on the fan mode type code.
 		 * Returns null if the code does not exist.
 		 * @param i the code to lookup
-		 * @return enumeration value of the mode type.
+		 * @return enumeration value of the fan mode type.
 		 */
-		public static ModeType getModeType(int i) {
-			if (codeToModeTypeMapping == null) {
+		public static FanModeType getFanModeType(int i) {
+			if (codeToFanModeTypeMapping == null) {
 				initMapping();
 			}
-			return codeToModeTypeMapping.get(i);
+			return codeToFanModeTypeMapping.get(i);
 		}
 
 		/**
