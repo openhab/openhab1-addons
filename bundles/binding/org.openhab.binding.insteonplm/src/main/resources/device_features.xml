@@ -10,6 +10,14 @@
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
 	<poll-handler>DefaultPollHandler</poll-handler>
 </feature>
+<feature name="MultiButtonRemote">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">LightOnMultiHandler</message-handler>
+	<message-handler cmd="0x13">LightOffMultiHandler</message-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
 <feature name="GenericLastTime" statusFeature="true">
 	<message-dispatcher>PassThroughDispatcher</message-dispatcher>
 	<message-handler default="true">LastTimeHandler</message-handler>

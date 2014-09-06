@@ -342,15 +342,30 @@ public class DeviceFeature {
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
+			f.publishAll(OnOffType.ON);
+		}
+	}
+	public static class LightOffHandler extends MessageHandler {
+		LightOffHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			f.publishAll(OnOffType.OFF);
+		}
+	}
+	public static class LightOnMultiHandler extends MessageHandler {
+		LightOnMultiHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
 			int button = this.getButtonInfo(msg, f);
 			if (button != -1) {
 				f.publishFiltered(OnOffType.ON, "button", button);
 			}
 		}
 	}
-	
-	public static class LightOffHandler extends MessageHandler {
-		LightOffHandler(DeviceFeature p) { super(p); }
+	public static class LightOffMultiHandler extends MessageHandler {
+		LightOffMultiHandler(DeviceFeature p) { super(p); }
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
@@ -360,6 +375,7 @@ public class DeviceFeature {
 			}
 		}
 	}
+	
 	/**
 	 * A message handler which reads the command2 field
 	 * if command2 == 0xFF then the light has been turned on

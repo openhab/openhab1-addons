@@ -130,6 +130,10 @@ Example:
     	<feature name="switch">GenericSwitch</feature>
     	<feature name="lastheardfrom">GenericLastTime</feature>
     </productKey>
+    <productKey name="F00.00.10">
+    	<feature name="switch">MultiButtonRemote</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
   </subcategory>
   <subcategory>
     <name>DIN Rail On/Off</name>
