@@ -129,11 +129,14 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			connector.addItem(itemName, property);
 			
 			// update the player status so any current value is initialised
-			if (connector.isConnected())
+			if (connector.isConnected()) {
 				connector.updatePlayerStatus();
+			}
 			
 			if (property.startsWith("Application")) {
 				connector.requestApplicationUpdate();
+			} else if (property.equals("System.State")) {
+				connector.updateSystemStatus();
 			}
 		}
 	}

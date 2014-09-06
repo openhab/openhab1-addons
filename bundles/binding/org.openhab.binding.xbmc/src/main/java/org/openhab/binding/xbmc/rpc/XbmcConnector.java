@@ -282,6 +282,15 @@ public class XbmcConnector {
 		}
 	}
 
+	public void updateSystemStatus() {
+		if (connected) {
+			updateProperty("System.State" ,OnOffType.ON);
+		} else {
+			updateProperty("System.State" ,OnOffType.OFF);
+		}
+	}
+
+
 	/**
 	 * Update the status of the current player 
 	 */
