@@ -84,15 +84,6 @@ public class BinRpcClient extends BaseRpcClient {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getVersion(HmInterface hmInterface) throws HomematicClientException {
-		BinRpcRequest request = new BinRpcRequest("getVersion");
-		Object[] result = sendMessage(hmInterface, request);
-		return result[0].toString();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, String> getDeviceDescription(HmInterface hmInterface, String address)

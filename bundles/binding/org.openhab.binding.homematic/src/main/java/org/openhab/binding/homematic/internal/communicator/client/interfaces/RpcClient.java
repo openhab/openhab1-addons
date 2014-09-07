@@ -75,11 +75,6 @@ public interface RpcClient {
 	public ServerId getServerId(HmInterface hmInterface) throws HomematicClientException;
 
 	/**
-	 * Returns the version of the Homematic server.
-	 */
-	public String getVersion(HmInterface hmInterface) throws HomematicClientException;
-
-	/**
 	 * Returns the description of a Homematic device.
 	 */
 	public Map<String, String> getDeviceDescription(HmInterface hmInterface, String address)
