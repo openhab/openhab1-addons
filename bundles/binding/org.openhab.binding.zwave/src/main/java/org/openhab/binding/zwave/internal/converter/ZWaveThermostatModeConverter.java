@@ -96,7 +96,6 @@ public class ZWaveThermostatModeConverter extends
 			return;
 		}
 		
-		
 		this.getController().sendData(serialMessage);
 		
 		if (command instanceof State)

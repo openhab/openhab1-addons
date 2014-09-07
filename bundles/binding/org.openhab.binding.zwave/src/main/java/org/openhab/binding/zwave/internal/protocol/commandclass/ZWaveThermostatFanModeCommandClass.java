@@ -111,8 +111,12 @@ ZWaveCommandClassDynamicState {
 					logger.debug(String.format("looking up Fan Mode type %d", index));
 					// (n)th bit is set. n is the index for the fanMode type enumeration.
 					FanModeType fanModeTypeToAdd = FanModeType.getFanModeType(index);
-					this.fanModeTypes.add(fanModeTypeToAdd);
-					logger.debug(String.format("Added Fan Mode type %s (0x%02x)", fanModeTypeToAdd.getLabel(), index));
+					if(fanModeTypeToAdd != null){
+						this.fanModeTypes.add(fanModeTypeToAdd);
+						logger.debug(String.format("Added Fan Mode type %s (0x%02x)", fanModeTypeToAdd.getLabel(), index));
+					} else {
+						logger.warn("Uknown fan mode type {}", index);
+					}
 				}
 			}
 
@@ -257,10 +261,10 @@ ZWaveCommandClassDynamicState {
 		AUTO_LOW(0,"Auto Low"),
 		ON_LOW(1,"On Low"),
 		AUTO_HIGH(2,"Auto High"),
-		ON_HIGH(2,"On High"),
-		UNKNOWN_4(3,"Unknown 4"),
-		UNKNOWN_5(4,"Unknown 5"),
-		CIRCULATE(5,"Circulate");
+		ON_HIGH(3,"On High"),
+		UNKNOWN_4(4,"Unknown 4"),
+		UNKNOWN_5(5,"Unknown 5"),
+		CIRCULATE(6,"Circulate");
 
 		/**
 		 * A mapping between the integer code and its corresponding fan mode type

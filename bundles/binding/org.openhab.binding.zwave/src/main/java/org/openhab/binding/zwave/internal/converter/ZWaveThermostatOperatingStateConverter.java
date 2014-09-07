@@ -1,10 +1,7 @@
 package org.openhab.binding.zwave.internal.converter;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
-import org.openhab.binding.zwave.internal.converter.command.DecimalCommandConverter;
-import org.openhab.binding.zwave.internal.converter.command.ZWaveCommandConverter;
 import org.openhab.binding.zwave.internal.converter.state.BigDecimalDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
@@ -33,7 +30,6 @@ ZWaveCommandClassConverter<ZWaveThermostatOperatingStateCommandClass> {
 	public ZWaveThermostatOperatingStateConverter(ZWaveController controller,
 			EventPublisher eventPublisher) {
 		super(controller, eventPublisher);
-		this.addCommandConverter(new DecimalCommandConverter());
 		this.addStateConverter(new BigDecimalDecimalTypeConverter());
 	}
 
@@ -69,6 +65,7 @@ ZWaveCommandClassConverter<ZWaveThermostatOperatingStateCommandClass> {
 		}
 
 		State state = converter.convertFromValueToState(event.getValue());
+		
 		this.getEventPublisher().postUpdate(item.getName(), state);
 
 	}
@@ -80,12 +77,7 @@ ZWaveCommandClassConverter<ZWaveThermostatOperatingStateCommandClass> {
 	void receiveCommand(Item item, Command command, ZWaveNode node,
 			ZWaveThermostatOperatingStateCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
-		ZWaveCommandConverter<?,?> converter = this.getCommandConverter(command.getClass());
-
-		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
-			return;
-		}
+		logger.warn("We do not take commands: item = {}, node = {} endpoint = {}, ignoring.", item.getName(), node.getNodeId(), endpointId);
 	}
 
 	/**

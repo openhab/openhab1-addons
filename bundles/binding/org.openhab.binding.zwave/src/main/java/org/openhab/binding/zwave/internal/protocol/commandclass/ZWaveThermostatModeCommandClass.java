@@ -111,8 +111,12 @@ ZWaveCommandClassDynamicState {
 					logger.debug(String.format("looking up mode type %d", index));
 					// (n)th bit is set. n is the index for the mode type enumeration.
 					ModeType modeTypeToAdd = ModeType.getModeType(index);
-					this.modeTypes.add(modeTypeToAdd);
-					logger.debug(String.format("Added mode type %s (0x%02x)", modeTypeToAdd.getLabel(), index));
+					if(modeTypeToAdd != null){
+						this.modeTypes.add(modeTypeToAdd);
+						logger.debug(String.format("Added mode type %s (0x%02x)", modeTypeToAdd.getLabel(), index));
+					} else {
+						logger.warn("Uknown mode type {}", index);
+					}
 				}
 			}
 
