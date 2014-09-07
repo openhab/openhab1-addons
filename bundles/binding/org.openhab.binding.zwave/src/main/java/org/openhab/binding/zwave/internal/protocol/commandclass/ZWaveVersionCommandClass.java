@@ -89,7 +89,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 				applicationVersion = serialMessage.getMessagePayloadByte(offset + 4) +
 						((double)serialMessage.getMessagePayloadByte(offset + 5) / 10);
 				
-				logger.debug(String.format("NODE %d: Library Type = 0x%02x", this.getNode().getNodeId(), libraryType));
+				logger.debug(String.format("NODE %d: Library Type = 0x%02x", this.getNode().getNodeId(), libraryType.key));
 				logger.debug(String.format("NODE %d: Protocol Version = %.1f", this.getNode().getNodeId(), protocolVersion));
 				logger.debug(String.format("NODE %d: Application Version = %.1f", this.getNode().getNodeId(), applicationVersion));
 				break;
