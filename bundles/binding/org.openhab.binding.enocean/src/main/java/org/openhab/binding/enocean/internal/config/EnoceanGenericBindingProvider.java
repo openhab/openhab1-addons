@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.enocean.java.address.EnoceanId;
-import org.enocean.java.address.EnoceanParameterAddress;
-import org.enocean.java.common.EEPId;
+import org.opencean.core.address.EnoceanId;
+import org.opencean.core.address.EnoceanParameterAddress;
+import org.opencean.core.common.EEPId;
 import org.openhab.binding.enocean.EnoceanBindingProvider;
 import org.openhab.binding.enocean.internal.profiles.Profile;
 import org.openhab.core.binding.BindingConfig;

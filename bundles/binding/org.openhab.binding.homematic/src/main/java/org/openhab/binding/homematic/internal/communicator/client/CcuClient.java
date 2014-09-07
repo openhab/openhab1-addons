@@ -126,7 +126,8 @@ public class CcuClient extends BaseHomematicClient {
 
 			for (HmChannel channel : device.getChannels()) {
 				for (HmDatapoint dp : channel.getDatapoints()) {
-					DatapointConfig bindingConfig = new DatapointConfig(device.getAddress(), channel.getNumber(),
+					String deviceAddress = StringUtils.stripStart(device.getAddress(), "*");
+					DatapointConfig bindingConfig = new DatapointConfig(deviceAddress, channel.getNumber(),
 							dp.getName());
 					callback.iterate(bindingConfig, dp);
 				}

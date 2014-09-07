@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.enocean.internal.profiles;
 
-import org.enocean.java.common.ParameterValueChangeListener;
+import org.opencean.core.common.ParameterValueChangeListener;
 import org.openhab.core.items.Item;
 
 /**

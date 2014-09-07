@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.NumberFormatException;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -231,7 +232,7 @@ public abstract class ZWaveCommandClass {
 		if((size+offset) >= buffer.length) {
 			logger.error("Error extracting value - length={}, offset={}, size={}.", 
 					new Object[] { buffer.length, offset, size});
-			return BigDecimal.ZERO;
+			throw new NumberFormatException();
 		}
 		
 		int value = 0;

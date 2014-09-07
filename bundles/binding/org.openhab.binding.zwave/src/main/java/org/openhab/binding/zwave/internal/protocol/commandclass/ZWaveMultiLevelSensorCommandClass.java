@@ -139,12 +139,17 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 			if (!sensors.contains(sensorType))
 				this.sensors.add(sensorType);
 
-			BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
+			try {
+				BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
 
-			logger.debug(String.format("NODE %d: Sensor Value = (%f)", this.getNode().getNodeId(), value));
-			
-			ZWaveMultiLevelSensorValueEvent zEvent = new ZWaveMultiLevelSensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, sensorScale, value);
-			this.getController().notifyEventListeners(zEvent);
+				logger.debug(String.format("NODE %d: Sensor Value = (%f)", this.getNode().getNodeId(), value));
+				
+				ZWaveMultiLevelSensorValueEvent zEvent = new ZWaveMultiLevelSensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, sensorScale, value);
+				this.getController().notifyEventListeners(zEvent);
+			}
+			catch (NumberFormatException e) {
+				return;
+			}
 			
 			if (this.getNode().getNodeStage() != NodeStage.DONE)
 				this.getNode().advanceNodeStage(NodeStage.DONE);

@@ -86,17 +86,6 @@ public class XmlRpcClient extends BaseRpcClient {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getVersion(HmInterface hmInterface) throws HomematicClientException {
-		Object result = getConnection(hmInterface).getVersion();
-		if (result instanceof String) {
-			return (String) result;
-		}
-		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, String> getDeviceDescription(HmInterface hmInterface, String address)

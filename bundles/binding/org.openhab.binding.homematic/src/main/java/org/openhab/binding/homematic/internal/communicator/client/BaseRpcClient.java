@@ -10,7 +10,6 @@ package org.openhab.binding.homematic.internal.communicator.client;
 
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.slf4j.Logger;
@@ -38,22 +37,9 @@ public abstract class BaseRpcClient implements RpcClient {
 	 */
 	@Override
 	public ServerId getServerId(HmInterface hmInterface) throws HomematicClientException {
-		ServerId serverId = null;
-		try {
-			serverId = new ServerId(getVersion(hmInterface));
-		} catch (Exception ex) {
-			// ignore, the getVersion method may not be implemented (CCU1)
-		}
-
-		if (serverId == null || !serverId.isHomegear()) {
-			Map<String, String> deviceDescription = getDeviceDescription(hmInterface, "BidCoS-RF");
-			String firmwareVersion = null;
-			if (deviceDescription != null) {
-				firmwareVersion = deviceDescription.get("FIRMWARE");
-			}
-			serverId = new ServerId(StringUtils.defaultIfBlank(firmwareVersion, "unknown"));
-		}
-
+		Map<String, String> deviceDescription = getDeviceDescription(hmInterface, "BidCoS-RF");
+		ServerId serverId = new ServerId(deviceDescription.get("TYPE"));
+		serverId.setVersion(deviceDescription.get("FIRMWARE"));
 		return serverId;
 	}
 

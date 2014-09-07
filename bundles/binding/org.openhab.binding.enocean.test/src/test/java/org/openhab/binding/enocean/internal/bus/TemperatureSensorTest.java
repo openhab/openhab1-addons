@@ -12,11 +12,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 
-import org.enocean.java.address.EnoceanId;
-import org.enocean.java.address.EnoceanParameterAddress;
-import org.enocean.java.common.Parameter;
-import org.enocean.java.common.values.NumberWithUnit;
-import org.enocean.java.common.values.Unit;
+import org.opencean.core.address.EnoceanId;
+import org.opencean.core.address.EnoceanParameterAddress;
+import org.opencean.core.common.Parameter;
+import org.opencean.core.common.values.NumberWithUnit;
+import org.opencean.core.common.values.Unit;
 import org.junit.Test;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
