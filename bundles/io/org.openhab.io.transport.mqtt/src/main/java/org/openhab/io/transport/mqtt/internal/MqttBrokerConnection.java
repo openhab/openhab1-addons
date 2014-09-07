@@ -82,6 +82,8 @@ public class MqttBrokerConnection implements MqttCallback {
 
 	private Timer reconnectTimer;
 
+	private int keepAliveInterval = 60;
+
 	/**
 	 * Create a new connection with the given name.
 	 * 
@@ -285,7 +287,7 @@ public class MqttBrokerConnection implements MqttCallback {
 			if (StringUtils.isBlank(clientId) || clientId.length() > 23) {
 				clientId = MqttClient.generateClientId();
 			}
-
+			
 			String tmpDir = System.getProperty("java.io.tmpdir") + "/" + name;
 			MqttDefaultFilePersistence dataStore = new MqttDefaultFilePersistence(
 					tmpDir);
@@ -303,7 +305,7 @@ public class MqttBrokerConnection implements MqttCallback {
 		}
 		if (!StringUtils.isBlank(password)) {
 			options.setPassword(password.toCharArray());
-		}
+		}		
 		if (url.toLowerCase().contains("ssl")) {
 
 			if (StringUtils.isNotBlank(System
@@ -347,6 +349,8 @@ public class MqttBrokerConnection implements MqttCallback {
 					lastWill.getQos(), lastWill.isRetain());
 		}
 
+		options.setKeepAliveInterval(keepAliveInterval);
+		
 		client.connect(options);
 	}
 
@@ -603,4 +607,16 @@ public class MqttBrokerConnection implements MqttCallback {
 
 	}
 
+	/**
+	 * Set the keep alive interval. The default interval is 60 seconds.
+	 * If no heartbeat is received within this timeframe, the connection 
+	 * will be considered dead. Set this to a higher value on systems which may
+	 * not always be able to process the heartbeat in time. 
+	 * @param keepAliveInterval interval in seconds
+	 */
+	public void setKeepAliveInterval(int keepAliveInterval) {
+		this.keepAliveInterval = keepAliveInterval;
+	}
+
+	
 }
