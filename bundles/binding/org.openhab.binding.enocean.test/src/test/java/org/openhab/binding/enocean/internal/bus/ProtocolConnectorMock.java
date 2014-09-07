@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.enocean.internal.bus;
 
-import org.enocean.java.common.ProtocolConnector;
+import org.opencean.core.common.ProtocolConnector;
 
 public class ProtocolConnectorMock implements ProtocolConnector {
 

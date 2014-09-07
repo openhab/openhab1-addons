@@ -8,9 +8,9 @@
  */
 package org.openhab.binding.enocean.internal.bus;
 
-import org.enocean.java.ESP3Host;
-import org.enocean.java.address.EnoceanParameterAddress;
-import org.enocean.java.common.ProtocolConnector;
+import org.opencean.core.ESP3Host;
+import org.opencean.core.address.EnoceanParameterAddress;
+import org.opencean.core.common.ProtocolConnector;
 import org.junit.Before;
 
 public class BasicBindingTest {

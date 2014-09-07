@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.enocean.internal.converter;
 
-import org.enocean.java.common.values.ButtonState;
+import org.opencean.core.common.values.ButtonState;
 import org.openhab.core.library.types.OnOffType;
 
 /**
