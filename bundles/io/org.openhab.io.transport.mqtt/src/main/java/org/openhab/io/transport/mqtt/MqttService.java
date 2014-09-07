@@ -99,6 +99,8 @@ public class MqttService implements ManagedService {
 				MqttWillAndTestament will = MqttWillAndTestament.fromString(value);
 				logger.debug("Setting last will: {}", will);
 				conn.setLastWill(will);
+			} else if (property.equals("keepAlive")) {
+				conn.setKeepAliveInterval(Integer.parseInt(value));
 			} else {
 				logger.warn("Unrecognized property: {}", key);
 			}
