@@ -11,6 +11,7 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveThermostatModeCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveThermostatSetpointCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -20,7 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * ZWaveThermostatModeConverter class. Converter for communication with the 
+ * {@link ZWaveThermostatModeCommandClass}. Implements polling of the mode
+ * state and receiving of mode state events.
  *  @author Dan Cunningham
  *	@since 1.6.0
  */
@@ -30,6 +33,11 @@ public class ZWaveThermostatModeConverter extends
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatModeConverter.class);
 	private static final int REFRESH_INTERVAL = 0; // refresh interval in seconds for the thermostat setpoint;
 
+	/**
+	 * Constructor. Creates a new instance of the {@link ZWaveThermostatModeConverter} class.
+	 * @param controller the {@link ZWaveController} to use for sending messages.
+	 * @param eventPublisher the {@link EventPublisher} to use to publish events.
+	 */
 	public ZWaveThermostatModeConverter(ZWaveController controller,
 			EventPublisher eventPublisher) {
 		super(controller, eventPublisher);
