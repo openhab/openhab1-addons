@@ -75,6 +75,11 @@ public class LgTvMessageReader extends HttpServlet {
 		_listeners.add(listener);
 	}
 
+
+	LgTvMessageReader()
+	{
+	}
+
 	/**
 	 * Remove event listener.
 	 **/
@@ -110,7 +115,8 @@ public class LgTvMessageReader extends HttpServlet {
 		this.modelRepository = null;
 	}
 
-	protected void setHttpService(HttpService httpService) {
+	public  void setHttpService(HttpService httpService) {
+		logger.info("sethttpservice called"); 	
 		this.httpService = httpService;
 	}
 
@@ -124,8 +130,15 @@ public class LgTvMessageReader extends HttpServlet {
 	 * @return a {@link SecureHttpContext}
 	 */
 	protected HttpContext createHttpContext() {
-		HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
-		return new SecureHttpContext(defaultHttpContext, "openHAB.org");
+		if (this.httpService==null)
+		{
+			logger.error("cannot create http context httpservice null");	
+			return null;
+		} else
+		{	
+			HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
+			return new SecureHttpContext(defaultHttpContext, "openHAB.org");
+		}
 	}
 	
 	@Override
@@ -159,7 +172,7 @@ public class LgTvMessageReader extends HttpServlet {
 	public void startserver() throws IOException {
 
 		if (status == 0) {
-//			activate();
+			activate();
 			status = 1;
 		} else {
 			logger.debug("LgTvMessageReader server already started");
@@ -195,6 +208,97 @@ public class LgTvMessageReader extends HttpServlet {
 		}
 
 	}
+
+
+	@Override
+        public void doGet(HttpServletRequest req, HttpServletResponse res)
+                        throws ServletException, IOException {
+
+
+                        //String requestMethod = exchange.getRequestMethod();
+                        BufferedReader rd = null;
+                        StringBuilder sb = null;
+
+                        logger.debug("myhandler called");
+                        if (1==1) {
+                                //Headers responseHeaders = exchange.getResponseHeaders();
+                                //responseHeaders.set("Content-Type", "text/plain");
+                                res.setContentType("text/plain");
+                                //exchange.sendResponseHeaders(200, 0);
+                                res.setStatus(200);
+                                OutputStream responseBody = res.getOutputStream();
+
+                                //Headers requestHeaders = exchange.getRequestHeaders();
+
+                                LgtvStatusUpdateEvent event = new LgtvStatusUpdateEvent(this);
+
+                                rd = new BufferedReader(new InputStreamReader(
+                                                req.getInputStream()));
+                                sb = new StringBuilder();
+                                String line;
+                                while ((line = rd.readLine()) != null) {
+                                        sb.append(line + '\n');
+                                }
+
+                                String remoteaddr = req.getRemoteAddr();
+
+                                int start = remoteaddr.indexOf(":");
+                                String t;
+                                if (start > -1)
+                                        t = remoteaddr.substring(0, start);
+                                else
+                                        t = remoteaddr;
+                                remoteaddr = t;
+
+                                start = remoteaddr.indexOf("/");
+                                if (start > -1)
+                                        t = remoteaddr.substring(start + 1, remoteaddr.length());
+
+				  else
+                                        t = remoteaddr;
+                                remoteaddr = t;
+
+                                logger.debug("httphandler called from remoteaddr=" + remoteaddr
+                                                + " result=" + sb.toString());
+
+                                LgTvEventChannelChanged myevent = new LgTvEventChannelChanged();
+
+                                String result = "";
+                                try {
+                                        result = myevent.readevent(sb.toString());
+                                } catch (JAXBException e) {
+                                        logger.error("error in httphandler",e);
+                                }
+                                logger.debug("eventresult=" + result);
+
+                                LgTvEventChannelChanged.envelope envel = myevent.getenvel();
+
+                                String eventname = envel.getchannel().geteventname();
+
+                                if (eventname.equals("ChannelChanged")) {
+
+                                        String name = "CHANNEL_CURRENTNAME="
+                                                        + envel.getchannel().getchname();
+                                        String number = "CHANNEL_CURRENTNUMBER="
+                                                        + envel.getchannel().getmajor();
+                                        String set = "CHANNEL_SET=" + envel.getchannel().getmajor();
+
+                                        sendtohandlers(event, remoteaddr, name);
+                                        sendtohandlers(event, remoteaddr, number);
+                                        sendtohandlers(event, remoteaddr, set);
+
+                                } else if (eventname.equals("byebye")) {
+
+                                        sendtohandlers(event, remoteaddr, "BYEBYE_SEEN=1");
+
+                                } else
+                                        logger.debug("warning - unhandled event");
+
+                        responseBody.close();
+	}
+ }
+
+
 
 	
 
