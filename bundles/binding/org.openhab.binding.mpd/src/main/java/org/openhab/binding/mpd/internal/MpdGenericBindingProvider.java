@@ -138,7 +138,10 @@ public class MpdGenericBindingProvider extends AbstractGenericBindingProvider im
 			} else if (mpdConfig.containsKey("ARTIST") && PlayerCommandTypeMapping.TRACKARTIST.equals(playerCommand)) {
 				itemNames.add(itemName);
 			} 
-			else if (mpdConfig.containsKey(playerCommand.type.toString())) {
+			else if (mpdConfig.containsKey(playerCommand.type.toString())
+					&& StringUtils.contains(mpdConfig.get(playerCommand.type.toString()), playerCommand.toString().toLowerCase())) {
+				// we check to make sure the player command exists in the binding config
+				// otherwise we pull in other items not associated to the current command
 				itemNames.add(itemName);
 			}
 		}
