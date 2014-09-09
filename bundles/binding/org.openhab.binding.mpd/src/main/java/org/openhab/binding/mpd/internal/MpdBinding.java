@@ -26,11 +26,17 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.bff.javampd.MPD;
+import org.bff.javampd.MPDAdmin;
+import org.bff.javampd.MPDOutput;
 import org.bff.javampd.MPDPlayer;
 import org.bff.javampd.MPDPlayer.PlayerStatus;
+import org.bff.javampd.events.OutputChangeEvent;
+import org.bff.javampd.events.OutputChangeListener;
 import org.bff.javampd.events.PlayerBasicChangeEvent;
 import org.bff.javampd.events.PlayerBasicChangeListener;
 import org.bff.javampd.events.PlayerChangeEvent;
+import org.bff.javampd.events.TrackPositionChangeEvent;
+import org.bff.javampd.events.TrackPositionChangeListener;
 import org.bff.javampd.events.VolumeChangeEvent;
 import org.bff.javampd.events.VolumeChangeListener;
 import org.bff.javampd.exception.MPDConnectionException;
@@ -45,6 +51,7 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.quartz.CronScheduleBuilder;
@@ -70,6 +77,7 @@ import org.bff.javampd.events.TrackPositionChangeListener;
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @author Petr.Klus
+ * @author Matthew Bowman
  *
  * @since 0.8.0
  */
@@ -135,6 +143,11 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 		String playerCommand = 
 			provider.getPlayerCommand(itemName, matchingPlayerCommand);
 		if (StringUtils.isNotBlank(playerCommand)) {
+			String playerCommandParam =
+					provider.getPlayerCommandParam(itemName, matchingPlayerCommand);
+			if (playerCommandParam != null) {
+				params = playerCommandParam;
+			}
 			executePlayerCommand(playerCommand, params);
 		}
 		
@@ -196,6 +209,17 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 					case VOLUME_DECREASE: player.setVolume(player.getVolume() - VOLUME_CHANGE_SIZE); break;
 					case NEXT: player.playNext(); break;
 					case PREV: player.playPrev(); break;
+					case ENABLE:
+					case DISABLE:
+						Integer outputId = Integer.valueOf((String) commandParams);
+						MPDAdmin admin = daemon.getMPDAdmin();
+						MPDOutput output = new MPDOutput(outputId - 1); // internally mpd uses 0-based indexing
+						if (pCommand == PlayerCommandTypeMapping.ENABLE) {
+							admin.enableOutput(output);
+						} else {
+							admin.disableOutput(output);
+						}
+						break;
 					case VOLUME: 
 						logger.debug("Volume adjustment received: '{}' '{}'", pCommand, commandParams);
 						player.setVolume(((PercentType) commandParams).intValue());
@@ -424,6 +448,39 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 		}
 	}
 	
+	
+	/**
+	 * Handles MPD output change events. 
+	 * 
+	 * @param playerId the playerId which generated the <code>event</code> 
+	 * @param event the {@link OutputChangeEvent} that occurred
+	 * 
+	 * @since 1.6.0
+	 */
+	private void outputChanged(String playerId, OutputChangeEvent event) {
+		MPDOutput output = (MPDOutput) event.getSource();
+		logger.debug("Output {} changed on player {}, enabled = {}", output.getId(), playerId, output.isEnabled());
+		PlayerCommandTypeMapping playerCommand = 
+				output.isEnabled() ? PlayerCommandTypeMapping.ENABLE
+								   : PlayerCommandTypeMapping.DISABLE;
+		String[] itemNames = getItemsByPlayerCommandAndOutput(playerId, playerCommand, output);
+		for (String itemName : itemNames) {
+			eventPublisher.postUpdate(itemName, (State) playerCommand.type);
+		}
+	}
+	
+	
+	private String[] getItemsByPlayerCommandAndOutput(String playerId, PlayerCommandTypeMapping playerCommand, MPDOutput output) {
+		Set<String> itemNames = new HashSet<String>();
+		int outputId = output.getId() + 1; // internally mpd uses 0-based indexes
+		for (MpdBindingProvider provider : this.providers) {
+			itemNames.addAll(Arrays.asList(
+				provider.getItemNamesByPlayerOutputCommand(playerId, playerCommand, outputId)));
+		}
+		return itemNames.toArray(new String[itemNames.size()]);
+	}
+	
+
 	private String[] getItemNamesByPlayerAndPlayerCommand(String playerId, PlayerCommandTypeMapping playerCommand) {
 		Set<String> itemNames = new HashSet<String>();
 		for (MpdBindingProvider provider : this.providers) {
@@ -546,7 +603,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	 * @param host
 	 * @param port
 	 */
-	private void connect(String playerId) {
+	private void connect(final String playerId) {
 		MpdPlayerConfig config = null;
 		try {
 	    	
@@ -559,6 +616,24 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	    	    	mpdStandAloneMonitor.addVolumeChangeListener(this);
 	    	    	mpdStandAloneMonitor.addPlayerChangeListener(this);
 	    	    	mpdStandAloneMonitor.addTrackPositionChangeListener(this);	    	    	
+	    	    	
+	    	    	final MpdBinding self = this; // 'this' glue for the inner anon instance
+	    	    	mpdStandAloneMonitor.addOutputChangeListener(new OutputChangeListener() {
+	    	    		
+						@Override
+						public void outputChanged(OutputChangeEvent e) {
+							// We have to 'wrap' the OutputChangeEvent listener
+							// callback and add the playerId so we know which 
+							// player generated the event. There's not enough 
+							// info on just the OutputChangeEvent to derive 
+							// the source player. This 'workaround' is necessary 
+							// to support output control on multiple MPD players.
+							self.outputChanged(playerId, e);
+							
+						}
+						
+					});
+	    	    	
 	    	    Thread monitorThread = new Thread(
 	    	    	mpdStandAloneMonitor, "MPD Monitor (player:" + playerId + ")");
 	    	    monitorThread.start();
