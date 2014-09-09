@@ -453,7 +453,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 	 * Handles MPD output change events. 
 	 * 
 	 * @param playerId the playerId which generated the <code>event</code> 
-	 * @param e the {@link OutputChangeEvent} that occurred
+	 * @param event the {@link OutputChangeEvent} that occurred
 	 * 
 	 * @since 1.6.0
 	 */
