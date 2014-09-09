@@ -213,7 +213,7 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 					case DISABLE:
 						Integer outputId = Integer.valueOf((String) commandParams);
 						MPDAdmin admin = daemon.getMPDAdmin();
-						MPDOutput output = new MPDOutput(outputId);
+						MPDOutput output = new MPDOutput(outputId - 1); // internally mpd uses 0-based indexing
 						if (pCommand == PlayerCommandTypeMapping.ENABLE) {
 							admin.enableOutput(output);
 						} else {
@@ -463,18 +463,19 @@ public class MpdBinding extends AbstractBinding<MpdBindingProvider> implements M
 		PlayerCommandTypeMapping playerCommand = 
 				output.isEnabled() ? PlayerCommandTypeMapping.ENABLE
 								   : PlayerCommandTypeMapping.DISABLE;
-		String[] itemNames = getItemsByPlayerOutputCommand(playerId, output, playerCommand);
+		String[] itemNames = getItemsByPlayerCommandAndOutput(playerId, playerCommand, output);
 		for (String itemName : itemNames) {
 			eventPublisher.postUpdate(itemName, (State) playerCommand.type);
 		}
 	}
 	
 	
-	private String[] getItemsByPlayerOutputCommand(String playerId, MPDOutput output, PlayerCommandTypeMapping playerCommand) {
+	private String[] getItemsByPlayerCommandAndOutput(String playerId, PlayerCommandTypeMapping playerCommand, MPDOutput output) {
 		Set<String> itemNames = new HashSet<String>();
+		int outputId = output.getId() + 1; // internally mpd uses 0-based indexes
 		for (MpdBindingProvider provider : this.providers) {
 			itemNames.addAll(Arrays.asList(
-				provider.getItemNamesByPlayerOutputCommand(playerId, playerCommand, output.getId())));
+				provider.getItemNamesByPlayerOutputCommand(playerId, playerCommand, outputId)));
 		}
 		return itemNames.toArray(new String[itemNames.size()]);
 	}
