@@ -8,11 +8,16 @@
  */
 package org.openhab.binding.alarmdecoder.internal;
 
+import gnu.io.CommPort;
+import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
+import gnu.io.SerialPort;
+import gnu.io.UnsupportedCommOperationException;
+
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -44,6 +49,8 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 
 	private static final Logger logger = LoggerFactory.getLogger(AlarmDecoderBinding.class);
 
+	/** straight copy of the connection string */
+	private String m_connectString = null;
 	/** hostname for the alarmdecoder process */
 	private String	m_tcpHostName = null;
 	/** port for the alarmdecoder process */
@@ -54,10 +61,10 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 	private long refreshInterval = 10000;
 
 	private BufferedReader m_reader = null;
-	private BufferedWriter m_writer = null;
 	private Socket	m_socket = null;
+	private SerialPort m_port = null;
 	private Thread m_thread = null;
-	private SocketReader m_socketReader = null;
+	private MsgReader m_msgReader = null;
 	private static HashMap<String, ADMsgType> s_startToMsgType = new HashMap<String, ADMsgType>();
 	// pretty disgusting to have a separate hash map to keep track of which
 	// items have been updated. But where else to put per-item state?
@@ -81,7 +88,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 		// At the same time, should the socket get disconnected, it will
 		// be reconnected when this method is called.
 		synchronized (this) {
-			if (m_socket == null) {
+			if (m_socket == null && m_port == null) {
 				connect();
 			}
 		}
@@ -111,11 +118,11 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 			throw new ConfigurationException("alarmdecoder:connect", "no config!");
 		}
 		try {
-			String connect = (String) config.get("connect");
-			if (connect == null) {
+			m_connectString = (String) config.get("connect");
+			if (m_connectString == null) {
 				throw new ConfigurationException("alarmdecoder:connect", "no connect config in openhab.cfg!");
 			}
-			String [] parts = connect.split(":");
+			String [] parts = m_connectString.split(":");
 			if (parts.length < 2) {
 				throw new ConfigurationException("alarmdecoder:connect", "missing :, check openhab.cfg!");
 			}
@@ -153,20 +160,55 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 			if (m_tcpHostName != null && m_tcpPort > 0) {
 				m_socket = new Socket(m_tcpHostName, m_tcpPort);
 				m_reader = new BufferedReader(new InputStreamReader(m_socket.getInputStream()));
-				m_writer = new BufferedWriter(new OutputStreamWriter(m_socket.getOutputStream()));
 				logger.info("connected to {}:{}", m_tcpHostName, m_tcpPort);
-				m_socketReader = new SocketReader();
-				m_thread = new Thread(m_socketReader);
-				m_thread.start();
+				startMsgReader();
+			} else if (this.m_serialDeviceName != null) {
+				/* by default, RXTX searches only devices /dev/ttyS* and
+				 * /dev/ttyUSB*, and will so not find symlinks. The
+				 *  setProperty() call below helps 
+				 */
+				System.setProperty("gnu.io.rxtx.SerialPorts", m_serialDeviceName);
+				CommPortIdentifier ci =	CommPortIdentifier.getPortIdentifier(m_serialDeviceName);
+				CommPort cp = ci.open("openhabalarmdecoder", 10000);
+				if (cp == null) {
+					throw new IllegalStateException("cannot open serial port!");
+				}
+				if (cp instanceof SerialPort) {
+					m_port = (SerialPort)cp;
+				} else {
+					throw new IllegalStateException("unknown port type");
+				}
+				m_port.setSerialPortParams(19200, SerialPort.DATABITS_8,
+						SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+				//m_port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+				m_port.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+				m_port.disableReceiveFraming();
+				m_port.disableReceiveThreshold();
+				m_reader = new BufferedReader(new InputStreamReader(m_port.getInputStream()));
+				logger.info("connected to serial port: {}", m_serialDeviceName);
+				startMsgReader();
 			} else {
 				logger.warn("alarmdecoder hostname or port not configured!");
-				
 			}
+		} catch (PortInUseException e) {
+			logger.error("cannot open serial port: {}, it is in use!", m_serialDeviceName);
+		} catch (UnsupportedCommOperationException e) {
+			logger.error("got unsupported operation {} on port {}",	e.getMessage(), m_serialDeviceName);
+				} catch (NoSuchPortException e) {
+					logger.error("got no such port for {}", m_serialDeviceName);
+				} catch (IllegalStateException e) {
+					logger.error("got unknown port type for {}", m_serialDeviceName);
 		} catch (UnknownHostException e) {
 			logger.error("unknown host name :{}: ", m_tcpHostName, e);
 		} catch (IOException e) {
-			logger.error("cannot open tcp connection to {}:{}: ", m_tcpHostName, m_tcpPort, e);
+			logger.error("cannot open connection to {}", m_connectString);
 		}
+	}
+	
+	private void startMsgReader() {
+		m_msgReader = new MsgReader();
+		m_thread = new Thread(m_msgReader);
+		m_thread.start();
 	}
 	
 	private synchronized void disconnect() {
@@ -179,11 +221,16 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 			}
 			m_socket = null;
 		}
+		if (m_port != null) {
+			m_port.close();
+			m_port = null;
+		}
 	}
+	
 	private void stopThread() {
-		if (m_socketReader != null) {
-			m_socketReader.stopRunning();
-			m_socketReader = null;
+		if (m_msgReader != null) {
+			m_msgReader.stopRunning();
+			m_msgReader = null;
 		}
 		if (m_thread != null) {
 			try {
@@ -197,11 +244,11 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 		}
 	}
 	
-	class SocketReader implements Runnable {
+	class MsgReader implements Runnable {
 		private boolean m_keepRunning = true;
 		@Override
 		public void run() {
-			logger.debug("socket reader thread started");
+			logger.debug("msg reader thread started");
 			String msg;
 			try {
 				while ((msg = m_reader.readLine()) != null && m_keepRunning) {
@@ -227,10 +274,16 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 						logger.error("{} while parsing message {}", e.getMessage(), msg);
 					}
 				}
+				if (msg == null) {
+					logger.error("null read from input stream!");
+				}
 			} catch (IOException e) {
-				logger.warn("I/O error while reading from socket:", e);
+				logger.error("I/O error while reading from stream: {}", e.getMessage());
+				// mark connections as down so they get reestablished
+				m_socket	= null;
+				m_port		= null;
 			}
-			logger.debug("socket reader thread exited");
+			logger.debug("msg reader thread exited");
 		}
 		
 		public void stopRunning() {
