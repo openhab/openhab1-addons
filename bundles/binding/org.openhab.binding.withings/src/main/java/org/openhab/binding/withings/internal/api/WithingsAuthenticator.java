@@ -71,11 +71,11 @@ public class WithingsAuthenticator implements ManagedService {
 	/**
 	 * Default OAuth consumer key
 	 */
-	private static final String DEFAULT_CONSUMER_KEY = "8d512d30824ee862602f7df249e31d0476cf286bc99b4068b60d4e1c541";
+	private static final String DEFAULT_CONSUMER_KEY = "74c0e77021ef5be1ec8dcb4dd88c15539f9541c86799dcbbfcb8fc8b236";
 	/**
 	 * Default OAuth consumer secret
 	 */
-	private static final String DEFAULT_CONSUMER_SECRET = "1d0117ec8f6f4cb4cf123484f2b39d8f3524264ebefc7edbd435e0e28e60";
+	private static final String DEFAULT_CONSUMER_SECRET = "25f1098263e511711b3287288f90740ff45532cef91658c5043db0b0e0c851c";
 
 	/**
 	 * Default content dir for data storage
