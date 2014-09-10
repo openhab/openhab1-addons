@@ -271,10 +271,10 @@
                                     </data>
                                     <data>
                                         <src>${basedir}/openhabhome/configurations/openhab_default.cfg</src>
-                                        <dst>etc/openhab/configurations/openhab.cfg</dst>
                                         <type>file</type>
                                         <mapper>
                                             <type>perm</type>
+                                            <prefix>/etc/openhab/configurations</prefix>
                                             <user>root</user>
                                             <group>root</group>
                                         </mapper>
@@ -993,7 +993,8 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
+ 
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.energenie</artifactId>
             <version>${project.version}</version>
