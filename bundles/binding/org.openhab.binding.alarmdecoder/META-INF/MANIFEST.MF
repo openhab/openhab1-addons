@@ -8,7 +8,8 @@ Bundle-Activator: org.openhab.binding.alarmdecoder.internal.AlarmDecoderActivato
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the alarmdecoder backend for openHAB
-Import-Package: org.openhab.core.binding,
+Import-Package: gnu.io,
+ org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
