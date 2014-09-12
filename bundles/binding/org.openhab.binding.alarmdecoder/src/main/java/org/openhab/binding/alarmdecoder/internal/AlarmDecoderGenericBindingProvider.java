@@ -114,7 +114,7 @@ public class AlarmDecoderGenericBindingProvider extends AbstractGenericBindingPr
 		AlarmDecoderBindingConfig bc = new AlarmDecoderBindingConfig(item.getName(), mt, parts[1], parts[2], params);
 		bcl.add(bc);
 		addBindingConfig(item, bc);
-		
+
 		m_itemsToConfig.put(item.getName(), bc);
 		logger.trace("processing item \"{}\" read from .items file with cfg string {}",
 				item.getName(), bindingConfig);
@@ -183,6 +183,10 @@ public class AlarmDecoderGenericBindingProvider extends AbstractGenericBindingPr
 		default:
 			return (false);
 		}
+	}
+	@Override
+	public Boolean autoUpdate(String itemName) {
+		return true;
 	}
 	
 
