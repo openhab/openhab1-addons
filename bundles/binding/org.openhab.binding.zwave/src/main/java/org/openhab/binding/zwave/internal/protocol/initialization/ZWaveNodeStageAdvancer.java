@@ -225,6 +225,7 @@ public class ZWaveNodeStageAdvancer {
 			queriesPending = -1;
 			this.node.setNodeStage(NodeStage.DYNAMIC);
 		case DYNAMIC:
+			logger.trace("NODE {}: queriesPending {} ", this.node.getNodeId(), queriesPending);
 			if (queriesPending == -1) {
 				queriesPending = 0;
 				for (ZWaveCommandClass zwaveCommandClass : this.node.getCommandClasses()) {
@@ -272,7 +273,8 @@ public class ZWaveNodeStageAdvancer {
 					}
 				}
 			}
-			if (queriesPending-- > 0) // there is still something to be
+			logger.trace("NODE {}: queriesPending part 2 {} ", this.node.getNodeId(), queriesPending);
+			if (--queriesPending > 0) // there is still something to be
 										// initialized.
 				break;
 			logger.trace("NODE {}: Done getting dynamic values, proceeding to done node stage.", this.node.getNodeId());
