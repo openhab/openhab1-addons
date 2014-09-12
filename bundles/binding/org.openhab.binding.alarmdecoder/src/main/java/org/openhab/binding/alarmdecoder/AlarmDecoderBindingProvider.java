@@ -11,15 +11,14 @@ package org.openhab.binding.alarmdecoder;
 import java.util.ArrayList;
 import org.openhab.binding.alarmdecoder.internal.ADMsgType;
 import org.openhab.binding.alarmdecoder.internal.AlarmDecoderBindingConfig;
-import org.openhab.core.binding.BindingProvider;
-
+import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 /**
  * This interface is implemented by classes that provide per-item binding configuration
  * 
  * @author Bernd Pfrommer
  * @since 1.6.0
  */
-public interface AlarmDecoderBindingProvider extends BindingProvider {
+public interface AlarmDecoderBindingProvider extends AutoUpdateBindingProvider {
 
 	/**
 	 * Get the binding configuration for a given itemName. This method
