@@ -21,8 +21,12 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Iterator;
+
+
 import org.openhab.binding.alarmdecoder.AlarmDecoderBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
@@ -157,6 +161,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 	private synchronized void connect() {
 		try {
 			disconnect(); // make sure we have disconnected
+			markAllItemsUnupdated();
 			if (m_tcpHostName != null && m_tcpPort > 0) {
 				m_socket = new Socket(m_tcpHostName, m_tcpPort);
 				m_reader = new BufferedReader(new InputStreamReader(m_socket.getInputStream()));
@@ -224,6 +229,18 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 		if (m_port != null) {
 			m_port.close();
 			m_port = null;
+		}
+	}
+	private void markAllItemsUnupdated() {
+		logger.debug("marking all items as unknown");
+		for (AlarmDecoderBindingProvider provider : providers) {
+			Collection<String> items = provider.getItemNames();
+			logger.debug("unupdated items found: {}", items.size());
+			for (Iterator<String> item = items.iterator(); item.hasNext();) {
+				String s = item.next();
+				AlarmDecoderBindingConfig c =	provider.getBindingConfig(s);
+				m_unupdatedItems.put(s, c);
+			}
 		}
 	}
 	
@@ -345,10 +362,12 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		super.bindingChanged(provider, itemName);
+		logger.trace("binding changed for {}", itemName);
 		AlarmDecoderBindingConfig c = ((AlarmDecoderBindingProvider)provider).getBindingConfig(itemName);
 		// careful, the config reference c is a null pointer!
 		m_unupdatedItems.put(itemName, c);
 	}
+	
 
 	/**
 	 * Since there is no way to poll, all items of unknown status are
@@ -357,8 +376,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 	 * for instance because the alarm panel is in state READY.
 	 */
 	private void setUnupdatedItemsToDefault() {
-		if (m_unupdatedItems.isEmpty()) return;
-		logger.debug("setting {} unupdated items to default", m_unupdatedItems.size());
+		logger.trace("setting {} unupdated items to default", m_unupdatedItems.size());
 		while (!m_unupdatedItems.isEmpty()) {
 			// cannot use the config in the hash map, since it is null
 			String itemName = m_unupdatedItems.keySet().iterator().next();
