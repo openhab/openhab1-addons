@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>45603</Model>
-	<Label lang="en">Fluorescent Light &amp; Appliance Module</Label>
-	<CommandClasses>
-		<Class><id>0x70</id></Class>
-	</CommandClasses>
-	
-	<Configuration>
-
-	</Configuration>
-	
-</Product>
-<Product>
 	<Model>45606</Model>
 	<Endpoints>1</Endpoints>
 	<Label lang="en">In-Wall Dimmer</Label>
