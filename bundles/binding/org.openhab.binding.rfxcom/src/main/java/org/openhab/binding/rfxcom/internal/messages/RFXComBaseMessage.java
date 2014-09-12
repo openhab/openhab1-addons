@@ -33,6 +33,7 @@ public abstract class RFXComBaseMessage implements RFXComMessageInterface {
 		FAN(23),
 		CURTAIN1(24),
 		BLINDS1(25),
+		RFY(26),
 		SECURITY1(32),
 		CAMERA1(40),
 		REMOTE_CONTROL(48),
