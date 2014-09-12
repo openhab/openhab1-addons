@@ -129,11 +129,14 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			connector.addItem(itemName, property);
 			
 			// update the player status so any current value is initialised
-			if (connector.isConnected())
+			if (connector.isConnected()) {
 				connector.updatePlayerStatus();
+			}
 			
 			if (property.startsWith("Application")) {
 				connector.requestApplicationUpdate();
+			} else if (property.equals("System.State")) {
+				connector.updateSystemStatus();
 			}
 		}
 	}
@@ -296,6 +299,12 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 				connector.showNotification("openHAB", command.toString());
 			else if (property.equals("System.Shutdown") && command == OnOffType.OFF)
 				connector.systemShutdown();
+			else if (property.equals("System.Suspend") && command == OnOffType.OFF)
+				connector.systemSuspend();
+			else if (property.equals("System.Hibernate") && command == OnOffType.OFF)
+				connector.systemHibernate();
+			else if (property.equals("System.Reboot") && command == OnOffType.OFF)
+				connector.systemReboot();
 			else if (property.equals("Application.Volume"))
 				connector.applicationSetVolume(command.toString());
 		} catch (Exception e) {

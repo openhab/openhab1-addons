@@ -87,6 +87,20 @@ public enum PlayerCommandTypeMapping {
 			command = "prev";
 			type = OnOffType.OFF;
 		}
+	},
+	
+	ENABLE {
+		{
+			command = "enable";
+			type = OnOffType.ON;
+		}
+	},
+	
+	DISABLE {
+		{
+			command = "disable";
+			type = OnOffType.OFF;
+		}
 	};
 
 	/** Represents the player command as it will be used in *.items configuration */
