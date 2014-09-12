@@ -272,7 +272,8 @@ public class ZWaveNodeStageAdvancer {
 					}
 				}
 			}
-			if (queriesPending-- > 0) // there is still something to be
+			
+			if (--queriesPending > 0) // there is still something to be
 										// initialized.
 				break;
 			logger.trace("NODE {}: Done getting dynamic values, proceeding to done node stage.", this.node.getNodeId());
