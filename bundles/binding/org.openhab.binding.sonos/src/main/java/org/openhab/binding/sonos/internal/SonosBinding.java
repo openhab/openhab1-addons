@@ -67,7 +67,6 @@ import org.teleal.cling.model.types.UDN;
 import org.teleal.cling.registry.Registry;
 import org.teleal.cling.registry.RegistryListener;
 import org.teleal.cling.transport.impl.apache.StreamClientConfigurationImpl;
-import org.teleal.cling.transport.impl.apache.StreamClientImpl;
 import org.teleal.cling.transport.impl.apache.StreamServerConfigurationImpl;
 import org.teleal.cling.transport.impl.apache.StreamServerImpl;
 import org.teleal.cling.transport.spi.NetworkAddressFactory;
