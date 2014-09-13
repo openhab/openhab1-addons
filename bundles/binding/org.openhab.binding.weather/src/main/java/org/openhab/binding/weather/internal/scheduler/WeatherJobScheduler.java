@@ -19,7 +19,11 @@ import org.openhab.binding.weather.WeatherBindingProvider;
 import org.openhab.binding.weather.internal.bus.WeatherPublisher;
 import org.openhab.binding.weather.internal.common.LocationConfig;
 import org.openhab.binding.weather.internal.common.WeatherContext;
+import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
 import org.openhab.binding.weather.internal.utils.DelayedExecutor;
+import org.openhab.binding.weather.internal.utils.ItemIterator;
+import org.openhab.binding.weather.internal.utils.ItemIterator.ItemIteratorCallback;
+import org.openhab.core.items.Item;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -74,6 +78,7 @@ public class WeatherJobScheduler {
 	 * Start the weather jobs if a binding is available.
 	 */
 	public void start() {
+		validateItemLocationIds();
 		for (LocationConfig locationConfig : context.getConfig().getAllLocationConfigs()) {
 			if (hasBinding(locationConfig.getLocationId())) {
 				scheduleIntervalJob(locationConfig);
@@ -81,6 +86,22 @@ public class WeatherJobScheduler {
 				logger.info("Disabling weather locationId '{}', no binding available", locationConfig.getLocationId());
 			}
 		}
+	}
+
+	/**
+	 * Validate the locationId in all items.
+	 */
+	private void validateItemLocationIds() {
+		new ItemIterator().iterate(new ItemIteratorCallback() {
+
+			@Override
+			public void next(WeatherBindingConfig bindingConfig, Item item) {
+				if (context.getConfig().getLocationConfig(bindingConfig.getLocationId()) == null) {
+					throw new RuntimeException("Unknown locationId in item '" + item.getName() + "' with binding "
+							+ bindingConfig);
+				}
+			}
+		});
 	}
 
 	/**

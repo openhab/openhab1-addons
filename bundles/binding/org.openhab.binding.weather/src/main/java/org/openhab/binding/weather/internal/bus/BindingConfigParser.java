@@ -9,7 +9,6 @@
 package org.openhab.binding.weather.internal.bus;
 
 import org.apache.commons.lang.StringUtils;
-import org.openhab.binding.weather.internal.common.WeatherContext;
 import org.openhab.binding.weather.internal.common.binding.ForecastBindingConfig;
 import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
 import org.openhab.binding.weather.internal.model.Weather;
@@ -32,7 +31,6 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 1.6.0
  */
 public class BindingConfigParser {
-	protected WeatherContext context = WeatherContext.getInstance();
 
 	/**
 	 * Parses the bindingConfig of an item and returns a WeatherBindingConfig.
@@ -75,9 +73,6 @@ public class BindingConfigParser {
 			weatherConfig = new ForecastBindingConfig(helper.locationId, forecast, helper.type, helper.property);
 		} else {
 			weatherConfig = new WeatherBindingConfig(helper.locationId, helper.type, helper.property);
-		}
-		if (context.getConfig().getLocationConfig(weatherConfig.getLocationId()) == null) {
-			throw new BindingConfigParseException("Invalid binding, unknown locationId: " + bindingConfig);
 		}
 
 		if (!PropertyUtils.hasProperty(new Weather(null), weatherConfig.getWeatherProperty())) {
