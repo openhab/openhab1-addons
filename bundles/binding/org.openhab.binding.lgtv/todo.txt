@@ -1,0 +1,18 @@
+•please change @version to 1.4.0
+ •please change code formatter to standard eclipse (opening brace ob same line)
+ •please use code formatter in your classes (STRG+SHFT+F)
+ •please opening and closing braces even if just one line of code is between (that way readability is increased and bugs are reduced just in case another of code is added in the future)
+ •please decrease loglevel to something reasonable e.g. debug in most cases
+ •please use selfexplaning log statements e.g. "Confirmed!" is not that comprehensive :-)
+ •please make use of String.format() like log statements 'logger.warn("RSSI:{}\n", RSSI);' rather than 'logger.warn("RSSI:" + RSSI +"\n");
+ •please move javadoc of methods to the beginning of the method (see http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-141999.html#385)
+ •please fix method names that should start with lowercase letters (see http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-135099.html#367)
+ •please try to remove the length of your methods. This will increase readability and maintainability of your code.
+ •please add JUnit-Tests for the protocol implementation. See various xxx.test projects on how to achieve that.
+ 
+Best,
+
+Thomas E.-E.
+
+
+info wonach man pairkey am anfang einfach leer laesst dann zeigt das tv den key an
