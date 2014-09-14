@@ -174,6 +174,20 @@ public class Temperature {
 	}
 
 	/**
+	 * Returns the min max value as a string in the format min/max.
+	 */
+	public String getMinMax() {
+		return UnitUtils.doubleToIntDisplayString(min) + "/" + UnitUtils.doubleToIntDisplayString(max);
+	}
+
+	/**
+	 * Returns the min max fahrenheit value as a string in the format min/max.
+	 */
+	public String getMinMaxF() {
+		return UnitUtils.doubleToIntDisplayString(getMinF()) + "/" + UnitUtils.doubleToIntDisplayString(getMaxF());
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override

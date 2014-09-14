@@ -138,4 +138,11 @@ public class UnitUtils {
 		return directions[(int) (b % directions.length)];
 	}
 
+	/**
+	 * Returns a double value as integer string.
+	 */
+	public static String doubleToIntDisplayString(Double value) {
+		return value == null ? "-" : String.valueOf(value.intValue());
+	}
+
 }
