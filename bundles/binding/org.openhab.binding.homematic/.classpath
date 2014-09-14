@@ -4,9 +4,5 @@
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="lib/xmlrpc-common-3.1.3.jar" sourcepath="/opt/tools/maven/repository/org/apache/xmlrpc/xmlrpc-common/3.1.3/xmlrpc-common-3.1.3-sources.jar"/>
-	<classpathentry kind="lib" path="lib/xmlrpc-client-3.1.3.jar" sourcepath="/opt/tools/maven/repository/org/apache/xmlrpc/xmlrpc-client/3.1.3/xmlrpc-client-3.1.3-sources.jar"/>
-	<classpathentry kind="lib" path="lib/ws-commons-util-1.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/xmlrpc-server-3.1.3.jar" sourcepath="/opt/tools/maven/repository/org/apache/xmlrpc/xmlrpc-server/3.1.3/xmlrpc-server-3.1.3-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

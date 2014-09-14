@@ -17,11 +17,9 @@ import org.openhab.binding.homematic.internal.communicator.client.CcuClient;
 import org.openhab.binding.homematic.internal.communicator.client.HomegearClient;
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
 import org.openhab.binding.homematic.internal.communicator.client.ServerId;
-import org.openhab.binding.homematic.internal.communicator.client.XmlRpcClient;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.HomematicClient;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.communicator.server.BinRpcCallbackServer;
-import org.openhab.binding.homematic.internal.communicator.server.XmlRpcCallbackServer;
 import org.openhab.binding.homematic.internal.config.BindingAction;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
@@ -67,15 +65,13 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 		if (homematicCallbackServer == null) {
 			logger.info("Starting Homematic communicator");
 			try {
-				boolean isBinRpc = context.getConfig().isBinRpc();
-				homematicCallbackServer = isBinRpc ? new BinRpcCallbackServer(this) : new XmlRpcCallbackServer(this);
+				homematicCallbackServer = new BinRpcCallbackServer(this);
 
 				itemDisabler = new ItemDisabler();
 				itemDisabler.start();
 				newDevicesCounter = 0;
 
-				RpcClient rpcClient = isBinRpc ? new BinRpcClient() : new XmlRpcClient();
-
+				RpcClient rpcClient = new BinRpcClient();
 				ServerId serverId = rpcClient.getServerId(HmInterface.RF);
 				logger.info("Homematic {}", serverId);
 				homematicClient = serverId.isHomegear() ? new HomegearClient(rpcClient) : new CcuClient(rpcClient);

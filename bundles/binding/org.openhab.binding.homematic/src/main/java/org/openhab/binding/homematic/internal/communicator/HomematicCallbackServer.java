@@ -9,8 +9,7 @@
 package org.openhab.binding.homematic.internal.communicator;
 
 /**
- * The server interface with the common methods for XML-RPC and BIN-RPC
- * communication.
+ * The server interface with the methods for BIN-RPC communication.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0
