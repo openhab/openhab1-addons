@@ -6,6 +6,6 @@ Bundle-Version: 1.6.0.qualifier
 Fragment-Host: org.openhab.binding.dmx;bundle-version="1.2.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: openHAB.org
-Require-Bundle: org.junit4;bundle-version="4.8.1"
+Require-Bundle: org.junit;bundle-version="4.8.1"
 Bundle-ClassPath: lib/mockito-all-1.9.5.jar,
  .
