@@ -64,7 +64,7 @@ public class ForecastBindingConfig extends WeatherBindingConfig {
 	@Override
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
-		tsb.append("locationId", getLocationId()).append("forecastDay", forecastDay).append("type", getType())
+		tsb.append("locationId", getLocationId()).append("forecast", forecastDay).append("type", getType())
 				.append("property", getProperty());
 		return tsb.toString();
 	}
