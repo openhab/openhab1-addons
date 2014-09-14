@@ -1,26 +1,36 @@
-/**
- * Copyright (c) 2010-2014, openHAB.org and others.
+/*
+ * Copyright (C) 2011 Teleal GmbH, Switzerland
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.openhab.binding.sonos.internal;
+
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
+import org.apache.http.MethodNotSupportedException;
 import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -42,247 +52,223 @@ import org.teleal.cling.model.message.UpnpHeaders;
 import org.teleal.cling.model.message.UpnpMessage;
 import org.teleal.cling.model.message.UpnpRequest;
 import org.teleal.cling.model.message.UpnpResponse;
-import org.teleal.cling.model.message.header.UpnpHeader;
 import org.teleal.cling.transport.impl.apache.HeaderUtil;
 import org.teleal.cling.transport.impl.apache.StreamClientConfigurationImpl;
+import org.teleal.cling.transport.spi.InitializationException;
 import org.teleal.cling.transport.spi.StreamClient;
+import org.teleal.common.util.Exceptions;
 
 /**
- * This code is copied from the {@link StreamClientImpl} of the cling 2.X branch and modified.
- * 
- * @author Martin Ehmke
+ * Implementation based on <a href="http://hc.apache.org/">Apache HTTP Components</a>.
+ * <p>
+ * This implementation works on Android.
+ * </p>
+ *
+ * @author Christian Bauer
  */
-public class StreamClientImpl implements StreamClient<StreamClientConfigurationImpl>
-{
-	final private static Logger log = Logger.getLogger(StreamClient.class.getName());
+public class StreamClientImpl implements StreamClient<StreamClientConfigurationImpl> {
 
-	final protected HttpParams globalParams = new BasicHttpParams();
+    final private static Logger log = Logger.getLogger(StreamClient.class.getName());
 
-	final protected StreamClientConfigurationImpl configuration;
+    final protected StreamClientConfigurationImpl configuration;
+    final protected ThreadSafeClientConnManager clientConnectionManager;
+    final protected DefaultHttpClient httpClient;
+    final protected HttpParams globalParams = new BasicHttpParams();
 
-	final protected ThreadSafeClientConnManager clientConnectionManager;
+    public StreamClientImpl(StreamClientConfigurationImpl configuration) throws InitializationException {
+        this.configuration = configuration;
 
-	final protected DefaultHttpClient httpClient;
+        ConnManagerParams.setMaxTotalConnections(globalParams, getConfiguration().getMaxTotalConnections());
+        HttpConnectionParams.setConnectionTimeout(globalParams, getConfiguration().getConnectionTimeoutSeconds() * 1000);
+        HttpConnectionParams.setSoTimeout(globalParams, getConfiguration().getDataReadTimeoutSeconds() * 1000);
+        HttpProtocolParams.setContentCharset(globalParams, getConfiguration().getContentCharset());
+        if(getConfiguration().getSocketBufferSize() != -1) {
+        	
+        	// Android configuration will set this to 8192 as its httpclient is based 
+        	// on a random pre 4.0.1 snapshot whose BasicHttpParams do not set a default value for socket buffer size.
+        	// This will also avoid OOM on the HTC Thunderbolt where default size is 2Mb (!):
+        	// http://stackoverflow.com/questions/5358014/android-httpclient-oom-on-4g-lte-htc-thunderbolt
+        	
+        	HttpConnectionParams.setSocketBufferSize(globalParams, getConfiguration().getSocketBufferSize());
+        }
+        HttpConnectionParams.setStaleCheckingEnabled(globalParams, getConfiguration().getStaleCheckingEnabled());
 
-	/**
-	 * Constructs a new {@link StreamClientImpl}.
-	 * 
-	 * @param configuration
-	 *            to use for client configuration.
-	 */
-	public StreamClientImpl(StreamClientConfigurationImpl configuration)
-	{
-		this.configuration = configuration;
-		HttpProtocolParams.setContentCharset(globalParams, getConfiguration().getContentCharset());
-		HttpProtocolParams.setUseExpectContinue(globalParams, false);
 
-		// These are some safety settings, we should never run into these timeouts as we
-		// do our own expiration checking
+        // This is a pretty stupid API... https://issues.apache.org/jira/browse/HTTPCLIENT-805
+        SchemeRegistry registry = new SchemeRegistry();
+        registry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory())); // The 80 here is... useless
+        clientConnectionManager = new ThreadSafeClientConnManager(globalParams, registry);
+        httpClient = new DefaultHttpClient(clientConnectionManager, globalParams);
+        if(getConfiguration().getRequestRetryCount() != -1) {
+        	httpClient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(getConfiguration().getRequestRetryCount(), false));
+        }
+        
+        /*
+        // TODO: Ugh! And it turns out that by default it doesn't even use persistent connections properly!
+        @Override
+        protected ConnectionReuseStrategy createConnectionReuseStrategy() {
+            return new NoConnectionReuseStrategy();
+        }
 
-		if (getConfiguration().getSocketBufferSize() != -1)
-			HttpConnectionParams.setSocketBufferSize(globalParams, getConfiguration().getSocketBufferSize());
+        @Override
+        protected ConnectionKeepAliveStrategy createConnectionKeepAliveStrategy() {
+            return new ConnectionKeepAliveStrategy() {
+                public long getKeepAliveDuration(HttpResponse httpResponse, HttpContext httpContext) {
+                    return 0;
+                }
+            };
+        }
+        httpClient.removeRequestInterceptorByClass(RequestConnControl.class);
+        */
+    }
+    @Override
+    public StreamClientConfigurationImpl getConfiguration() {
+        return configuration;
+    }
 
-		HttpConnectionParams.setStaleCheckingEnabled(globalParams, getConfiguration().getStaleCheckingEnabled());
+    @Override
+    public StreamResponseMessage sendRequest(StreamRequestMessage requestMessage) {
 
-		// Only register 80, not 443 and SSL
-		SchemeRegistry registry = new SchemeRegistry();
-		// This is the key difference to the cling 1.X version. Constructor call of Scheme
-		// is in a different order.
-		registry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
+        final UpnpRequest requestOperation = requestMessage.getOperation();
+        log.fine("Preparing HTTP request message with method '" + requestOperation.getHttpMethodName() + "': " + requestMessage);
 
-		clientConnectionManager = new ThreadSafeClientConnManager(registry);
-		clientConnectionManager.setMaxTotal(getConfiguration().getMaxTotalConnections());
+        try {
 
-		httpClient = new DefaultHttpClient(clientConnectionManager, globalParams);
-		if (getConfiguration().getRequestRetryCount() != -1)
-		{
-			httpClient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(getConfiguration()
-					.getRequestRetryCount(), false));
-		}
-	}
+            // Create the right HTTP request
+            HttpUriRequest httpRequest = createHttpRequest(requestMessage, requestOperation);
 
-	@Override
-	public StreamResponseMessage sendRequest(StreamRequestMessage message)
-	{
-		if (log.isLoggable(Level.FINE))
-			log.fine("Sending HTTP request: " + message);
+            // Set all the headers on the request
+            httpRequest.setParams(getRequestParams(requestMessage));
+            HeaderUtil.add(httpRequest, requestMessage.getHeaders());
 
-		try
-		{
-			return httpClient.execute(createRequest(message), createResponseHandler());
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
+            log.fine("Sending HTTP request: " + httpRequest.getURI());
+            return httpClient.execute(httpRequest, createResponseHandler());
 
-	protected ResponseHandler<StreamResponseMessage> createResponseHandler()
-	{
-		return new ResponseHandler<StreamResponseMessage>()
-		{
-			public StreamResponseMessage handleResponse(final HttpResponse httpResponse) throws IOException
-			{
+        } catch (MethodNotSupportedException ex) {
+            log.warning("Request aborted: " + ex.toString());
+            return null;
+        } catch (ClientProtocolException ex) {
+            log.warning("HTTP protocol exception executing request: " + requestMessage);
+            log.warning("Cause: " + Exceptions.unwrap(ex));
+            return null;
+        } catch (IOException ex) {
+            log.fine("Client connection was aborted: " + ex.getMessage()); // Don't log stacktrace
+            return null;
+        }
+    }
 
-				StatusLine statusLine = httpResponse.getStatusLine();
-				if (log.isLoggable(Level.FINE))
-					log.fine("Received HTTP response: " + statusLine);
+    @Override
+    public void stop() {
+        log.fine("Shutting down HTTP client connection manager/pool");
+        clientConnectionManager.shutdown();
+    }
 
-				// Status
-				UpnpResponse responseOperation = new UpnpResponse(statusLine.getStatusCode(),
-						statusLine.getReasonPhrase());
+    protected HttpUriRequest createHttpRequest(UpnpMessage upnpMessage, UpnpRequest upnpRequestOperation) throws MethodNotSupportedException {
 
-				// Message
-				StreamResponseMessage responseMessage = new StreamResponseMessage(responseOperation);
+        switch (upnpRequestOperation.getMethod()) {
+            case GET:
+                return new HttpGet(upnpRequestOperation.getURI());
+            case SUBSCRIBE:
+                return new HttpGet(upnpRequestOperation.getURI()) {
+                    @Override
+                    public String getMethod() {
+                        return UpnpRequest.Method.SUBSCRIBE.getHttpName();
+                    }
+                };
+            case UNSUBSCRIBE:
+                return new HttpGet(upnpRequestOperation.getURI()) {
+                    @Override
+                    public String getMethod() {
+                        return UpnpRequest.Method.UNSUBSCRIBE.getHttpName();
+                    }
+                };
+            case POST:
+                HttpEntityEnclosingRequest post = new HttpPost(upnpRequestOperation.getURI());
+                post.setEntity(createHttpRequestEntity(upnpMessage));
+                return (HttpUriRequest) post; // Fantastic API
+            case NOTIFY:
+                HttpEntityEnclosingRequest notify = new HttpPost(upnpRequestOperation.getURI()) {
+                    @Override
+                    public String getMethod() {
+                        return UpnpRequest.Method.NOTIFY.getHttpName();
+                    }
+                };
+                notify.setEntity(createHttpRequestEntity(upnpMessage));
+                return (HttpUriRequest) notify; // Fantastic API
+            default:
+                throw new MethodNotSupportedException(upnpRequestOperation.getHttpMethodName());
+        }
 
-				// Headers
-				responseMessage.setHeaders(new UpnpHeaders(HeaderUtil.get(httpResponse)));
+    }
 
-				// Body
-				HttpEntity entity = httpResponse.getEntity();
-				if (entity == null || entity.getContentLength() == 0)
-				{
-					log.fine("HTTP response message has no entity");
-					return responseMessage;
-				}
+    protected HttpEntity createHttpRequestEntity(UpnpMessage upnpMessage) {
+        if (upnpMessage.getBodyType().equals(UpnpMessage.BodyType.BYTES)) {
+            log.fine("Preparing HTTP request entity as byte[]");
+            return new ByteArrayEntity(upnpMessage.getBodyBytes());
+        } else {
+            log.fine("Preparing HTTP request entity as string");
+            try {
+                String charset = upnpMessage.getContentTypeCharset();
+                return new StringEntity(upnpMessage.getBodyString(), charset != null ? charset : "UTF-8");
+            } catch (Exception ex) {
+                // WTF else am I supposed to do with this exception?
+                throw new RuntimeException(ex);
+            }
+        }
+    }
 
-				byte data[] = EntityUtils.toByteArray(entity);
-				if (data != null)
-				{
-					if (responseMessage.isContentTypeMissingOrText())
-					{
-						log.fine("HTTP response message contains text entity");
-						responseMessage.setBodyCharacters(data);
-					}
-					else
-					{
-						log.fine("HTTP response message contains binary entity");
-						responseMessage.setBody(UpnpMessage.BodyType.BYTES, data);
-					}
-				}
-				else
-				{
-					log.fine("HTTP response message has no entity");
-				}
+    protected ResponseHandler<StreamResponseMessage> createResponseHandler() {
+        return new ResponseHandler<StreamResponseMessage>() {
+            public StreamResponseMessage handleResponse(final HttpResponse httpResponse) throws IOException {
 
-				return responseMessage;
-			}
-		};
-	}
+                StatusLine statusLine = httpResponse.getStatusLine();
+                log.fine("Received HTTP response: " + statusLine);
 
-	protected HttpUriRequest createRequest(StreamRequestMessage requestMessage)
-	{
-		UpnpRequest requestOperation = requestMessage.getOperation();
-		HttpUriRequest request;
-		switch (requestOperation.getMethod())
-		{
-		case GET:
-			request = new HttpGet(requestOperation.getURI());
-			break;
-		case SUBSCRIBE:
-			request = new HttpGet(requestOperation.getURI())
-			{
-				@Override
-				public String getMethod()
-				{
-					return UpnpRequest.Method.SUBSCRIBE.getHttpName();
-				}
-			};
-			break;
-		case UNSUBSCRIBE:
-			request = new HttpGet(requestOperation.getURI())
-			{
-				@Override
-				public String getMethod()
-				{
-					return UpnpRequest.Method.UNSUBSCRIBE.getHttpName();
-				}
-			};
-			break;
-		case POST:
-			HttpEntityEnclosingRequest post = new HttpPost(requestOperation.getURI());
-			post.setEntity(createHttpRequestEntity(requestMessage));
-			request = (HttpUriRequest) post; // Fantastic API
-			break;
-		case NOTIFY:
-			HttpEntityEnclosingRequest notify = new HttpPost(requestOperation.getURI())
-			{
-				@Override
-				public String getMethod()
-				{
-					return UpnpRequest.Method.NOTIFY.getHttpName();
-				}
-			};
-			notify.setEntity(createHttpRequestEntity(requestMessage));
-			request = (HttpUriRequest) notify; // Fantastic API
-			break;
-		default:
-			throw new RuntimeException("Unknown HTTP method: " + requestOperation.getHttpMethodName());
-		}
+                // Status
+                UpnpResponse responseOperation =
+                        new UpnpResponse(statusLine.getStatusCode(), statusLine.getReasonPhrase());
 
-		// Headers
-		request.setParams(getRequestParams(requestMessage));
-		HeaderUtil.add(request, requestMessage.getHeaders());
+                // Message
+                StreamResponseMessage responseMessage = new StreamResponseMessage(responseOperation);
 
-		return request;
-	}
+                // Headers
+                responseMessage.setHeaders(new UpnpHeaders(HeaderUtil.get(httpResponse)));
 
-	protected HttpEntity createHttpRequestEntity(UpnpMessage upnpMessage)
-	{
-		if (upnpMessage.getBodyType().equals(UpnpMessage.BodyType.BYTES))
-		{
-			if (log.isLoggable(Level.FINE))
-				log.fine("Preparing HTTP request entity as byte[]");
-			return new ByteArrayEntity(upnpMessage.getBodyBytes());
-		}
-		else
-		{
-			if (log.isLoggable(Level.FINE))
-				log.fine("Preparing HTTP request entity as string");
-			try
-			{
-				String charset = upnpMessage.getContentTypeCharset();
-				return new StringEntity(upnpMessage.getBodyString(), charset != null ? charset : "UTF-8");
-			}
-			catch (Exception ex)
-			{
-				// WTF else am I supposed to do with this exception?
-				throw new RuntimeException(ex);
-			}
-		}
-	}
+                // Body
+                HttpEntity entity = httpResponse.getEntity();
+                if (entity == null || entity.getContentLength() == 0) return responseMessage;
 
-	protected HttpParams getRequestParams(StreamRequestMessage requestMessage)
-	{
-		HttpParams localParams = new BasicHttpParams();
+                if (responseMessage.isContentTypeMissingOrText()) {
+                    log.fine("HTTP response message contains text entity");
+                    responseMessage.setBody(UpnpMessage.BodyType.STRING, EntityUtils.toString(entity));
+                } else {
+                    log.fine("HTTP response message contains binary entity");
+                    responseMessage.setBody(UpnpMessage.BodyType.BYTES, EntityUtils.toByteArray(entity));
+                }
 
-		localParams.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, requestMessage.getOperation()
-				.getHttpMinorVersion() == 0 ? HttpVersion.HTTP_1_0 : HttpVersion.HTTP_1_1);
+                return responseMessage;
+            }
+        };
+    }
 
-		// DefaultHttpClient adds HOST header automatically in its default processor
+    protected HttpParams getRequestParams(StreamRequestMessage requestMessage) {
+        HttpParams localParams = new BasicHttpParams();
 
-		// Add the default user agent if not already set on the message
-		if (!requestMessage.getHeaders().containsKey(UpnpHeader.Type.USER_AGENT))
-		{
-			HttpProtocolParams.setUserAgent(
-					localParams,
-					getConfiguration().getUserAgentValue(requestMessage.getUdaMajorVersion(),
-							requestMessage.getUdaMinorVersion()));
-		}
+        localParams.setParameter(
+                CoreProtocolPNames.PROTOCOL_VERSION,
+                requestMessage.getOperation().getHttpMinorVersion() == 0 ? HttpVersion.HTTP_1_0 : HttpVersion.HTTP_1_1
+        );
 
-		return new DefaultedHttpParams(localParams, globalParams);
-	}
+        // DefaultHttpClient adds HOST header automatically in its default processor
 
-	@Override
-	public void stop()
-	{
-		log.fine("Shutting down HTTP client connection manager/pool");
-		clientConnectionManager.shutdown();
-	}
+        // Let's add the user-agent header on every request
+        HttpProtocolParams.setUserAgent(
+                localParams,
+                getConfiguration().getUserAgentValue(requestMessage.getUdaMajorVersion(), requestMessage.getUdaMinorVersion())
+        );
 
-	@Override
-	public StreamClientConfigurationImpl getConfiguration()
-	{
-		return configuration;
-	}
+        return new DefaultedHttpParams(localParams, globalParams);
+    }
+
+
 }
