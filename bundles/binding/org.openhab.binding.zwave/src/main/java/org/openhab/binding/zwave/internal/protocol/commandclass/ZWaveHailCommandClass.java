@@ -70,7 +70,7 @@ public class ZWaveHailCommandClass extends ZWaveCommandClass {
 				if (this.getNode().getNodeStage() != NodeStage.DONE)
 					return;
 				
-				pollNode();
+				getController().pollNode(getNode());
 				
 				break;
 			default:
@@ -78,56 +78,6 @@ public class ZWaveHailCommandClass extends ZWaveCommandClass {
 					command, 
 					this.getCommandClass().getLabel(),
 					this.getCommandClass().getKey()));
-		}
-	}
-	
-	/**
-	 * Poll our nodes status, identical to an ApplicationUpdate request
-	 */
-	void pollNode() {
-		
-		ZWaveController zController = getController();
-		ZWaveNode node = getNode();
-		
-		for (ZWaveCommandClass zwaveCommandClass : node.getCommandClasses()) {
-			logger.trace("NODE {}: Inspecting command class {}", node.getNodeId(), zwaveCommandClass.getCommandClass().getLabel());
-			if (zwaveCommandClass instanceof ZWaveCommandClassDynamicState) {
-				logger.debug("NODE {}: Found dynamic state command class {}", node.getNodeId(), zwaveCommandClass.getCommandClass()
-						.getLabel());
-				ZWaveCommandClassDynamicState zdds = (ZWaveCommandClassDynamicState) zwaveCommandClass;
-				int instances = zwaveCommandClass.getInstances();
-				if (instances == 0) {
-					Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
-					for (SerialMessage serialMessage : dynamicQueries) {
-						zController.sendData(serialMessage);
-					}
-				} else {
-					for (int i = 1; i <= instances; i++) {
-						Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
-						for (SerialMessage serialMessage : dynamicQueries) {
-							zController.sendData(node.encapsulate(serialMessage, zwaveCommandClass, i));
-						}
-					}
-				}
-			} else if (zwaveCommandClass instanceof ZWaveMultiInstanceCommandClass) {
-				ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) zwaveCommandClass;
-				for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
-					for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
-						logger.trace(String.format("NODE %d: Inspecting command class %s for endpoint %d", node.getNodeId(), endpointCommandClass
-								.getCommandClass().getLabel(), endpoint.getEndpointId()));
-						if (endpointCommandClass instanceof ZWaveCommandClassDynamicState) {
-							logger.debug("NODE {}: Found dynamic state command class {}", node.getNodeId(), endpointCommandClass
-									.getCommandClass().getLabel());
-							ZWaveCommandClassDynamicState zdds2 = (ZWaveCommandClassDynamicState) endpointCommandClass;
-							Collection<SerialMessage> dynamicQueries = zdds2.getDynamicValues();
-							for (SerialMessage serialMessage : dynamicQueries) {
-								zController.sendData(node.encapsulate(serialMessage,
-										endpointCommandClass, endpoint.getEndpointId()));
-							}
-						}
-					}
-				}
-			}
 		}
 	}
 }
