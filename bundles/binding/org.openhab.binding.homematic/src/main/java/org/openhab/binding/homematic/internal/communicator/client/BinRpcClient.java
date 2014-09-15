@@ -11,14 +11,15 @@ package org.openhab.binding.homematic.internal.communicator.client;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openhab.binding.homematic.internal.binrpc.BinRpcRequest;
 import org.openhab.binding.homematic.internal.binrpc.BinRpcResponse;
-import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.model.HmInterface;
+import org.openhab.binding.homematic.internal.model.HmRssiInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public class BinRpcClient implements RpcClient {
 	private final static Logger logger = LoggerFactory.getLogger(BinRpcClient.class);
 	private final static boolean TRACE_ENABLED = logger.isTraceEnabled();
 
-	private HomematicConfig config = HomematicContext.getInstance().getConfig();
+	private HomematicContext context = HomematicContext.getInstance();
 
 	/**
 	 * {@inheritDoc}
@@ -57,7 +58,7 @@ public class BinRpcClient implements RpcClient {
 	@Override
 	public void init(HmInterface hmInterface) throws HomematicClientException {
 		BinRpcRequest request = new BinRpcRequest("init");
-		request.addArg(config.getBinRpcCallbackUrl());
+		request.addArg(context.getConfig().getBinRpcCallbackUrl());
 		request.addArg(hmInterface.toString());
 		sendMessage(hmInterface, request);
 	}
@@ -68,7 +69,7 @@ public class BinRpcClient implements RpcClient {
 	@Override
 	public void release(HmInterface hmInterface) throws HomematicClientException {
 		BinRpcRequest request = new BinRpcRequest("init");
-		request.addArg(config.getBinRpcCallbackUrl());
+		request.addArg(context.getConfig().getBinRpcCallbackUrl());
 		sendMessage(hmInterface, request);
 	}
 
@@ -114,7 +115,35 @@ public class BinRpcClient implements RpcClient {
 		Map<String, String> deviceDescription = getDeviceDescription(hmInterface, "BidCoS-RF");
 		ServerId serverId = new ServerId(deviceDescription.get("TYPE"));
 		serverId.setVersion(deviceDescription.get("FIRMWARE"));
+		serverId.setAddress(deviceDescription.get("INTERFACE"));
 		return serverId;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, HmRssiInfo> getRssiInfo(HmInterface hmInterface) throws HomematicClientException {
+		BinRpcRequest request = new BinRpcRequest("rssiInfo");
+		Map<String, HmRssiInfo> rssiList = new HashMap<String, HmRssiInfo>();
+		Object[] result = sendMessage(hmInterface, request);
+		if (result != null && result.length > 0 && result[0] instanceof Map) {
+			Map<String, ?> devices = (Map<String, ?>) result[0];
+			for (String sourceDevice : devices.keySet()) {
+				Map<String, Object[]> targetDevices = (Map<String, Object[]>) devices.get(sourceDevice);
+				for (String targetDevice : targetDevices.keySet()) {
+					if (targetDevice.equals(context.getServerId().getAddress())) {
+						Integer rssiDevice = (Integer) targetDevices.get(targetDevice)[0];
+						Integer rssiPeer = (Integer) targetDevices.get(targetDevice)[1];
+						HmRssiInfo rssiInfo = new HmRssiInfo(sourceDevice, rssiDevice, rssiPeer);
+						logger.debug("Adding {}", rssiInfo);
+						rssiList.put(rssiInfo.getAddress(), rssiInfo);
+					}
+				}
+			}
+		}
+		return rssiList;
 	}
 
 	/**
@@ -161,7 +190,7 @@ public class BinRpcClient implements RpcClient {
 			if (TRACE_ENABLED) {
 				logger.trace("Client BinRpcRequest {}", request);
 			}
-			socket = new Socket(config.getHost(), hmInterface.getPort());
+			socket = new Socket(context.getConfig().getHost(), hmInterface.getPort());
 			socket.setSoTimeout(5000);
 			socket.getOutputStream().write(request.createMessage());
 			BinRpcResponse resp = new BinRpcResponse(socket.getInputStream(), false);

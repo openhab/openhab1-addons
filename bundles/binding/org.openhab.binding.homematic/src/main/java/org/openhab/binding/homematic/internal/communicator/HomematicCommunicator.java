@@ -16,7 +16,6 @@ import org.openhab.binding.homematic.internal.communicator.client.BinRpcClient;
 import org.openhab.binding.homematic.internal.communicator.client.CcuClient;
 import org.openhab.binding.homematic.internal.communicator.client.HomegearClient;
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
-import org.openhab.binding.homematic.internal.communicator.client.ServerId;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.HomematicClient;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.communicator.server.BinRpcCallbackServer;
@@ -72,9 +71,11 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 				newDevicesCounter = 0;
 
 				RpcClient rpcClient = new BinRpcClient();
-				ServerId serverId = rpcClient.getServerId(HmInterface.RF);
-				logger.info("Homematic {}", serverId);
-				homematicClient = serverId.isHomegear() ? new HomegearClient(rpcClient) : new CcuClient(rpcClient);
+				context.setServerId(rpcClient.getServerId(HmInterface.RF));
+				logger.info("Homematic {}", context.getServerId());
+
+				homematicClient = context.getServerId().isHomegear() ? new HomegearClient(rpcClient) : new CcuClient(
+						rpcClient);
 
 				context.setHomematicClient(homematicClient);
 				homematicClient.start();

@@ -13,6 +13,7 @@ import java.util.Map;
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
 import org.openhab.binding.homematic.internal.communicator.client.ServerId;
 import org.openhab.binding.homematic.internal.model.HmInterface;
+import org.openhab.binding.homematic.internal.model.HmRssiInfo;
 
 /**
  * The interface with the methods for BIN-RPC communication.
@@ -73,6 +74,11 @@ public interface RpcClient {
 	 * Returns the id of the Homematic server.
 	 */
 	public ServerId getServerId(HmInterface hmInterface) throws HomematicClientException;
+
+	/**
+	 * Returns the rssi info of RF devices.
+	 */
+	public Map<String, HmRssiInfo> getRssiInfo(HmInterface hmInterface) throws HomematicClientException;
 
 	/**
 	 * Returns the description of a Homematic device.

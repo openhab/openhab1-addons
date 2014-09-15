@@ -36,6 +36,7 @@ import org.openhab.binding.homematic.internal.model.HmDevice;
 import org.openhab.binding.homematic.internal.model.HmDeviceList;
 import org.openhab.binding.homematic.internal.model.HmInterface;
 import org.openhab.binding.homematic.internal.model.HmResult;
+import org.openhab.binding.homematic.internal.model.HmRssiInfo;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.openhab.binding.homematic.internal.model.HmVariable;
 import org.openhab.binding.homematic.internal.model.HmVariableList;
@@ -121,6 +122,7 @@ public class CcuClient extends BaseHomematicClient {
 	 */
 	public void iterateAllDatapoints(HmValueItemIteratorCallback callback) throws HomematicClientException {
 		List<HmDevice> devices = sendScriptByName("getAllDevices", HmDeviceList.class).getDevices();
+		Map<String, HmRssiInfo> rssiList = rpcClient.getRssiInfo(HmInterface.RF);
 		for (HmDevice device : devices) {
 			addBatteryInfo(device);
 
@@ -128,6 +130,14 @@ public class CcuClient extends BaseHomematicClient {
 				for (HmDatapoint dp : channel.getDatapoints()) {
 					DatapointConfig bindingConfig = new DatapointConfig(device.getAddress(), channel.getNumber(),
 							dp.getName());
+					HmRssiInfo rssiInfo = rssiList.get(bindingConfig.getAddress());
+					if (rssiInfo != null) {
+						if ("RSSI_DEVICE".equals(bindingConfig.getParameter())) {
+							dp.setValue(rssiInfo.getDevice());
+						} else if ("RSSI_PEER".equals(bindingConfig.getParameter())) {
+							dp.setValue(rssiInfo.getPeer());
+						}
+					}
 					callback.iterate(bindingConfig, dp);
 				}
 			}

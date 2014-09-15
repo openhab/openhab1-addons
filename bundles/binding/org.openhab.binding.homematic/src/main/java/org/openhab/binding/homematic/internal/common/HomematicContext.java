@@ -12,6 +12,7 @@ import java.util.Collection;
 
 import org.openhab.binding.homematic.HomematicBindingProvider;
 import org.openhab.binding.homematic.internal.communicator.StateHolder;
+import org.openhab.binding.homematic.internal.communicator.client.ServerId;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.HomematicClient;
 import org.openhab.binding.homematic.internal.converter.ConverterFactory;
 import org.openhab.core.events.EventPublisher;
@@ -29,7 +30,8 @@ public class HomematicContext {
 	private ConverterFactory converterFactory = new ConverterFactory();
 	private HomematicClient homematicClient;
 	private StateHolder stateHolder;
-
+	private ServerId serverId;
+	
 	private static HomematicContext instance;
 
 	private HomematicContext() {
@@ -109,4 +111,17 @@ public class HomematicContext {
 		return stateHolder;
 	}
 
+	/**
+	 * Returns the serverId.
+	 */
+	public ServerId getServerId() {
+		return serverId;
+	}
+	
+	/**
+	 * Sets the serverId.
+	 */
+	public void setServerId(ServerId serverId) {
+		this.serverId = serverId;
+	}
 }
