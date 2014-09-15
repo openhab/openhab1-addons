@@ -97,6 +97,7 @@ public class HomegearClient extends BaseHomematicClient {
 
 				for (HmChannel channel : device.getChannels()) {
 					for (HmDatapoint dp : channel.getDatapoints()) {
+						logger.trace("{}", dp);
 						DatapointConfig bindingConfig = new DatapointConfig(device.getAddress(), channel.getNumber(),
 								dp.getName());
 						callback.iterate(bindingConfig, dp);
