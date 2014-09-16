@@ -9,8 +9,11 @@
 package org.openhab.binding.alarmdecoder.internal;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.openhab.core.binding.BindingConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Holds binding configuration
@@ -19,6 +22,7 @@ import org.openhab.core.binding.BindingConfig;
  * @since 1.6.0
  */
 public class AlarmDecoderBindingConfig implements BindingConfig {
+	private static final Logger logger = LoggerFactory.getLogger(AlarmDecoderBindingConfig.class);
 	/**
 	 * Class that holds binding configuration information
 	 * @param type
@@ -70,11 +74,12 @@ public class AlarmDecoderBindingConfig implements BindingConfig {
 		String v = m_params.get(key);
 		if (v != null) {
 			try {
-				int tmp = Integer.parseInt(v);
+				int tmp = Integer.decode(v);
 				if (tmp >= min && tmp <= max) {
 					i = tmp;
 				}
 			} catch (NumberFormatException e) {
+				logger.error("bad number in int parameter configuration: {} = {}", key, v);
 			}
 		}
 		return i;
@@ -86,7 +91,10 @@ public class AlarmDecoderBindingConfig implements BindingConfig {
 	
 	public String toString() {
 		String s = m_itemName + "->" + m_type + ":" + m_address +
-				"#" + m_feature + ":" + m_params.size();
+				"#" + m_feature;
+		for (Entry<String, String> p : m_params.entrySet()) {
+			s += ":" + p.getKey() + "=" + p.getValue() + ",";
+		}
 		return s;
 	}
 }
