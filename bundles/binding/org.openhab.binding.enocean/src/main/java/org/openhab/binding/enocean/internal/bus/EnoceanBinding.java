@@ -17,16 +17,16 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.enocean.java.ESP3Host;
-import org.enocean.java.EnoceanReceiver;
-import org.enocean.java.EnoceanSerialConnector;
-import org.enocean.java.address.EnoceanParameterAddress;
-import org.enocean.java.common.EEPId;
-import org.enocean.java.common.ParameterAddress;
-import org.enocean.java.common.ParameterValueChangeListener;
-import org.enocean.java.common.ProtocolConnector;
-import org.enocean.java.common.values.Value;
-import org.enocean.java.packets.BasicPacket;
+import org.opencean.core.ESP3Host;
+import org.opencean.core.EnoceanReceiver;
+import org.opencean.core.EnoceanSerialConnector;
+import org.opencean.core.address.EnoceanParameterAddress;
+import org.opencean.core.common.EEPId;
+import org.opencean.core.common.ParameterAddress;
+import org.opencean.core.common.ParameterValueChangeListener;
+import org.opencean.core.common.ProtocolConnector;
+import org.opencean.core.common.values.Value;
+import org.opencean.core.packets.BasicPacket;
 import org.openhab.binding.enocean.EnoceanBindingProvider;
 import org.openhab.binding.enocean.internal.converter.CommandConverter;
 import org.openhab.binding.enocean.internal.converter.ConverterFactory;
@@ -35,12 +35,14 @@ import org.openhab.binding.enocean.internal.profiles.Profile;
 import org.openhab.binding.enocean.internal.profiles.RollershutterProfile;
 import org.openhab.binding.enocean.internal.profiles.StandardProfile;
 import org.openhab.binding.enocean.internal.profiles.SwitchOnOffProfile;
+import org.openhab.binding.enocean.internal.profiles.WindowHandleProfile;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.RollershutterItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -202,7 +204,7 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
             } catch (Exception e) {
                 logger.error("Could not create class for profile " + customProfileClass, e);
             }
-        } else if (EEPId.EEP_F6_02_01.equals(eep) || EEPId.EEP_F6_02_01.equals(eep)) {
+        } else if (EEPId.EEP_F6_02_01.equals(eep) || EEPId.EEP_F6_10_00.equals(eep)) {
             if (item.getClass().equals(RollershutterItem.class)) {
                 RollershutterProfile profile = new RollershutterProfile(item, eventPublisher);
                 addProfile(item, parameterAddress, profile);
@@ -213,6 +215,10 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
             }
             if (item.getClass().equals(SwitchItem.class) && parameterAddress.getParameterId() == null) {
                 SwitchOnOffProfile profile = new SwitchOnOffProfile(item, eventPublisher);
+                addProfile(item, parameterAddress, profile);
+            }
+            if (item.getClass().equals(StringItem.class) && EEPId.EEP_F6_10_00.equals(eep)) {
+                WindowHandleProfile profile = new WindowHandleProfile(item, eventPublisher);
                 addProfile(item, parameterAddress, profile);
             }
         }

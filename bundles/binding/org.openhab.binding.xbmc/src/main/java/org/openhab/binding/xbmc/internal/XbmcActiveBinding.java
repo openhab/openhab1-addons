@@ -129,11 +129,14 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			connector.addItem(itemName, property);
 			
 			// update the player status so any current value is initialised
-			if (connector.isConnected())
+			if (connector.isConnected()) {
 				connector.updatePlayerStatus();
+			}
 			
 			if (property.startsWith("Application")) {
 				connector.requestApplicationUpdate();
+			} else if (property.equals("System.State")) {
+				connector.updateSystemStatus();
 			}
 		}
 	}
@@ -246,7 +249,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 				// we are still connected but send a ping to make sure
 				connector.ping();
 				// refresh all players
-				connector.updatePlayerStatus();
+				connector.updatePlayerStatus(true);
 			} else {
 				// broken connection so attempt to reconnect
 				logger.debug("Broken connection found for '{}', attempting to reconnect...", entry.getKey());
@@ -296,6 +299,12 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 				connector.showNotification("openHAB", command.toString());
 			else if (property.equals("System.Shutdown") && command == OnOffType.OFF)
 				connector.systemShutdown();
+			else if (property.equals("System.Suspend") && command == OnOffType.OFF)
+				connector.systemSuspend();
+			else if (property.equals("System.Hibernate") && command == OnOffType.OFF)
+				connector.systemHibernate();
+			else if (property.equals("System.Reboot") && command == OnOffType.OFF)
+				connector.systemReboot();
 			else if (property.equals("Application.Volume"))
 				connector.applicationSetVolume(command.toString());
 		} catch (Exception e) {

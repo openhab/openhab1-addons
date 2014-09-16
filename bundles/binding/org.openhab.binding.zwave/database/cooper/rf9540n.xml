@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>RF9540-N</Model>
+	<Label lang="en">Aspire RF Dimmer</Label>
+	<CommandClasses>
+		<Class><id>0x00</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x2B</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x82</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 1</Label>
+		</Group>
+	</Associations>
+        <Configuration>
+                <Parameter> 
+                        <Index>1</Index>
+                        <Type>byte</Type>
+                        <Minimum>0</Minimum>
+                        <Maximum>255</Maximum>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Delayed OFF time</Label>
+                        <Help lang="en">The amount of time in seconds the switch will delay when trigger the delayed off feature</Help>
+                </Parameter>
+                <Parameter> 
+                        <Index>2</Index>
+                        <Type>byte</Type>
+                        <Minimum>0</Minimum>
+                        <Maximum>255</Maximum>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Panic ON time</Label>
+                        <Help lang="en">The amount of time in seconds the switch will turn on for when panic mode is triggered</Help>
+                </Parameter>
+                <Parameter> 
+                        <Index>3</Index>
+                        <Type>byte</Type>
+                        <Minimum>0</Minimum>
+                        <Maximum>255</Maximum>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Panic OFF time</Label>
+                        <Help lang="en">The amount of time in seconds the switch will turn off for when panic mode is triggered</Help>
+                </Parameter>
+                <Parameter> 
+                        <Index>4</Index>
+                        <Type>byte</Type>
+                        <Minimum>0</Minimum>
+                        <Maximum>255</Maximum>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Basic Set Value</Label>
+                        <Help lang="en">Setting this to anything other than 0 will cause the value to be transmitted to devices in the association group when the switch is triggered. A setting other than 0 will likely result in undesired operation</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>5</Index>
+                        <Type>list</Type>
+                        <Default>1</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Power Up State</Label>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">OFF</Label>
+                        </Item>
+                        <Item>
+                                <Value>2</Value>
+                                <Label lang="en">ON</Label>
+                        </Item>
+                        <Item>
+                                <Value>3</Value>
+                                <Label lang="en">Last State</Label>
+                        </Item>
+                        <Help lang="en">Power Up State of the switch</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>6</Index>
+                        <Type>list</Type>
+                        <Default>1</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Panic mode enable</Label>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">OFF</Label>
+                        </Item>
+                        <Item>
+                                <Value>2</Value>
+                                <Label lang="en">ON</Label>
+                        </Item>
+                        <Help lang="en">Enables this switch to participate in panic mode</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>7</Index>
+                        <Type>byte</Type>
+                        <Minimum>0</Minimum>
+                        <Maximum>255</Maximum>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Dimmer Ramp Time</Label>
+                        <Help lang="en">The amount of time in seconds the switch will take to reach the desired dim level</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>8</Index>
+                        <Type>list</Type>
+                        <Default>1</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Kickstart / Rapid Start</Label>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">OFF</Label>
+                        </Item>
+                        <Item>
+                                <Value>2</Value>
+                                <Label lang="en">ON</Label>
+                        </Item>
+                        <Help lang="en">Ensures that LED / CFL bulbs turn on when the preset dim level is low.  Enabling this feature may cause the lights brightness to momentarily be bright when the switch is turned on before reducing in brightness to desired level</Help>
+                </Parameter>
+                <Parameter> 
+                        <Index>11</Index>
+                        <Type>byte</Type>
+                        <Minimum>4</Minimum>
+                        <Maximum>99</Maximum>
+                        <Default>4</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Minimum Dimmer Level</Label>
+                        <Help lang="en">The minimum dim level the switch will allow</Help>
+                </Parameter>
+                <Parameter> 
+                        <Index>12</Index>
+                        <Type>byte</Type>
+                        <Minimum>4</Minimum>
+                        <Maximum>99</Maximum>
+                        <Default>99</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Maximum Dimmer Level</Label>
+                        <Help lang="en">The maximum dim level the switch will allow</Help>
+                </Parameter>
+	</Configuration>
+</Product>
+

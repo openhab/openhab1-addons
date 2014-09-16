@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>45603</Model>
-	<Label lang="en">Fluorescent Light &amp; Appliance Module</Label>
-	<CommandClasses>
-		<Class><id>0x70</id></Class>
-	</CommandClasses>
-	
-	<Configuration>
-
-	</Configuration>
-	
-</Product>
-<Product>
-	<Model>45609</Model>
+	<Model>45606</Model>
 	<Endpoints>1</Endpoints>
-	<Label lang="en">On/Off Relay Switch</Label>
+	<Label lang="en">In-Wall Dimmer</Label>
 	<CommandClasses>
-		<Class><id>0x70</id></Class>
+        <Class><id>0x20</id></Class>
+        <Class><id>0x26</id></Class>
+        <Class><id>0x27</id></Class>
+        <Class><id>0x72</id></Class>
+        <Class><id>0x86</id></Class>
+        <Class><id>0x70</id></Class>
 	</CommandClasses>
 	
 	<Configuration>

@@ -177,6 +177,17 @@ public class Msg {
 		}
 		return true;
 	}
+	public boolean isCleanup() {
+		try {
+			MsgType t = MsgType.s_fromValue(getByte("messageFlags"));
+			if (t == MsgType.ALL_LINK_CLEANUP) {
+				return true;
+			}
+		} catch (FieldException e) {
+			return false;
+		}
+		return false;
+	}
 
 	public boolean isAckOfDirect() {
 		try {

@@ -149,6 +149,17 @@ foreach (dev_id, root.Devices().EnumUsedIDs()) {
         Write("' writeable='false'");
         Write(" />\n");
       }
+      object humidityF = channel_obj.DPByHssDP("HUMIDITYF");
+      if (humidityF) {
+        Write("      <datapoint");
+        Write(" name='HUMIDITYF'")
+        Write(" value='"); WriteXML(humidityF.Value());
+        Write("' valueType='" # humidityF.ValueType());
+        Write("' min='" # humidityF.ValueMin());
+        Write("' max='" # humidityF.ValueMax());
+        Write("' writeable='false'");
+        Write(" />\n");
+      }
 
       foreach(dp_id, channel_obj.DPs().EnumUsedIDs()) {
         object dp_obj = dom.GetObject(dp_id);
