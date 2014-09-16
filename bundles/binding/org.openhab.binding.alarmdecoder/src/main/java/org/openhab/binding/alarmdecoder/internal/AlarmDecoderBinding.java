@@ -434,7 +434,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 			throw new MessageParseException("need 2 comma separated fields in msg");
 		}
 		try {
-			int numeric = Integer.parseInt(parts[1]);
+			int numeric = Integer.parseInt(parts[1], 16);
 			ArrayList<AlarmDecoderBindingConfig> bcl = getItems(ADMsgType.RFX, parts[0], null);
 			for (AlarmDecoderBindingConfig c : bcl) {
 				if (c.hasFeature("data")) {
