@@ -239,6 +239,11 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 			if (event.isOnType()) {
 				executeProgram(event);
 			}
+		} else if (event.isAction()) {
+			if (event.isOnType()) {
+				executeBindingAction(event.getBindingConfig());
+				itemDisabler.add(event.getBindingConfig());
+			}
 		} else {
 			event.setHmValueItem(context.getStateHolder().getState(event.getBindingConfig()));
 

@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.homematic.internal.communicator;
 
+import org.openhab.binding.homematic.internal.config.binding.ActionConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.ProgramConfig;
 import org.openhab.binding.homematic.internal.config.binding.ValueBindingConfig;
@@ -113,6 +114,13 @@ public class Event {
 	 */
 	public boolean isProgram() {
 		return bindingConfig instanceof ProgramConfig;
+	}
+
+	/**
+	 * Returns true if the bindingConfig is a action.
+	 */
+	public boolean isAction() {
+		return bindingConfig instanceof ActionConfig;
 	}
 
 	/**

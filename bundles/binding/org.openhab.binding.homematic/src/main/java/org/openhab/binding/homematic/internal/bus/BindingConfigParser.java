@@ -10,6 +10,7 @@ package org.openhab.binding.homematic.internal.bus;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematic.internal.config.BindingAction;
+import org.openhab.binding.homematic.internal.config.binding.ActionConfig;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.ProgramConfig;
@@ -78,9 +79,9 @@ public class BindingConfigParser {
 		}
 
 		Converter<?> converter = null;
-//		if (helper.isValidDatapoint() || helper.isValidVariable()) {
-//			converter = instantiateConverter(helper.converter);
-//		}
+		// if (helper.isValidDatapoint() || helper.isValidVariable()) {
+		// converter = instantiateConverter(helper.converter);
+		// }
 
 		BindingAction bindingAction = getBindingAction(item, helper.action);
 
@@ -96,6 +97,8 @@ public class BindingConfigParser {
 								+ item.getName());
 			}
 			return new ProgramConfig(helper.program, bindingAction);
+		} else if (bindingAction != null) {
+			return new ActionConfig(bindingAction);
 		} else {
 			throw new BindingConfigParseException("Invalid binding: " + bindingConfig);
 		}
