@@ -11,6 +11,8 @@ package org.openhab.binding.homematic.internal.communicator.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.config.binding.VariableConfig;
@@ -224,6 +226,13 @@ public class HomegearClient extends BaseHomematicClient {
 		}
 
 		Object value = dpData.get("VALUE");
+
+		String type = (String) dpData.get("TYPE");
+		boolean isString = StringUtils.equals("STRING", type);		
+		if (isString && !(value instanceof String)) {
+			value = ObjectUtils.toString(value);
+		}
+
 		if (value instanceof Number) {
 			writeField(dp, "minValue", dpData.get("MIN"), value.getClass());
 			writeField(dp, "maxValue", dpData.get("MAX"), value.getClass());
