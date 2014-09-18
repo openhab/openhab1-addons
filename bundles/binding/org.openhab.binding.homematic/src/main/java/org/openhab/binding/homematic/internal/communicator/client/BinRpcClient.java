@@ -137,7 +137,6 @@ public class BinRpcClient implements RpcClient {
 						Integer rssiDevice = (Integer) targetDevices.get(targetDevice)[0];
 						Integer rssiPeer = (Integer) targetDevices.get(targetDevice)[1];
 						HmRssiInfo rssiInfo = new HmRssiInfo(sourceDevice, rssiDevice, rssiPeer);
-						logger.debug("Adding {}", rssiInfo);
 						rssiList.put(rssiInfo.getAddress(), rssiInfo);
 					}
 				}

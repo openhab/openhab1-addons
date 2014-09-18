@@ -20,6 +20,7 @@ import org.openhab.binding.homematic.internal.communicator.client.interfaces.Hom
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.communicator.server.BinRpcCallbackServer;
 import org.openhab.binding.homematic.internal.config.BindingAction;
+import org.openhab.binding.homematic.internal.config.binding.ActionConfig;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.ProgramConfig;
@@ -205,7 +206,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 				State state = converter.convertFromBinding(hmValueItem);
 				context.getEventPublisher().postUpdate(item.getName(), state);
 			}
-		} else if (bindingConfig instanceof ProgramConfig) {
+		} else if (bindingConfig instanceof ProgramConfig || bindingConfig instanceof ActionConfig) {
 			context.getEventPublisher().postUpdate(item.getName(), OnOffType.OFF);
 		} else {
 			logger.warn("Can't find {}, value is not published to openHAB!", bindingConfig);
@@ -351,6 +352,8 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 				context.getStateHolder().reloadVariables();
 			} else if (bindingConfig.getAction() == BindingAction.RELOAD_DATAPOINTS) {
 				context.getStateHolder().reloadDatapoints();
+			} else if (bindingConfig.getAction() == BindingAction.RELOAD_RSSI) {
+				context.getStateHolder().reloadRssi();
 			} else {
 				logger.warn("Unknown action {}", bindingConfig.getAction());
 			}

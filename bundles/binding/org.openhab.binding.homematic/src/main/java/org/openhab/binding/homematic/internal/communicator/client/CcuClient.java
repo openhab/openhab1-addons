@@ -120,6 +120,7 @@ public class CcuClient extends BaseHomematicClient {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void iterateAllDatapoints(HmValueItemIteratorCallback callback) throws HomematicClientException {
 		List<HmDevice> devices = sendScriptByName("getAllDevices", HmDeviceList.class).getDevices();
 		Map<String, HmRssiInfo> rssiList = rpcClient.getRssiInfo(HmInterface.RF);
@@ -147,6 +148,15 @@ public class CcuClient extends BaseHomematicClient {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public Map<String, HmRssiInfo> getRssiInfo() throws HomematicClientException {
+		return rpcClient.getRssiInfo(HmInterface.RF);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void iterateAllVariables(HmValueItemIteratorCallback callback) throws HomematicClientException {
 		List<HmVariable> variables = sendScriptByName("getAllVariables", HmVariableList.class).getVariables();
 		for (HmVariable variable : variables) {
@@ -158,6 +168,7 @@ public class CcuClient extends BaseHomematicClient {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void executeProgram(String programName) throws HomematicClientException {
 		logger.debug("Executing program on CCU: {}", programName);
 		HmResult result = sendScriptByName("executeProgram", HmResult.class, new String[] { "program_name" },
@@ -193,6 +204,7 @@ public class CcuClient extends BaseHomematicClient {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void setVariable(HmValueItem hmValueItem, Object value) throws HomematicClientException {
 		String strValue = ObjectUtils.toString(value);
 		if (hmValueItem.isStringValue()) {

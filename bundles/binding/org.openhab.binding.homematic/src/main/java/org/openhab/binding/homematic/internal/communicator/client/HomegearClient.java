@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.homematic.internal.communicator.client;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
@@ -17,6 +18,7 @@ import org.openhab.binding.homematic.internal.model.HmChannel;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmDevice;
 import org.openhab.binding.homematic.internal.model.HmInterface;
+import org.openhab.binding.homematic.internal.model.HmRssiInfo;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.openhab.binding.homematic.internal.model.HmVariable;
 import org.slf4j.Logger;
@@ -144,6 +146,14 @@ public class HomegearClient extends BaseHomematicClient {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public Map<String, HmRssiInfo> getRssiInfo() throws HomematicClientException {
+		return new HashMap<String, HmRssiInfo>();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean isStarted() {
 		return started;
 	}
@@ -248,4 +258,5 @@ public class HomegearClient extends BaseHomematicClient {
 			valueItem.setValueType(20);
 		}
 	}
+
 }

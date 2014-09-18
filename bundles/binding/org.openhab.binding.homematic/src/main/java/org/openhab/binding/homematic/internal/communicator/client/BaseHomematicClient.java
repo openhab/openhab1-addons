@@ -150,5 +150,4 @@ public abstract class BaseHomematicClient implements HomematicClient {
 		 */
 		public void iterate(HomematicBindingConfig bindingConfig, HmValueItem hmValueItem);
 	}
-
 }

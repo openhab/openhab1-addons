@@ -33,7 +33,7 @@ public class HmRssiInfo {
 	 */
 	private Integer convert(Integer intValue) {
 		if (intValue == null || intValue == 65536) {
-			return null;
+			return 0;
 		}
 		return intValue;
 	}
