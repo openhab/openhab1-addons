@@ -98,10 +98,11 @@ public class HomegearClient extends BaseHomematicClient {
 				Map<String, ?> entryMap = (Map<String, ?>) result[i];
 				HmDevice device = parseDevice(entryMap);
 				addBatteryInfo(device);
+				logger.trace("{}", device);
 
 				for (HmChannel channel : device.getChannels()) {
 					for (HmDatapoint dp : channel.getDatapoints()) {
-						logger.trace("{}", dp);
+						logger.trace("  {}", dp.toDumpString());
 						DatapointConfig bindingConfig = new DatapointConfig(device.getAddress(), channel.getNumber(),
 								dp.getName());
 						callback.iterate(bindingConfig, dp);
@@ -149,6 +150,7 @@ public class HomegearClient extends BaseHomematicClient {
 	 */
 	@Override
 	public Map<String, HmRssiInfo> getRssiInfo() throws HomematicClientException {
+		logger.info("Reloading RSSI infos not necessary for Homegear, values are always up to date");
 		return new HashMap<String, HmRssiInfo>();
 	}
 

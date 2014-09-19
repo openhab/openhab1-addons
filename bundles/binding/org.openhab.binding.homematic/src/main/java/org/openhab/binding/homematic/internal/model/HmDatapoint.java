@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -51,4 +52,15 @@ public class HmDatapoint extends HmValueItem {
 				.append("parameter", name).toString();
 	}
 
+	/**
+	 * Dumps all data to support better debugging.
+	 */
+	public String toDumpString() {
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+				.append("address", channel.getDevice().getAddress()).append("channel", channel.getNumber())
+				.append("parameter", name).append("value", value).append("valueType", valueType)
+				.append("subType", subType).append("minValue", minValue).append("maxValue", maxValue)
+				.append("valueList", valueList == null ? null : StringUtils.join(valueList, ","))
+				.append("writeable", writeable).toString();
+	}
 }
