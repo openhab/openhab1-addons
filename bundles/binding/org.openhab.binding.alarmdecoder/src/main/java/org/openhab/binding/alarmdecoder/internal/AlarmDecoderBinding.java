@@ -434,7 +434,7 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 			throw new MessageParseException("need 2 comma separated fields in msg");
 		}
 		try {
-			int numeric = Integer.parseInt(parts[1]);
+			int numeric = Integer.parseInt(parts[1], 16);
 			ArrayList<AlarmDecoderBindingConfig> bcl = getItems(ADMsgType.RFX, parts[0], null);
 			for (AlarmDecoderBindingConfig c : bcl) {
 				if (c.hasFeature("data")) {
@@ -443,8 +443,8 @@ public class AlarmDecoderBinding extends AbstractActiveBinding<AlarmDecoderBindi
 					int v = (bit == -1) ? numeric : ((numeric >> bit) & 0x00000001);
 					updateItem(c, new DecimalType(v));
 				} else if (c.hasFeature("contact")) {
-					// if no loop indicator bitmask is set, default to 0x50
-					int bit = c.getIntParameter("bitmask", 0, 255, 0x50);
+					// if no loop indicator bitmask is set, default to 0x80
+					int bit = c.getIntParameter("bitmask", 0, 255, 0x80);
 					int v = numeric & bit;
 					updateItem(c, v == 0 ? OpenClosedType.CLOSED : OpenClosedType.OPEN);
 				}
