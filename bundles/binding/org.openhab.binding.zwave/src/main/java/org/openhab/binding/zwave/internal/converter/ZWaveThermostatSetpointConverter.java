@@ -136,6 +136,8 @@ public class ZWaveThermostatSetpointConverter extends
 		int scale = 0;
 		if (scaleString !=null ) scale= Integer.parseInt(scaleString);
 
+		logger.debug("NODE {}: Command received for {}", node.getNodeId(), command.toString());
+
 		if (converter == null) {
 			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
 			return;
@@ -172,7 +174,10 @@ public class ZWaveThermostatSetpointConverter extends
 			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
 			return;
 		}
-		
+
+		logger.debug("NODE {}: sending update request !!!!!!!", node.getNodeId());
+		logger.debug("Sending Message: {}", serialMessage);
+
 		this.getController().sendData(serialMessage);
 	}
 
