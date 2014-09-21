@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>054313</Model>
+	<Model>064435</Model>
 	<Label lang="en">Battery powered One paddle wall controller</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
