@@ -136,7 +136,7 @@ public class ZWaveThermostatSetpointConverter extends
 		int scale = 0;
 		if (scaleString !=null ) scale= Integer.parseInt(scaleString);
 
-		logger.debug("NODE {}: Command received for {}", node.getNodeId(), command.toString());
+		logger.debug("NODE {}: Thermostat command received for {}", node.getNodeId(), command.toString());
 
 		if (converter == null) {
 			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
@@ -175,9 +175,7 @@ public class ZWaveThermostatSetpointConverter extends
 			return;
 		}
 
-		logger.debug("NODE {}: sending update request !!!!!!!", node.getNodeId());
 		logger.debug("Sending Message: {}", serialMessage);
-
 		this.getController().sendData(serialMessage);
 	}
 
