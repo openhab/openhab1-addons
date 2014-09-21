@@ -513,20 +513,15 @@
 		<Product>
 			<Reference>
 				<Type>0003</Type>
-				<Id>001A</Id>
-			</Reference>
-			<Model>MES</Model>
-			<Label lang="en">Switching Insert</Label>
-			<ConfigFile>aeon/mes.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>0003</Type>
 				<Id>000C</Id>
 			</Reference>
 			<Reference>
 				<Type>0003</Type>
 				<Id>0012</Id>
+			</Reference>
+			<Reference>
+				<Type>0003</Type>
+				<Id>001A</Id>
 			</Reference>
 			<Model>MSS2E</Model>
 			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
