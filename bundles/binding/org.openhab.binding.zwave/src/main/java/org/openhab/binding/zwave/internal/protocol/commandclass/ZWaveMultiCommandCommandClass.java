@@ -67,50 +67,51 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpointId) {
-		logger.trace("Handle Message Multi-instance/Multi-channel Request");
-		logger.debug("NODE {}: Received Multi-instance/Multi-channel Request", this.getNode().getNodeId());
+		logger.debug("NODE {}: Received Multi-Command Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
-		
+		case 0x01:			// Multi Cmd Encapsulation
+			handleMultiCommandEncapResponse(serialMessage, offset+1);
+			break;
 		}
 	}
 	
 	private void handleMultiCommandEncapResponse(
 			SerialMessage serialMessage, int offset) {
 		logger.trace("Process Multi-command Encapsulation");
-		CommandClass commandClass;
-		ZWaveCommandClass zwaveCommandClass;
-		int endpointId = serialMessage.getMessagePayloadByte(offset);
-		int commandClassCode = serialMessage.getMessagePayloadByte(offset + 2);
-		commandClass = CommandClass.getCommandClass(commandClassCode);
 		
-		if (commandClass == null) {
-			logger.error(String.format("NODE %d: Unsupported command class 0x%02x", this.getNode().getNodeId(), commandClassCode));
-			return;
+		int classCnt = serialMessage.getMessagePayloadByte(offset++);
+		logger.debug("======== classCnt={}", classCnt);
+		
+		// Iterate over all commands
+		for(int c = 0; c < classCnt; c++) {
+			logger.debug("======= Processing class {}", c);
+
+			logger.debug("======= length is {},", serialMessage.getMessagePayloadByte(offset));
+			logger.debug("======= class is {},", serialMessage.getMessagePayloadByte(offset + 1));
+
+			CommandClass commandClass;
+			ZWaveCommandClass zwaveCommandClass;
+			int commandClassCode = serialMessage.getMessagePayloadByte(offset + 1);
+
+			commandClass = CommandClass.getCommandClass(commandClassCode);			
+			if (commandClass == null) {
+				logger.error(String.format("NODE %d: Unsupported command class 0x%02x", this.getNode().getNodeId(), commandClassCode));
+				return;
+			}
+			
+			zwaveCommandClass  = this.getNode().getCommandClass(commandClass);
+			if (zwaveCommandClass == null) {
+				logger.error(String.format("NODE %d: CommandClass %s (0x%02x) not implemented.", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode));
+				return;
+			}
+			
+			logger.debug(String.format("NODE %d: Calling handleApplicationCommandRequest.", this.getNode().getNodeId()));
+			zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset + 2, 1);
+			
+			// Step over this class
+			offset += serialMessage.getMessagePayloadByte(offset);
 		}
-		
-		logger.debug(String.format("NODE %d: Requested Command Class = %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel() , commandClassCode));
-		ZWaveEndpoint endpoint = this.endpoints.get(endpointId);
-		
-		if (endpoint == null){
-			logger.error("NODE {}: Endpoint {} not found. Cannot set command classes.", this.getNode().getNodeId(), endpointId);
-			return;
-		}
-		
-		zwaveCommandClass = endpoint.getCommandClass(commandClass);
-		
-		if (zwaveCommandClass == null) {
-			logger.warn(String.format("NODE %d: CommandClass %s (0x%02x) not implemented by endpoint %d, fallback to main node.", commandClass.getLabel(), commandClassCode, endpointId));
-			zwaveCommandClass = this.getNode().getCommandClass(commandClass);
-		}
-		
-		if (zwaveCommandClass == null) {
-			logger.error(String.format("NODE %d: CommandClass %s (0x%02x) not implemented.", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode));
-			return;
-		}
-		
-		logger.debug(String.format("NODE %d: Endpoint = %d, calling handleApplicationCommandRequest.", this.getNode().getNodeId(), endpointId));
-		zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset + 3, endpointId);
 	}
 
 }
