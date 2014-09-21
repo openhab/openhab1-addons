@@ -8,6 +8,8 @@ Service-Component: OSGI-INF/servicediscovery.xml
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.osgi.framework,
+ org.osgi.service.cm;version="1.4.0",
+ org.apache.commons.lang;version="2.6.0",
  org.slf4j;version="1.6.1"
 Export-Package: org.openhab.io.servicediscovery
 Bundle-ClassPath: lib/jmdns-3.4.1.jar,
