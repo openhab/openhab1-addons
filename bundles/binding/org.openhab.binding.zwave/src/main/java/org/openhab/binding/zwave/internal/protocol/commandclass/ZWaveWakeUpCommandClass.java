@@ -242,7 +242,6 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		if (this.wakeUpQueue.contains(serialMessage)) {
 			logger.debug("NODE {}: Message already on the wake-up queue. Removing original.", this.getNode().getNodeId());
 			this.wakeUpQueue.remove(serialMessage);
-//			return false;
 		}
 
 		logger.debug("NODE {}: Putting message in wakeup queue.", this.getNode().getNodeId());
