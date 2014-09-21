@@ -331,6 +331,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>5002</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064435</Model>
+			<Label lang="en">Battery powered One paddle wall controller</Label>
+			<ConfigFile>reitz/064435.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>2001</Type>
 				<Id>0000</Id>
 			</Reference>
