@@ -62,9 +62,9 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 		String[] config = splitConfigurationString(configuration);
 		try {
 
-			if (config.length < 4) {
+			if (config.length != 4 && config.length != 5) {
 				throw new BindingConfigParseException(
-						"Configuration requires at least 4 parameters separated by ':'");
+						"Configuration requires 4 or 5 parameters separated by ':'");
 			}
 
 			if (StringUtils.isEmpty(config[0])) {
