@@ -78,6 +78,7 @@ public class BinRpcClient implements RpcClient {
 	 */
 	public Object[] getAllValues(HmInterface hmInterface) throws HomematicClientException {
 		BinRpcRequest request = new BinRpcRequest("getAllValues");
+		request.addArg(Boolean.TRUE);
 		return (Object[]) sendMessage(hmInterface, request)[0];
 	}
 
