@@ -54,6 +54,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveActiveBinding.class);
 	private String port;
 	private boolean isSUC = false;
+	private boolean softReset = false;
 	private Integer healtime = null;
 	private Integer timeout = null;
 	private volatile ZWaveController zController;
@@ -273,8 +274,12 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
 			// The network monitor service needs to know the controller...
 			this.networkMonitor = new ZWaveNetworkMonitor(this.zController);
-			if(healtime != null)
+			if(healtime != null) {
 				this.networkMonitor.setHealTime(healtime);
+			}
+			if(softReset != false) {
+				this.networkMonitor.resetOnError(softReset);
+			}
 
 			// The config service needs to know the controller and the network monitor...
 			this.zConfigurationService = new ZWaveConfiguration(this.zController, this.networkMonitor);
@@ -343,6 +348,15 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			} catch (NumberFormatException e) {
 				isSUC = false;
 				logger.error("Error parsing 'setSUC'. This must be boolean.");
+			}
+		}
+		if (StringUtils.isNotBlank((String) config.get("softReset"))) {
+			try {
+				softReset = Boolean.parseBoolean((String) config.get("softReset"));
+				logger.info("Update config, softReset = {}", softReset);
+			} catch (NumberFormatException e) {
+				softReset = false;
+				logger.error("Error parsing 'softReset'. This must be boolean.");
 			}
 		}
 

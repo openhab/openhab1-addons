@@ -591,6 +591,14 @@ public class ZWaveController {
 	}
 
 	/**
+	 * Terminates the exclusion mode
+	 */
+	public void requestSoftReset()
+	{
+		this.enqueue(new SerialApiSoftResetMessageClass().doRequest());
+	}
+
+	/**
 	 * Removes a failed node from the network.
 	 * Note that this won't remove nodes that have not failed.
 	 * @param nodeId The address of the node to remove
