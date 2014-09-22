@@ -109,7 +109,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 			return;
 		case ASSOCIATIONCMD_GROUPINGSREPORT:
 			logger.trace("Process Association GroupingsReport");
-			processGropuReport(serialMessage, offset);
+			processGroupingsReport(serialMessage, offset);
 			return;
 		default:
 			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).", this.getNode().getNodeId(), command, this
@@ -216,9 +216,9 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 * @param offset
 	 *            the offset position from which to start message processing.
 	 */
-	protected void processGropuReport(SerialMessage serialMessage, int offset) {
+	protected void processGroupingsReport(SerialMessage serialMessage, int offset) {
 		maxGroups = serialMessage.getMessagePayloadByte(offset + 1);
-		logger.debug("processGropuReport number of groups {}", maxGroups);
+		logger.debug("NODE {} processGroupingsReport number of groups {}", getNode(), maxGroups);
 		//Start the process to query these nodes
 		updateAssociationsNode = 1;
 		configAssociations.clear();
