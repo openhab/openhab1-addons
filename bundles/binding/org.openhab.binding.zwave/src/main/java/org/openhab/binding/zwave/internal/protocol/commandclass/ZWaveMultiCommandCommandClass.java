@@ -85,7 +85,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 		
 		// Iterate over all commands
 		for(int c = 0; c < classCnt; c++) {
-			logger.debug("======= Processing class {}", c);
+			logger.debug("======= Processing class {}, offset {}", c, offset);
 
 			logger.debug("======= length is {},", serialMessage.getMessagePayloadByte(offset));
 			logger.debug("======= class is {},", serialMessage.getMessagePayloadByte(offset + 1));
@@ -93,24 +93,23 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 			CommandClass commandClass;
 			ZWaveCommandClass zwaveCommandClass;
 			int commandClassCode = serialMessage.getMessagePayloadByte(offset + 1);
-
 			commandClass = CommandClass.getCommandClass(commandClassCode);			
 			if (commandClass == null) {
 				logger.error(String.format("NODE %d: Unsupported command class 0x%02x", this.getNode().getNodeId(), commandClassCode));
-				return;
 			}
-			
-			zwaveCommandClass  = this.getNode().getCommandClass(commandClass);
-			if (zwaveCommandClass == null) {
-				logger.error(String.format("NODE %d: CommandClass %s (0x%02x) not implemented.", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode));
-				return;
+			else {
+				zwaveCommandClass  = this.getNode().getCommandClass(commandClass);
+				if (zwaveCommandClass == null) {
+					logger.error(String.format("NODE %d: CommandClass %s (0x%02x) not implemented.", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode));
+				}
+				else {
+					logger.debug(String.format("NODE %d: Calling handleApplicationCommandRequest.", this.getNode().getNodeId()));
+					zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset + 2, 1);
+				}
 			}
-			
-			logger.debug(String.format("NODE %d: Calling handleApplicationCommandRequest.", this.getNode().getNodeId()));
-			zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset + 2, 1);
-			
+
 			// Step over this class
-			offset += serialMessage.getMessagePayloadByte(offset);
+			offset += serialMessage.getMessagePayloadByte(offset) + 1;
 		}
 	}
 
