@@ -57,7 +57,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	@XStreamOmitField
 	private AssociationGroup pendingAssociation = null;
 	
-	@XStreamOmitField
+	//this will be set when we query a node for the number of groups it supports
 	private int maxGroups = 0;
 
 	/**
