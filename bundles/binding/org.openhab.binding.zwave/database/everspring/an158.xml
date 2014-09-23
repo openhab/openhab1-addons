@@ -50,6 +50,20 @@
 			<Label lang="en">Meter Report Period</Label>
 			<Help lang="en"><![CDATA[The device will report its meter value within the interval set. Set to 0 will disable the autoreporting function.]]></Help>
 		</Parameter>
-	</Configuration>	
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Reports</Label>
+			<SetToController>true</SetToController>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">Control</Label>
+		</Group>
+	</Associations>
 </Product>
 
