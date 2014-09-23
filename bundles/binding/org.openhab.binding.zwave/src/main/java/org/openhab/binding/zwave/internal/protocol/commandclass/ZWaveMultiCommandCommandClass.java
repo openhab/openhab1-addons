@@ -8,23 +8,10 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
-import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
-import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
-import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
-import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
-import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
-import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +26,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveMultiCommandCommandClass.class);
-	private static final int MAX_SUPPORTED_VERSION = 1;
 
 	/**
 	 * Creates a new instance of the ZWaveMultiCommandCommandClass class.
@@ -76,20 +62,21 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 		}
 	}
 	
+	/**
+	 * Handle the multi command message. This processes the received frame, processing each
+	 * command class in turn.
+	 * 
+	 * @param serialMessage The received message
+	 * @param offset The starting offset into the payload
+	 */
 	private void handleMultiCommandEncapResponse(
 			SerialMessage serialMessage, int offset) {
 		logger.trace("Process Multi-command Encapsulation");
 		
 		int classCnt = serialMessage.getMessagePayloadByte(offset++);
-		logger.debug("======== classCnt={}", classCnt);
-		
+
 		// Iterate over all commands
 		for(int c = 0; c < classCnt; c++) {
-			logger.debug("======= Processing class {}, offset {}", c, offset);
-
-			logger.debug("======= length is {},", serialMessage.getMessagePayloadByte(offset));
-			logger.debug("======= class is {},", serialMessage.getMessagePayloadByte(offset + 1));
-
 			CommandClass commandClass;
 			ZWaveCommandClass zwaveCommandClass;
 			int commandClassCode = serialMessage.getMessagePayloadByte(offset + 1);
@@ -112,5 +99,4 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 			offset += serialMessage.getMessagePayloadByte(offset) + 1;
 		}
 	}
-
 }
