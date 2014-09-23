@@ -15,7 +15,7 @@ package org.openhab.binding.homematic.internal.config;
  * @since 1.5.0
  */
 public enum BindingAction {
-	RELOAD_VARIABLES, RELOAD_DATAPOINTS;
+	RELOAD_VARIABLES, RELOAD_DATAPOINTS, RELOAD_RSSI;
 
 	/**
 	 * Parses a string and returns the BindingAction.
@@ -27,6 +27,8 @@ public enum BindingAction {
 			return RELOAD_VARIABLES;
 		} else if (RELOAD_DATAPOINTS.toString().equalsIgnoreCase(action)) {
 			return RELOAD_DATAPOINTS;
+		} else if (RELOAD_RSSI.toString().equalsIgnoreCase(action)) {
+			return RELOAD_RSSI;
 		} else {
 			return null;
 		}
