@@ -26,7 +26,6 @@ import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -49,8 +48,8 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 
 	static final Logger logger = LoggerFactory.getLogger(HueBinding.class);
 
-	/** Default refresh interval (currently 1 second) */
-	private long refreshInterval = 1000;
+	/** Default refresh interval (currently 10 seconds) */
+	private long refreshInterval = 10000;
 	
 	private HueBridge activeBridge = null;
 	private String bridgeIP = null;
@@ -123,20 +122,26 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 							//
 							if (deviceConfig.getType().equals(BindingType.brightness)) {
 								eventPublisher.postUpdate(hueItemName, new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255)));
-							}
+								
+								// Setting brightness turns on the bulb. A postupdate to turn hue bulb turns brightness to 100%, so don't. 
+								if (bulb.getIsOn() == false) {
+									eventPublisher.postUpdate(hueItemName, OnOffType.OFF);
+								}
+							} else {
 							
-							if (deviceConfig.getType().equals(BindingType.rgb)) {
-								DecimalType decimalHue = new DecimalType(bulb.getHue() / (double)182);
-								PercentType percentBrightness = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255));
-								PercentType percentSaturation = new PercentType((int)Math.round((bulb.getSaturation() * (double)100) / (double)255));
-								HSBType newHsb = new HSBType(decimalHue, percentSaturation, percentBrightness);
-								eventPublisher.postUpdate(hueItemName, newHsb);
-							}
+								if (deviceConfig.getType().equals(BindingType.rgb)) {
+									DecimalType decimalHue = new DecimalType(bulb.getHue() / (double)182);
+									PercentType percentBrightness = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255));
+									PercentType percentSaturation = new PercentType((int)Math.round((bulb.getSaturation() * (double)100) / (double)255));
+									HSBType newHsb = new HSBType(decimalHue, percentSaturation, percentBrightness);
+									eventPublisher.postUpdate(hueItemName, newHsb);
+								}
 
-							if ((bulb.getIsOn() == true) && (bulb.getIsReachable() == true)) {
-								eventPublisher.postUpdate(hueItemName, OnOffType.ON);
-							} else { 
-								eventPublisher.postUpdate(hueItemName, OnOffType.OFF);
+								if ((bulb.getIsOn() == true) && (bulb.getIsReachable() == true)) {
+									eventPublisher.postUpdate(hueItemName, OnOffType.ON);
+								} else { 
+									eventPublisher.postUpdate(hueItemName, OnOffType.OFF);
+								}
 							}
 						}
 					}
