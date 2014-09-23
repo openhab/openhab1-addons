@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.config.binding.VariableConfig;
@@ -177,9 +178,9 @@ public class HomegearClient extends BaseHomematicClient {
 	private HmDevice parseDevice(Map<String, ?> deviceData) throws IllegalAccessException {
 		HmDevice device = new HmDevice();
 
-		writeField(device, "address", deviceData.get("ADDRESS"), String.class);
-		writeField(device, "type", deviceData.get("TYPE"), String.class);
-		writeField(device, "hmInterface", HmInterface.HOMEGEAR, HmInterface.class);
+		FieldUtils.writeField(device, "address", deviceData.get("ADDRESS"), true);
+		FieldUtils.writeField(device, "type", deviceData.get("TYPE"), true);
+		FieldUtils.writeField(device, "hmInterface", HmInterface.HOMEGEAR, true);
 
 		Object[] channelList = (Object[]) deviceData.get("CHANNELS");
 		for (int i = 0; i < channelList.length; i++) {
@@ -196,8 +197,8 @@ public class HomegearClient extends BaseHomematicClient {
 	@SuppressWarnings("unchecked")
 	private HmChannel parseChannel(HmDevice device, Map<String, ?> channelData) throws IllegalAccessException {
 		HmChannel channel = new HmChannel();
-		writeField(channel, "device", device, HmDevice.class);
-		writeField(channel, "number", String.valueOf(channelData.get("INDEX")), String.class);
+		FieldUtils.writeField(channel, "device", device, true);
+		FieldUtils.writeField(channel, "number", String.valueOf(channelData.get("INDEX")), true);
 
 		Map<String, ?> paramsList = (Map<String, ?>) channelData.get("PARAMSET");
 		for (String name : paramsList.keySet()) {
@@ -214,8 +215,8 @@ public class HomegearClient extends BaseHomematicClient {
 			throws IllegalAccessException {
 		HmDatapoint dp = new HmDatapoint();
 		dp.setName(name);
-		writeField(dp, "channel", channel, HmChannel.class);
-		writeField(dp, "writeable", dpData.get("WRITEABLE"), Boolean.class);
+		FieldUtils.writeField(dp, "channel", channel, true);
+		FieldUtils.writeField(dp, "writeable", dpData.get("WRITEABLE"), true);
 
 		Object valueList = dpData.get("VALUE_LIST");
 		if (valueList != null && valueList instanceof Object[]) {
@@ -224,23 +225,23 @@ public class HomegearClient extends BaseHomematicClient {
 			for (int i = 0; i < vl.length; i++) {
 				stringArray[i] = vl[i].toString();
 			}
-			writeField(dp, "valueList", stringArray, String[].class);
+			FieldUtils.writeField(dp, "valueList", stringArray, true);
 		}
 
 		Object value = dpData.get("VALUE");
 
 		String type = (String) dpData.get("TYPE");
-		boolean isString = StringUtils.equals("STRING", type);		
-		if (isString && !(value instanceof String)) {
+		boolean isString = StringUtils.equals("STRING", type);
+		if (isString && value != null && !(value instanceof String)) {
 			value = ObjectUtils.toString(value);
 		}
+		setValueType(dp, type, value);
 
-		if (value instanceof Number) {
-			writeField(dp, "minValue", dpData.get("MIN"), value.getClass());
-			writeField(dp, "maxValue", dpData.get("MAX"), value.getClass());
+		if (dp.isNumberValueType()) {
+			FieldUtils.writeField(dp, "minValue", dpData.get("MIN"), true);
+			FieldUtils.writeField(dp, "maxValue", dpData.get("MAX"), true);
 		}
 
-		setValueType(dp, value);
 		dp.setValue(value);
 		return dp;
 	}
@@ -252,21 +253,43 @@ public class HomegearClient extends BaseHomematicClient {
 		HmVariable var = new HmVariable();
 		var.setName(name);
 		var.setWriteable(true);
-		setValueType(var, value);
+		var.setValue(guessType(value));
 		var.setValue(value);
 		return var;
 	}
 
 	/**
+	 * Guesses the value type.
+	 */
+	private int guessType(Object value) {
+		if (value == null) {
+			return 20;
+		} else if (value instanceof Boolean) {
+			return 2;
+		} else if (value instanceof Integer || value instanceof Long) {
+			return 8;
+		} else if (value instanceof Number) {
+			return 4;
+		} else {
+			return 20;
+		}
+	}
+
+	/**
 	 * Sets the valueType of a valueItem.
 	 */
-	private void setValueType(HmValueItem valueItem, Object value) {
-		if (value instanceof Boolean) {
+	private void setValueType(HmValueItem valueItem, String type, Object value) {
+		if ("BOOL".equals(type) || "ACTION".equals(type)) {
 			valueItem.setValueType(2);
-		} else if (value instanceof Number) {
+		} else if ("INTEGER".equals(type) || "ENUM".equals(type)) {
 			valueItem.setValueType(8);
-		} else {
+		} else if ("FLOAT".equals(type)) {
+			valueItem.setValueType(4);
+		} else if ("STRING".equals(type)) {
 			valueItem.setValueType(20);
+		} else {
+			logger.warn("Unknown value type '{}', guessing type!", type);
+			valueItem.setValueType(guessType(value));
 		}
 	}
 

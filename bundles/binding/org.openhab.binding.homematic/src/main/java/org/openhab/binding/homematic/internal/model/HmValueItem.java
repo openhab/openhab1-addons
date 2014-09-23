@@ -66,14 +66,14 @@ public class HmValueItem {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Returns the value.
 	 */
 	public Object getValue() {
 		return value;
 	}
-	
+
 	/**
 	 * Returns the valueList.
 	 */
@@ -104,8 +104,7 @@ public class HmValueItem {
 			int idx = 0;
 			if (isBooleanValue()) {
 				idx = Boolean.TRUE == value ? 1 : 0;
-			}
-			else {
+			} else {
 				idx = Integer.parseInt(value.toString());
 			}
 			if (idx < valueList.length) {
@@ -157,7 +156,7 @@ public class HmValueItem {
 	public void setWriteable(boolean writeable) {
 		this.writeable = writeable;
 	}
-	
+
 	/**
 	 * Validates the values after unmarshaling or setting a new value.
 	 */
@@ -203,14 +202,14 @@ public class HmValueItem {
 	public Integer getValueType() {
 		return valueType;
 	}
-	
+
 	/**
 	 * Sets the valueType.
 	 */
 	public void setValueType(Integer valueType) {
 		this.valueType = valueType;
 	}
-	
+
 	/**
 	 * Checks if the value is from type boolean.
 	 */
@@ -265,6 +264,13 @@ public class HmValueItem {
 	 */
 	private boolean isIntegerValueType() {
 		return valueType == 8 || (valueType == 16 && (subType == 29 || subType == 27 || subType == 0));
+	}
+
+	/**
+	 * Checks if the Homematic valuetype is a number.
+	 */
+	public boolean isNumberValueType() {
+		return isIntegerValueType() || isDoubleValueType();
 	}
 
 	/**
