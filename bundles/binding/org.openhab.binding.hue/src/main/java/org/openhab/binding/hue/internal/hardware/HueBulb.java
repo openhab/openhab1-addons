@@ -22,6 +22,7 @@ import com.sun.jersey.api.client.WebResource;
  * 
  * @author Roman Hartmann
  * @author Kai Kreuzer
+ * @author Jos Schering
  * @since 1.2.0
  * 
  */
@@ -39,6 +40,7 @@ public class HueBulb {
 	private HueBridge bridge = null;
 	private int deviceNumber = 1;
 	private boolean isOn = false;
+	private boolean isReachable = false;
 	private int brightness = 0; // possible values are 0 - 255
 	private int colorTemperature = 154; // possible values are 154 - 500
 	private int hue = 0; // 0 - 65535
@@ -55,17 +57,26 @@ public class HueBulb {
 	 *            The number under which the bulb is filed in the bridge.
 	 */
 	public HueBulb(HueBridge connectedBridge, int deviceNumber) {
-		HueSettings settings = connectedBridge.getSettings();
 		this.bridge = connectedBridge;
 		this.deviceNumber = deviceNumber;
-		this.isOn = settings.isBulbOn(deviceNumber);
-		this.colorTemperature = settings.getColorTemperature(deviceNumber);
-		this.brightness = settings.getBrightness(deviceNumber);
-		this.hue = settings.getHue(deviceNumber);
-		this.saturation = settings.getSaturation(deviceNumber);
+		getStatus(this.bridge.getSettings());
+
 		this.client = Client.create();
 		this.client.setReadTimeout(1000);
 		this.client.setConnectTimeout(2000);
+	}
+	
+	/**
+	 * Update the internal bulb status according to the Philips hub 
+	 * @param HueSettings retrieved from hub
+	 */
+	public void getStatus(HueSettings settings){
+		this.isOn = settings.isBulbOn(this.deviceNumber);
+		this.isReachable = settings.isReachable(this.deviceNumber);
+		this.colorTemperature = settings.getColorTemperature(this.deviceNumber);
+		this.brightness = settings.getBrightness(this.deviceNumber);
+		this.hue = settings.getHue(this.deviceNumber);
+		this.saturation = settings.getSaturation(this.deviceNumber);
 	}
 
 	/**
@@ -258,5 +269,46 @@ public class HueBulb {
 					+ response.getStatus());
 		}
 	}
-
+	
+	/**
+	 * Return on / off status of bulb
+	 * @return
+	 */
+	public boolean getIsOn()
+	{
+		return isOn;
+	}
+	
+	/**
+	 * Return isReachable status of bulb
+	 * @return
+	 */
+	public boolean getIsReachable()
+	{
+		return isReachable;
+	}
+	
+	/**
+	 * Return Hue value of bulb
+	 * @return
+	 */
+	public int getHue(){
+		return hue;
+	}
+	
+	/**
+	 * Return Saturation of bulb
+	 * @return
+	 */
+	public int getSaturation(){
+		return saturation;
+	}
+	
+	/**
+	 * Return Brightness of bulb
+	 * @return
+	 */
+	public int getBrightness(){
+		return brightness;
+	}
 }
