@@ -1208,4 +1208,17 @@
 			<ConfigFile>monster/mllas1000.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>5254</Id>
+		<Name>Remotec</Name>
+		<Product>
+			<Reference>
+				<Type>0101</Type>
+				<Id>8377</Id>
+			</Reference>
+			<Model>ZXT-120</Model>
+			<Label lang="en">Remotec ZXT-120 AC IR Remote</Label>
+			<ConfigFile>remotec/zxt120.xml</ConfigFile>
+		</Product>
+	</Manufacturer>	
 </Manufacturers>
