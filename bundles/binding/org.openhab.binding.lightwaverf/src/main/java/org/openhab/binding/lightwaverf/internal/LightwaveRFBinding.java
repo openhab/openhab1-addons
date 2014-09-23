@@ -9,7 +9,7 @@
 package org.openhab.binding.lightwaverf.internal;
 
 import org.openhab.binding.lightwaverf.LightwaveRFBindingProvider;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -20,13 +20,11 @@ import org.slf4j.LoggerFactory;
  * @author Neil Renaud
  * @since 1.6
  */
-public class LightwaveRFBinding extends AbstractActiveBinding<LightwaveRFBindingProvider> {
+public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvider> {
 
 	private final Logger logger = LoggerFactory.getLogger(LightwaveRFBinding.class);
-	private static final long POLLING_INTERVAL = 100; //100ms
-	private static final String THREAD_NAME = "LightwaveRF Receiver Thread";
-	private LightwaveRFReceiver receiver = null;
-	private LightwaveRFSender sender = null;
+	private LightwaveRFReceiver receiver = new LightwaveRFReceiver();
+	private LightwaveRFSender sender = new LightwaveRFSender();
 
 	@Override
 	public void activate() {
@@ -58,20 +56,5 @@ public class LightwaveRFBinding extends AbstractActiveBinding<LightwaveRFBinding
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveUpdate() is called!");
-	}
-
-	@Override
-	protected void execute(){
-		logger.debug("Execute called");
-	}
-
-	@Override
-	protected long getRefreshInterval(){
-		return POLLING_INTERVAL;
-	}
-
-	@Override
-	protected String getName(){
-		return THREAD_NAME;
 	}
 }
