@@ -186,43 +186,6 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 		void setCachedState(State state) {
 			cachedState = state;
 		}
-	
-//		/**
-//		 * Calculates new item state based on the new boolean value, current item state and item class
-//		 * Used with item bound to "coil" type slaves
-//		 * 
-//		 * @param b new boolean value
-//		 * @param c class of the current item state
-//		 * @param itemClass class of the item
-//		 * 
-//		 * @return new item state
-//		 */
-//		protected State translateBoolean2State(boolean b) {
-//			
-//			Class<? extends State> c = item.getState().getClass();
-//			Class<? extends Item> itemClass = item.getClass();
-//			
-//			if (c == UnDefType.class && itemClass == SwitchItem.class) {
-//				return b ? OnOffType.ON : OnOffType.OFF;
-//			}
-//			else if (c == UnDefType.class && itemClass == ContactItem.class) {
-//				return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-//			}
-//			else if (c == OnOffType.class && itemClass == SwitchItem.class) {
-//				return b ? OnOffType.ON : OnOffType.OFF;
-//			}
-//			else if (c == OpenClosedType.class && itemClass == SwitchItem.class) {
-//				return b ? OnOffType.ON : OnOffType.OFF;
-//			}
-//			else if (c == OnOffType.class && itemClass == ContactItem.class) {
-//				return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-//			}
-//			else if (c == OpenClosedType.class && itemClass == ContactItem.class) {
-//				return b ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-//			} else {
-//				return UnDefType.UNDEF;
-//			}
-//		}
 
 		/**
 		 * Constructor for config object
