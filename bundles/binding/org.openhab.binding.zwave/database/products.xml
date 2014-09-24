@@ -1225,4 +1225,17 @@
 			<ConfigFile>remotec/zxt120.xml</ConfigFile>
 		</Product>
 	</Manufacturer>	
+	<Manufacturer>
+		<Id>159</Id>
+		<Name>Qubino</Name>
+		<Product>
+			<Reference>
+				<Type>2</Type>
+				<Id>2</Id>
+			</Reference>
+			<Model>ZMNHAA</Model>
+			<Label lang="en">Flush 1 relay</Label>
+			<ConfigFile>qubino/zmnhaa.xml</ConfigFile>
+		</Product>
+	</Manufacturer>	
 </Manufacturers>
