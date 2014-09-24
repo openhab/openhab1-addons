@@ -48,8 +48,8 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 
 	static final Logger logger = LoggerFactory.getLogger(HueBinding.class);
 
-	/** Default refresh interval (currently 10 seconds) */
-	private long refreshInterval = 10000;
+	/** refresh interval is only set by configuration */
+	private long refreshInterval;
 	
 	private HueBridge activeBridge = null;
 	private String bridgeIP = null;
@@ -88,7 +88,6 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 	 */
 	@Override
 	public void execute() {
-		logger.debug("Retrieve Hue bulb status and update items that are linked with bulbs");
 		if (activeBridge != null)
 		{
 			// Get settings and update the bulbs
@@ -113,35 +112,38 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 					if (deviceConfig != null) {
 						HueBulb bulb = bulbCache.get(deviceConfig.getDeviceNumber());
 						if (bulb != null) {
-							
+						
 							// Enhancement: only send a postUpdate for items that have changed.
-							// Tried to use item.getState() as found in enOcean binding, 
-							// but the state value was always uninitialized
-							//
+							// Tried to use item.getState() as found in enOcean binding, but the state value was always uninitialized
 							// State actualState = provider.getItem(itemName).getState(); --> always return Uninitialized
+							// Workaround for now, store the OnOff state in deviceConfig 
 							//
-							if (deviceConfig.getType().equals(BindingType.brightness)) {
-								eventPublisher.postUpdate(hueItemName, new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255)));
-								
-								// Setting brightness turns on the bulb. A postupdate to turn hue bulb turns brightness to 100%, so don't. 
-								if (bulb.getIsOn() == false) {
-									eventPublisher.postUpdate(hueItemName, OnOffType.OFF);
+							if ((bulb.getIsOn() == true) && (bulb.getIsReachable() == true)) {
+								if ((deviceConfig.itemStateOnOffType == null) || (deviceConfig.itemStateOnOffType.equals(OnOffType.ON) == false)) {
+									eventPublisher.postUpdate(hueItemName, OnOffType.ON);
+									deviceConfig.itemStateOnOffType = OnOffType.ON;
 								}
-							} else {
+							} else { 
+								if ((deviceConfig.itemStateOnOffType == null) || (deviceConfig.itemStateOnOffType.equals(OnOffType.OFF) == false)) {
+									eventPublisher.postUpdate(hueItemName, OnOffType.OFF);
+									deviceConfig.itemStateOnOffType = OnOffType.OFF;
+								}
+							}
 							
-								if (deviceConfig.getType().equals(BindingType.rgb)) {
+							if (deviceConfig.getType().equals(BindingType.brightness)) {
+								if ((bulb.getIsOn() == true) && (bulb.getIsReachable() == true)) {
+									// Only postUpdate when bulb is on, otherwise dimmer item is not retaining state and shows to max brightness value
+									eventPublisher.postUpdate(hueItemName, new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255)));
+								}									
+							} else if (deviceConfig.getType().equals(BindingType.rgb)) {
+								if ((bulb.getIsOn() == true) && (bulb.getIsReachable() == true)) {
+									// Only postUpdate when bulb is on, otherwise color item is not retaining state and shows to max brightness value
 									DecimalType decimalHue = new DecimalType(bulb.getHue() / (double)182);
 									PercentType percentBrightness = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255));
 									PercentType percentSaturation = new PercentType((int)Math.round((bulb.getSaturation() * (double)100) / (double)255));
 									HSBType newHsb = new HSBType(decimalHue, percentSaturation, percentBrightness);
 									eventPublisher.postUpdate(hueItemName, newHsb);
-								}
-
-								if ((bulb.getIsOn() == true) && (bulb.getIsReachable() == true)) {
-									eventPublisher.postUpdate(hueItemName, OnOffType.ON);
-								} else { 
-									eventPublisher.postUpdate(hueItemName, OnOffType.OFF);
-								}
+								}									
 							}
 						}
 					}
