@@ -71,6 +71,9 @@ abstract public class ResourceStateChangeListener {
 	
 	public void registerItems(){
 		broadcaster.getBroadcasterConfig().setBroadcasterCache(new CVBroadcasterCache());
+		broadcaster.getBroadcasterConfig().getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
+        broadcaster.getBroadcasterConfig().getBroadcasterCache().start();
+        
 		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override

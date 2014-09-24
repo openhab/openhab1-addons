@@ -18,11 +18,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.openhab.binding.insteonplm.internal.device.DeviceFeature;
+import org.openhab.binding.insteonplm.internal.device.DeviceFeatureListener;
 import org.openhab.binding.insteonplm.internal.device.DeviceQuerier;
 import org.openhab.binding.insteonplm.internal.device.DeviceQueryListener;
 import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
 import org.openhab.binding.insteonplm.internal.device.InsteonDevice;
-import org.openhab.binding.insteonplm.internal.device.StatePublisher.StateListener;
 import org.openhab.binding.insteonplm.internal.driver.Driver;
 import org.openhab.binding.insteonplm.internal.driver.DriverListener;
 import org.openhab.binding.insteonplm.internal.driver.Port;
@@ -31,7 +31,6 @@ import org.openhab.binding.insteonplm.internal.message.MsgListener;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -122,7 +121,8 @@ public class InsteonPLMActiveBinding
 		}
 		
 		if (!commandHandled)
-			logger.warn("No converter found for item = {}, command = {}, ignoring.", itemName, command.toString());
+			logger.warn("No converter found for item = {}, command = {}, ignoring.",
+						itemName, command.toString());
 	}
 	
 	/**
@@ -170,7 +170,8 @@ public class InsteonPLMActiveBinding
 		}
 		m_gotInitialConfig = true;
 		if (!m_driver.isDeviceListComplete()) {
-			logger.debug("ignoring binding configuration until the device list is complete");
+			logger.debug("ignoring binding config for {} until device list is complete",
+						itemName);
 			return;
 		}
 		InsteonAddress addr = c.getAddress();
@@ -200,15 +201,6 @@ public class InsteonPLMActiveBinding
 			// no point applying configuration to unknown device
 			return;
 		}
-		if (!dev.descriptorsHaveChanged()) {
-			// only apply binding config if this is the first time, or if the
-			// descriptors have changed because of a successfull query
-			if (!dev.needsQuerying()) {
-				logger.debug("descriptors for dev {} have not changed, no binding config applied.", dev);
-			}
-			return;
-		}
-		dev.setDescriptorsHaveChanged(false);
 
 		logger.debug("applying binding for item {} address {}", itemName, dev.getAddress());
 		String productKey = c.getProductKey();
@@ -237,14 +229,16 @@ public class InsteonPLMActiveBinding
 					// we get more information on the device
 					logger.debug("adding place holder for feature {} ", c.getFeature());
 					f = DeviceFeature.s_makeDeviceFeature("PLACEHOLDER");
-					f.setParameters(c.getParameters());
-					f.addListener(new FeatureListener(itemName));
+					DeviceFeatureListener fl = new DeviceFeatureListener(itemName, eventPublisher);
+					fl.setParameters(c.getParameters());
+					f.addListener(fl);
 					dev.addFeature(c.getFeature(), f);
 				}
 			} else {
 				logger.debug("now listening for feature {} item {}", f.toString(), itemName);
-				f.setParameters(c.getParameters());
-				f.addListener(new FeatureListener(itemName));
+				DeviceFeatureListener fl = new DeviceFeatureListener(itemName, eventPublisher);
+				fl.setParameters(c.getParameters());
+				f.addListener(fl);
 			}
 		}
 		if (!dev.hasValidPollingInterval()) {
@@ -282,7 +276,8 @@ public class InsteonPLMActiveBinding
 		for (InsteonPLMBindingProvider provider : providers) {
 			Collection<String> items = provider.getItemNames();
 			for (Iterator<String> item = items.iterator(); item.hasNext();) {
-				bindingChanged(provider, item.next());
+				String s = item.next();
+				bindingChanged(provider, s);
 			}
 		}
 	}
@@ -437,23 +432,6 @@ public class InsteonPLMActiveBinding
 		m_devices.clear();
 	}
 	
-	/**
-	 * Will listen to any feature status updates
-	 * @author daniel
-	 *
-	 */
-	private class FeatureListener implements StateListener {
-		private String			m_itemName;
-		
-		public FeatureListener(String item) {
-			m_itemName = item;
-		}
-		
-		@Override
-		public void stateChanged(State state) {
-			eventPublisher.postUpdate(m_itemName, state);
-		}
-	}
 	
 	/*
 	 * Handles messages that come in from the ports.

@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
  * status and receiving of setpoint events.
  * @author Matthew Bowman
  * @author Dave Hock
+ * @author Chris Jackson
  * @since 1.4.0
  */
 public class ZWaveThermostatSetpointConverter extends
@@ -135,6 +136,8 @@ public class ZWaveThermostatSetpointConverter extends
 		int scale = 0;
 		if (scaleString !=null ) scale= Integer.parseInt(scaleString);
 
+		logger.debug("NODE {}: Thermostat command received for {}", node.getNodeId(), command.toString());
+
 		if (converter == null) {
 			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
 			return;
@@ -156,8 +159,24 @@ public class ZWaveThermostatSetpointConverter extends
 		logger.debug("Sending Message: {}", serialMessage);
 		this.getController().sendData(serialMessage);
 		
-		if (command instanceof State)
+		if (command instanceof State) {
 			this.getEventPublisher().postUpdate(item.getName(), (State)command);
+		}
+		
+		// Request an update so that OH knows when the setpoint has changed.
+		if (setpointType != null) {
+			serialMessage = node.encapsulate(commandClass.getMessage(SetpointType.getSetpointType(Integer.parseInt(setpointType))), commandClass, endpointId);
+		} else {
+			serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
+		}
+		
+		if (serialMessage == null) {
+			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
+			return;
+		}
+
+		logger.debug("Sending Message: {}", serialMessage);
+		this.getController().sendData(serialMessage);
 	}
 
 	/**

@@ -25,6 +25,7 @@
     <module>org.openhab.action.xmpp</module>
     <module>org.openhab.action.nma</module>
     <module>org.openhab.action.homematic</module>
+    <module>org.openhab.action.openwebif</module>
   </modules>
 
 </project>

@@ -292,7 +292,7 @@ If the value is set to 0, then information about the temperature will be sent ev
 		<Group>
 			<Index>3</Index>
 			<Maximum>1</Maximum>
-			<Label lang="en">Temperature Sensor</Label>
+			<Label lang="en">Controller Updates</Label>
 			<SetToController>true</SetToController>
 		</Group>
 	</Associations>

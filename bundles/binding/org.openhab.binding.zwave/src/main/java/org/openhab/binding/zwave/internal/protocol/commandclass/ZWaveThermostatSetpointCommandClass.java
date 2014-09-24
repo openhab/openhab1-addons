@@ -147,27 +147,33 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 		
 		int setpointTypeCode = serialMessage.getMessagePayloadByte(offset + 1);
 		int scale = (serialMessage.getMessagePayloadByte(offset + 2) >> 3) & 0x03;
-		BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
 		
-		logger.debug(String.format("Thermostat Setpoint report from nodeId = %d, Scale = %d", this.getNode().getNodeId(), scale));
-		logger.debug(String.format("Thermostat Setpoint Value = (%f)", value));
-		
-		SetpointType setpointType = SetpointType.getSetpointType(setpointTypeCode);
-		
-		if (setpointType == null) {
-			logger.error(String.format("Unknown Setpoint Type = 0x%02x, ignoring report.", setpointTypeCode));
+		try {
+			BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
+			
+			logger.debug(String.format("Thermostat Setpoint report from nodeId = %d, Scale = %d", this.getNode().getNodeId(), scale));
+			logger.debug(String.format("Thermostat Setpoint Value = (%f)", value));
+			
+			SetpointType setpointType = SetpointType.getSetpointType(setpointTypeCode);
+			
+			if (setpointType == null) {
+				logger.error(String.format("Unknown Setpoint Type = 0x%02x, ignoring report.", setpointTypeCode));
+				return;
+			}
+			
+			// setpoint type seems to be supported, add it to the list.
+			if (!this.setpointTypes.contains(setpointType))
+				this.setpointTypes.add(setpointType);
+	
+			logger.debug(String.format("Setpoint Type = %s (0x%02x)", setpointType.getLabel(), setpointTypeCode));
+			
+			logger.debug(String.format("Thermostat Setpoint Report from Node ID = %d, value = %s", this.getNode().getNodeId(), value.toPlainString()));
+			ZWaveThermostatSetpointValueEvent zEvent = new ZWaveThermostatSetpointValueEvent(this.getNode().getNodeId(), endpoint, setpointType, scale, value);
+			this.getController().notifyEventListeners(zEvent);
+		}
+		catch (NumberFormatException e) {
 			return;
 		}
-		
-		// setpoint type seems to be supported, add it to the list.
-		if (!this.setpointTypes.contains(setpointType))
-			this.setpointTypes.add(setpointType);
-
-		logger.debug(String.format("Setpoint Type = %s (0x%02x)", setpointType.getLabel(), setpointTypeCode));
-		
-		logger.debug(String.format("Thermostat Setpoint Report from Node ID = %d, value = %s", this.getNode().getNodeId(), value.toPlainString()));
-		ZWaveThermostatSetpointValueEvent zEvent = new ZWaveThermostatSetpointValueEvent(this.getNode().getNodeId(), endpoint, setpointType, scale, value);
-		this.getController().notifyEventListeners(zEvent);
 	}
 	
 	/**

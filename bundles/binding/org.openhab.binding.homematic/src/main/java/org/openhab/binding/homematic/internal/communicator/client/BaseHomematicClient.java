@@ -112,9 +112,9 @@ public abstract class BaseHomematicClient implements HomematicClient {
 					try {
 						logger.debug("Adding battery type to device {}: {}", device.getType(), battery.getInfo());
 						HmDatapoint dp = new HmDatapoint();
-						writeField(dp, "name", "BATTERY_TYPE", String.class);
-						writeField(dp, "writeable", Boolean.FALSE, Boolean.class);
-						writeField(dp, "valueType", 20, Integer.class);
+						FieldUtils.writeField(dp, "name", "BATTERY_TYPE", true);
+						FieldUtils.writeField(dp, "writeable", Boolean.FALSE, true);
+						FieldUtils.writeField(dp, "valueType", 20, true);
 						dp.setValue(battery.getInfo());
 						channel.addDatapoint(dp);
 					} catch (IllegalAccessException ex) {
@@ -122,22 +122,6 @@ public abstract class BaseHomematicClient implements HomematicClient {
 					}
 				}
 			}
-		}
-	}
-
-	protected void writeField(Object target, String fieldName, Object value, Class<?> type)
-			throws IllegalAccessException {
-		if (value == null) {
-			throw new IllegalArgumentException("Field " + fieldName + " is required for target "
-					+ target.getClass().getSimpleName());
-		}
-
-		if (type.getName().equals(value.getClass().getName())) {
-			FieldUtils.writeField(target, fieldName, value, true);
-		} else {
-			throw new IllegalArgumentException("Value '" + value + "' (" + value.getClass().getName()
-					+ ") is not from type (" + type.getName() + ") in fieldName '" + fieldName + "' of class '"
-					+ target.getClass().getName() + "'");
 		}
 	}
 
@@ -150,5 +134,4 @@ public abstract class BaseHomematicClient implements HomematicClient {
 		 */
 		public void iterate(HomematicBindingConfig bindingConfig, HmValueItem hmValueItem);
 	}
-
 }

@@ -103,19 +103,21 @@ public class SqueezeServer implements ManagedService {
 	}
 
 	public synchronized SqueezePlayer getPlayer(String playerId) {
-		if (!playersById.containsKey(playerId)) {
+		String key = playerId.toLowerCase();
+		if (!playersById.containsKey(key)) {
 			logger.warn("No player exists for '{}'", playerId);
 			return null;
 		}
-		return playersById.get(playerId);
+		return playersById.get(key);
 	}
 
 	public synchronized SqueezePlayer getPlayerByMacAddress(String macAddress) {
-		if (!playersByMacAddress.containsKey(macAddress)) {
+		String key = macAddress.toLowerCase();
+		if (!playersByMacAddress.containsKey(key)) {
 			logger.warn("No player exists for MAC {}", macAddress);
 			return null;
 		}
-		return playersByMacAddress.get(macAddress);
+		return playersByMacAddress.get(key);
 	}
 
 	public void mute(String playerId) {
@@ -365,10 +367,10 @@ public class SqueezeServer implements ManagedService {
 			} else if (playerMatcher.matches()) {
 				String playerId = playerMatcher.group(1);
 				String macAddress = value;
+				
 				SqueezePlayer player = new SqueezePlayer(playerId, macAddress);
-
-				playersById.put(playerId, player);
-				playersByMacAddress.put(macAddress, player);
+				playersById.put(playerId.toLowerCase(), player);
+				playersByMacAddress.put(macAddress.toLowerCase(), player);
 			} else if (languageMatcher.matches() && StringUtils.isNotBlank(value)) {
 				language=value;
 			} else {

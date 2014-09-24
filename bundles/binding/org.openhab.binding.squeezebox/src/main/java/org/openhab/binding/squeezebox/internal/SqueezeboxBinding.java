@@ -135,7 +135,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 						if (command.equals(OnOffType.ON))
 							squeezeServer.syncPlayer(playerId, bindingConfig.getExtra()); 
 						else if (command.equals(OnOffType.OFF))
-							squeezeServer.unSyncPlayer(playerId);
+							squeezeServer.unSyncPlayer(bindingConfig.getExtra());
 						break;
 
 					default:

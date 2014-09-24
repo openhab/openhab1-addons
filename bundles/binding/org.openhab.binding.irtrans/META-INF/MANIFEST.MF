@@ -23,7 +23,6 @@ Import-Package: com.google.common.base,
  org.openhab.core.library.types,
  org.openhab.core.transform,
  org.openhab.core.types,
- org.openhab.model.core,
  org.openhab.model.item.binding,
  org.osgi.framework,
  org.osgi.service.cm,
@@ -35,7 +34,3 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/irtransbinding.xml
 Bundle-ClassPath: .
-Require-Bundle: org.openhab.core,
- org.openhab.model.item,
- org.openhab.core.library,
- org.openhab.model.core
