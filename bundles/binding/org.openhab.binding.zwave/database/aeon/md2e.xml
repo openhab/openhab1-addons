@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+        <Model>MD2E</Model>
+        <Label lang="en">Micro Dimmer 2nd Edition</Label>
+        <CommandClasses>
+                <Class><id>0x00</id></Class>
+                <Class><id>0x20</id></Class>
+                <Class><id>0x26</id></Class>
+                <Class><id>0x2B</id></Class>
+                <Class><id>0x70</id></Class>
+                <Class><id>0x72</id></Class>
+                <Class><id>0x85</id></Class>
+                <Class><id>0x86</id></Class>
+        </CommandClasses>
+        <Associations>
+                <Group>
+                        <Index>1</Index>
+                        <Maximum>5</Maximum>
+                        <Label lang="en">Target for automatic reports</Label>
+                        <Label lang="de">Ziel für automatische reports</Label>
+                </Group>
+        </Associations>
+        <Configuration>
+                <Parameter>
+                        <Index>80</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Notification on Status Change</Label>
+                        <Label lang="de">Notification on Status Change</Label>
+                        <Help lang="en">Parameter to Enable to send notification to associated devices (Group 1) when the state of Micro Dimmer's load changed</Help>
+                        <Help lang="de">Parameter to Enable to send notification to associated devices (Group 1) when the state of Micro Dimmer's load changed</Help>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Deactivate</Label>
+                                <Label lang="de">Deaktiviert</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Hail CC Sent</Label>
+                                <Label lang="de">Hail CC Sent</Label>
+                        </Item>
+                        <Item>
+                                <Value>2</Value>
+                                <Label lang="en">Basic CC Report Sent</Label>
+                                <Label lang="de">Basic CC Report Sent</Label>
+                        </Item>
+                </Parameter>
+                <Parameter>
+                        <Index>120</Index>
+                        <Type>list</Type>
+                        <Default>255</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Turn External Button Mode</Label>
+                        <Label lang="de">Turn External Button Mode</Label>
+                        <Help lang="en">Parameter to set External button type</Help>
+                        <Help lang="de">Parameter to set External button type</Help>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">Momentary Button Mode</Label>
+                                <Label lang="de">Momentary Button Mode</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">2 State Switch Mode</Label>
+                                <Label lang="de">2 State Switch Mode</Label>
+                        </Item>
+                        <Item>
+                                <Value>2</Value>
+                                <Label lang="en">3 Way Switch Mode</Label>
+                                <Label lang="de">3 Way Switch Mode</Label>
+                        </Item>
+                </Parameter>
+        </Configuration>
+</Product>
