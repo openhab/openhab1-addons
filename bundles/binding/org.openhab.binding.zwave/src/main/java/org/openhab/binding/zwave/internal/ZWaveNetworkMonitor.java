@@ -399,11 +399,11 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				healing.state = HealState.PING;
 				ZWaveNoOperationCommandClass zwaveCommandClass = (ZWaveNoOperationCommandClass) healing.node
 						.getCommandClass(CommandClass.NO_OPERATION);
-				if (zwaveCommandClass == null)
+				if (zwaveCommandClass != null) {
+					zController.sendData(zwaveCommandClass.getNoOperationMessage());
+					healing.stateNext = HealState.SETSUCROUTE;
 					break;
-				zController.sendData(zwaveCommandClass.getNoOperationMessage());
-				healing.stateNext = HealState.SETSUCROUTE;
-				break;
+				}
 			}
 			healing.state = HealState.SETSUCROUTE;
 		case SETSUCROUTE:
