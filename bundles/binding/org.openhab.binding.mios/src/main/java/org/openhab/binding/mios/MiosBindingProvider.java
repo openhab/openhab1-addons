@@ -45,15 +45,6 @@ public interface MiosBindingProvider extends BindingProvider {
 	 */
 	String getProperty(String itemName);
 
-	/**
-	 * Gets the Type of the Item {@code itemName}
-	 * 
-	 * @param itemName
-	 *            the name of the item to find the type for
-	 * @return the type of the Item identified by {@code itemName}
-	 */
-	Class<? extends Item> getItemType(String itemName);
-
 	public List<String> getItemsForProperty(String property);
 
 	/**

@@ -192,10 +192,10 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 		// pattern-matcher.
 		matcher = IN_CONFIG_PATTERN.matcher(inThing);
 		if (!matcher.matches())
-			throw new BindingConfigParseException("Config for item '"
-					+ item.getName()
-					+ "' could not be parsed.  Bad thing format '"
-					+ bindingConfig + "'");
+			throw new BindingConfigParseException(
+					String.format(
+							"Config for item '%s' could not be parsed.  Bad thing format '%s'",
+							item.getName(), bindingConfig));
 
 		String inType = matcher.group("inType");
 		String inId = matcher.group("id");
@@ -222,9 +222,9 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 					Integer.parseInt(inId), inStuff, item.getClass(), inTrans,
 					outTrans);
 		} else
-			throw new BindingConfigParseException(
-					"Invalid binding type received for item " + item.getName()
-							+ " bad type (" + inType + ")");
+			throw new BindingConfigParseException(String.format(
+					"Invalid binding type received for Item %s, bad type (%s)",
+					item.getName(), inType));
 	}
 
 	public MiosBindingConfig getMiosBindingConfig(String itemName) {
@@ -247,15 +247,6 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 	public String getProperty(String itemName) {
 		MiosBindingConfig config = getMiosBindingConfig(itemName);
 		return (config == null) ? null : config.toProperty();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Class<? extends Item> getItemType(String itemName) {
-		MiosBindingConfig config = getMiosBindingConfig(itemName);
-		return (config == null) ? null : config.getItemType();
 	}
 
 	/**

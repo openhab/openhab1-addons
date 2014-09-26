@@ -20,21 +20,12 @@ import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemRegistry;
-import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.DateTimeItem;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
-import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.core.types.TypeParser;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -88,9 +79,9 @@ import org.slf4j.LoggerFactory;
  * <p>
  * 
  * All updates are received asynchronously from the MiOS Units. This interaction
- * is managed by a per MiOS Unit {@link MiosConnector} Polling Thread object that
- * utilizes a {@link MiosUnit MiOS Unit} configuration object to determine the
- * location of the MiOS Unit.
+ * is managed by a per MiOS Unit {@link MiosUnitConnector} Polling Thread object
+ * that utilizes a {@link MiosUnit MiOS Unit} configuration object to determine
+ * the location of the MiOS Unit.
  * <p>
  * 
  * @author Mark Clark
@@ -102,7 +93,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	private static final Logger logger = LoggerFactory
 			.getLogger(MiosBinding.class);
 
-	private Map<String, MiosConnector> connectors = new HashMap<String, MiosConnector>();
+	private Map<String, MiosUnitConnector> connectors = new HashMap<String, MiosUnitConnector>();
 	private Map<String, MiosUnit> nameUnitMapper = null;
 
 	private String getName() {
@@ -133,7 +124,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		logger.debug(getName() + " deactivate()");
 
 		// close any open connections
-		for (MiosConnector connector : connectors.values()) {
+		for (MiosUnitConnector connector : connectors.values()) {
 			if (connector.isConnected()) {
 				connector.close();
 			}
@@ -198,7 +189,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 
 		// TODO: Work out a cleaner entry point for the Child connections to get
 		// started.
-		MiosConnector connector = getMiosConnector(unitName);
+		MiosUnitConnector connector = getMiosConnector(unitName);
 	}
 
 	private String getMiosUnitName(String itemName) {
@@ -215,7 +206,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		return null;
 	}
 
-	private MiosConnector getMiosConnector(String unitName) {
+	private MiosUnitConnector getMiosConnector(String unitName) {
 		logger.trace("getMiosConnector: start unitName '{}'", unitName);
 
 		// sanity check
@@ -223,7 +214,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 			return null;
 
 		// check if the connector for this unit already exists
-		MiosConnector connector = connectors.get(unitName);
+		MiosUnitConnector connector = connectors.get(unitName);
 		if (connector != null)
 			return connector;
 
@@ -254,7 +245,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		// create a new connection handler
 		logger.debug("Creating new MiosConnector for '{}' on {}", unitName,
 				miosUnit.getHostname());
-		connector = new MiosConnector(miosUnit, this);
+		connector = new MiosUnitConnector(miosUnit, this);
 		connectors.put(unitName, connector);
 
 		// attempt to open the connection straight away
@@ -280,7 +271,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 			// Lookup the MiOS Unit name and property for this item
 			String unitName = getMiosUnitName(itemName);
 
-			MiosConnector connector = getMiosConnector(unitName);
+			MiosUnitConnector connector = getMiosConnector(unitName);
 			if (connector == null) {
 				logger.warn(
 						"Received command ({}) for item '{}' but no connector found for MiOS Unit '{}', ignoring",
@@ -349,7 +340,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	@Override
 	public void updated(Dictionary<String, ?> properties)
 			throws ConfigurationException {
-		logger.trace(getName() + "MiOS updated()");
+		logger.trace(getName() + " updated()");
 
 		Map<String, MiosUnit> units = new HashMap<String, MiosUnit>();
 
@@ -413,50 +404,6 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	}
 
 	/**
-	 * Returns a {@link State} which is inherited from the {@link Item}s
-	 * accepted DataTypes. The call is delegated to the {@link TypeParser}. If
-	 * <code>item</code> is <code>null</code> the {@link StringType} is used.
-	 * 
-	 * Code borrowed from {@link HttpBinding}.
-	 * 
-	 * @param itemType
-	 * @param value
-	 * 
-	 * @return a {@link State} which type is inherited by the {@link TypeParser}
-	 *         or a {@link StringType} if <code>item</code> is <code>null</code>
-	 */
-	private State createState(Class<? extends Item> itemType, String value) {
-		State result;
-		try {
-			if (itemType.isAssignableFrom(NumberItem.class)) {
-				result = DecimalType.valueOf(value);
-			} else if (itemType.isAssignableFrom(ContactItem.class)) {
-				result = OpenClosedType.valueOf(value);
-			} else if (itemType.isAssignableFrom(SwitchItem.class)) {
-				result = OnOffType.valueOf(value);
-			} else if (itemType.isAssignableFrom(DimmerItem.class)) {
-				result = PercentType.valueOf(value);
-			} else if (itemType.isAssignableFrom(RollershutterItem.class)) {
-				result = PercentType.valueOf(value);
-			} else if (itemType.isAssignableFrom(DateTimeItem.class)) {
-				result = DateTimeType.valueOf(value);
-			} else {
-				result = StringType.valueOf(value);
-			}
-
-			logger.trace(
-					"createState: Converted '{}' to '{}', bound to '{}'",
-					new Object[] { value, result.getClass().getName(), itemType });
-
-			return result;
-		} catch (Exception e) {
-			logger.debug("Couldn't create state of type '{}' for value '{}'",
-					itemType, value);
-			return StringType.valueOf(value);
-		}
-	}
-
-	/**
 	 * Push a value into all openHAB Items that match a given MiOS Property name
 	 * (from the Item Binding declaration).
 	 * <p>
@@ -494,8 +441,9 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 					((Boolean) value).booleanValue() ? OnOffType.ON.toString()
 							: OnOffType.OFF.toString());
 		} else {
-			throw new IllegalArgumentException("Unexpected Datatype, property="
-					+ property + " datatype=" + value.getClass());
+			throw new IllegalArgumentException(String.format(
+					"Unexpected Datatype, property=%s datatype=%s", property,
+					value.getClass().toString()));
 		}
 	}
 
@@ -521,31 +469,18 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 							.getMiosBindingConfig(itemName);
 
 					if (config != null) {
-						if (config.supportsTransformIn()) {
-							// Transform whatever value we have, based upon the
-							// Transformation Service specified in the Binding
-							// Config.
+						// Transform whatever value we have, based upon the
+						// Transformation Service specified in the Binding
+						// Config.
 
-							State newValue = createState(config.getItemType(),
-									config.transformIn(value.toString()));
+						State newValue = config.transformIn(value);
 
+						if (newValue != value) {
 							logger.trace(
-									"internalPropertyUpdate: transformation present, from '{}' to '{}'",
+									"internalPropertyUpdate: transformation performed, from '{}' to '{}'",
 									value, newValue);
 
 							value = newValue;
-						}
-
-						// TODO Seriously? Reduce the overall number of type
-						// conversions, it's crazy wasteful. Must have been
-						// listening to too much Crystal Method at the time!!
-						if (value instanceof StringType) {
-							value = createState(config.getItemType(),
-									value.toString());
-
-							logger.trace(
-									"internalPropertyUpdate: Converted value '{}' from StringType to '{}'",
-									value, value.getClass());
 						}
 
 						logger.debug(

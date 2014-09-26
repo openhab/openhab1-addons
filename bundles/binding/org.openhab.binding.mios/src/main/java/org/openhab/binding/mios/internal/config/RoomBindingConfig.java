@@ -22,11 +22,17 @@ public class RoomBindingConfig extends MiosBindingConfig {
 
 	private RoomBindingConfig(String context, String itemName, String unitName,
 			int id, String stuff, Class<? extends Item> itemType,
-			String inTransform, String outTransform) {
+			String inTransform, String outTransform)
+			throws BindingConfigParseException {
 		super(context, itemName, unitName, id, stuff, itemType, null,
 				inTransform, outTransform);
 	}
 
+	/**
+	 * Static constructor-method.
+	 * 
+	 * @return an initialized MiOS Room Binding Configuration object.
+	 */
 	public static final MiosBindingConfig create(String context,
 			String itemName, String unitName, int id, String stuff,
 			Class<? extends Item> itemType, String inTransform,
@@ -38,14 +44,26 @@ public class RoomBindingConfig extends MiosBindingConfig {
 		return c;
 	}
 
+	/**
+	 * Returns the value "<code>room</code>".
+	 * 
+	 * @return the value "<code>room</code>"
+	 */
 	@Override
-	public String getType() {
+	public String getMiosType() {
 		return "room";
 	}
 
+	/**
+	 * This method throws a {@link TransformationException}, as MiOS Room
+	 * attributes don't support being called.
+	 * 
+	 * @throws TransformationException
+	 */
 	@Override
 	public String transformCommand(Command command)
 			throws TransformationException {
-		throw new TransformationException("Room attributes don't support Command Transformations");
+		throw new TransformationException(
+				"Room attributes don't support Command Transformations");
 	}
 }

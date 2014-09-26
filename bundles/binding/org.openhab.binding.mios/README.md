@@ -188,16 +188,16 @@ As you can see by the above declaration, the input and output transformations ar
 
 With examples like:
 
-    String   SystemZWaveStatusString "ZWave Status String [%d]" (GSystem) {mios="unit:house,system:/ZWaveStatus,in:MAP(miosZWaveStatus.map)"}
+    String   SystemZWaveStatusString "ZWave Status String [%d]" (GSystem) {mios="unit:house,system:/ZWaveStatus,in:MAP(miosZWaveStatusIn.map)"}
     Contact  LivingRoomZoneTripped "Living Room (Zone 2) [%s]" <contact> (GContact,GWindow,GPersist) {mios="unit:house,device:117/service/SecuritySensor1/Tripped,in:MAP(miosContactIn.map)"}
 
-and a map transform file like `configurations/transform/miosZWaveStatus.map`:
+and a map transform file like `configurations/transform/miosZWaveStatusIn.map`:
 
     1=Cool Bananas
     0=In the Dog house
     -=Your guess is as good as mine!
 
-and a map transform file like `configurations/transform/miosSwitch.map`:
+and a map transform file like `configurations/transform/miosSwitchIn.map`:
 
     1=OPEN
     0=CLOSED
@@ -319,7 +319,7 @@ TODO: Not finished yet!
 
     /* Thermostat Upstairs */
     Number   ThermostatUpstairsId "ID [%d]" {mios="unit:house,device:335/id"}
-    String   ThermostatUpstairsDeviceStatus "Device Status [%s]" (GThermostatUpstairs) {mios="unit:house,device:335/status,in:MAP(miosStatus.map)"}
+    String   ThermostatUpstairsDeviceStatus "Device Status [%s]" (GThermostatUpstairs) {mios="unit:house,device:335/status,in:MAP(miosStatusIn.map)"}
     Number   ThermostatUpstairsCurrentTemperature "Upstairs Temperature [%.1f °F]" <temperature> (GThermostatUpstairs, GTemperature) {mios="unit:house,device:335/service/TemperatureSensor1/CurrentTemperature"}
     Number   ThermostatUpstairsHeatCurrentSetpoint "Heat Setpoint [%.1f °F]" <temperature> (GThermostatUpstairs) {mios="unit:house,device:335/service/TemperatureSetpoint1_Heat/CurrentSetpoint,command:MAP(miosTStatSetpointHeatCommand.map)"}
     Number   ThermostatUpstairsCoolCurrentSetpoint "Cool Setpoint [%.1f °F]" <temperature> (GThermostatUpstairs) {mios="unit:house,device:335/service/TemperatureSetpoint1_Cool/CurrentSetpoint,command:MAP(miosTStatSetpointCoolCommand.map)"}
@@ -367,11 +367,11 @@ _&lt;SceneAttribute>_ is `status` | `active`
 
 In general Scenes tend to look like:
 
-    String   SceneMasterClosetLights "Master Closet Lights Scene" <sofa> (GScene) {mios="unit:house,scene:109/status,command:,in:MAP(miosStatus.map)", autoupdate="false"}
+    String   SceneMasterClosetLights "Master Closet Lights Scene" <sofa> (GScene) {mios="unit:house,scene:109/status,command:,in:MAP(miosStatusIn.map)", autoupdate="false"}
 
 Or if you want the Scene executed upon receipt of `ON` or `TOGGLE` Commands:
 
-    String   SceneMasterClosetLights "Master Closet Lights Scene" <sofa> (GScene) {mios="unit:house,scene:109/status,command:ON|TOGGLE,in:MAP(miosStatus.map)", autoupdate="false"}
+    String   SceneMasterClosetLights "Master Closet Lights Scene" <sofa> (GScene) {mios="unit:house,scene:109/status,command:ON|TOGGLE,in:MAP(miosStatusIn.map)", autoupdate="false"}
 
 
 NOTE: Here we've added an additional configuration to the binding declaration, `autoupdate="false"`, to ensure the Switch no longer has the `ON` and `OFF` States automatically managed, and instead just looks like a Button.

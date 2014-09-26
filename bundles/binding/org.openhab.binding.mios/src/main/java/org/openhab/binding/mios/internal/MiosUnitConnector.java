@@ -48,10 +48,10 @@ import com.ning.http.client.providers.jdk.JDKAsyncHttpProvider;
  * @author Mark Clark
  * @since 1.6.0
  */
-public class MiosConnector {
+public class MiosUnitConnector {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(MiosConnector.class);
+			.getLogger(MiosUnitConnector.class);
 
 	private static final String ENCODING_CHARSET = "utf-8";
 	private static int FORCE_FULL_POLL = 10;
@@ -111,7 +111,7 @@ public class MiosConnector {
 	 *            The host to connect to. Give a reachable hostname or IP
 	 *            address, without protocol or port
 	 */
-	public MiosConnector(MiosUnit unit, MiosBinding binding) {
+	public MiosUnitConnector(MiosUnit unit, MiosBinding binding) {
 		logger.debug("Constructor: unit '{}', binding '{}'", unit, binding);
 
 		this.unit = unit;
@@ -201,14 +201,13 @@ public class MiosConnector {
 
 		String newCommand = config.transformCommand(command);
 		if (newCommand == null) {
-			logger.debug(
-					"invokeCommand: Need to remote-invoke Device '{}', but no action determined for Command '{}' ('{}')",
-					new Object[] { config.toProperty(), command.toString(),
-							command.getClass() });
+			logger.warn(
+					"callDevice: Command '{}' not supported, or missing command: mapping, for Item '{}'",
+					command.toString(), config.getItemName());
 			return;
 		} else if (newCommand.equals("")) {
 			logger.trace(
-					"invokeCommand: Item '{}' has disabled the use of Command '{}' via it's configuration '{}'",
+					"callDevice: Item '{}' has disabled the use of Command '{}' via it's configuration '{}'",
 					new Object[] { config.getItemName(), command.toString(),
 							config.toProperty() });
 			return;
@@ -243,13 +242,13 @@ public class MiosConnector {
 							+ '='
 							+ URLEncoder.encode(serviceValue, ENCODING_CHARSET);
 					callMios(String.format(DEVICE_URL_PARAMS, u.getHostname(),
-							u.getPort(), config.getId(),
+							u.getPort(), config.getMiosId(),
 							URLEncoder.encode(serviceName, ENCODING_CHARSET),
 							URLEncoder.encode(serviceAction, ENCODING_CHARSET),
 							p));
 				} else {
 					callMios(String.format(DEVICE_URL, u.getHostname(),
-							u.getPort(), config.getId(),
+							u.getPort(), config.getMiosId(),
 							URLEncoder.encode(serviceName, ENCODING_CHARSET),
 							URLEncoder.encode(serviceAction, ENCODING_CHARSET)));
 				}
@@ -277,11 +276,11 @@ public class MiosConnector {
 		if (newCommand != null) {
 			MiosUnit u = getMiosUnit();
 			callMios(String.format(SCENE_URL, u.getHostname(), u.getPort(),
-					config.getId()));
+					config.getMiosId()));
 		} else {
-			logger.debug(
-					"invokeScene: Command type not supported for Scenes '{}'",
-					command.getClass());
+			logger.warn(
+					"callScene: Command '{}' not supported, or missing command: declaration, for Item '{}'",
+					command.toString(), config.getItemName());
 		}
 
 	}
@@ -306,15 +305,6 @@ public class MiosConnector {
 
 	public void invokeCommand(MiosBindingConfig config, Command command,
 			State state) throws Exception {
-		// If we don't support OutBound transmission, then bail out early.
-		if (!config.supportsCommands()) {
-			logger.debug(
-					"invokeCommand: Received ({}), for config '{}', but it's not configured to handle them.",
-					command, config);
-
-			return;
-		}
-
 		if (config instanceof SceneBindingConfig) {
 			callScene((SceneBindingConfig) config, command, state);
 		} else if (config instanceof DeviceBindingConfig) {

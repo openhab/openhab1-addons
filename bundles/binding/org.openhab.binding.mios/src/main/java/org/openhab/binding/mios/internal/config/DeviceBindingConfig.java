@@ -25,6 +25,151 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 import org.osgi.framework.BundleContext;
 
 /**
+ * A BindingConfig object targeted at MiOS Device Variables and Attributes.
+ * <p>
+ * 
+ * The device-specific form of a MiOS Binding is:<br>
+ * <ul>
+ * <li><nobr>
+ * <tt>mios="unit:<i>unitName</i>,device:<i>deviceId</i>/service/<i>serviceURN</i>/<i>serviceVariable</i>,<i>optionalTransformations</i></tt>
+ * </nobr>
+ * <li><nobr>
+ * <tt>mios="unit:<i>unitName</i>,device:<i>deviceId</i>/service/<i>serviceAlias</i>/<i>serviceVariable</i>,<i>optionalTransformations</i></tt>
+ * </nobr>
+ * <li><nobr>
+ * <tt>mios="unit:<i>unitName</i>,device:<i>deviceId</i>/<i>attrName</i>,<i>optionalTransformations</i></tt>
+ * </nobr>
+ * </ul>
+ * <p>
+ * 
+ * 
+ * Example Item declarations...<br>
+ * <ul>
+ * <li>
+ * <code><nobr>Number MiOSMemoryAvailable "Available [%.0f KB]"  (BindingDemo) {mios="unit:house,device:382/service/urn:cd-jackson-com:serviceId:SystemMonitor/memoryAvailable"}</nobr></code>
+ * <li>
+ * <code><nobr>Number Weather_Temperature "Outside Temperature [%.1f F]" &lt;temperature&gt; (Weather_Chart) {mios="unit:house,device:318/service/urn:upnp-org:serviceId:TemperatureSensor1/CurrentTemperature"}</nobr></code>
+ * <li>
+ * <code><nobr>Switch FamilyTheatreLightsStatus "Family Theatre Lights" (GSwitch) {mios="unit:house,device:13/service/urn:upnp-org:serviceId:SwitchPower1/Status,command:ON|OFF,in:MAP(miosSwitchIn.map),out:MAP(miosSwitchOut.map)"}</nobr></code>
+ * <li>
+ * <code><nobr>Dimmer FamilyTheatreLightsLoadLevelStatus "Family Theatre Lights [%d] %" &lt;slider&gt; (GDimmer) {mios="unit:house,device:13/service/urn:upnp-org:serviceId:Dimming1/LoadLevelStatus,command:MAP(miosDimmerCommand.map)", autoupdate="false"}</nobr></code>
+ * </ul>
+ * <p>
+ * 
+ * There are also a set of pre-defined UPnP Service aliases, so a short-hand
+ * notation can be used for common UPnP ServiceId's:<br>
+ * <ul>
+ * <li>
+ * <code><nobr>Number MiOSMemoryAvailable "Available [%.0f KB]" (BindingDemo) {mios="unit:house,device:382/service/SystemMonitor/memoryAvailable"}</nobr></code>
+ * <li>
+ * <code><nobr>Number Weather_Temperature "Outside Temperature [%.1f F]" &lt;temperature&gt; (Weather_Chart) {mios="unit:house,device:318/service/TemperatureSensor1/CurrentTemperature"}</nobr></code>
+ * <li>
+ * <code><nobr>Switch FamilyTheatreLightsStatus "Family Theatre Lights" (GSwitch) {mios="unit:house,device:13/service/SwitchPower1/Status,command:ON|OFF,in:MAP(miosSwitchIn.map),out:MAP(miosSwitchOut.map)"}</nobr></code>
+ * <li>
+ * <code><nobr>Dimmer FamilyTheatreLightsLoadLevelStatus "Family Theatre Lights [%d] %" &lt;slider&gt; (GDimmer) {mios="unit:house,device:13/service/Dimming1/LoadLevelStatus,command:MAP(miosDimmerCommand.map)", autoupdate="false"}</nobr></code>
+ * </ul>
+ * <p>
+ * 
+ * The complete list of UPnP Service aliases is listed in the documentation
+ * file, or can be seen in the file <code>ServiceAliases.properties</code>.
+ * <p>
+ * 
+ * In addition to binding against a Device's Variables,
+ * you can bind to the set of Device Attributes it exposes. Specifically it's
+ * <code>id</code> and <code>status</code>:
+ * <p>
+ * <ul>
+ * <li>
+ * <code><nobr>Number   FamilyTheatreLightsId "ID [%d]" {mios="unit:house,device:13/id"}</nobr></code>
+ * <li>
+ * <code><nobr>String   FamilyTheatreLightsDeviceStatus "Device Status [%s]" {mios="unit:house,device:13/status,in:MAP(miosStatusIn.map)"}</nobr></code>
+ * </ul>
+ * <p>
+ * 
+ * <b>Optional Transformations</b>
+ * <p>
+ * In many cases, the values exposed by a MiOS Unit aren't suitable for use
+ * within openHAB, and a value mapping/transformation may be needed.
+ * <p>
+ * 
+ * Values may be transformed using an input transformation (<code>in:</code>) or
+ * a command transformation (<code>command:</code>). In future, values will also
+ * be transformed prior to being sent to a MiOS Unit via the output
+ * transformation (<code>out:</code>)
+ * <p>
+ * 
+ * Transformation files are provided, for the common input and command
+ * transformations, in the <code>examples/transform</code> directory of the MiOS
+ * Binding.
+ * <p>
+ * The examples presented here assume that these MAP transformation files have
+ * been copied to the appropriate openHAB configuration location (typically
+ * <code>configuration/transform</code>).
+ * <p>
+ * 
+ * There are example Input transformation maps:
+ * <ul>
+ * <li><code>miosSwitchIn.map</code> - MiOS Switch device (
+ * <code>service/SwitchPower1/Status</code>) properties when mapped to a
+ * <code>Switch</code> Item.
+ * <li><code>miosStatusIn.map</code> - MiOS Status attributes (
+ * <code>/status</code>) to make them readable states when mapped to a
+ * <code>String</code> Item.
+ * <li><code>miosContactIn.map</code> - MiOS Security Sensor device (
+ * <code>/service/SecuritySensor1/Tripped</code>) when mapped to a
+ * <code>Contact</code> Item.
+ * <li><code>miosZWaveStatusIn.map</code> - MiOS System attribute (
+ * <code>system:/ZWaveStatus</code>) when mapped to a <code>String</code> Item.
+ * <li><code>miosWeatherConditionGroupIn.map</code> - MiOS
+ * </ul>
+ * 
+ * <p>
+ * Example Output transformation maps:
+ * <ul>
+ * <li><code>miosSwitchOut.map</code> - MiOS
+ * <li><code>miosContactOut.map</code> - MiOS
+ * </ul>
+ * 
+ * <p>
+ * And example Command transformation maps:
+ * <ul>
+ * <li><code>miosArmedCommand.map</code> - MiOS Security Sensor device (
+ * <code>/service/SecuritySensor1/Armed</code>) when mapped to a
+ * <code>Switch</code> Item.
+ * <li><code>miosDimmerCommand.map</code> - MiOS Dimmer device (
+ * <code>/service/Dimming1/LoadLevelStatus</code>) when mapped to a
+ * <code>Dimmer</code> Item.
+ * <li><code>miosLockCommand.map</code> - MiOS Lock device (
+ * <code>/service/DoorLock1/Status</code>) properties when mapped to a
+ * <code>Switch</code> Item.
+ * <li><code>miosTStatModeStatusCommand.map</code> - MiOS Thermostat device (
+ * <code>/service/HVAC_UserOperatingMode1/ModeStatus</code>) when mapped to a
+ * <code>String</code> Item.
+ * <li><code>miosTStatSetpointCoolCommand.map</code> - MiOS Thermostat device (
+ * <code>/service/TemperatureSetpoint1_Cool/CurrentSetpoint</code>) when mapped
+ * to a <code>Number</code> Item.
+ * <li><code>miosTStatSetpointHeatCommand.map</code> - MiOS Thermostat device (
+ * <code>/service/TemperatureSetpoint1_Heat/CurrentSetpoint</code>) when mapped
+ * to a <code>Number</code> Item.
+ * <li><code>miosTStatFanOperatingModeCommand.map</code> - MiOS Thermostat
+ * device (<code>/service/HVAC_FanOperatingMode1/Mode</code>) when mapped to a
+ * <code>String</code> Item.
+ * <li><code>miosUPnPRenderingControlVolumeCommand.map</code> - MiOS UPnP Volume
+ * (<code>service/RenderingControl/Volume</code>) property when mapped to a
+ * <code>Dimmer</code> Item.
+ * <li><code>miosUPnPRenderingControlMuteCommand.map</code> - MiOS UPnP Mute (
+ * <code>service/RenderingControl/Mute</code>) property when mapped to a
+ * <code>Switch</code> Item.
+ * <li><code>miosUPnPTransportStatePlayModeCommand.map</code> - MiOS UPnP
+ * PlayMode (<code>service/AVTransport/TransportState</code>) when mapped to a
+ * <code>String</code> Item.
+ * </ul>
+ * <p>
+ * 
+ * More details on these mappings can be found in the
+ * <code>README.md<code> file associated
+ * with this Binding.
+ * <p>
  * 
  * @author Mark Clark
  * @since 1.6.0
@@ -78,9 +223,6 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 	private static final Pattern SERVICE_COMMAND_INMAP_PATTERN = Pattern
 			.compile("(?<mapName>.+?)(=(?<mapValue>.+))?");
 
-	private String inServiceName;
-	private String inServiceVariable;
-
 	private String commandTransformName;
 	private String commandTransformParam;
 	private Map<String, String> commandMap;
@@ -90,11 +232,17 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 	private DeviceBindingConfig(String context, String itemName,
 			String unitName, int id, String stuff,
 			Class<? extends Item> itemType, String commandThing,
-			String inTransform, String outTransform) {
+			String inTransform, String outTransform)
+			throws BindingConfigParseException {
 		super(context, itemName, unitName, id, stuff, itemType, commandThing,
 				inTransform, outTransform);
 	}
 
+	/**
+	 * Static constructor-method.
+	 * 
+	 * @return an initialized MiOS Device Binding Configuration object.
+	 */
 	public static final MiosBindingConfig create(String context,
 			String itemName, String unitName, int id, String inStuff,
 			Class<? extends Item> itemType, String commandThing,
@@ -188,9 +336,6 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 					inTransform, outTransform);
 			c.initialize();
 
-			c.inServiceName = iName;
-			c.inServiceVariable = iVar;
-
 			c.commandTransformName = cTransform;
 			c.commandTransformParam = cParam;
 			c.commandMap = cMap;
@@ -201,17 +346,14 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 		}
 	}
 
+	/**
+	 * Returns the value "<code>device</code>".
+	 * 
+	 * @return the value "<code>device</code>"
+	 */
 	@Override
-	public String getType() {
+	public String getMiosType() {
 		return "device";
-	}
-
-	public String getInServiceName() {
-		return inServiceName;
-	}
-
-	public String getInServiceVariable() {
-		return inServiceVariable;
 	}
 
 	private String getCommandTransformName() {
@@ -246,7 +388,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 
 			logger.warn(
 					"Transformation Service (command) '{}' not found for declaration '{}'.",
-					name, getCommandThing());
+					name, getCommandTransform());
 		}
 
 		return commandTransformationService;
@@ -255,6 +397,11 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 	@Override
 	public String transformCommand(Command command)
 			throws TransformationException {
+		// Quickly return null if we don't support commands.
+		if (getCommandTransform() == null) {
+			return null;
+		}
+
 		TransformationService ts = getCommandTransformationService();
 		String result;
 
