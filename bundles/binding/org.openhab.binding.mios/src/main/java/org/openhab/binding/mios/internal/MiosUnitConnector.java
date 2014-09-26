@@ -45,6 +45,20 @@ import com.ning.http.client.providers.jdk.JDKAsyncHttpProvider;
 /**
  * Manages the HTTP Connection for a single MiOS Unit.
  * 
+ * This code has two functions to perform:
+ * <ul>
+ * <li>Inbound <i>changes</i> from the MiOS Unit.<br>
+ * Manages an internal thread to periodically poll the configured MiOS Unit and
+ * timeout at the specified interval. All changes are internally transformed
+ * from their original (JSON) form, and dispatched to the relevant parts of
+ * openHAB.
+ * <li>Outbound <i>commands</i> to the MiOS Unit.<br>
+ * Exposes a method to transform & transmit openHAB Commands to the configured
+ * MiOS Unit, in a non-blocking manner.<br>
+ * Callers wishing to utilize this functionality use the
+ * <code>invokeCommand</code> method.
+ * </ul>
+ * 
  * @author Mark Clark
  * @since 1.6.0
  */
@@ -162,7 +176,9 @@ public class MiosUnitConnector {
 	}
 
 	/**
-	 * Poll the MiOS Unit...
+	 * Is the underlying Polling thread running?
+	 * 
+	 * @return true if it's running.
 	 */
 
 	public boolean isRunning() {
@@ -303,6 +319,19 @@ public class MiosUnitConnector {
 		}
 	}
 
+	/**
+	 * Request a Command be delivered to the MiOS Unit under control.
+	 * <p>
+	 * The MiOS Binding uses this call to deliver "single valued" openHAB
+	 * Commands to the target MiOS Unit.
+	 * <p>
+	 * Configurable transformations, defined at the BindingConfig level, are
+	 * used to transform this openHAB Command into the specific form required by
+	 * the MiOS Unit.
+	 * <p>
+	 * openHAB Commands can only be targeted to Device and Scene Bindings, all
+	 * other requests will cause a warning to be logged.
+	 */
 	public void invokeCommand(MiosBindingConfig config, Command command,
 			State state) throws Exception {
 		if (config instanceof SceneBindingConfig) {
