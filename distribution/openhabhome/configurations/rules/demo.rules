@@ -114,7 +114,7 @@ when
 	Time cron "0 * * * * ?"
 then	
 	if(Weather_Temperature.changedSince(now.minusMinutes(1))) {
-		println("2 minutes ago, the temperature was " + Weather_Temperature.historicState(now.minusMinutes(2)) + " degrees.")			
+		println("2 minutes ago, the temperature was " + Weather_Temperature.historicState(now.minusMinutes(2)) + " degrees.")		
 	}
 end
 
