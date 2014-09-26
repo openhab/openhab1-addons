@@ -105,6 +105,7 @@ when
 then	
 	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight).state)
 	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight).state)
+	logInfo("Weather","Temperature evolved of " + Weather_Temperature.deltaSince(now.minusMinutes(2)).toString + " degrees.")
 end
 
 /** shows how to use sensor values from the past */
@@ -113,7 +114,7 @@ when
 	Time cron "0 * * * * ?"
 then	
 	if(Weather_Temperature.changedSince(now.minusMinutes(1))) {
-		println("2 minutes ago, the temperature was " + Weather_Temperature.historicState(now.minusMinutes(2)) + " degrees.")		
+		println("2 minutes ago, the temperature was " + Weather_Temperature.historicState(now.minusMinutes(2)) + " degrees.")			
 	}
 end
 
