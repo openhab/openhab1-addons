@@ -28,7 +28,6 @@ import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
@@ -304,24 +303,26 @@ public class ZWaveConverterHandler {
 
 		logger.trace("Getting converter for item = {}, command class = {}, item command class = {}", itemName, event.getCommandClass().getLabel(), commandClassName);
 		
-		if (item == null)
+		if (item == null) {
 			return;
+		}
 		
 		// check whether this item is bound to the right command class.
 		
 		if (commandClassName != null && !commandClassName.equalsIgnoreCase(event.getCommandClass().getLabel().toLowerCase()) &&
-				!(respondToBasic && event.getCommandClass() == CommandClass.BASIC)) 
+				!(respondToBasic && event.getCommandClass() == CommandClass.BASIC)) {
 			return;
+		}
 		
-		 ZWaveCommandClassConverter<?> converter = this.getConverter(event.getCommandClass());
+		ZWaveCommandClassConverter<?> converter = this.getConverter(event.getCommandClass());
 		 
 		 
-		 if (converter == null) {
-			 logger.warn("No converter found for command class = {}, ignoring event.",event.getCommandClass().toString());
-			 return;
-		 }
+		if (converter == null) {
+			logger.warn("No converter found for command class = {}, ignoring event.",event.getCommandClass().toString());
+			return;
+		}
 		 
-		 converter.handleEvent(event, item, bindingConfiguration.getArguments());
+		converter.handleEvent(event, item, bindingConfiguration.getArguments());
 	 }
 	
 	/**
