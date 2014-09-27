@@ -333,33 +333,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				records.add(record);
 
 				if(node.getManufacturer() != Integer.MAX_VALUE) {
-					if (database.FindManufacturer(node.getManufacturer()) == false) {
-						record = new OpenHABConfigurationRecord(domain, "ManufacturerID", "Manufacturer ID", true);
-						record.value = Integer.toHexString(node.getManufacturer());
-						records.add(record);
-					} else {
-						record = new OpenHABConfigurationRecord(domain, "Manufacturer", "Manufacturer", true);
-						record.value = database.getManufacturerName();
-						records.add(record);
-					}
-	
-					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
-						record = new OpenHABConfigurationRecord(domain, "DeviceId", "Device ID", true);
-						record.value = Integer.toHexString(node.getDeviceId());
-						records.add(record);
-	
-						record = new OpenHABConfigurationRecord(domain, "DeviceType", "Device Type", true);
-						record.value = Integer.toHexString(node.getDeviceType());
-						records.add(record);
-						
-						record = new OpenHABConfigurationRecord(domain, "Version", "Version", true);
-						record.value = Integer.toString(node.getVersion());
-						records.add(record);
-					} else {
-						record = new OpenHABConfigurationRecord(domain, "Product", "Product", true);
-						record.value = database.getProductName();
-						records.add(record);
-	
+					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == true) {
 						// Add links to configuration if the node supports the various command classes
 						if(database.doesProductImplementCommandClass(ZWaveCommandClass.CommandClass.CONFIGURATION.getKey()) == true) {
 							record = new OpenHABConfigurationRecord(domain + "parameters/", "Configuration Parameters");
@@ -393,6 +367,83 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				
 				record = new OpenHABConfigurationRecord(domain + "status/", "Status");
 				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain + "info/", "Information");
+				records.add(record);
+			} else if (arg.equals("info/")) {
+				if(node.getManufacturer() != Integer.MAX_VALUE) {
+					if (database.FindManufacturer(node.getManufacturer()) == true) {
+						record = new OpenHABConfigurationRecord(domain, "Manufacturer", "Manufacturer", true);
+						record.value = database.getManufacturerName();
+						records.add(record);
+					}
+	
+					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == true) {
+						record = new OpenHABConfigurationRecord(domain, "Product", "Product", true);
+						record.value = database.getProductName();
+						records.add(record);
+					}
+				
+					record = new OpenHABConfigurationRecord(domain, "ManufacturerID", "Manufacturer ID", true);
+					record.value = Integer.toHexString(node.getManufacturer());
+					records.add(record);
+
+					record = new OpenHABConfigurationRecord(domain, "DeviceId", "Device ID", true);
+					record.value = Integer.toHexString(node.getDeviceId());
+					records.add(record);
+
+					record = new OpenHABConfigurationRecord(domain, "DeviceType", "Device Type", true);
+					record.value = Integer.toHexString(node.getDeviceType());
+					records.add(record);
+					
+					record = new OpenHABConfigurationRecord(domain, "Version", "Version", true);
+					record.value = Integer.toString(node.getVersion());
+					records.add(record);
+					
+					record = new OpenHABConfigurationRecord(domain, "Listening", "Listening", true);
+					record.value = Boolean.toString(node.isListening());
+					records.add(record);
+
+					record = new OpenHABConfigurationRecord(domain, "Routing", "Routing", true);
+					record.value = Boolean.toString(node.isRouting());
+					records.add(record);
+
+					record = new OpenHABConfigurationRecord(domain, "Power", "Power", true);
+					ZWaveBatteryCommandClass batteryCommandClass = (ZWaveBatteryCommandClass) node
+							.getCommandClass(CommandClass.BATTERY);
+					if(batteryCommandClass != null) {
+						record.value = "Battery";					
+					}
+					else {
+						record.value = "Mains";
+					}
+					records.add(record);
+
+					ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
+							.getCommandClass(CommandClass.VERSION);
+					if (versionCommandClass != null) {
+						record = new OpenHABConfigurationRecord(domain, "LibType", "Library Type", true);
+						if(versionCommandClass.getLibraryType() == null)
+							record.value = "Unknown";
+						else
+							record.value = versionCommandClass.getLibraryType().getLabel();
+						records.add(record);
+
+						record = new OpenHABConfigurationRecord(domain, "ProtocolVersion", "Protocol Version", true);
+						if(versionCommandClass.getProtocolVersion() == null)
+							record.value = "Unknown";
+						else
+							record.value = Double.toString(versionCommandClass.getProtocolVersion());
+						records.add(record);
+
+						record = new OpenHABConfigurationRecord(domain, "AppVersion", "Application Version", true);
+						if(versionCommandClass.getApplicationVersion() == null)
+							record.value = "Unknown";
+						else
+							record.value = Double.toString(versionCommandClass.getApplicationVersion());
+						records.add(record);
+					}
+				}
 			} else if (arg.equals("status/")) {
 				record = new OpenHABConfigurationRecord(domain, "LastUpdated", "Last Updated", true);
 				record.value = node.getLastUpdated().toString();
@@ -408,14 +459,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				record.value = node.getNodeStage().getLabel() + " @ " + node.getQueryStageTimeStamp().toString();
 				records.add(record);
 
-				record = new OpenHABConfigurationRecord(domain, "Listening", "Listening", true);
-				record.value = Boolean.toString(node.isListening());
-				records.add(record);
-
-				record = new OpenHABConfigurationRecord(domain, "Routing", "Routing", true);
-				record.value = Boolean.toString(node.isRouting());
-				records.add(record);
-
 				record = new OpenHABConfigurationRecord(domain, "Packets", "Packet Statistics", true);
 				record.value = node.getRetryCount() + " / " + node.getSendCount();
 				records.add(record);
@@ -428,43 +471,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.value = Boolean.toString(node.isDead()) + " [" + node.getDeadCount() + " previous - last @ " + node.getDeadTime().toString() + "]";
 				}
 				records.add(record);
-				
-				record = new OpenHABConfigurationRecord(domain, "Power", "Power", true);
-				ZWaveBatteryCommandClass batteryCommandClass = (ZWaveBatteryCommandClass) node
-						.getCommandClass(CommandClass.BATTERY);
-				if(batteryCommandClass != null) {
-					record.value = "Battery";					
-				}
-				else {
-					record.value = "Mains";
-				}
-				records.add(record);
-
-				ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
-						.getCommandClass(CommandClass.VERSION);
-
-				if (versionCommandClass != null) {
-					record = new OpenHABConfigurationRecord(domain, "LibType", "Library Type", true);
-					if(versionCommandClass.getLibraryType() == null)
-						record.value = "Unknown";
-					else
-						record.value = versionCommandClass.getLibraryType().getLabel();
-					records.add(record);
-
-					record = new OpenHABConfigurationRecord(domain, "ProtocolVersion", "Protocol Version", true);
-					if(versionCommandClass.getProtocolVersion() == null)
-						record.value = "Unknown";
-					else
-						record.value = Double.toString(versionCommandClass.getProtocolVersion());
-					records.add(record);
-
-					record = new OpenHABConfigurationRecord(domain, "AppVersion", "Application Version", true);
-					if(versionCommandClass.getApplicationVersion() == null)
-						record.value = "Unknown";
-					else
-						record.value = Double.toString(versionCommandClass.getApplicationVersion());
-					records.add(record);
-				}
 			} else if (arg.equals("parameters/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
