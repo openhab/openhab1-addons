@@ -11,8 +11,7 @@ package org.openhab.binding.benqprojector.internal;
 import org.openhab.core.binding.BindingConfig;
 
 /**
- * Hold configuration information for BenQ projector
- * binding configurations
+ * Hold configuration information for BenQ projector binding configurations
  * 
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0

@@ -15,24 +15,28 @@ package org.openhab.binding.benqprojector.internal.transport;
  * @since 1.6.0
  */
 public interface BenqProjectorTransport {
-	
+
 	/**
 	 * Setup the transport connection
-	 * @param connectionParams String containing all the information to setup the connection
+	 * 
+	 * @param connectionParams
+	 *            String containing all the information to setup the connection
 	 * @return true if connection setup successfully
 	 */
 	public boolean setupConnection(String connectionParams);
-	
+
 	/**
 	 * Close down the connection
 	 */
 	public void closeConnection();
-	
+
 	/**
-	 * Send command to projector via transport and get a response 
-	 * @param cmd command to send
+	 * Send command to projector via transport and get a response
+	 * 
+	 * @param cmd
+	 *            command to send
 	 * @return response to command
 	 */
 	public String sendCommandExpectResponse(String cmd);
-	
+
 }

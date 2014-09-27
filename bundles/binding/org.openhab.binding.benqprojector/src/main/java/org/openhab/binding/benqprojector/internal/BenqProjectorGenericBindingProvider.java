@@ -18,19 +18,19 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * This class is responsible for parsing the binding configuration
- * of the BenQ projector binding
+ * This class is responsible for parsing the binding configuration of the BenQ
+ * projector binding
  * 
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
-public class BenqProjectorGenericBindingProvider extends AbstractGenericBindingProvider implements BenqProjectorBindingProvider {
+public class BenqProjectorGenericBindingProvider extends
+		AbstractGenericBindingProvider implements BenqProjectorBindingProvider {
 
-	private static final Logger logger = 
-			LoggerFactory.getLogger(BenqProjectorGenericBindingProvider.class);
-	
+	private static final Logger logger = LoggerFactory
+			.getLogger(BenqProjectorGenericBindingProvider.class);
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -39,55 +39,56 @@ public class BenqProjectorGenericBindingProvider extends AbstractGenericBindingP
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem ) && !(item instanceof NumberItem) && !(item instanceof StringItem)) {
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Switch or Number Items are allowed - please check your *.items configuration");
+	public void validateItemType(Item item, String bindingConfig)
+			throws BindingConfigParseException {
+		if (!(item instanceof SwitchItem) && !(item instanceof NumberItem)
+				&& !(item instanceof StringItem)) {
+			throw new BindingConfigParseException(
+					"item '"
+							+ item.getName()
+							+ "' is of type '"
+							+ item.getClass().getSimpleName()
+							+ "', only Switch or Number Items are allowed - please check your *.items configuration");
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item,
+			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 		BenqProjectorBindingConfig config = new BenqProjectorBindingConfig();
-				
-		if (bindingConfig.equalsIgnoreCase("power"))
-		{
+
+		if (bindingConfig.equalsIgnoreCase("power")) {
 			config.mode = BenqProjectorItemMode.POWER;
-		} else if (bindingConfig.equalsIgnoreCase("mute"))
-		{
+		} else if (bindingConfig.equalsIgnoreCase("mute")) {
 			config.mode = BenqProjectorItemMode.MUTE;
-		} else if (bindingConfig.equalsIgnoreCase("volume"))
-		{
+		} else if (bindingConfig.equalsIgnoreCase("volume")) {
 			config.mode = BenqProjectorItemMode.VOLUME;
-		} else if (bindingConfig.equalsIgnoreCase("lamp_hours"))
-		{
+		} else if (bindingConfig.equalsIgnoreCase("lamp_hours")) {
 			config.mode = BenqProjectorItemMode.LAMP_HOURS;
-		} else if (bindingConfig.equalsIgnoreCase("source_number"))
-		{ 
+		} else if (bindingConfig.equalsIgnoreCase("source_number")) {
 			config.mode = BenqProjectorItemMode.SOURCE_NUMBER;
-		} else if (bindingConfig.equalsIgnoreCase("source_string"))
-		{
+		} else if (bindingConfig.equalsIgnoreCase("source_string")) {
 			config.mode = BenqProjectorItemMode.SOURCE_STRING;
+		} else {
+			throw new BindingConfigParseException("Unable to parse '"
+					+ bindingConfig + "' to create a valid item binding.");
 		}
-		else {
-			throw new BindingConfigParseException("Unable to parse '"+bindingConfig+"' to create a valid item binding.");
-		}
-		logger.debug("Adding "+item.getName()+" as "+config.mode);
-		addBindingConfig(item, config);		
-	}	
-	
+		logger.debug("Adding " + item.getName() + " as " + config.mode);
+		addBindingConfig(item, config);
+	}
+
 	public BenqProjectorBindingConfig getConfigForItemName(String itemName) {
 		BenqProjectorBindingConfig config = null;
 		if (super.bindingConfigs.containsKey(itemName)) {
-			config = (BenqProjectorBindingConfig) super.bindingConfigs.get(itemName);
+			config = (BenqProjectorBindingConfig) super.bindingConfigs
+					.get(itemName);
 		}
 		return config;
 	}
