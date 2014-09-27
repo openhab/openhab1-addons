@@ -495,14 +495,18 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 	@Override
 	public Iterable<HistoricItem> query(FilterCriteria filter) {
-		if (!initialized)
+		if (!initialized) {
+			logger.debug("Query aborted on item {} - mySQL not initialised!", filter.getItemName());
 			return Collections.emptyList();
+		}
 
 		if (!isConnected())
 			connectToDatabase();
 
-		if (!isConnected())
+		if (!isConnected()) {
+			logger.debug("Query aborted on item {} - mySQL not connected!", filter.getItemName());
 			return Collections.emptyList();
+		}
 
 		SimpleDateFormat mysqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -522,10 +526,10 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			item = null;
 		}
                    
-                if(item instanceof GroupItem){
-                    // For Group Items is BaseItem needed to get correct Type of Value.
-                    item = GroupItem.class.cast(item).getBaseItem();
-                }
+        if(item instanceof GroupItem){
+            // For Group Items is BaseItem needed to get correct Type of Value.
+            item = GroupItem.class.cast(item).getBaseItem();
+        }
 
 		String table = sqlTables.get(itemName);
 		if (table == null) {
