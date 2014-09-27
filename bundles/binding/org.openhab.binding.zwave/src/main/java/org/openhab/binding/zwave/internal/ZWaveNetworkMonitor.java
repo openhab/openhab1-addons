@@ -87,11 +87,11 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	Map<Integer, HealNode> healNodes = new HashMap<Integer, HealNode>();
 
 	enum HealState {
-		INITIALIZING, WAITING, PING, SETSUCROUTE, UPDATENEIGHBORS, GETASSOCIATIONS, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, PINGEND, SAVE, DONE, FAILED;
+		IDLE, WAITING, PING, SETSUCROUTE, UPDATENEIGHBORS, GETASSOCIATIONS, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, PINGEND, SAVE, DONE, FAILED;
 
 		public boolean isActive() {
 			switch (this) {
-			case INITIALIZING:
+			case IDLE:
 			case DONE:
 			case FAILED:
 				return false;
@@ -137,22 +137,23 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	}
 
 	public String getNodeState(int nodeId) {
-		String status = HealState.WAITING.toString();
+		String status = HealState.IDLE.toString();
 
 		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
 			HealNode node = entry.getValue();
 			if (node.nodeId == nodeId) {
 				switch (node.state) {
+				case IDLE:
 				case WAITING:
 					break;
 				case FAILED:
-					status = "Failed during " + node.failState + " @ " + node.lastChange.toString();
+					status = "FAILED during " + node.failState + " @ " + node.lastChange.toString();
 					break;
 				default:
-					if (node.retryCnt > 1)
-						status = node.state + "(" + node.retryCnt + ") @ " + node.lastChange.toString();
-					else
-						status = node.state + " @ " + node.lastChange.toString();
+					status = node.state + " @ " + node.lastChange.toString();
+					if (node.retryCnt > 1) {
+						status += " (" + node.retryCnt + ")";
+					}
 					break;
 				}
 				break;
@@ -175,7 +176,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			HealNode node = entry.getValue();
 			if (node.nodeId == nodeId) {
 				switch (node.state) {
-				case INITIALIZING:
+				case IDLE:
 				case WAITING:
 				case FAILED:
 				case DONE:
