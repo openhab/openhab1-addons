@@ -431,6 +431,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 * @{inheritDoc
 	 */
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		logger.debug("mySQL configuration starting");
 		if (config != null) {
 			Enumeration<String> keys = config.keys();
 
@@ -484,11 +485,14 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 				waitTimeout = Integer.parseInt(tmpString);
 			}
 
+			// reconnect to the database in case the configuration has changed.
 			disconnectFromDatabase();
 			connectToDatabase();
 
 			// connection has been established ... initialization completed!
 			initialized = true;
+			
+			logger.debug("mySQL configuration complete.");
 		}
 
 	}
