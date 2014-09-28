@@ -595,7 +595,9 @@ public class ZWaveController {
 	 */
 	public void requestSoftReset()
 	{
-		this.enqueue(new SerialApiSoftResetMessageClass().doRequest());
+		SerialMessage msg = new SerialApiSoftResetMessageClass().doRequest();
+		msg.attempts = 1;
+		this.enqueue(msg);
 	}
 
 	/**
