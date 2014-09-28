@@ -591,7 +591,13 @@ public class ZWaveController {
 	}
 
 	/**
-	 * Terminates the exclusion mode
+	 * Sends a request to perform a soft reset on the controller.
+	 * This will just reset the controller - probably similar to a power cycle.
+	 * It doesn't reinitialise the network, or change the network configuration.
+	 * 
+	 * NOTE: At least for some (most!) sticks, this doesn't return a response.
+	 * Therefore, the number of retries is set to 1.
+	 * NOTE: On some (most!) ZWave-Plus sticks, this can cause the stick to hang.
 	 */
 	public void requestSoftReset()
 	{
