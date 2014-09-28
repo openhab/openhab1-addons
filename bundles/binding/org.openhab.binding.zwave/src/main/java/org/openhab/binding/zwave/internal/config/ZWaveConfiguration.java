@@ -759,6 +759,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					if (networkMonitor != null)
 						networkMonitor.rescheduleHeal();
 				}
+				if (action.equals("SoftReset")) {
+					zController.requestSoftReset();
+				}
 				if (inclusion == false && exclusion == false) {
 					if (action.equals("Include")) {
 						inclusion = true;
