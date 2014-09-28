@@ -8,11 +8,14 @@
  */
 package org.openhab.binding.zwave.internal;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -84,6 +87,8 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 	private boolean initialised = false;
 
+    private DateFormat df;
+
 	Map<Integer, HealNode> healNodes = new HashMap<Integer, HealNode>();
 
 	enum HealState {
@@ -104,6 +109,9 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	HealState networkHealState = HealState.WAITING;
 
 	public ZWaveNetworkMonitor(ZWaveController controller) {
+		df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		df.setTimeZone(TimeZone.getTimeZone("UTC"));
+
 		zController = controller;
 
 		// Set an event callback so we get notification of network events
@@ -144,13 +152,12 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			if (node.nodeId == nodeId) {
 				switch (node.state) {
 				case IDLE:
-				case WAITING:
 					break;
 				case FAILED:
-					status = "FAILED during " + node.failState + " @ " + node.lastChange.toString();
+					status = "FAILED during " + node.failState + " @ " + df.format(node.lastChange);
 					break;
 				default:
-					status = node.state + " @ " + node.lastChange.toString();
+					status = node.state + " @ " + df.format(node.lastChange);
 					if (node.retryCnt > 1) {
 						status += " (" + node.retryCnt + ")";
 					}

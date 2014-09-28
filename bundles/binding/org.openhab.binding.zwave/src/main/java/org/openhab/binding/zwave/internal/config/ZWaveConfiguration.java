@@ -58,18 +58,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	private boolean inclusion = false;
 	private boolean exclusion = false;
 	
-	private TimeZone tz = TimeZone.getTimeZone("UTC");
-    private DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+    private DateFormat df;
 
 	private Timer timer = new Timer();
 
 	private TimerTask timerTask = null;
 	
 	private PendingConfiguration PendingCfg = new PendingConfiguration();
-	
-	public ZWaveConfiguration() {
-		df.setTimeZone(tz);
-	}
 
 	/**
 	 * Constructor for the configuration class. Sets the zwave controller
@@ -77,6 +72,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	 * @param controller The zWave controller
 	 */
 	public ZWaveConfiguration(ZWaveController controller, ZWaveNetworkMonitor monitor) {
+		df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		df.setTimeZone(TimeZone.getTimeZone("UTC"));
+
 		this.zController = controller;
 		this.networkMonitor = monitor;
 
@@ -421,7 +419,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				ZWaveBatteryCommandClass batteryCommandClass = (ZWaveBatteryCommandClass) node
 						.getCommandClass(CommandClass.BATTERY);
 				if (batteryCommandClass != null) {
-					record.value = "Battery";
+					record.value = "Battery " + batteryCommandClass.getBatteryLevel() + "%";
 				} else {
 					record.value = "Mains";
 				}
