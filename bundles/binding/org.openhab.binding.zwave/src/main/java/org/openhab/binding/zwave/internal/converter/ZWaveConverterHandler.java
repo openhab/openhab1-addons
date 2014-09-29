@@ -28,7 +28,6 @@ import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
@@ -73,6 +72,8 @@ public class ZWaveConverterHandler {
 		converters.put(CommandClass.METER, new ZWaveMeterConverter(controller, eventPublisher));
 		converters.put(CommandClass.BASIC, new ZWaveBasicConverter(controller, eventPublisher));
 		converters.put(CommandClass.SCENE_ACTIVATION, new ZWaveSceneConverter(controller, eventPublisher));
+		converters.put(CommandClass.ALARM, new ZWaveAlarmConverter(controller, eventPublisher));
+
 		infoConverter = new ZWaveInfoConverter(controller, eventPublisher);
 		
 		// add preferred command classes per Item class here
