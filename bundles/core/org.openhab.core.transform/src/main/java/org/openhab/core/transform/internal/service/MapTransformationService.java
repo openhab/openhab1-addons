@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,8 +13,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Properties;
+import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.openhab.config.core.ConfigDispatcher;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationService;
@@ -55,15 +57,30 @@ public class MapTransformationService implements TransformationService {
 		if (filename == null || source == null) {
 			throw new TransformationException("the given parameters 'filename' and 'source' must not be null");
 		}
-
+		
+		String basename = FilenameUtils.getBaseName(filename);
+		String extension = FilenameUtils.getExtension(filename);
+		String locale = Locale.getDefault().getLanguage();
+		String basePath = ConfigDispatcher.getConfigFolder() + File.separator + TransformationActivator.TRANSFORM_FOLDER_NAME + File.separator;
+		
+		String path = basePath + filename;
+		// eg : /home/sysadmin/projects/openhab/distribution/openhabhome/configurations/transform/test.map
+		String alternatePath = basePath + basename + "_" + locale + "." + extension;
+		// eg : /home/sysadmin/projects/openhab/distribution/openhabhome/configurations/transform/test-en.map
+		
+		File f = new File(alternatePath);
+		if (f.exists()) {
+			path = alternatePath;						
+		} 
+		logger.debug("Transformation file found '{}'",path);
+					
 		Reader reader = null;
-		try {
-			String path = ConfigDispatcher.getConfigFolder() + File.separator + TransformationActivator.TRANSFORM_FOLDER_NAME + File.separator + filename;
+		try {						
 			Properties properties = new Properties();
 			reader = new FileReader(path);
 			properties.load(reader);
 			String target = properties.getProperty(source);
-			if(target!=null) {
+			if (target!=null) {
 				logger.debug("transformation resulted in '{}'", target);
 				return target;
 			} else {

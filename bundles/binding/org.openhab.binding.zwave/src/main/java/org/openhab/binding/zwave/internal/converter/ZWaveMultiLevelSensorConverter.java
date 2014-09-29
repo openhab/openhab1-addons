@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.zwave.internal.converter;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.converter.command.ZWaveCommandConverter;
@@ -87,6 +88,7 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 	public void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String,String> arguments) {
 		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
 		String sensorType = arguments.get("sensor_type");
+		String sensorScale = arguments.get("sensor_scale");
 		ZWaveMultiLevelSensorValueEvent sensorEvent = (ZWaveMultiLevelSensorValueEvent)event;
 
 		if (converter == null) {
@@ -97,8 +99,30 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 		// Don't trigger event if this item is bound to another sensor type
 		if (sensorType != null && SensorType.getSensorType(Integer.parseInt(sensorType)) != sensorEvent.getSensorType())
 			return;
-		
-		State state = converter.convertFromValueToState(event.getValue());
+
+		Object val = event.getValue();
+		// Perform a scale conversion if needed
+		if (sensorScale != null && Integer.parseInt(sensorScale) != sensorEvent.getSensorScale()) {
+			switch(SensorType.getSensorType(Integer.parseInt(sensorType))) {
+			case TEMPERATURE:
+				// For temperature, there are only two scales, so we simplify the conversion
+				if(sensorEvent.getSensorScale() == 0) {
+					// Scale is celsius, convert to fahrenheit
+					double c = ((BigDecimal)val).doubleValue();
+					val = new BigDecimal((c * 9.0 / 5.0) + 32.0 );
+				}
+				else if(sensorEvent.getSensorScale() == 1) {
+					// Scale is fahrenheit, convert to celsius
+					double f = ((BigDecimal)val).doubleValue();
+					val = new BigDecimal((f - 32.0) * 5.0 / 9.0 );					
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
+		State state = converter.convertFromValueToState(val);
 		this.getEventPublisher().postUpdate(item.getName(), state);
 	}
 

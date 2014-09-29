@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB ZWave Binding
 Bundle-SymbolicName: org.openhab.binding.zwave
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-Activator: org.openhab.binding.zwave.internal.ZWaveActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the ZWave binding of the open Home Aut
@@ -25,8 +25,9 @@ Import-Package: gnu.io,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.zwave
+Export-Package: org.openhab.binding.zwave,org.openhab.binding.zwave.in
+ ternal.config
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: ., lib/xstream-1.4.5.jar
+Bundle-ClassPath: ., lib/xstream-1.4.6.jar

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -41,14 +41,15 @@ public class RegExTransformationService implements TransformationService {
 
 		logger.debug("about to transform '{}' by the function '{}'", source, regExpression);
 
+		String result = source;
+
 		Matcher matcher = Pattern.compile("^" + regExpression + "$", Pattern.DOTALL).matcher(source.trim());
 		if (!matcher.matches()) {
 			logger.debug("the given regex '^{}$' doesn't match the given content '{}' -> couldn't compute transformation", regExpression, source);
-			return null;
+			return result;
 		}
 		matcher.reset();
 
-		String result = "";
 		while (matcher.find()) {
 			
 			if (matcher.groupCount() == 0) {

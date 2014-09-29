@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,11 +10,14 @@ package org.openhab.binding.configadmin.internal;
 
 import java.io.IOException;
 import java.util.Dictionary;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.configadmin.ConfigAdminBindingProvider;
 import org.openhab.binding.configadmin.internal.ConfigAdminGenericBindingProvider.ConfigAdminBindingConfig;
 import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
@@ -26,15 +29,16 @@ import org.osgi.service.cm.ConfigurationEvent;
 import org.osgi.service.cm.ConfigurationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-	
 
 /**
- * <p>The {@link ConfigAdminBinding} provides access to the openHAB system 
- * configuration through items. The system configuration is done through property
- * files (one key-value-pair per line) with the extension '*.cfg'.
- * <p>This Binding is also registered as {@link ConfigurationListener} at the 
+ * <p>
+ * The {@link ConfigAdminBinding} provides access to the openHAB system
+ * configuration through items. The system configuration is done through
+ * property files (one key-value-pair per line) with the extension '*.cfg'.
+ * <p>
+ * This Binding is also registered as {@link ConfigurationListener} at the
  * {@link ConfigurationAdmin} so all changes to configured items are posted to
- * the openHAB event bus as well. 
+ * the openHAB event bus as well.
  * 
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.0.0
@@ -42,61 +46,52 @@ import org.slf4j.LoggerFactory;
 public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvider> implements ConfigurationListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConfigAdminBinding.class);
-	
+
 	private ConfigurationAdmin configAdmin;
-	
-	private EventBusInitializer initializer = null;
-	
-	
+
+	private DelayedExecutor delayedExecutor = new DelayedExecutor();
+
 	public void addConfigurationAdmin(ConfigurationAdmin configAdmin) {
 		this.configAdmin = configAdmin;
 	}
-	
+
 	public void removeConfigurationAdmin(ConfigurationAdmin configAdmin) {
 		this.configAdmin = null;
 	}
-	
-	public void activate() {
-		initializer = new EventBusInitializer();
-		initializer.start();
-	}
-	
-	public void deactivate() {
-		initializer.setInterrupted(true);
-	}
-		
 
 	/**
 	 * Returns a {@link State} which is inherited from the {@link Item}s
-	 * accepted DataTypes. The call is delegated to the  {@link TypeParser}. If
+	 * accepted DataTypes. The call is delegated to the {@link TypeParser}. If
 	 * <code>item</code> is <code>null</code> the {@link StringType} is used.
-	 *  
+	 * 
 	 * @param item
 	 * @param stateAsString
 	 * 
 	 * @return a {@link State} which type is inherited by the {@link TypeParser}
-	 * or a {@link StringType} if <code>item</code> is <code>null</code> 
+	 *         or a {@link StringType} if <code>item</code> is <code>null</code>
 	 */
 	private State createState(Item item, String stateAsString) {
 		if (item != null) {
 			return TypeParser.parseState(item.getAcceptedDataTypes(), stateAsString);
-		}
-		else {
+		} else {
 			return StringType.valueOf(stateAsString);
 		}
 	}
-	
+
 	/**
-	 * <p>Returns the {@link Configuration} with the given pid from the 
+	 * <p>
+	 * Returns the {@link Configuration} with the given pid from the
 	 * {@link ConfigurationAdmin}-Service or null if <code>bindingConfig</code>
-	 * is null.</p>
-	 * <p><b>Note:</b>If there are Configuration items configured for the given
-	 * pid an empty {@link Configuration} is returned.
-	 *  
+	 * is null.
+	 * </p>
+	 * <p>
+	 * <b>Note:</b>If there are Configuration items configured for the given pid
+	 * an empty {@link Configuration} is returned.
+	 * 
 	 * @param bindingConfig
 	 * @return a Configuration (which could be empty if there are no entries for
-	 * the given pid) or <code>null</code> if the given <code>bindingConfig</code>
-	 * is null.
+	 *         the given pid) or <code>null</code> if the given
+	 *         <code>bindingConfig</code> is null.
 	 */
 	private Configuration getConfiguration(ConfigAdminBindingConfig bindingConfig) {
 		Configuration result = null;
@@ -109,31 +104,72 @@ public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvid
 		}
 		return result;
 	}
-	
+
 	/**
-	 * Gets the given configParameter from the given <code>config</code> transforms
-	 * the value to a {@link State} and posts this State to openHAB event bus.
+	 * Gets the given configParameter from the given <code>config</code>
+	 * transforms the value to a {@link State} and posts this State to openHAB
+	 * event bus.
 	 * 
-	 * @param config the {@link Configuration} which contains the data to post
-	 * @param bindingConfig contains the name of the configParameter which is
-	 * the key for the data to post an update for.
+	 * @param config
+	 *            the {@link Configuration} which contains the data to post
+	 * @param bindingConfig
+	 *            contains the name of the configParameter which is the key for
+	 *            the data to post an update for.
 	 */
 	private void postUpdate(Configuration config, ConfigAdminBindingConfig bindingConfig) {
 		if (config != null) {
-			String stateAsString = (String)
-				config.getProperties().get(bindingConfig.configParameter);
+			String stateAsString = (String) config.getProperties().get(bindingConfig.configParameter);
 			if (StringUtils.isNotBlank(stateAsString)) {
 				State state = createState(bindingConfig.item, stateAsString);
 				eventPublisher.postUpdate(bindingConfig.item.getName(), state);
 			} else {
-				logger.debug("config parameter '{}:{}' has value 'null'. It won't be posted to the event bus hence.", bindingConfig.normalizedPid, bindingConfig.configParameter);
+				logger.debug("config parameter '{}:{}' has value 'null'. It won't be posted to the event bus hence.",
+						bindingConfig.normalizedPid, bindingConfig.configParameter);
 			}
 		}
 	}
-	
-	
+
 	/**
-	 * @{inheritDoc}
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void allBindingsChanged(BindingProvider provider) {
+		initializeBus();
+		super.allBindingsChanged(provider);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		initializeBus();
+		super.bindingChanged(provider, itemName);
+	}
+
+	/**
+	 * Publishes the items with the configuration values.
+	 */
+	private void initializeBus() {
+		delayedExecutor.cancel();
+		delayedExecutor.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				for (ConfigAdminBindingProvider provider : providers) {
+					for (String itemName : provider.getItemNames()) {
+						ConfigAdminBindingConfig bindingConfig = provider.getBindingConfig(itemName);
+						Configuration config = getConfiguration(bindingConfig);
+						postUpdate(config, bindingConfig);
+					}
+				}
+			}
+
+		}, 3000);
+	}
+
+	/**
+	 * @{inheritDoc
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
@@ -148,9 +184,11 @@ public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvid
 					try {
 						config.update(props);
 					} catch (IOException ioe) {
-						logger.error("updating Configuration '{}' with '{}' failed", bindingConfig.normalizedPid, command.toString());
+						logger.error("updating Configuration '{}' with '{}' failed", bindingConfig.normalizedPid,
+								command.toString());
 					}
-					logger.debug("successfully updated configuration (pid={}, value={})", bindingConfig.normalizedPid, command.toString());
+					logger.debug("successfully updated configuration (pid={}, value={})", bindingConfig.normalizedPid,
+							command.toString());
 				} else {
 					logger.info("There is no configuration found for pid '{}'", bindingConfig.normalizedPid);
 				}
@@ -159,12 +197,13 @@ public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvid
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 * 
-	 * Whenever a {@link Configuration} is updated all items for the given
-	 * <code>pid</code> are queried and updated. Since the {@link ConfigurationEvent}
-	 * contains no information which key changed we have to post updates for
-	 * all configured items.
+	 *              Whenever a {@link Configuration} is updated all items for
+	 *              the given <code>pid</code> are queried and updated. Since
+	 *              the {@link ConfigurationEvent} contains no information which
+	 *              key changed we have to post updates for all configured
+	 *              items.
 	 */
 	@Override
 	public void configurationEvent(ConfigurationEvent event) {
@@ -176,47 +215,40 @@ public class ConfigAdminBinding extends AbstractBinding<ConfigAdminBindingProvid
 					for (ConfigAdminBindingConfig bindingConfig : provider.getBindingConfigByPid(event.getPid())) {
 						postUpdate(config, bindingConfig);
 					}
-				}				
+				}
 			} catch (IOException ioe) {
 				logger.warn("Fetching configuration for pid '" + event.getPid() + "' failed", ioe);
 			}
 		}
 	}
 
-	
 	/**
-	 * Initializes all configured items asynchronously.
+	 * Schedules a task for later execution with the possibility to cancel it.
 	 * 
-	 * @author Thomas.Eichstaedt-Engelen
-	 * @since 1.0.0
+	 * @author Gerhard Riegler
+	 * @since 1.5.0
 	 */
-	private class EventBusInitializer extends Thread {
-		
-		private boolean interrupted = false;
+	public class DelayedExecutor {
+		private Timer timer;
+		private TimerTask task;
 
-		public EventBusInitializer() {
-			setName("ConfigurationAdmin EventBus Initializer");
-		}
-		
-		public void setInterrupted(boolean interrupted) {
-			this.interrupted = interrupted;
-		}
-		
-		@Override
-		public void run() {
-			for (ConfigAdminBindingProvider provider : providers) {
-				for (String itemName : provider.getItemNames()) {
-					if (interrupted) {
-						break;
-					}
-					ConfigAdminBindingConfig bindingConfig = provider.getBindingConfig(itemName);
-					Configuration config = getConfiguration(bindingConfig);
-					postUpdate(config, bindingConfig);
-				}
+		public void cancel() {
+			if (task != null) {
+				task.cancel();
+				task = null;
+			}
+			if (timer != null) {
+				timer.cancel();
+				timer = null;
 			}
 		}
-		
+
+		public void schedule(TimerTask task, long delay) {
+			this.task = task;
+			timer = new Timer();
+			timer.schedule(task, delay);
+		}
+
 	}
-	
-	
+
 }

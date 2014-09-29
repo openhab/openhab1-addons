@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>CT100</Model>
+	<Label lang="en">Thermostat</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x40</id></Class>
+		<Class><id>0x42</id></Class>
+		<Class><id>0x43</id></Class>
+		<Class><id>0x44</id></Class>
+		<Class><id>0x45</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x81</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x87</id></Class>
+	</CommandClasses>
+</Product>
+

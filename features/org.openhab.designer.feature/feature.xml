@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2013, openHAB.org and others.
+    Copyright (c) 2010-2014, openHAB.org and others.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,7 @@
 <feature
       id="org.openhab.designer.feature"
       label="openHAB Designer"
-      version="1.4.0.qualifier"
+      version="1.6.0.qualifier"
       provider-name="openHAB.org"
       plugin="org.openhab.designer.core">
 
@@ -21,10 +21,10 @@
    </description>
 
    <copyright>
-      Copyright (C) 2010-2013, openHAB.org &lt;admin@openhab.org&gt;
+      Copyright (c) 2010-2014, openHAB.org &lt;admin@openhab.org&gt;
    </copyright>
 
-  <license url="%licenseURL">
+   <license url="%licenseURL">
       %license
    </license>
 
@@ -293,7 +293,21 @@
          unpack="false"/>
 
    <plugin
+         id="org.openhab.action.nma"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.openhab.action.prowl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.action.pushover"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -319,5 +333,19 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.openhab.action.homematic"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+     <plugin
+           id="org.openhab.action.openwebif"
+           download-size="0"
+           install-size="0"
+           version="0.0.0"
+           unpack="false"/>
 
 </feature>

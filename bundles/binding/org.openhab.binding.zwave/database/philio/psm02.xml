@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>PSM02</Model>
+	<Label lang="en">Slim Multi-Sensor</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>2</Index>
+			<Type>byte</Type>
+			<Default>-1</Default>
+			<Minimum>-1</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Basic Set Level</Label>
+			<Help lang="en">-1	   ->  	0xFF(-1) turns on the light.
+1 - 100	   ->  	For dimmers 1 to 100 means the light strength</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>byte</Type>
+			<Default>70</Default>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Size>1</Size>
+			<Label lang="en">PIR Sensitivity</Label>
+			<Help lang="en">parameter to set the Sensitivity for the PIR (Passiv Infrared Sensor)
+			0	   ->  	0 means disable the PIR motion;
+1 - 99	   ->  	1 means the lowest sensitivity, 99 means the highest sensitivity</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Default>100</Default>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Light Threshold</Label>
+			<Help lang="en">Setting the illumination threshold to turn on the light. When the event triggered and the environment illumination lower then the threshold, the device will turn on the light
+0	   ->  	0 means turn off illumination detected function And never turn on the light.
+1 - 100	   ->  	1 means darkest. 99 means brightest. 100 means turn off illumination detected function. And always turn on the light</Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Operation Mode</Label>
+			<Help lang="en">Bit 0: 1 means security mode; 0 means home automation mode. Bit 1: 1 means enable test mode; 0 means disable test mode. Notice: Bit0 and Bit1 will effect when the DIP Switch setting to program mode. If Bit1 is enabled, the Bit0 is useless. Bit 2: Disable the door/window function. Bit 3: Setting the temperature scale. 0: Fahrenheit, 1:Celsius Bit 4: Disable illumination report after event triggered. Bit 5: Disable temperature report after event triggered</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>byte</Type>
+			<Default>4</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Multi-Sensor Function Switch</Label>
+			<Help lang="en">Bit 0: Disable magnetic integrate illumination. Bit 1: Disable PIR integrate Illumination. Bit 2: Disable magnetic integrate PIR (Default is Disable) Bit 3: When Bit2 is 0 (Enable), the device is install in the same room with the light? 0: In the same room(Default), 1: In the different room. Bit 4: Disable delay 5 seconds to turn off the light, when door/window closed. Bit 5: Disable auto turn off the light, after door/window opened to turn on the light. Notice: If bit2 is zero, this setting is useless. Bit 6:Enable temperature monitoring. When this bit enable, the temperature changed 3 degree Fahrenheit, it will report. And also the temperature over 140 degree Fahrenheit, it will report every 64 seconds.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Minimum>3</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">PIR Re-Detect Interval Time</Label>
+			<Help lang="en">In the security mode, after the PIR motion detected, setting the re-detect time
+			3 8 sec - 127 8 sec	   ->  	8 seconds per tick, and minimum time is 24 seconds, default tick is 3 (24 seconds).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>byte</Type>
+			<Default>4</Default>
+			<Minimum>4</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Turn Off Light Time</Label>
+			<Help lang="en">After turn on the light, setting the delay time to turn off the light when the PIR motion is not detected
+			4 8 sec - 127 8 sec	   ->  	8 seconds per tick, and minimum time is 32 seconds, default tick is 4 (32 seconds)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Default>12</Default>
+			<Minimum>1</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Auto Report Battery Time</Label>
+			<Help lang="en">interval time for auto report the battery level
+			1 30 min - 127 30 min	   ->  	30 minutes per tick and minimum time is 30 minutes, default tick is 12 (6 hours)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>12</Default>
+			<Minimum>1</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Auto Report Door/Window State Time</Label>
+			<Help lang="en">interval time for auto report the door/window state
+			1 30 min - 127 30 min	   ->  	30 minutes per tick and minimum time is 30 minutes, default tick is 12 (6 hours)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>12</Default>
+			<Minimum>1</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Auto Report Illumination Time</Label>
+			<Help lang="en">interval time for auto report the illumination state
+			1 30 min - 127 30 min	   ->  	30 minutes per tick and minimum time is 30 minutes, default tick is 12 (6 hours)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>byte</Type>
+			<Default>12</Default>
+			<Minimum>1</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Auto Report Temperature Time</Label>
+			<Help lang="en">Interval time for auto report the temperature state
+			1 30 min - 127 30 min	   ->  	30 minutes per tick and minimum time is 30 minutes, default tick is 12 (6 hours)</Help>
+		</Parameter>
+	</Configuration>
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>7</Maximum>
+			<Label lang="en">Light Control</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>7</Maximum>
+			<Label lang="en">Reports</Label>
+		</Group>
+	</Associations>
+</Product>

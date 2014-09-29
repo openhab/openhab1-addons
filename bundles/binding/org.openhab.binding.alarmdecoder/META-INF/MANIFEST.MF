@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.alarmdecoder.internal
+Ignore-Package: org.openhab.binding.alarmdecoder.internal
+Bundle-Name: openHAB AlarmDecoder Binding
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.6.0.qualifier
+Bundle-Activator: org.openhab.binding.alarmdecoder.internal.AlarmDecoderActivator
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Description: This is the alarmdecoder backend for openHAB
+Import-Package: gnu.io,
+ org.openhab.core.autoupdate,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.slf4j
+Bundle-SymbolicName: org.openhab.binding.alarmdecoder
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Bundle-ClassPath: .
+

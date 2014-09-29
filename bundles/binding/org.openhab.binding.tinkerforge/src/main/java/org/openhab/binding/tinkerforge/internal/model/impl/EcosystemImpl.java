@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -23,6 +24,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
@@ -33,6 +35,9 @@ import org.slf4j.Logger;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Ecosystem</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -184,6 +189,42 @@ public class EcosystemImpl extends MinimalEObjectImpl.Container implements Ecosy
 		return null;
 	}
 
+  	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<MSubDevice<?>> getDevices4GenericId(String uid,
+			String genericId) {
+		EList<MSubDevice<?>> genericDevicesList = new BasicEList<MSubDevice<?>>();
+		EList<MBrickd> _mbrickds = getMbrickds();
+		for (final MBrickd mbrickd : _mbrickds) {
+			{
+				final MBaseDevice mDevice = mbrickd.getDevice(uid);
+				if (mDevice != null) {
+					if (mDevice instanceof MSubDeviceHolder) {
+						final MSubDeviceHolder<?> mBrick = ((MSubDeviceHolder<?>) mDevice);
+						EList<?> _msubdevices = mBrick.getMsubdevices();
+						for (final Object mg : _msubdevices)
+						{
+							if (mg instanceof GenericDevice) {
+								final GenericDevice mgenericdevice = ((GenericDevice) mg);
+								String _genericId = mgenericdevice
+										.getGenericDeviceId();
+								if (_genericId.equals(genericId)) {
+									genericDevicesList
+											.add(((MSubDevice<?>) mgenericdevice));
+								}
+							}
+						}
+					}
+
+				}
+			}
+		}
+		return genericDevicesList;
+	}
+
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -323,6 +364,8 @@ public class EcosystemImpl extends MinimalEObjectImpl.Container implements Ecosy
         return getBrickd((String)arguments.get(0), (Integer)arguments.get(1));
       case ModelPackage.ECOSYSTEM___GET_DEVICE__STRING_STRING:
         return getDevice((String)arguments.get(0), (String)arguments.get(1));
+      case ModelPackage.ECOSYSTEM___GET_DEVICES4_GENERIC_ID__STRING_STRING:
+        return getDevices4GenericId((String)arguments.get(0), (String)arguments.get(1));
       case ModelPackage.ECOSYSTEM___DISCONNECT:
         disconnect();
         return null;

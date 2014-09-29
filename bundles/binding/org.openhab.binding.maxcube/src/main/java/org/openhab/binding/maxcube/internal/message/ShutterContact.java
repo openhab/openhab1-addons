@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,6 @@ import org.openhab.core.library.types.OpenClosedType;
 public class ShutterContact extends Device {
 
 	private OpenClosedType shutterState = null;
-	private boolean lowBattery;
 	private boolean linkError;
 	private boolean panelLocked;
 	private boolean gatewayOk;
@@ -46,12 +45,6 @@ public class ShutterContact extends Device {
 	}
 
 	@Override
-	public String getRFAddress() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
 		return null;
@@ -61,10 +54,6 @@ public class ShutterContact extends Device {
 	public Calendar getLastUpdate() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	void setLowBattery(boolean lowBattery) {
-		this.lowBattery = lowBattery;
 	}
 
 	void setLinkError(boolean linkError) {

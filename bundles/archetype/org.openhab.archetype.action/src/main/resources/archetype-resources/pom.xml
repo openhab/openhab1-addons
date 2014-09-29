@@ -11,6 +11,8 @@
 	<properties>
 		<bundle.symbolicName>${artifactId}</bundle.symbolicName>
 		<bundle.namespace>${artifactId}</bundle.namespace>
+		<deb.name>openhab-addon-action-${action-name}</deb.name>
+		<deb.description>openhab addon action ${action-name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -20,7 +22,14 @@
 	<name>openHAB ${action-name} Action</name>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<version>${version}-SNAPSHOT</version>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

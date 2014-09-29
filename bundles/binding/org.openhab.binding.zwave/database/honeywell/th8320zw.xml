@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>TH8320ZW</Model>
+	<Label lang="en">VisionPRO Z-Wave Touchscreen Programmable Thermostat</Label>
+
+	<!-- Z-Wave Device Class: -->
+	<!-- GENERIC_TYPE_THERMOSTAT -->
+	<!-- SPECIFIC_TYPE_THERMOSTAT_V2 -->
+
+	<CommandClasses>                  <!-- Z-Wave Supported Command Classes: -->
+		<Class><id>0x20</id></Class>  <!-- COMMAND_CLASS_BASIC -->
+		<Class><id>0x27</id></Class>  <!-- COMMAND_CLASS_SWITCH_ALL -->
+		<Class><id>0x31</id></Class>  <!-- COMMAND_CLASS_SENSOR_MULTILEVEL -->
+		<Class><id>0x40</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_MODE -->
+		<Class><id>0x42</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_OPERATING_STATE -->
+		<Class><id>0x43</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_SETPOINT -->
+		<Class><id>0x44</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_FAN_MODE -->
+		<Class><id>0x45</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_FAN_STATE -->
+		<Class><id>0x72</id></Class>  <!-- COMMAND_CLASS_MANUFACTURER_SPECIFIC -->
+		<Class><id>0x85</id></Class>  <!-- COMMAND_CLASS_ASSOCIATION -->
+		<Class><id>0x86</id></Class>  <!-- COMMAND_CLASS_VERSION -->
+	</CommandClasses>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Relationship of devices in the network</Label>
+		</Group>
+	</Associations>
+
+</Product>

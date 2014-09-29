@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,6 +7,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.rfxcom.internal.messages;
+
+import java.util.List;
+
+import org.openhab.binding.rfxcom.RFXComValueSelector;
+import org.openhab.binding.rfxcom.internal.RFXComException;
+import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 
 
 /**
@@ -98,7 +105,7 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
 
 	public SubType subType = SubType.INTERFACE_RESPONSE;
 	public Commands command = Commands.UNKNOWN;
-	public TransceiverType transceiverType = TransceiverType.UNKNOWN;
+	public TransceiverType transceiverType = TransceiverType._443_92MHZ_TRANSCEIVER;
 	public byte firmwareVersion = 0;
 
 	public boolean enableUndecodedPackets = false;	// 0x80 - Undecoded packets
@@ -136,7 +143,6 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
 	}
 
 	public RFXComInterfaceMessage( byte[] data ) {
-
 		encodeMessage( data );
 	}
 
@@ -286,6 +292,37 @@ public class RFXComInterfaceMessage extends RFXComBaseMessage {
 		data[13] = 0;
 
 		return data;
+	}
+
+	@Override
+	public State convertToState(RFXComValueSelector valueSelector)
+			throws RFXComException {
+		
+		throw new RFXComException("Not supported");
+	}
+
+	@Override
+	public void convertFromState(RFXComValueSelector valueSelector, String id,
+			Object subType, Type type, byte seqNumber) throws RFXComException {
+		
+		throw new RFXComException("Not supported");
+	}
+
+	@Override
+	public Object convertSubType(String subType) throws RFXComException {
+		
+		for (SubType s : SubType.values()) {
+			if (s.toString().equals(subType)) {
+				return s;
+			}
+		}
+		
+		throw new RFXComException("Unknown sub type " + subType);
+	}
+	
+	@Override
+	public List<RFXComValueSelector> getSupportedValueSelectors() throws RFXComException {
+		return null;
 	}
 
 }

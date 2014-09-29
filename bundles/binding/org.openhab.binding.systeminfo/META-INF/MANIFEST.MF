@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB Systeminfo Binding
 Bundle-SymbolicName: org.openhab.binding.systeminfo
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-Activator: org.openhab.binding.systeminfo.internal.SysteminfoActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Systeminfo Binding of the open Home Aut
@@ -18,7 +18,6 @@ Import-Package: org.apache.commons.lang,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.types,
- org.openhab.model.core,
  org.openhab.model.item.binding,
  org.osgi.framework,
  org.osgi.service.cm,

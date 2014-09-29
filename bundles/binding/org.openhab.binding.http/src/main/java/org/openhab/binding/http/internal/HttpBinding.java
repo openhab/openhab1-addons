@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,9 +25,11 @@ import org.openhab.binding.http.HttpBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
@@ -75,6 +77,9 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 	/** RegEx to validate a cache config <code>'^(.*?)\\.(url|updateInterval)$'</code> */
 	private static final Pattern EXTRACT_CACHE_CONFIG_PATTERN = 
 			Pattern.compile("^(.*?)\\.(url|updateInterval)$");
+	
+	/** RegEx to extract and parse a cache config url with headers <code>'(.*?)(\\{.*\\})?'</code> */
+	private static final Pattern EXTRACT_CACHE_CONFIG_URL = Pattern.compile("(.*?)(\\{.*\\})?");
 
 	/** Map table to store cache data */
 	private Map<String, CacheConfig> itemCache = new HashMap<String, CacheConfig>();
@@ -245,6 +250,8 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 				return OnOffType.valueOf(transformedResponse);
 			} else if (itemType.isAssignableFrom(RollershutterItem.class)) {
 				return PercentType.valueOf(transformedResponse);
+			} else if (itemType.isAssignableFrom(DateTimeItem.class)) {
+				return DateTimeType.valueOf(transformedResponse);
 			} else {
 				return StringType.valueOf(transformedResponse);
 			}
@@ -359,7 +366,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 
 				// update and store data on cache
 				logger.debug("updating cache for '{}' ('{}')", cacheId, cacheConfig.url);
-				cacheConfig.data = HttpUtil.executeUrl("GET", cacheConfig.url, null, null, null, timeout);
+				cacheConfig.data = HttpUtil.executeUrl("GET", cacheConfig.url, cacheConfig.headers, null, null, timeout);
 
 				if (cacheConfig.data != null)
 					cacheConfig.lastUpdate = System.currentTimeMillis();
@@ -428,7 +435,14 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 					String value = (String) config.get(key);
 	
 					if ("url".equals(configKey)) {
-						cacheConfig.url = value;
+						matcher = EXTRACT_CACHE_CONFIG_URL.matcher(value);
+						if (!matcher.matches()) {
+							throw new ConfigurationException(configKey, "given config url '"
+									+ configKey
+									+ "' does not follow the expected pattern '<id>.url[{<headers>}]'");
+						}
+						cacheConfig.url = matcher.group(1);
+						cacheConfig.headers = parseHttpHeaders(matcher.group(2));
 					} else if ("updateInterval".equals(configKey)) {
 						cacheConfig.updateInterval = Integer.valueOf(value);
 					} else {
@@ -439,6 +453,26 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 				}
 	        }
 		}
+	}
+	
+	private Properties parseHttpHeaders(String group) {
+		Properties headers = new Properties();
+		if(group != null && group.length()>0){
+			if(group.startsWith("{")){
+				group=group.substring(1);
+			}
+			if(group.endsWith("}")){
+				group=group.substring(0,group.length()-1);
+			}
+			String[] headersArray = group.split("&");
+			for(String headerElement: headersArray){
+				int idx = headerElement.indexOf("=");
+				if(idx>=0){
+					headers.setProperty(headerElement.substring(0,idx), headerElement.substring(idx+1));
+				}
+			}
+		}
+		return headers;
 	}
 	
 	/**
@@ -452,6 +486,9 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 		
 		/** URL where data is fetched */
 		String url;
+		
+		/** HTTP Headers sent with the request */
+		Properties headers;
 		
 		/** Update interval for cache */
 		int updateInterval = 0;

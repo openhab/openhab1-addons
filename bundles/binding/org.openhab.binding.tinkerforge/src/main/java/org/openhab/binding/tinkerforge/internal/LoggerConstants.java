@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,8 @@ public class LoggerConstants {
 	public static String TFINITSUB = "TFINITSUB";
 	public static String TFCOMMAND = "TFCOMMAND";
 	public static String TFMODELUPDATE = "TFMODELUPDATE";
-	public static String TFOPENHABCONFIG = "TFOPENHABCONFIG";
+	public static String CONFIG = "CONFIG";
+	public static String ITEMUPDATE = "ITEMUPDATE";
+	public static String COMMAND = "COMMAND";
 	
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -95,5 +95,42 @@ public class UtilsTest {
 		
 		Assert.assertEquals(23, result.getHours());
 		Assert.assertEquals(00, result.getMinutes());
+	}
+	
+	@Test
+	  public void getBitsTest() {
+	    boolean b1[] = Utils.getBits(0xFF);
+	    
+	    Assert.assertEquals(b1.length, 8);
+	    for (int i = 0; i < 8; i++)
+	    {
+	      Assert.assertEquals(true, b1[i]);
+	    }
+	    
+	    boolean b2[] = Utils.getBits(0x5A);
+	    
+	    Assert.assertEquals(b2.length, 8);
+	    Assert.assertEquals(false, b2[0]);
+	    Assert.assertEquals(true, b2[1]);
+	    Assert.assertEquals(false, b2[2]);
+	    Assert.assertEquals(true, b2[3]);
+	    Assert.assertEquals(true, b2[4]);
+	    Assert.assertEquals(false, b2[5]);
+	    Assert.assertEquals(true, b2[6]);
+	    Assert.assertEquals(false, b2[7]);
+	}
+	
+	@Test
+	public void hexStringToByteArrayTest() {
+		String s = "000102030AFF";
+		
+		byte[] result = Utils.hexStringToByteArray(s);
+		
+		Assert.assertEquals(0, result[0] & 0xFF);
+		Assert.assertEquals(1, result[1] & 0xFF);
+		Assert.assertEquals(2, result[2] & 0xFF);
+		Assert.assertEquals(3, result[3] & 0xFF);
+		Assert.assertEquals(10, result[4] & 0xFF);
+		Assert.assertEquals(255, result[5] & 0xFF);	
 	}
 }

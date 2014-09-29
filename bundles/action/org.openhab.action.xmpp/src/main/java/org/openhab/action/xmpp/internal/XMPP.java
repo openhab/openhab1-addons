@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,6 +20,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
+import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.slf4j.Logger;
@@ -138,5 +139,39 @@ public class XMPP {
 		
 		return success;
 	}
+	
+	/**
+	 * Sends a message to an XMPP multi user chat.
+	 * 
+	 * @param message the message to send
+	 * 
+	 * @return <code>true</code>, if sending the message has been successful and 
+	 * <code>false</code> in all other cases.
+	 */
+	@ActionDoc(text="Sends a message to an XMPP multi user chat.")
+	static public boolean chatXMPP(
+			@ParamDoc(name="message") String message) {
+		boolean success = false;
+		
+		try {
+			MultiUserChat chat = XMPPConnect.getChat();
+
+			try {
+				while(message.length()>=2000) {
+					chat.sendMessage(message.substring(0, 2000));
+					message = message.substring(2000);
+				}
+				chat.sendMessage(message);
+				logger.debug("Sent message '{}' to multi user chat.", message);
+				success = true;
+			} catch (XMPPException e) {
+				System.out.println("Error Delivering block");
+			}
+		} catch (NotInitializedException e) {
+			logger.warn("Could not send XMPP message as connection is not correctly initialized!");
+		}
+		
+		return success;
+	}	
 	
 }

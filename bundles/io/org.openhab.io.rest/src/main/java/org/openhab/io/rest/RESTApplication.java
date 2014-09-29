@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -133,9 +134,11 @@ public class RESTApplication extends Application {
         	
     		httpPort = Integer.parseInt(bundleContext.getProperty("jetty.port"));
     		httpSSLPort = Integer.parseInt(bundleContext.getProperty("jetty.port.ssl"));
+    		
+    		Servlet atmosphereServlet = new AtmosphereServlet();
 
 			httpService.registerServlet(REST_SERVLET_ALIAS,
-				new AtmosphereServlet(), getJerseyServletParams(), createHttpContext());
+				atmosphereServlet, getJerseyServletParams(), createHttpContext());
 
  			logger.info("Started REST API at /rest");
 
@@ -184,17 +187,22 @@ public class RESTApplication extends Application {
     private Dictionary<String, String> getJerseyServletParams() {
         Dictionary<String, String> jerseyServletParams = new Hashtable<String, String>();
         jerseyServletParams.put("javax.ws.rs.Application", RESTApplication.class.getName());
+        
         jerseyServletParams.put("org.atmosphere.core.servlet-mapping", RESTApplication.REST_SERVLET_ALIAS+"/*");
         jerseyServletParams.put("org.atmosphere.useWebSocket", "true");
         jerseyServletParams.put("org.atmosphere.useNative", "true");
-        jerseyServletParams.put("org.atmosphere.cpr.padding", "whitespace");     
         
-//        jerseyServletParams.put("org.atmosphere.cpr.broadcastFilterClasses", "org.atmosphere.client.FormParamFilter");
+        jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor.disableDefaults", "true");
+        // use the default interceptors without PaddingAtmosphereInterceptor
+        // see: https://groups.google.com/forum/#!topic/openhab/Z-DVBXdNiYE
+        jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor", "org.atmosphere.interceptor.DefaultHeadersInterceptor,org.atmosphere.interceptor.AndroidAtmosphereInterceptor,org.atmosphere.interceptor.SSEAtmosphereInterceptor,org.atmosphere.interceptor.JSONPAtmosphereInterceptor,org.atmosphere.interceptor.JavaScriptProtocol,org.atmosphere.interceptor.OnDisconnectInterceptor");
+//      The BroadcasterCache is set in ResourceStateChangeListener.registerItems(), because otherwise
+//      it gets somehow overridden by other registered servlets (e.g. the CV-bundle)
+        //jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.atmosphere.cache.UUIDBroadcasterCache");
         jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "IDLE_DESTROY");
-        jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "300000");
+        jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "3000000");
         
         jerseyServletParams.put("com.sun.jersey.spi.container.ResourceFilter", "org.atmosphere.core.AtmosphereFilter");
-        //jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.atmosphere.cache.SessionBroadcasterCache");
         
         // required because of bug http://java.net/jira/browse/JERSEY-361
         jerseyServletParams.put(FeaturesAndProperties.FEATURE_XMLROOTELEMENT_PROCESSING, "true");

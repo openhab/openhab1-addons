@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZM1601</Model>
+	<Label lang="en">Battery Operated Siren</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>0</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Siren Strobe Mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Strobe and Siren</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Siren</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Strobe</Label>
+			</Item>			
+			<Help lang="en"><![CDATA[Defines the reaction of the siren]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">30 seconds</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">60 seconds</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">120 seconds</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Continuous</Label>
+			</Item>
+			<Label lang="en">Alarm auto stop</Label>
+			<Help lang="en"><![CDATA[Defines the auto time out of the alarm indication]]></Help>
+		</Parameter>
+	</Configuration>
+</Product>
+

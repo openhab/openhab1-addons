@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="MACROMAN"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>openhab</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -27,5 +27,42 @@
     <module>persistence</module>
     <module>ui</module>
   </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+            <artifactId>jdeb</artifactId>
+                <groupId>org.vafer</groupId>
+                <version>1.0.1</version>
+				<executions>
+                	<execution>
+                    	<phase>package</phase>
+                        <goals>
+                        	<goal>jdeb</goal>
+                        </goals>
+                        <configuration>
+							<controlDir>${basedir}/../../../distribution/src/deb/control-addons</controlDir>
+							<deb>${basedir}/target/${deb.name}-${project.version}.deb</deb>
+							<dataSet>
+								<data>
+									<src>${basedir}/target/${project.artifactId}-${project.version}.jar</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/openhab/addons</prefix>
+										<user>root</user>
+										<group>root</group>
+										<filemode>644</filemode>
+									</mapper>
+								</data>
+							</dataSet>
+                        </configuration>
+                   </execution>
+                </executions>
+	      </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>

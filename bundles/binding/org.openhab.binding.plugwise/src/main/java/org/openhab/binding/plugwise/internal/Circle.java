@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -219,6 +219,11 @@ public class Circle extends PlugwiseDevice {
 			case POWER_INFORMATION_RESPONSE:
 				
 				one = ((PowerInformationResponseMessage)message).getOneSecond();
+				if(pulseToWatt(one) > 10000) {
+					// the Circle reporting this information is in a kind of error state.
+					// we just skip these values
+					return true;
+				}
 				postUpdate(MAC,PlugwiseCommandType.CURRENTPOWER,pulseToWatt(one));
 				
 				DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");

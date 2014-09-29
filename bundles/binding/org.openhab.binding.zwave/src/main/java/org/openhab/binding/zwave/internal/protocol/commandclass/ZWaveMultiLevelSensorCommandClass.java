@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -89,9 +89,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
 		logger.trace("Handle Message Sensor Multi Level Request");
-		logger.debug(String.format(
-				"Received Sensor Multi Level Request for Node ID = %d", this
-						.getNode().getNodeId()));
+		logger.debug("NODE {}: Received Sensor Multi Level Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 		case SENSOR_MULTI_LEVEL_GET:
@@ -116,7 +114,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 					    // (n)th bit is set. n is the index for the alarm type enumeration.
 						SensorType sensorTypeToAdd = SensorType.getSensorType(index);
 						this.sensors.add(sensorTypeToAdd);
-						logger.debug(String.format("Added sensor type %s (0x%02x)", sensorTypeToAdd.getLabel(), index));
+						logger.debug(String.format("NODE %d: Added sensor type %s (0x%02x)", this.getNode().getNodeId(), sensorTypeToAdd.getLabel(), index));
 				}
 			}
 			
@@ -124,17 +122,16 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 			break;
 		case SENSOR_MULTI_LEVEL_REPORT:
 			logger.trace("Process Multi Level Sensor Report");
-			logger.debug(String.format(
-					"Sensor Multi Level report from nodeId = %d", this
-							.getNode().getNodeId()));
+			logger.debug("NODE {}: Sensor Multi Level report received", this.getNode().getNodeId());
 
 			int sensorTypeCode = serialMessage.getMessagePayloadByte(offset + 1);
-			logger.debug(String.format("Sensor Type = (0x%02x)", sensorTypeCode));
+			int sensorScale = (serialMessage.getMessagePayloadByte(offset + 2) >> 3) & 0x03;
+			logger.debug(String.format("NODE %d: Sensor Type = (0x%02x), Scale = %d", this.getNode().getNodeId(), sensorTypeCode, sensorScale));
 
 			SensorType sensorType = SensorType.getSensorType(sensorTypeCode);
 			
 			if (sensorType == null) {
-				logger.error(String.format("Unknown Alarm Type = 0x%02x, ignoring report.", sensorTypeCode));
+				logger.error(String.format("NODE %d: Unknown Sensor Type = 0x%02x, ignoring report.", this.getNode().getNodeId(), sensorTypeCode));
 				return;
 			}
 			
@@ -142,12 +139,17 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 			if (!sensors.contains(sensorType))
 				this.sensors.add(sensorType);
 
-			BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
+			try {
+				BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
 
-			logger.debug(String.format("Sensor Value = (%f)", value));
-			
-			ZWaveMultiLevelSensorValueEvent zEvent = new ZWaveMultiLevelSensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, value);
-			this.getController().notifyEventListeners(zEvent);
+				logger.debug(String.format("NODE %d: Sensor Value = (%f)", this.getNode().getNodeId(), value));
+				
+				ZWaveMultiLevelSensorValueEvent zEvent = new ZWaveMultiLevelSensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, sensorScale, value);
+				this.getController().notifyEventListeners(zEvent);
+			}
+			catch (NumberFormatException e) {
+				return;
+			}
 			
 			if (this.getNode().getNodeStage() != NodeStage.DONE)
 				this.getNode().advanceNodeStage(NodeStage.DONE);
@@ -173,7 +175,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 		}
 		
 		logger.debug(
-				"Creating new message for application command SENSOR_MULTI_LEVEL_GET for node {}",
+				"NODE {}: Creating new message for application command SENSOR_MULTI_LEVEL_GET",
 				this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(),
 				SerialMessageClass.SendData, SerialMessageType.Request,
@@ -194,7 +196,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	 */
 	public SerialMessage getSupportedValueMessage() {
 		logger.debug(
-				"Creating new message for application command SENSOR_MULTI_LEVEL_SUPPORTED_GET for node {}",
+				"NODE {}: Creating new message for application command SENSOR_MULTI_LEVEL_SUPPORTED_GET",
 				this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(),
 				SerialMessageClass.SendData, SerialMessageType.Request,
@@ -216,7 +218,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	 */
 	public SerialMessage getMessage(SensorType sensorType) {
 		logger.debug(
-				"Creating new message for application command SENSOR_MULTI_LEVEL_GET for node {}",
+				"NODE {}: Creating new message for application command SENSOR_MULTI_LEVEL_GET",
 				this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(),
 				SerialMessageClass.SendData, SerialMessageType.Request,
@@ -364,25 +366,35 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	public class ZWaveMultiLevelSensorValueEvent extends ZWaveCommandClassValueEvent {
 
 		private SensorType sensorType;
+		private int scale;
 		
 		/**
 		 * Constructor. Creates a instance of the ZWaveMultiLevelSensorValueEvent class.
 		 * @param nodeId the nodeId of the event
 		 * @param endpoint the endpoint of the event.
 		 * @param sensorType the sensor type that triggered the event;
+		 * @param scale the scale for the event
 		 * @param value the value for the event.
 		 */
 		private ZWaveMultiLevelSensorValueEvent(int nodeId, int endpoint,
-				SensorType sensorType, Object value) {
+				SensorType sensorType, int scale, Object value) {
 			super(nodeId, endpoint, CommandClass.SENSOR_MULTILEVEL, value);
 			this.sensorType = sensorType;
+			this.scale = scale;
 		}
 
 		/**
-		 * Gets the alarm type for this alarm sensor value event.
+		 * Gets the sensor type for this sensor value event.
 		 */
 		public SensorType getSensorType() {
 			return sensorType;
+		}
+		
+		/**
+		 * Gets the scale for this event
+		 */
+		public int getSensorScale() {
+			return this.scale;
 		}
 	}
 }

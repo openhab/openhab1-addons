@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -48,6 +48,16 @@ public abstract class Message {
 		this.payLoad = payLoad;
 		
 		parsePayLoad();
+	}
+	
+	public String toString() {
+		
+		return "Plugwise Message [type=" + type.toString()+
+				", MAC="+MAC+
+				", SeqNr="+sequenceNumber+
+				", payload="+payLoad+
+				", retrycount="+retryCount+"]";
+		
 	}
 	
 	// for messages where we do not care about the MAC address

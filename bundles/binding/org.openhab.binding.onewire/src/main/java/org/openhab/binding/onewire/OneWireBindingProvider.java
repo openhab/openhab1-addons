@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -34,6 +34,11 @@ public interface OneWireBindingProvider extends BindingProvider {
 	 * @return the corresponding unitId of the given <code>itemName</code>
 	 */
 	public String getUnitId(String itemName);
+
+	/**
+	 * @return the filter for the given <code>itemName</code>
+	 */
+	public String getFilter(String itemName);
 
 	public Item getItem(String itemName);
 	

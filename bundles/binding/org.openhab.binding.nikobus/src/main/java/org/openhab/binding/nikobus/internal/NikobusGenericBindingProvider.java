@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,7 @@ import org.openhab.binding.nikobus.internal.config.Button;
 import org.openhab.binding.nikobus.internal.config.ModuleChannelGroup;
 import org.openhab.binding.nikobus.internal.core.NikobusModule;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -52,7 +53,7 @@ public class NikobusGenericBindingProvider extends
 
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem)) {
+		if (!(item instanceof SwitchItem) && !(item instanceof RollershutterItem)) {
 			throw new BindingConfigParseException("Item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
 					+ "', which is not supported by the Nikobus Binding.");

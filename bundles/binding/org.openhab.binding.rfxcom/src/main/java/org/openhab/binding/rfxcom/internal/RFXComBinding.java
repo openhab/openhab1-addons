@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,7 @@ package org.openhab.binding.rfxcom.internal;
 
 import java.io.IOException;
 import java.util.EventObject;
+import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -18,7 +19,8 @@ import org.openhab.binding.rfxcom.RFXComValueSelector;
 import org.openhab.binding.rfxcom.internal.connector.RFXComEventListener;
 import org.openhab.binding.rfxcom.internal.connector.RFXComSerialConnector;
 import org.openhab.binding.rfxcom.internal.messages.RFXComBaseMessage.PacketType;
-import org.openhab.binding.rfxcom.internal.messages.RFXComMessageUtils;
+import org.openhab.binding.rfxcom.internal.messages.RFXComMessageFactory;
+import org.openhab.binding.rfxcom.internal.messages.RFXComMessageInterface;
 import org.openhab.binding.rfxcom.internal.messages.RFXComTransmitterMessage;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.events.EventPublisher;
@@ -153,22 +155,23 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 				RFXComValueSelector valueSelector = provider
 						.getValueSelector(itemName);
 
-				Object obj = RFXComDataConverter
-						.convertOpenHABValueToRFXCOMValue(id, packetType,
-								subType, valueSelector, command,
-								getNextSeqNumber());
-				byte[] data = RFXComMessageUtils.encodePacket(obj);
-				logger.debug("Transmitting data: {}",
-						DatatypeConverter.printHexBinary(data));
-
-				setResponseMessage(null);
-
 				try {
+					RFXComMessageInterface obj = RFXComMessageFactory.getMessageInterface(packetType);
+					obj.convertFromState(valueSelector, id, subType, command, getNextSeqNumber());
+					byte[] data = obj.decodeMessage();
+					
+					logger.debug("Transmitting data: {}",
+							DatatypeConverter.printHexBinary(data));
+
+					setResponseMessage(null);
 					connector.sendMessage(data);
+					
+				} catch (RFXComException e) {
+					e.printStackTrace();
 				} catch (IOException e) {
 					logger.error("Message sending to RFXCOM controller failed.", e);	
 				}
-
+				
 				try {
 
 					synchronized (notifierObject) {
@@ -225,8 +228,8 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 		public void packetReceived(EventObject event, byte[] packet) {
 
 			try {
-				Object obj = RFXComMessageUtils.decodePacket(packet);
-
+				RFXComMessageInterface obj = RFXComMessageFactory.getMessageInterface(packet);
+				
 				if (obj instanceof RFXComTransmitterMessage) {
 					RFXComTransmitterMessage resp = (RFXComTransmitterMessage) obj;
 
@@ -240,30 +243,40 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 					}
 
 				} else {
-					String id2 = RFXComDataConverter.generateDeviceId(obj);
+					String id2 = obj.generateDeviceId();
 
-					for (RFXComBindingProvider provider : providers) {
-						for (String itemName : provider.getItemNames()) {
+					List<RFXComValueSelector> supportedValueSelectors = obj
+							.getSupportedValueSelectors();
 
-							String id1 = provider.getId(itemName);
-							boolean inBinding = provider.isInBinding(itemName);
+					if (supportedValueSelectors != null) {
 
-							if (id1.equals(id2) && inBinding) {
+						for (RFXComBindingProvider provider : providers) {
+							for (String itemName : provider.getItemNames()) {
 
-								RFXComValueSelector parseItem = provider
-										.getValueSelector(itemName);
+								String id1 = provider.getId(itemName);
+								boolean inBinding = provider.isInBinding(itemName);
 
-								State value = RFXComDataConverter
-										.convertRFXCOMValueToOpenHABValue(
-												obj, parseItem);
-								eventPublisher.postUpdate(itemName, value);
+								if (id1.equals(id2) && inBinding) {
+
+									RFXComValueSelector valueSelector = provider
+											.getValueSelector(itemName);
+
+									if (supportedValueSelectors.contains(valueSelector)) {
+										try {
+											State value = obj.convertToState(valueSelector);
+											eventPublisher.postUpdate(itemName, value);
+										} catch (RFXComException e) {
+											logger.warn( "Data conversion error", e);
+										}
+									}
+								}
+
 							}
-
 						}
 					}
 				}
-			} catch (IllegalArgumentException e) {
-				logger.debug("Unknown packet received, data: {}",
+			} catch (RFXComException e) {
+				logger.error("Error occured during packet receiving, data: {}",
 						DatatypeConverter.printHexBinary(packet), e);
 			}
 		}

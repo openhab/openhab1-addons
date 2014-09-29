@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -73,18 +73,18 @@ public class MilightGenericBindingProvider extends AbstractGenericBindingProvide
 		try {
 			if (bindingConfig != null) {
 				String[] configParts = bindingConfig.split(";");
-				if (configParts.length > 3) {
-					throw new BindingConfigParseException("milight binding configuration must not have more than three parts");
+				if (configParts.length > 4) {
+					throw new BindingConfigParseException("milight binding configuration must not have more than four parts");
 				}
 
 				if (item instanceof ColorItem) {
 					BindingConfig milightBindingConfig = (BindingConfig) new MilightBindingConfig(
-							configParts[0], configParts[1], BindingType.rgb.name());
+							configParts[0], configParts[1], BindingType.rgb.name(), null );
 					addBindingConfig(item, milightBindingConfig);
 				} else if (item instanceof DimmerItem || item instanceof SwitchItem) {
-					BindingConfig milightBindingConfig = (BindingConfig) new MilightBindingConfig(
-							configParts[0], configParts[1], configParts.length < 3 ? null : configParts[2]);
-					addBindingConfig(item, milightBindingConfig);
+						BindingConfig milightBindingConfig = (BindingConfig) new MilightBindingConfig(
+								configParts[0], configParts[1], configParts.length < 3 ? null : configParts[2], configParts.length < 4 ? null : configParts[3]);
+						addBindingConfig(item,milightBindingConfig);
 				}
 
 			} else {

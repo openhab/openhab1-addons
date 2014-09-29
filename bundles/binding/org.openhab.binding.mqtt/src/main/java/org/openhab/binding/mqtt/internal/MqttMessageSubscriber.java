@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -46,6 +46,8 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 
 	private EventPublisher eventPublisher;
 
+	private String msgFilter = null;
+
 	/**
 	 * Create new MqttMessageSubscriber from config string.
 	 * 
@@ -54,14 +56,15 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 	 * @throws BindingConfigParseException
 	 *             if the config string is invalid
 	 */
-	public MqttMessageSubscriber(String configuration) throws BindingConfigParseException {
+	public MqttMessageSubscriber(String configuration)
+			throws BindingConfigParseException {
 
 		String[] config = splitConfigurationString(configuration);
 		try {
 
-			if (config.length != 4) {
+			if (config.length != 4 && config.length != 5) {
 				throw new BindingConfigParseException(
-						"Configuration requires 4 parameters separated by ':'");
+						"Configuration requires 4 or 5 parameters separated by ':'");
 			}
 
 			if (StringUtils.isEmpty(config[0])) {
@@ -93,6 +96,10 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 						"Missing transformation configuration.");
 			} else {
 				setTransformationRule(config[3].trim());
+				initTransformService();
+			}
+			if (config.length > 4) {
+				setMsgFilter(config[4].trim());
 			}
 
 		} catch (BindingConfigParseException e) {
@@ -109,11 +116,20 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 
 		try {
 
-			if (getTransformationServiceName() != null && getTransformationService() == null) {
+			if (getTransformationServiceName() != null
+					&& getTransformationService() == null) {
+				logger.debug("Received message before transformation service '{}' was initialized.");
 				initTransformService();
 			}
 
 			String value = new String(message);
+
+			if (!msgFilterApplies(value)) {
+				logger.debug(
+						"Skipped message '{}' because Message Filter '{}' does not apply.",
+						value, msgFilter);
+				return;
+			}
 
 			if (getTransformationService() != null) {
 				value = getTransformationService().transform(
@@ -147,6 +163,40 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements
 	@Override
 	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
+	}
+
+	/**
+	 * Set a Msg filter to the Subscriber. All Messages that do not match the
+	 * filter will be ignored. The filter will be interpreted as regular
+	 * expression. Set null to remove filter
+	 * 
+	 * @param filter
+	 *            Regular Expression String
+	 */
+	public void setMsgFilter(String filter) {
+		this.msgFilter = filter;
+	}
+
+	public String getMsgFilter() {
+		return this.msgFilter;
+	}
+
+	/**
+	 * Checks whether an incoming message matches a predefined regular
+	 * expression filter
+	 * 
+	 * @param msg
+	 * @return true if the msg matches the filter specified, or if no filter is
+	 *         specified
+	 */
+	private boolean msgFilterApplies(String msg) {
+		if (msg == null) {
+			return false;
+		} else if (msgFilter == null) {
+			return true;
+		} else {
+			return msg.matches(msgFilter);
+		}
 	}
 
 	/**

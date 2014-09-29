@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>DoorSensor</Model>
+	<Label lang="en">Door/Window sensor</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x9c</id></Class>
+	</CommandClasses>
+
+	 <Configuration>
+                <Parameter>
+                        <Index>1</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">On for opened, Off for closed</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Off for opened, On for closed</Label>
+                        </Item>
+                        <Label lang="en">Send Sensor binary report on open/close events</Label>
+						<Help lang="en"></Help>
+                </Parameter>
+                <Parameter>
+                        <Index>2</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">No</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Yes</Label>
+                        </Item>
+                        <Label lang="en">Enable wake up 10 minutes when power on</Label>
+						<Help lang="en"></Help>
+                </Parameter>
+                <Parameter>
+                        <Index>3</Index>
+                        <Type>list</Type>
+                        <Default>0</Default>
+                        <Size>1</Size>
+                        <Item>
+                                <Value>0</Value>
+                                <Label lang="en">On for opened, Off for closed</Label>
+                        </Item>
+                        <Item>
+                                <Value>1</Value>
+                                <Label lang="en">Off for opened, On for closed</Label>
+                        </Item>
+                        <Label lang="en">Send Basic Set on open/close event</Label>
+						<Help lang="en"></Help>
+                </Parameter>
+                <Parameter>
+                        <Index>121</Index>
+                        <Type>byte</Type>
+                        <Default>256</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Send those commands to associated devices on open/close/tamper events</Label>
+						<Help lang="en"><![CDATA[Bit mapped<BR/>
+						0	   ->  	Battery report<BR/>
+4	   ->  	Sensor binary report<BR/>
+8	   ->  	Basic Set  ]]></Help>
+                </Parameter>
+    </Configuration>
+    
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group 1</Label>
+		</Group>
+	</Associations>
+</Product>

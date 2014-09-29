@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -74,6 +74,7 @@ public class MqttGenericBindingProvider extends AbstractGenericBindingProvider i
 					for (MqttMessageSubscriber subscriber : itemConfig.getMessageSubscribers()) {
 						mqttService.unregisterMessageConsumer(subscriber.getBroker(), subscriber);
 					}
+					removeBindingChangeListener(this);
 				}
 			}
 
@@ -84,6 +85,7 @@ public class MqttGenericBindingProvider extends AbstractGenericBindingProvider i
 					for (MqttMessageSubscriber subscriber : itemConfig.getMessageSubscribers()) {
 						mqttService.unregisterMessageConsumer(subscriber.getBroker(), subscriber);
 					}
+					removeBindingChangeListener(this);
 				}
 			}
 		});
@@ -105,6 +107,7 @@ public class MqttGenericBindingProvider extends AbstractGenericBindingProvider i
 					for (MqttMessagePublisher publisher : itemConfig.getMessagePublishers()) {
 						mqttService.unregisterMessageProducer(publisher.getBroker(), publisher);
 					}
+					removeBindingChangeListener(this);
 				}
 			}
 
@@ -115,6 +118,7 @@ public class MqttGenericBindingProvider extends AbstractGenericBindingProvider i
 					for (MqttMessagePublisher publisher : itemConfig.getMessagePublishers()) {
 						mqttService.unregisterMessageProducer(publisher.getBroker(), publisher);
 					}
+					removeBindingChangeListener(this);
 				}
 			}
 		});

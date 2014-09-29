@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,8 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -46,16 +48,36 @@ import com.tinkerforge.BrickServo;
 import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
+import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualRelay;
+import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
+import com.tinkerforge.BrickletIO16;
+import com.tinkerforge.BrickletIO4;
+import com.tinkerforge.BrickletIndustrialDigitalIn4;
+import com.tinkerforge.BrickletIndustrialDigitalOut4;
+import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
+import com.tinkerforge.BrickletLEDStrip;
+import com.tinkerforge.BrickletMoisture;
+import com.tinkerforge.BrickletMotionDetector;
+import com.tinkerforge.BrickletMultiTouch;
+import com.tinkerforge.BrickletRemoteSwitch;
+import com.tinkerforge.BrickletSegmentDisplay4x7;
+import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
+import com.tinkerforge.BrickletTemperatureIR;
+import com.tinkerforge.BrickletTilt;
+import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.IPConnection;
 import com.tinkerforge.NotConnectedException;
 
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MBrickd</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -66,6 +88,7 @@ import com.tinkerforge.NotConnectedException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getPort <em>Port</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isIsConnected <em>Is Connected</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isAutoReconnect <em>Auto Reconnect</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#isReconnected <em>Reconnected</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getTimeout <em>Timeout</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getMdevices <em>Mdevices</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickdImpl#getEcosystem <em>Ecosystem</em>}</li>
@@ -195,6 +218,26 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
    * @ordered
    */
   protected boolean autoReconnect = AUTO_RECONNECT_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isReconnected() <em>Reconnected</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isReconnected()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean RECONNECTED_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isReconnected() <em>Reconnected</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isReconnected()
+   * @generated
+   * @ordered
+   */
+  protected boolean reconnected = RECONNECTED_EDEFAULT;
 
   /**
    * The default value of the '{@link #getTimeout() <em>Timeout</em>}' attribute.
@@ -392,6 +435,29 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
    * <!-- end-user-doc -->
    * @generated
    */
+  public boolean isReconnected()
+  {
+    return reconnected;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setReconnected(boolean newReconnected)
+  {
+    boolean oldReconnected = reconnected;
+    reconnected = newReconnected;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKD__RECONNECTED, oldReconnected, reconnected));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public int getTimeout()
   {
     return timeout;
@@ -479,19 +545,22 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 		final IPConnection ipcon = new IPConnection();
 		setIpConnection(ipcon);
 
-		ipcon.setTimeout(timeout);
-		ipcon.setAutoReconnect(false);
-		ipcon.addConnectedListener(new ConnectedListener(ipcon));
-		//ipcon.addDisconnectedListener(new DisconnectedListener());
-		makeConnect();
+		ipConnection.setTimeout(timeout);
+		ipConnection.setAutoReconnect(autoReconnect);
+		ipConnection.addConnectedListener(new ConnectedListener(ipcon));
+		ipConnection.addDisconnectedListener(new DisconnectedListener());
+		ipConnection.addEnumerateListener(new EnumerateListener());
+		//makeConnect();
+		makeConnectThread();
 		logger.trace("{} After connect call", LoggerConstants.TFINIT);
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @see makeConnectThread()
 	 * 
 	 * @generated NOT
 	 */
+	@SuppressWarnings("unused")
 	private void makeConnect() {
 		try {
 			logger.debug(
@@ -513,6 +582,66 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 	}
 
 	/**
+	 * Connects the ipConnection to the brickd. A thread is used to retry the
+	 * connection in case of a ConnectExpeption. This is as workaround for an
+	 * issue in the IpConnection api: If autoReconnect is chosen the reconntect
+	 * does not work for the connect method call. This call must anyway be
+	 * succesfull. Only later disconnects are handled by autoReconnect. If this
+	 * issue is solved in the upstream api, the makeConnect method of this
+	 * should be preferred.
+	 * 
+	 * @generated NOT
+	 */
+	private void makeConnectThread() {
+		connectThread = new Thread() {
+			boolean connected = false;
+			boolean fatalError = false;
+
+			@Override
+			public void run() {
+				while (!connected && !fatalError && ! isInterrupted() ) {
+					try {
+						logger.trace(
+								"trying to establish connection to {}:{}",
+								host, port);
+						ipConnection.connect(getHost(), getPort());
+					} catch (AlreadyConnectedException e) {
+						logger.trace("connect successful: {}:{}", host, port);
+						connected = true;
+					} catch (ConnectException e) {
+						// lets try it endless: don't set connected to true
+						logger.debug(
+								"connect failed with ConnectionException: {}:{}",
+								host, port);
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e1) {
+							logger.debug("connect interrupt recieved: {}:{}",
+									host, port);
+							interrupt();
+						}
+					} catch (UnknownHostException e) {
+						//TODO use TinkerforeExceptionHandler
+						logger.error("fatal error: {}", e);
+						fatalError = true;
+					} catch (IOException e) {
+						logger.error("connect failed with IOException {}", e);
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e1) {
+							logger.debug("connect interrupt recieved: {}:{}",
+									host, port);
+							interrupt();
+						}
+					}
+				}
+			}
+		};
+		connectThread.setDaemon(true);
+		connectThread.start();
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT
@@ -529,8 +658,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 		public void connected(short connectReason) {
 			logger.debug("{} Connected listener was called.", LoggerConstants.TFINIT);
 			setIsConnected(true);
-			//ipcon.addDisconnectedListener(new DisconnectedListener());
-			ipcon.addEnumerateListener(new EnumerateListener());
+			if (connectReason == IPConnection.CONNECT_REASON_AUTO_RECONNECT){
+			  setReconnected(true);
+			}
 			try {
 				ipcon.enumerate();
 			} catch (NotConnectedException e) {
@@ -545,22 +675,48 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 	 * 
 	 * @generated NOT
 	 */
+	
+	private Lock modelLock = new ReentrantLock(true);
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
 	private class DisconnectedListener implements
 			IPConnection.DisconnectedListener {
 
+		private String connectReasonString;
+
 		@Override
 		public void disconnected(short connectReason) {
-			logger.trace("disconnected listener was called.", LoggerConstants.TFINIT);
-			setIsConnected(false);
-			ArrayList<String> deviceUidList = new ArrayList<String>();
-			for (MDevice<?> mDevice: mdevices){
-				deviceUidList.add(mDevice.getUid());
+			modelLock.lock();
+			try {
+				setIsConnected(false);
+				ArrayList<String> deviceUidList = new ArrayList<String>();
+				for (MDevice<?> mDevice : mdevices) {
+					deviceUidList.add(mDevice.getUid());
+				}
+				for (String uid : deviceUidList) {
+					removeDevice(uid);
+				}
+				switch (connectReason) {
+				case 0:
+					connectReasonString = "request";
+					break;
+				case 1:
+					connectReasonString = "unresolvable problem";
+					break;
+				case 2:
+					connectReasonString = "shutdown";
+					break;
+				default:
+					break;
+				}
+				logger.debug("disconnected listener was called, caused by: {}",
+						connectReasonString);
+			} finally {
+				modelLock.unlock();
 			}
-			for (String uid : deviceUidList)
-			{
-				removeDevice(uid);
-			}
-			makeConnect();
 		}
 	}
 
@@ -575,24 +731,41 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 		public void enumerate(String uid, String connectedUid, char position,
 				short[] hardwareVersion, short[] firmwareVersion,
 				int deviceIdentifier, short enumerationType) {
-			logger.debug("{} EnumerateListener was called.", LoggerConstants.TFINIT);
-			if (enumerationType == IPConnection.ENUMERATION_TYPE_DISCONNECTED)
-				removeDevice(uid);
-			else
-				addDevice(uid, connectedUid, deviceIdentifier);
+			logger.debug("{} EnumerateListener was called, type {}",
+					LoggerConstants.TFINIT, enumerationType);
+			modelLock.lock();
+			try {
+				if (enumerationType == IPConnection.ENUMERATION_TYPE_DISCONNECTED)
+					removeDevice(uid);
+				else
+					addDevice(uid, connectedUid, deviceIdentifier);
+			} finally {
+				modelLock.unlock();
+			}
 		}
 
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Removes devices which are no longer available. If the device has
+	 * sub devices these are removed before removing the device. This gives the
+	 * model adapter a chance to handle sub device removal as well.
 	 * 
 	 * @generated NOT
 	 */
 	private void removeDevice(String uid) {
-		MBaseDevice device = getDevice(uid);
-		getMdevices().remove(device);
-		logger.debug("{} removeDevice called", LoggerConstants.TFINIT);
+		MDevice<?> device = (MDevice<?>) getDevice(uid);
+		if (device instanceof MSubDeviceHolder<?>){
+			logger.debug("{} removing all subdevices", LoggerConstants.TFINIT);
+			@SuppressWarnings("unchecked")
+			MSubDeviceHolder<MSubDevice<?>> mSubDeviceHolder = (MSubDeviceHolder<MSubDevice<?>>) device;
+			mSubDeviceHolder.getMsubdevices().clear();
+		}
+		if (device != null) {
+			EcoreUtil.remove(device);
+		}
+		//getMdevices().remove(device);
+		logger.debug("{} removeDevice called for uid: {}", LoggerConstants.TFINIT, uid);
 	}
 
 	/**
@@ -602,12 +775,12 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 	 */
 	@SuppressWarnings("unchecked")
 	private void addDevice(String uid, String connectedUid, int deviceIdentifier) {
+		logger.debug("{} addDevice called for uid: {}", LoggerConstants.TFINIT, uid);
 		if (getDevice(uid) != null) {
 			logger.debug("{} device already exists. uid: {}", LoggerConstants.TFINIT, uid);
 		} else {
 			ModelFactory factory = ModelFactory.eINSTANCE;
 			MDevice<?> mDevice = null;
-			logger.debug("{} addDevice called", LoggerConstants.TFINIT);
 			if (deviceIdentifier == BrickletTemperature.DEVICE_IDENTIFIER) {
 				logger.debug("{} addDevice temperature", LoggerConstants.TFINIT);
 				mDevice = factory.createMBrickletTemperature();
@@ -624,6 +797,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 				logger.debug("{} addDevice BrickletDualRelayBricklet", LoggerConstants.TFINIT);
 				mDevice = factory.createMDualRelayBricklet();
 				mDevice.setDeviceIdentifier(BrickletDualRelay.DEVICE_IDENTIFIER);
+			} else if (deviceIdentifier == BrickletIndustrialQuadRelay.DEVICE_IDENTIFIER){
+				logger.debug("{} addDevice BrickletIndustrialQuadRelayBricklet", LoggerConstants.TFINIT);
+				mDevice = factory.createMIndustrialQuadRelayBricklet();
+				mDevice.setDeviceIdentifier(BrickletIndustrialQuadRelay.DEVICE_IDENTIFIER);
 			} else if (deviceIdentifier == BrickletBarometer.DEVICE_IDENTIFIER){
 				logger.debug("{} addDevice BrickletBarometer", LoggerConstants.TFINIT);
 				mDevice = factory.createMBrickletBarometer();
@@ -644,8 +821,71 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
 				logger.debug("addDevice BrickletLCD20x4");
 				mDevice = factory.createMBrickletLCD20x4();
 				mDevice.setDeviceIdentifier(BrickletLCD20x4.DEVICE_IDENTIFIER);
-			}
-		
+			} else if (deviceIdentifier == BrickletIndustrialDigitalIn4.DEVICE_IDENTIFIER){
+				logger.debug("addDevice BrickletIndustrialDigitalIn4");
+				mDevice = factory.createMBrickletIndustrialDigitalIn4();
+				mDevice.setDeviceIdentifier(BrickletIndustrialDigitalIn4.DEVICE_IDENTIFIER);
+			} else if (deviceIdentifier == BrickletIO16.DEVICE_IDENTIFIER){
+				logger.debug("addDevice BrickletIO16");
+				mDevice = factory.createMBrickletIO16();
+				mDevice.setDeviceIdentifier(BrickletIO16.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletRemoteSwitch.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletRemoteSwitch");
+              mDevice = factory.createMBrickletRemoteSwitch();
+              mDevice.setDeviceIdentifier(BrickletRemoteSwitch.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletMotionDetector.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletMotionDetector");
+              mDevice = factory.createMBrickletMotionDetector();
+              mDevice.setDeviceIdentifier(BrickletMotionDetector.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletMultiTouch.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletMultiTouch");
+              mDevice = factory.createMBrickletMultiTouch();
+              mDevice.setDeviceIdentifier(BrickletMultiTouch.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletTemperatureIR.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletTemperatureIR");
+              mDevice = factory.createMBrickletTemperatureIR();
+              mDevice.setDeviceIdentifier(BrickletTemperatureIR.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletSoundIntensity.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletSoundIntensity");
+              mDevice = factory.createMBrickletSoundIntensity();
+              mDevice.setDeviceIdentifier(BrickletSoundIntensity.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletMoisture.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletMoisture");
+              mDevice = factory.createMBrickletMoisture();
+              mDevice.setDeviceIdentifier(BrickletMoisture.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletDistanceUS.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletDistanceUS");
+              mDevice = factory.createMBrickletDistanceUS();
+              mDevice.setDeviceIdentifier(BrickletDistanceUS.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletVoltageCurrent.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletVoltageCurrent");
+              mDevice = factory.createMBrickletVoltageCurrent();
+              mDevice.setDeviceIdentifier(BrickletVoltageCurrent.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletTilt.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletTilt");
+              mDevice = factory.createMBrickletTilt();
+              mDevice.setDeviceIdentifier(BrickletTilt.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletIO4.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletIO4");
+              mDevice = factory.createMBrickletIO4();
+              mDevice.setDeviceIdentifier(BrickletIO4.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletHallEffect.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletHallEffect");
+              mDevice = factory.createMBrickletHallEffect();
+              mDevice.setDeviceIdentifier(BrickletHallEffect.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletIndustrialDigitalOut4.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletIndustrilaDigitalOut4");
+              mDevice = factory.createMBrickletIndustrialDigitalOut4();
+              mDevice.setDeviceIdentifier(BrickletIndustrialDigitalOut4.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletSegmentDisplay4x7.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletSegmentDisplay4x7");
+              mDevice = factory.createMBrickletSegmentDisplay4x7();
+              mDevice.setDeviceIdentifier(BrickletSegmentDisplay4x7.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletLEDStrip.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletLEDStrip");
+              mDevice = factory.createMBrickletLEDStrip();
+              mDevice.setDeviceIdentifier(BrickletLEDStrip.DEVICE_IDENTIFIER);
+            }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());
 				logger.debug("{} addDevice uid: {}", LoggerConstants.TFINIT, uid);
@@ -782,6 +1022,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
         return isIsConnected();
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         return isAutoReconnect();
+      case ModelPackage.MBRICKD__RECONNECTED:
+        return isReconnected();
       case ModelPackage.MBRICKD__TIMEOUT:
         return getTimeout();
       case ModelPackage.MBRICKD__MDEVICES:
@@ -820,6 +1062,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
         return;
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         setAutoReconnect((Boolean)newValue);
+        return;
+      case ModelPackage.MBRICKD__RECONNECTED:
+        setReconnected((Boolean)newValue);
         return;
       case ModelPackage.MBRICKD__TIMEOUT:
         setTimeout((Integer)newValue);
@@ -863,6 +1108,9 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         setAutoReconnect(AUTO_RECONNECT_EDEFAULT);
         return;
+      case ModelPackage.MBRICKD__RECONNECTED:
+        setReconnected(RECONNECTED_EDEFAULT);
+        return;
       case ModelPackage.MBRICKD__TIMEOUT:
         setTimeout(TIMEOUT_EDEFAULT);
         return;
@@ -898,6 +1146,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
         return isConnected != IS_CONNECTED_EDEFAULT;
       case ModelPackage.MBRICKD__AUTO_RECONNECT:
         return autoReconnect != AUTO_RECONNECT_EDEFAULT;
+      case ModelPackage.MBRICKD__RECONNECTED:
+        return reconnected != RECONNECTED_EDEFAULT;
       case ModelPackage.MBRICKD__TIMEOUT:
         return timeout != TIMEOUT_EDEFAULT;
       case ModelPackage.MBRICKD__MDEVICES:
@@ -956,6 +1206,8 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
     result.append(isConnected);
     result.append(", autoReconnect: ");
     result.append(autoReconnect);
+    result.append(", reconnected: ");
+    result.append(reconnected);
     result.append(", timeout: ");
     result.append(timeout);
     result.append(')');

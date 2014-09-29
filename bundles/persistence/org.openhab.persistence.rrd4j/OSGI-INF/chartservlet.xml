@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2013, openHAB.org and others.
+    Copyright (c) 2010-2014, openHAB.org and others.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -13,4 +13,8 @@
    <implementation class="org.openhab.persistence.rrd4j.internal.charts.RRD4jChartServlet"/>
    <reference bind="setHttpService" cardinality="1..1" interface="org.osgi.service.http.HttpService" name="HttpService" policy="dynamic" unbind="unsetHttpService"/>
    <reference bind="setItemUIRegistry" cardinality="1..1" interface="org.openhab.ui.items.ItemUIRegistry" name="ItemUIRegistry" policy="dynamic" unbind="unsetItemUIRegistry"/>
+   
+   <service>
+      <provide interface="org.openhab.ui.chart.ChartProvider"/>
+   </service>
 </scr:component>

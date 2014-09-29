@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,9 +12,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.enocean.java.address.EnoceanId;
-import org.enocean.java.address.EnoceanParameterAddress;
-import org.enocean.java.eep.EEPId;
+import org.opencean.core.address.EnoceanId;
+import org.opencean.core.address.EnoceanParameterAddress;
+import org.opencean.core.common.EEPId;
 import org.junit.Test;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.types.Command;

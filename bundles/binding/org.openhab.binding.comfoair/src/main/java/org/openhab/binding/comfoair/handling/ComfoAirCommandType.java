@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -133,6 +133,46 @@ public enum ComfoAirCommandType {
 			read_command = 0xd1;
 			read_reply_command = 0xd2;
 			read_reply_data_pos = new int[] { 3 };
+		}
+	},
+
+	EWT_TEMPERATUR {
+		{
+			key = "ewt_temperatur";
+			data_type = DataTypeTemperature.class;
+			read_command = 0xd1;
+			read_reply_command = 0xd2;
+			read_reply_data_pos = new int[] { 6 };
+		}
+	},
+
+	EWT_TEMPERATUR_HIGH {
+		{
+			key = "ewt_temperatur_high";
+			data_type = DataTypeTemperature.class;
+			read_command = 0xeb;
+			read_reply_command = 0xec;
+			read_reply_data_pos = new int[] { 0 };
+		}
+	},
+
+	EWT_TEMPERATUR_LOW {
+		{
+			key = "ewt_temperatur_low";
+			data_type = DataTypeTemperature.class;
+			read_command = 0xeb;
+			read_reply_command = 0xec;
+			read_reply_data_pos = new int[] { 1 };
+		}
+	},
+
+	EWT_SPEED {
+		{
+			key = "ewt_speed";
+			data_type = DataTypeNumber.class;
+			read_command = 0xeb;
+			read_reply_command = 0xec;
+			read_reply_data_pos = new int[] { 2 };
 		}
 	},
 

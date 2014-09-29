@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -140,6 +140,23 @@ public class HueBulb {
 
 		return (int) Math.round((100.0 / 255.0) * this.brightness);
 
+	}
+	
+	/**
+	 * Set bulb ON/OFF without changing the brightness
+	 * @param on
+	 * 			true	turn bulb on
+	 * 			false	turn bulb off
+	 */
+	
+	public boolean switchOn(boolean powerOn) {
+		this.isOn = powerOn;
+		if(powerOn) {
+			executeMessage("{\"on\":true}");
+		} else {
+			executeMessage("{\"on\":false}");
+		}
+		return true;
 	}
 
 	/**

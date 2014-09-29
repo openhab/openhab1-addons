@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,7 +22,7 @@ import org.openhab.core.library.items.RollershutterItem;
  * Represents all valid value selectors which could be processed by this
  * binding.
  * 
- * @author Pauli Anttila, Evert van Es
+ * @author Pauli Anttila, Evert van Es, Neil Renaud
  * @since 1.2.0
  */
 public enum RFXComValueSelector {
@@ -30,6 +30,7 @@ public enum RFXComValueSelector {
 	RAW_DATA ("RawData", StringItem.class),
 	SHUTTER ("Shutter", RollershutterItem.class),
 	COMMAND ("Command", SwitchItem.class),
+	MOOD ("Mood", NumberItem.class),
 	SIGNAL_LEVEL ("SignalLevel", NumberItem.class),
 	DIMMING_LEVEL ("DimmingLevel", DimmerItem.class),
 	TEMPERATURE ("Temperature", NumberItem.class),
@@ -48,10 +49,12 @@ public enum RFXComValueSelector {
 	TOTAL_USAGE("TotalUsage", NumberItem.class),
 	INSTANT_AMPS("InstantAmps", NumberItem.class),
 	TOTAL_AMP_HOURS("TotalAmpHours", NumberItem.class),
-	STATUS("Status", StringItem.class),  	// Security1
-	MOTION("Motion", SwitchItem.class),		// Security1
-	CONTACT("Contact", ContactItem.class),	// Security1
-	VOLTAGE("Voltage", NumberItem.class);
+	STATUS("Status", StringItem.class),
+	MOTION("Motion", SwitchItem.class),
+	CONTACT("Contact", ContactItem.class),
+	VOLTAGE("Voltage", NumberItem.class),
+	SET_POINT("SetPoint", NumberItem.class)
+	;
 
 	private final String text;
 	private Class<? extends Item> itemClass;

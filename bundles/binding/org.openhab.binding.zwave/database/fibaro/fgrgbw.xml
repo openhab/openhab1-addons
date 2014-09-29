@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>FGRGBW</Model>
+	<Label lang="en">Fibaro RGBW Controller</Label>
+	<CommandClasses>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x7a</id></Class>
+		<Class><id>0x85</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">ALL ON / ALL OFF function activation</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">ALL ON inactive ALL OFF inactive</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALL ON inactive ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALL ON active ALL OFF inactive</Label>
+			</Item>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">ALL ON active ALL OFF active</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Activation/deactivation of ALL ON/ALL OFF functions. By default, ALL ON active ALL OFF active.<BR/>
+                             Default setting: ALL ON active ALL OFF active]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Associations command class choice</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Normal (Dimmer) - BASIC_SET/SWITCH_MULTILEVEL_START/STOP</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Normal (RGBW) - COLOR_CONTROL_SET/START/STOP_STATE_CHANGE</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Normal (RGBW) - COLOR_CONTROL_SET</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Brightness - BASIC_SET/SWITCH_MULTILEVEL_START/STOP</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Rainbow (RGBW) - COLOR_CONTROL_SET</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Associations command class choice. By default, Normal (Dimmer) - BASIC_SET/SWITCH_MULTILEVEL_START/STOP.<BR/>
+                             Default setting: Normal (Dimmer) - BASIC_SET/SWITCH_MULTILEVEL_START/STOP]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Outputs state change mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">MODE1 (related parameters: 9-step value, 10-time between steps)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">MODE2 (related parameters: 11-time to change value, relevant for RGB/RGBW)</Label>
+			</Item>
+			<Help lang="en"><![CDATA[MODE1, Example: change saturation level from 0% to 99% <BR/> 
+			                 Parameter 9: Step = 5 <BR/> 
+							 Parameter 10: Time between steps: 10ms.<BR/>
+                             Default setting: MODE1]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Step value (relevant for MODE1)</Label>
+			<Help lang="en"><![CDATA[Step value (relevant for MODE1).<BR/>
+			                 Default setting: 1<BR/>
+                             Available settings: 1 - 255.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>10</Index>
+			<Type>short</Type>
+			<Default>10</Default>
+			<Minimum>0</Minimum>
+			<Maximum>60000</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Time between steps (relevant for MODE1)</Label>
+			<Help lang="en"><![CDATA[Time between steps (relevant for MODE1).<BR/>
+			                 Default setting: 10 ms<BR/>
+			                 0 - immediate change of state<BR/>
+                             Available settings: 1 - 60000 ms.<BR/>]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>67</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Time for changing from start to end value</Label>
+			<Help lang="en"><![CDATA[Step value (relevant for MODE1).<BR/>
+			                 Default setting: 67 (3s)<BR/>
+							 0: immediate change<BR/>
+							 1-63: 20-126 [ms] value*20ms<BR/>
+							 65-127: 1-63 [s] (value-64)*1s<BR/>
+							 129-191: 10-630 [s] (value-128)*10s<BR/>
+                             193-255: 1-63 [min] (value-192)*1min]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>255</Default>
+			<Minimum>3</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Maximum Brightening level</Label>
+			<Help lang="en"><![CDATA[Maximum Brightening level.<BR/>
+			                 Default setting: 255<BR/>
+                             Available settings: 3 - 255.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>byte</Type>
+			<Default>2</Default>
+			<Minimum>3</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Minimum dim level</Label>
+			<Help lang="en"><![CDATA[Minimum dim level.<BR/>
+			                 Default setting: 2<BR/>
+                             Available settings: 3 - 255.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>short</Type>
+			<Default>4369</Default>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Inputs/Outputs configuration - relevant for main controllers other than Home Center 2 only</Label>
+			<Help lang="en"><![CDATA[Inputs/Outputs configuration - relevant for main controllers other than Home Center 2 only.<BR/>
+			                 Default setting: 4369<BR/>
+			                 Controlled device: RGBW, toggle switch inputs (NORMAL MODE).<BR/>
+                             Each 4bit refer to given IN/OUT (channel) settings.<BR/>
+							 The maximum level cannot be lower than minimum level.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>16</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Remember device status after power failure</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Do not remember state</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Remember state before power failure</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Define how will the Plug react after the power supply is back on.<BR/>
+                              Default setting: 1<BR/>
+                              Available settings:<BR/>
+                              0 - Device does not memorize its state after a power failure. Connected device will be off after the power supply is reconnected.<BR/>
+                              1 - Device memorizes its state after a power failure. Connected device will be set to the status from before power failure.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>30</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Alarm of any type (General alarm, flood alarm, smoke alarm: CO, CO2, temperature alarm.)</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">INACTIVE - the device doesn't respond to alarm frames</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALARM ON - the device turns on once alarm is detected (all channels set to 99%)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALARM OFF - the device turns off once alarm is detected (all channels set to 0%)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">ALARM PROGRAM - alarm sequence turns on (program selected in parameter 38)</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Alarm of any type (General alarm, flood alarm, smoke alarm: CO, CO2, temperature alarm.)<BR/> 
+                             Default setting: INACTIVE]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>38</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>1</Minimum>
+			<Maximum>10</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Alarm sequence program</Label>
+			<Help lang="en"><![CDATA[Alarm sequence program.<BR/>
+			                 Default setting: 10<BR/>
+                             1-10 specifies alarm program number.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>39</Index>
+			<Type>short</Type>
+			<Default>600</Default>
+			<Minimum>1</Minimum>
+			<Maximum>65534</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Active PROGRAM alarm time</Label>
+			<Help lang="en"><![CDATA[IActive PROGRAM alarm time.<BR/>
+			                 Default setting: 600s<BR/>
+                             1-65534 specifies alarm time in seconds.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>42</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Command class reporting Outputs status change</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Reporting as a result of inputs and controllers actions (SWITCH MULTILEVEL)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Reporting as a result of inputs actions (SWITCH MULTILEVEL)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Reporting as a result of inputs actions (COLOR CONTROL)</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Command class reporting Outputs status change.<BR/>
+                              Default setting: 0]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>43</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>1</Minimum>
+			<Maximum>100</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Reporting 0-10v analog inputs change threshold</Label>
+			<Help lang="en"><![CDATA[Parameter defines a value by which input voltage must change in order to be reported to the main controller.<BR/>
+			                 New value is calculated based on last reported value.<BR/>
+			                 Default setting: 5<BR/>
+                             1-100 - (0.1-10V).]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>44</Index>
+			<Type>short</Type>
+			<Default>30</Default>
+			<Minimum>1</Minimum>
+			<Maximum>65534</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Power load reporting frequency</Label>
+			<Help lang="en"><![CDATA[Parameter defines Time between reports. The report will be sent if last reported value differs from the current value, else reports will also be sent in case of polling.<BR/> 
+		                     Default setting: 3 600 (s)<BR/>
+                             Available settings: 1 - 65534 (s)<BR/>
+                             Value of 0 - no periodic reports, reports will also be sent in case of polling.<BR/>
+                             Reports will be sent only in case of power load / energy consumption changes (parameters 40, 42, 43,45) or in case of polling.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>45</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Reporting Changes in energy consumed by controlled devices</Label>
+			<Help lang="en"><![CDATA[Defines the required change in power to generate an unsolicited power report.<BR/>
+			                 New, reported energy value is calculated based on last reported value.<BR/>\
+							 Default setting: 10 (0,1 kWh).<BR/>
+                             Available settings: 1 - 254 (0,01kWh - 2,54kWh).<BR/>
+                             Value of 255 - changes in consumed energy will not be reported. Reports will be sent only in case of polling.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>71</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Response to BRIGHTNESS set to 0%</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">illumination colour set to white (all channels controlled together)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">last set colour is memorized</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Response to BRIGHTNESS set to 0%.<BR/>
+                              Default setting: 1]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>72</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Minimum>1</Minimum>
+			<Maximum>10</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Starting animation programm</Label>
+			<Help lang="en"><![CDATA[Starting animation programm.<BR/>
+			                 Starting predefined program when device set to work in RGB/RGBW mode (parameter 14) - relevant for main controllers other than Home Center 2 only.<BR/>
+			                 Default setting: 1<BR/>
+                             1-10 specifies animation program number.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>73</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Triple click action</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">NODE INFO control frame is sent</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">starting favourite program</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Triple click action.<BR/>
+                              Default setting: 0]]>
+			</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Assigned to IN1 input</Label>
+			<Help lang="en">Sends control frame to associated devices each time the device state changes (ON/OFF)</Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Assigned to IN2 input</Label>
+			<Help lang="en">Sends control frame to associated devices each time the device state changes (ON/OFF)</Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Assigned to IN3 input</Label>
+			<Help lang="en">Sends control frame to associated devices each time the device state changes (ON/OFF)</Help>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Assigned to IN4 input</Label>
+			<Help lang="en">Sends control frame to associated devices each time the device state changes (ON/OFF)</Help>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Reports device status</Label>
+			<Help lang="en">Only one device may be assigned to this group, main controller by default. It is not recommended to modify this group's settings.</Help>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,6 +9,7 @@
 package org.openhab.core.library.types;
 
 import java.math.BigDecimal;
+import java.util.IllegalFormatConversionException;
 
 import org.openhab.core.types.Command;
 import org.openhab.core.types.PrimitiveType;
@@ -21,7 +22,8 @@ import org.openhab.core.types.State;
  * @author Kai Kreuzer
  * 
  */
-public class DecimalType extends Number implements PrimitiveType, State, Command, Comparable<DecimalType> {
+public class DecimalType extends Number implements PrimitiveType, State,
+		Command, Comparable<DecimalType> {
 
 	private static final long serialVersionUID = 4226845847123464690L;
 
@@ -58,11 +60,20 @@ public class DecimalType extends Number implements PrimitiveType, State, Command
 	}
 
 	public String format(String pattern) {
-		if (pattern.contains("%d")) {
-			return String.format(pattern, value.toBigInteger());
-		} else {
-			return String.format(pattern, value);
+		// The value could be an integer value. Try to convert to BigInteger in
+		// order to have access to more conversion formats.
+		try {
+			return String.format(pattern, value.toBigIntegerExact());
+		} catch (ArithmeticException ae) {
+			// Could not convert to integer value without loss of
+			// information. Fall through to default behavior.
+		} catch (IllegalFormatConversionException ifce) {
+			// The conversion is not valid for the type BigInteger. This
+			// happens, if the format is like "%.1f" but the value is an
+			// integer. Fall through to default behavior.
 		}
+
+		return String.format(pattern, value);
 	}
 
 	public BigDecimal toBigDecimal() {

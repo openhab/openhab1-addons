@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -75,6 +75,20 @@ public class ColorpickerRenderer extends AbstractWidgetRenderer {
 		snippet = StringUtils.replace(snippet, "%state%", hexValue);
 		snippet = StringUtils.replace(snippet, "%frequency%", frequency);
 		snippet = StringUtils.replace(snippet, "%servletname%", WebAppServlet.SERVLET_NAME);
+
+		String style = "";
+		String color = itemUIRegistry.getLabelColor(w);
+		if(color != null) {
+			style = "color:"+ color;
+		}
+		snippet = StringUtils.replace(snippet, "%labelstyle%", style);
+
+		style = "";
+		color = itemUIRegistry.getValueColor(w);
+		if(color != null) {
+			style = "color:"+ color;
+		}
+		snippet = StringUtils.replace(snippet, "%valuestyle%", style);
 
 		sb.append(snippet);
 		return null;

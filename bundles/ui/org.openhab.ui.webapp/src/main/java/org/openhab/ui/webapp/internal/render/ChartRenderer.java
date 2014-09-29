@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -44,10 +44,6 @@ public class ChartRenderer extends AbstractWidgetRenderer {
 	 */
 	public EList<Widget> renderWidget(Widget w, StringBuilder sb) throws RenderException {
 		Chart chart = (Chart) w;
-
-		if(chart.getService()!=null && !chart.getService().equals("rrd4j")) {
-			logger.warn("Chart service '{}' is not supported by the Classic UI, using rrd4j as fallback instead.");
-		}
 		
 		try {
 			String itemParam = null;
@@ -58,7 +54,9 @@ public class ChartRenderer extends AbstractWidgetRenderer {
 				itemParam = "items=" + chart.getItem();
 			}
 			
-			String url = "/rrdchart.png?" + itemParam + "&period=" + chart.getPeriod() + "&random=1";
+			String url = "/chart?" + itemParam + "&period=" + chart.getPeriod() + "&random=1";
+			if(chart.getService() != null)
+				url += "&service=" + chart.getService();
 			
 			String snippet = getSnippet("image");			
 

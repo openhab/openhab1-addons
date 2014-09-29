@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,9 @@ import com.tinkerforge.BrickletLCD20x4;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MBricklet LCD2 0x4</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  *
  * <p>
@@ -27,10 +30,10 @@ import com.tinkerforge.BrickletLCD20x4;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLCD20x4()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletLCD20x4> org.openhab.binding.tinkerforge.internal.model.MTextActor org.openhab.binding.tinkerforge.internal.model.MInSwitchActor org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletLCD20x4> org.openhab.binding.tinkerforge.internal.model.MTextActor org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder<org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice>"
  * @generated
  */
-public interface MBrickletLCD20x4 extends MDevice<BrickletLCD20x4>, MTextActor, MInSwitchActor, MSubDeviceHolder<MLCD20x4Button>
+public interface MBrickletLCD20x4 extends MDevice<BrickletLCD20x4>, MTextActor, MSubDeviceHolder<MLCDSubDevice>
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.

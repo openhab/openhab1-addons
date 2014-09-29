@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2013, openHAB.org and others.
+    Copyright (c) 2010-2014, openHAB.org and others.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.homematic.genericbindingprovider">
-   <implementation class="org.openhab.binding.homematic.internal.config.HomematicGenericBindingProvider"/>
+   <implementation class="org.openhab.binding.homematic.internal.bus.HomematicGenericBindingProvider"/>
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
       <provide interface="org.openhab.binding.homematic.HomematicBindingProvider"/>

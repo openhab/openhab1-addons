@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="MACROMAN"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>bundles</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -77,9 +77,47 @@
     <module>org.openhab.binding.nikobus.test</module>
     <module>org.openhab.binding.enocean</module>
     <module>org.openhab.binding.enocean.test</module>
+    <module>org.openhab.binding.em</module>
+    <module>org.openhab.binding.s300th</module>
+    <module>org.openhab.binding.heatmiser</module>
     <module>org.openhab.binding.swegonventilation</module>
     <module>org.openhab.binding.maxcube</module>
     <module>org.openhab.binding.maxcube.test</module>
+    <module>org.openhab.binding.tivo</module>
+    <module>org.openhab.binding.tellstick</module>
+    <module>org.openhab.binding.insteonhub</module>
+    <module>org.openhab.binding.insteonplm</module>
+    <module>org.openhab.binding.pioneeravr</module>
+    <module>org.openhab.binding.em.test</module>
+    <module>org.openhab.binding.s300th.test</module>
+    <module>org.openhab.binding.fht</module>
+    <module>org.openhab.binding.fs20</module>
+    <module>org.openhab.binding.intertechno</module>
+    <module>org.openhab.binding.openenergymonitor</module>
+    <module>org.openhab.binding.netatmo</module>
+    <module>org.openhab.binding.netatmo.test</module>
+    <module>org.openhab.binding.hdanywhere</module>
+    <module>org.openhab.binding.omnilink</module>
+    <module>org.openhab.binding.freeswitch</module>
+    <module>org.openhab.binding.neohub</module>
+    <module>org.openhab.binding.gpio</module>
+    <module>org.openhab.binding.irtrans</module>
+    <module>org.openhab.binding.astro</module>
+    <module>org.openhab.binding.k8055</module>
+    <module>org.openhab.binding.withings</module>
+    <module>org.openhab.binding.rme</module>
+    <module>org.openhab.binding.iec6205621meter</module>
+    <module>org.openhab.binding.freebox</module>
+    <module>org.openhab.binding.xbmc</module>
+    <module>org.openhab.binding.daikin</module>
+    <module>org.openhab.binding.jointspace</module>
+    <module>org.openhab.binding.oceanic</module>
+    <module>org.openhab.binding.ecotouch</module>
+    <module>org.openhab.binding.yamahareceiver</module>
+    <module>org.openhab.binding.energenie</module>
+    <module>org.openhab.binding.maxcul</module>
+    <module>org.openhab.binding.wemo</module>
+    <module>org.openhab.binding.alarmdecoder</module>
   </modules>
 
 </project>

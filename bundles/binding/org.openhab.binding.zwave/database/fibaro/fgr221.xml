@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+  <Model>FGR221</Model>
+  <Label lang="en">FGR221 Roller Shutter Controller</Label>
+  <CommandClasses>
+    <Class>
+      <id>0x20</id>
+    </Class>
+    <Class>
+      <id>0x25</id>
+    </Class>
+    <Class>
+      <id>0x26</id>
+    </Class>
+    <Class>
+      <id>0x27</id>
+    </Class>
+    <Class>
+      <id>0x50</id>
+    </Class>
+    <Class>
+      <id>0x70</id>
+    </Class>
+    <Class>
+      <id>0x72</id>
+    </Class>
+    <Class>
+      <id>0x73</id>
+    </Class>
+    <Class>
+      <id>0x85</id>
+    </Class>
+    <Class>
+      <id>0x86</id>
+    </Class>
+    <Class>
+      <id>0x8e</id>
+    </Class>
+  </CommandClasses>
+  <Configuration>
+    <Parameter>
+      <Index>1</Index>
+      <Type>list</Type>
+      <Default>255</Default>
+      <Size>1</Size>
+      <Label lang="en">Enable/Disable ALL ON/OFF</Label>
+      <Item>
+        <Value>0</Value>
+        <Label lang="en">ALL ON disabled/ ALL OFF disabled</Label>
+      </Item>
+      <Item>
+        <Value>1</Value>
+        <Label lang="en">ALL ON disabled/ ALL OFF active</Label>
+      </Item>
+      <Item>
+        <Value>2</Value>
+        <Label lang="en">ALL ON active / ALL OFF disabled</Label>
+      </Item>
+      <Item>
+        <Value>255</Value>
+        <Label lang="en">ALL ON active / ALL OFF active</Label>
+      </Item>
+      <Help lang="en">Activate/Deactive ALL ON/OFF</Help>
+    </Parameter>
+    <Parameter>
+      <Index>10</Index>
+      <Type>list</Type>
+      <Default>0</Default>
+      <Size>1</Size>
+      <Label lang="en">Control key #2 behaviour</Label>
+      <Item>
+        <Value>0</Value>
+        <Label lang="en">Turning on the shutter positioning function - Default</Label>
+      </Item>
+      <Item>
+        <Value>1</Value>
+        <Label lang="en">Turning off the shutter positioning function</Label>
+      </Item>
+      <Help lang="en">Turning off the shutter positioning function</Help>
+    </Parameter>
+    <Parameter>
+      <Index>14</Index>
+      <Type>list</Type>
+      <Default>0</Default>
+      <Size>1</Size>
+      <Label lang="en">Inputs Button/Switch configuration</Label>
+      <Item>
+        <Value>0</Value>
+        <Label lang="en">Mono-stable input (button)</Label>
+      </Item>
+      <Item>
+        <Value>1</Value>
+        <Label lang="en">Bi-stable input (switch)</Label>
+      </Item>
+      <Item>
+        <Value>2</Value>
+        <Label lang="en">Single Mono-stable switch</Label>
+      </Item>
+      <Help lang="en">Binary inputs type configuration</Help>
+    </Parameter>
+    <Parameter>
+      <Index>20</Index>
+      <Type>byte</Type>
+      <Default>16</Default>
+      <Size>1</Size>
+      <Label lang="en">Dimmer/Roller shutter control</Label>
+      <Help lang="en">Options for changing parameter 1-99, default 16</Help>
+    </Parameter>
+    <Parameter>
+      <Index>30</Index>
+      <Type>list</Type>
+      <Default>2</Default>
+      <Size>1</Size>
+      <Label lang="en">General Alarm, set for shutter no. 1</Label>
+      <Item>
+        <Value>0</Value>
+        <Label lang="en">DEACTIVATION - the device does not respond to alarm data frames</Label>
+      </Item>
+      <Item>
+        <Value>1</Value>
+        <Label lang="en">OPEN SHUTTER ALARM - the device closes the roller shutter after detecting an alarm</Label>
+      </Item>
+      <Item>
+        <Value>2</Value>
+        <Label lang="en">CLOSED SHUTTER ALARM - the device opens the roller shutter after detecting an alarm - Default</Label>
+      </Item>
+      <Help lang="en">General Alarm, set for shutter no. 1</Help>
+    </Parameter>
+    <Parameter>
+      <Index>31</Index>
+      <Type>list</Type>
+      <Default>0</Default>
+      <Size>1</Size>
+      <Label lang="en">Alarm of flooding with water, set for relay the shutter.</Label>
+      <Item>
+        <Value>0</Value>
+        <Label lang="en">DEACTIVATION - the device does not respond to alarm data frames - Default</Label>
+      </Item>
+      <Item>
+        <Value>1</Value>
+        <Label lang="en">OPEN SHUTTER ALARM - the device closes the roller shutter after detecting an alarm</Label>
+      </Item>
+      <Item>
+        <Value>2</Value>
+        <Label lang="en">CLOSED SHUTTER ALARM - the device opens the roller shutter after detecting an alarm</Label>
+      </Item>
+      <Help lang="en"></Help>
+    </Parameter>
+    <Parameter>
+      <Index>32</Index>
+      <Type>list</Type>
+      <Default>1</Default>
+      <Size>1</Size>
+      <Label lang="en">Smoke, CO, CO2 Alarm. Set for the roller shutter.</Label>
+      <Item>
+        <Value>0</Value>
+        <Label lang="en">DEACTIVATION - the device does not respond to alarm data frames</Label>
+      </Item>
+      <Item>
+        <Value>1</Value>
+        <Label lang="en">OPEN SHUTTER ALARM - the device closes the roller shutter after detecting an alarm - Default</Label>
+      </Item>
+      <Item>
+        <Value>2</Value>
+        <Label lang="en">CLOSED SHUTTER ALARM - the device opens the roller shutter after detecting an alarm</Label>
+      </Item>
+      <Help lang="en"></Help>
+    </Parameter>
+    <Parameter>
+      <Index>33</Index>
+      <Type>list</Type>
+      <Default>1</Default>
+      <Size>1</Size>
+      <Label lang="en">Temperature Alarm, set for roller shutter</Label>
+      <Item>
+        <Value>0</Value>
+        <Label lang="en">DEACTIVATION - the device does not respond to alarm data frames</Label>
+      </Item>
+      <Item>
+        <Value>1</Value>
+        <Label lang="en">OPEN SHUTTER ALARM - the device closes the roller shutter after detecting an alarm - Default</Label>
+      </Item>
+      <Item>
+        <Value>2</Value>
+        <Label lang="en">CLOSED SHUTTER ALARM - the device opens the roller shutter after detecting an alarm</Label>
+      </Item>
+      <Help lang="en"></Help>
+    </Parameter>
+    <Parameter>
+      <Index>41</Index>
+      <Type>list</Type>
+      <Default>0</Default>
+      <Size>1</Size>
+      <Label lang="en">Scene activation functionality</Label>
+      <Item>
+        <Value>0</Value>
+        <Label lang="en">Deactivation of functionality - Default</Label>
+      </Item>
+      <Item>
+        <Value>1</Value>
+        <Label lang="en">Activation of functionality</Label>
+      </Item>
+      <Help lang="en"> Only valid for the 1.9 version of FGR221. The device offers the possibility of sending commands compatible with Command class scene activation. Information is sent to devices assigned to association group no. 3. Controllers such as Home Center 2 are able to interpret such commands and based on these commands they activate scenes, to which specific scene IDs have been assigned. The user may expand the functionality of the button connected to inputs S1 and S2 by distinguishing the actions of keys connected to those inputs. For example: double click would activate the scene goodnight and triple click would activate the scene morning.
+      </Help>
+    </Parameter>
+  </Configuration>
+  <Associations>
+    <Group>
+      <Index>1</Index>
+      <Maximum>16</Maximum>
+      <Label lang="en">Group 1</Label>
+    </Group>
+    <Group>
+      <Index>2</Index>
+      <Maximum>16</Maximum>
+      <Label lang="en">Group 2</Label>
+    </Group>
+    <Group>
+      <Index>3</Index>
+      <Maximum>1</Maximum>
+      <Label lang="en">Controller Updates</Label>
+      <SetToController>true</SetToController>
+    </Group>
+  </Associations>
+</Product>

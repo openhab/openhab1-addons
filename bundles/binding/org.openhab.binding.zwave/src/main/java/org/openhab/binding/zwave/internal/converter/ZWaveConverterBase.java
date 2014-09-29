@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -97,7 +97,9 @@ public abstract class ZWaveConverterBase {
 	 * @return a converter object that converts between the value and the state;
 	 */
 	protected ZWaveStateConverter<?,?> getStateConverter(Item item, Object value) {
-		
+		if(item == null)
+			return null;
+
 		List<Class<? extends State>> list = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
 		Collections.sort(list, new StateComparator());
 

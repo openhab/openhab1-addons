@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Sonos Binding
 Bundle-SymbolicName: org.openhab.binding.sonos
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-Activator: org.openhab.binding.sonos.internal.SonosActivator
 Bundle-Vendor: openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
@@ -21,6 +21,10 @@ Import-Package: org.apache.commons.lang;version="2.4.0",
  org.openhab.model.item.binding,
  org.osgi.framework,
  org.osgi.service.cm,
+ org.quartz,
+ org.quartz.impl,
+ org.quartz.impl.matchers,
+ org.quartz.utils,
  org.slf4j
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/sonosbinding.xml
 Bundle-ActivationPolicy: lazy

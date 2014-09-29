@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -94,11 +94,21 @@ public class ConverterFactory {
      *         protocolKey to a state for the item.
      */
     public StateConverter<?, ?> getToStateConverter(String protocolValue, Item item) {
-        List<Class<? extends State>> acceptedTypes = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
-        acceptedTypes.retainAll(converters.getMatchingStates(protocolValue));
-        if (acceptedTypes.isEmpty()) {
-            return null;
-        }
+        List<Class<? extends State>> acceptedTypes = new ArrayList<Class<? extends State>>();
+	List<Class<? extends State>> itemTypes = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
+	List<Class<? extends State>> matchingTypes = converters.getMatchingStates(protocolValue);
+        for (Class<? extends State> matchingType : matchingTypes) {
+	    for (Class<? extends State> itemType : itemTypes) {
+		    if(itemType.isAssignableFrom(matchingType)){
+			acceptedTypes.add(matchingType);
+			break;
+		    }
+	    }
+	}
+
+	if (acceptedTypes.isEmpty()) {
+	    return null;
+	}
         // Take best matching as accepted Type. Best matching is calculated by
         // ordering by importance of state.
         Collections.sort(acceptedTypes, new StateComparator());

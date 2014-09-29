@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+	deconfigure|remove|upgrade)
+		if [ -x /etc/init.d/openhab ]; then
+			if which invoke-rc.d > /dev/null 2>&1; then
+				invoke-rc.d openhab stop
+			else
+				/etc/init.d/openhab stop
+			fi
+        fi
+		;;
+	failed-upgrade)
+		;;
+	*)
+		echo "prerm called with unknown argument \`$1'" >&2
+		exit 1
+		;;
+esac
+
+exit 0

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,12 +9,17 @@
 package org.openhab.io.servicediscovery.internal;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.util.Dictionary;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.io.servicediscovery.DiscoveryService;
 import org.openhab.io.servicediscovery.ServiceDescription;
+import org.osgi.service.cm.ManagedService;
+import org.osgi.service.cm.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,14 +30,32 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.0
  *
  */
-public class DiscoveryServiceImpl implements DiscoveryService {
+public class DiscoveryServiceImpl implements DiscoveryService, ManagedService {
 
 	private static Logger logger = LoggerFactory.getLogger(DiscoveryServiceImpl.class);
 	private JmDNS jmdns;
 	
 	public DiscoveryServiceImpl() {
 	}
-	
+
+	@Override
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		try {
+			if (config != null) {
+				String bindAddress = (String)config.get("bind_address");
+				if (bindAddress != null && StringUtils.isNotBlank(bindAddress)) {
+					jmdns = JmDNS.create(InetAddress.getByName(bindAddress));
+					logger.info("Service Discovery initialization completed (bound to address: {}).", bindAddress);
+					return;
+				}
+			}
+			jmdns = JmDNS.create();
+			logger.info("Service Discovery initialization completed.");
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+	}
+
 	/**
 	 * @{inheritDoc}
 	 */
@@ -67,12 +90,7 @@ public class DiscoveryServiceImpl implements DiscoveryService {
 	}
 	
 	public void activate() {
-		try {
-			jmdns = JmDNS.create();
-			logger.info("mDNS service has been started");
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
+		logger.info("mDNS service has been started");
 	}
 	
 	public void deactivate() {

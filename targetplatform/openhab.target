@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="openHAB" sequenceNumber="39">
+<?pde version="3.8"?><target name="openHAB" sequenceNumber="40">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.sdk" version="4.2.2.M20130204-1200"/>
@@ -83,28 +83,27 @@
 <unit id="org.eclipse.emf.mwe.sdk.feature.group" version="1.2.1.v201206110920"/>
 <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.3.0.v201206120758"/>
 <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.3.0.v201206110920"/>
-<unit id="org.eclipse.xtend.typesystem.uml2.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xpand.examples.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xtend.typesystem.emf.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xtend.dependencies.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xpand.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xtend.ui.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xpand.incremental.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xpand.all.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xpand.ui.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xtend.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xtend.sdk.feature.group" version="2.3.0.v201206120633"/>
-<unit id="org.eclipse.xpand.sdk.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xpand.doc.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xtend.typesystem.xsd.feature.group" version="1.2.1.v201206110941"/>
-<unit id="org.eclipse.xtext.ui.feature.group" version="2.3.0.v201206120633"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.3.0.v201206120633"/>
-<unit id="org.eclipse.xtext.docs.feature.group" version="2.3.0.v201206120633"/>
+<unit id="org.eclipse.xtend.sdk.feature.group" version="2.3.1.v201208210947"/>
 <unit id="org.eclipse.xtext.xbase.feature.group" version="2.3.0.v201206120633"/>
 <unit id="org.eclipse.xtext.examples.feature.group" version="2.3.0.v201206120633"/>
 <unit id="org.eclipse.xtext.runtime.feature.group" version="2.3.0.v201206120633"/>
+<unit id="org.eclipse.xtext.ui.feature.group" version="2.3.0.v201206120633"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.3.0.v201206120633"/>
+<unit id="org.eclipse.xtext.docs.feature.group" version="2.3.0.v201206120633"/>
 <unit id="org.eclipse.xtext.xtend2.sdk.feature.group" version="2.3.0.v201206120633"/>
-<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
-</location>
-</locations>
+<unit id="org.eclipse.xtend.ui.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xpand.incremental.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xpand.all.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xpand.ui.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xtend.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xpand.examples.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xpand.sdk.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xpand.doc.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xpand.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xtend.typesystem.uml2.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xtend.typesystem.emf.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xtend.dependencies.feature.group" version="1.1.1.v201108020519"/>
+<unit id="org.eclipse.xtend.typesystem.xsd.feature.group" version="1.1.1.v201108020519"/>
+<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/archive/"/>
+</location></locations>
 </target>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,6 +20,7 @@ import org.openhab.core.types.State;
 
 public class DateTimeType implements PrimitiveType, State {
 	
+	public final static SimpleDateFormat DATE_FORMATTER_WITH_TZ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
 	public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
 	protected Calendar calendar;
@@ -37,7 +38,12 @@ public class DateTimeType implements PrimitiveType, State {
 		Date date = null;
 		
 		try {
-			date = DATE_FORMATTER.parse(calendarValue);
+			try {
+				date = DATE_FORMATTER_WITH_TZ.parse(calendarValue);
+			}
+			catch (ParseException fpe2) {
+				date = DATE_FORMATTER.parse(calendarValue);
+			}
 		}
 		catch (ParseException fpe) {
 			throw new IllegalArgumentException(calendarValue + " is not in a valid format.", fpe);

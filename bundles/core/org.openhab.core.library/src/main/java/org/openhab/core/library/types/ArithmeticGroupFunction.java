@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -57,7 +57,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		public State calculate(List<Item> items) {
 			if(items!=null && items.size()>0) {
 				for(Item item : items) {
-					if(!activeState.equals(item.getState())) {
+					if(!activeState.equals(item.getStateAs(activeState.getClass()))) {
 						return passiveState;
 					}
 				}
@@ -132,7 +132,7 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 		public State calculate(List<Item> items) {	
 			if(items!=null) {
 				for(Item item : items) {
-					if(activeState.equals(item.getState())) {
+					if(activeState.equals(item.getStateAs(activeState.getClass()))) {
 						return activeState;
 					}
 				}

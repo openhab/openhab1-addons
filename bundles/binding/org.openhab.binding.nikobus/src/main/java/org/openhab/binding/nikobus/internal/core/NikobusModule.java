@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.nikobus.internal.core;
 
-import org.openhab.binding.nikobus.internal.NikobusBinding;
 
 /**
  * A NikobusModule represents a physical module like a switch module or dimmer
@@ -27,7 +26,7 @@ public interface NikobusModule extends NikobusCommandListener {
 	 * 
 	 * @return command or null if none available.
 	 */
-	public NikobusCommand getStatusRequestCommand(NikobusBinding binding);
+	public NikobusCommand getStatusRequestCommand();
 
 	/**
 	 * Get the address of the module.

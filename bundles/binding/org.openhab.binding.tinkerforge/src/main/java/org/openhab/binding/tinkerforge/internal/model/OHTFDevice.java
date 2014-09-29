@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,11 +8,15 @@
  */
 package org.openhab.binding.tinkerforge.internal.model;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>OHTF Device</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  *
  * <p>
@@ -21,16 +25,18 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getUid <em>Uid</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getSubid <em>Subid</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getOhid <em>Ohid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getSubDeviceIds <em>Sub Device Ids</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getOhConfig <em>Oh Config</em>}</li>
  * </ul>
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getOHTFDevice()
- * @model
+ * @model IDSBounds="org.openhab.binding.tinkerforge.internal.model.Enum"
  * @generated
  */
-public interface OHTFDevice<TFC extends TFConfig> extends EObject
+@SuppressWarnings("rawtypes")
+public interface OHTFDevice<TFC extends TFConfig, IDS extends Enum> extends EObject
 {
   /**
    * Returns the value of the '<em><b>Uid</b></em>' attribute.
@@ -111,6 +117,22 @@ public interface OHTFDevice<TFC extends TFConfig> extends EObject
   void setOhid(String value);
 
   /**
+   * Returns the value of the '<em><b>Sub Device Ids</b></em>' attribute list.
+   * The list contents are of type {@link IDS}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Sub Device Ids</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Sub Device Ids</em>' attribute list.
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getOHTFDevice_SubDeviceIds()
+   * @model unique="false"
+   * @generated
+   */
+  EList<IDS> getSubDeviceIds();
+
+  /**
    * Returns the value of the '<em><b>Tf Config</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
@@ -163,5 +185,14 @@ public interface OHTFDevice<TFC extends TFConfig> extends EObject
    * @generated
    */
   void setOhConfig(OHConfig value);
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model unique="false" subIdUnique="false"
+   *        annotation="http://www.eclipse.org/emf/2002/GenModel body='<%org.openhab.binding.tinkerforge.internal.model.OHTFDevice%><TFC,IDS> _this = this;\n<%org.eclipse.emf.common.util.EList%><IDS> _subDeviceIds = _this.getSubDeviceIds();\nfor (final IDS sid : _subDeviceIds)\n{\n\t<%java.lang.String%> _string = sid.toString();\n\tboolean _equalsIgnoreCase = _string.equalsIgnoreCase(subId);\n\tif (_equalsIgnoreCase)\n\t{\n\t\treturn true;\n\t}\n}\nreturn false;'"
+   * @generated
+   */
+  boolean isValidSubId(String subId);
 
 } // OHTFDevice

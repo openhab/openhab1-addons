@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
+import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
 import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
@@ -26,14 +27,10 @@ import org.slf4j.LoggerFactory;
 /**
  * This Filter delays the broadcast to polling connections. 
  * The delay is necessary for the completion of group events.
- *   
  *  
  * @author Oliver Mazur
  * @since 1.0
- *
- *
  */
-
 public class PollingDelayFilter implements PerRequestBroadcastFilter {
 	private static final Logger logger = LoggerFactory.getLogger(PollingDelayFilter.class);
 	
@@ -47,7 +44,15 @@ public class PollingDelayFilter implements PerRequestBroadcastFilter {
 		final  HttpServletRequest request = resource.getRequest();
 		try {	
 			// delay first broadcast for long-polling and other polling transports
-			if(!ResponseTypeHelper.isStreamingTransport(request) && message instanceof PageBean && originalMessage instanceof Item) {
+			boolean isItemMessage = originalMessage instanceof Item || originalMessage instanceof GroupItem;
+			boolean isStreamingTransport = false;
+			try {
+			isStreamingTransport = ResponseTypeHelper.isStreamingTransport(request);
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+				return new BroadcastAction(ACTION.ABORT,  message);				
+			}
+			if(!isStreamingTransport && message instanceof PageBean && isItemMessage) {
 				final String delayedBroadcasterName = resource.getRequest().getPathInfo();
 				Executors.newSingleThreadExecutor().submit(new Runnable() {
 		            public void run() {
@@ -68,8 +73,9 @@ public class PollingDelayFilter implements PerRequestBroadcastFilter {
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage());
+			return new BroadcastAction(ACTION.ABORT,  message);
 		} 
 		return new BroadcastAction(ACTION.ABORT,  message);
-		
 	}
+	
 }

@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>org.openhab.bundles</groupId>
-    <artifactId>io</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.openhab.bundles</groupId>
+		<artifactId>io</artifactId>
+		<version>1.6.0-SNAPSHOT</version>
+	</parent>
 
-  <properties>
-    <bundle.symbolicName>org.openhab.io.multimedia.tts.marytts</bundle.symbolicName>
-    <bundle.namespace>org.openhab.io.multimedia.tts.marytts</bundle.namespace>
-	<project.dependencyDirectory>${basedir}/resources</project.dependencyDirectory>
-  </properties>
+	<name>openHAB Multimedia MaryTTS</name>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openhab.io</groupId>
-  <artifactId>org.openhab.io.multimedia.tts.marytts</artifactId>
+	<properties>
+		<bundle.symbolicName>org.openhab.io.multimedia.tts.marytts</bundle.symbolicName>
+		<bundle.namespace>org.openhab.io.multimedia.tts.marytts</bundle.namespace>
+		<project.dependencyDirectory>${basedir}/resources</project.dependencyDirectory>
+		<deb.name>openhab-addon-io-multimedia-marytts</deb.name>
+		<deb.description>${project.name}</deb.description>
+	</properties>
 
-  <name>openHAB Multimedia MaryTTS</name>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openhab.io</groupId>
+	<artifactId>org.openhab.io.multimedia.tts.marytts</artifactId>
 
-  <packaging>eclipse-plugin</packaging>
+	<packaging>eclipse-plugin</packaging>
 
 	<build>
 		<plugins>
@@ -38,7 +42,7 @@
 							<version>1.0</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/freetts-1.0.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/freetts-1.0.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -49,7 +53,7 @@
 							<version>1.0</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/freetts-de-1.0.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/freetts-de-1.0.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -60,7 +64,7 @@
 							<version>1.0</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/freetts-en_us-1.0.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/freetts-en_us-1.0.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -71,7 +75,7 @@
 							<version>3.0</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/sgt-3.0.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/sgt-3.0.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -82,7 +86,7 @@
 							<version>1.9.1</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/jtok-core-1.9.1.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/jtok-core-1.9.1.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -93,7 +97,7 @@
 							<version>1.16</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/mwdumper-1.16.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/mwdumper-1.16.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -104,7 +108,7 @@
 							<version>1.0-SNAPSHOT</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/emotionml-checker-java-1.0-SNAPSHOT.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/emotionml-checker-java-1.0-SNAPSHOT.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -115,7 +119,7 @@
 							<version>3.0.1-incubating</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/opennlp-maxent-3.0.1-incubating.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/opennlp-maxent-3.0.1-incubating.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -126,7 +130,7 @@
 							<version>1.5.1-incubating</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/opennlp-tools-1.5.1-incubating.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/opennlp-tools-1.5.1-incubating.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -137,7 +141,7 @@
 							<version>5.1-SNAPSHOT</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/marytts-lang-de-5.1-SNAPSHOT.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/marytts-lang-de-5.1-SNAPSHOT.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -148,7 +152,7 @@
 							<version>5.1-SNAPSHOT</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/marytts-lang-en-5.1-SNAPSHOT.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/marytts-lang-en-5.1-SNAPSHOT.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -159,7 +163,7 @@
 							<version>5.0-SNAPSHOT</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/voice-bits1-hsmm-5.0-SNAPSHOT.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/voice-bits1-hsmm-5.0-SNAPSHOT.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -170,7 +174,7 @@
 							<version>5.0-SNAPSHOT</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/voice-bits3-hsmm-5.0-SNAPSHOT.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/voice-bits3-hsmm-5.0-SNAPSHOT.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -181,7 +185,7 @@
 							<version>5.0</version>
 							<packaging>jar</packaging>
 							<downloadUrl>
-								http://dependencies.openhab.googlecode.com/hg/marytts/voice-cmu-slt-hsmm-5.0.jar
+								http://repository-openhab.forge.cloudbees.com/3rd/marytts/voice-cmu-slt-hsmm-5.0.jar
 							</downloadUrl>
 							<force>true</force>
 						</artifactItem>
@@ -198,6 +202,10 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
 			</plugin>
 		</plugins>
 

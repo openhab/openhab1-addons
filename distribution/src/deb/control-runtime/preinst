@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+	install)
+		if ! getent passwd openhab > /dev/null 2>&1; then
+			adduser --quiet --system --group --no-create-home \
+				--gecos "openHAB runtime user" --home /var/lib/openhab openhab
+		fi
+		;;
+	abort-upgrade|upgrade)
+		;;
+	*)
+		echo "preinst called with unknown argument \`$1'" >&2
+		exit 1
+		;;
+esac
+
+exit 0

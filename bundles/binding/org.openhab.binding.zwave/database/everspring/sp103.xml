@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>SP103</Model>
+	<Label lang="en">Motion Sensor</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Set OFF</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Set ON</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">Set LAST Level</Label>
+			</Item>
+			<Size>1</Size>
+			<Label lang="en">Phase level on command</Label>
+			<Help lang="en">Defines which command to send when sensor triggers</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enabled</Label>
+			</Item>
+			<Size>1</Size>
+			<Label lang="en">Enable/Disable Sleeping</Label>
+			<Help lang="en">Enables/Disables sleeping for debug purposes</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Triggered Report</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>
+

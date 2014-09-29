@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,36 +17,33 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.enocean.java.ESP3Host;
-import org.enocean.java.EnoceanSerialConnector;
-import org.enocean.java.address.EnoceanParameterAddress;
-import org.enocean.java.common.ParameterAddress;
-import org.enocean.java.common.ParameterValueChangeListener;
-import org.enocean.java.common.ProtocolConnector;
-import org.enocean.java.common.values.Value;
-import org.enocean.java.eep.EEPId;
-import org.enocean.java.eep.RockerSwitch;
-import org.enocean.java.eep.SingleInputContact;
-import org.enocean.java.eep.TemperaturSensor;
+import org.opencean.core.ESP3Host;
+import org.opencean.core.EnoceanReceiver;
+import org.opencean.core.EnoceanSerialConnector;
+import org.opencean.core.address.EnoceanParameterAddress;
+import org.opencean.core.common.EEPId;
+import org.opencean.core.common.ParameterAddress;
+import org.opencean.core.common.ParameterValueChangeListener;
+import org.opencean.core.common.ProtocolConnector;
+import org.opencean.core.common.values.Value;
+import org.opencean.core.packets.BasicPacket;
 import org.openhab.binding.enocean.EnoceanBindingProvider;
-import org.openhab.binding.enocean.internal.converter.ButtonStateConverter;
 import org.openhab.binding.enocean.internal.converter.CommandConverter;
-import org.openhab.binding.enocean.internal.converter.ContactStateConverter;
 import org.openhab.binding.enocean.internal.converter.ConverterFactory;
-import org.openhab.binding.enocean.internal.converter.TemperatureNumberWithUnitConverter;
 import org.openhab.binding.enocean.internal.profiles.DimmerOnOffProfile;
 import org.openhab.binding.enocean.internal.profiles.Profile;
 import org.openhab.binding.enocean.internal.profiles.RollershutterProfile;
 import org.openhab.binding.enocean.internal.profiles.StandardProfile;
+import org.openhab.binding.enocean.internal.profiles.SwitchOnOffProfile;
+import org.openhab.binding.enocean.internal.profiles.WindowHandleProfile;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.RollershutterItem;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -61,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * @author Kai Kreuzer
  * @since 1.3.0
  */
-public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> implements ManagedService, ParameterValueChangeListener {
+public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> implements ManagedService, ParameterValueChangeListener, EnoceanReceiver {
 
     private static final Logger logger = LoggerFactory.getLogger(EnoceanBinding.class);
 
@@ -79,10 +76,6 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
     private ESP3Host esp3Host;
 
     public EnoceanBinding() {
-        converterFactory.addStateConverter(TemperaturSensor.PARAMETER_ID, DecimalType.class, TemperatureNumberWithUnitConverter.class);
-        converterFactory.addStateConverter(RockerSwitch.BUTTON_I, OnOffType.class, ButtonStateConverter.class);
-        converterFactory.addStateConverter(RockerSwitch.BUTTON_O, OnOffType.class, ButtonStateConverter.class);
-        converterFactory.addStateConverter(SingleInputContact.PARAMETER_ID, OpenClosedType.class, ContactStateConverter.class);
     }
 
     @Override
@@ -142,23 +135,24 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
             connector.disconnect();
         }
         try {
-        	connect();
-	    } catch(RuntimeException e) {
-	    	if(e.getCause() instanceof NoSuchPortException) {
-				StringBuilder sb = new StringBuilder("Available ports are:\n");
-				Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers();
-				while (portList.hasMoreElements()) {
-					CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
-					if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-						sb.append(id.getName() + "\n");
-					}
-				}
-				sb.deleteCharAt(sb.length()-1);
-				throw new ConfigurationException(CONFIG_KEY_SERIAL_PORT, "Serial port '" + serialPort + "' could not be opened. " + sb.toString());
-	    	} else {
-	    		throw e;
-	    	}
-	    }
+            connect();
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof NoSuchPortException) {
+                StringBuilder sb = new StringBuilder("Available ports are:\n");
+                Enumeration<?> portList = CommPortIdentifier.getPortIdentifiers();
+                while (portList.hasMoreElements()) {
+                    CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
+                    if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+                        sb.append(id.getName() + "\n");
+                    }
+                }
+                sb.deleteCharAt(sb.length() - 1);
+                throw new ConfigurationException(CONFIG_KEY_SERIAL_PORT, "Serial port '" + serialPort + "' could not be opened. "
+                        + sb.toString());
+            } else {
+                throw e;
+            }
+        }
     }
 
     @Override
@@ -171,27 +165,27 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
 
     @Override
     public void bindingChanged(BindingProvider provider, String itemName) {
-    	if(esp3Host!=null) {
-	    	if (provider instanceof EnoceanBindingProvider) {
-	            EnoceanBindingProvider enoceanBindingProvider = (EnoceanBindingProvider) provider;
-	            processEEPs(enoceanBindingProvider, itemName);
-	            queryAndSendActualState(enoceanBindingProvider, itemName);
-	        }
-    	}
+        if (esp3Host != null) {
+            if (provider instanceof EnoceanBindingProvider) {
+                EnoceanBindingProvider enoceanBindingProvider = (EnoceanBindingProvider) provider;
+                processEEPs(enoceanBindingProvider, itemName);
+                queryAndSendActualState(enoceanBindingProvider, itemName);
+            }
+        }
     }
 
     private void initializeAllItemsInProvider(EnoceanBindingProvider provider) {
-    	if(esp3Host!=null) {
-	        logger.debug("Updating item state for items {}", provider.getItemNames());
-	        for (String itemName : provider.getItemNames()) {
-	            processEEPs(provider, itemName);
-	            queryAndSendActualState(provider, itemName);
-	        }
-    	}
+        if (esp3Host != null) {
+            logger.debug("Updating item state for items {}", provider.getItemNames());
+            for (String itemName : provider.getItemNames()) {
+                processEEPs(provider, itemName);
+                queryAndSendActualState(provider, itemName);
+            }
+        }
     }
 
     private void processEEPs(EnoceanBindingProvider enoceanBindingProvider, String itemName) {
-    	EnoceanParameterAddress parameterAddress = enoceanBindingProvider.getParameterAddress(itemName);
+        EnoceanParameterAddress parameterAddress = enoceanBindingProvider.getParameterAddress(itemName);
         EEPId eep = enoceanBindingProvider.getEEP(itemName);
         esp3Host.addDeviceProfile(parameterAddress.getEnoceanDeviceId(), eep);
         Item item = enoceanBindingProvider.getItem(itemName);
@@ -210,13 +204,21 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
             } catch (Exception e) {
                 logger.error("Could not create class for profile " + customProfileClass, e);
             }
-        } else if (RockerSwitch.EEP_ID_1.equals(eep) || RockerSwitch.EEP_ID_2.equals(eep)) {
+        } else if (EEPId.EEP_F6_02_01.equals(eep) || EEPId.EEP_F6_10_00.equals(eep)) {
             if (item.getClass().equals(RollershutterItem.class)) {
                 RollershutterProfile profile = new RollershutterProfile(item, eventPublisher);
                 addProfile(item, parameterAddress, profile);
             }
             if (item.getClass().equals(DimmerItem.class)) {
                 DimmerOnOffProfile profile = new DimmerOnOffProfile(item, eventPublisher);
+                addProfile(item, parameterAddress, profile);
+            }
+            if (item.getClass().equals(SwitchItem.class) && parameterAddress.getParameterId() == null) {
+                SwitchOnOffProfile profile = new SwitchOnOffProfile(item, eventPublisher);
+                addProfile(item, parameterAddress, profile);
+            }
+            if (item.getClass().equals(StringItem.class) && EEPId.EEP_F6_10_00.equals(eep)) {
+                WindowHandleProfile profile = new WindowHandleProfile(item, eventPublisher);
                 addProfile(item, parameterAddress, profile);
             }
         }
@@ -297,6 +299,7 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
         connector.connect(serialPort);
         esp3Host = new ESP3Host(connector);
         esp3Host.addParameterChangeListener(this);
+        esp3Host.addListener(this);
         for (EnoceanBindingProvider provider : providers) {
             initializeAllItemsInProvider(provider);
         }
@@ -310,5 +313,10 @@ public class EnoceanBinding extends AbstractBinding<EnoceanBindingProvider> impl
      */
     public void setEsp3Host(ESP3Host esp3Host) {
         this.esp3Host = esp3Host;
+    }
+
+    @Override
+    public void receivePacket(BasicPacket basicPacket) {
+        logger.debug("Packet received: " + basicPacket.toString());
     }
 }

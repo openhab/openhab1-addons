@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,17 +8,18 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
+import org.eclipse.emf.ecore.util.EDataTypeEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
@@ -27,6 +28,9 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>OHTF Device</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -34,6 +38,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getUid <em>Uid</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getSubid <em>Subid</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getOhid <em>Ohid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getSubDeviceIds <em>Sub Device Ids</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.OHTFDeviceImpl#getOhConfig <em>Oh Config</em>}</li>
  * </ul>
@@ -41,7 +46,10 @@ import org.openhab.binding.tinkerforge.internal.model.TFConfig;
  *
  * @generated
  */
-public class OHTFDeviceImpl<TFC extends TFConfig> extends MinimalEObjectImpl.Container implements OHTFDevice<TFC>
+@SuppressWarnings("rawtypes")
+public class OHTFDeviceImpl<TFC extends TFConfig, IDS extends Enum>
+		extends
+		MinimalEObjectImpl.Container implements OHTFDevice<TFC, IDS>
 {
   /**
    * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
@@ -102,6 +110,16 @@ public class OHTFDeviceImpl<TFC extends TFConfig> extends MinimalEObjectImpl.Con
    * @ordered
    */
   protected String ohid = OHID_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getSubDeviceIds() <em>Sub Device Ids</em>}' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSubDeviceIds()
+   * @generated
+   * @ordered
+   */
+  protected EList<IDS> subDeviceIds;
 
   /**
    * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
@@ -208,6 +226,20 @@ public class OHTFDeviceImpl<TFC extends TFConfig> extends MinimalEObjectImpl.Con
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<IDS> getSubDeviceIds()
+  {
+    if (subDeviceIds == null)
+    {
+      subDeviceIds = new EDataTypeEList<IDS>(Enum.class, this, ModelPackage.OHTF_DEVICE__SUB_DEVICE_IDS);
+    }
+    return subDeviceIds;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public TFC getTfConfig()
   {
     return tfConfig;
@@ -301,6 +333,27 @@ public class OHTFDeviceImpl<TFC extends TFConfig> extends MinimalEObjectImpl.Con
    * <!-- end-user-doc -->
    * @generated
    */
+  public boolean isValidSubId(String subId)
+  {
+    OHTFDevice<TFC,IDS> _this = this;
+    EList<IDS> _subDeviceIds = _this.getSubDeviceIds();
+    for (final IDS sid : _subDeviceIds)
+    {
+      String _string = sid.toString();
+      boolean _equalsIgnoreCase = _string.equalsIgnoreCase(subId);
+      if (_equalsIgnoreCase)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -364,6 +417,8 @@ public class OHTFDeviceImpl<TFC extends TFConfig> extends MinimalEObjectImpl.Con
         return getSubid();
       case ModelPackage.OHTF_DEVICE__OHID:
         return getOhid();
+      case ModelPackage.OHTF_DEVICE__SUB_DEVICE_IDS:
+        return getSubDeviceIds();
       case ModelPackage.OHTF_DEVICE__TF_CONFIG:
         return getTfConfig();
       case ModelPackage.OHTF_DEVICE__OH_CONFIG:
@@ -391,6 +446,10 @@ public class OHTFDeviceImpl<TFC extends TFConfig> extends MinimalEObjectImpl.Con
         return;
       case ModelPackage.OHTF_DEVICE__OHID:
         setOhid((String)newValue);
+        return;
+      case ModelPackage.OHTF_DEVICE__SUB_DEVICE_IDS:
+        getSubDeviceIds().clear();
+        getSubDeviceIds().addAll((Collection<? extends IDS>)newValue);
         return;
       case ModelPackage.OHTF_DEVICE__TF_CONFIG:
         setTfConfig((TFC)newValue);
@@ -421,6 +480,9 @@ public class OHTFDeviceImpl<TFC extends TFConfig> extends MinimalEObjectImpl.Con
       case ModelPackage.OHTF_DEVICE__OHID:
         setOhid(OHID_EDEFAULT);
         return;
+      case ModelPackage.OHTF_DEVICE__SUB_DEVICE_IDS:
+        getSubDeviceIds().clear();
+        return;
       case ModelPackage.OHTF_DEVICE__TF_CONFIG:
         setTfConfig((TFC)null);
         return;
@@ -447,12 +509,30 @@ public class OHTFDeviceImpl<TFC extends TFConfig> extends MinimalEObjectImpl.Con
         return SUBID_EDEFAULT == null ? subid != null : !SUBID_EDEFAULT.equals(subid);
       case ModelPackage.OHTF_DEVICE__OHID:
         return OHID_EDEFAULT == null ? ohid != null : !OHID_EDEFAULT.equals(ohid);
+      case ModelPackage.OHTF_DEVICE__SUB_DEVICE_IDS:
+        return subDeviceIds != null && !subDeviceIds.isEmpty();
       case ModelPackage.OHTF_DEVICE__TF_CONFIG:
         return tfConfig != null;
       case ModelPackage.OHTF_DEVICE__OH_CONFIG:
         return getOhConfig() != null;
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException
+  {
+    switch (operationID)
+    {
+      case ModelPackage.OHTF_DEVICE___IS_VALID_SUB_ID__STRING:
+        return isValidSubId((String)arguments.get(0));
+    }
+    return super.eInvoke(operationID, arguments);
   }
 
   /**
@@ -472,6 +552,8 @@ public class OHTFDeviceImpl<TFC extends TFConfig> extends MinimalEObjectImpl.Con
     result.append(subid);
     result.append(", ohid: ");
     result.append(ohid);
+    result.append(", subDeviceIds: ");
+    result.append(subDeviceIds);
     result.append(')');
     return result.toString();
   }

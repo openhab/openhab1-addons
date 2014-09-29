@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,7 +49,7 @@ public class MqttMessageSubscriberTest {
 	private void validateBadConfig(String configString) {
 		try {
 			new MqttMessageSubscriber(configString);
-			fail("Missing exception..");
+			fail("Missing exception for config " + configString);
 		} catch (BindingConfigParseException e) {
 			return;
 		}
@@ -103,17 +103,16 @@ public class MqttMessageSubscriberTest {
 	@Test
 	public void canDetectInvalidConfigurations() {
 
-		validateBadConfig(" :/mytopic:command:ON:1");
-		validateBadConfig("mybroker:/mytopic:command:ON:1");
+		validateBadConfig(" :/mytopic:command:ON:.*:1");
+		validateBadConfig("mybroker:/mytopic:command:ON:.*:1");
 		validateBadConfig("mybroker:/mytopic:command:ON:1:99");
 		validateBadConfig("mybroker::/mytopic:command:ON:1");
 		validateBadConfig("mybroker:command:ON:1");
-		validateBadConfig("mybroker:/mytopic:command:ON:1");
-		validateBadConfig("mybroker:/mytopic:command:ON:1");
+		validateBadConfig("mybroker:/mytopic:command:ON:.*:1");
 		validateBadConfig(null);
 		validateBadConfig("");
-		validateBadConfig("  mybroker : /mytopic : command : * : file(/tmp/myfile.txt)");
-		validateBadConfig("mybroker:/mytopic:command:ON:1");
+		validateBadConfig("  mybroker : /mytopic : command : * : .* : file(/tmp/myfile.txt)");
+		validateBadConfig("mybroker:/mytopic:comand:ON:1");
 	}
 
 	@Test

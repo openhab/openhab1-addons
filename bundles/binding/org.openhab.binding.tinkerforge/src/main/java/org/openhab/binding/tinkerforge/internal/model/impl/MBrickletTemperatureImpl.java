@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,8 +11,9 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
-
+import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
@@ -21,13 +22,17 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.tools.Tools;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +44,16 @@ import com.tinkerforge.TimeoutException;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MBricklet Temperature</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getIpConnection <em>Ip Connection</em>}</li>
@@ -54,10 +63,9 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getSensorValue <em>Sensor Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getTemperature <em>Temperature</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletTemperatureImpl#getThreshold <em>Threshold</em>}</li>
  * </ul>
  * </p>
@@ -105,6 +113,26 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = true;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -237,16 +265,6 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSensorValue()
-   * @generated
-   * @ordered
-   */
-  protected static final double SENSOR_VALUE_EDEFAULT = 0.0;
-
-  /**
    * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -254,7 +272,17 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * @generated
    * @ordered
    */
-  protected double sensorValue = SENSOR_VALUE_EDEFAULT;
+  protected DecimalValue sensorValue;
+
+  /**
+   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTfConfig()
+   * @generated
+   * @ordered
+   */
+  protected TFBaseConfiguration tfConfig;
 
   /**
    * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
@@ -277,16 +305,6 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
   protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTfConfig()
-   * @generated
-   * @ordered
-   */
-  protected TFBaseConfiguration tfConfig;
-
-  /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -307,26 +325,6 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getTemperature() <em>Temperature</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTemperature()
-   * @generated
-   * @ordered
-   */
-  protected static final short TEMPERATURE_EDEFAULT = 0;
-
-  /**
-   * The cached value of the '{@link #getTemperature() <em>Temperature</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTemperature()
-   * @generated
-   * @ordered
-   */
-  protected short temperature = TEMPERATURE_EDEFAULT;
-
-  /**
    * The default value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -334,7 +332,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * @generated
    * @ordered
    */
-  protected static final int THRESHOLD_EDEFAULT = 10;
+  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("0.1");
 
   /**
    * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
@@ -344,7 +342,9 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * @generated
    * @ordered
    */
-  protected int threshold = THRESHOLD_EDEFAULT;
+  protected BigDecimal threshold = THRESHOLD_EDEFAULT;
+
+  private TemperatureListener listener;
 
   /**
    * <!-- begin-user-doc -->
@@ -411,6 +411,29 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
     uid = newUid;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_TEMPERATURE__UID, oldUid, uid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_TEMPERATURE__POLL, oldPoll, poll));
   }
 
   /**
@@ -624,7 +647,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public double getSensorValue()
+  public DecimalValue getSensorValue()
   {
     return sensorValue;
   }
@@ -634,9 +657,9 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(double newSensorValue)
+  public void setSensorValue(DecimalValue newSensorValue)
   {
-    double oldSensorValue = sensorValue;
+    DecimalValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_TEMPERATURE__SENSOR_VALUE, oldSensorValue, sensorValue));
@@ -728,30 +751,7 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public short getTemperature()
-  {
-    return temperature;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setTemperature(short newTemperature)
-  {
-    short oldTemperature = temperature;
-    temperature = newTemperature;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_TEMPERATURE__TEMPERATURE, oldTemperature, temperature));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public int getThreshold()
+  public BigDecimal getThreshold()
   {
     return threshold;
   }
@@ -761,9 +761,9 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setThreshold(int newThreshold)
+  public void setThreshold(BigDecimal newThreshold)
   {
-    int oldThreshold = threshold;
+    BigDecimal oldThreshold = threshold;
     threshold = newThreshold;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_TEMPERATURE__THRESHOLD, oldThreshold, threshold));
@@ -774,66 +774,95 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void init()
-  {
-	setEnabledA(new AtomicBoolean());
-	logger = LoggerFactory.getLogger(MBrickletTemperatureImpl.class);
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    logger = LoggerFactory.getLogger(MBrickletTemperatureImpl.class);
+  }
+
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  @Override
+  public void fetchSensorValue() {
+    try {
+      short temperature = tinkerforgeDevice.getTemperature();
+      DecimalValue value = Tools.calculate100(temperature);
+      setSensorValue(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated NOT
-   */  
-	@Override
-	public void enable() {
-	    tinkerforgeDevice = new BrickletTemperature(uid, getIpConnection());
-		if (tfConfig != null) {
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"threshold"))) {
-				setThreshold(tfConfig.getThreshold());
-			}
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"callbackPeriod"))) {
-				setCallbackPeriod(tfConfig.getCallbackPeriod());
-			}
-		}
-	    try {
-	    	tinkerforgeDevice.setResponseExpected(BrickletTemperature.FUNCTION_SET_TEMPERATURE_CALLBACK_PERIOD, false);
-	    	tinkerforgeDevice.setTemperatureCallbackPeriod(callbackPeriod);
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-	    tinkerforgeDevice.addTemperatureListener(new BrickletTemperature.TemperatureListener() {
-			
-			@Override
-			public void temperature(short newTemperature) {
-				if ((newTemperature > (temperature + threshold))  || (newTemperature < (temperature - threshold)))
-				{
-					setSensorValue(newTemperature/100.0);
-					setTemperature(newTemperature);
-				}
-				else {
-					logger.trace(String.format("new temperature: %s, old %s", newTemperature, temperature));
-				}
-
-			}
-		});
-	}
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	@Override
-	public void disable() {
-		tinkerforgeDevice = null;
-	}
+  @Override
+  public void enable() {
+    if (tfConfig != null) {
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
+        setThreshold(tfConfig.getThreshold());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
+        setCallbackPeriod(tfConfig.getCallbackPeriod());
+      }
+    }
+    try {
+      tinkerforgeDevice = new BrickletTemperature(uid, getIpConnection());
+      tinkerforgeDevice.setResponseExpected(
+          BrickletTemperature.FUNCTION_SET_TEMPERATURE_CALLBACK_PERIOD, false);
+      tinkerforgeDevice.setTemperatureCallbackPeriod(callbackPeriod);
+      listener = new TemperatureListener();
+      tinkerforgeDevice.addTemperatureListener(listener);
+      fetchSensorValue();
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  private class TemperatureListener implements BrickletTemperature.TemperatureListener {
+
+    @Override
+    public void temperature(short temperature) {
+      DecimalValue newValue = Tools.calculate100(temperature);
+      logger.trace("{} got new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+      if (newValue.compareTo(getSensorValue(), getThreshold()) != 0 ) {
+        logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+        setSensorValue(newValue);
+      } else {
+        logger.trace("{} omitting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+      }
+    }
+    
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  @Override
+  public void disable() {
+    if (listener != null) {
+      tinkerforgeDevice.removeTemperatureListener(listener);
+    }
+    tinkerforgeDevice = null;
+  }
 
 /**
    * <!-- begin-user-doc -->
@@ -890,26 +919,6 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
 /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated NOT
-   */
-	@Override
-	public Double fetchSensorValue() {
-		try {
-			//TODO do not return anything update model instead: thread safe?
-			return (double) tinkerforgeDevice.getTemperature() / 100.0;
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}   	
-		return null;
-	}
-
-/**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated
    */
   @Override
@@ -921,6 +930,8 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         return getLogger();
       case ModelPackage.MBRICKLET_TEMPERATURE__UID:
         return getUid();
+      case ModelPackage.MBRICKLET_TEMPERATURE__POLL:
+        return isPoll();
       case ModelPackage.MBRICKLET_TEMPERATURE__ENABLED_A:
         return getEnabledA();
       case ModelPackage.MBRICKLET_TEMPERATURE__TINKERFORGE_DEVICE:
@@ -939,14 +950,12 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         return getBrickd();
       case ModelPackage.MBRICKLET_TEMPERATURE__SENSOR_VALUE:
         return getSensorValue();
-      case ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD:
-        return getCallbackPeriod();
       case ModelPackage.MBRICKLET_TEMPERATURE__TF_CONFIG:
         return getTfConfig();
+      case ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD:
+        return getCallbackPeriod();
       case ModelPackage.MBRICKLET_TEMPERATURE__DEVICE_TYPE:
         return getDeviceType();
-      case ModelPackage.MBRICKLET_TEMPERATURE__TEMPERATURE:
-        return getTemperature();
       case ModelPackage.MBRICKLET_TEMPERATURE__THRESHOLD:
         return getThreshold();
     }
@@ -968,6 +977,9 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.MBRICKLET_TEMPERATURE__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -994,19 +1006,16 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         setBrickd((MBrickd)newValue);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__SENSOR_VALUE:
-        setSensorValue((Double)newValue);
-        return;
-      case ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD:
-        setCallbackPeriod((Long)newValue);
+        setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)newValue);
         return;
-      case ModelPackage.MBRICKLET_TEMPERATURE__TEMPERATURE:
-        setTemperature((Short)newValue);
+      case ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD:
+        setCallbackPeriod((Long)newValue);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__THRESHOLD:
-        setThreshold((Integer)newValue);
+        setThreshold((BigDecimal)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -1027,6 +1036,9 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__UID:
         setUid(UID_EDEFAULT);
+        return;
+      case ModelPackage.MBRICKLET_TEMPERATURE__POLL:
+        setPoll(POLL_EDEFAULT);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
@@ -1053,16 +1065,13 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         setBrickd((MBrickd)null);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__SENSOR_VALUE:
-        setSensorValue(SENSOR_VALUE_EDEFAULT);
-        return;
-      case ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__TF_CONFIG:
         setTfConfig((TFBaseConfiguration)null);
         return;
-      case ModelPackage.MBRICKLET_TEMPERATURE__TEMPERATURE:
-        setTemperature(TEMPERATURE_EDEFAULT);
+      case ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD:
+        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
         return;
       case ModelPackage.MBRICKLET_TEMPERATURE__THRESHOLD:
         setThreshold(THRESHOLD_EDEFAULT);
@@ -1085,6 +1094,8 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MBRICKLET_TEMPERATURE__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MBRICKLET_TEMPERATURE__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.MBRICKLET_TEMPERATURE__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.MBRICKLET_TEMPERATURE__TINKERFORGE_DEVICE:
@@ -1102,17 +1113,15 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
       case ModelPackage.MBRICKLET_TEMPERATURE__BRICKD:
         return getBrickd() != null;
       case ModelPackage.MBRICKLET_TEMPERATURE__SENSOR_VALUE:
-        return sensorValue != SENSOR_VALUE_EDEFAULT;
-      case ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
+        return sensorValue != null;
       case ModelPackage.MBRICKLET_TEMPERATURE__TF_CONFIG:
         return tfConfig != null;
+      case ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD:
+        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.MBRICKLET_TEMPERATURE__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-      case ModelPackage.MBRICKLET_TEMPERATURE__TEMPERATURE:
-        return temperature != TEMPERATURE_EDEFAULT;
       case ModelPackage.MBRICKLET_TEMPERATURE__THRESHOLD:
-        return threshold != THRESHOLD_EDEFAULT;
+        return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
     }
     return super.eIsSet(featureID);
   }
@@ -1130,7 +1139,6 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
       switch (derivedFeatureID)
       {
         case ModelPackage.MBRICKLET_TEMPERATURE__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
-        case ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD: return ModelPackage.MSENSOR__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1139,6 +1147,14 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
       switch (derivedFeatureID)
       {
         case ModelPackage.MBRICKLET_TEMPERATURE__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1158,7 +1174,6 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
       switch (baseFeatureID)
       {
         case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.MBRICKLET_TEMPERATURE__SENSOR_VALUE;
-        case ModelPackage.MSENSOR__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1167,6 +1182,14 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
       switch (baseFeatureID)
       {
         case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_TEMPERATURE__TF_CONFIG;
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_TEMPERATURE__CALLBACK_PERIOD;
         default: return -1;
       }
     }
@@ -1196,6 +1219,13 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         default: return -1;
       }
     }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
     return super.eDerivedOperationID(baseOperationID, baseClass);
   }
 
@@ -1213,7 +1243,8 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
         init();
         return null;
       case ModelPackage.MBRICKLET_TEMPERATURE___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
       case ModelPackage.MBRICKLET_TEMPERATURE___ENABLE:
         enable();
         return null;
@@ -1239,6 +1270,8 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", tinkerforgeDevice: ");
@@ -1259,8 +1292,6 @@ public class MBrickletTemperatureImpl extends MinimalEObjectImpl.Container imple
     result.append(callbackPeriod);
     result.append(", deviceType: ");
     result.append(deviceType);
-    result.append(", temperature: ");
-    result.append(temperature);
     result.append(", threshold: ");
     result.append(threshold);
     result.append(')');

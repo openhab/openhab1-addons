@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,22 +9,16 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
@@ -32,7 +26,8 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-
+import org.openhab.binding.tinkerforge.internal.tools.Tools;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,19 +37,21 @@ import com.tinkerforge.TimeoutException;
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>MBarometer Temperature</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getSensorValue <em>Sensor Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#isPoll <em>Poll</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getMbrick <em>Mbrick</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getDeviceType <em>Device Type</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBarometerTemperatureImpl#getTemperature <em>Temperature</em>}</li>
  * </ul>
  * </p>
  *
@@ -63,16 +60,6 @@ import com.tinkerforge.TimeoutException;
 public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container implements MBarometerTemperature
 {
   /**
-   * The default value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSensorValue()
-   * @generated
-   * @ordered
-   */
-  protected static final double SENSOR_VALUE_EDEFAULT = 0.0;
-
-  /**
    * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -80,27 +67,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * @generated
    * @ordered
    */
-  protected double sensorValue = SENSOR_VALUE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
-
-  /**
-   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
+  protected DecimalValue sensorValue;
 
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -141,6 +108,26 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean POLL_EDEFAULT = true;
+
+  /**
+   * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isPoll()
+   * @generated
+   * @ordered
+   */
+  protected boolean poll = POLL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
@@ -203,26 +190,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
   protected String deviceType = DEVICE_TYPE_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getTemperature() <em>Temperature</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTemperature()
-   * @generated
-   * @ordered
-   */
-  protected static final short TEMPERATURE_EDEFAULT = 0;
-
-  /**
-   * The cached value of the '{@link #getTemperature() <em>Temperature</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTemperature()
-   * @generated
-   * @ordered
-   */
-  protected short temperature = TEMPERATURE_EDEFAULT;
-
-  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -248,7 +215,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public double getSensorValue()
+  public DecimalValue getSensorValue()
   {
     return sensorValue;
   }
@@ -258,35 +225,12 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSensorValue(double newSensorValue)
+  public void setSensorValue(DecimalValue newSensorValue)
   {
-    double oldSensorValue = sensorValue;
+    DecimalValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE, oldSensorValue, sensorValue));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public long getCallbackPeriod()
-  {
-    return callbackPeriod;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setCallbackPeriod(long newCallbackPeriod)
-  {
-    long oldCallbackPeriod = callbackPeriod;
-    callbackPeriod = newCallbackPeriod;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
   }
 
   /**
@@ -333,6 +277,29 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     uid = newUid;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__UID, oldUid, uid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isPoll()
+  {
+    return poll;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPoll(boolean newPoll)
+  {
+    boolean oldPoll = poll;
+    poll = newPoll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__POLL, oldPoll, poll));
   }
 
   /**
@@ -439,35 +406,12 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
-  public short getTemperature()
-  {
-    return temperature;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setTemperature(short newTemperature)
-  {
-    short oldTemperature = temperature;
-    temperature = newTemperature;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBAROMETER_TEMPERATURE__TEMPERATURE, oldTemperature, temperature));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void init()
-  {
-	 setEnabledA(new AtomicBoolean());
-	 logger = LoggerFactory.getLogger(MBarometerTemperatureImpl.class);
+  public void init() {
+    setEnabledA(new AtomicBoolean());
+    poll = true; // don't use the setter to prevent notification
+    logger = LoggerFactory.getLogger(MBarometerTemperatureImpl.class);
   }
 
   /**
@@ -477,6 +421,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
    */
   public void enable()
   {
+    fetchSensorValue();
   }
 
   /**
@@ -489,25 +434,22 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
-	public Double fetchSensorValue() {
-		try {
-			short chipTemperature = getMbrick().getTinkerforgeDevice()
-					.getChipTemperature();
-			setTemperature(chipTemperature);
-			return ((double) chipTemperature) / 100;
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-		return null;
-	}
+  public void fetchSensorValue() {
+    try {
+      short chipTemperature = getMbrick().getTinkerforgeDevice().getChipTemperature();
+      DecimalValue value = Tools.calculate100(chipTemperature);
+      setSensorValue(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
 
   /**
    * <!-- begin-user-doc -->
@@ -571,12 +513,12 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     {
       case ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE:
         return getSensorValue();
-      case ModelPackage.MBAROMETER_TEMPERATURE__CALLBACK_PERIOD:
-        return getCallbackPeriod();
       case ModelPackage.MBAROMETER_TEMPERATURE__LOGGER:
         return getLogger();
       case ModelPackage.MBAROMETER_TEMPERATURE__UID:
         return getUid();
+      case ModelPackage.MBAROMETER_TEMPERATURE__POLL:
+        return isPoll();
       case ModelPackage.MBAROMETER_TEMPERATURE__ENABLED_A:
         return getEnabledA();
       case ModelPackage.MBAROMETER_TEMPERATURE__SUB_ID:
@@ -585,8 +527,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
         return getMbrick();
       case ModelPackage.MBAROMETER_TEMPERATURE__DEVICE_TYPE:
         return getDeviceType();
-      case ModelPackage.MBAROMETER_TEMPERATURE__TEMPERATURE:
-        return getTemperature();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -602,16 +542,16 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     switch (featureID)
     {
       case ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE:
-        setSensorValue((Double)newValue);
-        return;
-      case ModelPackage.MBAROMETER_TEMPERATURE__CALLBACK_PERIOD:
-        setCallbackPeriod((Long)newValue);
+        setSensorValue((DecimalValue)newValue);
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__LOGGER:
         setLogger((Logger)newValue);
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__UID:
         setUid((String)newValue);
+        return;
+      case ModelPackage.MBAROMETER_TEMPERATURE__POLL:
+        setPoll((Boolean)newValue);
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
@@ -621,9 +561,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__MBRICK:
         setMbrick((MBrickletBarometer)newValue);
-        return;
-      case ModelPackage.MBAROMETER_TEMPERATURE__TEMPERATURE:
-        setTemperature((Short)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -640,16 +577,16 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     switch (featureID)
     {
       case ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE:
-        setSensorValue(SENSOR_VALUE_EDEFAULT);
-        return;
-      case ModelPackage.MBAROMETER_TEMPERATURE__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        setSensorValue((DecimalValue)null);
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__UID:
         setUid(UID_EDEFAULT);
+        return;
+      case ModelPackage.MBAROMETER_TEMPERATURE__POLL:
+        setPoll(POLL_EDEFAULT);
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
@@ -659,9 +596,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
         return;
       case ModelPackage.MBAROMETER_TEMPERATURE__MBRICK:
         setMbrick((MBrickletBarometer)null);
-        return;
-      case ModelPackage.MBAROMETER_TEMPERATURE__TEMPERATURE:
-        setTemperature(TEMPERATURE_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -678,13 +612,13 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     switch (featureID)
     {
       case ModelPackage.MBAROMETER_TEMPERATURE__SENSOR_VALUE:
-        return sensorValue != SENSOR_VALUE_EDEFAULT;
-      case ModelPackage.MBAROMETER_TEMPERATURE__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
+        return sensorValue != null;
       case ModelPackage.MBAROMETER_TEMPERATURE__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
       case ModelPackage.MBAROMETER_TEMPERATURE__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
+      case ModelPackage.MBAROMETER_TEMPERATURE__POLL:
+        return poll != POLL_EDEFAULT;
       case ModelPackage.MBAROMETER_TEMPERATURE__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
       case ModelPackage.MBAROMETER_TEMPERATURE__SUB_ID:
@@ -693,8 +627,6 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
         return getMbrick() != null;
       case ModelPackage.MBAROMETER_TEMPERATURE__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
-      case ModelPackage.MBAROMETER_TEMPERATURE__TEMPERATURE:
-        return temperature != TEMPERATURE_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -713,6 +645,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
       {
         case ModelPackage.MBAROMETER_TEMPERATURE__LOGGER: return ModelPackage.MBASE_DEVICE__LOGGER;
         case ModelPackage.MBAROMETER_TEMPERATURE__UID: return ModelPackage.MBASE_DEVICE__UID;
+        case ModelPackage.MBAROMETER_TEMPERATURE__POLL: return ModelPackage.MBASE_DEVICE__POLL;
         case ModelPackage.MBAROMETER_TEMPERATURE__ENABLED_A: return ModelPackage.MBASE_DEVICE__ENABLED_A;
         default: return -1;
       }
@@ -743,6 +676,7 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
       {
         case ModelPackage.MBASE_DEVICE__LOGGER: return ModelPackage.MBAROMETER_TEMPERATURE__LOGGER;
         case ModelPackage.MBASE_DEVICE__UID: return ModelPackage.MBAROMETER_TEMPERATURE__UID;
+        case ModelPackage.MBASE_DEVICE__POLL: return ModelPackage.MBAROMETER_TEMPERATURE__POLL;
         case ModelPackage.MBASE_DEVICE__ENABLED_A: return ModelPackage.MBAROMETER_TEMPERATURE__ENABLED_A;
         default: return -1;
       }
@@ -807,7 +741,8 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
         disable();
         return null;
       case ModelPackage.MBAROMETER_TEMPERATURE___FETCH_SENSOR_VALUE:
-        return fetchSensorValue();
+        fetchSensorValue();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }
@@ -825,20 +760,18 @@ public class MBarometerTemperatureImpl extends MinimalEObjectImpl.Container impl
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (sensorValue: ");
     result.append(sensorValue);
-    result.append(", callbackPeriod: ");
-    result.append(callbackPeriod);
     result.append(", logger: ");
     result.append(logger);
     result.append(", uid: ");
     result.append(uid);
+    result.append(", poll: ");
+    result.append(poll);
     result.append(", enabledA: ");
     result.append(enabledA);
     result.append(", subId: ");
     result.append(subId);
     result.append(", deviceType: ");
     result.append(deviceType);
-    result.append(", temperature: ");
-    result.append(temperature);
     result.append(')');
     return result.toString();
   }

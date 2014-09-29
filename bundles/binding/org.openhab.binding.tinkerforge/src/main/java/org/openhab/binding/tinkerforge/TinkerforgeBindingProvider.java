@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.tinkerforge;
 
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
@@ -63,5 +64,21 @@ public interface TinkerforgeBindingProvider extends BindingProvider {
 	 * 
 	 */
 	public Item getItem(String itemName);
+
+	/**
+	 * Returns the Type of the Item identified by {@code itemName}
+	 * 
+	 * @param itemName the name of the item to find the type for
+	 * @return the type of the Item identified by {@code itemName}
+	 */
+	public Class<? extends Item> getItemType(String itemName);
+
+	   /**
+     * Get the {@code DeviceOptions} for the Item identified by {@code itemName}.
+     * 
+     * @param itemName the name of the item to find the opts for
+     * @return the {@code DeviceOptions} of the Item identified by {@code itemName}
+     */
+	public DeviceOptions getDeviceOptions(String itemName);
 
 }

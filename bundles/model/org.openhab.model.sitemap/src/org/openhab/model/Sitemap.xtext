@@ -1,82 +1,133 @@
 grammar org.openhab.model.Sitemap with org.eclipse.xtext.common.Terminals
 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
-
 generate sitemap "http://www.openhab.org/model/Sitemap"
 
-SitemapModel :
+SitemapModel:
 	'sitemap' Sitemap;
 
-Sitemap :
-		name=ID ('label=' label=STRING)? ('icon=' icon=STRING)? '{'
-			(children+=Widget)+
-		'}';
+Sitemap:
+	name=ID ('label=' label=STRING)? ('icon=' icon=STRING)? '{'
+	(children+=Widget)+
+	'}';
 
-Widget :
-	(LinkableWidget | NonLinkableWidget);	
+Widget:
+	(LinkableWidget | NonLinkableWidget);
 
-NonLinkableWidget :
-	Switch | Selection | Slider | List | Setpoint | Video | Chart | Webview | Colorpicker
-;
+NonLinkableWidget:
+	Switch | Selection | Slider | List | Setpoint | Video | Chart | Webview | Colorpicker;
 
-LinkableWidget :
+LinkableWidget:
 	(Text | Group | Image | Frame)
 	('{'
-			(children+=Widget)+
+	(children+=Widget)+
 	'}')?;
 
-Frame : {Frame} 'Frame' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
+Frame:
+	{Frame} 'Frame' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? &
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
-Text : 
-	{Text} 'Text' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
-	
-Group : 
-	'Group' (('item=' item=GroupItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)?);
+Text:
+	{Text} 'Text' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? &
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
-Image : 
-	'Image' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)) ('refresh=' refresh=INT)?);
+Group:
+	'Group' (('item=' item=GroupItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? &
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
-Video : 
-	'Video' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)));
+Image:
+	'Image' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? &
+		('url=' url=STRING) &  ('refresh=' refresh=INT)? &
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('iconcolor=[' (IconColor+=ColorArray (',' IconColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
-Chart : 
-	'Chart' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('service=' service=(STRING))? & ('refresh=' refresh=INT)? & ('period=' period=ID));
+Video:
+	'Video' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? &
+		('url=' url=(STRING)) & ('encoding=' encoding=(STRING))? &	
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
-Webview : 
-	'Webview' (('item=' item=ItemRef)? & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('url=' url=(STRING)) & ('height=' height=INT)?);
-	
-Switch : 
-	'Switch' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?);
-	
-Slider :
-	'Slider' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('sendFrequency=' frequency=INT)? & (switchEnabled?='switchSupport')?);
-	
-Selection : 
-	'Selection' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('mappings=[' mappings+=Mapping (',' mappings+=Mapping)* ']')?);
+Chart:
+	'Chart' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
+		('service='service=(STRING))? & ('refresh=' refresh=INT)? & ('period=' period=ID) & 
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
-List : 
-	'List' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? ('separator=' separator=STRING));
+Webview:
+	'Webview' (('item=' item=ItemRef)? & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
+		('height=' height=INT)? & ('url=' url=(STRING)) &
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
-Setpoint : 
-	'Setpoint' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('minValue=' minValue=Number)? & ('maxValue=' maxValue=Number)? & ('step=' step=Number)?);
+Switch:
+	'Switch' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
+		('mappings=['mappings+=Mapping (',' mappings+=Mapping)* ']')? & 
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
-Colorpicker : 
-	'Colorpicker' (('item=' item=ItemRef) & ('label=' label=(ID|STRING))? & ('icon=' icon=Icon)? & ('sendFrequency=' frequency=INT)?);
+Slider:
+	'Slider' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
+		('sendFrequency=' frequency=INT)? & (switchEnabled?='switchSupport')? & 
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
-Mapping :
-	cmd=Command '=' label=(ID|STRING);
+Selection:
+	'Selection' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
+		('mappings=['	mappings+=Mapping (',' mappings+=Mapping)* ']')? & 
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
-ItemRef :
-	ID
-;
+List:
+	'List' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? 
+		('separator='separator=STRING) & 
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
-GroupItemRef :
-	ID
-;
+Setpoint:
+	'Setpoint' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & 
+		('minValue=' minValue=Number)? & ('maxValue=' maxValue=Number)? & ('step=' step=Number)? &
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
 
-Icon :
-	STRING
-;
+Colorpicker:
+	'Colorpicker' (('item=' item=ItemRef) & ('label=' label=(ID | STRING))? & ('icon=' icon=Icon)? & ('sendFrequency=' frequency=INT)? & 
+		('labelcolor=[' (LabelColor+=ColorArray (',' LabelColor+=ColorArray)* ']'))? &
+		('valuecolor=[' (ValueColor+=ColorArray (',' ValueColor+=ColorArray)* ']'))? &
+		('visibility=[' (Visibility+=VisibilityRule (',' Visibility+=VisibilityRule)* ']'))?);
+
+Mapping:
+	cmd=Command '=' label=(ID | STRING);
+
+VisibilityRule:
+	(item=ID) (condition=("==" | ">" | "<" | ">=" | "<=" | "!=")) (sign=('-'|'+'))? (state=XState);
+
+ItemRef:
+	ID;
+
+GroupItemRef:
+	ID;
+
+Icon:
+	STRING;
+
+ColorArray:
+	((item=ID)? (condition=("==" | ">" | "<" | ">=" | "<=" | "!="))? (sign=('-'|'+'))? (state=XState) '=')? (arg=STRING);
 
 Command returns ecore::EString:
 	INT | ID | STRING;
@@ -84,8 +135,13 @@ Command returns ecore::EString:
 Number returns ecore::EBigDecimal:
 	INT | FLOAT;
 
-terminal ID : ('^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*) |
-	 (('0'..'9')+ ('a'..'z'|'A'..'Z'|'_') ('0'..'9'|'a'..'z'|'A'..'Z'|'_')*);
-	
+XState returns ecore::EString:
+	INT | ID | STRING | FLOAT;
+
+terminal ID:
+	('^'? ('a'..'z' | 'A'..'Z' | '_') ('a'..'z' | 'A'..'Z' | '_' | '0'..'9')*) |
+	(('0'..'9')+ ('a'..'z' | 'A'..'Z' | '_') ('0'..'9' | 'a'..'z' | 'A'..'Z' | '_')*);
+
 terminal FLOAT returns ecore::EBigDecimal:
 	INT '.' INT;
+	

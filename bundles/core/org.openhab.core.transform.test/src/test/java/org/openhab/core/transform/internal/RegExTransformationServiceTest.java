@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -46,9 +46,19 @@ public class RegExTransformationServiceTest extends AbstractTransformationServic
 		String transformedResponse = processor.transform(".*", source);
 		
 		// Asserts
-		Assert.assertEquals("", transformedResponse);
+		Assert.assertEquals(source, transformedResponse);
 	}
 
+	@Test
+	public void testTransformByRegex_noContent() throws TransformationException {
+
+		// method under test
+		String transformedResponse = processor.transform("[A-Z]", "0123456789");
+		
+		// Asserts
+		Assert.assertEquals("0123456789", transformedResponse);
+	}
+	
 	@Test
 	public void testTransformByRegex_moreThanOneGroup() throws TransformationException {
 
@@ -58,5 +68,6 @@ public class RegExTransformationServiceTest extends AbstractTransformationServic
 		// Asserts
 		Assert.assertEquals("8", transformedResponse);
 	}
+	
 
 }

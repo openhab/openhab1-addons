@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>AN142</Model>
+	<Label lang="en">Dimmer Plugin</Label>
+	<Label lang="de">Dimmer Zwischenstecker</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+</Product>
+

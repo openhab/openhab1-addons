@@ -3,7 +3,7 @@ Private-Package: org.openhab.core.scheduler.internal
 Ignore-Package: org.openhab.core.scheduler.internal
 Bundle-Name: openHAB Scheduler Service
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the Scheduler Service of the open Home Aut
@@ -13,11 +13,8 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/quartz-all-2.1.7.jar,
  .
-Export-Package: org.quartz,
- org.quartz.impl,
- org.quartz.impl.calendar,
- org.quartz.impl.matchers,
- org.quartz.utils
+Export-Package: org.quartz,org.quartz.impl,org.quartz.impl.calendar,or
+ g.quartz.impl.matchers,org.quartz.utils
 Import-Package: org.osgi.framework,
  org.osgi.service.component,
  org.slf4j;version="1.5.11"

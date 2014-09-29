@@ -5,6 +5,7 @@ bin/
 bundles/io/org.openhab.io.multimedia.tts.marytts/lib/
 .antlr*
 .metadata/
+.DS_Store
 */plugin.xml_gen
 
 distribution/openhabhome/logs/*.log

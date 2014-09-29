@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Item Model
 Bundle-Vendor: openHABorg
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-SymbolicName: org.openhab.model.item; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext,
@@ -17,18 +17,12 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.emf.common,
  org.antlr.runtime
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.openhab.model,
- org.openhab.model.item.binding,
- org.openhab.model.items,
- org.openhab.model.items.impl,
- org.openhab.model.parseTreeConstruction,
- org.openhab.model.parser.antlr,
- org.openhab.model.parser.antlr.internal,
- org.openhab.model.services,
- org.openhab.model.validation,
- org.openhab.model.items.util,
- org.openhab.model.scoping,
- org.openhab.model.formatting
+Export-Package: org.openhab.model,org.openhab.model.item.binding,org.o
+ penhab.model.items,org.openhab.model.items.impl,org.openhab.model.par
+ seTreeConstruction,org.openhab.model.parser.antlr,org.openhab.model.p
+ arser.antlr.internal,org.openhab.model.services,org.openhab.model.val
+ idation,org.openhab.model.items.util,org.openhab.model.scoping,org.op
+ enhab.model.formatting
 Import-Package: org.apache.log4j,
  org.openhab.core.binding,
  org.openhab.core.items,

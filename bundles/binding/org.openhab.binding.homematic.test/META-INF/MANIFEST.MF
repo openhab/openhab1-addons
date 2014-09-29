@@ -2,8 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the Homematic binding
 Bundle-SymbolicName: org.openhab.binding.homematic.test
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-Vendor: openHAB.org
 Fragment-Host: org.openhab.binding.homematic
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit;bundle-version="4.8.1"
+Import-Package: org.apache.commons.lang.reflect

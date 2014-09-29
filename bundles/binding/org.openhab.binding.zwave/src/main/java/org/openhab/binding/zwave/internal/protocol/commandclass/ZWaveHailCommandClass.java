@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,6 +7,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
+
+import java.util.Collection;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -68,8 +70,8 @@ public class ZWaveHailCommandClass extends ZWaveCommandClass {
 				if (this.getNode().getNodeStage() != NodeStage.DONE)
 					return;
 				
-				this.getNode().setNodeStage(NodeStage.DYNAMIC);
-				this.getNode().advanceNodeStage(NodeStage.DONE);
+				getController().pollNode(getNode());
+				
 				break;
 			default:
 			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 

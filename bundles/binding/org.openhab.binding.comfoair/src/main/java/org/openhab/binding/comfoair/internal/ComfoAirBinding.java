@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -137,7 +137,7 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
 	 * @param command
 	 */
 	private void sendCommand(ComfoAirCommand command) {
-
+		
 		int[] response = connector.sendCommand(command);
 
 		if (response == null) {
@@ -181,8 +181,6 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
 					refreshInterval = Long.parseLong(refreshIntervalString);
 				}
 
-				setProperlyConfigured(true);
-
 				if (connector != null) {
 					connector.close();
 				}
@@ -193,6 +191,8 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
 				} catch (InitializationException e) {
 					logger.error(e.getMessage());
 				}
+
+				setProperlyConfigured(true);
 			}
 		}
 	}

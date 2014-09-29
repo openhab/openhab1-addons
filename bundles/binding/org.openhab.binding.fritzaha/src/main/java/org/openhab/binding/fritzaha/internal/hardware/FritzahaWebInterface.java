@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -65,11 +65,11 @@ public class FritzahaWebInterface {
 	/**
 	 * Timeout for synchronous HTTP requests to web interface in milliseconds
 	 */
-	protected int timeout = 2000;
+	protected int timeout;
 	/**
 	 * Timeout for asynchronous HTTP requests to web interface in milliseconds
 	 */
-	protected int asynctimeout = 4000;
+	protected int asynctimeout;
 	/**
 	 * Maximum number of simultaneous asynchronous connections
 	 */
@@ -204,13 +204,20 @@ public class FritzahaWebInterface {
 	 *            Username for login
 	 * @param password
 	 *            Password for login
+	 * @param synctimeout
+	 * 			  Timeout for synchronous http-connections
+	 * @param asynctimeout
+	 * 			  Timeout for asynchronous http-connections
 	 */
-	public FritzahaWebInterface(String host, int port, String protocol, String username, String password) {
+	public FritzahaWebInterface(String host, int port, String protocol, String username, String password, 
+			int synctimeout, int asynctimeout) {
 		this.host = host;
 		this.port = port;
 		this.protocol = protocol;
 		this.username = username;
 		this.password = password;
+		this.timeout = synctimeout;
+		this.asynctimeout = asynctimeout;
 		sid = null;
 		asyncclient = new HttpClient(new SslContextFactory(true));
 		asyncclient.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
