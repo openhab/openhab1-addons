@@ -44,6 +44,11 @@ public class SqueezePlayer {
 	private boolean isMuted;
 	private int volume;
 	private int unmuteVolume;
+	private int numPlaylistTracks;
+	private int currPlaylistIndex;
+	private int currPlayingTime;
+	private int currPlaylistShuffle;
+	private int currPlaylistRepeat;
 
 	private String title;
 	private String album;
@@ -72,7 +77,12 @@ public class SqueezePlayer {
 		this.isMuted = false;
 		this.volume = -128;
 		this.unmuteVolume = 50;
-
+		this.numPlaylistTracks = 0;
+		this.currPlaylistIndex = -1;
+		this.currPlayingTime = 0;
+		this.currPlaylistShuffle = 0;
+		this.currPlaylistRepeat = 0;
+		
 		this.title = "";
 		this.album = "";
 		this.artist = "";
@@ -202,7 +212,43 @@ public class SqueezePlayer {
 			fireVolumeChangeEvent();
 		}
 	}
+	public void setNumberPlaylistTracks(int numberPlaylistTracks) {
+		this.numPlaylistTracks = numberPlaylistTracks;
+		fireNumberPlaylistTracksEvent();
+	}
+	public void setCurrentPlaylistIndex(int currentPlaylistIndex ) {
+		this.currPlaylistIndex = currentPlaylistIndex;
+		fireCurrentPlaylistIndexEvent();
+	}
+	public void setCurrentPlayingTime(int currentPlayingTime ) {
+		this.currPlayingTime = currentPlayingTime;
+		fireCurrentPlayingTimeEvent();
+	}
+	public void setCurrentPlaylistShuffle(int currentPlaylistShuffle ) {
+		this.currPlaylistShuffle = currentPlaylistShuffle;
+		fireCurrentPlaylistShuffleEvent();
+	}
+	public void setCurrentPlaylistRepeat(int currentPlaylistRepeat ) {
+		this.currPlaylistRepeat = currentPlaylistRepeat;
+		fireCurrentPlaylistRepeatEvent();
+	}
 	
+	
+	public int getNumberPlaylistTracks() {
+		return this.numPlaylistTracks;
+	}
+	public int getCurrentPlaylistIndex() {
+		return this.currPlaylistIndex;
+	}
+	public int getCurrentPlayingTime() {
+		return this.currPlayingTime;
+	}
+	public int getCurrentPlaylistShuffle() {
+		return this.currPlaylistShuffle;
+	}
+	public int getCurrentPlaylistRepeat() {
+		return this.currPlaylistRepeat;
+	}
 	public int getVolume() {
 		return this.volume;
 	}
@@ -210,7 +256,9 @@ public class SqueezePlayer {
 	public int getUnmuteVolume() {
 		return this.unmuteVolume;
 	}
-	
+	public int getPlaylistNumTracks() {
+		return this.numPlaylistTracks;
+	}
 	public void printDebug() {
 		logger.trace("SqueezePlayer    id: " + this.playerId);
 		logger.trace("SqueezePlayer   MAC: " + this.macAddress);
@@ -335,6 +383,48 @@ public class SqueezePlayer {
 		}
 	}
 	
+	
+	private synchronized void fireCurrentPlaylistIndexEvent() {
+		PlayerEvent event = new PlayerEvent(this);
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
+
+	    while(itr.hasNext())  {
+	    	itr.next().currentPlaylistIndexEvent(event);
+	    }
+	}
+	private synchronized void fireCurrentPlayingTimeEvent() {
+		PlayerEvent event = new PlayerEvent(this);
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
+
+	    while(itr.hasNext())  {
+	    	itr.next().currentPlayingTimeEvent(event);
+	    }
+	}
+	private synchronized void fireNumberPlaylistTracksEvent() {
+		PlayerEvent event = new PlayerEvent(this);
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
+
+	    while(itr.hasNext())  {
+	    	itr.next().numberPlaylistTracksEvent(event);
+	    }
+	}	
+	private synchronized void fireCurrentPlaylistShuffleEvent() {
+		PlayerEvent event = new PlayerEvent(this);
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
+
+	    while(itr.hasNext())  {
+	    	itr.next().currentPlaylistShuffleEvent(event);
+	    }
+	}	
+	private synchronized void fireCurrentPlaylistRepeatEvent() {
+		PlayerEvent event = new PlayerEvent(this);
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
+
+	    while(itr.hasNext())  {
+	    	itr.next().currentPlaylistRepeatEvent(event);
+	    }
+	}	
+
 	private synchronized void fireVolumeChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
 	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
