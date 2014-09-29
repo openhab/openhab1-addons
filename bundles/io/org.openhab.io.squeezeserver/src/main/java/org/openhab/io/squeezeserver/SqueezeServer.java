@@ -223,6 +223,48 @@ public class SqueezeServer implements ManagedService {
 			return;
 		sendCommand(player.getMacAddress() + " playlist clear");
 	}
+	
+	public void deletePlaylistItem(String playerId, int playlistIndex) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return;
+		sendCommand(player.getMacAddress() + " playlist delete " + playlistIndex);
+	}
+	
+	public void playPlaylistItem(String playerId, int playlistIndex) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return;
+		sendCommand(player.getMacAddress() + " playlist index " + playlistIndex);
+	}
+	
+	public void addPlaylistItem(String playerId, String url) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return;
+		sendCommand(player.getMacAddress() + " playlist add " + url);
+	}
+	
+	public void setPlayingTime(String playerId, int time) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return;
+		sendCommand(player.getMacAddress() + " time " + time);
+	}
+	
+	public void setRepeatMode(String playerId, int repeatMode) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return;
+		sendCommand(player.getMacAddress() + " playlist repeat " + repeatMode);
+	}
+	
+	public void setShuffleMode(String playerId, int shuffleMode) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return;
+		sendCommand(player.getMacAddress() + " playlist shuffle " + shuffleMode);
+	}
 
 	public void volumeUp(String playerId) {
 		SqueezePlayer player = getPlayer(playerId);
@@ -618,6 +660,36 @@ public class SqueezeServer implements ManagedService {
 				else if (messagePart.startsWith("mode%3A")) {
 					String value = messagePart.substring("mode%3A".length());
 					player.setMode(Mode.valueOf(value));
+				}
+				// Parameter Playing Time
+				else if (messagePart.startsWith("time%3A")) {
+					String value = messagePart.substring("time%3A".length());
+					player.setCurrentPlayingTime((int) Double.parseDouble(value));
+				}
+				// Parameter Playing Playlist Index
+				else if (messagePart.startsWith("playlist_cur_index%3A")) {
+					String value = messagePart.substring("playlist_cur_index%3A".length());
+					player.setCurrentPlaylistIndex((int) Integer.parseInt(value));
+				}
+				// Parameter Playlist Number Tracks
+				else if (messagePart.startsWith("playlist_tracks%3A")) {
+					String value = messagePart.substring("playlist_tracks%3A".length());
+					player.setNumberPlaylistTracks((int) Integer.parseInt(value));
+				}
+				// Parameter Playlist Repeat Mode
+				else if (messagePart.startsWith("playlist%20repeat%3A")) {
+					String value = messagePart.substring("playlist%20repeat%3A".length());
+					player.setCurrentPlaylistRepeat((int) Integer.parseInt(value));
+				}
+				// Parameter Playlist Shuffle Mode
+				else if (messagePart.startsWith("playlist%20shuffle%3A")) {
+					String value = messagePart.substring("playlist%20shuffle%3A".length());
+					player.setCurrentPlaylistShuffle((int) Integer.parseInt(value));
+				}
+				// Parameter Playlist Number Tracks
+				else if (messagePart.startsWith("playlist_tracks%3A")) {
+					String value = messagePart.substring("playlist_tracks%3A".length());
+					player.setNumberPlaylistTracks((int) Integer.parseInt(value));
 				}
 				// Parameter Title
 				else if (messagePart.startsWith("title%3A")) {
