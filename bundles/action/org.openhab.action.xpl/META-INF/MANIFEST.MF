@@ -10,19 +10,14 @@ Bundle-Activator: org.openhab.action.xpl.internal.xPLActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the xPL action of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Import-Package: org.cdp1802.xpl,
  org.openhab.core.scriptengine.action,
- org.openhab.core.items,
- org.openhab.core.library.items,
- org.openhab.core.library.types,
- org.openhab.core.types,
+ org.openhab.io.transport.xpl,
  org.osgi.framework,
- org.osgi.service.cm,
- org.osgi.service.component,
  org.slf4j
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/action.xml
-Bundle-ClassPath: .,
- lib/xPL4Java.jar
+Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
+Require-Bundle: org.openhab.io.transport.xpl;bundle-version="1.6.0"
