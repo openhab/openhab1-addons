@@ -282,52 +282,54 @@ public class Squeezebox {
 			if (timeoutCount >= 200) {
 				logger.warn("Sentence timed out while speaking!");
 			}
-			
+			squeezeServer.stop(playerId);
 			// clean up the listener
 			player.removePlayerEventListener(listener);
 			listener = null;
 			logger.trace("Done playing speech - restore state...");
 		}
-		squeezeServer.stop(playerId);
-		// clear the player playlist
-		//squeezeServer.clearPlaylist(playerId);
+		
 		
 		logger.trace("Deleting Playlist Index: '{}'", newNumTracks-1);
 		squeezeServer.deletePlaylistItem(playerId, newNumTracks-1);
 
-		
-		logger.trace("Restoring Playlist Index Number: '{}'", currPlaylistIndex);
-		squeezeServer.playPlaylistItem(playerId, currPlaylistIndex);
-		logger.trace("Restoring Playing Time : '{}'", currPlayingTime);
-		squeezeServer.setPlayingTime(playerId, currPlayingTime);
+		// restore the player volume before playback
+		if (volume != -1) {
+			logger.trace("Restoring player to previous state: volume {}", playerVolume);
+			squeezeServer.setVolume(playerId, playerVolume);
+		}
+		if (playerMode != Mode.stop) {
+			logger.trace("Restoring Playlist Index Number: '{}'", currPlaylistIndex);
+			squeezeServer.playPlaylistItem(playerId, currPlaylistIndex);
+			logger.trace("Restoring Playing Time : '{}'", currPlayingTime);
+			squeezeServer.setPlayingTime(playerId, currPlayingTime);
+		}
+		// Must sleep 350ms before restoring previous playback state...
 		try {
-			Thread.sleep(500);
+			Thread.sleep(350);
 		} catch (InterruptedException e) { }
-		
+	
+		// restore play mode state
 		if (playerMode == Mode.play) {
 			if (resumePlayback) {
 				logger.trace("Restoring Playing Mode: '{}'", playerMode);
 				squeezeServer.play(playerId);
 			}
 			else {
-				logger.trace("NOT restoring Playing Mode: '{}' because resumePlayback is false", playerMode);
+				logger.warn("NOT restoring Playing Mode: '{}' because resumePlayback is false", playerMode);
 				squeezeServer.pause(playerId);
 			}
-		}
-		if (playerMode == Mode.stop)
-			squeezeServer.stop(playerId);
-		if (playerMode == Mode.pause)
+		} else if (playerMode == Mode.pause) {
 			squeezeServer.pause(playerId);
+		} else {
+			squeezeServer.stop(playerId);
+		}
 		
 		logger.trace("Restoring player to previous state: shuffle {}", currPlaylistShuffle);
 		squeezeServer.setShuffleMode(playerId, currPlaylistShuffle);
 		logger.trace("Restoring player to previous state: repeat {}", currPlaylistRepeat);
 		squeezeServer.setRepeatMode(playerId, currPlaylistRepeat);
-		// restore the player state
-		if (volume != -1) {
-			logger.trace("Restoring player to previous state: volume {}", playerVolume);
-			squeezeServer.setVolume(playerId, playerVolume);
-		}
+
 		if (playerMuted) {
 			logger.trace("Restoring player to previous state: muted");
 			squeezeServer.mute(playerId);
