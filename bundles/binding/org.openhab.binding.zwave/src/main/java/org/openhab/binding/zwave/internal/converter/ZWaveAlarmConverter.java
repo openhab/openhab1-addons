@@ -19,9 +19,9 @@ import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAlarmSensorCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAlarmSensorCommandClass.AlarmType;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAlarmSensorCommandClass.ZWaveAlarmSensorValueEvent;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAlarmCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAlarmCommandClass.AlarmType;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAlarmCommandClass.ZWaveAlarmValueEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -31,13 +31,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /***
- * ZWaveAlarmSensorConverter class. Converter for communication with the 
- * {@link ZWaveAlarmSensorCommandClass}. Implements polling of the alarm sensor
- * status and receiving of alarm sensor events.
- * @author Jan-Willem Spuij
- * @since 1.4.0
+ * ZWaveAlarmConverter class. Converter for communication with the 
+ * {@link ZWaveAlarmCommandClass}. Implements polling of the alarm 
+ * status and receiving of alarm  events.
+ * @author Chris Jackson
+ * @since 1.6.0
  */
-public class ZWaveAlarmConverter extends ZWaveCommandClassConverter<ZWaveAlarmSensorCommandClass> {
+public class ZWaveAlarmConverter extends ZWaveCommandClassConverter<ZWaveAlarmCommandClass> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveAlarmConverter.class);
 	private static final int REFRESH_INTERVAL = 0; // refresh interval in seconds for the binary switch;
@@ -62,7 +62,7 @@ public class ZWaveAlarmConverter extends ZWaveCommandClassConverter<ZWaveAlarmSe
 	 */
 	@Override
 	public void executeRefresh(ZWaveNode node, 
-			ZWaveAlarmSensorCommandClass commandClass, int endpointId, Map<String,String> arguments) {
+			ZWaveAlarmCommandClass commandClass, int endpointId, Map<String,String> arguments) {
 		logger.debug("Generating poll message for {} for node {} endpoint {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
 		SerialMessage serialMessage;
 		String alarmType = arguments.get("alarm_type");
@@ -88,13 +88,13 @@ public class ZWaveAlarmConverter extends ZWaveCommandClassConverter<ZWaveAlarmSe
 	public void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String,String> arguments) {
 		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
 		String alarmType = arguments.get("alarm_type");
-		ZWaveAlarmSensorValueEvent alarmEvent = (ZWaveAlarmSensorValueEvent)event;
+		ZWaveAlarmValueEvent alarmEvent = (ZWaveAlarmValueEvent)event;
 		
 		if (converter == null) {
 			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
 			return;
 		}
-		
+
 		// Don't trigger event if this item is bound to another alarm type
 		if (alarmType != null && AlarmType.getAlarmType(Integer.parseInt(alarmType)) != alarmEvent.getAlarmType())
 			return;
@@ -108,7 +108,7 @@ public class ZWaveAlarmConverter extends ZWaveCommandClassConverter<ZWaveAlarmSe
 	 */
 	@Override
 	public void receiveCommand(Item item, Command command, ZWaveNode node,
-			ZWaveAlarmSensorCommandClass commandClass, int endpointId, Map<String,String> arguments) {
+			ZWaveAlarmCommandClass commandClass, int endpointId, Map<String,String> arguments) {
 		ZWaveCommandConverter<?,?> converter = this.getCommandConverter(command.getClass());
 		
 		if (converter == null) {

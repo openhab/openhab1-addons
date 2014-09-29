@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -72,7 +70,7 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
 		logger.trace("Handle Message Alarm Request");
-		logger.debug(String.format("Received Alarm Request for Node ID = %d", this.getNode().getNodeId()));
+		logger.debug(String.format("NODE %d: Received Alarm Request", this.getNode().getNodeId()));
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 			case ALARM_GET:
@@ -80,19 +78,16 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 				return;
 			case ALARM_REPORT:
 				logger.trace("Process Alarm Report");
-				
-				int sourceNode = serialMessage.getMessagePayloadByte(offset + 1);
-				int alarmTypeCode = serialMessage.getMessagePayloadByte(offset + 2);
-				int value = serialMessage.getMessagePayloadByte(offset + 3);
-				
-				logger.debug(String.format("Alarm report from nodeId = %d", this.getNode().getNodeId()));
-				logger.debug(String.format("Source node ID = %d", sourceNode));
-				logger.debug(String.format("Value = 0x%02x", value));
+
+				int alarmTypeCode = serialMessage.getMessagePayloadByte(offset + 1);
+				int value = serialMessage.getMessagePayloadByte(offset + 2);
+
+				logger.debug(String.format("NODE %d: Alarm report - Value = 0x%02x", this.getNode().getNodeId(), value));
 				
 				AlarmType alarmType = AlarmType.getAlarmType(alarmTypeCode);
 				
 				if (alarmType == null) {
-					logger.error(String.format("Unknown Alarm Type = 0x%02x, ignoring report.", alarmTypeCode));
+					logger.error(String.format("NODE %d: Unknown Alarm Type = 0x%02x, ignoring report.", this.getNode().getNodeId(), alarmTypeCode));
 					return;
 				}
 				
@@ -101,7 +96,7 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 					this.alarms.add(alarmType);
 				}
 
-				logger.debug(String.format("Alarm Type = %s (0x%02x)", alarmType.getLabel(), alarmTypeCode));
+				logger.debug(String.format("NODE %d: Alarm Type = %s (0x%02x)", this.getNode().getNodeId(), alarmType.getLabel(), alarmTypeCode));
 				
 				ZWaveAlarmValueEvent zEvent = new ZWaveAlarmValueEvent(this.getNode().getNodeId(), endpoint, alarmType, value);
 				this.getController().notifyEventListeners(zEvent);
@@ -138,13 +133,14 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 	 * @return the serial message
 	 */
 	public SerialMessage getMessage(AlarmType alarmType) {
-		logger.debug("Creating new message for application command ALARM_GET for node {}", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command ALARM_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							3, 
 								(byte) getCommandClass().getKey(), 
 								(byte) ALARM_GET,
-								(byte) alarmType.getKey() };
+								(byte) alarmType.getKey()
+							};
     	result.setMessagePayload(newPayload);
     	return result;		
 	}
