@@ -186,7 +186,8 @@ class AnelConnectorThread extends Thread {
 
 	@Override
 	public void run() {
-		logger.debug("Anel NET-PwrCtrl message listener started");
+		logger.debug("Anel NET-PwrCtrl message listener started for host '" + connector.host + ":"
+				+ connector.receivePort + "'");
 
 		try {
 			connector.connect();
@@ -237,5 +238,11 @@ class AnelConnectorThread extends Thread {
 		} catch (Exception e) {
 			logger.error("Error occured when disconnecting form Anel device: " + state.host, e);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "Anel connection to '" + state.host + "', send UDP port " + connector.sendPort + ", receive UDP port "
+				+ connector.receivePort + ", user='" + user + "', password='" + password + "'";
 	}
 }

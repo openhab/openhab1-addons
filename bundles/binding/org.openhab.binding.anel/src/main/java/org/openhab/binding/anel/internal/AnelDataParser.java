@@ -56,7 +56,6 @@ public class AnelDataParser {
 	 *             If the data is invalid or corrupt.
 	 */
 	public static Map<AnelCommandType, State> parseData(byte[] data, AnelState state) throws Exception {
-
 		final String string = new String(data);
 		final String[] arr = string.split(":");
 
@@ -66,8 +65,7 @@ public class AnelDataParser {
 		if (!arr[0].equals("NET-PwrCtrl"))
 			throw new IllegalArgumentException("Data must start with 'NET-PwrCtrl' but it didn't: " + arr[0]);
 		if (!state.host.equals(arr[2]) && !state.host.equalsIgnoreCase(arr[1].trim()))
-			return Collections.emptyMap(); // this package came from another
-											// device?!
+			return Collections.emptyMap(); // this came from another device
 
 		final Map<AnelCommandType, State> result = new HashMap<AnelCommandType, State>();
 

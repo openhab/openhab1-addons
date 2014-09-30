@@ -35,7 +35,7 @@ public class AnelGenericBindingProvider extends AbstractGenericBindingProvider i
 	}
 
 	/**
-	 * @{inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
@@ -53,18 +53,26 @@ public class AnelGenericBindingProvider extends AbstractGenericBindingProvider i
 	public void processBindingConfiguration(String context, Item item, String bindingConfig)
 			throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
+		if (bindingConfig == null || bindingConfig.trim().isEmpty())
+			return; // empty binding - nothing to do
 
-		final String commandType = bindingConfig.trim();
+		final String[] segments = bindingConfig.trim().split(":");
+		if (segments.length != 2)
+			throw new BindingConfigParseException("Invalid binding format '" + bindingConfig
+					+ "', expected: '<anelId>:<property>'");
+
+		final String deviceId = segments[0];
+		final String commandType = segments[1];
 		try {
 			AnelCommandType.validateBinding(commandType, item.getClass());
 			final AnelCommandType cmdType = AnelCommandType.getCommandType(commandType);
 
 			// if command type was validated successfully, add binding config
-			addBindingConfig(item, new AnelBindingConfig(item.getClass(), cmdType));
+			addBindingConfig(item, new AnelBindingConfig(item.getClass(), cmdType, deviceId));
 		} catch (IllegalArgumentException e) {
-			throw new BindingConfigParseException("'" + commandType + "' is not a valid command type");
+			throw new BindingConfigParseException("'" + commandType + "' is not a valid Anel property");
 		} catch (InvalidClassException e) {
-			throw new BindingConfigParseException("Not valid class for command type '" + commandType + "'");
+			throw new BindingConfigParseException("Invalid class for Anel property '" + commandType + "'");
 		}
 	}
 
@@ -72,22 +80,25 @@ public class AnelGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * Internal class to represent an openHAB item binding.
 	 */
 	class AnelBindingConfig implements BindingConfig {
-		public final Class<? extends Item> itemType;
-		public final AnelCommandType commandType;
+		final Class<? extends Item> itemType;
+		final AnelCommandType commandType;
+		final String deviceId;
 
-		protected AnelBindingConfig(Class<? extends Item> itemType, AnelCommandType cmdType) {
+		protected AnelBindingConfig(Class<? extends Item> itemType, AnelCommandType cmdType, String deviceId) {
 			this.itemType = itemType;
 			this.commandType = cmdType;
+			this.deviceId = deviceId;
 		}
 
 		@Override
 		public String toString() {
-			return "AnelBindingConfig [itemType=" + itemType + ", commandType=" + commandType + "]";
+			return "AnelBindingConfig [device=" + deviceId + ", itemType=" + itemType + ", property=" + commandType
+					+ "]";
 		}
 	}
 
 	/**
-	 * @{inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Class<? extends Item> getItemType(String itemName) {
@@ -96,7 +107,7 @@ public class AnelGenericBindingProvider extends AbstractGenericBindingProvider i
 	}
 
 	/**
-	 * @{inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public AnelCommandType getCommandType(String itemName) {
@@ -104,4 +115,12 @@ public class AnelGenericBindingProvider extends AbstractGenericBindingProvider i
 		return config != null ? config.commandType : null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getDeviceId(String itemName) {
+		final AnelBindingConfig config = (AnelBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.deviceId : null;
+	}
 }

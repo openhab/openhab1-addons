@@ -31,33 +31,33 @@ class AnelUDPConnector {
 	private DatagramSocket socket = null;
 
 	/** The device IP this connector is listening to / sends to. */
-	final private String ip;
+	final String host;
 
 	/** The port this connector is listening to. */
-	final private int receivePort;
+	final int receivePort;
 
 	/** The port this connector is sending to. */
-	final private int sendPort;
+	final int sendPort;
 
 	/**
-	 * Create a new connector to an Anel device via the given ip address and UDP
+	 * Create a new connector to an Anel device via the given host and UDP
 	 * ports.
 	 * 
-	 * @param ipAddress
+	 * @param host
 	 *            The IP address / network name of the device.
 	 * @param udpReceivePort
 	 *            The UDP port to listen for packages.
 	 * @param udpSendPort
 	 *            The UDP port to send packages.
 	 */
-	AnelUDPConnector(String ipAddress, int udpReceivePort, int udpSendPort) {
+	AnelUDPConnector(String host, int udpReceivePort, int udpSendPort) {
 		if (udpReceivePort <= 0)
 			throw new IllegalArgumentException("Invalid udpReceivePort: " + udpReceivePort);
 		if (udpSendPort <= 0)
 			throw new IllegalArgumentException("Invalid udpSendPort: " + udpSendPort);
-		if (ipAddress == null || ipAddress.isEmpty())
+		if (host == null || host.isEmpty())
 			throw new IllegalArgumentException("Missing ipAddress.");
-		this.ip = ipAddress;
+		this.host = host;
 		this.receivePort = udpReceivePort;
 		this.sendPort = udpSendPort;
 	}
@@ -123,7 +123,7 @@ class AnelUDPConnector {
 		if (data == null || data.length == 0)
 			throw new IllegalArgumentException("data must not be null or empty");
 		try {
-			final InetAddress ipAddress = InetAddress.getByName(ip);
+			final InetAddress ipAddress = InetAddress.getByName(host);
 			final DatagramPacket packet = new DatagramPacket(data, data.length, ipAddress, sendPort);
 
 			final DatagramSocket socket = new DatagramSocket();
@@ -132,7 +132,7 @@ class AnelUDPConnector {
 		} catch (SocketException e) {
 			throw new Exception(e);
 		} catch (UnknownHostException e) {
-			throw new Exception("Could not resolve host: " + ip, e);
+			throw new Exception("Could not resolve host: " + host, e);
 		} catch (IOException e) {
 			throw new Exception(e);
 		}

@@ -24,8 +24,8 @@ public interface AnelBindingProvider extends BindingProvider {
 	 * Returns the Type of the Item identified by {@code itemName}
 	 * 
 	 * @param itemName
-	 *            the name of the item to find the type for
-	 * @return the type of the Item identified by {@code itemName}
+	 *            The name of the item to find the type for.
+	 * @return the type of the Item identified by {@code itemName}.
 	 */
 	Class<? extends Item> getItemType(String itemName);
 
@@ -33,11 +33,19 @@ public interface AnelBindingProvider extends BindingProvider {
 	 * Returns the command type to the given <code>itemName</code>.
 	 * 
 	 * @param itemName
-	 *            the item for which to find a command type.
+	 *            The item for which to find a command type.
 	 * 
 	 * @return the corresponding command type to the given <code>itemName</code>
 	 *         .
 	 */
-	public AnelCommandType getCommandType(String itemName);
+	AnelCommandType getCommandType(String itemName);
 
+	/**
+	 * Returns the device id for this binding provider.
+	 * 
+	 * @param itemName
+	 *            The item for which to fina a device name.
+	 * @return the device if to the given <code>itemName</code>.
+	 */
+	String getDeviceId(String itemName);
 }

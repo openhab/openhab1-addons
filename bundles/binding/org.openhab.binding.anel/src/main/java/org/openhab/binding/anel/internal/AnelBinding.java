@@ -9,11 +9,13 @@
 package org.openhab.binding.anel.internal;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.anel.AnelBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.events.EventPublisher;
@@ -33,29 +35,29 @@ import org.slf4j.LoggerFactory;
  * ########################## Anel NET-PwrCtrl Binding ###################################
  * #
  * # UDP receive port (optional, defaults to 77)
- * anel:udpReceivePort=7777
+ * anel:anel1.udpReceivePort=7777
  * 
  * # UDP send port (optional, defaults to 75)
- * anel:udpSendPort=7775
+ * anel:anel1.udpSendPort=7775
  * 
- * # IP or network address (optional, defaults to 'NET-CONTROL')
- * anel:ipAddress=anel1
+ * # IP or network address (optional, defaults to 'net-control')
+ * anel:anel1.host=anel1
  * 
  * # User name (optional, defaults to 'user7')
- * anel:user=user7
+ * anel:anel1.user=user7
  * 
  * # Password (optional, defaults to 'anel')
- * anel:password=anel
+ * anel:anel1.password=anel
  * 
- * # Refresh interval in seconds (optional, defaults to '60', disable with '0')
- * #refreshInterval=60
+ * # Global refresh interval in ms (optional, defaults to 300000=5min, disable with '0')
+ * #refresh=60
  * </pre>
  * 
  * Example items:
  * 
  * <pre>
- * Switch f1 { anel="F1" }
- * Switch io1 { anel="IO1" }
+ * Switch f1 { anel="anel1:F1" }
+ * Switch io1 { anel="anel1:IO1" }
  * </pre>
  * 
  * Example rule:
@@ -87,15 +89,6 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 		Collection<String> getItemNamesForCommandType(AnelCommandType cmd);
 
 		/**
-		 * Get the command type that is associated with the given item name.
-		 * 
-		 * @param itemName
-		 *            An item name.
-		 * @return The command type that is associated with the given item name.
-		 */
-		AnelCommandType getCommandTypeForItemName(String itemName);
-
-		/**
 		 * The event publisher so that the connector that can send events.
 		 * 
 		 * @return The event publisher that was set for the binding.
@@ -105,21 +98,14 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 
 	private static final Logger logger = LoggerFactory.getLogger(AnelBinding.class);
 
-	// default connection settings
-	private final static String DEFAULT_HOST = "net-control";
-	private final static String DEFAULT_USER = "user7";
-	private final static String DEFAULT_PASSWORD = "anel";
-	private final static int DEFAULT_UDP_RECEIVE_PORT = 77;
-	private final static int DEFAULT_UDP_SEND_PORT = 75;
-
 	/**
 	 * The refresh interval which is used to poll values from the Anel server
 	 * (optional, defaults to 300000ms).
 	 */
 	private long refreshInterval = 300000;
 
-	/** Thread to handle messages from devices */
-	private AnelConnectorThread connectorThread = null;
+	/** Threads to communicate with Anel devices */
+	private final Map<String, AnelConnectorThread> connectorThreads = new HashMap<String, AnelConnectorThread>();
 
 	private final IInternalAnelBinding bindingFacade = new IInternalAnelBinding() {
 
@@ -132,11 +118,6 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 		public EventPublisher getEventPublisher() {
 			return eventPublisher;
 		}
-
-		@Override
-		public AnelCommandType getCommandTypeForItemName(String itemName) {
-			return AnelBinding.this.getCommandTypeForItemName(itemName);
-		}
 	};
 
 	public void activate() {
@@ -147,9 +128,10 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	public void deactivate() {
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
-		if (connectorThread != null) {
+		for (AnelConnectorThread connectorThread : connectorThreads.values()) {
 			connectorThread.setInterrupted();
 		}
+		connectorThreads.clear();
 	}
 
 	/**
@@ -175,11 +157,13 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
 		/*
-		 * if the last update is more than <refreshInterval> ago, poll the
-		 * device for its state.
+		 * poll the device for its state regularly, just in case UDP packets
+		 * might be missed. Do that first when providers exist!
 		 */
-		if (connectorThread != null && refreshInterval > 0) {
-			connectorThread.requestRefresh();
+		if (refreshInterval > 0 && bindingsExist()) {
+			for (AnelConnectorThread connectorThread : connectorThreads.values()) {
+				connectorThread.requestRefresh();
+			}
 		}
 	}
 
@@ -210,15 +194,20 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	}
 
 	private void internalReceive(String itemName, Type newState) {
-		final AnelCommandType cmd = getCommandTypeForItemName(itemName);
-		if (cmd == null) {
+		final Map<String, AnelCommandType> map = getCommandTypeForItemName(itemName);
+		if (map == null || map.isEmpty()) {
 			logger.debug("Invalid command for item name: '" + itemName + "'");
 			return;
 		}
+		final String deviceId = map.keySet().iterator().next();
+		final AnelConnectorThread connectorThread = connectorThreads.get(deviceId);
 		if (connectorThread == null) {
-			logger.debug("Connection to Anel device not yet initialized, no device updates sent.");
+			logger.debug("Could not find device '" + deviceId + "', missing configuration or not yet initialized.");
+			return;
 		}
+		final AnelCommandType cmd = map.get(deviceId);
 
+		// check for switchable command
 		final boolean isSwitch = AnelCommandType.SWITCHES.contains(cmd);
 		final boolean isIO = AnelCommandType.IOS.contains(cmd);
 		if (isIO || isSwitch) {
@@ -253,63 +242,43 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		String host = DEFAULT_HOST;
-		String user = DEFAULT_USER;
-		String password = DEFAULT_PASSWORD;
-		int udpReceivePort = DEFAULT_UDP_RECEIVE_PORT;
-		int udpSendPort = DEFAULT_UDP_SEND_PORT;
-
-		if (config != null) {
-
-			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like
-			// <bindingName>:refresh=<intervalInMs>
-			final String refreshIntervalString = (String) config.get("refresh");
-			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				refreshInterval = Integer.parseInt(refreshIntervalString);
-			}
-			final String receivePortString = (String) config.get("udpReceivePort");
-			if (StringUtils.isNotBlank(receivePortString)) {
-				udpReceivePort = Integer.parseInt(receivePortString);
-			}
-			final String sendPortString = (String) config.get("udpSendPort");
-			if (StringUtils.isNotBlank(sendPortString)) {
-				udpSendPort = Integer.parseInt(sendPortString);
-			}
-			final String userString = (String) config.get("user");
-			if (StringUtils.isNotBlank(userString)) {
-				user = userString;
-			}
-			final String passwordString = (String) config.get("password");
-			if (StringUtils.isNotBlank(passwordString)) {
-				password = passwordString;
-			}
-			final String hostString = (String) config.get("host");
-			if (StringUtils.isNotBlank(hostString)) {
-				host = hostString;
-			}
-			logger.debug("Configuration read: host='" + host + "', sendUdpPort=" + udpSendPort + ", receiveUdpPort="
-					+ udpReceivePort + ", user='" + user + "', pwd='" + password + "', refresh="
-					+ (refreshInterval / 1000) + "s.");
-
-			// used in template but not in example swgon binding...
-			setProperlyConfigured(true);
-		}
-
-		if (connectorThread != null) {
-
-			logger.debug("Close previous message listener");
-
+		// first, close all existing connector threads
+		for (String device : connectorThreads.keySet()) {
+			logger.debug("Close previous message listener for device '" + device + "'");
+			final AnelConnectorThread connectorThread = connectorThreads.get(device);
 			connectorThread.setInterrupted();
+		}
+		// then wait for all of them to die
+		for (String device : connectorThreads.keySet()) {
+			final AnelConnectorThread connectorThread = connectorThreads.get(device);
 			try {
 				connectorThread.join();
 			} catch (InterruptedException e) {
-				logger.info("Previous message listener closing interrupted", e);
+				logger.info("Previous message listener closing interrupted for device '" + device + "'", e);
 			}
 		}
 
-		connectorThread = new AnelConnectorThread(host, udpReceivePort, udpSendPort, user, password, bindingFacade);
-		connectorThread.start();
+		// clear map of previous threads because config changed
+		connectorThreads.clear();
+
+		// read new config
+		try {
+			refreshInterval = AnelConfigReader.readConfig(config, connectorThreads, bindingFacade);
+		} catch (ConfigurationException e) {
+			logger.error("Could not read configuration for Anel binding: " + e.getMessage());
+			return;
+		} catch (Exception e) {
+			logger.error("Could not read configuration for Anel binding", e);
+			return;
+		}
+		setProperlyConfigured(true);
+
+		// successful! now start all device threads
+		for (String device : connectorThreads.keySet()) {
+			logger.debug("Starting message listener for device '" + device + "'");
+			final AnelConnectorThread connectorThread = connectorThreads.get(device);
+			connectorThread.start();
+		}
 
 		// start new thread that calls an initial update so the internal state
 		// can be initialized
@@ -317,19 +286,22 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 			@Override
 			public void run() {
 				try {
-					Thread.sleep(10000);
+					Thread.sleep(30000);
 				} catch (InterruptedException e) {
 				}
-				if (connectorThread != null && !connectorThread.isInterrupted())
+				for (AnelConnectorThread connectorThread : connectorThreads.values()) {
 					connectorThread.requestRefresh();
+				}
 			}
 		}).start();
 	}
 
 	private Collection<String> getItemNamesForCommandType(AnelCommandType cmd) {
+		if (cmd == null)
+			return Collections.emptyList();
 		final Set<String> itemNames = new HashSet<String>();
-		for (AnelBindingProvider provider : providers) {
-			for (String itemName : provider.getItemNames()) {
+		for (final AnelBindingProvider provider : providers) {
+			for (final String itemName : provider.getItemNames()) {
 				final AnelCommandType commandType = provider.getCommandType(itemName);
 				if (commandType.equals(cmd)) {
 					itemNames.add(itemName);
@@ -339,13 +311,15 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 		return itemNames;
 	}
 
-	private AnelCommandType getCommandTypeForItemName(String itemName) {
+	private Map<String, AnelCommandType> getCommandTypeForItemName(String itemName) {
 		if (itemName == null || itemName.isEmpty())
 			return null;
-		for (AnelBindingProvider provider : providers) {
-			for (String providerItemName : provider.getItemNames()) {
+		for (final AnelBindingProvider provider : providers) {
+			for (final String providerItemName : provider.getItemNames()) {
 				if (itemName.equals(providerItemName)) {
-					return provider.getCommandType(itemName);
+					final AnelCommandType cmd = provider.getCommandType(itemName);
+					final String deviceId = provider.getDeviceId(itemName);
+					return Collections.singletonMap(deviceId, cmd);
 				}
 			}
 		}
