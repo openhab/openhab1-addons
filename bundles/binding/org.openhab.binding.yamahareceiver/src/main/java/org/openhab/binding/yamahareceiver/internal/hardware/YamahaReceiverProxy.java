@@ -88,6 +88,18 @@ public class YamahaReceiverProxy {
 	}
 
 	public void setNetRadio(int lineNo) throws IOException {
+		// there are pages of net radio 'lines' so first thing is to return 'home'
+		postAndGetResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"PUT\"><NET_RADIO><List_Control><Cursor>"
+				+ "Back to Home" + "</Cursor></List_Control></NET_RADIO></YAMAHA_AV>");
+		
+		// then move the cursor down the number of pages (8 lines per page)
+		while (lineNo > 8) {
+			postAndGetResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"PUT\"><NET_RADIO><List_Control><Cursor>"
+					+ "Down" + "</Cursor></List_Control></NET_RADIO></YAMAHA_AV>");
+			lineNo -= 8;
+		}
+		
+		// select the line on the page we land on
 		postAndGetResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"PUT\"><NET_RADIO><List_Control><Direct_Sel>"
 				+ "Line_" + lineNo + "</Direct_Sel></List_Control></NET_RADIO></YAMAHA_AV>");
 	}
