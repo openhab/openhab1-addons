@@ -249,7 +249,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 	 */
 	@Override
 	public void allBindingsChanged(BindingProvider provider) {
-		logger.trace("allBindingsChanged() msg received. Initializing readable DPs");
+		logger.trace("allBindingsChanged() msg received. Initializing readable DPs.");
 		if (provider instanceof KNXBindingProvider) {
 			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
@@ -264,7 +264,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 	 */
 	@Override
 	public void connectionEstablished() {
-		logger.trace("connectionEstablished() msg received. Initializing readable DPs");
+		logger.trace("connectionEstablished() msg received. Initializing readable DPs.");
 		for (KNXBindingProvider knxProvider : providers) {
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
 				datapointsToInitialize.put(datapoint, 0);
