@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.openhab.binding.weather.internal.converter.Converter;
 
@@ -30,7 +31,7 @@ public abstract class AbstractDateConverter implements Converter<Calendar> {
 	 * Creates a DateConverter with the specified pattern.
 	 */
 	public AbstractDateConverter(String pattern) {
-		DATE_PATTERN = new SimpleDateFormat(pattern);
+		DATE_PATTERN = new SimpleDateFormat(pattern, Locale.ENGLISH);
 	}
 
 	/**
