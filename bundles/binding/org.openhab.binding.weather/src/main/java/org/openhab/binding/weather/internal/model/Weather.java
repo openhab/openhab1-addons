@@ -11,6 +11,7 @@ package org.openhab.binding.weather.internal.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.openhab.binding.weather.internal.annotation.Forecast;
@@ -25,6 +26,10 @@ import org.openhab.binding.weather.internal.annotation.ProviderMappings;
  * @since 1.6.0
  */
 public class Weather {
+	public static final String VIRTUAL_TEMP_MINMAX = "temperature.minMax";
+	public static final String VIRTUAL_TEMP_MINMAX_F = "temperature.minMaxF";
+	private static final String[] VIRTUAL_PROPERTIES = new String[] {VIRTUAL_TEMP_MINMAX, VIRTUAL_TEMP_MINMAX_F};
+
 	private Athmosphere athmosphere = new Athmosphere();
 	private Clouds clouds = new Clouds();
 	private Condition condition = new Condition();
@@ -150,6 +155,13 @@ public class Weather {
 		return responseCode;
 	}
 
+	/**
+	 * Returns true, if the specified property is a virtual property.
+	 */
+	public static boolean isVirtualProperty(String property) {
+		return ArrayUtils.contains(VIRTUAL_PROPERTIES, property);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

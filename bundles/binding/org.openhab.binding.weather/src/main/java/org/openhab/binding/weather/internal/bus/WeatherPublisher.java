@@ -9,7 +9,6 @@
 package org.openhab.binding.weather.internal.bus;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +20,7 @@ import org.openhab.binding.weather.WeatherBindingProvider;
 import org.openhab.binding.weather.internal.common.WeatherContext;
 import org.openhab.binding.weather.internal.common.binding.ForecastBindingConfig;
 import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
+import org.openhab.binding.weather.internal.model.Temperature;
 import org.openhab.binding.weather.internal.model.Weather;
 import org.openhab.binding.weather.internal.utils.ItemIterator;
 import org.openhab.binding.weather.internal.utils.ItemIterator.ItemIteratorCallback;
@@ -96,12 +96,23 @@ public class WeatherPublisher {
 				public void next(WeatherBindingConfig bindingConfig, Item item) {
 					if (bindingConfig.getLocationId().equals(locationId)) {
 						try {
-							Object instance = getInstance(weather, bindingConfig);
+							Weather instance = getInstance(weather, bindingConfig);
 							if (instance != null) {
-								Object value = PropertyUtils.getPropertyValue(instance,
-										bindingConfig.getWeatherProperty());
+								String weatherProperty = bindingConfig.getWeatherProperty();
+								Object value = null;
+
+								if (Weather.isVirtualProperty(weatherProperty)) {
+									Temperature temp = instance.getTemperature();
+									if (Weather.VIRTUAL_TEMP_MINMAX.equals(weatherProperty)) {
+										value = getMinMax(temp.getMin(), temp.getMax(), bindingConfig);
+									} else if (Weather.VIRTUAL_TEMP_MINMAX_F.equals(weatherProperty)) {
+										value = getMinMax(temp.getMinF(), temp.getMaxF(), bindingConfig);
+									}
+								} else {
+									value = PropertyUtils.getPropertyValue(instance, weatherProperty);
+								}
 								if (!equalsCachedValue(value, item)) {
-									publishValue(item, value);
+									publishValue(item, value, bindingConfig);
 									itemCache.put(item.getName(), value);
 								}
 							}
@@ -115,10 +126,24 @@ public class WeatherPublisher {
 	}
 
 	/**
+	 * Returns the minMax virtual property as a string.
+	 */
+	private String getMinMax(Double min, Double max, WeatherBindingConfig bindingConfig) {
+		return toDisplayString(min, bindingConfig) + "/" + toDisplayString(max, bindingConfig);
+	}
+
+	/**
+	 * Returns a rounded double value as string.
+	 */
+	private String toDisplayString(Double value, WeatherBindingConfig bindingConfig) {
+		return value == null ? "-" : round(value.toString(), bindingConfig).toString();
+	}
+
+	/**
 	 * Returns the weather or the correct forecast object instance.
 	 */
-	private Object getInstance(Weather weather, WeatherBindingConfig bindingConfig) {
-		Object instance = weather;
+	private Weather getInstance(Weather weather, WeatherBindingConfig bindingConfig) {
+		Weather instance = weather;
 		if (bindingConfig instanceof ForecastBindingConfig) {
 			ForecastBindingConfig fcConfig = (ForecastBindingConfig) bindingConfig;
 			if (fcConfig.getForecastDay() < weather.getForecast().size()) {
@@ -145,7 +170,7 @@ public class WeatherPublisher {
 	/**
 	 * Publishes the item with the value.
 	 */
-	private void publishValue(Item item, Object value) {
+	private void publishValue(Item item, Object value, WeatherBindingConfig bindingConfig) {
 		if (value == null) {
 			context.getEventPublisher().postUpdate(item.getName(), UnDefType.UNDEF);
 		} else if (value instanceof Calendar) {
@@ -157,8 +182,8 @@ public class WeatherPublisher {
 			}
 		} else if (value instanceof Number) {
 			if (item.getAcceptedDataTypes().contains(DecimalType.class)) {
-				BigDecimal decimalValue = new BigDecimal(value.toString()).setScale(2, RoundingMode.HALF_UP);
-				context.getEventPublisher().postUpdate(item.getName(), new DecimalType(decimalValue));
+				context.getEventPublisher().postUpdate(item.getName(),
+						new DecimalType(round(value.toString(), bindingConfig)));
 			} else {
 				logger.warn("Unsupported type for item {}, only DecimalType supported!", item.getName());
 			}
@@ -178,4 +203,13 @@ public class WeatherPublisher {
 		}
 	}
 
+	/**
+	 * Returns a rounded value from the string.
+	 */
+	private BigDecimal round(String value, WeatherBindingConfig bindingConfig) {
+		if (bindingConfig.getRoundingMode() == null) {
+			return new BigDecimal(value);
+		}
+		return new BigDecimal(value).setScale(bindingConfig.getScale(), bindingConfig.getRoundingMode());
+	}
 }

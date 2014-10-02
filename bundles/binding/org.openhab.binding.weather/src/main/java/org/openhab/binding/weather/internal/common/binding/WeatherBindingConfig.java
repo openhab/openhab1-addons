@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.weather.internal.common.binding;
 
+import java.math.RoundingMode;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -24,6 +26,8 @@ public class WeatherBindingConfig implements BindingConfig {
 	private String locationId;
 	private String type;
 	private String property;
+	private RoundingMode roundingMode;
+	private Integer scale;
 
 	/**
 	 * Creates a weather config.
@@ -32,6 +36,11 @@ public class WeatherBindingConfig implements BindingConfig {
 		this.locationId = locationId;
 		this.type = type;
 		this.property = property;
+	}
+
+	public void setScale(RoundingMode roundingMode, Integer scale) {
+		this.roundingMode = roundingMode;
+		this.scale = scale;
 	}
 
 	/**
@@ -56,6 +65,20 @@ public class WeatherBindingConfig implements BindingConfig {
 	}
 
 	/**
+	 * Returns the scale for rounding a numeric value.
+	 */
+	public Integer getScale() {
+		return scale;
+	}
+
+	/**
+	 * Returns the scale mode.
+	 */
+	public RoundingMode getRoundingMode() {
+		return roundingMode;
+	}
+
+	/**
 	 * Returns the full property string.
 	 */
 	public String getWeatherProperty() {
@@ -67,7 +90,8 @@ public class WeatherBindingConfig implements BindingConfig {
 	 */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder().append(locationId).append(type).append(property).toHashCode();
+		return new HashCodeBuilder().append(locationId).append(type).append(property).append(roundingMode)
+				.append(scale).toHashCode();
 	}
 
 	/**
@@ -80,7 +104,8 @@ public class WeatherBindingConfig implements BindingConfig {
 		}
 		WeatherBindingConfig comp = (WeatherBindingConfig) obj;
 		return new EqualsBuilder().append(locationId, comp.getLocationId()).append(type, comp.getType())
-				.append(property, comp.getProperty()).isEquals();
+				.append(property, comp.getProperty()).append(roundingMode, comp.getRoundingMode())
+				.append(scale, comp.getScale()).isEquals();
 	}
 
 	/**
@@ -90,6 +115,9 @@ public class WeatherBindingConfig implements BindingConfig {
 	public String toString() {
 		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
 		tsb.append("locationId", locationId).append("type", type).append("property", property);
+		if (roundingMode != null) {
+			tsb.append("roundingMode", roundingMode).append("scale", scale);
+		}
 		return tsb.toString();
 	}
 }

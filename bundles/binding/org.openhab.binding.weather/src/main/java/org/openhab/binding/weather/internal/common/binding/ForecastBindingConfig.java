@@ -66,6 +66,9 @@ public class ForecastBindingConfig extends WeatherBindingConfig {
 		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
 		tsb.append("locationId", getLocationId()).append("forecast", forecastDay).append("type", getType())
 				.append("property", getProperty());
+		if (getRoundingMode() != null) {
+			tsb.append("roundingMode", getRoundingMode()).append("scale", getScale());
+		}
 		return tsb.toString();
 	}
 
