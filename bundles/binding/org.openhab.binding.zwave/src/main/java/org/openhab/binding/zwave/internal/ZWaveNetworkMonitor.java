@@ -82,6 +82,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	private long networkHealNightlyTime = Long.MAX_VALUE;
 	private long pingNodeTime = Long.MAX_VALUE;
 
+	private boolean doSoftReset = false;
 	private boolean initialised = false;
 
 	Map<Integer, HealNode> healNodes = new HashMap<Integer, HealNode>();
@@ -134,6 +135,15 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// Calculate the next heal time
 		networkHealNightlyTime = calculateNextHeal();
 		networkHealNextTime = networkHealNightlyTime;
+	}
+	
+	/**
+	 * Configures the binding to perform a soft reset during the heal
+	 * 
+	 * @param doReset true to enable performing a soft reset on error or heal
+	 */
+	public void resetOnError(boolean doReset) {
+		doSoftReset = doReset;
 	}
 
 	public String getNodeState(int nodeId) {
@@ -246,6 +256,12 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 		if (healNodes.size() == 0)
 			return false;
+
+		// If we want to do a soft reset on the controller, do it now....
+		if(doSoftReset == true) {
+			logger.debug("HEAL - Performing soft reset!");
+			zController.requestSoftReset();
+		}
 
 		return true;
 	}
@@ -383,11 +399,11 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				healing.state = HealState.PING;
 				ZWaveNoOperationCommandClass zwaveCommandClass = (ZWaveNoOperationCommandClass) healing.node
 						.getCommandClass(CommandClass.NO_OPERATION);
-				if (zwaveCommandClass == null)
+				if (zwaveCommandClass != null) {
+					zController.sendData(zwaveCommandClass.getNoOperationMessage());
+					healing.stateNext = HealState.SETSUCROUTE;
 					break;
-				zController.sendData(zwaveCommandClass.getNoOperationMessage());
-				healing.stateNext = HealState.SETSUCROUTE;
-				break;
+				}
 			}
 			healing.state = HealState.SETSUCROUTE;
 		case SETSUCROUTE:
