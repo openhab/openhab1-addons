@@ -197,6 +197,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0004</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>AN158</Model>
+			<Label lang="en">Switch Meter Plugin</Label>
+			<ConfigFile>everspring/an158.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0101</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -328,6 +337,15 @@
 			<Model>064394</Model>
 			<Label lang="en">Schuko Plug Dimmer</Label>
 			<ConfigFile>reitz/064394.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>5002</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064435</Model>
+			<Label lang="en">Battery powered One paddle wall controller</Label>
+			<ConfigFile>reitz/064435.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -513,20 +531,15 @@
 		<Product>
 			<Reference>
 				<Type>0003</Type>
-				<Id>001A</Id>
-			</Reference>
-			<Model>MES</Model>
-			<Label lang="en">Switching Insert</Label>
-			<ConfigFile>aeon/mes.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>0003</Type>
 				<Id>000C</Id>
 			</Reference>
 			<Reference>
 				<Type>0003</Type>
 				<Id>0012</Id>
+			</Reference>
+			<Reference>
+				<Type>0003</Type>
+				<Id>001A</Id>
 			</Reference>
 			<Model>MSS2E</Model>
 			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
@@ -1199,4 +1212,17 @@
 			<ConfigFile>monster/mllas1000.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>5254</Id>
+		<Name>Remotec</Name>
+		<Product>
+			<Reference>
+				<Type>0101</Type>
+				<Id>8377</Id>
+			</Reference>
+			<Model>ZXT-120</Model>
+			<Label lang="en">Remotec ZXT-120 AC IR Remote</Label>
+			<ConfigFile>remotec/zxt120.xml</ConfigFile>
+		</Product>
+	</Manufacturer>	
 </Manufacturers>
