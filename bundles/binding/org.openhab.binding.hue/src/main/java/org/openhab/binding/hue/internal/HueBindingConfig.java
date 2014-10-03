@@ -9,7 +9,9 @@
 package org.openhab.binding.hue.internal;
 
 import org.openhab.core.binding.BindingConfig;
+import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +70,20 @@ public class HueBindingConfig implements BindingConfig {
 	 */
 	private final int stepSize;
 	
+	/**
+	 * On / Off Item State
+	 */
 	public OnOffType itemStateOnOffType;
+	
+	/**
+	 * Percentage Item State
+	 */
+	public PercentType itemStatePercentType;
+	
+	/**
+	 * HSBType Item State
+	 */
+	public HSBType itemStateHSBType;
 	
 	/**
 	 * Constructor of the HueBindingConfig.

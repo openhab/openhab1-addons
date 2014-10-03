@@ -133,7 +133,11 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 							if (deviceConfig.getType().equals(BindingType.brightness)) {
 								if ((bulb.getIsOn() == true) && (bulb.getIsReachable() == true)) {
 									// Only postUpdate when bulb is on, otherwise dimmer item is not retaining state and shows to max brightness value
-									eventPublisher.postUpdate(hueItemName, new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255)));
+									PercentType newPercent = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255));
+									if ((deviceConfig.itemStatePercentType == null) || (deviceConfig.itemStatePercentType.equals(newPercent) == false)) {
+										eventPublisher.postUpdate(hueItemName, newPercent);
+										deviceConfig.itemStatePercentType = newPercent;
+									}
 								}									
 							} else if (deviceConfig.getType().equals(BindingType.rgb)) {
 								if ((bulb.getIsOn() == true) && (bulb.getIsReachable() == true)) {
@@ -142,7 +146,10 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 									PercentType percentBrightness = new PercentType((int)Math.round((bulb.getBrightness() * (double)100) / (double)255));
 									PercentType percentSaturation = new PercentType((int)Math.round((bulb.getSaturation() * (double)100) / (double)255));
 									HSBType newHsb = new HSBType(decimalHue, percentSaturation, percentBrightness);
-									eventPublisher.postUpdate(hueItemName, newHsb);
+									if ((deviceConfig.itemStateHSBType == null) || (deviceConfig.itemStateHSBType.equals(newHsb) == false)) {
+										eventPublisher.postUpdate(hueItemName, newHsb);
+										deviceConfig.itemStateHSBType = newHsb;
+									}
 								}									
 							}
 						}
