@@ -100,7 +100,9 @@ public abstract class AbstractWeatherParser implements WeatherParser {
 	@Override
 	public boolean endIfForecast(Weather weather, Weather forecast, String propertyName) {
 		if (metadataHandler.isForecast(forecast.getProvider(), propertyName)) {
-			weather.getForecast().add((Forecast) forecast);
+			Forecast fc = (Forecast) forecast;
+			fc.setDay(weather.getForecast().size());
+			weather.getForecast().add(fc);
 			return true;
 		}
 		return false;

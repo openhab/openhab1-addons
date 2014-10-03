@@ -15,9 +15,24 @@ package org.openhab.binding.weather.internal.model;
  * @since 1.6.0
  */
 public class Forecast extends Weather {
+	private int day;
 
 	public Forecast(ProviderName provider) {
 		super(provider);
+	}
+
+	/**
+	 * Returns the day of the forecast.
+	 */
+	public int getDay() {
+		return day;
+	}
+
+	/**
+	 * Sets the day of the forecast.
+	 */
+	public void setDay(int day) {
+		this.day = day;
 	}
 
 }

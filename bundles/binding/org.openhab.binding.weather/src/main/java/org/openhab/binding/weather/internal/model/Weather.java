@@ -28,7 +28,7 @@ import org.openhab.binding.weather.internal.annotation.ProviderMappings;
 public class Weather {
 	public static final String VIRTUAL_TEMP_MINMAX = "temperature.minMax";
 	public static final String VIRTUAL_TEMP_MINMAX_F = "temperature.minMaxF";
-	private static final String[] VIRTUAL_PROPERTIES = new String[] {VIRTUAL_TEMP_MINMAX, VIRTUAL_TEMP_MINMAX_F};
+	private static final String[] VIRTUAL_PROPERTIES = new String[] { VIRTUAL_TEMP_MINMAX, VIRTUAL_TEMP_MINMAX_F };
 
 	private Athmosphere athmosphere = new Athmosphere();
 	private Clouds clouds = new Clouds();
@@ -161,15 +161,19 @@ public class Weather {
 	public static boolean isVirtualProperty(String property) {
 		return ArrayUtils.contains(VIRTUAL_PROPERTIES, property);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("temperature", temperature)
-				.append("athmosphere", athmosphere).append("clouds", clouds).append("condition", condition)
-				.append("precipitation", precipitation).append("wind", wind).append("error", error).toString();
-	}
+		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		if (this instanceof org.openhab.binding.weather.internal.model.Forecast) {
+			tsb.append("day", ((org.openhab.binding.weather.internal.model.Forecast) this).getDay());
+		}
+		tsb.append(temperature).append(athmosphere).append(clouds).append(condition).append(precipitation).append(wind)
+				.append(error);
 
+		return tsb.toString();
+	}
 }
