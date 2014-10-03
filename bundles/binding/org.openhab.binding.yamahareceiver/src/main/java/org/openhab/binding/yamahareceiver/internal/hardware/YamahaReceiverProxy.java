@@ -83,25 +83,12 @@ public class YamahaReceiverProxy {
 
 	public void setSurroundProgram(Zone zone, String name) throws IOException {
 		postAndGetResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"PUT\"><" + zone + "><Surround><Program_Sel><Current><Sound_Program>"
-				+ name
-				+ "</Sound_Program></Current></Program_Sel></Surround></" + zone + "></YAMAHA_AV>");
+				+ name + "</Sound_Program></Current></Program_Sel></Surround></" + zone + "></YAMAHA_AV>");
 	}
 
 	public void setNetRadio(int lineNo) throws IOException {
-		// there are pages of net radio 'lines' so first thing is to return 'home'
-		postAndGetResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"PUT\"><NET_RADIO><List_Control><Cursor>"
-				+ "Back to Home" + "</Cursor></List_Control></NET_RADIO></YAMAHA_AV>");
-		
-		// then move the cursor down the number of pages (8 lines per page)
-		while (lineNo > 8) {
-			postAndGetResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"PUT\"><NET_RADIO><List_Control><Cursor>"
-					+ "Down" + "</Cursor></List_Control></NET_RADIO></YAMAHA_AV>");
-			lineNo -= 8;
-		}
-		
-		// select the line on the page we land on
-		postAndGetResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"PUT\"><NET_RADIO><List_Control><Direct_Sel>"
-				+ "Line_" + lineNo + "</Direct_Sel></List_Control></NET_RADIO></YAMAHA_AV>");
+		postAndGetResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"PUT\"><NET_RADIO><Play_Control><Preset_Sel>"
+				+ lineNo + "</Preset_Sel></Play_Control></NET_RADIO></YAMAHA_AV>");
 	}
 	
 	public YamahaReceiverState getState(Zone zone) throws IOException {
