@@ -118,6 +118,7 @@
     <module>org.openhab.binding.maxcul</module>
     <module>org.openhab.binding.wemo</module>
     <module>org.openhab.binding.weather</module>
+    <module>org.openhab.binding.alarmdecoder</module>
   </modules>
 
 </project>

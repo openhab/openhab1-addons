@@ -389,7 +389,49 @@ public class PersistenceExtensions implements ManagedService {
 		average /= quantity;
 		
 		return new DecimalType(average);
-	} 
+	}
+	
+	/**
+	 * Query for the last update timestamp of a given <code>item</code>.
+	 * The default persistence service is used.
+	 *
+	 * @param item the item to check for state updates
+	 * @return point in time of the last update or null if none available
+	 */
+	static public Date lastUpdate(Item item) {
+		if(isDefaultServiceAvailable()) {
+			return lastUpdate(item, defaultService);
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Query for the last update timestamp of a given <code>item</code>.
+	 *
+	 * @param item the item to check for state updates
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return point in time of the last update or null if none available
+	 */
+	static public Date lastUpdate(Item item, String serviceName) {
+		PersistenceService service = services.get(serviceName);
+		if (service instanceof QueryablePersistenceService) {
+			QueryablePersistenceService qService = (QueryablePersistenceService) service;
+			FilterCriteria filter = new FilterCriteria();
+			filter.setItemName(item.getName());
+			filter.setOrdering(Ordering.DESCENDING);
+			filter.setPageSize(1);
+			Iterable<HistoricItem> result = qService.query(filter);
+			if (result.iterator().hasNext()) {
+				return result.iterator().next().getTimestamp();
+			} else {
+				return null;
+			}
+		} else {
+			logger.warn("There is no queryable persistence service registered with the name '{}'", serviceName);
+			return null;
+		}
+	}
 	
 	static private Iterable<HistoricItem> getAllStatesSince(Item item, AbstractInstant timestamp, String serviceName) {
 		PersistenceService service = services.get(serviceName);
