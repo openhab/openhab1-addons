@@ -54,4 +54,21 @@ public class AnelState {
 			throw new IllegalArgumentException("argument must not be null or empty");
 		this.host = host;
 	}
+
+	/**
+	 * Clear all cached values.
+	 */
+	void clear() {
+		for (int i = 0; i < 8; i++) {
+			switchState[i] = null;
+			switchLocked[i] = null;
+			switchName[i] = null;
+			ioState[i] = null;
+			ioIsInput[i] = null;
+			ioName[i] = null;
+		}
+		name = null;
+		temperature = null;
+		lastUpdate = 0;
+	}
 }

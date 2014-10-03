@@ -26,8 +26,18 @@ import org.osgi.service.cm.ConfigurationException;
  */
 public class AnelConfigReader {
 
-	// default connection settings
-	private final static long DEFAULT_REFRESH_INTERVAL = 300000;
+	/**
+	 * Refresh rate with which the state is regularly updated.
+	 */
+	private final static long DEFAULT_REFRESH_INTERVAL = 60000;
+
+	/**
+	 * If cache period is set to a positive integer, then this specifies the
+	 * amount of minutes the switch states are cached. During that time, only
+	 * changes are reported to the event bus. E.g. when set to 60, the cache is
+	 * cleared once per hour.
+	 */
+	private final static long DEFAULT_CACHE_PERIOD = 0;
 
 	/**
 	 * Config data initialized with default values.
@@ -43,11 +53,25 @@ public class AnelConfigReader {
 	private final static Pattern CONFIG_PATTERN = Pattern.compile(
 			"^(.+?)\\.(host|user|password|udpReceivePort|udpSendPort)$", Pattern.CASE_INSENSITIVE);
 
+	/**
+	 * Read configuration for the Anel binding by creating the connector threads
+	 * (they are not yet started) and returning the refresh rate and cache
+	 * period.
+	 * 
+	 * @param config
+	 *            The configuration passed from the core.
+	 * @param threads
+	 *            A map of threads that will be filled by this call.
+	 * @param bindingFacade
+	 *            The binding facade that is needed by the connector threads.
+	 * @return The refresh rate.
+	 */
 	static long readConfig(Dictionary<String, ?> config, Map<String, AnelConnectorThread> threads,
 			IInternalAnelBinding bindingFacade) throws ConfigurationException {
 		if (config == null || config.isEmpty())
 			return 0;
 
+		long cachePeriod = DEFAULT_CACHE_PERIOD;
 		long refresh = DEFAULT_REFRESH_INTERVAL;
 		final Map<String, AnelConfig> anelConfigs = new HashMap<String, AnelConfig>();
 
@@ -67,6 +91,12 @@ public class AnelConfigReader {
 				// refresh is global setting, get value and continue
 				if ("refresh".equalsIgnoreCase(key)) {
 					refresh = Long.parseLong(((String) config.get(key)).trim());
+					continue;
+				}
+
+				// cache period is global setting, get value and continue
+				if ("cachePeriod".equalsIgnoreCase(key)) {
+					cachePeriod = Integer.parseInt(((String) config.get(key)).trim());
 					continue;
 				}
 
@@ -106,7 +136,7 @@ public class AnelConfigReader {
 			for (String device : anelConfigs.keySet()) {
 				final AnelConfig anelConfig = anelConfigs.get(device);
 				final AnelConnectorThread thread = new AnelConnectorThread(anelConfig.host, anelConfig.receivePort,
-						anelConfig.sendPort, anelConfig.user, anelConfig.password, bindingFacade);
+						anelConfig.sendPort, anelConfig.user, anelConfig.password, bindingFacade, cachePeriod);
 				threads.put(device, thread);
 			}
 		}

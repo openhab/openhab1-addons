@@ -49,8 +49,14 @@ import org.slf4j.LoggerFactory;
  * # Password (optional, defaults to 'anel')
  * anel:anel1.password=anel
  * 
- * # Global refresh interval in ms (optional, defaults to 300000=5min, disable with '0')
- * #refresh=60
+ * # Global refresh interval in ms (optional, defaults to 60000=1min, disable with '0')
+ * #anel:refresh=60
+ * 
+ * # Cache the state for n minutes so only changes are posted (optional, defaults to 0 = disabled)
+ * # Example: if period is 60, once per hour all states are posted to the event bus;
+ * #          changes are always and immediately posted to the event bus.
+ * # The recommended value is 60 minutes.
+ * anel:cachePeriod=60
  * </pre>
  * 
  * Example items:
@@ -102,7 +108,7 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	 * The refresh interval which is used to poll values from the Anel server
 	 * (optional, defaults to 300000ms).
 	 */
-	private long refreshInterval = 300000;
+	private long refreshInterval;
 
 	/** Threads to communicate with Anel devices */
 	private final Map<String, AnelConnectorThread> connectorThreads = new HashMap<String, AnelConnectorThread>();
@@ -260,6 +266,7 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 
 		// clear map of previous threads because config changed
 		connectorThreads.clear();
+		refreshInterval = 0;
 
 		// read new config
 		try {

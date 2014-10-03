@@ -42,6 +42,9 @@ class AnelConnectorThread extends Thread {
 	private final String user;
 	private final String password;
 
+	private long cachePeriod;
+	private long lastCachePurge = 0;
+
 	/**
 	 * Initialize a new thread for listening on UDP packages of an Anel device.
 	 * 
@@ -58,12 +61,15 @@ class AnelConnectorThread extends Thread {
 	 * @param binding
 	 *            A facade to the binding for sending updates to the openHAB
 	 *            event bus.
+	 * @param cachePeriod
+	 *            Cache values for the given amount of minutes.
 	 */
 	AnelConnectorThread(String host, int udpReceivePort, int udpSendPort, String user, String password,
-			IInternalAnelBinding binding) {
+			IInternalAnelBinding binding, long cachePeriod) {
 		this.binding = binding;
 		this.password = password;
 		this.user = user;
+		this.cachePeriod = cachePeriod;
 		state = new AnelState(host);
 		connector = new AnelUDPConnector(host, udpReceivePort, udpSendPort);
 	}
@@ -207,14 +213,24 @@ class AnelConnectorThread extends Thread {
 
 				logger.trace("Received data (len={}): {}", data.length, DatatypeConverter.printString(new String(data)));
 
+				// parse data and create commands for all state changes
 				final Map<AnelCommandType, org.openhab.core.types.State> newValues;
+				long now = System.currentTimeMillis();
 				synchronized (state) {
+
+					// clear cache after <cachePeriod> minutes
+					if (lastCachePurge + (cachePeriod * 60000) < now) {
+						state.clear();
+						lastCachePurge = now;
+					}
 					newValues = AnelDataParser.parseData(data, state);
 				}
 
+				// updates are only needed if commands have been parsed
 				if (newValues != null && !newValues.isEmpty()) {
 					logger.debug("newValues (len={}): {}", newValues.size(), newValues);
 
+					// get all item names and post updates to event bus
 					for (AnelCommandType cmd : newValues.keySet()) {
 						final org.openhab.core.types.State state = newValues.get(cmd);
 
