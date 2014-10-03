@@ -110,7 +110,7 @@ public class ZWaveController {
 	private int manufactureId = 0;
 	private int deviceType = 0; 
 	private int deviceId = 0;
-	private int ZWaveLibraryType = 0;
+	private int zWaveLibraryType = 0;
 	private int sentDataPointer = 1;
 	private boolean setSUC = false;
 	private ZWaveDeviceType controllerType = ZWaveDeviceType.UNKNOWN;
@@ -233,7 +233,7 @@ public class ZWaveController {
 		switch (incomingMessage.getMessageClass()) {
 			case GetVersion:
 				this.zWaveVersion = ((GetVersionMessageClass)processor).getVersion();
-				this.ZWaveLibraryType = ((GetVersionMessageClass)processor).getLibraryType();
+				this.zWaveLibraryType = ((GetVersionMessageClass)processor).getLibraryType();
 				break;
 			case MemoryGetId:
 				this.ownNodeId = ((MemoryGetIdMessageClass)processor).getNodeId();
@@ -780,6 +780,14 @@ public class ZWaveController {
 		return zWaveVersion;
 	}
 
+	 /**
+	  * Gets the zWave Library Type of the controller.
+	  * @return the zWaveLibraryType
+	  */
+	public String getZWaveLibraryType() {
+		return Integer.toString(zWaveLibraryType);
+	}
+	
 	/**
 	 * Gets the Manufacturer ID of the controller. 
 	 * @return the manufactureId
