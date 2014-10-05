@@ -458,6 +458,10 @@
 				<Type>1E12</Type>
 				<Id>015E</Id>
 			</Reference>
+			<Reference>
+				<Type>1E12</Type>
+				<Id>015C</Id>
+			</Reference>
 			<Model>CT30</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
 			<ConfigFile>rtc/ct30.xml</ConfigFile>
@@ -466,6 +470,10 @@
 			<Reference>
 				<Type>6401</Type>
 				<Id>0015</Id>
+			</Reference>
+			<Reference>
+				<Type>6401</Type>
+				<Id>106</Id>
 			</Reference>
 			<Model>CT100</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
