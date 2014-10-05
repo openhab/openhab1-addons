@@ -466,6 +466,10 @@
 				<Type>0006</Type>
 				<Id>0002</Id>
 			</Reference>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>			
 			<Model>Minimote</Model>
 			<Label lang="en">4 button remote control</Label>
 			<ConfigFile>aeon/minimote.xml</ConfigFile>
