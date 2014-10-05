@@ -271,6 +271,8 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 		// read new config
 		try {
 			refreshInterval = AnelConfigReader.readConfig(config, connectorThreads, bindingFacade);
+			logger.debug("Anel configuration read with refresh interval " + refreshInterval + "ms and "
+					+ connectorThreads.size() + " devices.");
 		} catch (ConfigurationException e) {
 			logger.error("Could not read configuration for Anel binding: " + e.getMessage());
 			return;
@@ -282,8 +284,8 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 
 		// successful! now start all device threads
 		for (String device : connectorThreads.keySet()) {
-			logger.debug("Starting message listener for device '" + device + "'");
 			final AnelConnectorThread connectorThread = connectorThreads.get(device);
+			logger.debug("Starting message listener for device: " + connectorThread);
 			connectorThread.start();
 		}
 

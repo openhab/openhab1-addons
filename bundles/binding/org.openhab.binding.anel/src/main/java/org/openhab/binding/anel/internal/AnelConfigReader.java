@@ -131,14 +131,14 @@ public class AnelConfigReader {
 			} catch (NumberFormatException ex) {
 				throw new ConfigurationException(key, "Invalid value: '" + value + "'");
 			}
+		}
 
-			// we collected all configs, now let's create the actual threads
-			for (String device : anelConfigs.keySet()) {
-				final AnelConfig anelConfig = anelConfigs.get(device);
-				final AnelConnectorThread thread = new AnelConnectorThread(anelConfig.host, anelConfig.receivePort,
-						anelConfig.sendPort, anelConfig.user, anelConfig.password, bindingFacade, cachePeriod);
-				threads.put(device, thread);
-			}
+		// we collected all configs, now let's create the actual threads
+		for (String device : anelConfigs.keySet()) {
+			final AnelConfig anelConfig = anelConfigs.get(device);
+			final AnelConnectorThread thread = new AnelConnectorThread(anelConfig.host, anelConfig.receivePort,
+					anelConfig.sendPort, anelConfig.user, anelConfig.password, bindingFacade, cachePeriod);
+			threads.put(device, thread);
 		}
 		return refresh;
 	}

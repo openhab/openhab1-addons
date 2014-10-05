@@ -108,13 +108,14 @@ class AnelConnectorThread extends Thread {
 						logger.error("Error occured when sending UDP data to Anel device: " + cmd, e);
 					}
 				} else {
-					logger.debug("switch is locked, nothing sent.");
+					logger.debug("switch " + switchNr + " is locked, nothing sent.");
 				}
 			} else {
-				logger.debug("switch lock state not yet initialized, nothing sent.");
+				logger.debug("switch " + switchNr + " lock state not yet initialized, nothing sent.");
 			}
 		} else {
-			logger.debug("switch has already the requested state, nothing sent.");
+			logger.debug("switch " + switchNr + " has already the requested state " + (newState ? "ON" : "OFF")
+					+ ", nothing sent.");
 		}
 	}
 
@@ -160,7 +161,10 @@ class AnelConnectorThread extends Thread {
 					logger.error("Error occured when sending UDP data to Anel device: " + cmd, e);
 				}
 			}
-		} // else: IO has already the requested state
+		} else {
+			logger.debug("IO " + ioNr + " has already the requested state " + (newState ? "ON" : "OFF")
+					+ ", nothing sent.");
+		}
 	}
 
 	/**
@@ -220,6 +224,7 @@ class AnelConnectorThread extends Thread {
 
 					// clear cache after <cachePeriod> minutes
 					if (lastCachePurge + (cachePeriod * 60000) < now) {
+						logger.debug("Clearing cache because it was older than " + cachePeriod + " minutes.");
 						state.clear();
 						lastCachePurge = now;
 					}
@@ -259,6 +264,7 @@ class AnelConnectorThread extends Thread {
 	@Override
 	public String toString() {
 		return "Anel connection to '" + state.host + "', send UDP port " + connector.sendPort + ", receive UDP port "
-				+ connector.receivePort + ", user='" + user + "', password='" + password + "'";
+				+ connector.receivePort + ", user='" + user + "', password='" + password + "', cache period="
+				+ cachePeriod + "min.";
 	}
 }

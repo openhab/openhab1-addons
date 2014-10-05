@@ -11,6 +11,7 @@ package org.openhab.binding.anel.internal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -25,6 +26,8 @@ import org.openhab.core.types.UnDefType;
  * @author paphko
  */
 public class AnelDataParser {
+
+	private final static Pattern TEMPERATURE_PATTERN = Pattern.compile("\\d\\d\\.\\d");
 
 	/**
 	 * Parse data package from Anel NET-PwrCtrl device and update
@@ -102,7 +105,7 @@ public class AnelDataParser {
 		// example temperature string: '26.4°C' (btw, the '°' seems to have a
 		// different encoding)
 		final String temperature = arr[24].substring(0, arr[24].length() - 2);
-		if (!temperature.equals(state.temperature)) {
+		if (hasTemperaturChanged(state, temperature)) {
 			result.put(AnelCommandType.TEMPERATURE, new DecimalType(temperature));
 			state.temperature = temperature;
 		}
@@ -115,6 +118,22 @@ public class AnelDataParser {
 		if (!result.isEmpty())
 			state.lastUpdate = System.currentTimeMillis();
 		return result;
+	}
+
+	private static boolean hasTemperaturChanged(AnelState state, final String temperature) {
+		if (state == null || state.temperature == null || state.temperature.isEmpty())
+			return true; // no calculation needed if cached state is empty
+		if (temperature.equals(state.temperature))
+			return false; // if it equals, nothing changed
+
+		// report only changes of more than 0.1 degrees
+		if (TEMPERATURE_PATTERN.matcher(temperature).matches()
+				&& TEMPERATURE_PATTERN.matcher(state.temperature).matches()) {
+			final int intTemperature = Integer.parseInt(temperature.replace(".", ""));
+			final int stateTemperature = Integer.parseInt(state.temperature.replace(".", ""));
+			return !(intTemperature + 1 == stateTemperature || intTemperature - 1 == stateTemperature);
+		}
+		return true; // pattern does not match or temperature differs too much
 	}
 
 	private static <T> void addCommand(T[] cache, int index, T newValue, String commandType,
