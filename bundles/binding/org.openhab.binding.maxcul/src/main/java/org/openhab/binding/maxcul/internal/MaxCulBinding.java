@@ -356,7 +356,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 			}
 		} else {
 			switch (msgType) {
-			/* TODO handle all other incoming messages */
+			/* TODO there are other incoming messages that aren't handled that could be */
 			case WALL_THERMOSTAT_CONTROL:
 				WallThermostatControlMsg wallThermCtrlMsg = new WallThermostatControlMsg(
 						data);
@@ -380,7 +380,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 									new DecimalType(wallThermCtrlMsg
 											.getMeasuredTemperature()));
 						}
-						// TODO switch mode?
+						// TODO switch mode between manual/automatic?
 					}
 				}
 
@@ -402,7 +402,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 									new DecimalType(setTempMsg
 											.getDesiredTemperature()));
 						}
-						// TODO switch mode?
+						// TODO switch mode between manual/automatic?
 					}
 				}
 				/* respond to device */
@@ -442,7 +442,7 @@ public class MaxCulBinding extends AbstractBinding<MaxCulBindingProvider>
 									.postUpdate(itemName, new DecimalType(
 											thermStateMsg.getValvePos()));
 						}
-						// TODO switch mode?
+						// TODO switch mode between manual/automatic?
 					}
 				}
 				/* respond to device */
