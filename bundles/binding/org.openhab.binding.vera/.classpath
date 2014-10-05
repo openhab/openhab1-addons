@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/cling-core-2.0-alpha3.jar"/>
+	<classpathentry kind="lib" path="lib/seamless-http-1.0-alpha3.jar"/>
+	<classpathentry kind="lib" path="lib/seamless-util-1.0-alpha3.jar"/>
+	<classpathentry kind="lib" path="lib/seamless-xml-1.0-alpha3.jar"/>
+	<classpathentry kind="lib" path="lib/xpp3-1.1.4c.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
