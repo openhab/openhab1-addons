@@ -41,6 +41,9 @@ public class MaxCulBindingConfigParser {
 			logger.debug("Listen Mode switch found");
 			cfg.setDeviceType(MaxCulDevice.LISTEN_MODE);
 			return;
+		} else if (bindingConfigStr.startsWith("CreditMonitor")) {
+			logger.debug("Credit Monitor binding found");
+			cfg.setDeviceType(MaxCulDevice.CREDIT_MONITOR);
 		} else if (configParts.length < 2) {
 			throw new BindingConfigParseException(
 					"MaxCul configuration requires a configuration of at least the format <device_type>:<serial_num> for a MAX! device.");
@@ -89,6 +92,7 @@ public class MaxCulBindingConfigParser {
 				case WALL_THERMOSTAT:
 					cfg.setFeature(MaxCulFeature.THERMOSTAT);
 					break;
+				case CREDIT_MONITOR:
 				case PAIR_MODE:
 				case LISTEN_MODE:
 				case CUBE:
@@ -98,10 +102,11 @@ public class MaxCulBindingConfigParser {
 			}
 			/*
 			 * load stored configuration from pairing (if present) except on
-			 * pair/listen mode bindings
+			 * pair/listen mode/credit monitor bindings
 			 */
 			if (cfg.getDeviceType() != MaxCulDevice.PAIR_MODE
-					|| cfg.getDeviceType() != MaxCulDevice.LISTEN_MODE)
+					|| cfg.getDeviceType() != MaxCulDevice.LISTEN_MODE 
+					|| cfg.getDeviceType() != MaxCulDevice.CREDIT_MONITOR)
 				cfg.loadStoredConfig();
 		}
 	}
