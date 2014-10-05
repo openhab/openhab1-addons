@@ -87,8 +87,9 @@ public class YamahaReceiverProxy {
 	}
 
 	public void setNetRadio(int lineNo) throws IOException {
-		postAndGetResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"PUT\"><NET_RADIO><Play_Control><Preset_Sel>"
-				+ lineNo + "</Preset_Sel></Play_Control></NET_RADIO></YAMAHA_AV>");
+		 /* Jump to specified line in preset list */
+		postAndGetResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"PUT\"><NET_RADIO><Play_Control><Preset><Preset_Sel>"
+				+ lineNo + "</Preset_Sel></Preset></Play_Control></NET_RADIO></YAMAHA_AV>");
 	}
 	
 	public YamahaReceiverState getState(Zone zone) throws IOException {
