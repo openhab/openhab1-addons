@@ -22,7 +22,7 @@ import org.osgi.service.cm.ConfigurationException;
  * Reads the configuration and initializes connector threads for them.
  * 
  * @since 1.6.0
- * @author koenemann
+ * @author paphko
  */
 public class AnelConfigReader {
 
@@ -39,9 +39,7 @@ public class AnelConfigReader {
 	 */
 	private final static long DEFAULT_CACHE_PERIOD = 0;
 
-	/**
-	 * Config data initialized with default values.
-	 */
+	/** Config data initialized with default values. */
 	private static class AnelConfig {
 		String user = "user7";
 		String password = "anel";
@@ -50,6 +48,7 @@ public class AnelConfigReader {
 		int receivePort = 77;
 	}
 
+	/** Pattern for all valid device configuration keys. */
 	private final static Pattern CONFIG_PATTERN = Pattern.compile(
 			"^(.+?)\\.(host|user|password|udpReceivePort|udpSendPort)$", Pattern.CASE_INSENSITIVE);
 

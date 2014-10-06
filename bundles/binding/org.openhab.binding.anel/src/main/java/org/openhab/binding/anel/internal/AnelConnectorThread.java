@@ -34,15 +34,28 @@ class AnelConnectorThread extends Thread {
 
 	private static final String UDP_STATE_REQUEST = "wer da?";
 
+	/** Interruption indicator for listening thread. */
 	private boolean interrupted = false;
 
-	private final AnelState state; // cached states of switches and I/O
+	/** Cached states of device name, temperature, switches, and I/O. */
+	private final AnelState state;
+
+	/** The actual connector to to the device. */
 	private final AnelUDPConnector connector;
+
+	/** Hook to binding to request binding items. */
 	private final IInternalAnelBinding binding;
+
+	/** Login of the device. */
 	private final String user;
+
+	/** Password of the device. */
 	private final String password;
 
+	/** If caching is enabled, keep cache for this amount of minutes. */
 	private long cachePeriod;
+
+	/** Remember last time the cache was purged. */
 	private long lastCachePurge = 0;
 
 	/**
