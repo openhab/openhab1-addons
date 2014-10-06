@@ -79,7 +79,7 @@ public class ZWaveNode {
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
-	private boolean neighborsUpdated = false;
+
 	private Date lastUpdated; 
 	private Date queryStageTimeStamp;
 	private volatile NodeStage nodeStage;
@@ -672,13 +672,6 @@ public class ZWaveNode {
 		nodeNeighbors.clear();
 	}
 	
-	
-	public boolean neighborsUpdated() {
-		return this.neighborsUpdated;
-	}
-	public void setNeighborsUpdated(boolean pending) {
-		this.neighborsUpdated = pending;
-	}
 
 	/**
 	 * Updates a nodes routing information

@@ -56,7 +56,6 @@ public class GetRoutingInfoMessageClass extends ZWaveCommandProcessor {
 			return false;
 		}
 		
-		List<Integer> oldNeighbors = node.getNeighbors();
 		node.clearNeighbors();
 		boolean hasNeighbors = false;
 		for (int by = 0; by < NODE_BYTES; by++) {
@@ -84,12 +83,6 @@ public class GetRoutingInfoMessageClass extends ZWaveCommandProcessor {
 		zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.NodeRoutingInfo, nodeId,
 				ZWaveNetworkEvent.State.Success));
 		
-		List<Integer> newNeighbors = node.getNeighbors();
-		
-		if (!oldNeighbors.containsAll(newNeighbors) && oldNeighbors.size() != newNeighbors.size() )
-			node.setNeighborsUpdated(true);
-		else
-			node.setNeighborsUpdated(false);
 				
 		transactionComplete = true;
 		return false;
