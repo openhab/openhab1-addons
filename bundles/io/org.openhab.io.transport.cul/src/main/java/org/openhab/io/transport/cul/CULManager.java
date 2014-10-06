@@ -10,7 +10,6 @@ package org.openhab.io.transport.cul;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +18,6 @@ import java.util.Map;
 import org.openhab.io.transport.cul.internal.CULHandlerInternal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 
 /**
