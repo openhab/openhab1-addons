@@ -23,23 +23,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Base class for the Heatmiser thermostats.
- * This provides the core functionality - other thermostat classes
- * extend this to provide or update the specific functionality of that thermostat.
+ * Base class for the Heatmiser thermostats. This provides the core
+ * functionality - other thermostat classes extend this to provide or update the
+ * specific functionality of that thermostat.
  * 
  * @author Chris Jackson
  * @since 1.4.0
- *
+ * 
  */
-public class HeatmiserThermostat {
-	private static Logger logger = LoggerFactory.getLogger(HeatmiserThermostat.class); 
+public abstract class HeatmiserThermostat {
+	private static Logger logger = LoggerFactory.getLogger(HeatmiserThermostat.class);
 
-	private byte address;
-	private int frameLength;
-	private byte function;
-	protected byte data[];
-	private int dcbStart;
-	private Models dcbModel;
+	private String connector;
+
+	protected int frameLength;
+	protected byte function;
+	protected byte dcbData[];
+	protected int dcbStart;
+	protected Models dcbModel;
 	protected byte dcbState;
 	protected byte dcbHeatState;
 	protected byte dcbWaterState;
@@ -50,24 +51,76 @@ public class HeatmiserThermostat {
 	protected int dcbHolidayTime;
 	protected int dcbHoldTime;
 
-	public void setAddress(byte newAddress) {
-		address = newAddress;
+	protected byte DCB_READ_DATA_START			= 0;
+
+	protected byte DCB_READ_MODEL				= 4;
+	protected byte DCB_READ_FROST_TEMPERATURE	= 17;
+	protected byte DCB_READ_SET_TEMPERATURE		= 18;
+	protected byte DCB_READ_ON_OFF_STATE		= 21;
+	protected byte DCB_READ_HOLIDAY_TIME		= 24;
+	protected byte DCB_READ_HOLD_TIME			= 26;
+	protected byte DCB_READ_FLOOR_TEMPERATURE	= 30;
+	protected byte DCB_READ_ROOM_TEMPERATURE	= 32;
+	protected byte DCB_READ_HEAT_STATE			= 35;
+	protected byte DCB_READ_WATER_STATE			= 36;
+	
+	protected byte DCB_WRITE_FROSTTEMP			= 17;
+	protected byte DCB_WRITE_ROOMTEMP			= 18;
+	protected byte DCB_WRITE_ENABLE				= 21;
+	protected byte DCB_WRITE_RUNMODE			= 23;
+	protected byte DCB_WRITE_HOLIDAYTIME		= 24;
+	protected byte DCB_WRITE_WATERSTATE			= 42;
+	protected byte DCB_WRITE_TIME				= 43;
+
+
+	/**
+	 * Set the connector to be used with this thermostat
+	 * @param newConnector
+	 */
+	public void setConnector(String newConnector) {
+		connector = newConnector;
 	}
 
-	public int getAddress() {
-		return address;
+	/**
+	 * Get the connector to be used with this thermostat
+	 * @return
+	 */
+	public String getConnector() {
+		return connector;
 	}
+	
+	abstract public int getAddress();
 
 	protected int getInt(int pos) {
 		int val;
-		val = (data[pos] & 0xFF) + ((data[pos + 1] & 0xFF) * 256);
+		val = (dcbData[pos] & 0xFF) + ((dcbData[pos + 1] & 0xFF) * 256);
 		return val;
 	}
 
 	protected double getTemp(int pos) {
 		double val;
-		val = (double) ((data[pos + 1] & 0xFF) + ((data[pos] & 0xFF) * 256)) / 10;
+		val = (double) ((dcbData[pos + 1] & 0xFF) + ((dcbData[pos] & 0xFF) * 256)) / 10;
 		return val;
+	}
+
+	/**
+	 * 
+	 */
+	void readDCB() {
+		dcbState = dcbData[DCB_READ_DATA_START + DCB_READ_ON_OFF_STATE];
+		dcbHeatState = dcbData[DCB_READ_DATA_START + DCB_READ_HEAT_STATE];
+		dcbFrostTemperature = dcbData[DCB_READ_DATA_START + DCB_READ_FROST_TEMPERATURE];
+		dcbRoomTemperature = getTemp(DCB_READ_DATA_START + DCB_READ_ROOM_TEMPERATURE);
+		dcbSetTemperature = dcbData[DCB_READ_DATA_START + DCB_READ_SET_TEMPERATURE];
+		dcbHolidayTime = getTime(DCB_READ_DATA_START + DCB_READ_HOLIDAY_TIME);
+		dcbHoldTime = getTime(DCB_READ_DATA_START + DCB_READ_HOLD_TIME);
+
+		// The following are not supported in all thermostats
+		if(DCB_READ_FLOOR_TEMPERATURE != 0)
+			dcbFloorTemperature = getTemp(DCB_READ_DATA_START + DCB_READ_FLOOR_TEMPERATURE);
+
+		if(DCB_READ_WATER_STATE != 0)
+			dcbWaterState = dcbData[DCB_READ_DATA_START + DCB_READ_WATER_STATE];
 	}
 
 	/*
@@ -76,53 +129,9 @@ public class HeatmiserThermostat {
 	 * 
 	 * @param in Input data byte array
 	 */
-	public boolean setData(byte in[]) {
-		if (in.length < 9)
-			return false;
+	abstract public boolean setData(byte in[]);
 
-		data = in;
-		frameLength = getInt(1);
-		if (in.length != frameLength)
-			return false;
-
-		int crc = getInt(frameLength - 2);
-		if (crc != checkCRC(data))
-			return false;
-
-		address = data[3];
-		function = data[4];
-		if (function == 1)
-			return false;
-
-		// Check that the whole DCB is returned
-		// While this isn't 100% necessary, it's what the binding does to make
-		// things easier!
-		dcbStart = getInt(5);
-		if (dcbStart != 0)
-			return false;
-
-		switch (data[13]) {
-		case 0:
-			dcbModel = Models.DT;
-			break;
-		case 1:
-			dcbModel = Models.DTE;
-			break;
-		case 2:
-			dcbModel = Models.PRT;
-			break;
-		case 3:
-			dcbModel = Models.PRTE;
-			break;
-		case 4:
-			dcbModel = Models.PRTHW;
-			break;
-		}
-
-		return true;
-	}
-
-	private int checkCRC(byte[] packet) {
+	protected int checkCRC(byte[] packet) {
 		int crc = 0xFFFF; // initial value
 		int polynomial = 0x1021; // 0001 0000 0010 0001 (0, 5, 12)
 
@@ -142,54 +151,31 @@ public class HeatmiserThermostat {
 		return crc;
 	}
 
-	protected byte[] makePacket(boolean write, int start, int length,
-			byte[] data) {
-		byte[] outPacket;
-
-		if (write == false)
-			outPacket = new byte[10];
-		else
-			outPacket = new byte[10 + length];
-
-		outPacket[0] = address;
-		if (write) {
-			outPacket[1] = (byte) (length + 10);
-			outPacket[3] = 1;
-		} else {
-			outPacket[1] = 10;
-			outPacket[3] = 0;
-		}
-		outPacket[2] = (byte) 0x81;
-		outPacket[4] = (byte) (start & 0xff);
-		outPacket[5] = (byte) ((start >> 8) & 0xff);
-		outPacket[6] = (byte) (length & 0xff);
-		outPacket[7] = (byte) ((length >> 8) & 0xff);
-
-		if (write == true) {
-			for (byte cnt = 0; cnt < length; cnt++)
-				outPacket[8 + cnt] = data[cnt];
-		} else
-			length = 0;
-
-		int crc = checkCRC(outPacket);
-		outPacket[length + 8] = (byte) (crc & 0xff);
-		outPacket[length + 9] = (byte) ((crc >> 8) & 0xff);
-
-		return outPacket;
-	}
+	/**
+	 * Build a packet to send to the thermostat
+	 * 
+	 * @param write
+	 * @param start
+	 * @param length
+	 * @param data
+	 * @return
+	 */
+	protected abstract byte[] makePacket(boolean write, int start, int length, byte[] data);
 
 	/**
 	 * Produces a packet to poll this thermostat
+	 * 
 	 * @return byte array with the packet
 	 */
-	public byte[] pollThermostat() {
-		return makePacket(false, 0, 0xffff, null);
-	}
+	public abstract byte[] pollThermostat();
 
 	/**
 	 * Formats a command to the thermostat
-	 * @param function The command function 
-	 * @param command The openHAB command parameter
+	 * 
+	 * @param function
+	 *            The command function
+	 * @param command
+	 *            The openHAB command parameter
 	 * @return byte array with the command packet
 	 */
 	public byte[] formatCommand(Functions function, Command command) {
@@ -204,6 +190,8 @@ public class HeatmiserThermostat {
 			return setFrostTemperature(command);
 		case HOLIDAYSET:
 			return setHolidayTime(command);
+		case WATERSTATE:
+			return setWaterState(command);
 		default:
 			return null;
 		}
@@ -214,7 +202,17 @@ public class HeatmiserThermostat {
 	}
 
 	/**
+	 * Extracts a time from the data buffer
+	 * @param i
+	 * @return
+	 */
+	protected int getTime(int i) {
+		return (dcbData[i+1] & 0xFF) + ((dcbData[i] & 0xFF) * 256);
+	}
+
+	/**
 	 * Command to set the room temperature
+	 * 
 	 * @param command
 	 * @return byte array with the command data
 	 */
@@ -232,11 +230,12 @@ public class HeatmiserThermostat {
 			return null;
 
 		cmdByte[0] = temperature;
-		return makePacket(true, 18, 1, cmdByte);
+		return makePacket(true, DCB_WRITE_ROOMTEMP, 1, cmdByte);
 	}
 
 	/**
 	 * Sets the frost temperature
+	 * 
 	 * @param command
 	 * @return byte array with the command packet
 	 */
@@ -250,12 +249,14 @@ public class HeatmiserThermostat {
 			temperature = 18;
 
 		cmdByte[0] = (byte) temperature;
-		return makePacket(true, 17, 1, cmdByte);
+		return makePacket(true, DCB_WRITE_FROSTTEMP, 1, cmdByte);
 	}
 
 	/**
 	 * Sets the holiday time
-	 * @param command time to set holiday mode - specified in days
+	 * 
+	 * @param command
+	 *            time to set holiday mode - specified in days
 	 * @return command string to send to thermostat
 	 */
 	public byte[] setHolidayTime(Command command) {
@@ -276,20 +277,21 @@ public class HeatmiserThermostat {
 		time -= now.get(Calendar.HOUR_OF_DAY);
 
 		// Sanity check
-		if(time < 0)
+		if (time < 0)
 			time = 0;
-		if(time > (99*24))
+		if (time > (99 * 24))
 			time = 0;
 		logger.debug("Setting holiday time {} days = {} hours.", command.toString(), time);
 
 		cmdBytes[0] = (byte) (time & 0xff);
 		cmdBytes[1] = (byte) ((time >> 8) & 0xff);
 
-		return makePacket(true, 24, 2, cmdBytes);
+		return makePacket(true, DCB_WRITE_HOLIDAYTIME, 2, cmdBytes);
 	}
 
-	/** 
+	/**
 	 * Sets the current time for the thermostat
+	 * 
 	 * @param command
 	 * @return command string to send to thermostat
 	 */
@@ -302,11 +304,12 @@ public class HeatmiserThermostat {
 		// end
 		// cmdFrame =
 		// Dec2Hex(Now.wday)..Dec2Hex(Now.hour)..Dec2Hex(Now.min)..Dec2Hex(Now.sec)
-		return makePacket(true, 43, 4, cmdBytes);
+		return makePacket(true, DCB_WRITE_TIME, 4, cmdBytes);
 	}
 
 	/**
 	 * Enables or disables the thermostat
+	 * 
 	 * @param command
 	 * @return
 	 */
@@ -317,7 +320,7 @@ public class HeatmiserThermostat {
 			cmdByte[0] = 1;
 		else
 			cmdByte[0] = 0;
-		return makePacket(true, 21, 1, cmdByte);
+		return makePacket(true, DCB_WRITE_ENABLE, 1, cmdByte);
 	}
 
 	public byte[] setRunMode(Command command) {
@@ -327,15 +330,29 @@ public class HeatmiserThermostat {
 			cmdByte[0] = 1;
 		else
 			cmdByte[0] = 0;
-		return makePacket(true, 23, 1, cmdByte);
+		return makePacket(true, DCB_WRITE_RUNMODE, 1, cmdByte);
+	}
+
+	private byte[] setWaterState(Command command) {
+		byte[] cmdByte = new byte[1];
+
+		if (command.toString().contentEquals("ON"))
+			cmdByte[0] = 1;
+		else
+			cmdByte[0] = 0;
+		return makePacket(true, DCB_WRITE_WATERSTATE, 1, cmdByte);
 	}
 
 	/**
 	 * Returns the current room temperature
+	 * 
 	 * @param itemType
 	 * @return
 	 */
 	public State getTemperature(Class<? extends Item> itemType) {
+		if(DCB_READ_ROOM_TEMPERATURE == 0)
+			return null;
+
 		if (itemType == StringItem.class)
 			return StringType.valueOf(Double.toString(dcbRoomTemperature));
 
@@ -345,6 +362,7 @@ public class HeatmiserThermostat {
 
 	/**
 	 * Returns the current frost temperature
+	 * 
 	 * @param itemType
 	 * @return
 	 */
@@ -358,6 +376,7 @@ public class HeatmiserThermostat {
 
 	/**
 	 * Returns the current floor temperature
+	 * 
 	 * @param itemType
 	 * @return
 	 */
@@ -370,38 +389,38 @@ public class HeatmiserThermostat {
 	}
 
 	/**
-	 * Returns the current state of the thermostat
-	 * This is a consolidated status that brings together a number of
-	 * status registers within the thermostat.
+	 * Returns the current state of the thermostat This is a consolidated status
+	 * that brings together a number of status registers within the thermostat.
+	 * 
 	 * @param itemType
 	 * @return
 	 */
 	public State getState(Class<? extends Item> itemType) {
-		// If this is a switch, then just treat this like the getOnOffState() function
+		// If this is a switch, then just treat this like the getOnOffState()
+		// function
 		if (itemType == SwitchItem.class)
 			return dcbState == 1 ? OnOffType.ON : OnOffType.OFF;
 
 		// Default to a string
-		if(dcbState == 0)
+		if (dcbState == 0)
 			return StringType.valueOf(States.OFF.toString());
-		if(dcbHolidayTime != 0)
+		if (dcbHolidayTime != 0)
 			return StringType.valueOf(States.HOLIDAY.toString());
-		if(dcbHoldTime != 0)
+		if (dcbHoldTime != 0)
 			return StringType.valueOf(States.HOLD.toString());
 
 		return StringType.valueOf(States.ON.toString());
 	}
 
-
 	/**
 	 * Returns the current heating state
+	 * 
 	 * @param itemType
 	 * @return
 	 */
 	public State getOnOffState(Class<? extends Item> itemType) {
 		if (itemType == StringItem.class)
-			return dcbState == 1 ? StringType.valueOf("ON") : StringType
-					.valueOf("OFF");
+			return dcbState == 1 ? StringType.valueOf("ON") : StringType.valueOf("OFF");
 		if (itemType == SwitchItem.class)
 			return dcbState == 1 ? OnOffType.ON : OnOffType.OFF;
 
@@ -410,9 +429,11 @@ public class HeatmiserThermostat {
 	}
 
 	public State getWaterState(Class<? extends Item> itemType) {
+		if(DCB_READ_WATER_STATE == 0)
+			return null;
+
 		if (itemType == StringItem.class)
-			return dcbWaterState == 1 ? StringType.valueOf("ON") : StringType
-					.valueOf("OFF");
+			return dcbWaterState == 1 ? StringType.valueOf("ON") : StringType.valueOf("OFF");
 		if (itemType == SwitchItem.class)
 			return dcbWaterState == 1 ? OnOffType.ON : OnOffType.OFF;
 
@@ -430,8 +451,7 @@ public class HeatmiserThermostat {
 
 	public State getHeatState(Class<? extends Item> itemType) {
 		if (itemType == StringItem.class)
-			return dcbHeatState == 1 ? StringType.valueOf("ON") : StringType
-					.valueOf("OFF");
+			return dcbHeatState == 1 ? StringType.valueOf("ON") : StringType.valueOf("OFF");
 		if (itemType == SwitchItem.class)
 			return dcbHeatState == 1 ? OnOffType.ON : OnOffType.OFF;
 
@@ -463,7 +483,7 @@ public class HeatmiserThermostat {
 		// Return the number of days (midnights) remaining
 		// ie midnight tonight == 1
 		int days = 0;
-		if(dcbHolidayTime > 0)
+		if (dcbHolidayTime > 0)
 			days = dcbHolidayTime / 24 + 1;
 
 		return DecimalType.valueOf(Integer.toString(days));
@@ -488,9 +508,7 @@ public class HeatmiserThermostat {
 	}
 
 	public enum Functions {
-		UNKNOWN, ROOMTEMP, FLOORTEMP, ONOFF, RUNMODE, SETTEMP, FROSTTEMP, 
-		HOLIDAYTIME, HOLIDAYMODE, HOLIDAYSET, HEATSTATE, WATERSTATE, 
-		HOLDTIME, HOLDMODE, STATE;
+		UNKNOWN, ROOMTEMP, FLOORTEMP, ONOFF, RUNMODE, SETTEMP, FROSTTEMP, HOLIDAYTIME, HOLIDAYMODE, HOLIDAYSET, HEATSTATE, WATERSTATE, HOLDTIME, HOLDMODE, STATE;
 	}
 
 	public enum States {
@@ -498,6 +516,6 @@ public class HeatmiserThermostat {
 	}
 
 	public enum Models {
-		PRT, PRTHW, DT, DTE, PRTE
+		UNKNOWN, PRT, PRTHW, DT, DTE, PRTE, PRT_WIFI, PRTHW_WIFI, DT_WIFI, DTE_WIFI, PRTE_WIFI
 	}
 }

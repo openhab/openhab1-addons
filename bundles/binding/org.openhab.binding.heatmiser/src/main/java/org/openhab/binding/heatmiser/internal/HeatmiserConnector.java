@@ -44,6 +44,8 @@ public class HeatmiserConnector {
 	private Socket socket = null;
 	private InputStream in = null;
 	private OutputStream out = null;
+	
+	private int rxAddress = (byte)0x81;
 
 	Thread inputThread = null;
 	
@@ -60,6 +62,10 @@ public class HeatmiserConnector {
 	}
 	
 	public HeatmiserConnector() {
+	}
+	
+	public void setRxAddress(byte addr) {
+		rxAddress = addr;
 	}
 
 	public void connect(String address, int port) throws IOException {
@@ -81,7 +87,7 @@ public class HeatmiserConnector {
 			return;
 		}
 
-		inputThread = new InputReader(in);
+		inputThread = new InputReader(in, this);
 		inputThread.start();
 		
 		connectionStateCount = 0;
@@ -151,9 +157,11 @@ public class HeatmiserConnector {
 	 */
 	public class InputReader extends Thread {
 		InputStream in;
+		HeatmiserConnector connector;
 
-		public InputReader(InputStream in) {
+		public InputReader(InputStream in, HeatmiserConnector connector) {
 			this.in = in;
+			this.connector = connector;
 		}
 
 		public void interrupt() {
@@ -166,13 +174,14 @@ public class HeatmiserConnector {
 		}
 
 		public void run() {
-			final int dataBufferMaxLen = 256;
+			final int dataBufferMaxLen = 512;
 
 			byte[] dataBuffer = new byte[dataBufferMaxLen];
 
 			int msgLen = 0;
 			int index = 0;
 			States state = States.SEARCHING;
+			int rxAddress = connector.rxAddress;
 
 			try {
 				byte[] tmpData = new byte[150];
@@ -180,13 +189,12 @@ public class HeatmiserConnector {
 
 				while ((len = in.read(tmpData)) > 0) {
 					for (int i = 0; i < len; i++) {
-
 						if (index >= dataBufferMaxLen) {
 							// too many bytes received, try to find new start
 							state = States.SEARCHING;
 						}
 
-						if (state == States.SEARCHING && (int)(tmpData[i] & 0xff) == 0x81) {
+						if (state == States.SEARCHING && tmpData[i] == rxAddress) {
 							state = States.LENGTH1;
 							index = 0;
 							dataBuffer[index++] = tmpData[i];
@@ -209,7 +217,7 @@ public class HeatmiserConnector {
 								for (int j = 0; j < msgLen; j++)
 									msg[j] = dataBuffer[j];
 
-								HeatmiserResponseEvent event = new HeatmiserResponseEvent(this);
+								HeatmiserResponseEvent event = new HeatmiserResponseEvent(connector);
 
 								// Decrement the state counter by 2
 								if(connectionStateCount <= 2)
@@ -239,7 +247,7 @@ public class HeatmiserConnector {
 				}
 			} catch (InterruptedIOException e) {
 				Thread.currentThread().interrupt();
-				logger.error("Interrupted via InterruptedIOException");
+				logger.error("Interrupted via InterruptedIOException after {} bytes", e.bytesTransferred);
 			} catch (IOException e) {
 				logger.error("Reading from network failed", e);
 			}
