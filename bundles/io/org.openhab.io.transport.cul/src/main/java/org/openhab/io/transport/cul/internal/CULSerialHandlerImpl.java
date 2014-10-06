@@ -53,6 +53,31 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 	private BufferedReader br;
 	private BufferedWriter bw;
 
+	/**
+	 * Default Constructor
+	 * @param deviceName
+	 * 			String representing the device.
+	 * @param mode
+	 * 			The RF mode for which the device will be configured.
+	 */
+	public CULSerialHandlerImpl(String deviceName, CULMode mode) {
+		super(deviceName, mode);
+	}
+	
+	
+	/**
+	 * Constructor including property map for specific configuration.
+	 * @param deviceName
+	 * 			String representing the device.
+	 * @param mode
+	 * 			The RF mode for which the device will be configured.
+	 * @param properties
+	 * 			Property Map containing specific configuration for serial device connection.
+	 * 			<ul>
+	 * 				<li>"baudrate" (Integer) Setup baudrate</li>
+	 * 				<li>"parity" (Integer) Setup parity bit handling. (http://show.docjava.com/book/cgij/code/data/j4pDoc/constant-values.html#serialPort.rxtx.SerialPortInterface.PARITY_NONE)
+	 * 			</ul>
+	 */
 	public CULSerialHandlerImpl(String deviceName, CULMode mode, Map<String, ?> properties){
 		super(deviceName, mode);
 		
@@ -68,9 +93,6 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 		
 	}
 	
-	public CULSerialHandlerImpl(String deviceName, CULMode mode) {
-		super(deviceName, mode);
-	}
 
 	@Override
 	public void serialEvent(SerialPortEvent event) {

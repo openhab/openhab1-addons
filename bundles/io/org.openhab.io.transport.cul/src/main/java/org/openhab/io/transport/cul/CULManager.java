@@ -50,7 +50,6 @@ public class CULManager {
 	 * @return A CULHandler to communicate with the culfw based device.
 	 * @throws CULDeviceException
 	 */
-	
 	public static CULHandler getOpenCULHandler(String deviceName, CULMode mode) throws CULDeviceException {
 		return getOpenCULHandler(deviceName, mode, null);
 	}
