@@ -49,9 +49,22 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 	private OutputStream os;
 	private BufferedReader br;
 	private BufferedWriter bw;
+	private int credit10ms = 0;
 
 	public CULSerialHandlerImpl(String deviceName, CULMode mode) {
 		super(deviceName, mode);
+	}
+	
+	private void requestCreditReport()
+	{
+		/* this requests a report which provides credit10ms */
+		log.debug("Requesting credit report");
+		try {
+			bw.write("X\r\n");
+			bw.flush();
+		} catch (IOException e) {
+			log.error("Can't write report command to CUL", e);
+		}
 	}
 
 	@Override
@@ -66,8 +79,15 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 				} else if ("LOVF".equals(data)) {
 					log.warn("(LOVF) Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
 					return;
+				} else if (data.matches("^.. *\\d*"))
+				{					
+					String[] report = data.split(" ");					
+					credit10ms = Integer.parseInt(report[report.length-1]);
+					log.debug("credit10ms = "+credit10ms);
+					return;
 				}
 				notifyDataReceived(data);
+				requestCreditReport();
 			} catch (IOException e) {
 				log.error("Exception while reading from serial port", e);
 				notifyError(e);
@@ -89,6 +109,8 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 			} catch (IOException e) {
 				log.error("Can't write to CUL", e);
 			}
+			
+			requestCreditReport();
 		}
 
 	}
@@ -151,5 +173,10 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 			}
 		}
 
+	}
+
+	@Override
+	public int getCredit10ms() {
+		return credit10ms;
 	}
 }
