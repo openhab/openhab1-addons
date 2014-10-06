@@ -924,6 +924,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if (action.equals("Refresh")) {
 					// this.zController.requestNodeNeighborUpdate(nodeId);
 					this.zController.requestNodeRoutingInfo(nodeId);// .requestNodeNeighborUpdate(nodeId);
+					// If nodes updated then Save node neighbors to XML!
+					if (node.neighborsUpdated()) {
+						ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+						nodeSerializer.SerializeNode(node);
+					}
 				}
 			}
 

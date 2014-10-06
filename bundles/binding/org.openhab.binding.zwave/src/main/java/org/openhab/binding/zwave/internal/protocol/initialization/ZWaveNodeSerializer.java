@@ -106,6 +106,7 @@ public class ZWaveNodeSerializer {
 					} catch (IOException e) {
 					}
 			}
+			node.setNeighborsUpdated(false);
 		}
 	}
 

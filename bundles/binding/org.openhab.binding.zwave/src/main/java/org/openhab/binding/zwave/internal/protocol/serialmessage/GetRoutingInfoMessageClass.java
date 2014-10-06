@@ -8,11 +8,12 @@
  */
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
+import java.util.List;
+
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
-import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ public class GetRoutingInfoMessageClass extends ZWaveCommandProcessor {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 		
 		logger.debug("NODE {}: Got NodeRoutingInfo request.", nodeId);
-
+		
 		// Get the node
 		ZWaveNode node = zController.getNode(nodeId);
 		if(node == null) {
@@ -54,7 +55,8 @@ public class GetRoutingInfoMessageClass extends ZWaveCommandProcessor {
 			transactionComplete = true;
 			return false;
 		}
-
+		
+		List<Integer> oldNeighbors = node.getNeighbors();
 		node.clearNeighbors();
 		boolean hasNeighbors = false;
 		for (int by = 0; by < NODE_BYTES; by++) {
@@ -82,9 +84,13 @@ public class GetRoutingInfoMessageClass extends ZWaveCommandProcessor {
 		zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.NodeRoutingInfo, nodeId,
 				ZWaveNetworkEvent.State.Success));
 		
-		ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-		nodeSerializer.SerializeNode(node);
+		List<Integer> newNeighbors = node.getNeighbors();
 		
+		if (!oldNeighbors.containsAll(newNeighbors) && oldNeighbors.size() != newNeighbors.size() )
+			node.setNeighborsUpdated(true);
+		else
+			node.setNeighborsUpdated(false);
+				
 		transactionComplete = true;
 		return false;
 	}
