@@ -72,6 +72,10 @@ public class ZWaveNode {
 	private boolean listening;			 // i.e. sleeping
 	private boolean frequentlyListening; 
 	private boolean routing;
+	private String appVersion;
+	private String protocolVersion;
+	private String libraryType;
+	private String healState;
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
@@ -155,6 +159,74 @@ public class ZWaveNode {
 	 */
 	public void setFrequentlyListening(boolean frequentlyListening) {
 		this.frequentlyListening = frequentlyListening;
+		this.lastUpdated = Calendar.getInstance().getTime();
+	}
+	
+	/**
+	 * Gets the Heal State of the node.
+	 * @return String indicating the node Heal State.
+	 */
+	public String getHealState() {
+		return healState;
+	}
+	
+	/**
+	 * Sets the Heal State of the node.
+	 * @param healState
+	 */
+	public void setHealState(String healState) {
+		this.healState = healState;
+		this.lastUpdated = Calendar.getInstance().getTime();
+	}
+	
+	/**
+	 * Gets the Application Version of the node.
+	 * @return String indicating the node Application Version.
+	 */
+	public String getAppVersion() {
+		return appVersion;
+	}
+	
+	/**
+	 * Sets the Application Version of the node.
+	 * @param appVersion
+	 */
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
+		this.lastUpdated = Calendar.getInstance().getTime();
+	}
+	
+	/**
+	 * Gets the Protocol Version of the node.
+	 * @return String indicating the node Protocol Version.
+	 */
+	public String getProtocolVersion() {
+		return protocolVersion;
+	}
+	
+	/**
+	 * Sets the Protocol Version of the node.
+	 * @param protocolVersion
+	 */
+	public void setProtocolVersion(String protocolVersion) {
+		this.protocolVersion = protocolVersion;
+		this.lastUpdated = Calendar.getInstance().getTime();
+	}
+	
+	/**
+	 * Gets the Library Type of the node.
+	 * @return String indicating the node Library Type.
+	 */
+	public String getLibraryType() {
+		return libraryType;
+	}
+	
+	/**
+	 * Sets the Library Type of the node.
+	 * @param libraryType
+	 */
+	public void setLibraryType(String libraryType) {
+		this.libraryType = libraryType;
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 	
@@ -582,6 +654,14 @@ public class ZWaveNode {
 	 */
 	public List<Integer> getNeighbors() {
 		return nodeNeighbors;
+	}
+	
+	/**
+	 * Set the node neighbour list
+	 * @param neighbours
+	 */
+	public void setNeighbors(List<Integer> neighbors) {
+		this.nodeNeighbors = neighbors;
 	}
 	
 	/**

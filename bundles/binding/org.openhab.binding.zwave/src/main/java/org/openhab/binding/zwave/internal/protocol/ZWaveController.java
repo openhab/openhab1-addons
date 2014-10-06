@@ -110,7 +110,7 @@ public class ZWaveController {
 	private int manufactureId = 0;
 	private int deviceType = 0; 
 	private int deviceId = 0;
-	private int ZWaveLibraryType = 0;
+	private int zWaveLibraryType = 0;
 	private int sentDataPointer = 1;
 	private boolean setSUC = false;
 	private ZWaveDeviceType controllerType = ZWaveDeviceType.UNKNOWN;
@@ -233,7 +233,7 @@ public class ZWaveController {
 		switch (incomingMessage.getMessageClass()) {
 			case GetVersion:
 				this.zWaveVersion = ((GetVersionMessageClass)processor).getVersion();
-				this.ZWaveLibraryType = ((GetVersionMessageClass)processor).getLibraryType();
+				this.zWaveLibraryType = ((GetVersionMessageClass)processor).getLibraryType();
 				break;
 			case MemoryGetId:
 				this.ownNodeId = ((MemoryGetIdMessageClass)processor).getNodeId();
@@ -641,6 +641,22 @@ public class ZWaveController {
 	}
 
 	/**
+	 * Sends a request to perform a soft reset on the controller.
+	 * This will just reset the controller - probably similar to a power cycle.
+	 * It doesn't reinitialise the network, or change the network configuration.
+	 * 
+	 * NOTE: At least for some (most!) sticks, this doesn't return a response.
+	 * Therefore, the number of retries is set to 1.
+	 * NOTE: On some (most!) ZWave-Plus sticks, this can cause the stick to hang.
+	 */
+	public void requestSoftReset()
+	{
+		SerialMessage msg = new SerialApiSoftResetMessageClass().doRequest();
+		msg.attempts = 1;
+		this.enqueue(msg);
+	}
+
+	/**
 	 * Removes a failed node from the network.
 	 * Note that this won't remove nodes that have not failed.
 	 * @param nodeId The address of the node to remove
@@ -764,6 +780,14 @@ public class ZWaveController {
 		return zWaveVersion;
 	}
 
+	 /**
+	  * Gets the zWave Library Type of the controller.
+	  * @return the zWaveLibraryType
+	  */
+	public String getZWaveLibraryType() {
+		return Integer.toString(zWaveLibraryType);
+	}
+	
 	/**
 	 * Gets the Manufacturer ID of the controller. 
 	 * @return the manufactureId
