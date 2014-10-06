@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Map;
 import java.util.TooManyListenersException;
 
 import org.openhab.io.transport.cul.CULDeviceException;
@@ -45,11 +46,28 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 	private final static Logger log = LoggerFactory.getLogger(CULSerialHandlerImpl.class);
 
 	private SerialPort serialPort;
+	private Integer baudRate = 9600;
+	private Integer parityMode = SerialPort.PARITY_EVEN;
 	private InputStream is;
 	private OutputStream os;
 	private BufferedReader br;
 	private BufferedWriter bw;
 
+	public CULSerialHandlerImpl(String deviceName, CULMode mode, Map<String, ?> properties){
+		super(deviceName, mode);
+		
+		if(properties.get("baudrate") != null){
+			baudRate = (Integer) properties.get("baudrate");
+			log.debug("Set baudrate to " + baudRate);
+		}
+		
+		if(properties.get("parity") != null){
+			parityMode = (Integer) properties.get("parity");
+			log.debug("Set parity to " + parityMode);
+		}
+		
+	}
+	
 	public CULSerialHandlerImpl(String deviceName, CULMode mode) {
 		super(deviceName, mode);
 	}
@@ -107,7 +125,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 				throw new CULDeviceException("The device " + deviceName + " is not a serial port");
 			}
 			serialPort = (SerialPort) port;
-			serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_EVEN);
+			serialPort.setSerialPortParams(baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, parityMode);
 			is = serialPort.getInputStream();
 			os = serialPort.getOutputStream();
 			br = new BufferedReader(new InputStreamReader(is));
