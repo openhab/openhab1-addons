@@ -147,15 +147,18 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 	    }
 	    
         // parse the response to build our location object
-        Map<String, String> locationData;
+        Map<String, Object> locationData;
+        String toParse = "{}";
         try {
             ObjectMapper jsonReader = new ObjectMapper();
-        	locationData = jsonReader.readValue(response.getBody(), Map.class);
+            toParse = response.getBody();
+            toParse = toParse.substring(1, toParse.length() - 2);
+        	locationData = jsonReader.readValue(toParse, Map.class);
         } catch (JsonParseException e) {
-            logger.error("Error parsing JSON:\n" + response.getBody());
+            logger.error("Error parsing JSON:\n" + toParse, e);
             return null;
         } catch (JsonMappingException e) {
-            logger.error("Error mapping JSON:\n" + response.getBody());
+            logger.error("Error mapping JSON:\n" + toParse, e);
             return null;
         } catch (IOException e) {
             logger.error("An I/O error occured while decoding JSON:\n" + response.getBody());
@@ -321,4 +324,26 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 			return "Lat: " + latitude + ", Long: " + longitude + " (from " + device + ")";
 		}
 	}
+/*	
+	public static void main(String[] args) {
+		
+		String toParse = "[\"lon\": 13.5878175, \"lat\": 52.360595500000002,\"version\": \"1.0\",\"t\": 1412496682,\"device\": \"samsung m0\",\"alt\": 0,\"os\": \"4.3\"]";
+        Map<String, Object> locationData;
+        try {
+            ObjectMapper jsonReader = new ObjectMapper();
+            toParse = "{" + toParse + "}";
+        	locationData = jsonReader.readValue(toParse, Map.class);
+    	    float latitude = Float.parseFloat(locationData.get("lat").toString());
+    	    float longitude = Float.parseFloat(locationData.get("lon").toString());
+    	    String device = locationData.get("device").toString();
+    	    System.out.println("" + latitude + ", " + longitude + ", " + device);
+        } catch (JsonParseException e) {
+        	e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+*/
 }
