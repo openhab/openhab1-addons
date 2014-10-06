@@ -324,26 +324,4 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 			return "Lat: " + latitude + ", Long: " + longitude + " (from " + device + ")";
 		}
 	}
-/*	
-	public static void main(String[] args) {
-		
-		String toParse = "[\"lon\": 13.5878175, \"lat\": 52.360595500000002,\"version\": \"1.0\",\"t\": 1412496682,\"device\": \"samsung m0\",\"alt\": 0,\"os\": \"4.3\"]";
-        Map<String, Object> locationData;
-        try {
-            ObjectMapper jsonReader = new ObjectMapper();
-            toParse = "{" + toParse + "}";
-        	locationData = jsonReader.readValue(toParse, Map.class);
-    	    float latitude = Float.parseFloat(locationData.get("lat").toString());
-    	    float longitude = Float.parseFloat(locationData.get("lon").toString());
-    	    String device = locationData.get("device").toString();
-    	    System.out.println("" + latitude + ", " + longitude + ", " + device);
-        } catch (JsonParseException e) {
-        	e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-	}
-*/
 }
