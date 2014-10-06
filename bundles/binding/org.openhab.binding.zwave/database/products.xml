@@ -526,6 +526,15 @@
 		<Product>
 			<Reference>
 				<Type>0003</Type>
+				<Id>001B</Id>
+			</Reference>
+			<Model>MD2E</Model>
+			<Label lang="en">Micro Dimmer 2nd Edition</Label>
+			<ConfigFile>aeon/md2e.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
 				<Id>0011</Id>
 			</Reference>
 			<Model>MSES</Model>
