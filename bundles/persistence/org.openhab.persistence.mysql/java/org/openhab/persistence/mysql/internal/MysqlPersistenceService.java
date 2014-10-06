@@ -431,6 +431,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 * @{inheritDoc
 	 */
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		logger.debug("mySQL configuration starting");
 		if (config != null) {
 			Enumeration<String> keys = config.keys();
 
@@ -484,25 +485,32 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 				waitTimeout = Integer.parseInt(tmpString);
 			}
 
+			// reconnect to the database in case the configuration has changed.
 			disconnectFromDatabase();
 			connectToDatabase();
 
 			// connection has been established ... initialization completed!
 			initialized = true;
+			
+			logger.debug("mySQL configuration complete.");
 		}
 
 	}
 
 	@Override
 	public Iterable<HistoricItem> query(FilterCriteria filter) {
-		if (!initialized)
+		if (!initialized) {
+			logger.debug("Query aborted on item {} - mySQL not initialised!", filter.getItemName());
 			return Collections.emptyList();
+		}
 
 		if (!isConnected())
 			connectToDatabase();
 
-		if (!isConnected())
+		if (!isConnected()) {
+			logger.debug("Query aborted on item {} - mySQL not connected!", filter.getItemName());
 			return Collections.emptyList();
+		}
 
 		SimpleDateFormat mysqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -522,10 +530,10 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			item = null;
 		}
                    
-                if(item instanceof GroupItem){
-                    // For Group Items is BaseItem needed to get correct Type of Value.
-                    item = GroupItem.class.cast(item).getBaseItem();
-                }
+        if(item instanceof GroupItem){
+            // For Group Items is BaseItem needed to get correct Type of Value.
+            item = GroupItem.class.cast(item).getBaseItem();
+        }
 
 		String table = sqlTables.get(itemName);
 		if (table == null) {

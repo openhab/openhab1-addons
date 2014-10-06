@@ -759,6 +759,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					if (networkMonitor != null)
 						networkMonitor.rescheduleHeal();
 				}
+				if (action.equals("SoftReset")) {
+					zController.requestSoftReset();
+				}
 				if (inclusion == false && exclusion == false) {
 					if (action.equals("Include")) {
 						inclusion = true;
@@ -957,6 +960,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					node.setName(value);
 				if (splitDomain[2].equals("Location"))
 					node.setLocation(value);
+				
+				// Write the node to disk
+				ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+				nodeSerializer.SerializeNode(node);
 			} else if (splitDomain.length == 4) {
 				if (splitDomain[2].equals("parameters")) {
 					ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
