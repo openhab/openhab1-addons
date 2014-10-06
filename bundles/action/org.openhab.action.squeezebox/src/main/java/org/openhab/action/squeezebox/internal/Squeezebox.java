@@ -214,7 +214,7 @@ public class Squeezebox {
 			
 			// create an instance of our special listener so we can detect when the sentence is complete
 			SqueezeboxSentenceListener listener = new SqueezeboxSentenceListener(playerId);
-			player.addPlayerEventListener(listener);
+			squeezeServer.addPlayerEventListener(listener);
 			
 			// send the URL (this will power up the player and un-mute if necessary)
 			logger.trace("Sending URL '{}' to device to play", url);
@@ -236,7 +236,7 @@ public class Squeezebox {
 			}
 			
 			// clean up the listener
-			player.removePlayerEventListener(listener);
+			squeezeServer.removePlayerEventListener(listener);
 			listener = null;
 		}
 		

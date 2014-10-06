@@ -8,10 +8,8 @@
  */
 package org.openhab.io.squeezeserver;
 
-import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -32,6 +30,7 @@ public class SqueezePlayer {
 		stop;
 	}
 	
+	private final SqueezeServer squeezeServer;
 	private final String playerId;
 	private final String macAddress;
 
@@ -56,11 +55,10 @@ public class SqueezePlayer {
 	
 	private String irCode;
 	
-	private List<SqueezePlayerEventListener> playerListeners = new ArrayList<SqueezePlayerEventListener>();
-	
 	private static final Logger logger = LoggerFactory.getLogger(SqueezePlayer.class);
 	
-	public SqueezePlayer(String playerId, String macAddress) {
+	public SqueezePlayer(SqueezeServer server, String playerId, String macAddress) {
+		this.squeezeServer = server;
 		this.playerId = playerId;
 		this.macAddress = macAddress;
 
@@ -337,17 +335,9 @@ public class SqueezePlayer {
 		}
 	}
 	
-	public synchronized void addPlayerEventListener(SqueezePlayerEventListener listener)  {
-		playerListeners.add(listener);
-	}
-
-	public synchronized void removePlayerEventListener(SqueezePlayerEventListener listener)   {
-		playerListeners.remove(listener);
-	}
-	
 	private synchronized void fireVolumeChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
 
 	    while(itr.hasNext())  {
 	    	itr.next().volumeChangeEvent(event);
@@ -356,7 +346,7 @@ public class SqueezePlayer {
 	
 	private synchronized void fireMuteChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
 
 	    while(itr.hasNext())  {
 	    	itr.next().muteChangeEvent(event);
@@ -365,7 +355,7 @@ public class SqueezePlayer {
 	
 	private synchronized void firePowerChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
 
 	    while(itr.hasNext())  {
 	    	itr.next().powerChangeEvent(event);
@@ -374,7 +364,7 @@ public class SqueezePlayer {
 	
 	private synchronized void fireModeChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
 
 	    while(itr.hasNext())  {
 	    	itr.next().modeChangeEvent(event);
@@ -383,7 +373,7 @@ public class SqueezePlayer {
 		
 	private synchronized void fireTitleChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
 
 	    while(itr.hasNext())  {
 	    	itr.next().titleChangeEvent(event);
@@ -392,7 +382,7 @@ public class SqueezePlayer {
 	
 	private synchronized void fireArtistChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
 
 	    while(itr.hasNext())  {
 	    	itr.next().artistChangeEvent(event);
@@ -401,7 +391,7 @@ public class SqueezePlayer {
 	
 	private synchronized void fireAlbumChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
 
 	    while(itr.hasNext())  {
 	    	itr.next().albumChangeEvent(event);
@@ -410,7 +400,7 @@ public class SqueezePlayer {
 	
 	private synchronized void fireCoverArtChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
 
 	    while(itr.hasNext())  {
 	    	itr.next().coverArtChangeEvent(event);
@@ -419,7 +409,7 @@ public class SqueezePlayer {
 	
 	private synchronized void fireGenreChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
 
 	    while(itr.hasNext())  {
 	    	itr.next().genreChangeEvent(event);
@@ -428,7 +418,7 @@ public class SqueezePlayer {
 	
 	private synchronized void fireYearChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
 
 	    while(itr.hasNext())  {
 	    	itr.next().yearChangeEvent(event);
@@ -437,7 +427,7 @@ public class SqueezePlayer {
 	
 	private synchronized void fireRemoteTitleChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
 
 	    while(itr.hasNext())  {
 	    	itr.next().remoteTitleChangeEvent(event);
@@ -446,7 +436,7 @@ public class SqueezePlayer {
 	
 	private synchronized void fireIrCodeChangeEvent() {
 		PlayerEvent event = new PlayerEvent(this);
-	    Iterator<SqueezePlayerEventListener> itr = playerListeners.iterator();
+	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
 
 	    while(itr.hasNext())  {
 	    	itr.next().irCodeChangeEvent(event);
