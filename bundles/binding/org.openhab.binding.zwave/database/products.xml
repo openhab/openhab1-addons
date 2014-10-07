@@ -466,6 +466,10 @@
 				<Type>0006</Type>
 				<Id>0002</Id>
 			</Reference>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>			
 			<Model>Minimote</Model>
 			<Label lang="en">4 button remote control</Label>
 			<ConfigFile>aeon/minimote.xml</ConfigFile>
@@ -518,6 +522,15 @@
 			<Model>MSD2E</Model>
 			<Label lang="en">Micro Smart Dimmer 2nd Edition</Label>
 			<ConfigFile>aeon/msd2e.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>001B</Id>
+			</Reference>
+			<Model>MD2E</Model>
+			<Label lang="en">Micro Dimmer 2nd Edition</Label>
+			<ConfigFile>aeon/md2e.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1223,6 +1236,19 @@
 			<Model>ZXT-120</Model>
 			<Label lang="en">Remotec ZXT-120 AC IR Remote</Label>
 			<ConfigFile>remotec/zxt120.xml</ConfigFile>
+		</Product>
+	</Manufacturer>	
+	<Manufacturer>
+		<Id>159</Id>
+		<Name>Qubino</Name>
+		<Product>
+			<Reference>
+				<Type>2</Type>
+				<Id>2</Id>
+			</Reference>
+			<Model>ZMNHAA</Model>
+			<Label lang="en">Flush 1 relay</Label>
+			<ConfigFile>qubino/zmnhaa.xml</ConfigFile>
 		</Product>
 	</Manufacturer>	
 </Manufacturers>
