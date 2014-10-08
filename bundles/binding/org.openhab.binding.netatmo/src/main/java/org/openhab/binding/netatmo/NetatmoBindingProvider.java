@@ -23,6 +23,14 @@ import org.openhab.core.binding.BindingProvider;
 public interface NetatmoBindingProvider extends BindingProvider {
 
 	/**
+	 * Returns an Id of the user the OAuth credentials do refer to.
+	 *  
+	 * @param itemName
+	 * @return
+	 */
+	String getUserid(String itemName);
+
+	/**
 	 * Queries the Netatmo device id of the given {@code itemName}.
 	 * 
 	 * @param itemName

@@ -46,27 +46,14 @@ import org.slf4j.LoggerFactory;
  * </li> </ul>
  * 
  * @author Andreas Brenk
+ * @author Thomas.Eichstaedt-Engelen
  * @since 1.4.0
  */
 public class NetatmoGenericBindingProvider extends
 		AbstractGenericBindingProvider implements NetatmoBindingProvider {
 
-	private static class NetatmoBindingConfig implements BindingConfig {
-
-		String deviceId;
-		String moduleId;
-		String measure;
-
-		@Override
-		public String toString() {
-			return "NetatmoBindingConfig [deviceId=" + this.deviceId
-					+ ", moduleId=" + this.moduleId + ", measure="
-					+ this.measure + "]";
-		}
-	}
-
-	private static Logger logger = LoggerFactory
-			.getLogger(NetatmoGenericBindingProvider.class);
+	private static Logger logger = 
+		LoggerFactory.getLogger(NetatmoGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
@@ -77,12 +64,34 @@ public class NetatmoGenericBindingProvider extends
 	}
 
 	/**
+	 * @{inheritDoc
+	 */
+	@Override
+	public void validateItemType(final Item item, final String bindingConfig) throws BindingConfigParseException {
+		if (!(item instanceof NumberItem)) {
+			throw new BindingConfigParseException(
+				"item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + 
+				"', only NumberItems are allowed - please check your *.items configuration");
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getUserid(final String itemName) {
+		final NetatmoBindingConfig config = 
+			(NetatmoBindingConfig) this.bindingConfigs.get(itemName);
+		return config != null ? config.userid : null;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String getDeviceId(final String itemName) {
-		final NetatmoBindingConfig config = (NetatmoBindingConfig) this.bindingConfigs
-				.get(itemName);
+		final NetatmoBindingConfig config = 
+			(NetatmoBindingConfig) this.bindingConfigs.get(itemName);
 		return config != null ? config.deviceId : null;
 	}
 
@@ -91,8 +100,8 @@ public class NetatmoGenericBindingProvider extends
 	 */
 	@Override
 	public String getMeasure(final String itemName) {
-		final NetatmoBindingConfig config = (NetatmoBindingConfig) this.bindingConfigs
-				.get(itemName);
+		final NetatmoBindingConfig config = 
+			(NetatmoBindingConfig) this.bindingConfigs.get(itemName);
 		return config != null ? config.measure : null;
 	}
 
@@ -101,8 +110,8 @@ public class NetatmoGenericBindingProvider extends
 	 */
 	@Override
 	public String getModuleId(final String itemName) {
-		final NetatmoBindingConfig config = (NetatmoBindingConfig) this.bindingConfigs
-				.get(itemName);
+		final NetatmoBindingConfig config = 
+			(NetatmoBindingConfig) this.bindingConfigs.get(itemName);
 		return config != null ? config.moduleId : null;
 	}
 
@@ -111,8 +120,7 @@ public class NetatmoGenericBindingProvider extends
 	 */
 	@Override
 	public void processBindingConfiguration(final String context,
-			final Item item, final String bindingConfig)
-			throws BindingConfigParseException {
+			final Item item, final String bindingConfig) throws BindingConfigParseException {
 		logger.debug("Processing binding configuration: '{}'", bindingConfig);
 
 		super.processBindingConfiguration(context, item, bindingConfig);
@@ -130,30 +138,38 @@ public class NetatmoGenericBindingProvider extends
 			config.moduleId = configParts[1];
 			config.measure = configParts[2];
 			break;
+		case 4:
+			config.userid = configParts[0];
+			config.deviceId = configParts[1];
+			config.moduleId = configParts[2];
+			config.measure = configParts[3];
+			break;
 		default:
 			throw new BindingConfigParseException(
-					"A Netatmo binding configuration must consist of two or three parts - please verify your *.items file");
+					"A Netatmo binding configuration must consist of two, three or four parts - please verify your *.items file");
 		}
 
 		logger.debug("Adding binding: {}", config);
 
 		addBindingConfig(item, config);
 	}
+	
+	
+	private static class NetatmoBindingConfig implements BindingConfig {
 
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	public void validateItemType(final Item item, final String bindingConfig)
-			throws BindingConfigParseException {
-		if (!(item instanceof NumberItem)) {
-			throw new BindingConfigParseException(
-					"item '"
-							+ item.getName()
-							+ "' is of type '"
-							+ item.getClass().getSimpleName()
-							+ "', only NumberItems are allowed - please check your *.items configuration");
+		String userid;
+		String deviceId;
+		String moduleId;
+		String measure;
+
+		@Override
+		public String toString() {
+			return "NetatmoBindingConfig [userid=" + this.userid 
+					+ ", deviceId=" + this.deviceId
+					+ ", moduleId=" + this.moduleId
+					+ ", measure=" + this.measure + "]";
 		}
 	}
 
+	
 }

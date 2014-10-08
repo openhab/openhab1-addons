@@ -8,13 +8,13 @@
  */
 package org.openhab.binding.netatmo.internal;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequest.createKey;
 
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -44,26 +44,21 @@ import org.slf4j.LoggerFactory;
  * Binding that gets measurements from the Netatmo API every couple of minutes.
  * 
  * @author Andreas Brenk
+ * @author Thomas.Eichstaedt-Engelen
  * @since 1.4.0
  */
 public class NetatmoBinding extends
 		AbstractActiveBinding<NetatmoBindingProvider> implements ManagedService {
+	
+	private static final String DEFAULT_USER_ID = "DEFAULT_USER";
+
+	private static final Logger logger = 
+		LoggerFactory.getLogger(NetatmoBinding.class);
 
 	protected static final String CONFIG_CLIENT_ID = "clientid";
-
 	protected static final String CONFIG_CLIENT_SECRET = "clientsecret";
-
 	protected static final String CONFIG_REFRESH = "refresh";
-
-	protected static final String CONFIG_REFRESH_TOKEN = "refreshToken";
-
-	private static final Logger logger = LoggerFactory
-			.getLogger(NetatmoBinding.class);
-
-	/**
-	 * 
-	 */
-	private boolean firstExecution = true;
+	protected static final String CONFIG_REFRESH_TOKEN = "refreshtoken";
 
 	/**
 	 * The refresh interval which is used to poll values from the Netatmo server
@@ -71,160 +66,8 @@ public class NetatmoBinding extends
 	 */
 	private long refreshInterval = 300000;
 
-	/**
-	 * The client id to access the Netatmo API. Normally set in
-	 * <code>openhab.cfg</code>.
-	 * 
-	 * @see <a href="http://dev.netatmo.com/doc/authentication/usercred">Client
-	 *      Credentials</a>
-	 */
-	private String clientId;
-
-	/**
-	 * The client secret to access the Netatmo API. Normally set in
-	 * <code>openhab.cfg</code>.
-	 * 
-	 * @see <a href="http://dev.netatmo.com/doc/authentication/usercred">Client
-	 *      Credentials</a>
-	 */
-	private String clientSecret;
-
-	/**
-	 * The refresh token to access the Netatmo API. Normally set in
-	 * <code>openhab.cfg</code>.
-	 * 
-	 * @see <a
-	 *      href="http://dev.netatmo.com/doc/authentication/usercred">Client&nbsp;Credentials</a>
-	 * @see <a
-	 *      href="http://dev.netatmo.com/doc/authentication/refreshtoken">Refresh&nbsp;Token</a>
-	 */
-	private String refreshToken;
-
-	/**
-	 * The access token to access the Netatmo API. Automatically renewed from
-	 * the API using the refresh token.
-	 * 
-	 * @see <a
-	 *      href="http://dev.netatmo.com/doc/authentication/refreshtoken">Refresh
-	 *      Token</a>
-	 * @see #refreshAccessToken()
-	 */
-	private String accessToken;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void updated(final Dictionary<String, ?> config)
-			throws ConfigurationException {
-		if (config != null) {
-			final String refreshIntervalString = (String) config
-					.get(CONFIG_REFRESH);
-			if (isNotBlank(refreshIntervalString)) {
-				this.refreshInterval = Long.parseLong(refreshIntervalString);
-			}
-
-			this.clientId = (String) config.get(CONFIG_CLIENT_ID);
-			if (isBlank(this.clientId)) {
-				throw new ConfigurationException("netatmo:clientid",
-						"Parameter 'netatmo:clientid' must be set!");
-			}
-
-			this.clientSecret = (String) config.get(CONFIG_CLIENT_SECRET);
-			if (isBlank(this.clientSecret)) {
-				throw new ConfigurationException("netatmo:clientsecret",
-						"Parameter 'netatmo:clientsecret' must be set!");
-			}
-
-			this.refreshToken = (String) config.get(CONFIG_REFRESH_TOKEN);
-			if (isBlank(this.refreshToken)) {
-				throw new ConfigurationException("netatmo:refreshToken",
-						"Parameter 'netatmo:refreshToken' must be set!");
-			}
-
-			setProperlyConfigured(true);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void execute() {
-		logger.debug("Querying Netatmo API");
-
-		if (this.accessToken == null) {
-			// initial run after a restart, so get an access token first
-			refreshAccessToken();
-		}
-
-		if (this.firstExecution) {
-			final DeviceListRequest request = new DeviceListRequest(
-					this.accessToken);
-			final DeviceListResponse response = request.execute();
-
-			logger.debug("Request: {}", request);
-			logger.debug("Response: {}", response);
-
-			if (response.isError()) {
-				final NetatmoError error = response.getError();
-
-				if (error.isAccessTokenExpired()) {
-					refreshAccessToken();
-					execute();
-				} else {
-					logger.error(error.getMessage());
-				}
-
-				return; // abort processing
-			} else {
-				processDeviceListResponse(response);
-				this.firstExecution = false;
-			}
-		}
-
-		final Map<String, Map<String, BigDecimal>> deviceMeasureValueMap = new HashMap<String, Map<String, BigDecimal>>();
-
-		for (final MeasurementRequest request : createMeasurementRequests()) {
-			final MeasurementResponse response = request.execute();
-
-			logger.debug("Request: {}", request);
-			logger.debug("Response: {}", response);
-
-			if (response.isError()) {
-				final NetatmoError error = response.getError();
-
-				if (error.isAccessTokenExpired()) {
-					refreshAccessToken();
-					execute();
-				} else {
-					logger.error(error.getMessage());
-				}
-
-				return; // abort processing
-			} else {
-				processMeasurementResponse(request, response,
-						deviceMeasureValueMap);
-			}
-		}
-
-		for (final NetatmoBindingProvider provider : this.providers) {
-			for (final String itemName : provider.getItemNames()) {
-				final String deviceId = provider.getDeviceId(itemName);
-				final String moduleId = provider.getModuleId(itemName);
-				final String measure = provider.getMeasure(itemName);
-
-				final String requestKey = createKey(deviceId, moduleId);
-
-				final State state = new DecimalType(deviceMeasureValueMap.get(
-						requestKey).get(measure));
-				if (state != null) {
-					this.eventPublisher.postUpdate(itemName, state);
-				}
-			}
-		}
-	}
-
+	private Map<String, OAuthCredentials> credentialsCache = new HashMap<String, OAuthCredentials>();
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -240,6 +83,86 @@ public class NetatmoBinding extends
 	protected long getRefreshInterval() {
 		return this.refreshInterval;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void execute() {
+		logger.debug("Querying Netatmo API");
+		
+		for (String userid : credentialsCache.keySet()) {
+			OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
+			if (oauthCredentials.noAccessToken()) {
+				// initial run after a restart, so get an access token first
+				oauthCredentials.refreshAccessToken();
+			}
+
+			if (oauthCredentials.firstExecution) {
+				final DeviceListRequest request = new DeviceListRequest(oauthCredentials.accessToken);
+				final DeviceListResponse response = request.execute();
+
+				logger.debug("Request: {}", request);
+				logger.debug("Response: {}", response);
+
+				if (response.isError()) {
+					final NetatmoError error = response.getError();
+
+					if (error.isAccessTokenExpired()) {
+						oauthCredentials.refreshAccessToken();
+						execute();
+					} else {
+						logger.error(error.getMessage());
+					}
+
+					return; // abort processing
+				} else {
+					processDeviceListResponse(response);
+					oauthCredentials.firstExecution = false;
+				}
+			}
+
+			final Map<String, Map<String, BigDecimal>> deviceMeasureValueMap = new HashMap<String, Map<String, BigDecimal>>();
+
+			for (final MeasurementRequest request : createMeasurementRequests()) {
+				final MeasurementResponse response = request.execute();
+
+				logger.debug("Request: {}", request);
+				logger.debug("Response: {}", response);
+
+				if (response.isError()) {
+					final NetatmoError error = response.getError();
+
+					if (error.isAccessTokenExpired()) {
+						oauthCredentials.refreshAccessToken();
+						execute();
+					} else {
+						logger.error(error.getMessage());
+					}
+
+					return; // abort processing
+				} else {
+					processMeasurementResponse(request, response, deviceMeasureValueMap);
+				}
+			}
+
+			for (final NetatmoBindingProvider provider : this.providers) {
+				for (final String itemName : provider.getItemNames()) {
+					final String deviceId = provider.getDeviceId(itemName);
+					final String moduleId = provider.getModuleId(itemName);
+					final String measure = provider.getMeasure(itemName);
+
+					final String requestKey = createKey(deviceId, moduleId);
+
+					final State state = new DecimalType(deviceMeasureValueMap.get(
+							requestKey).get(measure));
+					if (state != null) {
+						this.eventPublisher.postUpdate(itemName, state);
+					}
+				}
+			}		
+		}
+	}
 
 	/**
 	 * Creates the necessary requests to query the Netatmo API for all measures
@@ -251,19 +174,22 @@ public class NetatmoBinding extends
 
 		for (final NetatmoBindingProvider provider : this.providers) {
 			for (final String itemName : provider.getItemNames()) {
+				
+				final String userid = provider.getUserid(itemName);
 				final String deviceId = provider.getDeviceId(itemName);
 				final String moduleId = provider.getModuleId(itemName);
 				final String measure = provider.getMeasure(itemName);
 
 				final String requestKey = createKey(deviceId, moduleId);
-
-				if (!requests.containsKey(requestKey)) {
-					requests.put(requestKey, new MeasurementRequest(
-							this.accessToken, deviceId, moduleId));
+				
+				OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
+				if (oauthCredentials != null) {
+					if (!requests.containsKey(requestKey)) {
+						requests.put(requestKey, 
+							new MeasurementRequest(oauthCredentials.accessToken, deviceId, moduleId));
+					}
+					requests.get(requestKey).addMeasure(measure);
 				}
-
-				requests.get(requestKey).addMeasure(measure);
-
 			}
 		}
 
@@ -373,18 +299,156 @@ public class NetatmoBinding extends
 
 		deviceMeasureValueMap.put(request.getKey(), valueMap);
 	}
+	
+	/**
+	 * Returns the cached {@link OAuthCredentials} for the given {@code userid}.
+	 * If their is no such cached {@link OAuthCredentials} element, the cache is
+	 * searched with the {@code DEFAULT_USER}. If there is still no cached element
+	 * found {@code NULL} is returned.
+	 *  
+	 * @param userid the userid to find the {@link OAuthCredentials}
+	 * @return the cached {@link OAuthCredentials} or {@code NULL}
+	 */
+	private OAuthCredentials getOAuthCredentials(String userid) {
+		if (credentialsCache.containsKey(userid)) {
+			return credentialsCache.get(userid);
+		} else {
+			return credentialsCache.get(DEFAULT_USER_ID);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void updated(final Dictionary<String, ?> config) throws ConfigurationException {
+		if (config != null) {
+			
+			final String refreshIntervalString = (String) config.get(CONFIG_REFRESH);
+			if (isNotBlank(refreshIntervalString)) {
+				this.refreshInterval = Long.parseLong(refreshIntervalString);
+			}
+			
+			Enumeration<String> configKeys = config.keys();
+			while (configKeys.hasMoreElements()) {
+				String configKey = (String) configKeys.nextElement();
+				
+				// the config-key enumeration contains additional keys that we
+				// don't want to process here ...
+				if (CONFIG_REFRESH.equals(configKey) || "service.pid".equals(configKey)) {
+					continue;
+				}
 
-	private void refreshAccessToken() {
-		logger.debug("Refreshing access token.");
+				String userid;
+				String configKeyTail;
+				
+				if (configKey.contains(".")) {
+					String[] keyElements = configKey.split("\\.");
+					userid = keyElements[0];
+					configKeyTail = keyElements[1];
+					
+				} else {
+					userid = DEFAULT_USER_ID;
+					configKeyTail = configKey;
+				}
 
-		final RefreshTokenRequest request = new RefreshTokenRequest(
-				this.clientId, this.clientSecret, this.refreshToken);
-		logger.debug("Request: {}", request);
+				OAuthCredentials credentials = credentialsCache.get(userid);
+				if (credentials == null) {
+					credentials = new OAuthCredentials();
+					credentialsCache.put(userid, credentials);
+				}
 
-		final RefreshTokenResponse response = request.execute();
-		logger.debug("Response: {}", response);
+				String value = (String) config.get(configKeyTail);
 
-		this.accessToken = response.getAccessToken();
+				if (CONFIG_CLIENT_ID.equals(configKeyTail)) {
+					credentials.clientId = value;
+				}
+				else if (CONFIG_CLIENT_SECRET.equals(configKeyTail)) {
+					credentials.clientSecret= value;
+				}
+				else if (CONFIG_REFRESH_TOKEN.equals(configKeyTail)) {
+					credentials.refreshToken = value;
+				}
+				else {
+					throw new ConfigurationException(
+						configKey, "the given configKey '" + configKey + "' is unknown");
+				}
+			}
+			
+			setProperlyConfigured(true);
+		}
+	}
+	
+	
+	/**
+	 * This internal class holds the different crendentials necessary for the
+	 * OAuth2 flow to work. It also provides basic methods to refresh the access
+	 * token.
+	 * 
+	 * @author Thomas.Eichstaedt-Engelen
+	 * @since 1.6.0
+	 */
+	static class OAuthCredentials {
+		
+		/**
+		 * The client id to access the Netatmo API. Normally set in
+		 * <code>openhab.cfg</code>.
+		 * 
+		 * @see <a href="http://dev.netatmo.com/doc/authentication/usercred">Client
+		 *      Credentials</a>
+		 */
+		String clientId;
+
+		/**
+		 * The client secret to access the Netatmo API. Normally set in
+		 * <code>openhab.cfg</code>.
+		 * 
+		 * @see <a href="http://dev.netatmo.com/doc/authentication/usercred">Client
+		 *      Credentials</a>
+		 */
+		String clientSecret;
+
+		/**
+		 * The refresh token to access the Netatmo API. Normally set in
+		 * <code>openhab.cfg</code>.
+		 * 
+		 * @see <a
+		 *      href="http://dev.netatmo.com/doc/authentication/usercred">Client&nbsp;Credentials</a>
+		 * @see <a
+		 *      href="http://dev.netatmo.com/doc/authentication/refreshtoken">Refresh&nbsp;Token</a>
+		 */
+		String refreshToken;
+
+		/**
+		 * The access token to access the Netatmo API. Automatically renewed from
+		 * the API using the refresh token.
+		 * 
+		 * @see <a
+		 *      href="http://dev.netatmo.com/doc/authentication/refreshtoken">Refresh
+		 *      Token</a>
+		 * @see #refreshAccessToken()
+		 */
+		String accessToken;
+		
+		boolean firstExecution = true;
+		
+		public boolean noAccessToken() {
+			return this.accessToken == null;
+		}
+		
+		public void refreshAccessToken() {
+			logger.debug("Refreshing access token.");
+
+			final RefreshTokenRequest request = 
+				new RefreshTokenRequest(this.clientId, this.clientSecret, this.refreshToken);
+			logger.debug("Request: {}", request);
+
+			final RefreshTokenResponse response = request.execute();
+			logger.debug("Response: {}", response);
+
+			this.accessToken = response.getAccessToken();
+		}
+		
 	}
 
 }
