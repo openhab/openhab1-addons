@@ -170,6 +170,17 @@ public class ZWaveNode {
 	}
 	
 	/**
+	 * Gets whether the node is failed by controller.
+	 * @return
+	 */
+	public boolean isFailed(){
+		if(this.nodeStage == NodeStage.FAILED)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
 	 * Sets the node to be 'undead'.
 	 * @return
 	 */
