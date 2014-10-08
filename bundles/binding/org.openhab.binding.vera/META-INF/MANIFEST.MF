@@ -1,0 +1,42 @@
+Manifest-Version: 1.0
+Private-Package: org.openhab.binding.vera.internal
+Ignore-Package: org.openhab.binding.vera.internal
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB Vera Binding
+Bundle-SymbolicName: org.openhab.binding.vera
+Bundle-Vendor: openHAB.org
+Bundle-Version: 1.6.0.qualifier
+Bundle-Activator: org.openhab.binding.vera.internal.VeraActivator
+Bundle-ManifestVersion: 2
+Bundle-Description: This is the Vera binding of the open Home Aut
+ omation Bus (openHAB)
+Import-Package: org.apache.commons.lang,
+ org.eclipse.jetty.client,
+ org.eclipse.jetty.http,
+ org.eclipse.jetty.io,
+ org.eclipse.jetty.util.thread,
+ org.openhab.core.binding,
+ org.openhab.core.events,
+ org.openhab.core.items,
+ org.openhab.core.library.items,
+ org.openhab.core.library.types,
+ org.openhab.core.types,
+ org.openhab.model.item.binding,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.osgi.service.component,
+ org.osgi.service.event,
+ org.quartz,
+ org.quartz.impl,
+ org.quartz.utils,
+ org.slf4j
+Export-Package: org.openhab.binding.vera
+Bundle-DocURL: http://www.openhab.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/binding-service.xml, OSGI-INF/binding-provider.xml
+Bundle-ClassPath: .,
+ lib/cling-core-2.0-alpha3.jar,
+ lib/seamless-http-1.0-alpha3.jar,
+ lib/seamless-util-1.0-alpha3.jar,
+ lib/seamless-xml-1.0-alpha3.jar,
+ lib/xpp3-1.1.4c.jar
