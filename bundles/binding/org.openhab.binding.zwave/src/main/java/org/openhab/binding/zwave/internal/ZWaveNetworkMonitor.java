@@ -244,12 +244,21 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// The list is built multiple times since it seems that in order to
 		// fully optimize the network, this is required
 		for (ZWaveNode node : zController.getNodes()) {
-			// Ignore devices that haven't initialized yet - unless they are
+			// Ignore devices that haven't initialized yet, not listening or is the controller - unless they are
 			// DEAD.
 			if (node.isInitializationComplete() == false && node.isDead() == false) {
 				logger.debug("NODE {}: Initialisation NOT yet complete. Skipping heal.", node.getNodeId());
 				continue;
 			}
+			if (node.isListening() == false) {
+				logger.debug("NODE {}: Not listening. Skipping heal.", node.getNodeId());
+				continue;
+			}
+			if (node.getNodeId() == zController.getOwnNodeId()) {
+				logger.debug("NODE {}: Is Controller. Skipping heal.", node.getNodeId());
+				continue;
+			}
+			logger.debug("NODE {}: Attempting to heal node.", node.getNodeId());
 
 			healNode(node.getNodeId());
 		}
@@ -380,6 +389,14 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			healing.failState = healing.state;
 			healing.state = HealState.FAILED;
 			networkHealNextTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
+			
+			// Save the XML file. This serialises the data we've just updated
+			// (neighbors etc)
+			healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
+			
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(healing.node);
+			
 			return;
 		}
 
@@ -473,18 +490,23 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			}
 		case SAVE:
 			logger.debug("NODE {}: Heal is complete - saving XML.", healing.nodeId);
-			// Save the XML file. This serialises the data we've just updated
-			// (neighbors etc)
-			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-			nodeSerializer.SerializeNode(healing.node);
-
+			
 			healing.state = HealState.DONE;
+			healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
 
 			networkHealNextTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
+			
+			// Save the XML file. This serialises the data we've just updated			
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(healing.node);
+			
 			break;
 		default:
 			break;
 		}
+		
+		healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
+
 	}
 
 	/**
