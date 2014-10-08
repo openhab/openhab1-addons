@@ -10,6 +10,7 @@ package org.openhab.action.xpl.internal;
 
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
+import org.openhab.io.transport.xpl.XplTransportService;
 import org.cdp1802.xpl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,39 +25,7 @@ import org.slf4j.LoggerFactory;
 public class xPL {
 
 	private static final Logger logger = LoggerFactory.getLogger(xPL.class);
-	private static final String vendor = "clinique";
-	private static final String device = "openhab";
-	private static xPL_Manager theManager = null;
-	private static xPL_IdentifierI sourceIdentifier = null;
-	private static xPL_MutableMessageI theMessage = null;
-
-	public static String getInstance() {
-		return sourceIdentifier.getInstanceID();
-	}
-
-	public static void setInstance(String instance) {
-	    
-		if (theManager == null) {
-			try {
-			    theManager = xPL_Manager.getManager();
-			    theManager.createAndStartNetworkHandler();
-			    logger.debug("manager started");				
-				theMessage = xPL_Utils.createMessage();			    
-			} catch (xPL_MediaHandlerException startError) {
-			    logger.error("Unable to start xPL Manager" + startError.getMessage());
-			}
-	    }
-		sourceIdentifier = theManager.getIdentifierManager().parseNamedIdentifier(vendor + "-" + device + "." + instance);
-		logger.info("sender set to  : " + sourceIdentifier.toString());
-		theMessage.setSource(sourceIdentifier);	    
-	}
-	
-	public static void stopManager(){
-		if (theManager != null) {
-			theManager.stopAllMediaHandlers();
-			logger.debug("manager stopped");
-		}
-	}
+	public static XplTransportService xPLTransportService;
 	
 	@ActionDoc(text="Send an xPL Message", returns="<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean sendxPLMessage(
@@ -66,12 +35,9 @@ public class xPL {
 			@ParamDoc(name="bodyElements") String ... bodyElements
 					) 
 	{		
-		if (!xPLActionService.isProperlyConfigured) {
-			logger.error("xPL action is not yet configured - execution aborted!");
-			return false;
-		}	    
+		xPL_MutableMessageI theMessage  = xPL_Utils.createMessage();
 		
-	    xPL_IdentifierI targetIdentifier = theManager.getIdentifierManager().parseNamedIdentifier(target);
+	    xPL_IdentifierI targetIdentifier = xPLTransportService.parseNamedIdentifier(target); 
 		if (targetIdentifier == null) {
 			logger.error("Invalid target identifier");
 			return false;
@@ -127,9 +93,7 @@ public class xPL {
 	      theMessage.addNamedValue(theName, theValue);
 	    } 
 	    
-	    // Send the message
-	    logger.debug(theMessage.toString());
-	    theManager.sendMessage(theMessage);
+	    xPLTransportService.sendMessage(theMessage);
 	    
 		return true;
 	}
