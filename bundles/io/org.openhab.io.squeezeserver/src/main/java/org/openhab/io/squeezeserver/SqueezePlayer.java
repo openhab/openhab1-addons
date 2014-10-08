@@ -383,7 +383,6 @@ public class SqueezePlayer {
 		}
 	}
 	
-	
 	private synchronized void fireCurrentPlaylistIndexEvent() {
 		PlayerEvent event = new PlayerEvent(this);
 	    Iterator<SqueezePlayerEventListener> itr = squeezeServer.getPlayerEventListeners().iterator();
