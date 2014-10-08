@@ -164,6 +164,28 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 	}
 	
 	@Override
+	public void currentPlaylistIndexEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.CURRTRACK, event.getPlayer().getCurrentPlaylistIndex());
+	}
+	
+	@Override
+	public void currentPlayingTimeEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.PLAYTIME, event.getPlayer().getCurrentPlayingTime());
+	}
+	
+	@Override
+	public void numberPlaylistTracksEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.NUMTRACKS, event.getPlayer().getNumberPlaylistTracks());
+	}
+	@Override
+	public void currentPlaylistShuffleEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.SHUFFLE, event.getPlayer().getCurrentPlaylistShuffle());
+	}
+	@Override
+	public void currentPlaylistRepeatEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.REPEAT, event.getPlayer().getCurrentPlaylistRepeat());
+	}
+	@Override
 	public void modeChangeEvent(PlayerEvent event) {
 		booleanChangeEvent(event.getPlayerId(), CommandType.PLAY, event.getPlayer().isPlaying());
 		booleanChangeEvent(event.getPlayerId(), CommandType.PAUSE, event.getPlayer().isPaused());
