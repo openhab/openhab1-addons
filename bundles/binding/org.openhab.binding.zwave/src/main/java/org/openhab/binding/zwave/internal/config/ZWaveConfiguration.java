@@ -747,16 +747,22 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			return;
 		}
 
-		// Process 'binding' level requests even if the controller isn't initialised
-		// This allows us to reset the controller.
+		// Process Controller Reset requests even if the controller isn't initialised
+		if (splitDomain[0].equals("binding") && splitDomain[1].equals("network") && action.equals("SoftReset")) {
+			zController.requestSoftReset();
+		}
+		
+		// If the controller isn't ready, then ignore any further requests
+		if (zController.isConnected() == false) {
+			logger.debug("Controller not ready - Ignoring request to '{}'", domain);
+			return;
+		}
+
 		if (splitDomain[0].equals("binding")) {
 			if (splitDomain[1].equals("network")) {
 				if (action.equals("Heal")) {
 					if (networkMonitor != null)
 						networkMonitor.rescheduleHeal();
-				}
-				if (action.equals("SoftReset")) {
-					zController.requestSoftReset();
 				}
 				if (inclusion == false && exclusion == false) {
 					if (action.equals("Include")) {
@@ -774,12 +780,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					logger.debug("Exclusion/Inclusion already in progress.");
 				}
 			}
-		}
-		
-		// If the controller isn't ready, then ignore any further requests
-		if (zController.isConnected() == false) {
-			logger.debug("Controller not ready - Ignoring request to '{}'", domain);
-			return;
 		}
 
 		if (splitDomain[0].equals("nodes")) {
