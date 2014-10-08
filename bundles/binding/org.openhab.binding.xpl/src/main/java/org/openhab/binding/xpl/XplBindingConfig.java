@@ -12,7 +12,7 @@ import org.openhab.core.binding.BindingConfig;
  *
  */
 
-public class xPLBindingConfig implements BindingConfig {
+public class XplBindingConfig implements BindingConfig {
 	public xPL_MutableMessageI Message;
 	public String NamedParameter;
 }

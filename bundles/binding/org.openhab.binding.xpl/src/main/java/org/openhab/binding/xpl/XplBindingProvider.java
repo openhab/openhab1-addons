@@ -23,17 +23,17 @@ import org.openhab.core.items.Item;
  * @author clinique
  * @since 1.5.0
  */
-public interface xPLBindingProvider extends BindingProvider {
+public interface XplBindingProvider extends BindingProvider {
 	
 	/**
-	 * Returns a <code>xPLBindingConfig</code> associated to <code>itemName</code>
+	 * Returns a <code>XplBindingConfig</code> associated to <code>itemName</code>
 	 * 
 	 * @param itemName
 	 *            the item for which to find a configuration
 	 * 
-	 * @return a matching xPLBindingConfig
+	 * @return a matching XplBindingConfig
 	 */
-	public xPLBindingConfig getConfig(String itemName);
+	public XplBindingConfig getConfig(String itemName);
 	
 	/**
 	 * Returns a <code>List</code> of item names that definition matches the incoming

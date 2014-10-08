@@ -15,14 +15,14 @@ import org.slf4j.LoggerFactory;
 	
 
 /**
- * This class registers an OSGi service for the xPL action.
+ * This class registers an OSGi service for the Xpl action.
  * 
  * @author clinique
  * @since 1.5.0
  */
-public class xPLActionService implements ActionService {
+public class XplActionService implements ActionService {
 
-	private static final Logger logger = LoggerFactory.getLogger(xPLActionService.class);
+	private static final Logger logger = LoggerFactory.getLogger(XplActionService.class);
 
 	/**
 	 * Indicates whether this action is properly configured which means all
@@ -31,7 +31,7 @@ public class xPLActionService implements ActionService {
 	 */
 	/* default */ static boolean isProperlyConfigured = false;
 	
-	public xPLActionService() {}
+	public XplActionService() {}
 	
 	public void activate() {
 		logger.debug("xPL action service activated");
@@ -43,12 +43,12 @@ public class xPLActionService implements ActionService {
 
 	@Override
 	public String getActionClassName() {
-		return xPL.class.getCanonicalName();
+		return Xpl.class.getCanonicalName();
 	}
 
 	@Override
 	public Class<?> getActionClass() {
-		return xPL.class;
+		return Xpl.class;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class xPLActionService implements ActionService {
 	 *            Service.
 	 */
 	public void setXplTransportService(XplTransportService xPLTransportService) {
-		xPL.xPLTransportService = xPLTransportService;
+		Xpl.xplTransportService = xPLTransportService;
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class xPLActionService implements ActionService {
 	 *            Service to remove.
 	 */
 	public void unsetXplTransportService(XplTransportService xPLTransportService) {
-		xPL.xPLTransportService = null;
+		Xpl.xplTransportService = null;
 	}	
 	
 }

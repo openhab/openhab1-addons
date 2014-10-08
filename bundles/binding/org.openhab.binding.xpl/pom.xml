@@ -11,8 +11,9 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.xpl</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.xpl</bundle.namespace>
-		<deb.name>openhab-addon-binding-xPL</deb.name>
+		<deb.name>openhab-addon-binding-xpl</deb.name>
 		<deb.description>openhab addon binding xPL</deb.description>
+		<deb.depends>openhab-addon-io-xpl</deb.depends>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
