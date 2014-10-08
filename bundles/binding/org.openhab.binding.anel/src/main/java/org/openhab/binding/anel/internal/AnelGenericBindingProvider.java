@@ -21,6 +21,60 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
  * This class is responsible for parsing the binding configuration.
+ * <p>
+ * Example configuration:
+ * </p>
+ * 
+ * <pre>
+ * ########################## Anel NET-PwrCtrl Binding ###################################
+ * #
+ * # UDP receive port (optional, defaults to 77)
+ * anel:anel1.udpReceivePort=7777
+ * 
+ * # UDP send port (optional, defaults to 75)
+ * anel:anel1.udpSendPort=7775
+ * 
+ * # IP or network address (optional, defaults to 'net-control')
+ * anel:anel1.host=anel1
+ * 
+ * # User name (optional, defaults to 'user7')
+ * anel:anel1.user=user7
+ * 
+ * # Password (optional, defaults to 'anel')
+ * anel:anel1.password=anel
+ * 
+ * # Global refresh interval in ms (optional, defaults to 60000 = 1min, disable with '0')
+ * #anel:refresh=60
+ * 
+ * # Cache the state for n minutes so only changes are posted (optional, defaults to 0 = disabled)
+ * # Example: if period is 60, once per hour all states are posted to the event bus;
+ * #          changes are always and immediately posted to the event bus.
+ * # The recommended value is 60 minutes.
+ * anel:cachePeriod=60
+ * </pre>
+ * 
+ * Example items:
+ * 
+ * <pre>
+ * Switch f1 { anel="anel1:F1" }
+ * Switch f2 { anel="anel1:F2" }
+ * Switch io7 { anel="anel1:IO7" }
+ * Switch io8 { anel="anel1:IO8" }
+ * </pre>
+ * 
+ * Example rules:
+ * 
+ * <pre>
+ * rule "regular switch on Anel1 IO7 for relay 1"
+ * when Item io7 changed then
+ * 	postUpdate(f1, io7.state)
+ * end
+ * 
+ * rule "push button switch on Anel1 IO8 for relay 2"
+ * when Item io8 changed to ON then
+ * 	postUpdate(f2, if (f2.state != ON) ON else OFF)
+ * end
+ * </pre>
  * 
  * @author paphko
  * @since 1.6.0

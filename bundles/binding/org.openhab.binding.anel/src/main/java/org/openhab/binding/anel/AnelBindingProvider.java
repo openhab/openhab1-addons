@@ -13,7 +13,7 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
 /**
- * The binding provider.
+ * The binding provider for Anel Elektronik NET-PrwCrtl devices.
  * 
  * @author paphko
  * @since 1.6.0

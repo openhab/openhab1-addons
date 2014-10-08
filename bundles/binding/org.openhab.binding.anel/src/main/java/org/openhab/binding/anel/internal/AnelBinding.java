@@ -29,56 +29,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Anel binding. Example configuration:
- * 
- * <pre>
- * ########################## Anel NET-PwrCtrl Binding ###################################
- * #
- * # UDP receive port (optional, defaults to 77)
- * anel:anel1.udpReceivePort=7777
- * 
- * # UDP send port (optional, defaults to 75)
- * anel:anel1.udpSendPort=7775
- * 
- * # IP or network address (optional, defaults to 'net-control')
- * anel:anel1.host=anel1
- * 
- * # User name (optional, defaults to 'user7')
- * anel:anel1.user=user7
- * 
- * # Password (optional, defaults to 'anel')
- * anel:anel1.password=anel
- * 
- * # Global refresh interval in ms (optional, defaults to 60000=1min, disable with '0')
- * #anel:refresh=60
- * 
- * # Cache the state for n minutes so only changes are posted (optional, defaults to 0 = disabled)
- * # Example: if period is 60, once per hour all states are posted to the event bus;
- * #          changes are always and immediately posted to the event bus.
- * # The recommended value is 60 minutes.
- * anel:cachePeriod=60
- * </pre>
- * 
- * Example items:
- * 
- * <pre>
- * Switch f1 { anel="anel1:F1" }
- * Switch io1 { anel="anel1:IO1" }
- * </pre>
- * 
- * Example rule:
- * 
- * <pre>
- * rule "switch test on anel"
- * when Item io1 changed to OFF then
- * 	postUpdate(f1, if (f1.state == ON) OFF else ON)
- * end
- * </pre>
+ * The actual Anel binding. Please see javadoc of
+ * {@link AnelGenericBindingProvider} how to use it.
  * 
  * @author paphko
  * @since 1.6.0
  */
 public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> implements ManagedService {
+
+	/**
+	 * Delay before first initial refresh call for initialization (required at
+	 * any time after startup to make sure everything else is initialized).
+	 */
+	private static final int THREAD_INITIALIZATION_DELAY = 30000;
+
+	/** Interruption timeout when disconnecting all threads. */
+	private static final int THREAD_INTERRUPTION_TIMEOUT = 5000;
 
 	/**
 	 * Internally used for communication with connector thread.
@@ -104,10 +70,7 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 
 	private static final Logger logger = LoggerFactory.getLogger(AnelBinding.class);
 
-	/**
-	 * The refresh interval which is used to poll values from the Anel server
-	 * (optional, defaults to 300000ms).
-	 */
+	/** The refresh interval which is used to poll values from the Anel server. */
 	private long refreshInterval;
 
 	/** Threads to communicate with Anel devices */
@@ -134,9 +97,7 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	public void deactivate() {
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
-		for (AnelConnectorThread connectorThread : connectorThreads.values()) {
-			connectorThread.setInterrupted();
-		}
+		disconnectAll();
 		connectorThreads.clear();
 	}
 
@@ -164,12 +125,19 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 		// the frequently executed code (polling) goes here ...
 		/*
 		 * poll the device for its state regularly, just in case UDP packets
-		 * might be missed. Do that first when providers exist!
+		 * might be missed. Do that only when providers exist!
 		 */
 		if (refreshInterval > 0 && bindingsExist()) {
-			for (AnelConnectorThread connectorThread : connectorThreads.values()) {
-				connectorThread.requestRefresh();
-			}
+			refreshAll();
+		}
+	}
+
+	/**
+	 * Request a refresh on all threads.
+	 */
+	private void refreshAll() {
+		for (AnelConnectorThread connectorThread : connectorThreads.values()) {
+			connectorThread.requestRefresh();
 		}
 	}
 
@@ -248,21 +216,8 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		// first, close all existing connector threads
-		for (String device : connectorThreads.keySet()) {
-			logger.debug("Close previous message listener for device '" + device + "'");
-			final AnelConnectorThread connectorThread = connectorThreads.get(device);
-			connectorThread.setInterrupted();
-		}
-		// then wait for all of them to die
-		for (String device : connectorThreads.keySet()) {
-			final AnelConnectorThread connectorThread = connectorThreads.get(device);
-			try {
-				connectorThread.join();
-			} catch (InterruptedException e) {
-				logger.info("Previous message listener closing interrupted for device '" + device + "'", e);
-			}
-		}
+		// disconnect all currently running threads
+		disconnectAll();
 
 		// clear map of previous threads because config changed
 		connectorThreads.clear();
@@ -289,20 +244,37 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 			connectorThread.start();
 		}
 
-		// start new thread that calls an initial update so the internal state
+		// start new thread that calls an initial refresh so the internal state
 		// can be initialized
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					Thread.sleep(30000);
+					Thread.sleep(THREAD_INITIALIZATION_DELAY);
 				} catch (InterruptedException e) {
 				}
-				for (AnelConnectorThread connectorThread : connectorThreads.values()) {
-					connectorThread.requestRefresh();
-				}
+				refreshAll();
 			}
 		}).start();
+	}
+
+	private void disconnectAll() {
+		// first, notify all existing connector threads to interrupt
+		for (String device : connectorThreads.keySet()) {
+			logger.debug("Close message listener for device '" + device + "'");
+			final AnelConnectorThread connectorThread = connectorThreads.get(device);
+			connectorThread.setInterrupted();
+		}
+		// then wait for all of them to die
+		for (String device : connectorThreads.keySet()) {
+			final AnelConnectorThread connectorThread = connectorThreads.get(device);
+			try {
+				// wait for the thread to die with a timeout of 5 seconds
+				connectorThread.join(THREAD_INTERRUPTION_TIMEOUT);
+			} catch (InterruptedException e) {
+				logger.info("Previous message listener closing interrupted for device '" + device + "'", e);
+			}
+		}
 	}
 
 	private Collection<String> getItemNamesForCommandType(AnelCommandType cmd) {
