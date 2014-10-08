@@ -169,6 +169,7 @@ public class ZWaveNodeStageAdvancer {
 			logger.trace("NODE {}: does not support MULTI_INSTANCE, proceeding to static node stage.",
 					this.node.getNodeId());
 		case INSTANCES_ENDPOINTS:
+			this.controller.requestNodeVersionInfo(this.node.getNodeId());
 			this.node.setNodeStage(NodeStage.STATIC_VALUES);
 		case STATIC_VALUES:
 			if (queriesPending == -1) {
