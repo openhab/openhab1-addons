@@ -36,6 +36,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
@@ -475,6 +476,16 @@ public class ZWaveController {
 	 */
 	public void requestNodeInfo(int nodeId) {
 		this.enqueue(new RequestNodeInfoMessageClass().doRequest(nodeId));
+	}
+	
+	/**
+	 * Send Request Node Version info message to the controller.
+	 * @param nodeId the nodeId of the node to identify
+	 * @throws SerialInterfaceException when timing out or getting an invalid response.
+	 */
+	public void requestNodeVersionInfo(int nodeId) {
+		ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) getNode(nodeId).getCommandClass(CommandClass.VERSION);
+		this.enqueue(versionCommandClass.getVersionMessage());
 	}
 	
 	/**
