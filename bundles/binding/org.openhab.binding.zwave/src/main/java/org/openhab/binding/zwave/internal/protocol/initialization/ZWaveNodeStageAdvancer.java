@@ -67,7 +67,8 @@ public class ZWaveNodeStageAdvancer {
 	 * stages
 	 */
 	public void advanceNodeStage(NodeStage targetStage) {
-		if (targetStage.getStage() <= this.node.getNodeStage().getStage() && targetStage != NodeStage.DONE) {
+		logger.debug(String.format("NODE %d: Current Stage = %s, Requested Stage = %s", this.node.getNodeId(), this.node.getNodeStage().getLabel(), targetStage.getLabel()));
+		if (targetStage.getStage() <= this.node.getNodeStage().getStage() && targetStage != NodeStage.DONE && targetStage != NodeStage.DEAD) {
 			logger.warn(String.format("NODE %d: Already in or beyond node stage, ignoring. current = %s, requested = %s", this.node.getNodeId(),
 					this.node.getNodeStage().getLabel(), targetStage.getLabel()));
 			return;
@@ -343,6 +344,14 @@ public class ZWaveNodeStageAdvancer {
 		this.node.setDeviceId(restoredNode.getDeviceId());
 		this.node.setDeviceType(restoredNode.getDeviceType());
 		this.node.setManufacturer(restoredNode.getManufacturer());
+		
+		this.node.setName(restoredNode.getName());
+		this.node.setLocation(restoredNode.getLocation());
+		this.node.setAppVersion(restoredNode.getAppVersion());
+		this.node.setProtocolVersion(restoredNode.getProtocolVersion());
+		this.node.setLibraryType(restoredNode.getLibraryType());
+		this.node.setHealState(restoredNode.getHealState());
+		this.node.setNeighbors(restoredNode.getNeighbors());
 
 		for (ZWaveCommandClass commandClass : restoredNode.getCommandClasses()) {
 			commandClass.setController(this.controller);

@@ -246,7 +246,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", "Node " + node.getNodeId());
 				}
 				else {
-					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", node.getName());
+					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", node.getNodeId() + ": " + node.getName());
 				}
 				
 				// If we can't find the product, then try and find just the
@@ -376,6 +376,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				record = new OpenHABConfigurationRecord(domain + "info/", "Information");
 				records.add(record);
+
 			} else if (arg.equals("info/")) {
 				if (node.getManufacturer() != Integer.MAX_VALUE) {
 					if (database.FindManufacturer(node.getManufacturer()) == true) {
@@ -389,6 +390,16 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						record.value = database.getProductName();
 						records.add(record);
 					}
+					
+				if(networkMonitor != null) {
+					record = new OpenHABConfigurationRecord(domain, "LastHeal", "Heal Status", true);
+					if (node.getHealState() == null)
+						record.value = "NONE";
+					else
+						record.value = node.getHealState();
+					
+					records.add(record);
+
 				}
 
 				record = new OpenHABConfigurationRecord(domain, "ManufacturerID", "Manufacturer ID", true);
@@ -489,6 +500,31 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.value = Boolean.toString(node.isDead()) + " [" + node.getDeadCount() + " previous - last @ " + node.getDeadTime().toString() + "]";
 				}
 				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain, "LibType", "Library Type", true);
+				if (node.getLibraryType() == null)
+					record.value = "Unknown";
+				else
+					record.value = node.getLibraryType();
+				
+				records.add(record);
+				
+				record = new OpenHABConfigurationRecord(domain, "ProtocolVersion", "Protocol Version", true);
+				if (node.getProtocolVersion() == null)
+					record.value = "Unknown";
+				else
+					record.value = node.getProtocolVersion();
+				
+				records.add(record);
+				
+				record = new OpenHABConfigurationRecord(domain, "AppVersion", "Application Version", true);
+				if (node.getAppVersion() == null)
+					record.value = "Unknown";
+				else
+					record.value = node.getAppVersion();
+				
+				records.add(record);
+				
 			} else if (arg.equals("parameters/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
@@ -740,7 +776,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			
 			return records;
 		}
-
+		}
 		return null;
 	}
 
@@ -859,6 +895,16 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 					// Request the version report for this node
 					this.zController.sendData(versionCommandClass.getVersionMessage());
+					
+					if(versionCommandClass.getApplicationVersion() != null)
+						node.setAppVersion(Double.toString(versionCommandClass.getApplicationVersion()));
+					if(versionCommandClass.getProtocolVersion() != null) 
+						node.setProtocolVersion(Double.toString(versionCommandClass.getProtocolVersion()));
+					if(versionCommandClass.getLibraryType() != null)
+						node.setLibraryType(versionCommandClass.getLibraryType().getLabel());
+					
+					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+					nodeSerializer.SerializeNode(node);
 				}
 
 				// Return here as afterwards we assume there are more elements
