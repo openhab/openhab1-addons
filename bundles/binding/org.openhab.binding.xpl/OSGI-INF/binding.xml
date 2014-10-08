@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.binding.xpl.binding">
-	<implementation class="org.openhab.binding.xpl.internal.xPLBinding" />
+	<implementation class="org.openhab.binding.xpl.internal.XplBinding" />
 
 	<service>
 		<provide interface="org.osgi.service.event.EventHandler" />
@@ -23,7 +23,7 @@
 		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
 		policy="dynamic" unbind="unsetEventPublisher" />
 	<reference bind="addBindingProvider" cardinality="1..n"
-		interface="org.openhab.binding.xpl.xPLBindingProvider" name="xPLBindingProvider"
+		interface="org.openhab.binding.xpl.XplBindingProvider" name="XplBindingProvider"
 		policy="dynamic" unbind="removeBindingProvider" />
  	<reference bind="setXplTransportService" cardinality="1..1" 
  		interface="org.openhab.io.transport.xpl.XplTransportService" name="XplTransportService" 

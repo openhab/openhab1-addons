@@ -11,8 +11,9 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.action.xpl</bundle.symbolicName>
 		<bundle.namespace>org.openhab.action.xpl</bundle.namespace>
-		<deb.name>openhab-addon-action-xPL</deb.name>
+		<deb.name>openhab-addon-action-xpl</deb.name>
 		<deb.description>openhab addon action xPL</deb.description>
+		<deb.depends>openhab-addon-io-xpl</deb.depends>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

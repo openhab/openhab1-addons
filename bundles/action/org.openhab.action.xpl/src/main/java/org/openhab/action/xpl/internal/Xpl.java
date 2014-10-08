@@ -22,10 +22,10 @@ import org.slf4j.LoggerFactory;
  * @author Clinique
  * @since 1.5.0
  */
-public class xPL {
+public class Xpl {
 
-	private static final Logger logger = LoggerFactory.getLogger(xPL.class);
-	public static XplTransportService xPLTransportService;
+	private static final Logger logger = LoggerFactory.getLogger(Xpl.class);
+	public static XplTransportService xplTransportService;
 	
 	@ActionDoc(text="Send an xPL Message", returns="<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean sendxPLMessage(
@@ -37,7 +37,7 @@ public class xPL {
 	{		
 		xPL_MutableMessageI theMessage  = xPL_Utils.createMessage();
 		
-	    xPL_IdentifierI targetIdentifier = xPLTransportService.parseNamedIdentifier(target); 
+	    xPL_IdentifierI targetIdentifier = xplTransportService.parseNamedIdentifier(target); 
 		if (targetIdentifier == null) {
 			logger.error("Invalid target identifier");
 			return false;
@@ -93,7 +93,7 @@ public class xPL {
 	      theMessage.addNamedValue(theName, theValue);
 	    } 
 	    
-	    xPLTransportService.sendMessage(theMessage);
+	    xplTransportService.sendMessage(theMessage);
 	    
 		return true;
 	}

@@ -10,8 +10,8 @@ package org.openhab.binding.xpl.internal;
 
 import java.util.List;
 
-import org.openhab.binding.xpl.xPLBindingConfig;
-import org.openhab.binding.xpl.xPLBindingProvider;
+import org.openhab.binding.xpl.XplBindingConfig;
+import org.openhab.binding.xpl.XplBindingProvider;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -32,13 +32,13 @@ import org.cdp1802.xpl.xPL_MessageListenerI;
  * @author clinique
  * @since 1.5.0
  */
-public class xPLBinding extends AbstractBinding<xPLBindingProvider> implements xPL_MessageListenerI {
+public class XplBinding extends AbstractBinding<XplBindingProvider> implements xPL_MessageListenerI {
 
-	//private static final Logger logger = LoggerFactory.getLogger(xPLBinding.class);	
+	//private static final Logger logger = LoggerFactory.getLogger(XplBinding.class);	
 	private XplTransportService xplTransportService;
 	private EventPublisher eventPublisher;
 
-	public xPLBinding() {
+	public XplBinding() {
 	}
 
 	public void setEventPublisher(EventPublisher eventPublisher) {
@@ -55,8 +55,8 @@ public class xPLBinding extends AbstractBinding<xPLBindingProvider> implements x
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		for (xPLBindingProvider provider : providers) {
-			xPLBindingConfig config = provider.getConfig(itemName);
+		for (XplBindingProvider provider : providers) {
+			XplBindingConfig config = provider.getConfig(itemName);
 			if ((config == null) || (config.NamedParameter == null)) continue;
 
 			if (config.Message.getSource() == null) 
@@ -70,10 +70,10 @@ public class xPLBinding extends AbstractBinding<xPLBindingProvider> implements x
 	@Override	 
 	public void handleXPLMessage(xPL_MessageI theMessage) {
 		
-		for (xPLBindingProvider provider : providers) {
+		for (XplBindingProvider provider : providers) {
 			List<String> matchingItems = provider.hasMessage(theMessage);
 			for (String itemName : matchingItems) {
-				xPLBindingConfig config = provider.getConfig(itemName);
+				XplBindingConfig config = provider.getConfig(itemName);
 				if (config == null) continue;
 				
 				String current = theMessage.getNamedValue(config.NamedParameter);
