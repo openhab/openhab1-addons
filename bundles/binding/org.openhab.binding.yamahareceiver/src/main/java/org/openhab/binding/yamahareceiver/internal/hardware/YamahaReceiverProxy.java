@@ -83,10 +83,15 @@ public class YamahaReceiverProxy {
 
 	public void setSurroundProgram(Zone zone, String name) throws IOException {
 		postAndGetResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"PUT\"><" + zone + "><Surround><Program_Sel><Current><Sound_Program>"
-				+ name
-				+ "</Sound_Program></Current></Program_Sel></Surround></" + zone + "></YAMAHA_AV>");
+				+ name + "</Sound_Program></Current></Program_Sel></Surround></" + zone + "></YAMAHA_AV>");
 	}
 
+	public void setNetRadio(int lineNo) throws IOException {
+		 /* Jump to specified line in preset list */
+		postAndGetResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"PUT\"><NET_RADIO><Play_Control><Preset><Preset_Sel>"
+				+ lineNo + "</Preset_Sel></Preset></Play_Control></NET_RADIO></YAMAHA_AV>");
+	}
+	
 	public YamahaReceiverState getState(Zone zone) throws IOException {
 		Document doc = postAndGetXmlResponse("<?xml version=\"1.0\" encoding=\"utf-8\"?><YAMAHA_AV cmd=\"GET\"><" + zone + "><Basic_Status>GetParam</Basic_Status></" + zone + "></YAMAHA_AV>");
 		Node basicStatus = getNode(doc.getFirstChild(),

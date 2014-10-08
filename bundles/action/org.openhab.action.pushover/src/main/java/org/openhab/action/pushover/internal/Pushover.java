@@ -101,6 +101,33 @@ public class Pushover {
 			@ParamDoc(name = "priority", text = "The priority of the notification") int priority) {
 		return pushover(defaultApiKey, defaultUser, message, defaultDevice, defaultTitle, defaultUrl, defaultUrlTitle, priority, defaultSound);
 	}
+	
+	@ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean pushover(
+			@ParamDoc(name = "message", text = "Your message.") String message,
+			@ParamDoc(name = "priority", text = "The priority of the notification") int priority,
+			@ParamDoc(name = "url", text = "A supplementary URL to show with your message.") String url) {
+		return pushover(defaultApiKey, defaultUser, message, defaultDevice, defaultTitle, url, defaultUrlTitle, priority, defaultSound);
+	}
+	
+	@ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean pushover(
+			@ParamDoc(name = "message", text = "Your message.") String message,
+			@ParamDoc(name = "priority", text = "The priority of the notification") int priority,
+			@ParamDoc(name = "url", text = "A supplementary URL to show with your message.") String url,
+			@ParamDoc(name = "urlTitle", text = "A title for your supplementary URL, otherwise just the URL is shown.") String urlTitle) {
+		return pushover(defaultApiKey, defaultUser, message, defaultDevice, defaultTitle, url, urlTitle, priority, defaultSound);
+	}
+
+	@ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean pushover(
+			@ParamDoc(name = "message", text = "Your message.") String message,
+			@ParamDoc(name = "priority", text = "The priority of the notification") int priority,
+			@ParamDoc(name = "url", text = "A supplementary URL to show with your message.") String url,
+			@ParamDoc(name = "urlTitle", text = "A title for your supplementary URL, otherwise just the URL is shown.") String urlTitle,
+			@ParamDoc(name = "sound", text = "The name of one of the sounds supported by device clients to override the user's default sound choice.") String sound) {
+		return pushover(defaultApiKey, defaultUser, message, defaultDevice, defaultTitle, url, urlTitle, priority, sound);
+	}
 
 	@ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean pushover(
@@ -108,6 +135,36 @@ public class Pushover {
 			@ParamDoc(name = "device", text = " Your user's device name to send the message directly to that device, rather than all of the user's devices.") String device,
 			@ParamDoc(name = "priority", text = "The priority of the notification") int priority) {
 		return pushover(defaultApiKey, defaultUser, message, device, defaultTitle, defaultUrl, defaultUrlTitle, priority, defaultSound);
+	}
+	
+	@ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean pushover(
+			@ParamDoc(name = "message", text = "Your message.") String message,
+			@ParamDoc(name = "device", text = " Your user's device name to send the message directly to that device, rather than all of the user's devices.") String device,
+			@ParamDoc(name = "priority", text = "The priority of the notification") int priority,
+			@ParamDoc(name = "url", text = "A supplementary URL to show with your message.") String url) {
+		return pushover(defaultApiKey, defaultUser, message, device, defaultTitle, url, defaultUrlTitle, priority, defaultSound);
+	}
+	
+	@ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean pushover(
+			@ParamDoc(name = "message", text = "Your message.") String message,
+			@ParamDoc(name = "device", text = " Your user's device name to send the message directly to that device, rather than all of the user's devices.") String device,
+			@ParamDoc(name = "priority", text = "The priority of the notification") int priority,
+			@ParamDoc(name = "url", text = "A supplementary URL to show with your message.") String url,
+			@ParamDoc(name = "urlTitle", text = "A title for your supplementary URL, otherwise just the URL is shown.") String urlTitle) {
+		return pushover(defaultApiKey, defaultUser, message, device, defaultTitle, url, urlTitle, priority, defaultSound);
+	}
+	
+	@ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean pushover(
+			@ParamDoc(name = "message", text = "Your message.") String message,
+			@ParamDoc(name = "device", text = " Your user's device name to send the message directly to that device, rather than all of the user's devices.") String device,
+			@ParamDoc(name = "priority", text = "The priority of the notification") int priority,
+			@ParamDoc(name = "url", text = "A supplementary URL to show with your message.") String url,
+			@ParamDoc(name = "urlTitle", text = "A title for your supplementary URL, otherwise just the URL is shown.") String urlTitle,
+			@ParamDoc(name = "sound", text = "The name of one of the sounds supported by device clients to override the user's default sound choice.") String sound) {
+		return pushover(defaultApiKey, defaultUser, message, device, defaultTitle, url, urlTitle, priority, sound);
 	}
 
 	@ActionDoc(text = "Send a notification to your mobile device while providing api key and user/group key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")

@@ -213,6 +213,10 @@ public class YamahaReceiverBinding extends
 				proxy.setInput(zone, parseString(command.toString()));
 			} else if (type == BindingType.surroundProgram) {
 				proxy.setSurroundProgram(zone, parseString(command.toString()));
+			} else if (type == BindingType.netRadio) {
+				if (command instanceof DecimalType) {
+					proxy.setNetRadio(((DecimalType)command).intValue());
+				}
 			}
 		} catch (IOException e) {
 			logger.warn("Cannot communicate with " + proxy.getHost()
