@@ -258,10 +258,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 	 */
 	public void setSqueezeServer(SqueezeServer squeezeServer) {
 		this.squeezeServer = squeezeServer;
-		
-		for (SqueezePlayer player : squeezeServer.getPlayers()) {
-			player.addPlayerEventListener(this);
-		}
+		this.squeezeServer.addPlayerEventListener(this);
 	}
 
 	/**
@@ -271,10 +268,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 	 *            Service to remove.
 	 */
 	public void unsetSqueezeServer(SqueezeServer squeezeServer) {
+		this.squeezeServer.removePlayerEventListener(this);
 		this.squeezeServer = null;
-		
-		for (SqueezePlayer player : squeezeServer.getPlayers()) {
-			player.removePlayerEventListener(this);
-		}
 	}
 }

@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.List;
@@ -81,6 +82,9 @@ public class SqueezeServer implements ManagedService {
 	private Socket clientSocket;
 	private SqueezeServerListener listener;
 
+	// player listeners
+	private final List<SqueezePlayerEventListener> playerEventListeners = Collections.synchronizedList(new ArrayList<SqueezePlayerEventListener>());
+	
 	// configured players - keyed by playerId and MAC address
 	private final Map<String, SqueezePlayer> playersById = new ConcurrentHashMap<String, SqueezePlayer>();
 	private final Map<String, SqueezePlayer> playersByMacAddress = new ConcurrentHashMap<String, SqueezePlayer>();
@@ -96,6 +100,19 @@ public class SqueezeServer implements ManagedService {
 		// always return true even after the socket is closed
 		// http://stackoverflow.com/questions/10163358/
 		return clientSocket.isConnected() && !clientSocket.isClosed();
+	}
+
+	public synchronized void addPlayerEventListener(SqueezePlayerEventListener playerEventListener) {
+		if (!playerEventListeners.contains(playerEventListener))
+			playerEventListeners.add(playerEventListener);
+	}
+		
+	public synchronized void removePlayerEventListener(SqueezePlayerEventListener playerEventListener) {
+		playerEventListeners.remove(playerEventListener);
+	}
+		
+	public synchronized List<SqueezePlayerEventListener> getPlayerEventListeners() {
+		return new ArrayList<SqueezePlayerEventListener>(playerEventListeners);
 	}
 
 	public synchronized List<SqueezePlayer> getPlayers() {
@@ -368,7 +385,7 @@ public class SqueezeServer implements ManagedService {
 				String playerId = playerMatcher.group(1);
 				String macAddress = value;
 				
-				SqueezePlayer player = new SqueezePlayer(playerId, macAddress);
+				SqueezePlayer player = new SqueezePlayer(this, playerId, macAddress);
 				playersById.put(playerId.toLowerCase(), player);
 				playersByMacAddress.put(macAddress.toLowerCase(), player);
 			} else if (languageMatcher.matches() && StringUtils.isNotBlank(value)) {
