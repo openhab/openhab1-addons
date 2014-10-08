@@ -90,110 +90,90 @@ public class NetatmoBinding extends
 	@Override
 	protected void execute() {
 		logger.debug("Querying Netatmo API");
-		
 		for (String userid : credentialsCache.keySet()) {
+			
 			OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
 			if (oauthCredentials.noAccessToken()) {
 				// initial run after a restart, so get an access token first
 				oauthCredentials.refreshAccessToken();
 			}
 
-			if (oauthCredentials.firstExecution) {
-				final DeviceListRequest request = new DeviceListRequest(oauthCredentials.accessToken);
-				final DeviceListResponse response = request.execute();
-
-				logger.debug("Request: {}", request);
-				logger.debug("Response: {}", response);
-
-				if (response.isError()) {
-					final NetatmoError error = response.getError();
-
-					if (error.isAccessTokenExpired()) {
-						oauthCredentials.refreshAccessToken();
-						execute();
-					} else {
-						logger.error(error.getMessage());
-					}
-
-					return; // abort processing
-				} else {
-					processDeviceListResponse(response);
-					oauthCredentials.firstExecution = false;
+			try {
+				if (oauthCredentials.firstExecution) {
+					processDeviceList(oauthCredentials);
 				}
+
+				Map<String, Map<String, BigDecimal>> deviceMeasureValueMap = processMeasurements(oauthCredentials);
+				for (final NetatmoBindingProvider provider : this.providers) {
+					for (final String itemName : provider.getItemNames()) {
+						final String deviceId = provider.getDeviceId(itemName);
+						final String moduleId = provider.getModuleId(itemName);
+						final String measure = provider.getMeasure(itemName);
+
+						final String requestKey = createKey(deviceId, moduleId);
+
+						final State state = new DecimalType(deviceMeasureValueMap.get(requestKey).get(measure));
+						if (state != null) {
+							this.eventPublisher.postUpdate(itemName, state);
+						}
+					}
+				}
+			} catch (NetatmoException ne) {
+				logger.error(ne.getMessage());
 			}
-
-			final Map<String, Map<String, BigDecimal>> deviceMeasureValueMap = new HashMap<String, Map<String, BigDecimal>>();
-
-			for (final MeasurementRequest request : createMeasurementRequests()) {
-				final MeasurementResponse response = request.execute();
-
-				logger.debug("Request: {}", request);
-				logger.debug("Response: {}", response);
-
-				if (response.isError()) {
-					final NetatmoError error = response.getError();
-
-					if (error.isAccessTokenExpired()) {
-						oauthCredentials.refreshAccessToken();
-						execute();
-					} else {
-						logger.error(error.getMessage());
-					}
-
-					return; // abort processing
-				} else {
-					processMeasurementResponse(request, response, deviceMeasureValueMap);
-				}
-			}
-
-			for (final NetatmoBindingProvider provider : this.providers) {
-				for (final String itemName : provider.getItemNames()) {
-					final String deviceId = provider.getDeviceId(itemName);
-					final String moduleId = provider.getModuleId(itemName);
-					final String measure = provider.getMeasure(itemName);
-
-					final String requestKey = createKey(deviceId, moduleId);
-
-					final State state = new DecimalType(deviceMeasureValueMap.get(
-							requestKey).get(measure));
-					if (state != null) {
-						this.eventPublisher.postUpdate(itemName, state);
-					}
-				}
-			}		
 		}
 	}
 
-	/**
-	 * Creates the necessary requests to query the Netatmo API for all measures
-	 * that have a binding. One request can query all measures of a single
-	 * device or module.
-	 */
-	private Collection<MeasurementRequest> createMeasurementRequests() {
-		final Map<String, MeasurementRequest> requests = new HashMap<String, MeasurementRequest>();
+	private Map<String, Map<String, BigDecimal>> processMeasurements(OAuthCredentials oauthCredentials) {
+		Map<String, Map<String, BigDecimal>> deviceMeasureValueMap = new HashMap<String, Map<String,BigDecimal>>();
+		
+		for (final MeasurementRequest request : createMeasurementRequests()) {
+			final MeasurementResponse response = request.execute();
 
-		for (final NetatmoBindingProvider provider : this.providers) {
-			for (final String itemName : provider.getItemNames()) {
-				
-				final String userid = provider.getUserid(itemName);
-				final String deviceId = provider.getDeviceId(itemName);
-				final String moduleId = provider.getModuleId(itemName);
-				final String measure = provider.getMeasure(itemName);
+			logger.debug("Request: {}", request);
+			logger.debug("Response: {}", response);
 
-				final String requestKey = createKey(deviceId, moduleId);
-				
-				OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
-				if (oauthCredentials != null) {
-					if (!requests.containsKey(requestKey)) {
-						requests.put(requestKey, 
-							new MeasurementRequest(oauthCredentials.accessToken, deviceId, moduleId));
-					}
-					requests.get(requestKey).addMeasure(measure);
+			if (response.isError()) {
+				final NetatmoError error = response.getError();
+
+				if (error.isAccessTokenExpired()) {
+					oauthCredentials.refreshAccessToken();
+					execute();
+				} else {
+					throw new NetatmoException(error.getMessage());
 				}
+
+				break; // abort processing measurement requests
+			} else {
+				processMeasurementResponse(request, response, deviceMeasureValueMap);
 			}
 		}
+		
+		return deviceMeasureValueMap;
+	}
+	
+	private void processDeviceList(OAuthCredentials oauthCredentials) {
+		final DeviceListRequest request = new DeviceListRequest(oauthCredentials.accessToken);
+		final DeviceListResponse response = request.execute();
 
-		return requests.values();
+		logger.debug("Request: {}", request);
+		logger.debug("Response: {}", response);
+
+		if (response.isError()) {
+			final NetatmoError error = response.getError();
+
+			if (error.isAccessTokenExpired()) {
+				oauthCredentials.refreshAccessToken();
+				execute();
+			} else {
+				throw new NetatmoException(error.getMessage());
+			}
+
+			return; // abort processing
+		} else {
+			processDeviceListResponse(response);
+			oauthCredentials.firstExecution = false;
+		}
 	}
 
 	/**
@@ -268,6 +248,7 @@ public class NetatmoBinding extends
 						+ device.getModuleName() + ")\n");
 			}
 		}
+		
 		for (Entry<String, Set<String>> entry : moduleMeasurements.entrySet()) {
 			final String moduleId = entry.getKey();
 			final Module module = moduleMap.get(moduleId);
@@ -282,12 +263,40 @@ public class NetatmoBinding extends
 		logger.info(message.toString());
 	}
 
-	private void processMeasurementResponse(final MeasurementRequest request,
-			final MeasurementResponse response,
-			final Map<String, Map<String, BigDecimal>> deviceMeasureValueMap) {
-		final List<BigDecimal> values = response.getBody().get(0).getValues()
-				.get(0);
+	/**
+	 * Creates the necessary requests to query the Netatmo API for all measures
+	 * that have a binding. One request can query all measures of a single
+	 * device or module.
+	 */
+	private Collection<MeasurementRequest> createMeasurementRequests() {
+		final Map<String, MeasurementRequest> requests = new HashMap<String, MeasurementRequest>();
 
+		for (final NetatmoBindingProvider provider : this.providers) {
+			for (final String itemName : provider.getItemNames()) {
+				
+				final String userid = provider.getUserid(itemName);
+				final String deviceId = provider.getDeviceId(itemName);
+				final String moduleId = provider.getModuleId(itemName);
+				final String measure = provider.getMeasure(itemName);
+
+				final String requestKey = createKey(deviceId, moduleId);
+				
+				OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
+				if (oauthCredentials != null) {
+					if (!requests.containsKey(requestKey)) {
+						requests.put(requestKey, 
+							new MeasurementRequest(oauthCredentials.accessToken, deviceId, moduleId));
+					}
+					requests.get(requestKey).addMeasure(measure);
+				}
+			}
+		}
+
+		return requests.values();
+	}
+	
+	private void processMeasurementResponse(final MeasurementRequest request, final MeasurementResponse response, Map<String, Map<String, BigDecimal>> deviceMeasureValueMap) {
+		final List<BigDecimal> values = response.getBody().get(0).getValues().get(0);
 		final Map<String, BigDecimal> valueMap = new HashMap<String, BigDecimal>();
 
 		int index = 0;
