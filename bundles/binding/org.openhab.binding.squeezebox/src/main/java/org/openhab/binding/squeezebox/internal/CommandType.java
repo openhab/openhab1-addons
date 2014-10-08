@@ -31,6 +31,11 @@ public enum CommandType {
 	FILE("file"),
 	HTTP("http"),
 	SYNC("sync"),
+	SHUFFLE("shuffle"),
+	REPEAT("repeat"),
+	NUMTRACKS("numbertracks"),
+	PLAYTIME("time"),
+	CURRTRACK("currentrack"),
 			
 	TITLE("title"),	
 	ARTIST("artist"),
