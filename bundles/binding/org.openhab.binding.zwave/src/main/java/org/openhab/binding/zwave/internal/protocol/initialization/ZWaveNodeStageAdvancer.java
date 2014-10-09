@@ -351,24 +351,6 @@ public class ZWaveNodeStageAdvancer {
 		this.node.setHealState(restoredNode.getHealState());
 		this.node.setNeighbors(restoredNode.getNeighbors());
 		
-		// Restore node Version CommandClass information from previous values if set. 
-		ZWaveVersionCommandClass versionCommandClassRestored = (ZWaveVersionCommandClass) restoredNode
-				.getCommandClass(CommandClass.VERSION);
-		ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) restoredNode
-				.getCommandClass(CommandClass.VERSION);
-		
-		if (versionCommandClassRestored != null) {
-			if(versionCommandClassRestored.getLibraryType() != null) {
-				versionCommandClass.setLibraryType(versionCommandClassRestored.getLibraryType());
-			}
-			if(versionCommandClassRestored.getApplicationVersion() != null) {
-				versionCommandClass.setApplicationVersion(versionCommandClassRestored.getApplicationVersion());
-			}
-			if(versionCommandClassRestored.getProtocolVersion() != null) {
-				versionCommandClass.setProtocolVersion(versionCommandClassRestored.getProtocolVersion());
-			}
-		}
-
 
 		for (ZWaveCommandClass commandClass : restoredNode.getCommandClasses()) {
 			commandClass.setController(this.controller);
@@ -385,6 +367,24 @@ public class ZWaveNodeStageAdvancer {
 			}
 			
 			this.node.addCommandClass(commandClass);
+		}
+		
+		// Restore node Version CommandClass information 
+		ZWaveVersionCommandClass versionCommandClassRestored = (ZWaveVersionCommandClass) restoredNode
+				.getCommandClass(CommandClass.VERSION);
+		ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) restoredNode
+				.getCommandClass(CommandClass.VERSION);
+		
+		if (versionCommandClassRestored != null) {
+			if(versionCommandClassRestored.getLibraryType() != null) {
+				versionCommandClass.setLibraryType(versionCommandClassRestored.getLibraryType());
+			}
+			if(versionCommandClassRestored.getApplicationVersion() != null) {
+				versionCommandClass.setApplicationVersion(versionCommandClassRestored.getApplicationVersion());
+			}
+			if(versionCommandClassRestored.getProtocolVersion() != null) {
+				versionCommandClass.setProtocolVersion(versionCommandClassRestored.getProtocolVersion());
+			}
 		}
 
 		logger.debug("NODE {}: Restored from config.", this.node.getNodeId());
