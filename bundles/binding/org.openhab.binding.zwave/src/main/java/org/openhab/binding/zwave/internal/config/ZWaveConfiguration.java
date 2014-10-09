@@ -35,7 +35,6 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionComm
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
@@ -832,17 +831,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				if (action.equals("Delete")) {
 					logger.debug("NODE {}: Delete node", nodeId);
-					if (node.isFailed()) {
-						this.zController.requestRemoveFailedNode(nodeId);
-						// Delete the XML file.
-						// TODO: This should be possibly be done after registering
-						// an event handler
-						// Then we can delete this after the controller confirms the
-						// removal.
-						ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-						nodeSerializer.DeleteNode(nodeId);
-					}
-
+					this.zController.requestRemoveFailedNode(nodeId);
 				}
 
 				// This is temporary

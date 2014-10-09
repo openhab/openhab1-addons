@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class processes a serial message from the zwave controller
- * @author Chris Jackson
- * @since 1.5.0
+ * @author Wez Hunter
+ * @since 1.6.0
  */
 public class IsFailedNodeMessageClass  extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(IsFailedNodeMessageClass.class);

@@ -56,6 +56,7 @@ public class RemoveFailedNodeMessageClass extends ZWaveCommandProcessor {
 		switch(incomingMessage.getMessagePayloadByte(0)) {
 			case FAILED_NODE_REMOVE_STARTED:
 				logger.debug("NODE {}: Remove failed node successfully placed on stack.", nodeId);
+				transactionComplete = true;
 				break;
 			case FAILED_NODE_NOT_PRIMARY_CONTROLLER:
 				logger.error("NODE {}: Remove failed node failed as not Primary Controller for node!", nodeId);
