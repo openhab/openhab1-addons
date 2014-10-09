@@ -72,6 +72,7 @@ public class ZWaveNode {
 	private boolean listening;			 // i.e. sleeping
 	private boolean frequentlyListening; 
 	private boolean routing;
+	private String healState;
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
@@ -155,6 +156,23 @@ public class ZWaveNode {
 	 */
 	public void setFrequentlyListening(boolean frequentlyListening) {
 		this.frequentlyListening = frequentlyListening;
+		this.lastUpdated = Calendar.getInstance().getTime();
+	}
+	
+	/**
+	 * Gets the Heal State of the node.
+	 * @return String indicating the node Heal State.
+	 */
+	public String getHealState() {
+		return healState;
+	}
+	
+	/**
+	 * Sets the Heal State of the node.
+	 * @param healState
+	 */
+	public void setHealState(String healState) {
+		this.healState = healState;
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 	
@@ -583,6 +601,14 @@ public class ZWaveNode {
 	public List<Integer> getNeighbors() {
 		return nodeNeighbors;
 	}
+	
+	/**
+	 * Set the node neighbour list
+	 * @param neighbours
+	 */
+	public void setNeighbors(List<Integer> neighbors) {
+		this.nodeNeighbors = neighbors;
+	}	
 	
 	/**
 	 * Clear the neighbor list

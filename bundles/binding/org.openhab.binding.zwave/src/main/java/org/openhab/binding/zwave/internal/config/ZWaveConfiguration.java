@@ -246,7 +246,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", "Node " + node.getNodeId());
 				}
 				else {
-					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", node.getName());
+					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", node.getNodeId() + ": " + node.getName());
 				}
 				
 				// If we can't find the product, then try and find just the
@@ -376,6 +376,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				record = new OpenHABConfigurationRecord(domain + "info/", "Information");
 				records.add(record);
+
 			} else if (arg.equals("info/")) {
 				if (node.getManufacturer() != Integer.MAX_VALUE) {
 					if (database.FindManufacturer(node.getManufacturer()) == true) {
@@ -389,6 +390,16 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						record.value = database.getProductName();
 						records.add(record);
 					}
+					
+				if(networkMonitor != null) {
+					record = new OpenHABConfigurationRecord(domain, "LastHeal", "Heal Status", true);
+					if (node.getHealState() == null)
+						record.value = "NONE";
+					else
+						record.value = node.getHealState();
+					
+					records.add(record);
+
 				}
 
 				record = new OpenHABConfigurationRecord(domain, "ManufacturerID", "Manufacturer ID", true);
@@ -489,6 +500,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.value = Boolean.toString(node.isDead()) + " [" + node.getDeadCount() + " previous - last @ " + node.getDeadTime().toString() + "]";
 				}
 				records.add(record);
+
 			} else if (arg.equals("parameters/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
@@ -740,7 +752,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			
 			return records;
 		}
-
+		}
 		return null;
 	}
 

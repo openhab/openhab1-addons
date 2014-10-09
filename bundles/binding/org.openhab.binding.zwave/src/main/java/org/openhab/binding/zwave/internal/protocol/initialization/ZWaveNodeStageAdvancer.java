@@ -67,7 +67,8 @@ public class ZWaveNodeStageAdvancer {
 	 * stages
 	 */
 	public void advanceNodeStage(NodeStage targetStage) {
-		if (targetStage.getStage() <= this.node.getNodeStage().getStage() && targetStage != NodeStage.DONE) {
+		logger.debug(String.format("NODE %d: Current Stage = %s, Requested Stage = %s", this.node.getNodeId(), this.node.getNodeStage().getLabel(), targetStage.getLabel()));
+		if (targetStage.getStage() <= this.node.getNodeStage().getStage() && targetStage != NodeStage.DONE && targetStage != NodeStage.DEAD) {
 			logger.warn(String.format("NODE %d: Already in or beyond node stage, ignoring. current = %s, requested = %s", this.node.getNodeId(),
 					this.node.getNodeStage().getLabel(), targetStage.getLabel()));
 			return;
@@ -94,6 +95,7 @@ public class ZWaveNodeStageAdvancer {
 
 				this.node.setNodeStage(NodeStage.PING);
 				this.controller.sendData(zwaveCommandClass.getNoOperationMessage());
+				this.controller.requestNodeVersionInfo(this.node.getNodeId());
 			} else {
 				logger.debug("NODE {}: Initialisation complete.", this.node.getNodeId());
 				initializationComplete = true;
@@ -343,6 +345,12 @@ public class ZWaveNodeStageAdvancer {
 		this.node.setDeviceId(restoredNode.getDeviceId());
 		this.node.setDeviceType(restoredNode.getDeviceType());
 		this.node.setManufacturer(restoredNode.getManufacturer());
+		
+		this.node.setName(restoredNode.getName());
+		this.node.setLocation(restoredNode.getLocation());
+		this.node.setHealState(restoredNode.getHealState());
+		this.node.setNeighbors(restoredNode.getNeighbors());
+		
 
 		for (ZWaveCommandClass commandClass : restoredNode.getCommandClasses()) {
 			commandClass.setController(this.controller);
@@ -359,6 +367,24 @@ public class ZWaveNodeStageAdvancer {
 			}
 			
 			this.node.addCommandClass(commandClass);
+		}
+		
+		// Restore node Version CommandClass information 
+		ZWaveVersionCommandClass versionCommandClassRestored = (ZWaveVersionCommandClass) restoredNode
+				.getCommandClass(CommandClass.VERSION);
+		ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) restoredNode
+				.getCommandClass(CommandClass.VERSION);
+		
+		if (versionCommandClassRestored != null) {
+			if(versionCommandClassRestored.getLibraryType() != null) {
+				versionCommandClass.setLibraryType(versionCommandClassRestored.getLibraryType());
+			}
+			if(versionCommandClassRestored.getApplicationVersion() != null) {
+				versionCommandClass.setApplicationVersion(versionCommandClassRestored.getApplicationVersion());
+			}
+			if(versionCommandClassRestored.getProtocolVersion() != null) {
+				versionCommandClass.setProtocolVersion(versionCommandClassRestored.getProtocolVersion());
+			}
 		}
 
 		logger.debug("NODE {}: Restored from config.", this.node.getNodeId());
