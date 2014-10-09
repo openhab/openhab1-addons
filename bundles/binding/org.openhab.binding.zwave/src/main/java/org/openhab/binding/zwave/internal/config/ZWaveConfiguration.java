@@ -501,33 +501,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 				records.add(record);
 
-				ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
-								.getCommandClass(CommandClass.VERSION);
-		
-				if (versionCommandClass != null) {
-					record = new OpenHABConfigurationRecord(domain, "LibType", "Library Type", true);
-					if(versionCommandClass.getLibraryType() == null)
-						record.value = "Unknown";
-					else
-						record.value = versionCommandClass.getLibraryType().getLabel();
-					records.add(record);
-
-					record = new OpenHABConfigurationRecord(domain, "ProtocolVersion", "Protocol Version", true);
-					if(versionCommandClass.getProtocolVersion() == null)
-						record.value = "Unknown";
-					else
-						record.value = Double.toString(versionCommandClass.getProtocolVersion());
-					records.add(record);
-
-					record = new OpenHABConfigurationRecord(domain, "AppVersion", "Application Version", true);
-					if(versionCommandClass.getApplicationVersion() == null)
-						record.value = "Unknown";
-					else
-						record.value = Double.toString(versionCommandClass.getApplicationVersion());
-					records.add(record);
-				}				
-				
-				
 			} else if (arg.equals("parameters/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
