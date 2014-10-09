@@ -348,11 +348,27 @@ public class ZWaveNodeStageAdvancer {
 		
 		this.node.setName(restoredNode.getName());
 		this.node.setLocation(restoredNode.getLocation());
-		this.node.setAppVersion(restoredNode.getAppVersion());
-		this.node.setProtocolVersion(restoredNode.getProtocolVersion());
-		this.node.setLibraryType(restoredNode.getLibraryType());
 		this.node.setHealState(restoredNode.getHealState());
 		this.node.setNeighbors(restoredNode.getNeighbors());
+		
+		// Restore node Version CommandClass information from previous values if set. 
+		ZWaveVersionCommandClass versionCommandClassRestored = (ZWaveVersionCommandClass) restoredNode
+				.getCommandClass(CommandClass.VERSION);
+		ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) restoredNode
+				.getCommandClass(CommandClass.VERSION);
+		
+		if (versionCommandClassRestored != null) {
+			if(versionCommandClassRestored.getLibraryType() != null) {
+				versionCommandClass.setLibraryType(versionCommandClassRestored.getLibraryType());
+			}
+			if(versionCommandClassRestored.getApplicationVersion() != null) {
+				versionCommandClass.setApplicationVersion(versionCommandClassRestored.getApplicationVersion());
+			}
+			if(versionCommandClassRestored.getProtocolVersion() != null) {
+				versionCommandClass.setProtocolVersion(versionCommandClassRestored.getProtocolVersion());
+			}
+		}
+
 
 		for (ZWaveCommandClass commandClass : restoredNode.getCommandClasses()) {
 			commandClass.setController(this.controller);

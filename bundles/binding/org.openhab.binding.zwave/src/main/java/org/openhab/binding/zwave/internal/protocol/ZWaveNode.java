@@ -72,9 +72,6 @@ public class ZWaveNode {
 	private boolean listening;			 // i.e. sleeping
 	private boolean frequentlyListening; 
 	private boolean routing;
-	private String appVersion;
-	private String protocolVersion;
-	private String libraryType;
 	private String healState;
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
@@ -176,57 +173,6 @@ public class ZWaveNode {
 	 */
 	public void setHealState(String healState) {
 		this.healState = healState;
-		this.lastUpdated = Calendar.getInstance().getTime();
-	}
-	
-	/**
-	 * Gets the Application Version of the node.
-	 * @return String indicating the node Application Version.
-	 */
-	public String getAppVersion() {
-		return appVersion;
-	}
-	
-	/**
-	 * Sets the Application Version of the node.
-	 * @param appVersion
-	 */
-	public void setAppVersion(String appVersion) {
-		this.appVersion = appVersion;
-		this.lastUpdated = Calendar.getInstance().getTime();
-	}
-	
-	/**
-	 * Gets the Protocol Version of the node.
-	 * @return String indicating the node Protocol Version.
-	 */
-	public String getProtocolVersion() {
-		return protocolVersion;
-	}
-	
-	/**
-	 * Sets the Protocol Version of the node.
-	 * @param protocolVersion
-	 */
-	public void setProtocolVersion(String protocolVersion) {
-		this.protocolVersion = protocolVersion;
-		this.lastUpdated = Calendar.getInstance().getTime();
-	}
-	
-	/**
-	 * Gets the Library Type of the node.
-	 * @return String indicating the node Library Type.
-	 */
-	public String getLibraryType() {
-		return libraryType;
-	}
-	
-	/**
-	 * Sets the Library Type of the node.
-	 * @param libraryType
-	 */
-	public void setLibraryType(String libraryType) {
-		this.libraryType = libraryType;
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 	
