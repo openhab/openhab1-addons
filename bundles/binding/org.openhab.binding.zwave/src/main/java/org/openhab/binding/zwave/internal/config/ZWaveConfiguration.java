@@ -527,7 +527,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					records.add(record);
 				}				
 				
-				records.add(record);
 				
 			} else if (arg.equals("parameters/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
