@@ -763,12 +763,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	public void doAction(String domain, String action) {
 		logger.trace("doAction domain '{}' to '{}'", domain, action);
 
-		// If the controller isn't ready, then ignore any requests
-		if (zController.isConnected() == false) {
-			logger.debug("Controller not ready - Ignoring request to '{}'", domain);
-			return;
-		}
-
 		String[] splitDomain = domain.split("/");
 
 		// There must be at least 2 components to the domain
@@ -777,14 +771,22 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			return;
 		}
 
+		// Process Controller Reset requests even if the controller isn't initialised
+		if (splitDomain[0].equals("binding") && splitDomain[1].equals("network") && action.equals("SoftReset")) {
+			zController.requestSoftReset();
+		}
+		
+		// If the controller isn't ready, then ignore any further requests
+		if (zController.isConnected() == false) {
+			logger.debug("Controller not ready - Ignoring request to '{}'", domain);
+			return;
+		}
+
 		if (splitDomain[0].equals("binding")) {
 			if (splitDomain[1].equals("network")) {
 				if (action.equals("Heal")) {
 					if (networkMonitor != null)
 						networkMonitor.rescheduleHeal();
-				}
-				if (action.equals("SoftReset")) {
-					zController.requestSoftReset();
 				}
 				if (inclusion == false && exclusion == false) {
 					if (action.equals("Include")) {
@@ -802,7 +804,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					logger.debug("Exclusion/Inclusion already in progress.");
 				}
 			}
-		} else if (splitDomain[0].equals("nodes")) {
+		}
+
+		if (splitDomain[0].equals("nodes")) {
 			int nodeId = Integer.parseInt(splitDomain[1].substring(4));
 
 			// Get the node - if it exists
