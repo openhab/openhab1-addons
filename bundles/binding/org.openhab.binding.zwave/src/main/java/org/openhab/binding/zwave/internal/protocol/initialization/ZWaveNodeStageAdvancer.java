@@ -95,6 +95,7 @@ public class ZWaveNodeStageAdvancer {
 
 				this.node.setNodeStage(NodeStage.PING);
 				this.controller.sendData(zwaveCommandClass.getNoOperationMessage());
+				this.controller.requestNodeVersionInfo(this.node.getNodeId());
 			} else {
 				logger.debug("NODE {}: Initialisation complete.", this.node.getNodeId());
 				initializationComplete = true;
@@ -169,7 +170,6 @@ public class ZWaveNodeStageAdvancer {
 			logger.trace("NODE {}: does not support MULTI_INSTANCE, proceeding to static node stage.",
 					this.node.getNodeId());
 		case INSTANCES_ENDPOINTS:
-			this.controller.requestNodeVersionInfo(this.node.getNodeId());
 			this.node.setNodeStage(NodeStage.STATIC_VALUES);
 		case STATIC_VALUES:
 			if (queriesPending == -1) {
