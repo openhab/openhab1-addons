@@ -201,6 +201,12 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	public LibraryType getLibraryType() {
 		return libraryType;
 	}
+	/**
+	 * Sets the current ZWave library type
+	 */
+	public void setLibraryType(LibraryType librarytype) {
+		libraryType = librarytype;
+	}
 
 	/**
 	 * Returns the version of the protocol used by the device
@@ -209,6 +215,12 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	public Double getProtocolVersion() {
 		return protocolVersion;
 	}
+	/**
+	 * Sets the current ZWave protocol version
+	 */
+	public void setProtocolVersion(Double protocolversion) {
+		protocolVersion = protocolversion;
+	}
 	
 	/**
 	 * Returns the version of the firmware used by the device
@@ -216,6 +228,12 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	 */
 	public Double getApplicationVersion() {
 		return applicationVersion;
+	}
+	/**
+	 * Sets the current ZWave application version
+	 */
+	public void setApplicationVersion(Double applicationversion) {
+		applicationVersion = applicationversion;
 	}
 	
 	public enum LibraryType
