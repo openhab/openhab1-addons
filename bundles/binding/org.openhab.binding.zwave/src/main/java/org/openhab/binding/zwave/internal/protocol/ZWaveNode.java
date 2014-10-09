@@ -590,7 +590,14 @@ public class ZWaveNode {
 	public void clearNeighbors() {
 		nodeNeighbors.clear();
 	}
-
+	/**
+	 * Set the node neighbour list
+	 * @param neighbours
+	 */
+	public void setNeighbors(List<Integer> neighbors) {
+		this.nodeNeighbors = neighbors;
+	}	
+	
 	/**
 	 * Updates a nodes routing information
 	 * Generation of routes uses associations
