@@ -273,6 +273,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				// Set the state
 				boolean canDelete = false;
 				switch(node.getNodeStage()) {
+				case DEAD:
+					record.state = OpenHABConfigurationRecord.STATE.ERROR;
+					break;
 				case FAILED:
 					record.state = OpenHABConfigurationRecord.STATE.ERROR;
 					canDelete = true;
@@ -288,12 +291,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					else if(node.getSendCount() > 0 && (node.getRetryCount() * 100 / node.getSendCount()) > 5)
 						record.state = OpenHABConfigurationRecord.STATE.WARNING;
 					else
-					record.state = OpenHABConfigurationRecord.STATE.OK;
-					canDelete = false;
+						record.state = OpenHABConfigurationRecord.STATE.OK;
 					break;
 				default:
 					record.state = OpenHABConfigurationRecord.STATE.INITIALIZING;
-					canDelete = false;
 					break;
 				}
 
@@ -475,7 +476,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 
 				record = new OpenHABConfigurationRecord(domain, "NodeStage", "Node Stage", true);
-				record.value = node.getNodeStage().getLabel() + " @ " + df.format(node.getQueryStageTimeStamp());
+				record.value = node.getNodeStage() + " @ " + df.format(node.getQueryStageTimeStamp());
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "Packets", "Packet Statistics", true);
@@ -487,12 +488,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.value = Boolean.toString(node.isDead());
 				}
 				else {
-					record.value = Boolean.toString(node.isDead()) + " [" + node.getDeadCount() + " previous - last @ " + node.getDeadTime().toString() + "]";
+					record.value = Boolean.toString(node.isDead()) + " [" + node.getDeadCount() + " previous - last @ " + df.format(node.getDeadTime()) + "]";
 				}
-				records.add(record);
-				
-				record = new OpenHABConfigurationRecord(domain, "Failed", "Failed", true);
-				record.value = Boolean.toString(node.isFailed());
 				records.add(record);
 			} else if (arg.equals("parameters/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
