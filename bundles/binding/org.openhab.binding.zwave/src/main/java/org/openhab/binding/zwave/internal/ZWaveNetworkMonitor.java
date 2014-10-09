@@ -608,7 +608,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 					logger.error("NODE {}: Status event received, but node not found.", statusEvent.getNodeId());
 					return;
 				}
-
+				zController.requestIsFailedNode(node.getNodeId());
 				// The node is dead, but we may have already started a Heal
 				// If so, don't start it again!
 				if (!isNodeHealing(node.getNodeId())) {

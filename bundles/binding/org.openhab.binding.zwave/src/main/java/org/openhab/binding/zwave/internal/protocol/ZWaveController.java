@@ -548,8 +548,6 @@ public class ZWaveController {
 			
 			logger.warn(String.format("NODE %d: May be dead, setting stage to DEAD.", entry.getKey()));
 			entry.getValue().setNodeStage(NodeStage.DEAD);
-			
-			requestIsFailedNode(entry.getValue().getNodeId());
 
 			completeCount++;
 		}
