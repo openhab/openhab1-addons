@@ -444,27 +444,31 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 				records.add(record);
 
-				record = new OpenHABConfigurationRecord(domain, "LibType", "Library Type", true);
-				if (node.getLibraryType() == null)
-					record.value = "Unknown";
-				else
-					record.value = node.getLibraryType();
-				
-				records.add(record);
-				
-				record = new OpenHABConfigurationRecord(domain, "ProtocolVersion", "Protocol Version", true);
-				if (node.getProtocolVersion() == null)
-					record.value = "Unknown";
-				else
-					record.value = node.getProtocolVersion();
-				
-				records.add(record);
-				
-				record = new OpenHABConfigurationRecord(domain, "AppVersion", "Application Version", true);
-				if (node.getAppVersion() == null)
-					record.value = "Unknown";
-				else
-					record.value = node.getAppVersion();
+				ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
+								.getCommandClass(CommandClass.VERSION);
+		
+				if (versionCommandClass != null) {
+					record = new OpenHABConfigurationRecord(domain, "LibType", "Library Type", true);
+					if(versionCommandClass.getLibraryType() == null)
+						record.value = "Unknown";
+					else
+						record.value = versionCommandClass.getLibraryType().getLabel();
+					records.add(record);
+
+					record = new OpenHABConfigurationRecord(domain, "ProtocolVersion", "Protocol Version", true);
+					if(versionCommandClass.getProtocolVersion() == null)
+						record.value = "Unknown";
+					else
+						record.value = Double.toString(versionCommandClass.getProtocolVersion());
+					records.add(record);
+
+					record = new OpenHABConfigurationRecord(domain, "AppVersion", "Application Version", true);
+					if(versionCommandClass.getApplicationVersion() == null)
+						record.value = "Unknown";
+					else
+						record.value = Double.toString(versionCommandClass.getApplicationVersion());
+					records.add(record);
+				}				
 				
 				records.add(record);
 				
@@ -834,16 +838,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 					// Request the version report for this node
 					this.zController.sendData(versionCommandClass.getVersionMessage());
-					
-					if(versionCommandClass.getApplicationVersion() != null)
-						node.setAppVersion(Double.toString(versionCommandClass.getApplicationVersion()));
-					if(versionCommandClass.getProtocolVersion() != null) 
-						node.setProtocolVersion(Double.toString(versionCommandClass.getProtocolVersion()));
-					if(versionCommandClass.getLibraryType() != null)
-						node.setLibraryType(versionCommandClass.getLibraryType().getLabel());
-					
-					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-					nodeSerializer.SerializeNode(node);
 				}
 
 				// Return here as afterwards we assume there are more elements
