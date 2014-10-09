@@ -343,6 +343,9 @@ public class ZWaveNodeStageAdvancer {
 		this.node.setDeviceId(restoredNode.getDeviceId());
 		this.node.setDeviceType(restoredNode.getDeviceType());
 		this.node.setManufacturer(restoredNode.getManufacturer());
+		
+		this.node.setName(restoredNode.getName());
+		this.node.setLocation(restoredNode.getLocation());
 
 		for (ZWaveCommandClass commandClass : restoredNode.getCommandClasses()) {
 			commandClass.setController(this.controller);
