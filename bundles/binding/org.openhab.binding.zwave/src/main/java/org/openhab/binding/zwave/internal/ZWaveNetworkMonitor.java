@@ -252,12 +252,21 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// The list is built multiple times since it seems that in order to
 		// fully optimize the network, this is required
 		for (ZWaveNode node : zController.getNodes()) {
-			// Ignore devices that haven't initialized yet - unless they are
+			// Ignore devices that haven't initialized yet, not listening or is the controller - unless they are
 			// DEAD.
 			if (node.isInitializationComplete() == false && node.isDead() == false) {
 				logger.debug("NODE {}: Initialisation NOT yet complete. Skipping heal.", node.getNodeId());
 				continue;
 			}
+			if (node.isListening() == false) {
+				logger.debug("NODE {}: Not listening. Skipping heal.", node.getNodeId());
+				continue;
+			}
+			if (node.getNodeId() == zController.getOwnNodeId()) {
+				logger.debug("NODE {}: Is Controller. Skipping heal.", node.getNodeId());
+				continue;
+			}
+			logger.debug("NODE {}: Attempting to heal node.", node.getNodeId());
 
 			healNode(node.getNodeId());
 		}
