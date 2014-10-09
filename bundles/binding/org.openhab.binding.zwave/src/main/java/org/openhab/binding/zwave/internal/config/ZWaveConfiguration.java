@@ -469,7 +469,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				
 				if(networkMonitor != null) {
 					record = new OpenHABConfigurationRecord(domain, "LastHeal", "Heal Status", true);
-					record.value = networkMonitor.getNodeState(nodeId);
+					if (node.getHealState() == null)
+						record.value = "NONE";
+					else
+						record.value = node.getHealState();
+					
 					records.add(record);
 				}
 
