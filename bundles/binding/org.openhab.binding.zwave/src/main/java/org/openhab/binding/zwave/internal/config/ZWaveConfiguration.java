@@ -490,6 +490,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.value = Boolean.toString(node.isDead()) + " [" + node.getDeadCount() + " previous - last @ " + node.getDeadTime().toString() + "]";
 				}
 				records.add(record);
+				
+				record = new OpenHABConfigurationRecord(domain, "Failed", "Failed", true);
+				record.value = Boolean.toString(node.isFailed());
+				records.add(record);
 			} else if (arg.equals("parameters/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
