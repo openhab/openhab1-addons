@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * Handle messages going to and from the CUL device. Make sure to intercept
  * control command responses first before passing on valid MAX! messages to the
  * binding itself for processing.
- *
+ * 
  * @author Paul Hampson (cyclingengineer)
  * @since 1.6.0
  */
@@ -63,9 +63,7 @@ public class MaxCulMsgHandler implements CULListener {
 		int retryCount = 0;
 	}
 
-	private int surplusCredit = 0;
 	private Date lastTransmit = new Date();
-	private Date lastCreditUpdateTime = new Date();
 	private Date endOfQueueTransmit;
 
 	private int msgCount = 0;
@@ -102,36 +100,15 @@ public class MaxCulMsgHandler implements CULListener {
 	}
 
 	private boolean enoughCredit(int requiredCredit, boolean fastSend) {
-		return enoughCredit(requiredCredit, fastSend, false);
-	}
-
-	private boolean enoughCredit(int requiredCredit, boolean fastSend,
-			boolean updateSurplus) {
-		// TODO - should this be handled by the io.transport.cul bundle?
-		Date now = new Date();
-		/*
-		 * units are accumulated as 1% of time elapsed with no TX - so 1x10ms
-		 * credit per second
-		 */
-		long credit = ((now.getTime() - this.lastCreditUpdateTime.getTime()) / 1000)
-				+ this.surplusCredit;
-
-		/*
-		 * if device isn't awake we need long preamble for wakeup, otherwise we
-		 * don't
-		 */
+		int availableCredit = cul.getCredit10ms();
 		int preambleCredit = fastSend ? 0 : 100;
-		boolean result = (credit > (requiredCredit + preambleCredit));
-		if (result && updateSurplus) {
-			this.surplusCredit = (int) credit
-					- (requiredCredit + preambleCredit);
-			/* match MAX_CREDIT in culfw */
-			if (this.surplusCredit > 900)
-				this.surplusCredit = 900;
-			lastCreditUpdateTime = new Date();
-		}
-
+		boolean result = (availableCredit >= (requiredCredit + preambleCredit));
+		logger.debug("Fast Send? " + fastSend + ", preambleCredit = "
+				+ preambleCredit + ", requiredCredit = " + requiredCredit
+				+ ", availableCredit = " + availableCredit + ", enoughCredit? "
+				+ result);
 		return result;
+
 	}
 
 	private void transmitMessage(BaseMsg data, SenderQueueItem queueItem) {
@@ -146,7 +123,7 @@ public class MaxCulMsgHandler implements CULListener {
 		if (data.isPartOfSequence()) {
 			fastSend = data.getMessageSequencer().useFastSend();
 		}
-		enoughCredit(data.requiredCredit(), fastSend, true);
+		enoughCredit(data.requiredCredit(), fastSend);
 		this.lastTransmit = new Date();
 		if (this.endOfQueueTransmit.before(this.lastTransmit)) {
 			/* hit a time after the queue finished tx'ing */
@@ -182,7 +159,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send a raw Base Message
-	 *
+	 * 
 	 * @param msg
 	 *            Base message to send
 	 * @param queueItem
@@ -201,9 +178,7 @@ public class MaxCulMsgHandler implements CULListener {
 				logger.debug("Sending message immediately. Message is "
 						+ msg.msgType + " => " + msg.rawMsg);
 				transmitMessage(msg, queueItem);
-				logger.debug("Credit required " + msg.requiredCredit()
-						+ ", surplus credit remaining after TX "
-						+ this.surplusCredit);
+				logger.debug("Credit required " + msg.requiredCredit());
 			} else {
 				/*
 				 * message is going on the queue - this means that the device
@@ -272,7 +247,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Associate binding processor with this message handler
-	 *
+	 * 
 	 * @param mcbmp
 	 *            Binding processor to associate with this message handler
 	 */
@@ -411,9 +386,10 @@ public class MaxCulMsgHandler implements CULListener {
 							}
 
 						}
-					} else
+					} else {
 						logger.info("Got ACK for message " + msg.msgCount
 								+ " but it wasn't in the queue");
+					}
 				}
 
 				if (sequenceRegister.containsKey(new BaseMsg(data).msgCount)) {
@@ -504,7 +480,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send response to PairPing as part of a message sequence
-	 *
+	 * 
 	 * @param dstAddr
 	 *            Address of device to respond to
 	 * @param msgSeq
@@ -523,7 +499,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send a wakeup message as part of a message sequence
-	 *
+	 * 
 	 * @param dstAddr
 	 *            Address of device to respond to
 	 * @param msgSeq
@@ -539,7 +515,7 @@ public class MaxCulMsgHandler implements CULListener {
 	/**
 	 * Send time information to device that has requested it as part of a
 	 * message sequence
-	 *
+	 * 
 	 * @param dstAddr
 	 *            Address of device to respond to
 	 * @param tzStr
@@ -557,7 +533,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send time information to device in fast mode
-	 *
+	 * 
 	 * @param dstAddr
 	 *            Address of device to respond to
 	 * @param tzStr
@@ -574,7 +550,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send time information to device that has requested it
-	 *
+	 * 
 	 * @param dstAddr
 	 *            Address of device to respond to
 	 * @param tzStr
@@ -586,7 +562,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Set the group ID on a device
-	 *
+	 * 
 	 * @param devAddr
 	 *            Address of device to set group ID on
 	 * @param group_id
@@ -604,7 +580,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send an ACK response to a message
-	 *
+	 * 
 	 * @param msg
 	 *            Message we are acking
 	 */
@@ -617,7 +593,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send an NACK response to a message
-	 *
+	 * 
 	 * @param msg
 	 *            Message we are nacking
 	 */
@@ -630,7 +606,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send a set temperature message
-	 *
+	 * 
 	 * @param devAddr
 	 *            Radio addr of device
 	 * @param temp
@@ -645,7 +621,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send temperature configuration message
-	 *
+	 * 
 	 * @param devAddr
 	 *            Radio addr of device
 	 * @param msgSeq
@@ -678,7 +654,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Link one device to another
-	 *
+	 * 
 	 * @param devAddr
 	 *            Destination device address
 	 * @param msgSeq
@@ -698,7 +674,7 @@ public class MaxCulMsgHandler implements CULListener {
 
 	/**
 	 * Send a reset message to device
-	 *
+	 * 
 	 * @param devAddr
 	 *            Address of device to reset
 	 */
@@ -711,7 +687,7 @@ public class MaxCulMsgHandler implements CULListener {
 	/**
 	 * Set listen mode status. Doing this will stop proper message processing
 	 * and will just turn this message handler into a snooper.
-	 *
+	 * 
 	 * @param listenModeOn
 	 *            TRUE sets listen mode to ON
 	 */
@@ -723,5 +699,9 @@ public class MaxCulMsgHandler implements CULListener {
 	public void startSequence(MessageSequencer ps, BaseMsg msg) {
 		logger.debug("Starting sequence");
 		ps.runSequencer(msg);
+	}
+
+	public int getCreditStatus() {
+		return cul.getCredit10ms();
 	}
 }

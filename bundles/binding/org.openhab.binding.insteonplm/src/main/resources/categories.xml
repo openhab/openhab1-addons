@@ -114,6 +114,24 @@ Example:
   <description>Switchable Lighting</description>
   <devCat>0x02</devCat>
   <subcategory>
+    <name>In-LineLinc Relay</name>
+    <description>2475D</description>
+    <subCat>0x10</subCat>
+    <productKey name="0x00001B">
+      <feature name="switch">GenericSwitch</feature>
+      <feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>SwitchLinc Relay</name>
+    <description>2476S</description>
+    <subCat>0x0A</subCat>
+    <productKey name="F00.00.0A">
+      <feature name="switch">GenericSwitch</feature>
+      <feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
     <name>ICON Switch</name>
     <description>2876S</description>
     <subCat>0x0B</subCat>

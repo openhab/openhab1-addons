@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Map;
 import java.util.TooManyListenersException;
 
 import org.openhab.io.transport.cul.CULDeviceException;
@@ -45,13 +46,64 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 	private final static Logger log = LoggerFactory.getLogger(CULSerialHandlerImpl.class);
 
 	private SerialPort serialPort;
+	private Integer baudRate = 9600;
+	private Integer parityMode = SerialPort.PARITY_EVEN;
 	private InputStream is;
 	private OutputStream os;
 	private BufferedReader br;
 	private BufferedWriter bw;
+	private int credit10ms = 0;
 
+	/**
+	 * Default Constructor
+	 * @param deviceName
+	 * 			String representing the device.
+	 * @param mode
+	 * 			The RF mode for which the device will be configured.
+	 */
 	public CULSerialHandlerImpl(String deviceName, CULMode mode) {
 		super(deviceName, mode);
+	}
+	
+	
+	/**
+	 * Constructor including property map for specific configuration.
+	 * @param deviceName
+	 * 			String representing the device.
+	 * @param mode
+	 * 			The RF mode for which the device will be configured.
+	 * @param properties
+	 * 			Property Map containing specific configuration for serial device connection.
+	 * 			<ul>
+	 * 				<li>"baudrate" (Integer) Setup baudrate</li>
+	 * 				<li>"parity" (Integer) Setup parity bit handling. (http://show.docjava.com/book/cgij/code/data/j4pDoc/constant-values.html#serialPort.rxtx.SerialPortInterface.PARITY_NONE)
+	 * 			</ul>
+	 */
+	public CULSerialHandlerImpl(String deviceName, CULMode mode, Map<String, ?> properties){
+		super(deviceName, mode);
+		
+		if(properties.get("baudrate") != null){
+			baudRate = (Integer) properties.get("baudrate");
+			log.debug("Set baudrate to " + baudRate);
+		}
+		
+		if(properties.get("parity") != null){
+			parityMode = (Integer) properties.get("parity");
+			log.debug("Set parity to " + parityMode);
+		}
+		
+	}
+	
+	private void requestCreditReport()
+	{
+		/* this requests a report which provides credit10ms */
+		log.debug("Requesting credit report");
+		try {
+			bw.write("X\r\n");
+			bw.flush();
+		} catch (IOException e) {
+			log.error("Can't write report command to CUL", e);
+		}
 	}
 
 	@Override
@@ -66,8 +118,15 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 				} else if ("LOVF".equals(data)) {
 					log.warn("(LOVF) Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
 					return;
+				} else if (data.matches("^.. *\\d*"))
+				{					
+					String[] report = data.split(" ");					
+					credit10ms = Integer.parseInt(report[report.length-1]);
+					log.debug("credit10ms = "+credit10ms);
+					return;
 				}
 				notifyDataReceived(data);
+				requestCreditReport();
 			} catch (IOException e) {
 				log.error("Exception while reading from serial port", e);
 				notifyError(e);
@@ -89,6 +148,8 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 			} catch (IOException e) {
 				log.error("Can't write to CUL", e);
 			}
+			
+			requestCreditReport();
 		}
 
 	}
@@ -107,7 +168,7 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 				throw new CULDeviceException("The device " + deviceName + " is not a serial port");
 			}
 			serialPort = (SerialPort) port;
-			serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_EVEN);
+			serialPort.setSerialPortParams(baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, parityMode);
 			is = serialPort.getInputStream();
 			os = serialPort.getOutputStream();
 			br = new BufferedReader(new InputStreamReader(is));
@@ -151,5 +212,10 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 			}
 		}
 
+	}
+
+	
+	public int getCredit10ms() {
+		return credit10ms;
 	}
 }

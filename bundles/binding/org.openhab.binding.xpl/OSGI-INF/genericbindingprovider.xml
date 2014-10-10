@@ -9,11 +9,11 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.xpl.genericbindingprovider">
-   <implementation class="org.openhab.binding.xpl.internal.xPLGenericBindingProvider"/>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.binding.xpl.genericbindingprovider">
+   <implementation class="org.openhab.binding.xpl.internal.XplGenericBindingProvider"/>
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.binding.xpl.xPLBindingProvider"/>
+      <provide interface="org.openhab.binding.xpl.XplBindingProvider"/>
    </service>
    
 </scr:component>

@@ -8,11 +8,14 @@
  */
 package org.openhab.binding.zwave.internal;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -82,16 +85,19 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	private long networkHealNightlyTime = Long.MAX_VALUE;
 	private long pingNodeTime = Long.MAX_VALUE;
 
+	private boolean doSoftReset = false;
 	private boolean initialised = false;
+
+    private DateFormat df;
 
 	Map<Integer, HealNode> healNodes = new HashMap<Integer, HealNode>();
 
 	enum HealState {
-		INITIALIZING, WAITING, PING, SETSUCROUTE, UPDATENEIGHBORS, GETASSOCIATIONS, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, PINGEND, SAVE, DONE, FAILED;
+		IDLE, WAITING, PING, SETSUCROUTE, UPDATENEIGHBORS, GETASSOCIATIONS, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, PINGEND, SAVE, DONE, FAILED;
 
 		public boolean isActive() {
 			switch (this) {
-			case INITIALIZING:
+			case IDLE:
 			case DONE:
 			case FAILED:
 				return false;
@@ -104,6 +110,9 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	HealState networkHealState = HealState.WAITING;
 
 	public ZWaveNetworkMonitor(ZWaveController controller) {
+		df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		df.setTimeZone(TimeZone.getTimeZone("UTC"));
+
 		zController = controller;
 
 		// Set an event callback so we get notification of network events
@@ -135,24 +144,33 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		networkHealNightlyTime = calculateNextHeal();
 		networkHealNextTime = networkHealNightlyTime;
 	}
+	
+	/**
+	 * Configures the binding to perform a soft reset during the heal
+	 * 
+	 * @param doReset true to enable performing a soft reset on error or heal
+	 */
+	public void resetOnError(boolean doReset) {
+		doSoftReset = doReset;
+	}
 
 	public String getNodeState(int nodeId) {
-		String status = HealState.WAITING.toString();
+		String status = HealState.IDLE.toString();
 
 		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
 			HealNode node = entry.getValue();
 			if (node.nodeId == nodeId) {
 				switch (node.state) {
-				case WAITING:
+				case IDLE:
 					break;
 				case FAILED:
-					status = "Failed during " + node.failState + " @ " + node.lastChange.toString();
+					status = "FAILED during " + node.failState + " @ " + df.format(node.lastChange);
 					break;
 				default:
-					if (node.retryCnt > 1)
-						status = node.state + "(" + node.retryCnt + ") @ " + node.lastChange.toString();
-					else
-						status = node.state + " @ " + node.lastChange.toString();
+					status = node.state + " @ " + df.format(node.lastChange);
+					if (node.retryCnt > 1) {
+						status += " (" + node.retryCnt + ")";
+					}
 					break;
 				}
 				break;
@@ -175,7 +193,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			HealNode node = entry.getValue();
 			if (node.nodeId == nodeId) {
 				switch (node.state) {
-				case INITIALIZING:
+				case IDLE:
 				case WAITING:
 				case FAILED:
 				case DONE:
@@ -246,6 +264,12 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 		if (healNodes.size() == 0)
 			return false;
+
+		// If we want to do a soft reset on the controller, do it now....
+		if(doSoftReset == true) {
+			logger.debug("HEAL - Performing soft reset!");
+			zController.requestSoftReset();
+		}
 
 		return true;
 	}
@@ -383,11 +407,11 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				healing.state = HealState.PING;
 				ZWaveNoOperationCommandClass zwaveCommandClass = (ZWaveNoOperationCommandClass) healing.node
 						.getCommandClass(CommandClass.NO_OPERATION);
-				if (zwaveCommandClass == null)
+				if (zwaveCommandClass != null) {
+					zController.sendData(zwaveCommandClass.getNoOperationMessage());
+					healing.stateNext = HealState.SETSUCROUTE;
 					break;
-				zController.sendData(zwaveCommandClass.getNoOperationMessage());
-				healing.stateNext = HealState.SETSUCROUTE;
-				break;
+				}
 			}
 			healing.state = HealState.SETSUCROUTE;
 		case SETSUCROUTE:
