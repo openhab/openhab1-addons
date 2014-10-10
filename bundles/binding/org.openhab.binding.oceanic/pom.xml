@@ -16,6 +16,7 @@
 		<bundle.namespace>org.openhab.binding.oceanic</bundle.namespace>
 		<deb.name>openhab-addon-binding-oceanic</deb.name>
 		<deb.description>${project.name}</deb.description>
+		<deb.depends>openhab-addon-io-serial</deb.depends>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

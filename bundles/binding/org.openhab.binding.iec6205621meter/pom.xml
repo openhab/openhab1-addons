@@ -13,6 +13,7 @@
 		<bundle.namespace>org.openhab.binding.iec6205621meter</bundle.namespace>
 		<deb.name>openhab-addon-binding-iec6205621meter</deb.name>
 		<deb.description>${project.name}</deb.description>
+		<deb.depends>openhab-addon-io-serial</deb.depends>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
