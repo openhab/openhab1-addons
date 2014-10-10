@@ -15,9 +15,11 @@ import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -222,7 +224,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 			byte[] inputBuf = null;
 			switch (commandType.getResponselimitertype()) {
 				case Constants.RESPONSE_LIMITER_TYPE_CRLF:
-					inputBuf = readLine();					
+					inputBuf = new BufferedReader(new InputStreamReader(inputStream)).readLine().getBytes();					
 					break;
 				case Constants.RESPONSE_LIMITER_TYPE_FIXED_SIZE:
 					inputBuf = readBytes(commandType.getResponselength());			        
@@ -371,46 +373,4 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 		return buf.toString();
 	}
 	
-	 /**
-     * Read bytes until CR.
-     * @return return a byte array up to but not including the NL or CR.
-     * @throws java.io.IOException if the read operation fails.
-     */
-    private byte[] readLine() throws IOException {
-        byte[] inputBuffer = new byte[BUF_LENGTH];
-        int idx = 0;
-        int character;
-        while ((character = inputStream.read()) != -1) {
-            if (character == '\r') {
-                break;
-            }
-            if (idx >= BUF_LENGTH) {
-                // Invalid input, throw away this line.
-                System.err.println("Invalid input");
-                while (inputStream.read() != -1) {
-                // Throw away.
-                }
-                return new byte[0];
-            }
-            inputBuffer[idx++] = (byte) character;
-        }
-
-        /*
-         * Remove trailing CR/NL
-         */
-        if (idx > 0) {
-            while (--idx != -1) {
-                if (inputBuffer[idx] != 10 && inputBuffer[idx] != 13) {
-                    break;
-                }
-            }
-            ++idx;
-        }
-        byte[] input = new byte[idx];
-        System.arraycopy(inputBuffer, 0, input, 0, idx);
-
-        return input;
-    }
-	
-
 }
