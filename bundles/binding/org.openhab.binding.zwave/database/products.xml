@@ -1250,5 +1250,14 @@
 			<Label lang="en">Flush 1 relay</Label>
 			<ConfigFile>qubino/zmnhaa.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHBA2</Model>
+			<Label lang="en">Flush 2 relays</Label>
+			<ConfigFile>qubino/zmnhba2.xml</ConfigFile>
+		</Product>
 	</Manufacturer>	
 </Manufacturers>
