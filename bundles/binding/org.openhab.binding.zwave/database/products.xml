@@ -1042,6 +1042,15 @@
 			<Label lang="en">Wall Plug</Label>
 			<ConfigFile>tkb/tz68.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>TSM02</Model>
+			<Label lang="en">Slim Multi-Sensor</Label>
+			<ConfigFile>tkb/tsm02.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0002</Id>
