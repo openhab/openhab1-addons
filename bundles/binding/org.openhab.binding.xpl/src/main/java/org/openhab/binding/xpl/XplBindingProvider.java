@@ -9,6 +9,7 @@
 package org.openhab.binding.xpl;
 
 import java.util.List;
+
 import org.cdp1802.xpl.xPL_MessageI;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
@@ -21,19 +22,19 @@ import org.openhab.core.items.Item;
  * taken into account.
  * 
  * @author clinique
- * @since 1.5.0
+ * @since 1.6.0
  */
-public interface xPLBindingProvider extends BindingProvider {
+public interface XplBindingProvider extends BindingProvider {
 	
 	/**
-	 * Returns a <code>xPLBindingConfig</code> associated to <code>itemName</code>
+	 * Returns a <code>XplBindingConfig</code> associated to <code>itemName</code>
 	 * 
 	 * @param itemName
 	 *            the item for which to find a configuration
 	 * 
-	 * @return a matching xPLBindingConfig
+	 * @return a matching XplBindingConfig
 	 */
-	public xPLBindingConfig getConfig(String itemName);
+	public XplBindingConfig getConfig(String itemName);
 	
 	/**
 	 * Returns a <code>List</code> of item names that definition matches the incoming
@@ -56,4 +57,5 @@ public interface xPLBindingProvider extends BindingProvider {
 	 *         could be found.
 	 */
 	public Item getItem(String itemName);
+	
 }

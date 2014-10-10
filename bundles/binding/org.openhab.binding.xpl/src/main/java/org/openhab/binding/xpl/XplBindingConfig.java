@@ -5,14 +5,13 @@ import org.openhab.core.binding.BindingConfig;
 
 /**
  * This is a class that stores xPL binding configuration elements :
- * 	 - an interface to the message template to match toward incoming messages
- *   - the name of the body key that will be returned if matched
+ *	- an interface to the message template to match toward incoming messages
+ * 	- the name of the body key that will be returned if matched
+ * 
  * @author clinique
- * @since 1.5.0
- *
+ * @since 1.6.0
  */
-
-public class xPLBindingConfig implements BindingConfig {
+public class XplBindingConfig implements BindingConfig {
 	public xPL_MutableMessageI Message;
 	public String NamedParameter;
 }

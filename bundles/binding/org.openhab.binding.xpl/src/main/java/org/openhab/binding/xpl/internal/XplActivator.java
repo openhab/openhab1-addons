@@ -18,11 +18,11 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author Clinique
- * @since 1.5.0
+ * @since 1.6.0
  */
-public final class xPLActivator implements BundleActivator {
+public final class XplActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(xPLActivator.class); 
+	private static Logger logger = LoggerFactory.getLogger(XplActivator.class); 
 	
 	private static BundleContext context;
 	
