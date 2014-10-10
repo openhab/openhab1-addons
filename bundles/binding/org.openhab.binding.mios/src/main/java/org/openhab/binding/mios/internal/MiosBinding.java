@@ -386,6 +386,10 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 				unit.setPort(Integer.valueOf(value));
 			} else if ("timeout".equals(key)) {
 				unit.setTimeout(Integer.valueOf(value));
+			} else if ("refreshCount".equals(key)) {
+				unit.setRefreshCount(Integer.valueOf(value));
+			} else if ("errorCount".equals(key)) {
+				unit.setErrorCount(Integer.valueOf(value));
 			} else {
 				logger.warn("Unexpected configuration parameter {}", key);
 				created = false;

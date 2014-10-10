@@ -47,10 +47,19 @@ public class MiosUnit {
 	private static final int CONFIG_DEFAULT_PORT = 3480;
 	private static final String CONFIG_DEFAULT_HOSTNAME = "127.0.0.1";
 
+	private static final int CONFIG_DISABLE_REFRESH_COUNT = 0;
+	private static final int CONFIG_DEFAULT_REFRESH_COUNT = CONFIG_DISABLE_REFRESH_COUNT;
+
+	private static final int CONFIG_DISABLE_ERROR_COUNT = 0;
+	private static final int CONFIG_DEFAULT_ERROR_COUNT = CONFIG_DISABLE_ERROR_COUNT;
+
 	private String name = null;
 	private String hostname = CONFIG_DEFAULT_HOSTNAME;
 	private int port = CONFIG_DEFAULT_PORT;
 	private int timeout = CONFIG_DEFAULT_TIMEOUT;
+
+	private int refreshCount = CONFIG_DEFAULT_REFRESH_COUNT;
+	private int errorCount = CONFIG_DEFAULT_ERROR_COUNT;
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(MiosUnit.class);
@@ -96,6 +105,42 @@ public class MiosUnit {
 	}
 
 	/**
+	 * Get the Refresh Count setting for the MiOS Unit configuration.
+	 * 
+	 * This setting is used to control how often (loop cycles) should be
+	 * performed loading incremental data, before a full-refresh of data should
+	 * be performed from the MiOS Unit under control.
+	 * 
+	 * If this setting is not specified, it will default to never performing the
+	 * full-refresh on the MiOS Unit (internally, a 0 value).
+	 * 
+	 * @return the Full Refresh cycle count. A value of 0 will disable the Full
+	 *         Refresh from occurring.
+	 */
+	public int getRefreshCount() {
+		return refreshCount;
+	}
+
+	/**
+	 * Get the Error Count setting for the MiOS Unit configuration.
+	 * 
+	 * This setting is used to control how many errors are permitted, in
+	 * attempting to retrieve data from the MiOS Unit, prior to forcing a
+	 * full-refresh. By default, this logic is disabled (a 0 value), but it can
+	 * be reset so that errors in the retrieval will trigger a full data-set to
+	 * be fetched.
+	 * 
+	 * If this setting is not specified, it will default to never performing the
+	 * full-refresh on the MiOS Unit (internally, a 0 value).
+	 * 
+	 * @return the Error count. A value of 0 will disable the Full Refresh from
+	 *         occurring upon errors.
+	 */
+	public int getErrorCount() {
+		return errorCount;
+	}
+
+	/**
 	 * Set the Hostname of the MiOS Unit configuration.
 	 * 
 	 * @param hostname
@@ -124,11 +169,45 @@ public class MiosUnit {
 	 */
 	public void setTimeout(int timeout) {
 		if (timeout < CONFIG_MIN_TIMEOUT) {
-			timeout = CONFIG_MIN_TIMEOUT;
 			logger.warn("Timeout of {} below minimum permitted, {} used.",
 					timeout, CONFIG_MIN_TIMEOUT);
+			timeout = CONFIG_MIN_TIMEOUT;
 		}
 		this.timeout = timeout;
+	}
+
+	/**
+	 * Set the Refresh Count of the MiOS Unit configuration.
+	 * 
+	 * @param count
+	 *            the number of loop/cycles before a Full-data refresh is
+	 *            performed from the MiOS Unit. A value of 0 disables the
+	 *            refresh processing.
+	 */
+	public void setRefreshCount(int count) {
+		if (count < 0) {
+			logger.warn("RefreshCount {} below minimum permitted, {} used.",
+					count, CONFIG_DISABLE_REFRESH_COUNT);
+			count = CONFIG_DISABLE_REFRESH_COUNT;
+		}
+		this.refreshCount = count;
+	}
+
+	/**
+	 * Set the Error Count of the MiOS Unit configuration.
+	 * 
+	 * @param errors
+	 *            the number of error loop/cycles before a Full-data refresh is
+	 *            performed from the MiOS Unit. A value of 0 disables the
+	 *            processing.
+	 */
+	public void setErrorCount(int errors) {
+		if (errors < 0) {
+			logger.warn("RefreshCount {} below minimum permitted, {} used.",
+					errors, CONFIG_DISABLE_ERROR_COUNT);
+			errors = CONFIG_DISABLE_ERROR_COUNT;
+		}
+		this.errorCount = errors;
 	}
 
 	/**
