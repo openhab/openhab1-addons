@@ -71,9 +71,8 @@
 				<Value>2</Value>
 				<Label lang="en">ALL ON active ALL OFF is not active</Label>
 			</Item>
-			<Help lang="en">Flush 1 relay module responds to commands ALL ON / 
-ALL OFF that may be sent by the main controller or by 
-other controller belonging to the system.</Help>
+			<Help lang="en">Flush 1 relay module responds to commands ALL ON / ALL OFF 
+				that may be sent by the main controller or by other controller belonging to the system.</Help>
 		</Parameter>
 
 		<Parameter>
@@ -82,10 +81,9 @@ other controller belonging to the system.</Help>
 			<Default>0</Default>
 			<Size>2</Size>
 			<Label lang="en">Automatic turning off relay Q1 after set time</Label>
-			
-			<Help lang="en">0 - Auto OFF disabled 
-1 – 65535 = 0,01second – 655,35 seconds
-Auto OFF enabled with define time, step is 10mseconds</Help>
+			<Help lang="en"><![CDATA[Auto OFF enabled with define time, step is 10 mseconds<br/>
+				<ul><li>0 = Auto OFF disabled</li> 
+				<li>1–65535 = 0,01 second – 655,35 seconds</li></ul>]]></Help>
 		</Parameter>
 
 		<Parameter>
@@ -94,10 +92,9 @@ Auto OFF enabled with define time, step is 10mseconds</Help>
 			<Default>0</Default>
 			<Size>2</Size>
 			<Label lang="en">Automatic turning off relay Q2 after set time</Label>
-			
-			<Help lang="en">0 - Auto OFF disabled 
-1 – 65535 = 0,01second – 655,35 seconds
-Auto OFF enabled with define time, step is 10mseconds</Help>
+			<Help lang="en"><![CDATA[Auto OFF enabled with define time, step is 10 mseconds<br/>
+				<ul><li>0 = Auto OFF disabled</li> 
+				<li>1–65535 = 0,01 second – 655,35 seconds</li></ul>]]></Help>
 		</Parameter>
 
 		<Parameter>
@@ -124,15 +121,11 @@ Auto OFF enabled with define time, step is 10mseconds</Help>
 			<Default>1</Default>
 			<Size>1</Size>
 			<Label lang="en">Power reporting in Watts on power change for Q1</Label>			
-			
-			<Help lang="en">0 – Reporting Disabled
-1 – 100 = 1% - 100% Reporting enabled
-Power report is send (push) only when actual 
-power in Watts in real time change for more than 
-set percentage comparing to previous actual 
-power in Watts, step is 1%.
-NOTE: if power changed is less than 1W, the report is 
-not send (pushed), independent of percentage set. </Help>
+			<Help lang="en"><![CDATA[Power report is sent (pushed) only when actual power in Watts in real time changed for more than 
+				set percentage comparing to previous actual power in Watts, step is 1%.<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–100 = 1% - 100% Reporting enabled</li></ul>
+				NOTE: if power changed is less than 1W, the report is not sent (pushed), regardless of percentage set.]]></Help>
 		</Parameter>
 
 		<Parameter>
@@ -141,15 +134,11 @@ not send (pushed), independent of percentage set. </Help>
 			<Default>1</Default>
 			<Size>1</Size>
 			<Label lang="en">Power reporting in Watts on power change for Q2</Label>			
-			
-			<Help lang="en">0 – Reporting Disabled
-1 – 100 = 1% - 100% Reporting enabled
-Power report is send (push) only when actual 
-power in Watts in real time change for more than 
-set percentage comparing to previous actual 
-power in Watts, step is 1%.
-NOTE: if power changed is less than 1W, the report is 
-not send (pushed), independent of percentage set. </Help>
+			<Help lang="en"><![CDATA[Power report is sent (pushed) only when actual power in Watts in real time changed for more than 
+				set percentage comparing to previous actual power in Watts, step is 1%.<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–100 = 1% - 100% Reporting enabled</li></ul>
+				NOTE: if power changed is less than 1W, the report is not sent (pushed), regardless of percentage set.]]></Help>
 		</Parameter>
 
 		<Parameter>
@@ -158,13 +147,10 @@ not send (pushed), independent of percentage set. </Help>
 			<Default>300</Default>
 			<Size>2</Size>
 			<Label lang="en">Power reporting in Watts by time interval for Q1</Label>
-			
-			<Help lang="en">default value 300 (power report in Watts is 
-send each 300s)
-0 – Reporting Disabled
-1 – 65535 = 1 second – 65535 seconds.
-Reporting enabled. Power report is send with time 
-interval set by entered value. </Help>
+			<Help lang="en"><![CDATA[default value is 300 (power report in Watts is sent each 300s)<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–65535 = 1 second – 65535 seconds. Reporting enabled. 
+				Power report is sent with time interval set by entered value.</li></ul>]]></Help>
 		</Parameter>
 
 		<Parameter>
@@ -173,13 +159,10 @@ interval set by entered value. </Help>
 			<Default>300</Default>
 			<Size>2</Size>
 			<Label lang="en">Power reporting in Watts by time interval for Q2</Label>
-			
-			<Help lang="en">default value 300 (power report in Watts is 
-send each 300s)
-0 – Reporting Disabled
-1 – 65535 = 1 second – 65535 seconds.
-Reporting enabled. Power report is send with time 
-interval set by entered value. </Help>
+			<Help lang="en"><![CDATA[default value is 300 (power report in Watts is sent each 300s)<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–65535 = 1 second – 65535 seconds. Reporting enabled. 
+				Power report is sent with time interval set by entered value.</li></ul>]]></Help>
 		</Parameter>
 	</Configuration>
 
@@ -187,14 +170,12 @@ interval set by entered value. </Help>
 		<Group>
 			<Index>1</Index>
 			<Maximum>4</Maximum>
-			<Label lang="en">basic on/off (triggered at change of the output 
-Q1 state and reflecting its state)</Label>
+			<Label lang="en">basic on/off (triggered at change of the output Q1 state and reflecting its state)</Label>
 		</Group>
 		<Group>
 			<Index>2</Index>
 			<Maximum>4</Maximum>
-			<Label lang="en">basic on/off (triggered at change of the output 
-Q2 state and reflecting its state)</Label>
+			<Label lang="en">basic on/off (triggered at change of the output Q2 state and reflecting its state)</Label>
 		</Group>
 		<Group>
 			<Index>3</Index>
