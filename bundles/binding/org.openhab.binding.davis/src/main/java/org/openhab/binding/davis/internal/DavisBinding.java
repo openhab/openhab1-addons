@@ -121,17 +121,15 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 		
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		if (config != null) {
+			// to override the default refresh interval one has to add a 
+			// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
+			String refreshIntervalString = (String) config.get("refresh");
+			if (StringUtils.isNotBlank(refreshIntervalString)) {
+				refreshInterval = Long.parseLong(refreshIntervalString);
+			}
 			String newPort = (String) config.get("port"); //$NON-NLS-1$
 			if (StringUtils.isNotBlank(newPort) && !newPort.equals(port)) {
-				// only do something if the newPort has changed
-			
-				// to override the default refresh interval one has to add a 
-				// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
-				String refreshIntervalString = (String) config.get("refresh");
-				if (StringUtils.isNotBlank(refreshIntervalString)) {
-					refreshInterval = Long.parseLong(refreshIntervalString);
-				}
-							
+				
 				try {
 					openPort(newPort);
 					setProperlyConfigured(true);
