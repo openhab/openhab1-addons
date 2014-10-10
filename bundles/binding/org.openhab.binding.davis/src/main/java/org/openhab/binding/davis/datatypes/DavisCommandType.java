@@ -169,7 +169,7 @@ public enum DavisCommandType {
 	 * 
 	 * @param command
 	 *            command key
-	 * @return ComfoAirCommandType identified by key
+	 * @return DavisCommandType identified by command
 	 */
 	public static DavisCommandType getCommandTypeByCommand(String command) {
 		for (DavisCommandType entry : values()) {
