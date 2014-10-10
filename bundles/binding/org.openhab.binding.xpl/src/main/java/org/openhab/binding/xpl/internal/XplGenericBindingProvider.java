@@ -11,21 +11,25 @@ package org.openhab.binding.xpl.internal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import org.cdp1802.xpl.NamedValueI;
+import org.cdp1802.xpl.NamedValuesI;
+import org.cdp1802.xpl.xPL_MessageI;
+import org.cdp1802.xpl.xPL_Utils;
 import org.openhab.binding.xpl.XplBindingConfig;
 import org.openhab.binding.xpl.XplBindingProvider;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
-import org.cdp1802.xpl.*;
 
 /**
  * This class is responsible for parsing the binding configuration.
  * 
  * @author clinique
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class XplGenericBindingProvider extends AbstractGenericBindingProvider implements XplBindingProvider {
 

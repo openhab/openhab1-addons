@@ -5,7 +5,7 @@ Bundle-Name: openHAB xPL Transport Bundle
 Bundle-SymbolicName: org.openhab.io.transport.xpl;singleton:=true
 Bundle-Version: 1.6.0.qualifier
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.cdp1802.xpl,
  org.openhab.core.events,
  org.osgi.framework;version="1.7.0",

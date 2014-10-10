@@ -10,6 +10,8 @@ package org.openhab.binding.xpl.internal;
 
 import java.util.List;
 
+import org.cdp1802.xpl.xPL_MessageI;
+import org.cdp1802.xpl.xPL_MessageListenerI;
 import org.openhab.binding.xpl.XplBindingConfig;
 import org.openhab.binding.xpl.XplBindingProvider;
 import org.openhab.core.binding.AbstractBinding;
@@ -23,14 +25,12 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.io.transport.xpl.XplTransportService;
-import org.cdp1802.xpl.xPL_MessageI;
-import org.cdp1802.xpl.xPL_MessageListenerI;
 
 /**
  * xPL binding for openHAB
  * 
  * @author clinique
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class XplBinding extends AbstractBinding<XplBindingProvider> implements xPL_MessageListenerI {
 

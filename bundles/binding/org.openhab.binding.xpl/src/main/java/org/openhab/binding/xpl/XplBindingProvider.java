@@ -9,6 +9,7 @@
 package org.openhab.binding.xpl;
 
 import java.util.List;
+
 import org.cdp1802.xpl.xPL_MessageI;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
@@ -21,7 +22,7 @@ import org.openhab.core.items.Item;
  * taken into account.
  * 
  * @author clinique
- * @since 1.5.0
+ * @since 1.6.0
  */
 public interface XplBindingProvider extends BindingProvider {
 	
@@ -56,4 +57,5 @@ public interface XplBindingProvider extends BindingProvider {
 	 *         could be found.
 	 */
 	public Item getItem(String itemName);
+	
 }

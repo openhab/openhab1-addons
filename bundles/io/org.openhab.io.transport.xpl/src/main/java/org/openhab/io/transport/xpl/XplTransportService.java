@@ -10,18 +10,21 @@ package org.openhab.io.transport.xpl;
 
 import java.util.Dictionary;
 
+import org.cdp1802.xpl.xPL_IdentifierI;
+import org.cdp1802.xpl.xPL_Manager;
+import org.cdp1802.xpl.xPL_MediaHandlerException;
+import org.cdp1802.xpl.xPL_MessageListenerI;
+import org.cdp1802.xpl.xPL_MutableMessageI;
+import org.cdp1802.xpl.device.xPL_DeviceI;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.cdp1802.xpl.*;
-import org.cdp1802.xpl.device.xPL_DeviceI;
 
 /**
  * Bundle activator for xPL transport bundle. 
  * 
  * @author clinique
  * @since 1.6.0
- * 
  */
 public class XplTransportService implements ManagedService {
 

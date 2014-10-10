@@ -8,10 +8,13 @@
  */
 package org.openhab.action.xpl.internal;
 
+import org.cdp1802.xpl.xPL_IdentifierI;
+import org.cdp1802.xpl.xPL_MessageI;
+import org.cdp1802.xpl.xPL_MutableMessageI;
+import org.cdp1802.xpl.xPL_Utils;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.openhab.io.transport.xpl.XplTransportService;
-import org.cdp1802.xpl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * This class contains the methods that are made available in scripts and rules for xPL.
  * 
  * @author Clinique
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class Xpl {
 

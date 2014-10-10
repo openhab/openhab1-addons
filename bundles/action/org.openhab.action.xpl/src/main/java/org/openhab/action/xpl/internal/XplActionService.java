@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * This class registers an OSGi service for the Xpl action.
  * 
  * @author clinique
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class XplActionService implements ActionService {
 

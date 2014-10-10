@@ -24,7 +24,7 @@ Import-Package: org.cdp1802.xpl,
  org.slf4j
 Export-Package: org.openhab.binding.xpl
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
 Require-Bundle: org.openhab.io.transport.xpl;bundle-version="1.6.0"
