@@ -106,7 +106,7 @@ public class OpenSprinklerBinding extends AbstractActiveBinding<OpenSprinklerBin
 			if ( stationItemName != null ) {
 				if ( openSprinkler.isStationOpen(station) ) {
 					eventPublisher.postUpdate(stationItemName, OnOffType.ON);
-				} else if ( !openSprinkler.isStationOpen(station) ) {
+				} else {
 					eventPublisher.postUpdate(stationItemName, OnOffType.OFF);
 				}
 			}
