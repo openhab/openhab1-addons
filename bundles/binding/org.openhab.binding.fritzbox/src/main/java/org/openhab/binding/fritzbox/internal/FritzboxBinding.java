@@ -146,7 +146,6 @@ public class FritzboxBinding extends
 	public void internalReceiveCommand(String itemName, Command command) {
 
 		if (password != null && !password.isEmpty()) {
-			logger.warn("Fritzbox password: "+password);
 			String type = null;
 			for (FritzboxBindingProvider provider : providers) {
 				type = provider.getType(itemName);
