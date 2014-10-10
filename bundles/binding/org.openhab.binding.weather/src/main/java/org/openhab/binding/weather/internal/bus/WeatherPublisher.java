@@ -25,6 +25,7 @@ import org.openhab.binding.weather.internal.model.Weather;
 import org.openhab.binding.weather.internal.utils.ItemIterator;
 import org.openhab.binding.weather.internal.utils.ItemIterator.ItemIteratorCallback;
 import org.openhab.binding.weather.internal.utils.PropertyUtils;
+import org.openhab.binding.weather.internal.utils.UnitUtils;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
@@ -104,13 +105,17 @@ public class WeatherPublisher {
 								if (Weather.isVirtualProperty(weatherProperty)) {
 									Temperature temp = instance.getTemperature();
 									if (Weather.VIRTUAL_TEMP_MINMAX.equals(weatherProperty)) {
-										value = getMinMax(temp.getMin(), temp.getMax(), bindingConfig);
-									} else if (Weather.VIRTUAL_TEMP_MINMAX_F.equals(weatherProperty)) {
-										value = getMinMax(temp.getMinF(), temp.getMaxF(), bindingConfig);
+										Double min = UnitUtils.convertUnit(temp.getMin(), bindingConfig);
+										Double max = UnitUtils.convertUnit(temp.getMax(), bindingConfig);
+										value = getMinMax(min, max, bindingConfig);
 									}
 								} else {
 									value = PropertyUtils.getPropertyValue(instance, weatherProperty);
+									if (bindingConfig.hasUnit()) {
+										value = UnitUtils.convertUnit((Double) value, bindingConfig);
+									}
 								}
+
 								if (!equalsCachedValue(value, item)) {
 									publishValue(item, value, bindingConfig);
 									itemCache.put(item.getName(), value);

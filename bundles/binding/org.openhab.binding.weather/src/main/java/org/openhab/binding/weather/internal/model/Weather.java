@@ -27,8 +27,7 @@ import org.openhab.binding.weather.internal.annotation.ProviderMappings;
  */
 public class Weather {
 	public static final String VIRTUAL_TEMP_MINMAX = "temperature.minMax";
-	public static final String VIRTUAL_TEMP_MINMAX_F = "temperature.minMaxF";
-	private static final String[] VIRTUAL_PROPERTIES = new String[] { VIRTUAL_TEMP_MINMAX, VIRTUAL_TEMP_MINMAX_F };
+	private static final String[] VIRTUAL_PROPERTIES = new String[] { VIRTUAL_TEMP_MINMAX };
 
 	private Athmosphere athmosphere = new Athmosphere();
 	private Clouds clouds = new Clouds();

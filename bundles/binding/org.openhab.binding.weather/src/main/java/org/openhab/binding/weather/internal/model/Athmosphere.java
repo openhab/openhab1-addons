@@ -13,7 +13,6 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.openhab.binding.weather.internal.annotation.Provider;
 import org.openhab.binding.weather.internal.annotation.ProviderMappings;
 import org.openhab.binding.weather.internal.converter.ConverterType;
-import org.openhab.binding.weather.internal.utils.UnitUtils;
 
 /**
  * Common provider model for athmosphere data.
@@ -82,13 +81,6 @@ public class Athmosphere {
 	}
 
 	/**
-	 * Returns the visibility in miles per hour.
-	 */
-	public Double getVisibilityMph() {
-		return UnitUtils.kmhToMph(visibility);
-	}
-
-	/**
 	 * Sets the visibility in kilometers.
 	 */
 	public void setVisibility(Double visibility) {
@@ -100,13 +92,6 @@ public class Athmosphere {
 	 */
 	public Double getPressure() {
 		return pressure;
-	}
-
-	/**
-	 * Returns the pressure in inches.
-	 */
-	public Double getPressureInches() {
-		return UnitUtils.millibarToInches(pressure);
 	}
 
 	/**

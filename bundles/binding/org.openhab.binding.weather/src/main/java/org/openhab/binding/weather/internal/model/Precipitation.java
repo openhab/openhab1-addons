@@ -13,7 +13,6 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.openhab.binding.weather.internal.annotation.Provider;
 import org.openhab.binding.weather.internal.annotation.ProviderMappings;
 import org.openhab.binding.weather.internal.converter.ConverterType;
-import org.openhab.binding.weather.internal.utils.UnitUtils;
 
 /**
  * Common provider model for precipitation data.
@@ -60,13 +59,6 @@ public class Precipitation {
 	}
 
 	/**
-	 * Returns the rain in inches.
-	 */
-	public Double getRainInches() {
-		return UnitUtils.millimetersToInches(rain);
-	}
-
-	/**
 	 * Sets the rain in millimeters.
 	 */
 	public void setRain(Double rain) {
@@ -78,13 +70,6 @@ public class Precipitation {
 	 */
 	public Double getSnow() {
 		return snow;
-	}
-
-	/**
-	 * Returns the snow in inches.
-	 */
-	public Double getSnowInches() {
-		return UnitUtils.millimetersToInches(UnitUtils.centimeterToMillimeter(snow));
 	}
 
 	/**

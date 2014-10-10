@@ -69,6 +69,9 @@ public class ForecastBindingConfig extends WeatherBindingConfig {
 		if (getRoundingMode() != null) {
 			tsb.append("roundingMode", getRoundingMode()).append("scale", getScale());
 		}
+		if (getUnit() != null) {
+			tsb.append("unit", getUnit().toString());
+		}
 		return tsb.toString();
 	}
 

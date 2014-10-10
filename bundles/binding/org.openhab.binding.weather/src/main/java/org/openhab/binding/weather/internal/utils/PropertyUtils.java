@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.weather.internal.utils;
 
+import java.lang.reflect.Field;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
@@ -54,6 +56,15 @@ public class PropertyUtils {
 		} catch (Exception ex) {
 			return false;
 		}
+	}
+
+	/**
+	 * Returns the type name of the property of the instance.
+	 */
+	public static String getPropertyTypeName(Object instance, String property) throws IllegalAccessException {
+		Object object = getNestedObject(instance, property);
+		Field field = FieldUtils.getField(object.getClass(), PropertyResolver.last(property), true);
+		return field.getType().getCanonicalName();
 	}
 
 	/**

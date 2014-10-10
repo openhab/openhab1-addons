@@ -14,6 +14,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.openhab.binding.weather.internal.common.Unit;
 import org.openhab.core.binding.BindingConfig;
 
 /**
@@ -28,6 +29,7 @@ public class WeatherBindingConfig implements BindingConfig {
 	private String property;
 	private RoundingMode roundingMode;
 	private Integer scale;
+	private Unit unit;
 
 	/**
 	 * Creates a weather config.
@@ -41,6 +43,27 @@ public class WeatherBindingConfig implements BindingConfig {
 	public void setScale(RoundingMode roundingMode, Integer scale) {
 		this.roundingMode = roundingMode;
 		this.scale = scale;
+	}
+
+	/**
+	 * Sets the unit.
+	 */
+	public void setUnit(Unit unit) {
+		this.unit = unit;
+	}
+
+	/**
+	 * Returns the unit.
+	 */
+	public Unit getUnit() {
+		return unit;
+	}
+
+	/**
+	 * Returns true, if a unit is specified.
+	 */
+	public boolean hasUnit() {
+		return unit != null;
 	}
 
 	/**
@@ -91,7 +114,7 @@ public class WeatherBindingConfig implements BindingConfig {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(locationId).append(type).append(property).append(roundingMode)
-				.append(scale).toHashCode();
+				.append(scale).append(unit).toHashCode();
 	}
 
 	/**
@@ -105,7 +128,7 @@ public class WeatherBindingConfig implements BindingConfig {
 		WeatherBindingConfig comp = (WeatherBindingConfig) obj;
 		return new EqualsBuilder().append(locationId, comp.getLocationId()).append(type, comp.getType())
 				.append(property, comp.getProperty()).append(roundingMode, comp.getRoundingMode())
-				.append(scale, comp.getScale()).isEquals();
+				.append(scale, comp.getScale()).append(unit, comp.getUnit()).isEquals();
 	}
 
 	/**
@@ -117,6 +140,9 @@ public class WeatherBindingConfig implements BindingConfig {
 		tsb.append("locationId", locationId).append("type", type).append("property", property);
 		if (roundingMode != null) {
 			tsb.append("roundingMode", roundingMode).append("scale", scale);
+		}
+		if (unit != null) {
+			tsb.append("unit", unit.toString());
 		}
 		return tsb.toString();
 	}

@@ -13,7 +13,6 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.openhab.binding.weather.internal.annotation.Provider;
 import org.openhab.binding.weather.internal.annotation.ProviderMappings;
 import org.openhab.binding.weather.internal.converter.ConverterType;
-import org.openhab.binding.weather.internal.utils.UnitUtils;
 
 /**
  * Common provider model for wind data.
@@ -72,34 +71,6 @@ public class Wind {
 	}
 
 	/**
-	 * Returns the windspeed in beaufort.
-	 */
-	public Double getSpeedBeaufort() {
-		return UnitUtils.kmhToBeaufort(speed);
-	}
-
-	/**
-	 * Returns the windspeed in knots.
-	 */
-	public Double getSpeedKnots() {
-		return UnitUtils.kmhToKnots(speed);
-	}
-
-	/**
-	 * Returns the windspeed in meter per second.
-	 */
-	public Double getSpeedMps() {
-		return UnitUtils.kmhToMps(speed);
-	}
-
-	/**
-	 * Returns the windspeed in miles per hour.
-	 */
-	public Double getSpeedMph() {
-		return UnitUtils.kmhToMph(speed);
-	}
-
-	/**
 	 * Sets the windspeed in kilometer per hour.
 	 */
 	public void setSpeed(Double speed) {
@@ -142,34 +113,6 @@ public class Wind {
 	}
 
 	/**
-	 * Returns the wind gust in beaufort.
-	 */
-	public Double getGustBeaufort() {
-		return UnitUtils.kmhToBeaufort(gust);
-	}
-
-	/**
-	 * Returns the wind gust in knots.
-	 */
-	public Double getGustKnots() {
-		return UnitUtils.kmhToKnots(gust);
-	}
-
-	/**
-	 * Returns the wind gust in meter per second.
-	 */
-	public Double getGustMps() {
-		return UnitUtils.kmhToMps(gust);
-	}
-
-	/**
-	 * Returns the wind gust in miles per hour.
-	 */
-	public Double getGustMph() {
-		return UnitUtils.kmhToMph(gust);
-	}
-
-	/**
 	 * Sets the wind gust.
 	 */
 	public void setGust(Double gust) {
@@ -181,13 +124,6 @@ public class Wind {
 	 */
 	public Double getChill() {
 		return chill;
-	}
-
-	/**
-	 * Returns the wind chill in fahrenheit.
-	 */
-	public Double getChillF() {
-		return UnitUtils.celsiusToFahrenheit(chill);
 	}
 
 	/**

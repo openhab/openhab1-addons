@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.weather.internal.utils;
 
+import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
+
 /**
  * Utility class for different unit conversions.
  * 
@@ -136,6 +138,35 @@ public class UnitUtils {
 		double step = 360.0 / directions.length;
 		double b = Math.floor((degree + (step / 2.0)) / step);
 		return directions[(int) (b % directions.length)];
+	}
+
+	/**
+	 * Converts a value to the unit configured in the item binding.
+	 */
+	public static Double convertUnit(Double value, WeatherBindingConfig bindingConfig) {
+		if (bindingConfig.hasUnit()) {
+			switch (bindingConfig.getUnit()) {
+			case FAHRENHEIT:
+				return celsiusToFahrenheit(value);
+			case MPH:
+				return kmhToMph(value);
+			case INCHES:
+				if ("athmosphere.pressure".equals(bindingConfig.getWeatherProperty())) {
+					return millibarToInches(value);
+				} else if ("precipitation.snow".equals(bindingConfig.getWeatherProperty())) {
+					return millimetersToInches(centimeterToMillimeter(value));
+				} else {
+					return millimetersToInches(value);
+				}
+			case BEAUFORT:
+				return kmhToBeaufort(value);
+			case KNOTS:
+				return kmhToKnots(value);
+			case MPS:
+				return kmhToMps(value);
+			}
+		}
+		return value;
 	}
 
 }

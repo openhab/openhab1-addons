@@ -12,7 +12,6 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.openhab.binding.weather.internal.annotation.Provider;
 import org.openhab.binding.weather.internal.annotation.ProviderMappings;
-import org.openhab.binding.weather.internal.utils.UnitUtils;
 
 /**
  * Common provider model for temperature data.
@@ -76,13 +75,6 @@ public class Temperature {
 	}
 
 	/**
-	 * Returns the current temperature in fahrenheit.
-	 */
-	public Double getCurrentF() {
-		return UnitUtils.celsiusToFahrenheit(current);
-	}
-
-	/**
 	 * Sets the current temperature in degrees.
 	 */
 	public void setCurrent(Double current) {
@@ -94,13 +86,6 @@ public class Temperature {
 	 */
 	public Double getMin() {
 		return min;
-	}
-
-	/**
-	 * Returns the min forecast temperature in fahrenheit.
-	 */
-	public Double getMinF() {
-		return UnitUtils.celsiusToFahrenheit(min);
 	}
 
 	/**
@@ -118,13 +103,6 @@ public class Temperature {
 	}
 
 	/**
-	 * Returns the max forecast temperature in fahrenheit.
-	 */
-	public Double getMaxF() {
-		return UnitUtils.celsiusToFahrenheit(max);
-	}
-
-	/**
 	 * Sets the min forecast temperature in degrees.
 	 */
 	public void setMax(Double max) {
@@ -139,13 +117,6 @@ public class Temperature {
 	}
 
 	/**
-	 * Returns the current feels like temperature in fahrenheit.
-	 */
-	public Double getFeelF() {
-		return UnitUtils.celsiusToFahrenheit(feel);
-	}
-
-	/**
 	 * Sets the current feels like temperature in degrees.
 	 */
 	public void setFeel(Double feel) {
@@ -157,13 +128,6 @@ public class Temperature {
 	 */
 	public Double getDewpoint() {
 		return dewpoint;
-	}
-
-	/**
-	 * Returns the dewpoint in fahrenheit.
-	 */
-	public Double getDewpointF() {
-		return UnitUtils.celsiusToFahrenheit(dewpoint);
 	}
 
 	/**

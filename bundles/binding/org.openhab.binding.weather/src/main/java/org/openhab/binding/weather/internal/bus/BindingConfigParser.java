@@ -11,6 +11,7 @@ package org.openhab.binding.weather.internal.bus;
 import java.math.RoundingMode;
 
 import org.apache.commons.lang.StringUtils;
+import org.openhab.binding.weather.internal.common.Unit;
 import org.openhab.binding.weather.internal.common.binding.ForecastBindingConfig;
 import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
 import org.openhab.binding.weather.internal.model.Weather;
@@ -18,6 +19,8 @@ import org.openhab.binding.weather.internal.utils.PropertyUtils;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class to parse the key - value base config for an Weather item.
@@ -27,17 +30,19 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 
  * <pre>
  * Number  Temperature    "Temperature [%.2f °C]"        {weather="locationId=home, type=temperature, property=current"} 
+ * Number  Temperature_F  "Temperature [%.2f °F]"        {weather="locationId=home, type=temperature, property=current, unit=fahrenheit"} 
  * Number  Humidity       "Humidity [%.0f %]"            {weather="locationId=home, type=athmosphere, property=humidity"}
  * Number  Rain           "Rain [%.2f mm]"               {weather="locationId=home, type=precipitation, property=rain"}
  * 
  * Number  Temperature    "Temperature [%.0f °C]"        {weather="locationId=home, type=precipitation, property=rain, roundingMode=ceiling, scale=0"}
- *
+ * 
  * </pre>
  * 
  * @author Gerhard Riegler
  * @since 1.6.0
  */
 public class BindingConfigParser {
+	private static final Logger logger = LoggerFactory.getLogger(BindingConfigParser.class);
 
 	/**
 	 * Parses the bindingConfig of an item and returns a WeatherBindingConfig.
@@ -82,8 +87,9 @@ public class BindingConfigParser {
 			weatherConfig = new WeatherBindingConfig(helper.locationId, helper.type, helper.property);
 		}
 
+		Weather validationInstance = new Weather(null);
 		String property = weatherConfig.getWeatherProperty();
-		if (!Weather.isVirtualProperty(property) && !PropertyUtils.hasProperty(new Weather(null), property)) {
+		if (!Weather.isVirtualProperty(property) && !PropertyUtils.hasProperty(validationInstance, property)) {
 			throw new BindingConfigParseException("Invalid binding, unknown type or property: " + bindingConfig);
 		}
 
@@ -108,6 +114,24 @@ public class BindingConfigParser {
 			weatherConfig.setScale(roundingMode, scale);
 		}
 
+		weatherConfig.setUnit(Unit.parse(helper.unit));
+		if (StringUtils.isNotBlank(helper.unit) && weatherConfig.getUnit() == null) {
+			throw new BindingConfigParseException("Invalid binding, unknown unit: " + bindingConfig);
+		}
+
+		try {
+			if (!Weather.isVirtualProperty(property) && weatherConfig.hasUnit()) {
+				String doubleTypeName = Double.class.getName();
+				String propertyTypeName = PropertyUtils.getPropertyTypeName(validationInstance, property);
+				if (!StringUtils.equals(doubleTypeName, propertyTypeName)) {
+					throw new BindingConfigParseException(
+							"Invalid binding, unit specified but property is not a double type: " + bindingConfig);
+				}
+			}
+		} catch (IllegalAccessException ex) {
+			logger.error(ex.getMessage(), ex);
+			throw new BindingConfigParseException(ex.getMessage());
+		}
 		return weatherConfig;
 	}
 
@@ -133,6 +157,7 @@ public class BindingConfigParser {
 		public String forecast;
 		public String roundingMode;
 		public String scale;
+		public String unit;
 
 		protected boolean isValid() {
 			return StringUtils.isNotBlank(locationId) && StringUtils.isNotBlank(type)
