@@ -43,7 +43,6 @@ public class ZWaveApplicationStatusClass extends ZWaveCommandClass {
 	
 	public static int DEFAULT_RETRY = 2000;
 	
-	
 	/**
 	 * Creates a new instance of the ZWaveApplicationStatusClass class.
 	 * @param node the node this command class belongs to
@@ -69,20 +68,20 @@ public class ZWaveApplicationStatusClass extends ZWaveCommandClass {
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage, 
 			int offset, int endpoint) {
-		logger.debug("NODE {} Application Status message", getNode());
+		logger.debug("NODE {}: Application Status message", getNode());
 		int status = serialMessage.getMessagePayloadByte(offset++);
 		switch (status) {
 			case ApplicationStatusBusy:
-				logger.trace("NODE {} Process Application StatusBusy status", getNode());
+				logger.trace("NODE {}: Process Application Status Busy status", getNode());
 				int busyStatus = serialMessage.getMessagePayloadByte(offset++);
 				int retry = DEFAULT_RETRY;
 				switch(busyStatus){
 					case StatusBusyTryAgainLaterInSeconds:
 						int seconds = serialMessage.getMessagePayloadByte(offset++);
-						logger.info("NODE {} is busy and wants us to try again in {} seconds",getNode(), seconds);
+						logger.debug("NODE {}: is busy and wants us to try again in {} seconds",getNode(), seconds);
 						retry = seconds * 1000;
 					case StatusBusyTryAgainLater:
-						logger.info("NODE {} is busy and wants us to try again later", getNode());
+						logger.debug("NODE {}: is busy and wants us to try again later", getNode());
 						final ZWaveNode node = this.getNode();
 						final ZWaveController controller = this.getController();
 						scheduler.schedule(new Runnable() {
@@ -96,15 +95,15 @@ public class ZWaveApplicationStatusClass extends ZWaveCommandClass {
 						}, retry, TimeUnit.MILLISECONDS);
 						break;
 					case StatusBusyQueued:
-						logger.warn("NODE {} is busy and has queued the request", getNode());
+						logger.warn("NODE {}: is busy and has queued the request", getNode());
 						break;
 					 default:
-						 logger.warn("NODE {} unknown busy status {} ", getNode(), busyStatus);
+						 logger.warn("NODE {}: unknown busy status {} ", getNode(), busyStatus);
 						break;
 				}
 				break;
 			case ApplicationStatusRejected:
-				logger.warn("NODE {} has rejected the request", getNode());
+				logger.warn("NODE {}: has rejected the request", getNode());
 				break;
 			default:
 			logger.warn(String.format("Unsupported status 0x%02X for command class %s (0x%02X).", 
