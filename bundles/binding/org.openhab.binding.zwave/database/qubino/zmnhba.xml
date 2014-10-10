@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>ZMNHBA2</Model>
+	<Model>ZMNHBA</Model>
 	<Label lang="en">Flush 2 relays</Label>
 	<CommandClasses>
 		<Class><id>0x00</id></Class>

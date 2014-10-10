@@ -1255,9 +1255,9 @@
 				<Type>2</Type>
 				<Id>1</Id>
 			</Reference>
-			<Model>ZMNHBA2</Model>
+			<Model>ZMNHBA</Model>
 			<Label lang="en">Flush 2 relays</Label>
-			<ConfigFile>qubino/zmnhba2.xml</ConfigFile>
+			<ConfigFile>qubino/zmnhba.xml</ConfigFile>
 		</Product>
 	</Manufacturer>	
 </Manufacturers>
