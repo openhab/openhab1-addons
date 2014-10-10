@@ -314,6 +314,13 @@
          unpack="false"/>
 
    <plugin
+         id="org.openhab.action.squeezebox"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.openhab.action.twitter"
          download-size="0"
          install-size="0"
@@ -329,6 +336,13 @@
 
    <plugin
          id="org.openhab.action.xmpp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.action.xpl"
          download-size="0"
          install-size="0"
          version="0.0.0"

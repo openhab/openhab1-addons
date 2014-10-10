@@ -147,15 +147,18 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 	    }
 	    
         // parse the response to build our location object
-        Map<String, String> locationData;
+        Map<String, Object> locationData;
+        String toParse = "{}";
         try {
             ObjectMapper jsonReader = new ObjectMapper();
-        	locationData = jsonReader.readValue(response.getBody(), Map.class);
+            toParse = response.getBody();
+            toParse = toParse.substring(1, toParse.length() - 2);
+        	locationData = jsonReader.readValue(toParse, Map.class);
         } catch (JsonParseException e) {
-            logger.error("Error parsing JSON:\n" + response.getBody());
+            logger.error("Error parsing JSON:\n" + toParse, e);
             return null;
         } catch (JsonMappingException e) {
-            logger.error("Error mapping JSON:\n" + response.getBody());
+            logger.error("Error mapping JSON:\n" + toParse, e);
             return null;
         } catch (IOException e) {
             logger.error("An I/O error occured while decoding JSON:\n" + response.getBody());

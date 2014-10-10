@@ -9,7 +9,6 @@
 
 	<CommandClasses>                  <!-- Z-Wave Supported Command Classes: -->
 		<Class><id>0x20</id></Class>  <!-- COMMAND_CLASS_BASIC -->
-		<Class><id>0x27</id></Class>  <!-- COMMAND_CLASS_SWITCH_ALL -->
 		<Class><id>0x31</id></Class>  <!-- COMMAND_CLASS_SENSOR_MULTILEVEL -->
 		<Class><id>0x40</id></Class>  <!-- COMMAND_CLASS_THERMOSTAT_MODE -->
 		<Class><id>0x70</id></Class>  <!-- COMMAND_CLASS_CONFIGURATION -->
@@ -28,7 +27,7 @@
 			<Default>1</Default>
 			<Size>1</Size>
 			<Label lang="en">Indicate a location for IR code learning and start learning</Label>
-			<Label lang="de">Geben Sie einen Speicherort für IR-Code-Lernen und Lernen beginnen</Label>
+			<Label lang="de">Geben Sie einen Speicherort fÃ¼r IR-Code-Lernen und Lernen beginnen</Label>
 		</Parameter>
 		<Parameter>
 			<Index>26</Index>
@@ -48,7 +47,7 @@
 			<Maximum>512</Maximum>
 			<Size>1</Size>
 			<Label lang="en">IR code number for built-in code library</Label>
-			<Label lang="de">IR-Code-Nummer für integrierten Code-Bibliothek</Label>
+			<Label lang="de">IR-Code-Nummer fÃ¼r integrierten Code-Bibliothek</Label>
 		</Parameter>
 		<Parameter>
 			<Index>28</Index>
@@ -83,7 +82,7 @@
 			<Item>
 				<Value>-1</Value>
 				<Label lang="en">Enable Surround IR Emitters</Label>
-				<Label lang="de">Ermöglichen Surround-IR-Strahler</Label>
+				<Label lang="de">ErmÃ¶glichen Surround-IR-Strahler</Label>
 			</Item>
 		</Parameter>		
 		<Parameter>

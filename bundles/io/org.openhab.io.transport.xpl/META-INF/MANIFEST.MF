@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Name: openHAB xPL Transport Bundle
+Bundle-SymbolicName: org.openhab.io.transport.xpl;singleton:=true
+Bundle-Version: 1.6.0.qualifier
+Bundle-Vendor: openHAB.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.cdp1802.xpl,
+ org.openhab.core.events,
+ org.osgi.framework;version="1.7.0",
+ org.osgi.service.cm;version="1.4.0",
+ org.slf4j;version="1.6.4"
+Export-Package: org.cdp1802.xpl;
+  uses:="org.cdp1802.xpl.tracker,
+   org.cdp1802.xpl.ethernet,
+   org.cdp1802.xpl.plugins,
+   org.apache.log4j,
+   org.cdp1802.xpl.device",
+ org.openhab.io.transport.xpl;uses:="org.cdp1802.xpl,org.osgi.service.cm,org.cdp1802.xpl.device"
+Service-Component: OSGI-INF/xpl-*.xml
+Bundle-ClassPath: .,
+ lib/xPL4Java.jar

@@ -15,6 +15,7 @@
 		<bundle.namespace>org.openhab.binding.openenergymonitor</bundle.namespace>
 		<deb.name>openhab-addon-binding-openenergymonitor</deb.name>
 		<deb.description>${project.name}</deb.description>
+		<deb.depends>openhab-addon-io-serial</deb.depends>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>

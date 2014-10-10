@@ -9,6 +9,7 @@
 package org.openhab.model.script.internal.actions;
 
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure0;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -27,7 +28,9 @@ public class TimerExecutionJob implements Job {
 
 	static final private Logger logger = LoggerFactory.getLogger(TimerExecutionJob.class);
 	
-	private Procedure0 procedure;
+	private Procedure0 procedure = null;
+	private Procedure1<Object> procedure1 = null;
+	private Object	argument1 = null;
 	private TimerImpl timer;
 
 	/**
@@ -37,17 +40,34 @@ public class TimerExecutionJob implements Job {
 	 */
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		logger.debug("Executing timer '{}'", context.getJobDetail().getKey().toString());
-		procedure.apply();
+		if (procedure != null) {
+			procedure.apply();
+		} else if (procedure1 != null) {
+			procedure1.apply(argument1);
+		}
 		timer.setTerminated(true);
 	}
 
 	/**
-	 * Sets the closure for this job
+	 * Sets the 0-parameter closure for this job
 	 * 
 	 * @param procedure a closure without parameters
 	 */
 	public void setProcedure(Procedure0 procedure) {
 		this.procedure = procedure;
+	}
+
+	/**
+	 * Sets the 1-parameter closure for this job
+	 * 
+	 * @param procedure a closure with a single argument
+	 */
+	public void setProcedure1(Procedure1<Object> procedure) {
+		this.procedure1 = procedure;
+	}
+	
+	public void setArgument1(Object argument1) {
+		this.argument1 = argument1;
 	}
 
 	/** 

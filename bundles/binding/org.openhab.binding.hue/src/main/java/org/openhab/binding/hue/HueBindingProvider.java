@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.hue;
 
+import java.util.List;
+
 import org.openhab.binding.hue.internal.HueBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 
@@ -19,6 +21,7 @@ import org.openhab.core.binding.BindingProvider;
  * taken into account.
  * 
  * @author Roman Hartmann
+ * @author Jos Schering
  * @since 1.2.0
  */
 public interface HueBindingProvider extends BindingProvider {
@@ -32,4 +35,10 @@ public interface HueBindingProvider extends BindingProvider {
 	 */
 	public HueBindingConfig getItemConfig(String itemName);
 
+	/**
+	 * Returns a list of item names
+	 * 
+	 * @return List of item names mapped to a Hue-Binding
+	 */
+	public List<String> getInBindingItemNames();
 }

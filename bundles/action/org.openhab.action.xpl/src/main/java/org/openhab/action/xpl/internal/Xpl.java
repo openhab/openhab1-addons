@@ -8,9 +8,13 @@
  */
 package org.openhab.action.xpl.internal;
 
+import org.cdp1802.xpl.xPL_IdentifierI;
+import org.cdp1802.xpl.xPL_MessageI;
+import org.cdp1802.xpl.xPL_MutableMessageI;
+import org.cdp1802.xpl.xPL_Utils;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
-import org.cdp1802.xpl.*;
+import org.openhab.io.transport.xpl.XplTransportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,44 +23,12 @@ import org.slf4j.LoggerFactory;
  * This class contains the methods that are made available in scripts and rules for xPL.
  * 
  * @author Clinique
- * @since 1.5.0
+ * @since 1.6.0
  */
-public class xPL {
+public class Xpl {
 
-	private static final Logger logger = LoggerFactory.getLogger(xPL.class);
-	private static final String vendor = "clinique";
-	private static final String device = "openhab";
-	private static xPL_Manager theManager = null;
-	private static xPL_IdentifierI sourceIdentifier = null;
-	private static xPL_MutableMessageI theMessage = null;
-
-	public static String getInstance() {
-		return sourceIdentifier.getInstanceID();
-	}
-
-	public static void setInstance(String instance) {
-	    
-		if (theManager == null) {
-			try {
-			    theManager = xPL_Manager.getManager();
-			    theManager.createAndStartNetworkHandler();
-			    logger.debug("manager started");				
-				theMessage = xPL_Utils.createMessage();			    
-			} catch (xPL_MediaHandlerException startError) {
-			    logger.error("Unable to start xPL Manager" + startError.getMessage());
-			}
-	    }
-		sourceIdentifier = theManager.getIdentifierManager().parseNamedIdentifier(vendor + "-" + device + "." + instance);
-		logger.info("sender set to  : " + sourceIdentifier.toString());
-		theMessage.setSource(sourceIdentifier);	    
-	}
-	
-	public static void stopManager(){
-		if (theManager != null) {
-			theManager.stopAllMediaHandlers();
-			logger.debug("manager stopped");
-		}
-	}
+	private static final Logger logger = LoggerFactory.getLogger(Xpl.class);
+	public static XplTransportService xplTransportService;
 	
 	@ActionDoc(text="Send an xPL Message", returns="<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean sendxPLMessage(
@@ -66,12 +38,9 @@ public class xPL {
 			@ParamDoc(name="bodyElements") String ... bodyElements
 					) 
 	{		
-		if (!xPLActionService.isProperlyConfigured) {
-			logger.error("xPL action is not yet configured - execution aborted!");
-			return false;
-		}	    
+		xPL_MutableMessageI theMessage  = xPL_Utils.createMessage();
 		
-	    xPL_IdentifierI targetIdentifier = theManager.getIdentifierManager().parseNamedIdentifier(target);
+	    xPL_IdentifierI targetIdentifier = xplTransportService.parseNamedIdentifier(target); 
 		if (targetIdentifier == null) {
 			logger.error("Invalid target identifier");
 			return false;
@@ -127,9 +96,7 @@ public class xPL {
 	      theMessage.addNamedValue(theName, theValue);
 	    } 
 	    
-	    // Send the message
-	    logger.debug(theMessage.toString());
-	    theManager.sendMessage(theMessage);
+	    xplTransportService.sendMessage(theMessage);
 	    
 		return true;
 	}

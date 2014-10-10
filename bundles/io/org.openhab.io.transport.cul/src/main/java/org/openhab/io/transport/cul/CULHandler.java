@@ -49,4 +49,12 @@ public interface CULHandler {
 	 * @return
 	 */
 	public CULMode getCULMode();
+	
+	/**
+	 * Get the number of transmit credits remaining. This
+	 * value is updated every time data is RX'd or TX'd
+	 * 
+	 * @return number of 10ms transmit credits remaining
+	 */
+	public int getCredit10ms();
 }

@@ -9,6 +9,8 @@
 package org.openhab.binding.fs20.internal;
 
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.fs20.FS20BindingConfig;
@@ -41,8 +43,12 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>
 			.getLogger(FS20Binding.class);
 
 	private final static String KEY_DEVICE_NAME = "device";
+	private final static String KEY_BAUD_RATE = "baudrate";
+	private final static String KEY_PARITY = "parity";
 
 	private String deviceName;
+		
+	private Map<String, Object> properties = new HashMap<String, Object>();
 
 	private CULHandler cul;
 
@@ -58,19 +64,18 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>
 	public void activate() {
 		logger.debug("Activating FS20 binding");
 	}
-
-	private void setNewDeviceName(String deviceName) {
+	
+	private void updateDeviceSettings(){
 		if (cul != null) {
 			CULManager.close(cul);
 		}
-		this.deviceName = deviceName;
 		getCULHandler();
 	}
 
 	private void getCULHandler() {
 		try {
 			logger.debug("Opening CUL device on " + deviceName);
-			cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
+			cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF, properties);
 			cul.registerListener(this);
 		} catch (CULDeviceException e) {
 			logger.error("Can't open cul device", e);
@@ -143,6 +148,27 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>
 		logger.debug("Received new config");
 		if (config != null) {
 
+			Boolean configChanged = false;
+			String baudRateString = (String) config.get(KEY_BAUD_RATE);
+			if(StringUtils.isNotBlank(baudRateString)){
+				properties.put(KEY_BAUD_RATE, Integer.parseInt(baudRateString));
+				configChanged = true;
+			}
+			
+			/*
+			 * PARITY_EVEN 2
+			 * PARITY_MARK 3
+			 * PARITY_NONE 0
+			 * PARITY_ODD  1
+			 * PARITY_SPACE 4
+			 */
+			
+			String parityString = (String) config.get(KEY_PARITY);
+			if(StringUtils.isNotBlank(parityString)){
+				properties.put(KEY_PARITY, Integer.parseInt(parityString));
+				configChanged = true;
+			}
+			
 			// to override the default refresh interval one has to add a
 			// parameter to openhab.cfg like
 			// <bindingName>:refresh=<intervalInMs>
@@ -157,7 +183,12 @@ public class FS20Binding extends AbstractActiveBinding<FS20BindingProvider>
 				throw new ConfigurationException(KEY_DEVICE_NAME,
 						"The device name can't be empty");
 			} else {
-				setNewDeviceName(deviceName);
+				this.deviceName = deviceName;
+				configChanged = true;
+			}
+			
+			if(configChanged){
+				updateDeviceSettings();
 			}
 
 			setProperlyConfigured(true);

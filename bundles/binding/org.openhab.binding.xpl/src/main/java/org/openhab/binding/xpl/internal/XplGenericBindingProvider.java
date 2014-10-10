@@ -11,23 +11,27 @@ package org.openhab.binding.xpl.internal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.openhab.binding.xpl.xPLBindingConfig;
-import org.openhab.binding.xpl.xPLBindingProvider;
+
+import org.cdp1802.xpl.NamedValueI;
+import org.cdp1802.xpl.NamedValuesI;
+import org.cdp1802.xpl.xPL_MessageI;
+import org.cdp1802.xpl.xPL_Utils;
+import org.openhab.binding.xpl.XplBindingConfig;
+import org.openhab.binding.xpl.XplBindingProvider;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
-import org.cdp1802.xpl.*;
 
 /**
  * This class is responsible for parsing the binding configuration.
  * 
  * @author clinique
- * @since 1.5.0
+ * @since 1.6.0
  */
-public class xPLGenericBindingProvider extends AbstractGenericBindingProvider implements xPLBindingProvider {
+public class XplGenericBindingProvider extends AbstractGenericBindingProvider implements XplBindingProvider {
 
 	/**
 	 * {@inheritDoc}
@@ -54,8 +58,8 @@ public class xPLGenericBindingProvider extends AbstractGenericBindingProvider im
 	 * {@inheritDoc}
 	 */
 	@Override
-	public xPLBindingConfig getConfig(String itemName) {
-		xPLBindingConfig config = (xPLBindingConfig) bindingConfigs.get(itemName);
+	public XplBindingConfig getConfig(String itemName) {
+		XplBindingConfig config = (XplBindingConfig) bindingConfigs.get(itemName);
 		return config;
 	}
 	
@@ -82,7 +86,7 @@ public class xPLGenericBindingProvider extends AbstractGenericBindingProvider im
 		
 		if (theMessage.getType()  != xPL_MessageI.MessageType.COMMAND) {							// the message must not be is not a xpl-cmnd
 			for (String key: bindingConfigs.keySet()) {
-				xPLBindingConfig config = (xPLBindingConfig) bindingConfigs.get(key);
+				XplBindingConfig config = (XplBindingConfig) bindingConfigs.get(key);
 				NamedValuesI theBody = config.Message.getMessageBody();
 				if ( (theBody !=  null) && 	(!theBody.isEmpty()) &&
 					(config.Message.getTarget().isBroadcastIdentifier() || config.Message.getTarget().equals(theMessage.getSource()))	&&
@@ -122,7 +126,7 @@ public class xPLGenericBindingProvider extends AbstractGenericBindingProvider im
 		if (configParts.length < 5) {
 			throw new BindingConfigParseException("xPL binding configuration must contain : target,message type,schema at at least one body key/value pair");
 		}
-		xPLBindingConfig config = new xPLBindingConfig();
+		XplBindingConfig config = new XplBindingConfig();
 		
 		config.Message = xPL_Utils.createMessage();
 		config.Message.setTarget(configParts[0]);
