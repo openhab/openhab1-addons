@@ -119,6 +119,7 @@
     <module>org.openhab.binding.wemo</module>
     <module>org.openhab.binding.ekey</module>
     <module>org.openhab.binding.alarmdecoder</module>
+    <module>org.openhab.binding.davis</module>
     <module>org.openhab.binding.xpl</module>
   </modules>
 
