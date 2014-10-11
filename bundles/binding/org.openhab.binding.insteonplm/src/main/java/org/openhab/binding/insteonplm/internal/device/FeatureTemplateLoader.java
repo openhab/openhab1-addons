@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2013, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.insteonplm.internal.device;
 
 import java.io.File;
@@ -23,7 +31,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class XMLDeviceFeatureReader {
+/**
+ * Class that loads the device feature templates from an xml stream
+ * 
+ * @author Daniel Pfrommer
+ * @since 1.6.0
+*/
+
+public class FeatureTemplateLoader {
 	public static ArrayList<FeatureTemplate> s_readTemplates(InputStream input)
 			throws IOException, ParsingException {
 		ArrayList<FeatureTemplate> features = new ArrayList<FeatureTemplate>();

@@ -1,0 +1,145 @@
+<xml>
+<!-- device types
+Example:
+<device productKey="F00.00.05">
+     <model>2456-D3</model>
+     <description>LampLinc V2</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ -->
+
+<device productKey="F00.00.05">
+     <model>2456D3</model>
+     <description>LampLinc V2</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+<device productKey="0x000037">
+     <model>2486D</model>
+     <description>KeypadLinc Dimmer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ 
+ <device productKey="F00.00.0B">
+     <model>2672-422</model>
+     <description>LED Dimmer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ 
+ <device productKey="0x000051">
+     <model>2486DWH8</model>
+     <description>KeypadLinc Dimmer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.01">
+     <model>2477D</model>
+     <description>SwitchLinc Dimmer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.08">
+     <model>2452-222</model>
+     <description>DIN Rail Dimmer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.06">
+     <model>2442-222</model>
+     <description>Micro Dimmer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ 
+ <device productKey="0x000068">
+     <model>2472D</model>
+     <description>OutletLincDimmer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ 
+ <device productKey="F00.00.04">
+     <model>2876S</model>
+     <description>ICON Switch</description>
+     <feature name="switch">GenericSwitch</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.02">
+     <model>2477S</model>
+     <description>SwitchLinc Switch</description>
+     <feature name="switch">GenericSwitch</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.10">
+     <model>2342-2</model>
+     <description>Mini Remote</description>
+     <feature name="switch">MultiButtonRemote</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.07">
+     <model>2453-222</model>
+     <description>DIN Rail On/Off</description>
+     <feature name="switch">GenericSwitch</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="0x000045">
+     <model>2413U</model>
+     <description>PowerLinc 2413U USB modem</description>
+     <feature name="control">GenericModemControl</feature>
+ </device>
+
+ <device productKey="0x00001A">
+     <model>2450</model>
+     <description>IO Link</description>
+     <feature name="contact">IOLincContact</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+     <feature name="switch">IOLincSwitch</feature>
+ </device>
+
+ <device productKey="F00.00.09">
+     <model>2458-A1</model>
+     <description>MorningLinc RF Lock Controller</description>
+     <feature name="switch">GenericSwitch</feature>
+ </device>
+
+ <device productKey="0x00004A">
+     <model>2842-222</model>
+     <description>Motion Sensor</description>
+     <feature name="contact">WirelessMotionSensorContact</feature>
+     <feature name="batterylevel">MotionSensorBatteryLevel</feature>
+     <feature name="lightlevel">MotionSensorLightLevel</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="0x000049">
+     <model>2843-222</model>
+     <description>Wireless Open/Close Sensor</description>
+     <feature name="contact">GenericContact</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.0A">
+     <model>2852-222</model>
+     <description>Leak Sensor</description>
+     <feature name="contact">LeakSensorContact</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.03">
+     <model>2845-222</model>
+     <description>Hidden Door Sensor</description>
+     <feature name="contact">GenericContact</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+</xml>
