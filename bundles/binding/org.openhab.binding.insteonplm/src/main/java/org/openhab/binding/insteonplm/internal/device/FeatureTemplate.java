@@ -22,16 +22,18 @@ import org.openhab.core.types.Command;
  * @since 1.5.0
  */
 public class FeatureTemplate {
-	private String m_name;
-	private boolean m_isStatus;
+	private String	m_name				= null;
+	private boolean m_isStatus			= false;
+	private String	m_dispatcher		= null;
+	private String	m_pollHandler		= null;
+	private String	m_defaultMsgHandler	= null;
+	private String	m_defaultCmdHandler	= null;
+	private HashMap<Integer, String> m_messageHandlers =
+				new HashMap<Integer, String>();
+	private HashMap<Class<? extends Command>, String> m_commandHandlers =
+				new HashMap<Class<? extends Command>, String>();
 	
-	private String m_dispatcher = null;
-	private String m_pollHandler = null;
-	private String m_defaultMsgHandler = null;
-	private String m_defaultCmdHandler = null;
-	private HashMap<Integer, String> m_messageHandlers = new HashMap<Integer, String>();
-	private HashMap<Class<? extends Command>, String> m_commandHandlers = new HashMap<Class<? extends Command>, String>();
-	
+	// simple getters
 	public String getName() { return m_name; }
 	public boolean isStatusFeature() { return m_isStatus; }
 	public String getPollHandler() { return m_pollHandler; }
@@ -51,11 +53,10 @@ public class FeatureTemplate {
 	 * @return a HashMap from Command Classes to CommandHandler names
 	 */
 	public HashMap<Class<? extends Command>, String> getCommandHandlers() { return m_commandHandlers; }
-	
+
+	// simple setters
 	public void setName(String name) { m_name = name; }
-	
 	public void setStatusFeature(boolean status) { m_isStatus = status; }
-	
 	public void setMessageDispatcher(String dispatcher) { m_dispatcher = dispatcher; }
 	public void setPollHandler(String poll) { m_pollHandler = poll; }
 	public void setDefaultCommandHandler(String cmd) { m_defaultCmdHandler = cmd; }
@@ -82,18 +83,15 @@ public class FeatureTemplate {
 		DeviceFeature f = new DeviceFeature(m_name);
 		f.setStatusFeature(m_isStatus);
 		
-		if (m_dispatcher != null) f.setMessageDispatcher((DeviceFeature.MessageDispatcher)
-													DeviceFeature.s_makeHandler(m_dispatcher, f));
-		if (m_pollHandler != null) f.setPollHandler((DeviceFeature.PollHandler)DeviceFeature.s_makeHandler(m_pollHandler, f));
-		if (m_defaultCmdHandler != null) f.setDefaultCommandHandler((DeviceFeature.CommandHandler)
-													DeviceFeature.s_makeHandler(m_defaultCmdHandler, f));
-		if (m_defaultMsgHandler != null) f.setDefaultMsgHandler((DeviceFeature.MessageHandler)
-													DeviceFeature.s_makeHandler(m_defaultMsgHandler, f));
+		if (m_dispatcher != null) f.setMessageDispatcher(MessageDispatcher.s_makeMessageDispatcher(m_dispatcher, f));
+		if (m_pollHandler != null) f.setPollHandler(PollHandler.s_makeHandler(m_pollHandler, f));
+		if (m_defaultCmdHandler != null) f.setDefaultCommandHandler(CommandHandler.s_makeHandler(m_defaultCmdHandler, f));
+		if (m_defaultMsgHandler != null) f.setDefaultMsgHandler(MessageHandler.s_makeHandler(m_defaultMsgHandler, f));
 		for (Entry<Integer, String> mH : m_messageHandlers.entrySet()) {
-			f.addMessageHandler(mH.getKey(), (DeviceFeature.MessageHandler)DeviceFeature.s_makeHandler(mH.getValue(), f));
+			f.addMessageHandler(mH.getKey(), MessageHandler.s_makeHandler(mH.getValue(), f));
 		}
 		for (Entry<Class<? extends Command>, String> cH : m_commandHandlers.entrySet()) {
-			f.addCommandHandler(cH.getKey(), (DeviceFeature.CommandHandler)DeviceFeature.s_makeHandler(cH.getValue(), f));
+			f.addCommandHandler(cH.getKey(), CommandHandler.s_makeHandler(cH.getValue(), f));
 		}
 		return f;
 	}
