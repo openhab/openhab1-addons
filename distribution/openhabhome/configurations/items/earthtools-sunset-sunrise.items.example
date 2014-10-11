@@ -1,2 +1,0 @@
-DateTime		Sunset			"Sunset  [%1$tA, %1$td.%1$tm.%1$tY, %1$tT]" { http="<[http://www.earthtools.org/sun-1.0/50.85/-4.35/%1$td/%1$tm/99/1?date=%1$td:6000000:XSLT(earthtools_org_sunset.xsl)]" }
-DateTime		Sunrise			"Sunrise [%1$tA, %1$td.%1$tm.%1$tY, %1$tT]" { http="<[http://www.earthtools.org/sun-1.0/50.85/-4.35/%1$td/%1$tm/99/1?date=%1$td:6000000:XSLT(earthtools_org_sunrise.xsl)]" }
