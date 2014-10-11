@@ -115,7 +115,8 @@ public class Iec6205621MeterBinding extends
 
 				for (String itemName : provider.getItemNames()) {
 					String obis = provider.getObis(itemName);
-					if (obis != null && dataSets.containsKey(obis)) {
+					String meterName = provider.getMeterName(itemName);
+					if (obis != null && dataSets.containsKey(obis) && meterName != null && meterName.equals(entry.getKey())) {
 						DataSet dataSet = dataSets.get(obis);
 						Class<? extends Item> itemType = provider
 								.getItemType(itemName);
