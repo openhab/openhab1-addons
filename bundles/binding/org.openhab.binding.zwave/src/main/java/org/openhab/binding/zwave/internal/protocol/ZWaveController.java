@@ -244,6 +244,8 @@ public class ZWaveController {
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
 					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 					ZWaveNode node = nodeSerializer.DeserializeNode(nodeId);
+					String name = node.getName();
+					String location = node.getLocation();
 
 					// Did the node deserialise ok?
 					if (node != null) {
@@ -276,6 +278,11 @@ public class ZWaveController {
 					// Create a new node if it wasn't deserialised ok
 					if(node == null) {
 						node = new ZWaveNode(this.homeId, nodeId, this);
+						
+						// Try to maintain the name and location (user supplied data)
+						// even if the XML file was considered corrupt and we reload data from the device.
+						node.setName(name);
+						node.setLocation(location);
 					}
 
 					if(nodeId == this.ownNodeId) {
