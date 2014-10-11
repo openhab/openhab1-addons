@@ -91,7 +91,7 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 		
 		// if restored the node from configuration information
 		// then we don't have to add these command classes anymore.
-		if (!node.restoreFromConfig()) {
+//		if (!node.restoreFromConfig()) {
 			// Add mandatory command classes as specified by it's generic device class.
 			for (CommandClass commandClass : generic.getMandatoryCommandClasses()) {
 				ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
@@ -105,8 +105,8 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 				if (zwaveCommandClass != null)
 					node.addCommandClass(zwaveCommandClass);
 			}
-		}
-		
+//		}
+
     	// advance node stage of the current node.
 		node.advanceNodeStage(NodeStage.PING);
 		

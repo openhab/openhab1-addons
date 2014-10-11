@@ -242,8 +242,42 @@ public class ZWaveController {
 			case SerialApiGetInitData:
 				this.isConnected = true;
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
-					// Place nodes in the local ZWave Controller
-					ZWaveNode node = new ZWaveNode(this.homeId, nodeId, this);
+					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+					ZWaveNode node = nodeSerializer.DeserializeNode(nodeId);
+
+					// Did the node deserialise ok?
+					if (node != null) {
+						// Sanity check the data from the file
+						if (node.getManufacturer() == Integer.MAX_VALUE ||
+								node.getHomeId() != this.homeId ||
+								node.getNodeId() != nodeId) {
+							logger.warn("NODE {}: Config file data is invalid, ignoring config.", nodeId);
+							node = null;
+						}
+						else {
+							// The restore was ok, but we have some work to set up the links that aren't
+							// made as the deserialiser doesn't call the constructor
+							logger.debug("NODE {}: Restored from config.", nodeId);
+							node.setRestoredFromConfigfile(this);
+
+							// Set the controller and node references for all command classes
+							for (ZWaveCommandClass commandClass : node.getCommandClasses()) {
+								commandClass.setController(this);
+								commandClass.setNode(node);
+
+								// Handle event handlers
+								if (commandClass instanceof ZWaveEventListener) {
+									this.addEventListener((ZWaveEventListener)commandClass);
+								}
+							}
+						}
+					}
+
+					// Create a new node if it wasn't deserialised ok
+					if(node == null) {
+						node = new ZWaveNode(this.homeId, nodeId, this);
+					}
+
 					if(nodeId == this.ownNodeId) {
 						// This is the controller node.
 						// We already know the device type, id, manufacturer so set it here
@@ -252,6 +286,8 @@ public class ZWaveController {
 						node.setDeviceType(this.getDeviceType());
 						node.setManufacturer(this.getManufactureId());
 					}
+
+					// Place nodes in the local ZWave Controller
 					this.zwaveNodes.put(nodeId, node);
 					node.advanceNodeStage(NodeStage.PROTOINFO);
 				}
