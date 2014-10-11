@@ -228,14 +228,10 @@ public class LgTvMessageReader extends HttpServlet {
 
                         logger.debug("myhandler called");
                         if (1==1) {
-                                //Headers responseHeaders = exchange.getResponseHeaders();
-                                //responseHeaders.set("Content-Type", "text/plain");
                                 res.setContentType("text/plain");
-                                //exchange.sendResponseHeaders(200, 0);
                                 res.setStatus(200);
                                 OutputStream responseBody = res.getOutputStream();
 
-                                //Headers requestHeaders = exchange.getRequestHeaders();
 
                                 LgtvStatusUpdateEvent event = new LgtvStatusUpdateEvent(this);
 
@@ -320,14 +316,10 @@ public class LgTvMessageReader extends HttpServlet {
 
 			logger.debug("myhandler called");
 			if (1==1) {
-				//Headers responseHeaders = exchange.getResponseHeaders();
-				//responseHeaders.set("Content-Type", "text/plain");
 				res.setContentType("text/plain");	
-				//exchange.sendResponseHeaders(200, 0);
 				res.setStatus(200);
 				OutputStream responseBody = res.getOutputStream();
 				
-				//Headers requestHeaders = exchange.getRequestHeaders();
 
 				LgtvStatusUpdateEvent event = new LgtvStatusUpdateEvent(this);
 
