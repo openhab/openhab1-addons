@@ -21,7 +21,7 @@ For installation of the binding, please see Wiki page Bindings.
 
 #The lgtv:<lgtvId1>.host value is the ip address of the lgtv . 
 #The lgtv:<lgtvId1>.port value is TCP port address. 
-#The lgtv:<lgtvId1>.serverport is TCP port address on the openhab system to receive lgtv status messages (only first occurance is used for all tvs)
+#The lgtv:<lgtvId1>.serverport is TCP port address of the openhab system to receive lgtv status messages (only first occurance is used for all tvs) usually 8080
 #The lgtv:<lgtvId1>.xmldatafiles location to put xml files with the information of availiable channels and apps (optional)
 #The lgtv:<lgtvId1>.checkalive check if tv is availiable every 60secs
 #The lgtv:<lgtvid1>.pairkey - the pairkey / if it's wrong the device shows the right pairkey at every connection attempt 
@@ -34,7 +34,7 @@ For installation of the binding, please see Wiki page Bindings.
 lgtv:wohnzimmer.host=192.168.77.15
 lgtv:wohnzimmer.port=8080
 lgtv:wohnzimmer.pairkey=
-lgtv:wohnzimmer.serverport=9080
+lgtv:wohnzimmer.serverport=8080
 lgtv:wohnzimmer.xmldatafiles=./
 lgtv:wohnzimmer.checkalive=60
 ```
