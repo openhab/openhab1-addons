@@ -113,10 +113,12 @@ public class ZWaveNode {
 	 */
 	public void setRestoredFromConfigfile(ZWaveController controller) {
 		this.controller = controller;
+		
+		// Create the initialisation advancer and tell it we've loaded from file
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
-		//TODO: set flag!
-//		this.nodeStageAdvancer
+		this.nodeStageAdvancer.setRestoredFromConfigfile();
 		this.nodeStage = NodeStage.EMPTYNODE;
+		
 		this.lastUpdated = Calendar.getInstance().getTime();		
 	}
 
