@@ -1259,5 +1259,14 @@
 			<Label lang="en">Flush 2 relays</Label>
 			<ConfigFile>qubino/zmnhba.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>1</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHDA</Model>
+			<Label lang="en">Flush dimmer</Label>
+			<ConfigFile>qubino/zmnhda.xml</ConfigFile>
+		</Product>
 	</Manufacturer>	
 </Manufacturers>
