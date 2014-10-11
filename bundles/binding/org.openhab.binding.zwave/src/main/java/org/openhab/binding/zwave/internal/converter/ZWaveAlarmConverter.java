@@ -63,7 +63,7 @@ public class ZWaveAlarmConverter extends ZWaveCommandClassConverter<ZWaveAlarmCo
 	@Override
 	public void executeRefresh(ZWaveNode node, 
 			ZWaveAlarmCommandClass commandClass, int endpointId, Map<String,String> arguments) {
-		logger.debug("Generating poll message for {} for node {} endpoint {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
+		logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
 		SerialMessage serialMessage;
 		String alarmType = arguments.get("alarm_type");
 		
@@ -74,7 +74,7 @@ public class ZWaveAlarmConverter extends ZWaveCommandClassConverter<ZWaveAlarmCo
 		}
 			
 		if (serialMessage == null) {
-			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
+			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
 			return;
 		}
 		
@@ -91,7 +91,7 @@ public class ZWaveAlarmConverter extends ZWaveCommandClassConverter<ZWaveAlarmCo
 		ZWaveAlarmValueEvent alarmEvent = (ZWaveAlarmValueEvent)event;
 		
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
+			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring event.", event.getNodeId(), item.getName(), event.getEndpoint());
 			return;
 		}
 
@@ -112,7 +112,7 @@ public class ZWaveAlarmConverter extends ZWaveCommandClassConverter<ZWaveAlarmCo
 		ZWaveCommandConverter<?,?> converter = this.getCommandConverter(command.getClass());
 		
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
+			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring command.", node.getNodeId(), item.getName(), endpointId);
 			return;
 		}
 	}
