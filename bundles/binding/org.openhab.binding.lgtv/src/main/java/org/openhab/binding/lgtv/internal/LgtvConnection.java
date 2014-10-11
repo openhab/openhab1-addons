@@ -303,6 +303,13 @@ public class LgtvConnection implements LgtvEventListener {
 				}
 					;
 					break;
+				case 12: {
+					//dummy / fuer browser
+					result="";
+				}	; break;
+
+
+
 				}
 			} catch (Exception e) {
 

@@ -32,14 +32,6 @@ public final class LgtvActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-
-		//LgTvMessageReader m=new LgTvMessageReader();
-		//org.osgi.service.cm.ManagedService service = new LgTvMessageReader();
-    		//context.registerService(LgTvMessageReader.class.getName(), m,null);
-
-
-
-
 		logger.debug("Lgtv binding has been started.");
 
 	}

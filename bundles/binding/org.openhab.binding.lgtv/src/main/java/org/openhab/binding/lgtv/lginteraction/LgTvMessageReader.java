@@ -18,8 +18,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+ 
 import java.util.Dictionary;
-
+import java.util.HashMap; 
 import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
 import javax.servlet.Servlet;
@@ -45,17 +47,33 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.Collection;
 
 import javax.xml.bind.JAXBException;
 
 import org.openhab.binding.lgtv.internal.LgtvConnection;
 import org.openhab.binding.lgtv.internal.LgtvEventListener;
 import org.openhab.binding.lgtv.internal.LgtvStatusUpdateEvent;
+import org.openhab.binding.lgtv.internal.LgtvBinding;
+import org.openhab.binding.lgtv.LgtvBindingProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.osgi.service.cm.ConfigurationException;
 
 
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+
+
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.items.Item;
+import org.openhab.core.types.State;
+
+import org.openhab.core.items.Item; 
+import org.openhab.core.items.ItemNotFoundException; 
+import org.openhab.core.items.ItemRegistry; 
+ 
 /**
  * This class forks the reader task to receive tv's messages 
  * 
@@ -67,12 +85,17 @@ public class LgTvMessageReader extends HttpServlet {
 	private static Logger logger = LoggerFactory
 			.getLogger(LgtvConnection.class);
 	private static List<LgtvEventListener> _listeners = new ArrayList<LgtvEventListener>();
-
+	protected static ItemRegistry itemRegistry; 						//mf11102014
 	public static final String WEBAPP_ALIAS = "/";
 	public static final String SERVLET_NAME = "udap/api/event"; 	
 	private static final long serialVersionUID = -4716754591953777793L;
 
 	private static int status = 0;
+
+
+	protected BundleContext bundleContext=null; 
+	protected LgtvBindingProvider bindingprovider=null; 
+	protected ItemRegistry itemregistry=null;
 
 	public synchronized void addEventListener(LgtvEventListener listener) {
 		_listeners.add(listener);
@@ -92,7 +115,6 @@ public class LgTvMessageReader extends HttpServlet {
 	}
 
 	public LgTvMessageReader(int portno) {
-		serverport = portno;
 		logger.debug("LgTvMessageReader initialized");
 	}
 
@@ -156,6 +178,23 @@ public class LgTvMessageReader extends HttpServlet {
 
 	public void activate() {
 		try {	
+			bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+			if (bundleContext!=null)
+			{
+				ServiceReference<?> serviceReference1 = bundleContext.getServiceReference( LgtvBindingProvider.class.getName());
+				if (serviceReference1!=null)
+				{
+					bindingprovider=(LgtvBindingProvider) bundleContext.getService(serviceReference1);
+				}else logger.error("lgtvbindungprovider=null");
+
+
+				ServiceReference<?> serviceReference2 = bundleContext.getServiceReference(ItemRegistry.class.getName());
+				if (serviceReference2!=null)
+				{
+					itemregistry=(ItemRegistry) bundleContext.getService(serviceReference2);
+				}else logger.error("itemregistry=null");
+			}else logger.error("bundleContext=null");
+
 			logger.info("lgtv servlet activate called");		
 			Hashtable<String, String> props = new Hashtable<String, String>();
 			httpService.registerServlet(WEBAPP_ALIAS + SERVLET_NAME, this, props, createHttpContext());
@@ -226,11 +265,9 @@ public class LgTvMessageReader extends HttpServlet {
                         BufferedReader rd = null;
                         StringBuilder sb = null;
 
-                        logger.debug("myhandler called");
+                        logger.debug("myhandler / get / called");
                         if (1==1) {
-                                res.setContentType("text/plain");
-                                res.setStatus(200);
-                                OutputStream responseBody = res.getOutputStream();
+                         //       OutputStream responseBody = res.getOutputStream();
 
 
                                 LgtvStatusUpdateEvent event = new LgtvStatusUpdateEvent(this);
@@ -239,9 +276,10 @@ public class LgTvMessageReader extends HttpServlet {
                                                 req.getInputStream()));
                                 sb = new StringBuilder();
                                 String line;
-                                while ((line = rd.readLine()) != null) {
-                                        sb.append(line + '\n');
-                                }
+                         //       while ((line = rd.readLine()) != null) {
+                         //               sb.append(line + '\n');
+                         //       }
+
 
                                 String remoteaddr = req.getRemoteAddr();
 
@@ -264,47 +302,97 @@ public class LgTvMessageReader extends HttpServlet {
                                 logger.debug("httphandler called from remoteaddr=" + remoteaddr
                                                 + " result=" + sb.toString());
 
-                                LgTvEventChannelChanged myevent = new LgTvEventChannelChanged();
+   PrintWriter out = res.getWriter();
+    res.setStatus(200);
 
-                                String result = "";
-                                try {
-                                        result = myevent.readevent(sb.toString());
-                                } catch (JAXBException e) {
-                                        logger.error("error in httphandler",e);
-                                }
-                                logger.debug("eventresult=" + result);
+   String devicename=req.getParameter("devicename");
+   String value = req.getParameter("command");
+   if (value!=null && !value.equals(""))
+   {
+	 res.setContentType("text/plain");
+	if (value.equals("geturl"))
+ 	{
+		//remoteaddr
+		//geturl from varaiable
+		//BROWSER_URL
 
-                                LgTvEventChannelChanged.envelope envel = myevent.getenvel();
 
-                                String eventname = envel.getchannel().geteventname();
 
-                                if (eventname.equals("ChannelChanged")) {
+						if (bindingprovider!=null&&itemregistry!=null)
+						{
+							for (String itemName : bindingprovider.getItemNames()) 
+							{
+                                                        HashMap<String, String> values = bindingprovider.getDeviceCommands(itemName);
 
-                                        String name = "CHANNEL_CURRENTNAME="
-                                                        + envel.getchannel().getchname();
-                                        String number = "CHANNEL_CURRENTNUMBER="
-                                                        + envel.getchannel().getmajor();
-                                        String set = "CHANNEL_SET=" + envel.getchannel().getmajor();
+                                                        for (String cmd : values.keySet()) 
+							{
 
-                                        sendtohandlers(event, remoteaddr, name);
-                                        sendtohandlers(event, remoteaddr, number);
-                                        sendtohandlers(event, remoteaddr, set);
+                                                                String[] commandParts = values.get(cmd).split(":");
+                                                                String deviceCmd = commandParts[1];
+                                                                String deviceId = commandParts[0];
+                                                                // logger.debug("check: "+values.get(cmd));
+                                                                //out.println("found: "+deviceCmd+" "+deviceId);
+                                                                boolean match = false;
 
-                                } else if (eventname.equals("byebye")) {
+                                                                if (deviceId.equals(devicename) && deviceCmd.equals("BROWSER_URL"))
+                                                                {
+                                                                        //out.println("name="+itemName+" val="+cmd+" "+values.get(cmd));
+									try {
+										Item i=itemregistry.getItem(itemName);
+										State state=i.getState();
+                                                                                String va=state.toString();
+                                                                                //out.println("val="+va);
+										out.print(va);
 
-                                        sendtohandlers(event, remoteaddr, "BYEBYE_SEEN=1");
+									} catch (ItemNotFoundException e)
+									{
+										logger.error("item not found");
+									}
+                                                        	}
+                                                	}
+							}			
 
-                                } else
-                                        logger.debug("warning - unhandled event");
+						}else logger.error("itemregistry=null or bindingprovider=null");
 
-                        responseBody.close();
+		//out.println("http://www.derstandard.at");
+	} else out.println("command: "+value);
+
+ 
+   }else
+   {
+    res.setContentType("text/html");
+    out.println("<HTML>");
+    out.println("<HEAD>");
+    out.println("<TITLE>LgTv Binding</TITLE>");
+    out.println("<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js\"></script>");
+    out.println("<script type=\"text/javascript\">");
+    out.println("var serviceaddress;");
+    out.println("var oldpage;");
+    out.println("function CallRegular(){");
+    out.println("$.ajax({ type:\'Get\', url: serviceaddress, success:function(data) ");
+    out.println(" { ");
+    out.println("   if (data!=\"Uninitialized\"&&data!=oldpage) {document.getElementById(\'content1\').src=data;oldpage=data;} ");
+    out.println(" } })");	
+    out.println("}");
+    out.println("function LoadPage(){");
+    out.println(" serviceaddress=window.top.location.href+\'&command=geturl\'");
+    out.println(" CallRegular(); ");
+    out.println(" setInterval(CallRegular,10000);");
+    out.println("}");
+    out.println(" </script>");
+    out.println("</HEAD>");
+    out.println("<frameset rows=\"100%,*\" onload=\"LoadPage();\">");    
+    out.println("<frame src=\"#\" id=\"content1\">");    
+    out.println("</frameset>");
+    out.println("<BODY>");
+    out.println("<BIG>Hello World</BIG>");
+    out.println("</BODY></HTML>");
 	}
+
+   out.close();
  }
-
-
-
 	
-
+}
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
@@ -314,7 +402,7 @@ public class LgTvMessageReader extends HttpServlet {
 			BufferedReader rd = null;
 			StringBuilder sb = null;
 
-			logger.debug("myhandler called");
+			logger.debug("myhandler / post / called");
 			if (1==1) {
 				res.setContentType("text/plain");	
 				res.setStatus(200);

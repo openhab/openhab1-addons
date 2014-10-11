@@ -110,7 +110,8 @@ public enum LgTvCommand {
 	APP_EXECUTE("APP_EXECUTE", 76, 8, "","MF: Execute Application"), 
 	APP_TERMINATE("APP_TERMINATE", 77, 9,"", "MF: Terminate Application"), 
 	CONNECTION_STATUS("CONNECTION_STATUS", 78, 10, "","MF: Get Binding Connection Status"), 
-	VOLUME_SET("VOLUME_SET", 79,11, "", "MF: Set Volume"), ;
+	VOLUME_SET("VOLUME_SET", 79,11, "", "MF: Set Volume"), 
+	BROWSER_URL("BROWSER_URL",80,12,"", "MF: Set Browser Url"), ;
 
 	private String command;
 	private int commandRef;
