@@ -18,7 +18,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.Dictionary;
+
 import javax.servlet.ServletException;
+import javax.servlet.ServletConfig;
 import javax.servlet.Servlet;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletRequest;
@@ -29,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Hashtable;
 
+import org.osgi.service.cm.ManagedService;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -49,8 +53,7 @@ import org.openhab.binding.lgtv.internal.LgtvEventListener;
 import org.openhab.binding.lgtv.internal.LgtvStatusUpdateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
+import org.osgi.service.cm.ConfigurationException;
 
 
 /**
@@ -78,6 +81,7 @@ public class LgTvMessageReader extends HttpServlet {
 
 	LgTvMessageReader()
 	{
+		 logger.debug("LgTvMessageReader initialized");
 	}
 
 	/**
@@ -88,41 +92,44 @@ public class LgTvMessageReader extends HttpServlet {
 	}
 
 	public LgTvMessageReader(int portno) {
-		//serverport = portno;
+		serverport = portno;
 		logger.debug("LgTvMessageReader initialized");
 	}
 
 	//servlet extension
 	protected HttpService httpService;
-	protected ItemUIRegistry itemUIRegistry;
-	protected ModelRepository modelRepository;
 
-
-	
-	protected void setItemUIRegistry(ItemUIRegistry itemUIRegistry) {
-		this.itemUIRegistry = itemUIRegistry;
-	}
-
-	protected void unsetItemUIRegistry(ItemUIRegistry itemUIRegistry) {
-		this.itemUIRegistry = null;
-	}
-
-	protected void setModelRepository(ModelRepository modelRepository) {
-		this.modelRepository = modelRepository;
-	}
-
-	protected void unsetModelRepository(ModelRepository modelRepository) {
-		this.modelRepository = null;
-	}
 
 	public  void setHttpService(HttpService httpService) {
 		logger.info("sethttpservice called"); 	
 		this.httpService = httpService;
 	}
 
-	protected void unsetHttpService(HttpService httpService) {
+	public void unsetHttpService(HttpService httpService) {
 		this.httpService = null;
 	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void init(ServletConfig config) throws ServletException {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ServletConfig getServletConfig() {
+		return null;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void destroy() {
+	}
+
 
 
 	/**
@@ -147,7 +154,7 @@ public class LgTvMessageReader extends HttpServlet {
 	}
 
 
-	protected void activate() {
+	public void activate() {
 		try {	
 			logger.info("lgtv servlet activate called");		
 			Hashtable<String, String> props = new Hashtable<String, String>();
@@ -162,7 +169,7 @@ public class LgTvMessageReader extends HttpServlet {
 		}	
 	}
 	
-	protected void deactivate() {
+	public void deactivate() {
 		httpService.unregister(WEBAPP_ALIAS + SERVLET_NAME);
 		logger.info("Stopped LgTv Servlet ");
 	}

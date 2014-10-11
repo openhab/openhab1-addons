@@ -19,6 +19,13 @@ import org.openhab.binding.lgtv.lginteraction.LgTvMessageReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+
+
+import org.osgi.service.http.HttpService;
+
 /**
  * This class open a TCP/IP connection to the LGTV device and send a command.
  * 
@@ -36,6 +43,7 @@ public class LgtvConnection implements LgtvEventListener {
 	private int checkalive = 0;
 	private int lastvolume = -1;
 
+	BundleContext bundleContext = null;
 	private LgTvInteractor connection = null;
 	private static LgTvMessageReader reader = null;
 
@@ -98,6 +106,7 @@ public class LgtvConnection implements LgtvEventListener {
 		this.localport = port;
 		this.checkalive = checkalive;
 
+		bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext(); 
 		try {
 			connection = new LgTvInteractor(ip, port, localport, xmldf);
 			connection.setpairkey(pkey);
@@ -107,8 +116,20 @@ public class LgtvConnection implements LgtvEventListener {
 		}
 
 		if (localport != 0 && reader == null) {
-			reader = new LgTvMessageReader(localport);
+	 			reader = new LgTvMessageReader(localport);
+				HttpService h=null;
+
+				 if (bundleContext!=null)
+                		{
+                        		ServiceReference<?> serviceReference = bundleContext.getServiceReference(HttpService.class.getName());
+                        		if (serviceReference!=null)
+                        		{
+                                		h = (HttpService) bundleContext.getService(serviceReference);
+						reader.setHttpService(h);
+                        		}else logger.error("serviceRefeerence=null");
+                		}else logger.error("bundleContext=null");
 		}
+
 
 		if (connection != null)
 			addEventListener(connection);
@@ -146,11 +167,11 @@ public class LgtvConnection implements LgtvEventListener {
 	}
 
 	public void addEventListener(LgtvEventListener listener) {
-		reader.addEventListener(listener);
+		if (reader!=null) reader.addEventListener(listener);
 	}
 
 	public void removeEventListener(LgtvEventListener listener) {
-		reader.removeEventListener(listener);
+		if (reader!=null) reader.removeEventListener(listener);
 	}
 
 	public String quickfind(String sourcestring, String tag) {

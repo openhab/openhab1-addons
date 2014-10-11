@@ -39,6 +39,6 @@ Export-Package: org.openhab.binding.lgtv, org.openhab.binding.lgtv.lginteraction
  org.openhab.binding.lgtv.internal;x-internal:=true
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Service-Component: OSGI-INF/lgtvservlet.xml, OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
 Require-Bundle: javax.servlet
