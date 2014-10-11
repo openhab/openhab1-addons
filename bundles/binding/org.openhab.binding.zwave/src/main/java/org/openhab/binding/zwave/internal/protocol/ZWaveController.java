@@ -244,11 +244,15 @@ public class ZWaveController {
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
 					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 					ZWaveNode node = nodeSerializer.DeserializeNode(nodeId);
-					String name = node.getName();
-					String location = node.getLocation();
+					String name = null;
+					String location = null;
 
 					// Did the node deserialise ok?
 					if (node != null) {
+						// Remember the name and location - in case we decide the file was invalid
+						name = node.getName();
+						location = node.getLocation();
+
 						// Sanity check the data from the file
 						if (node.getManufacturer() == Integer.MAX_VALUE ||
 								node.getHomeId() != this.homeId ||
