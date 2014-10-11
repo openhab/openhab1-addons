@@ -246,7 +246,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", "Node " + node.getNodeId());
 				}
 				else {
-					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", node.getName());
+					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", node.getNodeId() + ": " + node.getName());
 				}
 				
 				// If we can't find the product, then try and find just the
