@@ -115,7 +115,7 @@ public class ZWaveConverterHandler {
 		ZWaveMultiInstanceCommandClass multiInstanceCommandClass = null;
 		ZWaveCommandClass result = null;
 		
-		if (endpointId != 1)
+		if (endpointId != 0)
 			multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)node.getCommandClass(CommandClass.MULTI_INSTANCE);
 
 		if (!preferredCommandClasses.containsKey(item.getClass())) {

@@ -484,7 +484,7 @@ public class ZWaveNode {
 	
 	/**
 	 * Resolves a command class for this node. First endpoint is checked. 
-	 * If endpoint == 1 or (endpoint != 1 and version of the multi instance 
+	 * If endpoint == 0 or (endpoint != 1 and version of the multi instance 
 	 * command == 1) then return a supported command class on the node itself. 
 	 * If endpoint != 1 and version of the multi instance command == 2 then
 	 * first try command classes of endpoints. If not found the return a  
@@ -520,7 +520,7 @@ public class ZWaveNode {
 				result.getInstances() >= endpointId)
 			return result;
 		
-		return endpointId == 1 ? result : null;
+		return endpointId == 0 ? result : null;
 	}
 	
 	/**
