@@ -27,5 +27,5 @@ Export-Package: org.openhab.binding.opensprinkler
 Bundle-DocURL: http://www.openhab.org
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
- lib/opensprinkler-0.0.1.jar,
+ lib/opensprinkler-0.0.2.jar,
  lib/pi4j-core-0.0.5.jar
