@@ -229,14 +229,16 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		
 		logger.debug(String.format("NODE %d: Requested Command Class = %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel() , commandClassCode));
 		
-		ZWaveEndpoint endpoint = this.endpoints.get(instance);
 		ZWaveCommandClass zwaveCommandClass = null;
 		
-		// first get command class from endpoint
-		if (endpoint != null) {
-			zwaveCommandClass = endpoint.getCommandClass(commandClass);
-			if (zwaveCommandClass == null) {
-				logger.warn(String.format("NODE %d: CommandClass %s (0x%02x) not implemented by endpoint %d, fallback to main node.", commandClass.getLabel(), commandClassCode, instance));
+		// first get command class from endpoint, if supported
+		if (this.getVersion() >= 2) {
+			ZWaveEndpoint endpoint = this.endpoints.get(instance);
+			if (endpoint != null) {
+				zwaveCommandClass = endpoint.getCommandClass(commandClass);
+				if (zwaveCommandClass == null) {
+					logger.warn(String.format("NODE %d: CommandClass %s (0x%02x) not implemented by endpoint %d, fallback to main node.", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode, instance));
+				}
 			}
 		}
 		
@@ -413,7 +415,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		zwaveCommandClass = endpoint.getCommandClass(commandClass);
 		
 		if (zwaveCommandClass == null) {
-			logger.warn(String.format("NODE %d: CommandClass %s (0x%02x) not implemented by endpoint %d, fallback to main node.", commandClass.getLabel(), commandClassCode, endpointId));
+			logger.warn(String.format("NODE %d: CommandClass %s (0x%02x) not implemented by endpoint %d, fallback to main node.", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode, endpointId));
 			zwaveCommandClass = this.getNode().getCommandClass(commandClass);
 		}
 		
