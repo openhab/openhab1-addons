@@ -14,6 +14,8 @@ import java.util.Map;
 import org.openhab.binding.zwave.ZWaveBindingConfig;
 import org.openhab.binding.zwave.ZWaveBindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.model.item.binding.AbstractGenericBindingProvider;
+import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +66,7 @@ public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider 
 			throw new BindingConfigParseException(segments[1] + " is not a valid node id.");
 		}
 		
-		int endpoint = 0;
+		int endpoint = 1;
 		Integer refreshInterval = null;
 		Map<String, String> arguments = new HashMap<String, String>();
 		

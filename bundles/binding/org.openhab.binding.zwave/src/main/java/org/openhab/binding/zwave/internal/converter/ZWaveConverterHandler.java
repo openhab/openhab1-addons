@@ -14,14 +14,21 @@ import java.util.Map;
 
 import org.openhab.binding.zwave.ZWaveBindingConfig;
 import org.openhab.binding.zwave.ZWaveBindingProvider;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,16 +109,38 @@ public class ZWaveConverterHandler {
 	private ZWaveCommandClass resolveConverter(Item item, ZWaveNode node, int endpointId) {
 		if(item == null)
 			return null;
+
+		ZWaveMultiInstanceCommandClass multiInstanceCommandClass = null;
+		ZWaveCommandClass result = null;
 		
+		if (endpointId != 1)
+			multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)node.getCommandClass(CommandClass.MULTI_INSTANCE);
+
 		if (!preferredCommandClasses.containsKey(item.getClass())) {
 			logger.warn("No preferred command classes found for item class = {}", item.getClass().toString());
 			return null;
 		}
-
+		
 		for (CommandClass commandClass : preferredCommandClasses.get(item.getClass())) {
-			ZWaveCommandClass result = node.resolveCommandClass(commandClass, endpointId);
+			if (multiInstanceCommandClass != null && multiInstanceCommandClass.getVersion() == 2) {
+				ZWaveEndpoint endpoint = multiInstanceCommandClass.getEndpoint(endpointId);
+				
+				if (endpoint != null) { 
+					result = endpoint.getCommandClass(commandClass);
+				} 
+			}
 			
-			if (result != null && converters.containsKey(commandClass))
+			if (result == null)
+				result = node.getCommandClass(commandClass);
+			
+			if (result == null)
+				continue;
+			
+			if (multiInstanceCommandClass != null && multiInstanceCommandClass.getVersion() == 1 &&
+					result.getInstances() < endpointId)
+				continue;
+			
+			if (converters.containsKey(commandClass))
 				return result;
 		}
 		

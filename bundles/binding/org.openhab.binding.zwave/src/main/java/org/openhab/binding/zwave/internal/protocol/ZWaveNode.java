@@ -22,9 +22,9 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeStageAdvancer;
@@ -466,9 +466,11 @@ public class ZWaveNode {
 	
 	/**
 	 * Resolves a command class for this node. First endpoint is checked. 
-	 * If endpoint == 0 then return a supported command class on the node itself. 
-	 * If endpoint != 0 and version of the multi instance command == 2 then
-	 * try command classes of endpoints. 
+	 * If endpoint == 1 or (endpoint != 1 and version of the multi instance 
+	 * command == 1) then return a supported command class on the node itself. 
+	 * If endpoint != 1 and version of the multi instance command == 2 then
+	 * first try command classes of endpoints. If not found the return a  
+	 * supported command class on the node itself.
 	 * Returns null if a command class is not found.
 	 * @param commandClass The command class to resolve.
 	 * @param endpointId the endpoint / instance to resolve this command class for.
@@ -479,31 +481,28 @@ public class ZWaveNode {
 		if (commandClass == null)
 			return null;
 		
-		if (endpointId == 0)
-			return getCommandClass(commandClass);
+		ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)supportedCommandClasses.get(CommandClass.MULTI_INSTANCE);
 		
-		ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) supportedCommandClasses.get(CommandClass.MULTI_INSTANCE);
-		if (multiInstanceCommandClass == null) {
-			return null;
-			
-		} else if (multiInstanceCommandClass.getVersion() == 2) {
+		if (multiInstanceCommandClass != null && multiInstanceCommandClass.getVersion() == 2) {
 			ZWaveEndpoint endpoint = multiInstanceCommandClass.getEndpoint(endpointId);
 			
 			if (endpoint != null) { 
 				ZWaveCommandClass result = endpoint.getCommandClass(commandClass);
 				if (result != null)
 					return result;
-			}
-			
-		} else if (multiInstanceCommandClass.getVersion() == 1) {
-			ZWaveCommandClass result = getCommandClass(commandClass);
-			if (endpointId <= result.getInstances())
-				return result;
-		} else {
-			logger.warn("NODE {}: Unsupported multi instance command version: {}.", nodeId, multiInstanceCommandClass.getVersion());
+			} 
 		}
 		
-		return null;
+		ZWaveCommandClass result = getCommandClass(commandClass);
+		
+		if (result == null)
+			return result;
+		
+		if (multiInstanceCommandClass != null && multiInstanceCommandClass.getVersion() == 1 &&
+				result.getInstances() >= endpointId)
+			return result;
+		
+		return endpointId == 1 ? result : null;
 	}
 	
 	/**
@@ -545,10 +544,10 @@ public class ZWaveNode {
 			return null;
 		
 		// no encapsulation necessary.
-		if (endpointId == 0)
+		if (endpointId == 1 && commandClass.getInstances() == 1 && commandClass.getEndpoint() == null)
 			return serialMessage;
 		
-		multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) this.getCommandClass(CommandClass.MULTI_INSTANCE);
+		multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)this.getCommandClass(CommandClass.MULTI_INSTANCE);
 		
 		if (multiInstanceCommandClass != null) {
 			logger.debug("NODE {}: Encapsulating message, instance / endpoint {}", this.getNodeId(), endpointId);
@@ -569,8 +568,12 @@ public class ZWaveNode {
 			}
 		}
 
-		logger.warn("NODE {}:Encapsulating message, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
-		return null;
+		if (endpointId != 1) {
+			logger.warn("NODE {}:Encapsulating message, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
+			return null;
+		}
+		
+		return serialMessage;
 	}
 
 	/**
