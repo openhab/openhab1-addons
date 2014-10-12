@@ -74,7 +74,10 @@ public class ZWaveNode {
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
 	private Date lastUpdated; 
+	
+	@XStreamOmitField
 	private Date queryStageTimeStamp;
+	@XStreamOmitField
 	private volatile NodeStage nodeStage;
 
 	@XStreamOmitField
