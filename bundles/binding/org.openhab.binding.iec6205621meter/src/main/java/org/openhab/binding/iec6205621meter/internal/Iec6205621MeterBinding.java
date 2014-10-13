@@ -105,29 +105,33 @@ public class Iec6205621MeterBinding extends
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
+		Map<String, Map<String, DataSet>> cache = new HashMap<>();
+		for (Iec6205621MeterBindingProvider provider : providers) {
 
-		for (Entry<String, Meter> entry : meterDeviceConfigurtions.entrySet()) {
-			Meter reader = entry.getValue();
-
-			Map<String, DataSet> dataSets = reader.read();
-
-			for (Iec6205621MeterBindingProvider provider : providers) {
-
-				for (String itemName : provider.getItemNames()) {
-					String obis = provider.getObis(itemName);
+			for (String itemName : provider.getItemNames()) {
+				for (Entry<String, Meter> entry : meterDeviceConfigurtions.entrySet()) {
+					Meter reader = entry.getValue();
 					String meterName = provider.getMeterName(itemName);
-					if (obis != null && dataSets.containsKey(obis) && meterName != null && meterName.equals(entry.getKey())) {
-						DataSet dataSet = dataSets.get(obis);
-						Class<? extends Item> itemType = provider
-								.getItemType(itemName);
-						if (itemType.isAssignableFrom(NumberItem.class)) {
-							eventPublisher.postUpdate(itemName,
-									new DecimalType(dataSet.getValue()));
+					if(meterName != null && meterName.equals(entry.getKey())) {
+						Map<String, DataSet> dataSets;
+						if((dataSets = cache.get(meterName)) == null) {
+							dataSets = reader.read();
+							cache.put(meterName, dataSets);
 						}
-						if (itemType.isAssignableFrom(StringItem.class)) {
-							String value = dataSet.getValue();
-							eventPublisher.postUpdate(itemName, new StringType(
-									value));
+						String obis = provider.getObis(itemName);
+						if (obis != null && dataSets.containsKey(obis)) {
+							DataSet dataSet = dataSets.get(obis);
+							Class<? extends Item> itemType = provider
+									.getItemType(itemName);
+							if (itemType.isAssignableFrom(NumberItem.class)) {
+								eventPublisher.postUpdate(itemName,
+										new DecimalType(dataSet.getValue()));
+							}
+							if (itemType.isAssignableFrom(StringItem.class)) {
+								String value = dataSet.getValue();
+								eventPublisher.postUpdate(itemName, new StringType(
+										value));
+							}
 						}
 					}
 				}
