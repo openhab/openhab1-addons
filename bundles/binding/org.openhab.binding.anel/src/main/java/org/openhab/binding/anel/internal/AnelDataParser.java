@@ -75,48 +75,52 @@ public class AnelDataParser {
 		// check for switch changes, update cached state, and prepare command if
 		// needed
 		final int locked = Integer.parseInt(arr[14]);
-		for (int i = 0; i < 8; i++) {
-			final String[] swState = arr[6 + i].split(",");
+		for (int nr = 0; nr < 8; nr++) {
+			final String[] swState = arr[6 + nr].split(",");
 			if (swState.length == 2) {
-				addCommand(state.switchName, i, swState[0], "F" + (i + 1) + "NAME", result);
-				addCommand(state.switchState, i, "1".equals(swState[1]), "F" + (i + 1), result);
+				// expected format
+				addCommand(state.switchName, nr, swState[0], "F" + (nr + 1) + "NAME", result);
+				addCommand(state.switchState, nr, "1".equals(swState[1]), "F" + (nr + 1), result);
 			} else {
-				addCommand(state.switchName, i, null, "F" + (i + 1) + "NAME", result);
-				addCommand(state.switchState, i, null, "F" + (i + 1), result);
+				// unexpected format, set states to null
+				addCommand(state.switchName, nr, null, "F" + (nr + 1) + "NAME", result);
+				addCommand(state.switchState, nr, null, "F" + (nr + 1), result);
 			}
-			addCommand(state.switchLocked, i, (locked & (1 << i)) > 0, "F" + (i + 1) + "LOCKED", result);
+			addCommand(state.switchLocked, nr, (locked & (1 << nr)) > 0, "F" + (nr + 1) + "LOCKED", result);
 		}
 
-		// check for IO changes, update cached state, and prepare command if
+		// check for IO changes, update cached state, and prepare commands if
 		// needed
-		for (int i = 0; i < 8; i++) {
-			final String[] ioState = arr[16 + i].split(",");
+		for (int nr = 0; nr < 8; nr++) {
+			final String[] ioState = arr[16 + nr].split(",");
 			if (ioState.length == 3) {
-				addCommand(state.ioName, i, ioState[0], "IO" + (i + 1) + "NAME", result);
-				addCommand(state.ioIsInput, i, "1".equals(ioState[1]), "IO" + (i + 1) + "ISINPUT", result);
-				addCommand(state.ioState, i, "1".equals(ioState[2]), "IO" + (i + 1), result);
+				// expected format
+				addCommand(state.ioName, nr, ioState[0], "IO" + (nr + 1) + "NAME", result);
+				addCommand(state.ioIsInput, nr, "1".equals(ioState[1]), "IO" + (nr + 1) + "ISINPUT", result);
+				addCommand(state.ioState, nr, "1".equals(ioState[2]), "IO" + (nr + 1), result);
 			} else {
-				addCommand(state.ioName, i, null, "IO" + (i + 1) + "NAME", result);
-				addCommand(state.ioIsInput, i, null, "IO" + (i + 1) + "ISINPUT", result);
-				addCommand(state.ioState, i, null, "IO" + (i + 1), result);
+				// unexpected format, set states to null
+				addCommand(state.ioName, nr, null, "IO" + (nr + 1) + "NAME", result);
+				addCommand(state.ioIsInput, nr, null, "IO" + (nr + 1) + "ISINPUT", result);
+				addCommand(state.ioState, nr, null, "IO" + (nr + 1), result);
 			}
 		}
 
-		// example temperature string: '26.4°C' (btw, the '°' seems to have a
-		// different encoding)
+		// example temperature string: '26.4°C'
+		// '°' is caused by some different encoding, so cut last 2 chars
 		final String temperature = arr[24].substring(0, arr[24].length() - 2);
 		if (hasTemperaturChanged(state, temperature)) {
 			result.put(AnelCommandType.TEMPERATURE, new DecimalType(temperature));
 			state.temperature = temperature;
 		}
+
+		// maybe the device's name changed?!
 		final String name = arr[1];
 		if (!name.equals(state.name)) {
 			result.put(AnelCommandType.NAME, new StringType(name));
 			state.name = name;
 		}
 
-		if (!result.isEmpty())
-			state.lastUpdate = System.currentTimeMillis();
 		return result;
 	}
 
@@ -133,7 +137,10 @@ public class AnelDataParser {
 			final int stateTemperature = Integer.parseInt(state.temperature.replace(".", ""));
 			return !(intTemperature + 1 == stateTemperature || intTemperature - 1 == stateTemperature);
 		}
-		return true; // pattern does not match or temperature differs too much
+
+		// pattern does not match or temperature differs more than 0.1 degrees
+		// from last update
+		return true;
 	}
 
 	private static <T> void addCommand(T[] cache, int index, T newValue, String commandType,

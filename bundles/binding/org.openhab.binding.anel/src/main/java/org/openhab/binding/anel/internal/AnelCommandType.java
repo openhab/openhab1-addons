@@ -199,7 +199,10 @@ public enum AnelCommandType {
 	/** Name of {@link AnelCommandType#IO8} (not changeable). */
 	IO8NAME("IO8NAME", StringItem.class), ;
 
+	/** Set of all changeable switch (if not locked). */
 	public static Set<AnelCommandType> SWITCHES = Sets.newHashSet(F1, F2, F3, F4, F5, F6, F7, F8);
+
+	/** Set of all IOs. */
 	public static Set<AnelCommandType> IOS = Sets.newHashSet(IO1, IO2, IO3, IO4, IO5, IO6, IO7, IO8);
 
 	private final String text;

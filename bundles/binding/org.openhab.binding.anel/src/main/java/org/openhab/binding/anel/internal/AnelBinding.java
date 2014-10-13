@@ -18,11 +18,9 @@ import java.util.Set;
 
 import org.openhab.binding.anel.AnelBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.core.types.Type;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -46,6 +44,9 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	/** Interruption timeout when disconnecting all threads. */
 	private static final int THREAD_INTERRUPTION_TIMEOUT = 5000;
 
+	/** Logger for this binding class. */
+	private static final Logger logger = LoggerFactory.getLogger(AnelBinding.class);
+
 	/**
 	 * Internally used for communication with connector thread.
 	 */
@@ -61,14 +62,17 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 		Collection<String> getItemNamesForCommandType(AnelCommandType cmd);
 
 		/**
-		 * The event publisher so that the connector that can send events.
+		 * Connectors should use this to send updates to the event bus.
 		 * 
-		 * @return The event publisher that was set for the binding.
+		 * @param itemName
+		 *            The item name (from
+		 *            {@link #getItemNamesForCommandType(AnelCommandType)})
+		 *            whose state was updated.
+		 * @param newState
+		 *            The new state to be sent to the event bus.
 		 */
-		EventPublisher getEventPublisher();
+		void postUpdateToEventBus(String itemName, State newState);
 	}
-
-	private static final Logger logger = LoggerFactory.getLogger(AnelBinding.class);
 
 	/** The refresh interval which is used to poll values from the Anel server. */
 	private long refreshInterval;
@@ -76,6 +80,7 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	/** Threads to communicate with Anel devices */
 	private final Map<String, AnelConnectorThread> connectorThreads = new HashMap<String, AnelConnectorThread>();
 
+	/** Binding facade used by the {@link #connectorThreads}. */
 	private final IInternalAnelBinding bindingFacade = new IInternalAnelBinding() {
 
 		@Override
@@ -84,8 +89,8 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 		}
 
 		@Override
-		public EventPublisher getEventPublisher() {
-			return eventPublisher;
+		public void postUpdateToEventBus(String itemName, State newState) {
+			eventPublisher.postUpdate(itemName, newState);
 		}
 	};
 
@@ -142,32 +147,43 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Disconnect all currently running listener threads.
 	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		// logger.debug("internalReceiveCommand() is called! " + itemName +
-		// " -> " + command);
-		internalReceive(itemName, command);
+	private void disconnectAll() {
+		// first, notify all existing connector threads to interrupt
+		for (String device : connectorThreads.keySet()) {
+			logger.debug("Close message listener for device '" + device + "'");
+			final AnelConnectorThread connectorThread = connectorThreads.get(device);
+			connectorThread.setInterrupted();
+		}
+		// then wait for all of them to die
+		for (String device : connectorThreads.keySet()) {
+			final AnelConnectorThread connectorThread = connectorThreads.get(device);
+			try {
+				// wait for the thread to die with a timeout of 5 seconds
+				connectorThread.join(THREAD_INTERRUPTION_TIMEOUT);
+			} catch (InterruptedException e) {
+				logger.info("Previous message listener closing interrupted for device '" + device + "'", e);
+			}
+		}
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * There is no need to react on status changes because we only listen to
+	 * commands.
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		// logger.debug("internalReceiveUpdate() is called! " + itemName + " = "
-		// + newState);
-		internalReceive(itemName, newState);
 	}
 
-	private void internalReceive(String itemName, Type newState) {
+	/**
+	 * Valid commands are of type {@link OnOffType} for items bound to
+	 * {@link AnelCommandType#F1} - {@link AnelCommandType#F8} or
+	 * {@link AnelCommandType#IO1} - {@link AnelCommandType#IO8}.
+	 */
+	@Override
+	protected void internalReceiveCommand(String itemName, Command command) {
+		logger.trace("Received command (item='{}', command='{}')", itemName, command.toString());
 		final Map<String, AnelCommandType> map = getCommandTypeForItemName(itemName);
 		if (map == null || map.isEmpty()) {
 			logger.debug("Invalid command for item name: '" + itemName + "'");
@@ -185,8 +201,8 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 		final boolean isSwitch = AnelCommandType.SWITCHES.contains(cmd);
 		final boolean isIO = AnelCommandType.IOS.contains(cmd);
 		if (isIO || isSwitch) {
-			if (newState instanceof OnOffType) {
-				final boolean newStateBoolean = OnOffType.ON.equals(newState);
+			if (command instanceof OnOffType) {
+				final boolean newStateBoolean = OnOffType.ON.equals(command);
 
 				if (isSwitch) {
 
@@ -199,15 +215,10 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 					connectorThread.sendIO(ioNr, newStateBoolean);
 				}
 			} else {
-				logger.debug("Invalid state for '" + cmd.name() + "' (expected: ON/OFF): " + newState);
+				logger.warn("Invalid state for '" + cmd.name() + "' (expected: ON/OFF): " + command);
 			}
 		} else {
-			/*
-			 * We receive this update even if *we* set the value, so better
-			 * ignore all calls that are not changeable
-			 */
-			// logger.debug("Cannot switch '" + cmd.name() +
-			// "', supported switches: F1 - F8, IO1 - IO8");
+			logger.warn("Cannot switch '" + cmd.name() + "', supported switches: F1 - F8, IO1 - IO8");
 		}
 	}
 
@@ -256,25 +267,6 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 				refreshAll();
 			}
 		}).start();
-	}
-
-	private void disconnectAll() {
-		// first, notify all existing connector threads to interrupt
-		for (String device : connectorThreads.keySet()) {
-			logger.debug("Close message listener for device '" + device + "'");
-			final AnelConnectorThread connectorThread = connectorThreads.get(device);
-			connectorThread.setInterrupted();
-		}
-		// then wait for all of them to die
-		for (String device : connectorThreads.keySet()) {
-			final AnelConnectorThread connectorThread = connectorThreads.get(device);
-			try {
-				// wait for the thread to die with a timeout of 5 seconds
-				connectorThread.join(THREAD_INTERRUPTION_TIMEOUT);
-			} catch (InterruptedException e) {
-				logger.info("Previous message listener closing interrupted for device '" + device + "'", e);
-			}
-		}
 	}
 
 	private Collection<String> getItemNamesForCommandType(AnelCommandType cmd) {

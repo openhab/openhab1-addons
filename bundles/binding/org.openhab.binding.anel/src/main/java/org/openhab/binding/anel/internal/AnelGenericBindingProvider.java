@@ -44,7 +44,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * anel:anel1.password=anel
  * 
  * # Global refresh interval in ms (optional, defaults to 60000 = 1min, disable with '0')
- * #anel:refresh=60
+ * anel:refresh=90
  * 
  * # Cache the state for n minutes so only changes are posted (optional, defaults to 0 = disabled)
  * # Example: if period is 60, once per hour all states are posted to the event bus;
@@ -65,14 +65,14 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * Example rules:
  * 
  * <pre>
- * rule "regular switch on Anel1 IO7 for relay 1"
+ * rule "regular switch on Anel1 IO7 input for relay 1"
  * when Item io7 changed then
- * 	postUpdate(f1, io7.state)
+ * 	sendCommand(f1, io7.state)
  * end
  * 
- * rule "push button switch on Anel1 IO8 for relay 2"
+ * rule "push button switch on Anel1 IO8 input for relay 2"
  * when Item io8 changed to ON then
- * 	postUpdate(f2, if (f2.state != ON) ON else OFF)
+ * 	sendCommand(f2, if (f2.state != ON) ON else OFF)
  * end
  * </pre>
  * 

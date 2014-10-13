@@ -154,7 +154,7 @@ class AnelConnectorThread extends Thread {
 
 			// check whether IO is of direction output
 			if (isInput == null || !isInput) {
-				logger.debug("Attempted to change IO" + ioNr + " to " + (newState ? "ON" : "OFF")
+				logger.warn("Attempted to change IO" + ioNr + " to " + (newState ? "ON" : "OFF")
 						+ " but it's direction is " + (isInput == null ? "unknown" : "input"));
 				return; // better not send anything if direction is not
 						// 'out'
@@ -254,7 +254,7 @@ class AnelConnectorThread extends Thread {
 
 						final Collection<String> itemNames = binding.getItemNamesForCommandType(cmd);
 						for (String itemName : itemNames) {
-							binding.getEventPublisher().postUpdate(itemName, state);
+							binding.postUpdateToEventBus(itemName, state);
 						}
 					}
 				}
@@ -262,7 +262,7 @@ class AnelConnectorThread extends Thread {
 				// blocking call seems to be interrupted...
 				// interrupted is probably false, so we can properly cleanup
 			} catch (SocketTimeoutException e) {
-				// nothing received after timeout... continue with loop
+				// nothing received after timeout. continue with loop
 			} catch (Exception e) {
 				logger.error("Error occured when received data from Anel device: " + state.host, e);
 			}

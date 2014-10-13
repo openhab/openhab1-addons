@@ -39,9 +39,6 @@ public class AnelState {
 	/** Device temperature; read-only. */
 	String temperature = null;
 
-	/** Time of last internal state update. */
-	long lastUpdate = 0;
-
 	/**
 	 * Create new internal state with default values <code>null</code> for the
 	 * specified IP address / network name.
@@ -69,6 +66,5 @@ public class AnelState {
 		}
 		name = null;
 		temperature = null;
-		lastUpdate = 0;
 	}
 }
