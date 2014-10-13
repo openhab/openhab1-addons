@@ -105,7 +105,7 @@ public class Iec6205621MeterBinding extends
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
-		Map<String, Map<String, DataSet>> cache = new HashMap<>();
+		Map<String, Map<String, DataSet>> cache = new HashMap<String, Map<String,DataSet>>();
 		for (Iec6205621MeterBindingProvider provider : providers) {
 
 			for (String itemName : provider.getItemNames()) {
