@@ -5,27 +5,26 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB xPL Binding
 Bundle-SymbolicName: org.openhab.binding.xpl
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.5.0.qualifier
-Bundle-Activator: org.openhab.binding.xpl.internal.xPLActivator
+Bundle-Version: 1.6.0.qualifier
+Bundle-Activator: org.openhab.binding.xpl.internal.XplActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the xPL binding of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Import-Package: org.cdp1802.xpl,
  org.openhab.core.binding,
  org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.types,
+ org.openhab.io.transport.xpl,
  org.openhab.model.item.binding,
  org.osgi.framework,
- org.osgi.service.cm,
- org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
 Export-Package: org.openhab.binding.xpl
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .,
- lib/xPL4Java.jar
+Bundle-ClassPath: .
+Require-Bundle: org.openhab.io.transport.xpl;bundle-version="1.6.0"

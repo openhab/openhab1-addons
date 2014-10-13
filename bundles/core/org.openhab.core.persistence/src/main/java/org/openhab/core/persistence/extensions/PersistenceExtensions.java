@@ -433,6 +433,81 @@ public class PersistenceExtensions implements ManagedService {
 		}
 	}
 	
+	/**
+	 * Gets the difference value of the state of a given <code>item</code> since a certain point in time.
+	 * The default persistence service is used.
+	 *
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check
+	 * @return the difference between now and then, null if not calculable
+	 */
+	static public DecimalType deltaSince(Item item, AbstractInstant timestamp) {
+		if(isDefaultServiceAvailable()) {
+			return deltaSince(item, timestamp, defaultService);
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Gets the difference value of the state of a given <code>item</code> since a certain point in time.
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used.
+	 *
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the difference between now and then, null if not calculable
+	 */
+	static public DecimalType deltaSince(Item item, AbstractInstant timestamp, String serviceName) {
+		HistoricItem itemThen = historicState(item, timestamp);
+		DecimalType valueThen = (DecimalType) itemThen.getState();
+		DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);
+		DecimalType result = null;
+		if (( valueThen != null) && ( valueNow != null)) {
+			result = new DecimalType(valueNow.doubleValue() - valueThen.doubleValue());
+		};
+		return result;
+ 	}
+	
+	/**
+	 * Gets the evolution rate of the state of a given <code>item</code> since a certain point in time.
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used.
+	 *
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the evolution rate in percent (positive and negative) between now and then, 
+	 * 			null if not calculable
+	 */
+	static public DecimalType evolutionRate(Item item, AbstractInstant timestamp) {
+		if(isDefaultServiceAvailable()) {
+			return evolutionRate(item, timestamp, defaultService);
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Gets the evolution rate of the state of a given <code>item</code> since a certain point in time.
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used.
+	 *
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the evolution rate in percent (positive and negative) between now and then, 
+	 * 			null if not calculable
+	 */
+	static public DecimalType evolutionRate(Item item, AbstractInstant timestamp, String serviceName) {
+		HistoricItem itemThen = historicState(item, timestamp);
+		DecimalType valueThen = (DecimalType) itemThen.getState();
+		DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);
+		DecimalType result = null;
+		if (( valueThen != null) && ( valueNow != null)) {
+			result = new DecimalType(100 * (valueNow.doubleValue() - valueThen.doubleValue()) / valueThen.doubleValue());
+		};
+		return result;
+ 	}
+	
 	static private Iterable<HistoricItem> getAllStatesSince(Item item, AbstractInstant timestamp, String serviceName) {
 		PersistenceService service = services.get(serviceName);
 		if (service instanceof QueryablePersistenceService) {

@@ -8,11 +8,14 @@
  */
 package org.openhab.binding.zwave.internal;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -85,14 +88,16 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	private boolean doSoftReset = false;
 	private boolean initialised = false;
 
+    private DateFormat df;
+
 	Map<Integer, HealNode> healNodes = new HashMap<Integer, HealNode>();
 
 	enum HealState {
-		INITIALIZING, WAITING, PING, SETSUCROUTE, UPDATENEIGHBORS, GETASSOCIATIONS, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, PINGEND, SAVE, DONE, FAILED;
+		IDLE, WAITING, PING, SETSUCROUTE, UPDATENEIGHBORS, GETASSOCIATIONS, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, PINGEND, SAVE, DONE, FAILED;
 
 		public boolean isActive() {
 			switch (this) {
-			case INITIALIZING:
+			case IDLE:
 			case DONE:
 			case FAILED:
 				return false;
@@ -105,6 +110,9 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	HealState networkHealState = HealState.WAITING;
 
 	public ZWaveNetworkMonitor(ZWaveController controller) {
+		df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		df.setTimeZone(TimeZone.getTimeZone("UTC"));
+
 		zController = controller;
 
 		// Set an event callback so we get notification of network events
@@ -147,22 +155,22 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	}
 
 	public String getNodeState(int nodeId) {
-		String status = HealState.WAITING.toString();
+		String status = HealState.IDLE.toString();
 
 		for (Map.Entry<Integer, HealNode> entry : healNodes.entrySet()) {
 			HealNode node = entry.getValue();
 			if (node.nodeId == nodeId) {
 				switch (node.state) {
-				case WAITING:
+				case IDLE:
 					break;
 				case FAILED:
-					status = "Failed during " + node.failState + " @ " + node.lastChange.toString();
+					status = "FAILED during " + node.failState + " @ " + df.format(node.lastChange);
 					break;
 				default:
-					if (node.retryCnt > 1)
-						status = node.state + "(" + node.retryCnt + ") @ " + node.lastChange.toString();
-					else
-						status = node.state + " @ " + node.lastChange.toString();
+					status = node.state + " @ " + df.format(node.lastChange);
+					if (node.retryCnt > 1) {
+						status += " (" + node.retryCnt + ")";
+					}
 					break;
 				}
 				break;
@@ -185,7 +193,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			HealNode node = entry.getValue();
 			if (node.nodeId == nodeId) {
 				switch (node.state) {
-				case INITIALIZING:
+				case IDLE:
 				case WAITING:
 				case FAILED:
 				case DONE:
@@ -380,6 +388,13 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			healing.failState = healing.state;
 			healing.state = HealState.FAILED;
 			networkHealNextTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
+
+			// Save the XML file. This serialises the data we've just updated
+			// (neighbors etc)
+			healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
+			
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(healing.node);
 			return;
 		}
 
@@ -473,18 +488,20 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			}
 		case SAVE:
 			logger.debug("NODE {}: Heal is complete - saving XML.", healing.nodeId);
-			// Save the XML file. This serialises the data we've just updated
-			// (neighbors etc)
-			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-			nodeSerializer.SerializeNode(healing.node);
-
 			healing.state = HealState.DONE;
 
 			networkHealNextTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
+			// Save the XML file. This serialises the data we've just updated
+			// (neighbors etc)
+			healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
+			
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(healing.node);
 			break;
 		default:
 			break;
 		}
+		healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
 	}
 
 	/**

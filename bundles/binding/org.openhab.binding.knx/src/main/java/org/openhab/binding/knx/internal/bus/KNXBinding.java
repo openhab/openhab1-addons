@@ -53,13 +53,13 @@ import tuwien.auto.calimero.process.ProcessListener;
  *
  */
 public class KNXBinding extends AbstractBinding<KNXBindingProvider> 
-implements ProcessListener, KNXConnectionListener {
+	implements ProcessListener, KNXConnectionListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
 	/** to keep track of all KNX type mappers */
 	protected Collection<KNXTypeMapper> typeMappers = new HashSet<KNXTypeMapper>();
-
+	
 	/**
 	 * used to store events that we have sent ourselves; we need to remember them for not reacting to them
 	 */
@@ -69,19 +69,21 @@ implements ProcessListener, KNXConnectionListener {
 	 * keeps track of all datapoints for which we should send a read request to the KNX bus
 	 */
 	private Map<Datapoint, Integer> datapointsToInitialize = Collections.synchronizedMap(new HashMap<Datapoint, Integer>());
-
+	
 
 	/** the datapoint initializer, which runs in a separate thread */
-	private DatapointInitializer initializer = new DatapointInitializer();
-
+	private DatapointInitializer initializer;
+	
 
 	public void activate(ComponentContext componentContext) {
+		logger.trace("KNXBinding: activating");
 		KNXConnection.addConnectionEstablishedListener(this);
 		initializer = new DatapointInitializer();
 		initializer.start();
 	}
 
 	public void deactivate(ComponentContext componentContext) {
+		logger.trace("KNXBinding: deactivating");
 		KNXConnection.removeConnectionEstablishedListener(this);
 		for (KNXBindingProvider provider : providers) {
 			provider.removeBindingChangeListener(this);
@@ -90,7 +92,7 @@ implements ProcessListener, KNXConnectionListener {
 		initializer.setInterrupted(true);
 		KNXConnection.disconnect();
 	}
-
+	
 	public void addKNXTypeMapper(KNXTypeMapper typeMapper) {
 		this.typeMappers.add(typeMapper);
 	}
@@ -99,8 +101,8 @@ implements ProcessListener, KNXConnectionListener {
 		this.typeMappers.remove(typeMapper);
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.lang.String, org.openhab.core.types.Command)
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
@@ -110,8 +112,8 @@ implements ProcessListener, KNXConnectionListener {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see org.openhab.core.binding.AbstractBinding#internalReceiveUpdate(java.lang.String, org.openhab.core.types.State)
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
@@ -120,7 +122,7 @@ implements ProcessListener, KNXConnectionListener {
 			writeToKNX(itemName, newState);
 		}
 	}
-
+	
 	private boolean isEcho(String itemName, Type type) {
 		String ignoreEventListKey = itemName + type.toString();
 		if (ignoreEventList.contains(ignoreEventListKey)) {
@@ -152,7 +154,7 @@ implements ProcessListener, KNXConnectionListener {
 							logger.debug("Wrote value '{}' to datapoint '{}' on second try", value, datapoint);
 						} catch (KNXException e1) {
 							logger.error("Value '{}' could not be sent to the KNX bus using datapoint '{}' - giving up after second try: {}",
-									new Object[]{value, datapoint, e1.getMessage()});
+								new Object[]{value, datapoint, e1.getMessage()});
 						}
 					}
 				}
@@ -160,22 +162,24 @@ implements ProcessListener, KNXConnectionListener {
 		}
 	}
 
-
-	/**
-	 * {@inheritDoc}
+	
+	/* (non-Javadoc)
+	 * @see tuwien.auto.calimero.process.ProcessListener#groupWrite(tuwien.auto.calimero.process.ProcessEvent)
 	 */
+	@Override
 	public void groupWrite(ProcessEvent e) {
 		readFromKNX(e);
 	}
-
-	/**
-	 * {@inheritDoc}
+	
+	/* (non-Javadoc)
+	 * @see tuwien.auto.calimero.process.ProcessListener#detached(tuwien.auto.calimero.DetachEvent)
 	 */
+	@Override
 	public void detached(DetachEvent e) {
 		logger.error("Received detach Event.");
 	}
-
-
+	
+	
 	/**
 	 * Handles the given {@link ProcessEvent}. After finding the corresponding
 	 * Item (by iterating through all known group addresses) this Item is updated.
@@ -201,7 +205,7 @@ implements ProcessListener, KNXConnectionListener {
 							// the knx bus again, when receiving it on the openHAB bus
 							ignoreEventList.add(itemName + type.toString());
 							logger.trace("Added event (item='{}', type='{}') to the ignore event list", itemName, type.toString());
-
+							
 							if (type instanceof Command && isCommandGA(destination)) {
 								eventPublisher.postCommand(itemName, (Command) type);
 							} else if (type instanceof State) {
@@ -234,26 +238,31 @@ implements ProcessListener, KNXConnectionListener {
 			logger.error("Error while receiving event from KNX bus: " + re.toString());
 		}
 	}
+	
 
-
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see org.openhab.core.binding.AbstractBinding#bindingChanged(org.openhab.core.binding.BindingProvider, java.lang.String)
 	 */
+	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
+		logger.trace("bindingChanged() for item {} msg received.", itemName);
 		if (provider instanceof KNXBindingProvider) {
 			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
 				if(datapoint.getName().equals(itemName)) {
+					logger.debug("Adding item {} to initialization list.", itemName);
 					datapointsToInitialize.put(datapoint, 0);
 				}
 			}
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see org.openhab.core.binding.AbstractBinding#allBindingsChanged(org.openhab.core.binding.BindingProvider)
 	 */
+	@Override
 	public void allBindingsChanged(BindingProvider provider) {
+		logger.trace("allBindingsChanged() msg received. Initializing readable DPs.");
 		if (provider instanceof KNXBindingProvider) {
 			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
@@ -261,20 +270,21 @@ implements ProcessListener, KNXConnectionListener {
 			}
 		}
 	}
+	
 
-
-	/**
-	 * When a connection is (re-)established all readable datapoints are refreshed. 
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.knx.internal.connection.KNXConnectionListener#connectionEstablished()
 	 */
 	@Override
 	public void connectionEstablished() {
+		logger.trace("connectionEstablished() msg received. Initializing readable DPs.");
 		for (KNXBindingProvider knxProvider : providers) {
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
 				datapointsToInitialize.put(datapoint, 0);
 			}
 		}
 	}
-
+	
 	/**
 	 * Determines whether the given <code>groupAddress</code> is the address which
 	 * will be interpreted as the command type. This method iterates over all 
@@ -291,7 +301,7 @@ implements ProcessListener, KNXConnectionListener {
 		}
 		return true;
 	}
-
+	
 	/**
 	 * Returns all listening item names. This method iterates over all registered KNX binding providers and aggregates
 	 * the result.
@@ -399,9 +409,9 @@ implements ProcessListener, KNXConnectionListener {
 	 * 
 	 */
 	private class DatapointInitializer extends Thread {
-
+		
 		private boolean interrupted = false;
-
+		
 		public DatapointInitializer() {
 			super("KNX datapoint initializer");
 		}
@@ -410,14 +420,17 @@ implements ProcessListener, KNXConnectionListener {
 			this.interrupted = interrupted;
 		}
 
+		/* (non-Javadoc)
+		 * @see java.lang.Thread#run()
+		 */
 		@Override
 		public void run() {
 			// as long as no interrupt is requested, continue running
-			while (!interrupted && !KNXConnection.shutdown) {
+			while (!interrupted && !KNXConnection.sShutdown) {
 				if (datapointsToInitialize.size() > 0) {
 					// we first clone the map, so that it stays unmodified
 					HashMap<Datapoint,Integer> clonedMap =
-							new HashMap<Datapoint, Integer>(datapointsToInitialize);
+						new HashMap<Datapoint, Integer>(datapointsToInitialize);
 					initializeDatapoints(clonedMap);
 				}
 				// just wait before looping again
@@ -436,16 +449,17 @@ implements ProcessListener, KNXConnectionListener {
 					if (pc != null) {
 						logger.debug("Sending read request to KNX for item {}", datapoint.getName());
 						pc.read(datapoint);
+						logger.debug("Removing item {} from initialization queue", datapoint.getName());
+						datapointsToInitialize.remove(datapoint);
 					}
-					datapointsToInitialize.remove(datapoint);
 				} catch (KNXException e) {
-					logger.warn("Cannot read value for item '{}' from KNX bus: {}", datapoint.getName(), e.getMessage() );
+					logger.warn("Cannot read value for item '{}' from KNX bus: {}", new Object[] { datapoint.getName(), e.getMessage() });
 					increaseReadLimitCounter(datapoint);
 				} catch (KNXIllegalArgumentException e) {
-					logger.warn("Error sending KNX read request for '{}': {}", datapoint.getName(), e.getMessage() );
+					logger.warn("Error sending KNX read request for '{}': {}", new Object[] { datapoint.getName(), e.getMessage() });
 					increaseReadLimitCounter(datapoint);
 				} catch (InterruptedException e) {
-					logger.warn("Cannot read value for item '{}' from KNX bus: {}", datapoint.getName(), e.getMessage() );
+					logger.warn("Cannot read value for item '{}' from KNX bus: {}", new Object[] { datapoint.getName(), e.getMessage() });
 					increaseReadLimitCounter(datapoint);
 				}
 
@@ -453,23 +467,23 @@ implements ProcessListener, KNXConnectionListener {
 				// it is possible that a key contained in the clonedMap disappeared
 				// from the original datapointMap!
 				int retriesCounter = datapointsToInitialize.get(datapoint) != null ? 
-						datapointsToInitialize.get(datapoint) : Integer.MIN_VALUE;
-						if (retriesLimit < retriesCounter) {
-							datapointsToInitialize.remove(datapoint);
-							logger.debug("Giving up initialization of item {} - retries ({}) exeeded.", datapoint.getName(), retriesLimit);
-						}
+									 datapointsToInitialize.get(datapoint) : Integer.MIN_VALUE;
+				if (retriesLimit < retriesCounter) {
+					datapointsToInitialize.remove(datapoint);
+					logger.debug("Giving up initialization of item {} - retries ({}) exeeded.", datapoint.getName(), retriesLimit);
+				}
 
-						long readingPause = KNXConnection.getReadingPause();
-						if (readingPause > 0) {
-							try {
-								sleep(readingPause);
-							} catch (InterruptedException e) {
-								logger.debug("KNX reading pause has been interrupted: {}", e.getMessage());
-							}
-						}
-						if(KNXConnection.shutdown) {
-							return;
-						}
+				long readingPause = KNXConnection.getReadingPause();
+				if (readingPause > 0) {
+					try {
+						sleep(readingPause);
+					} catch (InterruptedException e) {
+						logger.debug("KNX reading pause has been interrupted: {}", e.getMessage());
+					}
+				}
+				if(KNXConnection.sShutdown) {
+					return;
+				}
 			}
 		}
 
@@ -479,8 +493,8 @@ implements ProcessListener, KNXConnectionListener {
 				datapointsToInitialize.put(datapoint, counter + 1);
 			}
 		}		
-
+		
 	}
-
+	
 
 }
