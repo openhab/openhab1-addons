@@ -228,6 +228,7 @@ public class DeviceListResponse extends AbstractResponse {
 		private String type;
 		private List<String> owner;
 		private List<String> measurements;
+		private Integer wifiStatus;
 
 		/**
 		 * "firmware": 1
@@ -382,7 +383,31 @@ public class DeviceListResponse extends AbstractResponse {
 
 			return builder.toString();
 		}
-
+		
+		/**
+		 * "wifi_status"
+		 */
+		 @JsonProperty("wifi_status")
+		 public Integer getWifiStatus() {
+			 switch (this.wifiStatus) {
+			 	case WIFI_STATUS_THRESHOLD_0 : return 0;
+			 	case WIFI_STATUS_THRESHOLD_1 : return 1;
+			 	default : return 2;
+			 }
+		 }
+		
+		 public Integer getAltitude() {
+			 return this.place.altitude;
+		 }
+		
+		 public Double getLatitude() {
+			 return this.place.location.get(0);
+		 }
+		
+		 public Double getLongitude() {
+			 return this.place.location.get(1);
+		 }
+		
 	}
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -394,6 +419,7 @@ public class DeviceListResponse extends AbstractResponse {
 		private String moduleName;
 		private Boolean publicData;
 		private Integer rfStatus;
+		private Integer batteryVp;
 		private String type;
 		private List<String> measurements;
 
@@ -442,7 +468,33 @@ public class DeviceListResponse extends AbstractResponse {
 		 */
 		@JsonProperty("rf_status")
 		public Integer getRfStatus() {
-			return this.rfStatus;
+			switch (this.rfStatus) {
+				case RF_STATUS_THRESHOLD_0 : return 0;
+				case RF_STATUS_THRESHOLD_1 : return 1;
+				case RF_STATUS_THRESHOLD_2 : return 2;
+				default : return 3;
+			}
+		}
+		
+		/**
+		 * "battery_vp"
+		 */
+		@JsonProperty("battery_vp")
+		public Double getBatteryVp() {
+			int value;
+			int minima;
+			int spread;
+			if (this.type.equalsIgnoreCase(TYPE_MODULE_1)) {
+				value = Math.min(this.batteryVp, BATTERY_MODULE_1_THRESHOLD_0);
+				minima = BATTERY_MODULE_1_THRESHOLD_3 + BATTERY_MODULE_1_THRESHOLD_2 - BATTERY_MODULE_1_THRESHOLD_1;
+				spread = BATTERY_MODULE_1_THRESHOLD_0 - minima;		
+			} else {
+				value = Math.min(this.batteryVp, BATTERY_MODULE_4_THRESHOLD_0);
+				minima = BATTERY_MODULE_4_THRESHOLD_3 + BATTERY_MODULE_4_THRESHOLD_2 - BATTERY_MODULE_4_THRESHOLD_1;
+				spread = BATTERY_MODULE_4_THRESHOLD_0 - minima;
+			}
+			double percent = 100 * (value - minima) / spread;
+			return new Double( percent );		
 		}
 
 		/**
@@ -482,7 +534,7 @@ public class DeviceListResponse extends AbstractResponse {
 
 		private Integer altitude;
 		private String country;
-		private List<Integer> location;
+		private List<Double> location;
 		private String timezone;
 		private Boolean trustedLocation;
 
@@ -511,7 +563,7 @@ public class DeviceListResponse extends AbstractResponse {
 		 * </pre>
 		 */
 		@JsonProperty("location")
-		public List<Integer> getlocation() {
+		public List<Double> getlocation() {
 			return this.location;
 		}
 
