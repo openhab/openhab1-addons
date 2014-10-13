@@ -941,10 +941,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 					if (splitDomain.length == 3) {
 						// Request all groups for this node
-						List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
-
-						for (ZWaveDbAssociationGroup group : groupList)
-							this.zController.sendData(associationCommandClass.getAssociationMessage(group.Index));
+						associationCommandClass.getAllAssociations();
 					} else if (splitDomain.length == 4) {
 						// Request a single group
 						int nodeArg = Integer.parseInt(splitDomain[3].substring(11));
