@@ -275,7 +275,24 @@ public class ZWaveController {
 								if (commandClass instanceof ZWaveEventListener) {
 									this.addEventListener((ZWaveEventListener)commandClass);
 								}
-							}
+								
+								// If this is the multi-instance class, add all command classes for the endpoints
+								if (commandClass instanceof ZWaveMultiInstanceCommandClass) {
+									for (ZWaveEndpoint endPoint : ((ZWaveMultiInstanceCommandClass) commandClass)
+											.getEndpoints()) {
+										for (ZWaveCommandClass endpointCommandClass : endPoint.getCommandClasses()) {
+											endpointCommandClass.setController(this);
+											endpointCommandClass.setNode(node);
+											endpointCommandClass.setEndpoint(endPoint);
+
+											// Handle event handlers
+											if (endpointCommandClass instanceof ZWaveEventListener) {
+												this.addEventListener((ZWaveEventListener)endpointCommandClass);
+											}
+										}
+									}
+								}	
+							}							
 						}
 					}
 
