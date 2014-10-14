@@ -388,6 +388,13 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			healing.failState = healing.state;
 			healing.state = HealState.FAILED;
 			networkHealNextTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
+
+			// Save the XML file. This serialises the data we've just updated
+			// (neighbors etc)
+			healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
+			
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(healing.node);
 			return;
 		}
 
@@ -481,18 +488,20 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			}
 		case SAVE:
 			logger.debug("NODE {}: Heal is complete - saving XML.", healing.nodeId);
-			// Save the XML file. This serialises the data we've just updated
-			// (neighbors etc)
-			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-			nodeSerializer.SerializeNode(healing.node);
-
 			healing.state = HealState.DONE;
 
 			networkHealNextTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
+			// Save the XML file. This serialises the data we've just updated
+			// (neighbors etc)
+			healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
+			
+			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+			nodeSerializer.SerializeNode(healing.node);
 			break;
 		default:
 			break;
 		}
+		healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
 	}
 
 	/**

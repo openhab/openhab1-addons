@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZMNHDA</Model>
+	<Label lang="en">Flush dimmer</Label>
+	<CommandClasses>
+		<Class><id>0x00</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 2 contact type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">NO (normally open) input type</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">NC (normally close) input type</Label>
+			</Item>
+			<Help lang="en">Input 2 contact type</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 3 contact type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">NO (normally open) input type</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">NC (normally close) input type</Label>
+			</Item>
+			<Help lang="en">Input 3 contact type</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">Activate / deactivate functions ALL ON/ALL OFF</Label>			
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">ALL ON active, ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">ALL ON is not active ALL OFF is not active</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALL ON is not active ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALL ON active ALL OFF is not active</Label>
+			</Item>
+			<Help lang="en">Flush 1 relay module responds to commands ALL ON / ALL OFF 
+				that may be sent by the main controller or by other controller belonging to the system.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>30</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Saving the state of the device after a power failure</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Flush dimmer module saves its state before power failure (it returns to the last position saved before a power failure)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Flush dimmer module does not save the state after a power failure, it returns to "off" position</Label>
+			</Item>
+			<Help lang="en">Saving the state of the device after a power failure</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>40</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Size>1</Size>
+			<Label lang="en">Power reporting in Watts on power change for Q1</Label>			
+			<Help lang="en"><![CDATA[Set value means percentage, set value from 0-100 = 0%-100%.
+				Power report is sent (pushed) only when actual power in Watts in real time changed for more than set
+				percentage comparing to previous actual power in Watts, step is 1%.<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–100 = 1% - 100% Reporting enabled</li></ul>
+				NOTE: if power changed is less than 1W, the report is not sent (pushed), regardless of percentage set.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>42</Index>
+			<Type>byte</Type>
+			<Default>300</Default>
+			<Size>2</Size>
+			<Label lang="en">Power reporting in Watts by time interval</Label>
+			<Help lang="en"><![CDATA[Set value means time interval (0 – 65535) in seconds, when power report is sent. 
+				Default value is 300 (power report in Watts is sent each 300s)<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–65535 = 1 second – 65535 seconds. Reporting enabled. 
+				Power report is sent with time interval set by entered value.</li></ul>]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>60</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Minimum dimming value</Label>
+			<Help lang="en"><![CDATA[Range is 1% – 98%, step is 1%.<br/>
+				Default value is 1 (Minimum dimming value is 1%)<br/>
+				NOTE: The maximum level may not be lower than the minimum level!<br/> 
+				1% min. dimming value is defined by Z-Wave multilevel device class.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>61</Index>
+			<Type>byte</Type>
+			<Default>99</Default>
+			<Size>1</Size>
+			<Label lang="en">Maximum dimming value</Label>
+			<Help lang="en"><![CDATA[Range is 2% – 99%, step is 1%.<br/>
+				Default value 99 (Maximum dimming value is 99 %)<br/>
+				NOTE: The maximum level may not be lower than the minimum level!<br/> 
+				99% max. dimming value is defined by Z-Wave multilevel device class.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>65</Index>
+			<Type>byte</Type>
+			<Default>100</Default>
+			<Size>1</Size>
+			<Label lang="en">Dimming time (soft on/off)</Label>
+			<Help lang="en"><![CDATA[Set value means time of moving the Dimmer between min. and max. 
+				dimming values by short press of push button I1 or controlled through UI.<br/>
+				Range is 1-255 = 10-2550ms (2.55s), step is 10ms.<br/>
+				Default value 100 (Dimming time between min. and max. dimming values is 1s)]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>66</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Dimming time when key pressed</Label>
+			<Help lang="en"><![CDATA[Time of moving the Dimmer between min. and max dimming values by continues 
+				hold of push button I1.<br/>
+				Range is 1-255 = 1-255s, step is 1s.<br/>
+				Default value 3 (Dimming time between min. and max. dimming values is 3s)]]></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">multilevel (triggered at changes of state/value of the Flush dimmer)</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">basic on/off (triggered at change of the input I2 state and reflecting its state)</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">basic on/off (triggered at change of the input I3 state and reflecting its state)</Label>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">default reporting group (reserved for the main controller)</Label>
+		</Group>
+	</Associations>
+</Product>

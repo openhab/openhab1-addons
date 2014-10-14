@@ -246,7 +246,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", "Node " + node.getNodeId());
 				}
 				else {
-					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", node.getName());
+					record = new OpenHABConfigurationRecord("nodes/" + "node" + node.getNodeId() + "/", node.getNodeId() + ": " + node.getName());
 				}
 				
 				// If we can't find the product, then try and find just the
@@ -469,7 +469,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				
 				if(networkMonitor != null) {
 					record = new OpenHABConfigurationRecord(domain, "LastHeal", "Heal Status", true);
-					record.value = networkMonitor.getNodeState(nodeId);
+					if (node.getHealState() == null)
+                        record.value = networkMonitor.getNodeState(nodeId);
+                    else
+                        record.value = node.getHealState();
+					
 					records.add(record);
 				}
 
@@ -937,10 +941,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 					if (splitDomain.length == 3) {
 						// Request all groups for this node
-						List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
-
-						for (ZWaveDbAssociationGroup group : groupList)
-							this.zController.sendData(associationCommandClass.getAssociationMessage(group.Index));
+						associationCommandClass.getAllAssociations();
 					} else if (splitDomain.length == 4) {
 						// Request a single group
 						int nodeArg = Integer.parseInt(splitDomain[3].substring(11));
