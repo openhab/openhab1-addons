@@ -2,16 +2,16 @@ package org.openhab.binding.netatmo.internal;
 import org.apache.commons.lang.StringUtils;
 public enum NetatmoMeasureType {
 	CO2("co2"),
-	TEMPERATURE("temperature"),
-	HUMIDITY("humidity"),
-	NOISE("noise"),
-	PRESSURE("pressure"),
-	WIFISTATUS("wifistatus"),
-	ALTITUDE("altitude"),
-	LATITUDE("latitude"),
-	LONGITUDE("longitude"),
-	RFSTATUS("rfstatus"),
-	BATTERYVP("batteryvp");
+	TEMPERATURE("Temperature"),
+	HUMIDITY("Humidity"),
+	NOISE("Noise"),
+	PRESSURE("Pressure"),
+	WIFISTATUS("WifiStatus"),
+	ALTITUDE("Altitude"),
+	LATITUDE("Latitude"),
+	LONGITUDE("Longitude"),
+	RFSTATUS("RfStatus"),
+	BATTERYVP("BatteryVp");
 	
 	String measure;
 
