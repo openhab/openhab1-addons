@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<common-id-mappings>
+  <common-id-mapping id="thunder">
+    <provider name="Yahoo" ids="0,3,4,17,35"/>
+    <provider name="OpenWeatherMap" ids="200, 201, 202, 210, 211, 212, 221, 230, 231, 232, 906"/>
+    <provider name="WorldWeatherOnline" ids="392, 386, 200, 389"/>
+    <provider name="Hamweather" ids="A,T"/>
+    <provider name="ForecastIO" icons="hail, thunderstorm, tornado"/>
+  </common-id-mapping>
+  <common-id-mapping id="storm">
+    <provider name="Yahoo" ids="1,2"/>
+    <provider name="Hamweather" ids="BY"/>
+  </common-id-mapping>
+  <common-id-mapping id="rain-and-snow">
+    <provider name="Yahoo" ids="5"/>
+    <provider name="OpenWeatherMap" ids="615, 616"/>
+    <provider name="Hamweather" ids="RS, SW"/>
+  </common-id-mapping>
+  <common-id-mapping id="rain-and-sleet">
+    <provider name="Yahoo" ids="6"/>
+    <provider name="OpenWeatherMap" ids="611, 612"/>
+    <provider name="ForecastIO" icons="sleet"/>
+    <provider name="WorldWeatherOnline" ids="374, 365, 362, 179"/>
+  </common-id-mapping>
+  <common-id-mapping id="snow-and-sleet">
+    <provider name="Yahoo" ids="7"/>
+    <provider name="OpenWeatherMap" ids="620, 621, 622"/>
+    <provider name="Hamweather" ids="SI, WM"/>
+  </common-id-mapping>
+  <common-id-mapping id="freezing-drizzle">
+    <provider name="Yahoo" ids="8"/>
+    <provider name="WorldWeatherOnline" ids="281, 284, 185"/>
+    <provider name="Hamweather" ids="ZY"/>
+  </common-id-mapping>
+  <common-id-mapping id="few-showers">
+    <provider name="Yahoo" ids="9, 11"/>
+    <provider name="OpenWeatherMap" ids="300, 301, 302, 310, 311, 500, 501, 520, 521"/>
+    <provider name="WorldWeatherOnline" ids="353, 263, 176, 296, 293, 266"/>
+    <provider name="Wunderground" icons="chancerain"/>
+    <provider name="Hamweather" ids="L, ZL"/>
+  </common-id-mapping>
+  <common-id-mapping id="freezing-rain">
+    <provider name="Yahoo" ids="10"/>
+    <provider name="OpenWeatherMap" ids="511"/>
+    <provider name="WorldWeatherOnline" ids="314, 311"/>
+    <provider name="Hamweather" ids="ZR"/>
+  </common-id-mapping>
+  <common-id-mapping id="rain">
+    <provider name="Yahoo" ids="12"/>
+    <provider name="OpenWeatherMap" ids="312, 313, 314, 321, 502, 503, 504, 522, 531"/>
+    <provider name="ForecastIO" icons="rain"/>
+    <provider name="Wunderground" icons="nt_rain, rain"/>
+    <provider name="WorldWeatherOnline" ids="356, 305, 299, 359, 308, 302"/>
+    <provider name="Hamweather" ids="R, RW, WP"/>
+  </common-id-mapping>
+  <common-id-mapping id="snow-flurries">
+    <provider name="Yahoo" ids="13"/>
+    <provider name="WorldWeatherOnline" ids="230"/>
+  </common-id-mapping>
+  <common-id-mapping id="light-snow">
+    <provider name="Yahoo" ids="14,42"/>
+    <provider name="OpenWeatherMap" ids="600"/>
+    <provider name="WorldWeatherOnline" ids="368, 326, 323, 329"/>
+  </common-id-mapping>
+  <common-id-mapping id="blowing-snow">
+    <provider name="Yahoo" ids="15"/>
+    <provider name="WorldWeatherOnline" ids="227"/>
+    <provider name="Hamweather" ids="BS"/>
+  </common-id-mapping>
+  <common-id-mapping id="snow">
+    <provider name="Yahoo" ids="16, 41, 43"/>
+    <provider name="OpenWeatherMap" ids="601, 602"/>
+    <provider name="ForecastIO" icons="snow"/>
+    <provider name="WorldWeatherOnline" ids="395, 371, 335, 338, 332"/>
+    <provider name="Hamweather" ids="S"/>
+  </common-id-mapping>
+  <common-id-mapping id="sleet">
+    <provider name="Yahoo" ids="18"/>
+    <provider name="WorldWeatherOnline" ids="377, 350, 317, 182"/>
+    <provider name="Hamweather" ids="IC, IP"/>
+  </common-id-mapping>
+  <common-id-mapping id="dust">
+    <provider name="Yahoo" ids="19"/>
+    <provider name="WorldWeatherOnline" ids="143"/>
+    <provider name="Hamweather" ids="BD, BN"/>
+  </common-id-mapping>
+  <common-id-mapping id="fog">
+    <provider name="Yahoo" ids="20, 21, 22"/>
+    <provider name="OpenWeatherMap" ids="701, 711, 721, 731, 741, 751, 761, 762"/>
+    <provider name="ForecastIO" icons="fog"/>
+    <provider name="Wunderground" icons="fog"/>
+    <provider name="WorldWeatherOnline" ids="260, 248"/>
+    <provider name="Hamweather" ids="BR, F, H, IF, K, VA, ZF"/>
+  </common-id-mapping>
+  <common-id-mapping id="wind">
+    <provider name="Yahoo" ids="23, 24"/>
+    <provider name="OpenWeatherMap" ids="771, 781, 900, 901, 902, 905, 957, 958, 959, 960, 961, 962"/>
+    <provider name="ForecastIO" icons="wind"/>
+  </common-id-mapping>
+  <common-id-mapping id="cold">
+    <provider name="Yahoo" ids="25"/>
+    <provider name="OpenWeatherMap" ids="903"/>
+    <provider name="Hamweather" ids="FR"/>
+  </common-id-mapping>
+  <common-id-mapping id="cloudy">
+    <provider name="Yahoo" ids="26"/>
+    <provider name="OpenWeatherMap" ids="804"/>
+    <provider name="ForecastIO" icons="cloudy"/>
+    <provider name="Wunderground" icons="nt_cloudy, cloudy"/>
+    <provider name="WorldWeatherOnline" ids="122"/>
+    <provider name="Hamweather" ids="OV"/>
+  </common-id-mapping>
+  <common-id-mapping id="mostly-cloudy-night">
+    <provider name="Yahoo" ids="27"/>
+  </common-id-mapping>
+  <common-id-mapping id="mostly-cloudy-day">
+    <provider name="Yahoo" ids="28"/>
+    <provider name="OpenWeatherMap" ids="802, 803"/>
+    <provider name="Wunderground" icons="mostlycloudy"/>
+    <provider name="WorldWeatherOnline" ids="119"/>
+    <provider name="Hamweather" ids="BK"/>
+  </common-id-mapping>
+  <common-id-mapping id="partly-cloudy-night">
+    <provider name="Yahoo" ids="29, 33"/>
+    <provider name="ForecastIO" icons="partly-cloudy-night"/>
+  </common-id-mapping>
+  <common-id-mapping id="partly-cloudy-day">
+    <provider name="Yahoo" ids="30, 34, 44"/>
+    <provider name="OpenWeatherMap" ids="801"/>
+    <provider name="ForecastIO" icons="partly-cloudy-day"/>
+    <provider name="Wunderground" icons="partlycloudy"/>
+    <provider name="WorldWeatherOnline" ids="116"/>
+    <provider name="Hamweather" ids="SC, FW"/>
+  </common-id-mapping>
+  <common-id-mapping id="clear-night">
+    <provider name="Yahoo" ids="31"/>
+    <provider name="ForecastIO" icons="clear-night"/>
+    <provider name="Wunderground" icons="nt_clear"/>
+  </common-id-mapping>
+  <common-id-mapping id="sunny">
+    <provider name="Yahoo" ids="32"/>
+    <provider name="OpenWeatherMap" ids="800"/>
+    <provider name="ForecastIO" icons="clear-day"/>
+    <provider name="Wunderground" icons="clear"/>
+    <provider name="WorldWeatherOnline" ids="113"/>
+    <provider name="Hamweather" ids="CL"/>
+  </common-id-mapping>
+  <common-id-mapping id="hot">
+    <provider name="Yahoo" ids="36"/>
+    <provider name="OpenWeatherMap" ids="904"/>
+  </common-id-mapping>
+  <common-id-mapping id="scattered-thunder">
+    <provider name="Yahoo" ids="37"/>
+  </common-id-mapping>
+  <common-id-mapping id="scattered-showers">
+    <provider name="Yahoo" ids="39, 40"/>
+  </common-id-mapping>
+  <common-id-mapping id="thundershower">
+    <provider name="Yahoo" ids="45"/>
+  </common-id-mapping>
+  <common-id-mapping id="snow-showers">
+    <provider name="Yahoo" ids="46"/>
+  </common-id-mapping>
+  <common-id-mapping id="scattered-thundershowers">
+    <provider name="Yahoo" ids="47"/>
+  </common-id-mapping>
+  <common-id-mapping id="unknown">
+    <provider name="Yahoo" ids="3200"/>
+    <provider name="Hamweather" ids="UP"/>
+  </common-id-mapping>
+</common-id-mappings>

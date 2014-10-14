@@ -57,6 +57,8 @@ public class Condition {
 	})
 	private String id;
 
+	private String commonId;
+
 	@ProviderMappings({ 
 			@Provider(name = ProviderName.FORECASTIO, property = "icon"),
 			@Provider(name = ProviderName.OPENWEATHERMAP, property = "icon"),
@@ -139,6 +141,20 @@ public class Condition {
 	}
 
 	/**
+	 * Returns the common condition id.
+	 */
+	public String getCommonId() {
+		return commonId;
+	}
+
+	/**
+	 * Sets the common condition id.
+	 */
+	public void setCommonId(String commonId) {
+		this.commonId = commonId;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -146,7 +162,9 @@ public class Condition {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("text", text)
 				.append("lastUpdate", lastUpdate == null ? null : lastUpdate.getTime())
 				.append("observationTime", observationTime == null ? null : observationTime.getTime()).append("id", id)
-				.append("icon", icon).toString();
+				.append("icon", icon)
+				.append("commonId", commonId)
+				.toString();
 	}
 
 }

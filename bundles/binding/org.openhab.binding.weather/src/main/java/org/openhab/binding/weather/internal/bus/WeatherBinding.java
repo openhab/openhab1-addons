@@ -14,6 +14,7 @@ import org.openhab.binding.weather.WeatherBindingProvider;
 import org.openhab.binding.weather.internal.common.WeatherContext;
 import org.openhab.binding.weather.internal.metadata.MetadataHandler;
 import org.openhab.binding.weather.internal.model.Weather;
+import org.openhab.binding.weather.internal.parser.CommonIdHandler;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.events.EventPublisher;
@@ -53,8 +54,9 @@ public class WeatherBinding extends AbstractBinding<WeatherBindingProvider> impl
 		context.setProviders(providers);
 		try {
 			MetadataHandler.getInstance().generate(Weather.class);
-		} catch (IllegalAccessException ex) {
-			logger.error("Error activating WeatherBinding: {}", ex.getMessage());
+			CommonIdHandler.getInstance().loadMapping();
+		} catch (Exception ex) {
+			logger.error("Error activating WeatherBinding: {}", ex.getMessage(), ex);
 		}
 	}
 

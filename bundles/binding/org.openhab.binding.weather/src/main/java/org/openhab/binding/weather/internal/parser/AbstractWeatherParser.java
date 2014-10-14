@@ -159,6 +159,8 @@ public abstract class AbstractWeatherParser implements WeatherParser {
 		if (precip.getRain() != null && precip.getRain() == 0.0) {
 			precip.setRain(null);
 		}
+
+		CommonIdHandler.getInstance().setCommonId(weather);
 	}
 
 	/**
