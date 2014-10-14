@@ -36,7 +36,7 @@
 				<Label lang="en">ALL ON active ALL OFF inactive</Label>
 			</Item>
 			<Item>
-				<Value>255</Value>
+				<Value>-1</Value>
 				<Label lang="en">ALL ON active ALL OFF active</Label>
 			</Item>
 			<Help lang="en"><![CDATA[Activation/deactivation of ALL ON/ALL OFF functions. By default, ALL ON active ALL OFF active.<BR/>
