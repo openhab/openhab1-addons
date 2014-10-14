@@ -1164,6 +1164,11 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+        	<groupId>org.openhab.binding</groupId>
+        	<artifactId>org.openhab.binding.dscalarm</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
