@@ -55,6 +55,7 @@ The DSCAlarmDeviceType indicates one of three device types of the DSC Alarm Syst
     <tr><td>panel</td><td>The basic representation of the DSC Alarm System.</td></tr>
     <tr><td>partition</td><td>Represents a controllable area within a DSC Alarm system.</td></tr>
     <tr><td>zone</td><td>Represents a physical device such as a door, window, or motion sensor.</td></tr>
+    <tr><td>keypad</td><td>Represents the central administrative unit.</td></tr>
 </table>
 
 The parameters *partitionID* and *zoneID* will depend on the DSC Alarm device type.  A DSC Alarm device type of 'partition' requires a *partitionID* in the range 1-8, which will depend on how your DSC Alarm system is configured.  A DSC Alarm device type of 'zone' requires *zoneID* in the range 1-64, as well as the *partitionID*.
@@ -74,7 +75,15 @@ The DSCAlarmItemType maps the binding to an openHAB item type.  Here are the sup
     <tr><td>zone_tamper_status</td><td>String</td><td>A zones tamper status.</td></tr>
     <tr><td>zone_fault_status</td><td>String</td><td>A zones fault status.</td></tr>
     <tr><td>zone_bypass_mode</td><td>Number</td><td>A zones bypass mode.</td></tr>
-    
+    <tr><td>keypad_ready_led</td><td>Number</td><td>Keypad Ready LED Status.</td></tr>
+    <tr><td>keypad_armed_led</td><td>Number</td><td>Keypad Armed LED Status.</td></tr>
+    <tr><td>keypad_memory_led</td><td>Number</td><td>Keypad Memory LED Status.</td></tr>
+    <tr><td>keypad_bypass_led</td><td>Number</td><td>Keypad Bypass LED Status.</td></tr>
+    <tr><td>keypad_trouble_led</td><td>Number</td><td>Keypad Trouble LED Status.</td></tr>
+    <tr><td>keypad_program_led</td><td>Number</td><td>Keypad Program LED Status.</td></tr>
+    <tr><td>keypad_fire_led</td><td>Number</td><td>Keypad Fire LED Status.</td></tr>
+    <tr><td>keypad_backlight_led</td><td>Number</td><td>Keypad Backlight LED Status.</td></tr>
+    <tr><td>keypad_ac_led</td><td>Number</td><td>Keypad AC LED Status.</td></tr>
 </table>
 
 The following is an example of an item file:
@@ -97,7 +106,18 @@ Number ZONE1_BYPASS_MODE "Tamper Switch Bypass Mode" (DSCAlarmZones) {dscalarm="
 String ZONE1_ALARM_STATUS "Alarm Status : [%s]" (DSCAlarmZones) {dscalarm="zone:1:1:zone_alarm_status"}
 String ZONE1_FAULT_STATUS "Fault Status : [%s]" (DSCAlarmZones) {dscalarm="zone:1:1:zone_fault_status"}
 String ZONE1_TAMPER_STATUS "Tamper Status : [%s]" (DSCAlarmZones) {dscalarm="zone:1:1:zone_tamper_status"}
+/* DSC Alarm Keypad Items */
+Number KEYPAD_READY_LED "Ready LED Status: [%d]" (DSCAlarmPartitions) {dscalarm="keypad:keypad_ready_led"}
+Number KEYPAD_ARMED_LED "Armed LED Status: [%d]" (DSCAlarmPartitions) {dscalarm="keypad:keypad_armed_led"}
+Number KEYPAD_MEMORY_LED "Memory LED Status: [%d]" (DSCAlarmPartitions) {dscalarm="keypad:keypad_memory_led"}
+Number KEYPAD_BYPASS_LED "Bypass LED Status: [%d]" (DSCAlarmPartitions) {dscalarm="keypad:keypad_bypass_led"}
+Number KEYPAD_TROUBLE_LED "Trouble LED Status: [%d]" (DSCAlarmPartitions) {dscalarm="keypad:keypad_trouble_led"}
+Number KEYPAD_PROGRAM_LED "Program LED Status: [%d]" (DSCAlarmPartitions) {dscalarm="keypad:keypad_program_led"}
+Number KEYPAD_FIRE_LED "Fire LED Status: [%d]" (DSCAlarmPartitions) {dscalarm="keypad:keypad_fire_led"}
+Number KEYPAD_BACKLIGHT_LED "Backlight LED Status: [%d]" (DSCAlarmPartitions) {dscalarm="keypad:keypad_backlight_led"}
+Number KEYPAD_AC_LED "AC LED Status: [%d]" (DSCAlarmPartitions) {dscalarm="keypad:keypad_ac_led"}
 
+/*DSC Alarm Zones */
 Contact ZONE9_GENERAL_STATUS "Front Door Sensor" (DSCAlarmZones, GF_FFoyer) {dscalarm="zone:1:9:zone_general_status"}
 Number ZONE9_BYPASS_MODE "Tamper SwitchBypass Mode" (DSCAlarmZones) {dscalarm="zone:1:9:zone_bypass_mode"}
 String ZONE9_ALARM_STATUS "Alarm Status : [%s]" (DSCAlarmZones) {dscalarm="zone:1:9:zone_alarm_status"}
@@ -155,11 +175,27 @@ Frame label="Alarm System" {
 			Switch item=PANEL_CONNECTION label="Panel Connection" icon="shield-1" mappings=[1="Connected", 0="Disconnected"]
 			Text item=PANEL_MESSAGE icon="shield-1"
 		}
+		
 		Frame label="Partitions" {
 				Text item=PARTITION1_STATUS icon="shield-1" {
 					Switch item=PARTITION1_ARM_MODE label="Partition 1 Arm Options" mappings=[0="Disarm", 1="Away", 2="Stay", 3="Zero"]
 				}
 		}
+		
+		Frame label="Keypad" {
+			Text label="Keypad LED Status" icon="shield-1" {
+				Switch item=KEYPAD_READY_LED label="Ready LED Status:" mappings=[0="Off", 1="On", 2="Flashing"]
+				Switch item=KEYPAD_ARMED_LED label="Armed LED Status:" mappings=[0="Off", 1="On", 2="Flashing"]
+				Switch item=KEYPAD_MEMORY_LED label="Memory LED Status:" mappings=[0="Off", 1="On", 2="Flashing"]
+				Switch item=KEYPAD_BYPASS_LED label="Bypass LED Status:" mappings=[0="Off", 1="On", 2="Flashing"]
+				Switch item=KEYPAD_TROUBLE_LED label="Trouble LED Status:" mappings=[0="Off", 1="On", 2="Flashing"]
+				Switch item=KEYPAD_PROGRAM_LED label="Program LED Status:" mappings=[0="Off", 1="On", 2="Flashing"]
+				Switch item=KEYPAD_FIRE_LED label="Fire LED Status:" mappings=[0="Off", 1="On", 2="Flashing"]
+				Switch item=KEYPAD_BACKLIGHT_LED label="Backlight LED Status:" mappings=[0="Off", 1="On", 2="Flashing"]
+				Switch item=KEYPAD_AC_LED label="AC LED Status:" mappings=[0="Off", 1="On", 2="Flashing"]
+			}
+		}
+		
 		Frame label="Zones" {
 			Text item=ZONE1_GENERAL_STATUS {
 				Switch item=ZONE1_BYPASS_MODE icon="MyImages/Zone-Alarm" mappings=[0="Armed", 1="Bypassed"]
