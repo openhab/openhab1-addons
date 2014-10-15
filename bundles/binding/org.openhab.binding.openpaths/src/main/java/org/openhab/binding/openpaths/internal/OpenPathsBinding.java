@@ -17,13 +17,13 @@ import java.util.Map;
 import org.scribe.builder.*;
 import org.scribe.model.*;
 import org.scribe.oauth.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.binding.openpaths.OpenPathsBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * to check the location of one or more users, and check against a 
  * predefined 'home' location to see if a user is inside the 'geofence'. 
  * 
- * @author Ben Jones
+ * @author Ben Jones, Robert Bausdorf
  * @since 1.4.0
  */
 public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProvider> implements ManagedService {
@@ -52,8 +52,8 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
     // default geo fence distance (defaults to 100m)
     private float geoFence = 100;
     
-    // home location
-    private Location homeLocation;
+    // list of locations, home location is now within the map
+    private Map<String, Location> locations;
     
     // list of OpenPaths users
     private Map<String, OpenPathsUser> openPathsUsers;
@@ -67,7 +67,18 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 	protected long getRefreshInterval() {
 		return refreshInterval;
 	}
-		
+	
+	public Map<String, OpenPathsBinding.Location> getLocations() {
+	    return this.locations;
+	}
+	
+	public Map<String, OpenPathsBinding.OpenPathsUser> getUsers() {
+	    return this.openPathsUsers;
+	}
+	
+	enum LocationBindingType {
+	    on, distance
+	}
 	/**
 	 * @{inheritDoc}
 	 */
@@ -82,17 +93,38 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 			for (String itemName : provider.getItemNames()) {
 				
 				OpenPathsBindingConfig bindingConfig = provider.getItemConfig(itemName);				
-				String name = bindingConfig.getName();
-				
+				String bindingConfigName = bindingConfig.getName();
+                String[] bindingParts = bindingConfigName.split("\\:");
+                if (bindingParts.length < 1) {
+                    logger.error("Empty OpenPaths binding config");
+                    continue;
+                }
+				String name = bindingParts[0]; 
 				if (!openPathsUsers.containsKey(name)) {
 					logger.warn("There is no OpenPaths user configured for '" + name + "'. Please add this user to the binding configuration, including both the ACCESS_KEY and SECRET_KEY from the OpenPaths profile.");
 					continue;
 				}
 
-				OpenPathsUser openPathsUser = openPathsUsers.get(name);
+				if( bindingParts[1].startsWith("current") ) {
+				    logger.warn("current... Bindings will be supported soon");
+				    continue;
+				}
+				
+                String bindingLocationName = bindingParts[1];
+                if( ! locations.containsKey(bindingLocationName) ) {
+                    logger.warn("location name " + bindingLocationName + " not configured, falling back to 'home'");
+                    bindingLocationName = "home";
+                }
+                LocationBindingType bindingType = LocationBindingType.on;
+                if( bindingParts.length == 3 ) {
+                    switch( bindingParts[2] ) {
+                        case "distance": bindingType = LocationBindingType.distance;
+                    }
+                }
+                OpenPathsUser openPathsUser = openPathsUsers.get(name);
 				String accessKey = openPathsUser.getAccessKey();
 				String secretKey = openPathsUser.getSecretKey();
-				
+
 				if (StringUtils.isEmpty(accessKey)) {
 					logger.warn("There is no ACCESS_KEY configured for '" + name + "'. Please add this user to the binding configuration, including both the ACCESS_KEY and SECRET_KEY from the OpenPaths profile.");
 					continue;
@@ -110,16 +142,23 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
                 }
                 logger.debug("Location received for '{}': {}", name, location.toString());
 				
-                logger.debug("Calculating distance between home ({}) and user location ({}) for '{}'...", new Object[] { homeLocation.toString(), location.toString(), name });                
-                double distance = calculateDistance(homeLocation, location);
-                logger.debug("Distance calculated as {} for '{}'", distance, name);
+                Location bindingLocation = locations.get(bindingLocationName);
+                logger.debug("Calculating distance between home ({}) and user location ({}) for '{}'...", new Object[] { bindingLocation.toString(), location.toString(), name });                
+                double distance = calculateDistance(bindingLocation, location);
+                bindingLocation.setDistance(distance);
+                logger.debug("Distance calculated as {} for '{}'@'{}'", distance, name, bindingLocationName);
 
-                if (distance <= geoFence) {
-                    logger.debug("Detected that '{}' is inside the geofence ({}m)", name, geoFence);
-                    eventPublisher.postUpdate(itemName, OnOffType.ON);
-                } else {
-                    logger.debug("Detected that '{}' is outside the geofence ({}m)", name, geoFence);
-                    eventPublisher.postUpdate(itemName, OnOffType.OFF);
+                if( bindingType.equals(LocationBindingType.on) ) {
+                    float fence = bindingLocation.getGeofence() == Float.MAX_VALUE ? geoFence : bindingLocation.getGeofence(); 
+                    if (distance <= fence) {
+                        logger.debug("Detected that '{}'@'{}' is inside the geofence ({}m)", name, bindingLocationName, fence);
+                        eventPublisher.postUpdate(itemName, OnOffType.ON);
+                    } else {
+                        logger.debug("Detected that '{}'@'{}' is outside the geofence ({}m)", name, bindingLocationName, fence);
+                        eventPublisher.postUpdate(itemName, OnOffType.OFF);
+                    }
+                } else if(bindingType.equals(LocationBindingType.distance) ) {
+                    eventPublisher.postUpdate(itemName, new DecimalType(distance));
                 }
 			}
 		}
@@ -198,10 +237,11 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		openPathsUsers = new HashMap<String, OpenPathsUser>();
+		locations = new HashMap<String, Location>();
 		if (config != null) {
             // mandatory configs
-            float homeLat = 0;
-            float homeLong = 0;
+//            float homeLat = 0;
+//            float homeLong = 0;
 
             Enumeration<String> keys = config.keys();
 			while (keys.hasMoreElements()) {
@@ -214,23 +254,70 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 					continue;
 				}
 				
-				if ("home.lat".equals(key)) {
+                if("refresh".equals(key)) {
+                    if (StringUtils.isNotBlank(value)) {
+                        refreshInterval = Long.parseLong(value);
+                    }
+                } else if ("geofence".equals(key)) {
+                    // only for backward compatibility / as fallback
+                    if (StringUtils.isNotBlank(value)) {
+                        geoFence = Float.parseFloat(value);
+                    }
+                } else	if (key.endsWith("lat")) {
+                    String[] keyParts = key.split("\\.");
+                    if (keyParts.length != 2) {
+                        throw new ConfigurationException(key, "Invalid OpenPaths user location lattitude: " + key);
+                    }
 		            if (StringUtils.isNotBlank(value)) {
-		                homeLat = Float.parseFloat(value);
-		            }
-				} else if ("home.long".equals(key)) {
-		            if (StringUtils.isNotBlank(value)) {
-		                homeLong = Float.parseFloat(value);
-		            }
-				} else if ("refresh".equals(key)) {
-		            if (StringUtils.isNotBlank(value)) {
-		                refreshInterval = Long.parseLong(value);
-		            }
-				} else if ("geofence".equals(key)) {
-		            if (StringUtils.isNotBlank(value)) {
-		                geoFence = Float.parseFloat(value);
-		            }
-				} else {
+		                float lat = Float.parseFloat(value);
+		                
+                        String name = keyParts[0];
+
+                        if (locations.containsKey(name)) {
+                            locations.get(name).setLatitude(lat);
+                        } else {
+                            Location loc = new Location();
+                            loc.setLatitude(lat);
+                            locations.put(name, loc);
+                        }
+                    }
+				} else if (key.endsWith("long")) {
+                    String[] keyParts = key.split("\\.");
+                    if (keyParts.length != 2) {
+                        throw new ConfigurationException(key, "Invalid OpenPaths user location longitude: " + key);
+                    }
+                    if (StringUtils.isNotBlank(value)) {
+                        float lon = Float.parseFloat(value);
+                        
+                        String name = keyParts[0];
+
+                        if (locations.containsKey(name)) {
+                            locations.get(name).setLongitude(lon);
+                        } else {
+                            Location loc = new Location();
+                            loc.setLongitude(lon);
+                            locations.put(name, loc);
+                        }
+                    }
+                } else if (key.endsWith("geofence") && ! key.equals("geofence")) {
+                    String[] keyParts = key.split("\\.");
+                    if (keyParts.length != 2) {
+                        throw new ConfigurationException(key, "Invalid OpenPaths user location geofence: " + key);
+                    }
+                    if (StringUtils.isNotBlank(value)) {
+                        float fence = Float.parseFloat(value);
+                        
+                        String name = keyParts[0];
+
+                        if (locations.containsKey(name)) {
+                            locations.get(name).setGeofence(fence);
+                        } else {
+                            Location loc = new Location();
+                            loc.setGeofence(fence);
+                            locations.put(name, loc);
+                        }
+                    }
+				} else if ( key.endsWith("key") ) {
 					String[] keyParts = key.split("\\.");
 					if (keyParts.length != 2) {
 						throw new ConfigurationException(key, "Invalid OpenPaths user key: " + key);
@@ -255,18 +342,14 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 				}
 			}
 
-            if (homeLat == 0)
-                throw new ConfigurationException("home.lat", "No latitude specified for 'home'");
-            if (homeLong == 0)
-                throw new ConfigurationException("home.long", "No longitude specified for 'home'");
+            if (! locations.containsKey("home"))
+                throw new ConfigurationException("home.lat", "No location specified for 'home'");
 
-            homeLocation = new Location(homeLat, homeLong, "home");
-            
 			setProperlyConfigured(true);            
         }
 	}
 		
-	class OpenPathsUser {
+	public class OpenPathsUser {
 		private final String name;
 		private String accessKey;
 		private String secretKey;
@@ -294,19 +377,35 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 		public void setSecretKey(String secretKey) {
 			this.secretKey = secretKey;
 		}
+		
+		public String toString() {
+		    return this.name + ", access " + this.accessKey + ", secret " + this.secretKey;
+		}
 	}
 	
-	class Location {
-		private final float latitude;
-		private final float longitude;
-		private final String device;
+	public class Location {
+		private float latitude;
+		private float longitude;
+        private float geofence;
+		private String device;
+		private double distance;
 		
 		public Location(float latitude, float longitude, String device) {
 			this.latitude = latitude;
 			this.longitude = longitude;
 			this.device = device;
+			this.geofence = 0.0f;
+			this.distance = Float.MAX_VALUE;
 		}
 		
+        public Location() {
+            this.latitude = 0.0f;
+            this.longitude = 0.0f;
+            this.device = "";
+            this.geofence = 0.0f;
+            this.distance = Float.MAX_VALUE;
+        }
+        
 		public float getLatitude() {
 			return latitude;
 		}
@@ -315,13 +414,47 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 			return longitude;
 		}
 		
+		public float getGeofence() {
+		    return geofence;
+		}
+
 		public String getDevice() {
 			return device;
 		}
 		
-		@Override
+		public void setLatitude(float latitude)
+        {
+            this.latitude = latitude;
+        }
+
+        public void setLongitude(float longitude)
+        {
+            this.longitude = longitude;
+        }
+
+        public void setGeofence(float geofence)
+        {
+            this.geofence = geofence;
+        }
+
+        public void setDevice(String device)
+        {
+            this.device = device;
+        }
+
+        public double getDistance()
+        {
+            return distance;
+        }
+
+        public void setDistance(double distance)
+        {
+            this.distance = distance;
+        }
+
+        @Override
 		public String toString() {
-			return "Lat: " + latitude + ", Long: " + longitude + " (from " + device + ")";
+			return "Lat: " + latitude + ", Long: " + longitude + ", Fence: " + geofence + "(from " + device + ")";
 		}
 	}
 }
