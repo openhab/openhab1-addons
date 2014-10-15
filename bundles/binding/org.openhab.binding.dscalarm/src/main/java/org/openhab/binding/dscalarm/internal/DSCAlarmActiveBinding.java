@@ -346,7 +346,6 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		return "DSC Alarm Monitor Service";
 	}
 
-	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		logger.debug("updated(): Configuration updated, config {}", config != null ? true:false);
 		
@@ -557,7 +556,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 			DSCAlarmItemType.KEYPAD_PROGRAM_LED,DSCAlarmItemType.KEYPAD_FIRE_LED,DSCAlarmItemType.KEYPAD_BACKLIGHT_LED};
 
 		String itemName;
-		String apiCode = apiMessage.getAPICode();
+		APICode apiCode = APICode.getAPICodeValue(apiMessage.getAPICode());
 		
 		int bitField = Integer.decode("0x" + apiMessage.getAPIData());
 		int[] masks = {1,2,4,8,16,32,64,128};
@@ -571,10 +570,10 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 			if(itemName != "") {
 				
 				switch(apiCode) {
-					case "510":
+					case KeypadLEDState: /*510*/
 						updateDeviceProperties(itemName, bits[i] != 0 ? 1:0, "");
 						break;
-					case "511":
+					case KeypadLEDFlashState: /*511*/
 						if(bits[i] != 0) {
 							updateDeviceProperties(itemName, 2, "");
 						}
@@ -594,14 +593,13 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		return "DSC Alarm: IP Address=" + ipAddress;
 	}
 
-	@Override
 	public void dscAlarmEventRecieved(EventObject event) {
 		DSCAlarmEvent dscAlarmEvent = (DSCAlarmEvent) event;
 		APIMessage apiMessage = dscAlarmEvent.getAPIMessage();
 		APIMessage.APIMessageType apiMessageType = apiMessage.getAPIMessageType();
 
 		DSCAlarmItemType dscAlarmItemType = null;
-		String apiCode = apiMessage.getAPICode();
+		APICode apiCode = APICode.getAPICodeValue(apiMessage.getAPICode());
 		String apiData = apiMessage.getAPIData();
 		DSCAlarmBindingConfig config = null;
 		Item item = null;
@@ -611,79 +609,80 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		boolean found = false;
 		
 		switch(apiCode) {
-			case "500":
+			case CommandAcknowledge: /*500*/
 				dscAlarmItemUpdate.setConnected(true);
 				dscAlarmItemType = DSCAlarmItemType.PANEL_CONNECTION;
 				break;
-			case "502":
+			case SystemError: /*502*/
 				dscAlarmItemType = DSCAlarmItemType.PANEL_SYSTEM_ERROR;
 				break;
-			case "510":
-			case "511":
+			case KeypadLEDState: /*510*/
+			case KeypadLEDFlashState: /*511*/
 				keypadLEDStateEventHandler(event);
 				break;
-			case "550":
+			case TimeDateBroadcast: /*550*/
 				dscAlarmItemType = DSCAlarmItemType.PANEL_TIME_DATE;
 				break;
-			case "650":
-			case "651":
-			case "653":
-			case "654":
-			case "672":
-			case "674":
+			case PartitionReady: /*650*/
+			case PartitionNotReady: /*651*/
+			case PartitionReadyForceArming: /*653*/
+			case PartitionInAlarm: /*654*/
+			case FailureToArm: /*672*/
+			case SystemArmingInProgress:
 				dscAlarmItemType = DSCAlarmItemType.PARTITION_STATUS;
 				break;
-			case "652":
+			case PartitionArmed: /*652*/
 				forLimit = 2;
-			case "655":
+			case PartitionDisarmed: /*655*/
 				dscAlarmItemType = DSCAlarmItemType.PARTITION_ARM_MODE;
 				break;
-			case "601":
-			case "602":
+			case ZoneAlarm: /*601*/
+			case ZoneAlarmRestore: /*602*/
 				dscAlarmItemType = DSCAlarmItemType.ZONE_ALARM_STATUS;
 				break;
-			case "603":
-			case "604":
+			case ZoneTamper: /*603*/
+			case ZoneTamperRestore: /*604*/
 				dscAlarmItemType = DSCAlarmItemType.ZONE_TAMPER_STATUS;
 				break;
-			case "605":
-			case "606":
+			case ZoneFault: /*605*/
+			case ZoneFaultRestore: /*606*/
 				dscAlarmItemType = DSCAlarmItemType.ZONE_FAULT_STATUS;
 				break;
-			case "609":
-			case "610":
+			case ZoneOpen: /*609*/
+			case ZoneRestored: /*610*/
 				dscAlarmItemType = DSCAlarmItemType.ZONE_GENERAL_STATUS;
 				break;
-			case "900":
+			case CodeRequired: /*900*/
 				api.sendCommand(APICode.CodeSend, api.getUserCode());
 				break;
-			case "903":
-				switch(apiData.substring(0,1)) {
-					case "1":
+			case LEDStatus: /*903*/
+				int aData = Integer.parseInt(apiData.substring(0,1));
+				switch(aData) {
+					case 1:
 						dscAlarmItemType = DSCAlarmItemType.KEYPAD_READY_LED;
 						break;
-					case "2":
+					case 2:
 						dscAlarmItemType = DSCAlarmItemType.KEYPAD_ARMED_LED;
 						break;
-					case "3":
+					case 3:
 						dscAlarmItemType = DSCAlarmItemType.KEYPAD_MEMORY_LED;
 						break;
-					case "4":
+					case 4:
 						dscAlarmItemType = DSCAlarmItemType.KEYPAD_BYPASS_LED;
 						break;
-					case "5":
+					case 5:
 						dscAlarmItemType = DSCAlarmItemType.KEYPAD_TROUBLE_LED;
 						break;
-					case "6":
+					case 6:
 						dscAlarmItemType = DSCAlarmItemType.KEYPAD_PROGRAM_LED;
 						break;
-					case "7":
+					case 7:
 						dscAlarmItemType = DSCAlarmItemType.KEYPAD_FIRE_LED;
 						break;
-					case "8":
+					case 8:
 						dscAlarmItemType = DSCAlarmItemType.KEYPAD_BACKLIGHT_LED;
 						break;
-					case "9":
+					case 9:
 						dscAlarmItemType = DSCAlarmItemType.KEYPAD_AC_LED;
 						break;
 				}
@@ -749,7 +748,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 				}
 			}
 			
-			if(dscAlarmItemType ==  DSCAlarmItemType.PARTITION_ARM_MODE && apiCode.equals("652")) {
+			if(dscAlarmItemType ==  DSCAlarmItemType.PARTITION_ARM_MODE && apiCode == APICode.PartitionArmed) {
 				dscAlarmItemType = DSCAlarmItemType.PARTITION_STATUS;
 				apiMessageType = APIMessage.APIMessageType.PARTITION_EVENT;
 				found = false;

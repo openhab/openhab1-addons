@@ -50,7 +50,6 @@ public class DSCAlarmGenericBindingProvider extends AbstractGenericBindingProvid
 	/**
 	 * @{inheritDoc}
 	 */
-	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		// All types are valid
 		logger.trace("validateItemType({}, {})", item.getName(), bindingConfig);
@@ -60,7 +59,6 @@ public class DSCAlarmGenericBindingProvider extends AbstractGenericBindingProvid
 	 * Processes DSC Alarm binding configuration string.
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
@@ -123,7 +121,6 @@ public class DSCAlarmGenericBindingProvider extends AbstractGenericBindingProvid
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public DSCAlarmBindingConfig getDSCAlarmBindingConfig(String itemName) {
 		return (DSCAlarmBindingConfig) this.bindingConfigs.get(itemName);
 	}
@@ -131,7 +128,6 @@ public class DSCAlarmGenericBindingProvider extends AbstractGenericBindingProvid
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public Item getItem(String itemName) {
 		for (Set<Item> items : contextMap.values()) {
 			if (items != null) {
