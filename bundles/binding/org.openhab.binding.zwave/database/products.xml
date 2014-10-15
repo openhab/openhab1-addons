@@ -253,6 +253,16 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>HSM02</Model>
+			<Label lang="en">Door/Window Contact</Label>
+			<Label lang="de">Tür/Fenster Kontakt</Label>
+			<ConfigFile>everspring/hsm02.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>000C</Type>
 				<Id>0001</Id>
 			</Reference>
