@@ -9,12 +9,13 @@
 	</parent>
 
 	<name>openHAB DSC Alarm Binding</name>
+	<description>openHAB binding for DSC Alarm.</description>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.dscalarm</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.dscalarm</bundle.namespace>
 		<deb.name>openhab-addon-binding-dscalarm</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
