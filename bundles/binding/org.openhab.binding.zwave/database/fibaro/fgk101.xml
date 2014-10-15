@@ -76,7 +76,7 @@
 		<Parameter>
 			<Index>5</Index>
 			<Type>list</Type>
-			<Default>255</Default>
+			<Default>-1</Default>
 			<Size>1</Size>
 			<Label lang="en">Type of transmitted control frame for association
 				group 1
@@ -106,7 +106,7 @@
 				<Label lang="en">ALARM WATER</Label>
 			</Item>
 			<Item>
-				<Value>255</Value>
+				<Value>-1</Value>
 				<Label lang="en">BASIC_SET</Label>
 			</Item>
 			<Help lang="en">Type of transmitted control frame for association
