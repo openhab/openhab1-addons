@@ -30,10 +30,16 @@ public class ZWaveDbProductFile {
 	public ZWaveDbAssociation Associations;
 
 	List<ZWaveDbConfigurationParameter> getConfiguration() {
+		if(Configuration == null) {
+			return null;
+		}
 		return Configuration.Parameter;
 	}
 	
 	List<ZWaveDbAssociationGroup> getAssociations() {
+		if(Associations == null) {
+			return null;
+		}
 		return Associations.Group;
 	}
 
