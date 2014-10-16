@@ -74,9 +74,9 @@ import org.osgi.framework.BundleContext;
  * file, or can be seen in the file <code>ServiceAliases.properties</code>.
  * <p>
  * 
- * In addition to binding against a Device's Variables,
- * you can bind to the set of Device Attributes it exposes. Specifically it's
- * <code>id</code> and <code>status</code>:
+ * In addition to binding against a Device's Variables, you can bind to the set
+ * of Device Attributes it exposes. Specifically it's <code>id</code> and
+ * <code>status</code>:
  * <p>
  * <ul>
  * <li>
@@ -198,9 +198,14 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 	private static Properties aliasMap = new Properties();
 	private static String SERVICE_ALIASES = "org/openhab/binding/mios/internal/config/ServiceAliases.properties";
 
+	private static HashMap<String, ParameterDefaults> paramDefaults = new HashMap<String, ParameterDefaults>();
+	private static String PARAM_DEFAULTS = "org/openhab/binding/mios/internal/config/DeviceDefaults.properties";
+
 	static {
-		InputStream input = DeviceBindingConfig.class.getClassLoader()
-				.getResourceAsStream(SERVICE_ALIASES);
+		ClassLoader cl = DeviceBindingConfig.class.getClassLoader();
+		InputStream input;
+
+		input = cl.getResourceAsStream(SERVICE_ALIASES);
 
 		try {
 			aliasMap.load(input);
@@ -211,6 +216,27 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 			// Pre-shipped with the Binding, so it should never error out.
 			logger.error("Failed to load Service Alias file '{}', Exception",
 					SERVICE_ALIASES, e);
+		}
+
+		input = cl.getResourceAsStream(PARAM_DEFAULTS);
+
+		try {
+			Properties tmp = new Properties();
+			tmp.load(input);
+
+			for (Map.Entry<Object, Object> e : tmp.entrySet()) {
+				paramDefaults.put((String) e.getKey(),
+						ParameterDefaults.parse((String) e.getValue()));
+			}
+
+			logger.debug(
+					"Successfully loaded Device Parameter defaults from '{}', entries '{}'",
+					PARAM_DEFAULTS, paramDefaults.size());
+		} catch (Exception e) {
+			// Pre-shipped with the Binding, so it should never error out.
+			logger.error(
+					"Failed to load Device Parameter defaults file '{}', Exception",
+					PARAM_DEFAULTS, e);
 		}
 	}
 
@@ -231,11 +257,11 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 
 	private DeviceBindingConfig(String context, String itemName,
 			String unitName, int id, String stuff,
-			Class<? extends Item> itemType, String commandThing,
+			Class<? extends Item> itemType, String commandTransform,
 			String inTransform, String outTransform)
 			throws BindingConfigParseException {
-		super(context, itemName, unitName, id, stuff, itemType, commandThing,
-				inTransform, outTransform);
+		super(context, itemName, unitName, id, stuff, itemType,
+				commandTransform, inTransform, outTransform);
 	}
 
 	/**
@@ -245,16 +271,13 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 	 */
 	public static final MiosBindingConfig create(String context,
 			String itemName, String unitName, int id, String inStuff,
-			Class<? extends Item> itemType, String commandThing,
+			Class<? extends Item> itemType, String commandTransform,
 			String inTransform, String outTransform)
 			throws BindingConfigParseException {
 		try {
 			// Before we initialize, normalize the serviceId string used in any
 			// outgoing stuff.
 			String newInStuff = inStuff;
-			String newCommandThing = commandThing;
-
-			// String newOutStuff = outStuff;
 
 			String tmp;
 			Matcher matcher;
@@ -280,23 +303,58 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 				newInStuff = "service/" + iName + '/' + iVar;
 			}
 
+			//
+			// Apply any "Default" values to the in:, out:, and command:
+			// transformations prior
+			// to converting them for internal usage.
+			//
+			ParameterDefaults pd = paramDefaults.get(newInStuff);
+			if (pd != null) {
+				logger.trace(
+						"Device ParameterDefaults FOUND '{}' for '{}', '{}'",
+						itemName, newInStuff, pd);
+				if (commandTransform == null) {
+					commandTransform = pd.getCommandTransform();
+					logger.trace(
+							"Device ParameterDefaults '{}' defaulted command: to '{}'",
+							itemName, commandTransform);
+				}
+				if (inTransform == null) {
+					inTransform = pd.getInTransform();
+					logger.trace(
+							"Device ParameterDefaults '{}' defaulted in: to '{}'",
+							itemName, inTransform);
+				}
+				if (outTransform == null) {
+					outTransform = pd.getOutTransform();
+					logger.trace(
+							"Device ParameterDefaults '{}' defaulted out: to '{}'",
+							itemName, outTransform);
+				}
+			} else {
+				logger.trace(
+						"Device ParameterDefaults NOT FOUND '{}' for '{}'",
+						itemName, newInStuff);
+			}
+
 			String cTransform = null;
 			String cParam = null;
 			Map<String, String> cMap = null;
+			String newCommandTransform = commandTransform;
 
-			if ("".equals(newCommandThing)) {
+			if ("".equals(newCommandTransform)) {
 				// If it's present, but blank, use the global defaults.
 				cMap = COMMAND_DEFAULTS;
-			} else if (newCommandThing != null) {
+			} else if (newCommandTransform != null) {
 				// Try for a match as a TransformationService.
 				matcher = SERVICE_COMMAND_TRANSFORM_PATTERN
-						.matcher(newCommandThing);
+						.matcher(newCommandTransform);
 				if (matcher.matches()) {
 					cTransform = matcher.group("transformCommand");
 					cParam = matcher.group("transformParam");
 				} else { // Try as an inline static command mapping.
 
-					String[] commandList = newCommandThing.split("\\|");
+					String[] commandList = newCommandTransform.split("\\|");
 					String command;
 
 					Map<String, String> l = new HashMap<String, String>(
@@ -315,13 +373,13 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 								throw new BindingConfigParseException(
 										String.format(
 												"Duplicate inline Map entry '%s' in command: '%s'",
-												oldMapName, newCommandThing));
+												oldMapName, newCommandTransform));
 							}
 						} else {
 							throw new BindingConfigParseException(
 									String.format(
 											"Invalid command, parameter format '%s' in command: '%s'",
-											command, newCommandThing));
+											command, newCommandTransform));
 						}
 					}
 					cMap = l;
@@ -332,7 +390,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 					new Object[] { newInStuff, iName, iVar });
 
 			DeviceBindingConfig c = new DeviceBindingConfig(context, itemName,
-					unitName, id, newInStuff, itemType, newCommandThing,
+					unitName, id, newInStuff, itemType, newCommandTransform,
 					inTransform, outTransform);
 			c.initialize();
 

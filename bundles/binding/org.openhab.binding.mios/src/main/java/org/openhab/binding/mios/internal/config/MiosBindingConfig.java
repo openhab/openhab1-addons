@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * <ul>
  * <li>
- * <tt>mios="unit:<i>unitName</i>,<i>miosThing</i>{,command:<i>commandThing</i>}{,in:<i>inTransform</i>}{,out:<i>outTransform</i>}"</tt>
+ * <tt>mios="unit:<i>unitName</i>,<i>miosThing</i>{,command:<i>commandTransform</i>}{,in:<i>inTransform</i>}{,out:<i>outTransform</i>}"</tt>
  * </ul>
  * <p>
  * 
