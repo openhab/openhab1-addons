@@ -190,11 +190,7 @@ public class API {
     		if(connectorType == DSCAlarmConnectorType.TCP)
     			sendCommand(APICode.NetworkLogin);
     		
-    		if(connected = dscAlarmConnector.isConnected()) {
-	    		//Turn off Time Stamp Control
-	    		sendCommand(APICode.TimeStampControl,"0");
-    		}
-    		
+    		connected = dscAlarmConnector.isConnected();
     	}
 
     	if(!connected)
@@ -368,11 +364,11 @@ public class API {
 				validCommand = true;
  				break;
  			case CodeSend: /*200*/
- 				if (apiData[0] == null || apiData[0].length() < 4 || apiData[0].length() > 6) {
+ 				if (dscAlarmUserCode == null || dscAlarmUserCode.length() < 4 || dscAlarmUserCode.length() > 6) {
  					logger.error("sendCommand(): Access Code is invalid, must be between 4 and 6 chars: {}", apiData[0]);
  					break;
  				}
-				data = apiData[0];
+				data = dscAlarmUserCode;
 				validCommand = true;
  				break;
 

@@ -60,7 +60,13 @@ public class APIMessage {
 		
 		if (apiMessage.length() > 3) {
 			try {
-				apiMessage = apiMessage.substring(0, apiMessage.length() - 2);
+				if(apiMessage.length() >= 8 && apiMessage.charAt(2) == ':'  && apiMessage.charAt(5) == ':') {
+					apiMessage = apiMessage.substring(9, apiMessage.length() - 2);					
+				}
+				else { 
+					apiMessage = apiMessage.substring(0, apiMessage.length() - 2);
+				}
+				
 				apiCodeReceived = apiMessage.substring(0, 3);
 			
 				if(apiMessage.length() >= 4) {

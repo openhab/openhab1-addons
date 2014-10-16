@@ -221,14 +221,11 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 										break;
 									case 2: api.sendCommand(APICode.LabelsRequest);
 										break;
-									case 5: api.sendCommand(APICode.NetworkLogin);
-										break;
 									case 8: api.sendCommand(APICode.DumpZoneTimers);
 										break;
-									case 10:
-										api.sendCommand(APICode.SetTimeDate);
+									case 10: api.sendCommand(APICode.SetTimeDate);
 										break;
-									case 200: api.sendCommand(APICode.CodeSend,api.getUserCode());
+									case 200: api.sendCommand(APICode.CodeSend);
 										break;
 									default:
 										break;
@@ -322,8 +319,8 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 						}
 					}
 				}
-				dscAlarmUpdateMap.put(itemName, dscAlarmBindingConfig);
-				itemHasChanged = true;
+				/*dscAlarmUpdateMap.put(itemName, dscAlarmBindingConfig);
+				itemHasChanged = true;*/
 			}
 		}
 	}
@@ -727,7 +724,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 				dscAlarmItemType = DSCAlarmItemType.ZONE_GENERAL_STATUS;
 				break;
 			case CodeRequired: /*900*/
-				api.sendCommand(APICode.CodeSend, api.getUserCode());
+				api.sendCommand(APICode.CodeSend);
 				break;
 			case LEDStatus: /*903*/
 				int aData = Integer.parseInt(apiData.substring(0,1));
