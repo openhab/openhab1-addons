@@ -255,6 +255,10 @@
 				<Type>0002</Type>
 				<Id>0001</Id>
 			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
 			<Model>HSM02</Model>
 			<Label lang="en">Door/Window Contact</Label>
 			<Label lang="de">Tür/Fenster Kontakt</Label>
