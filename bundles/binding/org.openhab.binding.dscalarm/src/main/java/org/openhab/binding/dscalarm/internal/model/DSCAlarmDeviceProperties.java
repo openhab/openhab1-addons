@@ -28,6 +28,7 @@ public class DSCAlarmDeviceProperties {
 	private String systemConnectionDescription = "";
 	private String systemMessage = "";
 	private Date systemTimeDate;
+	private int systemCommand = -1;
 	private int systemError = 0;
 	private int systemErrorCode = 0;
 	private String systemErrorDescription = "No Error";
@@ -103,8 +104,12 @@ public class DSCAlarmDeviceProperties {
 	}
 	
 	public String getTimeDate() {
-		SimpleDateFormat tm = new SimpleDateFormat("HH:MM MM/DD/YY");
+		SimpleDateFormat tm = new SimpleDateFormat("HH:mm MM/dd/YY");
 		return tm.format(systemTimeDate);
+	}
+
+	public int getSystemCommand() {
+		return systemCommand;
 	}
 
 	public int getSystemError() {
@@ -294,6 +299,10 @@ public class DSCAlarmDeviceProperties {
 
 	public void setSystemErrorCode(int systemErrorCode) {
 		this.systemErrorCode = systemErrorCode;
+	}
+
+	public void setSystemCommand(int systemCommand) {
+		this.systemCommand = systemCommand;
 	}
 
 	public void setSystemErrorDescription(String systemErrorDescription) {

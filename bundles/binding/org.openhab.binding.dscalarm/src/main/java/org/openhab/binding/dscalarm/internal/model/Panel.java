@@ -68,6 +68,10 @@ public class Panel extends DSCAlarmDevice{
 						str = panelProperties.getTimeDate();
 						publisher.postUpdate(item.getName(), new StringType(str));
 						break;
+					case PANEL_COMMAND:
+						state = panelProperties.getSystemCommand();
+						publisher.postUpdate(item.getName(), new DecimalType(state));
+						break;
 					default:
 						logger.debug("refreshItem(): Panel item not updated.");
 						break;
@@ -230,6 +234,9 @@ public class Panel extends DSCAlarmDevice{
 						break;
 					case PANEL_MESSAGE:
 						panelProperties.setSystemMessage(description);
+						break;
+					case PANEL_COMMAND:
+						panelProperties.setSystemCommand(state);
 						break;
 					/*case PANEL_TIME_DATE:
 						panelProperties.setState(StateType.TIME_DATE, state, description);

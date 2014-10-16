@@ -202,15 +202,48 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 				if(connected) {
 					switch(dscAlarmDeviceType) {
 						case PANEL:
-							if(dscAlarmBindingConfig.getDSCAlarmItemType() == DSCAlarmItemType.PANEL_CONNECTION) {
-								if(command.toString() == "0") {
-									closeConnection();
-									if(!connected) {
-										dscAlarmItemUpdate.setConnected(false);
-										dscAlarmItemUpdate.updateDeviceProperties(item, dscAlarmBindingConfig, 0, "Disconnected");
+							switch (dscAlarmBindingConfig.getDSCAlarmItemType()) {
+								case PANEL_CONNECTION:
+									if(command.toString() == "0") {
+										closeConnection();
+										if(!connected) {
+											dscAlarmItemUpdate.setConnected(false);
+											dscAlarmItemUpdate.updateDeviceProperties(item, dscAlarmBindingConfig, 0, "Disconnected");
+										}
 									}
-								}
+									break;
+								case PANEL_COMMAND:
+									int cmd = Integer.parseInt(command.toString());
+									switch (cmd) {
+									case 0: api.sendCommand(APICode.Poll);
+										break;
+									case 1: api.sendCommand(APICode.StatusReport);
+										break;
+									case 2: api.sendCommand(APICode.LabelsRequest);
+										break;
+									case 5: api.sendCommand(APICode.NetworkLogin);
+										break;
+									case 8: api.sendCommand(APICode.DumpZoneTimers);
+										break;
+									case 10:
+										api.sendCommand(APICode.SetTimeDate);
+										break;
+									case 200: api.sendCommand(APICode.CodeSend,api.getUserCode());
+										break;
+									default:
+										break;
+									}
+
+									itemName = getItemName(DSCAlarmItemType.PANEL_COMMAND,0,0);
+									if(itemName != "") {
+										updateDeviceProperties(itemName,-1,"");
+										updateItem(itemName);
+									}
+									break;
+								default:
+									break;
 							}
+							
 							break;
 						case PARTITION:
 							partitionId = dscAlarmBindingConfig.getPartitionId();

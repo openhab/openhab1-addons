@@ -21,6 +21,7 @@ public enum DSCAlarmItemType{
 
 	PANEL_CONNECTION("panel_connection"),
 	PANEL_MESSAGE("panel_message"),
+	PANEL_COMMAND("panel_command"),
 	PANEL_SYSTEM_ERROR("panel_system_error"),
 	PANEL_TIME_DATE("panel_time_date"),
 	

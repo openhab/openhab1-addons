@@ -9,9 +9,8 @@
 
 package org.openhab.binding.dscalarm.internal.protocol;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.openhab.binding.dscalarm.internal.DSCAlarmEventListener;
 import org.openhab.binding.dscalarm.internal.connector.DSCAlarmConnector;
@@ -191,7 +190,11 @@ public class API {
     		if(connectorType == DSCAlarmConnectorType.TCP)
     			sendCommand(APICode.NetworkLogin);
     		
-    		connected = dscAlarmConnector.isConnected();
+    		if(connected = dscAlarmConnector.isConnected()) {
+	    		//Turn off Time Stamp Control
+	    		sendCommand(APICode.TimeStampControl,"0");
+    		}
+    		
     	}
 
     	if(!connected)
@@ -270,17 +273,10 @@ public class API {
 				validCommand = true;
  				break;
  			case SetTimeDate: /*010*/
- 				DateFormat dateFormat = new SimpleDateFormat("hhmmMMDDYY");
- 				String dateTime = apiData[0];
- 				try {
- 					dateFormat.parse(dateTime);
- 					data = apiData[0];
-					validCommand = true;
- 				}
- 				catch (ParseException parseException) {
- 					logger.error("sendCommand(): Could not format date: " + dateTime + " to hhmmMMDDYY format: ", parseException);
- 					validCommand = false;
- 				}
+ 				Date date = new Date();
+ 				SimpleDateFormat dateTime = new SimpleDateFormat("HHmmMMddYY");
+ 				data = dateTime.format(date);
+				validCommand = true;
  				break;
  			case CommandOutputControl: /*020*/
  				if (apiData[0] == null || !apiData[0].matches("[1-8]")) {
