@@ -63,7 +63,7 @@
                                 <Type>4441</Type>
                                 <Id>0000</Id>
                         </Reference>
-                        <Model>RF9540-Z</Model>
+                        <Model>RF9542-Z</Model>
                         <Label lang="en">Dimmer Accessory Switch</Label>
                         <ConfigFile>cooper/rf9542z.xml</ConfigFile>
                 </Product>
