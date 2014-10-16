@@ -56,6 +56,15 @@ Example:
   </subcategory>
   <subcategory>
     <name>SwitchLinc Dimmer</name>
+    <description>2476D</description>
+    <subCat>0x19</subCat>
+    <productKey name="F00.00.0B">
+    	<feature name="dimmer">GenericDimmer</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>SwitchLinc Dimmer</name>
     <description>2477D</description>
     <subCat>0x20</subCat>
     <productKey name="F00.00.01">
