@@ -12,24 +12,26 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
 /**
- * Binding provider interface for a DSC Alarm system.
+ * Binding provider interface for a DSC Alarm system
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
 public interface DSCAlarmBindingProvider extends BindingProvider {
 
 	/**
-	 * Returns the binding configuration for the item with
-	 * this name.
-	 * @param itemName the name to get the binding configuration for.
+	 * Returns the binding configuration for the item with this name
+	 * 
+	 * @param itemName
 	 * @return the binding configuration.
 	 */
 	public DSCAlarmBindingConfig getDSCAlarmBindingConfig(String itemName);
 
 	/**
-	 * Returns the {@link Item} with the specified item name.
-	 * @param itemName the name of the item.
-	 * @return item.
+	 * Returns the {@link Item} with the specified item name
+	 * 
+	 * @param itemName
+	 * @return item
 	 */
 	public Item getItem(String itemName);
 }

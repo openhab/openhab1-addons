@@ -14,14 +14,16 @@ import java.util.EventObject;
 
 
 /**
- * DSC Alarm Event Listener interface. Handles incoming DSC Alarm events.
+ * DSC Alarm Event Listener interface. Handles incoming DSC Alarm events
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
 public interface DSCAlarmEventListener extends EventListener {
 
 	/**
-	 * Event handler method for incoming DSC Alarm events.
+	 * Event handler method for incoming DSC Alarm events
+	 * 
 	 * @param event.
 	 */
 	void dscAlarmEventRecieved(EventObject event);

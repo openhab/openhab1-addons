@@ -14,13 +14,15 @@ import org.openhab.binding.dscalarm.internal.DSCAlarmItemType;
 
 /**
  * Binding Configuration class. Represents a binding configuration in
- * the items file to a DSC Alarm system.
+ * the items file to a DSC Alarm system
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
 public class DSCAlarmBindingConfig implements BindingConfig {
 	/**
-	 * Constructor. Creates a new instance of the DSCAlarmBindingConfig class.
+	 * Constructor
+	 * 
 	 * @param dscAlarmDeviceType the DSC Alarm Device Type.
 	 * @param partitionId the PartionId of the item
 	 * @param zoneId the ZoneId of the item
@@ -39,7 +41,8 @@ public class DSCAlarmBindingConfig implements BindingConfig {
 	private DSCAlarmItemType dscAlarmItemType;
 
 	/**
-	 * Returns the DSC Alarm Device Type.
+	 * Returns the DSC Alarm Device Type
+	 * 
 	 * @return deviceType
 	 */
 	public DSCAlarmDeviceType getDeviceType() {
@@ -47,7 +50,8 @@ public class DSCAlarmBindingConfig implements BindingConfig {
 	}
 
 	/**
-	 * Returns Partition Id.
+	 * Returns Partition Id
+	 * 
 	 * @return partitionId
 	 */
 	public int getPartitionId() {
@@ -55,7 +59,8 @@ public class DSCAlarmBindingConfig implements BindingConfig {
 	}
 
 	/**
-	 * Returns Zone Id.
+	 * Returns Zone Id
+	 * 
 	 * @return zoneId
 	 */
 	public int getZoneId() {
@@ -64,6 +69,7 @@ public class DSCAlarmBindingConfig implements BindingConfig {
 
 	/**
 	 * Returns the DSC Alarm Item Type
+	 * 
 	 * @return dscAlarmItemType
 	 */
 	public DSCAlarmItemType getDSCAlarmItemType() {

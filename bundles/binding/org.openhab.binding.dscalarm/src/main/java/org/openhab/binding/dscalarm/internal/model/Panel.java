@@ -21,7 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A Panel represents the basic DSC Alarm System.
+ * A Panel represents the basic DSC Alarm System
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
@@ -30,10 +31,18 @@ public class Panel extends DSCAlarmDevice{
 
 	DSCAlarmDeviceProperties panelProperties = new DSCAlarmDeviceProperties();
 
+	/**
+	 * Constructor
+	 * 
+	 * @param panelId
+	 */
 	public Panel(int panelId) {
 		panelProperties.setPanelId(panelId);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void refreshItem(Item item, DSCAlarmBindingConfig config, EventPublisher publisher) {
 		int state;
@@ -67,6 +76,9 @@ public class Panel extends DSCAlarmDevice{
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void handleEvent(Item item, DSCAlarmBindingConfig config, EventPublisher publisher, DSCAlarmEvent event) {
 		APIMessage apiMessage = null;
@@ -205,6 +217,9 @@ public class Panel extends DSCAlarmDevice{
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void updateProperties(Item item, DSCAlarmBindingConfig config, int state, String description) {
 		logger.debug("updateProperties(): Panel Item Name: {}", item.getName());
 		if(config != null) {
@@ -227,5 +242,4 @@ public class Panel extends DSCAlarmDevice{
 			}
 		}
 	}
-
 }

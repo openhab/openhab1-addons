@@ -155,7 +155,11 @@ public enum APICode {
 	 */
 	private static Map<String, APICode> codeToAPICodeValue;
 	
-
+	/**
+	 * Constructor
+	 * 
+	 * @param code
+	 */
 	private APICode(String code) {
 		this.code = code;
 	}
@@ -172,17 +176,17 @@ public enum APICode {
 	
 	/**
 	 * The API command/message code string (example '005')
-	 *  
 	 */
 	public String getCode() {
 		return code;
 	}
 	
    /**
-	 * Lookup function to return the APICode value based on the string code.
-	 * Returns null if the string code is not found.
-	 * @param code the numeric code to lookup
-	 * @return The APICode enumeration value.
+	 * Lookup function to return the APICode value based on the string code
+	 * Returns null if the string code is not found
+	 * 
+	 * @param code
+	 * @return enum value
 	 */
 	public static APICode getAPICodeValue(String code) {
 		if (codeToAPICodeValue == null) {

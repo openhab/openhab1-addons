@@ -22,7 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A Partition represents a controllable area within a DSC Alarm system.
+ * A Partition represents a controllable area within a DSC Alarm system
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
@@ -31,6 +32,11 @@ public class Partition extends DSCAlarmDevice{
 
 	DSCAlarmDeviceProperties partitionProperties = new DSCAlarmDeviceProperties();
 
+	/**
+	 * Constructor
+	 * 
+	 * @param partitionId
+	 */
 	public Partition(int partitionId) {
 		if(partitionId >= 1 && partitionId <= 8)
 			partitionProperties.setPartitionId(partitionId);
@@ -38,6 +44,9 @@ public class Partition extends DSCAlarmDevice{
 			partitionProperties.setPartitionId(1);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void refreshItem(Item item, DSCAlarmBindingConfig config, EventPublisher publisher) {
 		int state;
@@ -65,6 +74,9 @@ public class Partition extends DSCAlarmDevice{
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void handleEvent(Item item, DSCAlarmBindingConfig config, EventPublisher publisher, DSCAlarmEvent event) {
 		int state = 0;
@@ -125,6 +137,9 @@ public class Partition extends DSCAlarmDevice{
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void updateProperties(Item item, DSCAlarmBindingConfig config, int state, String description) {
 		logger.debug("updateProperties(): Partition Item Name: {}", item.getName());
 

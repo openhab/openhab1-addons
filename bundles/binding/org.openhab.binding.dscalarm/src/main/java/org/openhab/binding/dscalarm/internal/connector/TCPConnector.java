@@ -29,7 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A class that establishes a TCP Socket connection to the EyezOn Envisalink 3/2DS interface.
+ * A class that establishes a TCP Socket connection to the EyezOn Envisalink 3/2DS interface
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
@@ -64,7 +65,7 @@ public class TCPConnector implements DSCAlarmConnector {
 	}
 	
 	/**
-	 * Write a string to the socket.
+	 * {@inheritDoc}
 	 **/
 	public void write(String writeString) {
         try {
@@ -80,7 +81,7 @@ public class TCPConnector implements DSCAlarmConnector {
     }
 
 	/**
-	 * Read a string from the socket.
+	 * {@inheritDoc}
 	 **/
    public String read() {
         String message = "";
@@ -102,8 +103,7 @@ public class TCPConnector implements DSCAlarmConnector {
     }
     
 	/**
-	 * Open the socket.
-	 * @throws Exception 
+	 * {@inheritDoc}
 	 **/
    public void open() {
         try {
@@ -137,8 +137,9 @@ public class TCPConnector implements DSCAlarmConnector {
     }
 
 	 /**
-	  * Handles an incoming  message.
-	  * @param incomingMessage .
+	  * Handles an incoming  message
+	  * 
+	  * @param incomingMessage
 	  */
 	 public synchronized void handleIncomingMessage(String incomingMessage) {
 		APIMessage Message = new APIMessage(incomingMessage);
@@ -161,17 +162,17 @@ public class TCPConnector implements DSCAlarmConnector {
 	 }
 
  
-	 /**
-	 * Return Connected boolean.
+	/**
+	 * {@inheritDoc}
 	 **/
-   public boolean isConnected() {
-	   return connected;
-   }
+	 public boolean isConnected() {
+		 return connected;
+	 }
    
-   /**
-	 * Close the socket.
+	/**
+	 * {@inheritDoc}
 	 **/
-	public void close() {
+	 public void close() {
 		try {
 			if (tcpSocket != null) {
 				tcpSocket.close();
@@ -187,27 +188,25 @@ public class TCPConnector implements DSCAlarmConnector {
 			}
 			connected = false;
 			logger.debug("close(): Closed TCP Connection!");
-        }
-        catch (IOException ioException) {
-        	logger.error("close(): Unable to close connection - " + ioException.getMessage());
-        }
+		}
+		catch (IOException ioException) {
+			logger.error("close(): Unable to close connection - " + ioException.getMessage());
+		}
         catch (Exception exception) {
         	logger.error("close(): Error closing connection - " + exception.getMessage());
         }
-	}
+	 }
 
 	/**
-	 * Method for registering an event listener.
-	 * @param listener
-	 */
+	 * {@inheritDoc}
+	 **/
 	public synchronized void addEventListener(DSCAlarmEventListener listener) {
 		_listeners.add(listener);
 	}
 
 	/**
-	 * Method for removing an event listener.
-	 * @param listener
-	 */
+	 * {@inheritDoc}
+	 **/
 	public synchronized void removeEventListener(DSCAlarmEventListener listener) {
 		_listeners.remove(listener);		
 	}
@@ -222,7 +221,7 @@ public class TCPConnector implements DSCAlarmConnector {
 		}
 		
 		/**
-		 * Run method. Runs the MessageListener thread.
+		 * Run method. Runs the MessageListener thread
 		 */
 		@Override
 		public void run() {

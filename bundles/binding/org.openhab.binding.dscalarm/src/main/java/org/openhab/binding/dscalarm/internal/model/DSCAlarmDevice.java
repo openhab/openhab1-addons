@@ -15,13 +15,15 @@ import org.openhab.core.items.Item;
 
 /**
  * Abstract class for DSC Alarm devices
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
 public abstract class DSCAlarmDevice {
 
 	/**
-	 * Refresh an openHAB item.
+	 * Refresh an openHAB item
+	 * 
 	 * @param item
 	 * @param config
 	 * @param publisher
@@ -30,7 +32,8 @@ public abstract class DSCAlarmDevice {
 	public abstract void refreshItem(Item item, DSCAlarmBindingConfig config, EventPublisher publisher);
 
 	/**
-	 * Update an openHAB item after receiving a DSC Alarm event.
+	 * Update an openHAB item after receiving a DSC Alarm event
+	 * 
 	 * @param item
 	 * @param config
 	 * @param publisher
@@ -38,7 +41,8 @@ public abstract class DSCAlarmDevice {
 	public abstract void handleEvent(Item item, DSCAlarmBindingConfig config, EventPublisher publisher, DSCAlarmEvent event);
 
 	/**
-	 * Update a DSC Alarm Device Property.
+	 * Update a DSC Alarm Device Property
+	 * 
 	 * @param item
 	 * @param config
 	 * @param publisher

@@ -36,7 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-* A class that establishes a Serial connection to the DSC IT100 interface.
+* A class that establishes a Serial connection to the DSC IT100 interface
+* 
 * @author Russell Stephens
 * @since 1.6.0
 */
@@ -68,8 +69,8 @@ public class SerialConnector implements DSCAlarmConnector, SerialPortEventListen
 	}
 	
 	/**
-	 * Write a string to the serial port.
-	 */
+	 * {@inheritDoc}
+	 **/
 	public void write(String writeString) {
         try {
         	serialOutput.write(writeString);
@@ -84,8 +85,8 @@ public class SerialConnector implements DSCAlarmConnector, SerialPortEventListen
     }
 	
 	/**
-	 * Read a string from the serial port.
-	 */
+	 * {@inheritDoc}
+	 **/
    public String read() {
         String message = "";
 
@@ -109,6 +110,9 @@ public class SerialConnector implements DSCAlarmConnector, SerialPortEventListen
 		return serialInput.readLine();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 **/
 	public void open() {
 
 		try {
@@ -147,8 +151,9 @@ public class SerialConnector implements DSCAlarmConnector, SerialPortEventListen
 	}
 	
 	 /**
-	  * Handles an incoming message.
-	  * @param incomingMessage .
+	  * Handles an incoming message
+	  * 
+	  * @param incomingMessage
 	  */
 	 public synchronized void handleIncomingMessage(String incomingMessage) {
 		APIMessage Message = new APIMessage(incomingMessage);
@@ -171,7 +176,7 @@ public class SerialConnector implements DSCAlarmConnector, SerialPortEventListen
 	 }
 
 	 /**
-	 * Serial Port Event. Receives Serial Port Events and reads Serial Port Data.
+	 * Receives Serial Port Events and reads Serial Port Data
 	 */	
 	public synchronized void serialEvent(SerialPortEvent serialPortEvent) {
 		 if (serialPortEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
@@ -198,14 +203,15 @@ public class SerialConnector implements DSCAlarmConnector, SerialPortEventListen
 	}
 
 	/**
-	 * Return Connected boolean.
-	 */
-   public boolean isConnected() {
-	   return connected;
-   }
-   /**
-	 * Close the serial port.
-	 */
+	 * {@inheritDoc}
+	 **/
+	public boolean isConnected() {
+		return connected;
+	}
+   
+	/**
+	 * {@inheritDoc}
+	 **/
 	public void close() {
        	logger.debug("close(): Closing Serial Connection!");
 
@@ -234,17 +240,15 @@ public class SerialConnector implements DSCAlarmConnector, SerialPortEventListen
 	}
 	
 	/**
-	 * Method for registering an event listener.
-	 * @param listener
-	 */
+	 * {@inheritDoc}
+	 **/
 	public synchronized void addEventListener(DSCAlarmEventListener listener) {
 		_listeners.add(listener);
 	}
 
 	/**
-	 * Method for removing an event listener.
-	 * @param listener
-	 */
+	 * {@inheritDoc}
+	 **/
 	public synchronized void removeEventListener(DSCAlarmEventListener listener) {
 		_listeners.remove(listener);		
 	}

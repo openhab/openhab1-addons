@@ -10,7 +10,8 @@
 package org.openhab.binding.dscalarm.internal.protocol;
 
 /**
- * Class to create a API Command string 
+ * Class to create a API Command string
+ *  
  * @author Russell Stephens
  * @author Donn Renk
  * @since 1.6.0
@@ -28,6 +29,11 @@ public class APICommand {
 	APICommand() {
 	}
 
+	/**
+	 * Returns the API Command
+	 * 
+	 * @return
+	 */
 	public String getAPICommand() {
 		StringBuffer apiCommandSB = new StringBuffer();
 
@@ -39,6 +45,12 @@ public class APICommand {
 		return apiCommandSB.toString();
 	}
 	
+	/**
+	 * Sets a new API command
+	 * 
+	 * @param command
+	 * @param data
+	 */
 	public void setAPICommand(String command, String data) {
 		this.apiCommand = command;
 		this.apiData = data;
@@ -46,6 +58,9 @@ public class APICommand {
 	
 	}
 
+	/**
+	 * Calculates the API checksum
+	 */
 	private void calculateChecksum() {
         int checkSum;
         int runningTotal = 0;

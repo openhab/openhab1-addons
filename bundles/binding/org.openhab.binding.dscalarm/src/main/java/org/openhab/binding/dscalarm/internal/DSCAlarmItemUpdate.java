@@ -23,7 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class to manage OpenHAB item updates;
+ * Class to manage OpenHAB item updates
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
@@ -45,18 +46,41 @@ public class DSCAlarmItemUpdate {
 	private boolean connected = false;
 	String sysMessage = "";
 	
+	/**
+	 * Get connection status
+	 * 
+	 * @return
+	 */
 	public boolean getConnected() {
 		return connected;
 	}
 
+	/**
+	 * Set connection status
+	 * 
+	 * @param connected
+	 */
 	public void setConnected(boolean connected) {
 		this.connected = connected;
 	}
 
+	/**
+	 * Set the system message
+	 * 
+	 * @param sysMessage
+	 */
 	public void setSysMessage(String sysMessage) {
 		this.sysMessage = sysMessage;
 	}
 	
+	/**
+	 * Update a DSC Alarm Device Item
+	 * 
+	 * @param item
+	 * @param config
+	 * @param eventPublisher
+	 * @param event
+	 */
 	public synchronized void updateDeviceItem(Item item, DSCAlarmBindingConfig config, EventPublisher eventPublisher, DSCAlarmEvent event) {
 		logger.debug("updateDeviceItem(): Item Name: {}", item.getName());
 
@@ -152,6 +176,14 @@ public class DSCAlarmItemUpdate {
 		}
 	}
 	
+	/**
+	 * Update DSC Alarm Device Properties
+	 * 
+	 * @param item
+	 * @param config
+	 * @param state
+	 * @param description
+	 */
 	public synchronized void updateDeviceProperties(Item item, DSCAlarmBindingConfig config, int state, String description) {
 		logger.debug("updateDeviceProperties(): Item Name: {}", item.getName());
 	

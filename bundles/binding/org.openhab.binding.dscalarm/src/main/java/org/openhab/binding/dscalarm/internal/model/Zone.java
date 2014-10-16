@@ -21,7 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A Zone represents a physical device such as a door, window, or motion sensor.
+ * A Zone represents a physical device such as a door, window, or motion sensor
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
@@ -30,6 +31,12 @@ public class Zone extends DSCAlarmDevice{
 
 	DSCAlarmDeviceProperties zoneProperties = new DSCAlarmDeviceProperties();
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param partitionId
+	 * @param zoneId
+	 */
 	public Zone(int partitionId, int zoneId) {
 		if(partitionId >= 1 && partitionId <= 8)
 			zoneProperties.setPartitionId(partitionId);
@@ -37,6 +44,9 @@ public class Zone extends DSCAlarmDevice{
 		zoneProperties.setZoneId(zoneId);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void refreshItem(Item item, DSCAlarmBindingConfig config, EventPublisher publisher) {
 		int state;
@@ -78,6 +88,9 @@ public class Zone extends DSCAlarmDevice{
 		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void handleEvent(Item item, DSCAlarmBindingConfig config, EventPublisher publisher, DSCAlarmEvent event) {
 		int tpiCode = -1;
@@ -118,6 +131,9 @@ public class Zone extends DSCAlarmDevice{
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void updateProperties(Item item, DSCAlarmBindingConfig config, int state, String description) {
 		logger.debug("updateProperties(): Zone Item Name: {}", item.getName());
 

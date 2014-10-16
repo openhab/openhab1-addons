@@ -13,6 +13,7 @@ import java.util.Map;
 
 /**
  * Used to map item types from the binding string to a ENUM value
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
@@ -52,10 +53,18 @@ public enum DSCAlarmItemType{
 	 */
 	private static Map<String, DSCAlarmItemType> labelToDSCAlarmItemType;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param label
+	 */
 	private DSCAlarmItemType(String label) {
 		this.label = label;
 	}
 	
+	/**
+	 * Initialize the lookup map that gets a DSCAlarmItemType value from a string label
+	 */
 	private static void initMapping() {
 		labelToDSCAlarmItemType = new HashMap<String, DSCAlarmItemType>();
 		for (DSCAlarmItemType s : values()) {
@@ -65,6 +74,7 @@ public enum DSCAlarmItemType{
 
 	/**
 	 * Returns the label of the DSCAlarmItemType Values enumeration
+	 * 
 	 * @return the label
 	 */
 	public String getLabel() {
@@ -72,10 +82,11 @@ public enum DSCAlarmItemType{
 	}
 	
 	/**
-	 * Lookup function based on the binding type label.
-	 * Returns null if the binding type is not found.
-	 * @param label the label to lookup
-	 * @return enumeration value of the binding type.
+	 * Lookup function based on the binding type label
+	 * Returns null if the binding type is not found
+	 * 
+	 * @param label
+	 * @return enum value
 	 */
 	public static DSCAlarmItemType getDSCAlarmItemType(String label) {
 		if (labelToDSCAlarmItemType == null) {

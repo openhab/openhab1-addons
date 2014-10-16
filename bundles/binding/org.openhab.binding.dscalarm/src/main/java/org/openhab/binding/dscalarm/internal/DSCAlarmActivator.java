@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Extension of the default OSGi bundle activator
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
@@ -26,7 +27,7 @@ public final class DSCAlarmActivator implements BundleActivator {
 	private static BundleContext context;
 	
 	/**
-	 * Called whenever the OSGi framework starts our bundle
+	 * {@inheritDoc}
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
@@ -34,7 +35,7 @@ public final class DSCAlarmActivator implements BundleActivator {
 	}
 
 	/**
-	 * Called whenever the OSGi framework stops our bundle
+	 * {@inheritDoc}
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
@@ -43,6 +44,7 @@ public final class DSCAlarmActivator implements BundleActivator {
 	
 	/**
 	 * Returns the bundle context of this bundle
+	 * 
 	 * @return the bundle context
 	 */
 	public static BundleContext getContext() {

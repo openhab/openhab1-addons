@@ -12,7 +12,8 @@ package org.openhab.binding.dscalarm.internal.connector;
 import org.openhab.binding.dscalarm.internal.DSCAlarmEventListener;
 
 /**
- * Interface for DSC Alarm communication.
+ * Interface for DSC Alarm communication
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
@@ -35,6 +36,8 @@ public interface DSCAlarmConnector {
 
 	/**
 	 * Method for writing to an open DSC Alarm connection
+	 * 
+	 * @param writeString
 	 **/
 	void write(String writeString);
 
@@ -49,13 +52,15 @@ public interface DSCAlarmConnector {
 	boolean isConnected();
 
 	/**
-	 * Method for registering an event listener.
+	 * Method for registering an event listener
+	 * 
 	 * @param listener
 	 */
 	public void addEventListener(DSCAlarmEventListener listener);
 
 	/**
-	 * Method for removing an event listener.
+	 * Method for removing an event listener
+	 * 
 	 * @param listener
 	 */
 	public void removeEventListener(DSCAlarmEventListener listener);

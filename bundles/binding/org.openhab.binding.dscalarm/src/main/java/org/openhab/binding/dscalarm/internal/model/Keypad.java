@@ -22,7 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Keypad is the central administrative unit of the DSC Alarm System.
+ * The Keypad is the central administrative unit of the DSC Alarm System
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
@@ -31,10 +32,18 @@ public class Keypad extends DSCAlarmDevice{
 
 	DSCAlarmDeviceProperties keypadProperties = new DSCAlarmDeviceProperties();
 
+	/**
+	 * Constructor
+	 * 
+	 * @param keypadId
+	 */
 	public Keypad(int keypadId) {
 		keypadProperties.setKeypadId(keypadId);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void refreshItem(Item item, DSCAlarmBindingConfig config, EventPublisher publisher) {
 		int state;
@@ -142,6 +151,9 @@ public class Keypad extends DSCAlarmDevice{
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void handleEvent(Item item, DSCAlarmBindingConfig config, EventPublisher publisher, DSCAlarmEvent event) {
 		APIMessage apiMessage = null;
@@ -255,6 +267,9 @@ public class Keypad extends DSCAlarmDevice{
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void updateProperties(Item item, DSCAlarmBindingConfig config, int state, String description) {
 		logger.debug("updateProperties(): Panel Item Name: {}", item.getName());
 		if(config != null) {
@@ -294,5 +309,4 @@ public class Keypad extends DSCAlarmDevice{
 			}
 		}
 	}
-
 }

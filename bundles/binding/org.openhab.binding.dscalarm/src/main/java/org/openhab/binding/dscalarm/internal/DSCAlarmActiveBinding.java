@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
  * DSCAlarmActiveBinding Class. Polls the DSC Alarm panel,
  * responds to item commands, and also handles events coming 
  * from the DSC Alarm panel.
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
@@ -47,8 +48,8 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 
 	private DSCAlarmConnectorType connectorType = null;
 	
-	/** The serial port name of the DSC-IT100 Serial Interface. 
-	 * 	Valid values are e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux.
+	/** The serial port name of the DSC-IT100 Serial Interface
+	 * 	Valid values are e.g. COM1 for Windows and /dev/ttyS0 or /dev/ttyUSB0 for Linux
 	 * */
 	private String serialPort = null;
 
@@ -86,22 +87,70 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 	
 	/**
 	 * Activates the binding. Actually does nothing, because on activation
-	 * OpenHAB always calls updated to indicate that the config is updated.
-	 * Activation is done there.
+	 * OpenHAB always calls updated to indicate that the config is updated
+	 * Activation is done there
 	 */
 	public void activate() {
 		logger.debug("Activate DSC Alarm");
 	}
 	
 	/**
-	 * Deactivates the binding.
+	 * Deactivates the binding
 	 */
- 	public void deactivate() {
+	public void deactivate() {
 		logger.debug("Deactivate DSC Alarm");
 		closeConnection();
 	}
 
- 	/**
+	/**
+	 * @{inheritDoc
+	 */
+	@Override
+	protected void execute() {
+		logger.debug("DSC Alarm Execute");
+
+		if(api != null) {
+			connected = api.isConnected();
+		}
+		
+		if(connected) {
+			if(pollPeriod == 0) {
+				pollPeriod = System.currentTimeMillis();
+			}
+			
+			pollTime = ((System.currentTimeMillis() - pollPeriod) / 1000) / 60;
+			
+			//Send Poll command to the DSC Alarm if idle for 15 minutes
+			if(pollTime >= 1) {
+				api.sendCommand(APICode.Poll);
+				pollPeriod = 0;
+				logger.debug("execute(): Poll Command Sent to DSC Alarm.");
+			}
+		}
+		else {
+			closeConnection();
+			logger.error("execute(): Not Connected to the DSC Alarm!");
+			reconnect();
+		}
+
+		//Need to allow one cycle to pass before processing item updates after binding changes.
+		if(itemHasChanged) {
+			if(processUpdates) {
+				processUpdateMap();
+				itemHasChanged = false;
+				processUpdates = false;
+				if(connected) {
+					//Get a status report from API.
+					api.sendCommand(APICode.StatusReport);
+				}
+
+			}
+			else
+				processUpdates = true;
+		}
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -133,51 +182,6 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		itemHasChanged = true;
 	}
 	
-	/**
-	 * Build the Update Items Map
-	 */
-	private void buildUpdateMap() {
-		DSCAlarmBindingConfig config;
-
-		for (DSCAlarmBindingProvider prov : providers) {
-	 		if(!prov.getItemNames().isEmpty()) {
-	 			itemCount = prov.getItemNames().size();	 			
-				dscAlarmUpdateMap.clear();
-				for (String iName : prov.getItemNames()) {
-					config = prov.getDSCAlarmBindingConfig(iName); 
-					if(config != null) {
-						dscAlarmUpdateMap.put(iName, config);
-					}
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Processes the Update Items Map
-	 */
-	private void processUpdateMap() {
-	
-		if (dscAlarmUpdateMap.size() == 0) {
-			logger.debug("processUpdateMap(): Nothing to update.");
-			return;
-		}
-		
-		Map<String, DSCAlarmBindingConfig> itemsMap = new HashMap<String, DSCAlarmBindingConfig>(dscAlarmUpdateMap);
-	
-		for (String itemName : itemsMap.keySet()) {
-			DSCAlarmBindingConfig dscAlarmBindingConfig = itemsMap.get(itemName);
-			dscAlarmUpdateMap.remove(itemName);
-			Item item = null;
-			for (DSCAlarmBindingProvider provider : providers) {
-				item = provider.getItem(itemName);
-			}
-
-			dscAlarmItemUpdate.updateDeviceItem(item, dscAlarmBindingConfig, eventPublisher, null);
-			logger.debug("processUpdateMap(): Updated item: {}", itemName);
-		}
-	}
-
 	/**
 	 * @{inheritDoc
 	 */
@@ -291,61 +295,26 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		}
 	}
 	
-	@Override
-	protected void execute() {
-		logger.debug("DSC Alarm Execute");
 
-		if(api != null) {
-			connected = api.isConnected();
-		}
-		
-		if(connected) {
-			if(pollPeriod == 0) {
-				pollPeriod = System.currentTimeMillis();
-			}
-			
-			pollTime = ((System.currentTimeMillis() - pollPeriod) / 1000) / 60;
-			
-			//Send Poll command to the DSC Alarm if idle for 15 minutes
-			if(pollTime >= 1) {
-				api.sendCommand(APICode.Poll);
-				pollPeriod = 0;
-				logger.debug("execute(): Poll Command Sent to DSC Alarm.");
-			}
-		}
-		else {
-			closeConnection();
-			logger.error("execute(): Not Connected to the DSC Alarm!");
-			reconnect();
-		}
-
-		//Need to allow one cycle to pass before processing item updates after binding changes.
-		if(itemHasChanged) {
-			if(processUpdates) {
-				processUpdateMap();
-				itemHasChanged = false;
-				processUpdates = false;
-				if(connected) {
-					//Get a status report from API.
-					api.sendCommand(APICode.StatusReport);
-				}
-
-			}
-			else
-				processUpdates = true;
-		}
-	}
-
+	/**
+	 * @{inheritDoc
+	 */
 	@Override
 	protected long getRefreshInterval() {
 		return refreshInterval;
 	}
 
+	/**
+	 * @{inheritDoc
+	 */
 	@Override
 	protected String getName() {
 		return "DSC Alarm Monitor Service";
 	}
 
+	/**
+	 * @{inheritDoc
+	 */
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		logger.debug("updated(): Configuration updated, config {}", config != null ? true:false);
 		
@@ -391,7 +360,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 	}
 
 	/**
-	 * Initializes the binding. 
+	 * Initializes the binding
 	 */
  	private void initialize() {
 
@@ -414,11 +383,53 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		logger.debug("initialize(): Binding initialized!");
  	}
 
+ 	/**
+	 * Build the Update Items Map
+	 */
+	private void buildUpdateMap() {
+		DSCAlarmBindingConfig config;
+
+		for (DSCAlarmBindingProvider prov : providers) {
+	 		if(!prov.getItemNames().isEmpty()) {
+	 			itemCount = prov.getItemNames().size();	 			
+				dscAlarmUpdateMap.clear();
+				for (String iName : prov.getItemNames()) {
+					config = prov.getDSCAlarmBindingConfig(iName); 
+					if(config != null) {
+						dscAlarmUpdateMap.put(iName, config);
+					}
+				}
+			}
+		}
+	}
+	
 	/**
-	 * Open a TCP connection to the DSC Alarm Panel
-	 * @param ip
-	 * @param pw
-	 * @param uc
+	 * Processes the Update Items Map
+	 */
+	private void processUpdateMap() {
+	
+		if (dscAlarmUpdateMap.size() == 0) {
+			logger.debug("processUpdateMap(): Nothing to update.");
+			return;
+		}
+		
+		Map<String, DSCAlarmBindingConfig> itemsMap = new HashMap<String, DSCAlarmBindingConfig>(dscAlarmUpdateMap);
+	
+		for (String itemName : itemsMap.keySet()) {
+			DSCAlarmBindingConfig dscAlarmBindingConfig = itemsMap.get(itemName);
+			dscAlarmUpdateMap.remove(itemName);
+			Item item = null;
+			for (DSCAlarmBindingProvider provider : providers) {
+				item = provider.getItem(itemName);
+			}
+
+			dscAlarmItemUpdate.updateDeviceItem(item, dscAlarmBindingConfig, eventPublisher, null);
+			logger.debug("processUpdateMap(): Updated item: {}", itemName);
+		}
+	}
+
+	/**
+	 * Open a TCP or Serial connection to the DSC Alarm Panel
 	 */
  	private void openConnection() {
 
@@ -446,6 +457,9 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		}
 	}
 	
+	/**
+	 * Attempt to reconnect to TCP or Serial connection
+	 */
 	private void reconnect() {
 		String itemName;
 		logger.debug("reconnect(): API Reconnection!");	
@@ -473,7 +487,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 	}
 
 	/**
-	 * Close TCP connection to the DSC Alarm Panel and remove the Event Listener
+	 * Close TCP or Serial connection to the DSC Alarm Panel and remove the Event Listener
 	 */
 	private void closeConnection() {
 		String itemName;
@@ -490,8 +504,16 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		}
 		
 		logger.debug("closeConnection(): {} Connection Closed!",connectorType);	
-	}
+	}	
 	
+	/**
+	 * Searches for an items name and returns it
+	 * 
+	 * @param dscAlarmItemType
+	 * @param partitionId
+	 * @param zoneId
+	 * @return itemName
+	 */
 	private String getItemName(DSCAlarmItemType dscAlarmItemType, int partitionId, int zoneId) {
 		String itemName = "";
 		DSCAlarmBindingConfig config = null;
@@ -511,6 +533,11 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		return itemName;
 	}
 	
+	/**
+	 * Update a DSC Alarm item
+	 * 
+	 * @param itemName
+	 */
 	private void updateItem(String itemName) {
 		DSCAlarmBindingConfig config = null;
 		Item item = null;
@@ -529,6 +556,13 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		}
 	}
 
+	/**
+	 * Update a DSC Alarm device Properties
+	 * 
+	 * @param itemName
+	 * @param state
+	 * @param description
+	 */	
 	private void updateDeviceProperties(String itemName, int state, String description) {
 		DSCAlarmBindingConfig config = null;
 		Item item = null;
@@ -547,13 +581,21 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 		}
 	}
 
+	/**
+	 * Handle Keypad LED events for the EyezOn Envisalink 3/2DS DSC Alarm Interface
+	 * 
+	 * @param event
+	 */	
 	private void keypadLEDStateEventHandler(EventObject event) {
 		DSCAlarmEvent dscAlarmEvent = (DSCAlarmEvent) event;
 		APIMessage apiMessage = dscAlarmEvent.getAPIMessage();
-		DSCAlarmItemType[] dscAlarmItemTypes = 
-			{DSCAlarmItemType.KEYPAD_READY_LED,DSCAlarmItemType.KEYPAD_ARMED_LED,
-			DSCAlarmItemType.KEYPAD_MEMORY_LED,DSCAlarmItemType.KEYPAD_BYPASS_LED,DSCAlarmItemType.KEYPAD_TROUBLE_LED,
-			DSCAlarmItemType.KEYPAD_PROGRAM_LED,DSCAlarmItemType.KEYPAD_FIRE_LED,DSCAlarmItemType.KEYPAD_BACKLIGHT_LED};
+		DSCAlarmItemType[] dscAlarmItemTypes =
+		{
+			DSCAlarmItemType.KEYPAD_READY_LED,DSCAlarmItemType.KEYPAD_ARMED_LED,
+			DSCAlarmItemType.KEYPAD_MEMORY_LED,DSCAlarmItemType.KEYPAD_BYPASS_LED,
+			DSCAlarmItemType.KEYPAD_TROUBLE_LED,DSCAlarmItemType.KEYPAD_PROGRAM_LED,
+			DSCAlarmItemType.KEYPAD_FIRE_LED,DSCAlarmItemType.KEYPAD_BACKLIGHT_LED
+		};
 
 		String itemName;
 		APICode apiCode = APICode.getAPICodeValue(apiMessage.getAPICode());
@@ -584,15 +626,14 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
 				
 				updateItem(itemName);
 			}
-		}
-		
-	}
-	
-	@Override
-	public String toString() {
-		return "DSC Alarm: IP Address=" + ipAddress;
+		}		
 	}
 
+	/**
+	 * DSC Alarm incoming message event handler
+	 * 
+	 * @param event
+	 */
 	public void dscAlarmEventRecieved(EventObject event) {
 		DSCAlarmEvent dscAlarmEvent = (DSCAlarmEvent) event;
 		APIMessage apiMessage = dscAlarmEvent.getAPIMessage();

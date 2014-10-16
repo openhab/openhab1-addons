@@ -67,7 +67,12 @@ public class API {
 	private boolean connected = false;
 	private int[] baudRates = {9600,19200,38400,57600,115200};
 	
-	
+	/**
+	 * Constructor for Serial Connection
+	 * 
+	 * @param serialPort
+	 * @param baud
+	 */	
 	public API(String serialPort, int baud) {
 		if (StringUtils.isNotBlank(serialPort)) {
 			apiSerialPort = serialPort;
@@ -79,6 +84,13 @@ public class API {
 		connectorType = DSCAlarmConnectorType.SERIAL;
 	}
        
+	/**
+	 * Constructor for TCP connection
+	 * 
+	 * @param ip
+	 * @param password
+	 * @param dscAlarmUserCode
+	 */
 	public API(String ip, String password, String dscAlarmUserCode) {
 		if (StringUtils.isNotBlank(ip)) {
 			apiIP = ip;
@@ -96,14 +108,18 @@ public class API {
 	}
 
 	/**
-	 * Add event listener.
+	 * Add event listener
+	 * 
+	 * @param listener
 	 **/
 	public void addEventListener(DSCAlarmEventListener listener) {
 		dscAlarmConnector.addEventListener(listener);
 	}
 
 	/**
-	 * Remove event listener.
+	 * Remove event listener
+	 * 
+	 * @param listener
 	 **/
 	public synchronized void removeEventListener(DSCAlarmEventListener listener) {
 		dscAlarmConnector.removeEventListener(listener);
@@ -111,6 +127,7 @@ public class API {
 
 	/**
 	 * Returns Connector Type
+	 * 
 	 * @return connectorType
 	 **/
 	public DSCAlarmConnectorType getConnectorType() {
@@ -119,6 +136,7 @@ public class API {
 
 	/**
 	 * Method to check if baud rate is valid
+	 * 
 	 * @return boolean
 	 */
 	private boolean isValidBaudRate(int baudRate) {
@@ -140,8 +158,7 @@ public class API {
 	}
 	
 	/**
-	 * Connect to the DSC Alarm System through the EyezOn Envisalink 3/2DS.
-	 * @throws Exception 
+	 * Connect to the DSC Alarm System through the EyezOn Envisalink 3/2DS or the DSC IT-100.
 	 **/
     public boolean open() {
 
@@ -202,10 +219,21 @@ public class API {
 		return dscAlarmConnector.read();
      }
        
-     /**
-     * Send an API command to the DSC Alarm system.
+    /**
+     * Return Connected Status.
      */
-    public boolean sendCommand(APICode apiCode, String... apiData) {
+     public boolean isConnected() {
+         return dscAlarmConnector.isConnected();
+     }
+
+     /**
+      * Send an API command to the DSC Alarm system.
+      * 
+      * @param apiCode
+      * @param apiData
+      * @return
+      */
+     public boolean sendCommand(APICode apiCode, String... apiData) {
     	boolean successful = false;
     	boolean validCommand = false;
     	
@@ -213,23 +241,35 @@ public class API {
     	String data = "";
  		
  		switch (apiCode) {
- 			case NetworkLogin:
+			case Poll: /*000*/
+			case StatusReport: /*001*/
+				validCommand = true;
+				break;
+ 			case LabelsRequest: /*002*/
+ 				if(!connectorType.equals(DSCAlarmConnectorType.SERIAL)) {
+ 					break;					
+ 				}
+				validCommand = true;
+ 				break;
+			case NetworkLogin: /*005*/
+ 				if(!connectorType.equals(DSCAlarmConnectorType.TCP)) {
+ 					break;					
+ 				}
+ 				
  				if (password == null || password.length() < 1 || password.length() > 6) {
  					logger.error("sendCommand(): Password is invalid, must be between 1 and 6 chars", password);
- 					validCommand = false;
+ 					break;
  				}
- 				else {
- 					data = password;
- 					validCommand = true;
+				data = password;
+				validCommand = true;
+ 				break;
+ 			case DumpZoneTimers: /*008*/
+ 				if(!connectorType.equals(DSCAlarmConnectorType.TCP)) {
+ 					break;					
  				}
+				validCommand = true;
  				break;
- 			case Poll:
- 			case StatusReport:
- 			case LabelsRequest:
- 			case DumpZoneTimers:
- 				validCommand = true;
- 				break;
- 			case SetTimeDate:
+ 			case SetTimeDate: /*010*/
  				DateFormat dateFormat = new SimpleDateFormat("hhmmMMDDYY");
  				String dateTime = apiData[0];
  				try {
@@ -242,130 +282,120 @@ public class API {
  					validCommand = false;
  				}
  				break;
- 			case CommandOutputControl:
+ 			case CommandOutputControl: /*020*/
  				if (apiData[0] == null || !apiData[0].matches("[1-8]")) {
  		    		logger.error("sendCommand(): Partition number must be a single character string from 1 to 8, it was: " + apiData[0]);
- 					validCommand = false;
  	 				break;
  				}
  
  				if (apiData[1] == null || !apiData[1].matches("[1-4]")) {
  		    		logger.error("sendCommand(): Output number must be a single character string from 1 to 4, it was: " + apiData[1]);
- 					validCommand = false;
+ 					break;					
  				}
- 				else {
- 					data = apiData[0];
- 					validCommand = true;
- 				}
+
+ 				data = apiData[0];
+ 				validCommand = true;
  				break;
- 			case KeepAlive:
- 			case PartitionArmControlAway:
- 			case PartitionArmControlStay:
- 			case PartitionArmControlZeroEntryDelay:
+ 			case KeepAlive: /*074*/
+ 				if(!connectorType.equals(DSCAlarmConnectorType.TCP)) {
+ 					break;					
+ 				}
+ 			case PartitionArmControlAway: /*030*/
+ 			case PartitionArmControlStay: /*031*/
+ 			case PartitionArmControlZeroEntryDelay: /*032*/
  				if (apiData[0] == null || !apiData[0].matches("[1-8]")) {
  			    	logger.error("sendCommand(): Partition number must be a single character string from 1 to 8, it was: {}", apiData[0]);
- 					validCommand = false;
+ 					break;					
  				}
- 				else {
- 					data = apiData[0];
- 					validCommand = true;
- 				}
+				data = apiData[0];
+				validCommand = true;
  				break;
- 			case PartitionArmControlWithUserCode:
- 			case PartitionDisarmControl:
+ 			case PartitionArmControlWithUserCode: /*033*/
+ 			case PartitionDisarmControl: /*040*/
  				if (apiData[0] == null || !apiData[0].matches("[1-8]")) {
  			    	logger.error("sendCommand(): Partition number must be a single character string from 1 to 8, it was: {}", apiData[0]);
- 					validCommand = false;
  					break;
  				}
  				
  				if (dscAlarmUserCode == null || dscAlarmUserCode.length() < 4 || dscAlarmUserCode.length() > 6) {
  					logger.error("sendCommand(): User Code is invalid, must be between 4 and 6 chars: {}", dscAlarmUserCode);
- 					validCommand = false;
+ 					break;
  				}
- 				else {
- 					data = apiData[0] + dscAlarmUserCode;
- 					validCommand = true;
+				data = apiData[0] + dscAlarmUserCode;
+				validCommand = true;
+  				break;
+ 			case VirtualKeypadControl: /*058*/
+ 				if(!connectorType.equals(DSCAlarmConnectorType.SERIAL)) {
+ 					break;					
  				}
- 				break;
- 			case TimeStampControl:
- 			case TimeDateBroadcastControl:
- 			case TemperatureBroadcastControl:
- 			case VirtualKeypadControl:
+ 			case TimeStampControl: /*055*/
+ 			case TimeDateBroadcastControl: /*056*/
+ 			case TemperatureBroadcastControl: /*057*/
  				if (apiData[0] == null || !apiData[0].matches("[0-1]")) {
  				   	logger.error("sendCommand(): Value must be a single character string of 0 or 1: {}", apiData[0]);
- 					validCommand = false;
+ 					break;
  				}
- 				else {
- 					data = apiData[0];
- 					validCommand = true;
- 				}
+				data = apiData[0];
+				validCommand = true;
  				break;
- 			case TriggerPanicAlarm:
+ 			case TriggerPanicAlarm: /*060*/
  				if (apiData[0] == null || !apiData[0].matches("[1-8]")) {
  				   	logger.error("sendCommand(): Partition number must be a single character string from 1 to 8, it was: {}", apiData[0]);
- 					validCommand = false;
  	 				break;
  				}		 
  				 
  				if (apiData[1] == null || !apiData[1].matches("[1-3]")) {
  		    		logger.error("sendCommand(): FAPcode must be a single character string from 1 to 3, it was: {}", apiData[1]);
+ 					break;
  				}
- 				else {
- 					data = apiData[0] + apiData[1];
- 					validCommand = true;
- 				}
+				data = apiData[0] + apiData[1];
+				validCommand = true;
  				break;
- 			case KeyStroke:
+ 			case KeyStroke: /*070*/
  				if (apiData[0] == null || apiData[0].length() != 1 || !apiData[0].matches("[0-9]|A|#|\\*")) {
  		    		logger.error("sendCommand(): \'keystroke\' must be a single character string from 0 to 9, *, #, or A, it was: {}", apiData[0]);
+ 					break;
  				}
- 				else {
- 					data = apiData[0];
- 					validCommand = true;
- 				}
+				data = apiData[0];
+				validCommand = true;
  				break;
- 			case KeySequence:
+ 			case KeySequence: /*071*/
+ 				if(!connectorType.equals(DSCAlarmConnectorType.TCP)) {
+ 					break;
+ 				}
+ 				
  				if (apiData[0] == null || apiData[0].length() > 6 || !apiData[0].matches("(\\d|#|\\*)+")) {
  		    		logger.error("sendCommand(): \'keysequence\' must be a string of up to 6 characters consiting of 0 to 9, *, or #, it was: {}", apiData[0]);
+ 					break;
  				}
- 				else {
- 					data = apiData[0];
- 					validCommand = true;
- 				}
+				data = apiData[0];
+				validCommand = true;
  				break;
- 			case CodeSend:
+ 			case CodeSend: /*200*/
  				if (apiData[0] == null || apiData[0].length() < 4 || apiData[0].length() > 6) {
  					logger.error("sendCommand(): Access Code is invalid, must be between 4 and 6 chars: {}", apiData[0]);
+ 					break;
  				}
- 				else {
- 					data = apiData[0];
- 					validCommand = true;
- 				}
+				data = apiData[0];
+				validCommand = true;
  				break;
 
  			default:
  				validCommand = false;
- 		}
- 		
+				break;
+
+ 		} 		
 
  		if(validCommand) {
  			APICommand apiCommand = new APICommand();
  			apiCommand.setAPICommand(command, data);
     		dscAlarmConnector.write(apiCommand.toString());
     		successful = true;
-    	 }
-    	 else
+    		logger.debug("sendCommand(): Command Sent - {}",apiCommand.toString());
+    	}
+    	else
     		logger.error("sendCommand(): Command Not Sent - Invalid!");
     	 
-    	 return successful;
-
-     }
-  
-     /**
-      * Return Connected Status.
-      */
-      public boolean isConnected() {
-          return dscAlarmConnector.isConnected();
-      }
+    	return successful;
+    }
 }

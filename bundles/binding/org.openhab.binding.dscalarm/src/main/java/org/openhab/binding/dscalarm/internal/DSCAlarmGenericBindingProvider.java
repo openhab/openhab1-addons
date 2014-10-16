@@ -56,7 +56,6 @@ public class DSCAlarmGenericBindingProvider extends AbstractGenericBindingProvid
 	}
 	
 	/**
-	 * Processes DSC Alarm binding configuration string.
 	 * {@inheritDoc}
 	 */
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {

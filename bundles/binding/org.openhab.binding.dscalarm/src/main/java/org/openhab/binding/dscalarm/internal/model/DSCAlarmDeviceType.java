@@ -13,6 +13,7 @@ import java.util.Map;
 
 /**
  * Used to map device types from the binding string to a ENUM value
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
@@ -22,20 +23,25 @@ public enum DSCAlarmDeviceType {
 	ZONE("zone"),
 	KEYPAD("keypad");
 	
-	/*
-	 * The string found in a binding configuration
-	 */
 	private String label;
 	
-	/*
+	/**
 	 * Lookup map to get a DSCAlarmDeviceType from its label
 	 */
 	private static Map<String, DSCAlarmDeviceType> labelToDSCAlarmDeviceType;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param label
+	 */
 	private DSCAlarmDeviceType(String label) {
 		this.label = label;
 	}
 	
+	/**
+	 * Creates a HashMap that maps the string label to a DSCAlarmDeviceType enum value
+	 */
 	private static void initMapping() {
 		labelToDSCAlarmDeviceType = new HashMap<String, DSCAlarmDeviceType>();
 		for (DSCAlarmDeviceType s : values()) {
@@ -45,6 +51,7 @@ public enum DSCAlarmDeviceType {
 
 	/**
 	 * Returns the label of the DSCAlarmItemType Values enumeration
+	 * 
 	 * @return the label
 	 */
 	public String getLabel() {
@@ -52,10 +59,11 @@ public enum DSCAlarmDeviceType {
 	}
 	
 	/**
-	 * Lookup function based on the binding type label.
-	 * Returns null if the binding type is not found.
-	 * @param label the label to lookup
-	 * @return enumeration value of the binding type.
+	 * Lookup function based on the binding type label
+	 * Returns null if the binding type is not found
+	 * 
+	 * @param label
+	 * @return enum value
 	 */
 	public static DSCAlarmDeviceType getDSCAlarmDeviceType(String label) {
 		if (labelToDSCAlarmDeviceType == null) {

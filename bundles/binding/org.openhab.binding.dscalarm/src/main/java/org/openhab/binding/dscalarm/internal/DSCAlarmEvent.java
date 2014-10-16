@@ -12,7 +12,8 @@ import java.util.EventObject;
 import org.openhab.binding.dscalarm.internal.protocol.APIMessage;
 
 /**
- * Event for Receiving API Messages.
+ * Event for Receiving API Messages
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
@@ -22,7 +23,8 @@ public class DSCAlarmEvent extends EventObject {
 	private APIMessage apiMessage;
 	
 	/**
-	 * Constructor. Creates a new instance of the DSC Alarm event class.
+	 * Constructor
+	 * 
 	 * @param source
 	 */
 	public DSCAlarmEvent(Object source) {
@@ -30,7 +32,8 @@ public class DSCAlarmEvent extends EventObject {
 	}
 
 	/**
-	 * Adds the the received API Message to the event.
+	 * Adds the the received API Message to the event
+	 * 
 	 * @param apiMessage
 	 */
 	public void dscAlarmEventMessage(APIMessage apiMessage) {
@@ -39,6 +42,7 @@ public class DSCAlarmEvent extends EventObject {
 	
 	/**
 	 * Returns the API Message event from the DSC Alarm System
+	 * 
 	 * @return apiMessage
 	 */
 	public APIMessage getAPIMessage() {

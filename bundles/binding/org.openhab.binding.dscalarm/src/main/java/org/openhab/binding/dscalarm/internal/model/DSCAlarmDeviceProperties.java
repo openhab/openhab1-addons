@@ -16,7 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class for DSC Alarm device properties;
+ * Class for DSC Alarm device properties
+ * 
  * @author Russell Stephens
  * @since 1.6.0
  */
