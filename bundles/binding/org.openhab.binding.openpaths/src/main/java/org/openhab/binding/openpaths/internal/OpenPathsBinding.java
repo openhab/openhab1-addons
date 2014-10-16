@@ -9,6 +9,7 @@
 package org.openhab.binding.openpaths.internal;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import org.openhab.binding.openpaths.OpenPathsBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StringType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -91,7 +93,7 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 		
 		for (OpenPathsBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
-				
+				logger.debug("try binding provider item: " + itemName);
 				OpenPathsBindingConfig bindingConfig = provider.getItemConfig(itemName);				
 				String bindingConfigName = bindingConfig.getName();
                 String[] bindingParts = bindingConfigName.split("\\:");
@@ -105,22 +107,6 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 					continue;
 				}
 
-				if( bindingParts[1].startsWith("current") ) {
-				    logger.warn("current... Bindings will be supported soon");
-				    continue;
-				}
-				
-                String bindingLocationName = bindingParts[1];
-                if( ! locations.containsKey(bindingLocationName) ) {
-                    logger.warn("location name " + bindingLocationName + " not configured, falling back to 'home'");
-                    bindingLocationName = "home";
-                }
-                LocationBindingType bindingType = LocationBindingType.on;
-                if( bindingParts.length == 3 ) {
-                    switch( bindingParts[2] ) {
-                        case "distance": bindingType = LocationBindingType.distance;
-                    }
-                }
                 OpenPathsUser openPathsUser = openPathsUsers.get(name);
 				String accessKey = openPathsUser.getAccessKey();
 				String secretKey = openPathsUser.getSecretKey();
@@ -141,6 +127,33 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
                     continue;
                 }
                 logger.debug("Location received for '{}': {}", name, location.toString());
+
+                String bindingLocationName = bindingParts.length > 1 ? bindingParts[1] : "";
+				if( bindingLocationName.startsWith("current") ) {
+					if( bindingLocationName.equals("currentLocation") ) {
+	                    eventPublisher.postUpdate(itemName, new StringType("" + location.getLatitude() + ", " + location.getLongitude()));
+					} else if( bindingLocationName.equals("currentLatitude") ) {
+						eventPublisher.postUpdate(itemName, new DecimalType(new BigDecimal(location.getLatitude())));
+					} else if( bindingLocationName.equals("currentLongitude") ) {
+						eventPublisher.postUpdate(itemName, new DecimalType(new BigDecimal(location.getLongitude())));
+					} else {
+						logger.warn("unsupported Binding: " + bindingLocationName);
+					}
+				    continue;
+				}
+
+				if( ! locations.containsKey(bindingLocationName) ) {
+                    logger.warn("location name " + bindingLocationName + " not configured, falling back to 'home'");
+                    bindingLocationName = "home";
+                }
+				logger.debug("OpenPathsUser: " + name + "@" + bindingLocationName);
+
+				LocationBindingType bindingType = LocationBindingType.on;
+                if( bindingParts.length == 3 ) {
+                    if ( bindingParts[2].equals("distance") ) {
+                        bindingType = LocationBindingType.distance;
+                    }
+                }
 				
                 Location bindingLocation = locations.get(bindingLocationName);
                 logger.debug("Calculating distance between home ({}) and user location ({}) for '{}'...", new Object[] { bindingLocation.toString(), location.toString(), name });                
@@ -149,7 +162,7 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
                 logger.debug("Distance calculated as {} for '{}'@'{}'", distance, name, bindingLocationName);
 
                 if( bindingType.equals(LocationBindingType.on) ) {
-                    float fence = bindingLocation.getGeofence() == Float.MAX_VALUE ? geoFence : bindingLocation.getGeofence(); 
+                    float fence = bindingLocation.getGeofence() == 0.0 ? geoFence : bindingLocation.getGeofence(); 
                     if (distance <= fence) {
                         logger.debug("Detected that '{}'@'{}' is inside the geofence ({}m)", name, bindingLocationName, fence);
                         eventPublisher.postUpdate(itemName, OnOffType.ON);
@@ -158,7 +171,7 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
                         eventPublisher.postUpdate(itemName, OnOffType.OFF);
                     }
                 } else if(bindingType.equals(LocationBindingType.distance) ) {
-                    eventPublisher.postUpdate(itemName, new DecimalType(distance));
+                    eventPublisher.postUpdate(itemName, new DecimalType(new BigDecimal(distance/1000)));
                 }
 			}
 		}
@@ -257,11 +270,13 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
                 if("refresh".equals(key)) {
                     if (StringUtils.isNotBlank(value)) {
                         refreshInterval = Long.parseLong(value);
+                        logger.debug("Config: refresh=" + this.refreshInterval);
                     }
                 } else if ("geofence".equals(key)) {
                     // only for backward compatibility / as fallback
                     if (StringUtils.isNotBlank(value)) {
                         geoFence = Float.parseFloat(value);
+                        logger.debug("Config: geofence=" + this.geoFence);
                     }
                 } else	if (key.endsWith("lat")) {
                     String[] keyParts = key.split("\\.");
@@ -275,9 +290,11 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 
                         if (locations.containsKey(name)) {
                             locations.get(name).setLatitude(lat);
+                            logger.debug("Config: new Location " + name + "("+ locations.get(name) + ")");
                         } else {
                             Location loc = new Location();
                             loc.setLatitude(lat);
+                            logger.debug("Config: update Location " + name + "("+ locations.get(name) + ")");
                             locations.put(name, loc);
                         }
                     }
@@ -293,9 +310,11 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 
                         if (locations.containsKey(name)) {
                             locations.get(name).setLongitude(lon);
+                            logger.debug("Config: new Location " + name + "("+ locations.get(name) + ")");
                         } else {
                             Location loc = new Location();
                             loc.setLongitude(lon);
+                            logger.debug("Config: update Location " + name + "("+ locations.get(name) + ")");
                             locations.put(name, loc);
                         }
                     }
@@ -311,9 +330,11 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 
                         if (locations.containsKey(name)) {
                             locations.get(name).setGeofence(fence);
+                            logger.debug("Config: new Location " + name + "("+ locations.get(name) + ")");
                         } else {
                             Location loc = new Location();
                             loc.setGeofence(fence);
+                            logger.debug("Config: update Location " + name + "("+ locations.get(name) + ")");
                             locations.put(name, loc);
                         }
                     }
