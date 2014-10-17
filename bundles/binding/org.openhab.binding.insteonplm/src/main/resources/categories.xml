@@ -171,6 +171,15 @@ Example:
     	<feature name="lastheardfrom">GenericLastTime</feature>
     </productKey>
   </subcategory>
+  <subcategory>
+    <name>On/Off Dual-Band Outdoor Module</name>
+    <description>2634-222</description>
+    <subCat>0x38</subCat>
+    <productKey name="F00.00.0C">
+    	<feature name="switch">GenericSwitch</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
 </category>
 <category>
   <name>Network Bridge</name>
