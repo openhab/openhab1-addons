@@ -145,7 +145,7 @@ public class FritzboxBinding extends
 	@Override
 	public void internalReceiveCommand(String itemName, Command command) {
 
-		if (password != null) {
+		if (password != null && !password.isEmpty()) {
 			String type = null;
 			for (FritzboxBindingProvider provider : providers) {
 				type = provider.getType(itemName);
@@ -575,13 +575,14 @@ public class FritzboxBinding extends
 	@Override
 	protected void execute() {
 
+		if (password == null)
+			return;
+		else if (password.trim().isEmpty())
+			return;
+		
 		try {
-			TelnetClient client = new TelnetClient();
-			client.connect(ip);
-
-			receive(client);
-			send(client, password);
-			receive(client);
+			TelnetClient client = null ;
+			
 
 			for (FritzboxBindingProvider provider : providers) {
 				for (String item : provider.getItemNames()) {
@@ -598,6 +599,14 @@ public class FritzboxBinding extends
 					}else
 						continue;
 
+					if (client == null){
+						client = new TelnetClient();
+						client.connect(ip);
+						receive(client);
+						send(client, password);
+						receive(client);
+					}
+					
 					send(client, query);
 
 					String answer = receive(client);
@@ -627,10 +636,10 @@ public class FritzboxBinding extends
 
 				}
 			}
-
-			client.disconnect();
+			if (client != null)
+				client.disconnect();
 		} catch (Exception e) {
-			logger.warn("Could not get item state", e);
+			logger.warn("Could not get item state ", e);
 		}
 
 	}

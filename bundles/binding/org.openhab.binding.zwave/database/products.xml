@@ -60,6 +60,15 @@
                 </Product>
                 <Product>
                         <Reference>
+                                <Type>4441</Type>
+                                <Id>0000</Id>
+                        </Reference>
+                        <Model>RF9542-Z</Model>
+                        <Label lang="en">Dimmer Accessory Switch</Label>
+                        <ConfigFile>cooper/rf9542z.xml</ConfigFile>
+                </Product>
+                <Product>
+                        <Reference>
                                 <Type>534C</Type>
                                 <Id>0000</Id>
                         </Reference>
@@ -178,6 +187,16 @@
 		<Name>Everspring</Name>
 		<Product>
 			<Reference>
+				<Type>0003</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>AD131</Model>
+			<Label lang="en">Dimmer Plugin</Label>
+			<Label lang="de">Dimmer Zwischenstecker</Label>
+			<ConfigFile>everspring/ad131.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0103</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -245,6 +264,10 @@
 			<Reference>
 				<Type>0002</Type>
 				<Id>0001</Id>
+			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
 			</Reference>
 			<Model>HSM02</Model>
 			<Label lang="en">Door/Window Contact</Label>

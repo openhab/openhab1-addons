@@ -116,7 +116,7 @@
 				<Label lang="en">ALARM WATER</Label>
 			</Item>
 			<Item>
-				<Value>255</Value>
+				<Value>-1</Value>
 				<Label lang="en">BASIC_SET</Label>
 			</Item>
 			<Help lang="en">Type of transmitted control frame for association group 1, activated via input IN1. The parameter allows to specify the type of alarm frame or to force transmission of control commands (BASIC_SET)</Help>
@@ -152,7 +152,7 @@
 				<Label lang="en">ALARM WATER</Label>
 			</Item>
 			<Item>
-				<Value>255</Value>
+				<Value>-1</Value>
 				<Label lang="en">BASIC_SET</Label>
 			</Item>
 			<Help lang="en">Type of transmitted control frame for association group 2, activated via input IN2. The parameter allows to specify the type of alarm frame or to force transmission of control commands (BASIC_SET)</Help>
