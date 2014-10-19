@@ -67,7 +67,7 @@ public class ZWaveNodeStageAdvancer {
 	 * stages
 	 */
 	public void advanceNodeStage(NodeStage targetStage) {
-		if (targetStage.getStage() <= this.node.getNodeStage().getStage() && targetStage != NodeStage.DONE) {
+		if (targetStage.getStage() <= this.node.getNodeStage().getStage() && targetStage != NodeStage.DONE && targetStage != NodeStage.DEAD) {
 			logger.warn(String.format("NODE %d: Already in or beyond node stage, ignoring. current = %s, requested = %s", this.node.getNodeId(),
 					this.node.getNodeStage().getLabel(), targetStage.getLabel()));
 			return;
