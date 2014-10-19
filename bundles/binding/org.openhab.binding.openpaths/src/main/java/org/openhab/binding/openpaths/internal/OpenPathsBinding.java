@@ -10,6 +10,7 @@ package org.openhab.binding.openpaths.internal;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
 public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProvider> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(OpenPathsBinding.class);
-		
+
     // default refresh interval (defaults to 5 minutes)
     private long refreshInterval = 300000L;
 
@@ -107,26 +108,33 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 					continue;
 				}
 
+				Location location = null;
                 OpenPathsUser openPathsUser = openPathsUsers.get(name);
-				String accessKey = openPathsUser.getAccessKey();
-				String secretKey = openPathsUser.getSecretKey();
-
-				if (StringUtils.isEmpty(accessKey)) {
-					logger.warn("There is no ACCESS_KEY configured for '" + name + "'. Please add this user to the binding configuration, including both the ACCESS_KEY and SECRET_KEY from the OpenPaths profile.");
-					continue;
-				}
-				if (StringUtils.isEmpty(secretKey)) {
-					logger.warn("There is no SECRET_KEY configured for '" + name + "'. Please add this user to the binding configuration, including both the ACCESS_KEY and SECRET_KEY from the OpenPaths profile.");
-					continue;
-				}
-				
-				logger.debug("Requesting location for '{}'...", name);
-				Location location = getUserLocation(accessKey, secretKey);
-                if (location == null) {
-                    logger.warn("Unable to determine location for '{}'. Skipping.", name);
-                    continue;
+                if( openPathsUser.lastUpdateTS + this.refreshInterval < System.currentTimeMillis() ) {
+					String accessKey = openPathsUser.getAccessKey();
+					String secretKey = openPathsUser.getSecretKey();
+	
+					if (StringUtils.isEmpty(accessKey)) {
+						logger.warn("There is no ACCESS_KEY configured for '" + name + "'. Please add this user to the binding configuration, including both the ACCESS_KEY and SECRET_KEY from the OpenPaths profile.");
+						continue;
+					}
+					if (StringUtils.isEmpty(secretKey)) {
+						logger.warn("There is no SECRET_KEY configured for '" + name + "'. Please add this user to the binding configuration, including both the ACCESS_KEY and SECRET_KEY from the OpenPaths profile.");
+						continue;
+					}
+					
+					logger.debug("Requesting location for '{}'...", name);
+					location = getUserLocation(accessKey, secretKey);
+					openPathsUsers.get(name).setLastLocation(location);
+	                logger.debug("New location received for '{}': {}", name, location.toString());
+                } else {
+                	location = openPathsUsers.get(name).getLastLocation();
+                	logger.debug("Using cached location for '{}'", openPathsUser.toString());
                 }
-                logger.debug("Location received for '{}': {}", name, location.toString());
+//                if (location == null) {
+//                    logger.warn("Unable to determine location for '{}'. Skipping.", name);
+//                    continue;
+//                }
 
                 String bindingLocationName = bindingParts.length > 1 ? bindingParts[1] : "";
 				if( bindingLocationName.startsWith("current") ) {
@@ -374,6 +382,8 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 		private final String name;
 		private String accessKey;
 		private String secretKey;
+		private Location lastLocation = null;
+		private long lastUpdateTS = 0;
 		
 		public OpenPathsUser(String name) {
 			this.name = name;
@@ -399,8 +409,26 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 			this.secretKey = secretKey;
 		}
 		
+		public Location getLastLocation() {
+			return lastLocation;
+		}
+
+		public void setLastLocation(Location lastLocation) {
+			this.lastLocation = lastLocation;
+			this.lastUpdateTS = System.currentTimeMillis();
+		}
+
+		public long getLastUpdateTS() {
+			return lastUpdateTS;
+		}
+
 		public String toString() {
-		    return this.name + ", access " + this.accessKey + ", secret " + this.secretKey;
+        	StringBuilder out = new StringBuilder();
+        	out.append(name).append(", last updated ");
+        	out.append(new Date(this.lastUpdateTS).toString());
+        	out.append(": ").append(this.lastLocation.toString());
+        	
+		    return out.toString();
 		}
 	}
 	
@@ -414,7 +442,7 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 		public Location(float latitude, float longitude, String device) {
 			this.latitude = latitude;
 			this.longitude = longitude;
-			this.device = device;
+			this.device = device != null ? device : "";
 			this.geofence = 0.0f;
 			this.distance = Float.MAX_VALUE;
 		}
@@ -460,7 +488,7 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 
         public void setDevice(String device)
         {
-            this.device = device;
+            this.device = device != null ? device : "";
         }
 
         public double getDistance()
@@ -475,7 +503,15 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 
         @Override
 		public String toString() {
-			return "Lat: " + latitude + ", Long: " + longitude + ", Fence: " + geofence + "(from " + device + ")";
+        	StringBuilder out = new StringBuilder();
+        	out.append(latitude).append(", ").append(longitude);
+        	if( geofence > 0 ) {
+        		out.append(", Fence: ").append(geofence);
+        	}
+        	if( ! device.isEmpty() ) {
+        		out.append("(from ").append(device).append(')');
+        	}
+			return out.toString();
 		}
 	}
 }
