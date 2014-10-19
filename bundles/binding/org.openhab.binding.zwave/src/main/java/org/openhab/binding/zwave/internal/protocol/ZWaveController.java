@@ -40,8 +40,10 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpComma
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent.State;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AddNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRouteMessageClass;
@@ -51,6 +53,7 @@ import org.openhab.binding.zwave.internal.protocol.serialmessage.EnableSucMessag
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetControllerCapabilitiesMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetSucNodeIdMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.IdentifyNodeMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.IsFailedNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeNeighborUpdateMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveFailedNodeMessageClass;
@@ -447,6 +450,37 @@ public class ZWaveController {
 				break;
 			}
 		}
+		if(event instanceof ZWaveNetworkEvent) {
+			ZWaveNetworkEvent networkEvent = (ZWaveNetworkEvent)event;
+			switch(networkEvent.getEvent()) {
+				case FailedNode:
+					if(getNode(networkEvent.getNodeId()) == null) {
+						logger.debug("NODE {}: Deleting a node that doesn't exist.", networkEvent.getNodeId());
+						break;
+					}
+					if (networkEvent.getState() == State.Success) {
+						logger.debug("NODE {}: Marking node as failed because its on the controllers failed node list.", networkEvent.getNodeId());
+						getNode(networkEvent.getNodeId()).setNodeStage(NodeStage.FAILED);
+						
+						ZWaveEvent zEvent = new ZWaveNodeStatusEvent(networkEvent.getNodeId(), ZWaveNodeStatusEvent.State.Failed);
+						this.notifyEventListeners(zEvent);
+						break;
+					}
+				case DeleteNode:
+					if(getNode(networkEvent.getNodeId()) == null) {
+						logger.debug("NODE {}: Deleting a node that doesn't exist.", networkEvent.getNodeId());
+						break;
+					}
+					this.zwaveNodes.remove(networkEvent.getNodeId());
+					
+					//Remove the XML file
+					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+					nodeSerializer.DeleteNode(event.getNodeId());
+					break;
+				default:
+					break;
+			}
+		}
 	}
 	
 	/**
@@ -656,6 +690,15 @@ public class ZWaveController {
 		this.enqueue(msg);
 	}
 
+	/**
+	* Request if the node is currently marked as failed by the controller.
+	* @param nodeId The address of the node to check
+	*/
+ 	public void requestIsFailedNode(int nodeId)
+ 	{
+ 		this.enqueue(new IsFailedNodeMessageClass().doRequest(nodeId));
+ 	}
+ 	
 	/**
 	 * Removes a failed node from the network.
 	 * Note that this won't remove nodes that have not failed.
