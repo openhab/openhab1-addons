@@ -336,6 +336,15 @@
 		<Name>Reitz Group</Name>
 		<Product>
 			<Reference>
+				<Type>3001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>054375</Model>
+			<Label lang="en">Schuko Plug Switch</Label>
+			<ConfigFile>reitz/054375.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0000</Id>
 			</Reference>
