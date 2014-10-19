@@ -84,7 +84,7 @@ ZWaveCommandClassDynamicState {
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
 		logger.trace("Handle Message Thermostat Mode Request");
-		logger.debug(String.format("Received Thermostat Mode Request for Node ID = %d", this.getNode().getNodeId()));
+		logger.debug("NODE {}: Received Thermostat Mode Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 		case THERMOSTAT_MODE_SET:
@@ -94,7 +94,7 @@ ZWaveCommandClassDynamicState {
 					command));
 			return;
 		case THERMOSTAT_MODE_SUPPORTED_REPORT:
-			logger.debug("Process Thermostat Supported Mode Report");
+			logger.debug("NODE {}: Process Thermostat Supported Mode Report", this.getNode().getNodeId());
 
 			int payloadLength = serialMessage.getMessagePayload().length;
 
@@ -108,14 +108,13 @@ ZWaveCommandClassDynamicState {
 					if(index >= ModeType.values().length)
 						continue;
 
-					logger.debug(String.format("looking up mode type %d", index));
 					// (n)th bit is set. n is the index for the mode type enumeration.
 					ModeType modeTypeToAdd = ModeType.getModeType(index);
 					if(modeTypeToAdd != null){
 						this.modeTypes.add(modeTypeToAdd);
-						logger.debug(String.format("Added mode type %s (0x%02x)", modeTypeToAdd.getLabel(), index));
+						logger.debug("NODE {}: Added mode type {} ({})", this.getNode().getNodeId(), modeTypeToAdd.getLabel(), index);
 					} else {
-						logger.warn("Uknown mode type {}", index);
+						logger.warn("NODE {}: Unknown mode type {}", this.getNode().getNodeId(), index);
 					}
 				}
 			}
@@ -149,12 +148,12 @@ ZWaveCommandClassDynamicState {
 
 		int value = serialMessage.getMessagePayloadByte(offset + 1); 
 
-		logger.debug(String.format("Thermostat Mode report from nodeId = %d,  value = 0x%02X", this.getNode().getNodeId(), value));
+		logger.debug("NODE {}: Thermostat Mode report, value = {}", this.getNode().getNodeId(), value);
 
 		ModeType modeType = ModeType.getModeType(value);
 
 		if (modeType == null) {
-			logger.error(String.format("Unknown Mode Type = 0x%02x, ignoring report.", value));
+			logger.error("NODE {}: Unknown Mode Type = {}, ignoring report.", this.getNode().getNodeId(), value);
 			return;
 		}
 
@@ -162,7 +161,7 @@ ZWaveCommandClassDynamicState {
 		if (!this.modeTypes.contains(modeType))
 			this.modeTypes.add(modeType);
 
-		logger.debug(String.format("Thermostat Mode Report from Node ID = %d, value = %s", this.getNode().getNodeId(), modeType.getLabel()));
+		logger.debug("NODE {}: Thermostat Mode Report, value = %s", this.getNode().getNodeId(), modeType.getLabel());
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
 		this.getController().notifyEventListeners(zEvent);
 	}
@@ -192,7 +191,7 @@ ZWaveCommandClassDynamicState {
 	 */
 	@Override
 	public SerialMessage getValueMessage() {
-		logger.debug("Creating new message for application command THERMOSTAT_MODE_GET for node {}", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command THERMOSTAT_MODE_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Get);
 		byte[] payload = {
 				(byte) this.getNode().getNodeId(),
@@ -209,7 +208,7 @@ ZWaveCommandClassDynamicState {
 	 * @return the serial message, or null if the supported command is not supported.
 	 */
 	public SerialMessage getSupportedMessage() {
-		logger.debug("Creating new message for application command THERMOSTAT_MODE_SUPPORTED_GET for node {}", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command THERMOSTAT_MODE_SUPPORTED_GET", this.getNode().getNodeId());
 
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.High);
 		byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
@@ -227,19 +226,19 @@ ZWaveCommandClassDynamicState {
 	@Override
 	public SerialMessage setValueMessage(int value) {
 
-		logger.debug("setValueMessage {} , modeTypy empty {}", value, modeTypes.isEmpty());
+		logger.debug("NODE {}: setValueMessage {}, modeType empty {}", this.getNode().getNodeId(), value, modeTypes.isEmpty());
 
 		//if we do not have any mode types yet, get them
 		if(modeTypes.isEmpty())
 			return this.getSupportedMessage();
 
 		if(!modeTypes.contains(ModeType.getModeType(value))){
-			logger.error("Unsupported mode type {} for node {}", value, this.getNode().getNodeId());
+			logger.error("NODE {}: Unsupported mode type {}", this.getNode().getNodeId(), value);
 
 			return null;
 		}
 
-		logger.debug("Creating new message for application command THERMOSTAT_MODE_SET for node {}", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command THERMOSTAT_MODE_SET", this.getNode().getNodeId());
 
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
 		byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
