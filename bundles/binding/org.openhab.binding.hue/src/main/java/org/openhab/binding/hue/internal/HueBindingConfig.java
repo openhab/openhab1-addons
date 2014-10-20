@@ -136,7 +136,7 @@ public class HueBindingConfig implements BindingConfig {
 			return Integer.parseInt(configString);
 		} catch (Exception e) {
 			throw new BindingConfigParseException(
-					"Error parsing device number.");
+					"Error parsing step size.");
 		}
 	}
 
