@@ -103,7 +103,7 @@ public class OpenSprinklerBinding extends AbstractActiveBinding<OpenSprinklerBin
 			String stationItemName = findFirstMatchingItemName(station);
 			logger.debug("Checking state of item: " + stationItemName);
 			
-			if ( stationItemName != null ) {
+			if ( stationItemName != null && openSprinkler != null ) {
 				if ( openSprinkler.isStationOpen(station) ) {
 					eventPublisher.postUpdate(stationItemName, OnOffType.ON);
 				} else {
