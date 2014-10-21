@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.zwave.internal.config;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -30,17 +31,23 @@ public class ZWaveDbProductFile {
 	public ZWaveDbAssociation Associations;
 
 	List<ZWaveDbConfigurationParameter> getConfiguration() {
-		if(Configuration == null) {
-			return null;
+		final List<ZWaveDbConfigurationParameter> params;
+		if (Configuration == null) {
+			params = Collections.emptyList();
+		} else {
+			params = Configuration.Parameter;
 		}
-		return Configuration.Parameter;
+		return params;
 	}
 	
 	List<ZWaveDbAssociationGroup> getAssociations() {
-		if(Associations == null) {
-			return null;
+		final List<ZWaveDbAssociationGroup> groups;
+		if (Associations == null) {
+			groups = Collections.emptyList();
+		} else {
+			groups = Associations.Group;
 		}
-		return Associations.Group;
+		return groups;
 	}
 
 	class ZWaveDbCommandClassList {
