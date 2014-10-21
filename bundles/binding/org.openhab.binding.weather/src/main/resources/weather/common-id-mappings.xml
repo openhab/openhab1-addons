@@ -46,7 +46,7 @@
     <provider name="Hamweather" ids="ZR"/>
   </common-id-mapping>
   <common-id-mapping id="rain">
-    <provider name="Yahoo" ids="12"/>
+    <provider name="Yahoo" ids="12, 40"/>
     <provider name="OpenWeatherMap" ids="312, 313, 314, 321, 502, 503, 504, 522, 531"/>
     <provider name="ForecastIO" icons="rain"/>
     <provider name="Wunderground" icons="nt_rain, rain"/>
@@ -153,7 +153,7 @@
     <provider name="Yahoo" ids="37"/>
   </common-id-mapping>
   <common-id-mapping id="scattered-showers">
-    <provider name="Yahoo" ids="39, 40"/>
+    <provider name="Yahoo" ids="39"/>
   </common-id-mapping>
   <common-id-mapping id="thundershower">
     <provider name="Yahoo" ids="45"/>
