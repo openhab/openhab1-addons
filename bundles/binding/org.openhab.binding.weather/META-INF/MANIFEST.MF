@@ -9,11 +9,15 @@ Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Description: This is the Weather binding of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.apache.commons.httpclient,
+Import-Package: javax.servlet,
+ javax.servlet.http,
+ org.apache.commons.httpclient,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.params,
+ org.apache.commons.io,
  org.apache.commons.lang,
  org.apache.commons.lang.builder,
+ org.apache.commons.lang.math,
  org.apache.commons.lang.reflect,
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -22,11 +26,16 @@ Import-Package: org.apache.commons.httpclient,
  org.openhab.core.library.types,
  org.openhab.core.transform,
  org.openhab.core.types,
+ org.openhab.io.net.http,
  org.openhab.model.item.binding,
+ org.openhab.model.sitemap,
+ org.openhab.model.sitemap.impl,
+ org.openhab.ui.items,
  org.osgi.framework,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.osgi.service.event,
+ org.osgi.service.http,
  org.quartz,
  org.quartz.impl,
  org.quartz.impl.matchers,
@@ -34,7 +43,7 @@ Import-Package: org.apache.commons.httpclient,
  org.slf4j
 Bundle-SymbolicName: org.openhab.binding.weather
 Bundle-DocURL: http://www.openhab.org
-Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
+Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml, OSGI-INF/weatherservlet.xml
 Bundle-ClassPath: .,
  lib/jackson-core-2.4.1.1.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

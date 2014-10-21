@@ -25,6 +25,7 @@ public class LocationConfig {
 	private Double longitude;
 	private Integer updateInterval;
 	private String locationId;
+	private String name;
 
 	/**
 	 * Returns the language.
@@ -111,6 +112,20 @@ public class LocationConfig {
 	}
 
 	/**
+	 * Returns the name.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the name.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
 	 * Returns true, if this config is valid.
 	 */
 	public boolean isValid() {
@@ -125,7 +140,7 @@ public class LocationConfig {
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("providerName", providerName)
 				.append("language", language).append("updateInterval", updateInterval).append("latitude", latitude)
-				.append("longitude", longitude).append("locationId", locationId).toString();
+				.append("longitude", longitude).append("locationId", locationId).append("name", name).toString();
 	}
 
 }

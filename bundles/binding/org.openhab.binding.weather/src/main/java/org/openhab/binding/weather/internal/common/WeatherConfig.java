@@ -135,6 +135,8 @@ public class WeatherConfig {
 			lc.setLongitude(parseNumber(key, value));
 		} else if (StringUtils.equalsIgnoreCase(keyId, "language")) {
 			lc.setLanguage(value);
+		} else if (StringUtils.equalsIgnoreCase(keyId, "name")) {
+			lc.setName(value);
 		} else {
 			throw new ConfigurationException("weather", "Unknown configuration key '" + key
 					+ "', please check your openhab.cfg!");
