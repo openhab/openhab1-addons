@@ -132,7 +132,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 				return;
 			}
 			
-			logger.debug("NODE {}: Meter Scale = {} ({})", scale.getUnit(), scale.getScale());
+			logger.debug("NODE {}: Meter Scale = {} ({})", this.getNode().getNodeId(), scale.getUnit(), scale.getScale());
 
 			// add scale to the list of supported scales.
 			if (!this.meterScales.contains(scale)) {
