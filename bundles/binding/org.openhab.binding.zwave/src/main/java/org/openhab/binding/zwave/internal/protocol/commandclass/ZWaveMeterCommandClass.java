@@ -103,7 +103,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 		case METER_GET:
 		case METER_SUPPORTED_GET:
 		case METER_RESET:
-			logger.warn("Command %d not implemented.", command);
+			logger.warn("Command {} not implemented.", command);
 			return;
 		case METER_REPORT:
 			logger.trace("Process Meter Report");
