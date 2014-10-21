@@ -43,17 +43,13 @@ import org.slf4j.LoggerFactory;
  */
 public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPortEventListener {
 
-	private final static Logger log = LoggerFactory.getLogger(CULSerialHandlerImpl.class);
+	final static Logger log = LoggerFactory.getLogger(CULSerialHandlerImpl.class);
 
 	private SerialPort serialPort;
 	private Integer baudRate = 9600;
 	private Integer parityMode = SerialPort.PARITY_EVEN;
 	private InputStream is;
 	private OutputStream os;
-	private BufferedReader br;
-	private BufferedWriter bw;
-	private int credit10ms = 0;
-
 	/**
 	 * Default Constructor
 	 * @param deviceName
@@ -94,62 +90,10 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 		
 	}
 	
-	private void requestCreditReport()
-	{
-		/* this requests a report which provides credit10ms */
-		log.debug("Requesting credit report");
-		try {
-			bw.write("X\r\n");
-			bw.flush();
-		} catch (IOException e) {
-			log.error("Can't write report command to CUL", e);
-		}
-	}
-
 	@Override
 	public void serialEvent(SerialPortEvent event) {
 		if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-			try {
-				String data = br.readLine();
-				log.debug("Received raw message from CUL: " + data);
-				if ("EOB".equals(data)) {
-					log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
-					return;
-				} else if ("LOVF".equals(data)) {
-					log.warn("(LOVF) Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
-					return;
-				} else if (data.matches("^.. *\\d*"))
-				{					
-					String[] report = data.split(" ");					
-					credit10ms = Integer.parseInt(report[report.length-1]);
-					log.debug("credit10ms = "+credit10ms);
-					return;
-				}
-				notifyDataReceived(data);
-				requestCreditReport();
-			} catch (IOException e) {
-				log.error("Exception while reading from serial port", e);
-				notifyError(e);
-			}
-		}
-
-	}
-
-	@Override
-	protected void writeMessage(String message) {
-		log.debug("Sending raw message to CUL: " + message);
-		if (bw == null) {
-			log.error("Can't write message, BufferedWriter is NULL");
-		}
-		synchronized (bw) {
-			try {
-				bw.write(message);
-				bw.flush();
-			} catch (IOException e) {
-				log.error("Can't write to CUL", e);
-			}
-			
-			requestCreditReport();
+			processNextLine();
 		}
 
 	}
@@ -212,10 +156,5 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 			}
 		}
 
-	}
-
-	
-	public int getCredit10ms() {
-		return credit10ms;
 	}
 }

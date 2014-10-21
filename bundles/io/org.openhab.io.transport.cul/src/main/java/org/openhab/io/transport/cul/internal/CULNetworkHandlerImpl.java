@@ -18,6 +18,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.CULMode;
@@ -35,8 +36,6 @@ import org.slf4j.LoggerFactory;
 public class CULNetworkHandlerImpl extends AbstractCULHandler {
 
 	private static final int CUN_DEFAULT_PORT = 2323;
-	private int credit10ms = 0;
-
 	/**
 	 * Thread which receives all data from the CUL.
 	 * 
@@ -48,31 +47,17 @@ public class CULNetworkHandlerImpl extends AbstractCULHandler {
 
 		private final Logger logger = LoggerFactory.getLogger(ReceiveThread.class);
 
+		/**
+		 * Mark this thread
+		 */
+		ReceiveThread(){
+			super("CUL ReceiveThread");
+		}
+		
 		@Override
 		public void run() {
 			while (!isInterrupted()) {
-				try {
-					String data = br.readLine();
-					log.debug("Received raw message from CUL: " + data);
-					if ("EOB".equals(data)) {
-						log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
-						return;
-					} else if ("LOVF".equals(data)) {
-						log.warn("(LOVF) Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
-						return;
-					} else if (data.matches("^.. *\\d*"))
-					{					
-						String[] report = data.split(" ");					
-						credit10ms = Integer.parseInt(report[report.length-1]);
-						log.debug("credit10ms = "+credit10ms);
-						return;
-					}
-					notifyDataReceived(data);
-					requestCreditReport();
-				} catch (IOException e) {
-					log.error("Exception while reading from serial port", e);
-					notifyError(e);
-				}				
+				processNextLine();
 				
 				try {
 					Thread.sleep(10);
@@ -80,54 +65,36 @@ public class CULNetworkHandlerImpl extends AbstractCULHandler {
 					logger.debug("Error while sleeping in ReceiveThread", e);
 				}
 			}
+			logger.debug("ReceiveThread exiting.");
 		}
 	}
 	
-	private final static Logger log = LoggerFactory.getLogger(CULNetworkHandlerImpl.class);
+	final static Logger log = LoggerFactory.getLogger(CULNetworkHandlerImpl.class);
 
 	private ReceiveThread receiveThread;
 	
 	private Socket socket;
 	private InputStream is;
 	private OutputStream os;
-	private BufferedReader br;
-	private BufferedWriter bw;
-
+	
+	
 	public CULNetworkHandlerImpl(String deviceName, CULMode mode) {
 		super(deviceName, mode);
 	}
 
-	private void requestCreditReport()
-	{
-		/* this requests a report which provides credit10ms */
-		log.debug("Requesting credit report");
-		try {
-			bw.write("X\r\n");
-			bw.flush();
-		} catch (IOException e) {
-			log.error("Can't write report command to CUL", e);
-		}
+	/**
+	 * Constructor including property map for specific configuration. Just for compatibility with CulSerialHandlerImpl
+	 * @param deviceName
+	 * 			String representing the device.
+	 * @param mode
+	 * 			The RF mode for which the device will be configured.
+	 * @param properties
+	 * 			Properties are ignored
+	 */
+	public CULNetworkHandlerImpl(String deviceName, CULMode mode, Map<String, ?> properties){
+		super(deviceName, mode);		
 	}
 	
-	@Override
-	protected void writeMessage(String message) {
-		log.debug("Sending raw message to CUL: " + message);
-		if (bw == null) {
-			log.error("Can't write message, BufferedWriter is NULL");
-		}
-		synchronized (bw) {
-			try {
-				bw.write(message);
-				bw.flush();
-			} catch (IOException e) {
-				log.error("Can't write to CUL", e);
-			}
-			
-			requestCreditReport();
-		}
-
-	}
-
 	@Override
 	protected void openHardware() throws CULDeviceException {
 		log.debug("Opening network CUL connection for " + deviceName);
@@ -182,10 +149,5 @@ public class CULNetworkHandlerImpl extends AbstractCULHandler {
 				}
 			}
 		}
-	}
-
-	@Override
-	public int getCredit10ms() { 
-		return credit10ms;
-	}
+	}	
 }

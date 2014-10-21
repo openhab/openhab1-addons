@@ -8,6 +8,9 @@
  */
 package org.openhab.io.transport.cul.internal;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -19,6 +22,7 @@ import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.CULHandler;
 import org.openhab.io.transport.cul.CULListener;
+import org.openhab.io.transport.cul.CULManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +36,8 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public abstract class AbstractCULHandler implements CULHandler, CULHandlerInternal {
+
+	private final static Logger log = LoggerFactory.getLogger(AbstractCULHandler.class);
 
 	/**
 	 * Thread which sends all queued commands to the CUL.
@@ -105,6 +111,9 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 	protected List<CULListener> listeners = new ArrayList<CULListener>();
 
 	protected Queue<String> sendQueue = new ConcurrentLinkedQueue<String>();
+	protected int credit10ms = 0;
+	protected BufferedReader br;
+	protected BufferedWriter bw;
 
 	protected AbstractCULHandler(String deviceName, CULMode mode) {
 		this.mode = mode;
@@ -171,13 +180,6 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 		sendQueue.add(message);
 	}
 
-	/**
-	 * Write a message to the CUL.
-	 * 
-	 * @param message
-	 * @throws CULCommunicationException
-	 */
-	protected abstract void writeMessage(String message) throws CULCommunicationException;
 
 	/**
 	 * Checks if the message would alter the RF mode of this device.
@@ -211,5 +213,93 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 		for (CULListener listener : listeners) {
 			listener.error(e);
 		}
+	}
+
+	/**
+	 * read and process next line from underlying transport.
+	 */
+	protected void processNextLine()  {
+		try {
+			String data = br.readLine();
+			log.debug("Received raw message from CUL: " + data);
+			if ("EOB".equals(data)) {
+				log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
+				return;
+			} else if ("LOVF".equals(data)) {
+				log.warn("(LOVF) Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
+				return;
+			} else if (data.matches("^.. *\\d*"))
+			{					
+				processCreditReport(data);
+				return;
+			}
+			notifyDataReceived(data);
+			requestCreditReport();
+			
+				processNextLine();
+		} catch (IOException e) {
+			//TODO: describe connection!
+			log.error("Exception while reading from CUL port", e);
+			notifyError(e);
+		}				
+	}
+
+	/**
+	 * process data received from credit report
+	 * @param data
+	 */
+	private void processCreditReport(String data) {
+		// Credit report received
+		String[] report = data.split(" ");					
+		credit10ms = Integer.parseInt(report[report.length-1]);
+		log.debug("credit10ms = "+credit10ms);
+	}
+	
+
+	/**
+	 * get the remaining send time on channel as seen at the last send/receive event.
+	 * 
+	 * @return  remaining send time in 10ms units
+	 */
+	public int getCredit10ms() {
+		return credit10ms;
+	}
+
+	/**
+	 * write out request for a credit report directly to CUL
+	 */
+	private void requestCreditReport() {
+		/* this requests a report which provides credit10ms */
+		log.debug("Requesting credit report");
+		try {
+			bw.write("X\r\n");
+			bw.flush();
+		} catch (IOException e) {
+			log.error("Can't write report command to CUL", e);
+		}
+	}
+
+	/**
+	 * Write a message to the CUL.
+	 * 
+	 * @param message
+	 * @throws CULCommunicationException
+	 */
+	private  void writeMessage(String message) throws CULCommunicationException {
+		log.debug("Sending raw message to CUL "+deviceName+":  +'"+ message+"'");
+		if (bw == null) {
+			log.error("Can't write message, BufferedWriter is NULL");
+		}
+		synchronized (bw) {
+			try {
+				bw.write(message);
+				bw.flush();
+			} catch (IOException e) {
+				log.error("Can't write to CUL "+deviceName, e);
+			}
+			
+			requestCreditReport();
+		}
+	
 	}
 }
