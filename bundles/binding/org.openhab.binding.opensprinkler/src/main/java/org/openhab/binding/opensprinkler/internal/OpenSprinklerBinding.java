@@ -65,8 +65,8 @@ public class OpenSprinklerBinding extends AbstractActiveBinding<OpenSprinklerBin
 	}
 	
 	public void activate() {
-		super.activate();
 		updateBinding();
+		super.activate();
 	}
 	
 	public void deactivate() {
@@ -96,6 +96,12 @@ public class OpenSprinklerBinding extends AbstractActiveBinding<OpenSprinklerBin
 	 */
 	@Override
 	protected void execute() {
+		if ( openSprinkler == null ) {
+			logger.debug("State is not being updated with the OpenSprinkler device because access not initialized.");
+			
+			return;
+		}
+		
 		logger.debug("State is being updated with the OpenSprinkler device.");
 		
 		/* Parse through all stations and update their state value */
@@ -103,7 +109,7 @@ public class OpenSprinklerBinding extends AbstractActiveBinding<OpenSprinklerBin
 			String stationItemName = findFirstMatchingItemName(station);
 			logger.debug("Checking state of item: " + stationItemName);
 			
-			if ( stationItemName != null && openSprinkler != null ) {
+			if ( stationItemName != null ) {
 				if ( openSprinkler.isStationOpen(station) ) {
 					eventPublisher.postUpdate(stationItemName, OnOffType.ON);
 				} else {
