@@ -394,7 +394,16 @@ public class SitemapResource {
     	}
     	if(widget instanceof Webview) {
     		Webview webViewWidget = (Webview) widget;
-    		bean.url = webViewWidget.getUrl();
+    		if (webViewWidget.getUrl().startsWith("/")) {
+    			if (uri.getPort() < 0 || uri.getPort() == 80) {
+    				bean.url = uri.getScheme() + "://" + uri.getHost() + webViewWidget.getUrl();
+    			} else {
+    				bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + webViewWidget.getUrl();
+    			}
+    		}
+    		else {
+    			bean.url = webViewWidget.getUrl();
+    		}
     		bean.height = webViewWidget.getHeight();
     	}
     	if(widget instanceof Chart) {
