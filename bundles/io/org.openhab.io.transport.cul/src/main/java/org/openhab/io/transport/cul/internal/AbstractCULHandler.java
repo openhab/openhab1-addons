@@ -22,7 +22,6 @@ import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.CULHandler;
 import org.openhab.io.transport.cul.CULListener;
-import org.openhab.io.transport.cul.CULManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -215,12 +214,20 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 		}
 	}
 
+	
 	/**
 	 * read and process next line from underlying transport.
+	 * @throws CULCommunicationException if 
 	 */
-	protected void processNextLine()  {
+	protected void processNextLine() throws CULCommunicationException  {
 		try {
 			String data = br.readLine();
+			if(data==null){
+				String msg="EOF encountered for "+deviceName;
+				log.error(msg);
+				throw new CULCommunicationException(msg);
+			}
+			
 			log.debug("Received raw message from CUL: " + data);
 			if ("EOB".equals(data)) {
 				log.warn("(EOB) End of Buffer. Last message lost. Try sending less messages per time slot to the CUL");
@@ -235,12 +242,12 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 			}
 			notifyDataReceived(data);
 			requestCreditReport();
-			
-				processNextLine();
+						
 		} catch (IOException e) {
-			//TODO: describe connection!
-			log.error("Exception while reading from CUL port", e);
+			log.error("Exception while reading from CUL port "+deviceName, e);
 			notifyError(e);
+			
+			throw new CULCommunicationException(e);
 		}				
 	}
 

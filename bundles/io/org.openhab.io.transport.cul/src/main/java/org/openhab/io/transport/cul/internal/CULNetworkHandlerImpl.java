@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.CULMode;
 import org.slf4j.Logger;
@@ -56,17 +57,23 @@ public class CULNetworkHandlerImpl extends AbstractCULHandler {
 		
 		@Override
 		public void run() {
-			while (!isInterrupted()) {
-				processNextLine();
-				
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					logger.debug("Error while sleeping in ReceiveThread", e);
+
+			try {
+				while (!isInterrupted()) {
+					processNextLine();
+
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						logger.debug("Error while sleeping in ReceiveThread", e);
+					}
 				}
+				logger.debug("ReceiveThread exiting.");
+			} catch (CULCommunicationException e) {
+				log.error("Connection to CUL broken, terminating receive thread for " + deviceName);
 			}
-			logger.debug("ReceiveThread exiting.");
 		}
+
 	}
 	
 	final static Logger log = LoggerFactory.getLogger(CULNetworkHandlerImpl.class);

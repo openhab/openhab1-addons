@@ -27,6 +27,7 @@ import java.io.OutputStreamWriter;
 import java.util.Map;
 import java.util.TooManyListenersException;
 
+import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.CULMode;
 import org.slf4j.Logger;
@@ -93,9 +94,12 @@ public class CULSerialHandlerImpl extends AbstractCULHandler implements SerialPo
 	@Override
 	public void serialEvent(SerialPortEvent event) {
 		if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-			processNextLine();
+			try {
+				processNextLine();
+			} catch (CULCommunicationException e) {
+				log.error("Serial CUL connection read failed for " + deviceName);
+			}
 		}
-
 	}
 
 	@Override
