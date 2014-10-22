@@ -1226,6 +1226,10 @@
 				<Type>0301</Type>
 				<Id>0209</Id>
 			</Reference>
+			<Reference>
+                                <Type>301</Type>
+                                <Id>0334</Id>
+                        </Reference>
 			<Model>VRS15-1LZ</Model>
 			<Label lang="en">Scene Capable Push On/Off</Label>
 			<ConfigFile>leviton/vrs15-1lz.xml</ConfigFile>
