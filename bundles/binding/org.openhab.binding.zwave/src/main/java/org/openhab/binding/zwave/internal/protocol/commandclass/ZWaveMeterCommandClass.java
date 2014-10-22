@@ -109,6 +109,12 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 			logger.trace("Process Meter Report");
 			logger.debug(String.format("Meter report from nodeId = %d", this.getNode().getNodeId()));
 
+			if(serialMessage.getMessagePayload().length < offset+3) {
+				logger.error("NODE {}: Buffer too short: length={}, required={}", this.getNode().getNodeId(), 
+						serialMessage.getMessagePayload().length, offset+3);
+				return;
+			}
+			
 			meterTypeIndex = serialMessage.getMessagePayloadByte(offset + 1) & 0x1F;
 			if (meterTypeIndex >= MeterType.values().length) {
 				logger.warn(String.format("Invalid meter type 0x%02X", meterTypeIndex));
