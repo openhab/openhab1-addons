@@ -180,5 +180,6 @@
     <module>org.openhab.binding.garadget</module>
     <!--module>org.openhab.binding.fritzboxtr064</module-->
     <module>org.openhab.binding.smarthomatic</module>
+    <module>org.openhab.binding.gc100ir</module>
   </modules>
 </project>
