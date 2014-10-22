@@ -235,7 +235,7 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 			} else if ("LOVF".equals(data)) {
 				log.warn("(LOVF) Limit Overflow: Last message lost. You are using more than 1% transmitting time. Reduce the number of rf messages");
 				return;
-			} else if (data.matches("^.. *\\d*"))
+			} else if (data.matches("^\\d+\\s+\\d+"))
 			{					
 				processCreditReport(data);
 				return;
@@ -293,7 +293,7 @@ public abstract class AbstractCULHandler implements CULHandler, CULHandlerIntern
 	 * @throws CULCommunicationException
 	 */
 	private  void writeMessage(String message) throws CULCommunicationException {
-		log.debug("Sending raw message to CUL "+deviceName+":  +'"+ message+"'");
+		log.debug("Sending raw message to CUL "+deviceName+":  '"+ message+"'");
 		if (bw == null) {
 			log.error("Can't write message, BufferedWriter is NULL");
 		}
