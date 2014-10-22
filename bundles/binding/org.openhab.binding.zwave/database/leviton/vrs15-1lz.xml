@@ -22,7 +22,7 @@
         <Associations>
                 <Group>
                         <Index>1</Index>
-                        <Maximum>232</Maximum>
+                        <Maximum>5</Maximum>
                         <Label lang="en">Group 1</Label>
                 </Group>
         </Associations>	
