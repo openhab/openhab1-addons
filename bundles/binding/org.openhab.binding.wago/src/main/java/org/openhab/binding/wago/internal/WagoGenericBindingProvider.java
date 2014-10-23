@@ -13,6 +13,7 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.State;
@@ -24,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
- * 
+ *
  * @author Kaltofen
  * @since 1.5.0
  */
@@ -51,15 +52,12 @@ public class WagoGenericBindingProvider extends AbstractGenericBindingProvider
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException {
-		// if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
-		// throw new BindingConfigParseException("item '" + item.getName()
-		// + "' is of type '" + item.getClass().getSimpleName()
-		// +
-		// "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
-		// }
-
-		// TODO
+		throws BindingConfigParseException {
+			if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
+				throw new BindingConfigParseException("item '" + item.getName()
+				+ "' is of type '" + item.getClass().getSimpleName()
+				+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
+			}
 	}
 
 	/**
@@ -90,14 +88,14 @@ public class WagoGenericBindingProvider extends AbstractGenericBindingProvider
 		public WagoBindingConfig(Item item, String conf) {
 			this.item = item;
 
-			try {
-				String attributes[] = conf.split(":");
+			String attributes[] = conf.split(":");
 
 				couplerName = attributes[0];
+			try {
 				module = Integer.parseInt(attributes[1]) - 1; // -1 so that the user can just use the values from the EA-config.
 				channel = Integer.parseInt(attributes[2]) - 1;
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (NumberFormatException e) {
+				logger.error("wago binding configuration invalid. Module or channel is not a number.");
 			}
 		}
 
