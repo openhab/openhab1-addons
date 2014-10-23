@@ -92,9 +92,9 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 			case THERMOSTAT_SETPOINT_SET:
 			case THERMOSTAT_SETPOINT_GET:
 			case THERMOSTAT_SETPOINT_SUPPORTED_GET:
-				logger.warn(String.format("NODE %d: Command 0x%02X not implemented.",
+				logger.warn("NODE {}: Command {} not implemented.",
 						this.getNode().getNodeId(),
-						command));
+						command);
 				return;
 			case THERMOSTAT_SETPOINT_SUPPORTED_REPORT:
 				logger.debug("NODE {}: Process Thermostat Supported Setpoint Report", this.getNode().getNodeId());
@@ -114,7 +114,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 						    // (n)th bit is set. n is the index for the setpoint type enumeration.
 						    SetpointType setpointTypeToAdd = SetpointType.getSetpointType(index);
 							this.setpointTypes.add(setpointTypeToAdd);
-							logger.debug(String.format("NODE %d: Added setpoint type %s (0x%02x)", this.getNode().getNodeId(), setpointTypeToAdd.getLabel(), index));
+							logger.debug("NODE {}: Added setpoint type {} {}", this.getNode().getNodeId(), setpointTypeToAdd.getLabel(), index);
 					}
 				}
 
@@ -129,11 +129,11 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 				
 				break;
 			default:
-				logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).",
+				logger.warn("NODE {}: Unsupported Command {} for command class {} ({}).",
 						this.getNode().getNodeId(),
 						command, 
 						this.getCommandClass().getLabel(),
-						this.getCommandClass().getKey()));
+						this.getCommandClass().getKey());
 		}
 	}
 	
@@ -153,12 +153,12 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 			BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
 			
 			logger.debug("NODE {}: Thermostat Setpoint report Scale = {}", this.getNode().getNodeId(), scale);
-			logger.debug(String.format("NODE %d: Thermostat Setpoint Value = (%f)", this.getNode().getNodeId(), value));
+			logger.debug("NODE {}: Thermostat Setpoint Value = {}", this.getNode().getNodeId(), value);
 			
 			SetpointType setpointType = SetpointType.getSetpointType(setpointTypeCode);
 			
 			if (setpointType == null) {
-				logger.error(String.format("NODE %d: Unknown Setpoint Type = 0x%02x, ignoring report.", this.getNode().getNodeId(),setpointTypeCode));
+				logger.error("NODE {}: Unknown Setpoint Type = {}, ignoring report.", this.getNode().getNodeId(),setpointTypeCode);
 				return;
 			}
 			
@@ -166,7 +166,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 			if (!this.setpointTypes.contains(setpointType))
 				this.setpointTypes.add(setpointType);
 	
-			logger.debug(String.format("NODE %d: Setpoint Type = %s (0x%02x)", this.getNode().getNodeId(), setpointType.getLabel(), setpointTypeCode));
+			logger.debug("NODE {}: Setpoint Type = {} ({})", this.getNode().getNodeId(), setpointType.getLabel(), setpointTypeCode);
 			
 			logger.debug("NODE {}: Thermostat Setpoint Report value = {}", this.getNode().getNodeId(), value.toPlainString());
 			ZWaveThermostatSetpointValueEvent zEvent = new ZWaveThermostatSetpointValueEvent(this.getNode().getNodeId(), endpoint, setpointType, scale, value);
@@ -300,7 +300,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 			result.setMessagePayload(payload);
     	return result;
 		} catch (ArithmeticException e) {
-			logger.error(String.format("NODE %d: Got an arithmetic exception converting value %f to a valid Z-Wave value. Ignoring THERMOSTAT_SETPOINT_SET message.", this.getNode().getNodeId(), setpoint));
+			logger.error("NODE {}: Got an arithmetic exception converting value {} to a valid Z-Wave value. Ignoring THERMOSTAT_SETPOINT_SET message.", this.getNode().getNodeId(), setpoint);
 			return null;
 		}
 	}

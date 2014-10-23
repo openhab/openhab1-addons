@@ -91,11 +91,11 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
 			break;
 		default:
-			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).", 
+			logger.warn("NODE {}: Unsupported Command {} for command class {} ({}).", 
 					this.getNode().getNodeId(),
 					command, 
 					this.getCommandClass().getLabel(),
-					this.getCommandClass().getKey()));
+					this.getCommandClass().getKey());
 		}
 	}
 
@@ -110,12 +110,12 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
 		int value = serialMessage.getMessagePayloadByte(offset + 1); 
 
-		logger.debug(String.format("NODE %d: Thermostat fan state report value = 0x%02X", this.getNode().getNodeId(), value));
+		logger.debug("NODE {}: Thermostat fan state report value = {}", this.getNode().getNodeId(), value);
 
 		FanStateType fanStateType = FanStateType.getFanStateType(value);
 
 		if (fanStateType == null) {
-			logger.error(String.format("NODE %d: Unknown fan state Type = 0x%02x, ignoring report.", this.getNode().getNodeId(), value));
+			logger.error("NODE {}: Unknown fan state Type = {}, ignoring report.", this.getNode().getNodeId(), value);
 			return;
 		}
 

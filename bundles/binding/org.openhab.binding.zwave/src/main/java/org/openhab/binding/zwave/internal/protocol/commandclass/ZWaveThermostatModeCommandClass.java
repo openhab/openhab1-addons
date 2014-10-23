@@ -89,8 +89,8 @@ ZWaveCommandClassDynamicState {
 		case THERMOSTAT_MODE_SET:
 		case THERMOSTAT_MODE_GET:
 		case THERMOSTAT_MODE_SUPPORTED_GET:
-			logger.warn(String.format("NODE %d: Command 0x%02X not implemented.", 
-				this.getNode().getNodeId(), command));
+			logger.warn("NODE {}: Command {} not implemented.", 
+				this.getNode().getNodeId(), command);
 			return;
 		case THERMOSTAT_MODE_SUPPORTED_REPORT:
 			logger.debug("NODE {}: Process Thermostat Supported Mode Report", this.getNode().getNodeId());
@@ -129,11 +129,11 @@ ZWaveCommandClassDynamicState {
 
 			break;
 		default:
-			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).",
+			logger.warn("NODE {}: Unsupported Command {} for command class {} ({}).",
 					this.getNode().getNodeId(),
 					command, 
 					this.getCommandClass().getLabel(),
-					this.getCommandClass().getKey()));
+					this.getCommandClass().getKey());
 		}
 	}
 

@@ -89,8 +89,8 @@ ZWaveCommandClassDynamicState {
 		case THERMOSTAT_FAN_MODE_SET:
 		case THERMOSTAT_FAN_MODE_GET:
 		case THERMOSTAT_FAN_MODE_SUPPORTED_GET:
-			logger.warn(String.format("NODE %d: Command 0x%02X not implemented.", 
-				this.getNode().getNodeId(),command));
+			logger.warn("NODE {}: Command {} not implemented.", 
+				this.getNode().getNodeId(),command);
 			return;
 		case THERMOSTAT_FAN_MODE_SUPPORTED_REPORT:
 			logger.debug("NODE {}: Process Thermostat Supported Fan Mode Report", this.getNode().getNodeId());
@@ -112,7 +112,7 @@ ZWaveCommandClassDynamicState {
 					FanModeType fanModeTypeToAdd = FanModeType.getFanModeType(index);
 					if(fanModeTypeToAdd != null){
 						this.fanModeTypes.add(fanModeTypeToAdd);
-						logger.debug(String.format("NODE %d: Added Fan Mode type %s (0x%02x)", this.getNode().getNodeId(), fanModeTypeToAdd.getLabel(), index));
+						logger.debug("NODE {}: Added Fan Mode type {} ({})", this.getNode().getNodeId(), fanModeTypeToAdd.getLabel(), index);
 					} else {
 						logger.warn("NODE {}: Uknown fan mode type {}", this.getNode().getNodeId(), index);
 					}
@@ -130,11 +130,11 @@ ZWaveCommandClassDynamicState {
 
 			break;
 		default:
-			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).", 
+			logger.warn("NODE {}: Unsupported Command {} for command class {} ({}).", 
 					this.getNode().getNodeId(),
 					command, 
 					this.getCommandClass().getLabel(),
-					this.getCommandClass().getKey()));
+					this.getCommandClass().getKey());
 		}
 	}
 
@@ -149,12 +149,12 @@ ZWaveCommandClassDynamicState {
 
 		int value = serialMessage.getMessagePayloadByte(offset + 1); 
 
-		logger.debug(String.format("NODE %d: Thermostat Fan Mode report value = 0x%02X", this.getNode().getNodeId(), value));
+		logger.debug("NODE {}: Thermostat Fan Mode report value = {}", this.getNode().getNodeId(), value);
 
 		FanModeType fanModeType = FanModeType.getFanModeType(value);
 
 		if (fanModeType == null) {
-			logger.error(String.format("NODE %d: Unknown Fan Mode Type = 0x%02x, ignoring report.", this.getNode().getNodeId(),value));
+			logger.error("NODE {}: Unknown Fan Mode Type = {}, ignoring report.", this.getNode().getNodeId(),value);
 			return;
 		}
 

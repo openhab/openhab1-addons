@@ -91,11 +91,11 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
 			break;
 		default:
-			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).",
+			logger.warn("NODE {}: Unsupported Command {} for command class {} ({}).",
 					this.getNode().getNodeId(),
 					command, 
 					this.getCommandClass().getLabel(),
-					this.getCommandClass().getKey()));
+					this.getCommandClass().getKey());
 		}
 	}
 
@@ -110,12 +110,12 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
 		int value = serialMessage.getMessagePayloadByte(offset + 1); 
 
-		logger.debug(String.format("NODE %d: Thermostat Operating State report value = 0x%02X", this.getNode().getNodeId(), value));
+		logger.debug("NODE {}: Thermostat Operating State report value = {}", this.getNode().getNodeId(), value);
 
 		OperatingStateType operatingStateType = OperatingStateType.getOperatingStateType(value);
 
 		if (operatingStateType == null) {
-			logger.error(String.format("NODE %d: Unknown Operating State Type = 0x%02x, ignoring report.", this.getNode().getNodeId(), value));
+			logger.error("NODE {}: Unknown Operating State Type = {}, ignoring report.", this.getNode().getNodeId(), value);
 			return;
 		}
 
@@ -123,7 +123,7 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		if (!this.operatingStateTypes.contains(operatingStateType))
 			this.operatingStateTypes.add(operatingStateType);
 
-		logger.debug(String.format("NODE %d: Operating State Type = %s (0x%02x)", this.getNode().getNodeId(), operatingStateType.getLabel(), value));
+		logger.debug("NODE {}: Operating State Type = {} ({})", this.getNode().getNodeId(), operatingStateType.getLabel(), value);
 
 		logger.debug("NODE {}: Thermostat Operating State Report value = {}", this.getNode().getNodeId(), operatingStateType.getLabel());
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
