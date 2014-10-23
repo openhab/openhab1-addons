@@ -402,6 +402,15 @@
 			<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
 			<ConfigFile>merten/506004.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>5082xx</Model>
+			<Label lang="en">Battery Powered Wall Controller MOVE</Label>
+			<ConfigFile>merten/5082xx.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0077</Id>
