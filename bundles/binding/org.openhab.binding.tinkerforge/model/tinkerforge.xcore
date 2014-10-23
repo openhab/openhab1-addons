@@ -41,7 +41,11 @@ import com.tinkerforge.BrickletTilt
 import com.tinkerforge.BrickletIO4
 import com.tinkerforge.BrickletIndustrialDigitalOut4
 import com.tinkerforge.BrickletHallEffect
+import com.tinkerforge.BrickletSegmentDisplay4x7
+import com.tinkerforge.BrickletLEDStrip
+import org.openhab.core.library.types.HSBType
 import java.math.BigDecimal
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions
 
 /**
  * @author Theo Weiss
@@ -81,6 +85,10 @@ type TinkerBrickletVoltageCurrent wraps BrickletVoltageCurrent
 type TinkerBrickletTilt wraps BrickletTilt
 type TinkerBrickletIO4 wraps BrickletIO4
 type TinkerBrickletHallEffect wraps BrickletHallEffect
+type TinkerBrickletSegmentDisplay4x7 wraps BrickletSegmentDisplay4x7
+type TinkerBrickletLEDStrip wraps BrickletLEDStrip
+type HSBType wraps HSBType
+type DeviceOptions wraps DeviceOptions
 type Enum wraps Enum
 
 class Ecosystem {
@@ -267,6 +275,22 @@ interface DigitalActor {
     DigitalValue digitalState
     op void turnDigital(DigitalValue digitalState)
     op void fetchDigitalValue()
+}
+
+interface NumberActor {
+    op void setNumber(BigDecimal value)
+}
+
+class MBrickletSegmentDisplay4x7 extends NumberActor, MDevice<TinkerBrickletSegmentDisplay4x7>{
+    
+}
+
+interface ColorActor {
+    op void setColor(HSBType color, DeviceOptions opts)
+}
+
+class MBrickletLEDStrip extends ColorActor, MDevice<TinkerBrickletLEDStrip>{
+    
 }
 
 class DigitalActorIO16 extends DigitalActor, IODevice, MTFConfigConsumer<TFIOActorConfiguration>{

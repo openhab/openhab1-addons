@@ -109,7 +109,7 @@ public class MilightBindingConfig extends HashMap<String, String> implements Bin
 		if (steps != null) {
 			this.steps = parseStepsConfigString(steps);
 		} else {
-				this.steps = 31;
+				this.steps = 27; // http://www.limitlessled.com/dev/
 		}
 	}
 

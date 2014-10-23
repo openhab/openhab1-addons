@@ -77,7 +77,7 @@ implements ManagedService {
 	/** stores information about serial devices / pump gateways in use  */ 
 	private Map<String, SerialDevice> serialDevices = new HashMap<String, SerialDevice>();
 	private ReentrantLock serialDevicesLock = new ReentrantLock();
-	
+
 	/** stores information about the context of items. The map has this content structure: context -> Set of itemNames */ 
 	private Map<String, Set<String>> contextMap = new HashMap<String, Set<String>>();
 
@@ -170,7 +170,6 @@ implements ManagedService {
 					boolean serialDeviceReady = true;
 					if (serialDevice == null) {
 						serialDevice = new SerialDevice(serialPort);
-						serialDevice.setEventPublisher(eventPublisher);
 						try {
 							serialDevice.initialize();
 						} catch (InitializationException e) {
@@ -183,7 +182,11 @@ implements ManagedService {
 									+ e.getMessage());
 							serialDeviceReady = false;
 						}
-						serialDevices.put(serialPort, serialDevice);
+
+						if(serialDeviceReady) {
+							serialDevice.setEventPublisher(eventPublisher);
+							serialDevices.put(serialPort, serialDevice);
+						}
 					}
 
 					Set<String> itemNames = contextMap.get(serialPort);
@@ -290,11 +293,11 @@ implements ManagedService {
 		}
 		return firstMatchingProvider;
 	}
-	
+
 	public void lockSerialDevices() {
 		serialDevicesLock.lock();
 	}
-	
+
 	public void unlockSerialDevices() {
 		serialDevicesLock.unlock();
 	}
@@ -526,29 +529,34 @@ implements ManagedService {
 
 			theBinding.lockSerialDevices();
 			SerialDevice serialDevice = theBinding.serialDevices.get(serialPort);
-			String response = serialDevice.requestResponse(valueSelector.name());
-			logger.debug("Requested '{}' from the oceanic unit, got '{}' back",valueSelector.name(),response);
+			String response = null;
+			if(serialDevice != null) {
+				response = serialDevice.requestResponse(valueSelector.name());
+				logger.debug("Requested '{}' from the oceanic unit, got '{}' back",valueSelector.name(),response);
+			}
 			theBinding.unlockSerialDevices();
-			
+
 			// process response etc
 
-			for (OceanicBindingProvider provider : theBinding.providers) {
-				for (String itemName : provider.getItemNames()) {
-					String itemSerialPort = provider.getSerialPort(itemName);
-					OceanicValueSelector itemSelector = OceanicValueSelector.getValueSelector(provider.getValueSelector(itemName),ValueSelectorType.GET);
+			if(response!=null) {
+				for (OceanicBindingProvider provider : theBinding.providers) {
+					for (String itemName : provider.getItemNames()) {
+						String itemSerialPort = provider.getSerialPort(itemName);
+						OceanicValueSelector itemSelector = OceanicValueSelector.getValueSelector(provider.getValueSelector(itemName),ValueSelectorType.GET);
 
-					if (itemSerialPort.equals(serialPort) && itemSelector.equals(valueSelector)) {
-						if(serialDevice.cachedValues.get(valueSelector)==null || !serialDevice.cachedValues.get(valueSelector).equals(response)) {
-							serialDevice.cachedValues.put(valueSelector, response);
-							State value;
-							try {
-								value = createStateForType(valueSelector,response);
-							} catch (BindingConfigParseException e) {
-								logger.error("An exception occured while converting {} to a valide state : {}",response,e.getMessage());
-								return;
+						if (itemSerialPort.equals(serialPort) && itemSelector.equals(valueSelector)) {
+							if(serialDevice.cachedValues.get(valueSelector)==null || !serialDevice.cachedValues.get(valueSelector).equals(response)) {
+								serialDevice.cachedValues.put(valueSelector, response);
+								State value;
+								try {
+									value = createStateForType(valueSelector,response);
+								} catch (BindingConfigParseException e) {
+									logger.error("An exception occured while converting {} to a valide state : {}",response,e.getMessage());
+									return;
+								}
+
+								serialDevice.eventPublisher.postUpdate(itemName, value);
 							}
-
-							serialDevice.eventPublisher.postUpdate(itemName, value);
 						}
 					}
 				}

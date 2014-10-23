@@ -16,10 +16,17 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.openhab.binding.netatmo.NetatmoBindingProvider;
+import org.openhab.binding.netatmo.internal.messages.DeviceListRequest;
+import org.openhab.binding.netatmo.internal.messages.DeviceListResponse;
+import org.openhab.binding.netatmo.internal.messages.DeviceListResponse.Device;
+import org.openhab.binding.netatmo.internal.messages.DeviceListResponse.Module;
 import org.openhab.binding.netatmo.internal.messages.MeasurementRequest;
 import org.openhab.binding.netatmo.internal.messages.MeasurementResponse;
 import org.openhab.binding.netatmo.internal.messages.NetatmoError;
@@ -52,6 +59,11 @@ public class NetatmoBinding extends
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(NetatmoBinding.class);
+
+	/**
+	 * 
+	 */
+	private boolean firstExecution = true;
 
 	/**
 	 * The refresh interval which is used to poll values from the Netatmo server
@@ -146,6 +158,31 @@ public class NetatmoBinding extends
 			refreshAccessToken();
 		}
 
+		if (this.firstExecution) {
+			final DeviceListRequest request = new DeviceListRequest(
+					this.accessToken);
+			final DeviceListResponse response = request.execute();
+
+			logger.debug("Request: {}", request);
+			logger.debug("Response: {}", response);
+
+			if (response.isError()) {
+				final NetatmoError error = response.getError();
+
+				if (error.isAccessTokenExpired()) {
+					refreshAccessToken();
+					execute();
+				} else {
+					logger.error(error.getMessage());
+				}
+
+				return; // abort processing
+			} else {
+				processDeviceListResponse(response);
+				this.firstExecution = false;
+			}
+		}
+
 		final Map<String, Map<String, BigDecimal>> deviceMeasureValueMap = new HashMap<String, Map<String, BigDecimal>>();
 
 		for (final MeasurementRequest request : createMeasurementRequests()) {
@@ -166,19 +203,8 @@ public class NetatmoBinding extends
 
 				return; // abort processing
 			} else {
-				final List<BigDecimal> values = response.getBody().get(0)
-						.getValues().get(0);
-
-				final Map<String, BigDecimal> valueMap = new HashMap<String, BigDecimal>();
-
-				int index = 0;
-				for (final String measure : request.getMeasures()) {
-					final BigDecimal value = values.get(index);
-					valueMap.put(measure, value);
-					index++;
-				}
-
-				deviceMeasureValueMap.put(request.getKey(), valueMap);
+				processMeasurementResponse(request, response,
+						deviceMeasureValueMap);
 			}
 		}
 
@@ -237,10 +263,115 @@ public class NetatmoBinding extends
 				}
 
 				requests.get(requestKey).addMeasure(measure);
+
 			}
 		}
 
 		return requests.values();
+	}
+
+	/**
+	 * Processes an incoming {@link DeviceListResponse}.
+	 * <p>
+	 */
+	private void processDeviceListResponse(final DeviceListResponse response) {
+		// Prepare a map of all known device measurements
+		final Map<String, Device> deviceMap = new HashMap<String, Device>();
+		final Map<String, Set<String>> deviceMeasurements = new HashMap<String, Set<String>>();
+
+		for (final Device device : response.getDevices()) {
+			final String deviceId = device.getId();
+			deviceMap.put(deviceId, device);
+
+			for (final String measurement : device.getMeasurements()) {
+				if (!deviceMeasurements.containsKey(deviceId)) {
+					deviceMeasurements.put(deviceId, new HashSet<String>());
+				}
+
+				deviceMeasurements.get(deviceId).add(measurement);
+			}
+		}
+
+		// Prepare a map of all known module measurements
+		final Map<String, Module> moduleMap = new HashMap<String, Module>();
+		final Map<String, Set<String>> moduleMeasurements = new HashMap<String, Set<String>>();
+
+		for (final Module module : response.getModules()) {
+			final String moduleId = module.getId();
+			moduleMap.put(moduleId, module);
+
+			for (final String measurement : module.getMeasurements()) {
+				if (!moduleMeasurements.containsKey(moduleId)) {
+					moduleMeasurements.put(moduleId, new HashSet<String>());
+				}
+
+				moduleMeasurements.get(moduleId).add(measurement);
+			}
+		}
+
+		// Remove all configured items from the maps
+		for (final NetatmoBindingProvider provider : this.providers) {
+			for (final String itemName : provider.getItemNames()) {
+				final String deviceId = provider.getDeviceId(itemName);
+				final String moduleId = provider.getModuleId(itemName);
+				final String measure = provider.getMeasure(itemName);
+
+				final Set<String> measurements;
+
+				if (moduleId != null) {
+					measurements = moduleMeasurements.get(moduleId);
+				} else {
+					measurements = deviceMeasurements.get(deviceId);
+				}
+
+				if (measurements != null) {
+					measurements.remove(measure);
+				}
+			}
+		}
+
+		// Log all unconfigured measurements
+		final StringBuilder message = new StringBuilder();
+		message.append("The following Netatmo measurements are not yet configured:\n");
+		for (Entry<String, Set<String>> entry : deviceMeasurements.entrySet()) {
+			final String deviceId = entry.getKey();
+			final Device device = deviceMap.get(deviceId);
+
+			for (String measurement : entry.getValue()) {
+				message.append("\t" + deviceId + "#" + measurement + " ("
+						+ device.getModuleName() + ")\n");
+			}
+		}
+		for (Entry<String, Set<String>> entry : moduleMeasurements.entrySet()) {
+			final String moduleId = entry.getKey();
+			final Module module = moduleMap.get(moduleId);
+
+			for (String measurement : entry.getValue()) {
+				message.append("\t" + module.getMainDevice() + "#" + moduleId
+						+ "#" + measurement + " (" + module.getModuleName()
+						+ ")\n");
+			}
+		}
+
+		logger.info(message.toString());
+	}
+
+	private void processMeasurementResponse(final MeasurementRequest request,
+			final MeasurementResponse response,
+			final Map<String, Map<String, BigDecimal>> deviceMeasureValueMap) {
+		final List<BigDecimal> values = response.getBody().get(0).getValues()
+				.get(0);
+
+		final Map<String, BigDecimal> valueMap = new HashMap<String, BigDecimal>();
+
+		int index = 0;
+		for (final String measure : request.getMeasures()) {
+			final BigDecimal value = values.get(index);
+			valueMap.put(measure, value);
+			index++;
+		}
+
+		deviceMeasureValueMap.put(request.getKey(), valueMap);
 	}
 
 	private void refreshAccessToken() {

@@ -77,6 +77,7 @@ public class Port {
 	private Driver			m_driver	 = null;
 	private ArrayList<MsgListener>	 m_listeners = new ArrayList<MsgListener>();
 	private LinkedBlockingQueue<Msg> m_writeQueue = new LinkedBlockingQueue<Msg>();
+	private Poller			m_poller	 = null;
 
 	/**
 	 * Constructor
@@ -91,14 +92,15 @@ public class Port {
 		addListener(m_modem);
 		m_reader	= new SerialReader();
 		m_writer	= new SerialWriter();
+		m_poller	= new Poller();
 	}
 
-	public boolean 			isRunning() 	{ return m_running; }
+	public boolean 		isRunning() 	{ return m_running; }
 	public synchronized boolean isDeviceListComplete() { return (m_deviceListComplete); }
 	public InsteonAddress	getAddress()	{ return m_modem.getAddress(); } 
 	public String			getDeviceName()	{ return m_devName; }
 	public Driver			getDriver()		{ return m_driver; }
-
+	public Poller			getPoller()		{ return m_poller; }
 
 	public void addListener (MsgListener l) {
 		synchronized(m_listeners) {
@@ -243,10 +245,21 @@ public class Port {
 				while ((len = m_in.read(buffer, 0, m_readSize)) > -1) {
 					m_msgFactory.addData(buffer, len);
 					// must call processData() until we get a null pointer back
-					for (Msg m = m_msgFactory.processData(); m != null;
-							m = m_msgFactory.processData()) {
-							toAllListeners(m);
-						notifyWaiters(m);
+					try {
+						for (Msg m = m_msgFactory.processData(); m != null;
+								m = m_msgFactory.processData()) {
+								toAllListeners(m);
+								notifyWaiters(m);
+						}
+					} catch (IOException e) {
+						// got bad data from modem,
+						// unblock those waiting for ack
+						logger.warn("bad data received: {}", e.toString());
+						if (m_reply == ReplyType.WAITING_FOR_ACK) {
+							logger.warn("got bad data back, must assume message was acked.");
+							m_reply = ReplyType.GOT_ACK;
+							notify();
+						}
 					}
 				}
 			} catch (IOException e)	{
@@ -371,6 +384,7 @@ public class Port {
 					dev.addDescriptor(d);
 					dev.setInitStatus(InitStatus.INITIALIZED);
 					dev.setIsModem(true);
+					dev.addPort(fromPort);
 					synchronized (devices) {
 						devices.put(a, dev);
 					}

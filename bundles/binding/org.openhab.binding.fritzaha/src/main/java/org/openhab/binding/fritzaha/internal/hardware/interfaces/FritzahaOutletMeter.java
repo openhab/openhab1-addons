@@ -27,6 +27,9 @@ public interface FritzahaOutletMeter extends FritzahaDevice {
 		VOLTAGE, CURRENT, POWER, ENERGY;
 	};
 
+	public static enum TimeDef {
+		MINUTES, DAY, MONTH, YEAR; 
+	}
 	/**
 	 * Getter for type of meter
 	 * 

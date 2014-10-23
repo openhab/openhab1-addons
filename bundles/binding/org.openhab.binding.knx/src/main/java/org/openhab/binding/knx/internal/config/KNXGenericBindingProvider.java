@@ -356,7 +356,12 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 					if (isReadable) {
 						configItem.readableDataPoint = dp;
 					}
-					configItem.allDataPoints.add(dp);
+					if(!configItem.allDataPoints.contains(dp)) {
+						configItem.allDataPoints.add(dp);
+					} else {
+						throw new BindingConfigParseException(
+								"Datapoint '"+dp.getDPT() + "' already exists for item '"+item.getName()+"'.");
+					}
 				}
 				
 				config.add(configItem);

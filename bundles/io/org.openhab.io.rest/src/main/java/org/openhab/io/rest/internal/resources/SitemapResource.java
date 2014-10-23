@@ -11,6 +11,7 @@ package org.openhab.io.rest.internal.resources;
 import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -29,6 +30,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend.SCOPE;
+import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -86,7 +88,11 @@ public class SitemapResource {
     protected static final String SITEMAP_FILEEXT = ".sitemap";
 
 	public static final String PATH_SITEMAPS = "sitemaps";
-    
+	
+	public static final String ATMOS_TIMEOUT_HEADER = "X-Atmosphere-Timeout";
+	
+	public static final int DEFAULT_TIMEOUT_SECS = 300;
+	
 	@Context UriInfo uriInfo;
 	@Context Broadcaster sitemapBroadcaster;
 
@@ -141,17 +147,28 @@ public class SitemapResource {
 			if(responseType!=null) {
 		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
 		    			new JSONWithPadding(getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build()), callback) : getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build());
-		    	throw new WebApplicationException(Response.ok(responseObject, responseType).build());
+		    	throw new WebApplicationException(Response.ok(responseObject, responseType).header(ATMOS_TIMEOUT_HEADER, DEFAULT_TIMEOUT_SECS + "").build());
 			} else {
 				throw new WebApplicationException(Response.notAcceptable(null).build());
 			}
 		}
-		GeneralBroadcaster sitemapBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
+		
+		GeneralBroadcaster sitemapBroadcaster = BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
 		sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
+		
+		boolean resume = false;
+		try {
+		AtmosphereRequest request = resource.getRequest();
+		resume = !ResponseTypeHelper.isStreamingTransport(request);
+		} catch (Exception e) {
+			logger.debug(e.getMessage());
+		}
+
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
 			.scope(SCOPE.REQUEST)
-			.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))
+			.resumeOnBroadcast(resume)
 			.broadcaster(sitemapBroadcaster)
+			.period(DEFAULT_TIMEOUT_SECS, TimeUnit.SECONDS)
 			.outputComments(true).build(); 
     }
 	

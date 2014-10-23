@@ -24,7 +24,7 @@ public class MultiLevelUpDownCommandConverter extends
 	 */
 	@Override
 	protected Integer convert(Item item, UpDownType command) {
-		return command == UpDownType.DOWN ? 0x63 : 0x00;
+		return command != UpDownType.DOWN ? 0x63 : 0x00;
 	}
 
 }

@@ -87,14 +87,8 @@ public class DeviceListBuilder implements MsgListener {
 			int devCat	= m.getByte("LinkData1") & 0xff;
 			int subCat	= m.getByte("LinkData2") & 0xff;
 			int vers	= m.getByte("LinkData3") & 0xff;
-			/*
-			if (devCat == 0 && subCat == 0 && vers == 0) {
-				// got this kind of bogus link record.
-				// not sure what to do with it, just ignore
-				// the record
-				return;
-			}
-			*/
+			boolean invalidRecord = (devCat == 0 && subCat == 0 && vers == 0);
+			logger.info("modem db: {}", m);
 			HashMap<InsteonAddress, InsteonDevice> devices = m_port.getDeviceList();
 			synchronized(devices) {
 				InsteonDevice dev = devices.get(linkAddr);
@@ -104,11 +98,24 @@ public class DeviceListBuilder implements MsgListener {
 					devices.put(linkAddr,  dev);
 				}
 				dev.addPort(m_port.getDeviceName());
-				dev.addLinkRecord(m);
-				DeviceDescriptor desc = DeviceDescriptor.s_getDeviceDescriptor(devCat, subCat, 0x00);
-				desc.setVersion(vers);
-				dev.addDescriptor(desc);
-				dev.instantiateFeatures();
+				if (invalidRecord) {
+					// invalid record indicates that HouseLinc or other
+					// software may have messed with the modem link database.
+					// 
+					// Unless a valid link record has been found earlier,
+					// try and get the correct description by querying the 
+					// device with a product info request.
+					if (!dev.hasLinkRecords()) {
+						dev.setNeedsQuerying(true);
+					}
+				} else {
+					dev.setNeedsQuerying(false);
+					dev.addLinkRecord(m);
+					DeviceDescriptor desc = DeviceDescriptor.s_getDeviceDescriptor(devCat, subCat, 0x00);
+					desc.setVersion(vers);
+					dev.addDescriptor(desc);
+					dev.instantiateFeatures();
+				}
 			}
 		} catch (FieldException e) {
 			logger.error("cannot access field:", e);

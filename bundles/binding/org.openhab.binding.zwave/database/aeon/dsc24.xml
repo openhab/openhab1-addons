@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>DSB06</Model>
+	<Label lang="en">Smart Energy Switch</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x82</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Multilevel Sensor Report Content</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Power</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Voltage</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>word</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Make SES blink</Label>
+		</Parameter>
+		<Parameter>
+			<Index>80</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Automatic Notifications</Label>
+			<Help lang="en">Enables automatic notifications to associated devices whenever there is a state change</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Nothing</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Hail</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Basic CC Report</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>90</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable Parameter 91</Label>
+			<Help lang="en">Enables/disables parameter 91 and 92 below</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>91</Index>
+			<Type>word</Type>
+			<Default>50</Default>
+			<Size>2</Size>
+			<Label lang="en">Minimum change in wattage</Label>
+			<Help lang="en">The value here represents minimum change in wattage (in terms of wattage) for a REPORT to be sent.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>92</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Minimum change in wattage %</Label>
+			<Help lang="en">The value here represents minimum change in wattage percent (in terms of percentage) for a REPORT to be sent.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>100</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Set 100 to 103 to default</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Reset</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>101</Index>
+			<Type>list</Type>
+			<Default>8</Default>
+			<Size>4</Size>
+			<Label lang="en">Group 1 report</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Multisensor Report</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Meter Report (Watts)</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Meter Report (kWh)</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>102</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">Group 2 report</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Multisensor Report</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Meter Report (Watts)</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Meter Report (kWh)</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>103</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>4</Size>
+			<Label lang="en">Group 3 report</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Multisensor Report</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Meter Report (Watts)</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Meter Report (kWh)</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>110</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Set 111 to 113 to default</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Reset</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>111</Index>
+			<Type>word</Type>
+			<Default>600</Default>
+			<Size>4</Size>
+			<Label lang="en">Interval group 1</Label>
+			<Help lang="en">The time interval of sending Report group 1</Help>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+		</Parameter>
+		<Parameter>
+			<Index>112</Index>
+			<Type>word</Type>
+			<Default>600</Default>
+			<Size>4</Size>
+			<Label lang="en">Interval group 1</Label>
+			<Help lang="en">The time interval of sending Report group 2</Help>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+		</Parameter>
+		<Parameter>
+			<Index>113</Index>
+			<Type>word</Type>
+			<Default>600</Default>
+			<Size>4</Size>
+			<Label lang="en">Interval group 1</Label>
+			<Help lang="en">The time interval of sending Report group 3</Help>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+		</Parameter>
+		<Parameter>
+			<Index>254</Index>
+			<Type>word</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Device Tag</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>255</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Device Reset</Label>
+			<Help lang="en"></Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Reset</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+	
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Status Reports</Label>
+		</Group>
+	</Associations>
+</Product>
+

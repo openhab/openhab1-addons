@@ -12,6 +12,9 @@ package org.openhab.binding.tinkerforge.internal.model;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>TFIO Sensor Configuration</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.4.0
  * <!-- end-user-doc -->
  *
  * <p>

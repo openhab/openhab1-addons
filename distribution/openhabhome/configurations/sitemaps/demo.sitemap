@@ -11,13 +11,15 @@ sitemap demo label="Main Menu"
 			Frame {
 				Text item=Weather_Temp_Max valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]
 				Text item=Weather_Temp_Min valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]
+				Text item=Weather_Humidity
+				Text item=Weather_Humidex
 				Text item=Weather_LastUpdate visibility=[Weather_LastUpdate>30] valuecolor=[Weather_LastUpdate>120="orange", Weather_LastUpdate>300="red"]
 			}
 			Frame {
 				Switch item=Weather_Chart_Period label="Chart Period" mappings=[0="Hour", 1="Day", 2="Week"]
-				Chart item=Weather_Chart period=h refresh=600 visibility=[Weather_Chart_Period==0, Weather_Chart_Period=="Uninitialized"]
-				Chart item=Weather_Chart period=D refresh=3600 visibility=[Weather_Chart_Period==1]
-				Chart item=Weather_Chart period=W refresh=3600 visibility=[Weather_Chart_Period==2]
+				Chart item=Weather_Chart period=h refresh=6000 visibility=[Weather_Chart_Period==0, Weather_Chart_Period=="Uninitialized"]
+				Chart item=Weather_Chart period=D refresh=30000 visibility=[Weather_Chart_Period==1]
+				Chart item=Weather_Chart period=W refresh=30000 visibility=[Weather_Chart_Period==2]
 			}
 		}
 	}

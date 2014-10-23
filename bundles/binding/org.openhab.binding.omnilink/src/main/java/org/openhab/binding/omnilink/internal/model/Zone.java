@@ -55,7 +55,6 @@ public class Zone extends OmnilinkDevice {
 		int current = ((properties.getStatus() >> 0) & 0x03);
 		int latched = ((properties.getStatus() >> 2) & 0x03);
 		int arming = ((properties.getStatus() >> 4) & 0x03);
-		int trouble = ((properties.getStatus() >> 6) & 0x01);
 
 		String latchedTxt = (latched < LATCHED_TEXT.length ? LATCHED_TEXT[latched]
 				: "?");
@@ -80,7 +79,7 @@ public class Zone extends OmnilinkDevice {
 			str = latchedTxt;
 			break;
 		case ZONE_STATUS_ALL:
-			str = currentTxt + " | " + latchedTxt + " | " + arming;
+			str = currentTxt + " | " + latchedTxt + " | " + armingTxt;
 			break;
 		default:
 			break;

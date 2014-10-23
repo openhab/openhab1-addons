@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
 import org.openhab.binding.tinkerforge.internal.config.ConfigurationHandler;
+import org.openhab.binding.tinkerforge.internal.model.ColorActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
@@ -36,6 +37,7 @@ import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.NumberActor;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
@@ -52,6 +54,7 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.StringType;
@@ -470,10 +473,10 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         String subDeviceId = provider.getSubId(itemName);
         String deviceName = provider.getName(itemName);
         if (deviceName != null) {
-          logger.trace("found item for command: name {}", deviceName);
           OHTFDevice<?, ?> ohtfDevice = ohConfig.getConfigByOHId(deviceName);
           deviceUid = ohtfDevice.getUid();
-          deviceName = ohtfDevice.getSubid();
+          subDeviceId = ohtfDevice.getSubid();
+          logger.trace("found deviceName {}, uid={}, subId {}", deviceName, deviceUid, subDeviceId);
         }
         if (uid.equals(deviceUid)) {
           if (subId == null && subDeviceId == null) {
@@ -630,7 +633,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
    *         subid as second element as {@code String} or {@code null}.
    */
   private String[] getDeviceIdsForDeviceName(String deviceName) {
-    logger.trace("found item for command: name {}", deviceName);
+    logger.trace("searching ids for name {}", deviceName);
     OHTFDevice<?, ?> ohtfDevice = ohConfig.getConfigByOHId(deviceName);
     String[] ids = {ohtfDevice.getUid(), ohtfDevice.getSubid()};
     return ids;
@@ -649,6 +652,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
    */
   @Override
   protected void internalReceiveCommand(String itemName, Command command) {
+    logger.debug("received command {} for item {}", command, itemName);
     for (TinkerforgeBindingProvider provider : providers) {
       for (String itemNameP : provider.getItemNames()) {
         if (itemNameP.equals(itemName)) {
@@ -682,6 +686,19 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
               logger.trace("{} found string command", LoggerConstants.COMMAND);
               if (mDevice instanceof MTextActor) {
                 ((MTextActor) mDevice).setText(command.toString());
+              }
+            } else if (command instanceof DecimalType) {
+              logger.debug("{} found number command", LoggerConstants.COMMAND);
+              if (command instanceof HSBType) {
+                logger.debug("{} found HSBType command", LoggerConstants.COMMAND);
+                if (mDevice instanceof ColorActor) {
+                  ((ColorActor) mDevice).setColor((HSBType) command,
+                      provider.getDeviceOptions(itemName));
+                }
+              } else {
+                if (mDevice instanceof NumberActor) {
+                  ((NumberActor) mDevice).setNumber(((DecimalType) command).toBigDecimal());
+                }
               }
             } else {
               logger.error("{} got unknown command type: {}", LoggerConstants.COMMAND,

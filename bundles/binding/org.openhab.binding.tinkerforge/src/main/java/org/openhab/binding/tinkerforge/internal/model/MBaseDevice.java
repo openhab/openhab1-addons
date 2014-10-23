@@ -16,6 +16,9 @@ import org.slf4j.Logger;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MBase Device</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  *
  * <p>

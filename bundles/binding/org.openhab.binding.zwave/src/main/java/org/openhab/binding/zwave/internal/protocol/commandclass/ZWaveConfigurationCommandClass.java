@@ -107,18 +107,23 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 		int size = serialMessage.getMessagePayloadByte(offset + 2);
 
 		// Recover the data
-		int value = extractValue(serialMessage.getMessagePayload(), offset + 3, size);
+		try {
+			int value = extractValue(serialMessage.getMessagePayload(), offset + 3, size);
 
-		logger.debug(String.format("NODE %d: Node configuration report, parameter = %d, value = 0x%02X", this
-				.getNode().getNodeId(), parameter, value));
+			logger.debug(String.format("NODE %d: Node configuration report, parameter = %d, value = 0x%02X", this
+					.getNode().getNodeId(), parameter, value));
 
-		ConfigurationParameter configurationParameter = new ConfigurationParameter(parameter, value, size);
-		
-		this.configParameters.put(parameter, configurationParameter);
-		
-		ZWaveConfigurationParameterEvent zEvent = new ZWaveConfigurationParameterEvent(this.getNode().getNodeId(),
-				configurationParameter);
-		this.getController().notifyEventListeners(zEvent);
+			ConfigurationParameter configurationParameter = new ConfigurationParameter(parameter, value, size);
+			
+			this.configParameters.put(parameter, configurationParameter);
+			
+			ZWaveConfigurationParameterEvent zEvent = new ZWaveConfigurationParameterEvent(this.getNode().getNodeId(),
+					configurationParameter);
+			this.getController().notifyEventListeners(zEvent);
+		}
+		catch (NumberFormatException e) {
+			return;
+		}
 	}
 
 	/**

@@ -57,6 +57,9 @@
 	</root>
 
 	<logger name="org.openhab.io.dropbox" level="DEBUG" />
+
+	<!-- temporary workaround for https://github.com/openhab/jupnp/issues/9 -->
+    <logger name="javax.jmdns.impl.DNSIncoming" level="ERROR"/>
 	
 	<!-- temporary workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=402750 -->
 	<logger name="OSGi" level="OFF" />

@@ -5,14 +5,15 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>action</artifactId>
-		<version>1.5.0-SNAPSHOT</version>
+		<version>1.6.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
 		<bundle.symbolicName>org.openhab.action.xpl</bundle.symbolicName>
 		<bundle.namespace>org.openhab.action.xpl</bundle.namespace>
-		<deb.name>openhab-addon-action-xPL</deb.name>
+		<deb.name>openhab-addon-action-xpl</deb.name>
 		<deb.description>openhab addon action xPL</deb.description>
+		<deb.depends>openhab-addon-io-xpl</deb.depends>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -22,8 +23,7 @@
 	<name>openHAB xPL Action</name>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<version>1.5.0-SNAPSHOT</version>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -32,6 +32,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>

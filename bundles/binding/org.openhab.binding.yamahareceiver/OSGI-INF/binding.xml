@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+ openHAB, the open Home Automation Bus.
+ Copyright (C) 2010-2013, openHAB.org <admin@openhab.org>
+
+ See the contributors.txt file in the distribution for a
+ full listing of individual contributors.
+ 
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as
+ published by the Free Software Foundation; either version 3 of the
+ License, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, see <http://www.gnu.org/licenses>.
+
+ Additional permission under GNU GPL version 3 section 7
+ 
+ If you modify this Program, or any covered work, by linking or
+ combining it with Eclipse (or a modified version of that library),
+ containing parts covered by the terms of the Eclipse Public License
+ (EPL), the licensors of this Program grant you additional permission
+ to convey the resulting work. -->
+
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.yamahareceiver.binding">
+	<implementation class="org.openhab.binding.yamahareceiver.internal.YamahaReceiverBinding" />
+
+	<service>
+		<provide interface="org.osgi.service.event.EventHandler" />
+		<provide interface="org.osgi.service.cm.ManagedService" />
+	</service>
+
+	<property name="event.topics" type="String" value="openhab/command/*" />
+	<property name="service.pid" type="String" value="org.openhab.yamahareceiver" />
+
+	<reference bind="setEventPublisher" cardinality="1..1"
+		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
+		policy="dynamic" unbind="unsetEventPublisher" />
+	<reference bind="addBindingProvider" cardinality="1..n"
+		interface="org.openhab.binding.yamahareceiver.YamahaReceiverBindingProvider" name="YamahaReceiverBindingProvider"
+		policy="dynamic" unbind="removeBindingProvider" />
+	
+</scr:component>

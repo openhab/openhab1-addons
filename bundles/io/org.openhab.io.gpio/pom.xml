@@ -4,12 +4,15 @@
   <parent>
     <groupId>org.openhab.bundles</groupId>
     <artifactId>io</artifactId>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
   </parent>
 
   <properties>
   	<bundle.symbolicName>org.openhab.io.gpio</bundle.symbolicName>
   	<bundle.namespace>org.openhab.io.gpio</bundle.namespace>
+  	<deb.name>openhab-addon-io-gpio</deb.name>
+  	<deb.description>${project.name}</deb.description>
+  	<deb.depends>libjna-java, openhab-runtime</deb.depends>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -19,5 +22,14 @@
   <name>openHAB GPIO IO Module</name>
 
   <packaging>eclipse-plugin</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

@@ -2250,7 +2250,6 @@ var oph_app = Ext.application({
                         this.goToNode(node.parentNode);
                     }
                 } else {
-                    broadCrumb.pop();
                     this.goToNode(node.parentNode);
                 }
                 clickOnLeaf = false;

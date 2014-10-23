@@ -16,6 +16,9 @@ import org.eclipse.emf.ecore.EFactory;
  * <!-- begin-user-doc -->
  * The <b>Factory</b> for the model.
  * It provides a create method for each non-abstract class of the model.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage
  * @generated
@@ -165,6 +168,24 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   DigitalActorDigitalOut4 createDigitalActorDigitalOut4();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Segment Display4x7</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Segment Display4x7</em>'.
+   * @generated
+   */
+  MBrickletSegmentDisplay4x7 createMBrickletSegmentDisplay4x7();
+
+  /**
+   * Returns a new object of class '<em>MBricklet LED Strip</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet LED Strip</em>'.
+   * @generated
+   */
+  MBrickletLEDStrip createMBrickletLEDStrip();
 
   /**
    * Returns a new object of class '<em>Digital Actor IO16</em>'.

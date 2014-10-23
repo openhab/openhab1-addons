@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.insteonplm;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -17,17 +18,19 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.openhab.binding.insteonplm.internal.device.DeviceFeature;
+import org.openhab.binding.insteonplm.internal.device.DeviceFeatureListener;
+import org.openhab.binding.insteonplm.internal.device.DeviceQuerier;
+import org.openhab.binding.insteonplm.internal.device.DeviceQueryListener;
 import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
 import org.openhab.binding.insteonplm.internal.device.InsteonDevice;
-import org.openhab.binding.insteonplm.internal.device.StatePublisher.StateListener;
 import org.openhab.binding.insteonplm.internal.driver.Driver;
 import org.openhab.binding.insteonplm.internal.driver.DriverListener;
+import org.openhab.binding.insteonplm.internal.driver.Port;
 import org.openhab.binding.insteonplm.internal.message.Msg;
 import org.openhab.binding.insteonplm.internal.message.MsgListener;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -44,22 +47,32 @@ import org.slf4j.LoggerFactory;
 
 public class InsteonPLMActiveBinding
 	extends AbstractActiveBinding<InsteonPLMBindingProvider>
-	implements ManagedService {
+	implements ManagedService, DeviceQueryListener {
 	private static final Logger logger = LoggerFactory.getLogger(InsteonPLMActiveBinding.class);
 
-	private Driver						m_driver	= new Driver();
-	private HashMap<InsteonAddress, InsteonDevice>  m_devices 	= new HashMap<InsteonAddress, InsteonDevice>();
+	private Driver						m_driver	= null;
+	private HashMap<InsteonAddress, InsteonDevice>  m_devices 	= null;
 	private HashMap<String, String> 	m_config	= new HashMap<String, String>();
 	private PortListener				m_portListener = new PortListener();
 	private long						m_devicePollInterval = 300000L;
 	private long						m_deadDeviceTimeout = -1L;
+	private DeviceQuerier				m_deviceQuerier = null;
 	
 	// Configuration values set on initialize
-	private int			m_refreshInterval = 15000;
+	private int			m_refreshInterval = 600000;
 	
 	// Various flags that indicate the state of the binding
 	private boolean		m_isActive		  		= false;
 	private boolean		m_gotInitialConfig		= false;
+	
+	/**
+	 * Constructor
+	 */
+	public InsteonPLMActiveBinding() {
+		m_driver	= new Driver();
+		m_devices 	= new HashMap<InsteonAddress, InsteonDevice>();
+		m_deviceQuerier = new DeviceQuerier(m_devices, m_driver, this);
+	}
 
 	/**
 	 * Called by the framework to execute a refresh of the binding
@@ -108,7 +121,8 @@ public class InsteonPLMActiveBinding
 		}
 		
 		if (!commandHandled)
-			logger.warn("No converter found for item = {}, command = {}, ignoring.", itemName, command.toString());
+			logger.warn("No converter found for item = {}, command = {}, ignoring.",
+						itemName, command.toString());
 	}
 	
 	/**
@@ -156,11 +170,11 @@ public class InsteonPLMActiveBinding
 		}
 		m_gotInitialConfig = true;
 		if (!m_driver.isDeviceListComplete()) {
-			logger.debug("ignoring binding configuration until the device list is complete");
+			logger.debug("ignoring binding config for {} until device list is complete",
+						itemName);
 			return;
 		}
 		InsteonAddress addr = c.getAddress();
-		logger.debug("applying binding for item {} address {}", itemName, addr);
 		synchronized (m_devices) {
 			if (m_driver.isDeviceListComplete() && (!m_devices.containsKey(addr))) {
 				logger.warn("device {} not found in modem link database (is it linked?), disabling it.",
@@ -168,52 +182,73 @@ public class InsteonPLMActiveBinding
 				return;
 			}
 			InsteonDevice dev = getDevice(addr);
-			if (dev == null) {
-				// should never happen because we check before, but just for safety
+			if (dev == null) { // should never happen because we check before, but just for safety
 				logger.error("addr {} referenced in items file is not found!");
 				return;
 			}
-			String productKey = c.getProductKey();
-			if (!dev.hasProductKey()) {
-				dev.setProductKey(productKey);
-				dev.instantiateFeatures();
-			} else if (!dev.hasProductKey(productKey)) {
-				logger.error("inconsistent product key {} for device {}, already has {}",
-						productKey, addr, dev.getProductKey());
-			}
-			if (c.getFeature() == null) {
-				logger.error("feature string missing for item {}", itemName);
-			} else {
-				DeviceFeature f = dev.getFeature(c.getFeature());
-				if (f == null) {
-					if (dev.isInitialized()) {
-						logger.error(".items file references unknown feature {} for device {},"
-								+ " is the product key correct?", c.getFeature(), addr);
-						logger.error("modem reports device {} as: {}. " +
-								"If that is not correct, unlink from modem, and link again.",
-								addr, dev.getDescriptorsAsString());
-					} else {
-						// We have no information about the device yet, but already getting
-						// a request for an item wanting to bind to a feature. We enter
-						// it as a placeholder, and will try to resolve it when
-						// we get more information on the device
-						logger.debug("adding place holder for feature {} ", c.getFeature());
-						f = DeviceFeature.s_makeDeviceFeature("PLACEHOLDER");
-						f.setParameters(c.getParameters());
-						f.addListener(new FeatureListener(itemName));
-						dev.addFeature(c.getFeature(), f);
-					}
+			bindingChangedForDevice(dev, itemName, c);
+		}
+	}
+	
+	private void bindingChangedForDevice(InsteonDevice dev, String itemName,
+										   InsteonPLMBindingConfig c) {
+		dev.setIsInItemsFile(true);
+		if (dev.needsQuerying()) {
+			m_deviceQuerier.addDevice(dev);
+			dev.setNeedsQuerying(false);
+		}
+		if (!dev.hasValidDescriptors()) {
+			// no point applying configuration to unknown device
+			return;
+		}
+
+		logger.debug("applying binding for item {} address {}", itemName, dev.getAddress());
+		String productKey = c.getProductKey();
+		if (!dev.hasProductKey()) {
+			dev.setProductKey(productKey);
+			dev.instantiateFeatures();
+		} else if (!dev.hasProductKey(productKey)) {
+			logger.error("inconsistent product key {} for device {}, already has {}",
+					productKey, dev.getAddress(), dev.getProductKey());
+		}
+		if (c.getFeature() == null) {
+			logger.error("feature string missing for item {}", itemName);
+		} else {
+			DeviceFeature f = dev.getFeature(c.getFeature());
+			if (f == null) {
+				if (dev.isInitialized()) {
+					logger.error(".items file references unknown feature {} for device {},"
+							+ " is the product key correct?", c.getFeature(), dev.getAddress());
+					logger.error("modem reports device {} as: {}. " +
+							"If that is not correct, unlink from modem, and link again.",
+							dev.getAddress(), dev.getDescriptorsAsString());
 				} else {
-					logger.debug("now listening for feature {} item {}", f.toString(), itemName);
-					f.setParameters(c.getParameters());
-					f.addListener(new FeatureListener(itemName));
+					// We have no information about the device yet, but already getting
+					// a request for an item wanting to bind to a feature. We enter
+					// it as a placeholder, and will try to resolve it when
+					// we get more information on the device
+					logger.debug("adding place holder for feature {} ", c.getFeature());
+					f = DeviceFeature.s_makeDeviceFeature("PLACEHOLDER");
+					DeviceFeatureListener fl = new DeviceFeatureListener(itemName, eventPublisher);
+					fl.setParameters(c.getParameters());
+					f.addListener(fl);
+					dev.addFeature(c.getFeature(), f);
 				}
+			} else {
+				logger.debug("now listening for feature {} item {}", f.toString(), itemName);
+				DeviceFeatureListener fl = new DeviceFeatureListener(itemName, eventPublisher);
+				fl.setParameters(c.getParameters());
+				f.addListener(fl);
 			}
-			if (!dev.hasValidPollingInterval()) {
-				dev.setPollInterval(m_devicePollInterval);
-			}
-			dev.startQueueThread();
-			dev.startPolling(); // start the polling cycle
+		}
+		if (!dev.hasValidPollingInterval()) {
+			dev.setPollInterval(m_devicePollInterval);
+		}
+		try {
+			Port p = m_driver.getPort(dev.getPort());
+			p.getPoller().startPolling(dev);
+		} catch (IOException e) {
+			logger.error("no port found for device {}, disabled polling.", dev);
 		}
 	}
 
@@ -233,18 +268,57 @@ public class InsteonPLMActiveBinding
 		m_isActive = true;
 	}
 	
-	/*
+	
+	/**
 	 * Apply binding config to device. Done by calling bindingChanged() on all items
 	 */
 	private void applyConfigurationToDevices() {
 		for (InsteonPLMBindingProvider provider : providers) {
 			Collection<String> items = provider.getItemNames();
 			for (Iterator<String> item = items.iterator(); item.hasNext();) {
-				bindingChanged(provider, item.next());
+				String s = item.next();
+				bindingChanged(provider, s);
 			}
 		}
 	}
-
+	
+	/**
+	 * Applies all item configurations pertaining to a given device 
+	 * @param dev address of device to apply config to
+	 */
+	public void applyConfigurationForDevice(InsteonAddress dev) {
+		for (InsteonPLMBindingProvider provider : providers) {
+			Collection<String> items = provider.getItemNames();
+			InsteonPLMBindingProvider bp = (InsteonPLMBindingProvider)provider;
+			for (Iterator<String> item = items.iterator(); item.hasNext();) {
+				String itemName = item.next();
+				InsteonPLMBindingConfig c =	bp.getInsteonPLMBindingConfig(itemName);
+				if (c == null) continue;
+				if (c.getAddress().equals(dev)) {
+					bindingChanged(provider, itemName);
+				}
+			}
+		}
+	}
+	/**
+	 * Checks if a given device is referenced in the items file
+	 * @param dev the device to check
+	 */
+	private boolean isInItemsFile(InsteonAddress dev) {
+		for (InsteonPLMBindingProvider provider : providers) {
+			Collection<String> items = provider.getItemNames();
+			InsteonPLMBindingProvider bp = (InsteonPLMBindingProvider)provider;
+			for (Iterator<String> item = items.iterator(); item.hasNext();) {
+				String itemName = item.next();
+				InsteonPLMBindingConfig c =	bp.getInsteonPLMBindingConfig(itemName);
+				if (c == null) continue;
+				if (c.getAddress().equals(dev)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 	/**
 	 * Deactivates the binding. The Controller is stopped and the serial interface
@@ -358,23 +432,6 @@ public class InsteonPLMActiveBinding
 		m_devices.clear();
 	}
 	
-	/**
-	 * Will listen to any feature status updates
-	 * @author daniel
-	 *
-	 */
-	private class FeatureListener implements StateListener {
-		private String			m_itemName;
-		
-		public FeatureListener(String item) {
-			m_itemName = item;
-		}
-		
-		@Override
-		public void stateChanged(State state) {
-			eventPublisher.postUpdate(m_itemName, state);
-		}
-	}
 	
 	/*
 	 * Handles messages that come in from the ports.
@@ -419,8 +476,14 @@ public class InsteonPLMActiveBinding
 		@Override
 		public void driverCompletelyInitialized() {
 			logger.info("driver is completely initialized");
-			// now consolidate our device list with those of the modems
+			for (InsteonDevice dev : m_devices.values()) {
+				if (!dev.hasValidDescriptors()) {
+					logger.warn("device {} has invalid modem db entry, probably caused by houselinc", dev.getAddress());
+					logger.warn("will attempt to query device {}, if that fails consider re-linking", dev.getAddress());
+				}
+			}
 			applyConfigurationToDevices();
+			m_deviceQuerier.start();
 			dumpAllDevices();
 			logDeviceProblems();
 		}
@@ -456,7 +519,7 @@ public class InsteonPLMActiveBinding
 		synchronized (m_devices) {
 			for (InsteonDevice dev : m_devices.values()) {
 				if (dev.isModem()) continue;
-				if (!dev.isReferenced()) {
+				if (!dev.isReferenced() && !isInItemsFile(dev.getAddress())) {
 					logger.info("device {} is known to modem, but not in items file!", dev.toString());
 				}
 				if (!dev.isInitialized()) {
@@ -471,6 +534,11 @@ public class InsteonPLMActiveBinding
 		t = Math.max(t, min);
 		t = Math.min(t, max);
 		return t;
+	}
+
+	@Override
+	public void deviceQueryComplete(InsteonAddress devAddress) {
+		applyConfigurationForDevice(devAddress);
 	}
 
 }

@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SitemapStateChangeListener extends ResourceStateChangeListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(ResourceStateChangeListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(SitemapStateChangeListener.class);
 	
 	@Override
 	protected Object getResponseObject(HttpServletRequest request) {
@@ -119,6 +119,8 @@ public class SitemapStateChangeListener extends ResourceStateChangeListener {
 	}
 	
 	private PageBean getPageBean(HttpServletRequest request){
+		try {
+			String query = request.getQueryString();
 		String pathInfo = request.getPathInfo();
 		
 		String responseType = (new ResponseTypeHelper()).getResponseType(request);
@@ -135,6 +137,9 @@ public class SitemapStateChangeListener extends ResourceStateChangeListener {
 	            	}
 	            }
 	        }
+		}
+		} catch (Exception e) {
+			return null;
 		}
 		return null;
 		

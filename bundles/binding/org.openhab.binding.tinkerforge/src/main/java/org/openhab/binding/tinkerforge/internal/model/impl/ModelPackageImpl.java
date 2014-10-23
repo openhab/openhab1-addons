@@ -23,11 +23,13 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
 import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
+import org.openhab.binding.tinkerforge.internal.model.ColorActor;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
@@ -65,10 +67,12 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
@@ -99,6 +103,7 @@ import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds;
 import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
+import org.openhab.binding.tinkerforge.internal.model.NumberActor;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
@@ -135,6 +140,7 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
+import org.openhab.core.library.types.HSBType;
 import org.slf4j.Logger;
 
 import com.tinkerforge.BrickDC;
@@ -152,10 +158,12 @@ import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletLCD20x4;
+import com.tinkerforge.BrickletLEDStrip;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletRemoteSwitch;
+import com.tinkerforge.BrickletSegmentDisplay4x7;
 import com.tinkerforge.BrickletSoundIntensity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletTemperatureIR;
@@ -163,6 +171,7 @@ import com.tinkerforge.BrickletTilt;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
+import java.math.BigDecimal;
 
 /**
  * <!-- begin-user-doc -->
@@ -325,6 +334,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass digitalActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass numberActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass colorActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletLEDStripEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletSegmentDisplay4x7EClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1095,6 +1132,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletHallEffectEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletSegmentDisplay4x7EDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletLEDStripEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType hsbTypeEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType deviceOptionsEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2146,6 +2211,66 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getDigitalActor__FetchDigitalValue()
   {
     return digitalActorEClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getNumberActor()
+  {
+    return numberActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getNumberActor__SetNumber__BigDecimal()
+  {
+    return numberActorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getColorActor()
+  {
+    return colorActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getColorActor__SetColor__HSBType_DeviceOptions()
+  {
+    return colorActorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletLEDStrip()
+  {
+    return mBrickletLEDStripEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletSegmentDisplay4x7()
+  {
+    return mBrickletSegmentDisplay4x7EClass;
   }
 
   /**
@@ -4863,6 +4988,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletSegmentDisplay4x7()
+  {
+    return tinkerBrickletSegmentDisplay4x7EDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getTinkerBrickletLEDStrip()
+  {
+    return tinkerBrickletLEDStripEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getHSBType()
+  {
+    return hsbTypeEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getDeviceOptions()
+  {
+    return deviceOptionsEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getEnum()
   {
     return enumEDataType;
@@ -5073,6 +5238,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(digitalActorEClass, DIGITAL_ACTOR__DIGITAL_STATE);
     createEOperation(digitalActorEClass, DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE);
     createEOperation(digitalActorEClass, DIGITAL_ACTOR___FETCH_DIGITAL_VALUE);
+
+    numberActorEClass = createEClass(NUMBER_ACTOR);
+    createEOperation(numberActorEClass, NUMBER_ACTOR___SET_NUMBER__BIGDECIMAL);
+
+    mBrickletSegmentDisplay4x7EClass = createEClass(MBRICKLET_SEGMENT_DISPLAY4X7);
+
+    colorActorEClass = createEClass(COLOR_ACTOR);
+    createEOperation(colorActorEClass, COLOR_ACTOR___SET_COLOR__HSBTYPE_DEVICEOPTIONS);
+
+    mBrickletLEDStripEClass = createEClass(MBRICKLET_LED_STRIP);
 
     digitalActorIO16EClass = createEClass(DIGITAL_ACTOR_IO16);
     createEAttribute(digitalActorIO16EClass, DIGITAL_ACTOR_IO16__DEVICE_TYPE);
@@ -5401,6 +5576,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletTiltEDataType = createEDataType(TINKER_BRICKLET_TILT);
     tinkerBrickletIO4EDataType = createEDataType(TINKER_BRICKLET_IO4);
     tinkerBrickletHallEffectEDataType = createEDataType(TINKER_BRICKLET_HALL_EFFECT);
+    tinkerBrickletSegmentDisplay4x7EDataType = createEDataType(TINKER_BRICKLET_SEGMENT_DISPLAY4X7);
+    tinkerBrickletLEDStripEDataType = createEDataType(TINKER_BRICKLET_LED_STRIP);
+    hsbTypeEDataType = createEDataType(HSB_TYPE);
+    deviceOptionsEDataType = createEDataType(DEVICE_OPTIONS);
     enumEDataType = createEDataType(ENUM);
   }
 
@@ -5565,6 +5744,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMBrickletIndustrialDigitalOut4());
     g1.getETypeArguments().add(g2);
     digitalActorDigitalOut4EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getNumberActor());
+    mBrickletSegmentDisplay4x7EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletSegmentDisplay4x7());
+    g1.getETypeArguments().add(g2);
+    mBrickletSegmentDisplay4x7EClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getColorActor());
+    mBrickletLEDStripEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletLEDStrip());
+    g1.getETypeArguments().add(g2);
+    mBrickletLEDStripEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getDigitalActor());
     digitalActorIO16EClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getIODevice());
@@ -6138,6 +6329,21 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEOperation(getDigitalActor__FetchDigitalValue(), null, "fetchDigitalValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(numberActorEClass, NumberActor.class, "NumberActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getNumberActor__SetNumber__BigDecimal(), null, "setNumber", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEBigDecimal(), "value", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(mBrickletSegmentDisplay4x7EClass, MBrickletSegmentDisplay4x7.class, "MBrickletSegmentDisplay4x7", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(colorActorEClass, ColorActor.class, "ColorActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getColorActor__SetColor__HSBType_DeviceOptions(), null, "setColor", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getHSBType(), "color", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(mBrickletLEDStripEClass, MBrickletLEDStrip.class, "MBrickletLEDStrip", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
     initEClass(digitalActorIO16EClass, DigitalActorIO16.class, "DigitalActorIO16", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDigitalActorIO16_DeviceType(), theEcorePackage.getEString(), "deviceType", "io_actuator", 0, 1, DigitalActorIO16.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDigitalActorIO16_Port(), theEcorePackage.getEChar(), "port", null, 0, 1, DigitalActorIO16.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -6607,6 +6813,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletTiltEDataType, BrickletTilt.class, "TinkerBrickletTilt", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletIO4EDataType, BrickletIO4.class, "TinkerBrickletIO4", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletHallEffectEDataType, BrickletHallEffect.class, "TinkerBrickletHallEffect", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletSegmentDisplay4x7EDataType, BrickletSegmentDisplay4x7.class, "TinkerBrickletSegmentDisplay4x7", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletLEDStripEDataType, BrickletLEDStrip.class, "TinkerBrickletLEDStrip", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(deviceOptionsEDataType, DeviceOptions.class, "DeviceOptions", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource

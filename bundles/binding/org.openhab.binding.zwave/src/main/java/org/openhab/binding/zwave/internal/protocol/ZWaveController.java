@@ -33,12 +33,17 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePr
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent.State;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AddNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRouteMessageClass;
@@ -48,6 +53,7 @@ import org.openhab.binding.zwave.internal.protocol.serialmessage.EnableSucMessag
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetControllerCapabilitiesMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetSucNodeIdMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.IdentifyNodeMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.IsFailedNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeNeighborUpdateMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveFailedNodeMessageClass;
@@ -334,7 +340,8 @@ public class ZWaveController {
 		disconnect();
 		
 		// clear nodes collection and send queue
-		for (Object listener : this.zwaveEventListeners.toArray()) {
+		ArrayList<ZWaveEventListener> copy = new ArrayList<ZWaveEventListener>(this.zwaveEventListeners);
+		for (Object listener : copy.toArray()) {
 			if (!(listener instanceof ZWaveNode))
 				continue;
 			
@@ -402,7 +409,8 @@ public class ZWaveController {
 	 */
 	public void notifyEventListeners(ZWaveEvent event) {
 		logger.debug("Notifying event listeners");
-		for (ZWaveEventListener listener : this.zwaveEventListeners) {
+		ArrayList<ZWaveEventListener> copy = new ArrayList<ZWaveEventListener>(this.zwaveEventListeners);
+		for (ZWaveEventListener listener : copy) {
 			logger.trace("Notifying {}", listener.toString());
 			listener.ZWaveIncomingEvent(event);
 		}
@@ -440,6 +448,37 @@ public class ZWaveController {
 				break;
 			default:
 				break;
+			}
+		}
+		if(event instanceof ZWaveNetworkEvent) {
+			ZWaveNetworkEvent networkEvent = (ZWaveNetworkEvent)event;
+			switch(networkEvent.getEvent()) {
+				case FailedNode:
+					if(getNode(networkEvent.getNodeId()) == null) {
+						logger.debug("NODE {}: Deleting a node that doesn't exist.", networkEvent.getNodeId());
+						break;
+					}
+					if (networkEvent.getState() == State.Success) {
+						logger.debug("NODE {}: Marking node as failed because its on the controllers failed node list.", networkEvent.getNodeId());
+						getNode(networkEvent.getNodeId()).setNodeStage(NodeStage.FAILED);
+						
+						ZWaveEvent zEvent = new ZWaveNodeStatusEvent(networkEvent.getNodeId(), ZWaveNodeStatusEvent.State.Failed);
+						this.notifyEventListeners(zEvent);
+						break;
+					}
+				case DeleteNode:
+					if(getNode(networkEvent.getNodeId()) == null) {
+						logger.debug("NODE {}: Deleting a node that doesn't exist.", networkEvent.getNodeId());
+						break;
+					}
+					this.zwaveNodes.remove(networkEvent.getNodeId());
+					
+					//Remove the XML file
+					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+					nodeSerializer.DeleteNode(event.getNodeId());
+					break;
+				default:
+					break;
 			}
 		}
 	}
@@ -533,6 +572,53 @@ public class ZWaveController {
 			}
 		}
 	}
+	
+	/**
+	 * Polls a node for any dynamic information
+	 * @param node
+	 */
+	public void pollNode(ZWaveNode node) {
+		for (ZWaveCommandClass zwaveCommandClass : node.getCommandClasses()) {
+			logger.trace("NODE {}: Inspecting command class {}", node.getNodeId(), zwaveCommandClass.getCommandClass().getLabel());
+			if (zwaveCommandClass instanceof ZWaveCommandClassDynamicState) {
+				logger.debug("NODE {}: Found dynamic state command class {}", node.getNodeId(), zwaveCommandClass.getCommandClass()
+						.getLabel());
+				ZWaveCommandClassDynamicState zdds = (ZWaveCommandClassDynamicState) zwaveCommandClass;
+				int instances = zwaveCommandClass.getInstances();
+				if (instances == 0) {
+					Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
+					for (SerialMessage serialMessage : dynamicQueries) {
+						sendData(serialMessage);
+					}
+				} else {
+					for (int i = 1; i <= instances; i++) {
+						Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
+						for (SerialMessage serialMessage : dynamicQueries) {
+							sendData(node.encapsulate(serialMessage, zwaveCommandClass, i));
+						}
+					}
+				}
+			} else if (zwaveCommandClass instanceof ZWaveMultiInstanceCommandClass) {
+				ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) zwaveCommandClass;
+				for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
+					for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
+						logger.trace(String.format("NODE %d: Inspecting command class %s for endpoint %d", node.getNodeId(), endpointCommandClass
+								.getCommandClass().getLabel(), endpoint.getEndpointId()));
+						if (endpointCommandClass instanceof ZWaveCommandClassDynamicState) {
+							logger.debug("NODE {}: Found dynamic state command class {}", node.getNodeId(), endpointCommandClass
+									.getCommandClass().getLabel());
+							ZWaveCommandClassDynamicState zdds2 = (ZWaveCommandClassDynamicState) endpointCommandClass;
+							Collection<SerialMessage> dynamicQueries = zdds2.getDynamicValues();
+							for (SerialMessage serialMessage : dynamicQueries) {
+								sendData(node.encapsulate(serialMessage,
+										endpointCommandClass, endpoint.getEndpointId()));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	 * Request the node routing information.
@@ -588,6 +674,31 @@ public class ZWaveController {
 		this.enqueue(new RemoveNodeMessageClass().doRequestStop());
 	}
 
+	/**
+	 * Sends a request to perform a soft reset on the controller.
+	 * This will just reset the controller - probably similar to a power cycle.
+	 * It doesn't reinitialise the network, or change the network configuration.
+	 * 
+	 * NOTE: At least for some (most!) sticks, this doesn't return a response.
+	 * Therefore, the number of retries is set to 1.
+	 * NOTE: On some (most!) ZWave-Plus sticks, this can cause the stick to hang.
+	 */
+	public void requestSoftReset()
+	{
+		SerialMessage msg = new SerialApiSoftResetMessageClass().doRequest();
+		msg.attempts = 1;
+		this.enqueue(msg);
+	}
+
+	/**
+	* Request if the node is currently marked as failed by the controller.
+	* @param nodeId The address of the node to check
+	*/
+ 	public void requestIsFailedNode(int nodeId)
+ 	{
+ 		this.enqueue(new IsFailedNodeMessageClass().doRequest(nodeId));
+ 	}
+ 	
 	/**
 	 * Removes a failed node from the network.
 	 * Note that this won't remove nodes that have not failed.
@@ -999,21 +1110,6 @@ public class ZWaveController {
 
 			// Send a NAK to resynchronise communications
 			sendResponse(NAK);
-			
-			// If we want to do a soft reset on the serial interface, do it here.
-			// It seems there's no response to this message, so sending it through
-			// 'normal' channels will cause a timeout.
-			try {
-				synchronized (serialPort.getOutputStream()) {
-					SerialMessage resetMsg = new SerialApiSoftResetMessageClass().doRequest();
-					byte[] buffer = resetMsg.getMessageBuffer();
-
-					serialPort.getOutputStream().write(buffer);
-					serialPort.getOutputStream().flush();
-				}
-			} catch (IOException e) {
-				logger.error(e.getMessage());
-			}
 
 			while (!interrupted()) {
 				int nextByte;

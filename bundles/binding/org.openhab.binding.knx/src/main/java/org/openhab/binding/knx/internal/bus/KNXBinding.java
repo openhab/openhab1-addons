@@ -22,7 +22,6 @@ import org.openhab.binding.knx.config.KNXBindingProvider;
 import org.openhab.binding.knx.config.KNXTypeMapper;
 import org.openhab.binding.knx.internal.connection.KNXConnectionListener;
 import org.openhab.binding.knx.internal.connection.KNXConnection;
-import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
@@ -73,16 +72,18 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 	
 
 	/** the datapoint initializer, which runs in a separate thread */
-	private DatapointInitializer initializer = new DatapointInitializer();
+	private DatapointInitializer initializer;
 	
 
 	public void activate(ComponentContext componentContext) {
+		logger.trace("KNXBinding: activating");
 		KNXConnection.addConnectionEstablishedListener(this);
 		initializer = new DatapointInitializer();
 		initializer.start();
 	}
 
 	public void deactivate(ComponentContext componentContext) {
+		logger.trace("KNXBinding: deactivating");
 		KNXConnection.removeConnectionEstablishedListener(this);
 		for (KNXBindingProvider provider : providers) {
 			provider.removeBindingChangeListener(this);
@@ -100,8 +101,8 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 		this.typeMappers.remove(typeMapper);
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.lang.String, org.openhab.core.types.Command)
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
@@ -111,8 +112,8 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see org.openhab.core.binding.AbstractBinding#internalReceiveUpdate(java.lang.String, org.openhab.core.types.State)
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
@@ -162,16 +163,18 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 	}
 
 	
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see tuwien.auto.calimero.process.ProcessListener#groupWrite(tuwien.auto.calimero.process.ProcessEvent)
 	 */
+	@Override
 	public void groupWrite(ProcessEvent e) {
 		readFromKNX(e);
 	}
 	
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see tuwien.auto.calimero.process.ProcessListener#detached(tuwien.auto.calimero.DetachEvent)
 	 */
+	@Override
 	public void detached(DetachEvent e) {
 		logger.error("Received detach Event.");
 	}
@@ -210,8 +213,21 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 							} else {
 								throw new IllegalClassException("Cannot process datapoint of type " + type.toString());
 							}								
-								
-							logger.trace("Processed event (item='{}', type='{}', destination='{}')", new String[] {itemName, type.toString(), destination.toString()});
+
+							logger.trace("Processed event (item='{}', type='{}', destination='{}')", itemName, type.toString(), destination.toString());
+							return;
+						}
+						else {
+							final char[] hexCode = "0123456789ABCDEF".toCharArray();
+					        StringBuilder sb = new StringBuilder(2+asdu.length * 2);
+					        sb.append("0x");
+					        for (byte b : asdu) {
+					            sb.append(hexCode[(b >> 4) & 0xF]);
+					            sb.append(hexCode[(b & 0xF)]);
+					        }
+
+							logger.debug("Ignoring KNX bus data: couldn't transform to an openHAB type (not supported). Destination='{}', datapoint='{}', data='{}'",
+									new Object[] {destination.toString(), datapoint.toString(), sb.toString() });
 							return;
 						}
 					}
@@ -224,24 +240,29 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 	}
 	
 
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see org.openhab.core.binding.AbstractBinding#bindingChanged(org.openhab.core.binding.BindingProvider, java.lang.String)
 	 */
+	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
+		logger.trace("bindingChanged() for item {} msg received.", itemName);
 		if (provider instanceof KNXBindingProvider) {
 			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
 				if(datapoint.getName().equals(itemName)) {
+					logger.debug("Adding item {} to initialization list.", itemName);
 					datapointsToInitialize.put(datapoint, 0);
 				}
 			}
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see org.openhab.core.binding.AbstractBinding#allBindingsChanged(org.openhab.core.binding.BindingProvider)
 	 */
+	@Override
 	public void allBindingsChanged(BindingProvider provider) {
+		logger.trace("allBindingsChanged() msg received. Initializing readable DPs.");
 		if (provider instanceof KNXBindingProvider) {
 			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
@@ -251,11 +272,12 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 	}
 	
 
-	/**
-	 * When a connection is (re-)established all readable datapoints are refreshed. 
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.knx.internal.connection.KNXConnectionListener#connectionEstablished()
 	 */
 	@Override
 	public void connectionEstablished() {
+		logger.trace("connectionEstablished() msg received. Initializing readable DPs.");
 		for (KNXBindingProvider knxProvider : providers) {
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
 				datapointsToInitialize.put(datapoint, 0);
@@ -398,10 +420,13 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 			this.interrupted = interrupted;
 		}
 
+		/* (non-Javadoc)
+		 * @see java.lang.Thread#run()
+		 */
 		@Override
 		public void run() {
 			// as long as no interrupt is requested, continue running
-			while (!interrupted && !KNXConnection.shutdown) {
+			while (!interrupted && !KNXConnection.sShutdown) {
 				if (datapointsToInitialize.size() > 0) {
 					// we first clone the map, so that it stays unmodified
 					HashMap<Datapoint,Integer> clonedMap =
@@ -424,16 +449,17 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 					if (pc != null) {
 						logger.debug("Sending read request to KNX for item {}", datapoint.getName());
 						pc.read(datapoint);
+						logger.debug("Removing item {} from initialization queue", datapoint.getName());
+						datapointsToInitialize.remove(datapoint);
 					}
-					datapointsToInitialize.remove(datapoint);
 				} catch (KNXException e) {
-					logger.warn("Cannot read value for item '{}' from KNX bus: {}", new String[] { datapoint.getName(), e.getMessage() });
+					logger.warn("Cannot read value for item '{}' from KNX bus: {}", new Object[] { datapoint.getName(), e.getMessage() });
 					increaseReadLimitCounter(datapoint);
 				} catch (KNXIllegalArgumentException e) {
-					logger.warn("Error sending KNX read request for '{}': {}", new String[] { datapoint.getName(), e.getMessage() });
+					logger.warn("Error sending KNX read request for '{}': {}", new Object[] { datapoint.getName(), e.getMessage() });
 					increaseReadLimitCounter(datapoint);
 				} catch (InterruptedException e) {
-					logger.warn("Cannot read value for item '{}' from KNX bus: {}", new String[] { datapoint.getName(), e.getMessage() });
+					logger.warn("Cannot read value for item '{}' from KNX bus: {}", new Object[] { datapoint.getName(), e.getMessage() });
 					increaseReadLimitCounter(datapoint);
 				}
 
@@ -455,7 +481,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider>
 						logger.debug("KNX reading pause has been interrupted: {}", e.getMessage());
 					}
 				}
-				if(KNXConnection.shutdown) {
+				if(KNXConnection.sShutdown) {
 					return;
 				}
 			}

@@ -265,11 +265,7 @@ public class HDanywhereGenericBindingProvider extends AbstractGenericBindingProv
 			}
 		}	
 		
-		if(result.size() == 0) {
-			return null;
-		} else {
-			return result;	
-		}
+		return result;	
 	}
 
 }

@@ -9,12 +9,10 @@
 package org.openhab.binding.insteonplm.internal.device;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.LinkedBlockingDeque;
-
 import org.openhab.binding.insteonplm.internal.driver.Driver;
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
@@ -44,13 +42,14 @@ public class InsteonDevice {
 	private HashMap<String, DeviceFeature> 	m_features	= new HashMap<String, DeviceFeature>();
 	private	 InitStatus					m_initStatus	= InitStatus.UNINITIALIZED;
 	private String						m_productKey	= null;
-	private LinkedBlockingDeque<QEntry>	 m_requestQueue	= new LinkedBlockingDeque<QEntry>();
-	private long						m_nextTimeAllowed = 0L;
-	private Timer						m_pollTimer		= null;
-	private Thread						m_queueThread	= null;
 	private Long						m_lastTimePolled = 0L;
 	private Long						m_lastMsgReceived = 0L;
-	private boolean						m_isModem		= false;
+	private boolean					m_isModem		= false;
+	private boolean					m_hasRespondedToQuery = false;
+	private boolean					m_descriptorsHaveChanged = false;
+	private boolean					m_needsQuerying = false;
+	private boolean					m_isInItemsFile = false;
+	private	 Deque<QEntry>				m_requestQueue  = new LinkedList<QEntry>();
 	
 	public static enum InitStatus {
 		UNINITIALIZED,
@@ -71,16 +70,26 @@ public class InsteonDevice {
 	}
 	public void addLinkRecord(Msg m) { m_linkRecords.add(m); }
 	public boolean hasLinkRecords() { return !m_linkRecords.isEmpty(); }
+	public boolean hasRespondedToQuery() { return m_hasRespondedToQuery; }
+	public boolean hasValidDescriptors() { return !m_descriptors.isEmpty(); }
+	public boolean needsQuerying() { return m_needsQuerying; }
+	public void clearDescriptors() { m_descriptors.clear(); }
 	public void addFeature(String name, DeviceFeature f) {
 		f.setDevice(this);
-		synchronized(m_features) {
+		synchronized (m_features) {
 			m_features.put(name, f);
 		}
 	}
 	public void removeFeature(DeviceFeature f) {
 		f.setDevice(null);
-		synchronized(m_features) {
+		synchronized (m_features) {
 			m_features.remove(f);
+		}
+	}
+	
+	private void clearFeatures() {
+		synchronized (m_features) {
+			m_features.clear();
 		}
 	}
 
@@ -102,25 +111,29 @@ public class InsteonDevice {
 	public InsteonAddress		getAddress() 		{ return (m_address);	}
 	public InitStatus			getInitStatus()		{ return m_initStatus; }
 	public Driver				getDriver()			{ return m_driver; }
-	public boolean 			hasValidPorts()		{ return (!m_ports.isEmpty());	}
+	public boolean 				hasValidPorts()		{ return (!m_ports.isEmpty());	}
 	public boolean				isInitialized() 	{ return m_initStatus == InitStatus.INITIALIZED; }
 	public boolean				hasProductKey(String key) {
 		return m_productKey != null && m_productKey.equals(key); }
+	public boolean				descriptorsHaveChanged() { return m_descriptorsHaveChanged; }
 	public boolean				hasValidPollingInterval() {
 		return (m_pollInterval > 0);
 	}
+	public long				getPollInterval()	{ return m_pollInterval; }
 	public boolean				isModem()	 		{ return m_isModem; }
+	public boolean				isInItemsFile()		{ return m_isInItemsFile; }
 	
 	public void setIsModem(boolean f)  			{ m_isModem = f; }
+	public void setIsInItemsFile(boolean f)			{ m_isInItemsFile = f; }
 	public void setInitStatus(InitStatus status)	{ m_initStatus = status; }
-	
-	public void startQueueThread() {
-		m_queueThread = new Thread(new RequestQueueReader());
-		m_queueThread.start();
-	}
+	public void setDescriptorsHaveChanged(boolean f) { m_descriptorsHaveChanged = f; }
+	public void setNeedsQuerying(boolean f) 		{ m_needsQuerying = f; }
 	
 	public void addDescriptor(DeviceDescriptor desc) {
-		if (!m_descriptors.contains(desc)) 	m_descriptors.add(desc);
+		if (!m_descriptors.contains(desc)) 	{
+			m_descriptors.add(desc);
+			setDescriptorsHaveChanged(true);
+		}
 	}
 	
 	public long getPollOverDueTime() {
@@ -139,22 +152,45 @@ public class InsteonDevice {
 		logger.debug("setting poll interval for {} to {} ", m_address, pi);
 		if (pi > 0) m_pollInterval = pi;
 	}
+	/**
+	 * This method is called when product information has been received
+	 * through a query. It attempts to repair the sometimes broken or
+	 * incomplete information that was obtained from the modem's link
+	 * records.
+	 * 
+	 * @param prodKey The product key received. Since most devices only
+	 *                 report 0 as product key, this argument is currently ignored
+	 * @param devCat Insteon device category
+	 * @param subCat Insteon device subcategory
+	 * @param vers   firmware version
+	 */
+	public void setProductInfo(int prodKey, int devCat, int subCat, int vers) {
+		m_hasRespondedToQuery = true;
+		m_productKey = null; // reset product key such that features are instantiated again!
+		DeviceDescriptor desc = DeviceDescriptor.s_getDeviceDescriptor(devCat, subCat, vers);
+		desc.setVersion(vers);
+		logger.debug("{} updated with queried descriptor: {}", this, desc);
+		m_descriptors.clear();
+		addDescriptor(desc);
+		setNeedsQuerying(false);
+	}
 	
 	public void instantiateFeatures() {
 		if (m_productKey == null) return;
 		logger.debug("calling instantiate features {} ", m_productKey);
+		clearFeatures();
 		// instantiate features
 		for (DeviceDescriptor desc : m_descriptors) {
 			HashMap<String,String> features = desc.getSubCat().getProductKeys().get(m_productKey);
 			if (features == null) continue;
 			for (Entry<String, String> fe : features.entrySet()) {
-					logger.debug("instantiating feature {} {}", fe.getKey(), fe.getValue());
-					DeviceFeature f = DeviceFeature.s_makeDeviceFeature(fe.getValue());
-					if (f == null) {
-						logger.error("error in categories.xml: unimplemented feature {}", fe.getValue());
-					} else {
-						addFeature(fe.getKey(), f);
-					}
+				logger.debug("instantiating feature {} {}", fe.getKey(), fe.getValue());
+				DeviceFeature f = DeviceFeature.s_makeDeviceFeature(fe.getValue());
+				if (f == null) {
+					logger.error("error in categories.xml: unimplemented feature {}", fe.getValue());
+				} else {
+					addFeature(fe.getKey(), f);
+				}
 			}
 		}
 		if (m_features.isEmpty() && !m_descriptors.isEmpty()) {
@@ -168,29 +204,12 @@ public class InsteonDevice {
 	}
 
 	public void processCommand(Driver driver, Command command) {
-		//logger.debug("processing command {} features: {}", command, m_features.size());
+		logger.debug("processing command {} features: {}", command, m_features.size());
 		synchronized(m_features) {
 			for (DeviceFeature i : m_features.values()) {
 				i.handleCommand(command);
 			}
 		}
-	}
-	
-	public void startPolling() {
-		if (m_pollTimer != null) {
-			m_pollTimer.cancel();
-			logger.debug("cancelled polling for {} ", m_address);
-		}
-		m_pollTimer = new Timer();
-		if (!hasValidPollingInterval()) return;
-		logger.debug("start polling for {} at rate {}", m_address, m_pollInterval);
-		doPoll();
-		m_pollTimer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				doPoll();
-			}
-		}, (long)(m_pollInterval * Math.random()), m_pollInterval);
 	}
 	
 	public void doPoll() {
@@ -203,12 +222,18 @@ public class InsteonDevice {
 				}
 			}
 		}
-		for (QEntry e : l) {
-			m_requestQueue.addLast(e);
+		if (l.isEmpty()) return;
+		synchronized (m_requestQueue) {
+			for (QEntry e : l) {
+				m_requestQueue.add(e);
+			}
 		}
+		long now = System.currentTimeMillis();
+		RequestQueueManager.instance().addQueue(this, now);
+		
 		if (!l.isEmpty()) {
 			synchronized(m_lastTimePolled) {
-				m_lastTimePolled = System.currentTimeMillis();
+				m_lastTimePolled = now;
 			}
 		}
 	}
@@ -225,7 +250,7 @@ public class InsteonDevice {
 				m.setByte("linkData3", (byte)0x00);
 				Driver d = getDriver();
 				d.writeMessage(d.getDefaultPort(), m);
-				logger.debug("wrote erase message: {}", m);
+				logger.info("wrote erase message: {}", m);
 			}
 			m_linkRecords.clear();
 		} catch (FieldException e) {
@@ -277,13 +302,46 @@ public class InsteonDevice {
 		m.setByte("userData14", (byte)checksum);
 		return m;
 	}
+	
+	public long processRequestQueue(long timeNow) {
+		synchronized (m_requestQueue) {
+			if (m_requestQueue.isEmpty()) {
+				return 0L;
+			}
+			QEntry qe = m_requestQueue.poll();
+			qe.getFeature().setQueryStatus(DeviceFeature.QueryStatus.QUERY_PENDING);
+			long quietTime = qe.getMsg().getQuietTime();
+			qe.getMsg().setQuietTime(500L); // rate limiting downstream:
+			try {
+				writeMessage(qe.getMsg());
+			} catch (IOException e) {
+				logger.warn("message write failed!");
+			}
+			return (timeNow + quietTime);
+		}
+	}
+
+	public static class QEntry {
+		private DeviceFeature	m_feature	= null;
+		private Msg 			m_msg		= null;
+		public DeviceFeature getFeature() { return m_feature; }
+		public Msg getMsg() { return m_msg; }
+		QEntry(DeviceFeature f, Msg m) {
+			m_feature	= f;
+			m_msg		= m;
+		}
+	}
 
 	private void writeMessage(Msg m) throws IOException {
 		m_driver.writeMessage(getPort(), m);
 	}
 
 	public void enqueueMessage(Msg m, DeviceFeature f) {
-		m_requestQueue.add(new QEntry(f, m));
+		synchronized (m_requestQueue) {
+			m_requestQueue.add(new QEntry(f, m));
+		}
+		long now = System.currentTimeMillis();
+		RequestQueueManager.instance().addQueue(this, now);
 	}
 
 	public String getStatusAsString() {
@@ -302,45 +360,6 @@ public class InsteonDevice {
 		return s;
 	}
 	
-	public static class QEntry {
-		private DeviceFeature	m_feature	= null;
-		private Msg 			m_msg		= null;
-		public DeviceFeature getFeature() { return m_feature; }
-		public Msg getMsg() { return m_msg; }
-		QEntry(DeviceFeature f, Msg m) {
-			m_feature	= f;
-			m_msg		= m;
-		}
-	}
-	
-	class RequestQueueReader implements Runnable {
-		@Override
-		public void run() {
-			logger.debug("starting new request queue thread for {}", m_address);
-			while (true) {
-				try {
-					QEntry qe = m_requestQueue.take();
-					long now = System.currentTimeMillis();
-					long delay = m_nextTimeAllowed - now;
-					//logger.debug("request queue reader: delay {} msg {}", delay, qe.getMsg());
-					if (delay > 0) {
-						Thread.sleep(delay);
-					}
-					qe.getFeature().setQueryStatus(DeviceFeature.QueryStatus.QUERY_PENDING);
-					long quietTime = qe.getMsg().getQuietTime();
-					qe.getMsg().setQuietTime(500L); // rate limiting downstream:
-					writeMessage(qe.getMsg());
-					m_nextTimeAllowed = System.currentTimeMillis() + quietTime;
-				} catch (IOException e) {
-					logger.error("write failed: ", e);
-				} catch (InterruptedException e) {
-					logger.error("got interrupted: ", e);
-					break;
-				}
-			}
-		}
-	}
-		
 	public static InsteonDevice s_makeDevice(InsteonAddress a, Driver d) {
 		// look up by cat/subcat to see what kind of device we need to make
 		InsteonDevice dev = new InsteonDevice(a, d);

@@ -15,6 +15,9 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MSwitch Actor</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.4.0
  * <!-- end-user-doc -->
  *
  * <p>

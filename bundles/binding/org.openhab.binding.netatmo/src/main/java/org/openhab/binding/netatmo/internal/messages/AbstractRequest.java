@@ -10,7 +10,9 @@ package org.openhab.binding.netatmo.internal.messages;
 
 import java.util.Properties;
 
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.openhab.binding.netatmo.internal.NetatmoException;
 
 /**
  * Base class for all Netatmo API requests.
@@ -36,4 +38,14 @@ public abstract class AbstractRequest extends AbstractMessage implements
 		HTTP_HEADERS.put("Accept", "application/json");
 	}
 
+	protected final RuntimeException newException(
+			final String message, final Exception cause,
+			final String url, final String json) {
+		if(cause instanceof JsonMappingException) {
+			return new NetatmoException("Could not parse JSON from URL '"
+					+ url + "': " + json, cause);
+		}
+
+		return new NetatmoException(message, cause);
+	}
 }

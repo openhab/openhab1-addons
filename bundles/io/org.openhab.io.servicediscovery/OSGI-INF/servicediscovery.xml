@@ -13,5 +13,7 @@
    <implementation class="org.openhab.io.servicediscovery.internal.DiscoveryServiceImpl"/>
    <service>
 	   <provide interface="org.openhab.io.servicediscovery.DiscoveryService"/>
+	   <provide interface="org.osgi.service.cm.ManagedService"/>
    </service>
+   <property name="service.pid" type="String" value="org.openhab.servicediscovery"/>
 </scr:component>

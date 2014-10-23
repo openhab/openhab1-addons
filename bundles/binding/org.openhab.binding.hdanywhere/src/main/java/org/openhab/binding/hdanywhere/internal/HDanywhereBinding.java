@@ -105,7 +105,7 @@ public class HDanywhereBinding extends AbstractActiveBinding<HDanywhereBindingPr
 				}
 			}
 		}
-		
+
 		setProperlyConfigured(true);
 
 	}	
@@ -240,53 +240,55 @@ public class HDanywhereBinding extends AbstractActiveBinding<HDanywhereBindingPr
 
 				HashMap<String, Integer> compiledList = ((HDanywhereBindingProvider)provider).getIntervalList();
 
-				Iterator<String> pbcIterator = compiledList.keySet().iterator();
-				while(pbcIterator.hasNext()) {
-					String aHost = pbcIterator.next();
+				if(compiledList != null) {
+					Iterator<String> pbcIterator = compiledList.keySet().iterator();
+					while(pbcIterator.hasNext()) {
+						String aHost = pbcIterator.next();
 
-					boolean jobExists = false;
+						boolean jobExists = false;
 
-					// enumerate each job group
-					try {
-						for(String group: sched.getJobGroupNames()) {
-							// enumerate each job in group
-							for(JobKey jobKey : sched.getJobKeys(jobGroupEquals(group))) {
-								if(jobKey.getName().equals(aHost)) {
-									jobExists = true;
-									break;
+						// enumerate each job group
+						try {
+							for(String group: sched.getJobGroupNames()) {
+								// enumerate each job in group
+								for(JobKey jobKey : sched.getJobKeys(jobGroupEquals(group))) {
+									if(jobKey.getName().equals(aHost)) {
+										jobExists = true;
+										break;
+									}
 								}
 							}
+						} catch (SchedulerException e1) {
+							logger.error("An exception occurred while quering the Quartz Scheduler ({})",e1.getMessage());
 						}
-					} catch (SchedulerException e1) {
-						logger.error("An exception occurred while quering the Quartz Scheduler ({})",e1.getMessage());
-					}
 
-					if(!jobExists) {
-						// set up the Quartz jobs
-						JobDataMap map = new JobDataMap();
-						map.put("host", aHost);
-						map.put("binding", this);
+						if(!jobExists) {
+							// set up the Quartz jobs
+							JobDataMap map = new JobDataMap();
+							map.put("host", aHost);
+							map.put("binding", this);
 
-						JobDetail job = newJob(HDanywhereBinding.PollJob.class)
-								.withIdentity(aHost, "HDanywhere-"+provider.toString())
-								.usingJobData(map)
-								.build();
+							JobDetail job = newJob(HDanywhereBinding.PollJob.class)
+									.withIdentity(aHost, "HDanywhere-"+provider.toString())
+									.usingJobData(map)
+									.build();
 
-						Trigger trigger = newTrigger()
-								.withIdentity(aHost, "HDanywhere-"+provider.toString())
-								.startNow()
-								.withSchedule(simpleSchedule()
-										.repeatForever()
-										.withIntervalInSeconds(compiledList.get(aHost)))            
-										.build();
+							Trigger trigger = newTrigger()
+									.withIdentity(aHost, "HDanywhere-"+provider.toString())
+									.startNow()
+									.withSchedule(simpleSchedule()
+											.repeatForever()
+											.withIntervalInSeconds(compiledList.get(aHost)))            
+											.build();
 
-						try {
-							sched.scheduleJob(job, trigger);
-						} catch (SchedulerException e) {
-							logger.error("An exception occurred while scheduling a Quartz Job");
+							try {
+								sched.scheduleJob(job, trigger);
+							} catch (SchedulerException e) {
+								logger.error("An exception occurred while scheduling a Quartz Job");
+							}
 						}
-					}
-				} 
+					} 
+				}
 			}		
 		} 
 	}

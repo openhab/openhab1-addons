@@ -92,42 +92,57 @@ public class DeviceListResponse extends AbstractResponse {
 	private static final String TYPE_MODULE_1 = "NAModule1";
 
 	/**
+	 * <code>type</code> constant of the rain gauge module
+	 */
+	private static final String TYPE_MODULE_3 = "NAModule3";
+
+	/**
 	 * <code>type</code> constant of the additional indoor module
 	 */
 	private static final String TYPE_MODULE_4 = "NAModule4";
 
 	/**
-	 * <code>wifi_status</code> threshold constant.
+	 * <code>type</code> constant of the thermostat relay/plug
+	 */
+	private static final String TYPE_PLUG = "NAPlug";
+
+	/**
+	 * <code>type</code> constant of the thermostat module
+	 */
+	private static final String TYPE_THERM_1 = "NATherm1";
+
+	/**
+	 * <code>wifi_status</code> threshold constant: bad signal
 	 */
 	private static final int WIFI_STATUS_THRESHOLD_0 = 86;
 
 	/**
-	 * <code>wifi_status</code> threshold constant.
+	 * <code>wifi_status</code> threshold constant: middle quality signal
 	 */
 	private static final int WIFI_STATUS_THRESHOLD_1 = 71;
 
 	/**
-	 * <code>wifi_status</code> threshold constant.
+	 * <code>wifi_status</code> threshold constant: good signal
 	 */
 	private static final int WIFI_STATUS_THRESHOLD_2 = 56;
 
 	/**
-	 * <code>rf_status</code> threshold constant.
+	 * <code>rf_status</code> threshold constant: low signal
 	 */
 	private static final int RF_STATUS_THRESHOLD_0 = 90;
 
 	/**
-	 * <code>rf_status</code> threshold constant.
+	 * <code>rf_status</code> threshold constant: medium signal
 	 */
 	private static final int RF_STATUS_THRESHOLD_1 = 80;
 
 	/**
-	 * <code>rf_status</code> threshold constant.
+	 * <code>rf_status</code> threshold constant: high signal
 	 */
 	private static final int RF_STATUS_THRESHOLD_2 = 70;
 
 	/**
-	 * <code>rf_status</code> threshold constant.
+	 * <code>rf_status</code> threshold constant: full signal
 	 */
 	private static final int RF_STATUS_THRESHOLD_3 = 60;
 

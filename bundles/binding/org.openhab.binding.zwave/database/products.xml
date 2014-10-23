@@ -1,6 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
+		<Id>0000</Id>
+		<Name>Sigma Designs</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>UZB</Model>
+			<Label lang="en">ACC-UZB</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>014F</Id>
+		<Name>Linear</Name>
+		<Product>
+			<Reference>
+				<Type>4457</Type>
+				<Id>3034</Id>
+			</Reference>
+			<Model>WD500Z-1</Model>
+			<Label lang="en">Wall Dimmer Switch</Label>
+			<ConfigFile>linear/wdz500-1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0150</Id>
+		<Name>Cooper Wiring Devices (!!0150!!)</Name>
+		<Product>
+			<Reference>
+				<Type>00F9</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>RF9540-N</Model>
+			<Label lang="en">Single-Pole Multi-Location Master Dimmer Light Switch</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>001A</Id>
+		<Name>Cooper Wiring Devices</Name>
+		<Product>
+			<Reference>
+				<Type>5342</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>RF9500</Model>
+			<Label lang="en">Battery Switch</Label>
+			<ConfigFile>cooper/9500.xml</ConfigFile>
+		</Product>
+                <Product>
+                        <Reference>
+                                <Type>4449</Type>
+                                <Id>0101</Id>
+                        </Reference>
+                        <Model>RF9540-N</Model>
+                        <Label lang="en">All Load Dimmer Light Switch</Label>
+                        <ConfigFile>cooper/rf9540n.xml</ConfigFile>
+                </Product>
+                <Product>
+                        <Reference>
+                                <Type>4441</Type>
+                                <Id>0000</Id>
+                        </Reference>
+                        <Model>RF9542-Z</Model>
+                        <Label lang="en">Dimmer Accessory Switch</Label>
+                        <ConfigFile>cooper/rf9542z.xml</ConfigFile>
+                </Product>
+                <Product>
+                        <Reference>
+                                <Type>534C</Type>
+                                <Id>0000</Id>
+                        </Reference>
+                        <Model>RF9501</Model>
+                        <Label lang="en">15A Light Switch</Label>
+                        <ConfigFile>cooper/rf9501.xml</ConfigFile>
+                </Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0005</Id>
 		<Name>Intermatic</Name>
 		<Product>
@@ -110,6 +187,16 @@
 		<Name>Everspring</Name>
 		<Product>
 			<Reference>
+				<Type>0003</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>AD131</Model>
+			<Label lang="en">Dimmer Plugin</Label>
+			<Label lang="de">Dimmer Zwischenstecker</Label>
+			<ConfigFile>everspring/ad131.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0103</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -126,6 +213,15 @@
 			<Model>AN157</Model>
 			<Label lang="en">Switch Plugin</Label>
 			<ConfigFile>everspring/an157.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>AN158</Model>
+			<Label lang="en">Switch Meter Plugin</Label>
+			<ConfigFile>everspring/an158.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -168,6 +264,10 @@
 			<Reference>
 				<Type>0002</Type>
 				<Id>0001</Id>
+			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
 			</Reference>
 			<Model>HSM02</Model>
 			<Label lang="en">Door/Window Contact</Label>
@@ -221,10 +321,28 @@
 			<Label lang="en">Fluorescent Light &amp; Appliance Module</Label>
 			<ConfigFile>ge/relay.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>5252</Type>
+				<Id>3530</Id>
+			</Reference>
+			<Model>45605</Model>
+			<Label lang="en">Duplex Receptacle</Label>
+			<ConfigFile>ge/relay.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0064</Id>
 		<Name>Reitz Group</Name>
+		<Product>
+			<Reference>
+				<Type>3001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>054375</Model>
+			<Label lang="en">Schuko Plug Switch</Label>
+			<ConfigFile>reitz/054375.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0001</Type>
@@ -236,12 +354,30 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>5001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064459</Model>
+			<Label lang="en">Düwi Remote Control</Label>
+			<ConfigFile>reitz/064459.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>1001</Type>
 				<Id>0000</Id>
 			</Reference>
 			<Model>064394</Model>
 			<Label lang="en">Schuko Plug Dimmer</Label>
 			<ConfigFile>reitz/064394.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>5002</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064435</Model>
+			<Label lang="en">Battery powered One paddle wall controller</Label>
+			<ConfigFile>reitz/064435.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -265,6 +401,52 @@
 			<Model>506004</Model>
 			<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
 			<ConfigFile>merten/506004.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0077</Id>
+		<Name>INNOVUS</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SmoothRemote</Model>
+			<Label lang="en">SmoothRemote Controller</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>WallSwitch</Model>
+			<Label lang="en">RAone SmartPower Wall Appliance Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>WallDimmer</Model>
+			<Label lang="en">RAone SmartDimmer Wall Dimmer Module</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0010</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SmartPower</Model>
+			<Label lang="en">RAone SmartPower</Label>
+			<ConfigFile>innovus/smartpower.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0011</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SmartDimmer</Model>
+			<Label lang="en">RAone SmartDimmer</Label>
+			<ConfigFile>innovus/smartdimmer.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -316,6 +498,10 @@
 				<Type>0006</Type>
 				<Id>0002</Id>
 			</Reference>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>			
 			<Model>Minimote</Model>
 			<Label lang="en">4 button remote control</Label>
 			<ConfigFile>aeon/minimote.xml</ConfigFile>
@@ -328,6 +514,15 @@
 			<Model>DSB06</Model>
 			<Label lang="en">Smart Energy Switch</Label>
 			<ConfigFile>aeon/dsb06.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0018</Id>
+			</Reference>
+			<Model>DSC24</Model>
+			<Label lang="en">Smart Energy Switch v2</Label>
+			<ConfigFile>aeon/dsc24.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -363,6 +558,15 @@
 		<Product>
 			<Reference>
 				<Type>0003</Type>
+				<Id>001B</Id>
+			</Reference>
+			<Model>MD2E</Model>
+			<Label lang="en">Micro Dimmer 2nd Edition</Label>
+			<ConfigFile>aeon/md2e.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
 				<Id>0011</Id>
 			</Reference>
 			<Model>MSES</Model>
@@ -372,20 +576,15 @@
 		<Product>
 			<Reference>
 				<Type>0003</Type>
-				<Id>001A</Id>
-			</Reference>
-			<Model>MES</Model>
-			<Label lang="en">Switching Insert</Label>
-			<ConfigFile>aeon/mes.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>0003</Type>
 				<Id>000C</Id>
 			</Reference>
 			<Reference>
 				<Type>0003</Type>
 				<Id>0012</Id>
+			</Reference>
+			<Reference>
+				<Type>0003</Type>
+				<Id>001A</Id>
 			</Reference>
 			<Model>MSS2E</Model>
 			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
@@ -454,6 +653,27 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>2002</Type>
+				<Id>0201</Id>
+			</Reference>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0202</Id>
+			</Reference>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0203</Id>
+			</Reference>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0204</Id>
+			</Reference>
+			<Model>ZP3102</Model>
+			<Label lang="en">Motion Sensor</Label>
+			<ConfigFile>vision/zp3102.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>2001</Type>
 				<Id>0102</Id>
 			</Reference>
@@ -481,6 +701,23 @@
 			<Label lang="en">Battery Siren</Label>
 			<ConfigFile>vision/zm1601.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>2009</Type>
+				<Id>0903</Id>
+			</Reference>
+			<Model>ZM1602</Model>
+			<Label lang="en">AC/DC Siren</Label>
+			<ConfigFile>vision/zm1602.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1001</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>ZU1401</Model>
+			<Label lang="en">USB Controller</Label>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>010F</Id>
@@ -490,8 +727,12 @@
 				<Type>0800</Type>
 				<Id>1001</Id>
 			</Reference>
+			<Reference>
+				<Type>0800</Type>
+				<Id>3001</Id>
+			</Reference>
 			<Model>FGMS01</Model>
-			<Label lang="en">Movement Sensor</Label>
+			<Label lang="en">Motion Sensor</Label>
 			<ConfigFile>fibaro/fgms01.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -683,6 +924,10 @@
       			</Reference>
       			<Reference>
         			<Type>0300</Type>
+        			<Id>0104</Id>
+      			</Reference>
+      			<Reference>
+        			<Type>0300</Type>
         			<Id>0107</Id>
       			</Reference>
       			<Model>FGR221</Model>
@@ -692,7 +937,7 @@
 	</Manufacturer>
 	<Manufacturer>
 		<Id>011F</Id>
-		<Name>Ecolink</Name>
+		<Name>Ecolink(Schlage)</Name>
 		<Product>
 			<Reference>
 				<Type>0001</Type>
@@ -710,6 +955,19 @@
 			<Model>TILTZWAVE1</Model>
 			<Label lang="en">Z-Wave Garage Door Sensor</Label>
 			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>	
+	<Manufacturer>
+		<Id>014A</Id>
+		<Name>Ecolink</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>DWZWAVE2</Model>
+			<Label lang="en">Z-Wave Door/Window Sensor</Label>
+			<ConfigFile>eco/dwzwave2.xml</ConfigFile>
 		</Product>
 	</Manufacturer>	
 	<Manufacturer>
@@ -750,6 +1008,32 @@
 			<Label lang="en">4 button keyfob</Label>
 			<ConfigFile>zwaveme/kfob.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>WCD2</Model>
+			<Label lang="en">Double Paddle Wall Controller</Label>
+			<ConfigFile>zwaveme/zme_wcd2.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1000</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>ZME_064435</Model>
+			<Label lang="en">Single Paddle Wall Controller</Label>
+			<ConfigFile>zwaveme/zme_064435.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>ZME_Z-StickC</Model>
+			<Label lang="en">Z-Wave USB Controller</Label>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0118</Id>
@@ -789,6 +1073,15 @@
 			<Model>TZ68</Model>
 			<Label lang="en">Wall Plug</Label>
 			<ConfigFile>tkb/tz68.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>TSM02</Model>
+			<Label lang="en">Slim Multi-Sensor</Label>
+			<ConfigFile>tkb/tsm02.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -851,6 +1144,16 @@
 			<Label lang="de">NorthQ Stromzähler</Label>
 			<ConfigFile>northq/nq9021.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>NQ-9022</Model>
+			<Label lang="en">NorthQ Electrical Meter</Label>
+			<Label lang="de">NorthQ Stromzähler</Label>
+			<ConfigFile>northq/nq9021.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0039</Id>
@@ -890,4 +1193,125 @@
 			<ConfigFile>eurotronic/stellaz.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0111</Id>
+		<Name>Airline Mechanical</Name>
+		<Product>
+			<Reference>
+				<Type>8200</Type>
+				<Id>0200</Id>
+			</Reference>
+			<Model>ZDS-UD10</Model>
+			<Label lang="en">Dimming Switch Module</Label>
+			<ConfigFile>amc/zds-ud10.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0001</Id>
+		<Name>ACT</Name>
+		<Product>
+			<Reference>
+				<Type>4450</Type>
+				<Id>3030</Id>
+			</Reference>
+			<Model>ZDP100</Model>
+			<Label lang="en">Plugin Lamp Module</Label>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>001d</Id>
+		<Name>Leviton</Name>
+		<Product>
+			<Reference>
+				<Type>0301</Type>
+				<Id>0209</Id>
+			</Reference>
+			<Reference>
+                                <Type>301</Type>
+                                <Id>0334</Id>
+                        </Reference>
+			<Model>VRS15-1LZ</Model>
+			<Label lang="en">Scene Capable Push On/Off</Label>
+			<ConfigFile>leviton/vrs15-1lz.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0401</Type>
+				<Id>0209</Id>
+			</Reference>
+			 <Reference>
+                <Type>0401</Type>
+                <Id>0334</Id>
+            </Reference>
+			<Model>VRI06-1LZ</Model>
+			<Label lang="en">Scene Capable Push On/Off Dimmer</Label>
+			<ConfigFile>leviton/vri06-1lz.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1c02</Type>
+				<Id>0334</Id>
+			</Reference>
+			<Model>DZS15-1LZ</Model>
+			<Label lang="en">Scene Capable Push On/Off</Label>
+			<ConfigFile>leviton/dzs15-1lz.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>007e</Id>
+		<Name>Monster</Name>
+		<Product>
+			<Reference>
+				<Type>0101</Type>
+				<Id>0206</Id>
+			</Reference>
+			<Model>ML LAS1000</Model>
+			<Label lang="en">Plugin Appliance Module</Label>
+			<ConfigFile>monster/mllas1000.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>5254</Id>
+		<Name>Remotec</Name>
+		<Product>
+			<Reference>
+				<Type>0101</Type>
+				<Id>8377</Id>
+			</Reference>
+			<Model>ZXT-120</Model>
+			<Label lang="en">Remotec ZXT-120 AC IR Remote</Label>
+			<ConfigFile>remotec/zxt120.xml</ConfigFile>
+		</Product>
+	</Manufacturer>	
+	<Manufacturer>
+		<Id>159</Id>
+		<Name>Qubino</Name>
+		<Product>
+			<Reference>
+				<Type>2</Type>
+				<Id>2</Id>
+			</Reference>
+			<Model>ZMNHAA</Model>
+			<Label lang="en">Flush 1 relay</Label>
+			<ConfigFile>qubino/zmnhaa.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>2</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHBA</Model>
+			<Label lang="en">Flush 2 relays</Label>
+			<ConfigFile>qubino/zmnhba.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHDA</Model>
+			<Label lang="en">Flush dimmer</Label>
+			<ConfigFile>qubino/zmnhda.xml</ConfigFile>
+		</Product>
+	</Manufacturer>	
 </Manufacturers>

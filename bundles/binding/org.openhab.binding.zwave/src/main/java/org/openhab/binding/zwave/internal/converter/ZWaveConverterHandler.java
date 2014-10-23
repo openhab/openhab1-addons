@@ -59,6 +59,10 @@ public class ZWaveConverterHandler {
 
 		// add converters here
 		converters.put(CommandClass.THERMOSTAT_SETPOINT, new ZWaveThermostatSetpointConverter(controller, eventPublisher));
+		converters.put(CommandClass.THERMOSTAT_MODE, new ZWaveThermostatModeConverter(controller, eventPublisher));
+		converters.put(CommandClass.THERMOSTAT_FAN_MODE, new ZWaveThermostatFanModeConverter(controller, eventPublisher));
+		converters.put(CommandClass.THERMOSTAT_OPERATING_STATE, new ZWaveThermostatOperatingStateConverter(controller, eventPublisher));
+		converters.put(CommandClass.THERMOSTAT_FAN_STATE, new ZWaveThermostatFanStateConverter(controller, eventPublisher));
 		converters.put(CommandClass.BATTERY, new ZWaveBatteryConverter(controller, eventPublisher));
 		converters.put(CommandClass.SWITCH_BINARY, new ZWaveBinarySwitchConverter(controller, eventPublisher));
 		converters.put(CommandClass.SWITCH_MULTILEVEL, new ZWaveMultiLevelSwitchConverter(controller, eventPublisher));
@@ -68,6 +72,8 @@ public class ZWaveConverterHandler {
 		converters.put(CommandClass.METER, new ZWaveMeterConverter(controller, eventPublisher));
 		converters.put(CommandClass.BASIC, new ZWaveBasicConverter(controller, eventPublisher));
 		converters.put(CommandClass.SCENE_ACTIVATION, new ZWaveSceneConverter(controller, eventPublisher));
+		converters.put(CommandClass.ALARM, new ZWaveAlarmConverter(controller, eventPublisher));
+
 		infoConverter = new ZWaveInfoConverter(controller, eventPublisher);
 		
 		// add preferred command classes per Item class here
@@ -79,7 +85,9 @@ public class ZWaveConverterHandler {
 			CommandClass.BASIC, CommandClass.SENSOR_MULTILEVEL, CommandClass.SENSOR_BINARY, CommandClass.SENSOR_ALARM });
 		preferredCommandClasses.put(NumberItem.class, new CommandClass[] { CommandClass.SENSOR_MULTILEVEL, CommandClass.METER, 
 			CommandClass.SWITCH_MULTILEVEL, CommandClass.BATTERY, CommandClass.BASIC, CommandClass.SENSOR_BINARY, 
-			CommandClass.SENSOR_ALARM, CommandClass.SWITCH_BINARY, CommandClass.THERMOSTAT_SETPOINT });
+			CommandClass.SENSOR_ALARM, CommandClass.SWITCH_BINARY, CommandClass.THERMOSTAT_SETPOINT, 
+			CommandClass.THERMOSTAT_MODE, CommandClass.THERMOSTAT_FAN_MODE, CommandClass.THERMOSTAT_OPERATING_STATE,
+			CommandClass.THERMOSTAT_FAN_STATE});
 		preferredCommandClasses.put(ContactItem.class, new CommandClass[] { CommandClass.SENSOR_BINARY, CommandClass.SENSOR_ALARM, 
 			CommandClass.SWITCH_BINARY, CommandClass.BASIC });
 	}
@@ -297,24 +305,26 @@ public class ZWaveConverterHandler {
 
 		logger.trace("Getting converter for item = {}, command class = {}, item command class = {}", itemName, event.getCommandClass().getLabel(), commandClassName);
 		
-		if (item == null)
+		if (item == null) {
 			return;
+		}
 		
 		// check whether this item is bound to the right command class.
 		
 		if (commandClassName != null && !commandClassName.equalsIgnoreCase(event.getCommandClass().getLabel().toLowerCase()) &&
-				!(respondToBasic && event.getCommandClass() == CommandClass.BASIC)) 
+				!(respondToBasic && event.getCommandClass() == CommandClass.BASIC)) {
 			return;
+		}
 		
-		 ZWaveCommandClassConverter<?> converter = this.getConverter(event.getCommandClass());
+		ZWaveCommandClassConverter<?> converter = this.getConverter(event.getCommandClass());
 		 
 		 
-		 if (converter == null) {
-			 logger.warn("No converter found for command class = {}, ignoring event.",event.getCommandClass().toString());
-			 return;
-		 }
+		if (converter == null) {
+			logger.warn("No converter found for command class = {}, ignoring event.",event.getCommandClass().toString());
+			return;
+		}
 		 
-		 converter.handleEvent(event, item, bindingConfiguration.getArguments());
+		converter.handleEvent(event, item, bindingConfiguration.getArguments());
 	 }
 	
 	/**

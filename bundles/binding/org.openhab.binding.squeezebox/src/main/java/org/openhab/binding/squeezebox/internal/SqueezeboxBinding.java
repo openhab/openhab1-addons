@@ -135,7 +135,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 						if (command.equals(OnOffType.ON))
 							squeezeServer.syncPlayer(playerId, bindingConfig.getExtra()); 
 						else if (command.equals(OnOffType.OFF))
-							squeezeServer.unSyncPlayer(playerId);
+							squeezeServer.unSyncPlayer(bindingConfig.getExtra());
 						break;
 
 					default:
@@ -163,6 +163,28 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 		numberChangeEvent(event.getPlayerId(), CommandType.VOLUME, event.getPlayer().getVolume());
 	}
 	
+	@Override
+	public void currentPlaylistIndexEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.CURRTRACK, event.getPlayer().getCurrentPlaylistIndex());
+	}
+	
+	@Override
+	public void currentPlayingTimeEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.PLAYTIME, event.getPlayer().getCurrentPlayingTime());
+	}
+	
+	@Override
+	public void numberPlaylistTracksEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.NUMTRACKS, event.getPlayer().getNumberPlaylistTracks());
+	}
+	@Override
+	public void currentPlaylistShuffleEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.SHUFFLE, event.getPlayer().getCurrentPlaylistShuffle());
+	}
+	@Override
+	public void currentPlaylistRepeatEvent(PlayerEvent event) {
+		numberChangeEvent(event.getPlayerId(), CommandType.REPEAT, event.getPlayer().getCurrentPlaylistRepeat());
+	}
 	@Override
 	public void modeChangeEvent(PlayerEvent event) {
 		booleanChangeEvent(event.getPlayerId(), CommandType.PLAY, event.getPlayer().isPlaying());
@@ -258,10 +280,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 	 */
 	public void setSqueezeServer(SqueezeServer squeezeServer) {
 		this.squeezeServer = squeezeServer;
-		
-		for (SqueezePlayer player : squeezeServer.getPlayers()) {
-			player.addPlayerEventListener(this);
-		}
+		this.squeezeServer.addPlayerEventListener(this);
 	}
 
 	/**
@@ -271,10 +290,7 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 	 *            Service to remove.
 	 */
 	public void unsetSqueezeServer(SqueezeServer squeezeServer) {
+		this.squeezeServer.removePlayerEventListener(this);
 		this.squeezeServer = null;
-		
-		for (SqueezePlayer player : squeezeServer.getPlayers()) {
-			player.removePlayerEventListener(this);
-		}
 	}
 }
