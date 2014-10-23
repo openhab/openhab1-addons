@@ -51,11 +51,11 @@ public class ZWaveThermostatModeConverter extends
 	void executeRefresh(ZWaveNode node,
 			ZWaveThermostatModeCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
-		logger.debug("Generating poll message for {} for node {} endpoint {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
+		logger.debug("NODE {}: Generating poll message for {} for node {} endpoint {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
 		SerialMessage serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
 		
 		if (serialMessage == null) {
-			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
+			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
 			return;
 		}
 		
@@ -71,7 +71,7 @@ public class ZWaveThermostatModeConverter extends
 		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
 		
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
+			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring event.", event.getNodeId(), item.getName(), event.getEndpoint());
 			return;
 		}
 		
@@ -90,16 +90,16 @@ public class ZWaveThermostatModeConverter extends
 		ZWaveCommandConverter<?,?> converter = this.getCommandConverter(command.getClass());
 		
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
+			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring command.", node.getNodeId(), item.getName(), endpointId);
 			return;
 		}
 		
-		logger.debug("receiveCommand with converter {} ", converter.getClass());
+		logger.debug("NODE {}: receiveCommand with converter {} ", node.getNodeId(), converter.getClass());
 		
 		SerialMessage serialMessage = node.encapsulate(commandClass.setValueMessage(((BigDecimal)converter.convertFromCommandToValue(item, command)).intValue()), commandClass, endpointId);
-		logger.debug("receiveCommand sending message {} ", serialMessage); 
+		logger.debug("NODE {}: receiveCommand sending message {} ", node.getNodeId(), serialMessage); 
 		if (serialMessage == null) {
-			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
+			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
 			return;
 		}
 		

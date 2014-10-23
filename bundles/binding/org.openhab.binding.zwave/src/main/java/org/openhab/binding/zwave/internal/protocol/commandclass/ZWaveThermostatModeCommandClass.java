@@ -83,15 +83,14 @@ ZWaveCommandClassDynamicState {
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
-		logger.trace("Handle Message Thermostat Mode Request");
 		logger.debug("NODE {}: Received Thermostat Mode Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 		case THERMOSTAT_MODE_SET:
 		case THERMOSTAT_MODE_GET:
 		case THERMOSTAT_MODE_SUPPORTED_GET:
-			logger.warn(String.format("Command 0x%02X not implemented.", 
-					command));
+			logger.warn(String.format("NODE %d: Command 0x%02X not implemented.", 
+				this.getNode().getNodeId(), command));
 			return;
 		case THERMOSTAT_MODE_SUPPORTED_REPORT:
 			logger.debug("NODE {}: Process Thermostat Supported Mode Report", this.getNode().getNodeId());
@@ -122,7 +121,7 @@ ZWaveCommandClassDynamicState {
 			this.getNode().advanceNodeStage(NodeStage.DYNAMIC);
 			break;
 		case THERMOSTAT_MODE_REPORT:
-			logger.trace("Process Thermostat Mode Report");
+			logger.trace("NODE {}: Process Thermostat Mode Report", this.getNode().getNodeId());
 			processThermostatModeReport(serialMessage, offset, endpoint);
 
 			if (this.getNode().getNodeStage() != NodeStage.DONE)
@@ -130,7 +129,8 @@ ZWaveCommandClassDynamicState {
 
 			break;
 		default:
-			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
+			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).",
+					this.getNode().getNodeId(),
 					command, 
 					this.getCommandClass().getLabel(),
 					this.getCommandClass().getKey()));
@@ -161,7 +161,7 @@ ZWaveCommandClassDynamicState {
 		if (!this.modeTypes.contains(modeType))
 			this.modeTypes.add(modeType);
 
-		logger.debug("NODE {}: Thermostat Mode Report, value = %s", this.getNode().getNodeId(), modeType.getLabel());
+		logger.debug("NODE {}: Thermostat Mode Report, value = {}", this.getNode().getNodeId(), modeType.getLabel());
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
 		this.getController().notifyEventListeners(zEvent);
 	}
