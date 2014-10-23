@@ -87,21 +87,12 @@ public class SamsungAcBinding extends
 			
 			SamsungAcHost host = nameHostMapper.get(hostName);
 			
-			Command commandEnum = Command.valueOf(property);
-			
-			switch (commandEnum) {
-			case "AC_FUN_POWER":
-				
-				break;
-
-			default:
-				break;
-			}
-			
 			if ("AC_FUN_POWER".equals(property)) {
 				String cmd = "Off";
 				if (command.toString() == "ON") cmd = "On";
 				host.getAirConditioner().sendCommand(property, cmd);
+			} else if ("AC_FUN_TEMPSET".equals(property)) {
+				host.getAirConditioner().sendCommand(property, command.toString());
 			}
 			
 		}
