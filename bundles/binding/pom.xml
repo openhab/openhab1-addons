@@ -49,6 +49,7 @@
     <module>org.openhab.binding.dmx.artnet</module>
     <module>org.openhab.binding.dmx.test</module>
     <module>org.openhab.binding.rfxcom</module>
+    <module>org.openhab.binding.samsungac</module>
     <module>org.openhab.binding.samsungtv</module>
     <module>org.openhab.binding.pulseaudio</module>
     <module>org.openhab.binding.homematic</module>
@@ -121,6 +122,7 @@
     <module>org.openhab.binding.alarmdecoder</module>
     <module>org.openhab.binding.davis</module>
     <module>org.openhab.binding.xpl</module>
+    <module>org.openhab.binding.samsungac2</module>
   </modules>
 
 </project>
