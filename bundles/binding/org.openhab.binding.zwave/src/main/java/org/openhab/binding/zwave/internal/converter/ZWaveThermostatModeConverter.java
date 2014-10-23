@@ -51,7 +51,7 @@ public class ZWaveThermostatModeConverter extends
 	void executeRefresh(ZWaveNode node,
 			ZWaveThermostatModeCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
-		logger.debug("NODE {}: Generating poll message for {} for node {} endpoint {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
+		logger.debug("NODE {}: Generating poll message for {} endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
 		SerialMessage serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
 		
 		if (serialMessage == null) {
