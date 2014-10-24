@@ -985,7 +985,7 @@ public class ZWaveController {
 						
 						if (node != null && !node.isListening() && !node.isFrequentlyListening() && lastSentMessage.getPriority() != SerialMessagePriority.Low) {
 							ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
-
+	
 							// If it's a battery operated device, check if it's awake or place in wake-up queue.
 							if (wakeUpCommandClass != null && !wakeUpCommandClass.processOutgoingWakeupMessage(lastSentMessage)) {
 								continue;
@@ -1028,7 +1028,7 @@ public class ZWaveController {
 									break;
 								}
 							}
-
+	
 							if (--lastSentMessage.attempts >= 0) {
 								logger.error("NODE {}: Timeout while sending message. Requeueing", lastSentMessage.getMessageNode());
 								if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData)
@@ -1051,7 +1051,6 @@ public class ZWaveController {
 					}
 					
 				}
-				
 			} catch (Exception e) {
 				logger.error("Got an exception during sending. exiting thread.", e);
 			}
@@ -1113,9 +1112,10 @@ public class ZWaveController {
 		public void run() {
 			logger.debug("Starting Z-Wave receive thread");
 			try {
+	
 				// Send a NAK to resynchronise communications
 				sendResponse(NAK);
-
+	
 				while (!interrupted()) {
 					int nextByte;
 					
@@ -1191,7 +1191,6 @@ public class ZWaveController {
 	    					break;
 					}
 				}
-				
 			} catch (Exception e) {
 				logger.error("Got an exception during receiving. exiting thread.", e);
 			}

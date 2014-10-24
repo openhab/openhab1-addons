@@ -56,6 +56,9 @@ public class Pushover {
 	private final static int API_MAX_URL_LENGTH = 512;
 	private final static int API_MAX_URL_TITLE_LENGTH = 100;
 	private final static int[] API_VALID_PRIORITY_LIST = {-2, -1, 0, 1, 2};
+	private final static int[] API_HIGH_PRIORITY_LIST = {2};
+	private final static int API_MIN_RETRY_SECONDS = 30;
+	private final static int API_MAX_EXPIRE_SECONDS = 86400;
 	
 	public static final String MESSAGE_KEY_API_KEY = "token";
 	public static final String MESSAGE_KEY_USER = "user";
@@ -68,6 +71,8 @@ public class Pushover {
 	public static final String MESSAGE_KEY_PRIORITY = "priority";
 	public static final String MESSAGE_KEY_TIMESTAMP = "timestamp";
 	public static final String MESSAGE_KEY_SOUND = "sound";
+	public static final String MESSAGE_KEY_RETRY = "retry";
+	public static final String MESSAGE_KEY_EXPIRE = "expire";
 	
 	public static final String MESSAGE_KEY_CONTENT_TYPE = "content-type";
 
@@ -79,7 +84,9 @@ public class Pushover {
 	static String defaultUrlTitle;
 	static int defaultPriority = 0;
 	static String defaultSound;
-	
+
+	static int retry = 300;
+	static int expire = 3600;
 	static int timeout = 10000;
 
 	@ActionDoc(text = "Send a notification to your mobile device using the default api key.", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
@@ -284,6 +291,22 @@ public class Pushover {
 			
 			if (!StringUtils.isEmpty(sound)) {
 				addEncodedParameter(data, MESSAGE_KEY_SOUND, sound);
+			}
+			
+			if ( isValueInList(API_HIGH_PRIORITY_LIST, priority) ) {
+				if ( retry >= API_MIN_RETRY_SECONDS ) {
+					addEncodedParameter(data, MESSAGE_KEY_RETRY, String.valueOf(retry));
+				} else {
+					logger.warn("Retry value of " + retry + " is too small. Using default value of " + API_MIN_RETRY_SECONDS + ".");
+					addEncodedParameter(data, MESSAGE_KEY_RETRY, String.valueOf(API_MIN_RETRY_SECONDS));
+				}
+
+				if ( expire <= API_MAX_EXPIRE_SECONDS ) {
+					addEncodedParameter(data, MESSAGE_KEY_EXPIRE, String.valueOf(expire));
+				} else {
+					logger.warn("Expire value of " + expire + " is too large. Using default value of " + API_MAX_EXPIRE_SECONDS + ".");
+					addEncodedParameter(data, MESSAGE_KEY_EXPIRE, String.valueOf(API_MAX_EXPIRE_SECONDS));					
+				}
 			}
 
 			String content = data.toString();
