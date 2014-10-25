@@ -12,11 +12,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -29,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Thermostat OperatingState command class.
@@ -44,7 +42,10 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	private static final byte THERMOSTAT_OPERATING_STATE_GET              = 0x2;
 	private static final byte THERMOSTAT_OPERATING_STATE_REPORT           = 0x3;
 
-	private final Set<OperatingStateType> operatingStateTypes = new HashSet<OperatingStateType>();
+	private final Map<OperatingStateType, OperatingState> operatingStates = new HashMap<OperatingStateType, OperatingState>();
+
+	@XStreamOmitField
+	private boolean dynamicDone = false;
 
 	/**
 	 * Creates a new instance of the ZWaveThermostatOperatingStateCommandClass class.
@@ -85,10 +86,6 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		case THERMOSTAT_OPERATING_STATE_REPORT:
 			logger.trace("NODE {}: Process Thermostat Operating State Report", this.getNode().getNodeId());
 			processThermostatOperatingStateReport(serialMessage, offset, endpoint);
-
-			if (this.getNode().getNodeStage() != NodeStage.DONE)
-				this.getNode().advanceNodeStage(NodeStage.DONE);
-
 			break;
 		default:
 			logger.warn("NODE {}: Unsupported Command {} for command class {} ({}).",
@@ -120,8 +117,12 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		}
 
 		// operatingState type seems to be supported, add it to the list.
-		if (!this.operatingStateTypes.contains(operatingStateType))
-			this.operatingStateTypes.add(operatingStateType);
+		OperatingState state = operatingStates.get(operatingStateType);
+		if (state == null) {
+			state = new OperatingState(operatingStateType);
+			operatingStates.put(operatingStateType, state);
+		}
+		state.setInitialised();
 
 		logger.debug("NODE {}: Operating State Type = {} ({})", this.getNode().getNodeId(), operatingStateType.getLabel(), value);
 
@@ -135,9 +136,11 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> getDynamicValues() {
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		result.add(getValueMessage());
+		if(refresh == true || dynamicDone == false) {
+			result.add(getValueMessage());
+		}
 		return result;
 	}
 
@@ -231,6 +234,31 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		 */
 		public String getLabel() {
 			return label;
+		}
+	}
+	
+	/**
+	 * Class to hold operating state
+	 * @author Chris Jackson
+	 */
+	private class OperatingState {
+		OperatingStateType operatingStateType;
+		boolean initialised = false;
+
+		public OperatingState(OperatingStateType type) {
+			operatingStateType = type;
+		}
+
+		public OperatingStateType getModeType() {			
+			return operatingStateType;
+		}
+
+		public void setInitialised() {
+			initialised = true;
+		}
+
+		public boolean getInitialised() {
+			return initialised;
 		}
 	}
 }

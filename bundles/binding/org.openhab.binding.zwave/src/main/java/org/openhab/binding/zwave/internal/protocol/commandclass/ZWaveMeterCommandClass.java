@@ -20,7 +20,6 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
@@ -29,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Meter command class. The Meter Command Class is intended for all
@@ -56,7 +56,13 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 	private MeterType meterType = null;
 	private final Set<MeterScale> meterScales = new HashSet<MeterScale>(); 
 	
+	@XStreamOmitField
 	private volatile boolean canReset = false;
+
+	@XStreamOmitField
+	private boolean initialiseDone = false;
+	@XStreamOmitField
+	private boolean dynamicDone = false;
 
 	/**
 	 * Creates a new instance of the ZWaveMeterCommandClass class.
@@ -157,9 +163,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 				return;
 			}
 
-			if (this.getNode().getNodeStage() != NodeStage.DONE) {
-				this.getNode().advanceNodeStage(NodeStage.DONE);
-			}
+			dynamicDone = true;
 			break;
 		case METER_SUPPORTED_REPORT:
 			logger.trace("Process Meter Supported Report");
@@ -199,7 +203,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 				}
 			}
 			
-			this.getNode().advanceNodeStage(NodeStage.DYNAMIC);
+			initialiseDone = true;
 			break;
 		default:
 			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", command, this
@@ -278,12 +282,12 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 	 * Initializes the meter command class. Requests the supported meter types.
 	 */
 	@Override
-	public Collection<SerialMessage> initialize() {
+	public Collection<SerialMessage> initialize(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-
-		if (this.getVersion() > 1)
+		// If we're already initialized, then don't do it again unless we're refreshing
+		if((refresh == true || initialiseDone == false) && this.getVersion() > 1) {
 			result.add(this.getSupportedMessage());
-
+		}
 		return result;
 	}
 
@@ -291,19 +295,21 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> getDynamicValues() {
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
 
-		switch (this.getVersion()) {
-			case 1: 
-				result.add(this.getValueMessage());
-				break;
-			case 2:
-			case 3:
-				for (MeterScale scale : this.meterScales) {
-					result.add(this.getMessage(scale));
-				}
-				break;
+		if(refresh == true || dynamicDone == false) {
+			switch (this.getVersion()) {
+				case 1: 
+					result.add(this.getValueMessage());
+					break;
+				case 2:
+				case 3:
+					for (MeterScale scale : this.meterScales) {
+						result.add(this.getMessage(scale));
+					}
+					break;
+			}
 		}
 
 		return result;

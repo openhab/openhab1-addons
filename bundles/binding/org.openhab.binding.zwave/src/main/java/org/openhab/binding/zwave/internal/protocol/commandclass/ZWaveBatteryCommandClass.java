@@ -18,12 +18,12 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Battery command class. Devices that support this
@@ -43,6 +43,9 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 	private static final int BATTERY_REPORT = 0x03;
 	
 	private Integer batteryLevel = null;
+	
+	@XStreamOmitField
+	private boolean dynamicDone = false;
 	
 	/**
 	 * Creates a new instance of the ZWaveBatteryCommandClass class.
@@ -85,8 +88,7 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 				ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), batteryLevel);
 				this.getController().notifyEventListeners(zEvent);
 
-				if (this.getNode().getNodeStage() != NodeStage.DONE)
-					this.getNode().advanceNodeStage(NodeStage.DONE);
+				dynamicDone = true;
 				break;
 			default:
 			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
@@ -115,11 +117,13 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> getDynamicValues() {
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
+		if(refresh == false && dynamicDone ==true) {
+			return null;
+		}
+
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		
 		result.add(getValueMessage());
-		
 		return result;
 	}
 	

@@ -18,7 +18,6 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,9 +128,6 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 					if (zCC.getVersion() == 0)
 						return;
 				}
-				// advance node stage;
-				this.getNode().advanceNodeStage(NodeStage.INSTANCES_ENDPOINTS);
-					
 				break;
 			default:
 				logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 

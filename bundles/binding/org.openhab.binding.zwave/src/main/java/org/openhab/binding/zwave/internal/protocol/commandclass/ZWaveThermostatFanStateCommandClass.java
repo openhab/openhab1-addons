@@ -12,11 +12,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -29,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Thermostat FanState command class.
@@ -44,7 +42,10 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	private static final byte THERMOSTAT_FAN_STATE_GET              = 0x2;
 	private static final byte THERMOSTAT_FAN_STATE_REPORT           = 0x3;
 
-	private final Set<FanStateType> fanStateTypes = new HashSet<FanStateType>();
+	private final Map<FanStateType, FanState> fanStates = new HashMap<FanStateType, FanState>();
+
+	@XStreamOmitField
+	private boolean dynamicDone = false;
 
 	/**
 	 * Creates a new instance of the ZWaveThermostatFanStateCommandClass class.
@@ -85,10 +86,6 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		case THERMOSTAT_FAN_STATE_REPORT:
 			logger.trace("NODE {}: Process Thermostat Fan State Report", this.getNode().getNodeId());
 			processThermostatFanStateReport(serialMessage, offset, endpoint);
-
-			if (this.getNode().getNodeStage() != NodeStage.DONE)
-				this.getNode().advanceNodeStage(NodeStage.DONE);
-
 			break;
 		default:
 			logger.warn("NODE {}: Unsupported Command {} for command class {} ({}).", 
@@ -120,8 +117,12 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		}
 
 		// fanState type seems to be supported, add it to the list.
-		if (!this.fanStateTypes.contains(fanStateType))
-			this.fanStateTypes.add(fanStateType);
+		FanState fanState = fanStates.get(fanStateType);
+		if (fanState == null) {
+			fanState = new FanState(fanStateType);
+			fanStates.put(fanStateType, fanState);
+		}
+		fanState.setInitialised();
 
 		logger.debug("NODE {}: Thermostat fan state  Report value = {}", this.getNode().getNodeId(), fanStateType.getLabel());
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
@@ -132,9 +133,12 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> getDynamicValues() {
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
+		// TODO (or question for Dan from Chris) - shouldn't this iterate through all fan modes?
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		result.add(getValueMessage());
+		if(refresh == true || dynamicDone == false) {
+			result.add(getValueMessage());
+		}
 		return result;
 	}
 
@@ -228,6 +232,31 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		 */
 		public String getLabel() {
 			return label;
+		}
+	}
+	
+	/**
+	 * Class to hold fan state
+	 * @author Chris Jackson
+	 */
+	private class FanState {
+		FanStateType fanStateType;
+		boolean initialised = false;
+
+		public FanState(FanStateType type) {
+			fanStateType = type;
+		}
+
+		public FanStateType getFanStateType() {			
+			return fanStateType;
+		}
+
+		public void setInitialised() {
+			initialised = true;
+		}
+
+		public boolean getInitialised() {
+			return initialised;
 		}
 	}
 }

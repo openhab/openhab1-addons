@@ -18,12 +18,12 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Binary Switch command class. Binary switches can be turned
@@ -41,7 +41,10 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 	private static final int SWITCH_BINARY_SET = 0x01;
 	private static final int SWITCH_BINARY_GET = 0x02;
 	private static final int SWITCH_BINARY_REPORT = 0x03;
-	
+
+	@XStreamOmitField
+	private boolean dynamicDone = false;
+
 	/**
 	 * Creates a new instance of the ZWaveBinarySwitchCommandClass class.
 	 * @param node the node this command class belongs to
@@ -86,8 +89,7 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 				logger.trace("Process Switch Binary Report");
 				processSwitchBinaryReport(serialMessage, offset, endpoint);
 				
-				if (this.getNode().getNodeStage() != NodeStage.DONE)
-					this.getNode().advanceNodeStage(NodeStage.DONE);
+				dynamicDone = true;
 				break;
 			default:
 			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
@@ -148,11 +150,12 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> getDynamicValues() {
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
 		
-		result.add(getValueMessage());
-		
+		if(refresh == true || dynamicDone == false) {
+			result.add(getValueMessage());
+		}
 		return result;
 	}
 }

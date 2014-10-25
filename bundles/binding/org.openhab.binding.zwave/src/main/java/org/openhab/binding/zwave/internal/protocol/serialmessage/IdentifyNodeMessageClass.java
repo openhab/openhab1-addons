@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
@@ -106,10 +105,7 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 					node.addCommandClass(zwaveCommandClass);
 			}
 		}
-		
-    	// advance node stage of the current node.
-		node.advanceNodeStage(NodeStage.PING);
-		
+
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 
 		return false;

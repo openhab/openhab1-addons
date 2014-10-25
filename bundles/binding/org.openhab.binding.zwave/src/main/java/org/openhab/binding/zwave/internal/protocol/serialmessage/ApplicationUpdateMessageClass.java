@@ -67,9 +67,6 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 					if (commandClass != null)
 						node.addCommandClass(commandClass);
 				}
-
-				// advance node stage.
-				node.advanceNodeStage(NodeStage.MANSPEC01);
 			}
 			
 			checkTransactionComplete(lastSentMessage, incomingMessage);

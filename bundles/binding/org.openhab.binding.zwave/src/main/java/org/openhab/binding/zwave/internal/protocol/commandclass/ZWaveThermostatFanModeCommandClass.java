@@ -12,11 +12,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -29,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Thermostat FanMode command class.
@@ -48,7 +46,12 @@ ZWaveCommandClassDynamicState {
 	private static final byte THERMOSTAT_FAN_MODE_SUPPORTED_GET    = 0x4;
 	private static final byte THERMOSTAT_FAN_MODE_SUPPORTED_REPORT = 0x5;
 
-	private final Set<FanModeType> fanModeTypes = new HashSet<FanModeType>();
+	private final Map<FanModeType, FanMode> fanModes = new HashMap<FanModeType, FanMode>();
+
+	@XStreamOmitField
+	private boolean initialiseDone = false;
+	@XStreamOmitField
+	private boolean dynamicDone = false;
 
 	/**
 	 * Creates a new instance of the ZWaveThermostatFanModeCommandClass class.
@@ -111,23 +114,21 @@ ZWaveCommandClassDynamicState {
 					// (n)th bit is set. n is the index for the fanMode type enumeration.
 					FanModeType fanModeTypeToAdd = FanModeType.getFanModeType(index);
 					if(fanModeTypeToAdd != null){
-						this.fanModeTypes.add(fanModeTypeToAdd);
+						FanMode newFanMode = new FanMode(fanModeTypeToAdd);
+						this.fanModes.put(fanModeTypeToAdd, newFanMode);
 						logger.debug("NODE {}: Added Fan Mode type {} ({})", this.getNode().getNodeId(), fanModeTypeToAdd.getLabel(), index);
-					} else {
+					}
+					else {
 						logger.warn("NODE {}: Uknown fan mode type {}", this.getNode().getNodeId(), index);
 					}
 				}
 			}
 
-			this.getNode().advanceNodeStage(NodeStage.DYNAMIC);
+			initialiseDone = true;
 			break;
 		case THERMOSTAT_FAN_MODE_REPORT:
 			logger.trace("NODE {}: Process Thermostat Fan Mode Report",this.getNode().getNodeId());
 			processThermostatFanModeReport(serialMessage, offset, endpoint);
-
-			if (this.getNode().getNodeStage() != NodeStage.DONE)
-				this.getNode().advanceNodeStage(NodeStage.DONE);
-
 			break;
 		default:
 			logger.warn("NODE {}: Unsupported Command {} for command class {} ({}).", 
@@ -159,8 +160,12 @@ ZWaveCommandClassDynamicState {
 		}
 
 		// fanMode type seems to be supported, add it to the list.
-		if (!this.fanModeTypes.contains(fanModeType))
-			this.fanModeTypes.add(fanModeType);
+		FanMode fanMode = fanModes.get(fanModeType);
+		if (fanMode == null) {
+			fanMode = new FanMode(fanModeType);
+			this.fanModes.put(fanModeType, fanMode);
+		}
+		fanMode.setInitialised();
 
 		logger.debug("NODE {}: Thermostat Fan Mode Report value = {}", this.getNode().getNodeId(), fanModeType.getLabel());
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
@@ -171,9 +176,11 @@ ZWaveCommandClassDynamicState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> initialize() {
+	public Collection<SerialMessage> initialize(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		result.add(this.getSupportedMessage());
+		if(refresh == true || initialiseDone == false) {
+			result.add(this.getSupportedMessage());
+		}
 		return result;
 	}
 
@@ -181,9 +188,12 @@ ZWaveCommandClassDynamicState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> getDynamicValues() {
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
+		// TODO (or question for Dan from Chris) - shouldn't this itterate through all fan types?
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		result.add(getValueMessage());
+		if(refresh == true || dynamicDone == false) {
+			result.add(getValueMessage());
+		}
 		return result;
 	}
 
@@ -227,10 +237,11 @@ ZWaveCommandClassDynamicState {
 	@Override
 	public SerialMessage setValueMessage(int value) {
 
-		if(fanModeTypes.isEmpty())
+		if(fanModes.isEmpty()) {
 			return this.getSupportedMessage();
+		}
 
-		if(!fanModeTypes.contains(FanModeType.getFanModeType(value))){
+		if(!fanModes.containsKey(FanModeType.getFanModeType(value))) {
 			logger.error("NODE {}: Unsupported fanMode type {}", value, this.getNode().getNodeId());
 			
 			return null;
@@ -312,6 +323,31 @@ ZWaveCommandClassDynamicState {
 		 */
 		public String getLabel() {
 			return label;
+		}
+	}
+	
+	/**
+	 * Class to hold fan state
+	 * @author Chris Jackson
+	 */
+	private class FanMode {
+		FanModeType fanModeType;
+		boolean initialised = false;
+
+		public FanMode(FanModeType type) {
+			fanModeType = type;
+		}
+
+		public FanModeType getFanModeType() {			
+			return fanModeType;
+		}
+
+		public void setInitialised() {
+			initialised = true;
+		}
+
+		public boolean getInitialised() {
+			return initialised;
 		}
 	}
 }

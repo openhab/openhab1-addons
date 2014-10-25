@@ -76,7 +76,9 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	@XStreamOmitField
 	private TimerTask timerTask = null;
 
-	
+	@XStreamOmitField
+	private boolean initialiseDone = false;
+
 	/**
 	 * Creates a new instance of the ZWaveWakeUpCommandClass class.
 	 * @param node the node this command class belongs to
@@ -155,8 +157,6 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				this.initializationComplete = true;
 				ZWaveWakeUpEvent event = new ZWaveWakeUpEvent(getNode().getNodeId(), WAKE_UP_INTERVAL_REPORT);
 				this.getController().notifyEventListeners(event);
-
-				this.getNode().advanceNodeStage(NodeStage.DYNAMIC);
 				break;
 			case WAKE_UP_INTERVAL_CAPABILITIES_REPORT:
 				logger.trace("Process Wake Up Interval Capabilities");
@@ -170,10 +170,10 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				logger.debug("NODE {}: Minimum interval = {}", this.getNode().getNodeId(), this.minInterval);
 				logger.debug("NODE {}: Maximum interval = {}", this.getNode().getNodeId(), this.maxInterval);
 				logger.debug("NODE {}: Default interval = {}", this.getNode().getNodeId(), this.defaultInterval);
-				logger.debug("NODE {}: Interval step = {}", this.getNode().getNodeId(), this.intervalStep);
+				logger.debug("NODE {}: Interval step    = {}", this.getNode().getNodeId(), this.intervalStep);
                 
 				this.initializationComplete = true;
-				this.getNode().advanceNodeStage(NodeStage.DYNAMIC);
+				initialiseDone = true;
 				break;
 			case WAKE_UP_NOTIFICATION:
 				logger.trace("Process Wake Up Notification");
@@ -185,9 +185,8 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				// are no initialization packets on the wake-up queue, restart initialization.
 				if (!this.initializationComplete && (this.wakeUpQueue.isEmpty() || this.getNode().getNodeStage() == NodeStage.DEAD)) {
 					logger.info("NODE {}: Got Wake Up Notification from node, continuing initialization.", this.getNode().getNodeId());
-					
+
 					this.getNode().setNodeStage(NodeStage.WAKEUP);
-					this.getNode().advanceNodeStage(NodeStage.DETAILS);
 				}
 
 				// Set the awake flag. This will also empty the queue
@@ -325,11 +324,16 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> initialize() {
+	public Collection<SerialMessage> initialize(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>(2);
-		result.add(this.getIntervalMessage()); // get wake up interval.
-		if (this.getVersion() > 1)
-			result.add(this.getIntervalCapabilitiesMessage()); // get default values for wake up interval.
+		if(refresh == true || initialiseDone == false) {
+			// get wake up interval.
+			result.add(getIntervalMessage()); 
+			if (this.getVersion() > 1) {
+				// get default values for wake up interval.
+				result.add(getIntervalCapabilitiesMessage());
+			}
+		}
 		return result;
 	}
 

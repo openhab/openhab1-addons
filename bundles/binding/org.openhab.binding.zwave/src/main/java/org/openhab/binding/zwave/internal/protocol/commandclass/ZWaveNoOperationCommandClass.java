@@ -15,7 +15,6 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,9 +61,6 @@ public class ZWaveNoOperationCommandClass extends ZWaveCommandClass {
 			int offset, int endpoint) {
 		logger.trace("Handle No Operation Request");
 		logger.debug(String.format("NODE {}: Received No Operation", this.getNode().getNodeId()));
-		
-		// advance node stage.
-		this.getNode().advanceNodeStage(NodeStage.DETAILS);
 	}
 
 	/**

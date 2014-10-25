@@ -256,7 +256,7 @@ public class ZWaveController {
 						node.setManufacturer(this.getManufactureId());
 					}
 					this.zwaveNodes.put(nodeId, node);
-					node.advanceNodeStage(NodeStage.PROTOINFO);
+					node.advanceNodeStage();
 				}
 				break;
 			case GetSucNodeId:
@@ -431,7 +431,7 @@ public class ZWaveController {
 				ZWaveNode node = new ZWaveNode(this.homeId, incEvent.getNodeId(), this);
 
 				this.zwaveNodes.put(incEvent.getNodeId(), node);
-				node.advanceNodeStage(NodeStage.PROTOINFO);
+				node.advanceNodeStage();
 				break;
 			case ExcludeDone:
 				logger.debug("NODE {}: Excluding node.", incEvent.getNodeId());
@@ -586,13 +586,13 @@ public class ZWaveController {
 				ZWaveCommandClassDynamicState zdds = (ZWaveCommandClassDynamicState) zwaveCommandClass;
 				int instances = zwaveCommandClass.getInstances();
 				if (instances == 0) {
-					Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
+					Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues(true);
 					for (SerialMessage serialMessage : dynamicQueries) {
 						sendData(serialMessage);
 					}
 				} else {
 					for (int i = 1; i <= instances; i++) {
-						Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
+						Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues(true);
 						for (SerialMessage serialMessage : dynamicQueries) {
 							sendData(node.encapsulate(serialMessage, zwaveCommandClass, i));
 						}
@@ -608,7 +608,7 @@ public class ZWaveController {
 							logger.debug("NODE {}: Found dynamic state command class {}", node.getNodeId(), endpointCommandClass
 									.getCommandClass().getLabel());
 							ZWaveCommandClassDynamicState zdds2 = (ZWaveCommandClassDynamicState) endpointCommandClass;
-							Collection<SerialMessage> dynamicQueries = zdds2.getDynamicValues();
+							Collection<SerialMessage> dynamicQueries = zdds2.getDynamicValues(true);
 							for (SerialMessage serialMessage : dynamicQueries) {
 								sendData(node.encapsulate(serialMessage,
 										endpointCommandClass, endpoint.getEndpointId()));

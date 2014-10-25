@@ -12,11 +12,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -29,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Thermostat Mode command class.
@@ -48,7 +46,12 @@ ZWaveCommandClassDynamicState {
 	private static final byte THERMOSTAT_MODE_SUPPORTED_GET    = 0x4;
 	private static final byte THERMOSTAT_MODE_SUPPORTED_REPORT = 0x5;
 
-	private final Set<ModeType> modeTypes = new HashSet<ModeType>();
+	private final Map<ModeType, Mode> modes = new HashMap<ModeType, Mode>();
+
+	@XStreamOmitField
+	private boolean initialiseDone = false;
+	@XStreamOmitField
+	private boolean dynamicDone = false;
 
 	/**
 	 * Creates a new instance of the ZWaveThermostatModeCommandClass class.
@@ -110,23 +113,21 @@ ZWaveCommandClassDynamicState {
 					// (n)th bit is set. n is the index for the mode type enumeration.
 					ModeType modeTypeToAdd = ModeType.getModeType(index);
 					if(modeTypeToAdd != null){
-						this.modeTypes.add(modeTypeToAdd);
+						Mode newMode = new Mode(modeTypeToAdd);
+						this.modes.put(modeTypeToAdd, newMode);
 						logger.debug("NODE {}: Added mode type {} ({})", this.getNode().getNodeId(), modeTypeToAdd.getLabel(), index);
-					} else {
+					}
+					else {
 						logger.warn("NODE {}: Unknown mode type {}", this.getNode().getNodeId(), index);
 					}
 				}
 			}
 
-			this.getNode().advanceNodeStage(NodeStage.DYNAMIC);
+			initialiseDone = true;
 			break;
 		case THERMOSTAT_MODE_REPORT:
 			logger.trace("NODE {}: Process Thermostat Mode Report", this.getNode().getNodeId());
 			processThermostatModeReport(serialMessage, offset, endpoint);
-
-			if (this.getNode().getNodeStage() != NodeStage.DONE)
-				this.getNode().advanceNodeStage(NodeStage.DONE);
-
 			break;
 		default:
 			logger.warn("NODE {}: Unsupported Command {} for command class {} ({}).",
@@ -158,8 +159,12 @@ ZWaveCommandClassDynamicState {
 		}
 
 		// mode type seems to be supported, add it to the list.
-		if (!this.modeTypes.contains(modeType))
-			this.modeTypes.add(modeType);
+		Mode mode = modes.get(modeType);
+		if (mode == null) {
+			mode = new Mode(modeType);
+			modes.put(modeType, mode);
+		}
+		mode.setInitialised();
 
 		logger.debug("NODE {}: Thermostat Mode Report, value = {}", this.getNode().getNodeId(), modeType.getLabel());
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
@@ -170,9 +175,11 @@ ZWaveCommandClassDynamicState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> initialize() {
+	public Collection<SerialMessage> initialize(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		result.add(this.getSupportedMessage());
+		if(refresh == true || initialiseDone == false) {
+			result.add(this.getSupportedMessage());
+		}
 		return result;
 	}
 
@@ -180,9 +187,11 @@ ZWaveCommandClassDynamicState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> getDynamicValues() {
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		result.add(getValueMessage());
+		if(refresh == true || dynamicDone == false) {
+			result.add(getValueMessage());
+		}
 		return result;
 	}
 
@@ -226,13 +235,14 @@ ZWaveCommandClassDynamicState {
 	@Override
 	public SerialMessage setValueMessage(int value) {
 
-		logger.debug("NODE {}: setValueMessage {}, modeType empty {}", this.getNode().getNodeId(), value, modeTypes.isEmpty());
+		logger.debug("NODE {}: setValueMessage {}, modeType empty {}", this.getNode().getNodeId(), value, modes.isEmpty());
 
 		//if we do not have any mode types yet, get them
-		if(modeTypes.isEmpty())
+		if(modes.isEmpty()) {
 			return this.getSupportedMessage();
+		}
 
-		if(!modeTypes.contains(ModeType.getModeType(value))){
+		if(!modes.containsKey(ModeType.getModeType(value))){
 			logger.error("NODE {}: Unsupported mode type {}", this.getNode().getNodeId(), value);
 
 			return null;
@@ -322,6 +332,31 @@ ZWaveCommandClassDynamicState {
 		 */
 		public String getLabel() {
 			return label;
+		}
+	}
+	
+	/**
+	 * Class to hold fan state
+	 * @author Chris Jackson
+	 */
+	private class Mode {
+		ModeType modeType;
+		boolean initialised = false;
+
+		public Mode(ModeType type) {
+			modeType = type;
+		}
+
+		public ModeType getModeType() {			
+			return modeType;
+		}
+
+		public void setInitialised() {
+			initialised = true;
+		}
+
+		public boolean getInitialised() {
+			return initialised;
 		}
 	}
 }

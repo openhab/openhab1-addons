@@ -135,7 +135,7 @@ public class ZWaveMeterConverter extends ZWaveCommandClassConverter<ZWaveMeterCo
 		this.getController().sendData(serialMessage);
 		
 		// poll the device
-		for (SerialMessage serialGetMessage : commandClass.getDynamicValues()) {
+		for (SerialMessage serialGetMessage : commandClass.getDynamicValues(true)) {
 			this.getController().sendData(node.encapsulate(serialGetMessage, commandClass, endpointId));
 		}
 	}

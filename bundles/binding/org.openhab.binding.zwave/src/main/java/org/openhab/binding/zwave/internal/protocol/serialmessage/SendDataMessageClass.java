@@ -78,7 +78,7 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 				// in case we received a ping response and the node is alive, we
 				// proceed with the next node stage for this node.
 				if (node.getNodeStage() == NodeStage.PING) {
-					node.advanceNodeStage(NodeStage.DETAILS);
+//					node.advanceNodeStage(NodeStage.DETAILS);
 				}
 			}
 			checkTransactionComplete(lastSentMessage, incomingMessage);

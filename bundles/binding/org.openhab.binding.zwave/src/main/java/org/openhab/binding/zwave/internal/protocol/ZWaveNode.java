@@ -78,7 +78,6 @@ public class ZWaveNode {
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
 	private Date lastUpdated; 
 	private Date queryStageTimeStamp;
-	private volatile NodeStage nodeStage;
 
 	@XStreamOmitField
 	private int resendCount = 0;
@@ -104,7 +103,6 @@ public class ZWaveNode {
 		this.nodeId = nodeId;
 		this.controller = controller;
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
-		this.nodeStage = NodeStage.EMPTYNODE;
 		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN, Generic.NOT_KNOWN, Specific.NOT_USED);
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
@@ -181,7 +179,7 @@ public class ZWaveNode {
 	 * @return
 	 */
 	public boolean isDead(){
-		if(this.nodeStage == NodeStage.DEAD)
+		if(this.nodeStageAdvancer.getCurrentStage() == NodeStage.DEAD)
 			return true;
 		else
 			return false;
@@ -192,7 +190,7 @@ public class ZWaveNode {
 	 * @return
 	 */
 	public boolean isFailed(){
-		if(this.nodeStage == NodeStage.FAILED)
+		if(this.nodeStageAdvancer.getCurrentStage() == NodeStage.FAILED)
 			return true;
 		else
 			return false;
@@ -204,11 +202,11 @@ public class ZWaveNode {
 	public void setAlive(){
 		if(this.nodeStageAdvancer.isInitializationComplete()) {
 			logger.debug("NODE {}: Node is now ALIVE", this.nodeId);
-			this.nodeStage = NodeStage.DONE;
+			this.nodeStageAdvancer.setCurrentStage(NodeStage.DONE);
 		}
 		else {
-			this.nodeStage = NodeStage.DYNAMIC;
-			this.nodeStageAdvancer.advanceNodeStage(NodeStage.DONE);
+			this.nodeStageAdvancer.setCurrentStage(NodeStage.DYNAMIC);
+			this.nodeStageAdvancer.advanceNodeStage();
 		}
 
 		// Reset the resend counter and remember when we last updated
@@ -326,7 +324,7 @@ public class ZWaveNode {
 	 * @return the nodeStage
 	 */
 	public NodeStage getNodeStage() {
-		return nodeStage;
+		return this.nodeStageAdvancer.getCurrentStage();
 	}
 	
 	/**
@@ -343,7 +341,7 @@ public class ZWaveNode {
 	 * @param nodeStage the nodeStage to set
 	 */
 	public void setNodeStage(NodeStage nodeStage) {
-		this.nodeStage = nodeStage;
+		this.nodeStageAdvancer.setCurrentStage(nodeStage);
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
@@ -405,7 +403,7 @@ public class ZWaveNode {
 	 */
 	public void incrementResendCount() {
 		if (++resendCount >= 3) {
-			this.nodeStage = NodeStage.DEAD;
+			this.nodeStageAdvancer.setCurrentStage(NodeStage.DEAD);
 			this.deadCount++;
 			this.deadTime = Calendar.getInstance().getTime();
 			this.queryStageTimeStamp = Calendar.getInstance().getTime();
@@ -431,8 +429,9 @@ public class ZWaveNode {
 	 */
 	public void resetResendCount() {
 		this.resendCount = 0;
-		if (this.nodeStageAdvancer.isInitializationComplete() && this.nodeStage != NodeStage.DEAD)
-			this.nodeStage = NodeStage.DONE;
+		if (this.nodeStageAdvancer.isInitializationComplete() && this.nodeStageAdvancer.getCurrentStage() != NodeStage.DEAD) {
+			this.nodeStageAdvancer.setCurrentStage(NodeStage.DONE);
+		}
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
@@ -540,9 +539,9 @@ public class ZWaveNode {
 	 * one to finally end up with a completely built node structure
 	 * through querying the controller / node.
 	 */
-	public void advanceNodeStage(NodeStage targetStage) {
+	public void advanceNodeStage() {
 		// call the advanceNodeStage method on the advancer.
-		this.nodeStageAdvancer.advanceNodeStage(targetStage);
+		this.nodeStageAdvancer.advanceNodeStage();//targetStage);
 	}
 	
 	/**

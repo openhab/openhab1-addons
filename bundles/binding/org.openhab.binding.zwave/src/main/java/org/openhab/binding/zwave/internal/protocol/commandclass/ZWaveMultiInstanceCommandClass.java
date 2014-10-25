@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -157,8 +156,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	 * @param serialMessage the serial message to process.
 	 * @param offset the offset at which to start processing.
 	 */
-	private void handleMultiInstanceReportResponse(SerialMessage serialMessage,
-			int offset) {
+	private void handleMultiInstanceReportResponse(SerialMessage serialMessage, int offset) {
 		logger.trace("Process Multi-instance Report");
 		int commandClassCode = serialMessage.getMessagePayloadByte(offset);
 		int instances = serialMessage.getMessagePayloadByte(offset + 1);
@@ -378,14 +376,13 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			}
 		}
 		
-		if (this.endpointsAreTheSameDeviceClass)
-			// advance node stage.
-			this.getNode().advanceNodeStage(NodeStage.STATIC_VALUES);
-		else {
-			for (ZWaveEndpoint ep : this.endpoints.values())
-			{
-				if (ep.getDeviceClass().getBasicDeviceClass() == Basic.NOT_KNOWN) // only advance node stage when all endpoints are known.
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		if (!this.endpointsAreTheSameDeviceClass) {
+			for (ZWaveEndpoint ep : this.endpoints.values()) {
+				// only advance node stage when all endpoints are known.
+				if (ep.getDeviceClass().getBasicDeviceClass() == Basic.NOT_KNOWN) {
 					return;
+				}
 			}
 			// advance node stage.
 			this.getNode().advanceNodeStage(NodeStage.STATIC_VALUES);
@@ -397,7 +394,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	 * an Application Command message and handles it using the right
 	 * endpoint.
 	 * @param serialMessage the serial message to process.
-	 * @param offset the offset at which to start procesing.
+	 * @param offset the offset at which to start processing.
 	 */
 	private void handleMultiChannelEncapResponse(
 			SerialMessage serialMessage, int offset) {

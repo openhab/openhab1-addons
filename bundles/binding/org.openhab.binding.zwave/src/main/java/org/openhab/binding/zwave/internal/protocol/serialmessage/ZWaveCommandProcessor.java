@@ -53,8 +53,10 @@ public abstract class ZWaveCommandProcessor {
 	 * @param incomingMessage The response from the controller
 	 */
 	protected void checkTransactionComplete(SerialMessage lastSentMessage, SerialMessage incomingMessage) {
+		logger.debug("Checking transaction complete: {}-|-{} cancelled={}", incomingMessage.getMessageClass(), lastSentMessage.getExpectedReply(), incomingMessage.isTransActionCanceled());
 		if (incomingMessage.getMessageClass() == lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
 			transactionComplete = true;
+			logger.debug("         transaction complete!");
 		}
 	}
 
@@ -118,17 +120,7 @@ public abstract class ZWaveCommandProcessor {
 		try {
 			constructor = messageMap.get(serialMessage).getConstructor();
 			return constructor.newInstance();
-		} catch (NoSuchMethodException e) {
-			logger.error("Command processor error: {}", e);
-		} catch (InvocationTargetException e) {
-			logger.error("Command processor error: {}", e);
-		} catch (InstantiationException e) {
-			logger.error("Command processor error: {}", e);
-		} catch (IllegalAccessException e) {
-			logger.error("Command processor error: {}", e);
-		} catch (SecurityException e) {
-			logger.error("Command processor error: {}", e);
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
 			logger.error("Command processor error: {}", e);
 		}
 		

@@ -158,6 +158,13 @@ public class ZWaveNodeStageAdvancer {
 				break;
 
 			case DETAILS:
+				// If we already know the manufacturer information, then
+				// continue
+				if (this.node.getManufacturer() != Integer.MAX_VALUE && this.node.getDeviceType() != Integer.MAX_VALUE
+						&& this.node.getDeviceId() != Integer.MAX_VALUE) {
+					break;
+				}
+
 				// try and get the manufacturerSpecific command class.
 				ZWaveManufacturerSpecificCommandClass manufacturerSpecific = (ZWaveManufacturerSpecificCommandClass) this.node
 						.getCommandClass(CommandClass.MANUFACTURER_SPECIFIC);
@@ -335,6 +342,21 @@ public class ZWaveNodeStageAdvancer {
 						.getNodeStage().getLabel());
 			}
 		}
+	}
+
+	/**
+	 * Gets the current node stage
+	 * @return current node stage
+	 */
+	public NodeStage getCurrentStage() {
+		return currentStage;
+	}
+
+	/**
+	 * Sets the current node stage
+	 */
+	public void setCurrentStage(NodeStage newStage) {
+		currentStage = newStage;
 	}
 
 	/**

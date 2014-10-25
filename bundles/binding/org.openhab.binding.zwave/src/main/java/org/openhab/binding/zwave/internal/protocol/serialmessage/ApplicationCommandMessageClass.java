@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
+import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
@@ -73,18 +74,19 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 				node.addCommandClass(zwaveCommandClass);
 			}
 		}
-		
+
 		// We got an unsupported command class, return.
 		if (zwaveCommandClass == null) {
 			logger.error(String.format("NODE %d: Unsupported command class %s (0x%02x)", nodeId, commandClass.getLabel(), commandClassCode));
 			return false;
 		}
-		
+
 		logger.trace("NODE {}: Found Command Class {}, passing to handleApplicationCommandRequest", nodeId, zwaveCommandClass.getCommandClass().getLabel());
 		zwaveCommandClass.handleApplicationCommandRequest(incomingMessage, 4, 1);
 
 		checkTransactionComplete(lastSentMessage, incomingMessage);
-		
+
+		node.advanceNodeStage();
 		return false;
 	}
 }
