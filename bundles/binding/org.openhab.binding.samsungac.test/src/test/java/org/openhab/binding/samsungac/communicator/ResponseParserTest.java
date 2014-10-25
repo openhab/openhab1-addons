@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.binding.openhab.samsungac.communicator.ResponseParser;
 import org.junit.Test;
+import org.openhab.binding.samsungac.internal.CommandEnum;
 import org.xml.sax.SAXException;
 
 public class ResponseParserTest {
@@ -57,11 +58,11 @@ public class ResponseParserTest {
 	@Test
 	public void shouldParseXMLStatusResponseCorrectly() throws SAXException {
 		String response = "<?xml version=\"1.0\" encoding=\"utf-8\" ?><Response Type=\"DeviceState\" Status=\"Okay\"><DeviceState><Device DUID=\"7825AD1243BA\" GroupID=\"AC\" ModelID=\"AC\" ><Attr ID=\"AC_FUN_ENABLE\" Type=\"RW\" Value=\"Enable\"/><Attr ID=\"AC_FUN_POWER\" Type=\"RW\" Value=\"On\"/><Attr ID=\"AC_FUN_SUPPORTED\" Type=\"R\" Value=\"0\"/><Attr ID=\"AC_FUN_OPMODE\" Type=\"RW\" Value=\"Heat\"/><Attr ID=\"AC_FUN_TEMPSET\" Type=\"RW\" Value=\"20\"/><Attr ID=\"AC_FUN_COMODE\" Type=\"RW\" Value=\"Off\"/><Attr ID=\"AC_FUN_ERROR\" Type=\"RW\" Value=\"00000000\"/><Attr ID=\"AC_FUN_TEMPNOW\" Type=\"R\" Value=\"21\"/><Attr ID=\"AC_FUN_SLEEP\" Type=\"RW\" Value=\"0\"/><Attr ID=\"AC_FUN_WINDLEVEL\" Type=\"RW\" Value=\"Auto\"/><Attr ID=\"AC_FUN_DIRECTION\" Type=\"RW\" Value=\"Fixed\"/><Attr ID=\"AC_ADD_AUTOCLEAN\" Type=\"RW\" Value=\"Off\"/><Attr ID=\"AC_ADD_APMODE_END\" Type=\"W\" Value=\"0\"/><Attr ID=\"AC_ADD_STARTWPS\" Type=\"RW\" Value=\"Direct\"/><Attr ID=\"AC_ADD_SPI\" Type=\"RW\" Value=\"Off\"/><Attr ID=\"AC_SG_WIFI\" Type=\"W\" Value=\"Connected\"/><Attr ID=\"AC_SG_INTERNET\" Type=\"W\" Value=\"Connected\"/><Attr ID=\"AC_ADD2_VERSION\" Type=\"RW\" Value=\"0\"/><Attr ID=\"AC_SG_MACHIGH\" Type=\"W\" Value=\"0\"/><Attr ID=\"AC_SG_MACMID\" Type=\"W\" Value=\"0\"/><Attr ID=\"AC_SG_MACLOW\" Type=\"W\" Value=\"0\"/><Attr ID=\"AC_SG_VENDER01\" Type=\"W\" Value=\"0\"/><Attr ID=\"AC_SG_VENDER02\" Type=\"W\" Value=\"0\"/><Attr ID=\"AC_SG_VENDER03\" Type=\"W\" Value=\"0\"/></Device></DeviceState></Response>";
-		Map<String,String> result = ResponseParser.parseStatusResponse(response);
+		Map<CommandEnum,String> result = ResponseParser.parseStatusResponse(response);
 		
-		assertEquals("On", result.get("AC_FUN_POWER"));
-		assertEquals("21", result.get("AC_FUN_TEMPNOW"));
-		assertEquals("20", result.get("AC_FUN_TEMPSET"));
+		assertEquals("On", result.get(CommandEnum.AC_FUN_POWER));
+		assertEquals("21", result.get(CommandEnum.AC_FUN_TEMPNOW));
+		assertEquals("20", result.get(CommandEnum.AC_FUN_TEMPSET));
 	}
 
 }

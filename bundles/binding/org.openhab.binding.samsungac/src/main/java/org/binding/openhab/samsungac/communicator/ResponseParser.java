@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.binding.openhab.samsungac.communicator;
 
 import java.io.IOException;
@@ -7,6 +15,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openhab.binding.samsungac.internal.CommandEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -15,6 +26,10 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 public class ResponseParser {
+	
+	private static final Logger logger = LoggerFactory
+			.getLogger(ResponseParser.class);
+	
 	public static boolean isResponseWithToken(String response) {
         return response.matches("Token=\"(.*)\"");
     }
@@ -30,7 +45,7 @@ public class ResponseParser {
     }
 
     public static boolean isFailedResponse(String line) {
-        return line.contains("<Response Status=\"Fail\" Type=\"Authenticate\" ErrorCode=\"301\" />");
+        return line.contains("<Response Status=\"Fail\" Type=\"Authenticate\" ErrorCode=\"103\" />");
     }
 
     public static boolean isCorrectCommandResponse(String line, String commandId) {
@@ -71,8 +86,9 @@ public class ResponseParser {
         return matcher.group();
     }
 
-    public static Map<String, String> parseStatusResponse(String response) throws SAXException {
-    	Map<String, String> status = new HashMap<String, String>();
+    public static Map<CommandEnum, String> parseStatusResponse(String response) throws SAXException {
+    	logger.info("Response is: " + response);
+    	Map<CommandEnum, String> status = new HashMap<CommandEnum, String>();
     	try {
 			XMLReader reader = XMLReaderFactory.createXMLReader();
 			StatusHandler statusHandler = new StatusHandler();
@@ -87,16 +103,22 @@ public class ResponseParser {
     
     static private class StatusHandler extends DefaultHandler {
     	
-    	private Map<String, String> values = new HashMap<String, String>();
+    	private Map<CommandEnum, String> values = new HashMap<CommandEnum, String>();
     	
     	@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 			if ("Attr".equals(qName)) {
-				values.put(attributes.getValue("ID"), attributes.getValue("Value"));
+				try {
+					CommandEnum cmd = CommandEnum.valueOf(attributes.getValue("ID"));
+					if (cmd != null)
+							values.put(cmd, attributes.getValue("Value"));
+				} catch (IllegalArgumentException e) {
+					logger.debug("Does not support attribute: '" + attributes.getValue("ID"));
+				}
 			}
 		}
 		
-		public Map<String, String> getStatusMap() {
+		public Map<CommandEnum, String> getStatusMap() {
 			return values;
 		}
     }

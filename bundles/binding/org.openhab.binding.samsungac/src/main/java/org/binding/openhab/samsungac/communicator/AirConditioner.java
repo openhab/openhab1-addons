@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.binding.openhab.samsungac.communicator;
 
 import java.io.BufferedReader;
@@ -6,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.SocketTimeoutException;
-
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -15,13 +22,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.openhab.binding.samsungac.internal.Command;
-import org.openhab.binding.samsungac.internal.ConvenientMode;
-import org.openhab.binding.samsungac.internal.OperationMode;
+import org.openhab.binding.samsungac.internal.CommandEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,26 +40,17 @@ public class AirConditioner {
 	private String MAC;
 	private String TOKEN_STRING;
 	private final Integer PORT = 2878;
-	private Map<String, String> statusMap = new HashMap<String, String>();
+	private Map<CommandEnum, String> statusMap = new HashMap<CommandEnum, String>();
 	private SSLSocket socket;
-
-	public AirConditioner(String ipAddress, String macAddress) {
-		this(ipAddress, macAddress, null);
-	}
-
-	public AirConditioner(String ipAddress, String macAddress, String token) {
-		IP = ipAddress;
-		MAC = macAddress;
-		TOKEN_STRING = token;
-	}
 
 	public AirConditioner login() {
 		try {
-			socket = connect();
+			connect();
 			getToken();
 			loginWithToken();
 		} catch (Exception e) {
 			logger.warn("Connection to Air Conditioner failed", e);
+			disconnect();
 		}
 		return this;
 	}
@@ -62,6 +59,7 @@ public class AirConditioner {
 		if (isConnected()) {
 			try {
 				socket.close();
+				socket = null;
 			} catch (IOException e) {
 				logger.warn(
 						"Could not disconnect from Air Conditioner with IP: "
@@ -74,7 +72,7 @@ public class AirConditioner {
 		return socket != null && socket.isConnected();
 	}
 
-	private Map<String, String> loginWithToken() throws Exception {
+	private Map<CommandEnum, String> loginWithToken() throws Exception {
 		if (TOKEN_STRING != null) {
 			writeLine("<Request Type=\"AuthToken\"><User Token=\""
 					+ TOKEN_STRING + "\" /></Request>");
@@ -114,25 +112,29 @@ public class AirConditioner {
 			}
 
 			if (ResponseParser.isFailedAuthenticationResponse(line)) {
-				throw new Exception("failed to connect");
+				throw new Exception("failed to connect: '" + line + "'");
 			}
 
 			if (commandId != null
 					&& ResponseParser
 							.isCorrectCommandResponse(line, commandId)) {
+				logger.debug("Correct command response: '" + line + "'");
 				return;
 			}
 
 			if (ResponseParser.isResponseWithToken(line)) {
 				TOKEN_STRING = ResponseParser.parseTokenFromResponse(line);
+				logger.info("Received TOKEN from AC: '" + TOKEN_STRING + "'");
 				return;
 			}
 			if (ResponseParser.isReadyForTokenResponse(line)) {
 				logger.warn("Switch off and on the air conditioner within 30 seconds");
+				Thread.sleep(20);
 				return;
 			}
 
 			if (ResponseParser.isSuccessfulLoginResponse(line)) {
+				logger.debug("SuccessfulLoginResponse: '" + line + "'");
 				return;
 			}
 
@@ -142,6 +144,7 @@ public class AirConditioner {
 			}
 
 			if (ResponseParser.isDeviceControl(line)) {
+				logger.debug("DeviceControl: '" + line + "'");
 				return;
 			}
 
@@ -150,7 +153,12 @@ public class AirConditioner {
 						.compile("Attr ID=\"(.*)\" Value=\"(.*)\"");
 				Matcher matcher = pattern.matcher(line);
 				if (matcher.groupCount() == 2) {
-					statusMap.put(matcher.group(0), matcher.group(1));
+					try {
+						CommandEnum cmd = CommandEnum.valueOf(matcher.group(0));
+					if (cmd != null)
+						statusMap.put(cmd, matcher.group(1));
+					} catch (IllegalStateException e) {
+					}
 				}
 				return;
 			}
@@ -167,24 +175,31 @@ public class AirConditioner {
 			writer.write(line);
 			writer.newLine();
 			writer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.warn("Could not write line. Disconnecting...");
+			disconnect();
 		}
 	}
 
-	static String readLine(SSLSocket socket) throws Exception {
+	String readLine(SSLSocket socket) throws Exception {
+		connect();
 		BufferedReader r = new BufferedReader(new InputStreamReader(
 				socket.getInputStream()));
 		try {
 			return r.readLine();
 		} catch (SocketTimeoutException e) {
+		} catch (SSLException e){
+			logger.debug("Got SSL Exception. Disconnecting...");
+			disconnect();
 		}
 		return null;
 	}
 
-	private SSLSocket connect() throws Exception {
+	private void connect() throws Exception {
 		if (isConnected())
-			return socket;
+			return;
+		else
+			disconnect();
 		try {
 			SSLContext ctx = SSLContext.getInstance("TLS");
 			final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
@@ -203,65 +218,25 @@ public class AirConditioner {
 
 			ctx.init(null, trustAllCerts, null);
 			socket = (SSLSocket) ctx.getSocketFactory().createSocket(IP, PORT);
-			socket.setSoTimeout(1000);
+			socket.setSoTimeout(10000);
 			socket.startHandshake();
 		} catch (Exception e) {
 			throw new Exception("Cannot connect to " + IP + ":" + PORT, e);
 		}
 		handleResponse();
-		handleResponse();
-		return socket;
 	}
 
-	private String sendCommand(Object command, String value) throws Exception {
-		connect();
-		logger.debug("Sending command: '" + command + "' value: '" + value);
+	public String sendCommand(CommandEnum command, String value) throws Exception {
+		logger.debug("Sending command: '" + command.toString() + "' with value: '" + value + "'");
 		String id = "cmd" + Math.round(Math.random() * 10000);
 		writeLine("<Request Type=\"DeviceControl\"><Control CommandID=\"" + id
 				+ "\" DUID=\"" + MAC + "\"><Attr ID=\"" + command
 				+ "\" Value=\"" + value + "\" /></Control></Request>");
+		handleResponse(id);
 		return id;
 	}
 
-	private void handleCommandRequestResponse(Command command, String value) {
-		try {
-			connect();
-			handleResponse(sendCommand(command, value));
-		} catch (Exception e) {
-			logger.warn("Could not handle command request respone", e);
-		}
-	}
-
-	public void sendCommand(String command, String value) {
-		handleCommandRequestResponse(Command.valueOf(command), value);
-	}
-
-	public void on() {
-		handleCommandRequestResponse(Command.AC_FUN_POWER, "On");
-	}
-
-	public void off() {
-		handleCommandRequestResponse(Command.AC_FUN_POWER, "Off");
-	}
-
-	public void setMode(OperationMode mode) {
-		handleCommandRequestResponse(Command.AC_FUN_OPMODE, mode.toString());
-	}
-
-	public void setTemperature(Integer temp) {
-		handleCommandRequestResponse(Command.AC_FUN_TEMPSET, temp.toString());
-	}
-
-	/*
-	 * public String getTemperatureNow() { return
-	 * handleCommandRequestResponse(Command.AC_FUN_TEMPNOW, ""); }
-	 */
-
-	public void setConvenientMode(ConvenientMode mode) {
-		handleCommandRequestResponse(Command.AC_FUN_COMODE, mode.toString());
-	}
-
-	public Map<String, String> getStatus() {
+	public Map<CommandEnum, String> getStatus() {
 		try {
 			writeLine("<Request Type=\"DeviceState\" DUID=\"" + MAC
 					+ "\"></Request>");
@@ -271,5 +246,21 @@ public class AirConditioner {
 					+ IP, e);
 		}
 		return statusMap;
+	}
+	
+	public String getIpAddress() {
+		return IP;
+	}
+	
+	public void setIpAddress(String ipAddress) {
+		IP = ipAddress;
+	}
+	
+	public void setMacAddress(String macAddress) {
+		MAC = macAddress;
+	}
+	
+	public void setToken(String token) {
+		TOKEN_STRING = token;
 	}
 }

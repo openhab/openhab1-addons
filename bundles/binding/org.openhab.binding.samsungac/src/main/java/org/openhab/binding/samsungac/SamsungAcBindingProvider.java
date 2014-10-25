@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.samsungac;
 
+import org.openhab.binding.samsungac.internal.CommandEnum;
 import org.openhab.core.binding.BindingProvider;
 
 /**
@@ -19,8 +20,6 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface SamsungAcBindingProvider extends BindingProvider {
 	String getAirConditionerInstance(String itemname);
-	String getProperty(String itemname);
-	boolean isInBound(String itemname);
-	boolean isOutBound(String itemname);
-
+	CommandEnum getProperty(String itemname);
+	String getItemName(CommandEnum property);
 }
