@@ -62,6 +62,18 @@ public class PushoverActionService implements ActionService, ManagedService {
 	 * (optional). Defaults to 10 seconds
 	 */
 	private final static String PARAM_KEY_TIMEOUT = "defaultTimeout";
+
+	/**
+	 * Retry time in seconds to resend message for high priority messages.
+	 * (optional). Defaults to 300 seconds.
+	 */
+	private final static String PARAM_KEY_RETRY = "defaultRetry";
+
+	/**
+	 * Expirey time in seconds to stop resending messages that are high priority.
+	 * (optional). Defaults to 3600 seconds.
+	 */
+	private final static String PARAM_KEY_EXPIRE = "defaultExpire";
 	
 	/**
 	 * Indicates whether this action is properly configured which means all
@@ -135,8 +147,25 @@ public class PushoverActionService implements ActionService, ManagedService {
 				}
 			}
 			
-			String timeOut = (String) config.get(PARAM_KEY_TIMEOUT);
+			String retry = (String) config.get(PARAM_KEY_RETRY);
+			if (!StringUtils.isEmpty(retry)) {
+				try {
+					Pushover.retry = Integer.parseInt((String) config.get(PARAM_KEY_RETRY));
+				} catch (NumberFormatException e) {
+					logger.warn("Can't parse the retry value, falling back to default value");
+				}
+			}
 			
+			String expire = (String) config.get(PARAM_KEY_EXPIRE);
+			if (!StringUtils.isEmpty(expire)) {
+				try {
+					Pushover.expire = Integer.parseInt((String) config.get(PARAM_KEY_EXPIRE));
+				} catch (NumberFormatException e) {
+					logger.warn("Can't parse the expire message value, falling back to default value");
+				}
+			}
+			
+			String timeOut = (String) config.get(PARAM_KEY_TIMEOUT);
 			if (!StringUtils.isEmpty(timeOut)) {
 				try {
 					Pushover.timeout = Integer.parseInt((String) config.get(PARAM_KEY_TIMEOUT));

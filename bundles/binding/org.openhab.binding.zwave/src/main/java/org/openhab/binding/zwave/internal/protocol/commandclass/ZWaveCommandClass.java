@@ -380,7 +380,7 @@ public abstract class ZWaveCommandClass {
 		DOOR_LOCK(0x62,"DOOR_LOCK",null),
 		USER_CODE(0x63,"USER_CODE",null),
 		CONFIGURATION(0x70,"CONFIGURATION",ZWaveConfigurationCommandClass.class),
-		ALARM(0x71,"ALARM",null),
+		ALARM(0x71,"ALARM",ZWaveAlarmCommandClass.class),
 		MANUFACTURER_SPECIFIC(0x72,"MANUFACTURER_SPECIFIC",ZWaveManufacturerSpecificCommandClass.class),
 		POWERLEVEL(0x73,"POWERLEVEL",null),
 		PROTECTION(0x75,"PROTECTION",null),

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>054375</Model>
+	<Label lang="en">Schuko Plug Switch</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x82</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x87</id></Class>
+	</CommandClasses>
+</Product>
+

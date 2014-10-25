@@ -32,6 +32,6 @@ public class ZWaveNodeStatusEvent extends ZWaveEvent {
 	}
 
 	public enum State {
-		Dead, Alive
+		Dead, Alive, Failed
 	}
 }
