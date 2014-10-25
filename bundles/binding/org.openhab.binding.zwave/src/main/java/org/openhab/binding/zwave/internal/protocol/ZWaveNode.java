@@ -76,8 +76,7 @@ public class ZWaveNode {
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
-	private Date lastUpdated; 
-	private Date queryStageTimeStamp;
+	private Date lastUpdated;
 
 	@XStreamOmitField
 	private int resendCount = 0;
@@ -384,16 +383,7 @@ public class ZWaveNode {
 	 * @return the queryStageTimeStamp
 	 */
 	public Date getQueryStageTimeStamp() {
-		return queryStageTimeStamp;
-	}
-
-	/**
-	 * Sets the time stamp the node was last queried.
-	 * @param queryStageTimeStamp the queryStageTimeStamp to set
-	 */
-	public void setQueryStageTimeStamp(Date queryStageTimeStamp) {
-		this.queryStageTimeStamp = queryStageTimeStamp;
-		this.lastUpdated = Calendar.getInstance().getTime();
+		return this.nodeStageAdvancer.getQueryStageTimeStamp();
 	}
 
 	/**
@@ -406,7 +396,6 @@ public class ZWaveNode {
 			this.nodeStageAdvancer.setCurrentStage(NodeStage.DEAD);
 			this.deadCount++;
 			this.deadTime = Calendar.getInstance().getTime();
-			this.queryStageTimeStamp = Calendar.getInstance().getTime();
 			logger.debug("NODE {}: Retry count exceeded. Node is DEAD.", this.nodeId);
 
 			if(nodeStageAdvancer.isInitializationComplete() == true) {
@@ -533,15 +522,20 @@ public class ZWaveNode {
 	}
 	
 	/**
-	 * Advances the initialization stage for this node. 
-	 * Every node follows a certain path through it's 
-	 * initialization phase. These stages are visited one by
-	 * one to finally end up with a completely built node structure
-	 * through querying the controller / node.
+	 * Advances the initialization stage for this node.
 	 */
 	public void advanceNodeStage() {
 		// call the advanceNodeStage method on the advancer.
-		this.nodeStageAdvancer.advanceNodeStage();//targetStage);
+		this.nodeStageAdvancer.advanceNodeStage();
+	}
+	
+	/**
+	 * Advances the initialization stage for this node.
+	 * This method processes the init queue once we've sent a frame.
+	 */
+	public void advanceNodeStage(SerialMessage msg) {
+		// call the advanceNodeStage method on the advancer.
+		this.nodeStageAdvancer.handleNodeQueue(msg);
 	}
 	
 	/**

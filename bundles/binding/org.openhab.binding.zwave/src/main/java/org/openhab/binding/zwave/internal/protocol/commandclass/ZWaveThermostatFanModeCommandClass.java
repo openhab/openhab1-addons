@@ -189,7 +189,7 @@ ZWaveCommandClassDynamicState {
 	 */
 	@Override
 	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
-		// TODO (or question for Dan from Chris) - shouldn't this itterate through all fan types?
+		// TODO (or question for Dan from Chris) - shouldn't this iterate through all fan types?
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
 		if(refresh == true || dynamicDone == false) {
 			result.add(getValueMessage());

@@ -10,6 +10,7 @@ package org.openhab.binding.zwave.internal.protocol.initialization;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.openhab.binding.zwave.internal.protocol.NodeStage;
@@ -34,6 +35,25 @@ import org.slf4j.LoggerFactory;
  * ZWaveNodeStageAdvancer class. Advances the node stage, thereby controlling
  * the initialization of a node.
  * 
+ * Command classes are responsible for building lists of messages needed to initialise themselves.
+ * The command class also needs to keep track of responses so it knows if initialisation of this
+ * stage is complete. Other than that, the command class does not have any input into the initialisation
+ * phase, and the sequencing of events - this is all handled here in the node advancer class.
+ * 
+ * For each stage, the advancer builds a list of all messages that need to be sent to the node.
+ * Since the initialisation phase is an intense period, with a lot of messages on the network, we try
+ * and ensure that only 1 packet is outstanding to any node at once.
+ * 
+ * Each time we receive an ack for a message, the node advancer gets called, and we see if this is an ack
+ * for a message that's part of the initialisation. If it is, the message gets removed from the list.
+ * 
+ * Each time we receive a command message, the node advancer gets called. This is called after the command
+ * class has been updated, so at this stage we know if the stage can be completed.
+ * 
+ * Two checks are performed to allow a node stage to advance. Firstly, we make sure we've sent all the messages
+ * required for this phase. Sending the messages however doesn't guarantee that we get a response, so we
+ * then run through the stage again to make sure that the command class really is initialised.
+ * 
  * @author Jan-Willem Spuij
  * @author Chris Jackson
  * @since 1.4.0
@@ -50,7 +70,10 @@ public class ZWaveNodeStageAdvancer {
 
 	private static final int MAX_BUFFFER_LEN = 32;
 	private ArrayBlockingQueue<SerialMessage> msgQueue;
+	private boolean freeToSend = true;
+	private boolean stageAdvanced = true;
 
+	private Date queryStageTimeStamp;
 	private NodeStage currentStage;
 
 	/**
@@ -72,37 +95,74 @@ public class ZWaveNodeStageAdvancer {
 	}
 
 	/**
-	 * Advances the initialization stage for this node. Every node follows a
-	 * certain path through it's initialization phase. These stages are visited
-	 * one by one to finally end up with a completely built node structure
-	 * through querying the controller / node. TODO: Handle the rest of the node
-	 * stages
+	 * Handles the removal of frames from the send queue.
+	 * This gets called after we have an ACK for our packet, but before we get the response.
+	 * The actual sending of frames, and the advancing is carried out
+	 * in the advanceNodeStage method.
 	 */
-	public void advanceNodeStage(SerialMessage incomingMessage) {
+	public void handleNodeQueue(SerialMessage incomingMessage) {
 		// If initialisation is complete, then just return.
 		if (this.initializationComplete) {
 			return;
 		}
 
+		logger.debug("NODE {}: Node advancer - checking intialisation queue.", this.node.getNodeId());
+
 		// If this message is in the queue, then remove it
-		// When the queue is empty, we can move on to the next stage.
 		if (this.msgQueue.contains(incomingMessage)) {
-			logger.debug("NODE {}: Message in initialisation queue.", this.node.getNodeId());
 			this.msgQueue.remove(incomingMessage);
+			logger.debug("NODE {}: Node advancer - message removed from queue. Queue size now {}.", this.node.getNodeId(), this.msgQueue.size());
+
+			freeToSend = true;
+		}
+	}
+
+	/**
+	 * Advances the initialization stage for this node.
+	 * This method is called after a response is received. We don't necessarily
+	 * know if the response is to the frame we requested though, so to be sure the initialisation
+	 * gets all the information it needs, the command class itself gets queried.
+	 * This method also handles the sending of frames. Since the intialisation phase is a busy one
+	 * we try and only have one outstanding request. Again though, we can't be sure that a response
+	 * is aligned with the node advancer request so it is possible that more than one packet can
+	 * be released at once, but it will constrain things.
+	 */
+	public void advanceNodeStage() {
+		// If initialisation is complete, then just return.
+		if (this.initializationComplete) {
+			return;
 		}
 
-		// We run through all stages until one sends a message.
+		logger.debug("NODE {}: Node advancer - state {}, queue length {}, free to send {}.", this.node.getNodeId(), currentStage.getLabel(), msgQueue.size(), freeToSend);
+
+		// A SerialMessage for queuing!
+		SerialMessage msg;
+
+		// If the queue is not empty, then we can't advance any further.
+		if(msgQueue.isEmpty() == false) {
+			// Check to see if we need to send a frame
+			if(freeToSend == true) {
+				try {
+					msg = this.msgQueue.take();
+					if(msg != null) {
+						freeToSend = false;
+						controller.sendData(msg);
+
+						logger.debug("NODE {}: Node advancer - queued packet.", this.node.getNodeId());
+					}
+				}
+				catch(InterruptedException e) {
+				}
+			}
+
+			return;
+		}
+
+		// We run through all stages until one queues a message.
 		// Then we will wait for the response before continuing
-		while (msgQueue.isEmpty()) {
-			// Move on to the next stage
-			currentStage = currentStage.getNextStage();
-			logger.debug("NODE {}: Advancing initialisation to {}.", this.node.getNodeId(), currentStage.getLabel());
-
-			// Remember the time so we can handle retries
-			this.node.setQueryStageTimeStamp(Calendar.getInstance().getTime());
-
-			// A SerialMessage for queuing!
-			SerialMessage msg;
+		do {
+			// Remember the time so we can handle retries and keep users informed
+			queryStageTimeStamp = Calendar.getInstance().getTime();
 
 			switch (currentStage) {
 			case EMPTYNODE:
@@ -140,7 +200,6 @@ public class ZWaveNodeStageAdvancer {
 
 				msg = zwaveCommandClass.getNoOperationMessage();
 				this.msgQueue.add(msg);
-				this.controller.sendData(msg);
 				break;
 
 			case PING:
@@ -154,7 +213,6 @@ public class ZWaveNodeStageAdvancer {
 
 				msg = new RequestNodeInfoMessageClass().doRequest(this.node.getNodeId());
 				this.msgQueue.add(msg);
-				this.controller.enqueue(msg);
 				break;
 
 			case DETAILS:
@@ -174,7 +232,6 @@ public class ZWaveNodeStageAdvancer {
 					// class, we use it to get manufacturer info.
 					msg = manufacturerSpecific.getManufacturerSpecificMessage();
 					this.msgQueue.add(msg);
-					this.controller.sendData(msg);
 					break;
 				}
 				break;
@@ -191,7 +248,6 @@ public class ZWaveNodeStageAdvancer {
 					if (version != null && zwaveVersionClass.getMaxVersion() > 1) {
 						msg = version.checkVersion(zwaveVersionClass);
 						this.msgQueue.add(msg);
-						this.controller.sendData(msg);
 					} else {
 						zwaveVersionClass.setVersion(1);
 					}
@@ -205,15 +261,8 @@ public class ZWaveNodeStageAdvancer {
 						.getCommandClass(CommandClass.MULTI_INSTANCE);
 
 				if (multiInstance != null) {
-					msg = multiInstance.initEndpoints();
-					this.msgQueue.add(msg);
-					this.controller.sendData(msg);
+					addCollectionToQueue(multiInstance.initEndpoints(stageAdvanced));
 				}
-
-				// WARNING: Currently, the multi_instance class will send
-				// multiple
-				// messages when the first request is received
-				// This should be handled here so we can monitor its progress.
 				break;
 
 			case INSTANCES_ENDPOINTS:
@@ -225,7 +274,6 @@ public class ZWaveNodeStageAdvancer {
 
 				// this.node.setNodeStage(NodeStage.STATIC_VALUES);
 				// Manually increment the stage and fall through
-				this.currentStage = NodeStage.STATIC_VALUES;
 				break;
 
 			case STATIC_VALUES:
@@ -239,19 +287,10 @@ public class ZWaveNodeStageAdvancer {
 						ZWaveCommandClassInitialization zcci = (ZWaveCommandClassInitialization) zwaveStaticClass;
 						int instances = zwaveStaticClass.getInstances();
 						if (instances == 0) {
-							Collection<SerialMessage> initqueries = zcci.initialize();
-							for (SerialMessage serialMessage : initqueries) {
-								this.msgQueue.add(serialMessage);
-								this.controller.sendData(serialMessage);
-							}
+							addCollectionToQueue(zcci.initialize(stageAdvanced));
 						} else {
 							for (int i = 1; i <= instances; i++) {
-								Collection<SerialMessage> initqueries = zcci.initialize();
-								for (SerialMessage serialMessage : initqueries) {
-									msg = this.node.encapsulate(serialMessage, zwaveStaticClass, i);
-									this.msgQueue.add(msg);
-									this.controller.sendData(msg);
-								}
+								addCollectionToQueue(zcci.initialize(stageAdvanced), zwaveStaticClass, i);
 							}
 						}
 					} else if (zwaveStaticClass instanceof ZWaveMultiInstanceCommandClass) {
@@ -265,13 +304,7 @@ public class ZWaveNodeStageAdvancer {
 									logger.debug("NODE {}: Found initializable command class {}",
 											this.node.getNodeId(), endpointCommandClass.getCommandClass().getLabel());
 									ZWaveCommandClassInitialization zcci2 = (ZWaveCommandClassInitialization) endpointCommandClass;
-									Collection<SerialMessage> initqueries = zcci2.initialize();
-									for (SerialMessage serialMessage : initqueries) {
-										msg = this.node.encapsulate(serialMessage, endpointCommandClass,
-												endpoint.getEndpointId());
-										this.msgQueue.add(msg);
-										this.controller.sendData(msg);
-									}
+									addCollectionToQueue(zcci2.initialize(stageAdvanced), endpointCommandClass, endpoint.getEndpointId());
 								}
 							}
 						}
@@ -289,19 +322,10 @@ public class ZWaveNodeStageAdvancer {
 						ZWaveCommandClassDynamicState zdds = (ZWaveCommandClassDynamicState) zwaveDynamicClass;
 						int instances = zwaveDynamicClass.getInstances();
 						if (instances == 0) {
-							Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
-							for (SerialMessage serialMessage : dynamicQueries) {
-								this.msgQueue.add(serialMessage);
-								this.controller.sendData(serialMessage);
-							}
+							addCollectionToQueue(zdds.getDynamicValues(stageAdvanced));
 						} else {
 							for (int i = 1; i <= instances; i++) {
-								Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
-								for (SerialMessage serialMessage : dynamicQueries) {
-									msg = this.node.encapsulate(serialMessage, zwaveDynamicClass, i);
-									this.msgQueue.add(msg);
-									this.controller.sendData(msg);
-								}
+								addCollectionToQueue(zdds.getDynamicValues(stageAdvanced), zwaveDynamicClass, i);
 							}
 						}
 					} else if (zwaveDynamicClass instanceof ZWaveMultiInstanceCommandClass) {
@@ -315,13 +339,8 @@ public class ZWaveNodeStageAdvancer {
 									logger.debug("NODE {}: Found dynamic state command class {}",
 											this.node.getNodeId(), endpointCommandClass.getCommandClass().getLabel());
 									ZWaveCommandClassDynamicState zdds2 = (ZWaveCommandClassDynamicState) endpointCommandClass;
-									Collection<SerialMessage> dynamicQueries = zdds2.getDynamicValues();
-									for (SerialMessage serialMessage : dynamicQueries) {
-										msg = this.node.encapsulate(serialMessage, endpointCommandClass,
-												endpoint.getEndpointId());
-										this.msgQueue.add(msg);
-										this.controller.sendData(msg);
-									}
+									addCollectionToQueue(zdds2.getDynamicValues(stageAdvanced), endpointCommandClass,
+											endpoint.getEndpointId());
 								}
 							}
 						}
@@ -334,13 +353,48 @@ public class ZWaveNodeStageAdvancer {
 			case DEAD:
 				nodeSerializer.SerializeNode(this.node);
 
-				logger.debug("NODE {}: Initialisation complete.", this.node.getNodeId());
+				logger.debug("NODE {}: Node advancer - initialisation complete.", this.node.getNodeId());
 				break;
 
 			default:
 				logger.error("NODE {}: Unknown node state {} encountered.", this.node.getNodeId(), this.node
 						.getNodeStage().getLabel());
 			}
+			
+			// The stageAdvanced flag is used to tell command classes that this is the first iteration.
+			// During the first iteration all messages are queued. After this, only outstanding requests
+			// are returned. This continues until there are no requests required.
+			stageAdvanced = false;
+			
+			if(msgQueue.isEmpty()) {
+				// Move on to the next stage
+				currentStage = currentStage.getNextStage();
+				stageAdvanced = true;
+				logger.debug("NODE {}: Node advancer - advancing to {}.", this.node.getNodeId(), currentStage.getLabel());
+			}
+		}
+		while (msgQueue.isEmpty());
+	}
+
+	/**
+	 * Move all the messages in a collection to the queue
+	 * @param msgs the message collection
+	 */
+	private void addCollectionToQueue(Collection<SerialMessage> msgs) {
+		for (SerialMessage serialMessage : msgs) {
+			this.msgQueue.add(serialMessage);
+		}
+	}
+
+	/**
+	 * Move all the messages in a collection to the queue and encapsulates them
+	 * @param msgs the message collection
+	 * @param the command class to encapsulate
+	 * @param endpointId the endpoint number
+	 */
+	private void addCollectionToQueue(Collection<SerialMessage> msgs, ZWaveCommandClass commandClass, int endpointId) {
+		for (SerialMessage serialMessage : msgs) {
+			this.msgQueue.add(this.node.encapsulate(serialMessage, commandClass, endpointId));
 		}
 	}
 
@@ -358,6 +412,15 @@ public class ZWaveNodeStageAdvancer {
 	public void setCurrentStage(NodeStage newStage) {
 		currentStage = newStage;
 	}
+	
+	/**
+	 * Sets the time stamp the node was last queried.
+	 * @param queryStageTimeStamp the queryStageTimeStamp to set
+	 */
+	public Date getQueryStageTimeStamp() {
+		return queryStageTimeStamp;
+	}
+
 
 	/**
 	 * Returns whether the initialization process has completed.

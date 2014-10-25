@@ -54,20 +54,24 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			return false;
 		}
 
-		logger.debug("CallBack ID = {}", callbackId);
-		logger.debug(String.format("Status = %s (0x%02x)", status.getLabel(), status.getKey()));
-
-		if (originalMessage == null || originalMessage.getCallbackId() != callbackId) {
-			logger.warn("Already processed another send data request for this callback Id, ignoring.");
+		ZWaveNode node = zController.getNode(originalMessage.getMessageNode());
+		if(node == null) {
+			logger.warn("Node not found!");
 			return false;
 		}
 
+		logger.debug("NODE {}: SendData Request. CallBack ID = {}, Status = %s ({})", node.getNodeId(), callbackId, status.getLabel(), status.getKey());
+
+		if (originalMessage == null || originalMessage.getCallbackId() != callbackId) {
+			logger.warn("NODE {}: Already processed another send data request for this callback Id, ignoring.", node.getNodeId());
+			return false;
+		}
+		
+		// Let the stage advancer know in case this was an initialisation message
+		node.advanceNodeStage(lastSentMessage);
+
 		switch (status) {
 		case COMPLETE_OK:
-			ZWaveNode node = zController.getNode(originalMessage.getMessageNode());
-			if(node == null)
-				break;
-
 			// If the node is DEAD, but we've just received a message from it, then it's not dead!
 			if(node.isDead()) {
 				node.setAlive();
@@ -75,11 +79,6 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			}
 			else {
 				node.resetResendCount();
-				// in case we received a ping response and the node is alive, we
-				// proceed with the next node stage for this node.
-				if (node.getNodeStage() == NodeStage.PING) {
-//					node.advanceNodeStage(NodeStage.DETAILS);
-				}
 			}
 			checkTransactionComplete(lastSentMessage, incomingMessage);
 			return true;
