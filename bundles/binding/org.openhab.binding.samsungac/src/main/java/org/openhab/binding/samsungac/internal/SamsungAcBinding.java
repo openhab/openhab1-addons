@@ -298,6 +298,13 @@ public class SamsungAcBinding extends
 					logger.debug(
 							"Reconnect failed for '{}', will retry in {}s",
 							entry.getKey(), refreshInterval / 1000);
+					
+					logger.debug("Trying to discover the AC");
+					Map<String, String> discovered = SsdpDiscovery.discover();
+					if (discovered != null && discovered.size() > 0) {
+						logger.warn("Samsung Air Conditioner has been configured, and we found one with IP:'" +
+								discovered.get("IP") + "' and MAC ADDRESS: '" + discovered.get("MAC_ADDR") + "'");
+					}
 				}
 			}
 		}
