@@ -129,7 +129,6 @@ public class AirConditioner {
 			}
 			if (ResponseParser.isReadyForTokenResponse(line)) {
 				logger.warn("Switch off and on the air conditioner within 30 seconds");
-				Thread.sleep(20);
 				return;
 			}
 
@@ -139,6 +138,7 @@ public class AirConditioner {
 			}
 
 			if (ResponseParser.isDeviceState(line)) {
+				logger.debug("Response is device state '" + line + "'");
 				statusMap = ResponseParser.parseStatusResponse(line);
 				return;
 			}
@@ -218,7 +218,7 @@ public class AirConditioner {
 
 			ctx.init(null, trustAllCerts, null);
 			socket = (SSLSocket) ctx.getSocketFactory().createSocket(IP, PORT);
-			socket.setSoTimeout(10000);
+			//socket.setSoTimeout(5000);
 			socket.startHandshake();
 		} catch (Exception e) {
 			throw new Exception("Cannot connect to " + IP + ":" + PORT, e);
@@ -236,14 +236,14 @@ public class AirConditioner {
 		return id;
 	}
 
-	public Map<CommandEnum, String> getStatus() {
+	public Map<CommandEnum, String> getStatus() throws Exception {
+		statusMap.clear();
 		try {
 			writeLine("<Request Type=\"DeviceState\" DUID=\"" + MAC
 					+ "\"></Request>");
 			handleResponse();
 		} catch (Exception e) {
-			logger.warn("Could not update status for air conditioner with IP: "
-					+ IP, e);
+			throw new Exception("Could not update status for air conditioner with IP: " + IP, e);
 		}
 		return statusMap;
 	}

@@ -164,14 +164,6 @@ public class SamsungAcBinding extends
 		return null;
 	}
 
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		if (itemName != null) {
-			logger.debug("InternalReceiveState +'" + itemName + "':'"
-					+ newState + "'");
-		}
-	}
-
 	/**
 	 * @{inheritDoc
 	 */
@@ -239,9 +231,15 @@ public class SamsungAcBinding extends
 				.entrySet()) {
 			AirConditioner host = entry.getValue();
 			if (host.isConnected()) {
-				Map<CommandEnum, String> status = host.getStatus();
-
-				for (CommandEnum cmd : CommandEnum.values()) {
+				Map<CommandEnum, String> status = new HashMap<CommandEnum, String>();
+				try {
+					status = host.getStatus();
+				} catch (Exception e) {
+					logger.debug("Could not get status.. returning..");
+					return;
+				}
+				
+				for (CommandEnum cmd : status.keySet()) {
 					String item = getItemName(cmd);
 					String value = status.get(cmd);
 					if (item != null && value != null) {
