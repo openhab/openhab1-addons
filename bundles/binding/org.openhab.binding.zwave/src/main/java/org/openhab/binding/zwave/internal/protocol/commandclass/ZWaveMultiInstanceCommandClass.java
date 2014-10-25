@@ -125,7 +125,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			case MULTI_CHANNEL_CAPABILITY_GET:
 			case MULTI_CHANNEL_ENDPOINT_FIND:
 			case MULTI_CHANNEL_ENDPOINT_FIND_REPORT:
-				logger.warn(String.format("NODE %d: Command 0x%02X not implemented.", this.getNode().getNodeId(), command));
+				logger.warn("NODE {}: Command {} not implemented.", this.getNode().getNodeId(), command);
 				return;
 			case MULTI_INSTANCE_REPORT:
 				handleMultiInstanceReportResponse(serialMessage, offset + 1);
@@ -155,7 +155,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	 * Handles Multi Instance Report message. Handles Report on
 	 * the number of instances for the command class.
 	 * @param serialMessage the serial message to process.
-	 * @param offset the offset at which to start procesing.
+	 * @param offset the offset at which to start processing.
 	 */
 	private void handleMultiInstanceReportResponse(SerialMessage serialMessage,
 			int offset) {
@@ -287,11 +287,14 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		for (int i=1; i <= endpoints; i++) {
 			ZWaveEndpoint endpoint = new ZWaveEndpoint(i);
 			this.endpoints.put(i, endpoint);
+			
+			// !!!!!!!!!!!!!!!!!!!!!!!!
+			// This request needs to move to advancer!!!!!!!!
 			if (!endpointsAreTheSameDeviceClass || i == 1)
 				this.getController().sendData(this.getMultiChannelCapabilityGetMessage(endpoint));
 		}
 	}
-	
+
 	/**
 	 * Handles Multi Channel Capability Report message. Handles Report on
 	 * an endpoint and adds command classes to the endpoint.
@@ -441,7 +444,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	 * @return the serial message.
 	 */
 	public SerialMessage getMultiInstanceGetMessage(CommandClass commandClass) {
-		logger.debug("NODE {}: Creating new message for application command MULTI_INSTANCE_GET command class {}", this.getNode().getNodeId(), commandClass.getLabel());
+		logger.debug("NODE {}: Creating new message for command MULTI_INSTANCE_GET command class {}", this.getNode().getNodeId(), commandClass.getLabel());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							3, 
@@ -461,7 +464,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	 * @return the encapsulated serial message.
 	 */
 	public SerialMessage getMultiInstanceEncapMessage(SerialMessage serialMessage, int instance) {
-		logger.debug("NODE {}: Creating new message for application command MULTI_INSTANCE_ENCAP instance {}", this.getNode().getNodeId(), instance);
+		logger.debug("NODE {}: Creating new message for command MULTI_INSTANCE_ENCAP instance {}", this.getNode().getNodeId(), instance);
 		
 		byte[] payload = serialMessage.getMessagePayload();
 		byte[] newPayload = new byte[payload.length + 3];
@@ -482,7 +485,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	 * @return the serial message.
 	 */
 	public SerialMessage getMultiChannelEndpointGetMessage() {
-		logger.debug("NODE {}: Creating new message for application command MULTI_CHANNEL_ENDPOINT_GET", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for command MULTI_CHANNEL_ENDPOINT_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
@@ -493,13 +496,13 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	}
 	
 	/**
-	 * Gets a SerialMessage with the MULTI CHANNEL CAPABILITY GET command.
+	 * Gets a SerialMessage with the MULTI_CHANNEL_CAPABILITY_GET command.
 	 * Gets the capabilities for a specific endpoint.
 	 * @param the number of the endpoint to get the 
 	 * @return the serial message.
 	 */
 	public SerialMessage getMultiChannelCapabilityGetMessage(ZWaveEndpoint endpoint) {
-		logger.debug("NODE {}: Creating new message for application command MULTI_CHANNEL_CAPABILITY_GET endpoint {}", this.getNode().getNodeId(), endpoint.getEndpointId());
+		logger.debug("NODE {}: Creating new message for command MULTI_CHANNEL_CAPABILITY_GET endpoint {}", this.getNode().getNodeId(), endpoint.getEndpointId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							3, 
@@ -511,14 +514,14 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	}
 	
 	/**
-	 * Gets a SerialMessage with the MULTI INSTANCE ENCAP command.
+	 * Gets a SerialMessage with the MULTI_INSTANCE_ENCAP command.
 	 * Encapsulates a message for a specific instance.
 	 * @param serialMessage the serial message to encapsulate
 	 * @param endpoint the endpoint to encapsulate the message for.
 	 * @return the encapsulated serial message.
 	 */
 	public SerialMessage getMultiChannelEncapMessage(SerialMessage serialMessage, ZWaveEndpoint endpoint) {
-		logger.debug("NODE {}: Creating new message for application command MULTI_CHANNEL_ENCAP endpoint {}", this.getNode().getNodeId(), endpoint.getEndpointId());
+		logger.debug("NODE {}: Creating new message for command MULTI_CHANNEL_ENCAP endpoint {}", this.getNode().getNodeId(), endpoint.getEndpointId());
 		
 		byte[] payload = serialMessage.getMessagePayload();
 		byte[] newPayload = new byte[payload.length + 4];

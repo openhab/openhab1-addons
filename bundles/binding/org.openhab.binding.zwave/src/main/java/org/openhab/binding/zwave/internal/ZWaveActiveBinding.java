@@ -398,8 +398,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		logger.debug("ZwaveIncomingEvent");
 		
 		// ignore transaction completed events.
-		if (event instanceof ZWaveTransactionCompletedEvent)
+		if (event instanceof ZWaveTransactionCompletedEvent) {
 			return;
+		}
 		
 		// handle command class value events.
 		if (event instanceof ZWaveCommandClassValueEvent) {
@@ -416,7 +417,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		ZWaveCommandClassValueEvent event) {
 		boolean handled = false;
 
-		logger.debug("Got a value event from Z-Wave network for nodeId = {}, endpoint = {}, command class = {}, value = {}", 
+		logger.debug("NODE {}: Got a value event from Z-Wave network, endpoint = {}, command class = {}, value = {}", 
 				new Object[] { event.getNodeId(), event.getEndpoint(), event.getCommandClass().getLabel(), event.getValue() } );
 
 		for (ZWaveBindingProvider provider : providers) {
@@ -431,9 +432,10 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			}
 		}
 		
-		if (!handled)
-			logger.warn("No item bound for event from nodeId = {}, endpoint = {}, command class = {}, value = {}, ignoring.", 
+		if (!handled) {
+			logger.warn("NODE {}: No item bound for event, endpoint = {}, command class = {}, value = {}, ignoring.", 
 					new Object[] { event.getNodeId(), event.getEndpoint(), event.getCommandClass().getLabel(), event.getValue() } );
+		}
 	}
 	
 	class ZWavePollItem {

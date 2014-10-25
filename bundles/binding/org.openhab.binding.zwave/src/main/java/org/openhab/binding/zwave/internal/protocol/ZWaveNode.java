@@ -200,7 +200,6 @@ public class ZWaveNode {
 	
 	/**
 	 * Sets the node to be 'undead'.
-	 * @return
 	 */
 	public void setAlive(){
 		if(this.nodeStageAdvancer.isInitializationComplete()) {
