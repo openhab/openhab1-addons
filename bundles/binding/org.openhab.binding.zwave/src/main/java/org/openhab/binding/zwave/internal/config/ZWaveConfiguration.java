@@ -466,11 +466,21 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 			} else if (arg.equals("status/")) {
 				record = new OpenHABConfigurationRecord(domain, "LastSent", "Last Packet Sent", true);
-				record.value = df.format(node.getLastSent());
+				if(node.getLastSent() == null) {
+					record.value = "NEVER";
+				}
+				else {
+					record.value = df.format(node.getLastSent());
+				}
 				records.add(record);
 				
 				record = new OpenHABConfigurationRecord(domain, "LastReceived", "Last Packet Received", true);
-				record.value = df.format(node.getLastReceived());
+				if(node.getLastReceived() == null) {
+					record.value = "NEVER";
+				}
+				else {
+					record.value = df.format(node.getLastReceived());
+				}
 				records.add(record);
 				
 				if(networkMonitor != null) {

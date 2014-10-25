@@ -48,6 +48,7 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 		}
 		
 		node.resetResendCount();
+		node.incrementReceiveCount();
 		
 		int commandClassCode = incomingMessage.getMessagePayloadByte(3);
 		CommandClass commandClass = CommandClass.getCommandClass(commandClassCode);
