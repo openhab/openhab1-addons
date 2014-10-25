@@ -8,18 +8,13 @@
  */
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
-import java.util.Collection;
-
 import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.UpdateState;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
-import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.slf4j.Logger;
@@ -105,7 +100,7 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			transactionComplete = true;
 			break;
 		default:
-			logger.warn(String.format("TODO: Implement Application Update Request Handling of %s (0x%02X).", updateState.getLabel(), updateState.getKey()));
+			logger.warn("TODO: Implement Application Update Request Handling of {} ({}).", updateState.getLabel(), updateState.getKey());
 		}		
 		return false;
 	}
