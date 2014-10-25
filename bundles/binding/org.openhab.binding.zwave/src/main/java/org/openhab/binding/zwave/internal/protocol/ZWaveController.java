@@ -242,8 +242,15 @@ public class ZWaveController {
 			case SerialApiGetInitData:
 				this.isConnected = true;
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
-					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-					ZWaveNode node = nodeSerializer.DeserializeNode(nodeId);
+					ZWaveNode node = null;
+					try {
+						ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+						node = nodeSerializer.DeserializeNode(nodeId);
+					}
+					catch (Exception e) {
+						logger.error("NODE {}: Error deserialising XML file. {}", nodeId, e.toString());
+						node = null;
+					}
 					String name = null;
 					String location = null;
 
