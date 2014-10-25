@@ -165,8 +165,8 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 
 		if (instances == 0) {
 			setInstances(1);
-		} else 
-		{
+		}
+		else {
 			CommandClass commandClass = CommandClass.getCommandClass(commandClassCode);
 			
 			if (commandClass == null) {
@@ -186,6 +186,10 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			logger.debug("NODE {}: Instances = {}, number of instances set.", this.getNode().getNodeId(), instances);
 		}
 
+		
+		
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// SHOULD BE IN THE NODE ADVANCER!!!!
 		// Check how many outstanding requests we're waiting for before advancing...
 		int waiting = 0;
 		for (ZWaveCommandClass zwaveCommandClass : this.getNode().getCommandClasses()) {
@@ -203,9 +207,10 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			logger.debug("NODE {}: Waiting for {} responses.", this.getNode().getNodeId(), waiting);
 			return;
 		}
-		
+
 		// All requests received - advance node stage.
 		this.getNode().advanceNodeStage(NodeStage.STATIC_VALUES);
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	}
 	
 	/**
@@ -275,9 +280,10 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		logger.debug("NODE {}: Number of endpoints = {}", this.getNode().getNodeId(), endpoints);
 
 		// TODO: handle dynamically added endpoints. Have never seen such a device.
-		if (changingNumberOfEndpoints)
+		if (changingNumberOfEndpoints) {
 			logger.warn("NODE {}: Changing number of endpoints, expect some weird behavior during multi channel handling.", this.getNode().getNodeId());
-		
+		}
+
 		for (int i=1; i <= endpoints; i++) {
 			ZWaveEndpoint endpoint = new ZWaveEndpoint(i);
 			this.endpoints.put(i, endpoint);
@@ -424,12 +430,12 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			return;
 		}
 		
-		logger.debug(String.format("NODE %d: Endpoint = %d, calling handleApplicationCommandRequest.", this.getNode().getNodeId(), endpointId));
+		logger.debug("NODE {}: Endpoint = {}, calling handleApplicationCommandRequest.", this.getNode().getNodeId(), endpointId);
 		zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset + 3, endpointId);
 	}
 	
 	/**
-	 * Gets a SerialMessage with the MULTI INSTANCE GET command.
+	 * Gets a SerialMessage with the MULTI_INSTANCE_GET command.
 	 * Returns the number of instances for this command class.
 	 * @param the command class to return the number of instances for.
 	 * @return the serial message.
@@ -448,7 +454,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	}
 	
 	/**
-	 * Gets a SerialMessage with the MULTI INSTANCE ENCAP command.
+	 * Gets a SerialMessage with the MULTI_INSTANCE_ENCAP command.
 	 * Encapsulates a message for a specific instance.
 	 * @param serialMessage the serial message to encapsulate
 	 * @param instance the number of the instance to encapsulate the message for.
@@ -531,8 +537,9 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	/**
 	 * Initializes the Multi instance / endpoint command class by setting the number of instances
 	 * or getting the endpoints.
+	 * @return SerialMessage message to send
 	 */
-	public void initEndpoints() {
+	public SerialMessage initEndpoints() {
 		logger.debug("NODE {}: Initialising endpoints - version {}", this.getNode().getNodeId(), this.getVersion());
 		switch (this.getVersion()) {
 			case 1:
@@ -540,17 +547,18 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 				for (ZWaveCommandClass commandClass : this.getNode().getCommandClasses()) {
 					if (commandClass.getCommandClass() == CommandClass.NO_OPERATION)
 						continue;
-					this.getController().sendData(this.getMultiInstanceGetMessage(commandClass.getCommandClass()));
+					return this.getMultiInstanceGetMessage(commandClass.getCommandClass());
 				}
 				break;
 			case 2:
-				this.getController().sendData(this.getMultiChannelEndpointGetMessage());
-				break;
+				return this.getMultiChannelEndpointGetMessage();
 			default:
 				logger.warn(String.format("NODE %d: Unknown version %d for command class %s (0x%02x)", 
 						this.getNode().getNodeId(), this.getVersion(), this.getCommandClass().getLabel(), this.getCommandClass().getKey()));
 				break;
 		}
+		
+		return null;
 	};
 	
 }

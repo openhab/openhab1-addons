@@ -89,5 +89,19 @@ public enum NodeStage {
 		
 		return codeToNodeStageMapping.get(i);
 	}
+	
+	/**
+	 * Return the next stage after the current stage
+	 * @return the next stage
+	 */
+	public NodeStage getNextStage() {
+		for (NodeStage s : values()) {
+			if(s.stage == this.stage) {
+				return s;
+			}
+		}
+		
+		return null;
+	}
 }
 

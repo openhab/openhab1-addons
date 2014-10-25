@@ -179,8 +179,9 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	/**
 	 * Check the version of a command class by sending a VERSION_COMMAND_CLASS_GET message to the node.
 	 * @param commandClass the command class to check the version for.
+	 * @return serial message to be sent
 	 */
-	public void checkVersion(ZWaveCommandClass commandClass) {
+	public SerialMessage  checkVersion(ZWaveCommandClass commandClass) {
 		ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass)this.getNode().getCommandClass(CommandClass.VERSION);
 		
 		if (versionCommandClass == null) {
@@ -189,10 +190,10 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 					this.getNode().getNodeId(), 
 					commandClass.getCommandClass().getLabel(), 
 					commandClass.getCommandClass().getKey()));
-			return;
+			return null;
 		}
-		
-		this.getController().sendData(versionCommandClass.getCommandClassVersionMessage(commandClass.getCommandClass()));
+
+		return versionCommandClass.getCommandClassVersionMessage(commandClass.getCommandClass());
 	};
 	
 	/**

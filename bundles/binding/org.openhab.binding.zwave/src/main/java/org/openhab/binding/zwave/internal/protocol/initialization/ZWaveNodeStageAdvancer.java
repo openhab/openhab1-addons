@@ -10,6 +10,7 @@ package org.openhab.binding.zwave.internal.protocol.initialization;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialInterfaceException;
@@ -25,6 +26,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveManufacture
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNoOperationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeInfoMessageClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +35,7 @@ import org.slf4j.LoggerFactory;
  * the initialization of a node.
  * 
  * @author Jan-Willem Spuij
+ * @author Chris Jackson
  * @since 1.4.0
  */
 public class ZWaveNodeStageAdvancer {
@@ -46,6 +49,11 @@ public class ZWaveNodeStageAdvancer {
 	private boolean initializationComplete = false;
 	private boolean restoredFromConfigfile = false;
 
+	private static final int MAX_BUFFFER_LEN = 32;
+	private ArrayBlockingQueue<SerialMessage> msgQueue;
+
+	private NodeStage currentStage;
+
 	/**
 	 * Constructor. Creates a new instance of the ZWaveNodeStageAdvancer class.
 	 * 
@@ -57,6 +65,11 @@ public class ZWaveNodeStageAdvancer {
 	public ZWaveNodeStageAdvancer(ZWaveNode node, ZWaveController controller) {
 		this.node = node;
 		this.controller = controller;
+
+		currentStage = NodeStage.EMPTYNODE;
+
+		// Initialise the message queue
+		msgQueue = new ArrayBlockingQueue<SerialMessage>(MAX_BUFFFER_LEN, true);
 	}
 
 	/**
@@ -66,57 +79,83 @@ public class ZWaveNodeStageAdvancer {
 	 * through querying the controller / node. TODO: Handle the rest of the node
 	 * stages
 	 */
-	public void advanceNodeStage(NodeStage targetStage) {
-		if (targetStage.getStage() <= this.node.getNodeStage().getStage() && targetStage != NodeStage.DONE) {
-			logger.warn(String.format("NODE %d: Already in or beyond node stage, ignoring. current = %s, requested = %s", this.node.getNodeId(),
-					this.node.getNodeStage().getLabel(), targetStage.getLabel()));
+	public void advanceNodeStage(SerialMessage incomingMessage) {
+		// If initialisation is complete, then just return.
+		if (this.initializationComplete) {
 			return;
 		}
-		logger.debug(String.format("NODE %d: Setting stage. current = %s, requested = %s", this.node.getNodeId(),
-				this.node.getNodeStage().getLabel(), targetStage.getLabel()));
 
+		// If this message is in the queue, then remove it
+		// When the queue is empty, we can move on to the next stage.
+		if (this.msgQueue.contains(incomingMessage)) {
+			logger.debug("NODE {}: Message in initialisation queue.", this.node.getNodeId());
+			this.msgQueue.remove(incomingMessage);
+		}
+
+		// If the queue isn't empty, then wait for the rest of the messages for
+		// this stage
+		if (!msgQueue.isEmpty()) {
+			return;
+		}
+
+		// Move on to the next stage
+		currentStage = currentStage.getNextStage();
+
+		SerialMessage msg;
+
+		// Remember the time so we can handle retries
 		this.node.setQueryStageTimeStamp(Calendar.getInstance().getTime());
-		switch (this.node.getNodeStage()) {
+		switch (currentStage) {
 		case EMPTYNODE:
-			try {
-				this.node.setNodeStage(NodeStage.PROTOINFO);
-				this.controller.identifyNode(this.node.getNodeId());
-			} catch (SerialInterfaceException e) {
-				logger.error("NODE {}: Got error {}, while identifying node", this.node.getNodeId(), e.getLocalizedMessage());
+			// Start the node initialisation.
+			// Check if the node has the manufacturer set.
+			// If it's set, then we must have received the node identity frame
+			// so we can continue to the next stage.
+			if (this.node.getManufacturer() != Integer.MAX_VALUE) {
+				// Step to the next stage, and fall through...
+				this.currentStage = NodeStage.PROTOINFO;
+			} else {
+				try {
+					// this.node.setNodeStage(NodeStage.PROTOINFO);
+					this.controller.identifyNode(this.node.getNodeId());
+				} catch (SerialInterfaceException e) {
+					logger.error("NODE {}: Got error {}, while identifying node", this.node.getNodeId(),
+							e.getLocalizedMessage());
+				}
+				break;
 			}
 			break;
-		case PROTOINFO:
-			if (this.node.getNodeId() != this.controller.getOwnNodeId()) {
-				ZWaveNoOperationCommandClass zwaveCommandClass = (ZWaveNoOperationCommandClass) this.node
-						.getCommandClass(CommandClass.NO_OPERATION);
-				if (zwaveCommandClass == null)
-					break;
 
-				this.node.setNodeStage(NodeStage.PING);
-				this.controller.sendData(zwaveCommandClass.getNoOperationMessage());
-			} else {
+		case PROTOINFO:
+			// If this is the controller, we're done
+			if (this.node.getNodeId() == this.controller.getOwnNodeId()) {
 				logger.debug("NODE {}: Initialisation complete.", this.node.getNodeId());
 				initializationComplete = true;
-				this.node.setNodeStage(NodeStage.DONE); // nothing
-														// more
-														// to
-														// do
-														// for
-														// this
-														// node.
+				this.currentStage = NodeStage.DONE;
+				break;
 			}
+
+			ZWaveNoOperationCommandClass zwaveCommandClass = (ZWaveNoOperationCommandClass) this.node
+					.getCommandClass(CommandClass.NO_OPERATION);
+			if (zwaveCommandClass == null) {
+				break;
+			}
+
+			msg = zwaveCommandClass.getNoOperationMessage();
+			this.msgQueue.add(msg);
+			this.controller.sendData(msg);
 			break;
 		case PING:
 		case WAKEUP:
-			// if restored from a config file, redo from the dynamic
-			// node stage.
+			// if restored from a config file, redo from the dynamic node stage.
 			if (this.isRestoredFromConfigfile()) {
-				this.node.setNodeStage(NodeStage.DYNAMIC);				
-				advanceNodeStage(NodeStage.DONE);
+				this.currentStage = NodeStage.DYNAMIC;
 				break;
 			}
-			this.node.setNodeStage(NodeStage.DETAILS);
-			this.controller.requestNodeInfo(this.node.getNodeId());
+
+			msg = new RequestNodeInfoMessageClass().doRequest(this.node.getNodeId());
+			this.msgQueue.add(msg);
+			this.controller.enqueue(msg);
 			break;
 		case DETAILS:
 			// try and get the manufacturerSpecific command class.
@@ -124,167 +163,184 @@ public class ZWaveNodeStageAdvancer {
 					.getCommandClass(CommandClass.MANUFACTURER_SPECIFIC);
 
 			if (manufacturerSpecific != null) {
-				// if this node implements the Manufacturer Specific command
+				// If this node implements the Manufacturer Specific command
 				// class, we use it to get manufacturer info.
-				this.node.setNodeStage(NodeStage.MANSPEC01);
-				this.controller.sendData(manufacturerSpecific.getManufacturerSpecificMessage());
+				msg = manufacturerSpecific.getManufacturerSpecificMessage();
+				this.msgQueue.add(msg);
+				this.controller.sendData(msg);
 				break;
 			}
 
 			logger.warn("NODE {}: does not support MANUFACTURER_SPECIFIC, proceeding to version node stage.",
 					this.node.getNodeId());
 		case MANSPEC01:
-			this.node.setNodeStage(NodeStage.VERSION);
-			// try and get the version command class.
+			// Try and get the version command class.
 			ZWaveVersionCommandClass version = (ZWaveVersionCommandClass) this.node
 					.getCommandClass(CommandClass.VERSION);
 
-			boolean checkVersionCalled = false;
-			for (ZWaveCommandClass zwaveCommandClass : this.node.getCommandClasses()) {
-				if (version != null && zwaveCommandClass.getMaxVersion() > 1) {
-					version.checkVersion(zwaveCommandClass); // check version
-																// for this
-																// command
-																// class.
-					checkVersionCalled = true;
-				} else
-					zwaveCommandClass.setVersion(1);
+			// Loop through all command classes, requesting their version using
+			// the Version command class
+			for (ZWaveCommandClass zwaveVersionClass : this.node.getCommandClasses()) {
+				if (version != null && zwaveVersionClass.getMaxVersion() > 1) {
+					msg = version.checkVersion(zwaveVersionClass);
+					this.msgQueue.add(msg);
+					this.controller.sendData(msg);
+				} else {
+					zwaveVersionClass.setVersion(1);
+				}
 			}
 
-			if (checkVersionCalled) // wait for another call of advanceNodeStage
-									// before continuing.
+			// If the queue has messages, then we need to wait for them to
+			// complete before continuing.
+			if (!this.msgQueue.isEmpty())
 				break;
+
+			// Manually increment the stage and fall through
+			this.currentStage = NodeStage.VERSION;
+
 		case VERSION:
-			this.node.setNodeStage(NodeStage.INSTANCES_ENDPOINTS);
+			// this.node.setNodeStage(NodeStage.INSTANCES_ENDPOINTS);
 			// try and get the multi instance / channel command class.
 			ZWaveMultiInstanceCommandClass multiInstance = (ZWaveMultiInstanceCommandClass) this.node
 					.getCommandClass(CommandClass.MULTI_INSTANCE);
 
 			if (multiInstance != null) {
-				multiInstance.initEndpoints();
+				msg = multiInstance.initEndpoints();
+				this.msgQueue.add(msg);
+				this.controller.sendData(msg);
 				break;
 			}
 
 			logger.trace("NODE {}: does not support MULTI_INSTANCE, proceeding to static node stage.",
 					this.node.getNodeId());
+
+			// Manually increment the stage and fall through
+			this.currentStage = NodeStage.INSTANCES_ENDPOINTS;
+
+			// WARNING: Currently, the multi_instance class will send multiple
+			// messages when the first request is received
+			// This should be handled here so we can monitor its progress.
+
 		case INSTANCES_ENDPOINTS:
-			this.node.setNodeStage(NodeStage.STATIC_VALUES);
+			// this.node.setNodeStage(NodeStage.STATIC_VALUES);
+			// Manually increment the stage and fall through
+			this.currentStage = NodeStage.STATIC_VALUES;
+
 		case STATIC_VALUES:
-			if (queriesPending == -1) {
-				queriesPending = 0;
-				for (ZWaveCommandClass zwaveCommandClass : this.node.getCommandClasses()) {
-					logger.trace("NODE {}: Inspecting command class {}", this.node.getNodeId(), zwaveCommandClass.getCommandClass().getLabel());
-					if (zwaveCommandClass instanceof ZWaveCommandClassInitialization) {
-						logger.debug("NODE {}: Found initializable command class {}", this.node.getNodeId(), zwaveCommandClass.getCommandClass()
-								.getLabel());
-						ZWaveCommandClassInitialization zcci = (ZWaveCommandClassInitialization) zwaveCommandClass;
-						int instances = zwaveCommandClass.getInstances();
-						if (instances == 0) {
+			// Loop through all classes looking for static initialisation
+			for (ZWaveCommandClass zwaveStaticClass : this.node.getCommandClasses()) {
+				logger.trace("NODE {}: Inspecting command class {}", this.node.getNodeId(), zwaveStaticClass
+						.getCommandClass().getLabel());
+				if (zwaveStaticClass instanceof ZWaveCommandClassInitialization) {
+					logger.debug("NODE {}: Found initializable command class {}", this.node.getNodeId(),
+							zwaveStaticClass.getCommandClass().getLabel());
+					ZWaveCommandClassInitialization zcci = (ZWaveCommandClassInitialization) zwaveStaticClass;
+					int instances = zwaveStaticClass.getInstances();
+					if (instances == 0) {
+						Collection<SerialMessage> initqueries = zcci.initialize();
+						for (SerialMessage serialMessage : initqueries) {
+							this.msgQueue.add(serialMessage);
+							this.controller.sendData(serialMessage);
+						}
+					} else {
+						for (int i = 1; i <= instances; i++) {
 							Collection<SerialMessage> initqueries = zcci.initialize();
 							for (SerialMessage serialMessage : initqueries) {
-								this.controller.sendData(serialMessage);
-								queriesPending++;
-							}
-						} else {
-							for (int i = 1; i <= instances; i++) {
-								Collection<SerialMessage> initqueries = zcci.initialize();
-								for (SerialMessage serialMessage : initqueries) {
-									this.controller
-											.sendData(this.node.encapsulate(serialMessage, zwaveCommandClass, i));
-									queriesPending++;
-								}
+								msg = this.node.encapsulate(serialMessage, zwaveStaticClass, i);
+								this.msgQueue.add(msg);
+								this.controller.sendData(msg);
 							}
 						}
-					} else if (zwaveCommandClass instanceof ZWaveMultiInstanceCommandClass) {
-						ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) zwaveCommandClass;
-						for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
-							for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
-								logger.trace(String.format("NODE %d: Inspecting command class %s for endpoint %d", this.node.getNodeId(), endpointCommandClass
-										.getCommandClass().getLabel(), endpoint.getEndpointId()));
-								if (endpointCommandClass instanceof ZWaveCommandClassInitialization) {
-									logger.debug("NODE {}: Found initializable command class {}", this.node.getNodeId(), endpointCommandClass
-											.getCommandClass().getLabel());
-									ZWaveCommandClassInitialization zcci2 = (ZWaveCommandClassInitialization) endpointCommandClass;
-									Collection<SerialMessage> initqueries = zcci2.initialize();
-									for (SerialMessage serialMessage : initqueries) {
-										this.controller.sendData(this.node.encapsulate(serialMessage,
-												endpointCommandClass, endpoint.getEndpointId()));
-										queriesPending++;
-									}
+					}
+				} else if (zwaveStaticClass instanceof ZWaveMultiInstanceCommandClass) {
+					ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) zwaveStaticClass;
+					for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
+						for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
+							logger.trace("NODE {}: Inspecting command class {} for endpoint {}", this.node.getNodeId(),
+									endpointCommandClass.getCommandClass().getLabel(), endpoint.getEndpointId());
+							if (endpointCommandClass instanceof ZWaveCommandClassInitialization) {
+								logger.debug("NODE {}: Found initializable command class {}", this.node.getNodeId(),
+										endpointCommandClass.getCommandClass().getLabel());
+								ZWaveCommandClassInitialization zcci2 = (ZWaveCommandClassInitialization) endpointCommandClass;
+								Collection<SerialMessage> initqueries = zcci2.initialize();
+								for (SerialMessage serialMessage : initqueries) {
+									msg = this.node.encapsulate(serialMessage, endpointCommandClass,
+											endpoint.getEndpointId());
+									this.msgQueue.add(msg);
+									this.controller.sendData(msg);
 								}
 							}
 						}
 					}
 				}
 			}
-			if (queriesPending-- > 0) // there is still something to be
-										// initialized.
+
+			// If the queue has messages, then we need to wait for them to
+			// complete before continuing.
+			if (!this.msgQueue.isEmpty())
 				break;
 
-			logger.trace("NODE {}: Done getting static values, proceeding to dynamic node stage.", this.node.getNodeId());
-			queriesPending = -1;
-			this.node.setNodeStage(NodeStage.DYNAMIC);
+			logger.trace("NODE {}: Done getting static values, proceeding to dynamic node stage.",
+					this.node.getNodeId());
+			this.currentStage = NodeStage.DYNAMIC;
+			// this.node.setNodeStage(NodeStage.DYNAMIC);
 		case DYNAMIC:
-			if (queriesPending == -1) {
-				queriesPending = 0;
-				for (ZWaveCommandClass zwaveCommandClass : this.node.getCommandClasses()) {
-					logger.trace("NODE {}: Inspecting command class {}", this.node.getNodeId(), zwaveCommandClass.getCommandClass().getLabel());
-					if (zwaveCommandClass instanceof ZWaveCommandClassDynamicState) {
-						logger.debug("NODE {}: Found dynamic state command class {}", this.node.getNodeId(), zwaveCommandClass.getCommandClass()
-								.getLabel());
-						ZWaveCommandClassDynamicState zdds = (ZWaveCommandClassDynamicState) zwaveCommandClass;
-						int instances = zwaveCommandClass.getInstances();
-						if (instances == 0) {
+			for (ZWaveCommandClass zwaveDynamicClass : this.node.getCommandClasses()) {
+				logger.trace("NODE {}: Inspecting command class {}", this.node.getNodeId(), zwaveDynamicClass
+						.getCommandClass().getLabel());
+				if (zwaveDynamicClass instanceof ZWaveCommandClassDynamicState) {
+					logger.debug("NODE {}: Found dynamic state command class {}", this.node.getNodeId(),
+							zwaveDynamicClass.getCommandClass().getLabel());
+					ZWaveCommandClassDynamicState zdds = (ZWaveCommandClassDynamicState) zwaveDynamicClass;
+					int instances = zwaveDynamicClass.getInstances();
+					if (instances == 0) {
+						Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
+						for (SerialMessage serialMessage : dynamicQueries) {
+							this.msgQueue.add(serialMessage);
+							this.controller.sendData(serialMessage);
+						}
+					} else {
+						for (int i = 1; i <= instances; i++) {
 							Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
 							for (SerialMessage serialMessage : dynamicQueries) {
-								this.controller.sendData(serialMessage);
-								queriesPending++;
-							}
-						} else {
-							for (int i = 1; i <= instances; i++) {
-								Collection<SerialMessage> dynamicQueries = zdds.getDynamicValues();
-								for (SerialMessage serialMessage : dynamicQueries) {
-									this.controller
-											.sendData(this.node.encapsulate(serialMessage, zwaveCommandClass, i));
-									queriesPending++;
-								}
+								msg = this.node.encapsulate(serialMessage, zwaveDynamicClass, i);
+								this.msgQueue.add(msg);
+								this.controller.sendData(msg);
 							}
 						}
-					} else if (zwaveCommandClass instanceof ZWaveMultiInstanceCommandClass) {
-						ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) zwaveCommandClass;
-						for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
-							for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
-								logger.trace(String.format("NODE %d: Inspecting command class %s for endpoint %d", this.node.getNodeId(), endpointCommandClass
-										.getCommandClass().getLabel(), endpoint.getEndpointId()));
-								if (endpointCommandClass instanceof ZWaveCommandClassDynamicState) {
-									logger.debug("NODE {}: Found dynamic state command class {}", this.node.getNodeId(), endpointCommandClass
-											.getCommandClass().getLabel());
-									ZWaveCommandClassDynamicState zdds2 = (ZWaveCommandClassDynamicState) endpointCommandClass;
-									Collection<SerialMessage> dynamicQueries = zdds2.getDynamicValues();
-									for (SerialMessage serialMessage : dynamicQueries) {
-										this.controller.sendData(this.node.encapsulate(serialMessage,
-												endpointCommandClass, endpoint.getEndpointId()));
-										queriesPending++;
-									}
+					}
+				}
+				else if (zwaveDynamicClass instanceof ZWaveMultiInstanceCommandClass) {
+					ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) zwaveDynamicClass;
+					for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
+						for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
+							logger.trace("NODE {}: Inspecting command class {} for endpoint {}", this.node.getNodeId(),
+									endpointCommandClass.getCommandClass().getLabel(), endpoint.getEndpointId());
+							if (endpointCommandClass instanceof ZWaveCommandClassDynamicState) {
+								logger.debug("NODE {}: Found dynamic state command class {}", this.node.getNodeId(),
+										endpointCommandClass.getCommandClass().getLabel());
+								ZWaveCommandClassDynamicState zdds2 = (ZWaveCommandClassDynamicState) endpointCommandClass;
+								Collection<SerialMessage> dynamicQueries = zdds2.getDynamicValues();
+								for (SerialMessage serialMessage : dynamicQueries) {
+									msg = this.node.encapsulate(serialMessage, endpointCommandClass, endpoint.getEndpointId());
+									this.msgQueue.add(msg);
+									this.controller.sendData(msg);
 								}
 							}
 						}
 					}
 				}
 			}
-			if (queriesPending-- > 0) // there is still something to be
-										// initialized.
-				break;
-			logger.trace("NODE {}: Done getting dynamic values, proceeding to done node stage.", this.node.getNodeId());
-			queriesPending = -1;
 
-			this.node.setNodeStage(NodeStage.DONE); // nothing
-													// more
-													// to
-													// do
-													// for
-													// this
-													// node.
+			// If the queue has messages, then we need to wait for them to
+			// complete before continuing.
+			if (!this.msgQueue.isEmpty())
+				break;
+
+			logger.trace("NODE {}: Done getting dynamic values, proceeding to done node stage.", this.node.getNodeId());
+
+			this.currentStage = NodeStage.DONE;
+			// this.node.setNodeStage(NodeStage.DONE);
 
 			nodeSerializer.SerializeNode(this.node);
 
@@ -295,7 +351,8 @@ public class ZWaveNodeStageAdvancer {
 		case DEAD:
 			break;
 		default:
-			logger.error("NODE {}: Unknown node state {} encountered.", this.node.getNodeId(), this.node.getNodeStage().getLabel());
+			logger.error("NODE {}: Unknown node state {} encountered.", this.node.getNodeId(), this.node.getNodeStage()
+					.getLabel());
 		}
 	}
 
@@ -324,13 +381,12 @@ public class ZWaveNodeStageAdvancer {
 	 */
 	public boolean restoreFromConfig() {
 		ZWaveNode restoredNode = nodeSerializer.DeserializeNode(this.node.getNodeId());
-		
+
 		if (restoredNode == null)
 			return false;
 
 		// Sanity check the data from the file
-		if (restoredNode.getVersion() != this.node.getVersion()
-				|| restoredNode.getManufacturer() == Integer.MAX_VALUE
+		if (restoredNode.getVersion() != this.node.getVersion() || restoredNode.getManufacturer() == Integer.MAX_VALUE
 				|| restoredNode.isListening() != this.node.isListening()
 				|| restoredNode.isFrequentlyListening() != this.node.isFrequentlyListening()
 				|| restoredNode.isRouting() != this.node.isRouting()
@@ -339,19 +395,19 @@ public class ZWaveNodeStageAdvancer {
 					this.node.getNodeId());
 			return false;
 		}
-		
+
 		this.node.setDeviceId(restoredNode.getDeviceId());
 		this.node.setDeviceType(restoredNode.getDeviceType());
 		this.node.setManufacturer(restoredNode.getManufacturer());
-		
+
 		this.node.setHealState(restoredNode.getHealState());
 
 		for (ZWaveCommandClass commandClass : restoredNode.getCommandClasses()) {
 			commandClass.setController(this.controller);
 			commandClass.setNode(this.node);
-			
+
 			if (commandClass instanceof ZWaveMultiInstanceCommandClass) {
-				for (ZWaveEndpoint endPoint : ((ZWaveMultiInstanceCommandClass)commandClass).getEndpoints()) {
+				for (ZWaveEndpoint endPoint : ((ZWaveMultiInstanceCommandClass) commandClass).getEndpoints()) {
 					for (ZWaveCommandClass endpointCommandClass : endPoint.getCommandClasses()) {
 						endpointCommandClass.setController(this.controller);
 						endpointCommandClass.setNode(this.node);
@@ -359,7 +415,7 @@ public class ZWaveNodeStageAdvancer {
 					}
 				}
 			}
-			
+
 			this.node.addCommandClass(commandClass);
 		}
 
