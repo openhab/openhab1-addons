@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
@@ -86,7 +85,6 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 
-		node.advanceNodeStage();
 		return false;
 	}
 }

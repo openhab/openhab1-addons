@@ -57,7 +57,7 @@ public class ZWaveNode {
 	private int homeId;
 	@XStreamOmitField
 	private int nodeId;
-	private int version;
+	private int version = Integer.MAX_VALUE;
 	
 	private String name;
 	private String location;
@@ -172,12 +172,28 @@ public class ZWaveNode {
 		this.healState = healState;
 		this.lastUpdated = Calendar.getInstance().getTime();
 	}
-	
+
+	/**
+	 * Marks the node as DEAD.
+	 * This occurs if the binding thinks the device is not responding
+	 */
+	public void setDead() {
+		this.nodeStageAdvancer.setCurrentStage(NodeStage.DEAD);
+	}
+
+	/**
+	 * Marks the node as FAILED.
+	 * This occurs only if the controller puts it on its internal failed devices list
+	 */
+	public void setFailed() {
+		this.nodeStageAdvancer.setCurrentStage(NodeStage.FAILED);
+	}
+
 	/**
 	 * Gets whether the node is dead.
 	 * @return
 	 */
-	public boolean isDead(){
+	public boolean isDead() {
 		if(this.nodeStageAdvancer.getCurrentStage() == NodeStage.DEAD)
 			return true;
 		else
@@ -188,7 +204,7 @@ public class ZWaveNode {
 	 * Gets whether the node is failed by controller.
 	 * @return
 	 */
-	public boolean isFailed(){
+	public boolean isFailed() {
 		if(this.nodeStageAdvancer.getCurrentStage() == NodeStage.FAILED)
 			return true;
 		else
@@ -198,14 +214,14 @@ public class ZWaveNode {
 	/**
 	 * Sets the node to be 'undead'.
 	 */
-	public void setAlive(){
+	public void setAlive() {
 		if(this.nodeStageAdvancer.isInitializationComplete()) {
 			logger.debug("NODE {}: Node is now ALIVE", this.nodeId);
 			this.nodeStageAdvancer.setCurrentStage(NodeStage.DONE);
 		}
 		else {
-			this.nodeStageAdvancer.setCurrentStage(NodeStage.DYNAMIC);
-			this.nodeStageAdvancer.advanceNodeStage();
+			this.nodeStageAdvancer.setCurrentStage(NodeStage.DYNAMIC_VALUES);
+			this.nodeStageAdvancer.advanceNodeStage(null);
 		}
 
 		// Reset the resend counter and remember when we last updated
@@ -339,10 +355,10 @@ public class ZWaveNode {
 	 * Sets the node stage.
 	 * @param nodeStage the nodeStage to set
 	 */
-	public void setNodeStage(NodeStage nodeStage) {
-		this.nodeStageAdvancer.setCurrentStage(nodeStage);
-		this.lastUpdated = Calendar.getInstance().getTime();
-	}
+//	public void setNodeStage(NodeStage nodeStage) {
+//		this.nodeStageAdvancer.setCurrentStage(nodeStage);
+//		this.lastUpdated = Calendar.getInstance().getTime();
+//	}
 
 	/**
 	 * Gets the node version
@@ -520,23 +536,30 @@ public class ZWaveNode {
 		
 		return endpointId == 1 ? result : null;
 	}
-	
+
+	/**
+	 * Initialise the node
+	 */
+	public void initialiseNode() {
+		this.nodeStageAdvancer.startInitialisation();		
+	}
+
 	/**
 	 * Advances the initialization stage for this node.
 	 */
-	public void advanceNodeStage() {
+//	public void advanceNodeStage() {
 		// call the advanceNodeStage method on the advancer.
-		this.nodeStageAdvancer.advanceNodeStage();
-	}
+//		this.nodeStageAdvancer.advanceNodeStage();
+//	}
 	
 	/**
 	 * Advances the initialization stage for this node.
 	 * This method processes the init queue once we've sent a frame.
 	 */
-	public void advanceNodeStage(SerialMessage msg) {
+//	public void advanceNodeStage(SerialMessage msg) {
 		// call the advanceNodeStage method on the advancer.
-		this.nodeStageAdvancer.handleNodeQueue(msg);
-	}
+//		this.nodeStageAdvancer.handleNodeQueue(msg);
+//	}
 	
 	/**
 	 * Restores a node from an XML file using the @ ZWaveNodeSerializer} class.

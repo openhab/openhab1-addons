@@ -107,7 +107,7 @@ public class ZWaveMultiLevelSwitchCommandClass extends ZWaveCommandClass impleme
 				logger.trace("Process Switch Multi Level Report");
 				
 				int value = serialMessage.getMessagePayloadByte(offset + 1); 
-				logger.debug("NODE {}: Switch Multi Level report, value = 0x%02X", this.getNode().getNodeId(), value);
+				logger.debug("NODE {}: Switch Multi Level report, value = {}", this.getNode().getNodeId(), value);
 				ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
 				this.getController().notifyEventListeners(zEvent);
 

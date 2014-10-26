@@ -245,10 +245,10 @@ public class ZWaveController {
 			case SerialApiGetInitData:
 				this.isConnected = true;
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
-					// ****************** REMOVE BEFORE FLIGHT!
+					// TODO: ****************** REMOVE BEFORE FLIGHT!
 					if(nodeId != 5)
 						continue;
-					
+					// TODO: ****************** REMOVE BEFORE FLIGHT!
 					
 					
 					
@@ -263,7 +263,7 @@ public class ZWaveController {
 						node.setManufacturer(this.getManufactureId());
 					}
 					this.zwaveNodes.put(nodeId, node);
-					node.advanceNodeStage();
+					node.initialiseNode();
 				}
 				break;
 			case GetSucNodeId:
@@ -438,7 +438,7 @@ public class ZWaveController {
 				ZWaveNode node = new ZWaveNode(this.homeId, incEvent.getNodeId(), this);
 
 				this.zwaveNodes.put(incEvent.getNodeId(), node);
-				node.advanceNodeStage();
+				node.initialiseNode();
 				break;
 			case ExcludeDone:
 				logger.debug("NODE {}: Excluding node.", incEvent.getNodeId());
@@ -466,8 +466,8 @@ public class ZWaveController {
 						break;
 					}
 					if (networkEvent.getState() == State.Success) {
-						logger.debug("NODE {}: Marking node as failed because its on the controllers failed node list.", networkEvent.getNodeId());
-						getNode(networkEvent.getNodeId()).setNodeStage(NodeStage.FAILED);
+						logger.warn("NODE {}: Marking node as FAILED because its on the controllers failed node list.", networkEvent.getNodeId());
+						getNode(networkEvent.getNodeId()).setFailed();
 						
 						ZWaveEvent zEvent = new ZWaveNodeStatusEvent(networkEvent.getNodeId(), ZWaveNodeStatusEvent.State.Failed);
 						this.notifyEventListeners(zEvent);
@@ -503,16 +503,14 @@ public class ZWaveController {
 	/**
 	 * Send Identify Node message to the controller.
 	 * @param nodeId the nodeId of the node to identify
-	 * @throws SerialInterfaceException when timing out or getting an invalid response.
 	 */
-	public void identifyNode(int nodeId) throws SerialInterfaceException {
+	public void identifyNode(int nodeId) {
 		this.enqueue(new IdentifyNodeMessageClass().doRequest(nodeId));
 	}
 	
 	/**
 	 * Send Request Node info message to the controller.
 	 * @param nodeId the nodeId of the node to identify
-	 * @throws SerialInterfaceException when timing out or getting an invalid response.
 	 */
 	public void requestNodeInfo(int nodeId) {
 		this.enqueue(new RequestNodeInfoMessageClass().doRequest(nodeId));
@@ -553,8 +551,8 @@ public class ZWaveController {
 			if(Calendar.getInstance().getTimeInMillis() < (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_TIMEOUT))
 				continue;
 			
-			logger.warn(String.format("NODE %d: May be dead, setting stage to DEAD.", entry.getKey()));
-			entry.getValue().setNodeStage(NodeStage.DEAD);
+			logger.warn(String.format("NODE %d: May be dead, marking node DEAD.", entry.getKey()));
+			entry.getValue().setDead();
 
 			completeCount++;
 		}

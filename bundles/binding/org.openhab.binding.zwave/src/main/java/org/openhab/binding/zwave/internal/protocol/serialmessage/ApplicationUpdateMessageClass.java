@@ -33,7 +33,7 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 		logger.trace("Handle Message Application Update Request");
 		int nodeId = incomingMessage.getMessagePayloadByte(1);
 		
-		logger.trace("NODE {}: Application Update Request from Node ", nodeId);
+		logger.trace("NODE {}: Application Update Request", nodeId);
 		UpdateState updateState = UpdateState.getUpdateState(incomingMessage.getMessagePayloadByte(0));
 		
 		switch (updateState) {
@@ -58,14 +58,15 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			else {
 				for (int i = 6; i < length + 3; i++) {
 					int data = incomingMessage.getMessagePayloadByte(i);
-					if(data == 0xef)  {
+					if(data == 0xef) {
 						// TODO: Implement control command classes
 						break;
 					}
 					logger.trace(String.format("NODE %d: Command class 0x%02X is supported.", nodeId, data));
 					ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, node, zController);
-					if (commandClass != null)
+					if (commandClass != null) {
 						node.addCommandClass(commandClass);
+					}
 				}
 			}
 			
@@ -90,8 +91,8 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			if (--requestInfoMessage.attempts >= 0) {
 				logger.error("NODE {}: Got Node Info Request Failed while sending this serial message. Requeueing", nodeId);
 				zController.enqueue(requestInfoMessage);
-			} else
-			{
+			}
+			else {
 				logger.warn("NODE {}: Node Info Request Failed 3x. Discarding message: {}", nodeId, lastSentMessage.toString());
 			}
 			transactionComplete = true;

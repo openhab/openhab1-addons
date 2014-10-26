@@ -66,9 +66,6 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			logger.warn("NODE {}: Already processed another send data request for this callback Id, ignoring.", node.getNodeId());
 			return false;
 		}
-		
-		// Let the stage advancer know in case this was an initialisation message
-		node.advanceNodeStage(lastSentMessage);
 
 		switch (status) {
 		case COMPLETE_OK:
