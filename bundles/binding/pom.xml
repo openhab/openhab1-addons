@@ -122,7 +122,6 @@
     <module>org.openhab.binding.alarmdecoder</module>
     <module>org.openhab.binding.davis</module>
     <module>org.openhab.binding.xpl</module>
-    <module>org.openhab.binding.samsungac2</module>
   </modules>
 
 </project>
