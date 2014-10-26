@@ -9,6 +9,7 @@
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,8 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * @since 1.4.0
  */
 @XStreamAlias("associationCommandClass")
-public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
+public class ZWaveAssociationCommandClass extends ZWaveCommandClass
+	implements ZWaveCommandClassInitialization, ZWaveCommandClassDynamicState{
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveAssociationCommandClass.class);
 
@@ -57,8 +59,13 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	@XStreamOmitField
 	private AssociationGroup pendingAssociation = null;
 	
-	//this will be set when we query a node for the number of groups it supports
+	// This will be set when we query a node for the number of groups it supports
 	private int maxGroups = 0;
+
+	@XStreamOmitField
+	private boolean initialiseDone = false;
+	@XStreamOmitField
+	private boolean dynamicDone = false;
 
 	/**
 	 * Creates a new instance of the ZWaveAssociationCommandClass class.
@@ -218,13 +225,18 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 */
 	protected void processGroupingsReport(SerialMessage serialMessage, int offset) {
 		maxGroups = serialMessage.getMessagePayloadByte(offset + 1);
-		logger.debug("NODE {} processGroupingsReport number of groups {}", getNode(), maxGroups);
-		//Start the process to query these nodes
-		updateAssociationsNode = 1;
-		configAssociations.clear();
-		SerialMessage sm = getAssociationMessage(updateAssociationsNode);
-		if(sm != null)
-			this.getController().sendData(sm);
+		logger.debug("NODE {}: processGroupingsReport number of groups {}", getNode(), maxGroups);
+
+		initialiseDone = true;
+
+		// Start the process to query these nodes
+		if(updateAssociationsNode == 1) {
+			configAssociations.clear();
+			SerialMessage sm = getAssociationMessage(updateAssociationsNode);
+			if(sm != null) {
+				this.getController().sendData(sm);
+			}
+		}
 	}
 
 	/**
@@ -288,7 +300,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 		result.setMessagePayload(newPayload);
 		return result;
 	}
-	
+
 	/**
 	 * Gets a SerialMessage with the ASSOCIATIONCMD_GROUPINGSGET command
 	 * 
@@ -316,8 +328,10 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 */
 	public void getAllAssociations() {
 		SerialMessage serialMessage = getGroupingsMessage();
-		if(serialMessage != null)
+		if(serialMessage != null) {
+			updateAssociationsNode = 1;
 			this.getController().sendData(serialMessage);
+		}
 	}
 	
 	/**
@@ -384,5 +398,33 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 		public void addMember(int member) {
 			members.add(member);
 		}
+	}
+
+	@Override
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
+		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
+		// If we're already initialized, then don't do it again unless we're refreshing
+		if(refresh == true || initialiseDone == false) {
+			for(int group = 1; group <= maxGroups; group++) {
+				result.add(this.getAssociationMessage(group));
+			}
+		}
+
+		// Setting dynamicDone here will stop this stage being repeated
+		// However doesn't confirm that all groups are received!
+		dynamicDone = true;
+
+		return result;
+	}
+
+	@Override
+	public Collection<SerialMessage> initialize(boolean refresh) {
+		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
+		// If we're already initialized, then don't do it again unless we're refreshing
+		if(refresh == true || initialiseDone == false) {
+			result.add(this.getGroupingsMessage());
+		}
+
+		return result;
 	}
 }
