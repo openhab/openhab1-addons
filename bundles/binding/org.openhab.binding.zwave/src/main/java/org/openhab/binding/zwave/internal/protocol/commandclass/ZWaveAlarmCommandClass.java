@@ -130,7 +130,7 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 		for (Map.Entry<AlarmType, Alarm> entry : this.alarms.entrySet()) {
 			return getMessage(entry.getValue().getAlarmType());
 		}
-		
+
 		// in case there are no supported alarms, get them.
 		
 		return getMessage(AlarmType.GENERAL);

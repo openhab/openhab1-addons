@@ -78,10 +78,10 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 		switch (command) {
 			case VERSION_GET:
 			case VERSION_COMMAND_CLASS_GET:
-				logger.warn(String.format("Command 0x%02X not implemented.", command));
+				logger.warn("Command {} not implemented.", command);
 				return;
 			case VERSION_REPORT:
-				logger.debug("Process Version Report");
+				logger.debug("NODE {}: Process Version Report", this.getNode().getNodeId());
 				libraryType = LibraryType.getLibraryType(serialMessage.getMessagePayloadByte(offset + 1));
 				protocolVersion = (double)serialMessage.getMessagePayloadByte(offset + 2) +
 					    ((double)serialMessage.getMessagePayloadByte(offset + 3) / 10);
@@ -93,34 +93,34 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 				logger.debug(String.format("NODE %d: Application Version = %.1f", this.getNode().getNodeId(), applicationVersion));
 				break;
 			case VERSION_COMMAND_CLASS_REPORT:
-				logger.debug("Process Version Command Class Report");
+				logger.debug("NODE {}: Process Version Command Class Report", this.getNode().getNodeId());
 				int commandClassCode = serialMessage.getMessagePayloadByte(offset + 1);
 				int commandClassVersion = serialMessage.getMessagePayloadByte(offset + 2);
 				
 				CommandClass commandClass = CommandClass.getCommandClass(commandClassCode);
 				if (commandClass == null) {
-					logger.error(String.format("Unsupported command class 0x%02x", commandClassCode));
+					logger.error(String.format("NODE %d: Unsupported command class 0x%02x", this.getNode().getNodeId(), commandClassCode));
 					return;
 				}
 
-				logger.debug(String.format("NODE %d: Requested Command Class = %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel() , commandClassCode));
-				logger.debug(String.format("NODE %d: Version = %d", this.getNode().getNodeId(), commandClassVersion));
+				logger.debug("NODE {}: Requested Command Class = {}, Version = {}", this.getNode().getNodeId(), commandClass.getLabel(),
+						commandClassCode, commandClassVersion);
 
 				// The version is set on the command class for this node. By updating the version, extra functionality is unlocked in the command class.
 				// The messages are backwards compatible, so it's not a problem that there is a slight delay when the command class version is queried on the
 				// node.
 				ZWaveCommandClass zwaveCommandClass = this.getNode().getCommandClass(commandClass);
 				if (zwaveCommandClass == null) {
-					logger.error(String.format("Unsupported command class %s (0x%02x)", commandClass.getLabel(), commandClassCode));
+					logger.error(String.format("NODE %d: Unsupported command class %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode));
 					return;
 				}
 				
 				if (commandClassVersion > zwaveCommandClass.getMaxVersion()) {
 					zwaveCommandClass.setVersion( zwaveCommandClass.getMaxVersion() );
-					logger.debug(String.format("NODE %d: Version = %d, version set to maximum supported by the binding. Enabling extra functionality.", this.getNode().getNodeId(), zwaveCommandClass.getMaxVersion()));
+					logger.debug("NODE {}: Version = {}, version set to maximum supported by the binding. Enabling extra functionality.", this.getNode().getNodeId(), zwaveCommandClass.getMaxVersion());
 				} else {
 					zwaveCommandClass.setVersion( commandClassVersion );
-					logger.debug(String.format("NODE %d: Version = %d, version set. Enabling extra functionality.", this.getNode().getNodeId(), commandClassVersion));
+					logger.debug("NODE {}: Version = {}, version set. Enabling extra functionality.", this.getNode().getNodeId(), commandClassVersion);
 				}
 				
 				for (ZWaveCommandClass zCC : this.getNode().getCommandClasses()) {
@@ -138,11 +138,11 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	}
 	
 	/**
-	 * Gets a SerialMessage with the VERSION GET command 
+	 * Gets a SerialMessage with the VERSION_GET command 
 	 * @return the serial message
 	 */
 	public SerialMessage getVersionMessage() {
-		logger.debug("NODE {}: Creating new message for application command VERSION_GET", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for command VERSION_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
