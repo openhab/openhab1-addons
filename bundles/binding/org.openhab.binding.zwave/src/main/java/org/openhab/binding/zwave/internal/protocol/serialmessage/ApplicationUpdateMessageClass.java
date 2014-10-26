@@ -30,10 +30,9 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 
 	@Override
 	public  boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		logger.trace("Handle Message Application Update Request");
 		int nodeId = incomingMessage.getMessagePayloadByte(1);
-		
 		logger.trace("NODE {}: Application Update Request", nodeId);
+
 		UpdateState updateState = UpdateState.getUpdateState(incomingMessage.getMessagePayloadByte(0));
 		
 		switch (updateState) {
@@ -79,12 +78,12 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			}
 			break;
 		case NODE_INFO_REQ_FAILED:
-			logger.debug("NODE {}: Application update request, Node Info Request Failed, re-request node info.", nodeId);
-			
+			logger.debug("NODE {}: Application update request, Node Info Request Failed.", nodeId);
+
 			SerialMessage requestInfoMessage = lastSentMessage;
-			
+
 			if (requestInfoMessage.getMessageClass() != SerialMessageClass.RequestNodeInfo) {
-				logger.warn("NODE {}: Got application update request without node info request, ignoring.", nodeId);
+				logger.warn("NODE {}: Got application update request without node info request, ignoring. Last {}.", nodeId, requestInfoMessage.getMessageClass());
 				return false;
 			}
 				

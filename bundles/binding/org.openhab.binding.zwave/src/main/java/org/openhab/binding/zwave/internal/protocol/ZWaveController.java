@@ -245,7 +245,7 @@ public class ZWaveController {
 			case SerialApiGetInitData:
 				this.isConnected = true;
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
-					if(nodeId != 10)
+					if(nodeId != 16)
 						continue;
 					
 					
@@ -593,49 +593,50 @@ public class ZWaveController {
 	 */
 	public void checkForDeadOrSleepingNodes(){
 		int completeCount = 0;
-		
+
 		if (zwaveNodes.isEmpty())
 			return;
-		
+
 		// There are still nodes waiting to get a ping.
 		// So skip the dead node checking.
 		for (SerialMessage serialMessage : sendQueue) {
-			if (serialMessage.getPriority() == SerialMessagePriority.Low)
+			if (serialMessage.getPriority() == SerialMessagePriority.Low) {
 				return;
+			}
 		}
-		
+
 		logger.trace("Checking for Dead or Sleeping Nodes.");
 		for (Map.Entry<Integer, ZWaveNode> entry : zwaveNodes.entrySet()){
-			if (entry.getValue().getNodeStage() == NodeStage.EMPTYNODE)
+			if (entry.getValue().getNodeStage() == NodeStage.EMPTYNODE) {
 				continue;
-			
-			logger.debug(String.format("NODE %d: Has been in Stage %s since %s", entry.getKey(), entry.getValue().getNodeStage().getLabel(), entry.getValue().getQueryStageTimeStamp().toString()));
-			
+			}
+
+			logger.debug("NODE {}: Has been in Stage {} since {}", entry.getKey(), entry.getValue().getNodeStage().getLabel(), entry.getValue().getQueryStageTimeStamp().toString());
+
 			if(entry.getValue().getNodeStage() == NodeStage.DONE || entry.getValue().getNodeStage() == NodeStage.DEAD
 					|| (!entry.getValue().isListening() && !entry.getValue().isFrequentlyListening())) {
 				completeCount++;
 				continue;
 			}
-			
-			logger.trace("NODE {}: Checking if {} miliseconds have passed in current stage.", entry.getKey(), QUERY_STAGE_TIMEOUT);
-			
-			if(Calendar.getInstance().getTimeInMillis() < (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_TIMEOUT))
+
+			if(Calendar.getInstance().getTimeInMillis() < (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_TIMEOUT)) {
 				continue;
-			
-			logger.warn(String.format("NODE %d: May be dead, marking node DEAD.", entry.getKey()));
+			}
+
+			logger.warn("NODE {}: May be dead, marking node DEAD.", entry.getKey());
 			entry.getValue().setDead();
 
 			completeCount++;
 		}
-		
+
 		// If all nodes are completed, then we say the binding is ready for business
 		if(this.zwaveNodes.size() == completeCount && initializationComplete == false) {
 			// We only want this event once!
 			initializationComplete = true;
-			
+
 			ZWaveEvent zEvent = new ZWaveInitializationCompletedEvent(this.ownNodeId);
 			this.notifyEventListeners(zEvent);
-			
+
 			// If there are DEAD nodes, send a Node Status event
 			// We do that here to avoid messing with the binding initialisation
 			for(ZWaveNode node : this.getNodes()) {
@@ -648,7 +649,7 @@ public class ZWaveController {
 			}
 		}
 	}
-	
+
 	/**
 	 * Polls a node for any dynamic information
 	 * @param node
