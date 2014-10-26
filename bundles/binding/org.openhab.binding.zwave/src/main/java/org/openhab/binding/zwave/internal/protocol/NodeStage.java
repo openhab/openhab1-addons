@@ -24,20 +24,21 @@ public enum NodeStage {
 	WAKEUP(3, "Wake Up"),
 	DETAILS(4, "Node Information"),
 	MANUFACTURER(5, "Manufacture Name and Product Identification"),
-	VERSION(6, "Node Version"),
-	ENDPOINTS(7, "Command Class Endpoints"),
-	STATIC_VALUES(8, "Static Information"),
+	VERSION(6, "Command Class Versions"),
+	APP_VERSION(7, "Application Version"),
+	ENDPOINTS(8, "Command Class Endpoints"),
+	STATIC_VALUES(9, "Static Information"),
 	// States below are not restored from the configuration files
-	SESSION_START(9, "Restore Marker"),
-	ASSOCIATIONS(10, "Association Information"),
-	NEIGHBORS(11, "Node Neighbor Information"),
-	SESSION(12, "Infrequently Changed Information"),
-	DYNAMIC_VALUES(13, "Frequently Changed Information"),
-	CONFIG(14, "Parameter Information"),
-	DONE(15, "Node Complete"),
-	INIT(16, "Node Not Started"),
-	DEAD(17, "Node Dead"),
-	FAILED(18,"Node Failed");
+	SESSION_START(10, "Restore Marker"),
+	ASSOCIATIONS(11, "Association Information"),
+	NEIGHBORS(12, "Node Neighbor Information"),
+	SESSION(13, "Infrequently Changed Information"),
+	DYNAMIC_VALUES(14, "Frequently Changed Information"),
+	CONFIG(15, "Parameter Information"),
+	DONE(16, "Node Complete"),
+	INIT(17, "Node Not Started"),
+	DEAD(18, "Node Dead"),
+	FAILED(19,"Node Failed");
 	
 	private int stage;
 	private String label;
