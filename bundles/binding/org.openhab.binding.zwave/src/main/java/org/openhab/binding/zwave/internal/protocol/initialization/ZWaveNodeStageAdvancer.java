@@ -523,53 +523,10 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	}
 
 	/**
-	 * Restores a node from an XML file using the @ ZWaveNodeSerializer} class.
-	 * 
-	 * @return true if succeeded, false otherwise.
+	 * Sets the flag to indicate that this node was restored from file
 	 */
-	public boolean restoreFromConfig() {
-		ZWaveNode restoredNode = nodeSerializer.DeserializeNode(this.node.getNodeId());
-
-		if (restoredNode == null)
-			return false;
-
-		// Sanity check the data from the file
-		if (restoredNode.getVersion() != this.node.getVersion() || restoredNode.getManufacturer() == Integer.MAX_VALUE
-				|| restoredNode.isListening() != this.node.isListening()
-				|| restoredNode.isFrequentlyListening() != this.node.isFrequentlyListening()
-				|| restoredNode.isRouting() != this.node.isRouting()
-				|| !restoredNode.getDeviceClass().equals(this.node.getDeviceClass())) {
-			logger.warn("NODE {}: Config file differs from controller information, ignoring config.",
-					this.node.getNodeId());
-			return false;
-		}
-
-		this.node.setDeviceId(restoredNode.getDeviceId());
-		this.node.setDeviceType(restoredNode.getDeviceType());
-		this.node.setManufacturer(restoredNode.getManufacturer());
-
-		this.node.setHealState(restoredNode.getHealState());
-
-		for (ZWaveCommandClass commandClass : restoredNode.getCommandClasses()) {
-			commandClass.setController(this.controller);
-			commandClass.setNode(this.node);
-
-			if (commandClass instanceof ZWaveMultiInstanceCommandClass) {
-				for (ZWaveEndpoint endPoint : ((ZWaveMultiInstanceCommandClass) commandClass).getEndpoints()) {
-					for (ZWaveCommandClass endpointCommandClass : endPoint.getCommandClasses()) {
-						endpointCommandClass.setController(this.controller);
-						endpointCommandClass.setNode(this.node);
-						endpointCommandClass.setEndpoint(endPoint);
-					}
-				}
-			}
-
-			this.node.addCommandClass(commandClass);
-		}
-
-		logger.debug("NODE {}: Restored from config.", this.node.getNodeId());
+	public void setRestoredFromConfigfile() {
 		restoredFromConfigfile = true;
-		return true;
 	}
 
 	@Override

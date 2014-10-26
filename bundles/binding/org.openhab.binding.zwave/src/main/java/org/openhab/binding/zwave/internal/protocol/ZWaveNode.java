@@ -49,13 +49,11 @@ public class ZWaveNode {
 
 	private final ZWaveDeviceClass deviceClass;
 	@XStreamOmitField
-	private final ZWaveController controller;
+	private ZWaveController controller;
 	@XStreamOmitField
-	private final ZWaveNodeStageAdvancer nodeStageAdvancer;
+	private ZWaveNodeStageAdvancer nodeStageAdvancer;
 
-	@XStreamOmitField
 	private int homeId;
-	@XStreamOmitField
 	private int nodeId;
 	private int version = Integer.MAX_VALUE;
 	
@@ -79,6 +77,11 @@ public class ZWaveNode {
 	private Date lastUpdated;
 
 	@XStreamOmitField
+	private Date queryStageTimeStamp;
+	@XStreamOmitField
+	private volatile NodeStage nodeStage;
+
+	@XStreamOmitField
 	private int resendCount = 0;
 
 	@XStreamOmitField
@@ -96,6 +99,7 @@ public class ZWaveNode {
 	 * Constructor. Creates a new instance of the ZWaveNode class.
 	 * @param homeId the home ID to use.
 	 * @param nodeId the node ID to use.
+	 * @param controller the wave controller instance
 	 */
 	public ZWaveNode(int homeId, int nodeId, ZWaveController controller) {
 		this.homeId = homeId;
@@ -104,6 +108,21 @@ public class ZWaveNode {
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
 		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN, Generic.NOT_KNOWN, Specific.NOT_USED);
 		this.lastUpdated = Calendar.getInstance().getTime();
+	}
+
+	/**
+	 * Configures the node after it's been restored from file
+	 * @param controller the wave controller instance
+	 */
+	public void setRestoredFromConfigfile(ZWaveController controller) {
+		this.controller = controller;
+		
+		// Create the initialisation advancer and tell it we've loaded from file
+		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
+		this.nodeStageAdvancer.setRestoredFromConfigfile();
+		this.nodeStage = NodeStage.EMPTYNODE;
+		
+		this.lastUpdated = Calendar.getInstance().getTime();		
 	}
 
 	/**
@@ -566,9 +585,11 @@ public class ZWaveNode {
 	 * 
 	 * @return true if succeeded, false otherwise.
 	 */
-	public boolean restoreFromConfig() {
-		return this.nodeStageAdvancer.restoreFromConfig();
-	}
+//	public boolean restoreFromConfig() {
+//		logger.warn("Restore from Config is called!!!!!");
+//		return false;
+//		return this.nodeStageAdvancer.restoreFromConfig();
+//	}
 
 	/**
 	 * Encapsulates a serial message for sending to a 

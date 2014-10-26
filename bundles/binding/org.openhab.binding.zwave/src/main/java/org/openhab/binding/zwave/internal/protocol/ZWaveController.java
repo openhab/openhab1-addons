@@ -245,15 +245,77 @@ public class ZWaveController {
 			case SerialApiGetInitData:
 				this.isConnected = true;
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
-					// TODO: ****************** REMOVE BEFORE FLIGHT
-					if(nodeId != 10)
-						continue;
-					// TODO: ****************** REMOVE BEFORE FLIGHT!
-					
-					
-					
-					// Place nodes in the local ZWave Controller
-					ZWaveNode node = new ZWaveNode(this.homeId, nodeId, this);
+					ZWaveNode node = null;
+					try {
+						ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+						node = nodeSerializer.DeserializeNode(nodeId);
+					}
+					catch (Exception e) {
+						logger.error("NODE {}: Error deserialising XML file. {}", nodeId, e.toString());
+						node = null;
+					}
+					String name = null;
+					String location = null;
+
+					// Did the node deserialise ok?
+					if (node != null) {
+						// Remember the name and location - in case we decide the file was invalid
+						name = node.getName();
+						location = node.getLocation();
+
+						// Sanity check the data from the file
+						if (node.getManufacturer() == Integer.MAX_VALUE ||
+								node.getHomeId() != this.homeId ||
+								node.getNodeId() != nodeId) {
+							logger.warn("NODE {}: Config file data is invalid, ignoring config.", nodeId);
+							node = null;
+						}
+						else {
+							// The restore was ok, but we have some work to set up the links that aren't
+							// made as the deserialiser doesn't call the constructor
+							logger.debug("NODE {}: Restored from config.", nodeId);
+							node.setRestoredFromConfigfile(this);
+
+							// Set the controller and node references for all command classes
+							for (ZWaveCommandClass commandClass : node.getCommandClasses()) {
+								commandClass.setController(this);
+								commandClass.setNode(node);
+
+								// Handle event handlers
+								if (commandClass instanceof ZWaveEventListener) {
+									this.addEventListener((ZWaveEventListener)commandClass);
+								}
+								
+								// If this is the multi-instance class, add all command classes for the endpoints
+								if (commandClass instanceof ZWaveMultiInstanceCommandClass) {
+									for (ZWaveEndpoint endPoint : ((ZWaveMultiInstanceCommandClass) commandClass)
+											.getEndpoints()) {
+										for (ZWaveCommandClass endpointCommandClass : endPoint.getCommandClasses()) {
+											endpointCommandClass.setController(this);
+											endpointCommandClass.setNode(node);
+											endpointCommandClass.setEndpoint(endPoint);
+
+											// Handle event handlers
+											if (endpointCommandClass instanceof ZWaveEventListener) {
+												this.addEventListener((ZWaveEventListener)endpointCommandClass);
+											}
+										}
+									}
+								}	
+							}							
+						}
+					}
+
+					// Create a new node if it wasn't deserialised ok
+					if(node == null) {
+						node = new ZWaveNode(this.homeId, nodeId, this);
+						
+						// Try to maintain the name and location (user supplied data)
+						// even if the XML file was considered corrupt and we reload data from the device.
+						node.setName(name);
+						node.setLocation(location);
+					}
+
 					if(nodeId == this.ownNodeId) {
 						// This is the controller node.
 						// We already know the device type, id, manufacturer so set it here
@@ -262,6 +324,8 @@ public class ZWaveController {
 						node.setDeviceType(this.getDeviceType());
 						node.setManufacturer(this.getManufactureId());
 					}
+
+					// Place nodes in the local ZWave Controller
 					this.zwaveNodes.put(nodeId, node);
 					node.initialiseNode();
 				}

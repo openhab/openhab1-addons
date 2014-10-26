@@ -67,42 +67,44 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 			logger.error(String.format("NODE %d: Basic device class 0x%02x not found", nodeId, incomingMessage.getMessagePayloadByte(3)));
 			return false;
 		}
-		logger.debug(String.format("NODE %d: Basic = %s 0x%02x", nodeId, basic.getLabel(), basic.getKey()));
+		logger.debug("NODE {}: Basic = {}", nodeId, basic.getLabel());
 
 		Generic generic = Generic.getGeneric(incomingMessage.getMessagePayloadByte(4));
 		if (generic == null) {
 			logger.error(String.format("NODE %d: Generic device class 0x%02x not found", nodeId, incomingMessage.getMessagePayloadByte(4)));
 			return false;
 		}
-		logger.debug(String.format("NODE %d: Generic = %s 0x%02x", nodeId, generic.getLabel(), generic.getKey()));
+		logger.debug("NODE {}: Generic = {}", nodeId, generic.getLabel());
 
 		Specific specific = Specific.getSpecific(generic, incomingMessage.getMessagePayloadByte(5));
 		if (specific == null) {
 			logger.error(String.format("NODE %d: Specific device class 0x%02x not found", nodeId, incomingMessage.getMessagePayloadByte(5)));
 			return false;
 		}
-		logger.debug(String.format("NODE %d: Specific = %s 0x%02x", nodeId, specific.getLabel(), specific.getKey()));
+		logger.debug("NODE {}: Specific = {}", nodeId, specific.getLabel());
 		
 		ZWaveDeviceClass deviceClass = node.getDeviceClass();
 		deviceClass.setBasicDeviceClass(basic);
 		deviceClass.setGenericDeviceClass(generic);
 		deviceClass.setSpecificDeviceClass(specific);
 		
-		// if restored the node from configuration information
-		// then we don't have to add these command classes anymore.
-		if (!node.restoreFromConfig()) {
-			// Add mandatory command classes as specified by it's generic device class.
-			for (CommandClass commandClass : generic.getMandatoryCommandClasses()) {
-				ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
-				if (zwaveCommandClass != null)
-					zController.getNode(nodeId).addCommandClass(zwaveCommandClass);
+		// Add all the command classes.
+		// If restored the node from configuration file then 
+		// the classes will already exist and this will be ignored 
+
+		// Add mandatory command classes as specified by it's generic device class.
+		for (CommandClass commandClass : generic.getMandatoryCommandClasses()) {
+			ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
+			if (zwaveCommandClass != null) {
+				zController.getNode(nodeId).addCommandClass(zwaveCommandClass);
 			}
-	
-			// Add mandatory command classes as specified by it's specific device class.
-			for (CommandClass commandClass : specific.getMandatoryCommandClasses()) {
-				ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
-				if (zwaveCommandClass != null)
-					node.addCommandClass(zwaveCommandClass);
+		}
+
+		// Add mandatory command classes as specified by it's specific device class.
+		for (CommandClass commandClass : specific.getMandatoryCommandClasses()) {
+			ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
+			if (zwaveCommandClass != null) {
+				node.addCommandClass(zwaveCommandClass);
 			}
 		}
 
