@@ -60,7 +60,7 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			return false;
 		}
 
-		logger.debug("NODE {}: SendData Request. CallBack ID = {}, Status = %s ({})", node.getNodeId(), callbackId, status.getLabel(), status.getKey());
+		logger.debug("NODE {}: SendData Request. CallBack ID = {}, Status = {} ({})", node.getNodeId(), callbackId, status.getLabel(), status.getKey());
 
 		if (originalMessage == null || originalMessage.getCallbackId() != callbackId) {
 			logger.warn("NODE {}: Already processed another send data request for this callback Id, ignoring.", node.getNodeId());

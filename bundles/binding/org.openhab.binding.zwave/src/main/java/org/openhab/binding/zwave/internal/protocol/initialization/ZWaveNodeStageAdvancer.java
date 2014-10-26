@@ -30,7 +30,6 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveManufacture
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNoOperationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.IdentifyNodeMessageClass;
@@ -334,7 +333,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				if (multiInstance != null) {
 					logger.debug("NODE {}: ENDPOINTS - MultiInstance is supported", this.node.getNodeId());
 					addCollectionToQueue(multiInstance.initEndpoints(stageAdvanced));
-					logger.debug("NODE {}: ENDPOINTS - queued {} frames", this.msgQueue.size());
+					logger.debug("NODE {}: ENDPOINTS - queued {} frames", this.node.getNodeId(), this.msgQueue.size());
 				}
 				break;
 
@@ -374,7 +373,10 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 						}
 					}
 				}
-				logger.debug("NODE {}: STATIC_VALUES - queued {} frames", this.msgQueue.size());
+				logger.debug("NODE {}: STATIC_VALUES - queued {} frames", this.node.getNodeId(), this.msgQueue.size());
+				break;
+				
+			case ASSOCIATIONS:
 				break;
 
 			case DYNAMIC_VALUES:
@@ -413,7 +415,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 						}
 					}
 				}
-				logger.debug("NODE {}: DYNAMIC_VALUES - queued {} frames", this.msgQueue.size());
+				logger.debug("NODE {}: DYNAMIC_VALUES - queued {} frames", this.node.getNodeId(), this.msgQueue.size());
 				break;
 
 			case DONE:
@@ -502,7 +504,6 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	public Date getQueryStageTimeStamp() {
 		return queryStageTimeStamp;
 	}
-
 
 	/**
 	 * Returns whether the initialization process has completed.
