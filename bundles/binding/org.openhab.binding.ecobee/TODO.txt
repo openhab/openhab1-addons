@@ -1,0 +1,21 @@
+Unimplemented classes:
+
+DemandManagement
+DemandResponse
+HierarchyPrivilege
+HierarchySet
+HierarchyUser
+MeterReport
+MeterReportData
+RuntimeReport
+RuntimeSensorMetadata
+RuntimeSensorReport
+
+
+ecobee=276075659054/modelNumber
+ecobee=276075659054/name
+ecobee=276075659054/settings/hvacMode
+ecobee=276075659054/runtime/actualTemperature
+ecobee=276075659054/runtime/actualHumidity
+ecobee=276075659054/runtime/desiredHeat
+ecobee=276075659054/runtime/desiredCool
