@@ -245,8 +245,8 @@ public class ZWaveController {
 			case SerialApiGetInitData:
 				this.isConnected = true;
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
-					// TODO: ****************** REMOVE BEFORE FLIGHT!
-					if(nodeId != 5)
+					// TODO: ****************** REMOVE BEFORE FLIGHT
+					if(nodeId != 10)
 						continue;
 					// TODO: ****************** REMOVE BEFORE FLIGHT!
 					

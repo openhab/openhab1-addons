@@ -421,7 +421,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				logger.debug("NODE {}: Node advancer - initialisation complete!", this.node.getNodeId());
 			case DEAD:
 			case FAILED:
-//				nodeSerializer.SerializeNode(this.node);
+				nodeSerializer.SerializeNode(this.node);
 				
 				// We remove the event listener to reduce loading now that we're done
 				controller.removeEventListener(this);
@@ -582,8 +582,6 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		// Process transaction complete events
 		if (event instanceof ZWaveTransactionCompletedEvent) {
 			SerialMessage serialMessage = ((ZWaveTransactionCompletedEvent) event).getCompletedMessage();
-			logger.debug("NODE {}: Initialisation transaction complete for {}", this.node.getNodeId(), serialMessage.getMessageClass());
-	
 			if (serialMessage.getMessageClass() == SerialMessageClass.SendData
 						&& serialMessage.getMessageType() == SerialMessageType.Request) {
 
@@ -599,11 +597,23 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				return;
 			}
 			if (serialMessage.getMessageClass() == SerialMessageClass.IdentifyNode) {
+				byte[] payload = serialMessage.getMessagePayload();
+				if (payload.length == 0 || this.node.getNodeId() != (payload[0] & 0xFF)) {
+					// This is a corrupt frame, OR, it's not addressed to us
+					return;
+				}
+
 				logger.debug("NODE {}: Initialisation transaction complete event (ApplicationUpdate)", this.node.getNodeId());
 				handleNodeQueue(serialMessage);
 				return;
 			}
 			if (serialMessage.getMessageClass() == SerialMessageClass.RequestNodeInfo) {
+				byte[] payload = serialMessage.getMessagePayload();
+				if (payload.length == 0 || this.node.getNodeId() != (payload[0] & 0xFF)) {
+					// This is a corrupt frame, OR, it's not addressed to us
+					return;
+				}
+
 				logger.debug("NODE {}: Initialisation transaction complete event (RequestNodeInfo)", this.node.getNodeId());
 				handleNodeQueue(serialMessage);
 				return;

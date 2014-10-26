@@ -163,15 +163,14 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		int instances = serialMessage.getMessagePayloadByte(offset + 1);
 
 		CommandClass commandClass = CommandClass.getCommandClass(commandClassCode);
-		
 		if (commandClass == null) {
 			logger.error(String.format("NODE %d: Unsupported command class 0x%02x", this.getNode().getNodeId(), commandClassCode));
 			return;
 		}
 		
-		logger.debug(String.format("NODE %d: Requested Command Class = %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel() , commandClassCode));
+		logger.debug("NODE {}: Requested Command Class = {}", this.getNode().getNodeId(), commandClass.getLabel());
+
 		ZWaveCommandClass zwaveCommandClass = this.getNode().getCommandClass(commandClass);
-		
 		if (zwaveCommandClass == null) {
 			logger.error(String.format("NODE %d: Unsupported command class %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode));
 			return;
@@ -183,7 +182,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		}
 
 		zwaveCommandClass.setInstances(instances);
-		logger.debug("NODE {}: Instances = {}, number of instances set.", this.getNode().getNodeId(), instances);
+		logger.debug("NODE {}: Command class {}, has {} instance(s).", this.getNode().getNodeId(), commandClass.getLabel(), instances);
 	}
 	
 	/**
@@ -291,7 +290,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		for (int endpointId = startId; endpointId <= endId; endpointId++) {
 			ZWaveEndpoint endpoint = this.endpoints.get(endpointId);
 			
-			if (endpoint == null){
+			if (endpoint == null) {
 				logger.error("NODE {}: Endpoint {} not found. Cannot set command classes.", this.getNode().getNodeId(), endpointId);
 				continue;
 			}
@@ -329,23 +328,25 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			
 			for (int i = 0; i < serialMessage.getMessagePayload().length - offset - 3; i++) {
 				int data = serialMessage.getMessagePayloadByte(offset + 3 + i);
-				if(data == 0xef )  {
+				if(data == 0xef)  {
 					// TODO: Implement control command classes
 					break;
 				}
-				logger.debug(String.format("NODE %d: Adding command class 0x%02X to the list of supported command classes.", this.getNode().getNodeId(), data));
 				ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, this.getNode(), this.getController(), endpoint);
-				
-				if (commandClass == null)
+				if (commandClass == null) {
 					continue;
-				
+				}
+
+				logger.debug("NODE {}: Adding command class {} to the list of supported command classes.",
+						this.getNode().getNodeId(), commandClass.getCommandClass().getLabel());
 				endpoint.addCommandClass(commandClass);
 				
 				ZWaveCommandClass parentClass = this.getNode().getCommandClass(commandClass.getCommandClass());
 				
 				// copy version info to endpoint classes.
-				if (parentClass != null)
+				if (parentClass != null) {
 					commandClass.setVersion(parentClass.getVersion());
+				}
 			}
 		}
 
