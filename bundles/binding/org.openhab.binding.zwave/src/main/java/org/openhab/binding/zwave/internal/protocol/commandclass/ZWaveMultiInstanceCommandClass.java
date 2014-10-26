@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Multi Instance / Multi Channel command class. The
@@ -117,7 +116,6 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpointId) {
-		logger.trace("Handle Message Multi-instance/Multi-channel Request");
 		logger.debug("NODE {}: Received Multi-instance/Multi-channel Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
@@ -164,28 +162,28 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		int commandClassCode = serialMessage.getMessagePayloadByte(offset);
 		int instances = serialMessage.getMessagePayloadByte(offset + 1);
 
-		if (instances == 0) {
-			setInstances(1);
+		CommandClass commandClass = CommandClass.getCommandClass(commandClassCode);
+		
+		if (commandClass == null) {
+			logger.error(String.format("NODE %d: Unsupported command class 0x%02x", this.getNode().getNodeId(), commandClassCode));
+			return;
 		}
-		else {
-			CommandClass commandClass = CommandClass.getCommandClass(commandClassCode);
-			
-			if (commandClass == null) {
-				logger.error(String.format("NODE %d: Unsupported command class 0x%02x", this.getNode().getNodeId(), commandClassCode));
-				return;
-			}
-			
-			logger.debug(String.format("NODE %d: Requested Command Class = %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel() , commandClassCode));
-			ZWaveCommandClass zwaveCommandClass = this.getNode().getCommandClass(commandClass);
-			
-			if (zwaveCommandClass == null) {
-				logger.error(String.format("NODE %d: Unsupported command class %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode));
-				return;
-			}
-			
-			zwaveCommandClass.setInstances(instances);
-			logger.debug("NODE {}: Instances = {}, number of instances set.", this.getNode().getNodeId(), instances);
+		
+		logger.debug(String.format("NODE %d: Requested Command Class = %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel() , commandClassCode));
+		ZWaveCommandClass zwaveCommandClass = this.getNode().getCommandClass(commandClass);
+		
+		if (zwaveCommandClass == null) {
+			logger.error(String.format("NODE %d: Unsupported command class %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode));
+			return;
 		}
+
+		if(instances == 0) {
+			logger.debug("NODE {}: Instances = 0. Setting to 1.", this.getNode().getNodeId());
+			instances = 1;
+		}
+
+		zwaveCommandClass.setInstances(instances);
+		logger.debug("NODE {}: Instances = {}, number of instances set.", this.getNode().getNodeId(), instances);
 	}
 	
 	/**
@@ -513,7 +511,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	 */
 	public ArrayList<SerialMessage> initEndpoints(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		
+
 		logger.debug("NODE {}: Initialising endpoints - version {}", this.getNode().getNodeId(), this.getVersion());
 		switch (this.getVersion()) {
 			case 1:
@@ -522,8 +520,12 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 					if (commandClass.getCommandClass() == CommandClass.NO_OPERATION) {
 						continue;
 					}
+					logger.debug("NODE {}: ENDPOINTS - checking {}, Instances {}", this.getNode().getNodeId(),
+							commandClass.getCommandClass().getLabel(), commandClass.getInstances());
 					// Instances is set to 1 after it's initialised
 					if (commandClass.getInstances() == 0) {
+						logger.debug("NODE {}: ENDPOINTS - found    {}", this.getNode().getNodeId(),
+								commandClass.getCommandClass().getLabel());
 						result.add(getMultiInstanceGetMessage(commandClass.getCommandClass()));
 					}
 				}
