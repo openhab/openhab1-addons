@@ -96,7 +96,7 @@ public enum NodeStage {
 	 */
 	public NodeStage getNextStage() {
 		for (NodeStage s : values()) {
-			if(s.stage == this.stage) {
+			if(s.stage == this.stage + 1) {
 				return s;
 			}
 		}

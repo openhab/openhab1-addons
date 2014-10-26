@@ -372,6 +372,16 @@ public class ZWaveNodeStageAdvancer {
 				stageAdvanced = true;
 				logger.debug("NODE {}: Node advancer - advancing to {}.", this.node.getNodeId(), currentStage.getLabel());
 			}
+			else {
+				try {
+					freeToSend = false;
+					controller.sendData(this.msgQueue.take());
+				}
+				catch(InterruptedException e) {
+				}
+
+				logger.debug("NODE {}: Node advancer - queued packet.", this.node.getNodeId());
+			}
 		}
 		while (msgQueue.isEmpty());
 	}

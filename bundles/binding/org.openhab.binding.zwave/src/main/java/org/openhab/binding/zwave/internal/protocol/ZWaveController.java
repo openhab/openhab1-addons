@@ -245,6 +245,13 @@ public class ZWaveController {
 			case SerialApiGetInitData:
 				this.isConnected = true;
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
+					// ****************** REMOVE BEFORE FLIGHT!
+					if(nodeId != 5)
+						continue;
+					
+					
+					
+					
 					// Place nodes in the local ZWave Controller
 					ZWaveNode node = new ZWaveNode(this.homeId, nodeId, this);
 					if(nodeId == this.ownNodeId) {
