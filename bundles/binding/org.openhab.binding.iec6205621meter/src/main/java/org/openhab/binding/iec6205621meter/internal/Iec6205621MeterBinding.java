@@ -115,12 +115,16 @@ public class Iec6205621MeterBinding extends
 					if(meterName != null && meterName.equals(entry.getKey())) {
 						Map<String, DataSet> dataSets;
 						if((dataSets = cache.get(meterName)) == null) {
+							if(logger.isDebugEnabled())
+								logger.debug("Read meter: " + meterName + "; " + reader.getConfig().getSerialPort());
 							dataSets = reader.read();
 							cache.put(meterName, dataSets);
 						}
 						String obis = provider.getObis(itemName);
 						if (obis != null && dataSets.containsKey(obis)) {
 							DataSet dataSet = dataSets.get(obis);
+							if(logger.isDebugEnabled())
+								logger.debug("Updateing item " + itemName + " with OBIS code " + obis + " and value " + dataSet.getValue());
 							Class<? extends Item> itemType = provider
 									.getItemType(itemName);
 							if (itemType.isAssignableFrom(NumberItem.class)) {
