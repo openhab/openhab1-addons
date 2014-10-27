@@ -89,7 +89,9 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			} finally {
 				transactionComplete = true;
 			}
+			break;
 		default:
+			break;
 		}
 
 		return false;

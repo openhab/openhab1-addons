@@ -181,14 +181,14 @@ public class ZWaveController {
 	 * @param incomingMessage the incoming message to process.
 	 */
 	private void handleIncomingRequestMessage(SerialMessage incomingMessage) {
-		logger.trace("Message type = REQUEST");
+		logger.trace("Incoming Message type = REQUEST");
 
 		ZWaveCommandProcessor processor = ZWaveCommandProcessor.getMessageDispatcher(incomingMessage.getMessageClass());
 		if(processor != null) {
-			processor.handleRequest(this, lastSentMessage, incomingMessage);
+			boolean result = processor.handleRequest(this, lastSentMessage, incomingMessage);
 
 			if(processor.isTransactionComplete()) {
-				notifyEventListeners(new ZWaveTransactionCompletedEvent(this.lastSentMessage));
+				notifyEventListeners(new ZWaveTransactionCompletedEvent(this.lastSentMessage, result));
 				transactionCompleted.release();
 				logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 			}
@@ -215,14 +215,14 @@ public class ZWaveController {
 	 * @param incomingMessage the response message to process.
 	 */
 	private void handleIncomingResponseMessage(SerialMessage incomingMessage) {
-		logger.trace("Message type = RESPONSE");
+		logger.trace("Incoming Message type = RESPONSE");
 
 		ZWaveCommandProcessor processor = ZWaveCommandProcessor.getMessageDispatcher(incomingMessage.getMessageClass());
 		if(processor != null) {
-			processor.handleResponse(this, lastSentMessage, incomingMessage);
+			boolean result = processor.handleResponse(this, lastSentMessage, incomingMessage);
 
 			if(processor.isTransactionComplete()) {
-				notifyEventListeners(new ZWaveTransactionCompletedEvent(this.lastSentMessage));
+				notifyEventListeners(new ZWaveTransactionCompletedEvent(this.lastSentMessage, result));
 				transactionCompleted.release();
 				logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 			}
@@ -245,8 +245,8 @@ public class ZWaveController {
 			case SerialApiGetInitData:
 				this.isConnected = true;
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
-					if(nodeId != 10)
-						continue;
+//					if(nodeId != 16)
+	//					continue;
 					
 					
 					
@@ -395,13 +395,13 @@ public class ZWaveController {
 
 			logger.info("Serial port is initialized");
 		} catch (NoSuchPortException e) {
-			logger.error(String.format("Port %s does not exist", serialPortName));
+			logger.error("Port {} does not exist", serialPortName);
 			throw new SerialInterfaceException(String.format("Port %s does not exist", serialPortName), e);
 		} catch (PortInUseException e) {
-			logger.error(String.format("Port %s in use.", serialPortName));
+			logger.error("Port {} in use.", serialPortName);
 			throw new SerialInterfaceException(String.format("Port %s in use.", serialPortName), e);
 		} catch (UnsupportedCommOperationException e) {
-			logger.error(String.format("Unsupported comm operation on Port %s.", serialPortName));
+			logger.error("Unsupported comm operation on Port {}.", serialPortName);
 			throw new SerialInterfaceException(String.format("Unsupported comm operation on Port %s.", serialPortName), e);
 		}
 	}
@@ -679,8 +679,8 @@ public class ZWaveController {
 				ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) zwaveCommandClass;
 				for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
 					for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
-						logger.trace(String.format("NODE %d: Inspecting command class %s for endpoint %d", node.getNodeId(), endpointCommandClass
-								.getCommandClass().getLabel(), endpoint.getEndpointId()));
+						logger.trace("NODE {}: Inspecting command class {} for endpoint {}", node.getNodeId(), endpointCommandClass
+								.getCommandClass().getLabel(), endpoint.getEndpointId());
 						if (endpointCommandClass instanceof ZWaveCommandClassDynamicState) {
 							logger.debug("NODE {}: Found dynamic state command class {}", node.getNodeId(), endpointCommandClass
 									.getCommandClass().getLabel());

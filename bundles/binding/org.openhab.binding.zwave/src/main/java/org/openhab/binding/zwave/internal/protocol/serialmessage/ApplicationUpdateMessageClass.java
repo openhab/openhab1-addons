@@ -99,6 +99,6 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 		default:
 			logger.warn("TODO: Implement Application Update Request Handling of {} ({}).", updateState.getLabel(), updateState.getKey());
 		}		
-		return false;
+		return true;
 	}
 }

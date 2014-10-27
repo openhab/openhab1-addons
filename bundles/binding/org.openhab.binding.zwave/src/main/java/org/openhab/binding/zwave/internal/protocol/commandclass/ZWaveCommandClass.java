@@ -192,20 +192,21 @@ public abstract class ZWaveCommandClass {
 	 * @return the ZWaveCommandClass instance that was instantiated, null otherwise 
 	 */
 	public static ZWaveCommandClass getInstance(int i, ZWaveNode node, ZWaveController controller, ZWaveEndpoint endpoint) {
-		logger.debug(String.format("Creating new instance of command class 0x%02X", i));
+		logger.trace(String.format("NODE %d: Creating new instance of command class 0x%02X", node.getNodeId(), i));
 		try {
 			CommandClass commandClass = CommandClass.getCommandClass(i);
 			if (commandClass == null) {
-				logger.warn(String.format("Unsupported command class 0x%02x", i));
+				logger.warn(String.format("NODE %d: Unknown command class 0x%02x", node.getNodeId(), i));
 				return null;
 			}
 			Class<? extends ZWaveCommandClass> commandClassClass = commandClass.getCommandClassClass();
 			
 			if (commandClassClass == null) {
-				logger.warn(String.format("Unsupported command class %s (0x%02x)", commandClass.getLabel(), i, endpoint));
+				logger.warn("NODE {}: Unsupported command class {}", node.getNodeId(), commandClass.getLabel(), i);
 				return null;
 			}
-				
+			logger.debug("NODE {}: Creating new instance of command class {}", node.getNodeId(), commandClass.getLabel());
+
 			Constructor<? extends ZWaveCommandClass> constructor = commandClassClass.getConstructor(ZWaveNode.class, ZWaveController.class, ZWaveEndpoint.class);
 			return constructor.newInstance(new Object[] {node, controller, endpoint});
 		} catch (InstantiationException e) {
@@ -215,7 +216,7 @@ public abstract class ZWaveCommandClass {
 		} catch (NoSuchMethodException e) {
 		} catch (SecurityException e) {
 		}
-		logger.error(String.format("Error instantiating command class 0x%02x", i));
+		logger.error(String.format("NODE %d: Error instantiating command class 0x%02x", node.getNodeId(), i));
 		return null;
 	}
 	

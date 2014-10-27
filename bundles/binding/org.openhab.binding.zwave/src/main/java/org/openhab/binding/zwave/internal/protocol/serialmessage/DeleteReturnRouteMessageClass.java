@@ -50,7 +50,7 @@ public class DeleteReturnRouteMessageClass extends ZWaveCommandProcessor {
 					ZWaveNetworkEvent.State.Failure));
 		}
 		
-		return false;
+		return true;
 	}
 
 	@Override
@@ -69,6 +69,6 @@ public class DeleteReturnRouteMessageClass extends ZWaveCommandProcessor {
 					ZWaveNetworkEvent.State.Success));
 		}
 		
-		return false;
+		return true;
 	}
 }

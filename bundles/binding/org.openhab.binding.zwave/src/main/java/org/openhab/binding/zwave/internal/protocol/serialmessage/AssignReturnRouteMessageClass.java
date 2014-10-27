@@ -50,7 +50,7 @@ public class AssignReturnRouteMessageClass extends ZWaveCommandProcessor {
 					ZWaveNetworkEvent.State.Failure));
 		}
 		
-		return false;
+		return true;
 	}
 
 	@Override
@@ -68,6 +68,6 @@ public class AssignReturnRouteMessageClass extends ZWaveCommandProcessor {
 					ZWaveNetworkEvent.State.Success));
 		}
 		
-		return false;
+		return true;
 	}
 }

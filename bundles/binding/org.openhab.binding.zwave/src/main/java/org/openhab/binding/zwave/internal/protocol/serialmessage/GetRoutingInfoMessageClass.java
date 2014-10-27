@@ -82,6 +82,6 @@ public class GetRoutingInfoMessageClass extends ZWaveCommandProcessor {
 				ZWaveNetworkEvent.State.Success));
 
 		transactionComplete = true;
-		return false;
+		return true;
 	}
 }

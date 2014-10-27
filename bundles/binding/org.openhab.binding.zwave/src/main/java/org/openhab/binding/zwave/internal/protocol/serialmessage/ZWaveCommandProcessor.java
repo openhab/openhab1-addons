@@ -9,7 +9,6 @@
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;

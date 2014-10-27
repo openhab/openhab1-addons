@@ -62,7 +62,7 @@ public class EnableSucMessageClass extends ZWaveCommandProcessor {
 		}
 
 		checkTransactionComplete(lastSentMessage, incomingMessage);
-		return false;
+		return true;
 	}
 	
 	public enum SUCType {

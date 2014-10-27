@@ -48,7 +48,7 @@ public class GetSucNodeIdMessageClass extends ZWaveCommandProcessor {
 		}
 
 		checkTransactionComplete(lastSentMessage, incomingMessage);
-		return false;
+		return true;
 	}
 	
 	public int getSucNodeId() {

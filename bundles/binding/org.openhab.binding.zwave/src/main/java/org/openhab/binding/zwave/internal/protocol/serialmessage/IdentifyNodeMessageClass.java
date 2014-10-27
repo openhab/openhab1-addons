@@ -110,6 +110,6 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 
-		return false;
+		return true;
 	}
 }

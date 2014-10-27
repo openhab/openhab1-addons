@@ -20,7 +20,6 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
-import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass.LibraryType;
@@ -30,6 +29,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveManufacture
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNoOperationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetRoutingInfoMessageClass;
@@ -549,64 +549,47 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
 		// Process transaction complete events
 		if (event instanceof ZWaveTransactionCompletedEvent) {
-			SerialMessage serialMessage = ((ZWaveTransactionCompletedEvent) event).getCompletedMessage();
-			if (serialMessage.getMessageClass() == SerialMessageClass.SendData
-						&& serialMessage.getMessageType() == SerialMessageType.Request) {
+			ZWaveTransactionCompletedEvent completeEvent = (ZWaveTransactionCompletedEvent)event;
 
-				byte[] payload = serialMessage.getMessagePayload();
-				logger.debug("====== Node is {}", payload[0] & 0xFF);
-				if (payload.length < 3 || this.node.getNodeId() != (payload[0] & 0xFF)) {
-					// This is a corrupt frame, OR, it's not addressed to us
-					return;
-				}
+			SerialMessage serialMessage = completeEvent.getCompletedMessage();
+			byte[] payload = serialMessage.getMessagePayload();
 
-				logger.debug("NODE {}: Initialisation transaction complete event (SendData)", this.node.getNodeId());
-				handleNodeQueue(serialMessage);
+			// Make sure this is addressed to us
+			if (payload.length == 0 || this.node.getNodeId() != (payload[0] & 0xFF)) {
+				// This is a corrupt frame, OR, it's not addressed to us
 				return;
 			}
-			if (serialMessage.getMessageClass() == SerialMessageClass.IdentifyNode) {
-				byte[] payload = serialMessage.getMessagePayload();
-				if (payload.length == 0 || this.node.getNodeId() != (payload[0] & 0xFF)) {
-					// This is a corrupt frame, OR, it's not addressed to us
-					return;
-				}
 
-				logger.debug("NODE {}: Initialisation transaction complete event (ApplicationUpdate)", this.node.getNodeId());
-				handleNodeQueue(serialMessage);
-				return;
-			}
-			if (serialMessage.getMessageClass() == SerialMessageClass.RequestNodeInfo) {
-				byte[] payload = serialMessage.getMessagePayload();
-				if (payload.length == 0 || this.node.getNodeId() != (payload[0] & 0xFF)) {
-					// This is a corrupt frame, OR, it's not addressed to us
-					return;
-				}
-
-				logger.debug("NODE {}: Initialisation transaction complete event (RequestNodeInfo)", this.node.getNodeId());
-				handleNodeQueue(serialMessage);
-				return;
-			}
-			if (serialMessage.getMessageClass() == SerialMessageClass.GetRoutingInfo) {
-				byte[] payload = serialMessage.getMessagePayload();
-				if (payload.length == 0 || this.node.getNodeId() != (payload[0] & 0xFF)) {
-					// This is a corrupt frame, OR, it's not addressed to us
-					return;
-				}
-
-				logger.debug("NODE {}: Initialisation transaction complete event (GetRoutingInfo)", this.node.getNodeId());
-				handleNodeQueue(serialMessage);
-				return;
+			switch(serialMessage.getMessageClass()) {
+				case SendData:
+				case IdentifyNode:
+				case RequestNodeInfo:
+				case GetRoutingInfo:
+					logger.debug("NODE {}: Initialisation transaction complete event ({}:{}) {}", this.node.getNodeId(),
+							serialMessage.getMessageClass(), serialMessage.getMessageType(), completeEvent.getState());
+					
+					if(((ZWaveTransactionCompletedEvent) event).getState()) {
+						handleNodeQueue(serialMessage);
+					}
+					break;
+				default:
 			}
 		}
 		// WAKEUP EVENT?.
-/*	} else if (event instanceof ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) {
-		// We only care about the wake-up notification
-		if (((ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) event).getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_NOTIFICATION) {
-			return;
-		}
+		else if (event instanceof ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) {
+			// We only care about the wake-up notification
+			if (((ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) event).getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_NOTIFICATION) {
+				return;
+			}
 
-		// A wakeup event is received. Find the node in the node list
-		HealNode node = healNodes.get(event.getNodeId());
-		*/
+			// A wakeup event is received. Make sure it's for this node
+			if(this.node.getNodeId() != event.getNodeId()) {
+				return;
+			}
+			
+			logger.debug("NODE {}: Wakeup during initialisation.", this.node.getNodeId());
+
+			advanceNodeStage(null);
+		}
 	}
 }
