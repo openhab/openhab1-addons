@@ -103,9 +103,10 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 
 		ZWaveNode node = zController.getNode(originalMessage.getMessageNode());
 
-		// No retries if the node is DEAD
-		if (node.getNodeStage() == NodeStage.DEAD)
+		// No retries if the node is DEAD or FAILED
+		if (node.getNodeStage() == NodeStage.DEAD || node.getNodeStage() == NodeStage.FAILED) {
 			return false;
+		}
 
 		// High priority messages get requeued, low priority get dropped
 		if (!node.isListening() && !node.isFrequentlyListening()
