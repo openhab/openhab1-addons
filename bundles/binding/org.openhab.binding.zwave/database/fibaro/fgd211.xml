@@ -33,7 +33,7 @@
 				<Label lang="en">ALL ON active / ALL OFF disabled</Label>
 			</Item>
 			<Item>
-				<Value>255</Value>
+				<Value>-1</Value>
 				<Label lang="en">ALL ON active / ALL OFF active</Label>
 			</Item>
 			<Help lang="en">Activate/Deactive ALL ON/OFF</Help>
@@ -208,7 +208,7 @@
 				<Label lang="en">Disable</Label>
 			</Item>
 			<Item>
-				<Value>0</Value>
+				<Value>1</Value>
 				<Label lang="en">Enable</Label>
 			</Item>
 			<Help lang="en">The function of 3-way switch provides the option to double key no. 1. The dimmer may control two bi-stable push-buttons or an infinite number of mono-stable push-buttons. (default value 0)</Help>
@@ -225,7 +225,7 @@
 				<Label lang="en">Disable</Label>
 			</Item>
 			<Item>
-				<Value>0</Value>
+				<Value>1</Value>
 				<Label lang="en">Enable</Label>
 			</Item>
 			<Help lang="en">The dimmer communicate the level to the associated devices. (default value 0)</Help>
@@ -239,11 +239,11 @@
 			<Label lang="en">Change [On-Off] bi-stable keys</Label>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">Disable</Label>
+				<Label lang="en">Device changes status on key status change</Label>
 			</Item>
 			<Item>
-				<Value>0</Value>
-				<Label lang="en">Enable</Label>
+				<Value>1</Value>
+				<Label lang="en">Device status depends on key status; ON when the key is ON, OFF when the key is OFF</Label>
 			</Item>
 			<Help lang="en">This function allow user to change [On-Off] bi-stable keys (parameter no. 14) (default value 0)</Help>
 		</Parameter>

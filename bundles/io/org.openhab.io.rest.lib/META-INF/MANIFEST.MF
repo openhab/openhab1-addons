@@ -45,5 +45,6 @@ Export-Package: com.sun.jersey.api.client,com.sun.jersey.api.core,com.
  nnotation,org.atmosphere.cache,org.atmosphere.cpr,org.atmosphere.jers
  ey,org.atmosphere.util,org.codehaus.jackson;version="1.9.2",org.codeh
  aus.jackson.annotate;version="1.9.2",org.codehaus.jackson.map;version
+ ="1.9.2",org.codehaus.jackson.map.annotate;version
  ="1.9.2",org.codehaus.jackson.type;version="1.9.2"
 Require-Bundle: javax.servlet
