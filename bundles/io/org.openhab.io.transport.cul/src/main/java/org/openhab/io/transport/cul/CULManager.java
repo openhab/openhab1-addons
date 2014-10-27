@@ -10,6 +10,7 @@ package org.openhab.io.transport.cul;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ public class CULManager {
 	private static Map<String, CULHandler> openDevices = new HashMap<String, CULHandler>();
 
 	private static Map<String, Class<? extends CULHandler>> deviceTypeClasses = new HashMap<String, Class<? extends CULHandler>>();
+	
 
 	/**
 	 * Get CULHandler for the given device in the given mode. The same
@@ -49,6 +51,27 @@ public class CULManager {
 	 * @throws CULDeviceException
 	 */
 	public static CULHandler getOpenCULHandler(String deviceName, CULMode mode) throws CULDeviceException {
+		return getOpenCULHandler(deviceName, mode, null);
+	}
+	
+	/**
+	 * Get CULHandler for the given device in the given mode. The same
+	 * CULHandler can be returned multiple times if you ask multiple times for
+	 * the same device in the same mode. It is not possible to obtain a
+	 * CULHandler of an already openend device for another RF mode.
+	 * 
+	 * @param deviceName
+	 *            String representing the device. Currently only serial ports
+	 *            are supported.
+	 * @param mode
+	 *            The RF mode for which the device will be configured.
+	 * @param properties
+	 *            Map of properties, do configure a specific CUL Handler Implementation. 
+	 *            For details please reference the Handler it self.
+	 * @return A CULHandler to communicate with the culfw based device.
+	 * @throws CULDeviceException
+	 */
+	public static CULHandler getOpenCULHandler(String deviceName, CULMode mode, Map<String, ?> properties) throws CULDeviceException {
 		logger.debug("Trying to open device " + deviceName + " in mode " + mode.toString());
 		synchronized (openDevices) {
 
@@ -63,7 +86,7 @@ public class CULManager {
 							+ mode.toString());
 				}
 			}
-			CULHandler handler = createNewHandler(deviceName, mode);
+			CULHandler handler = createNewHandler(deviceName, mode, properties);
 			openDevices.put(deviceName, handler);
 			return handler;
 		}
@@ -111,7 +134,7 @@ public class CULManager {
 		deviceTypeClasses.put(deviceType, clazz);
 	}
 
-	private static CULHandler createNewHandler(String deviceName, CULMode mode) throws CULDeviceException {
+	private static CULHandler createNewHandler(String deviceName, CULMode mode, Map<String, ?> properties) throws CULDeviceException {
 		String deviceType = getPrefix(deviceName);
 		String deviceAddress = getRawDeviceName(deviceName);
 		logger.debug("Searching class for device type " + deviceType);
@@ -119,11 +142,22 @@ public class CULManager {
 		if (culHandlerclass == null) {
 			throw new CULDeviceException("No class for the device type " + deviceType + " is registred");
 		}
+		
 		Class<?>[] constructorParametersTypes = { String.class, CULMode.class };
+		Object[] parameters = { deviceAddress, mode };
+		
+		if(properties != null){
+			constructorParametersTypes = Arrays.copyOf(constructorParametersTypes, constructorParametersTypes.length + 1);
+			constructorParametersTypes[constructorParametersTypes.length -1] = Map.class;
+			
+			parameters = Arrays.copyOf(parameters, parameters.length + 1);
+			parameters[parameters.length -1] = properties;
+		}
+		
 		try {
 			Constructor<? extends CULHandler> culHanlderConstructor = culHandlerclass
 					.getConstructor(constructorParametersTypes);
-			Object[] parameters = { deviceAddress, mode };
+			
 			CULHandler culHandler = culHanlderConstructor.newInstance(parameters);
 			List<String> initCommands = mode.getCommands();
 			if (!(culHandler instanceof CULHandlerInternal)) {

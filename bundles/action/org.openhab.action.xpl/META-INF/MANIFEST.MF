@@ -5,24 +5,18 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB xPL Action
 Bundle-SymbolicName: org.openhab.action.xpl
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.5.0.qualifier
-Bundle-Activator: org.openhab.action.xpl.internal.xPLActivator
+Bundle-Version: 1.6.0.qualifier
+Bundle-Activator: org.openhab.action.xpl.internal.XplActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the xPL action of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Import-Package: org.cdp1802.xpl,
  org.openhab.core.scriptengine.action,
- org.openhab.core.items,
- org.openhab.core.library.items,
- org.openhab.core.library.types,
- org.openhab.core.types,
+ org.openhab.io.transport.xpl,
  org.osgi.framework,
- org.osgi.service.cm,
- org.osgi.service.component,
  org.slf4j
 Bundle-DocURL: http://www.openhab.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/action.xml
-Bundle-ClassPath: .,
- lib/xPL4Java.jar
+Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy

@@ -72,6 +72,7 @@ public class ZWaveNode {
 	private boolean listening;			 // i.e. sleeping
 	private boolean frequentlyListening; 
 	private boolean routing;
+	private String healState;
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
@@ -159,11 +160,39 @@ public class ZWaveNode {
 	}
 	
 	/**
+	 * Gets the Heal State of the node.
+	 * @return String indicating the node Heal State.
+	 */
+	public String getHealState() {
+		return healState;
+	}
+	
+	/**
+	 * Sets the Heal State of the node.
+	 * @param healState
+	 */
+	public void setHealState(String healState) {
+		this.healState = healState;
+		this.lastUpdated = Calendar.getInstance().getTime();
+	}
+	
+	/**
 	 * Gets whether the node is dead.
 	 * @return
 	 */
 	public boolean isDead(){
 		if(this.nodeStage == NodeStage.DEAD)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * Gets whether the node is failed by controller.
+	 * @return
+	 */
+	public boolean isFailed(){
+		if(this.nodeStage == NodeStage.FAILED)
 			return true;
 		else
 			return false;

@@ -60,6 +60,15 @@
                 </Product>
                 <Product>
                         <Reference>
+                                <Type>4441</Type>
+                                <Id>0000</Id>
+                        </Reference>
+                        <Model>RF9542-Z</Model>
+                        <Label lang="en">Dimmer Accessory Switch</Label>
+                        <ConfigFile>cooper/rf9542z.xml</ConfigFile>
+                </Product>
+                <Product>
+                        <Reference>
                                 <Type>534C</Type>
                                 <Id>0000</Id>
                         </Reference>
@@ -178,6 +187,16 @@
 		<Name>Everspring</Name>
 		<Product>
 			<Reference>
+				<Type>0003</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>AD131</Model>
+			<Label lang="en">Dimmer Plugin</Label>
+			<Label lang="de">Dimmer Zwischenstecker</Label>
+			<ConfigFile>everspring/ad131.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0103</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -246,6 +265,10 @@
 				<Type>0002</Type>
 				<Id>0001</Id>
 			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
 			<Model>HSM02</Model>
 			<Label lang="en">Door/Window Contact</Label>
 			<Label lang="de">Tür/Fenster Kontakt</Label>
@@ -313,6 +336,15 @@
 		<Name>Reitz Group</Name>
 		<Product>
 			<Reference>
+				<Type>3001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>054375</Model>
+			<Label lang="en">Schuko Plug Switch</Label>
+			<ConfigFile>reitz/054375.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0000</Id>
 			</Reference>
@@ -369,6 +401,15 @@
 			<Model>506004</Model>
 			<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
 			<ConfigFile>merten/506004.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>5082xx</Model>
+			<Label lang="en">Battery Powered Wall Controller MOVE</Label>
+			<ConfigFile>merten/5082xx.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -466,6 +507,10 @@
 				<Type>0006</Type>
 				<Id>0002</Id>
 			</Reference>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>			
 			<Model>Minimote</Model>
 			<Label lang="en">4 button remote control</Label>
 			<ConfigFile>aeon/minimote.xml</ConfigFile>
@@ -518,6 +563,15 @@
 			<Model>MSD2E</Model>
 			<Label lang="en">Micro Smart Dimmer 2nd Edition</Label>
 			<ConfigFile>aeon/msd2e.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>001B</Id>
+			</Reference>
+			<Model>MD2E</Model>
+			<Label lang="en">Micro Dimmer 2nd Edition</Label>
+			<ConfigFile>aeon/md2e.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1029,6 +1083,15 @@
 			<Label lang="en">Wall Plug</Label>
 			<ConfigFile>tkb/tz68.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>TSM02</Model>
+			<Label lang="en">Slim Multi-Sensor</Label>
+			<ConfigFile>tkb/tsm02.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0002</Id>
@@ -1172,6 +1235,10 @@
 				<Type>0301</Type>
 				<Id>0209</Id>
 			</Reference>
+			<Reference>
+                                <Type>301</Type>
+                                <Id>0334</Id>
+                        </Reference>
 			<Model>VRS15-1LZ</Model>
 			<Label lang="en">Scene Capable Push On/Off</Label>
 			<ConfigFile>leviton/vrs15-1lz.xml</ConfigFile>
@@ -1223,6 +1290,37 @@
 			<Model>ZXT-120</Model>
 			<Label lang="en">Remotec ZXT-120 AC IR Remote</Label>
 			<ConfigFile>remotec/zxt120.xml</ConfigFile>
+		</Product>
+	</Manufacturer>	
+	<Manufacturer>
+		<Id>159</Id>
+		<Name>Qubino</Name>
+		<Product>
+			<Reference>
+				<Type>2</Type>
+				<Id>2</Id>
+			</Reference>
+			<Model>ZMNHAA</Model>
+			<Label lang="en">Flush 1 relay</Label>
+			<ConfigFile>qubino/zmnhaa.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>2</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHBA</Model>
+			<Label lang="en">Flush 2 relays</Label>
+			<ConfigFile>qubino/zmnhba.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHDA</Model>
+			<Label lang="en">Flush dimmer</Label>
+			<ConfigFile>qubino/zmnhda.xml</ConfigFile>
 		</Product>
 	</Manufacturer>	
 </Manufacturers>

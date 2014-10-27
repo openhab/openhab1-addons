@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZMNHAA</Model>
+	<Label lang="en">Flush 1 relay</Label>
+	<CommandClasses>
+		<Class><id>0x00</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x9c</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 1 switch type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">bi-stable switch type</Label>
+			</Item>
+			<Help lang="en">Input 1 switch type</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 2 contact type</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">NO (normaly open) input type</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en"> NC (normaly close) input type</Label>
+			</Item>
+			<Help lang="en">Input 2 contact type</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 3 contact type</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">NO (normaly open) input type</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en"> NC (normaly close) input type</Label>
+			</Item>
+			<Help lang="en">Input 3 contact type</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">Activate / deactivate functions ALL ON/ALL OFF</Label>			
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">ALL ON active, ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">ALL ON is not active ALL OFF is not active</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALL ON is not active ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALL ON active ALL OFF is not active</Label>
+			</Item>
+			<Help lang="en">Flush 1 relay module responds to commands ALL ON / 
+ALL OFF that may be sent by the main controller or by 
+other controller belonging to the system.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatic turning off relay after set time</Label>			
+			
+			<Help lang="en">0 - Auto OFF disabled 
+1 – 65535 = 0,01second – 655,35 seconds
+Auto OFF enabled with define time, step is 10mseconds</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>30</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Saving the state of the relay after a power failure</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Flush 1relay module saves its state before power failure (it returns to the last position saved before a power failure)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Flush 1relay module does not save the state after a power failure, it returns to "off" position.
+</Label>
+			</Item>
+			<Help lang="en">Saving the state of the relay after a power failure</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>40</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Power reporting in Watts on power change</Label>			
+			
+			<Help lang="en">0 – Reporting Disabled
+1 – 100 = 1% - 100% Reporting enabled
+Power report is send (push) only when actual 
+power in Watts in real time change for more than 
+set percentage comparing to previous actual 
+power in Watts, step is 1%.
+NOTE: if power changed is less than 1W, the report is 
+not send (pushed), independent of percentage set. </Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>42</Index>
+			<Type>byte</Type>
+			<Default>300</Default>
+			<Size>2</Size>
+			<Label lang="en">Power reporting in Watts on power change</Label>			
+			
+			<Help lang="en">default value 300 (power report in Watts is 
+send each 300s)
+0 – Reporting Disabled
+1 – 65535 = 1second – 65535 seconds.
+Reporting enabled. Power report is send with time 
+interval set by entered value. </Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">basic on/off (triggered at change of the output 
+Q state and reflecting its state)</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en"> basic on/off (triggered at change of the input I2 
+state and reflecting its state)</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en"> basic on/off (triggered at change of the input I3 
+state and reflecting its state)</Label>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Controller Updates</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>
+
