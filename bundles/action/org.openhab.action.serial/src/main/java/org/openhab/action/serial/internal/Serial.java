@@ -8,6 +8,8 @@
  */
 package org.openhab.action.serial.internal;
 
+import java.io.IOException;
+
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.slf4j.Logger;
@@ -27,15 +29,40 @@ public class Serial {
 	// provide public static methods here
 	
 	// Example
-	@ActionDoc(text="A cool method that does some Serial", 
+	@ActionDoc(text="Method to send data via serial devices.", 
 			returns="<code>true</code>, if successful and <code>false</code> otherwise.")
-	public static boolean doSerial(@ParamDoc(name="something", text="the something to do") String something) {
+	public static boolean sendSerial(@ParamDoc(name="deviceName", text="Serial device name.") String deviceName, 
+			@ParamDoc(name="message", text="Serial command")String message) {
+		
+		logger.debug("Send '" + message + "' to '" + deviceName + "'.");
 		if (!SerialActionService.isProperlyConfigured) {
-			logger.debug("Serial action is not yet configured - execution aborted!");
+			logger.debug("Serial device action not properly configured.");
 			return false;
 		}
-		// now do something cool
+		
+		SerialActionHandler device = SerialActionService.getHandler(deviceName);
+		try {
+			device.openHardware();
+			device.send(message);
+		} catch (SerialActionException e) {
+			logger.error("Can't open device " + deviceName);
+			return false;
+		} catch (IOException e) {
+			logger.error("Can't send to '" + deviceName + "': " + e);
+		}
 		return true;
+	}
+	
+	@ActionDoc(text="Method to set lock flag for serial device (works only with devices configured in openhab.cfg)", returns="<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean lockSerial(@ParamDoc(name="deviceName", text="Serial device name.") String deviceName){
+		SerialActionHandler device = SerialActionService.getHandler(deviceName);
+		return device.lock();
+	}
+	
+	@ActionDoc(text="Method to remove lock flag from serial device (works only with devices configured in openhab.cfg)", returns="<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean unlockSerial(@ParamDoc(name="deviceName", text="Serial device name.") String deviceName){
+		SerialActionHandler device = SerialActionService.getHandler(deviceName);
+		return device.unlock();
 	}
 
 }
