@@ -74,7 +74,8 @@
 			<Help lang="en"><![CDATA[Can be used to calibrate the temperature sensors function. Calibrated as factory default.]]></Help>
 		</Parameter>
 	</Configuration>
-		<Associations>
+
+	<Associations>
 		<Group>
 			<Index>1</Index>
 			<Maximum>5</Maximum>

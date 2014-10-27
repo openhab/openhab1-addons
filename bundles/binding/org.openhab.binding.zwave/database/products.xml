@@ -1333,6 +1333,6 @@
 			<Model>ITEMP</Model>
 			<Label lang="en">Contact and temp sensor</Label>
 			<ConfigFile>wintop/itemp.xml</ConfigFile>
-			</Product>
-			</Manufacturer>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
