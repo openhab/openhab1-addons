@@ -245,7 +245,7 @@ public class ZWaveController {
 			case SerialApiGetInitData:
 				this.isConnected = true;
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
-					if(nodeId != 16)
+					if(nodeId != 10)
 						continue;
 					
 					
