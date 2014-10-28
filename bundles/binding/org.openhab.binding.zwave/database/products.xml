@@ -599,6 +599,15 @@
 			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
 			<ConfigFile>aeon/mss2e.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>000C</Id>
+			</Reference>
+			<Model>HEM-G2</Model>
+			<Label lang="en">Home Energy Meter G2</Label>
+			<ConfigFile>aeon/hemg2.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
