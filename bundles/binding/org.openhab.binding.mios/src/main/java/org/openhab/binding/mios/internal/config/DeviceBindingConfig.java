@@ -247,7 +247,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 			.compile("(?<transform>(?<transformCommand>[a-zA-Z]+)\\((?<transformParam>.*)\\))");
 
 	private static final Pattern SERVICE_COMMAND_INMAP_PATTERN = Pattern
-			.compile("(?<mapName>.+?)(=(?<mapValue>.+))?");
+			.compile("(?<mapName>.+?)(=(?<serviceName>.+)/(?<serviceAction>.+))?");
 
 	private String commandTransformName;
 	private String commandTransformParam;
@@ -360,14 +360,26 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 					Map<String, String> l = new HashMap<String, String>(
 							commandList.length);
 
+					String mapName;
+					String serviceName;
+					String serviceAction;
+
 					for (int i = 0; i < commandList.length; i++) {
 						command = commandList[i];
 						matcher = SERVICE_COMMAND_INMAP_PATTERN
 								.matcher(command);
 						if (matcher.matches()) {
-							String mapName = matcher.group("mapName");
-							String mapValue = matcher.group("mapValue");
-							String oldMapName = l.put(mapName, mapValue);
+							mapName = matcher.group("mapName");
+							serviceName = matcher.group("serviceName");
+							serviceAction = matcher.group("serviceAction");
+
+							// Handle any Service Aliases that might have been used in the inline Map.
+							tmp = (String) aliasMap.get(serviceName);
+							if (tmp != null) {
+								serviceName = tmp;
+							}
+
+							String oldMapName = l.put(mapName, serviceName + '/' + serviceAction);
 
 							if (oldMapName != null) {
 								throw new BindingConfigParseException(
