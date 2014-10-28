@@ -40,6 +40,9 @@ public class ZWaveEndpoint {
 	 * @param endpointId the endpoint ID.
 	 */
 	public ZWaveEndpoint(int endpointId) {
+		if (endpointId == 0) {
+			throw new IllegalArgumentException("Endpoint number cannot be 0");
+		}
 		this.endpointId = endpointId;
 		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN,
 				Generic.NOT_KNOWN, Specific.NOT_USED);
