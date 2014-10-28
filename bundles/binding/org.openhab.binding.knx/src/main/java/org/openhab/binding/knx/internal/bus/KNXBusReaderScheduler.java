@@ -70,6 +70,9 @@ public class KNXBusReaderScheduler {
 	public void stop() {
 		sLogger.trace("Stopping auto refresh scheduler");
 
+		sLogger.trace("Clearing all items from the refresher queue");
+		mReadQueue.clear();
+
 		sLogger.debug("Terminating schedule executor.");
 		mScheduledExecutorService.shutdown();
 		try {
@@ -83,8 +86,7 @@ public class KNXBusReaderScheduler {
 			sLogger.debug("Auto refresh scheduler: interrupted while waiting for termination.");
 		}
 
-		sLogger.trace("Clearing all items from the refresher queue");
-		mReadQueue.clear();
+		sLogger.trace("Stopping reader task");
 		mDatapointReaderTask.setInterrupted(true);
 		mIsRunning=false;
 	}
@@ -97,7 +99,7 @@ public class KNXBusReaderScheduler {
 	 */
 	public synchronized void clear() {
 		sLogger.trace("Clearing all datapoints from auto refresh scheduler");
-//		mReadQueue.clear();
+		mReadQueue.clear();
 
 		//Restarting schedule executor
 		if (mScheduledExecutorService != null) {

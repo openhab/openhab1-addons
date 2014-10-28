@@ -101,7 +101,7 @@ public class KNXConnection implements ManagedService {
 	 */
 	public static synchronized ProcessCommunicator getCommunicator() {
 		if(sLink!=null && !sLink.isOpen()) {
-			connect();
+//			connect();
 		}
 		return sPC;
 	}
@@ -147,38 +147,23 @@ public class KNXConnection implements ManagedService {
 				return false;
 			}
 
-			//TODO this might not work: since recursive calling of connect is quite strange
 			NetworkLinkListener linkListener = new NetworkLinkListener() {
 				public void linkClosed(CloseEvent e) {
 					if(!(CloseEvent.USER_REQUEST == e.getInitiator()) && !sShutdown) {
-						sLogger.warn("KNX link has been lost (reason: {} on object {}) - reconnecting...", e.getReason(), e.getSource().toString());
+						sLogger.warn("KNX link has been lost (reason: {} on object {})", e.getReason(), e.getSource().toString());
 						for(KNXConnectionListener listener : KNXConnection.sConnectionListeners) {
 							listener.connectionLost();
 						}
-
-//						// if the link is lost, we want to reconnect immediately
-//						connect();
-//					}
-//					if(!sLink.isOpen() && !sShutdown) {
-//						sLogger.error("KNX link has been lost!");
+						
+						/*
+						 * If an auto reconnect period was scheduled, then start a timer based task, which will
+						 * try to reconnect.
+						 */
+						
 						if(sAutoReconnectPeriod>0) {
 							sLogger.info("KNX link will be retried in " + sAutoReconnectPeriod + " seconds");
 							final Timer timer = new Timer();
-							TimerTask timerTask = new TimerTask() {
-								@Override
-								public void run() {
-									if(sShutdown) {
-										timer.cancel();
-									}
-									else {
-										sLogger.info("Trying to reconnect to KNX...");
-										connect();
-										if(sLink.isOpen()) {
-											timer.cancel();
-										}
-									}
-								}
-							};
+							TimerTask timerTask = new ConnectTimerTask(timer);
 							timer.schedule(timerTask, sAutoReconnectPeriod * 1000, sAutoReconnectPeriod * 1000);
 						}
 					}
@@ -359,25 +344,7 @@ public class KNXConnection implements ManagedService {
 					if(sAutoReconnectPeriod>0) {
 						sLogger.info("KNX link will be retried in {} seconds", sAutoReconnectPeriod);
 						final Timer timer = new Timer();
-						TimerTask timerTask = new TimerTask() {
-							@Override
-							public void run() {
-								if(sShutdown) {
-									timer.cancel();
-								}
-								else {
-									sLogger.info("Trying to reconnect to KNX...");
-									connect();
-									if( sLink!=null && sLink.isOpen()) {
-										sLogger.info("Connected to KNX");
-										timer.cancel();
-									}
-									else {
-										sLogger.info("KNX link will be retried in {} seconds", sAutoReconnectPeriod);
-									}
-								}
-							}
-						};
+						TimerTask timerTask = new ConnectTimerTask(timer);
 						timer.schedule(timerTask, sAutoReconnectPeriod * 1000, sAutoReconnectPeriod * 1000);
 					}
 				}
@@ -400,5 +367,27 @@ public class KNXConnection implements ManagedService {
 		return sAutoReconnectPeriod;
 	}
 	
-	
+	private static final class ConnectTimerTask extends TimerTask {
+		private final Timer timer;
+		
+		public ConnectTimerTask(Timer timer) {
+			this.timer=timer;
+		}
+		@Override
+		public void run() {
+			if(sShutdown) {
+				timer.cancel();
+			}
+			else {
+				sLogger.info("Trying to (re-)connect to KNX...");
+				if( connect() ) {
+					sLogger.info("Connected to KNX");
+					timer.cancel();
+				}
+				else {
+					sLogger.info("KNX link will be retried in {} seconds", sAutoReconnectPeriod);
+				}
+			}
+		}
+	}
 }
