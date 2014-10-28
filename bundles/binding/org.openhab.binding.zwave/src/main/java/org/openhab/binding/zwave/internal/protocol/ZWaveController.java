@@ -604,10 +604,12 @@ public class ZWaveController {
 			if (entry.getValue().getNodeStage() == NodeStage.EMPTYNODE)
 				continue;
 			
-			logger.debug(String.format("NODE %d: Has been in Stage %s since %s", entry.getKey(), entry.getValue().getNodeStage().getLabel(), entry.getValue().getQueryStageTimeStamp().toString()));
+			logger.debug("NODE {}: In Stage {} since {}, listening={}, FLiRS={}", entry.getKey(),
+					entry.getValue().getNodeStage().getLabel(), entry.getValue().getQueryStageTimeStamp().toString(),
+					entry.getValue().isListening(), entry.getValue().isFrequentlyListening());
 			
-			if(entry.getValue().getNodeStage() == NodeStage.DONE || entry.getValue().getNodeStage() == NodeStage.DEAD
-					|| (!entry.getValue().isListening() && !entry.getValue().isFrequentlyListening())) {
+			if(entry.getValue().getNodeStage() == NodeStage.DONE || entry.getValue().isDead() == true
+					 || (!entry.getValue().isListening() && !entry.getValue().isFrequentlyListening())) {
 				completeCount++;
 				continue;
 			}
@@ -617,7 +619,7 @@ public class ZWaveController {
 			if(Calendar.getInstance().getTimeInMillis() < (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_TIMEOUT))
 				continue;
 			
-			logger.warn(String.format("NODE %d: May be dead, setting stage to DEAD.", entry.getKey()));
+			logger.warn("NODE {}: May be dead, setting stage to DEAD.", entry.getKey());
 			entry.getValue().setNodeStage(NodeStage.DEAD);
 
 			completeCount++;
@@ -625,6 +627,8 @@ public class ZWaveController {
 		
 		// If all nodes are completed, then we say the binding is ready for business
 		if(this.zwaveNodes.size() == completeCount && initializationComplete == false) {
+			logger.debug("ZWave Initialisation Complete");
+			
 			// We only want this event once!
 			initializationComplete = true;
 			
@@ -634,6 +638,7 @@ public class ZWaveController {
 			// If there are DEAD nodes, send a Node Status event
 			// We do that here to avoid messing with the binding initialisation
 			for(ZWaveNode node : this.getNodes()) {
+				logger.debug("NODE {}: Checking completion state - {}.", node.getNodeId(), node.getNodeStage());
 				if (node.isDead()) {
 					logger.debug("NODE {}: DEAD node.", node.getNodeId());
 

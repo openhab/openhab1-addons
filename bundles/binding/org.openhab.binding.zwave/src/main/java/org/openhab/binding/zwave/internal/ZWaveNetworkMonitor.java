@@ -254,7 +254,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		for (ZWaveNode node : zController.getNodes()) {
 			// Ignore devices that haven't initialized yet - unless they are
 			// DEAD or FAILED.
-			if (node.isInitializationComplete() == false && node.isDead() == false && node.isFailed() == false) {
+			if (node.isInitializationComplete() == false && node.isDead() == false) {
 				logger.debug("NODE {}: Initialisation NOT yet complete. Skipping heal.", node.getNodeId());
 				continue;
 			}
@@ -612,16 +612,22 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 			switch (statusEvent.getState()) {
 			case Dead:
+			case Failed:
 				ZWaveNode node = zController.getNode(statusEvent.getNodeId());
 				if (node == null) {
 					logger.error("NODE {}: Status event received, but node not found.", statusEvent.getNodeId());
 					return;
 				}
-				zController.requestIsFailedNode(node.getNodeId());
+
+				// If this is a DEAD notification, then ask the controller if it's really FAILED
+				if(statusEvent.getState() == ZWaveNodeStatusEvent.State.Dead) {
+					zController.requestIsFailedNode(node.getNodeId());
+				}
+
 				// The node is dead, but we may have already started a Heal
 				// If so, don't start it again!
 				if (!isNodeHealing(node.getNodeId())) {
-					logger.debug("NODE {}: DEAD node - requesting network heal.", node.getNodeId());
+					logger.debug("NODE {}: {} node - requesting network heal.", node.getNodeId(), statusEvent.getState());
 
 					healNode(node.getNodeId());
 
@@ -633,32 +639,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 					node.resetResendCount();
 				} else {
-					logger.debug("NODE {}: DEAD node - already healing.", node.getNodeId());
-				}
-				break;
-			case Failed:
-				ZWaveNode failedNode = zController.getNode(statusEvent.getNodeId());
-				if (failedNode == null) {
-					logger.error("NODE {}: Status event received, but node not found.", statusEvent.getNodeId());
-					return;
-				}
-
-				// The node is dead, but we may have already started a Heal
-				// If so, don't start it again!
-				if (!isNodeHealing(failedNode.getNodeId())) {
-					logger.debug("NODE {}: FAILED node - requesting network heal.", failedNode.getNodeId());
-
-					healNode(failedNode.getNodeId());
-
-					// Reset the node stage to PING.
-					// This will also set the state back to DONE in
-					// resetResendCount if the node
-					// has already completed initialisation.
-					// node.setNodeStage(NodeStage.PING);
-
-					failedNode.resetResendCount();
-				} else {
-					logger.debug("NODE {}: FAILED node - already healing.", failedNode.getNodeId());
+					logger.debug("NODE {}: {} node - already healing.", node.getNodeId(), statusEvent.getState());
 				}
 				break;
 			case Alive:
