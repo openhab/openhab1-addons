@@ -1322,5 +1322,18 @@
 			<Label lang="en">Flush dimmer</Label>
 			<ConfigFile>qubino/zmnhda.xml</ConfigFile>
 		</Product>
-	</Manufacturer>	
+	</Manufacturer>
+	<Manufacturer>
+		<Id>97</Id>
+		<Name>Wintop</Name>
+		<Product>
+			<Reference>
+				<Type>1188</Type>
+				<Id>4501</Id>
+			</Reference>
+			<Model>ITEMP</Model>
+			<Label lang="en">Contact and temp sensor</Label>
+			<ConfigFile>wintop/itemp.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>

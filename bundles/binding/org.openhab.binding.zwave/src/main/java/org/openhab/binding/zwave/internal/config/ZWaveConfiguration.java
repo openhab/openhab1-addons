@@ -575,7 +575,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						for (ZWaveDbAssociationGroup group : groupList) {
 							// TODO: Controller reporting associations are set to read only
 							record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/",
-									database.getLabel(group.Label), group.SetToController);
+									database.getLabel(group.Label), true);
 
 							// Add the description
 							record.description = database.getLabel(group.Help);

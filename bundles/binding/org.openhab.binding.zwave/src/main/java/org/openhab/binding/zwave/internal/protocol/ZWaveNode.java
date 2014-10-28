@@ -49,13 +49,11 @@ public class ZWaveNode {
 
 	private final ZWaveDeviceClass deviceClass;
 	@XStreamOmitField
-	private final ZWaveController controller;
+	private ZWaveController controller;
 	@XStreamOmitField
-	private final ZWaveNodeStageAdvancer nodeStageAdvancer;
+	private ZWaveNodeStageAdvancer nodeStageAdvancer;
 
-	@XStreamOmitField
 	private int homeId;
-	@XStreamOmitField
 	private int nodeId;
 	private int version;
 	
@@ -78,7 +76,10 @@ public class ZWaveNode {
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
 	private Date lastSent;
 	private Date lastReceived;
+
+	@XStreamOmitField
 	private Date queryStageTimeStamp;
+	@XStreamOmitField
 	private volatile NodeStage nodeStage;
 
 	@XStreamOmitField
@@ -101,6 +102,7 @@ public class ZWaveNode {
 	 * Constructor. Creates a new instance of the ZWaveNode class.
 	 * @param homeId the home ID to use.
 	 * @param nodeId the node ID to use.
+	 * @param controller the wave controller instance
 	 */
 	public ZWaveNode(int homeId, int nodeId, ZWaveController controller) {
 		this.homeId = homeId;
@@ -111,6 +113,21 @@ public class ZWaveNode {
 		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN, Generic.NOT_KNOWN, Specific.NOT_USED);
 		this.lastSent = null;
 		this.lastReceived = null;
+	}
+
+	/**
+	 * Configures the node after it's been restored from file
+	 * @param controller the wave controller instance
+	 */
+	public void setRestoredFromConfigfile(ZWaveController controller) {
+		this.controller = controller;
+		
+		// Create the initialisation advancer and tell it we've loaded from file
+		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
+		this.nodeStageAdvancer.setRestoredFromConfigfile();
+		this.nodeStage = NodeStage.EMPTYNODE;
+		
+		this.lastUpdated = Calendar.getInstance().getTime();		
 	}
 
 	/**
@@ -491,7 +508,7 @@ public class ZWaveNode {
 	
 	/**
 	 * Resolves a command class for this node. First endpoint is checked. 
-	 * If endpoint == 1 or (endpoint != 1 and version of the multi instance 
+	 * If endpoint == 0 or (endpoint != 1 and version of the multi instance 
 	 * command == 1) then return a supported command class on the node itself. 
 	 * If endpoint != 1 and version of the multi instance command == 2 then
 	 * first try command classes of endpoints. If not found the return a  
@@ -507,31 +524,32 @@ public class ZWaveNode {
 			return null;
 		}
 		
-		ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)supportedCommandClasses.get(CommandClass.MULTI_INSTANCE);
+		if (endpointId == 0) {
+			return getCommandClass(commandClass);
+		}
 		
-		if (multiInstanceCommandClass != null && multiInstanceCommandClass.getVersion() == 2) {
+		ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) supportedCommandClasses.get(CommandClass.MULTI_INSTANCE);
+		if (multiInstanceCommandClass == null) {
+			return null;	
+		}
+		else if (multiInstanceCommandClass.getVersion() == 2) {
 			ZWaveEndpoint endpoint = multiInstanceCommandClass.getEndpoint(endpointId);
 			
 			if (endpoint != null) { 
 				ZWaveCommandClass result = endpoint.getCommandClass(commandClass);
 				if (result != null) {
 					return result;
-				}
-			} 
+			}
+		}
+		else if (multiInstanceCommandClass.getVersion() == 1) {
+			ZWaveCommandClass result = getCommandClass(commandClass);
+			if (endpointId <= result.getInstances())
+				return result;
+		} else {
+			logger.warn("NODE {}: Unsupported multi instance command version: {}.", nodeId, multiInstanceCommandClass.getVersion());
 		}
 		
-		ZWaveCommandClass result = getCommandClass(commandClass);
-		
-		if (result == null) {
-			return result;
-		}
-		
-		if (multiInstanceCommandClass != null && multiInstanceCommandClass.getVersion() == 1 &&
-				result.getInstances() >= endpointId) {
-			return result;
-		}
-		
-		return endpointId == 1 ? result : null;
+		return null;
 	}
 	
 	/**
@@ -551,9 +569,11 @@ public class ZWaveNode {
 	 * 
 	 * @return true if succeeded, false otherwise.
 	 */
-	public boolean restoreFromConfig() {
-		return this.nodeStageAdvancer.restoreFromConfig();
-	}
+//	public boolean restoreFromConfig() {
+//		logger.warn("Restore from Config is called!!!!!");
+//		return false;
+//		return this.nodeStageAdvancer.restoreFromConfig();
+//	}
 
 	/**
 	 * Encapsulates a serial message for sending to a 
@@ -573,8 +593,9 @@ public class ZWaveNode {
 			return null;
 		
 		// no encapsulation necessary.
-		if (endpointId == 1 && commandClass.getInstances() == 1 && commandClass.getEndpoint() == null)
+		if (endpointId == 0) {
 			return serialMessage;
+		}
 		
 		multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)this.getCommandClass(CommandClass.MULTI_INSTANCE);
 		
@@ -597,12 +618,8 @@ public class ZWaveNode {
 			}
 		}
 
-		if (endpointId != 1) {
-			logger.warn("NODE {}:Encapsulating message, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
-			return null;
-		}
-		
-		return serialMessage;
+		logger.warn("NODE {}:Encapsulating message, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
+		return null;
 	}
 
 	/**
