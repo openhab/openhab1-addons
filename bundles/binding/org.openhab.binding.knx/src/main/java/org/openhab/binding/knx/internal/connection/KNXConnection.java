@@ -147,16 +147,20 @@ public class KNXConnection implements ManagedService {
 				return false;
 			}
 
-
+			//TODO this might not work: since recursive calling of connect is quite strange
 			NetworkLinkListener linkListener = new NetworkLinkListener() {
 				public void linkClosed(CloseEvent e) {
-					// if the link is lost, we want to reconnect immediately
 					if(!(CloseEvent.USER_REQUEST == e.getInitiator()) && !sShutdown) {
 						sLogger.warn("KNX link has been lost (reason: {} on object {}) - reconnecting...", e.getReason(), e.getSource().toString());
-						connect();
-					}
-					if(!sLink.isOpen() && !sShutdown) {
-						sLogger.error("KNX link has been lost!");
+						for(KNXConnectionListener listener : KNXConnection.sConnectionListeners) {
+							listener.connectionLost();
+						}
+
+//						// if the link is lost, we want to reconnect immediately
+//						connect();
+//					}
+//					if(!sLink.isOpen() && !sShutdown) {
+//						sLogger.error("KNX link has been lost!");
 						if(sAutoReconnectPeriod>0) {
 							sLogger.info("KNX link will be retried in " + sAutoReconnectPeriod + " seconds");
 							final Timer timer = new Timer();
@@ -199,12 +203,6 @@ public class KNXConnection implements ManagedService {
 				sPC.addProcessListener(sProcessCommunicationListener);
 			}
 
-			for(KNXConnectionListener listener : KNXConnection.sConnectionListeners) {
-				listener.connectionEstablished();
-			}
-
-			successRetVal=true;
-
 			if (sLogger.isInfoEnabled()) {
 				if (sLink instanceof KNXNetworkLinkIP) {
 					String ipConnectionTypeString = 
@@ -215,6 +213,12 @@ public class KNXConnection implements ManagedService {
 				}
 			}
 			
+			for(KNXConnectionListener listener : KNXConnection.sConnectionListeners) {
+				listener.connectionEstablished();
+			}
+
+			successRetVal=true;
+
 		} catch (KNXException e) {
 			sLogger.error("Error connecting to KNX bus: {}", e.getMessage());
 		} catch (UnknownHostException e) {
