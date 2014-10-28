@@ -372,11 +372,11 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 			}
 
 			boolean created = false;
-			String hackUnitName = (unitName == null) ? "_default" : unitName;
+			String hackUnitName = (unitName == null) ? MiosUnit.CONFIG_DEFAULT_UNIT : unitName;
 			MiosUnit unit = units.get(hackUnitName);
 
 			if (unit == null) {
-				unit = new MiosUnit(unitName);
+				unit = new MiosUnit(hackUnitName);
 				created = true;
 			}
 

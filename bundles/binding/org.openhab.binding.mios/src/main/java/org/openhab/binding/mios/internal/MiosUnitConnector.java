@@ -402,20 +402,19 @@ public class MiosUnitConnector {
 		private String getUri(boolean full) {
 			// Force a full poll of the dataSet every time the MiOS Unit
 			// configuration indicates to do so
-			int errorCount = getMiosUnit().getErrorCount();
+			MiosUnit unit = getMiosUnit();
+			int errorCount = unit.getErrorCount();
 			boolean force = full || (errorCount != 0) && (failures != 0)
 					&& ((failures % errorCount) == 0);
 
-			MiosUnit unit = getMiosUnit();
 
 			if (!force && loadTime != null && dataVersion != null) {
 				AsyncHttpClientConfig c = getAsyncHttpClient().getConfig();
 
-				// Use a timeout on the MiOS URL call that's about 1/3 of what
-				// the
-				// connection timeout is.
+				// Use a timeout on the MiOS URL call that's about 2/3 of what
+				// the connection timeout is.
 				int t = Math.min(c.getIdleConnectionTimeoutInMs(),
-						c.getRequestTimeoutInMs()) / 1000 / 3;
+						unit.getTimeout()) / 500 / 3;
 
 				return String.format(Locale.US, STATUS2_INCREMENTAL_URL,
 						unit.getHostname(), unit.getPort(), loadTime,
