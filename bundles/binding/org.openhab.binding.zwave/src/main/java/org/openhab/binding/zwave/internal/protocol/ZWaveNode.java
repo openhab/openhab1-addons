@@ -439,7 +439,7 @@ public class ZWaveNode {
 		this.resendCount = 0;
 		if (this.nodeStageAdvancer.isInitializationComplete() && this.isDead() == false) {
 			this.nodeStage = NodeStage.DONE;
-		this.lastUpdated = Calendar.getInstance().getTime();
+		}
 	}
 
 	/**
