@@ -254,7 +254,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		for (ZWaveNode node : zController.getNodes()) {
 			// Ignore devices that haven't initialized yet - unless they are
 			// DEAD or FAILED.
-			if (node.isInitializationComplete() == false && node.isDead() == false && node.isFailed() == false) {
+			if (node.isInitializationComplete() == false && node.isDead() == false) {
 				logger.debug("NODE {}: Initialisation NOT yet complete. Skipping heal.", node.getNodeId());
 				continue;
 			}

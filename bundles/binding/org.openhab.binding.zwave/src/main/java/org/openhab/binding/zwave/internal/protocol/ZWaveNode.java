@@ -177,27 +177,19 @@ public class ZWaveNode {
 	}
 	
 	/**
-	 * Gets whether the node is dead.
+	 * Gets whether the node is dead or failed.
+	 * In either case, the device is not considered functioning
 	 * @return
 	 */
-	public boolean isDead(){
-		if(this.nodeStage == NodeStage.DEAD)
+	public boolean isDead() {
+		if(this.nodeStage == NodeStage.DEAD || this.nodeStage == NodeStage.FAILED) {
 			return true;
-		else
+		}
+		else {
 			return false;
+		}
 	}
-	
-	/**
-	 * Gets whether the node is failed by controller.
-	 * @return
-	 */
-	public boolean isFailed(){
-		if(this.nodeStage == NodeStage.FAILED)
-			return true;
-		else
-			return false;
-	}
-	
+
 	/**
 	 * Sets the node to be 'undead'.
 	 * @return
@@ -432,8 +424,7 @@ public class ZWaveNode {
 	 */
 	public void resetResendCount() {
 		this.resendCount = 0;
-		if (this.nodeStageAdvancer.isInitializationComplete() &&
-				this.nodeStage != NodeStage.DEAD && this.nodeStage != NodeStage.FAILED) {
+		if (this.nodeStageAdvancer.isInitializationComplete() && this.isDead() == false) {
 			this.nodeStage = NodeStage.DONE;
 		}
 		this.lastUpdated = Calendar.getInstance().getTime();
