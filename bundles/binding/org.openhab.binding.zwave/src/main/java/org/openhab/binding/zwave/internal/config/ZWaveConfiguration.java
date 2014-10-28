@@ -843,22 +843,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					this.zController.requestRemoveFailedNode(nodeId);
 				}
 
-				// This is temporary
-				// It should be in the startup code, but that needs refactoring
-				if (action.equals("Version")) {
-					logger.debug("NODE {}: Get node version", nodeId);
-					ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
-							.getCommandClass(CommandClass.VERSION);
-
-					if (versionCommandClass == null) {
-						logger.error("NODE {}: Error getting versionCommandClass in doAction", nodeId);
-						return;
-					}
-
-					// Request the version report for this node
-					this.zController.sendData(versionCommandClass.getVersionMessage());
-				}
-
+			
 				// Return here as afterwards we assume there are more elements
 				// in the domain array
 				return;
