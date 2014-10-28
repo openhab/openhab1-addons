@@ -361,6 +361,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 							commandList.length);
 
 					String mapName;
+					String serviceStr;
 					String serviceName;
 					String serviceAction;
 
@@ -373,13 +374,19 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 							serviceName = matcher.group("serviceName");
 							serviceAction = matcher.group("serviceAction");
 
-							// Handle any Service Aliases that might have been used in the inline Map.
-							tmp = (String) aliasMap.get(serviceName);
-							if (tmp != null) {
-								serviceName = tmp;
+							if (serviceName != null) {
+								// Handle any Service Aliases that might have been used in the inline Map.
+								tmp = (String) aliasMap.get(serviceName);
+								if (tmp != null) {
+									serviceName = tmp;
+								}
+
+								serviceStr = serviceName + '/' + serviceAction;
+							} else {
+								serviceStr = null;
 							}
 
-							String oldMapName = l.put(mapName, serviceName + '/' + serviceAction);
+							String oldMapName = l.put(mapName, serviceStr);
 
 							if (oldMapName != null) {
 								throw new BindingConfigParseException(
