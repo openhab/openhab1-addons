@@ -299,7 +299,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 					continue;
 				if (oldestNode == null) {
 					oldestNode = node;
-				} else if (node.getLastUpdated().getTime() < oldestNode.getLastUpdated().getTime()) {
+				} else if (node.getLastSent().getTime() < oldestNode.getLastSent().getTime()) {
 					oldestNode = node;
 				}
 			}
