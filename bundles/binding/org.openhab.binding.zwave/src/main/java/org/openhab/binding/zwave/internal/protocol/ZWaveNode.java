@@ -126,8 +126,6 @@ public class ZWaveNode {
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
 		this.nodeStageAdvancer.setRestoredFromConfigfile();
 		this.nodeStage = NodeStage.EMPTYNODE;
-		
-		this.lastUpdated = Calendar.getInstance().getTime();		
 	}
 
 	/**
@@ -539,12 +537,14 @@ public class ZWaveNode {
 				ZWaveCommandClass result = endpoint.getCommandClass(commandClass);
 				if (result != null) {
 					return result;
+				}
 			}
 		}
 		else if (multiInstanceCommandClass.getVersion() == 1) {
 			ZWaveCommandClass result = getCommandClass(commandClass);
-			if (endpointId <= result.getInstances())
+			if (endpointId <= result.getInstances()) {
 				return result;
+			}
 		} else {
 			logger.warn("NODE {}: Unsupported multi instance command version: {}.", nodeId, multiInstanceCommandClass.getVersion());
 		}
@@ -563,17 +563,6 @@ public class ZWaveNode {
 		// call the advanceNodeStage method on the advancer.
 		this.nodeStageAdvancer.advanceNodeStage(targetStage);
 	}
-	
-	/**
-	 * Restores a node from an XML file using the @ ZWaveNodeSerializer} class.
-	 * 
-	 * @return true if succeeded, false otherwise.
-	 */
-//	public boolean restoreFromConfig() {
-//		logger.warn("Restore from Config is called!!!!!");
-//		return false;
-//		return this.nodeStageAdvancer.restoreFromConfig();
-//	}
 
 	/**
 	 * Encapsulates a serial message for sending to a 
