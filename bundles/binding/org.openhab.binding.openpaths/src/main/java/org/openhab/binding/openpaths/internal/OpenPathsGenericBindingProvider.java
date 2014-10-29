@@ -11,6 +11,8 @@ package org.openhab.binding.openpaths.internal;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.openpaths.OpenPathsBindingProvider;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -41,10 +43,12 @@ public class OpenPathsGenericBindingProvider extends AbstractGenericBindingProvi
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem)) {
+		if (!(item instanceof SwitchItem)
+				&& !(item instanceof NumberItem)
+				&&!(item instanceof StringItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Switch are allowed - please check your *.items configuration");
+					+ "', only Switch,Number and String are allowed - please check your *.items configuration");
 		}
 	}
 	
