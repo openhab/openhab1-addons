@@ -10,13 +10,16 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.action.xpl.action">
-	<implementation class="org.openhab.action.xpl.internal.xPLActionService" />
+	<implementation class="org.openhab.action.xpl.internal.XplActionService" />
 
 	<service>
 		<provide interface="org.openhab.core.scriptengine.action.ActionService" />
-		<provide interface="org.osgi.service.cm.ManagedService" />
 	</service>
 
 	<property name="service.pid" type="String" value="org.openhab.xpl" />
+	
+	<reference bind="setXplTransportService" cardinality="1..1"
+		interface="org.openhab.io.transport.xpl.XplTransportService"
+		name="XplTransportService" policy="static" unbind="unsetXplTransportService"/>
 	
 </scr:component>

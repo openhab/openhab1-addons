@@ -38,7 +38,7 @@ public class DateTimeUtils {
 	public static Range getRange(int startMonth, int startDay, int endMonth, int endDay) {
 		Calendar start = Calendar.getInstance();
 		start.set(Calendar.MONTH, startMonth);
-		start.set(Calendar.DAY_OF_MONTH, startMonth);
+		start.set(Calendar.DAY_OF_MONTH, startDay);
 		start = truncateToMidnight(start);
 
 		Calendar end = Calendar.getInstance();

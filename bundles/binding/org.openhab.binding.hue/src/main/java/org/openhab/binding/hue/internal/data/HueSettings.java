@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * 
  * @author Roman Hartmann
+ * @author Jos Schering
  * @since 1.2.0
  */
 public class HueSettings {
@@ -68,6 +69,39 @@ public class HueSettings {
 		}
 		return (Boolean) settingsData.node("lights")
 				.node(Integer.toString(deviceNumber)).node("state").value("on");
+	}
+	
+	
+	/**
+	 * Determines whether the given bulb is reachable.
+	 * Once a bulb is physical disconnected it becomes unreachable after around 10 seconds. 
+	 * The hearbeat service of the Hue hub device is responsible for this behavior.  
+	 * 
+	 * @param deviceNumber
+	 *            The bulb number the bridge has filed the bulb under.
+	 * @return true if the bulb is reachable, false otherwise.
+	 */
+	public boolean isReachable(int deviceNumber) {
+		if (settingsData == null) {
+			logger.error("Hue bridge settings not initialized correctly.");
+			return false;
+		}
+		return (Boolean) settingsData.node("lights")
+				.node(Integer.toString(deviceNumber)).node("state").value("reachable");
+	}
+	
+	
+	/**
+	 * Determine amount of lights connected to Hue hub
+	 * 
+	 * @return amount of lights connected to Hue hub
+	 */
+	public int getCount() {
+		if (settingsData == null) {
+			logger.error("Hue bridge settings not initialized correctly.");
+			return -1;
+		}
+		return settingsData.node("lights").count();
 	}
 
 	/**
@@ -180,6 +214,13 @@ public class HueSettings {
 		@SuppressWarnings("unchecked")
 		protected SettingsTree node(String nodeName) {
 			return new SettingsTree((Map<String, Object>) dataMap.get(nodeName));
+		}
+
+		/**
+		 * @return the amount of lights connected to Hue hub
+		 */
+		protected int count() {
+			return dataMap.size();
 		}
 
 		/**

@@ -79,12 +79,11 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
-		logger.trace("Handle Message Thermostat Operating State Request");
-		logger.debug(String.format("Received Thermostat Operating State Request for Node ID = %d", this.getNode().getNodeId()));
+		logger.debug("NODE {}: Received Thermostat Operating State Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 		case THERMOSTAT_OPERATING_STATE_REPORT:
-			logger.trace("Process Thermostat Operating State Report");
+			logger.trace("NODE {}: Process Thermostat Operating State Report", this.getNode().getNodeId());
 			processThermostatOperatingStateReport(serialMessage, offset, endpoint);
 
 			if (this.getNode().getNodeStage() != NodeStage.DONE)
@@ -92,10 +91,11 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
 			break;
 		default:
-			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
+			logger.warn("NODE {}: Unsupported Command {} for command class {} ({}).",
+					this.getNode().getNodeId(),
 					command, 
 					this.getCommandClass().getLabel(),
-					this.getCommandClass().getKey()));
+					this.getCommandClass().getKey());
 		}
 	}
 
@@ -110,12 +110,12 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
 		int value = serialMessage.getMessagePayloadByte(offset + 1); 
 
-		logger.debug(String.format("Thermostat Operating State report from nodeId = %d,  value = 0x%02X", this.getNode().getNodeId(), value));
+		logger.debug("NODE {}: Thermostat Operating State report value = {}", this.getNode().getNodeId(), value);
 
 		OperatingStateType operatingStateType = OperatingStateType.getOperatingStateType(value);
 
 		if (operatingStateType == null) {
-			logger.error(String.format("Unknown Operating State Type = 0x%02x, ignoring report.", value));
+			logger.error("NODE {}: Unknown Operating State Type = {}, ignoring report.", this.getNode().getNodeId(), value);
 			return;
 		}
 
@@ -123,9 +123,9 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		if (!this.operatingStateTypes.contains(operatingStateType))
 			this.operatingStateTypes.add(operatingStateType);
 
-		logger.debug(String.format("Operating State Type = %s (0x%02x)", operatingStateType.getLabel(), value));
+		logger.debug("NODE {}: Operating State Type = {} ({})", this.getNode().getNodeId(), operatingStateType.getLabel(), value);
 
-		logger.debug(String.format("Thermostat Operating State Report from Node ID = %d, value = %s", this.getNode().getNodeId(), operatingStateType.getLabel()));
+		logger.debug("NODE {}: Thermostat Operating State Report value = {}", this.getNode().getNodeId(), operatingStateType.getLabel());
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
 		this.getController().notifyEventListeners(zEvent);
 	}
@@ -146,7 +146,7 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	 */
 	@Override
 	public SerialMessage getValueMessage() {
-		logger.debug("Creating new message for application command THERMOSTAT_OPERATING_STATE_GET for node {}", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command THERMOSTAT_OPERATING_STATE_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Get);
 		byte[] payload = {
 				(byte) this.getNode().getNodeId(),

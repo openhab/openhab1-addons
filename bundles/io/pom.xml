@@ -36,6 +36,7 @@
     <module>org.openhab.io.transport.cul</module>
     <module>org.openhab.io.transport.mqtt</module>
     <module>org.openhab.io.transport.serial</module>
+    <module>org.openhab.io.transport.xpl</module>
   </modules>
 
 </project>
