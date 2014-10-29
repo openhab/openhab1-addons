@@ -219,8 +219,6 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 		}
 	}
 	
-
-	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		// remove all known items if configuration changed
 		modbusSlaves.clear();
@@ -244,6 +242,8 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 						}
 					} else if ("writemultipleregisters".equals(key)) {
 						ModbusSlave.setWriteMultipleRegisters(Boolean.valueOf(config.get(key).toString()));
+					} else if ("readmultipleregisters".equals(key)) {
+						ModbusSlave.setReadMultipleRegisters(Boolean.valueOf(config.get(key).toString()));
 					} else {
 						logger.debug("given modbus-slave-config-key '" + key
 							+ "' does not follow the expected pattern 'pollInterval' or '<slaveId>.<connection|id|start|length|type>'");
@@ -280,14 +280,19 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 						}
 					} else if (modbusSlave instanceof ModbusSerialSlave) {
 						((ModbusSerialSlave) modbusSlave).setPort(chunks[0]);
-						if (chunks.length == 2) {
+						if (chunks.length >= 2) {
 							((ModbusSerialSlave) modbusSlave).setBaud(Integer.valueOf(chunks[1]));
+						}
+						if (chunks.length >= 3) {
+							((ModbusSerialSlave) modbusSlave).setReceiveTimeout(Integer.valueOf(chunks[2]));
 						}
 					}
 				} else if ("start".equals(configKey)) {
 					modbusSlave.setStart(Integer.valueOf(value));
 				} else if ("length".equals(configKey)) {
 					modbusSlave.setLength(Integer.valueOf(value));
+				} else if ("step".equals(configKey)) {
+					modbusSlave.setStep(Integer.valueOf(value));
 				} else if ("id".equals(configKey)) {
 					modbusSlave.setId(Integer.valueOf(value));
 				} else if ("type".equals(configKey)) {

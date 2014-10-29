@@ -198,6 +198,12 @@ public class SerialConnection
     // Set connection parameters, if set fails return parameters object
     // to original state.
     try {
+      if(Modbus.debug) System.out.println("Connection parameters: " +
+    		  m_Parameters.getBaudRate() + ", " + 
+    		  m_Parameters.getDatabits() + ", " +
+    		  m_Parameters.getStopbits() + ", " +
+    		  m_Parameters.getParity());
+        
       m_SerialPort.setSerialPortParams(m_Parameters.getBaudRate(),
           m_Parameters.getDatabits(),
           m_Parameters.getStopbits(),
@@ -209,7 +215,7 @@ public class SerialConnection
       m_Parameters.setParity(oldParity);
       if(Modbus.debug) System.out.println(e.getMessage());
 
-      throw new Exception("Unsupported parameter");
+      throw new Exception("Unsupported parameter", e);
     }
 
     // Set flow control.
