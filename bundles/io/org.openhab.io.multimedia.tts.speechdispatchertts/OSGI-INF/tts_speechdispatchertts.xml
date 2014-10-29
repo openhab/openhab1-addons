@@ -9,10 +9,12 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.io.multimedia.tts.speechdispatchertts">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="false" name="org.openhab.io.multimedia.tts.speechdispatchertts">
    <implementation class="org.openhab.io.multimedia.internal.tts.TTSServiceSpeechDispatcherTTS"/>
    <service>
       <provide interface="org.openhab.io.multimedia.tts.TTSService"/>
+      <provide interface="org.osgi.service.cm.ManagedService"/>
    </service>
    <property name="os" type="String" value="any"/>
+   <property name="service.pid" type="String" value="org.openhab.speechdispatchertts"/>
 </scr:component>
