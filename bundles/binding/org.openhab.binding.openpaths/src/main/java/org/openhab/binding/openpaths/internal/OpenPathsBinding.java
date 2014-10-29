@@ -125,16 +125,17 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 					
 					logger.debug("Requesting location for '{}'...", name);
 					location = getUserLocation(accessKey, secretKey);
-					openPathsUsers.get(name).setLastLocation(location);
-	                logger.debug("New location received for '{}': {}", name, location.toString());
+					if( location != null ) {
+						openPathsUsers.get(name).setLastLocation(location);
+		                logger.debug("New location received for '{}': {}", name, location.toString());
+					} else {
+	                    logger.warn("Unable to determine location for '{}'. Skipping.", name);
+	                    continue;
+					}
                 } else {
                 	location = openPathsUsers.get(name).getLastLocation();
                 	logger.debug("Using cached location for '{}'", openPathsUser.toString());
                 }
-//                if (location == null) {
-//                    logger.warn("Unable to determine location for '{}'. Skipping.", name);
-//                    continue;
-//                }
 
                 String bindingLocationName = bindingParts.length > 1 ? bindingParts[1] : "";
 				if( bindingLocationName.startsWith("current") ) {
@@ -202,7 +203,7 @@ public class OpenPathsBinding extends AbstractActiveBinding<OpenPathsBindingProv
 	    // send the request and check we got a successful response
 	    Response response = request.send();
 	    if (!response.isSuccessful()) {
-	    	logger.error("Failed to request the OpenPaths location: " + response.getCode());
+	    	logger.error("Failed to request the OpenPaths location, response code: " + response.getCode());
 	    	return null;
 	    }
 	    
