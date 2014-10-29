@@ -110,7 +110,7 @@ public class KNXConnection implements ManagedService {
 	 */
 	public static synchronized ProcessCommunicator getCommunicator() {
 		if(sLink!=null && !sLink.isOpen()) {
-//			connect();
+			connect();
 		}
 		return sPC;
 	}
