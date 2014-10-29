@@ -601,8 +601,8 @@
 		</Product>
 		<Product>
 			<Reference>
-				<Type>0003</Type>
-				<Id>000C</Id>
+				<Type>0002</Type>
+				<Id>001C</Id>
 			</Reference>
 			<Model>HEM-G2</Model>
 			<Label lang="en">Home Energy Meter G2</Label>
