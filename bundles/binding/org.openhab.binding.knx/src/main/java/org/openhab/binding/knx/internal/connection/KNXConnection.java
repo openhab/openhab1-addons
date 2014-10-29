@@ -90,6 +90,15 @@ public class KNXConnection implements ManagedService {
 	/** seconds between connect retries when KNX link has been lost, 0 means never retry. Default value is <code>0</code> */
 	private static int sAutoReconnectPeriod = 0;
 	
+	/** Number of threads executing in parallel for auto refresh feature. Default value is <code>5</code> */
+	private static int sNumberOfThreads = 5;
+	
+	/** Time in seconds to wait for an orderly shutdown of the auto refresher feature. Default value is <code>5</code> */
+	private static int sScheduledExecutorServiceShutdownTimeout = 5;
+
+	/** The maximum number of queue entries in the refresh queue used by the auto refresh feature. Default value is <code>100</code> */
+	private static int sMaxRefreshQueueEntries = 100;
+	
 	/** listeners for connection/re-connection events */
 	private static Set<KNXConnectionListener> sConnectionListeners = new HashSet<KNXConnectionListener>();
 	
@@ -338,6 +347,31 @@ public class KNXConnection implements ManagedService {
 			}
 
 			
+			String maxRefreshQueueEntriesString = (String) config.get("maxRefreshQueueEntries");
+			if (StringUtils.isNotBlank(autoReconnectPeriodString)) {
+				int maxRefreshQueueEntriesValue = Integer.parseInt(maxRefreshQueueEntriesString);
+				if (maxRefreshQueueEntriesValue >= 0) {
+					sMaxRefreshQueueEntries = maxRefreshQueueEntriesValue;
+				}
+			}
+
+			
+			String numberOfThreadsString = (String) config.get("numberOfThreads");
+			if (StringUtils.isNotBlank(autoReconnectPeriodString)) {
+				int numberOfThreadsValue = Integer.parseInt(numberOfThreadsString);
+				if (numberOfThreadsValue >= 0) {
+					sNumberOfThreads = numberOfThreadsValue;
+				}
+			}
+			
+			String scheduledExecutorServiceShutdownTimeoutString = (String) config.get("scheduledExecutorServiceShutdownTimeout");
+			if (StringUtils.isNotBlank(scheduledExecutorServiceShutdownTimeoutString)) {
+				int scheduledExecutorServiceShutdownTimeoutValue = Integer.parseInt(scheduledExecutorServiceShutdownTimeoutString);
+				if (scheduledExecutorServiceShutdownTimeoutValue >= 0) {
+					sScheduledExecutorServiceShutdownTimeout = scheduledExecutorServiceShutdownTimeoutValue;
+				}
+			}
+			
 			if(sPC==null) {
 				if (!connect()) {
 					sLogger.warn("Inital connection to KNX bus failed!");
@@ -367,6 +401,27 @@ public class KNXConnection implements ManagedService {
 		return sAutoReconnectPeriod;
 	}
 	
+	/**
+	 * @return the sNumberOfThreads
+	 */
+	public static int getNumberOfThreads() {
+		return sNumberOfThreads;
+	}
+
+	/**
+	 * @return the sScheduledExecutorServiceShutdownTimeout
+	 */
+	public static int getScheduledExecutorServiceShutdownTimeout() {
+		return sScheduledExecutorServiceShutdownTimeout;
+	}
+
+	/**
+	 * @return the sMaxRefreshQueueEntries
+	 */
+	public static int getMaxRefreshQueueEntries() {
+		return sMaxRefreshQueueEntries;
+	}
+
 	private static final class ConnectTimerTask extends TimerTask {
 		private final Timer timer;
 		

@@ -35,12 +35,6 @@ public class KNXBusReaderScheduler {
 	private static final Logger sLogger = LoggerFactory.getLogger(KNXBusReaderScheduler.class);
 
 	private final BlockingQueue<Datapoint> mReadQueue = new LinkedBlockingQueue<Datapoint> ();
-	//TODO make NUM_THREADS a configuration parameter
-	private static final int NUM_THREADS = 5;
-	//TODO make MAX_QUEUE_ENTRIES a configuration parameter
-	private static final int MAX_QUEUE_ENTRIES = 100;
-	//TODO make SCHEDULED_EXECUTOR_SERVICE_SHUTDOWN_TIMEOUT a configuration parameter
-	private static final int SCHEDULED_EXECUTOR_SERVICE_SHUTDOWN_TIMEOUT = 5;
 
 	private static Map<Integer, List<Datapoint>> mScheduleMap = new ConcurrentHashMap<Integer,List<Datapoint>>();
 	private ScheduledExecutorService mScheduledExecutorService;
@@ -59,7 +53,7 @@ public class KNXBusReaderScheduler {
 		mDatapointReaderTask.start();
 
 		sLogger.debug("Starting schedule executor.");
-		mScheduledExecutorService = Executors.newScheduledThreadPool(NUM_THREADS);
+		mScheduledExecutorService = Executors.newScheduledThreadPool(KNXConnection.getNumberOfThreads());
 
 		mIsRunning=true;
 	}
@@ -76,7 +70,7 @@ public class KNXBusReaderScheduler {
 		sLogger.debug("Terminating schedule executor.");
 		mScheduledExecutorService.shutdown();
 		try {
-			if (mScheduledExecutorService.awaitTermination(SCHEDULED_EXECUTOR_SERVICE_SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
+			if (mScheduledExecutorService.awaitTermination(KNXConnection.getScheduledExecutorServiceShutdownTimeout(), TimeUnit.SECONDS)) {
 				sLogger.debug("Auto refresh scheduler successfully terminated");
 			}
 			else {
@@ -106,7 +100,7 @@ public class KNXBusReaderScheduler {
 			sLogger.debug("Schedule executor restart.");
 			mScheduledExecutorService.shutdown();
 			try {
-				if (mScheduledExecutorService.awaitTermination(SCHEDULED_EXECUTOR_SERVICE_SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
+				if (mScheduledExecutorService.awaitTermination(KNXConnection.getScheduledExecutorServiceShutdownTimeout(), TimeUnit.SECONDS)) {
 					sLogger.debug("Schedule executor restart: successfully terminated old instance");
 				}
 				else {
@@ -115,7 +109,7 @@ public class KNXBusReaderScheduler {
 			} catch (InterruptedException e) {
 				sLogger.debug("Schedule executor restart failed: interrupted while waiting for termination.");
 			}
-			mScheduledExecutorService = Executors.newScheduledThreadPool(NUM_THREADS);
+			mScheduledExecutorService = Executors.newScheduledThreadPool(KNXConnection.getNumberOfThreads());
 			sLogger.debug("Schedule executor restart: started.");
 		}
 
@@ -141,8 +135,8 @@ public class KNXBusReaderScheduler {
 			return false;
 		}
 
-		if (mReadQueue.size()>MAX_QUEUE_ENTRIES) {
-			sLogger.error("Maximium number of permissible reading queue entries reached ('{}'). Ignoring new entries.", MAX_QUEUE_ENTRIES);
+		if (mReadQueue.size()>KNXConnection.getMaxRefreshQueueEntries()) {
+			sLogger.error("Maximium number of permissible reading queue entries reached ('{}'). Ignoring new entries.", KNXConnection.getMaxRefreshQueueEntries());
 			return false;
 		}
 
@@ -170,8 +164,8 @@ public class KNXBusReaderScheduler {
 			return readOnce(datapoint);
 		}
 
-		if (mReadQueue.size()>MAX_QUEUE_ENTRIES) {
-			sLogger.error("Maximium number of permissible reading queue entries reached ('{}'). Ignoring new entries.", MAX_QUEUE_ENTRIES);
+		if (mReadQueue.size()>KNXConnection.getMaxRefreshQueueEntries()) {
+			sLogger.error("Maximium number of permissible reading queue entries reached ('{}'). Ignoring new entries.", KNXConnection.getMaxRefreshQueueEntries());
 			return false;
 		}
 
@@ -179,13 +173,27 @@ public class KNXBusReaderScheduler {
 		int oldListNumber = getAutoRefreshTimeInSecs(datapoint);
 		if (oldListNumber > 0) { 
 			if (oldListNumber==autoRefreshTimeInSecs) {
-				sLogger.warn("Datapoint '{}' was already in  auto refresh list {}", datapoint.getName(), autoRefreshTimeInSecs);
+				sLogger.debug("Datapoint '{}' was already in  auto refresh list {}", datapoint.getName(), autoRefreshTimeInSecs);
 				return false;
 			}
 			List<Datapoint> oldList = mScheduleMap.get(oldListNumber);
 			synchronized(oldList) {
-				sLogger.debug("Datapoint '{}' already present in different list {}: removing", datapoint.getName(), autoRefreshTimeInSecs);
-				oldList.remove(datapoint);
+				sLogger.debug("Datapoint '{}' already present in different list: {}, removing", datapoint.getName(), oldListNumber);
+				/*
+				 * The simple method to remove a <code>Datapoint</code> from a
+				 * list would be <code>dpList.remove(datapoint)</code>
+				 * Unfortunately, this cannot be used as the
+				 * <code>Datapoint.equals()</code> method is comparing objects
+				 * and sometimes new objects are being created for example when
+				 * a configuration file is reread.
+				 */
+
+				for (Datapoint dp : oldList) {
+					if (dp.toString().equals(datapoint.toString())) {
+						oldList.remove(dp);
+					}
+				}
+
 			}
 		}
 
@@ -216,19 +224,26 @@ public class KNXBusReaderScheduler {
 	 * @return the auto refresh time in seconds if datapoint was added previously. <code>0</code> otherwise.
 	 */
 	private synchronized int getAutoRefreshTimeInSecs(Datapoint datapoint) {
-		int autoRefreshTimeInSecs = 0;
-		//		synchronized(mScheduleMap) {
 		for (int number : mScheduleMap.keySet()) {
 			List<Datapoint> dpList = mScheduleMap.get(number);
 			synchronized(dpList) {
-				if (dpList.contains(datapoint)) {
-					autoRefreshTimeInSecs = number;
-					break;
+				/*
+				 * The simple method to see if a <code>Datapoint</code> is
+				 * already in the list would be
+				 * <code>dpList.contains(datapoint)</code> Unfortunately, this
+				 * cannot be used as the Datapoint.equals() method is comparing
+				 * objects and sometimes new objects are being created for
+				 * example when a configuration file is reread.
+				 */
+
+				for (Datapoint dp : dpList) {
+					if (dp.toString().equals(datapoint.toString())) {
+						return number;
+					}
 				}
 			}
 		}
-		//		}
-		return autoRefreshTimeInSecs;
+		return 0;
 	}
 
 
@@ -254,7 +269,7 @@ public class KNXBusReaderScheduler {
 					sLogger.debug("Autorefresh: List {} was deleted. Terminating thread.", autoRefreshTimeInSecs);
 				}
 				else {
-					sLogger.debug("Autorefresh: Adding items with refresh time {} to reader queue.", autoRefreshTimeInSecs);
+					sLogger.debug("Autorefresh: Adding {} item(s) with refresh time {} to reader queue.", dpList.size(), autoRefreshTimeInSecs);
 					synchronized(dpList) {
 						mReadQueue.addAll(dpList);
 					}
