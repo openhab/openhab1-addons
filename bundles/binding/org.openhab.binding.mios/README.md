@@ -5,6 +5,8 @@ This code is not currently in release-ready form.  Changes are expected, especia
 ## 1.6.0
   * TBD
 
+# Configuration
+
 ## MiOS Unit configuration
 
 In order for the MiOS openHAB Binding to talk to your MiOS Unit, it needs configuration indicating _where_ it lives.  This information is specified within the `openhab.cfg` file.
@@ -37,7 +39,19 @@ You can also declare multiple MiOS Units, as illustrated in this example.
 
 **NOTE**: The MiOS Unit name is case-sensitive, and may only contain AlphaNumeric characters.  The leading character must be an [ASCII] alpha.
 
+## MiOS Transformations
 
+Internally, the MiOS Binding uses the openHAB Transformation Service.  The MiOS Binding supplies a number of pre-configured MAP Transformation for the common use-cases.
+
+From a configuration standpoint, these transformations need to be copied from the source-code repository:
+
+    [examples/transform/mios*.map](examples/transform/)
+    
+and places into your openHAB installation into the directory:
+
+    {openHAB Home}/configurations/transform/
+
+**NOTE**: These transformations can be readily extended by the user, for any use-cases that aren't covered by the pre-configured set shipped with the Binding.
 
 ## MiOS Item configuration
 
@@ -53,13 +67,16 @@ The examples below illustrates the form of each.
 
 The general form of these bindings is:
 
-    mios="unit:<unitName>,<miosThing>{,command:<commandThing>}{,in:<inTransform>}{,out:<outTransform>}"
+    mios="unit:<unitName>,<miosThing>{,command:<commandTransform>}{,in:<inTransform>}{,out:<outTransform>}"
 
-The sections below describe the types of things that can be bound, in addition to the transformations that are permitted.
+In many cases, only a subset of these parameters need to be specified/used, with *internal defaults* applied for the common use-cases.
+
+The sections below describe the types of things that can be bound, in addition to the transformations that are permitted, and any default transformations that may be applied for you.
 
 
 ### Item : MiOS Device Binding - Values (Reading)
-Device Bindings are currently read-only, with data flowing from the MiOS Unit _into_ openHAB.  Device Bindings have the form:
+
+Device Bindings can be read-only, with data flowing from the MiOS Unit _into_ openHAB.  Device Bindings have the form:
 
     mios="unit:<unitName>,device:<deviceId>/service/<serviceURN>/<serviceVariable>
 
@@ -95,63 +112,63 @@ or, you can track the status of a Light Switch or perhaps a Dimmer:
     Number HallLightAsDimmer      "Level [%3d]"          (BindingDemo) {mios="unit:house,device:11/service/Dimming1/LoadLevelStatus"}  
 
 
-The _serviceAliases_ are currently hard-coded.  The following list of aliases is built into the MiOS Binding.  Each is case-sensitive:
+The _serviceAliases_ are built into the MiOS Binding.  This list may be expanded over time, as feedback is received.  Each Alias is case-sensitive, and there can be multiple Aliases for a single UPnP ServiceId:
 
-| _Core_ UPnP Service Id | Alias |
+| _Core_ UPnP Service Id | Aliases |
 |----------------------|-------|
-|`urn:upnp-org:serviceId:SwitchPower1`|`SwitchPower1`|
-|`urn:upnp-org:serviceId:Dimming1`|`Dimming1`|
-|`urn:upnp-org:serviceId:TemperatureSensor1`|`TemperatureSensor1`|
-|`urn:upnp-org:serviceId:HVAC_FanOperatingMode1`|`HVAC_FanOperatingMode1`|
-|`urn:upnp-org:serviceId:HVAC_UserOperatingMode1`|`HVAC_UserOperatingMode1`|
-|`urn:upnp-org:serviceId:TemperatureSetpoint1_Heat`|`TemperatureSetpoint1_Heat`|
-|`urn:upnp-org:serviceId:TemperatureSetpoint1_Cool`|`TemperatureSetpoint1_Cool`|
+|`urn:upnp-org:serviceId:SwitchPower1`|`SwitchPower1`, `Switch`|
+|`urn:upnp-org:serviceId:Dimming1`|`Dimming1`,`Dimming`,`Dimmer`|
+|`urn:upnp-org:serviceId:TemperatureSensor1`|`TemperatureSensor1`,`Temperature`|
+|`urn:upnp-org:serviceId:HVAC_FanOperatingMode1`|`HVAC_FanOperatingMode1`,`HVACFan`|
+|`urn:upnp-org:serviceId:HVAC_UserOperatingMode1`|`HVAC_UserOperatingMode1`,`HVACUser`|
+|`urn:upnp-org:serviceId:TemperatureSetpoint1_Heat`|`TemperatureSetpoint1_Heat`,`Heat`|
+|`urn:upnp-org:serviceId:TemperatureSetpoint1_Cool`|`TemperatureSetpoint1_Cool`,`Cool`|
 |`urn:upnp-org:serviceId:AVTransport`|`AVTransport`|
 |`urn:upnp-org:serviceId:RenderingControl`|`RenderingControl`|
 |`urn:upnp-org:serviceId:DeviceProperties`|`DeviceProperties`|
-|`urn:upnp-org:serviceId:HouseStatus1`|`HouseStatus1`|
+|`urn:upnp-org:serviceId:HouseStatus1`|`HouseStatus1`,`HouseStatus`|
 |`urn:upnp-org:serviceId:ContentDirectory`|`ContentDirectory`|
 |`urn:upnp-org:serviceId:AudioIn`|`AudioIn`|
 
 
 
-| _MiCasaVerde_ UPnP Service Id | Alias |
+| _MiCasaVerde_ UPnP Service Id | Aliases |
 |-----------------------------|-------|
-|`urn:micasaverde-com:serviceId:ZWaveDevice1`|`ZWaveDevice1`|
-|`urn:micasaverde-com:serviceId:ZWaveNetwork1`|`ZWaveNetwork1`|
-|`urn:micasaverde-com:serviceId:HaDevice1`|`HaDevice1`|
-|`urn:micasaverde-com:serviceId:SceneControllerLED1`|`SceneControllerLED1`|
-|`urn:micasaverde-com:serviceId:SecuritySensor1`|`SecuritySensor1`|
-|`urn:micasaverde-com:serviceId:HumiditySensor1`|`HumiditySensor1`|
-|`urn:micasaverde-com:serviceId:EnergyMetering1`|`EnergyMetering1`|
-|`urn:micasaverde-com:serviceId:SceneController1`|`SceneController1`|
-|`urn:micasaverde-com:serviceId:HVAC_OperatingState1`|`HVAC_OperatingState1`|
-|`urn:micasaverde-org:serviceId:SerialPort1`|`SerialPort1`|
-|`urn:micasaverde-com:serviceId:DoorLock1`|`DoorLock1`|
-|`urn:micasaverde-com:serviceId:AlarmPartition2`|`AlarmPartition2`|
-|`urn:micasaverde-com:serviceId:Camera1`|`Camera1`|
+|`urn:micasaverde-com:serviceId:ZWaveDevice1`|`ZWaveDevice1`,`ZWaveDevice`|
+|`urn:micasaverde-com:serviceId:ZWaveNetwork1`|`ZWaveNetwork1`,`ZWaveNetwork`|
+|`urn:micasaverde-com:serviceId:HaDevice1`|`HaDevice1`,`HaDevice`|
+|`urn:micasaverde-com:serviceId:SceneControllerLED1`|`SceneControllerLED1`,`SceneControllerLED`|
+|`urn:micasaverde-com:serviceId:SecuritySensor1`|`SecuritySensor1`,`Security`|
+|`urn:micasaverde-com:serviceId:HumiditySensor1`|`HumiditySensor1`,`Humidity`|
+|`urn:micasaverde-com:serviceId:EnergyMetering1`|`EnergyMetering1`,`EnergyMeter`|
+|`urn:micasaverde-com:serviceId:SceneController1`|`SceneController1`,`SceneController`|
+|`urn:micasaverde-com:serviceId:HVAC_OperatingState1`|`HVAC_OperatingState1`,`HVACState`|
+|`urn:micasaverde-org:serviceId:SerialPort1`|`SerialPort1`,`Serial`|
+|`urn:micasaverde-com:serviceId:DoorLock1`|`DoorLock1`,`DoorLock`|
+|`urn:micasaverde-com:serviceId:AlarmPartition2`|`AlarmPartition2`,`Alarm`|
+|`urn:micasaverde-com:serviceId:Camera1`|`Camera1`,`Camera`|
 
 
 
-| _Plugin-specific_ UPnP Service Id | Alias |
+| _Plugin-specific_ UPnP Service Id | Aliases |
 |---------------------------------|-------|
 |`urn:cd-jackson-com:serviceId:SystemMonitor`|`SystemMonitor`|
-|`urn:garrettwp-com:serviceId:WPSwitch1`|`WPSwitch1`|
-|`urn:watou-com:serviceId:Nest1`|`Nest1`|
-|`urn:watou-com:serviceId:NestStructure1`|`NestStructure1`|
-|`urn:upnp-micasaverde-com:serviceId:Weather1`|`Weather1`|
-|`urn:demo-ted-striker:serviceId:PingSensor1`|`PingSensor1`|
-|`urn:micasaverde-com:serviceId:Sonos1`|`Sonos1`|
-|`urn:demo-paradox-com:serviceId:ParadoxSecurityEVO1`|`ParadoxSecurityEVO1`|
-|`urn:macrho-com:serviceId:LiftMasterOpener1`|`LiftMasterOpener1`|
-|`urn:directv-com:serviceId:DVR1`|`DirecTVDVR1`|
+|`urn:garrettwp-com:serviceId:WPSwitch1`|`WPSwitch1`,`WPSwitch`|
+|`urn:watou-com:serviceId:Nest1`|`Nest1`,`Nest`|
+|`urn:watou-com:serviceId:NestStructure1`|`NestStructure1`,`NestStructure`|
+|`urn:upnp-micasaverde-com:serviceId:Weather1`|`Weather1`,`Weather`|
+|`urn:demo-ted-striker:serviceId:PingSensor1`|`PingSensor1`,`PingSensor`|
+|`urn:micasaverde-com:serviceId:Sonos1`|`Sonos1`,`Sonos`|
+|`urn:demo-paradox-com:serviceId:ParadoxSecurityEVO1`|`ParadoxSecurityEVO1`,`Paradox`|
+|`urn:macrho-com:serviceId:LiftMasterOpener1`|`LiftMasterOpener1`,`LiftMaster`|
+|`urn:directv-com:serviceId:DVR1`|`DirecTVDVR1`,`DirecTV`|
 
 
 ### Item : MiOS Scene Binding - Values (Reading)
 
 Scene Bindings are read-only, with data flowing from the MiOS Unit _into_ openHAB.  Scene Bindings have the form:
 
-    mios="unit:<unitName>,scene:<deviceId>/<attributeName>
+    mios="unit:<unitName>,scene:<sceneId>/<attributeName>
 
 With examples like:
 
@@ -184,7 +201,7 @@ These take the form of the `in:` and `out:` declarations at the end of the bindi
 
     mios="unit:<unitName>,<miosThing>{,in:<inTransform>}{,out:<outTransform>}"
 
-As you can see by the above declaration, the input and output transformations are optional.  If they aren't declared, then an internal, automated, transformation will be attempted based upon the Type of the Item being bound.
+As you can see by the above declaration, the input and output transformations are optional.  If they aren't declared, then an internal, automated, transformation will be attempted based upon the Type of the Item being bound and, in some cases, the type of MiOS Attribute and/or State Variable involved in the binding.
 
 With examples like:
 
@@ -204,7 +221,37 @@ and a map transform file like `configurations/transform/miosSwitchIn.map`:
     
 Then as data flows from the MiOS system, data for these items will be _transformed_ into the new [String] format for for display and/or rule purposes.  
 
-The openHAB _Transformation Service_ provides a number of other transforms that may be of interest:
+To ease the setup process, the common MiOS entities have internal defaults for these parameters.  This aids in keeping the typical binding simple in use.  The defaults are as follows:
+
+For Devices, the defaults are as follows:
+
+State Variable / Attribute  | Default Parameters
+--------------------------- | -------------------
+`service/urn:micasaverde-com:serviceId:DoorLock1/Status` | `command:MAP(miosLockCommand.map)`<br>`in:MAP(miosSwitchIn.map)`<br>`out:MAP(miosSwitchOut.map)`
+`service/urn:watou-com:serviceId:Nest1/status` | `in:MAP(miosContactIn.map)`<br>`out:MAP(miosContactOut.map)`
+`service/urn:upnp-org:serviceId:RenderingControl/Mute`  | ` command:MAP(miosUPnPRenderingControlMuteCommand.map)`<br>`in:MAP(miosSwitchIn.map)`<br>`out:MAP(miosSwitchOut.map)`
+`service/urn:micasaverde-com:serviceId:SecuritySensor1/Armed` | `command:MAP(miosArmedCommand.map)`<br>`in:MAP(miosSwitchIn.map)`<br>`out:MAP(miosSwitchOut.map)`
+`service/urn:micasaverde-com:serviceId:SecuritySensor1/Tripped` | `in:MAP(miosContactIn.map)`<br>`out:MAP(miosContactOut.map)`
+`service/urn:upnp-org:serviceId:SwitchPower1/Status` | `command:ON/OFF`<br>`in:MAP(miosSwitchIn.map)`<br>`out:MAP(miosSwitchOut.map)`
+`service/urn:upnp-org:serviceId:Dimming1/LoadLevelStatus` | `command:MAP(miosDimmerCommand.map)`
+`service/urn:upnp-org:serviceId:TemperatureSetpoint1_Heat/CurrentSetpoint` | `command:MAP(miosTStatSetpointHeatCommand.map)`
+`service/urn:upnp-org:serviceId:TemperatureSetpoint1_Cool/CurrentSetpoint` | `command:MAP(miosTStatSetpointCoolCommand.map)`
+`service/urn:upnp-org:serviceId:HVAC_UserOperatingMode1/ModeStatus` | `command:MAP(miosTStatModeStatusCommand.map)`
+`service/urn:upnp-org:serviceId:HVAC_FanOperatingMode1/Mode` | `command:MAP(miosTStatFanOperatingModeCommand.map)`
+`service/urn:upnp-org:serviceId:RenderingControl/Volume` | `command:MAP(miosUPnPRenderingControlVolumeCommand.map)`
+`service/urn:upnp-org:serviceId:AVTransport/TransportState` | `command:MAP(miosUPnPTransportStatePlayModeCommand.map)` 
+`status` | `in:MAP(miosStatusIn.map)` | 
+
+
+For Scenes, they look like:
+
+State Variable / Attribute  | Default Parameters
+--------------------------- | -------------------
+`active` | `in:MAP(miosSceneActiveIn.map)`
+`status` | `command:`<br>`in:MAP(miosStatusIn.map)`
+
+
+For users wanting more advanced configurations, the openHAB _Transformation Service_ provides a number of other transforms that may be of interest:
 
 * `JS(example.js)` - run the Javascript to perform the conversion.
 * `MAP (example.map)` - Transform using the static, file-based, conversion.
@@ -212,6 +259,8 @@ The openHAB _Transformation Service_ provides a number of other transforms that 
 * `EXEC(...)` - Transform using the OS-level script.
 * `REGEX(...)` - Transform using the supplied Regular Expression and use Capture markers `(` and `)` around the value to be extracted.
 * `XPATH(...)` - Transform using the supplied XPath Expression.
+
+More reading on these is available in the openHAB Wiki.
 
 
 ## Item Commands (Reacting)
@@ -227,7 +276,7 @@ Through observation, the following commands are commonly sent:
 
 MiOS Units don't natively handle these Commands so a mapping step must occur before openHAB Commands can be executed by a MiOS Unit.  Additionally, since MiOS Bindings are read-only by default, we must add a parameter to indicate we want data to flow back to the MiOS Unit.
 
-The `command:` Binding parameter is used to specify that we want data to flow back to the MiOS unit as well as how to perform the required mapping.  
+The `command:` Binding parameter is used to specify that we want data to flow back to the MiOS unit as well as how to perform the required mapping.  For most Items bound using the MiOS Binding, internal defaults will take care of the correct `command:`, `in:` and `out:` parameters.  These need only be specified if you have something not handled by the internal defaults, or wish to override them with custom behavior.
 
 
 ### Item : MiOS Device Binding - Commands (Reacting)
@@ -246,8 +295,8 @@ _&lt;InlineCommandMap>_ is _&lt;openHABCommandMap>_ { `|` _&lt;openHABCommandMap
 _&lt;openHABCommandMap>_ is _&lt;openHABCommand>_ { `=` _&lt;UPnPAction>_ }<br>
 _&lt;openHABCommand>_ is `ON`, `OFF`, `INCREASE`, `DECREASE`, etc or the special value `_defaultCommand`<br>
 
-_&lt;UPnPAction>_ is { _&lt;ServiceName>_ `/` } _&lt;ServiceAction>_ `(` { _&lt;ServiceParam>_ { `=` _&lt;ServiceValue>_ | `=` _&lt;BoundValue>_} } `)` OR;<br>
-_&lt;UPnPAction>_ is { _&lt;ServiceAlias>_ `/` } _&lt;ServiceAction>_ `(` { _&lt;ServiceParam>_ { `=` _&lt;ServiceValue>_ | `=` _&lt;BoundValue>_} } `)`<br>
+_&lt;UPnPAction>_ is _&lt;ServiceName>_ `/` _&lt;ServiceAction>_ `(` { _&lt;ServiceParam>_ { `=` _&lt;ServiceValue>_ | `=` _&lt;BoundValue>_} } `)` OR;<br>
+_&lt;UPnPAction>_ is _&lt;ServiceAlias>_ `/` _&lt;ServiceAction>_ `(` { _&lt;ServiceParam>_ { `=` _&lt;ServiceValue>_ | `=` _&lt;BoundValue>_} } `)`<br>
 
 _&lt;UPnPVariable>_ is _&lt;ServiceName>_ `/` _&lt;ServiceVariable>_ OR;<br>
 _&lt;UPnPVariable>_ is _&lt;ServiceAlias>_ `/` _&lt;ServiceVariable>_<br>
@@ -258,7 +307,7 @@ _&lt;BoundValue>_ is `?`, `??`, `?++`, `?--`
 
 #### Device Command Binding Examples (Parameterless)
 
-In practice, when discrete commands are being sent by openHAB, the map is fairly simple.  In the examples listed below, the `*.map` files are provided in the `examples/transform` directory of the binding.
+In practice, when discrete commands are being sent by openHAB, the map is fairly simple.  In the examples listed below, the `*.map` files are provided in the `examples/transform` directory of the MiOS binding.
 
 ##### A Switch...
 
@@ -270,17 +319,29 @@ And then reduce it to the internal default map, but specify that you only want t
 
     Switch   FamilyTheatreLightsStatus "Family Theatre Lights" (GSwitch) {mios="unit:house,device:13/service/SwitchPower1/Status,command:ON|OFF,in:MAP(miosSwitchIn.map)"}
 
-or more simply, just use the internal defaults:
+or, *more simply*, use the internal defaults altogether:
 
-    Switch   FamilyTheatreLightsStatus "Family Theatre Lights" (GSwitch) {mios="unit:house,device:13/service/SwitchPower1/Status,command:,in:MAP(miosSwitchIn.map)"}
+    Switch   FamilyTheatreLightsStatus "Family Theatre Lights" (GSwitch) {mios="unit:house,device:13/service/SwitchPower1/Status"}
 
 
 ##### An Armed Sensor...
+
+The simple version, using internal defaults for the `SecuritySensor1/Armed` service state of the Device:
+
+    Switch   LivingRoomZoneArmed "Zone Armed [%s]" {mios="unit:house,device:117/service/SecuritySensor1/Armed"}
+
+or the fully spelled out version:
 
     Switch   LivingRoomZoneArmed "Zone Armed [%s]" {mios="unit:house,device:117/service/SecuritySensor1/Armed,command:MAP(miosArmedCommand.map),in:MAP(miosSwitchIn.map)"}
 
 
 ##### A Lock...
+
+The simple version, using internal defaults for the `DoorLock1/Status` service state of the Device:
+
+    Switch   GarageDeadboltDStatus "Garage Deadbolt" (GLock,GSwitch) {mios="unit:house,device:189/service/DoorLock1/Status"}
+
+or the full version:
 
     Switch   GarageDeadboltDStatus "Garage Deadbolt" (GLock,GSwitch) {mios="unit:house,device:189/service/DoorLock1/Status,command:MAP(miosLockCommand.map),in:MAP(miosSwitchIn.map)"}
 
@@ -301,7 +362,14 @@ Additionally, since _&lt;PCTNumber>_ is just a value, it won't match any of the 
 
 ##### A Dimmer, Volume Control, Speed controlled Fan...
 
+The simple version, using internal defaults for the `Dimming1/LoadLevelStatus` service state of the Device:
+
+    Dimmer   MasterCeilingFanLoadLevelStatus "Master Ceiling Fan [%d]%" <slider> (GDimmer) {mios="unit:house,device:101/service/Dimming1/LoadLevelStatus"}
+
+or the full version:
+
     Dimmer   MasterCeilingFanLoadLevelStatus "Master Ceiling Fan [%d]%" <slider> (GDimmer) {mios="unit:house,device:101/service/Dimming1/LoadLevelStatus,command:MAP(miosDimmerCommand.map)"}
+
 
 Since Dimmer Items in openHAB can be sent `INCREASE`, `DECREASE` or _&lt;PCTNumber>_ as the command, the mapping file must account for both the static commands (`INCREASE`, `DECREASE`) as well as the possibility of a _Command Value_ being sent.
 
@@ -315,17 +383,18 @@ The `examples/transform/miosDimmerCommand.map` file has a definition that handle
 ##### A Thermostat...
 
 A Thermostat is composed of a number of pieces.  Each piece must be first bound to openHAB Items, and then a number of mappings must be put in place.
-TODO: Not finished yet!
+
+Since all the components of a Thermostat have reasonable internal defaults, we'll use the simpler form for our Item definitions in openHAB:
 
     /* Thermostat Upstairs */
     Number   ThermostatUpstairsId "ID [%d]" {mios="unit:house,device:335/id"}
-    String   ThermostatUpstairsDeviceStatus "Device Status [%s]" (GThermostatUpstairs) {mios="unit:house,device:335/status,in:MAP(miosStatusIn.map)"}
+    String   ThermostatUpstairsDeviceStatus "Device Status [%s]" (GThermostatUpstairs) {mios="unit:house,device:335/status"}
     Number   ThermostatUpstairsCurrentTemperature "Upstairs Temperature [%.1f °F]" <temperature> (GThermostatUpstairs, GTemperature) {mios="unit:house,device:335/service/TemperatureSensor1/CurrentTemperature"}
-    Number   ThermostatUpstairsHeatCurrentSetpoint "Heat Setpoint [%.1f °F]" <temperature> (GThermostatUpstairs) {mios="unit:house,device:335/service/TemperatureSetpoint1_Heat/CurrentSetpoint,command:MAP(miosTStatSetpointHeatCommand.map)"}
-    Number   ThermostatUpstairsCoolCurrentSetpoint "Cool Setpoint [%.1f °F]" <temperature> (GThermostatUpstairs) {mios="unit:house,device:335/service/TemperatureSetpoint1_Cool/CurrentSetpoint,command:MAP(miosTStatSetpointCoolCommand.map)"}
-    String   ThermostatUpstairsFanMode "Fan Mode" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_FanOperatingMode1/Mode,command:MAP(miosTStatFanOperatingModeCommand.map)"}
+    Number   ThermostatUpstairsHeatCurrentSetpoint "Heat Setpoint [%.1f °F]" <temperature> (GThermostatUpstairs) {mios="unit:house,device:335/service/TemperatureSetpoint1_Heat/CurrentSetpoint"}
+    Number   ThermostatUpstairsCoolCurrentSetpoint "Cool Setpoint [%.1f °F]" <temperature> (GThermostatUpstairs) {mios="unit:house,device:335/service/TemperatureSetpoint1_Cool/CurrentSetpoint"}
+    String   ThermostatUpstairsFanMode "Fan Mode" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_FanOperatingMode1/Mode"}
     String   ThermostatUpstairsFanStatus "Fan Status [%s]" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_FanOperatingMode1/FanStatus"}
-    String   ThermostatUpstairsModeStatus "Mode Status" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_UserOperatingMode1/ModeStatus,command:MAP(miosTStatModeStatusCommand.map)"}
+    String   ThermostatUpstairsModeStatus "Mode Status" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_UserOperatingMode1/ModeStatus"}
     String   ThermostatUpstairsModeState "Mode State [%s]" (GThermostatUpstairs) {mios="unit:house,device:335/service/HVAC_OperatingState1/ModeState"}
     Number   ThermostatUpstairsBatteryLevel "Battery Level [%d] %" (GThermostatUpstairs) {mios="unit:house,device:335/service/HaDevice1/BatteryLevel"}
     DateTime ThermostatUpstairsBatteryDate "Battery Date [%1$ta, %1$tm/%1$te %1$tR]" <calendar> (GThermostatUpstairs) {mios="unit:house,device:335/service/HaDevice1/BatteryDate"}
@@ -367,12 +436,11 @@ _&lt;SceneAttribute>_ is `status` | `active`
 
 In general Scenes tend to look like:
 
-    String   SceneMasterClosetLights "Master Closet Lights Scene" <sofa> (GScene) {mios="unit:house,scene:109/status,command:,in:MAP(miosStatusIn.map)", autoupdate="false"}
+    String   SceneMasterClosetLights "Master Closet Lights Scene" <sofa> (GScene) {mios="unit:house,scene:109/status, autoupdate="false"}
 
 Or if you want the Scene executed upon receipt of `ON` or `TOGGLE` Commands:
 
-    String   SceneMasterClosetLights "Master Closet Lights Scene" <sofa> (GScene) {mios="unit:house,scene:109/status,command:ON|TOGGLE,in:MAP(miosStatusIn.map)", autoupdate="false"}
+    String   SceneMasterClosetLights "Master Closet Lights Scene" <sofa> (GScene) {mios="unit:house,scene:109/status,command:ON|TOGGLE", autoupdate="false"}
 
 
-NOTE: Here we've added an additional configuration to the binding declaration, `autoupdate="false"`, to ensure the Switch no longer has the `ON` and `OFF` States automatically managed, and instead just looks like a Button.
-
+**NOTE**: Here we've added an additional configuration to the binding declaration, `autoupdate="false"`, to ensure the Switch no longer has the `ON` and `OFF` States automatically managed.  In openHAB, this declaration ensures that the UI rendition appears like a Button.
