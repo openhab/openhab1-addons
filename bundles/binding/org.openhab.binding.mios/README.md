@@ -41,17 +41,17 @@ You can also declare multiple MiOS Units, as illustrated in this example.
 
 ## MiOS Transformations
 
-Internally, the MiOS Binding uses the openHAB Transformation Service.  The MiOS Binding supplies a number of pre-configured MAP Transformation for the common use-cases.
+Internally, the MiOS Binding uses the openHAB _Transformation Service_.  The MiOS Binding supplies a number of pre-configured MAP Transformation for the common use-cases.
 
 From a configuration standpoint, these transformations need to be copied from the source-code repository:
 
-    [examples/transform/mios*.map](examples/transform/)
+    bundles/binding/org.openhab.binding.mios/examples/transform/mios*.map
     
-and places into your openHAB installation into the directory:
+and placed into your openHAB installation under the directory:
 
     {openHAB Home}/configurations/transform/
 
-**NOTE**: These transformations can be readily extended by the user, for any use-cases that aren't covered by the pre-configured set shipped with the Binding.
+**NOTE**: These transformations can be readily extended by the user, for any use-cases that aren't covered by those pre-configured & shipped with the Binding.
 
 ## MiOS Item configuration
 
@@ -112,7 +112,7 @@ or, you can track the status of a Light Switch or perhaps a Dimmer:
     Number HallLightAsDimmer      "Level [%3d]"          (BindingDemo) {mios="unit:house,device:11/service/Dimming1/LoadLevelStatus"}  
 
 
-The _serviceAliases_ are built into the MiOS Binding.  This list may be expanded over time, as feedback is received.  Each Alias is case-sensitive, and there can be multiple Aliases for a single UPnP ServiceId:
+The _serviceAliases_ are built into the MiOS Binding and may be expanded over time, as feedback is received.  Each Alias is case-sensitive, and there can be multiple Aliases for a single UPnP ServiceId:
 
 | _Core_ UPnP Service Id | Aliases |
 |----------------------|-------|
@@ -193,9 +193,9 @@ With examples like:
       
 ### Transformations
 
-Sometimes the value presented by the binding isn't in the format that you require for your Item.  For these cases, the binding provides access to the standard openHAB Transformation service.
+Sometimes the value presented by the binding isn't in the format that you require for your Item.  For these cases, the binding provides access to the standard openHAB _Transformation Service_.
 
-To utilize the Transformation service, you need to declare additional settings on your bindings.
+To utilize the _Transformation Service_, you need to declare additional settings on your bindings.
 
 These take the form of the `in:` and `out:` declarations at the end of the binding.  The `in:` declaration is used when values are received from the MiOS Unit, but before it places the value into openHAB.  The `out:` declaration is used when values are taken from the openHAB system for delivered to the MiOS Unit (in _Command_ execution, for example).
 
@@ -219,9 +219,9 @@ and a map transform file like `configurations/transform/miosSwitchIn.map`:
     1=OPEN
     0=CLOSED
     
-Then as data flows from the MiOS system, data for these items will be _transformed_ into the new [String] format for for display and/or rule purposes.  
+Then as data flows from the MiOS system, data for these items will be _transformed_ into the new [String] format for display and/or rule purposes.  
 
-To ease the setup process, the common MiOS entities have internal defaults for these parameters.  This aids in keeping the typical binding simple in use.  The defaults are as follows:
+To ease the setup process, the common MiOS entities have internal defaults for these parameters.  This aids in keeping the binding string simple for typical use-case scenarios.  The defaults are as follows:
 
 For Devices, the defaults are as follows:
 
@@ -283,7 +283,7 @@ The `command:` Binding parameter is used to specify that we want data to flow ba
 
 For MiOS Devices, this parameter can take one of several forms:
 
-    mios="unit:<unitName>,device:<deviceId>{/service/<UPnPVariable>},command:{<CommandMap>}"
+    mios="unit:<unitName>,device:<deviceId>/service/<UPnPVariable>,command:{<CommandMap>}"
 
 With definitions as:
 
