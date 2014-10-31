@@ -198,19 +198,20 @@ public class SamsungAcBinding extends
 				host.setToken(value);
 			}
 			hosts.put(hostname, host);
+			setProperlyConfigured(true);
 		}
 
 		nameHostMapper = hosts;
 		
 		if (nameHostMapper == null || nameHostMapper.size() == 0) {
+			setProperlyConfigured(false);
 			Map<String, String> discovered = SsdpDiscovery.discover();
 			if (discovered != null && discovered.size() > 0) {
-				logger.warn("No Samsung Air Conditioner has been configured, but we found one with IP:'" +
-						discovered.get("IP") + "' and MAC ADDRESS: '" + discovered.get("MAC_ADDR") + "'");
-				AirConditioner host = new AirConditioner();
-				host.setIpAddress(discovered.get("IP"));
-				host.setMacAddress(discovered.get("MAC_ADDR"));
-				nameHostMapper.put("DiscoveredAC", host);
+				logger.warn("We found an air conditioner. Please put the following in your configuration file: " +
+						"\r\n samsungac:Livingroom.host=" + discovered.get("IP") +
+						"\r\n samsungac:Livingroom.mac=" + discovered.get("MAC_ADDR"));
+			} else {
+				logger.warn("No Samsung Air Conditioner has been configured, and we could not find one either");
 			}
 		}
 	}
