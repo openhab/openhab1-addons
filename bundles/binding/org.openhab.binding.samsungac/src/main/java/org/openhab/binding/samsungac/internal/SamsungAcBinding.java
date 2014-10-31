@@ -177,7 +177,7 @@ public class SamsungAcBinding extends
 			if ("service.pid".equals(key)) {
 				continue;
 			}
-
+			
 			String[] parts = key.split("\\.");
 			String hostname = parts[0];
 
@@ -269,7 +269,7 @@ public class SamsungAcBinding extends
 						case AC_FUN_WINDLEVEL:
 							postUpdate(item,
 									DecimalType.valueOf(Integer
-											.toString(DirectionEnum
+											.toString(WindLevelEnum
 													.valueOf(value).value)));
 							break;
 						case AC_FUN_DIRECTION:
