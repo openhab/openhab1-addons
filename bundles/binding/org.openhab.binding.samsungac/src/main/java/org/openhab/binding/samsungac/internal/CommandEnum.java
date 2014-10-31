@@ -41,7 +41,7 @@ enum ConvenientModeEnum {
 }
 
 enum DirectionEnum {
-	Auto(0), SwingUD(1), Rotation(2), Fixed(3);
+	Auto(0), SwingUD(1), Rotation(2), Fixed(3), SwingLR(4);
 	int value;
 
 	private DirectionEnum(int number) {
