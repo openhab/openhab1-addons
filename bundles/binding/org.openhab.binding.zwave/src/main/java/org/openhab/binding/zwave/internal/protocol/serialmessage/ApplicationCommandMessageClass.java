@@ -41,13 +41,9 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 			node.setAlive();
 			logger.debug("NODE {}: Node has risen from the DEAD. Set stage to {}.", nodeId, node.getNodeStage());			
 		}
-		// If the node is FAILED, but we've just received a message from it, then it's not dead!
-		if(node.isFailed()) {
-			node.setAlive();
-			logger.debug("NODE {}: Node has risen from the FAILED. Set stage to {}.", nodeId, node.getNodeStage());			
-		}
 		
 		node.resetResendCount();
+		node.incrementReceiveCount();
 		
 		int commandClassCode = incomingMessage.getMessagePayloadByte(3);
 		CommandClass commandClass = CommandClass.getCommandClass(commandClassCode);
@@ -81,7 +77,7 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 		}
 		
 		logger.trace("NODE {}: Found Command Class {}, passing to handleApplicationCommandRequest", nodeId, zwaveCommandClass.getCommandClass().getLabel());
-		zwaveCommandClass.handleApplicationCommandRequest(incomingMessage, 4, 1);
+		zwaveCommandClass.handleApplicationCommandRequest(incomingMessage, 4, 0);
 
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 		

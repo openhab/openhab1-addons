@@ -599,6 +599,15 @@
 			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
 			<ConfigFile>aeon/mss2e.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>001C</Id>
+			</Reference>
+			<Model>HEM-G2</Model>
+			<Label lang="en">Home Energy Meter G2</Label>
+			<ConfigFile>aeon/hemg2.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
@@ -972,6 +981,15 @@
 		<Product>
 			<Reference>
 				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>PIR</Model>
+			<Label lang="en">Z-Wave PIR Motion Sensor</Label>
+			<ConfigFile>eco/pir1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
 				<Id>0002</Id>
 			</Reference>
 			<Model>DWZWAVE2</Model>
@@ -1322,5 +1340,18 @@
 			<Label lang="en">Flush dimmer</Label>
 			<ConfigFile>qubino/zmnhda.xml</ConfigFile>
 		</Product>
-	</Manufacturer>	
+	</Manufacturer>
+	<Manufacturer>
+		<Id>97</Id>
+		<Name>Wintop</Name>
+		<Product>
+			<Reference>
+				<Type>1188</Type>
+				<Id>4501</Id>
+			</Reference>
+			<Model>ITEMP</Model>
+			<Label lang="en">Contact and temp sensor</Label>
+			<ConfigFile>wintop/itemp.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>

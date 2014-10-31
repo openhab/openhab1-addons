@@ -18,7 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class processes a serial message from the zwave controller
+ * This class processes a serial message from the zwave controller.
+ * It queries the controller to see if the node is on its 'failed nodes' list.
  * @author Wez Hunter
  * @since 1.6.0
  */
@@ -36,21 +37,19 @@ public class IsFailedNodeMessageClass  extends ZWaveCommandProcessor {
 	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
-		
+
 		logger.trace("Handle IsFailedNode Response");
-			
+
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.FailedNode, nodeId, ZWaveNetworkEvent.State.Success));
-			logger.error("NODE {}: Is currently marked as failed by the controller!", nodeId);
+			logger.warn("NODE {}: Is currently marked as failed by the controller!", nodeId);
 		}
 		else {
-			logger.debug("NODE {}: Is currently marked as healty by the controller", nodeId);
+			logger.debug("NODE {}: Is currently marked as healthy by the controller", nodeId);
 		}
 		
 		transactionComplete = true;
 
 		return true;
 	}
-	
-	
 }

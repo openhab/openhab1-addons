@@ -245,8 +245,77 @@ public class ZWaveController {
 			case SerialApiGetInitData:
 				this.isConnected = true;
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
-					// Place nodes in the local ZWave Controller
-					ZWaveNode node = new ZWaveNode(this.homeId, nodeId, this);
+					ZWaveNode node = null;
+					try {
+						ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+						node = nodeSerializer.DeserializeNode(nodeId);
+					}
+					catch (Exception e) {
+						logger.error("NODE {}: Error deserialising XML file. {}", nodeId, e.toString());
+						node = null;
+					}
+					String name = null;
+					String location = null;
+
+					// Did the node deserialise ok?
+					if (node != null) {
+						// Remember the name and location - in case we decide the file was invalid
+						name = node.getName();
+						location = node.getLocation();
+
+						// Sanity check the data from the file
+						if (node.getManufacturer() == Integer.MAX_VALUE ||
+								node.getHomeId() != this.homeId ||
+								node.getNodeId() != nodeId) {
+							logger.warn("NODE {}: Config file data is invalid, ignoring config.", nodeId);
+							node = null;
+						}
+						else {
+							// The restore was ok, but we have some work to set up the links that aren't
+							// made as the deserialiser doesn't call the constructor
+							logger.debug("NODE {}: Restored from config.", nodeId);
+							node.setRestoredFromConfigfile(this);
+
+							// Set the controller and node references for all command classes
+							for (ZWaveCommandClass commandClass : node.getCommandClasses()) {
+								commandClass.setController(this);
+								commandClass.setNode(node);
+
+								// Handle event handlers
+								if (commandClass instanceof ZWaveEventListener) {
+									this.addEventListener((ZWaveEventListener)commandClass);
+								}
+								
+								// If this is the multi-instance class, add all command classes for the endpoints
+								if (commandClass instanceof ZWaveMultiInstanceCommandClass) {
+									for (ZWaveEndpoint endPoint : ((ZWaveMultiInstanceCommandClass) commandClass)
+											.getEndpoints()) {
+										for (ZWaveCommandClass endpointCommandClass : endPoint.getCommandClasses()) {
+											endpointCommandClass.setController(this);
+											endpointCommandClass.setNode(node);
+											endpointCommandClass.setEndpoint(endPoint);
+
+											// Handle event handlers
+											if (endpointCommandClass instanceof ZWaveEventListener) {
+												this.addEventListener((ZWaveEventListener)endpointCommandClass);
+											}
+										}
+									}
+								}	
+							}							
+						}
+					}
+
+					// Create a new node if it wasn't deserialised ok
+					if(node == null) {
+						node = new ZWaveNode(this.homeId, nodeId, this);
+						
+						// Try to maintain the name and location (user supplied data)
+						// even if the XML file was considered corrupt and we reload data from the device.
+						node.setName(name);
+						node.setLocation(location);
+					}
+
 					if(nodeId == this.ownNodeId) {
 						// This is the controller node.
 						// We already know the device type, id, manufacturer so set it here
@@ -255,6 +324,8 @@ public class ZWaveController {
 						node.setDeviceType(this.getDeviceType());
 						node.setManufacturer(this.getManufactureId());
 					}
+
+					// Place nodes in the local ZWave Controller
 					this.zwaveNodes.put(nodeId, node);
 					node.advanceNodeStage(NodeStage.PROTOINFO);
 				}
@@ -533,10 +604,12 @@ public class ZWaveController {
 			if (entry.getValue().getNodeStage() == NodeStage.EMPTYNODE)
 				continue;
 			
-			logger.debug(String.format("NODE %d: Has been in Stage %s since %s", entry.getKey(), entry.getValue().getNodeStage().getLabel(), entry.getValue().getQueryStageTimeStamp().toString()));
+			logger.debug("NODE {}: In Stage {} since {}, listening={}, FLiRS={}", entry.getKey(),
+					entry.getValue().getNodeStage().getLabel(), entry.getValue().getQueryStageTimeStamp().toString(),
+					entry.getValue().isListening(), entry.getValue().isFrequentlyListening());
 			
-			if(entry.getValue().getNodeStage() == NodeStage.DONE || entry.getValue().getNodeStage() == NodeStage.DEAD
-					|| (!entry.getValue().isListening() && !entry.getValue().isFrequentlyListening())) {
+			if(entry.getValue().getNodeStage() == NodeStage.DONE || entry.getValue().isDead() == true
+					 || (!entry.getValue().isListening() && !entry.getValue().isFrequentlyListening())) {
 				completeCount++;
 				continue;
 			}
@@ -546,7 +619,7 @@ public class ZWaveController {
 			if(Calendar.getInstance().getTimeInMillis() < (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_TIMEOUT))
 				continue;
 			
-			logger.warn(String.format("NODE %d: May be dead, setting stage to DEAD.", entry.getKey()));
+			logger.warn("NODE {}: May be dead, setting stage to DEAD.", entry.getKey());
 			entry.getValue().setNodeStage(NodeStage.DEAD);
 
 			completeCount++;
@@ -554,6 +627,8 @@ public class ZWaveController {
 		
 		// If all nodes are completed, then we say the binding is ready for business
 		if(this.zwaveNodes.size() == completeCount && initializationComplete == false) {
+			logger.debug("ZWave Initialisation Complete");
+			
 			// We only want this event once!
 			initializationComplete = true;
 			
@@ -563,6 +638,7 @@ public class ZWaveController {
 			// If there are DEAD nodes, send a Node Status event
 			// We do that here to avoid messing with the binding initialisation
 			for(ZWaveNode node : this.getNodes()) {
+				logger.debug("NODE {}: Checking completion state - {}.", node.getNodeId(), node.getNodeStage());
 				if (node.isDead()) {
 					logger.debug("NODE {}: DEAD node.", node.getNodeId());
 
