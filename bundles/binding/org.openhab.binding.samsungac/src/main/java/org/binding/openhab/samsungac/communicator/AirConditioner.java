@@ -43,14 +43,14 @@ public class AirConditioner {
 	private Map<CommandEnum, String> statusMap = new HashMap<CommandEnum, String>();
 	private SSLSocket socket;
 
-	public AirConditioner login() {
+	public AirConditioner login() throws Exception {
 		try {
 			connect();
 			getToken();
 			loginWithToken();
 		} catch (Exception e) {
-			logger.warn("Connection to Air Conditioner failed", e);
 			disconnect();
+			throw e;
 		}
 		return this;
 	}
