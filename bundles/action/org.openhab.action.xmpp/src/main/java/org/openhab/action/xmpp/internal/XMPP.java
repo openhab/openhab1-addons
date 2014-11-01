@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.apache.commons.io.IOUtils;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.MessageListener;
@@ -125,17 +126,19 @@ public class XMPP {
 				// Create the outgoing file transfer
 				OutgoingFileTransfer transfer = manager.createOutgoingFileTransfer(to);
 
+				InputStream is = null;
 				try {
 					URL url = new URL(attachmentUrl);
 					// Send the file
-					InputStream is = url.openStream();
+					is = url.openStream();
 					OutgoingFileTransfer.setResponseTimeout(10000);
 					transfer.sendStream(is, url.getFile(), is.available(), message);
 					logger.debug("Sent message '{}' with attachment '{}' to '{}'.", new String[] { message, attachmentUrl, to });
-					is.close();
 					success = true;
 				} catch (IOException e) {
 					logger.error("Could not open url '{}' for sending it via XMPP", attachmentUrl, e);
+				} finally {
+					IOUtils.closeQuitely(is);
 				}
 			}
 		} catch (NotInitializedException e) {
