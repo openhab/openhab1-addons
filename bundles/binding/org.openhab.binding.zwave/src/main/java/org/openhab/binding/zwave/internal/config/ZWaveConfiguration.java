@@ -275,6 +275,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				switch(node.getNodeStage()) {
 				case DEAD:
 					record.state = OpenHABConfigurationRecord.STATE.ERROR;
+					break;
+				case FAILED:
+					record.state = OpenHABConfigurationRecord.STATE.ERROR;
 					canDelete = true;
 					break;
 				case DONE:
@@ -288,11 +291,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					else if(node.getSendCount() > 0 && (node.getRetryCount() * 100 / node.getSendCount()) > 5)
 						record.state = OpenHABConfigurationRecord.STATE.WARNING;
 					else
-					record.state = OpenHABConfigurationRecord.STATE.OK;
+						record.state = OpenHABConfigurationRecord.STATE.OK;
 					break;
 				default:
 					record.state = OpenHABConfigurationRecord.STATE.INITIALIZING;
-					canDelete = true;
 					break;
 				}
 
@@ -463,8 +465,22 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					records.add(record);
 				}
 			} else if (arg.equals("status/")) {
-				record = new OpenHABConfigurationRecord(domain, "LastUpdated", "Last Updated", true);
-				record.value = df.format(node.getLastUpdated());
+				record = new OpenHABConfigurationRecord(domain, "LastSent", "Last Packet Sent", true);
+				if(node.getLastSent() == null) {
+					record.value = "NEVER";
+				}
+				else {
+					record.value = df.format(node.getLastSent());
+				}
+				records.add(record);
+				
+				record = new OpenHABConfigurationRecord(domain, "LastReceived", "Last Packet Received", true);
+				if(node.getLastReceived() == null) {
+					record.value = "NEVER";
+				}
+				else {
+					record.value = df.format(node.getLastReceived());
+				}
 				records.add(record);
 				
 				if(networkMonitor != null) {
@@ -478,7 +494,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 
 				record = new OpenHABConfigurationRecord(domain, "NodeStage", "Node Stage", true);
-				record.value = node.getNodeStage().getLabel() + " @ " + df.format(node.getQueryStageTimeStamp());
+				record.value = node.getNodeStage() + " @ " + df.format(node.getQueryStageTimeStamp());
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "Packets", "Packet Statistics", true);
@@ -490,7 +506,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.value = Boolean.toString(node.isDead());
 				}
 				else {
-					record.value = Boolean.toString(node.isDead()) + " [" + node.getDeadCount() + " previous - last @ " + node.getDeadTime().toString() + "]";
+					record.value = Boolean.toString(node.isDead()) + " [" + node.getDeadCount() + " previous - last @ " + df.format(node.getDeadTime()) + "]";
 				}
 				records.add(record);
 			} else if (arg.equals("parameters/")) {
@@ -559,7 +575,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						for (ZWaveDbAssociationGroup group : groupList) {
 							// TODO: Controller reporting associations are set to read only
 							record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/",
-									database.getLabel(group.Label), group.SetToController);
+									database.getLabel(group.Label), true);
 
 							// Add the description
 							record.description = database.getLabel(group.Help);
@@ -839,14 +855,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if (action.equals("Delete")) {
 					logger.debug("NODE {}: Delete node", nodeId);
 					this.zController.requestRemoveFailedNode(nodeId);
-
-					// Delete the XML file.
-					// TODO: This should be possibly be done after registering
-					// an event handler
-					// Then we can delete this after the controller confirms the
-					// removal.
-					ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-					nodeSerializer.DeleteNode(nodeId);
 				}
 
 				// This is temporary

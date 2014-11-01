@@ -22,7 +22,7 @@ public class ZWaveNodeStatusEvent extends ZWaveEvent {
 	 * @param nodeId the nodeId of the event.
 	 */
 	public ZWaveNodeStatusEvent(int nodeId, State state) {
-		super(nodeId, 1);
+		super(nodeId);
 
 		this.state = state;
 	}
@@ -32,6 +32,6 @@ public class ZWaveNodeStatusEvent extends ZWaveEvent {
 	}
 
 	public enum State {
-		Dead, Alive
+		Dead, Alive, Failed
 	}
 }
