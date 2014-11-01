@@ -130,6 +130,14 @@ public class WeatherTokenResolver implements TokenResolver {
 			return locationConfig.getLongitude().toString();
 		} else if ("name".equals(token.name)) {
 			return locationConfig.getName();
+		} else if ("language".equals(token.name)) {
+			return locationConfig.getLanguage();
+		} else if ("updateInterval".equals(token.name)) {
+			return ObjectUtils.toString(locationConfig.getUpdateInterval());
+		} else if ("locationId".equals(token.name)) {
+			return locationConfig.getLocationId();
+		} else if ("providerName".equals(token.name)) {
+			return ObjectUtils.toString(locationConfig.getProviderName());
 		} else {
 			throw new RuntimeException("Invalid weather token: " + token.full);
 		}
