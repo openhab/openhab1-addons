@@ -138,7 +138,7 @@ public class XMPP {
 				} catch (IOException e) {
 					logger.error("Could not open url '{}' for sending it via XMPP", attachmentUrl, e);
 				} finally {
-					IOUtils.closeQuitely(is);
+					IOUtils.closeQuietly(is);
 				}
 			}
 		} catch (NotInitializedException e) {
