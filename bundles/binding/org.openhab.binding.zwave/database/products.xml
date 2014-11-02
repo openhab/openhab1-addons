@@ -1254,9 +1254,9 @@
 				<Id>0209</Id>
 			</Reference>
 			<Reference>
-                                <Type>301</Type>
-                                <Id>0334</Id>
-                        </Reference>
+				<Type>301</Type>
+				<Id>0334</Id>
+            </Reference>
 			<Model>VRS15-1LZ</Model>
 			<Label lang="en">Scene Capable Push On/Off</Label>
 			<ConfigFile>leviton/vrs15-1lz.xml</ConfigFile>
@@ -1282,6 +1282,15 @@
 			<Model>DZS15-1LZ</Model>
 			<Label lang="en">Scene Capable Push On/Off</Label>
 			<ConfigFile>leviton/dzs15-1lz.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1b03</Type>
+				<Id>334</Id>
+			</Reference>
+			<Model>DZMX1-1LZ</Model>
+			<Label lang="en">Scene Capable Push On/Off</Label>
+			<ConfigFile>leviton/dzmx1-1lz.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
