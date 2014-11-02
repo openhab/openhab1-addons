@@ -12,6 +12,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.openhab.io.console.Console;
@@ -51,6 +52,8 @@ public class XMPPConsole implements ChatManagerListener, MessageListener {
 				chat.sendMessage("Sorry, you are not allowed to send messages.");
 				logger.warn("Received chat request from the unknown user '{}'.", chatUser);
 			} catch (XMPPException e) {
+				logger.warn("Error sending XMPP message: {}", e.getMessage());
+			} catch (NotConnectedException e) {
 				logger.warn("Error sending XMPP message: {}", e.getMessage());
 			}
 		}
@@ -95,6 +98,8 @@ public class XMPPConsole implements ChatManagerListener, MessageListener {
 				chat.sendMessage(msg);
 			} catch (XMPPException e) {
 				logger.error("Error sending message '{}': {}", msg, e.getMessage());
+			} catch (NotConnectedException e) {
+				logger.error("Error sending message '{}': {}", msg, e.getMessage());
 			}
 			sb = new StringBuffer();
 		}
@@ -103,6 +108,8 @@ public class XMPPConsole implements ChatManagerListener, MessageListener {
 			try {
 				chat.sendMessage("Usage: \n" + s);
 			} catch (XMPPException e) {
+				logger.error("Error sending message '{}': {}", s, e.getMessage());
+			} catch (NotConnectedException e) {
 				logger.error("Error sending message '{}': {}", s, e.getMessage());
 			}
 		}
