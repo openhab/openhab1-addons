@@ -35,6 +35,10 @@ public class ModbusSerialSlave extends ModbusSlave {
 
 	private static String port = null;
 	private static int baud = 9600;
+	private static int dataBits = 8;
+	private static String parity = "None"; // "none", "even" or "odd"
+	private static int stopBits = 1;
+	
 	public void setPort(String port) {
 		ModbusSerialSlave.port = port;
 	}
@@ -43,6 +47,18 @@ public class ModbusSerialSlave extends ModbusSlave {
 		ModbusSerialSlave.baud = baud;
 	}
 
+	public void setDatabits(int dataBits) {
+		ModbusSerialSlave.dataBits = dataBits;
+	}
+	
+	// Parity string should be "none", "even" or "odd"
+	public void setParity(String parity) {
+		ModbusSerialSlave.parity = parity;
+	}
+	
+	public void setStopbits(int stopBits) {
+		ModbusSerialSlave.stopBits = stopBits;
+	}
 	//	String port = null;
 
 	private static SerialConnection connection = null;
@@ -77,9 +93,9 @@ public class ModbusSerialSlave extends ModbusSlave {
 				SerialParameters params = new SerialParameters();
 				params.setPortName(port);
 				params.setBaudRate(baud);
-				params.setDatabits(8);
-				params.setParity("None");
-				params.setStopbits(1);
+				params.setDatabits(dataBits);
+				params.setParity(parity);
+				params.setStopbits(stopBits);
 				params.setEncoding(Modbus.SERIAL_ENCODING_RTU);
 				params.setEcho(false);
 				connection = new SerialConnection(params);
