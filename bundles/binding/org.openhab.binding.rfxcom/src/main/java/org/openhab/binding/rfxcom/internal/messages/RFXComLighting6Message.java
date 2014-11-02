@@ -81,7 +81,8 @@ public class RFXComLighting6Message extends RFXComBaseMessage {
 	private final static List<RFXComValueSelector> supportedValueSelectors = Arrays
 			.asList(RFXComValueSelector.RAW_DATA,
 					RFXComValueSelector.SIGNAL_LEVEL,
-					RFXComValueSelector.COMMAND);
+					RFXComValueSelector.COMMAND,
+					RFXComValueSelector.CONTACT);
 
 	public SubType subType = SubType.BLYSS;
 	public int sensorId = 0;
@@ -210,17 +211,17 @@ public class RFXComLighting6Message extends RFXComBaseMessage {
 
 		} else if (valueSelector.getItemClass() == ContactItem.class) {
 
-			if (valueSelector == RFXComValueSelector.COMMAND) {
+			if (valueSelector == RFXComValueSelector.CONTACT) {
 
 				switch (command) {
 				case OFF:
 				case GROUP_OFF:
-					state = OpenClosedType.OPEN;
+					state = OpenClosedType.CLOSED;
 					break;
 
 				case ON:
 				case GROUP_ON:
-					state = OpenClosedType.CLOSED;
+					state = OpenClosedType.OPEN;
 					break;
 					
 				default:
