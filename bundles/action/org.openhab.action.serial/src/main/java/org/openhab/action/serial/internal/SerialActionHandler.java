@@ -1,4 +1,13 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.action.serial.internal;
+
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
@@ -15,6 +24,12 @@ import java.io.OutputStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Extension of the default OSGi bundle activator
+ * 
+ * @author Johannes Engelke <info@johannes-engelke.de>
+ * @since 1.6.0
+ */
 public class SerialActionHandler {
 	
 	private final static Logger log = LoggerFactory.getLogger(SerialActionHandler.class);
@@ -52,24 +67,17 @@ public class SerialActionHandler {
 	
 	public void setProperty(String key, String value){
 		
-		switch (key) {
-		case "device":
+		if(key == "device"){
 			this.setDeviceName(value);
-			break;
-		case "baudrate":
+		} else if (key == "baudrate") {
 			this.setBaudRate(Integer.parseInt(value));
-			break;
-		case "databits":
+		} else if (key == "databits") {
 			this.setDataBits(Integer.parseInt(value));
-			break;
-		case "parity":
+		} else if (key == "parity") {
 			this.setParityMode(Integer.parseInt(value));
-			break;
-		case "stopbits":
+		} else if (key == "stopbits") {
 			this.setStopBits(Integer.parseInt(value));
-		default:
-			break;
-		}
+		} 
 	}
 	
 	public void writeMessage(String message){
