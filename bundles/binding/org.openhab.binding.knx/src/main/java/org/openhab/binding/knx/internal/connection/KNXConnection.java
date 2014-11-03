@@ -116,7 +116,6 @@ public class KNXConnection implements ManagedService {
 	}
 
 	public void setProcessListener(ProcessListener listener) {
-		sLogger.debug("setProcessListener() event: {}", listener);
 		if (sPC != null) {
 			sPC.removeProcessListener(KNXConnection.sProcessCommunicationListener);
 			sLogger.debug("Adding Process Listener: {}", listener);
@@ -126,7 +125,6 @@ public class KNXConnection implements ManagedService {
 	}
 	
 	public void unsetProcessListener(ProcessListener listener) {
-		sLogger.debug("unsetProcessListener() event: {}", listener);
 		if (sPC != null) {
 			sPC.removeProcessListener(KNXConnection.sProcessCommunicationListener);
 		}
