@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import tuwien.auto.calimero.DetachEvent;
 import tuwien.auto.calimero.GroupAddress;
+import tuwien.auto.calimero.Settings;
 import tuwien.auto.calimero.datapoint.Datapoint;
 import tuwien.auto.calimero.exception.KNXException;
 import tuwien.auto.calimero.process.ProcessCommunicator;
@@ -50,6 +51,7 @@ import tuwien.auto.calimero.process.ProcessListener;
  */
 public class KNXBinding extends AbstractBinding<KNXBindingProvider> 
 implements ProcessListener, KNXConnectionListener {
+//	implements KNXConnectionListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
@@ -66,15 +68,16 @@ implements ProcessListener, KNXConnectionListener {
 	private boolean mKNXConnectionEstablished;
 
 	public void activate(ComponentContext componentContext) {
+		logger.info("Calimero library version {}", Settings.getLibraryVersion());
 		logger.debug("KNXBinding: activating");
-		KNXConnection.addConnectionEstablishedListener(this);
+		KNXConnection.addConnectionListener(this);
 		mKNXBusReaderScheduler.start();
 
 	}
 
 	public void deactivate(ComponentContext componentContext) {
 		logger.debug("KNXBinding: deactivating");
-		KNXConnection.removeConnectionEstablishedListener(this);
+		KNXConnection.removeConnectionListener(this);
 		for (KNXBindingProvider provider : providers) {
 			provider.removeBindingChangeListener(this);
 		}
@@ -158,6 +161,7 @@ implements ProcessListener, KNXConnectionListener {
 	 */
 	@Override
 	public void groupWrite(ProcessEvent e) {
+		logger.debug("Received groupWrite Event.");
 		readFromKNX(e);
 	}
 

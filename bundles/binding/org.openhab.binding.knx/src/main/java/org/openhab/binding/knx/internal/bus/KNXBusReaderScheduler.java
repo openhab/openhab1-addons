@@ -81,7 +81,7 @@ public class KNXBusReaderScheduler {
 		}
 
 		sLogger.trace("Stopping reader task");
-		mDatapointReaderTask.setInterrupted(true);
+		mDatapointReaderTask.interrupt();
 		mIsRunning=false;
 	}
 
@@ -125,9 +125,9 @@ public class KNXBusReaderScheduler {
 	}
 
 	/**
-	 * 
-	 * @param datapoint
-	 * @return
+	 * Schedules immediate and one-time reading of a <code>Datapoint</code>.  
+	 * @param datapoint the <code>Datapoint</code> to read
+	 * @return false if the datapoint is null.
 	 */
 	public synchronized boolean readOnce(Datapoint datapoint) {
 		if (datapoint==null) {
@@ -145,9 +145,17 @@ public class KNXBusReaderScheduler {
 	}
 
 	/**
+	 * Schedules a <code>Datapoint</code> to be cyclicly read. When parameter
+	 * <code>autoRefreshTimeInSecs</code> is 0 then calling ths method is equal
+	 * to calling <link>readOnce</link>.
+	 * 
 	 * @param datapoint
+	 *            the <code>Datapoint</code> to be read
 	 * @param autoRefreshTimeInSecs
-	 * @return
+	 *            time in seconds specifying the reading cycle. 0 is equal to
+	 *            calling <link>readOnce</link>
+	 * @return true if the Datapoint was scheduled for reading, false in all
+	 *         other cases
 	 */
 	public synchronized boolean scheduleRead(Datapoint datapoint, int autoRefreshTimeInSecs) {
 		if (datapoint==null) {

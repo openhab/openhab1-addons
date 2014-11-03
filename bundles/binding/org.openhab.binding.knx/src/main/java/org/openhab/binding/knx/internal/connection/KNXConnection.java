@@ -96,8 +96,8 @@ public class KNXConnection implements ManagedService {
 	/** Time in seconds to wait for an orderly shutdown of the auto refresher feature. Default value is <code>5</code> */
 	private static int sScheduledExecutorServiceShutdownTimeout = 5;
 
-	/** The maximum number of queue entries in the refresh queue used by the auto refresh feature. Default value is <code>100</code> */
-	private static int sMaxRefreshQueueEntries = 100;
+	/** The maximum number of queue entries in the refresh queue used by the auto refresh feature. Default value is <code>10000</code> */
+	private static int sMaxRefreshQueueEntries = 10000;
 	
 	/** listeners for connection/re-connection events */
 	private static Set<KNXConnectionListener> sConnectionListeners = new HashSet<KNXConnectionListener>();
@@ -116,25 +116,28 @@ public class KNXConnection implements ManagedService {
 	}
 
 	public void setProcessListener(ProcessListener listener) {
+		sLogger.debug("setProcessListener() event: {}", listener);
 		if (sPC != null) {
 			sPC.removeProcessListener(KNXConnection.sProcessCommunicationListener);
+			sLogger.debug("Adding Process Listener: {}", listener);
 			sPC.addProcessListener(listener);
 		}
 		KNXConnection.sProcessCommunicationListener = listener;
 	}
 	
 	public void unsetProcessListener(ProcessListener listener) {
+		sLogger.debug("unsetProcessListener() event: {}", listener);
 		if (sPC != null) {
 			sPC.removeProcessListener(KNXConnection.sProcessCommunicationListener);
 		}
 		KNXConnection.sProcessCommunicationListener = null;
 	}
 	
-	public static void addConnectionEstablishedListener(KNXConnectionListener listener) {
+	public static void addConnectionListener(KNXConnectionListener listener) {
 		KNXConnection.sConnectionListeners.add(listener);
 	}
 
-	public static void removeConnectionEstablishedListener(KNXConnectionListener listener) {
+	public static void removeConnectionListener(KNXConnectionListener listener) {
 		KNXConnection.sConnectionListeners.remove(listener);
 	}
 
