@@ -1157,9 +1157,9 @@ class SonosZonePlayer {
 							logger.error("Could not parse RadioTime from String {}",response);
 						}
 
-						if(fields != null) {
+						resultString = new String();
 
-							resultString = new String();
+						if(fields != null && fields.size()>1) {
 
 							artist = fields.get(0);
 							title = fields.get(1);

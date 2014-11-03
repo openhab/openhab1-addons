@@ -168,6 +168,17 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 					logger.debug("Multilevel Switch MultiLevelUpDownCommandConverter - inverted: {}", command);
 				}
 			}
+			
+			// Alloe inversion of roller shutter PERCENT value
+			if(converter instanceof MultiLevelPercentCommandConverter){
+				logger.debug("Multilevel Switch MultiLevelPercentCommandConverter");
+				if ("true".equalsIgnoreCase(arguments.get("invert_percent"))) {
+					logger.debug("Multilevel Switch MultiLevelPercentCommandConverter - invert");
+					command = new PercentType(100 - ((DecimalType)command).intValue());
+					logger.debug("Multilevel Switch MultiLevelPercentCommandConverter - inverted: {}", command);
+				}
+			}
+			
 
 			Integer value = (Integer)converter.convertFromCommandToValue(item, command);
 			logger.trace("Converted command '{}' to value {} for item = {}, node = {}, endpoint = {}.", command.toString(), value, item.getName(), node.getNodeId(), endpointId);

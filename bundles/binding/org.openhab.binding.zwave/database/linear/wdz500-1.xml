@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>WD500Z</Model>
+	<Label lang="en"> Wall Dimmer Switch</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x26</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x2b</id>
+		</Class>
+		<Class>
+			<id>0x2c</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Dim Start Level</Label>
+			<Help lang="en">A dimmer receiving this command will start dimming
+				from that start level if this bit is set to 0. If the bit is set to
+				1, the dimmer will ignore the start level and instead start dimming
+				from its current level.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Use Start Level</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore Start Level</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">LED Indication</Label>
+			<Help lang="en">The WD500Z-1 will flicker its LED when it is
+				transmitting to any of its groups. This can be changed if desired.
+			</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">0</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">1</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert Switch</Label>
+			<Help lang="en">To change the top of the switch to OFF and the bottom
+				to ON change parameter to 1.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Top-ON, Bottom-OFF </Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Bottom-ON, Top-OFF</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable Shade Control Group 2</Label>
+			<Help lang="en">The switch can control shade control devices if this
+				parameter is set to 1</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable Shade Control Group 3</Label>
+			<Help lang="en">The switch can control shade control devices if this
+				parameter is set to 1.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>19</Index>
+			<Type>list</Type>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">LED Transmission Indication</Label>
+			<Help lang="en">The WD500Z-1 will flicker its LED when it is
+				transmitting to any of its groups. Parameter set to 0 = not flicker
+				Parameter set to 1 = flicker the entire time of transmitting
+				Parameter set to 2 = flicker for only 1 second.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable Flicker</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Flicker while transmitting</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Flicker for 1 second</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">UNKNOWN!!!</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Double Tap</Label>
+			<Help lang="en">Turn devices on an off by tapping the top or the
+				bottom of the switch twice. Brighten or dim devices by tapping and
+				then hold the top or the bottom of the switch.</Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Triple Tap</Label>
+			<Help lang="en"> Turn devices on an off by tapping the top or the
+				bottom of the switch three times. Brighten or dim devices by tapping
+				twice and then hold the top or the bottom of the switch.</Help>
+		</Group>
+	</Associations>
+</Product>

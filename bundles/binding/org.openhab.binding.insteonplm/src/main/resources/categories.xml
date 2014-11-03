@@ -114,6 +114,24 @@ Example:
   <description>Switchable Lighting</description>
   <devCat>0x02</devCat>
   <subcategory>
+    <name>In-LineLinc Relay</name>
+    <description>2475D</description>
+    <subCat>0x10</subCat>
+    <productKey name="0x00001B">
+      <feature name="switch">GenericSwitch</feature>
+      <feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>SwitchLinc Relay</name>
+    <description>2476S</description>
+    <subCat>0x0A</subCat>
+    <productKey name="F00.00.0A">
+      <feature name="switch">GenericSwitch</feature>
+      <feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
     <name>ICON Switch</name>
     <description>2876S</description>
     <subCat>0x0B</subCat>
@@ -128,6 +146,10 @@ Example:
     <subCat>0x2A</subCat>
     <productKey name="F00.00.02">
     	<feature name="switch">GenericSwitch</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+    <productKey name="F00.00.10">
+    	<feature name="switch">MultiButtonRemote</feature>
     	<feature name="lastheardfrom">GenericLastTime</feature>
     </productKey>
   </subcategory>
@@ -248,7 +270,9 @@ Example:
     	<description>2842-222</description>
     	<subCat>0x01</subCat>
     	<productKey name="0x00004A">
-    	  <feature name="contact">MotionSensorContact</feature>
+    	  <feature name="contact">WirelessMotionSensorContact</feature>
+    	  <feature name="batterylevel">MotionSensorBatteryLevel</feature>
+    	  <feature name="lightlevel">MotionSensorLightLevel</feature>
     	  <feature name="lastheardfrom">GenericLastTime</feature>
     	</productKey>
     </subcategory>
@@ -258,6 +282,15 @@ Example:
     	<subCat>0x02</subCat>
     	<productKey name="0x000049">
     	  <feature name="contact">GenericContact</feature>
+    	  <feature name="lastheardfrom">GenericLastTime</feature>
+    	</productKey>
+    </subcategory>
+    <subcategory>
+	<name>Leak Sensor</name>
+    	<description>2852-222</description>
+    	<subCat>0x08</subCat>
+    	<productKey name="F00.00.0A">
+    	  <feature name="contact">LeakSensorContact</feature>
     	  <feature name="lastheardfrom">GenericLastTime</feature>
     	</productKey>
     </subcategory>

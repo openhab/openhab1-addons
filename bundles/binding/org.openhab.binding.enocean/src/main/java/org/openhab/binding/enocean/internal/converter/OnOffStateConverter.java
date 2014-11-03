@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.enocean.internal.converter;
 
-import org.enocean.java.common.values.OnOffState;
+import org.opencean.core.common.values.OnOffState;
 import org.openhab.core.library.types.OnOffType;
 
 /**

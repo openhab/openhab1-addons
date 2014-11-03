@@ -41,8 +41,6 @@ public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProv
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		// All types are valid
-		// logger.trace("validateItemType({}, {})", item.getName(), bindingConfig);
 		String[] parts = parseConfigString(bindingConfig);
 		if (parts.length != 3) throw new
 			BindingConfigParseException("item config must have addr:prodKey#feature format");
@@ -54,7 +52,6 @@ public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProv
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		//logger.trace("processBindingConfiguration({}, {})", item.getName(), bindingConfig);
 		super.processBindingConfiguration(context, item, bindingConfig);
 		String[] parts = parseConfigString(bindingConfig);
 		if (parts.length != 3) throw new

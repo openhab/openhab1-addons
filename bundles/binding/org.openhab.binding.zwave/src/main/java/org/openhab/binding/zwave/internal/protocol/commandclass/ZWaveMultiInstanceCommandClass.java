@@ -12,18 +12,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
-import org.openhab.binding.zwave.internal.protocol.ZWaveController;
-import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
-import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
-import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
+import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
+import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -228,7 +228,23 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		}
 		
 		logger.debug(String.format("NODE %d: Requested Command Class = %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel() , commandClassCode));
-		ZWaveCommandClass zwaveCommandClass = this.getNode().getCommandClass(commandClass);
+		
+		ZWaveCommandClass zwaveCommandClass = null;
+		
+		// first get command class from endpoint, if supported
+		if (this.getVersion() >= 2) {
+			ZWaveEndpoint endpoint = this.endpoints.get(instance);
+			if (endpoint != null) {
+				zwaveCommandClass = endpoint.getCommandClass(commandClass);
+				if (zwaveCommandClass == null) {
+					logger.warn(String.format("NODE %d: CommandClass %s (0x%02x) not implemented by endpoint %d, fallback to main node.", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode, instance));
+				}
+			}
+		}
+		
+		if (zwaveCommandClass == null) {
+			zwaveCommandClass = this.getNode().getCommandClass(commandClass);
+		}
 		
 		if (zwaveCommandClass == null) {
 			logger.error(String.format("NODE %d: Unsupported command class %s (0x%02x)", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode));
@@ -399,7 +415,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		zwaveCommandClass = endpoint.getCommandClass(commandClass);
 		
 		if (zwaveCommandClass == null) {
-			logger.warn(String.format("NODE %d: CommandClass %s (0x%02x) not implemented by endpoint %d, fallback to main node.", commandClass.getLabel(), commandClassCode, endpointId));
+			logger.warn(String.format("NODE %d: CommandClass %s (0x%02x) not implemented by endpoint %d, fallback to main node.", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode, endpointId));
 			zwaveCommandClass = this.getNode().getCommandClass(commandClass);
 		}
 		

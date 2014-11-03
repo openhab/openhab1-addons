@@ -89,24 +89,24 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 		deviceClass.setGenericDeviceClass(generic);
 		deviceClass.setSpecificDeviceClass(specific);
 		
-		// if restored the node from configuration information
-		// then we don't have to add these command classes anymore.
-		if (!node.restoreFromConfig()) {
-			// Add mandatory command classes as specified by it's generic device class.
-			for (CommandClass commandClass : generic.getMandatoryCommandClasses()) {
-				ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
-				if (zwaveCommandClass != null)
-					zController.getNode(nodeId).addCommandClass(zwaveCommandClass);
-			}
-	
-			// Add mandatory command classes as specified by it's specific device class.
-			for (CommandClass commandClass : specific.getMandatoryCommandClasses()) {
-				ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
-				if (zwaveCommandClass != null)
-					node.addCommandClass(zwaveCommandClass);
-			}
+		// Add all the command classes.
+		// If restored the node from configuration file then 
+		// the classes will already exist and this will be ignored 
+
+		// Add mandatory command classes as specified by it's generic device class.
+		for (CommandClass commandClass : generic.getMandatoryCommandClasses()) {
+			ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
+			if (zwaveCommandClass != null)
+				zController.getNode(nodeId).addCommandClass(zwaveCommandClass);
 		}
-		
+
+		// Add mandatory command classes as specified by it's specific device class.
+		for (CommandClass commandClass : specific.getMandatoryCommandClasses()) {
+			ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
+			if (zwaveCommandClass != null)
+				node.addCommandClass(zwaveCommandClass);
+		}
+
     	// advance node stage of the current node.
 		node.advanceNodeStage(NodeStage.PING);
 		

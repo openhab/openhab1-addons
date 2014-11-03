@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.openhab.io.squeezeserver.SqueezePlayer;
+import org.openhab.io.squeezeserver.SqueezePlayer.Mode;
 import org.openhab.io.squeezeserver.SqueezeServer;
 
 import org.slf4j.Logger;
@@ -166,21 +167,47 @@ public class Squeezebox {
 	public static boolean squeezeboxSpeak(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
 			@ParamDoc(name = "message", text = "The message to say") String message) {
-		return squeezeboxSpeak(playerId, message, -1);
+		return squeezeboxSpeak(playerId, message, -1, true);
 	}	
-	
-	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the specified volume", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the specified volume and always resume previous playback", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
 	public static boolean squeezeboxSpeak(
 			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
 			@ParamDoc(name = "message", text = "The message to say") String message,
 			@ParamDoc(name = "volume", text = "The volume to set the device when speaking this message (between 1-100)") int volume) {
+		return squeezeboxSpeak(playerId, message, -1, true);
+	}	
+	
+	@ActionDoc(text = "Speak a message via one of your Squeezebox devices using the specified volume and using specified resume status", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean squeezeboxSpeak(
+			@ParamDoc(name = "playerId", text = "The Squeezebox to send the message to") String playerId,
+			@ParamDoc(name = "message", text = "The message to say") String message,
+			@ParamDoc(name = "volume", text = "The volume to set the device when speaking this message (between 1-100)") int volume,
+			@ParamDoc(name = "resumePlayback", text = "Continue playback after speech") Boolean resumePlayback ){
 		SqueezePlayer player = getPlayer(playerId);
 		if (player == null) return false;
-
+		logger.trace("***START SPEECH**** Player: '{}'", playerId);
 		// get the current player state
 		int playerVolume = player.getUnmuteVolume();
 		boolean playerPowered = player.isPowered();
 		boolean playerMuted = player.isMuted();
+		Mode playerMode = player.getMode();
+		int currNumTracks = player.getNumberPlaylistTracks();
+		int currPlayingTime = player.getCurrentPlayingTime();
+		int currPlaylistIndex = player.getCurrentPlaylistIndex();
+		int currPlaylistShuffle = player.getCurrentPlaylistShuffle();
+		int currPlaylistRepeat = player.getCurrentPlaylistRepeat();
+		int newNumTracks = 0;
+		logger.trace("Current Playing Mode '{}'", playerMode.toString());
+		logger.trace("Current Volume '{}'", playerVolume);
+		logger.trace("Current Num Playlist Tracks '{}'", currNumTracks);
+		logger.trace("Current Playing Playlist Index '{}'", currPlaylistIndex);
+		logger.trace("Current Playing Time '{}'", currPlayingTime);
+		logger.trace("Current Shuffle Mode '{}'", currPlaylistShuffle);
+		logger.trace("Current Repeat Mode '{}'", currPlaylistRepeat);
+		
+		// If Playing Pause player before adjusting volume!
+		if (playerMode == Mode.play)
+			squeezeServer.pause(playerId);
 		
 		// set the player ready to play this announcement
 		if (playerMuted) {
@@ -191,13 +218,22 @@ public class Squeezebox {
 			logger.trace("Setting player state: volume {}", volume);
 			squeezeServer.setVolume(playerId, volume);
 		}
-
+		
+		if (currPlaylistRepeat != 0)
+			squeezeServer.setRepeatMode(playerId, 0);
+		if (currPlaylistShuffle != 0) {
+			squeezeServer.setShuffleMode(playerId, 0);
+			currPlaylistIndex = 0;
+			logger.trace("Shuffle Changed! Set Current Playing Index to 0");
+		}
+		
+		
 		// can only 'say' 100 chars at a time
 		List<String> sentences = getSentences(message, MAX_SENTENCE_LENGTH);
 
 		// send each sentence in turn
 		for (String sentence : sentences) {
-			logger.debug("Sending sentence to " + playerId + " (" + sentence + ")");
+			logger.trace("Sending sentence to " + playerId + " (" + sentence + ")");
 			
 			String encodedSentence;
 			try {
@@ -207,19 +243,31 @@ public class Squeezebox {
 				continue;
 			}
 			encodedSentence = encodedSentence.replace("+", "%20");
-			logger.debug("Encoded sentence " + encodedSentence);
+			logger.trace("Encoded sentence " + encodedSentence);
 			
 			// build the URL to send to the Squeezebox to play
 			String url = String.format(GOOGLE_TRANSLATE_URL,squeezeServer.language()) + encodedSentence;
 			
 			// create an instance of our special listener so we can detect when the sentence is complete
 			SqueezeboxSentenceListener listener = new SqueezeboxSentenceListener(playerId);
-			player.addPlayerEventListener(listener);
+			squeezeServer.addPlayerEventListener(listener);
 			
 			// send the URL (this will power up the player and un-mute if necessary)
-			logger.trace("Sending URL '{}' to device to play", url);
-			squeezeServer.playUrl(playerId, url);
-
+			logger.trace("Adding URL to current playlist '{}' to play", url);
+			squeezeServer.addPlaylistItem(playerId, url);
+			logger.trace("Sleeping for 1s for updated playlist to refresh", url);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				continue;
+			}
+			newNumTracks = player.getNumberPlaylistTracks();
+			logger.trace("New Playlist Track Number: '{}'", newNumTracks);
+			
+			squeezeServer.playPlaylistItem(playerId, newNumTracks-1);
+			
+			squeezeServer.play(playerId);
+			
 			// wait for this message to complete (timing out after 30s)
 			int timeoutCount = 0;
 			while (!listener.isFinished() && timeoutCount < 300) {
@@ -234,20 +282,54 @@ public class Squeezebox {
 			if (timeoutCount >= 200) {
 				logger.warn("Sentence timed out while speaking!");
 			}
-			
+			squeezeServer.stop(playerId);
 			// clean up the listener
-			player.removePlayerEventListener(listener);
+			squeezeServer.removePlayerEventListener(listener);
 			listener = null;
+			logger.trace("Done playing speech - restore state...");
 		}
 		
-		// clear the player playlist
-		squeezeServer.clearPlaylist(playerId);
 		
-		// restore the player state
+		logger.trace("Deleting Playlist Index: '{}'", newNumTracks-1);
+		squeezeServer.deletePlaylistItem(playerId, newNumTracks-1);
+
+		// restore the player volume before playback
 		if (volume != -1) {
 			logger.trace("Restoring player to previous state: volume {}", playerVolume);
 			squeezeServer.setVolume(playerId, playerVolume);
 		}
+		if (playerMode != Mode.stop) {
+			logger.trace("Restoring Playlist Index Number: '{}'", currPlaylistIndex);
+			squeezeServer.playPlaylistItem(playerId, currPlaylistIndex);
+			logger.trace("Restoring Playing Time : '{}'", currPlayingTime);
+			squeezeServer.setPlayingTime(playerId, currPlayingTime);
+		}
+		// Must sleep 350ms before restoring previous playback state...
+		try {
+			Thread.sleep(350);
+		} catch (InterruptedException e) { }
+	
+		// restore play mode state
+		if (playerMode == Mode.play) {
+			if (resumePlayback) {
+				logger.trace("Restoring Playing Mode: '{}'", playerMode);
+				squeezeServer.play(playerId);
+			}
+			else {
+				logger.warn("NOT restoring Playing Mode: '{}' because resumePlayback is false", playerMode);
+				squeezeServer.pause(playerId);
+			}
+		} else if (playerMode == Mode.pause) {
+			squeezeServer.pause(playerId);
+		} else {
+			squeezeServer.stop(playerId);
+		}
+		
+		logger.trace("Restoring player to previous state: shuffle {}", currPlaylistShuffle);
+		squeezeServer.setShuffleMode(playerId, currPlaylistShuffle);
+		logger.trace("Restoring player to previous state: repeat {}", currPlaylistRepeat);
+		squeezeServer.setRepeatMode(playerId, currPlaylistRepeat);
+
 		if (playerMuted) {
 			logger.trace("Restoring player to previous state: muted");
 			squeezeServer.mute(playerId);
@@ -256,7 +338,7 @@ public class Squeezebox {
 			logger.trace("Restoring player to previous state: off");
 			squeezeServer.powerOff(playerId);
 		}
-		
+		logger.trace("*****DONE SPEECH****** Player: '{}'", playerId);
 		return true;
 	}
 	

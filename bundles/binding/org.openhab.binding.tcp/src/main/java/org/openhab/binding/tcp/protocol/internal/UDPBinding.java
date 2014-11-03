@@ -181,14 +181,24 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 
 			String preambleString = (String) config.get("preamble");
 			if (StringUtils.isNotBlank(preambleString)) {
-				preAmble = preambleString.replaceAll("\\\\", "\\");
+				try {
+					preAmble = preambleString.replaceAll("\\\\", "\\");
+				}
+				catch(Exception e) {
+					preAmble = preambleString;
+				}
 			} else {
 				logger.info("The preamble for all write operations will be set to the default vaulue of {}",preAmble);
 			}
 
 			String postambleString = (String) config.get("postamble");
 			if (StringUtils.isNotBlank(postambleString)) {
-				postAmble = postambleString.replaceAll("\\\\", "\\");;
+				try {
+					postAmble = postambleString.replaceAll("\\\\", "\\");
+				}
+				catch(Exception e) {
+					postAmble = postambleString;
+				}
 			} else {
 				logger.info("The postamble for all write operations will be set to the default vaulue of {}",postAmble);
 			}
@@ -254,7 +264,7 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 				logger.warn("couldn't transform response because transformationService of type '{}' is unavailable", transformationType);
 			}
 		}
-		catch (TransformationException te) {
+		catch (Exception te) {
 			logger.error("transformation throws exception [transformation="
 					+ transformation + ", response=" + response + "]", te);
 

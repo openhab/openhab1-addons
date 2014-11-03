@@ -25,7 +25,7 @@ public class ZWaveNetworkEvent extends ZWaveEvent {
 	 * @param nodeId the nodeId of the event.
 	 */
 	public ZWaveNetworkEvent(Type type, int nodeId, State state) {
-		super(nodeId, 1);
+		super(nodeId);
 		
 		this.type = type;
 		this.state = state;
@@ -40,7 +40,7 @@ public class ZWaveNetworkEvent extends ZWaveEvent {
 	}
 
 	public enum Type {
-		AssignSucReturnRoute, AssignReturnRoute, DeleteReturnRoute, NodeNeighborUpdate, NodeRoutingInfo, AssociationUpdate,
+		AssignSucReturnRoute, AssignReturnRoute, DeleteReturnRoute, NodeNeighborUpdate, NodeRoutingInfo, AssociationUpdate, DeleteNode, FailedNode
 		
 		
 	}

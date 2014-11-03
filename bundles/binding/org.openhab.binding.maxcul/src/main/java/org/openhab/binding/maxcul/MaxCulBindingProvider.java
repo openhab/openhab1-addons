@@ -70,4 +70,9 @@ public interface MaxCulBindingProvider extends BindingProvider {
 	 * number
 	 */
 	HashSet<MaxCulBindingConfig> getAssociations(String deviceSerial);
+	
+	/**
+	 * Get credit monitor bindings
+	 */
+	List<MaxCulBindingConfig> getCreditMonitorBindings();
 }

@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * 	<li><code>{ owserver="<serverId:F90000012A608428:PrimaryValue:2000" }</code></li>
  * 	<li><code>{ owserver="<serverId:53000000224EA612:Temperature:10000" }</code></li>
  * 	<li><code>{ owserver="<serverId:5A0010000021D57E:DewPoint:10000" }</code></li>
+* 	<li><code>{ owserver="<serverId:FC00000310120B1D:Counter_B:10000" }</code></li>
  * </ul>
  * 
  * The 'serverId' referenced in the binding string is configured in the openhab.cfg file -:
@@ -58,11 +59,11 @@ public class OWServerGenericBindingProvider extends AbstractGenericBindingProvid
 
 	/** {@link Pattern} which matches a binding configuration part */
 	private static final Pattern BASE_CONFIG_PATTERN =
-		Pattern.compile("(<|>)([0-9.a-zA-Z]+:[0-9.a-zA-Z]+:[0-9.a-zA-Z]+:[0-9]+)");
+		Pattern.compile("(<|>)([0-9.a-zA-Z]+:[0-9.a-zA-Z]+:[0-9._a-zA-Z]+:[0-9]+)");
 
 	/** {@link Pattern} which matches an In-Binding */
 	private static final Pattern IN_BINDING_PATTERN =
-		Pattern.compile("([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9]+)");
+		Pattern.compile("([0-9.a-zA-Z]+):([0-9.a-zA-Z]+):([0-9._a-zA-Z]+):([0-9]+)");
 	
 
 	/**
@@ -137,7 +138,7 @@ public class OWServerGenericBindingProvider extends AbstractGenericBindingProvid
 
 	/**
 	 * Parses a owserver-in configuration by using the regular expression
-	 * <code>([0-9.a-zA-Z]+:[0-9.a-zA-Z]+:[0-9.a-zA-Z]+:[0-9]+)</code>. Where the groups should 
+	 * <code>([0-9.a-zA-Z]+:[0-9.a-zA-Z]+:[0-9._a-zA-Z]+:[0-9]+)</code>. Where the groups should 
 	 * contain the following content:
 	 * <ul>
 	 * <li>1 - Server ID</li>

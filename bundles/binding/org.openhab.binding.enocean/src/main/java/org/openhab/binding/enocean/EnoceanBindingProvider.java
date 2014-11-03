@@ -8,8 +8,8 @@
  */
 package org.openhab.binding.enocean;
 
-import org.enocean.java.address.EnoceanParameterAddress;
-import org.enocean.java.common.EEPId;
+import org.opencean.core.address.EnoceanParameterAddress;
+import org.opencean.core.common.EEPId;
 import org.openhab.binding.enocean.internal.profiles.Profile;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;

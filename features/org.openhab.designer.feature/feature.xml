@@ -24,7 +24,7 @@
       Copyright (c) 2010-2014, openHAB.org &lt;admin@openhab.org&gt;
    </copyright>
 
-  <license url="%licenseURL">
+   <license url="%licenseURL">
       %license
    </license>
 
@@ -314,6 +314,13 @@
          unpack="false"/>
 
    <plugin
+         id="org.openhab.action.squeezebox"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.openhab.action.twitter"
          download-size="0"
          install-size="0"
@@ -333,5 +340,26 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.openhab.action.xpl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.action.homematic"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+     <plugin
+           id="org.openhab.action.openwebif"
+           download-size="0"
+           install-size="0"
+           version="0.0.0"
+           unpack="false"/>
 
 </feature>

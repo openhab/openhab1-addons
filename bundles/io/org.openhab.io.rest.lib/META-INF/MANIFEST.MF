@@ -20,9 +20,9 @@ Bundle-ClassPath: lib/jackson-core-asl-1.9.2.jar,
  lib/atmosphere-compat-jbossweb-2.0.1.jar,
  lib/atmosphere-compat-tomcat-2.0.1.jar,
  lib/atmosphere-compat-tomcat7-2.0.1.jar,
- lib/atmosphere-annotations-2.0.7.jar,
- lib/atmosphere-jersey-2.0.7.jar,
- lib/atmosphere-runtime-2.0.7.jar
+ lib/atmosphere-annotations-2.0.9.jar,
+ lib/atmosphere-jersey-2.0.9.jar,
+ lib/atmosphere-runtime-2.0.9.jar
 Import-Package: com.sun.jersey.api.core,
  com.sun.jersey.api.json,
  com.sun.jersey.core.osgi,
@@ -45,5 +45,6 @@ Export-Package: com.sun.jersey.api.client,com.sun.jersey.api.core,com.
  nnotation,org.atmosphere.cache,org.atmosphere.cpr,org.atmosphere.jers
  ey,org.atmosphere.util,org.codehaus.jackson;version="1.9.2",org.codeh
  aus.jackson.annotate;version="1.9.2",org.codehaus.jackson.map;version
+ ="1.9.2",org.codehaus.jackson.map.annotate;version
  ="1.9.2",org.codehaus.jackson.type;version="1.9.2"
 Require-Bundle: javax.servlet

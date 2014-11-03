@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry exported="true" kind="lib" path="lib/freeboxos-0.3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-codec-1.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/freeboxos-0.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/guava-15.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/httpclient-4.3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/httpcore-4.3.2.jar"/>

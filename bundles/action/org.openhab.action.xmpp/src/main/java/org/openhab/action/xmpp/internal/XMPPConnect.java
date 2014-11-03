@@ -11,10 +11,14 @@ package org.openhab.action.xmpp.internal;
 import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
+import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -102,25 +106,27 @@ public class XMPPConnect implements ManagedService {
 			}
 
 			if (connection != null && connection.isConnected()) {
-				connection.disconnect();
+				try {
+					connection.disconnect();
+				} catch (NotConnectedException e) {
+					logger.debug("Already disconnected", e);
+				}
 			}
 
-			connection = new XMPPConnection(config);
+			connection = new XMPPTCPConnection(config);
 
 			try {
 				connection.connect();
 				connection.login(username, password);
 				if (consoleUsers.length > 0) {
-					connection.getChatManager().addChatListener(new XMPPConsole(consoleUsers));
+					ChatManager.getInstanceFor(connection).addChatListener(new XMPPConsole(consoleUsers));
 					connection.addConnectionListener(new XMPPConnectionListener());
 				}
 				logger.info("Connection to XMPP as '{}' has been established.",
 						username);
 				initialized = true;
-			} catch (XMPPException e) {
+			} catch (Exception e) {
 				logger.error("Could not establish connection to XMPP server '" + servername + ":" + port + "': {}", e.getMessage());
-			} catch (NullPointerException e) {
-				logger.error("Could not establish connection to XMPP server '" + servername + ":" + port + "'");
 			}
 		}
 	}
@@ -147,7 +153,10 @@ public class XMPPConnect implements ManagedService {
 			} catch (XMPPException e) {
 				logger.error("Could not join chat '{}' with nickname '{}': {}",
 						chatroom, chatnickname, e.getMessage());
-			}				
+			} catch (SmackException e) {
+				logger.error("Could not join chat '{}' with nickname '{}': {}",
+						chatroom, chatnickname, e.getMessage());
+			}
 		}
 	}
 	
@@ -188,7 +197,7 @@ public class XMPPConnect implements ManagedService {
 		return chat;
 	}	
 
-	private static class XMPPConnectionListener implements ConnectionListener {
+	private static class XMPPConnectionListener extends AbstractConnectionListener {
 
 		public void connectionClosed() {
 			logger.debug("XMPP connection has been closed.");
@@ -206,9 +215,6 @@ public class XMPPConnect implements ManagedService {
 			} catch (NotInitializedException nie) {
 				logger.error("XMPP re-connection failed, giving up: {}", nie.getMessage());
 			}
-		}
-
-		public void reconnectingIn(int s) {
 		}
 
 		public void reconnectionFailed(Exception e) {
