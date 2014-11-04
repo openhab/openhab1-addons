@@ -21,8 +21,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Helper class that is able to discover Samsung Airconditioners in the network by a SSDP
@@ -33,8 +31,6 @@ import org.slf4j.LoggerFactory;
  */
 public class SsdpDiscovery {
 
-	static final Logger logger = LoggerFactory.getLogger(SsdpDiscovery.class);
-	
 	static final int PORT = 1900;
     static final String NEWLINE = "\r\n";
 
@@ -46,6 +42,10 @@ public class SsdpDiscovery {
             + "SERVICE_NAME: ControlServer-MLib" + NEWLINE
             + "MESSAGE_TYPE: CONTROLLER_START" + NEWLINE;
 
+    public static void main(String args[]) {
+    	discover();
+    }
+    
     /**
      * Discovers one Samsung Air Conditioners in the network, and returns a Map
      * with all the details about it. We will use the IP-address and the MAC-address later
@@ -59,16 +59,17 @@ public class SsdpDiscovery {
     		sendNotify(DISCOVER_MESSAGE);
     		response.putAll(parseResponse(retrieveResponse()));
     	} catch (Exception e) {
-    		logger.warn("Failed while trying to discover Samsung Air Conditioner", e);
+    		e.printStackTrace();
     	}
-        logger.debug("Got the following response from Samsung Air Conditioner: " + response);
+    	System.out.println("Got the following response from Samsung Air Conditioner: " + response);
         return response;
     }
 
     private static Map<String, String> parseResponse(String response) {
-    	logger.debug("Response was:" + response);
-        Map<String, String> device = new HashMap<String, String>();
-        for (String element : response.split(NEWLINE))  {
+    	Map<String, String> device = new HashMap<String, String>();
+    	if (response == null) return device;
+    	
+    	for (String element : response.split(NEWLINE))  {
         	if (element.contains(": "))
         		device.put(element.split(": ")[0], element.split(": ")[1]);
         }
@@ -88,12 +89,11 @@ public class SsdpDiscovery {
                 recSocket.receive(input);
                 response = new String(input.getData());
             } catch (SocketTimeoutException e) {
-                // TODO fix handling of time out
-                if (i >= 2) break;
+            	System.out.println("Got a socket timeout exception... will continune to look");
+                if (i >= 10) break;
                 i++;
             }
         }
-        if (response == null) throw new Exception("No air conditioner found");
         return response;
     }
 

@@ -84,30 +84,7 @@ public class SamsungAcBinding extends
 			}
 			CommandEnum property = getProperty(itemName);
 
-			String cmd = null;
-			switch (property) {
-			case AC_FUN_POWER:
-				cmd = "ON".equals(command.toString()) ? "On" : "Off";
-				break;
-			case AC_FUN_WINDLEVEL:
-				cmd = WindLevelEnum.getFromValue(command).toString();
-				break;
-			case AC_FUN_OPMODE:
-				cmd = OperationModeEnum.getFromValue(command).toString();
-				break;
-			case AC_FUN_COMODE:
-				cmd = ConvenientModeEnum.getFromValue(command).toString();
-				break;
-			case AC_FUN_DIRECTION:
-				cmd = DirectionEnum.getFromValue(command).toString();
-				break;
-			case AC_FUN_TEMPSET:
-				cmd = command.toString();
-				break;
-			default:
-				cmd = command.toString();
-				break;
-			}
+			String cmd = getCmdStringFromEnumValue(command, property);
 
 			if (cmd != null) {
 				sendCommand(host, property, cmd);
@@ -116,6 +93,35 @@ public class SamsungAcBinding extends
 						+ "' because property not implemented: '" + property
 						+ "'");
 		}
+	}
+
+	private String getCmdStringFromEnumValue(Command command,
+			CommandEnum property) {
+		String cmd = null;
+		switch (property) {
+		case AC_FUN_POWER:
+			cmd = "ON".equals(command.toString()) ? "On" : "Off";
+			break;
+		case AC_FUN_WINDLEVEL:
+			cmd = WindLevelEnum.getFromValue(command).toString();
+			break;
+		case AC_FUN_OPMODE:
+			cmd = OperationModeEnum.getFromValue(command).toString();
+			break;
+		case AC_FUN_COMODE:
+			cmd = ConvenientModeEnum.getFromValue(command).toString();
+			break;
+		case AC_FUN_DIRECTION:
+			cmd = DirectionEnum.getFromValue(command).toString();
+			break;
+		case AC_FUN_TEMPSET:
+			cmd = command.toString();
+			break;
+		default:
+			cmd = command.toString();
+			break;
+		}
+		return cmd;
 	}
 
 	private void sendCommand(AirConditioner aircon, CommandEnum property,
@@ -232,80 +238,84 @@ public class SamsungAcBinding extends
 				.entrySet()) {
 			AirConditioner host = entry.getValue();
 			if (host.isConnected()) {
-				Map<CommandEnum, String> status = new HashMap<CommandEnum, String>();
-				try {
-					status = host.getStatus();
-				} catch (Exception e) {
-					logger.debug("Could not get status.. returning..");
-					return;
-				}
-				
-				for (CommandEnum cmd : status.keySet()) {
-					String item = getItemName(cmd);
-					String value = status.get(cmd);
-					if (item != null && value != null) {
-						switch (cmd) {
-						case AC_FUN_TEMPNOW:
-						case AC_FUN_TEMPSET:
-							postUpdate(item, DecimalType.valueOf(value));
-							break;
-						case AC_FUN_POWER:
-							postUpdate(
-									item,
-									value.toUpperCase().equals("ON") ? OnOffType.ON
-											: OnOffType.OFF);
-							break;
-						case AC_FUN_COMODE:
-							postUpdate(item,
-									DecimalType.valueOf(Integer
-											.toString(ConvenientModeEnum
-													.valueOf(value).value)));
-							break;
-						case AC_FUN_OPMODE:
-							postUpdate(item,
-									DecimalType.valueOf(Integer
-											.toString(OperationModeEnum
-													.valueOf(value).value)));
-							break;
-						case AC_FUN_WINDLEVEL:
-							postUpdate(item,
-									DecimalType.valueOf(Integer
-											.toString(WindLevelEnum
-													.valueOf(value).value)));
-							break;
-						case AC_FUN_DIRECTION:
-							postUpdate(item,
-									DecimalType.valueOf(Integer
-											.toString(DirectionEnum
-													.valueOf(value).value)));
-							break;
-						default:
-							logger.debug("Not implementation for updating: '"
-									+ cmd + "'");
-							break;
-						}
-					}
-				}
+				getAndUpdateStatusForAirConditioner(host);
 			} else {
-				// broken connection so attempt to reconnect
-				logger.debug(
-						"Broken connection found for '{}', attempting to reconnect...",
-						entry.getKey());
-				try {
-					host.login();
-				} catch (Exception e) {
-					logger.debug(
-							"Reconnect failed for '{}', will retry in {}s",
-							entry.getKey(), refreshInterval / 1000);
-					
-					logger.debug("Trying to discover the AC");
-					Map<String, String> discovered = SsdpDiscovery.discover();
-					if (discovered != null && discovered.size() > 0) {
-						logger.warn("Samsung Air Conditioner has been configured, and we found one with IP:'" +
-								discovered.get("IP") + "' and MAC ADDRESS: '" + discovered.get("MAC_ADDR") + "'");
-					}
-				}
+				reconnectToAirConditioner(entry.getKey(), host);
 			}
+		}
+	}
+
+	private void reconnectToAirConditioner(String key, AirConditioner host) {
+		logger.info(
+				"Broken connection found for '{}', attempting to reconnect...",
+				key);
+		try {
+			host.login();
+		} catch (Exception e) {
+			logger.info(
+					"Reconnect failed for '{}', will retry in {}s",
+					key, refreshInterval / 1000);
+		}
+	}
+
+	private void getAndUpdateStatusForAirConditioner(AirConditioner host) {
+		Map<CommandEnum, String> status = new HashMap<CommandEnum, String>();
+		try {
+			status = host.getStatus();
+		} catch (Exception e) {
+			logger.debug("Could not get status.. returning..");
+			return;
+		}
+		
+		for (CommandEnum cmd : status.keySet()) {
+			String item = getItemName(cmd);
+			String value = status.get(cmd);
+			if (item != null && value != null) {
+				updateItemWithValue(cmd, item, value);
+			}
+		}
+	}
+
+	private void updateItemWithValue(CommandEnum cmd, String item, String value) {
+		switch (cmd) {
+		case AC_FUN_TEMPNOW:
+		case AC_FUN_TEMPSET:
+			postUpdate(item, DecimalType.valueOf(value));
+			break;
+		case AC_FUN_POWER:
+			postUpdate(
+					item,
+					value.toUpperCase().equals("ON") ? OnOffType.ON
+							: OnOffType.OFF);
+			break;
+		case AC_FUN_COMODE:
+			postUpdate(item,
+					DecimalType.valueOf(Integer
+							.toString(ConvenientModeEnum
+									.valueOf(value).value)));
+			break;
+		case AC_FUN_OPMODE:
+			postUpdate(item,
+					DecimalType.valueOf(Integer
+							.toString(OperationModeEnum
+									.valueOf(value).value)));
+			break;
+		case AC_FUN_WINDLEVEL:
+			postUpdate(item,
+					DecimalType.valueOf(Integer
+							.toString(WindLevelEnum
+									.valueOf(value).value)));
+			break;
+		case AC_FUN_DIRECTION:
+			postUpdate(item,
+					DecimalType.valueOf(Integer
+							.toString(DirectionEnum
+									.valueOf(value).value)));
+			break;
+		default:
+			logger.debug("Not implementation for updating: '"
+					+ cmd + "'");
+			break;
 		}
 	}
 

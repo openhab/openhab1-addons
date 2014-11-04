@@ -110,8 +110,9 @@ public class ResponseParser {
 			if ("Attr".equals(qName)) {
 				try {
 					CommandEnum cmd = CommandEnum.valueOf(attributes.getValue("ID"));
-					if (cmd != null)
+					if (cmd != null) {
 							values.put(cmd, attributes.getValue("Value"));
+					}
 				} catch (IllegalArgumentException e) {
 					logger.debug("Does not support attribute: '" + attributes.getValue("ID"));
 				}
