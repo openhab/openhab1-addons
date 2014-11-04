@@ -43,7 +43,7 @@ public class SsdpDiscovery {
             + "MESSAGE_TYPE: CONTROLLER_START" + NEWLINE;
 
     public static void main(String args[]) {
-    	discover();
+    	System.out.println("Got the following response from Samsung Air Conditioner: " + discover());
     }
     
     /**
@@ -61,7 +61,6 @@ public class SsdpDiscovery {
     	} catch (Exception e) {
     		e.printStackTrace();
     	}
-    	System.out.println("Got the following response from Samsung Air Conditioner: " + response);
         return response;
     }
 
@@ -89,8 +88,7 @@ public class SsdpDiscovery {
                 recSocket.receive(input);
                 response = new String(input.getData());
             } catch (SocketTimeoutException e) {
-            	System.out.println("Got a socket timeout exception... will continune to look");
-                if (i >= 10) break;
+            	if (i >= 10) break;
                 i++;
             }
         }
