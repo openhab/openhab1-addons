@@ -253,7 +253,7 @@ public class HomegearClient extends BaseHomematicClient {
 		HmVariable var = new HmVariable();
 		var.setName(name);
 		var.setWriteable(true);
-		var.setValue(guessType(value));
+		var.setValueType(guessType(value));
 		var.setValue(value);
 		return var;
 	}
