@@ -56,6 +56,15 @@ Example:
   </subcategory>
   <subcategory>
     <name>SwitchLinc Dimmer</name>
+    <description>2476D</description>
+    <subCat>0x19</subCat>
+    <productKey name="F00.00.0B">
+    	<feature name="dimmer">GenericDimmer</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>SwitchLinc Dimmer</name>
     <description>2477D</description>
     <subCat>0x20</subCat>
     <productKey name="F00.00.01">
@@ -158,6 +167,15 @@ Example:
     <description>2453-222</description>
     <subCat>0x2e</subCat>
     <productKey name="F00.00.07">
+    	<feature name="switch">GenericSwitch</feature>
+    	<feature name="lastheardfrom">GenericLastTime</feature>
+    </productKey>
+  </subcategory>
+  <subcategory>
+    <name>On/Off Dual-Band Outdoor Module</name>
+    <description>2634-222</description>
+    <subCat>0x38</subCat>
+    <productKey name="F00.00.0C">
     	<feature name="switch">GenericSwitch</feature>
     	<feature name="lastheardfrom">GenericLastTime</feature>
     </productKey>
