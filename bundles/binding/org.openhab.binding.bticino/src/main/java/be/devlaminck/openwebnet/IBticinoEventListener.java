@@ -6,14 +6,20 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * @author Tom De Vlaminck
- * @serial 1.0
- * @since 1.5.0
- * 
  */
 
 package be.devlaminck.openwebnet;
 
+/**
+* @author Tom De Vlaminck
+* @serial 1.0
+* @since 1.5.0
+* 
+* This interface must be implemented by every object that wants to process
+* an event on the bticino bus. The event is encapsulated in the ProtocolRead
+* object.
+* 
+*/
 public interface IBticinoEventListener
 {
 	public void handleEvent(ProtocolRead p_protocol_read) throws Exception;
