@@ -121,6 +121,7 @@
     <module>org.openhab.binding.alarmdecoder</module>
     <module>org.openhab.binding.davis</module>
     <module>org.openhab.binding.xpl</module>
+    <module>org.openhab.binding.dscalarm</module>
   </modules>
 
 </project>
