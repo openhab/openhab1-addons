@@ -10,8 +10,7 @@ package org.openhab.binding.insteonplm.internal.device;
 
 import java.io.IOException;
 import java.util.HashMap;
-
-import org.openhab.binding.insteonplm.internal.device.InsteonDevice.InitStatus;
+import org.openhab.binding.insteonplm.internal.driver.ModemDBEntry;
 import org.openhab.binding.insteonplm.internal.driver.Port;
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
@@ -19,18 +18,17 @@ import org.openhab.binding.insteonplm.internal.message.MsgListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * Builds a list of devices from modem link records
- * (category, sub category, version) 
+ * Builds the modem database from incoming link record messages
  * 
  * @author Bernd Pfrommer
  * @since 1.5.0
  */
-public class DeviceListBuilder implements MsgListener {
-	private static final Logger logger = LoggerFactory.getLogger(DeviceListBuilder.class);
+public class ModemDBBuilder implements MsgListener {
+	private static final Logger logger = LoggerFactory.getLogger(ModemDBBuilder.class);
 	
-	Port					m_port = null;
+	Port m_port = null;
 	
-	public DeviceListBuilder(Port port) {
+	public ModemDBBuilder(Port port) {
 		m_port = port;
 	}
 	
@@ -45,9 +43,9 @@ public class DeviceListBuilder implements MsgListener {
 	}
 	
 	/**
-	 * processes link record messages from the modem to build device list,
+	 * processes link record messages from the modem to build database
 	 * and request more link records if not finished.
-	 * @see org.openhab.binding.insteonplm.internal.message.MsgListener#msg(org.openhab.binding.insteonplm.internal.message.Msg, java.lang.String)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void msg(Msg msg, String fromPort) {
@@ -64,7 +62,7 @@ public class DeviceListBuilder implements MsgListener {
 				}
 			} else if (msg.getByte("Cmd") == 0x57) {
 				// we got the link record response
-				updateDeviceList(msg);
+				updateModemDB(msg);
 				m_port.writeMessage(Msg.s_makeMessage("GetNextALLLinkRecord"));
 			}
 		} catch (FieldException e) {
@@ -78,47 +76,24 @@ public class DeviceListBuilder implements MsgListener {
 	
 	private void done() {
 		m_port.removeListener(this);
-		m_port.deviceListComplete();
+		m_port.modemDBComplete();
 	}
 	
-	private void updateDeviceList(Msg m) 	{
+	private void updateModemDB(Msg m) 	{
 		try {
+			HashMap<InsteonAddress, ModemDBEntry> dbes = m_port.getDriver().lockModemDBEntries();
 			InsteonAddress linkAddr = m.getAddress("LinkAddr");
-			int devCat	= m.getByte("LinkData1") & 0xff;
-			int subCat	= m.getByte("LinkData2") & 0xff;
-			int vers	= m.getByte("LinkData3") & 0xff;
-			boolean invalidRecord = (devCat == 0 && subCat == 0 && vers == 0);
-			logger.info("modem db: {}", m);
-			HashMap<InsteonAddress, InsteonDevice> devices = m_port.getDeviceList();
-			synchronized(devices) {
-				InsteonDevice dev = devices.get(linkAddr);
-				if (dev == null) {
-					dev = InsteonDevice.s_makeDevice(linkAddr, m_port.getDriver());
-					dev.setInitStatus(InitStatus.INITIALIZED);
-					devices.put(linkAddr,  dev);
-				}
-				dev.addPort(m_port.getDeviceName());
-				if (invalidRecord) {
-					// invalid record indicates that HouseLinc or other
-					// software may have messed with the modem link database.
-					// 
-					// Unless a valid link record has been found earlier,
-					// try and get the correct description by querying the 
-					// device with a product info request.
-					if (!dev.hasLinkRecords()) {
-						dev.setNeedsQuerying(true);
-					}
-				} else {
-					dev.setNeedsQuerying(false);
-					dev.addLinkRecord(m);
-					DeviceDescriptor desc = DeviceDescriptor.s_getDeviceDescriptor(devCat, subCat, 0x00);
-					desc.setVersion(vers);
-					dev.addDescriptor(desc);
-					dev.instantiateFeatures();
-				}
+			ModemDBEntry dbe = dbes.get(linkAddr.toString());
+			if (dbe == null) {
+				dbe = new ModemDBEntry(linkAddr);
+				dbes.put(linkAddr, dbe);
 			}
+			dbe.setPort(m_port);
+			dbe.addLinkRecord(m);
 		} catch (FieldException e) {
 			logger.error("cannot access field:", e);
+		} finally {
+			m_port.getDriver().unlockModemDBEntries();
 		}
 	}
 }

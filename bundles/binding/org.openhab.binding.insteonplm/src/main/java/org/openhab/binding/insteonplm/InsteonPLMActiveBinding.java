@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.insteonplm;
 
-import java.io.IOException;
+
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -16,16 +16,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.openhab.binding.insteonplm.internal.device.DeviceFeature;
 import org.openhab.binding.insteonplm.internal.device.DeviceFeatureListener;
-import org.openhab.binding.insteonplm.internal.device.DeviceQuerier;
-import org.openhab.binding.insteonplm.internal.device.DeviceQueryListener;
+import org.openhab.binding.insteonplm.internal.device.DeviceType;
+import org.openhab.binding.insteonplm.internal.device.DeviceTypeLoader;
 import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
 import org.openhab.binding.insteonplm.internal.device.InsteonDevice;
+import org.openhab.binding.insteonplm.internal.device.InsteonDevice.DeviceStatus;
+import org.openhab.binding.insteonplm.internal.device.RequestQueueManager;
 import org.openhab.binding.insteonplm.internal.driver.Driver;
 import org.openhab.binding.insteonplm.internal.driver.DriverListener;
-import org.openhab.binding.insteonplm.internal.driver.Port;
+import org.openhab.binding.insteonplm.internal.driver.ModemDBEntry;
+import org.openhab.binding.insteonplm.internal.driver.Poller;
 import org.openhab.binding.insteonplm.internal.message.Msg;
 import org.openhab.binding.insteonplm.internal.message.MsgListener;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -38,7 +42,41 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * This is the main class that holds the binding together.
+ * This class represents the actual implementation of the binding, and controls the high level flow
+ * of messages to and from the InsteonModem.
+ * 
+ * Writing this binding has been an odyssey through the quirks of the Insteon protocol
+ * and Insteon devices. A substantial redesign was necessary at some point along the way.
+ * Here are some of the hard learned lessons that should be considered by anyone who wants
+ * to re-architect the binding:
+ * 
+ * 1) The entries of the link database of the modem are not reliable. The category/subcategory entries in
+ *    particular have junk data. Forget about using the modem database to generate a list of devices.
+ *    The database should only be used to verify that a device has been linked.
+ *    
+ * 2) Querying devices for their product information does not work either. First of all, battery operated devices
+ *    (and there are a lot of those) have their radio switched off, and may generally not respond to product
+ *    queries. Even main stream hardwired devices sold presently (like the 2477s switch and the 2477d dimmer)
+ *    don't even have a product ID. Although supposedly part of the Insteon protocol, we have yet to
+ *    encounter a device that would cough up a product id when queried, even among very recent devices. They
+ *    simply return zeros as product id. Lesson: forget about querying devices to generate a device list.
+ *    
+ * 3) Polling is a thorny issue: too much traffic on the network, and messages will be dropped left and right,
+ *    and not just the poll related ones, but others as well. In particular sending back-to-back messages
+ *    seemed to result in the second message simply never getting sent, without flow control back pressure
+ *    (NACK) from the modem. For now the work-around is to space out the messages upon sending, and
+ *    in general poll as infrequently as acceptable.
+ * 
+ * 4) Instantiating and tracking devices when reported by the modem (either from the database, or when
+ *    messages are received) leads to complicated state management because there is no guarantee at what
+ *    point (if at all) the binding configuration will be available. It gets even more difficult when
+ *    items are created, destroyed, and modified while the binding runs.
+ *    
+ * For the above reasons, devices are only instantiated when they are referenced by binding information.
+ * As nice as it would be to discover devices and their properties dynamically, we have abandoned that
+ * path because it had led to a complicated and fragile system which due to the technical limitations
+ * above was inherently squirrely.
+ *  
  * 
  * @author Bernd Pfrommer
  * @author Daniel Pfrommer
@@ -47,62 +85,40 @@ import org.slf4j.LoggerFactory;
 
 public class InsteonPLMActiveBinding
 	extends AbstractActiveBinding<InsteonPLMBindingProvider>
-	implements ManagedService, DeviceQueryListener {
+	implements ManagedService {
 	private static final Logger logger = LoggerFactory.getLogger(InsteonPLMActiveBinding.class);
 
-	private Driver						m_driver	= null;
-	private HashMap<InsteonAddress, InsteonDevice>  m_devices 	= null;
-	private HashMap<String, String> 	m_config	= new HashMap<String, String>();
-	private PortListener				m_portListener = new PortListener();
-	private long						m_devicePollInterval = 300000L;
-	private long						m_deadDeviceTimeout = -1L;
-	private DeviceQuerier				m_deviceQuerier = null;
-	
-	// Configuration values set on initialize
-	private int			m_refreshInterval = 600000;
-	
-	// Various flags that indicate the state of the binding
-	private boolean		m_isActive		  		= false;
-	private boolean		m_gotInitialConfig		= false;
-	
+	private Driver					m_driver			= null;
+	private HashMap<InsteonAddress, InsteonDevice>  m_devices = null; // list of all configured devices
+	private HashMap<String, String> m_config			= new HashMap<String, String>();
+	private PortListener			m_portListener 		= new PortListener();
+	private long					m_devicePollInterval 	= 300000L;
+	private long					m_deadDeviceTimeout 	= -1L;
+	private long					m_refreshInterval		= 600000L;
+	private int						m_messagesReceived		= 0;
+	private boolean					m_isActive		  		= false; // state of binding
+	private boolean					m_hasInitialItemConfig	= false;
+
 	/**
 	 * Constructor
 	 */
 	public InsteonPLMActiveBinding() {
 		m_driver	= new Driver();
 		m_devices 	= new HashMap<InsteonAddress, InsteonDevice>();
-		m_deviceQuerier = new DeviceQuerier(m_devices, m_driver, this);
 	}
 
 	/**
-	 * Called by the framework to execute a refresh of the binding
-	 */
-	@Override
-	protected void execute() {
-		logDeviceStatistics();
-	}
-
-	/**
+	 * Inherited from AbstractBinding. This method is invoked by the framework whenever
+	 * a command is coming from openhab, i.e. a switch is flipped via the GUI or other
+	 * controls. The binding translates this openhab command into a message to the modem.
 	 * {@inheritDoc}
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		// from AbstractActiveBinding
-		return m_refreshInterval;
-	}
-	
-	/*
-	 * This method is invoked by the framework whenever a command is coming from openhab, i.e.
-	 * a switch is flipped via the GUI or other controls. The binding translates this openhab
-	 * command into a message to the modem.
-	 * @see org.openhab.core.binding.AbstractBinding#internalReceiveCommand(java.lang.String, org.openhab.core.types.Command)
 	 */
 
 	@Override
 	public void internalReceiveCommand(String itemName, Command command) {
 		logger.info("Item: {} got command {}", itemName, command);
 
-		if(!(this.isProperlyConfigured() && m_isActive)) {
+		if(!(isProperlyConfigured() && m_isActive)) {
 			logger.debug("not ready to handle commands yet, returning.");
 			return;
 		}
@@ -110,12 +126,11 @@ public class InsteonPLMActiveBinding
 		for (InsteonPLMBindingProvider provider : providers) {
 			if (provider.providesBindingFor(itemName)) {
 				commandHandled = true;
-				InsteonAddress	ia		= provider.getAddress(itemName);
-				String			feature = provider.getFeature(itemName);
-				if (ia == null || feature == null) {
+				InsteonPLMBindingConfig c = provider.getInsteonPLMBindingConfig(itemName);
+				if (c == null) {
 					logger.warn("could not find config for item {}", itemName);
 				} else {
-					sendCommand(ia, feature, command);
+					sendCommand(c, command);
 				}
 			}
 		}
@@ -124,213 +139,92 @@ public class InsteonPLMActiveBinding
 			logger.warn("No converter found for item = {}, command = {}, ignoring.",
 						itemName, command.toString());
 	}
-	
+
 	/**
-	 * send command to insteon device
+	 * Inherited from AbstractBinding.
+	 * Activates the binding. There is nothing we can do at this point
+	 * if we don't have the configuration information, which usually comes
+	 * in later, when updated() is called.
+	 * {@inheritDoc}
 	 */
-	private void sendCommand(InsteonAddress a, String feature, Command command) {
-		InsteonDevice dev = getDevice(a);
-		if (dev == null) {
-			logger.warn("no device found with insteon address {}", a);
-			return;
+	@Override
+	public void activate() {
+		logger.debug("activating binding");
+		if (isProperlyConfigured() && !m_isActive) {
+			initialize();
 		}
-		if (!dev.isInitialized()) {
-			logger.warn("device {} not ready for commands yet!", a);
-		} else {
-			dev.processCommand(m_driver, command);
-		}
-	}
-	
-	private InsteonDevice getDevice(InsteonAddress a) {
-		if (a == null) return null;
-		return m_devices.get(a);
+		m_isActive = true;
 	}
 	
 	/**
+	 * Inherited from AbstractBinding. Deactivates the binding.
+	 * The Controller is stopped and the serial interface is closed as well.
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void deactivate() {
+		logger.debug("deactivating binding!");
+		shutdown();
+		m_isActive = false;
+	}
+
+
+	/**
+	 * Inherited from AbstractActiveBinding.
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getName() {
-		return "InsteonPLM refresh";
+		return "InsteonPLM";
 	}
 	
 	/**
+	 * Inherited from AbstractActiveBinding.
+	 * Periodically called by the framework to execute a refresh of the binding.
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void execute() {
+		logDeviceStatistics();
+	}
+
+	/**
+	 * Inherited from AbstractActiveBinding.
+	 * Returns the refresh interval (time between calls to execute()) in milliseconds.
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected long getRefreshInterval() {
+		return m_refreshInterval;
+	}
+	
+	/**
+	 * Inherited from AbstractActiveBinding.
+	 * This method is called by the framework whenever there are changes to
+	 * a binding configuration.
 	 * @param provider the binding provider where the binding has changed
 	 * @param itemName the item name for which the binding has changed
 	 */
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		super.bindingChanged(provider, itemName);
+		m_hasInitialItemConfig = true; // hack around openHAB bug
 		InsteonPLMBindingConfig c =
 					((InsteonPLMBindingProvider)provider).getInsteonPLMBindingConfig(itemName);
+		logger.debug("item {} binding changed: {}", String.format("%-30s", itemName), c);
 		if (c == null) {
-			// this condition happened when updating the .items file and
-			// changing the insteon address of a switch that had been replaced
-			return;	
-		}
-		m_gotInitialConfig = true;
-		if (!m_driver.isDeviceListComplete()) {
-			logger.debug("ignoring binding config for {} until device list is complete",
-						itemName);
-			return;
-		}
-		InsteonAddress addr = c.getAddress();
-		synchronized (m_devices) {
-			if (m_driver.isDeviceListComplete() && (!m_devices.containsKey(addr))) {
-				logger.warn("device {} not found in modem link database (is it linked?), disabling it.",
-						c.getAddress());
-				return;
-			}
-			InsteonDevice dev = getDevice(addr);
-			if (dev == null) { // should never happen because we check before, but just for safety
-				logger.error("addr {} referenced in items file is not found!");
-				return;
-			}
-			bindingChangedForDevice(dev, itemName, c);
-		}
-	}
-	
-	private void bindingChangedForDevice(InsteonDevice dev, String itemName,
-										   InsteonPLMBindingConfig c) {
-		dev.setIsInItemsFile(true);
-		if (dev.needsQuerying()) {
-			m_deviceQuerier.addDevice(dev);
-			dev.setNeedsQuerying(false);
-		}
-		if (!dev.hasValidDescriptors()) {
-			// no point applying configuration to unknown device
-			return;
-		}
-
-		logger.debug("applying binding for item {} address {}", itemName, dev.getAddress());
-		String productKey = c.getProductKey();
-		if (!dev.hasProductKey()) {
-			dev.setProductKey(productKey);
-			dev.instantiateFeatures();
-		} else if (!dev.hasProductKey(productKey)) {
-			logger.error("inconsistent product key {} for device {}, already has {}",
-					productKey, dev.getAddress(), dev.getProductKey());
-		}
-		if (c.getFeature() == null) {
-			logger.error("feature string missing for item {}", itemName);
+			// Item has been removed. This condition is also found when *any*
+			// change to the items file is made: the items are first removed (c == null),
+			// and then added anew.
+			removeFeatureListener(itemName);
 		} else {
-			DeviceFeature f = dev.getFeature(c.getFeature());
-			if (f == null) {
-				if (dev.isInitialized()) {
-					logger.error(".items file references unknown feature {} for device {},"
-							+ " is the product key correct?", c.getFeature(), dev.getAddress());
-					logger.error("modem reports device {} as: {}. " +
-							"If that is not correct, unlink from modem, and link again.",
-							dev.getAddress(), dev.getDescriptorsAsString());
-				} else {
-					// We have no information about the device yet, but already getting
-					// a request for an item wanting to bind to a feature. We enter
-					// it as a placeholder, and will try to resolve it when
-					// we get more information on the device
-					logger.debug("adding place holder for feature {} ", c.getFeature());
-					f = DeviceFeature.s_makeDeviceFeature("PLACEHOLDER");
-					DeviceFeatureListener fl = new DeviceFeatureListener(itemName, eventPublisher);
-					fl.setParameters(c.getParameters());
-					f.addListener(fl);
-					dev.addFeature(c.getFeature(), f);
-				}
-			} else {
-				logger.debug("now listening for feature {} item {}", f.toString(), itemName);
-				DeviceFeatureListener fl = new DeviceFeatureListener(itemName, eventPublisher);
-				fl.setParameters(c.getParameters());
-				f.addListener(fl);
+			InsteonDevice dev = getDevice(c.getAddress());
+			if (dev == null) {
+				dev = makeNewDevice(c);
 			}
-		}
-		if (!dev.hasValidPollingInterval()) {
-			dev.setPollInterval(m_devicePollInterval);
-		}
-		try {
-			Port p = m_driver.getPort(dev.getPort());
-			p.getPoller().startPolling(dev);
-		} catch (IOException e) {
-			logger.error("no port found for device {}, disabled polling.", dev);
+			addFeatureListener(dev, itemName, c);
 		}
 	}
-
-	/**
-	 * Activates the binding. There is nothing we can do at this point
-	 * if we don't have the configuration information, which usually comes
-	 * in later, when updated() is called. */
-	@Override
-	public void activate() {
-		logger.debug("called activate()!");
-		if (m_isActive) {
-			// if the binding is already in the active state,
-			// reinitialize it!
-			shutdown();
-			initialize();
-		}
-		m_isActive = true;
-	}
-	
-	
-	/**
-	 * Apply binding config to device. Done by calling bindingChanged() on all items
-	 */
-	private void applyConfigurationToDevices() {
-		for (InsteonPLMBindingProvider provider : providers) {
-			Collection<String> items = provider.getItemNames();
-			for (Iterator<String> item = items.iterator(); item.hasNext();) {
-				String s = item.next();
-				bindingChanged(provider, s);
-			}
-		}
-	}
-	
-	/**
-	 * Applies all item configurations pertaining to a given device 
-	 * @param dev address of device to apply config to
-	 */
-	public void applyConfigurationForDevice(InsteonAddress dev) {
-		for (InsteonPLMBindingProvider provider : providers) {
-			Collection<String> items = provider.getItemNames();
-			InsteonPLMBindingProvider bp = (InsteonPLMBindingProvider)provider;
-			for (Iterator<String> item = items.iterator(); item.hasNext();) {
-				String itemName = item.next();
-				InsteonPLMBindingConfig c =	bp.getInsteonPLMBindingConfig(itemName);
-				if (c == null) continue;
-				if (c.getAddress().equals(dev)) {
-					bindingChanged(provider, itemName);
-				}
-			}
-		}
-	}
-	/**
-	 * Checks if a given device is referenced in the items file
-	 * @param dev the device to check
-	 */
-	private boolean isInItemsFile(InsteonAddress dev) {
-		for (InsteonPLMBindingProvider provider : providers) {
-			Collection<String> items = provider.getItemNames();
-			InsteonPLMBindingProvider bp = (InsteonPLMBindingProvider)provider;
-			for (Iterator<String> item = items.iterator(); item.hasNext();) {
-				String itemName = item.next();
-				InsteonPLMBindingConfig c =	bp.getInsteonPLMBindingConfig(itemName);
-				if (c == null) continue;
-				if (c.getAddress().equals(dev)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Deactivates the binding. The Controller is stopped and the serial interface
-	 * is closed as well.
-	 */
-	@Override
-	public void deactivate() {
-		logger.debug("called deactivate()!");
-		shutdown();
-		m_isActive = false;
-	}
-
 	/**
 	 * Inherited from the ManagedService interface. This method is called whenever the configuration
 	 * is updated. This could be signaling that e.g. the port has changed etc.
@@ -359,27 +253,64 @@ public class InsteonPLMActiveBinding
 		// configuration has changed
 		if (m_isActive) {
 			if (isProperlyConfigured()) {
-				logger.debug("global binding config has changed, initializing.");
+				logger.debug("global binding config has changed, resetting.");
+				shutdown();
 			} else {
 				logger.debug("global binding config has arrived.");
 			}
-			shutdown();
-			initialize();
-		}
-		if (!m_gotInitialConfig) {
-			applyConfigurationToDevices();
 		}
 		long deadDeviceCount = 10;
+		if (m_config.containsKey("refresh")) {
+			m_refreshInterval = Integer.parseInt(m_config.get("refresh"));
+			logger.info("refresh interval set to {}s", m_refreshInterval / 1000);
+		}
 		if (m_config.containsKey("device_dead_count")) {
 			deadDeviceCount = s_parseLong(m_config.get("device_dead_count"), 2L, 100000L);
+			logger.info("device_dead_count set to {} per config file", deadDeviceCount);
 		}
 		if (m_config.containsKey("poll_interval")) {
 			m_devicePollInterval = s_parseLong(m_config.get("poll_interval"), 5000L, 3600000L);
+			logger.info("poll interval set to {} per config file", m_devicePollInterval);
 		}
+		if (m_config.containsKey("more_devices")) {
+			String fileName = m_config.get("more_devices");
+			try {
+				DeviceTypeLoader.s_instance().loadDeviceTypesXML(fileName);
+				logger.info("read additional device definitions from {}", fileName);
+			} catch (Exception e) {
+				logger.error("error reading additional devices from {}", fileName, e);
+			}
+		}
+		
 		m_deadDeviceTimeout = m_devicePollInterval * deadDeviceCount;
+		logger.info("dead device timeout set to {}s", m_deadDeviceTimeout / 1000);
 		logger.debug("configuration update complete!");
 		setProperlyConfigured(true);
+		if (m_isActive) {
+			initialize();
+		}
+		if (!m_hasInitialItemConfig) triggerBindingChangedCalls();
 		return;
+	}
+
+	/**
+	 * HACK around openHAB synchronization issues that don't show
+	 * up in the IDE environment, but when running as packaged bundle:
+	 * The InsteonPLMGenericBindingProvider is instantiated *before*
+	 * the InsteonPLMActiveBinding. This means: the binding provider parses
+	 * all the configuration strings, but bindingChanged() in the actual
+	 * binding is not called, because the binding is not even instantiated
+	 * at that point. Later when the binding is active, it has to artificially
+	 * trigger these calls.
+	 */
+	private void triggerBindingChangedCalls() {
+		for (InsteonPLMBindingProvider provider : providers) {
+			Collection<String> items = provider.getItemNames();
+			for (Iterator<String> item = items.iterator(); item.hasNext();) {
+				String itemName = item.next();
+				bindingChanged(provider, itemName);
+			}
+        }
 	}
 	
 	/**
@@ -389,10 +320,6 @@ public class InsteonPLMActiveBinding
 		logger.debug("initializing...");
 		
 		HashSet<String> ports = new HashSet<String>();
-		//Intialize other config
-		if (m_config.containsKey("refresh")) {
-			m_refreshInterval = Integer.parseInt(m_config.get("refresh"));
-		}
 
 		//Initialize ports
 		for (Map.Entry<String, String> e : m_config.entrySet()) {
@@ -428,24 +355,156 @@ public class InsteonPLMActiveBinding
 	 * Clean up all state.
 	 */
 	private void shutdown() {
+		logger.debug("shutting down binding");
 		m_driver.stopAllPorts();
 		m_devices.clear();
+		RequestQueueManager.s_destroyInstance();
+		Poller.s_instance().stop();
 	}
 	
+	/**
+	 * Send command to insteon device
+	 * @param c item binding configuration
+	 * @param command The command to be sent
+	 */
+	private void sendCommand(InsteonPLMBindingConfig c, Command command) {
+		InsteonDevice dev = getDevice(c.getAddress());
+		if (dev == null) {
+			logger.warn("no device found with insteon address {}", c.getAddress());
+			return;
+		}
+		dev.processCommand(m_driver, c, command);
+	}
+
+	/**
+	 * Helper method to find a device by address
+	 * @param aAddr the insteon address to search for
+	 * @return reference to the device, or null if not found
+	 */
+	private InsteonDevice getDevice(InsteonAddress aAddr) {
+		if (aAddr == null) return null;
+		return m_devices.get(aAddr);
+	}
 	
-	/*
+	/**
+	 * Finds the device that a particular item was bound to, and removes the
+	 * item as a listener
+	 * @param aItem The item (FeatureListener) to remove from all devices
+	 */
+	private void removeFeatureListener(String aItem) {
+		synchronized (m_devices) {
+			for (Iterator<Entry<InsteonAddress, InsteonDevice>> it = m_devices.entrySet().iterator();
+					it.hasNext(); ) {
+				InsteonDevice dev = it.next().getValue();
+				boolean removedListener = dev.removeFeatureListener(aItem);
+				if (removedListener) {
+					logger.trace("removed feature listener {} from dev {}", aItem, dev);
+				}
+				if (!dev.hasAnyListeners()) {
+					Poller.s_instance().stopPolling(dev);
+					it.remove();
+					logger.trace("removing unreferenced {}", dev);
+					if (m_devices.isEmpty()) {
+						logger.debug("all devices removed!", dev);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Creates a new insteon device for a given product key
+	 * @param aConfig The binding configuration parameters, needed to make device.
+	 * @return Reference to the new device that has been created
+	 */
+	private InsteonDevice makeNewDevice(InsteonPLMBindingConfig aConfig) {
+		String prodKey = aConfig.getProductKey();
+		DeviceType dt = DeviceTypeLoader.s_instance().getDeviceType(prodKey);
+		if (dt == null) {
+			logger.error("unknown product key: {} for config: {}." +
+					" Add definition to xml file and try again", prodKey, aConfig);
+			return null;
+		}
+		InsteonDevice dev =	InsteonDevice.s_makeDevice(dt);
+		dev.setAddress(aConfig.getAddress());
+		dev.setDriver(m_driver);
+		dev.addPort(m_driver.getDefaultPort());
+		if (!dev.hasValidPollingInterval()) {
+			dev.setPollInterval(m_devicePollInterval);
+		}
+		if (m_driver.isModemDBComplete() && dev.getStatus() != DeviceStatus.POLLING) {
+			int ndev = checkIfInModemDatabase(dev);
+			if (dev.hasModemDBEntry()) {
+				dev.setStatus(DeviceStatus.POLLING);
+				Poller.s_instance().startPolling(dev, ndev);
+			}
+		}
+		synchronized (m_devices) {
+			m_devices.put(aConfig.getAddress(), dev);
+		}
+		return (dev);
+	}
+	
+	/**
+	 * Checks if a device is in the modem link database, and, if the database
+	 * is complete, logs a warning if the device is not present
+	 * @param dev The device to search for in the modem database
+	 * @return number of devices in modem database
+	 */
+	private int checkIfInModemDatabase(InsteonDevice dev) {
+		InsteonAddress addr = dev.getAddress();
+		HashMap<InsteonAddress, ModemDBEntry> dbes = m_driver.lockModemDBEntries();
+		if (dbes.containsKey(addr)) {
+			if (!dev.hasModemDBEntry()) {
+				logger.info("device {} found in the modem database!", addr);
+				dev.setHasModemDBEntry(true);
+			}
+		} else {
+			if (m_driver.isModemDBComplete()) {
+				logger.warn("device {} not found in the modem database. Did you forget to link?", addr);
+			}
+		}
+		int ndev = dbes.size();
+		m_driver.unlockModemDBEntries();
+		return ndev;
+	}
+	/**
+	 * Adds a feature listener (i.e. item to a feature of a device)
+	 * @param aDev The device to add the feature listener
+	 * @param aItemName The name of the item (needed for logging and later lookups)
+	 * @param aConfig The binding configuration for the item
+	 */
+	private void addFeatureListener(InsteonDevice aDev, String aItemName,
+				InsteonPLMBindingConfig aConfig) {
+		if (aDev == null) {
+			return;
+		}
+		DeviceFeature f = aDev.getFeature(aConfig.getFeature());
+		if (f == null) {
+			logger.error("item {} references unknown feature: {}, item disabled!", aItemName, aConfig.getFeature());
+			return;
+		}
+		DeviceFeatureListener fl = new DeviceFeatureListener(aItemName, eventPublisher);
+		fl.setParameters(aConfig.getParameters());
+		f.addListener(fl);	
+	}
+
+	/**
 	 * Handles messages that come in from the ports.
 	 * Will only process one message at a time.
 	 */
 	private class PortListener implements MsgListener, DriverListener {
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public void msg(Msg msg, String fromPort) {
 			if (msg.isEcho() || msg.isPureNack()) return;
+			m_messagesReceived++;
 			logger.debug("got msg: {}", msg);
 			InsteonAddress toAddr = msg.getAddr("toAddress");
 			if (!msg.isBroadcast() && !m_driver.isMsgForUs(toAddr)) {
 				// not for one of our modems, do not process
-				//logger.debug("msg not for us: {}", msg);
 				return;
 			}
 
@@ -458,51 +517,48 @@ public class InsteonPLMActiveBinding
 				InsteonDevice  dev = getDevice(fromAddr);
 				if (dev == null) {
 					logger.debug("dropping message from unknown device with address {}", fromAddr);
-					return;
-				}
-				if (!dev.hasValidPorts()) {
-					// we got a message from a new device out of the blue
-					logger.info("got message from unknown device with addr {}", fromAddr);
-					dev.addPort(fromPort); // tell the new device what port it belongs to
-				}
-				if (!dev.isInitialized()) {
-					logger.debug("dropping message for uninitialized device {}", dev);
 				} else {
-					dev.handleMessage(fromPort, msg, eventPublisher);
+					dev.handleMessage(fromPort, msg);
 				}
 			}
 		}
-
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public void driverCompletelyInitialized() {
-			logger.info("driver is completely initialized");
-			for (InsteonDevice dev : m_devices.values()) {
-				if (!dev.hasValidDescriptors()) {
-					logger.warn("device {} has invalid modem db entry, probably caused by houselinc", dev.getAddress());
-					logger.warn("will attempt to query device {}, if that fails consider re-linking", dev.getAddress());
+			HashMap<InsteonAddress, ModemDBEntry> dbes = m_driver.lockModemDBEntries();
+			logger.info("modem database has {} entries!", dbes.size());
+			if (dbes.isEmpty()) {
+				logger.warn("the modem link database is empty!");
+			}
+			for (InsteonAddress k : dbes.keySet()) {
+				logger.debug("modem db entry: {}", k);
+			}
+			synchronized (m_devices) {
+				for (InsteonDevice dev : m_devices.values()) {
+					InsteonAddress a = dev.getAddress();
+					if (!dbes.containsKey(a)) {
+						logger.warn("device {} not found in the modem database. Did you forget to link?", a);
+					} else {
+						if (!dev.hasModemDBEntry()) {
+							logger.info("device {}     found in the modem database!", a);
+							dev.setHasModemDBEntry(true);
+						}
+						if (dev.getStatus() != DeviceStatus.POLLING) {
+							Poller.s_instance().startPolling(dev, dbes.size());
+						}
+					}
 				}
 			}
-			applyConfigurationToDevices();
-			m_deviceQuerier.start();
-			dumpAllDevices();
-			logDeviceProblems();
-		}
-
-		@Override
-		public HashMap<InsteonAddress, InsteonDevice> getDeviceList() {
-			return m_devices;
-		}
-
-	}
-	
-	
-	private void dumpAllDevices() {
-		for (InsteonDevice dev : m_devices.values()) {
-			if (!dev.isModem())
-				logger.info("modem is linked to: {}", dev.toString());
+			m_driver.unlockModemDBEntries();
 		}
 	}
+	
 	private void logDeviceStatistics() {
+		logger.info(String.format("devices: %3d configured, %3d polling, msgs received: %5d",
+					m_devices.size(), Poller.s_instance().getSizeOfQueue(), m_messagesReceived));
+		m_messagesReceived = 0;
 		synchronized (m_devices) {
 			for (InsteonDevice dev : m_devices.values()) {
 				if (dev.isModem()) continue;
@@ -515,30 +571,10 @@ public class InsteonPLMActiveBinding
 		}
 	}
 
-	private void logDeviceProblems() {
-		synchronized (m_devices) {
-			for (InsteonDevice dev : m_devices.values()) {
-				if (dev.isModem()) continue;
-				if (!dev.isReferenced() && !isInItemsFile(dev.getAddress())) {
-					logger.info("device {} is known to modem, but not in items file!", dev.toString());
-				}
-				if (!dev.isInitialized()) {
-					logger.info("device {} is in items file, but not linked to modem!", dev.toString());
-				}
-			}
-		}
-	}
-	
-	public static long s_parseLong(String pi, long min, long max) {
+	private static long s_parseLong(String pi, long min, long max) {
 		long t = Long.parseLong(pi);
 		t = Math.max(t, min);
 		t = Math.min(t, max);
 		return t;
 	}
-
-	@Override
-	public void deviceQueryComplete(InsteonAddress devAddress) {
-		applyConfigurationForDevice(devAddress);
-	}
-
 }

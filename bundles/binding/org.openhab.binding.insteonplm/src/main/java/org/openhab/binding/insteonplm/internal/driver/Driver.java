@@ -9,9 +9,9 @@
 package org.openhab.binding.insteonplm.internal.driver;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
-import org.openhab.binding.insteonplm.internal.device.InsteonDevice;
 import org.openhab.binding.insteonplm.internal.message.Msg;
 import org.openhab.binding.insteonplm.internal.message.MsgListener;
 import org.slf4j.Logger;
@@ -32,11 +32,9 @@ public class Driver {
 	// maps device name to serial port, i.e /dev/insteon -> Port object
 	private HashMap<String, Port> m_ports = new HashMap<String, Port>();
 	private DriverListener m_listener = null; // single listener for notifications
-	
-	public HashMap<InsteonAddress, InsteonDevice> getDeviceList() {
-		return m_listener.getDeviceList();
-	}
-	
+	private HashMap<InsteonAddress, ModemDBEntry> m_modemDBEntries = new HashMap<InsteonAddress, ModemDBEntry>();
+	private ReentrantLock m_modemDBEntriesLock = new ReentrantLock();
+
 	public void setDriverListener(DriverListener listener) {
 		m_listener = listener;
 	}
@@ -46,7 +44,13 @@ public class Driver {
 		}
 		return true;
 	}
-	
+	public HashMap<InsteonAddress, ModemDBEntry> lockModemDBEntries() {
+		m_modemDBEntriesLock.lock();
+		return m_modemDBEntries;
+	}
+	public void unlockModemDBEntries() {
+		m_modemDBEntriesLock.unlock();
+	}
 	/**
 	 * Add new port (modem) to the driver
 	 * @param name the name of the port (from the config file, e.g. port_0, port_1, etc
@@ -135,17 +139,17 @@ public class Driver {
 		return m_ports.get(port);
 	}
 	
-	public void deviceListComplete(Port port) {
+	public void modemDBComplete(Port port) {
 		// check if all ports have a complete device list
-		if (!isDeviceListComplete()) return;
+		if (!isModemDBComplete()) return;
 		// if yes, notify listener
 		m_listener.driverCompletelyInitialized();
 	}
 
-	public boolean isDeviceListComplete() {
+	public boolean isModemDBComplete() {
 		// check if all ports have a complete device list
 		for (Port p : m_ports.values()) {
-			if (!p.isDeviceListComplete()) {
+			if (!p.isModemDBComplete()) {
 				return false;
 			}
 		}
