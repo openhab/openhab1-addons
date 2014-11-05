@@ -26,7 +26,6 @@ import org.openhab.binding.bticino.internal.BticinoGenericBindingProvider.Bticin
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -194,18 +193,6 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
 					+ l_interface_id
 					+ "] but this gateway doesn't exist : check items.cfg and openhab.cfg!");
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void internalReceiveUpdate(String itemName, State newState)
-	{
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate() is called!");
 	}
 
 	/**
