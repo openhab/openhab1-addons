@@ -1012,7 +1012,6 @@
             <type>jar</type>
         </dependency>
         <dependency>
- 
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.energenie</artifactId>
             <version>${project.version}</version>
@@ -1024,12 +1023,12 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-		<dependency>
-			<groupId>org.openhab.binding</groupId>
-			<artifactId>org.openhab.binding.davis</artifactId>
-			<version>${project.version}</version>
-			<type>jar</type>
-		</dependency>
+        <dependency> 
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.davis</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
         <dependency> 
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.ekey</artifactId>
@@ -1063,6 +1062,12 @@
         <dependency> 
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.anel</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency> 
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.openpaths</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
