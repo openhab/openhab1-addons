@@ -4,7 +4,7 @@ Ignore-Package: org.openhab.binding.bticino.internal
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB BTicino Binding
 Bundle-SymbolicName: org.openhab.binding.bticino
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.openhab.core.binding,
@@ -21,5 +21,4 @@ Export-Package: org.openhab.binding.bticino.internal
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/bticinobinding.xml
 Bundle-ClassPath: .
 Bundle-Activator: org.openhab.binding.bticino.internal.BticinoActivator
-Require-Bundle: org.openhab.io.transport.serial;bundle-version="1.5.0"
 
