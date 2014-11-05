@@ -9,6 +9,7 @@
 package org.openhab.binding.insteonplm;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
 import org.openhab.core.binding.BindingConfig;
@@ -53,7 +54,8 @@ public class InsteonPLMBindingConfig implements BindingConfig {
 	
 	/**
 	 * Returns the product key of the device. The product key
-	 * is necessary to configure the device properly.
+	 * must be unique for each device type, and is mandatory
+	 * to configure the device properly.
 	 * @return product key
 	 */
 	public String getProductKey() { return productKey; }
@@ -64,5 +66,21 @@ public class InsteonPLMBindingConfig implements BindingConfig {
 	 */
 	public HashMap<String,String> getParameters() {
 		return params;
+	}
+	
+	public String toString() {
+		String s = "addr=" + ((address != null) ? address.toString() : "null_address");
+		s += "|prodKey:" + String.format("%9s", ((productKey != null) ? productKey : "null_pkey"));
+		s += "|feature:" + ((feature != null) ? feature : "null_feature");
+		if (params == null) {
+			s += "|null_params";
+		} else {
+			String sepChar = "|params:";
+			for (Entry<String, String> h : params.entrySet()) {
+				s+= sepChar + h.getKey() + "=" + h.getValue();
+				sepChar = ",";
+			}
+		}
+		return (s);
 	}
 }
