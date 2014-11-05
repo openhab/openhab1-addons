@@ -196,15 +196,6 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
 	}
 
 	/**
-	 * # OpenWeb gateway IP address / Hostname bticino:default.host=x.x.x.x OR
-	 * hostname # OpenWeb gateway Port (optional, defaults to 20000)
-	 * bticino:default.port=z (20000)
-	 * 
-	 * # Interface with name aaa bticino:aaa.host=x.x.x.x OR hostname # OpenWeb
-	 * gateway Port (optional, defaults to 20000) bticino:aaa.port=z (20000)
-	 */
-
-	/**
 	 * @{inheritDoc
 	 */
 	public void updated(Dictionary<String, ?> properties)
