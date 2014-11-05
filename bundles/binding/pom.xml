@@ -123,6 +123,7 @@
     <module>org.openhab.binding.xpl</module>
     <module>org.openhab.binding.dscalarm</module>
     <module>org.openhab.binding.benqprojector</module>
+    <module>org.openhab.binding.ehealth</module>
   </modules>
 
 </project>
