@@ -162,9 +162,7 @@ then
   postUpdate(Weather_LastUpdate, new DateTimeType())
 end
 
-/** 
- * This rule will be used to test Scale transformation service
- */
+// This rule will be used to test Scale transformation service
 rule "Compute humidex"
 when Item Weather_Temperature changed or
 	 Item Weather_Humidity changed 
