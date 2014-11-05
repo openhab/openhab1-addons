@@ -12,10 +12,6 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * @author Tom De Vlaminck
- * @serial 1.0
- * @since 1.5.0
- * 
  */
 package be.devlaminck.openwebnet;
 
@@ -26,6 +22,15 @@ import org.slf4j.LoggerFactory;
 
 import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
 
+/**
+* @author Tom De Vlaminck
+* @serial 1.0
+* @since 1.5.0
+* 
+* This thread reads every event on the bticino bus and the converts & publishes
+* it to the openhab
+* 
+*/
 public class MonitorSessionThread extends Thread
 {
 	private static final Logger logger = LoggerFactory
@@ -42,7 +47,7 @@ public class MonitorSessionThread extends Thread
 		try
 		{
 			pluginReference.myPlant.startMonitoring();
-			while (true)
+			while (!Thread.interrupted())
 			{
 				try
 				{
@@ -54,11 +59,13 @@ public class MonitorSessionThread extends Thread
 							+ ex.getMessage());
 				}
 			}
-		} catch (IOException ex)
+		} 
+		catch (IOException ex)
 		{
 			logger.error("MonitorSessionThread.run, exception : "
 					+ ex.getMessage());
 		}
+		logger.info("Stopped MonitorSessionThread thread");
 	}
 
 	public MonitorSessionThread(OpenWebNet pluginReference, String ipAddress,
@@ -770,12 +777,12 @@ public class MonitorSessionThread extends Thread
 						// type of pressure
 						messageDescription = "Virtual release after short pressure";
 					}
-					if (what_parts[0].equalsIgnoreCase("2"))
+					else if (what_parts[0].equalsIgnoreCase("2"))
 					{
 						// type of pressure
 						messageDescription = "Virtual release after an extended pressure";
 					}
-					if (what_parts[0].equalsIgnoreCase("3"))
+					else if (what_parts[0].equalsIgnoreCase("3"))
 					{
 						// type of pressure
 						messageDescription = "Virtual extended pressure";

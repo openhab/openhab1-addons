@@ -38,7 +38,8 @@ public class OpenWebNet extends Thread
 	/*
 	 * Initializations
 	 */
-	private String host = "10.0.6.12";
+	private String host = "";
+	// standard port for the MH200(N) of bticino
 	private Integer port = 20000;
 	private Date m_last_bus_scan = new Date(0);
 	private Integer m_bus_scan_interval_secs = 120;
@@ -86,17 +87,7 @@ public class OpenWebNet extends Thread
 		// start the processing thread
 		start();
 	}
-
-	@SuppressWarnings("deprecation")
-	public void onStop()
-	{
-		// TODO : add stop method on monitor thread that sets flag + does
-		// interrupt
-		// interrupt handler will then check flag and stop thread
-		monitorSessionThread.stop();
-		logger.info("Stopped OpenWebNet thread");
-	}
-
+	
 	/*
 	 * Actuator side
 	 */
@@ -116,7 +107,7 @@ public class OpenWebNet extends Thread
 	{
 		try
 		{
-			while (true)
+			while (!Thread.interrupted())
 			{
 				// synchronizes the software with the system status
 				// Every x seconds do a full bus scan
@@ -131,6 +122,13 @@ public class OpenWebNet extends Thread
 		{
 			logger.error("Openwebnet.run, Exception : " + p_i_ex.getMessage());
 		}
+		  finally
+		{
+		    // interrupt handler on monitor thread will stop thread
+	        monitorSessionThread.interrupt();
+	        logger.info("Stopped monitorSessionThread thread");
+		}
+		logger.info("Stopped OpenWebNet thread");
 	}
 
 	private void checkForBusScan()
