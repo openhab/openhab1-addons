@@ -164,6 +164,11 @@ public class ConverterTest {
 		Assert.assertEquals(OnOffType.OFF,
 				converter.convertFromBinding(getDatapoint("STATE", true, 0, 0, "15", "BC-SC-Rd-WM-2")));
 
+		Assert.assertEquals(OnOffType.ON,
+				converter.convertFromBinding(getDatapoint("STATE", false, 0, 0, "HM-SCI-3-FM")));
+		Assert.assertEquals(OnOffType.OFF,
+				converter.convertFromBinding(getDatapoint("STATE", true, 0, 0, "HM-SCI-3-FM")));
+
 		Assert.assertEquals(OnOffType.ON, converter.convertFromBinding(getDatapoint("LEVEL", "on")));
 		Assert.assertEquals(OnOffType.OFF, converter.convertFromBinding(getDatapoint("LEVEL", "off")));
 
@@ -241,6 +246,11 @@ public class ConverterTest {
 		Assert.assertEquals(true,
 				converter.convertToBinding(OnOffType.OFF, getDatapoint("STATE", false, 0, 0, "BC-SC-Rd-WM-2")));
 
+		Assert.assertEquals(false,
+				converter.convertToBinding(OnOffType.ON, getDatapoint("STATE", true, 0, 0, "HM-SCI-3-FM")));
+		Assert.assertEquals(true,
+				converter.convertToBinding(OnOffType.OFF, getDatapoint("STATE", false, 0, 0, "HM-SCI-3-FM")));
+
 		Assert.assertEquals(1.0, converter.convertToBinding(OnOffType.ON, getRollerShutterDatapoint("LEVEL", 0.0)));
 		Assert.assertEquals(0.0, converter.convertToBinding(OnOffType.OFF, getRollerShutterDatapoint("LEVEL", 0.0)));
 	}
@@ -296,6 +306,11 @@ public class ConverterTest {
 				converter.convertFromBinding(getDatapoint("STATE", false, 0, 0, "15", "BC-SC-Rd-WM-2")));
 		Assert.assertEquals(OpenClosedType.OPEN,
 				converter.convertFromBinding(getDatapoint("STATE", true, 0, 0, "15", "BC-SC-Rd-WM-2")));
+
+		Assert.assertEquals(OpenClosedType.CLOSED,
+				converter.convertFromBinding(getDatapoint("STATE", false, 0, 0, "15", "HM-SCI-3-FM")));
+		Assert.assertEquals(OpenClosedType.OPEN,
+				converter.convertFromBinding(getDatapoint("STATE", true, 0, 0, "15", "HM-SCI-3-FM")));
 
 		Assert.assertEquals(OpenClosedType.OPEN, converter.convertFromBinding(getDatapoint("STATE", false)));
 		Assert.assertEquals(OpenClosedType.CLOSED, converter.convertFromBinding(getDatapoint("STATE", true)));
@@ -389,6 +404,10 @@ public class ConverterTest {
 		Assert.assertEquals(true,
 				converter.convertToBinding(OpenClosedType.OPEN, getDatapoint("STATE", false, 0, 0, "BC-SC-Rd-WM-2")));
 		
+		Assert.assertEquals(false,
+				converter.convertToBinding(OpenClosedType.CLOSED, getDatapoint("STATE", true, 0, 0, "HM-SCI-3-FM")));
+		Assert.assertEquals(true,
+				converter.convertToBinding(OpenClosedType.OPEN, getDatapoint("STATE", false, 0, 0, "HM-SCI-3-FM")));
 		
 		Assert.assertEquals(true, converter.convertToBinding(OpenClosedType.CLOSED, getDatapoint("STATE", true)));
 		Assert.assertEquals(false, converter.convertToBinding(OpenClosedType.OPEN, getDatapoint("STATE", false)));

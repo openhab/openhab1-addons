@@ -32,6 +32,7 @@ import org.openhab.binding.netatmo.internal.messages.MeasurementResponse;
 import org.openhab.binding.netatmo.internal.messages.NetatmoError;
 import org.openhab.binding.netatmo.internal.messages.RefreshTokenRequest;
 import org.openhab.binding.netatmo.internal.messages.RefreshTokenResponse;
+import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
@@ -59,7 +60,10 @@ public class NetatmoBinding extends
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(NetatmoBinding.class);
-
+	
+	private static DeviceListResponse deviceListResponse = null;
+	private static DeviceListRequest deviceListRequest = null;
+	
 	/**
 	 * 
 	 */
@@ -149,6 +153,7 @@ public class NetatmoBinding extends
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	protected void execute() {
 		logger.debug("Querying Netatmo API");
@@ -159,15 +164,14 @@ public class NetatmoBinding extends
 		}
 
 		if (this.firstExecution) {
-			final DeviceListRequest request = new DeviceListRequest(
-					this.accessToken);
-			final DeviceListResponse response = request.execute();
+			deviceListRequest = new DeviceListRequest(this.accessToken);
+			deviceListResponse = deviceListRequest.execute();
+			
+			logger.debug("Request: {}", deviceListRequest);
+			logger.debug("Response: {}", deviceListResponse);
 
-			logger.debug("Request: {}", request);
-			logger.debug("Response: {}", response);
-
-			if (response.isError()) {
-				final NetatmoError error = response.getError();
+			if (deviceListResponse.isError()) {
+				final NetatmoError error = deviceListResponse.getError();
 
 				if (error.isAccessTokenExpired()) {
 					refreshAccessToken();
@@ -178,7 +182,7 @@ public class NetatmoBinding extends
 
 				return; // abort processing
 			} else {
-				processDeviceListResponse(response);
+				processDeviceListResponse(deviceListResponse);
 				this.firstExecution = false;
 			}
 		}
@@ -207,22 +211,46 @@ public class NetatmoBinding extends
 						deviceMeasureValueMap);
 			}
 		}
-
+		
+		deviceListResponse = deviceListRequest.execute();
 		for (final NetatmoBindingProvider provider : this.providers) {
 			for (final String itemName : provider.getItemNames()) {
 				final String deviceId = provider.getDeviceId(itemName);
 				final String moduleId = provider.getModuleId(itemName);
-				final String measure = provider.getMeasure(itemName);
-
-				final String requestKey = createKey(deviceId, moduleId);
-
-				final State state = new DecimalType(deviceMeasureValueMap.get(
-						requestKey).get(measure));
-				if (state != null) {
+				final NetatmoMeasureType measureType = provider.getMeasureType(itemName);
+				State state = null;
+				switch (measureType) {
+					case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE:
+							final String requestKey = createKey(deviceId, moduleId);
+							state = new DecimalType(deviceMeasureValueMap.get(requestKey).get(measureType.getMeasure()));
+							break;
+					case BATTERYVP: case RFSTATUS:
+						for (Module module : deviceListResponse.getModules()) {
+							if (module.getId().equals(moduleId)) {
+								switch (measureType) {
+									case BATTERYVP: state = new DecimalType(module.getBatteryVp()); break;
+									case RFSTATUS: state = new DecimalType(module.getRfStatus()); break;
+								}
+							}
+						}
+						break;
+					case ALTITUDE: case LATITUDE: case LONGITUDE: case WIFISTATUS:
+						for (Device device : deviceListResponse.getDevices()) {
+							if (device.getId().equals(deviceId)) {
+								switch (measureType) {
+									case ALTITUDE: state = new DecimalType(device.getAltitude()); break;
+									case LATITUDE: state = new DecimalType(device.getLatitude()); break;
+									case LONGITUDE: state = new DecimalType(device.getLongitude()); break;
+									case WIFISTATUS: state = new DecimalType(device.getWifiStatus()); break;
+								}
+							}
+						}
+						break;
+				}
+				if (state != null)
 					this.eventPublisher.postUpdate(itemName, state);
 				}
 			}
-		}
 	}
 
 	/**
@@ -248,25 +276,25 @@ public class NetatmoBinding extends
 	 */
 	private Collection<MeasurementRequest> createMeasurementRequests() {
 		final Map<String, MeasurementRequest> requests = new HashMap<String, MeasurementRequest>();
-
 		for (final NetatmoBindingProvider provider : this.providers) {
 			for (final String itemName : provider.getItemNames()) {
 				final String deviceId = provider.getDeviceId(itemName);
 				final String moduleId = provider.getModuleId(itemName);
-				final String measure = provider.getMeasure(itemName);
-
-				final String requestKey = createKey(deviceId, moduleId);
-
-				if (!requests.containsKey(requestKey)) {
-					requests.put(requestKey, new MeasurementRequest(
-							this.accessToken, deviceId, moduleId));
-				}
-
-				requests.get(requestKey).addMeasure(measure);
-
+				final NetatmoMeasureType measureType = provider.getMeasureType(itemName);
+				switch (measureType) {
+					case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE:
+						final String requestKey = createKey(deviceId, moduleId);
+						if (!requests.containsKey(requestKey)) {
+							requests.put(requestKey, new MeasurementRequest(
+									this.accessToken, deviceId, moduleId));
+						}
+						requests.get(requestKey).addMeasure(measureType);
+						break;
+					default:
+						break;
+				}	
 			}
 		}
-
 		return requests.values();
 	}
 
@@ -314,7 +342,7 @@ public class NetatmoBinding extends
 			for (final String itemName : provider.getItemNames()) {
 				final String deviceId = provider.getDeviceId(itemName);
 				final String moduleId = provider.getModuleId(itemName);
-				final String measure = provider.getMeasure(itemName);
+				final NetatmoMeasureType measureType = provider.getMeasureType(itemName);
 
 				final Set<String> measurements;
 
@@ -325,7 +353,7 @@ public class NetatmoBinding extends
 				}
 
 				if (measurements != null) {
-					measurements.remove(measure);
+					measurements.remove(measureType.getMeasure());
 				}
 			}
 		}

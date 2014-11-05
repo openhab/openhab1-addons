@@ -402,6 +402,15 @@
 			<Label lang="en">Transmitter Flush-Mounted 4-Gang Switch</Label>
 			<ConfigFile>merten/506004.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>5082xx</Model>
+			<Label lang="en">Battery Powered Wall Controller MOVE</Label>
+			<ConfigFile>merten/5082xx.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0077</Id>
@@ -590,6 +599,15 @@
 			<Label lang="en">Micro Smart Switch 2nd Edition</Label>
 			<ConfigFile>aeon/mss2e.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>001C</Id>
+			</Reference>
+			<Model>HEM-G2</Model>
+			<Label lang="en">Home Energy Meter G2</Label>
+			<ConfigFile>aeon/hemg2.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
@@ -603,6 +621,10 @@
 				<Type>1E12</Type>
 				<Id>015E</Id>
 			</Reference>
+			<Reference>
+				<Type>1E12</Type>
+				<Id>015C</Id>
+			</Reference>
 			<Model>CT30</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
 			<ConfigFile>rtc/ct30.xml</ConfigFile>
@@ -611,6 +633,10 @@
 			<Reference>
 				<Type>6401</Type>
 				<Id>0015</Id>
+			</Reference>
+			<Reference>
+				<Type>6401</Type>
+				<Id>106</Id>
 			</Reference>
 			<Model>CT100</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
@@ -963,6 +989,15 @@
 		<Product>
 			<Reference>
 				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>PIR</Model>
+			<Label lang="en">Z-Wave PIR Motion Sensor</Label>
+			<ConfigFile>eco/pir1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
 				<Id>0002</Id>
 			</Reference>
 			<Model>DWZWAVE2</Model>
@@ -1226,6 +1261,10 @@
 				<Type>0301</Type>
 				<Id>0209</Id>
 			</Reference>
+			<Reference>
+				<Type>301</Type>
+				<Id>0334</Id>
+            </Reference>
 			<Model>VRS15-1LZ</Model>
 			<Label lang="en">Scene Capable Push On/Off</Label>
 			<ConfigFile>leviton/vrs15-1lz.xml</ConfigFile>
@@ -1251,6 +1290,15 @@
 			<Model>DZS15-1LZ</Model>
 			<Label lang="en">Scene Capable Push On/Off</Label>
 			<ConfigFile>leviton/dzs15-1lz.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1b03</Type>
+				<Id>334</Id>
+			</Reference>
+			<Model>DZMX1-1LZ</Model>
+			<Label lang="en">Scene Capable Push On/Off</Label>
+			<ConfigFile>leviton/dzmx1-1lz.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -1309,5 +1357,18 @@
 			<Label lang="en">Flush dimmer</Label>
 			<ConfigFile>qubino/zmnhda.xml</ConfigFile>
 		</Product>
-	</Manufacturer>	
+	</Manufacturer>
+	<Manufacturer>
+		<Id>97</Id>
+		<Name>Wintop</Name>
+		<Product>
+			<Reference>
+				<Type>1188</Type>
+				<Id>4501</Id>
+			</Reference>
+			<Model>ITEMP</Model>
+			<Label lang="en">Contact and temp sensor</Label>
+			<ConfigFile>wintop/itemp.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
