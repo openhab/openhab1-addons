@@ -275,40 +275,24 @@ public class BticinoDevice implements IBticinoEventListener
 						{
 							// only returns when finished
 							eventPublisher.sendCommand(l_item.getName(), OnOffType.ON);
-							//eventPublisher.postUpdate(l_item.getName(),
-							//		OnOffType.ON);
-							//eventPublisher.postUpdate(l_item.getName(),
-							//		OnOffType.OFF);
 						} else if (p_protocol_read.getProperty(
 								"messageDescription").equalsIgnoreCase(
 								"Virtual release after short pressure"))
 						{
 							// only returns when finished
 							eventPublisher.sendCommand(l_item.getName(), OnOffType.ON);
-							//eventPublisher.postUpdate(l_item.getName(),
-							//		OnOffType.ON);
-							//eventPublisher.postUpdate(l_item.getName(),
-							//		OnOffType.OFF);
 						} else if (p_protocol_read.getProperty(
 								"messageDescription").equalsIgnoreCase(
 								"Virtual release after an extended pressure"))
 						{
 							// only returns when finished
 							eventPublisher.sendCommand(l_item.getName(), OnOffType.ON);
-							//eventPublisher.postUpdate(l_item.getName(),
-							//		OnOffType.ON);
-							//eventPublisher.postUpdate(l_item.getName(),
-							//		OnOffType.OFF);
 						} else if (p_protocol_read.getProperty(
 								"messageDescription").equalsIgnoreCase(
 								"Virtual extended pressure"))
 						{
 							// only returns when finished
 							eventPublisher.sendCommand(l_item.getName(), OnOffType.ON);
-							//eventPublisher.postUpdate(l_item.getName(),
-							//		OnOffType.ON);
-							//eventPublisher.postUpdate(l_item.getName(),
-							//		OnOffType.OFF);
 						}
 					}
 				}
