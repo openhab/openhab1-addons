@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * BticinoBindingProvider provides binding for Openhab Items
+ * BticinoBindingProvider provides binding for openHAB Items
  * 
  * @author Tom De Vlaminck
  * @serial 1.0
@@ -67,7 +67,8 @@ public class BticinoGenericBindingProvider extends
 							+ item.getName()
 							+ "' is of type '"
 							+ item.getClass().getSimpleName()
-							+ "', this Item is not allowed - please check your *.items configuration");
+							+ "', this Item is not allowed - please check your *.items configuration"
+							+ ", only SwitchItem and RollershutterItem are allowed / supported for now");
 		}
 	}
 

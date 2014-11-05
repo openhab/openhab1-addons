@@ -322,12 +322,7 @@ public class BticinoDevice implements IBticinoEventListener
 						.equalsIgnoreCase("automation"))
 				{
 
-					if (p_protocol_read.getProperty("messageDescription")
-							.equalsIgnoreCase("Automation STOP"))
-					{
-						// eventPublisher
-						// .postUpdate(l_item_name, StopMoveType.STOP);
-					} else if (p_protocol_read
+					if (p_protocol_read
 							.getProperty("messageDescription")
 							.equalsIgnoreCase("Automation UP"))
 					{
