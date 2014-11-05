@@ -129,7 +129,7 @@ public class BticinoDevice implements IBticinoEventListener
 	{
 		if (m_open_web_net != null)
 		{
-			m_open_web_net.onStop();
+			m_open_web_net.interrupt();
 			m_open_web_net = null;
 		}
 		m_device_is_started = false;
