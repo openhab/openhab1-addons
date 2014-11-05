@@ -17,7 +17,6 @@ Import-Package: org.openhab.core.binding,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Export-Package: org.openhab.binding.bticino.internal
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/bticinobinding.xml
 Bundle-ClassPath: .
 Bundle-Activator: org.openhab.binding.bticino.internal.BticinoActivator
