@@ -22,7 +22,7 @@ public class ZWaveNodeStatusEvent extends ZWaveEvent {
 	 * @param nodeId the nodeId of the event.
 	 */
 	public ZWaveNodeStatusEvent(int nodeId, State state) {
-		super(nodeId, 1);
+		super(nodeId);
 
 		this.state = state;
 	}
