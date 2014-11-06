@@ -43,7 +43,8 @@ Import-Package: org.apache.commons.lang,
  org.quartz.impl.calendar,
  org.quartz.impl.matchers,
  org.quartz.utils,
- org.slf4j
+ org.slf4j,
+ org.apache.commons.io
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.model.script,org.openhab.model.script.acti
  ons,org.openhab.model.script.formatting,org.openhab.model.script.jvmm
