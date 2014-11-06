@@ -8,18 +8,11 @@
  */
 package org.openhab.binding.insteonplm;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.openhab.binding.insteonplm.internal.device.DeviceCategoryLoader;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 /**
  * Extension of the default OSGi bundle activator.
@@ -39,16 +32,6 @@ public final class InsteonPLMActivator implements BundleActivator {
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
 		logger.info("Insteon PLM binding has been started.");
-		try {
-            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("categories.xml");
-			DeviceCategoryLoader.loadCategoryDefinitionsXML(stream);
-		} catch (IOException e) {
-			logger.error("hit i/o exception when trying to read device categories", e);
-		} catch (ParserConfigurationException e) {
-			logger.error("parser config exception when trying to read device categories", e);
-		} catch (SAXException e) {
-			logger.error("xml parser exception when trying to read device categories", e);
-		}
 	}
 
 	/**

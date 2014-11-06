@@ -494,7 +494,7 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-		
+
         <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.alarmdecoder</artifactId>
@@ -1012,33 +1012,62 @@
             <type>jar</type>
         </dependency>
         <dependency>
- 
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.energenie</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.wemo</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-		<dependency>
-			<groupId>org.openhab.binding</groupId>
-			<artifactId>org.openhab.binding.davis</artifactId>
-			<version>${project.version}</version>
-			<type>jar</type>
-		</dependency>
-        <dependency> 
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.davis</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.ekey</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.xpl</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.dscalarm</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.benqprojector</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.ehealth</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.anel</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.openpaths</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
@@ -1165,10 +1194,10 @@
             <type>jar</type>
         </dependency>
         <dependency>
-        	<groupId>org.openhab.action</groupId>
-        	<artifactId>org.openhab.action.serial</artifactId>
-        	<version>${project.version}</version>
-        	<type>jar</type>
+          <groupId>org.openhab.action</groupId>
+          <artifactId>org.openhab.action.serial</artifactId>
+          <version>${project.version}</version>
+          <type>jar</type>
         </dependency>
     </dependencies>
 

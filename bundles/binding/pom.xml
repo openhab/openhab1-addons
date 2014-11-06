@@ -121,6 +121,10 @@
     <module>org.openhab.binding.alarmdecoder</module>
     <module>org.openhab.binding.davis</module>
     <module>org.openhab.binding.xpl</module>
+    <module>org.openhab.binding.dscalarm</module>
+    <module>org.openhab.binding.benqprojector</module>
+    <module>org.openhab.binding.ehealth</module>
+    <module>org.openhab.binding.anel</module>
   </modules>
 
 </project>
