@@ -47,7 +47,8 @@ Import-Package: org.apache.commons.lang,
  org.quartz.impl,
  org.quartz.impl.matchers,
  org.quartz.utils,
- org.slf4j
+ org.slf4j,
+ org.apache.commons.io
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.openhab.model.rule,org.openhab.model.rule.services
  ,org.openhab.model.rule.rules,org.openhab.model.rule.rules.impl,org.o
