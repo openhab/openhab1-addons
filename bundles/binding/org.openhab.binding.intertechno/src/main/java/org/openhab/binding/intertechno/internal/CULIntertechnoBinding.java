@@ -9,6 +9,8 @@
 package org.openhab.binding.intertechno.internal;
 
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.intertechno.CULIntertechnoBindingProvider;
@@ -101,7 +103,9 @@ public class CULIntertechnoBinding extends
 	private void bindCULHandler() {
 		if (!StringUtils.isEmpty(deviceName)) {
 			try {
-				cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
+				Map<String,Integer> options = new HashMap<String,Integer>();
+				options.put("parity", 0); //parity none
+				cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF, options);
 				cul.send("it" + wavelength);
 				cul.send("isr" + repititions);
 				cul.registerListener(this);

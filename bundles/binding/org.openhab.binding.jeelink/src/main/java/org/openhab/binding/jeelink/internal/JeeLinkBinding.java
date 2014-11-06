@@ -9,6 +9,8 @@
 package org.openhab.binding.jeelink.internal;
 
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.jeelink.JeeLinkBindingConfig;
@@ -82,7 +84,10 @@ public class JeeLinkBinding extends
 	private void getCULHandler() {
 		try {
 			logger.debug("Opening CUL device on " + deviceName);
-			cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
+			Map<String,Integer> options = new HashMap<String,Integer>();
+			options.put("baudrate", 57600);
+			options.put("parity", 0); //parity none
+			cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF,options);
 			cul.registerListener(this);
 		} catch (CULDeviceException e) {
 			logger.error("Can't open cul device", e);
