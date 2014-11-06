@@ -16,10 +16,7 @@ Require-Bundle: org.eclipse.xtext;bundle-version="2.1.0";visibility:=reexport,
  org.eclipse.emf.ecore,
  org.eclipse.emf.common,
  org.antlr.runtime,
- org.eclipse.xtext.common.types,
- com.google.guava,
- org.eclipse.xtend.lib,
- org.eclipse.xtext.xbase.lib
+ org.eclipse.xtext.common.types
 Import-Package: org.apache.commons.logging,
  org.apache.log4j,
  org.eclipse.xtend2.lib,

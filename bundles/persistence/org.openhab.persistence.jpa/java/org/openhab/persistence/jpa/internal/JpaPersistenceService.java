@@ -6,6 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.openhab.persistence.jpa.internal;
 
 import java.util.Collections;
@@ -32,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
  /** 
+	 JPA based implementation of QueryablePersistenceService.
+	 
  * @author Manfred Bergmann
  * @since 1.6.0
  */
@@ -90,6 +93,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		logger.debug("Storing item: " + item.getName());
 		
 		if (item.getState() instanceof UnDefType) {
+			logger.debug("This item is of undefined type. Cannot perist it!");
 			return;
 		}
 		
@@ -105,8 +109,7 @@ public class JpaPersistenceService implements QueryablePersistenceService {
 		try {
 			pItem.setValue(StateHelper.toString(item.getState()));
 		} catch (Exception e1) {
-			logger.error("Error on converting state value to string!");
-			logger.error(e1.getMessage(), e1);
+			logger.error("Error on converting state value to string: {}", e1.getMessage());
 			return;
 		}
 		pItem.setName(name);

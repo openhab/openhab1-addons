@@ -7,9 +7,9 @@
         <class>org.openhab.persistence.jpa.internal.model.JpaPersistentItem</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://hab.local:5432/housestats"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql:"/>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="javax.persistence.jdbc.user" value="hab"/>
+            <property name="javax.persistence.jdbc.user" value=""/>
             <property name="javax.persistence.jdbc.password" value=""/>
             <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>
             <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
