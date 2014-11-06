@@ -47,7 +47,8 @@ public class Precipitation {
 	private String type;
 
 	@ProviderMappings({ 
-			@Provider(name = ProviderName.FORECASTIO, property = "precipProbability", converter = ConverterType.FRACTION_INTEGER) 
+			@Provider(name = ProviderName.FORECASTIO, property = "precipProbability", converter = ConverterType.FRACTION_INTEGER),
+			@Provider(name = ProviderName.WUNDERGROUND, property = "pop")
 	})
 	private Integer probability;
 
