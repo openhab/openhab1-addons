@@ -10,11 +10,13 @@ package org.openhab.binding.intertechno.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.openhab.binding.intertechno.CULIntertechnoBindingProvider;
 import org.openhab.binding.intertechno.IntertechnoBindingConfig;
 import org.openhab.binding.intertechno.internal.parser.AddressParserFactory;
 import org.openhab.binding.intertechno.internal.parser.IntertechnoAddressParser;
+import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -39,7 +41,7 @@ public class CULIntertechnoGenericBindingProvider extends
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
+
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
 		if (!(item instanceof SwitchItem)) {
@@ -75,15 +77,28 @@ public class CULIntertechnoGenericBindingProvider extends
 		String commandOn = parser.getCommandValueON();
 		String commandOff = parser.getCOmmandValueOFF();
 
-		IntertechnoBindingConfig config = new IntertechnoBindingConfig(address,
+		IntertechnoBindingConfig config = new IntertechnoBindingConfig(item, address,
 				commandOn, commandOff);
 
 		addBindingConfig(item, config);
 	}
 
-	@Override
+
 	public IntertechnoBindingConfig getConfigForItemName(String itemName) {
 		return (IntertechnoBindingConfig) bindingConfigs.get(itemName);
+	}
+	
+	public IntertechnoBindingConfig getConfigForAddress(String address) {
+		for (Map.Entry<String, BindingConfig> entry : bindingConfigs.entrySet())
+		{
+			IntertechnoBindingConfig config = (IntertechnoBindingConfig) entry.getValue();
+			  if (config.getAddress().equals(address))
+			  {
+				  return config;
+			  }
+		}
+		
+		return null;
 	}
 
 }

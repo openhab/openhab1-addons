@@ -13,12 +13,15 @@ import java.util.Dictionary;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.intertechno.CULIntertechnoBindingProvider;
 import org.openhab.binding.intertechno.IntertechnoBindingConfig;
+import org.openhab.binding.intertechno.internal.parser.IntertechnoReceiveParser;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULDeviceException;
 import org.openhab.io.transport.cul.CULHandler;
+import org.openhab.io.transport.cul.CULListener;
 import org.openhab.io.transport.cul.CULManager;
 import org.openhab.io.transport.cul.CULMode;
 import org.osgi.service.cm.ConfigurationException;
@@ -36,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CULIntertechnoBinding extends
 		AbstractActiveBinding<CULIntertechnoBindingProvider> implements
-		ManagedService {
+		ManagedService,CULListener {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(CULIntertechnoBinding.class);
@@ -101,6 +104,7 @@ public class CULIntertechnoBinding extends
 				cul = CULManager.getOpenCULHandler(deviceName, CULMode.SLOW_RF);
 				cul.send("it" + wavelength);
 				cul.send("isr" + repititions);
+				cul.registerListener(this);
 			} catch (CULDeviceException e) {
 				logger.error("Can't open CUL", e);
 			} catch (CULCommunicationException e) {
@@ -169,11 +173,40 @@ public class CULIntertechnoBinding extends
 			}
 		}
 	}
+	public void dataReceived(String data) {
 
+		
+		if (data.startsWith("IR")) {
+			IntertechnoReceiveParser parser = new IntertechnoReceiveParser(data);
+			String address = parser.getAddress();
+			logger.debug("Received IT message: " + data + " adress " + address);
+			
+			IntertechnoBindingConfig config = null;
+			for (CULIntertechnoBindingProvider provider : providers) {
+				config = provider.getConfigForAddress(address);
+				if (config!=null)
+				{
+					State state = parser.getCommand();
+					// filter double receive
+					if (config.getLastReceived()<System.currentTimeMillis()-300)
+					{
+						config.setLastReceived(System.currentTimeMillis());
+						eventPublisher.postUpdate(config.getItem().getName(), state);
+					}
+				} else {
+					logger.warn("Got message from unknown IT switch " + address);
+				}
+			}
+		}
+		
+		
+		
+
+
+	}
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
 		if (config != null) {
@@ -226,6 +259,10 @@ public class CULIntertechnoBinding extends
 			}
 		}
 		return null;
+	}
+
+	public void error(Exception e) {
+		// TODO Auto-generated method stub		
 	}
 
 }

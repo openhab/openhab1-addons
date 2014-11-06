@@ -9,6 +9,7 @@
 package org.openhab.binding.intertechno;
 
 import org.openhab.core.binding.BindingConfig;
+import org.openhab.core.items.Item;
 
 /**
  * This class represents the configuration of a receiving intertechno device. An
@@ -20,15 +21,16 @@ import org.openhab.core.binding.BindingConfig;
 public class IntertechnoBindingConfig implements BindingConfig {
 
 	private String address;
-
+	private Item item;
 	private String commandOff;
 	private String commandOn;
+	private long lastReceived;
 
-	public IntertechnoBindingConfig(String address, String commandOn,
-			String commandOff) {
+	public IntertechnoBindingConfig(Item item, String address, String commandOn, String commandOff) {
 		this.address = address;
 		this.commandOn = commandOn;
 		this.commandOff = commandOff;
+		this.item = item;
 	}
 
 	public String getAddress() {
@@ -41,6 +43,18 @@ public class IntertechnoBindingConfig implements BindingConfig {
 
 	public String getCommandValueOFF() {
 		return commandOff;
+	}
+
+	public Item getItem() {
+		return item;
+	}
+
+	public long getLastReceived() {
+		return lastReceived;
+	}
+
+	public void setLastReceived(long lastReceived) {
+		this.lastReceived = lastReceived;
 	}
 
 }

@@ -17,4 +17,6 @@ import org.openhab.core.binding.BindingProvider;
 public interface CULIntertechnoBindingProvider extends BindingProvider {
 
 	public IntertechnoBindingConfig getConfigForItemName(String itemName);
+	
+	public IntertechnoBindingConfig getConfigForAddress(String address);
 }
