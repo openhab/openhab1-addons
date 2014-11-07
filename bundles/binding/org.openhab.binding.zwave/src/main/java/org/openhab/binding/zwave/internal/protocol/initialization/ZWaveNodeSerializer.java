@@ -40,9 +40,8 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 public class ZWaveNodeSerializer {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveNodeSerializer.class);
-	private static final String FOLDER_NAME = "etc/zwave";
 	private final XStream stream = new XStream(new StaxDriver());
-	private final String versionedFolderName;
+	private final String folderName = "etc/zwave";
 
 	/**
 	 * Constructor. Creates a new instance of the {@link ZWaveNodeSerializer}
@@ -50,13 +49,11 @@ public class ZWaveNodeSerializer {
 	 */
 	public ZWaveNodeSerializer() {
 		logger.trace("Initializing ZWaveNodeSerializer.");
-		this.versionedFolderName = String.format("%s/%d.%d/", FOLDER_NAME, 
-				ZWaveActivator.getVersion().getMajor(), ZWaveActivator.getVersion().getMinor());
 
-		File folder = new File(versionedFolderName);
+		File folder = new File(folderName);
 		// create path for serialization.
 		if (!folder.exists()) {
-			logger.debug("Creating directory {}", versionedFolderName);
+			logger.debug("Creating directory {}", folderName);
 			folder.mkdirs();
 		}
 		stream.processAnnotations(ZWaveNode.class);
@@ -88,7 +85,7 @@ public class ZWaveNodeSerializer {
 	 */
 	public void SerializeNode(ZWaveNode node) {
 		synchronized (stream) {
-			File file = new File(this.versionedFolderName, String.format("node%d.xml", node.getNodeId()));
+			File file = new File(this.folderName, String.format("node%d.xml", node.getNodeId()));
 			BufferedWriter writer = null;
 
 			logger.debug("NODE {}: Serializing to file {}", node.getNodeId(), file.getPath());
@@ -118,7 +115,7 @@ public class ZWaveNodeSerializer {
 	 */
 	public ZWaveNode DeserializeNode(int nodeId) {
 		synchronized (stream) {
-			File file = new File(this.versionedFolderName, String.format("node%d.xml", nodeId));
+			File file = new File(this.folderName, String.format("node%d.xml", nodeId));
 			BufferedReader reader = null;
 
 			logger.debug("NODE {}: Deserializing from file {}", nodeId, file.getPath());
@@ -152,7 +149,7 @@ public class ZWaveNodeSerializer {
 	 */
 	public boolean DeleteNode(int nodeId) {
 		synchronized (stream) {
-			File file = new File(this.versionedFolderName, String.format("node%d.xml", nodeId));
+			File file = new File(this.folderName, String.format("node%d.xml", nodeId));
 
 			return file.delete();
 		}

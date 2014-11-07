@@ -18,6 +18,7 @@ import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestSt
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestStub.DEVICE_ID;
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestStub.MODULE_ID;
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestStub.createRequest;
+import static org.openhab.binding.netatmo.internal.NetatmoMeasureType.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -48,8 +49,8 @@ public class MeasurementTest {
 	@Test
 	public void testSuccess() throws Exception {
 		final MeasurementRequestStub request = createRequest("/getmeasure.json");
-		request.addMeasure("Temperature");
-		request.addMeasure("Humidity");
+		request.addMeasure(TEMPERATURE);
+		request.addMeasure(HUMIDITY);
 
 		final MeasurementResponse response = request.execute();
 
