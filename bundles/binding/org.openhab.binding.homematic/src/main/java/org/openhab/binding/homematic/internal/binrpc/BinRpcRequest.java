@@ -92,18 +92,20 @@ public class BinRpcRequest {
 	}
 
 	private void addDouble(double v) {
-		v = Math.abs(((Double) v).doubleValue());
-		double tmp = v;
+		double tmp = Math.abs(v);
 		int exp = 0;
 		while (tmp >= 2) {
 			tmp = Math.abs(v / Math.pow(2, exp++));
 		}
 		int mantissa = (int) (Math.abs(v / Math.pow(2, exp)) * 0x40000000);
-		// Note that this limits the range of the inbound double
+		if (v < 0) {
+			mantissa *= -1;
+		}
+
 		addInt(mantissa);
 		addInt(exp);
 	}
-
+	
 	private void addString(String s) {
 		byte sd[];
 		try {

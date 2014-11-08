@@ -14,6 +14,7 @@ import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,13 +56,13 @@ public class NetatmoGenericBindingProvider extends
 
 		String deviceId;
 		String moduleId;
-		String measure;
+		NetatmoMeasureType measureType;
 
 		@Override
 		public String toString() {
 			return "NetatmoBindingConfig [deviceId=" + this.deviceId
 					+ ", moduleId=" + this.moduleId + ", measure="
-					+ this.measure + "]";
+					+ this.measureType.getMeasure() + "]";
 		}
 	}
 
@@ -90,10 +91,10 @@ public class NetatmoGenericBindingProvider extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getMeasure(final String itemName) {
+	public NetatmoMeasureType getMeasureType(String itemName){ 
 		final NetatmoBindingConfig config = (NetatmoBindingConfig) this.bindingConfigs
 				.get(itemName);
-		return config != null ? config.measure : null;
+		return config != null ? config.measureType : null;
 	}
 
 	/**
@@ -123,12 +124,12 @@ public class NetatmoGenericBindingProvider extends
 		switch (configParts.length) {
 		case 2:
 			config.deviceId = configParts[0];
-			config.measure = configParts[1];
+			config.measureType = NetatmoMeasureType.fromString(configParts[1]);
 			break;
 		case 3:
 			config.deviceId = configParts[0];
 			config.moduleId = configParts[1];
-			config.measure = configParts[2];
+			config.measureType = NetatmoMeasureType.fromString(configParts[2]);
 			break;
 		default:
 			throw new BindingConfigParseException(
