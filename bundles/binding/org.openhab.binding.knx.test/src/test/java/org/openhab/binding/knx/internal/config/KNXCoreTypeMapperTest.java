@@ -1516,7 +1516,7 @@ public class KNXCoreTypeMapperTest {
 
 		TimeZone defaultTimeZone = TimeZone.getDefault();
 
-		TimeZone[] timeZones = {}; //{defaultTimeZone, TimeZone.getTimeZone("America/New_York"), TimeZone.getTimeZone("Europe/Berlin"), TimeZone.getTimeZone("Asia/Shanghai")};
+		TimeZone[] timeZones = {defaultTimeZone, TimeZone.getTimeZone("America/New_York"), TimeZone.getTimeZone("Europe/Berlin"), TimeZone.getTimeZone("Asia/Shanghai")};
 
 		try {
 			Field field = DPTXlatorDateTime.class.getDeclaredField("c");
@@ -1532,10 +1532,6 @@ public class KNXCoreTypeMapperTest {
 
 				TimeZone.setDefault(timeZone);
 
-				//Calendar c = Calendar.getInstance(TimeZone.getDefault()); // omit timezone for default tz
-				//c.set(1900, 01, 01, 0, 0, 0); // your date; omit this line for current date
-				//int offset = c.get(Calendar.DST_OFFSET);
-				
 				assertNull("KNXCoreTypeMapper.toType() should return null (no-day)",
 						testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00 }, DateTimeType.class));
 
