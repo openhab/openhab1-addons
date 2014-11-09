@@ -78,9 +78,9 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	/** If set to true, the binding will leave the connection to the cube
 	 * open and just request new informations.
 	 * This allows much higher poll rates and causes less load than the
-	 * non-exclusive polling but has the drawback that no other app
+	 * non-exclusive polling but has the drawback that no other apps
 	 * (i.E. original software) can use the cube while this binding is
-	 * running. Also new MAX! components are not discovered until reload.
+	 * running.
 	 */
 	private static boolean exclusive = false;
 
@@ -102,7 +102,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 */
 	private Socket socket = null;
 	private BufferedReader reader = null;
-	private BufferedWriter writer = null;
+	private OutputStreamWriter writer = null;
 
 	/**
 	 * {@inheritDoc}
@@ -134,7 +134,6 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 */
 	@Override
 	public void execute() {
-
 		if (ip == null) {
 			logger.debug("Update prior to completion of interface IP configuration");
 			return;
@@ -145,11 +144,13 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				socket = new Socket(ip, port);
 				logger.debug("open new connection... to "+ip+" port "+port);
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+				writer = new OutputStreamWriter(socket.getOutputStream());
 			}else {
-				//if the connection is already open (this happens in exclusive mode), just send a "l:\r\n" to get the latest live informations
-				writer.write("l:");
-				writer.newLine();
+				/* if the connection is already open (this happens in exclusive mode), just send a "l:\r\n" to get the latest live informations
+				 * note that "L:\r\n" or "l:\n" would not work.
+				 */
+				logger.debug("Writing state request to Maxcube");
+				writer.write("l:"+'\r'+'\n');
 				writer.flush();
 			}
 			
@@ -220,8 +221,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					logger.debug(Utils.getStackTrace(e));
 				}
 			}
-			if(!exclusive)
-			{
+			if(!exclusive) {
 				socket.close();
 				socket = null;
 			}
