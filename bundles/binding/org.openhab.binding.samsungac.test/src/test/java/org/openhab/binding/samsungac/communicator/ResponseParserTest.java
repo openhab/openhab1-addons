@@ -64,5 +64,17 @@ public class ResponseParserTest {
 		assertEquals("21", result.get(CommandEnum.AC_FUN_TEMPNOW));
 		assertEquals("20", result.get(CommandEnum.AC_FUN_TEMPSET));
 	}
+	
+	@Test
+	public void shouldReturnTrueWhenTokenResponseIsSent() {
+		String response = "<?xml version=\"1.0\" encoding=\"utf-8\" ?><Update Type=\"GetToken\" Status=\"Completed\" Token=\"33965903-4482-M849-N716-373832354144\"/>";
+		assertTrue(ResponseParser.isResponseWithToken(response));
+	}
+	
+	@Test
+	public void shouldParseTokenFromResponse() {
+		String response = "<?xml version=\"1.0\" encoding=\"utf-8\" ?><Update Type=\"GetToken\" Status=\"Completed\" Token=\"33965903-4482-M849-N716-373832354144\"/>";
+		assertEquals("33965903-4482-M849-N716-373832354144", ResponseParser.parseTokenFromResponse(response));
+	}
 
 }

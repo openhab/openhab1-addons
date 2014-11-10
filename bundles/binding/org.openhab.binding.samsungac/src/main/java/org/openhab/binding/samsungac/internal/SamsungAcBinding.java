@@ -252,6 +252,7 @@ public class SamsungAcBinding extends
 		try {
 			host.login();
 		} catch (Exception e) {
+			logger.debug(e.toString() + " : " + e.getCause().toString());
 			logger.info(
 					"Reconnect failed for '{}', will retry in {}s",
 					key, refreshInterval / 1000);

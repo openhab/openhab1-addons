@@ -31,13 +31,14 @@ public class ResponseParser {
 			.getLogger(ResponseParser.class);
 	
 	public static boolean isResponseWithToken(String response) {
-        return response.matches("Token=\"(.*)\"");
+        return response.contains("Update Type=\"GetToken\" Status=\"Completed\" Token=\"");
     }
 
 	public static String parseTokenFromResponse(String response) {
-    	Pattern pattern = Pattern.compile("Token=\"(.*)\"");
+    	Pattern pattern = Pattern.compile("Token=\"(.+)\"");
         Matcher matcher = pattern.matcher(response);
-        return matcher.group();
+        matcher.find();
+        return matcher.group().replaceFirst("Token=\"", "").replaceAll("\"", "");
     }
 
     public static boolean isFailedAuthenticationResponse(String line) {

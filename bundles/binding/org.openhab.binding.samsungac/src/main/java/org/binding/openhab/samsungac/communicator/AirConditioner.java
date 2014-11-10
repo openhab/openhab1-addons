@@ -221,7 +221,7 @@ public class AirConditioner {
 
 			ctx.init(null, trustAllCerts, null);
 			socket = (SSLSocket) ctx.getSocketFactory().createSocket(IP, PORT);
-			socket.setSoTimeout(5000);
+			socket.setSoTimeout(10000);
 			socket.startHandshake();
 		} catch (Exception e) {
 			throw new Exception("Cannot connect to " + IP + ":" + PORT, e);
