@@ -52,56 +52,56 @@ public class KNXConnection implements ManagedService {
 	private static final Logger sLogger = LoggerFactory.getLogger(KNXConnection.class);
 
 	private static ProcessCommunicator sPC = null;
-	
+
 	private static ProcessListener sProcessCommunicationListener = null;
 
 	private static KNXNetworkLink sLink;
-	
+
 	/** signals that the connection is shut down on purpose */
 	public static boolean sShutdown = false;
 
 	/** the ip address to use for connecting to the KNX bus */
 	private static String sIp;
-	
+
 	/** the ip connection type for connecting to the KNX bus. Could be either TUNNEL or ROUTING */
 	private static int sIpConnectionType;
-	
+
 	/** the default multicast ip address (see <a href="http://www.iana.org/assignments/multicast-addresses/multicast-addresses.xml">iana</a> EIBnet/IP)*/
 	private static final String DEFAULT_MULTICAST_IP = "224.0.23.12";
 
 	/** KNXnet/IP port number */
 	private static int sPort;
-	
+
 	/** local endpoint to specify the multicast interface. no port is used */
 	private static String sLocalIp;
-	
+
 	/** the serial port to use for connecting to the KNX bus */
 	private static String sSerialPort;
 
 	/** time in milliseconds of how long should be paused between two read requests to the bus during initialization. Default value is <code>50</Code> */
 	private static long sReadingPause = 50;
-	
+
 	/** timeout in milliseconds to wait for a response from the KNX bus. Default value is <code>10000</code> */
 	private static long sResponseTimeout = 10000;
-	
+
 	/** limits the read retries while initialization from the KNX bus. Default value is <code>3</code> */
 	private static int sReadRetriesLimit = 3;
 
 	/** seconds between connect retries when KNX link has been lost, 0 means never retry. Default value is <code>0</code> */
 	private static int sAutoReconnectPeriod = 0;
-	
+
 	/** Number of threads executing in parallel for auto refresh feature. Default value is <code>5</code> */
 	private static int sNumberOfThreads = 5;
-	
+
 	/** Time in seconds to wait for an orderly shutdown of the auto refresher feature. Default value is <code>5</code> */
 	private static int sScheduledExecutorServiceShutdownTimeout = 5;
 
 	/** The maximum number of queue entries in the refresh queue used by the auto refresh feature. Default value is <code>10000</code> */
 	private static int sMaxRefreshQueueEntries = 10000;
-	
+
 	/** listeners for connection/re-connection events */
 	private static Set<KNXConnectionListener> sConnectionListeners = new HashSet<KNXConnectionListener>();
-	
+
 	/**
 	 * Returns the KNXNetworkLink for talking to the KNX bus.
 	 * The link can be null, if it has not (yet) been established successfully.
@@ -123,14 +123,14 @@ public class KNXConnection implements ManagedService {
 		}
 		KNXConnection.sProcessCommunicationListener = listener;
 	}
-	
+
 	public void unsetProcessListener(ProcessListener listener) {
 		if (sPC != null) {
 			sPC.removeProcessListener(KNXConnection.sProcessCommunicationListener);
 		}
 		KNXConnection.sProcessCommunicationListener = null;
 	}
-	
+
 	public static void addConnectionListener(KNXConnectionListener listener) {
 		KNXConnection.sConnectionListeners.add(listener);
 	}
@@ -145,7 +145,7 @@ public class KNXConnection implements ManagedService {
 	 */
 	public static synchronized boolean connect() {
 		boolean successRetVal=false;
-		
+
 		sShutdown = false;
 		try {
 			if (StringUtils.isNotBlank(sIp)) { 
@@ -164,12 +164,12 @@ public class KNXConnection implements ManagedService {
 						for(KNXConnectionListener listener : KNXConnection.sConnectionListeners) {
 							listener.connectionLost();
 						}
-						
+
 						/*
 						 * If an auto reconnect period was scheduled, then start a timer based task, which will
 						 * try to reconnect.
 						 */
-						
+
 						if(sAutoReconnectPeriod>0) {
 							sLogger.info("KNX link will be retried in " + sAutoReconnectPeriod + " seconds");
 							final Timer timer = new Timer();
@@ -178,22 +178,22 @@ public class KNXConnection implements ManagedService {
 						}
 					}
 				}
-				
+
 				public void indication(FrameEvent e) {}
-				
+
 				public void confirmation(FrameEvent e) {}
 			};
-			
+
 			sLink.addLinkListener(linkListener);
-			
+
 			if(sPC!=null) {
 				sPC.removeProcessListener(sProcessCommunicationListener);
 				sPC.detach();
 			}
-			
+
 			sPC = new ProcessCommunicatorImpl(sLink);
 			sPC.setResponseTimeout((int) sResponseTimeout/1000);
-			
+
 			if(sProcessCommunicationListener!=null) {
 				sPC.addProcessListener(sProcessCommunicationListener);
 			}
@@ -201,13 +201,13 @@ public class KNXConnection implements ManagedService {
 			if (sLogger.isInfoEnabled()) {
 				if (sLink instanceof KNXNetworkLinkIP) {
 					String ipConnectionTypeString = 
-						KNXConnection.sIpConnectionType == KNXNetworkLinkIP.ROUTING ? "ROUTER" : "TUNNEL";
+							KNXConnection.sIpConnectionType == KNXNetworkLinkIP.ROUTING ? "ROUTER" : "TUNNEL";
 					sLogger.info("Established connection to KNX bus on {} in mode {}.", sIp + ":" + sPort, ipConnectionTypeString);
 				} else {
 					sLogger.info("Established connection to KNX bus through FT1.2 on serial port {}.", sSerialPort);
 				}
 			}
-			
+
 			for(KNXConnectionListener listener : KNXConnection.sConnectionListeners) {
 				listener.connectionEstablished();
 			}
@@ -223,7 +223,7 @@ public class KNXConnection implements ManagedService {
 		}
 		return successRetVal;
 	}
-	
+
 	public static synchronized void disconnect() {
 		sShutdown = true;
 		if (sPC!=null) {
@@ -240,7 +240,7 @@ public class KNXConnection implements ManagedService {
 	}
 
 	private static KNXNetworkLink connectByIp(int ipConnectionType, String localIp, String ip, int port) throws KNXException, UnknownHostException, InterruptedException {
-		
+
 		InetSocketAddress localEndPoint = null;
 		if (StringUtils.isNotBlank(localIp)) {
 			localEndPoint = new InetSocketAddress(localIp, 0);
@@ -252,10 +252,10 @@ public class KNXConnection implements ManagedService {
 				sLogger.warn("Couldn't find an IP address for this host. Please check the .hosts configuration or use the 'localIp' parameter to configure a valid IP address.");
 			}
 		}
-		
+
 		return new KNXNetworkLinkIP(ipConnectionType, localEndPoint, new InetSocketAddress(ip, port), false, TPSettings.TP1);
 	}
-	
+
 	private static KNXNetworkLink connectBySerial(String serialPort) throws KNXException {
 
 		try {
@@ -279,7 +279,7 @@ public class KNXConnection implements ManagedService {
 			throw knxe;
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
 	 */
@@ -322,7 +322,7 @@ public class KNXConnection implements ManagedService {
 			if (StringUtils.isNotBlank(readingPauseString)) {
 				sReadingPause = Long.parseLong(readingPauseString);
 			}
-			
+
 			String responseTimeoutString = (String) config.get("timeout");
 			if (StringUtils.isNotBlank(responseTimeoutString)) {
 				long timeout = Long.parseLong(responseTimeoutString);
@@ -330,7 +330,7 @@ public class KNXConnection implements ManagedService {
 					sResponseTimeout = timeout;
 				}
 			}
-			
+
 			String readRetriesLimitString = (String) config.get("readRetries");
 			if (StringUtils.isNotBlank(readRetriesLimitString)) {
 				int readRetries = Integer.parseInt(readRetriesLimitString);
@@ -338,7 +338,7 @@ public class KNXConnection implements ManagedService {
 					sReadRetriesLimit = readRetries;
 				}
 			}
-			
+
 			String autoReconnectPeriodString = (String) config.get("autoReconnectPeriod");
 			if (StringUtils.isNotBlank(autoReconnectPeriodString)) {
 				int autoReconnectPeriodValue = Integer.parseInt(autoReconnectPeriodString);
@@ -347,33 +347,48 @@ public class KNXConnection implements ManagedService {
 				}
 			}
 
-			
+
 			String maxRefreshQueueEntriesString = (String) config.get("maxRefreshQueueEntries");
-			if (StringUtils.isNotBlank(autoReconnectPeriodString)) {
-				int maxRefreshQueueEntriesValue = Integer.parseInt(maxRefreshQueueEntriesString);
-				if (maxRefreshQueueEntriesValue >= 0) {
-					sMaxRefreshQueueEntries = maxRefreshQueueEntriesValue;
+			if (StringUtils.isNotBlank(maxRefreshQueueEntriesString)) {
+				try {
+					int maxRefreshQueueEntriesValue = Integer.parseInt(maxRefreshQueueEntriesString);
+					if (maxRefreshQueueEntriesValue >= 0) {
+						sMaxRefreshQueueEntries = maxRefreshQueueEntriesValue;
+					}
+				}
+				catch (NumberFormatException e) {
+					sLogger.warn("Error when trying to read parameter 'maxRefreshQueueEntries' from configuration. '{}' is not a number: using default.", maxRefreshQueueEntriesString);
 				}
 			}
 
-			
 			String numberOfThreadsString = (String) config.get("numberOfThreads");
-			if (StringUtils.isNotBlank(autoReconnectPeriodString)) {
-				int numberOfThreadsValue = Integer.parseInt(numberOfThreadsString);
-				if (numberOfThreadsValue >= 0) {
-					sNumberOfThreads = numberOfThreadsValue;
+			if (StringUtils.isNotBlank(numberOfThreadsString)) {
+				try {
+					int numberOfThreadsValue = Integer.parseInt(numberOfThreadsString);
+					if (numberOfThreadsValue >= 0) {
+						sNumberOfThreads = numberOfThreadsValue;
+					}
+				}
+				catch (NumberFormatException e) {
+					sLogger.warn("Error when trying to read parameter 'numberOfThreads' from configuration. '{}' is not a number: using default.", numberOfThreadsString);
 				}
 			}
-			
+
 			String scheduledExecutorServiceShutdownTimeoutString = (String) config.get("scheduledExecutorServiceShutdownTimeout");
 			if (StringUtils.isNotBlank(scheduledExecutorServiceShutdownTimeoutString)) {
-				int scheduledExecutorServiceShutdownTimeoutValue = Integer.parseInt(scheduledExecutorServiceShutdownTimeoutString);
-				if (scheduledExecutorServiceShutdownTimeoutValue >= 0) {
-					sScheduledExecutorServiceShutdownTimeout = scheduledExecutorServiceShutdownTimeoutValue;
+				try {
+					int scheduledExecutorServiceShutdownTimeoutValue = Integer.parseInt(scheduledExecutorServiceShutdownTimeoutString);
+					if (scheduledExecutorServiceShutdownTimeoutValue >= 0) {
+						sScheduledExecutorServiceShutdownTimeout = scheduledExecutorServiceShutdownTimeoutValue;
+					}
+				}
+				catch (NumberFormatException e) {
+					sLogger.warn("Error when trying to read parameter 'scheduledExecutorServiceShutdownTimeout' from configuration. '{}' is not a number: using default.", scheduledExecutorServiceShutdownTimeoutString);
 				}
 			}
-			
+
 			if(sPC==null) {
+				sLogger.debug("Not connected yet. Trying to connect.");
 				if (!connect()) {
 					sLogger.warn("Inital connection to KNX bus failed!");
 					if(sAutoReconnectPeriod>0) {
@@ -382,6 +397,9 @@ public class KNXConnection implements ManagedService {
 						TimerTask timerTask = new ConnectTimerTask(timer);
 						timer.schedule(timerTask, sAutoReconnectPeriod * 1000, sAutoReconnectPeriod * 1000);
 					}
+				}
+				else {
+					sLogger.debug("Success: connected.");
 				}
 			}
 		}
@@ -393,15 +411,15 @@ public class KNXConnection implements ManagedService {
 	public static long getReadingPause() {
 		return sReadingPause;
 	}
-	
+
 	public static int getReadRetriesLimit() {
 		return sReadRetriesLimit;
 	}
-	
+
 	public static int getAutoReconnectPeriod() {
 		return sAutoReconnectPeriod;
 	}
-	
+
 	/**
 	 * @return the sNumberOfThreads
 	 */
@@ -425,7 +443,7 @@ public class KNXConnection implements ManagedService {
 
 	private static final class ConnectTimerTask extends TimerTask {
 		private final Timer timer;
-		
+
 		public ConnectTimerTask(Timer timer) {
 			this.timer=timer;
 		}

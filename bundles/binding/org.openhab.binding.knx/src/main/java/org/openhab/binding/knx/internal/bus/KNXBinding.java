@@ -51,7 +51,7 @@ import tuwien.auto.calimero.process.ProcessListener;
  */
 public class KNXBinding extends AbstractBinding<KNXBindingProvider> 
 implements ProcessListener, KNXConnectionListener {
-//	implements KNXConnectionListener {
+	//	implements KNXConnectionListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
@@ -267,8 +267,13 @@ implements ProcessListener, KNXConnectionListener {
 				KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
 				mKNXBusReaderScheduler.clear();
 				for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
-					if (!mKNXBusReaderScheduler.scheduleRead(datapoint, knxProvider.getAutoRefreshTime(datapoint))) {
-						logger.warn("Clouldn't add to KNX bus reader scheduler",datapoint);
+					mKNXBusReaderScheduler.readOnce(datapoint);
+
+					int autoRefreshTimeInSecs=knxProvider.getAutoRefreshTime(datapoint);
+					if (autoRefreshTimeInSecs>0) {
+						if (!mKNXBusReaderScheduler.scheduleRead(datapoint, knxProvider.getAutoRefreshTime(datapoint))) {
+							logger.warn("Clouldn't add to KNX bus reader scheduler",datapoint);
+						}
 					}
 				}
 			}
@@ -285,8 +290,13 @@ implements ProcessListener, KNXConnectionListener {
 		mKNXConnectionEstablished=true;
 		for (KNXBindingProvider knxProvider : providers) {
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
-				if (!mKNXBusReaderScheduler.scheduleRead(datapoint, knxProvider.getAutoRefreshTime(datapoint))) {
-					logger.warn("Clouldn't add to KNX bus reader scheduler",datapoint);
+				mKNXBusReaderScheduler.readOnce(datapoint);
+
+				int autoRefreshTimeInSecs=knxProvider.getAutoRefreshTime(datapoint);
+				if (autoRefreshTimeInSecs>0) {
+					if (!mKNXBusReaderScheduler.scheduleRead(datapoint, autoRefreshTimeInSecs)) {
+						logger.warn("Clouldn't add to KNX bus reader scheduler",datapoint);
+					}
 				}
 			}
 		}
