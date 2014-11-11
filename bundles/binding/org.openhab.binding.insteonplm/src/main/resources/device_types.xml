@@ -30,6 +30,20 @@ Example:
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  
+ <device productKey="F00.00.0C">
+     <model>2476D</model>
+     <description>SwitchLinc Dimmer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.0D">
+     <model>2634-222</model>
+     <description>On/Off Dual-Band Outdoor Module</description>
+     <feature name="switch">GenericSwitch</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ 
  <device productKey="0x000051">
      <model>2486DWH8</model>
      <description>KeypadLinc Dimmer</description>
