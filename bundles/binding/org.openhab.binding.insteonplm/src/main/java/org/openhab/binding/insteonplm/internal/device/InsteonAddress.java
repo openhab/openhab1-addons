@@ -18,26 +18,18 @@ import org.openhab.binding.insteonplm.internal.utils.Utils;
  */
 
 public class InsteonAddress {
-	private byte highByte;
-	private byte middleByte;
-	private byte lowByte;
+	private byte highByte, middleByte,lowByte;
 	
 	public InsteonAddress() {
-		highByte	= 0x00;
-		middleByte	= 0x00;
-		lowByte		= 0x00;
+		highByte = 0x00; middleByte = 0x00; lowByte = 0x00;
 	}
 	
 	public InsteonAddress(InsteonAddress a) {
-		highByte	= a.highByte;
-		middleByte	= a.middleByte;
-		lowByte		= a.lowByte;
+		highByte = a.highByte; middleByte = a.middleByte; lowByte = a.lowByte;
 	}
 	
 	public InsteonAddress(byte high, byte middle, byte low) {
-		highByte	= high;
-		middleByte	= middle;
-		lowByte		= low;
+		highByte = high; middleByte = middle; lowByte = low;
 	}
 	
 	public InsteonAddress(int high, int middle, int low) {
@@ -73,12 +65,6 @@ public class InsteonAddress {
 	public byte getMiddleByte()	{return middleByte;}
 	public byte getLowByte()	{return lowByte;}
 
-	public String toString() {
-		String s = Utils.getHexString(highByte) + "." + 
-			Utils.getHexString(middleByte) + "." + 
-			Utils.getHexString(lowByte);
-		return s;
-	}
 	public void storeBytes(byte[] bytes, int offset) {
 		bytes[offset] 		= getHighByte();
 		bytes[offset + 1] 	= getMiddleByte();
@@ -88,6 +74,14 @@ public class InsteonAddress {
 		setHighByte(bytes[offset]);
 		setMiddleByte(bytes[offset + 1]);
 		setLowByte(bytes[offset + 2]);
+	}
+
+	@Override
+	public String toString() {
+		String s = Utils.getHexString(highByte) + "." + 
+			Utils.getHexString(middleByte) + "." + 
+			Utils.getHexString(lowByte);
+		return s;
 	}
 	@Override
 	public boolean equals(Object a) {
@@ -109,6 +103,7 @@ public class InsteonAddress {
 	 * @return true if address is in valid AB.CD.EF format
 	 */
 	public static boolean s_isValid(String addr) {
+		if (addr == null) return false;
 		String[] fields = addr.split("\\.");
 		if (fields.length != 3) return false;
 		try{
@@ -131,7 +126,10 @@ public class InsteonAddress {
 	public static InsteonAddress s_parseAddress(String val) {
 		return new InsteonAddress(val);
 	}
-	
+	/**
+	 * Function for unit testing
+	 * @param args ignored
+	 */
 	public static void main(String[] args) {
 		// debug/test code
 		InsteonAddress a1 = new InsteonAddress();

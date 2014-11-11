@@ -62,6 +62,18 @@ public enum ADMsgType {
 		return (s_fromString(s).isValid());
 	}
 	
+	/**
+	 * Test if string contains a valid message type
+	 * @param s string to test
+	 * @return true if string contains a valid message type
+	 */
+	public static boolean s_containsValidMsgType(String s) {
+		for (String t: s_strToType.keySet()) {
+			if (s.contains(t)) return true;
+		}
+		return (false);
+	}
+	
 	/** hash map from string to type */
 	private static HashMap<String, ADMsgType> s_strToType;
 	
