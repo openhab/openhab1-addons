@@ -23,15 +23,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is a pure Java TTS service implementation, based on SpeechDispatcherTTS.
+ * This is a pure Java TTS service implementation, based on SpeechDispatcher.
  * 
  * @author Gaël L'hopital
  * @since 1.6.0
  * 
  */
-public class TTSServiceSpeechDispatcherTTS implements TTSService, ManagedService {
+public class TTSServiceSpeechDispatcher implements TTSService, ManagedService {
 
-	private static final Logger logger = LoggerFactory.getLogger(TTSServiceSpeechDispatcherTTS.class);
+	private static final Logger logger = LoggerFactory.getLogger(TTSServiceSpeechDispatcher.class);
 	
 	SpeechDispatcherConnection defaultOutput = null;
 	
