@@ -10,6 +10,13 @@ import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Representing an Enigma2 device
+ * 
+ * @author Sebastian Kutschbach
+ * @since 1.6.0
+ *
+ */
 public class Enigma2Node {
 	private static final Logger logger = LoggerFactory
 			.getLogger(Enigma2Node.class);
@@ -68,6 +75,9 @@ public class Enigma2Node {
 		return hostName != null && userName != null && password != null;
 	}
 
+	/**
+	 * @return requests the current value the volume
+	 */
 	public String getVolume() {
 		try {
 			String content = HttpUtils.getGetResponse(this.getHostName(),
@@ -79,6 +89,9 @@ public class Enigma2Node {
 		}
 	}
 
+	/**
+	 * @return requests the current channel
+	 */
 	public String getChannel() {
 		try {
 			String content = HttpUtils.getGetResponse(this.getHostName(),
@@ -90,6 +103,9 @@ public class Enigma2Node {
 		}
 	}
 
+	/**
+	 * @return requests, whether the device is on or off
+	 */
 	public String getOnOff() {
 		try {
 			String content = HttpUtils.getGetResponse(this.getHostName(),
@@ -106,6 +122,9 @@ public class Enigma2Node {
 	/*
 	 * Setter
 	 */
+	/**
+	 * Sets the volume
+	 */
 	public void setVolume(Command command) {
 		if (command instanceof IncreaseDecreaseType) {
 			sendRcCommand(
@@ -117,6 +136,9 @@ public class Enigma2Node {
 		}
 	}
 
+	/**
+	 * Sets the channel
+	 */
 	public void setChannel(Command command) {
 		if (command instanceof IncreaseDecreaseType) {
 			sendRcCommand(
@@ -128,6 +150,9 @@ public class Enigma2Node {
 		}
 	}
 
+	/**
+	 * Toggles play and pause
+	 */
 	public void sendPlayPause(Command command) {
 		if (command instanceof OnOffType) {
 			sendRcCommand(command, RC_PLAY_PAUSE);
@@ -136,6 +161,9 @@ public class Enigma2Node {
 		}
 	}
 
+	/**
+	 * Toggles mute and unmute
+	 */
 	public void sendMuteUnmute(Command command) {
 		if (command instanceof OnOffType) {
 			sendRcCommand(command, RC_MUTE_UNMUTE);
@@ -144,6 +172,9 @@ public class Enigma2Node {
 		}
 	}
 
+	/**
+	 * Toggles on and off
+	 */
 	public void sendOnOff(Command command, Enigma2PowerState powerState) {
 		if (command instanceof OnOffType) {
 			try {
@@ -158,6 +189,9 @@ public class Enigma2Node {
 		}
 	}
 
+	/**
+	 * Sends any custom rc command
+	 */
 	public void sendRcCommand(Command command, String commandValue) {
 		if (commandValue == null) {
 			logger.error("Error in item configuration. No remote control code provided (third part of item config)");

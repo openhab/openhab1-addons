@@ -5,6 +5,9 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
+/**
+ * Test class for XMLUtils
+ */
 public class XmlUtilsTest {
 
 	private final static String VALID_CONTENT = "<e2powerstate>"

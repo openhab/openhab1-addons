@@ -44,7 +44,7 @@ public class Enigma2Binding extends
 	private static final Logger logger = LoggerFactory
 			.getLogger(Enigma2Binding.class);
 
-	private HashMap<String, Enigma2Node> enigmaNodes = new HashMap<>();
+	private HashMap<String, Enigma2Node> enigmaNodes = new HashMap<String, Enigma2Node>();
 
 	/**
 	 * the refresh interval which is used to poll values from the Enigma2 server
@@ -257,16 +257,12 @@ public class Enigma2Binding extends
 					}
 
 					String option = keyElements[1];
-					switch (option) {
-					case "hostname":
+					if(option.equals("hostname")) {
 						node.setHostName((String) config.get(key));
-						break;
-					case "username":
+					} else if(option.equals("username")) {
 						node.setUserName((String) config.get(key));
-						break;
-					case "password":
+					} else if(option.equals("password")) {
 						node.setPassword((String) config.get(key));
-						break;
 					}
 
 				}
@@ -276,7 +272,7 @@ public class Enigma2Binding extends
 		}
 	}
 
-	public boolean checkProperlyConfigured() {
+	private boolean checkProperlyConfigured() {
 		for (Enigma2Node node : this.enigmaNodes.values()) {
 			if (!node.properlyConfigured()) {
 				return false;

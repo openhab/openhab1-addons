@@ -1,11 +1,20 @@
 package org.openhab.binding.enigma2.internal.xml;
 
+/**
+ * Util method for xml response handling
+ * 
+ * @author Sebastian Kutschbach
+ * @since 1.6.0
+ */
 public final class XmlUtils {
 
 	private XmlUtils() {
 		// hide constructor
 	}
-
+	
+	/**
+	 * Processes an string containing xml and returning the content of a specific tag 
+	 */
 	public static String getContentOfElement(String content, String element) {
 
 		final String beginTag = "<" + element + ">";
