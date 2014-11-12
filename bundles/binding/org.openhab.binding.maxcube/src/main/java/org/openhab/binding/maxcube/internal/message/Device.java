@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
  * Base class for devices provided by the MAX!Cube protocol.
  * 
  * @author Andreas Heil (info@aheil.de)
+ * @author Bernd Michael Helm (bernd.helm at helmundwalter.de)
  * @since 1.4.0
  */
 public abstract class Device {

@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * are sent then the cube no longer sends the data out.
  * 
  * @author Andreas Heil (info@aheil.de)
- * @author Bernd Michael Helm
+ * @author Bernd Michael Helm (bernd.helm at helmundwalter.de)
  * @since 1.4.0
  */
 public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider> implements ManagedService {
