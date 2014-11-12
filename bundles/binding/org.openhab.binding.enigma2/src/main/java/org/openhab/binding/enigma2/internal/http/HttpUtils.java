@@ -11,6 +11,12 @@ import javax.xml.bind.DatatypeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Util method for http communication
+ * 
+ * @author Sebastian Kutschbach
+ * @since 1.6.0
+ */
 public final class HttpUtils {
 
 	private static final Logger logger = LoggerFactory
@@ -19,7 +25,10 @@ public final class HttpUtils {
 	private HttpUtils() {
 		// hide constructor
 	}
-
+	
+	/**
+	 * Sends a get request via http and returns the response
+	 */
 	public static String getGetResponse(String hostName, String suffix,
 			String username, String password) throws IOException {
 		HttpURLConnection connection = null;

@@ -3,6 +3,13 @@ package org.openhab.binding.enigma2.internal;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 
+/**
+ * Wrapper class for a Enigma2Binding Configuration
+ *  
+ * @author Sebastian Kutschbach
+ * @since 1.6.0
+ *
+ */
 public class Enigma2BindingConfig implements BindingConfig {
 
 	private Item item;

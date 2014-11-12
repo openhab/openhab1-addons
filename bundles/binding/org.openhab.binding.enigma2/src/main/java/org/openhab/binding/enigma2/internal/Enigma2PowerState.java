@@ -1,5 +1,11 @@
 package org.openhab.binding.enigma2.internal;
 
+/**
+ * Representing the power state of the Enigma2 device
+ * 
+ * @author Sebastian Kutschbach
+ * @since 1.6.0
+ */
 public enum Enigma2PowerState {
 	/*
 	 * Standby: http://dreambox/web/powerstate?newstate=0

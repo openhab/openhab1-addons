@@ -18,8 +18,21 @@ import org.openhab.core.items.Item;
  */
 public interface Enigma2BindingProvider extends BindingProvider {
 
+	/**
+	 * Lookup method for binding configs
+	 * 
+	 * @param itemName
+	 *            name of the item
+	 * @return the binding config for the item with the name itemName
+	 */
 	public Enigma2BindingConfig getBindingConfigFor(String itemName);
 
+	/**
+	 * Returns the class for the item 
+	 * 
+	 * @param name name of the item
+	 * @return the class of the item with the name itemName
+	 */
 	public Class<? extends Item> getItemType(String name);
 
 }

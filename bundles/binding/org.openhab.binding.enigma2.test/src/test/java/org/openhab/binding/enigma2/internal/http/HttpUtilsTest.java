@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+/**
+ * Test class for HttpUtils
+ */
 public class HttpUtilsTest {
 
 	private static final String DEFAULT_HOSTNAME = "localhost";
