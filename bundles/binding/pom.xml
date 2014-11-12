@@ -125,6 +125,7 @@
     <module>org.openhab.binding.benqprojector</module>
     <module>org.openhab.binding.ehealth</module>
     <module>org.openhab.binding.anel</module>
+    <module>org.openhab.binding.enigma2</module>
   </modules>
 
 </project>
