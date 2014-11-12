@@ -298,6 +298,7 @@ public class ZWaveDeviceClass {
 					return new CommandClass[0];
 				case REMOTE_CONTROLLER:
 				case STATIC_CONTOLLER:
+				case GARAGE_DOOR:
 				case REPEATER_SLAVE:
 				case TOGGLE_SWITCH:
 				case REMOTE_SWITCH:
