@@ -33,6 +33,7 @@ import org.openhab.binding.maxcube.internal.message.M_Message;
 import org.openhab.binding.maxcube.internal.message.Message;
 import org.openhab.binding.maxcube.internal.message.MessageType;
 import org.openhab.binding.maxcube.internal.message.S_Command;
+import org.openhab.binding.maxcube.internal.message.S_Message;
 import org.openhab.binding.maxcube.internal.message.ShutterContact;
 import org.openhab.binding.maxcube.internal.message.ThermostatModeType;
 import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
@@ -83,6 +84,13 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 * running.
 	 */
 	private static boolean exclusive = false;
+	
+	/**
+	 * in exclusive mode, how many requests are allowed until connection is closed and reopened
+	 */
+	private static int maxRequestsPerConnection = 1000;
+	
+	private int requestCount = 0;
 
 	/** MaxCube's default off temperature */
 	private static final DecimalType DEFAULT_OFF_TEMPERATURE = new DecimalType(4.5);
@@ -103,7 +111,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	private Socket socket = null;
 	private BufferedReader reader = null;
 	private OutputStreamWriter writer = null;
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -128,6 +136,18 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		super.activate();
 		setProperlyConfigured(false);
 	}
+	
+	@Override
+	public void deactivate() {
+		if(socket!=null) {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+			}
+			socket = null;
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -141,17 +161,21 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		try {
 			String raw = null;
 			if(socket == null) {
-				socket = new Socket(ip, port);
-				logger.debug("open new connection... to "+ip+" port "+port);
-				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				writer = new OutputStreamWriter(socket.getOutputStream());
+				this.socketConnect();
+			}if(maxRequestsPerConnection > 0 && requestCount >= maxRequestsPerConnection) {
+				logger.debug("maxRequestsPerConnection reached, reconnecting.");
+				socket.close();
+				this.socketConnect();
+				requestCount = 0;
 			}else {
+			
 				/* if the connection is already open (this happens in exclusive mode), just send a "l:\r\n" to get the latest live informations
 				 * note that "L:\r\n" or "l:\n" would not work.
 				 */
-				logger.debug("Writing state request to Maxcube");
+				logger.info("Writing state request to Maxcube");
 				writer.write("l:"+'\r'+'\n');
 				writer.flush();
+				requestCount++;
 			}
 			
 			boolean cont = true;
@@ -203,11 +227,14 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 							} else {
 								c.setValues((C_Message) message);
 							}
+						} else if (message.getType() == MessageType.S) {
+							/** TODO: Implement handling of S: messages for proper command SET confirmation*/
+							cont=false;
 						} else if (message.getType() == MessageType.L) {
 							((L_Message) message).updateDevices(devices, configurations);
 							
 							logger.debug("{} devices found.", devices.size());
-						
+							
 							// the L message is the last one, while the reader
 							// would hang trying to read a new line and
 							// eventually the
@@ -346,15 +373,22 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			}
 
 			if (commandString != null) {
-				Socket socket = null;
+
 				try {
-					socket = new Socket(ip, port);
-					DataOutputStream stream = new DataOutputStream(socket.getOutputStream());
+					if(socket == null) {
+						this.socketConnect();
+					}
+					/*DataOutputStream stream = new DataOutputStream(socket.getOutputStream());
 
 					byte[] b = commandString.getBytes();
-					stream.write(b);
-					socket.close();
-
+					stream.write(b);*/
+					writer.write(commandString);
+					logger.debug(commandString);
+					writer.flush();
+					if(!exclusive) {
+						socket.close();
+						socket = null;
+					}
 				} catch (UnknownHostException e) {
 					logger.warn("Cannot establish connection with MAX!cube lan gateway while sending command to '{}'", ip);
 					logger.debug(Utils.getStackTrace(e));
@@ -367,6 +401,14 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				logger.debug("Null Command not sent to {}", ip);
 			}
 		}
+	}
+	
+	private boolean socketConnect() throws UnknownHostException, IOException {
+		socket = new Socket(ip, port);
+		logger.debug("open new connection... to "+ip+" port "+port);
+		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		writer = new OutputStreamWriter(socket.getOutputStream());
+		return true;
 	}
 
 	private Device findDevice(String serialNumber, ArrayList<Device> devices) {
@@ -396,6 +438,8 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			return new C_Message(raw);
 		} else if (raw.startsWith("L:")) {
 			return new L_Message(raw);
+		} else if (raw.startsWith("S:")) {
+			return new S_Message(raw);
 		} else {
 			logger.debug("Unknown message block: '{}'",raw);
 		}
@@ -428,6 +472,11 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			String exclusiveString = (String) config.get("exclusive");
 			if (StringUtils.isNotBlank(exclusiveString)) {
 				exclusive = Boolean.parseBoolean(exclusiveString);
+			}
+			
+			String maxRequestsPerConnectionString = (String) config.get("maxRequestsPerConnection");
+			if (maxRequestsPerConnectionString != null && !maxRequestsPerConnectionString.isEmpty()) {
+				maxRequestsPerConnection = Integer.parseInt(maxRequestsPerConnectionString);
 			}
 		} else {
 			ip = discoveryGatewayIp();

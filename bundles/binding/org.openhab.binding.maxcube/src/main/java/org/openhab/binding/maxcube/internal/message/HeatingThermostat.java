@@ -154,7 +154,7 @@ public class HeatingThermostat extends Device {
 	 * Sets the setpoint temperature for this thermostat. 
 	 * @param value the setpoint temperature raw value as provided by the L message
 	 */
-	public void setTemperatureSetpoint(int value) {
+	public void setTemperatureSetpoint(double value) {
 		value/=2.0;
 		if(this.temperatureSetpoint != value) {
 			this.temperatureSetpointUpdated = true;
