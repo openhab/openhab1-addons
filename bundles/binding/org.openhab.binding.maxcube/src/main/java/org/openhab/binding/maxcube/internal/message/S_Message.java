@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 * The S message contains information about Command execution results (guessed) 
 * 
 * @author Andreas Heil (info@aheil.de)
-* @author Bernd Michael Helm
+* @author Bernd Michael Helm (bernd.helm at helmundwalter.de)
 * @since 1.6.0
 */
 public final class S_Message extends Message {
