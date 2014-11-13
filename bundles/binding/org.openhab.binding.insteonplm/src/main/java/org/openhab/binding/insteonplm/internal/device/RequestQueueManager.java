@@ -25,6 +25,7 @@ public class RequestQueueManager {
 	private Thread	m_queueThread	= null;
 	private PriorityQueue<RequestQueue> m_requestQueues = new PriorityQueue<RequestQueue>();
 	private HashMap<InsteonDevice, RequestQueue> m_requestQueueHash = new HashMap<InsteonDevice, RequestQueue>();
+	private boolean m_keepRunning = true;
 	
 	private RequestQueueManager() {
 		m_queueThread = new Thread(new RequestQueueReader());
@@ -44,13 +45,31 @@ public class RequestQueueManager {
 			}
 		}
 	}
+
+	/**
+	 * Stops request queue thread
+	 */
+	private void stopThread() {
+		if (m_queueThread != null) {
+			synchronized (m_requestQueues) {
+				m_keepRunning = false;
+				m_requestQueues.notify();
+			}
+			try {
+				m_queueThread.join();
+			} catch (InterruptedException e) {
+				logger.error("got interrupted waiting for thread exit ", e);
+			}
+			m_queueThread = null;
+		}
+	}
 	
 	class RequestQueueReader implements Runnable {
 		@Override
 		public void run() {
-			logger.info("starting request queue thread");
+			logger.debug("starting request queue thread");
 			synchronized (m_requestQueues) {
-				while (true) {
+				while (m_keepRunning) {
 					try {
 						while (!m_requestQueues.isEmpty()) {
 							RequestQueue q = m_requestQueues.poll();
@@ -79,6 +98,7 @@ public class RequestQueueManager {
 					}
 				}
 			}
+			logger.debug("exiting request queue thread!");
 		}
 	}
 		
@@ -100,10 +120,16 @@ public class RequestQueueManager {
 			return (int)(m_expirationTime - a.m_expirationTime);
 		}
 	}
-	public static RequestQueueManager instance() {
+	public static RequestQueueManager s_instance() {
 		if (s_instance == null) {
 			s_instance = new RequestQueueManager();
 		}
 		return (s_instance);
+	}
+	public static void s_destroyInstance() {
+		if (s_instance != null) {
+			s_instance.stopThread();
+			s_instance = null;
+		}
 	}
 }

@@ -106,7 +106,8 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 					RFXComValueSelector.SIGNAL_LEVEL,
 					RFXComValueSelector.COMMAND,
 					RFXComValueSelector.MOOD,
-					RFXComValueSelector.DIMMING_LEVEL);
+					RFXComValueSelector.DIMMING_LEVEL,
+					RFXComValueSelector.CONTACT);
 
 	public SubType subType = SubType.LIGHTWAVERF;
 	public int sensorId = 0;
@@ -300,16 +301,16 @@ public class RFXComLighting5Message extends RFXComBaseMessage {
 
 		} else if (valueSelector.getItemClass() == ContactItem.class) {
 
-			if (valueSelector == RFXComValueSelector.COMMAND) {
+			if (valueSelector == RFXComValueSelector.CONTACT) {
 
 				switch (command) {
 				case OFF:
 				case GROUP_OFF:
-					state = OpenClosedType.OPEN;
+					state = OpenClosedType.CLOSED;
 					break;
 
 				case ON:				
-					state = OpenClosedType.CLOSED;
+					state = OpenClosedType.OPEN;
 					break;
 				
 				case SET_LEVEL:

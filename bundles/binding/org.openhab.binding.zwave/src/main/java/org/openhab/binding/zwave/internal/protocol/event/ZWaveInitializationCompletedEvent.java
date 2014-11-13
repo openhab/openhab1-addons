@@ -24,7 +24,7 @@ public class ZWaveInitializationCompletedEvent extends ZWaveEvent {
 	 * @param nodeId the nodeId of the event. Must be set to the controller node.
 	 */
 	public ZWaveInitializationCompletedEvent(int nodeId) {
-		super(nodeId, 1);
+		super(nodeId);
 	}
 
 }

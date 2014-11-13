@@ -107,6 +107,6 @@
 <feature name="GenericModemControl">
 	<message-dispatcher>PassThroughDispatcher</message-dispatcher>
 	<message-handler default="true">NoOpMsgHandler</message-handler>
-	<command-handler command="DecimalType">ModemCommandHandler</command-handler>
+	<command-handler command="OnOffType">ModemCommandHandler</command-handler>
 </feature>
 </xml>

@@ -200,7 +200,7 @@ public class HomematicBinding extends AbstractActiveBinding<HomematicBindingProv
 	 */
 	@Override
 	protected long getRefreshInterval() {
-		return context.getConfig().getAliveInterval() * 1000;
+		return 60000;
 	}
 
 	/**
