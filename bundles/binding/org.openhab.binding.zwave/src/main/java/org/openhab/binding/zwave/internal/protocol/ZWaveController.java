@@ -538,7 +538,7 @@ public class ZWaveController {
 					}
 					if (networkEvent.getState() == State.Success) {
 						logger.warn("NODE {}: Marking node as FAILED because its on the controllers failed node list.", networkEvent.getNodeId());
-						getNode(networkEvent.getNodeId()).setFailed();
+						getNode(networkEvent.getNodeId()).setNodeStage(NodeStage.FAILED);
 						
 						ZWaveEvent zEvent = new ZWaveNodeStatusEvent(networkEvent.getNodeId(), ZWaveNodeStatusEvent.State.Failed);
 						this.notifyEventListeners(zEvent);
@@ -609,6 +609,7 @@ public class ZWaveController {
 		for (Map.Entry<Integer, ZWaveNode> entry : zwaveNodes.entrySet()){
 			if (entry.getValue().getNodeStage() == NodeStage.EMPTYNODE) {
 				continue;
+			}
 			
 			logger.debug("NODE {}: In Stage {} since {}, listening={}, FLiRS={}", entry.getKey(),
 					entry.getValue().getNodeStage().getLabel(), entry.getValue().getQueryStageTimeStamp().toString(),

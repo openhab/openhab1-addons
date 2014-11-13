@@ -550,14 +550,6 @@ public class ZWaveNode {
 	}
 
 	/**
-	 * Advances the initialization stage for this node.
-	 */
-//	public void advanceNodeStage() {
-		// call the advanceNodeStage method on the advancer.
-		this.nodeStageAdvancer.advanceNodeStage(targetStage);
-	}
-
-	/**
 	 * Encapsulates a serial message for sending to a 
 	 * multi-instance instance/ multi-channel endpoint on
 	 * a node.

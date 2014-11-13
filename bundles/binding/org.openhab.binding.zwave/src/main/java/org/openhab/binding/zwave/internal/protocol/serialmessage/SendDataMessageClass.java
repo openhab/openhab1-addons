@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.TransmissionState;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -69,10 +68,6 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 
 		switch (status) {
 		case COMPLETE_OK:
-			ZWaveNode node = zController.getNode(originalMessage.getMessageNode());
-			if(node == null)
-				break;
-			
 			// Consider this as a received frame since the controller did receive an ACK from the device.
 			node.incrementReceiveCount();
 

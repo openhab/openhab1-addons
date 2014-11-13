@@ -29,7 +29,7 @@ public class ZWaveTransactionCompletedEvent extends ZWaveEvent {
 	 * @param completedMessage the original {@link SerialMessage} that has been completed.
 	 * @param state a flag indicating success / failure of the transaction processing
 	 */
-	public ZWaveTransactionCompletedEvent(SerialMessage completedMessage) {
+	public ZWaveTransactionCompletedEvent(SerialMessage completedMessage, boolean state) {
 		super(completedMessage.getMessageNode());
 
 		this.completedMessage = completedMessage;
