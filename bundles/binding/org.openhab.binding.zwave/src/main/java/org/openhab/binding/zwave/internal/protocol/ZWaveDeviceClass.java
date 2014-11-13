@@ -218,7 +218,7 @@ public class ZWaveDeviceClass {
 		STATIC_CONTOLLER(0x02, "Static Controller"), 
 		AV_CONTROL_POINT(0x03, "A/V Control Point"), 
 		DISPLAY(0x06, "Display"),
-		GARAGE_DOOR(0x07, "Garage Door")
+		GARAGE_DOOR(0x07, "Garage Door"),
 		THERMOSTAT(0x08, "Thermostat"), 
 		WINDOW_COVERING(0x09, "Window Covering"), 
 		REPEATER_SLAVE(0x0f, "Repeater Slave"), 
