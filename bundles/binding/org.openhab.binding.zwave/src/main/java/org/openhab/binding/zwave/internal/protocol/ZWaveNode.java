@@ -78,8 +78,6 @@ public class ZWaveNode {
 	private Date lastReceived;
 
 	@XStreamOmitField
-	private Date queryStageTimeStamp;
-	@XStreamOmitField
 	private volatile NodeStage nodeStage;
 
 	@XStreamOmitField
@@ -392,15 +390,7 @@ public class ZWaveNode {
 	 * @return the queryStageTimeStamp
 	 */
 	public Date getQueryStageTimeStamp() {
-		return queryStageTimeStamp;
-	}
-
-	/**
-	 * Sets the time stamp the node was last queried.
-	 * @param queryStageTimeStamp the queryStageTimeStamp to set
-	 */
-	public void setQueryStageTimeStamp(Date queryStageTimeStamp) {
-		this.queryStageTimeStamp = queryStageTimeStamp;
+		return this.nodeStageAdvancer.getQueryStageTimeStamp();
 	}
 
 	/**

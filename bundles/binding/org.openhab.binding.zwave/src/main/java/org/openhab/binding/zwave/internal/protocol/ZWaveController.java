@@ -594,8 +594,9 @@ public class ZWaveController {
 	public void checkForDeadOrSleepingNodes(){
 		int completeCount = 0;
 
-		if (zwaveNodes.isEmpty())
+		if (zwaveNodes.isEmpty()) {
 			return;
+		}
 
 		// There are still nodes waiting to get a ping.
 		// So skip the dead node checking.
@@ -610,7 +611,7 @@ public class ZWaveController {
 			if (entry.getValue().getNodeStage() == NodeStage.EMPTYNODE) {
 				continue;
 			}
-			
+
 			logger.debug("NODE {}: In Stage {} since {}, listening={}, FLiRS={}", entry.getKey(),
 					entry.getValue().getNodeStage().getLabel(), entry.getValue().getQueryStageTimeStamp().toString(),
 					entry.getValue().isListening(), entry.getValue().isFrequentlyListening());
