@@ -163,10 +163,7 @@ public class NetatmoBinding extends
 			refreshAccessToken();
 		}
 
-		if (this.firstExecution) {
-			deviceListRequest = new DeviceListRequest(this.accessToken);
-			deviceListResponse = deviceListRequest.execute();
-			
+		if (this.firstExecution) {	
 			logger.debug("Request: {}", deviceListRequest);
 			logger.debug("Response: {}", deviceListResponse);
 
@@ -212,7 +209,6 @@ public class NetatmoBinding extends
 			}
 		}
 		
-		deviceListResponse = deviceListRequest.execute();
 		for (final NetatmoBindingProvider provider : this.providers) {
 			for (final String itemName : provider.getItemNames()) {
 				final String deviceId = provider.getDeviceId(itemName);
@@ -360,7 +356,6 @@ public class NetatmoBinding extends
 
 		// Log all unconfigured measurements
 		final StringBuilder message = new StringBuilder();
-		message.append("The following Netatmo measurements are not yet configured:\n");
 		for (Entry<String, Set<String>> entry : deviceMeasurements.entrySet()) {
 			final String deviceId = entry.getKey();
 			final Device device = deviceMap.get(deviceId);
@@ -380,8 +375,10 @@ public class NetatmoBinding extends
 						+ ")\n");
 			}
 		}
-
-		logger.info(message.toString());
+		if (message.length() > 0) {
+			message.insert(0,"The following Netatmo measurements are not yet configured:\n");
+			logger.info(message.toString());
+		}
 	}
 
 	private void processMeasurementResponse(final MeasurementRequest request,
@@ -413,6 +410,8 @@ public class NetatmoBinding extends
 		logger.debug("Response: {}", response);
 
 		this.accessToken = response.getAccessToken();
+		deviceListRequest = new DeviceListRequest(this.accessToken);
+		deviceListResponse = deviceListRequest.execute();
 	}
 
 }
