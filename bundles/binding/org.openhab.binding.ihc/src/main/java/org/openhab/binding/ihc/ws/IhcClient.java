@@ -535,6 +535,7 @@ public class IhcClient {
 				logger.error(
 						"New notifications wait failed...", e);
 				
+				sendErrorEvent(e);
 				mysleep(1000L);
 			}
 
@@ -619,7 +620,7 @@ public class IhcClient {
 						logger.error(
 								"New controller state change notification wait failed...", 
 								e);
-						
+						sendErrorEvent(e);
 						mysleep(1000L);
 						
 					} 
@@ -637,4 +638,22 @@ public class IhcClient {
 	}
 
 
+	private void sendErrorEvent(IhcExecption err) {
+
+		// send error to event listeners
+
+		try {
+			Iterator<IhcEventListener> iterator = eventListeners.iterator();
+
+			IhcErrorEvent event = new IhcErrorEvent(this);
+
+			while (iterator.hasNext()) {
+				((IhcEventListener) iterator.next()).errorOccured(event,
+						err);
+			}
+
+		} catch (Exception e) {
+			logger.error("Event listener invoking error", e);
+		}
+	}
 }

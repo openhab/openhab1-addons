@@ -182,13 +182,12 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 
 				// if this node has not gone through it's query stages yet, and there
 				// are no initialization packets on the wake-up queue, restart initialization.
-
-				// TODO: Make sure this is ok!!!!
-//				if (!this.initializationComplete && (this.wakeUpQueue.isEmpty() || this.getNode().getNodeStage() == NodeStage.DEAD)) {
-//					logger.info("NODE {}: Got Wake Up Notification from node, continuing initialization.", this.getNode().getNodeId());
-
-//					this.getNode().setNodeStage(NodeStage.WAKEUP);
-//				}
+				if (!this.initializationComplete && (this.wakeUpQueue.isEmpty() || this.getNode().isDead() == true)) {
+					logger.info("NODE {}: Got Wake Up Notification from node, continuing initialization.", this.getNode().getNodeId());
+					
+					this.getNode().setNodeStage(NodeStage.WAKEUP);
+					this.getNode().advanceNodeStage(NodeStage.DETAILS);
+				}
 
 				// Set the awake flag. This will also empty the queue
 				this.setAwake(true);

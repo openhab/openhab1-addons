@@ -74,7 +74,8 @@ public class ZWaveNode {
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
-	private Date lastUpdated;
+	private Date lastSent;
+	private Date lastReceived;
 
 	@XStreamOmitField
 	private Date queryStageTimeStamp;
@@ -84,6 +85,8 @@ public class ZWaveNode {
 	@XStreamOmitField
 	private int resendCount = 0;
 
+	@XStreamOmitField
+	private int receiveCount = 0;
 	@XStreamOmitField
 	private int sendCount = 0;
 	@XStreamOmitField
@@ -106,8 +109,10 @@ public class ZWaveNode {
 		this.nodeId = nodeId;
 		this.controller = controller;
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
+		this.nodeStage = NodeStage.EMPTYNODE;
 		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN, Generic.NOT_KNOWN, Specific.NOT_USED);
-		this.lastUpdated = Calendar.getInstance().getTime();
+		this.lastSent = null;
+		this.lastReceived = null;
 	}
 
 	/**
@@ -121,8 +126,6 @@ public class ZWaveNode {
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
 		this.nodeStageAdvancer.setRestoredFromConfigfile();
 		this.nodeStage = NodeStage.EMPTYNODE;
-		
-		this.lastUpdated = Calendar.getInstance().getTime();		
 	}
 
 	/**
@@ -147,7 +150,6 @@ public class ZWaveNode {
 	 */
 	public void setListening(boolean listening) {
 		this.listening = listening;
-		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
 	/**
@@ -172,7 +174,6 @@ public class ZWaveNode {
 	 */
 	public void setFrequentlyListening(boolean frequentlyListening) {
 		this.frequentlyListening = frequentlyListening;
-		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 	
 	/**
@@ -189,23 +190,6 @@ public class ZWaveNode {
 	 */
 	public void setHealState(String healState) {
 		this.healState = healState;
-		this.lastUpdated = Calendar.getInstance().getTime();
-	}
-
-	/**
-	 * Marks the node as DEAD.
-	 * This occurs if the binding thinks the device is not responding
-	 */
-	public void setDead() {
-		this.nodeStageAdvancer.setCurrentStage(NodeStage.DEAD);
-	}
-
-	/**
-	 * Marks the node as FAILED.
-	 * This occurs only if the controller puts it on its internal failed devices list
-	 */
-	public void setFailed() {
-		this.nodeStageAdvancer.setCurrentStage(NodeStage.FAILED);
 	}
 
 	/**
@@ -213,23 +197,14 @@ public class ZWaveNode {
 	 * @return
 	 */
 	public boolean isDead() {
-		if(this.nodeStageAdvancer.getCurrentStage() == NodeStage.DEAD)
+		if(this.nodeStage == NodeStage.DEAD || this.nodeStage == NodeStage.FAILED) {
 			return true;
-		else
+		}
+		else {
 			return false;
+		}
 	}
-	
-	/**
-	 * Gets whether the node is failed by controller.
-	 * @return
-	 */
-	public boolean isFailed() {
-		if(this.nodeStageAdvancer.getCurrentStage() == NodeStage.FAILED)
-			return true;
-		else
-			return false;
-	}
-	
+
 	/**
 	 * Sets the node to be 'undead'.
 	 */
@@ -243,9 +218,8 @@ public class ZWaveNode {
 			this.nodeStageAdvancer.advanceNodeStage(null);
 		}
 
-		// Reset the resend counter and remember when we last updated
+		// Reset the resend counter
 		this.resendCount = 0;
-		this.lastUpdated = Calendar.getInstance().getTime();
 
 		// Alert anyone who wants to know...
 		ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeStatusEvent.State.Alive);
@@ -274,7 +248,6 @@ public class ZWaveNode {
 	 */
 	public void setName(String name) {
 		this.name = name;
-		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
 	/**
@@ -291,7 +264,6 @@ public class ZWaveNode {
 	 */
 	public void setLocation(String location) {
 		this.location = location;
-		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
 	/**
@@ -308,7 +280,6 @@ public class ZWaveNode {
 	 */
 	public void setManufacturer(int tempMan) {
 		this.manufacturer = tempMan;
-		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
 	/**
@@ -325,7 +296,6 @@ public class ZWaveNode {
 	 */
 	public void setDeviceId(int tempDeviceId) {
 		this.deviceId = tempDeviceId;
-		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
 	/**
@@ -342,15 +312,22 @@ public class ZWaveNode {
 	 */
 	public void setDeviceType(int tempDeviceType) {
 		this.deviceType = tempDeviceType;
-		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
 	/**
-	 * Get the date/time the node was last updated.
-	 * @return the lastUpdated
+	 * Get the date/time the node was last updated (ie a frame was received from it).
+	 * @return the lastUpdated time
 	 */
-	public Date getLastUpdated() {
-		return lastUpdated;
+	public Date getLastReceived() {
+		return lastReceived;
+	}
+
+	/**
+	 * Get the date/time we last sent a frame to the node.
+	 * @return the lastSent
+	 */
+	public Date getLastSent() {
+		return lastSent;
 	}
 
 	/**
@@ -374,10 +351,9 @@ public class ZWaveNode {
 	 * Sets the node stage.
 	 * @param nodeStage the nodeStage to set
 	 */
-//	public void setNodeStage(NodeStage nodeStage) {
-//		this.nodeStageAdvancer.setCurrentStage(nodeStage);
-//		this.lastUpdated = Calendar.getInstance().getTime();
-//	}
+	public void setNodeStage(NodeStage nodeStage) {
+		this.nodeStage = nodeStage;
+	}
 
 	/**
 	 * Gets the node version
@@ -393,7 +369,6 @@ public class ZWaveNode {
 	 */
 	public void setVersion(int version) {
 		this.version = version;
-		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
 	/**
@@ -410,7 +385,6 @@ public class ZWaveNode {
 	 */
 	public void setRouting(boolean routing) {
 		this.routing = routing;
-		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
 	/**
@@ -418,7 +392,15 @@ public class ZWaveNode {
 	 * @return the queryStageTimeStamp
 	 */
 	public Date getQueryStageTimeStamp() {
-		return this.nodeStageAdvancer.getQueryStageTimeStamp();
+		return queryStageTimeStamp;
+	}
+
+	/**
+	 * Sets the time stamp the node was last queried.
+	 * @param queryStageTimeStamp the queryStageTimeStamp to set
+	 */
+	public void setQueryStageTimeStamp(Date queryStageTimeStamp) {
+		this.queryStageTimeStamp = queryStageTimeStamp;
 	}
 
 	/**
@@ -442,7 +424,6 @@ public class ZWaveNode {
 			}
 		}
 		this.retryCount++;
-		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
 	/**
@@ -453,10 +434,9 @@ public class ZWaveNode {
 	 */
 	public void resetResendCount() {
 		this.resendCount = 0;
-		if (this.nodeStageAdvancer.isInitializationComplete() && this.nodeStageAdvancer.getCurrentStage() != NodeStage.DEAD) {
-			this.nodeStageAdvancer.setCurrentStage(NodeStage.DONE);
+		if (this.nodeStageAdvancer.isInitializationComplete() && this.isDead() == false) {
+			this.nodeStage = NodeStage.DONE;
 		}
-		this.lastUpdated = Calendar.getInstance().getTime();
 	}
 
 	/**
@@ -508,16 +488,15 @@ public class ZWaveNode {
 			logger.debug("NODE {}: Adding command class {} to the list of supported command classes.", nodeId, commandClass.getCommandClass().getLabel());
 			supportedCommandClasses.put(key, commandClass);
 			
-			if (commandClass instanceof ZWaveEventListener)
+			if (commandClass instanceof ZWaveEventListener) {
 				this.controller.addEventListener((ZWaveEventListener)commandClass);
-			
-			this.lastUpdated = Calendar.getInstance().getTime();
+			}
 		}
 	}
 	
 	/**
 	 * Resolves a command class for this node. First endpoint is checked. 
-	 * If endpoint == 1 or (endpoint != 1 and version of the multi instance 
+	 * If endpoint == 0 or (endpoint != 1 and version of the multi instance 
 	 * command == 1) then return a supported command class on the node itself. 
 	 * If endpoint != 1 and version of the multi instance command == 2 then
 	 * first try command classes of endpoints. If not found the return a  
@@ -529,31 +508,38 @@ public class ZWaveNode {
 	 */
 	public ZWaveCommandClass resolveCommandClass(CommandClass commandClass, int endpointId)
 	{
-		if (commandClass == null)
+		if (commandClass == null) {
 			return null;
+		}
 		
-		ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)supportedCommandClasses.get(CommandClass.MULTI_INSTANCE);
+		if (endpointId == 0) {
+			return getCommandClass(commandClass);
+		}
 		
-		if (multiInstanceCommandClass != null && multiInstanceCommandClass.getVersion() == 2) {
+		ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) supportedCommandClasses.get(CommandClass.MULTI_INSTANCE);
+		if (multiInstanceCommandClass == null) {
+			return null;	
+		}
+		else if (multiInstanceCommandClass.getVersion() == 2) {
 			ZWaveEndpoint endpoint = multiInstanceCommandClass.getEndpoint(endpointId);
 			
 			if (endpoint != null) { 
 				ZWaveCommandClass result = endpoint.getCommandClass(commandClass);
-				if (result != null)
+				if (result != null) {
 					return result;
-			} 
+				}
+			}
+		}
+		else if (multiInstanceCommandClass.getVersion() == 1) {
+			ZWaveCommandClass result = getCommandClass(commandClass);
+			if (endpointId <= result.getInstances()) {
+				return result;
+			}
+		} else {
+			logger.warn("NODE {}: Unsupported multi instance command version: {}.", nodeId, multiInstanceCommandClass.getVersion());
 		}
 		
-		ZWaveCommandClass result = getCommandClass(commandClass);
-		
-		if (result == null)
-			return result;
-		
-		if (multiInstanceCommandClass != null && multiInstanceCommandClass.getVersion() == 1 &&
-				result.getInstances() >= endpointId)
-			return result;
-		
-		return endpointId == 1 ? result : null;
+		return null;
 	}
 
 	/**
@@ -568,28 +554,8 @@ public class ZWaveNode {
 	 */
 //	public void advanceNodeStage() {
 		// call the advanceNodeStage method on the advancer.
-//		this.nodeStageAdvancer.advanceNodeStage();
-//	}
-	
-	/**
-	 * Advances the initialization stage for this node.
-	 * This method processes the init queue once we've sent a frame.
-	 */
-//	public void advanceNodeStage(SerialMessage msg) {
-		// call the advanceNodeStage method on the advancer.
-//		this.nodeStageAdvancer.handleNodeQueue(msg);
-//	}
-	
-	/**
-	 * Restores a node from an XML file using the @ ZWaveNodeSerializer} class.
-	 * 
-	 * @return true if succeeded, false otherwise.
-	 */
-//	public boolean restoreFromConfig() {
-//		logger.warn("Restore from Config is called!!!!!");
-//		return false;
-//		return this.nodeStageAdvancer.restoreFromConfig();
-//	}
+		this.nodeStageAdvancer.advanceNodeStage(targetStage);
+	}
 
 	/**
 	 * Encapsulates a serial message for sending to a 
@@ -609,8 +575,9 @@ public class ZWaveNode {
 			return null;
 		
 		// no encapsulation necessary.
-		if (endpointId == 1 && commandClass.getInstances() == 1 && commandClass.getEndpoint() == null)
+		if (endpointId == 0) {
 			return serialMessage;
+		}
 		
 		multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass)this.getCommandClass(CommandClass.MULTI_INSTANCE);
 		
@@ -633,12 +600,8 @@ public class ZWaveNode {
 			}
 		}
 
-		if (endpointId != 1) {
-			logger.warn("NODE {}:Encapsulating message, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
-			return null;
-		}
-		
-		return serialMessage;
+		logger.warn("NODE {}:Encapsulating message, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
+		return null;
 	}
 
 	/**
@@ -739,12 +702,23 @@ public class ZWaveNode {
 	}
 
 	/**
-	 * Increments the sent packet counter
+	 * Increments the sent packet counter and records the last sent time
 	 * This is simply used for statistical purposes to assess the health
 	 * of a node.
 	 */
 	public void incrementSendCount() {
 		sendCount++;
+		this.lastSent = Calendar.getInstance().getTime();
+	}
+	
+	/**
+	 * Increments the received packet counter and records the last received time
+	 * This is simply used for statistical purposes to assess the health
+	 * of a node.
+	 */
+	public void incrementReceiveCount() {
+		receiveCount++;
+		this.lastReceived = Calendar.getInstance().getTime();
 	}
 	
 	/**

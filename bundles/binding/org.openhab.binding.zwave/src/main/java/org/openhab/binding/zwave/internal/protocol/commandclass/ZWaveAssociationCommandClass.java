@@ -378,7 +378,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 		 * @param nodeId the nodeId of the event. Must be set to the controller node.
 		 */
 		public ZWaveAssociationEvent(int nodeId, int group) {
-			super(nodeId, 1);
+			super(nodeId);
 			
 			this.group = group;
 		}
