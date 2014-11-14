@@ -16,6 +16,7 @@ import java.util.HashMap;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.enigma2.Enigma2BindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.items.GenericItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
@@ -100,7 +101,7 @@ public class Enigma2Binding extends
 					Enigma2Node node = enigmaNodes.get(deviceId);
 
 					/*
-					 * yes, there is a device with this id now update it
+					 * yes, there is a device with this id, now update it
 					 */
 					String value = null;
 					switch (bindingConfig.getCmdId()) {
@@ -113,10 +114,17 @@ public class Enigma2Binding extends
 					case POWERSTATE:
 						value = node.getOnOff();
 						break;
+					case PAUSE:
+						logger.debug("Querying the player state (Play/Pause) is currently not supported");
+						break;
+					case MUTE:
+						value = node.getMuteUnmute();
+						break;
 					default:
+						break;
 					}
-					if (!bindingConfig.isInbound() && value != null) {
-						postUpdate(provider, name, value);
+					if (value != null) {
+						postUpdate(provider, bindingConfig.getItem(), value);
 					}
 				} else {
 					logger.error("Unknown deviceId \"{}\"", deviceId);
@@ -125,13 +133,16 @@ public class Enigma2Binding extends
 		}
 	}
 
-	private void postUpdate(Enigma2BindingProvider provider, String name,
+	private void postUpdate(Enigma2BindingProvider provider, Item item,
 			final String value) {
-		Class<? extends Item> itemType = provider.getItemType(name);
+		Class<? extends Item> itemType = provider.getItemType(item.getName());
 		State state = createState(itemType, value);
 
 		if (state != null) {
-			eventPublisher.postUpdate(name, state);
+			if (item instanceof GenericItem) {
+				((GenericItem) item).setState(state);
+			}
+			eventPublisher.postUpdate(item.getName(), state);
 		}
 	}
 
@@ -257,11 +268,11 @@ public class Enigma2Binding extends
 					}
 
 					String option = keyElements[1];
-					if(option.equals("hostname")) {
+					if (option.equals("hostname")) {
 						node.setHostName((String) config.get(key));
-					} else if(option.equals("username")) {
+					} else if (option.equals("username")) {
 						node.setUserName((String) config.get(key));
-					} else if(option.equals("password")) {
+					} else if (option.equals("password")) {
 						node.setPassword((String) config.get(key));
 					}
 
