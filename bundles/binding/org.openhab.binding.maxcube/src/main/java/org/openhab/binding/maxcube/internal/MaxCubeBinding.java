@@ -170,7 +170,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				/* if the connection is already open (this happens in exclusive mode), just send a "l:\r\n" to get the latest live informations
 				 * note that "L:\r\n" or "l:\n" would not work.
 				 */
-				logger.info("Writing state request to Maxcube");
+				logger.debug("Sending state request #"+this.requestCount+" to Maxcube");
 				writer.write("l:"+'\r'+'\n');
 				writer.flush();
 				requestCount++;
