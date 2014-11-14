@@ -13,22 +13,34 @@ package org.openhab.config.core;
  * 
  * @author Kai Kreuzer
  * @since 0.3.0
- *
  */
 public class ConfigConstants {
 
 	/** The program argument name for setting the main config directory path */
 	final static public String CONFIG_DIR_PROG_ARGUMENT = "openhab.configdir";
 	
-	/** The program argument name for setting the main config file name */
-	final static public String CONFIG_FILE_PROG_ARGUMENT = "openhab.configfile";
+	/** The program argument name for setting the service config directory path */
+	final static public String SERVICEDIR_PROG_ARGUMENT = "openhab.servicedir";
+	
+	/** The program argument name for setting the default services config file name */
+	final static public String SERVICECFG_PROG_ARGUMENT = "openhab.configfile";
 	
 	/** The main configuration directory name of openHAB */
 	final static public String MAIN_CONFIG_FOLDER = "configurations"; 
 	
-	/** The default filename of the main openHAB configuration file */
-	final static public String MAIN_CONFIG_FILENAME = "openhab.cfg";
+	/** The default folder name of the configuration folder of services */
+	final static public String SERVICES_FOLDER = "services";
 
-	/** The default filename of the default openHAB configuration file */
-	final static public String DEFAULT_CONFIG_FILENAME = "openhab_default.cfg";
+	/** The default services configuration filename */
+	final static public String DEFAULT_SERVICE_CFG_FILE = "openhab_default.cfg";
+
+	/** The main services configuration filename */
+	final static public String MAIN_SERVICE_CFG_FILE = "openhab.cfg";
+
+	/** The program argument name for setting the service pid namespace */
+	final static public String SERVICEPID_PROG_ARGUMENT = "openhab.servicepid";
+
+	/** The default namespace for service pids */
+	final static public String SERVICE_PID_NAMESPACE = "org.openhab";
+	
 }

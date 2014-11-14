@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.openhab.core.binding.BindingConfig;
+import org.openhab.core.items.Item;
+import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,26 +32,41 @@ public class AlarmDecoderBindingConfig implements BindingConfig {
 	 * @param feature
 	 * @param params
 	 */
-	public AlarmDecoderBindingConfig(String itemName, ADMsgType type, String address,
-				String feature,	HashMap<String, String> params) {
-		m_itemName = itemName;
-		m_type = type;
-		m_address = address;
-		m_feature = feature;
-		m_params = params;
+	public AlarmDecoderBindingConfig(Item item, ADMsgType type, String address,
+			String feature,	HashMap<String, String> params) {
+		m_item 		= item;
+		m_type		= type;
+		m_address	= address;
+		m_feature	= feature;
+		m_params	= params;
+		m_itemState	= item.getState();
 	}
 
-	private final String		m_itemName;
-	private final ADMsgType	m_type;
-	private final String		m_address;
-	private final String		m_feature;
-	private final HashMap<String, String>	m_params;
+	public AlarmDecoderBindingConfig(Item item, HashMap<String, String> params) {
+		m_item 			= item;
+		m_itemState		= item.getState();
+		m_type			= ADMsgType.INVALID;
+		m_params		= params;
+	}
+
+	private final Item	m_item;
+	private ADMsgType	m_type = ADMsgType.INVALID;
+	private String		m_feature = null;
+	private String		m_address = null;
+	private HashMap<String, String>	m_params = new HashMap<String,String>();
+	// Caching the item state in the binding config, ugh :(
+	// But somehow the item.getState() always returns Unintialized
+	// so it cannot be used to eliminate duplicate status updates
+	private State				m_itemState;
 
 	public HashMap<String,String> getParameters() {
 		return m_params;
 	}
+	public Item getItem() {
+		return m_item;
+	}
 	public String getItemName() {
-		return m_itemName;
+		return m_item.getName();
 	}
 	public String getFeature() {
 		return m_feature;
@@ -59,6 +76,12 @@ public class AlarmDecoderBindingConfig implements BindingConfig {
 	}
 	public ADMsgType getMsgType() {
 		return m_type;
+	}
+	public State getState() {
+		return m_itemState;
+	}
+	public void setState(State s) {
+		m_itemState = s;
 	}
 	/**
 	 * Gets integer parameter from binding config. If parameter is not found, or
@@ -90,10 +113,17 @@ public class AlarmDecoderBindingConfig implements BindingConfig {
 	}
 	
 	public String toString() {
-		String s = m_itemName + "->" + m_type + ":" + m_address +
-				"#" + m_feature;
-		for (Entry<String, String> p : m_params.entrySet()) {
-			s += ":" + p.getKey() + "=" + p.getValue() + ",";
+		String s = m_item.getName() + "->";
+		if (m_type.equals(ADMsgType.INVALID)) {
+			s = s + "SEND#";
+			for (Entry<String, String> p : m_params.entrySet()) {
+				s += ":" + p.getKey() + "=" + p.getValue() + ",";
+			}
+		} else {
+			s = s + m_type + ":" + m_address + "#" + m_feature;
+			for (Entry<String, String> p : m_params.entrySet()) {
+				s += ":" + p.getKey() + "=" + p.getValue() + ",";
+			}
 		}
 		return s;
 	}

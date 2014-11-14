@@ -510,7 +510,7 @@
 			<Reference>
 				<Type>0001</Type>
 				<Id>0003</Id>
-			</Reference>			
+			</Reference>
 			<Model>Minimote</Model>
 			<Label lang="en">4 button remote control</Label>
 			<ConfigFile>aeon/minimote.xml</ConfigFile>
@@ -982,7 +982,7 @@
 			<Label lang="en">Z-Wave Garage Door Sensor</Label>
 			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
 		</Product>
-	</Manufacturer>	
+	</Manufacturer>
 	<Manufacturer>
 		<Id>014A</Id>
 		<Name>Ecolink</Name>
@@ -1004,7 +1004,7 @@
 			<Label lang="en">Z-Wave Door/Window Sensor</Label>
 			<ConfigFile>eco/dwzwave2.xml</ConfigFile>
 		</Product>
-	</Manufacturer>	
+	</Manufacturer>
 	<Manufacturer>
 		<Id>001E</Id>
 		<Name>Homeseer</Name>
@@ -1326,7 +1326,7 @@
 			<Label lang="en">Remotec ZXT-120 AC IR Remote</Label>
 			<ConfigFile>remotec/zxt120.xml</ConfigFile>
 		</Product>
-	</Manufacturer>	
+	</Manufacturer>
 	<Manufacturer>
 		<Id>159</Id>
 		<Name>Qubino</Name>
@@ -1369,6 +1369,19 @@
 			<Model>ITEMP</Model>
 			<Label lang="en">Contact and temp sensor</Label>
 			<ConfigFile>wintop/itemp.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>84</Id>
+		<Name>Fortrezz</Name>
+		<Product>
+			<Reference>
+				<Type>453</Type>
+				<Id>110</Id>
+			</Reference>
+			<Model>MIMOlite</Model>
+			<Label lang="en">Digital or Analog Voltage input and/or Dry Contact Relay</Label>
+			<ConfigFile>fortrezz/mimolite.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

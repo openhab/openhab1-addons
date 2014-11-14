@@ -339,12 +339,13 @@ public class EpsonProjectorDevice {
 		
 		logger.debug("Query: '{}'", query);
 		String response = connection.sendMessage(query, timeout);
+		
+		if (response == null || response.length() == 0)
+			throw new EpsonProjectorException("No response received");
+
 		response = response.replace("\r:", "");
 		logger.debug("Response: '{}'", response);
 		
-		if (response.length() == 0)
-			throw new EpsonProjectorException("No response received");
-
 		if (response.equals("ERR"))
 			throw new EpsonProjectorException("Error response received");
 
