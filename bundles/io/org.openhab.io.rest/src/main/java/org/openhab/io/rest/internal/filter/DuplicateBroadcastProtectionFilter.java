@@ -67,6 +67,11 @@ public class DuplicateBroadcastProtectionFilter implements PerRequestBroadcastFi
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		try{
+			/*
+			 * This map object will start to collect dead uuid entries over time, but its 
+			 * difficult to know when this uuid's are really not valid anymore.  this
+			 * checks for dead entries before adding any new ones.
+			 */
 			ConcurrentMap<String, Object> resources = ResourceStateChangeListener.getMap();
 			for(String uuid : resources.keySet()){
 				AtmosphereResource resource = AtmosphereResourceFactory.getDefault().find(uuid);
