@@ -10,7 +10,6 @@ package org.openhab.binding.enigma2.internal;
 
 import org.openhab.binding.enigma2.Enigma2BindingProvider;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
@@ -44,8 +43,7 @@ public class Enigma2GenericBindingProvider extends
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof DimmerItem
-				|| item instanceof NumberItem || item instanceof StringItem)) {
+		if (!(item instanceof SwitchItem || item instanceof NumberItem || item instanceof StringItem)) {
 			throw new BindingConfigParseException(
 					"item '"
 							+ item.getName()
@@ -67,19 +65,10 @@ public class Enigma2GenericBindingProvider extends
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		/*
-		 * inbound/outbound
-		 */
-		boolean inbound = false;
-		if (bindingConfig.startsWith("<")) {
-			inbound = true;
-		}
-
-		/*
 		 * remove unnecessary chars
 		 */
-		String strippedBindingConfig = bindingConfig
-				.replace(inbound ? "<" : ">", "").replace("[", "")
-				.replace("]", "");
+		String strippedBindingConfig = bindingConfig.replace("[", "")
+				.replace("]", "").trim();
 
 		/*
 		 * get elements
@@ -99,11 +88,10 @@ public class Enigma2GenericBindingProvider extends
 		}
 
 		if (elements.length == 2) {
-			config = new Enigma2BindingConfig(item, inbound, elements[0],
-					cmdId, null);
+			config = new Enigma2BindingConfig(item, elements[0], cmdId, null);
 		} else if (elements.length == 3) {
-			config = new Enigma2BindingConfig(item, inbound, elements[0],
-					cmdId, elements[2]);
+			config = new Enigma2BindingConfig(item, elements[0], cmdId,
+					elements[2]);
 		} else {
 			throw new BindingConfigParseException(
 					"Configuration must have at at least 2 or 3 elements separated by ':'");
@@ -111,8 +99,8 @@ public class Enigma2GenericBindingProvider extends
 
 		logger.debug(
 				"Found \"{}\" binding config for deviceId \"{}\". Command is \"{}\" and value is \"{}\"",
-				inbound ? "inbound" : "outbund", elements[0], elements[1],
-				elements.length > 2 ? elements[2] : "-");
+				elements[0], elements[1], elements.length > 2 ? elements[2]
+						: "-");
 
 		addBindingConfig(item, config);
 	}

@@ -5,23 +5,21 @@ import org.openhab.core.items.Item;
 
 /**
  * Wrapper class for a Enigma2Binding Configuration
- *  
+ * 
  * @author Sebastian Kutschbach
  * @since 1.6.0
- *
+ * 
  */
 public class Enigma2BindingConfig implements BindingConfig {
 
 	private Item item;
-	private boolean inbound;
 	private String deviceId;
 	private Enigma2Command cmdId;
 	private String cmdValue;
 
-	public Enigma2BindingConfig(Item item, boolean inbound, String deviceId,
+	public Enigma2BindingConfig(Item item, String deviceId,
 			Enigma2Command cmdId, String cmdValue) {
 		this.item = item;
-		this.inbound = inbound;
 		this.deviceId = deviceId;
 		this.cmdId = cmdId;
 		this.cmdValue = cmdValue;
@@ -29,10 +27,6 @@ public class Enigma2BindingConfig implements BindingConfig {
 
 	public Item getItem() {
 		return item;
-	}
-
-	public boolean isInbound() {
-		return inbound;
 	}
 
 	public String getDeviceId() {

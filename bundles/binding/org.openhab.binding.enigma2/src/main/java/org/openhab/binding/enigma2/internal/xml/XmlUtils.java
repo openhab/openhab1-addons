@@ -11,9 +11,10 @@ public final class XmlUtils {
 	private XmlUtils() {
 		// hide constructor
 	}
-	
+
 	/**
-	 * Processes an string containing xml and returning the content of a specific tag 
+	 * Processes an string containing xml and returning the content of a
+	 * specific tag (alyways lowercase)
 	 */
 	public static String getContentOfElement(String content, String element) {
 

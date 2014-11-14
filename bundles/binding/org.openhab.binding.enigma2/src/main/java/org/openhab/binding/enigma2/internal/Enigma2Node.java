@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.openhab.binding.enigma2.internal.http.HttpUtils;
 import org.openhab.binding.enigma2.internal.xml.XmlUtils;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Sebastian Kutschbach
  * @since 1.6.0
- *
+ * 
  */
 public class Enigma2Node {
 	private static final Logger logger = LoggerFactory
@@ -37,6 +38,7 @@ public class Enigma2Node {
 	private static final String RC_MUTE_UNMUTE = "113";
 
 	private static final String SUFFIX_VOLUME = "/web/vol";
+	private static final String SUFFIX_VOLUME_SET = "?set=set";
 	private static final String SUFFIX_CHANNEL = "/web/subservices";
 	private static final String SUFFIX_POWERSTATE = "/web/powerstate";
 
@@ -84,7 +86,7 @@ public class Enigma2Node {
 					SUFFIX_VOLUME, this.getUserName(), this.getPassword());
 			return XmlUtils.getContentOfElement(content, "e2current");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("getVolume failed with IOException", e);
 			return null;
 		}
 	}
@@ -98,13 +100,15 @@ public class Enigma2Node {
 					SUFFIX_CHANNEL, this.getUserName(), this.getPassword());
 			return XmlUtils.getContentOfElement(content, "e2servicename");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("getChannel failed with IOException", e);
 			return null;
 		}
 	}
 
 	/**
-	 * @return requests, whether the device is on or off
+	 * Requests, whether the device is on or off
+	 * 
+	 * @return <code>true</code>, if the device is on, else <code>false</code>
 	 */
 	public String getOnOff() {
 		try {
@@ -114,7 +118,26 @@ public class Enigma2Node {
 			return content.equals("true") ? OnOffType.OFF.name() : OnOffType.ON
 					.name();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("getOnOff failed with IOException", e);
+			return null;
+		}
+	}
+
+	/**
+	 * Requests, whether the device is muted or unmuted
+	 * 
+	 * @return <code>true</code>, if the device is muted, else
+	 *         <code>false</code>
+	 */
+	public String getMuteUnmute() {
+		try {
+			String content = HttpUtils.getGetResponse(this.getHostName(),
+					SUFFIX_VOLUME, this.getUserName(), this.getPassword());
+			content = XmlUtils.getContentOfElement(content, "e2ismuted");
+			return content.toLowerCase().equals("True") ? OnOffType.ON.name()
+					: OnOffType.OFF.name();
+		} catch (IOException e) {
+			logger.error("getMuteUnmute failed with IOException", e);
 			return null;
 		}
 	}
@@ -126,11 +149,22 @@ public class Enigma2Node {
 	 * Sets the volume
 	 */
 	public void setVolume(Command command) {
+		// up or down one step
 		if (command instanceof IncreaseDecreaseType) {
 			sendRcCommand(
 					command,
 					((IncreaseDecreaseType) command) == IncreaseDecreaseType.INCREASE ? RC_VOLUME_UP
 							: RC_VOLUME_DOWN);
+		} else if (command instanceof DecimalType) {
+			// set absolute value
+			try {
+				int value = ((DecimalType) command).intValue();
+				HttpUtils.getGetResponse(this.getHostName(), SUFFIX_VOLUME
+						+ SUFFIX_VOLUME_SET + value, this.getUserName(),
+						this.getPassword());
+			} catch (IOException e) {
+				logger.error("setVolume failed with IOException", e);
+			}
 		} else {
 			logger.error("Unsupported command type");
 		}
@@ -146,7 +180,8 @@ public class Enigma2Node {
 					((IncreaseDecreaseType) command) == IncreaseDecreaseType.INCREASE ? RC_CHANNEL_UP
 							: RC_CHANNEL_DOWN);
 		} else {
-			logger.error("Unsupported command type");
+			logger.error("Unsupported command type: {}", command.getClass()
+					.getName());
 		}
 	}
 
@@ -157,7 +192,8 @@ public class Enigma2Node {
 		if (command instanceof OnOffType) {
 			sendRcCommand(command, RC_PLAY_PAUSE);
 		} else {
-			logger.error("Unsupported command type");
+			logger.error("Unsupported command type: {}", command.getClass()
+					.getName());
 		}
 	}
 
@@ -168,7 +204,8 @@ public class Enigma2Node {
 		if (command instanceof OnOffType) {
 			sendRcCommand(command, RC_MUTE_UNMUTE);
 		} else {
-			logger.error("Unsupported command type");
+			logger.error("Unsupported command type: {}", command.getClass()
+					.getName());
 		}
 	}
 
@@ -185,7 +222,8 @@ public class Enigma2Node {
 				e.printStackTrace();
 			}
 		} else {
-			logger.error("Unsupported command type");
+			logger.error("Unsupported command type: {}", command.getClass()
+					.getName());
 		}
 	}
 
@@ -200,7 +238,7 @@ public class Enigma2Node {
 			HttpUtils.getGetResponse(hostName, SUFFIX_REMOTE_CONTROL
 					+ commandValue, userName, password);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("sendRcCommand failed with IOException", e);
 		}
 	}
 }
