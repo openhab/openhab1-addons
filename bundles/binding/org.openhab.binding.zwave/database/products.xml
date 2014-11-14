@@ -463,6 +463,14 @@
 		<Name>Aeon Labs</Name>
 		<Product>
 			<Reference>
+				<Type>0019</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>DSD37-ZWEU</Model>
+			<Label lang="en">Range Extender</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0001</Id>
 			</Reference>
