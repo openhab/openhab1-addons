@@ -99,10 +99,10 @@ public class NetatmoGenericBindingProvider extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getMeasure(final String itemName) {
+	public NetatmoMeasureType getMeasureType(String itemName){ 
 		final NetatmoBindingConfig config = 
 			(NetatmoBindingConfig) this.bindingConfigs.get(itemName);
-		return config != null ? config.measure : null;
+		return config != null ? config.measureType : null;
 	}
 
 	/**
@@ -131,18 +131,18 @@ public class NetatmoGenericBindingProvider extends
 		switch (configParts.length) {
 		case 2:
 			config.deviceId = configParts[0];
-			config.measure = configParts[1];
+			config.measureType = NetatmoMeasureType.fromString(configParts[1]);
 			break;
 		case 3:
 			config.deviceId = configParts[0];
 			config.moduleId = configParts[1];
-			config.measure = configParts[2];
+			config.measureType = NetatmoMeasureType.fromString(configParts[2]);
 			break;
 		case 4:
 			config.userid = configParts[0];
 			config.deviceId = configParts[1];
 			config.moduleId = configParts[2];
-			config.measure = configParts[3];
+			config.measureType = NetatmoMeasureType.fromString(configParts[3]);
 			break;
 		default:
 			throw new BindingConfigParseException(
@@ -154,22 +154,23 @@ public class NetatmoGenericBindingProvider extends
 		addBindingConfig(item, config);
 	}
 	
-	
+		
 	private static class NetatmoBindingConfig implements BindingConfig {
 
 		String userid;
 		String deviceId;
 		String moduleId;
-		String measure;
+		NetatmoMeasureType measureType;
 
 		@Override
 		public String toString() {
 			return "NetatmoBindingConfig [userid=" + this.userid 
 					+ ", deviceId=" + this.deviceId
-					+ ", moduleId=" + this.moduleId
-					+ ", measure=" + this.measure + "]";
+					+ ", moduleId=" + this.moduleId + ", measure="
+					+ this.measureType.getMeasure() + "]";
 		}
 	}
+
 
 	
 }

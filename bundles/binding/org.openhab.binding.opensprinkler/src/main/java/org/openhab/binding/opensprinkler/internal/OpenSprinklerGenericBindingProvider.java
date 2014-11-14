@@ -12,6 +12,7 @@ import org.openhab.binding.opensprinkler.OpenSprinklerBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.items.ContactItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
@@ -48,7 +49,7 @@ public class OpenSprinklerGenericBindingProvider extends AbstractGenericBindingP
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem)) {
+		if (!(item instanceof SwitchItem) && !(item instanceof ContactItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
 					+ "', only Switch are allowed - please check your *.items configuration");
@@ -63,8 +64,12 @@ public class OpenSprinklerGenericBindingProvider extends AbstractGenericBindingP
 		super.processBindingConfiguration(context, item, bindingConfig);
 		OpenSprinklerBindingConfig config = new OpenSprinklerBindingConfig();
 		
-		//parse bindingconfig here ...
-		config.stationNumber = Integer.parseInt(bindingConfig);
+		//parse binding config here ...
+		if ( item instanceof SwitchItem ) {
+			config.stationNumber = Integer.parseInt(bindingConfig);
+		} else if ( item instanceof ContactItem ) {
+			config.commandValue = bindingConfig;
+		}
 		
 		addBindingConfig(item, config);		
 	}
@@ -72,18 +77,28 @@ public class OpenSprinklerGenericBindingProvider extends AbstractGenericBindingP
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public int getStationNumber(String itemName) {
+	@Override
+	public int getStationNumber(String itemName) {
 		OpenSprinklerBindingConfig config = (OpenSprinklerBindingConfig) bindingConfigs.get(itemName);
 		return config.stationNumber;
 	}
-	
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getCommand(String itemName) {
+		OpenSprinklerBindingConfig config = (OpenSprinklerBindingConfig) bindingConfigs.get(itemName);
+		return config.commandValue;
+	}
+	
 	/**
 	 * Custom configuration for OpenSprinkler
 	 */
 	class OpenSprinklerBindingConfig implements BindingConfig {
 		// put member fields here which holds the parsed values
 		private int stationNumber = -1;
+		private String commandValue = ""; 
 	}
 	
 }

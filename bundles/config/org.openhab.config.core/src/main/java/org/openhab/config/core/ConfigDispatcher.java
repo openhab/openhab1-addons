@@ -8,6 +8,11 @@
  */
 package org.openhab.config.core;
 
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
+import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,11 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-
-import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
-import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -296,6 +296,7 @@ public class ConfigDispatcher {
 
 	private static String[] parseLine(final String filePath, final String line) {
 		String trimmedLine = line.trim();
+		
 		if (trimmedLine.startsWith("#") || trimmedLine.isEmpty()) {
 			return null;
 		}
@@ -306,11 +307,16 @@ public class ConfigDispatcher {
 			pid = StringUtils.substringBefore(key, ":");
 			trimmedLine = trimmedLine.substring(pid.length() + 1);
 			pid = pid.trim();
+			if (!pid.contains(".")) {
+				pid = "org.openhab." + pid;
+			}
 		}
 		if (!trimmedLine.isEmpty() && trimmedLine.substring(1).contains("=")) {
 			String property = StringUtils.substringBefore(trimmedLine, "=");
 			String value = trimmedLine.substring(property.length() + 1);
-			return new String[] { pid, property.trim(), value.trim() };
+			String[] parsedLine = { pid, property.trim(), value.trim() };
+			logger.debug("Parsed configuration line {}:{}={}", (Object[]) parsedLine);
+			return parsedLine;
 		} else {
 			logger.warn("Could not parse line '{}'", line);
 			return null;

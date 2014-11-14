@@ -32,6 +32,7 @@ import org.openhab.binding.netatmo.internal.messages.MeasurementResponse;
 import org.openhab.binding.netatmo.internal.messages.NetatmoError;
 import org.openhab.binding.netatmo.internal.messages.RefreshTokenRequest;
 import org.openhab.binding.netatmo.internal.messages.RefreshTokenResponse;
+import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
@@ -59,7 +60,10 @@ public class NetatmoBinding extends
 	protected static final String CONFIG_CLIENT_SECRET = "clientsecret";
 	protected static final String CONFIG_REFRESH = "refresh";
 	protected static final String CONFIG_REFRESH_TOKEN = "refreshtoken";
-
+	
+	private static DeviceListResponse deviceListResponse = null;
+	private static DeviceListRequest deviceListRequest = null;
+	
 	/**
 	 * The refresh interval which is used to poll values from the Netatmo server
 	 * (optional, defaults to 300000ms)
@@ -87,6 +91,7 @@ public class NetatmoBinding extends
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	protected void execute() {
 		logger.debug("Querying Netatmo API");
@@ -108,11 +113,38 @@ public class NetatmoBinding extends
 					for (final String itemName : provider.getItemNames()) {
 						final String deviceId = provider.getDeviceId(itemName);
 						final String moduleId = provider.getModuleId(itemName);
-						final String measure = provider.getMeasure(itemName);
-
-						final String requestKey = createKey(deviceId, moduleId);
-
-						final State state = new DecimalType(deviceMeasureValueMap.get(requestKey).get(measure));
+						final NetatmoMeasureType measureType = provider.getMeasureType(itemName);
+						
+						State state = null;
+						switch (measureType) {
+							case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE:
+									final String requestKey = createKey(deviceId, moduleId);
+									state = new DecimalType(deviceMeasureValueMap.get(requestKey).get(measureType.getMeasure()));
+									break;
+							case BATTERYVP: case RFSTATUS:
+								for (Module module : deviceListResponse.getModules()) {
+									if (module.getId().equals(moduleId)) {
+										switch (measureType) {
+											case BATTERYVP: state = new DecimalType(module.getBatteryVp()); break;
+											case RFSTATUS: state = new DecimalType(module.getRfStatus()); break;
+										}
+									}
+								}
+								break;
+							case ALTITUDE: case LATITUDE: case LONGITUDE: case WIFISTATUS:
+								for (Device device : deviceListResponse.getDevices()) {
+									if (device.getId().equals(deviceId)) {
+										switch (measureType) {
+											case ALTITUDE: state = new DecimalType(device.getAltitude()); break;
+											case LATITUDE: state = new DecimalType(device.getLatitude()); break;
+											case LONGITUDE: state = new DecimalType(device.getLongitude()); break;
+											case WIFISTATUS: state = new DecimalType(device.getWifiStatus()); break;
+										}
+									}
+								}
+								break;
+						}
+						
 						if (state != null) {
 							this.eventPublisher.postUpdate(itemName, state);
 						}
@@ -152,6 +184,7 @@ public class NetatmoBinding extends
 		return deviceMeasureValueMap;
 	}
 	
+
 	private void processDeviceList(OAuthCredentials oauthCredentials) {
 		final DeviceListRequest request = new DeviceListRequest(oauthCredentials.accessToken);
 		final DeviceListResponse response = request.execute();
@@ -220,7 +253,7 @@ public class NetatmoBinding extends
 			for (final String itemName : provider.getItemNames()) {
 				final String deviceId = provider.getDeviceId(itemName);
 				final String moduleId = provider.getModuleId(itemName);
-				final String measure = provider.getMeasure(itemName);
+				final NetatmoMeasureType measureType = provider.getMeasureType(itemName);
 
 				final Set<String> measurements;
 
@@ -231,14 +264,13 @@ public class NetatmoBinding extends
 				}
 
 				if (measurements != null) {
-					measurements.remove(measure);
+					measurements.remove(measureType.getMeasure());
 				}
 			}
 		}
 
 		// Log all unconfigured measurements
 		final StringBuilder message = new StringBuilder();
-		message.append("The following Netatmo measurements are not yet configured:\n");
 		for (Entry<String, Set<String>> entry : deviceMeasurements.entrySet()) {
 			final String deviceId = entry.getKey();
 			final Device device = deviceMap.get(deviceId);
@@ -259,8 +291,10 @@ public class NetatmoBinding extends
 						+ ")\n");
 			}
 		}
-
-		logger.info(message.toString());
+		if (message.length() > 0) {
+			message.insert(0,"The following Netatmo measurements are not yet configured:\n");
+			logger.info(message.toString());
+		}
 	}
 
 	/**
@@ -270,28 +304,34 @@ public class NetatmoBinding extends
 	 */
 	private Collection<MeasurementRequest> createMeasurementRequests() {
 		final Map<String, MeasurementRequest> requests = new HashMap<String, MeasurementRequest>();
-
+		
 		for (final NetatmoBindingProvider provider : this.providers) {
 			for (final String itemName : provider.getItemNames()) {
-				
+
 				final String userid = provider.getUserid(itemName);
 				final String deviceId = provider.getDeviceId(itemName);
 				final String moduleId = provider.getModuleId(itemName);
-				final String measure = provider.getMeasure(itemName);
-
+				final NetatmoMeasureType measureType = provider.getMeasureType(itemName);
+				
 				final String requestKey = createKey(deviceId, moduleId);
 				
-				OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
-				if (oauthCredentials != null) {
-					if (!requests.containsKey(requestKey)) {
-						requests.put(requestKey, 
-							new MeasurementRequest(oauthCredentials.accessToken, deviceId, moduleId));
-					}
-					requests.get(requestKey).addMeasure(measure);
-				}
+				switch (measureType) {
+					case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE:
+						OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
+						if (oauthCredentials != null) {
+							if (!requests.containsKey(requestKey)) {
+								requests.put(requestKey, 
+									new MeasurementRequest(oauthCredentials.accessToken, deviceId, moduleId));
+							}
+							requests.get(requestKey).addMeasure(measureType);
+							break;
+						}
+					default:
+						break;
+				}	
 			}
 		}
-
+		
 		return requests.values();
 	}
 	
@@ -456,6 +496,9 @@ public class NetatmoBinding extends
 			logger.debug("Response: {}", response);
 
 			this.accessToken = response.getAccessToken();
+			
+			deviceListRequest = new DeviceListRequest(this.accessToken);
+			deviceListResponse = deviceListRequest.execute();
 		}
 		
 	}

@@ -9,6 +9,9 @@
 package org.openhab.binding.hue.internal;
 
 import org.openhab.core.binding.BindingConfig;
+import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +69,22 @@ public class HueBindingConfig implements BindingConfig {
 	 * dimmed up or down. Default is 25.
 	 */
 	private final int stepSize;
-
+	
+	/**
+	 * On / Off Item State
+	 */
+	public OnOffType itemStateOnOffType;
+	
+	/**
+	 * Percentage Item State
+	 */
+	public PercentType itemStatePercentType;
+	
+	/**
+	 * HSBType Item State
+	 */
+	public HSBType itemStateHSBType;
+	
 	/**
 	 * Constructor of the HueBindingConfig.
 	 * 
@@ -118,7 +136,7 @@ public class HueBindingConfig implements BindingConfig {
 			return Integer.parseInt(configString);
 		} catch (Exception e) {
 			throw new BindingConfigParseException(
-					"Error parsing device number.");
+					"Error parsing step size.");
 		}
 	}
 

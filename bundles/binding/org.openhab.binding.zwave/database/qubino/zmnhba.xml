@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZMNHBA</Model>
+	<Label lang="en">Flush 2 relays</Label>
+	<CommandClasses>
+		<Class><id>0x00</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 1 switch type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">bi-stable switch type</Label>
+			</Item>
+			<Help lang="en">Input 1 switch type</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 2 switch type</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">bi-stable switch type</Label>
+			</Item>
+			<Help lang="en">Input 2 switch type</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">Activate / deactivate functions ALL ON/ALL OFF</Label>			
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">ALL ON active, ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">ALL ON is not active ALL OFF is not active</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALL ON is not active ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALL ON active ALL OFF is not active</Label>
+			</Item>
+			<Help lang="en">Flush 1 relay module responds to commands ALL ON / ALL OFF 
+				that may be sent by the main controller or by other controller belonging to the system.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatic turning off relay Q1 after set time</Label>
+			<Help lang="en"><![CDATA[Auto OFF enabled with define time, step is 10 mseconds<br/>
+				<ul><li>0 = Auto OFF disabled</li> 
+				<li>1–65535 = 0,01 second – 655,35 seconds</li></ul>]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatic turning off relay Q2 after set time</Label>
+			<Help lang="en"><![CDATA[Auto OFF enabled with define time, step is 10 mseconds<br/>
+				<ul><li>0 = Auto OFF disabled</li> 
+				<li>1–65535 = 0,01 second – 655,35 seconds</li></ul>]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>30</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Saving the state of the relays Q1 and Q2 after a power failure</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Flush 2 relays module saves its state before power failure (it returns to the last position saved before a power failure)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Flush 2 relays module does not save the state after a power failure, it returns to "off" position.
+</Label>
+			</Item>
+			<Help lang="en">Saving the state of the relays Q1 and Q2 after a power failure</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>40</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Power reporting in Watts on power change for Q1</Label>			
+			<Help lang="en"><![CDATA[Power report is sent (pushed) only when actual power in Watts in real time changed for more than 
+				set percentage comparing to previous actual power in Watts, step is 1%.<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–100 = 1% - 100% Reporting enabled</li></ul>
+				NOTE: if power changed is less than 1W, the report is not sent (pushed), regardless of percentage set.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>41</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Power reporting in Watts on power change for Q2</Label>			
+			<Help lang="en"><![CDATA[Power report is sent (pushed) only when actual power in Watts in real time changed for more than 
+				set percentage comparing to previous actual power in Watts, step is 1%.<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–100 = 1% - 100% Reporting enabled</li></ul>
+				NOTE: if power changed is less than 1W, the report is not sent (pushed), regardless of percentage set.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>42</Index>
+			<Type>byte</Type>
+			<Default>300</Default>
+			<Size>2</Size>
+			<Label lang="en">Power reporting in Watts by time interval for Q1</Label>
+			<Help lang="en"><![CDATA[default value is 300 (power report in Watts is sent each 300s)<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–65535 = 1 second – 65535 seconds. Reporting enabled. 
+				Power report is sent with time interval set by entered value.</li></ul>]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>43</Index>
+			<Type>byte</Type>
+			<Default>300</Default>
+			<Size>2</Size>
+			<Label lang="en">Power reporting in Watts by time interval for Q2</Label>
+			<Help lang="en"><![CDATA[default value is 300 (power report in Watts is sent each 300s)<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–65535 = 1 second – 65535 seconds. Reporting enabled. 
+				Power report is sent with time interval set by entered value.</li></ul>]]></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">basic on/off (triggered at change of the output Q1 state and reflecting its state)</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">basic on/off (triggered at change of the output Q2 state and reflecting its state)</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>4</Maximum>
+			<Label lang="en">default reporting group</Label>
+		</Group>
+	</Associations>
+</Product>

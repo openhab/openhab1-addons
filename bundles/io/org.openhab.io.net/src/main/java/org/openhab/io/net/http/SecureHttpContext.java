@@ -13,6 +13,8 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Dictionary;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -27,8 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.util.Base64;
-import org.apache.commons.net.util.SubnetUtils;
-import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
 import org.eclipse.jetty.plus.jaas.callback.ObjectCallback;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -59,7 +59,7 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 	
 	private static SecurityOptions securityOptions = SecurityOptions.OFF;
 	
-	private static SubnetInfo subnetUtils;
+	private static Set<IpAddressMatcher> ipAddressMatchers = new HashSet<IpAddressMatcher>();
 	
 	public SecureHttpContext() {
 		// default constructor
@@ -149,17 +149,7 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 		String remoteAddr = request.getRemoteAddr();
 		
 		try {
-			InetAddress remoteIp = InetAddress.getByName(remoteAddr);
-			if (remoteIp.isLoopbackAddress()) {
-				// by definition: the loopback address is NOT external!
-				return false;
-			}
-			
-			boolean isExternal = !subnetUtils.isInRange(remoteAddr);
-			logger.trace("http request is originated by '{}' which is identified as '{}'",
-					remoteAddr, isExternal ? "external" : "internal");
-			
-			return isExternal;
+			return isExternalIp(remoteAddr);
 		} catch (UnknownHostException uhe) {
 			logger.error(uhe.getLocalizedMessage());
 		}
@@ -172,6 +162,25 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 		
 		// if there are any doubts we assume this request to be external!
 		return true; 
+	}
+
+	protected boolean isExternalIp(String remoteAddr) throws UnknownHostException {
+		InetAddress remoteIp = InetAddress.getByName(remoteAddr);
+		if (remoteIp.isLoopbackAddress()) {
+			// by definition: the loopback address is NOT external!
+			return false;
+		}
+
+		boolean isExternal = true;
+		for (IpAddressMatcher ipAddressMatcher : ipAddressMatchers) {
+			if (ipAddressMatcher.matches(remoteAddr)) {
+				isExternal = false;
+				break;
+			}
+		}
+		logger.trace("http request is originated by '{}' which is identified as '{}'",
+				remoteAddr, isExternal ? "external" : "internal");
+		return isExternal;
 	}
 	
 	/**
@@ -311,20 +320,21 @@ public class SecureHttpContext implements HttpContext, ManagedService {
 			}
 			
 			// first read the netmask and try to create a SubnetUtils object 
-			String netmask = (String) config.get("netmask");
-			if (StringUtils.isNotBlank(netmask)) {
-				SubnetUtils utils = new SubnetUtils(netmask);
-				if (utils != null) {
-					SecureHttpContext.subnetUtils = utils.getInfo();
+			String netmaskVal = (String) config.get("netmask");
+			ipAddressMatchers.clear();
+			if (StringUtils.isNotBlank(netmaskVal)) {
+				String[] netmasks = netmaskVal.split(",");
+				for (String netmask : netmasks) {
+					ipAddressMatchers.add(new IpAddressMatcher(netmask));
 				}
 			}
 			
 			// if SubnetUtils are still null something went wrong or one didn't configure a
 			// netmask. In both cases use the default netmask ...
-			if (SecureHttpContext.subnetUtils == null) {
+			if (ipAddressMatchers.size() == 0) {
 				// set default a value ...
-				SecureHttpContext.subnetUtils = new SubnetUtils("192.168.1.0/24").getInfo();
-				logger.debug("couldn't find netmask configuration -> using '{}' instead", SecureHttpContext.subnetUtils.getCidrSignature());
+				ipAddressMatchers.add(new IpAddressMatcher("192.168.1.0/24"));
+				logger.debug("couldn't find netmask configuration -> using '192.168.1.0/24' instead");
 			}
 		}
 	}
