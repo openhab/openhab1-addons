@@ -20,10 +20,10 @@ import org.joda.time.base.AbstractInstant;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.persistence.FilterCriteria;
+import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
-import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -508,6 +508,68 @@ public class PersistenceExtensions implements ManagedService {
 		return result;
  	}
 	
+	/**
+	 * Returns the parent state of a given <code>item</code>. 
+	 * If the item is uninitialized/undefined, the last saved state is returned.
+	 * 
+	 * @param item the item to get the average state value for
+	 * @return the parent state not equal the current state
+	 */
+	static public HistoricItem parentState(Item item) {
+		if (isDefaultServiceAvailable()) {
+			return parentState(item, defaultService);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns the parent state of a given <code>item</code>. 
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
+	 * If the item is uninitialized/undefined, the last saved state is returned.
+	 * 
+	 * @param item the item to get the average state value for
+	 * @return the parent state not equal the current state
+	 */
+	static public HistoricItem parentState(Item item, String serviceName) {
+		PersistenceService service = services.get(serviceName);
+		if (service instanceof QueryablePersistenceService) {
+			QueryablePersistenceService qService = (QueryablePersistenceService) service;
+			FilterCriteria filter = new FilterCriteria();
+			filter.setItemName(item.getName());
+			filter.setOrdering(Ordering.DESCENDING);
+
+			filter.setPageSize(3);
+			int startPage = 0;
+			filter.setPageNumber(startPage);
+
+			Iterable<HistoricItem> items = qService.query(filter);
+			while (items != null) {
+				Iterator<HistoricItem> itemIterator = items.iterator();
+				int itemCount = 0;
+				while (itemIterator.hasNext()) {
+					HistoricItem historicItem = itemIterator.next(); 
+					itemCount++;
+					if (!historicItem.getState().equals(item.getState())) {
+						return historicItem;
+					}
+				}					
+				if (itemCount == filter.getPageSize()) {
+					filter.setPageNumber(++startPage);
+					items = qService.query(filter);
+				}
+				else {
+					items = null;
+				}
+			}
+			return null;
+
+		} else {
+			logger.warn("There is no queryable persistence service registered with the name '{}'", serviceName);
+			return null;
+		}
+	}
+
 	static private Iterable<HistoricItem> getAllStatesSince(Item item, AbstractInstant timestamp, String serviceName) {
 		PersistenceService service = services.get(serviceName);
 		if (service instanceof QueryablePersistenceService) {
