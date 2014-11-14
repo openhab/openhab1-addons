@@ -8,8 +8,6 @@
  */
 package org.openhab.io.rest.internal.filter;
 
-
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -84,7 +82,7 @@ public class DuplicateBroadcastProtectionFilter implements PerRequestBroadcastFi
             	return true;
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error("Could not check if double broadcast",e);
 		} 
         return false;
 	}
