@@ -6,7 +6,7 @@ Bundle-Version: 1.6.0.qualifier
 Fragment-Host: org.openhab.binding.nikobus;bundle-version="1.3.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: openHAB.org
-Require-Bundle: org.junit4;bundle-version="4.8.1",org.openhab.io.transport.serial;bundle-version="1.3.0"
+Require-Bundle: org.junit;bundle-version="4.8.1",org.openhab.io.transport.serial;bundle-version="1.3.0"
 Bundle-ClassPath: lib/mockito-all-1.9.5.jar,
  lib/slf4j-jdk14-1.6.4.jar,
  .

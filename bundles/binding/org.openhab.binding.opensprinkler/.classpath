@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
-	<classpathentry kind="lib" path="lib/opensprinkler-0.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/opensprinkler-0.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/pi4j-core-0.0.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

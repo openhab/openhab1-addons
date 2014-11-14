@@ -78,9 +78,8 @@ public class BinRpcCallbackHandler implements Runnable {
 		if ("event".equals(methodName)) {
 			handleEvent(responseData);
 			return BIN_EMPTY_STRING;
-		} else if ("listDevices".equals(methodName)) {
-			return BIN_EMPTY_ARRAY;
-		} else if ("deleteDevices".equals(methodName)) {
+		} else if ("listDevices".equals(methodName) || "deleteDevices".equals(methodName)
+				|| "updateDevice".equals(methodName)) {
 			return BIN_EMPTY_ARRAY;
 		} else if ("newDevices".equals(methodName)) {
 			callbackReceiver.newDevices(null, null);

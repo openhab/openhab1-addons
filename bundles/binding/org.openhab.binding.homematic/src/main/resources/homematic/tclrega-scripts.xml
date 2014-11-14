@@ -149,6 +149,39 @@ foreach (dev_id, root.Devices().EnumUsedIDs()) {
         Write("' writeable='false'");
         Write(" />\n");
       }
+      object humidityF = channel_obj.DPByHssDP("HUMIDITYF");
+      if (humidityF) {
+        Write("      <datapoint");
+        Write(" name='HUMIDITYF'")
+        Write(" value='"); WriteXML(humidityF.Value());
+        Write("' valueType='" # humidityF.ValueType());
+        Write("' min='" # humidityF.ValueMin());
+        Write("' max='" # humidityF.ValueMax());
+        Write("' writeable='false'");
+        Write(" />\n");
+      }
+      object lastTicks = channel_obj.DPByHssDP("LAST_TICKS");
+      if (lastTicks) {
+        Write("      <datapoint");
+        Write(" name='LAST_TICKS'")
+        Write(" value='"); WriteXML(lastTicks.Value());
+        Write("' valueType='" # lastTicks.ValueType());
+        Write("' min='" # lastTicks.ValueMin());
+        Write("' max='" # lastTicks.ValueMax());
+        Write("' writeable='false'");
+        Write(" />\n");
+      }
+      object unitSpturn = channel_obj.DPByHssDP("UNITSPTURN");
+      if (unitSpturn) {
+        Write("      <datapoint");
+        Write(" name='UNITSPTURN'")
+        Write(" value='"); WriteXML(unitSpturn.Value());
+        Write("' valueType='" # unitSpturn.ValueType());
+        Write("' min='" # unitSpturn.ValueMin());
+        Write("' max='" # unitSpturn.ValueMax());
+        Write("' writeable='false'");
+        Write(" />\n");
+      }
 
       foreach(dp_id, channel_obj.DPs().EnumUsedIDs()) {
         object dp_obj = dom.GetObject(dp_id);

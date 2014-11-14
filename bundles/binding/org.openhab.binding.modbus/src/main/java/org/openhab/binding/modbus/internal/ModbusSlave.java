@@ -61,7 +61,7 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 	}
 
 	/**
-	 * Type of data porived by the physical device
+	 * Type of data provided by the physical device
 	 * "coil" and "discrete" use boolean (bit) values
 	 * "input" and "holding" use byte values
 	 */
@@ -74,6 +74,15 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 	private int start = 0;
 
 	private int length = 0;
+
+	/**
+	 * How to interpret Modbus register values. 
+	 * Examples: 
+	 *   uint16 - one register - one unsigned integer value (default)
+	 *   int32  - every two registers will be interpreted as single 32-bit integer value
+	 *   bit    - every register will be interpreted as 16 independent 1-bit values  
+	 */
+	private String valueType = ModbusBindingProvider.VALUE_TYPE_UINT16;
 
 	private Object storage;
 	protected ModbusTransaction transaction = null; 
@@ -356,6 +365,14 @@ public abstract class ModbusSlave implements ModbusSlaveConnection {
 
 	void setType(String type) {
 		this.type = type;
+	}
+
+	String getValueType() {
+		return valueType;
+	}
+
+	void setValueType(String valueType) {
+		this.valueType = valueType;
 	}
 
 }

@@ -97,7 +97,7 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 		
 		for (WemoBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
-				logger.trace("Wemo switch '{}' state will be updated", itemName);
+				logger.debug("Wemo switch '{}' state will be updated", itemName);
 
 				try {
 					String resp = wemoCall(itemName,
@@ -108,7 +108,7 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 					String state = resp.replaceAll(
 							"[\\d\\D]*<BinaryState>(.*)</BinaryState>[\\d\\D]*", "$1");
 
-					State itemState = state.equals("1") ? OnOffType.ON : OnOffType.OFF;
+					State itemState = state.equals("0") ? OnOffType.OFF : OnOffType.ON;
 					eventPublisher.postUpdate(itemName,  itemState);
 
 				} catch (IOException e) {
@@ -128,10 +128,10 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 
 		for (WemoBindingProvider provider : providers) {
 			String switchFriendlyName = provider.getWemoFriendlyName(itemName);
-		    logger.info("item '{}' is configured as '{}'",itemName, switchFriendlyName);
+		    logger.debug("item '{}' is configured as '{}'",itemName, switchFriendlyName);
 			}
 		try {
-			logger.trace("Command '{}' is about to be send to item '{}'",command, itemName );
+			logger.debug("Command '{}' is about to be send to item '{}'",command, itemName );
 			sendCommand(itemName, command);
 			
 		} catch (Exception e) {
@@ -163,11 +163,11 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 			StringBuffer discoveryMessage = new StringBuffer();
 			discoveryMessage.append("M-SEARCH * HTTP/1.1\r\n");
 			discoveryMessage.append("HOST: " + SSDP_IP + ":" + SSDP_PORT + "\r\n");
-			discoveryMessage.append("ST: urn:Belkin:device:controllee:1\r\n");
+			discoveryMessage.append("ST: urn:Belkin:device:\r\n");
 			discoveryMessage.append("MAN: \"ssdp:discover\"\r\n");
 			discoveryMessage.append("MX: 5\r\n");
 			discoveryMessage.append("\r\n");
-		    logger.trace("Request: {}", discoveryMessage.toString());
+		    logger.debug("Request: {}", discoveryMessage.toString());
 			byte[] discoveryMessageBytes = discoveryMessage.toString().getBytes();
 			DatagramPacket discoveryPacket = new DatagramPacket(
 					discoveryMessageBytes, discoveryMessageBytes.length, dstAddress);
@@ -177,12 +177,12 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 			try {
 				multicast = new MulticastSocket(null);
 				multicast.bind(srcAddress);
-				logger.trace("Source-Address = '{}'", srcAddress);
+				logger.debug("Source-Address = '{}'", srcAddress);
 				multicast.setTimeToLive(4);
-				logger.trace("Send multicast request.");
+				logger.debug("Send multicast request.");
 				multicast.send(discoveryPacket);
 			} finally {
-				logger.trace("Multicast ends. Close connection.");
+				logger.debug("Multicast ends. Close connection.");
 				multicast.disconnect();
 				multicast.close();
 			}
@@ -193,48 +193,41 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 			try {
 				wemoReceiveSocket = new DatagramSocket(SSDP_SEARCH_PORT);
 				wemoReceiveSocket.setSoTimeout(TIMEOUT);
-				logger.trace("Send datagram packet.");
+				logger.debug("Send datagram packet.");
 				wemoReceiveSocket.send(discoveryPacket);
 
 				while (true) {
 					try {
-						logger.trace("Receive SSDP Message.");
+						logger.debug("Receive SSDP Message.");
 						receivePacket = new DatagramPacket(new byte[1536], 1536);
 						wemoReceiveSocket.receive(receivePacket);
 						final String message = new String(receivePacket.getData());
-						logger.trace("Recieved message: {}", message);
+						logger.debug("Recieved message: {}", message);
 				
 						new Thread(new Runnable() {
 							@Override
 							public void run() {
-								String locationStart = "LOCATION:";
-								String locationEnd = "/setup.xml";
-								int findStringStart=message.lastIndexOf(locationStart);
-								if (findStringStart !=0) {
-									int findStringEnd=message.lastIndexOf(locationEnd);
-								String slicedMessage = message.substring(findStringStart+10, findStringEnd);
-								logger.trace("Wemo found at URL '{}'", slicedMessage);
+								String location = StringUtils.substringBetween(message, "LOCATION: ", "/setup.xml");
+								if (location != null) {
 								
-								try {
-									int timeout = 5000;
-									String friendlyNameResponse = HttpUtil.executeUrl("GET", slicedMessage+"/setup.xml", timeout);
-									String findFriendlyNameStart = "<friendlyName>";
-									String findFriendlyNameEnd = "</friendlyName>";
-									int findStart=friendlyNameResponse.lastIndexOf(findFriendlyNameStart); 
-									int findEnd=friendlyNameResponse.lastIndexOf(findFriendlyNameEnd);
-									String slicedFriendlyName=friendlyNameResponse.substring(findStart+14, findEnd);
-									logger.info("Wemo friendlyName '{}' found at '{}'", slicedFriendlyName, slicedMessage);
-									wemoConfigMap.put(slicedFriendlyName, slicedMessage);
+									logger.debug("Wemo device found at URL '{}'", location);
+								
+									try {
+										int timeout = 5000;
+										String friendlyNameResponse = HttpUtil.executeUrl("GET", location+"/setup.xml", timeout);
+										String friendlyName = StringUtils.substringBetween(friendlyNameResponse, "<friendlyName>", "</friendlyName>");
+										logger.info("Wemo device '{}' found at '{}'", friendlyName, location);
+										wemoConfigMap.put(friendlyName, location);
 									
-								} catch (Exception te) {
-									logger.error("Response transformation throws exception ", te);
-								}
+										} catch (Exception te) {
+											logger.error("Could not find wemo friendlyName ", te);
+										}
 								}
 							}
 						}).start();
 
 					} catch (SocketTimeoutException e) {
-						logger.error("Message receive timed out.");
+						logger.debug("Message receive timed out.");
 						break;
 					}
 				}
@@ -253,14 +246,14 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 	public void sendCommand(String itemName, Command command) throws IOException {
 		
 		boolean onOff = OnOffType.ON.equals(command);
-		logger.trace("command '{}' transformed to '{}'", command, onOff); 
+		logger.debug("command '{}' transformed to '{}'", command, onOff); 
 		String wemoCallResponse = wemoCall(itemName,
 				"urn:Belkin:service:basicevent:1#SetBinaryState",
 				IOUtils.toString(
 						getClass().getResourceAsStream("SetRequest.xml"))
 						.replace("{{state}}", onOff ? "1" : "0"));
 
-		logger.trace("setOn ={}", wemoCallResponse);
+		logger.debug("setOn ={}", wemoCallResponse);
 	}
 
 	private String wemoCall(String itemName, String soapMethod, String content) {
@@ -275,7 +268,7 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 
 			String wemoLocation = wemoConfigMap.get(switchFriendlyName);
 			if (wemoLocation != null) {
-				logger.trace("item '{}' is located at '{}'", itemName, wemoLocation);
+				logger.debug("item '{}' is located at '{}'", itemName, wemoLocation);
 				URL url = new URL(wemoLocation + endpoint);
 				Socket wemoSocket = new Socket(InetAddress.getByName(url.getHost()), url.getPort());
 				try {
@@ -295,7 +288,7 @@ public class WemoBinding extends AbstractActiveBinding<WemoBindingProvider> impl
 					wemoSocket.close();
 					}
 			} else {
-				logger.trace("No Location found for item '{}', start new discovery ", itemName);
+				logger.debug("No Location found for item '{}', start new discovery ", itemName);
 				wemoDiscovery();
 				String wemoCallResponse = "";
 				return wemoCallResponse;

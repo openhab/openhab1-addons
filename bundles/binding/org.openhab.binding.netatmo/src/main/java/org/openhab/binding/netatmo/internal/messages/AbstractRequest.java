@@ -20,8 +20,7 @@ import org.openhab.binding.netatmo.internal.NetatmoException;
  * @author Andreas Brenk
  * @since 1.4.0
  */
-public abstract class AbstractRequest extends AbstractMessage implements
-		Request {
+public abstract class AbstractRequest extends AbstractMessage implements Request {
 
 	protected static final String HTTP_GET = "GET";
 
@@ -48,4 +47,5 @@ public abstract class AbstractRequest extends AbstractMessage implements
 
 		return new NetatmoException(message, cause);
 	}
+	
 }

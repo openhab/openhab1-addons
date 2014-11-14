@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.openhab.binding.homematic.internal.model.adapter.HmInterfaceAdapter;
 
 /**
@@ -79,4 +81,14 @@ public class HmDevice {
 		channel.setDevice(this);
 		channels.add(channel);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("address", address)
+				.append("hmInterface", hmInterface.toString()).append("type", type).toString();
+	}
+
 }

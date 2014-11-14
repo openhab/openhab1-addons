@@ -80,8 +80,13 @@ public class ZWaveSceneActivationCommandClass extends ZWaveCommandClass {
 	 * @param endpoint the endpoint or instance number this message is meant for.
 	 */
 	protected void processSceneActivationSet(SerialMessage serialMessage, int offset, int endpoint) {
-        int sceneId = serialMessage.getMessagePayloadByte(offset + 1);
-        int sceneTime = serialMessage.getMessagePayloadByte(offset + 2);
+        int sceneId = serialMessage.getMessagePayloadByte(offset + 1);              
+        int sceneTime = 0;
+
+        // Aeon Minimote fw 1.19 sends SceneActivationSet without Time parameter
+        if (serialMessage.getMessagePayload().length > (offset  + 2)) {
+        	sceneTime = serialMessage.getMessagePayloadByte(offset + 2);
+        }
 
         logger.debug(String.format("Scene activation node from node %d: Scene %d, Time %d", this.getNode().getNodeId(),
         		sceneId, sceneTime));

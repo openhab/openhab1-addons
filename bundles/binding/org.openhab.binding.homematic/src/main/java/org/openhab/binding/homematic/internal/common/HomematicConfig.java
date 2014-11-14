@@ -24,9 +24,6 @@ import org.osgi.service.cm.ConfigurationException;
  * # Hostname / IP address of the Homematic CCU or Homegear server
  * homematic:host=
  *
- * # The communication with the Homematic server. xml for xmlrpc or bin for the lightweight binrpc, (optional, default is bin).
- * # homematic:rpc=
- * 
  * # Hostname / IP address for the callback server (optional, default is auto-discovery)
  * # This is normally the IP / hostname of the local host (but not "localhost" or "127.0.0.1"). 
  * # homematic:callback.host=
@@ -47,7 +44,6 @@ public class HomematicConfig {
 	private static final String CONFIG_KEY_CALLBACK_HOST = "callback.host";
 	private static final String CONFIG_KEY_CALLBACK_PORT = "callback.port";
 	private static final String CONFIG_KEY_ALIVE_INTERVAL = "alive.interval";
-	private static final String CONFIG_KEY_RPC = "rpc";
 
 	private static final Integer DEFAULT_CALLBACK_PORT = 9123;
 	private static final int DEFAULT_ALIVE_INTERVAL = 300;
@@ -57,7 +53,6 @@ public class HomematicConfig {
 	private String callbackHost;
 	private Integer callbackPort;
 	private Integer aliveInterval;
-	private String rpc;
 
 	/**
 	 * Parses and validates the properties in the openhab.cfg.
@@ -78,12 +73,6 @@ public class HomematicConfig {
 
 		callbackPort = parseInt(properties, CONFIG_KEY_CALLBACK_PORT, DEFAULT_CALLBACK_PORT);
 		aliveInterval = parseInt(properties, CONFIG_KEY_ALIVE_INTERVAL, DEFAULT_ALIVE_INTERVAL);
-
-		rpc = StringUtils.defaultIfBlank((String) properties.get(CONFIG_KEY_RPC), "bin").toLowerCase();
-		if (!"bin".equals(rpc) && !"xml".equals(rpc)) {
-			throw new ConfigurationException("homematic", "Unknown value for parameter rpc:" + rpc
-					+ ", only bin or xml is valid. Please check your openhab.cfg!");
-		}
 
 		valid = true;
 	}
@@ -143,20 +132,6 @@ public class HomematicConfig {
 	}
 
 	/**
-	 * Returns true if the communication mode is set to BIN-RPC.
-	 */
-	public boolean isBinRpc() {
-		return "bin".equals(rpc);
-	}
-
-	/**
-	 * Returns the XML-RPC url.
-	 */
-	public String getXmlRpcCallbackUrl() {
-		return "http://" + callbackHost + ":" + callbackPort + "/xmlrpc";
-	}
-
-	/**
 	 * Returns the BIN-RPC url.
 	 */
 	public String getBinRpcCallbackUrl() {
@@ -174,6 +149,6 @@ public class HomematicConfig {
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("host", host)
 				.append("callbackHost", callbackHost).append("callbackPort", callbackPort)
-				.append("aliveInterval", aliveInterval).append("rpc", rpc).toString();
+				.append("aliveInterval", aliveInterval).toString();
 	}
 }

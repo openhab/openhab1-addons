@@ -79,7 +79,7 @@ public class JobScheduler {
 				stop();
 				start();
 			}
-		}, 5000);
+		}, 3000);
 	}
 
 	/**

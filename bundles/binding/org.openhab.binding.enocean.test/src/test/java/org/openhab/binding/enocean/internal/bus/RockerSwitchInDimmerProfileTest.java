@@ -11,11 +11,11 @@ package org.openhab.binding.enocean.internal.bus;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.enocean.java.address.EnoceanId;
-import org.enocean.java.address.EnoceanParameterAddress;
-import org.enocean.java.common.EEPId;
-import org.enocean.java.common.Parameter;
-import org.enocean.java.common.values.ButtonState;
+import org.opencean.core.address.EnoceanId;
+import org.opencean.core.address.EnoceanParameterAddress;
+import org.opencean.core.common.EEPId;
+import org.opencean.core.common.Parameter;
+import org.opencean.core.common.values.ButtonState;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

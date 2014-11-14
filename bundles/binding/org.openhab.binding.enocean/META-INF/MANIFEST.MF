@@ -26,4 +26,4 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/enoceanbinding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
- lib/java-enocean-library-0.0.1.jar
+ lib/opencean-core-0.0.1.jar

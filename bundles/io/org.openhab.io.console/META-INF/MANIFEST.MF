@@ -9,6 +9,7 @@ Bundle-Description: This is the runtime component of the open Home Aut
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Import-Package: com.google.common.base,
  org.apache.commons.lang,
+ org.eclipse.emf.ecore,
  org.eclipse.osgi.framework.console,
  org.openhab.core.events,
  org.openhab.core.items,

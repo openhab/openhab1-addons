@@ -45,7 +45,7 @@ public class YamahaReceiverBindingConfig implements BindingConfig {
 	}
 
 	public enum BindingType {
-		power, volumePercent, volumeDb, mute, input, surroundProgram;
+		power, volumePercent, volumeDb, mute, input, surroundProgram, netRadio;
 	}
 
 	private final String deviceUid;
