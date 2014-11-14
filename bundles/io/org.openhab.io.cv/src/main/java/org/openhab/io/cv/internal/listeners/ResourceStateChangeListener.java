@@ -10,8 +10,6 @@ package org.openhab.io.cv.internal.listeners;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -43,7 +41,6 @@ import org.slf4j.LoggerFactory;
 abstract public class ResourceStateChangeListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceStateChangeListener.class);
-//	final static ConcurrentMap<String, Object> map = new ConcurrentHashMap<String, Object>();
 
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
@@ -63,10 +60,6 @@ abstract public class ResourceStateChangeListener {
 	public void setBroadcaster(CometVisuBroadcaster broadcaster) {
 		this.broadcaster = broadcaster;
 	}
-	
-//	public static ConcurrentMap<String, Object> getMap() {
-//		return map;
-//	}
 	
 	public void registerItems(){
 		broadcaster.getBroadcasterConfig().setBroadcasterCache(new CVBroadcasterCache());
