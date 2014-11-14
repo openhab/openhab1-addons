@@ -509,29 +509,29 @@ public class PersistenceExtensions implements ManagedService {
  	}
 	
 	/**
-	 * Returns the parent state of a given <code>item</code>. 
+	 * Returns the previous state of a given <code>item</code>. 
 	 * If the item is uninitialized/undefined, the last saved state is returned.
 	 * 
 	 * @param item the item to get the average state value for
 	 * @return the parent state not equal the current state
 	 */
-	static public HistoricItem parentState(Item item) {
+	static public HistoricItem previousState(Item item) {
 		if (isDefaultServiceAvailable()) {
-			return parentState(item, defaultService);
+			return previousState(item, defaultService);
 		} else {
 			return null;
 		}
 	}
 
 	/**
-	 * Returns the parent state of a given <code>item</code>. 
+	 * Returns the previous state of a given <code>item</code>. 
 	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
 	 * If the item is uninitialized/undefined, the last saved state is returned.
 	 * 
 	 * @param item the item to get the average state value for
 	 * @return the parent state not equal the current state
 	 */
-	static public HistoricItem parentState(Item item, String serviceName) {
+	static public HistoricItem previousState(Item item, String serviceName) {
 		PersistenceService service = services.get(serviceName);
 		if (service instanceof QueryablePersistenceService) {
 			QueryablePersistenceService qService = (QueryablePersistenceService) service;
