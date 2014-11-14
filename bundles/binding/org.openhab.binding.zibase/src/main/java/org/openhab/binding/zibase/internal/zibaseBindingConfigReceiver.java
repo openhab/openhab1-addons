@@ -95,10 +95,10 @@ public class zibaseBindingConfigReceiver extends zibaseBindingConfig {
 
 	
 	@Override
-	public State getOpenhabStateFromZibaseValue(ZbResponse zbResponse) {
+	public State getOpenhabStateFromZibaseValue(String zbResponseStr) {
 		if(constructor != null) {
 			try {
-				String zibaseValue = XmlSimpleParse.getTagValue(this.values[this.POS_VALUES], zbResponse.getMessage());
+				String zibaseValue = XmlSimpleParse.getTagValue(this.values[this.POS_VALUES], zbResponseStr);
 				return (State) constructor.newInstance(zibaseValue);
 			} catch (Exception e) {
 				logger.error("unable to convert zibase value to openHab State : " + e.toString());

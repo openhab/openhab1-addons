@@ -61,6 +61,8 @@ public class zibaseBindingConfigCommand extends zibaseBindingConfig {
 		} else {
 			zibase.sendCommand(this.getId(), action, protocol);
 		}
+		
+		logger.debug("Send command to " + this.getId() + " : " + action.toString() + " / " + protocol.toString());
 	}
 
 	
@@ -90,7 +92,7 @@ public class zibaseBindingConfigCommand extends zibaseBindingConfig {
 
 
 	@Override
-	public State getOpenhabStateFromZibaseValue(ZbResponse zbResponse) {
+	public State getOpenhabStateFromZibaseValue(String zbResponseStr) {
 		logger.error("getOpenhabStateFromZibaseValue : not implemented for command item");
 		return null;
 	}

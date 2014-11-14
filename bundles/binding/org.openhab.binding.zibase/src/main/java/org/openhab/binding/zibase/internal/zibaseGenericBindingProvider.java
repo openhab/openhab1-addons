@@ -83,12 +83,11 @@ public class zibaseGenericBindingProvider extends AbstractGenericBindingProvider
 		logger.debug("read item : " + item);
 		logger.debug("read config : " + bindingConfig);
 		
-		String[] itemConfig = StringUtils.split(bindingConfig);
+		String[] itemConfig = StringUtils.split(bindingConfig,zibaseBindingConfig.CONFIG_SEPARATOR);
 		
 		zibaseBindingConfig config = zibaseBindingConfig.factory(itemConfig);
 		itemMap.put(item.getName(), config);
-		
-		// TODO Check accepted values
+
 		if (idMap.containsKey(config.getId())) {
 			idMap.get(config.getId()).add(item.getName());
 		} else {

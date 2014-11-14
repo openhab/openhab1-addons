@@ -39,6 +39,8 @@ abstract class zibaseBindingConfig implements BindingConfig {
 	static protected final int POS_ID 		= 1;
 	static protected final int POS_VALUES 	= 2;
 	
+	static protected final String CONFIG_SEPARATOR = ",";
+	
 	/**
 	 * protocol for command's item, type of value to get for value to update
 	 */
@@ -78,10 +80,9 @@ abstract class zibaseBindingConfig implements BindingConfig {
 	
 	/**
 	 * Tell wether given config string is valid
-	 * @param zibase
-	 * @param parameters
+	 * @param zbResponseStr a ZbResponse instance as string
 	 */
-	abstract public State getOpenhabStateFromZibaseValue(ZbResponse zbResponse);
+	abstract public State getOpenhabStateFromZibaseValue(String zbResponseStr);
 	
 	
 	/**
@@ -89,7 +90,7 @@ abstract class zibaseBindingConfig implements BindingConfig {
 	 * @param bindingConfig
 	 */
 	static public boolean isConfigValid(String bindingConfig) {
-		String[] configParameters = StringUtils.split(bindingConfig);
+		String[] configParameters = StringUtils.split(bindingConfig,zibaseBindingConfig.CONFIG_SEPARATOR);
 		zibaseBindingConfig itemConfig = zibaseBindingConfig.factory(configParameters);
 		
 		if(itemConfig == null) {
@@ -115,7 +116,7 @@ abstract class zibaseBindingConfig implements BindingConfig {
 		Class<?> type = prefixClasses.get(configParameters[POS_TYPE]);
 		if (type != null) {
 			try {
-				return (zibaseBindingConfig) type.getConstructor(String[].class).newInstance(configParameters); 
+				return (zibaseBindingConfig) type.getConstructor(String[].class).newInstance((Object) configParameters); 
 			} catch(Exception ex) {
 				logger.error(ex.toString());
 			}
@@ -125,6 +126,7 @@ abstract class zibaseBindingConfig implements BindingConfig {
 		
 		return null;
 	}
+	
 	
 	/**
 	 * Constructor

@@ -59,22 +59,22 @@ public class zibaseBinding extends AbstractActiveBinding<zibaseBindingProvider> 
 	 * the refresh interval which is used to poll values from the zibase
 	 * server (optional, defaults to 60000ms)
 	 */
-	private long refreshInterval = 60000;
+	private static long refreshInterval = 60000;
 	
 	/**
 	 * ip adresse of zibase to connect to
 	 */
-	private String zibaseIp = "192.168.1.1";
+	private static String ip;
 	
 	/**
 	 * ip address sent to Zibase for registering
 	 */
-	private String listenerHost = "127.0.0.1";
+	private static String listenerHost = "127.0.0.1";
 	
 	/**
 	 * ip address sent to Zibase for registering
 	 */
-	private int listenerPort = 9876;
+	private static int listenerPort = 9876;
 	
 	
 	/**
@@ -94,12 +94,18 @@ public class zibaseBinding extends AbstractActiveBinding<zibaseBindingProvider> 
 		
 	/**
 	 * @{inheritDoc}
-	 * TODO: read ip address from config file
-	 * TODO: start listener depending on param from config file
 	 */
 	public void activate() {
+		
+	}
+	
+	private void launch() {
+		if(zibaseListener!=null) {
+			zibaseListener.shutdown();
+		}
+		
 		try {
-			zibase = new Zibase(zibaseIp);
+			zibase = new Zibase(ip);
 			logger.info("connected to zibase for command sending");
 						
 		} catch(Throwable th)	{
@@ -118,7 +124,6 @@ public class zibaseBinding extends AbstractActiveBinding<zibaseBindingProvider> 
 			logger.info("Error connecting to zibase for listening");
 		}
 	}
-	
 	
 	/**
 	 * @{inheritDoc}
@@ -185,7 +190,7 @@ public class zibaseBinding extends AbstractActiveBinding<zibaseBindingProvider> 
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
+		logger.debug("internalReceiveUpdate() is called!");
 	}
 	
 	
@@ -197,6 +202,8 @@ public class zibaseBinding extends AbstractActiveBinding<zibaseBindingProvider> 
 		if (config != null) {
 			// to override the default refresh interval one has to add a 
 			// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
+			logger.debug("Loading zibase configuration");
+			
 			String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
@@ -204,7 +211,7 @@ public class zibaseBinding extends AbstractActiveBinding<zibaseBindingProvider> 
 			
 			String ip = (String) config.get("ip");
 			if (StringUtils.isNotBlank(ip)) {
-				zibaseIp = ip;
+				this.ip = ip;
 			}
 
 			String tmpListenerIp = (String) config.get("listenerHost");
@@ -219,6 +226,7 @@ public class zibaseBinding extends AbstractActiveBinding<zibaseBindingProvider> 
 			
 			// read further config parameters here ...
 			setProperlyConfigured(true);
+			this.launch();
 		}
 	}
 }

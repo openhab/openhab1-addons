@@ -14,7 +14,7 @@ public class zibaseBindingConfigVariable extends zibaseBindingConfig {
 	}
 
 	@Override
-	public State getOpenhabStateFromZibaseValue(ZbResponse zbResponse) {
+	public State getOpenhabStateFromZibaseValue(String zbResponseStr) {
 		// TODO Auto-generated method stub
 		return null;
 	}
