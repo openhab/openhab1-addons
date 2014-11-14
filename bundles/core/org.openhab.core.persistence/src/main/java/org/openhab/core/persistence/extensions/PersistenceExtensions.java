@@ -539,7 +539,7 @@ public class PersistenceExtensions implements ManagedService {
 			filter.setItemName(item.getName());
 			filter.setOrdering(Ordering.DESCENDING);
 
-			filter.setPageSize(3);
+			filter.setPageSize(1000);
 			int startPage = 0;
 			filter.setPageNumber(startPage);
 
