@@ -8,10 +8,12 @@
  */
 package org.openhab.io.rest.internal.filter;
 
+import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereResourceFactory;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -65,13 +67,27 @@ public class DuplicateBroadcastProtectionFilter implements PerRequestBroadcastFi
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		try{
+			/*
+			 * This map object will start to collect dead uuid entries over time, but its 
+			 * difficult to know when this uuid's are really not valid anymore.  this
+			 * checks for dead entries before adding any new ones.
+			 */
+			ConcurrentMap<String, Object> resources = ResourceStateChangeListener.getMap();
+			for(String uuid : resources.keySet()){
+				AtmosphereResource resource = AtmosphereResourceFactory.getDefault().find(uuid);
+				if(resource == null){
+					logger.trace("removing {} from duplicate cache", uuid);
+					resources.remove(uuid);
+				}
+			}
 			String firedResponse =  mapper.writeValueAsString(ResourceStateChangeListener.getMap().put(clientId, responseEntity)); 
 			String responseValue =  mapper.writeValueAsString(responseEntity);
             if(responseValue.equals(firedResponse)) {
+            	logger.trace("Duplicate message for uuid {}", clientId);
             	return true;
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error("Could not check if double broadcast",e);
 		} 
         return false;
 	}
