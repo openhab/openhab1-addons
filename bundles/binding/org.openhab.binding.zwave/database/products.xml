@@ -466,8 +466,9 @@
 				<Type>0019</Type>
 				<Id>0004</Id>
 			</Reference>
-			<Model>DSD37-ZWEU</Model>
+			<Model>DSD37-ZW</Model>
 			<Label lang="en">Range Extender</Label>
+			<ConfigFile>aeon/dsd37-zw.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
