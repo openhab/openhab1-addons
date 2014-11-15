@@ -1082,7 +1082,7 @@ public class ZWaveController {
 					
 					// Send the message to the controller
 					byte[] buffer = lastSentMessage.getMessageBuffer();
-					logger.debug("NODE {}: Sending Message = ", lastSentMessage.getMessageNode(), SerialMessage.bb2hex(buffer));
+					logger.debug("NODE {}: Sending Message = {}", lastSentMessage.getMessageNode(), SerialMessage.bb2hex(buffer));
 					lastMessageStartTime = System.currentTimeMillis();
 					try {
 						synchronized (serialPort.getOutputStream()) {
@@ -1114,7 +1114,7 @@ public class ZWaveController {
 							}
 	
 							if (--lastSentMessage.attempts >= 0) {
-								logger.error("NODE {}: Timeout while sending message. Requeueing", lastSentMessage.getMessageNode());
+								logger.error("NODE {}: Timeout while sending message. Requeueing!", lastSentMessage.getMessageNode());
 								if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 									handleFailedSendDataRequest(lastSentMessage);
 								}

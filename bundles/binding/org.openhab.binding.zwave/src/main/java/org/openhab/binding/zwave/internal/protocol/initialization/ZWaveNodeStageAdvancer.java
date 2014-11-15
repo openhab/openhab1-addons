@@ -637,12 +637,17 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			}
 
 			logger.debug("NODE {}: Wakeup during initialisation.", this.node.getNodeId());
+			
+			// If the stage is PING, then move on to the next stage
+			if(currentStage == NodeStage.PING) {
+				currentStage = currentStage.getNextStage();
+			}
 
 			advanceNodeStage(null);
 		}
 		else if (event instanceof ZWaveNodeStatusEvent) {
 			ZWaveNodeStatusEvent statusEvent = (ZWaveNodeStatusEvent) event;
-			// A wakeup event is received. Make sure it's for this node
+			// A network status event is received. Make sure it's for this node.
 			if (this.node.getNodeId() != event.getNodeId()) {
 				return;
 			}

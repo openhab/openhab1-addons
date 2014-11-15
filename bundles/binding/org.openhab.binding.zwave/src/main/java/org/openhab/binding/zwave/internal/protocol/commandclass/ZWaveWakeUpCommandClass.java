@@ -177,7 +177,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 			case WAKE_UP_NOTIFICATION:
 				logger.trace("Process Wake Up Notification");
 				
-				logger.debug("NODE {}: is awake", this.getNode().getNodeId());
+				logger.debug("NODE {}: Received WAKE_UP_NOTIFICATION", this.getNode().getNodeId());
 				serialMessage.setTransActionCanceled(true);
 
 				// Set the awake flag. This will also empty the queue
@@ -336,19 +336,22 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	 */
 	@Override
 	public void ZWaveIncomingEvent(ZWaveEvent event) {
-		if (!(event instanceof ZWaveTransactionCompletedEvent))
+		if (!(event instanceof ZWaveTransactionCompletedEvent)) {
 			return;
+		}
 		
 		SerialMessage serialMessage = ((ZWaveTransactionCompletedEvent)event).getCompletedMessage();
 		
-		if (serialMessage.getMessageClass() != SerialMessageClass.SendData && serialMessage.getMessageType() != SerialMessageType.Request)
+		if (serialMessage.getMessageClass() != SerialMessageClass.SendData && serialMessage.getMessageType() != SerialMessageType.Request) {
 			return;
+		}
 				
 		byte[] payload = serialMessage.getMessagePayload();
 		
 		// Check if it's addressed to this node
-		if (payload.length == 0 || (payload[0] & 0xFF) != this.getNode().getNodeId())
+		if (payload.length == 0 || (payload[0] & 0xFF) != this.getNode().getNodeId()) {
 			return;
+		}
 
 		// We now know that this is a message to this node.
 		// If it's not the WAKE_UP_NO_MORE_INFORMATION, then we need to set the wakeup timer
