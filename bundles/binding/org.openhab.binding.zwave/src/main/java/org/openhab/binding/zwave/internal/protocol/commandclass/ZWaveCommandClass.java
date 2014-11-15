@@ -185,24 +185,23 @@ public abstract class ZWaveCommandClass {
 	/**
 	 * Gets an instance of the right command class.
 	 * Returns null if the command class is not found.
-	 * @param i the code to instantiate
+	 * @param classId the code to instantiate
 	 * @param node the node this instance commands.
 	 * @param controller the controller to send messages to.
 	 * @param endpoint the endpoint this Command class belongs to
 	 * @return the ZWaveCommandClass instance that was instantiated, null otherwise 
 	 */
-	public static ZWaveCommandClass getInstance(int i, ZWaveNode node, ZWaveController controller, ZWaveEndpoint endpoint) {
-		logger.trace(String.format("NODE %d: Creating new instance of command class 0x%02X", node.getNodeId(), i));
+	public static ZWaveCommandClass getInstance(int classId, ZWaveNode node, ZWaveController controller, ZWaveEndpoint endpoint) {
 		try {
-			CommandClass commandClass = CommandClass.getCommandClass(i);
+			CommandClass commandClass = CommandClass.getCommandClass(classId);
 			if (commandClass == null) {
-				logger.warn(String.format("NODE %d: Unknown command class 0x%02x", node.getNodeId(), i));
+				logger.warn(String.format("NODE %d: Unknown command class 0x%02x", node.getNodeId(), classId));
 				return null;
 			}
 			Class<? extends ZWaveCommandClass> commandClassClass = commandClass.getCommandClassClass();
 			
 			if (commandClassClass == null) {
-				logger.warn("NODE {}: Unsupported command class {}", node.getNodeId(), commandClass.getLabel(), i);
+				logger.warn("NODE {}: Unsupported command class {}", node.getNodeId(), commandClass.getLabel(), classId);
 				return null;
 			}
 			logger.debug("NODE {}: Creating new instance of command class {}", node.getNodeId(), commandClass.getLabel());
@@ -216,7 +215,7 @@ public abstract class ZWaveCommandClass {
 		} catch (NoSuchMethodException e) {
 		} catch (SecurityException e) {
 		}
-		logger.error(String.format("NODE %d: Error instantiating command class 0x%02x", node.getNodeId(), i));
+		logger.error(String.format("NODE %d: Error instantiating command class 0x%02x", node.getNodeId(), classId));
 		return null;
 	}
 	

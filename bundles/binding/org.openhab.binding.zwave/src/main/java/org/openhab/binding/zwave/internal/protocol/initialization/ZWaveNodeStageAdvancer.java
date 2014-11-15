@@ -641,6 +641,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			// If the stage is PING, then move on to the next stage
 			if(currentStage == NodeStage.PING) {
 				currentStage = currentStage.getNextStage();
+				this.msgQueue.clear();
 			}
 
 			advanceNodeStage(null);
