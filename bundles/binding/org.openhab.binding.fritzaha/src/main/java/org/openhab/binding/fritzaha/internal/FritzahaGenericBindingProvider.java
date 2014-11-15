@@ -87,6 +87,8 @@ public class FritzahaGenericBindingProvider extends AbstractGenericBindingProvid
 					config = new FritzahaWebserviceMeter(configParts[0], configParts[1], MeterType.POWER);
 				} else if ("energy".equalsIgnoreCase(configParts[2])) {
 					config = new FritzahaWebserviceMeter(configParts[0], configParts[1], MeterType.ENERGY);
+				} else if ("temperature".equalsIgnoreCase(configParts[2])) {
+					config = new FritzahaWebserviceMeter(configParts[0], configParts[1], MeterType.TEMPERATURE);
 				} else {
 					logger.warn("Could not configure item " + item + " - Unsupported meter type for webservice");
 					return;
