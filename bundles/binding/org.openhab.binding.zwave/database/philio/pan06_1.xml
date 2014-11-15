@@ -26,7 +26,7 @@
 							to access the endpoint of PAN06, you may configure
 							the endpoint value to react the Basic Command Class</Help>
 			<Help lang="de">Wenn der Controller die Multi_Channel command class nicht unterstützt,
-							kann durch die Endpunkt Selektion der endpunkt gewählt werden
+							kann durch die Endpunktselektion der Endpunkt gewählt werden,
 							der auf die Basic Command Class reagiert</Help>
 			<Item>
 				<Value>1</Value>
@@ -42,6 +42,31 @@
 				<Value>3</Value>
 				<Label lang="en">Relay 2</Label>
 				<Label lang="de">Relais 2</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Switch mode</Label>
+			<Label lang="de">Schaltertyp</Label>
+			<Help lang="en">Change the external switch mode</Help>
+			<Help lang="de">Externer Schaltertyp ändern</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Edge mode</Label>
+				<Label lang="de">Schalter ein-aus</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Pulse mode</Label>
+				<Label lang="de">Taster</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Edge-Toggle mode</Label>
+				<Label lang="de">Schalter ein-aus-ein</Label>
 			</Item>
 		</Parameter>
 	</Configuration>
