@@ -1082,7 +1082,7 @@ public class ZWaveController {
 					
 					// Send the message to the controller
 					byte[] buffer = lastSentMessage.getMessageBuffer();
-					logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
+					logger.debug("NODE {}: Sending Message = ", lastSentMessage.getMessageNode(), SerialMessage.bb2hex(buffer));
 					lastMessageStartTime = System.currentTimeMillis();
 					try {
 						synchronized (serialPort.getOutputStream()) {
@@ -1101,7 +1101,7 @@ public class ZWaveController {
 							if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 								
 								buffer = new SerialMessage(SerialMessageClass.SendDataAbort, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.High).getMessageBuffer();
-								logger.debug("Sending Message = " + SerialMessage.bb2hex(buffer));
+								logger.debug("NODE {}: Sending Message = {}", lastSentMessage.getMessageNode(), SerialMessage.bb2hex(buffer));
 								try {
 									synchronized (serialPort.getOutputStream()) {
 										serialPort.getOutputStream().write(buffer);
@@ -1115,10 +1115,12 @@ public class ZWaveController {
 	
 							if (--lastSentMessage.attempts >= 0) {
 								logger.error("NODE {}: Timeout while sending message. Requeueing", lastSentMessage.getMessageNode());
-								if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData)
+								if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 									handleFailedSendDataRequest(lastSentMessage);
-								else
+								}
+								else {
 									enqueue(lastSentMessage);
+								}
 							} else
 							{
 								logger.warn("NODE {}: Discarding message: {}", lastSentMessage.getMessageNode(), lastSentMessage.toString());
@@ -1126,8 +1128,9 @@ public class ZWaveController {
 							continue;
 						}
 						long responseTime = System.currentTimeMillis() - lastMessageStartTime;
-						if(responseTime > longestResponseTime)
+						if(responseTime > longestResponseTime) {
 							longestResponseTime = responseTime;
+						}
 						logger.debug("Response processed after {}ms/{}ms.", responseTime, longestResponseTime);
 						logger.trace("Acquired. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 					} catch (InterruptedException e) {

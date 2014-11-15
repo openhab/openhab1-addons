@@ -392,10 +392,10 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		this.isAwake = isAwake;
 		
 		if(isAwake) {
+			logger.debug("NODE {}: Is awake with {} messages in the wake-up queue.", this.getNode().getNodeId(), this.wakeUpQueue.size());
+
 			ZWaveWakeUpEvent event = new ZWaveWakeUpEvent(getNode().getNodeId(), WAKE_UP_NOTIFICATION);
 			this.getController().notifyEventListeners(event);
-			
-			logger.debug("NODE {}: Is awake with {} messages in the wake-up queue.", this.getNode().getNodeId(), this.wakeUpQueue.size());
 
 			// Handle the wake-up queue for this node.
 			// We send the first message, and when that's ACKed, we sent the next

@@ -128,7 +128,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			return;
 		}
 
-		logger.debug("NODE {}: Node advancer - checking intialisation queue.", this.node.getNodeId());
+		logger.debug("NODE {}: Node advancer - checking initialisation queue.", this.node.getNodeId());
 
 		// If this message is in the queue, then remove it
 		if (this.msgQueue.contains(incomingMessage)) {
@@ -171,7 +171,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					controller.enqueue(msg);
 				}
 
-				logger.debug("NODE {}: Node advancer - queued packet. Queue length now {}", this.node.getNodeId(),
+				logger.debug("NODE {}: Node advancer - queued packet. Queue length is {}", this.node.getNodeId(),
 						msgQueue.size());
 			}
 		}
@@ -196,7 +196,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			return;
 		}
 
-		logger.debug("NODE {}: Node advancer - {}: queue length({}), free to send ({})", this.node.getNodeId(),
+		logger.debug("NODE {}: Node advancer - {}: queue length({}), free to send({})", this.node.getNodeId(),
 				currentStage.toString(), msgQueue.size(), freeToSend);
 
 		// If event class is null, then this call isn't the result of an incoming frame
@@ -221,7 +221,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		// We run through all stages until one queues a message.
 		// Then we will wait for the response before continuing
 		do {
-			logger.debug("NODE {}: Node advancer loop - {}: stageAdvanced ({})", this.node.getNodeId(),
+			logger.debug("NODE {}: Node advancer loop - {}: stageAdvanced({})", this.node.getNodeId(),
 					currentStage.toString(), stageAdvanced);
 
 			// Remember the time so we can handle retries and keep users
@@ -614,7 +614,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			case IdentifyNode:
 			case RequestNodeInfo:
 			case GetRoutingInfo:
-				logger.debug("NODE {}: Initialisation transaction complete event ({}:{}) {}", this.node.getNodeId(),
+				logger.debug("NODE {}: Initialisation transaction complete event ({}:{}) success({})", this.node.getNodeId(),
 						serialMessage.getMessageClass(), serialMessage.getMessageType(), completeEvent.getState());
 
 				if (((ZWaveTransactionCompletedEvent) event).getState()) {

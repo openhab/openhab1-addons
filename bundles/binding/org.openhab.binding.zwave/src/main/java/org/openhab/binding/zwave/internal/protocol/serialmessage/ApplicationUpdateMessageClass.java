@@ -83,7 +83,7 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			SerialMessage requestInfoMessage = lastSentMessage;
 
 			if (requestInfoMessage.getMessageClass() != SerialMessageClass.RequestNodeInfo) {
-				logger.warn("NODE {}: Got application update request without node info request, ignoring. Last {}.", nodeId, requestInfoMessage.getMessageClass());
+				logger.warn("NODE {}: Got application update request without node info request, ignoring. Last message was {}.", nodeId, requestInfoMessage.getMessageClass());
 				return false;
 			}
 				

@@ -18,11 +18,11 @@ import java.util.Map;
  * @ since 1.3.0
  */
 public enum TransmissionState {
-	COMPLETE_OK(0x00, "Transmission complete and ACK received."),
-	COMPLETE_NO_ACK(0x01, "Transmission complete, no ACK received."),
-	COMPLETE_FAIL(0x02, "Transmission failed."),
-	COMPLETE_NOT_IDLE(0x03, "Transmission failed, network busy."),
-	COMPLETE_NOROUTE(0x04, "Tranmission complete, no return route.");
+	COMPLETE_OK(0x00, "Transmission complete and ACK received"),
+	COMPLETE_NO_ACK(0x01, "Transmission complete, no ACK received"),
+	COMPLETE_FAIL(0x02, "Transmission failed"),
+	COMPLETE_NOT_IDLE(0x03, "Transmission failed, network busy"),
+	COMPLETE_NOROUTE(0x04, "Tranmission complete, no return route");
 	
 	/**
 	 * A mapping between the integer code and its corresponding transmission state
