@@ -394,15 +394,30 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 
 				record = new OpenHABConfigurationRecord(domain, "ManufacturerID", "Manufacturer ID", true);
-				record.value = Integer.toHexString(node.getManufacturer());
+				if(node.getDeviceId() == Integer.MAX_VALUE) {
+					record.value = "UNKNOWN";
+				}
+				else {
+					record.value = Integer.toHexString(node.getManufacturer());
+				}
 				records.add(record);
 
-				record = new OpenHABConfigurationRecord(domain, "DeviceId", "Device ID", true);
-				record.value = Integer.toHexString(node.getDeviceId());
+				record = new OpenHABConfigurationRecord(domain, "DeviceID", "Device ID", true);
+				if(node.getDeviceId() == Integer.MAX_VALUE) {
+					record.value = "UNKNOWN";
+				}
+				else {
+					record.value = Integer.toHexString(node.getDeviceId());
+				}
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "DeviceType", "Device Type", true);
-				record.value = Integer.toHexString(node.getDeviceType());
+				if(node.getDeviceId() == Integer.MAX_VALUE) {
+					record.value = "UNKNOWN";
+				}
+				else {
+					record.value = Integer.toHexString(node.getDeviceType());
+				}
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "Version", "Version", true);
@@ -421,9 +436,14 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				ZWaveBatteryCommandClass batteryCommandClass = (ZWaveBatteryCommandClass) node
 						.getCommandClass(CommandClass.BATTERY);
 				if (batteryCommandClass != null) {
-					record.value = "Battery " + batteryCommandClass.getBatteryLevel() + "%";
+					if(batteryCommandClass.getBatteryLevel() == null) {
+						record.value = "BATTERY " + "UNKNOWN";
+					}
+					else {
+						record.value = "BATTERY " + batteryCommandClass.getBatteryLevel() + "%";
+					}
 				} else {
-					record.value = "Mains";
+					record.value = "MAINS";
 				}
 				records.add(record);
 
