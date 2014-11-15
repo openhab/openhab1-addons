@@ -1,0 +1,148 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+
+// Scenario button test
+rule "Scenario living read lights"
+when
+	Item Light_GF_Living_69_BTN1 received update
+then
+	if(Light_GF_Living_69_BTN1.state==ON)
+	{
+		if (Light_GF_Living_4x_LED.state==OFF)
+			sendCommand(Light_GF_Living_4x_LED, ON)
+		else
+			sendCommand(Light_GF_Living_4x_LED, OFF)
+	}
+end
+
+// Notify My Android test
+rule "Scenario detection corridor"
+when
+	Item Light_GF_Corridor_Ceiling received update
+then
+	logDebug("Scenario detection corridor", Light_GF_Corridor_Ceiling.toString())
+	
+	if(Light_GF_Corridor_Ceiling.state==ON)
+	{
+		// only send a message after 60 secs of inactivity
+		//if (Light_GF_Corridor_Ceiling.updatedSince(now.minusSeconds(60)))
+		{
+			notifyMyAndroid("Movement detected", "Licht in de gang is aan als gevolg van IR detectie")
+			//sendMail("tom_de_vlaminck@hotmail.com", "Movement detected", "Licht in de gang is aan als gevolg van IR detectie")
+		}
+	}
+end
+
+// Doorbel mail & notify
+rule "Doorbel handler"
+when
+	Item Light_DOORBEL_98_BTN1 received update
+then
+	if(Light_DOORBEL_98_BTN1.state==ON)
+	{
+		notifyMyAndroid("Doorbel", "Deurbelknop ingedrukt - sending image")
+		sendMail("devlaminck.tom@gmail.com", "OpenHAB Deurbel", "Deurbel ingedrukt", "http://10.0.6.11/lastsnap.jpg")
+		sendMail("els.carnol@gmail.com", "OpenHAB Deurbel", "Deurbel ingedrukt", "http://10.0.6.11/lastsnap.jpg")		
+		
+		var Number idx=0
+		// number of rings
+		while(idx<5 )
+		{
+			sendCommand(Light_GF_Corridor_BEL, ON)
+	       	sendCommand(Light_GF_Living_1x_LED, ON)
+	       	sendCommand(Light_FF_Bed_LED_Spot, ON)
+	        Thread::sleep(1500)
+	        sendCommand(Light_GF_Corridor_BEL, OFF)
+	       	sendCommand(Light_GF_Living_1x_LED, OFF)
+	       	sendCommand(Light_FF_Bed_LED_Spot, OFF)
+	        Thread::sleep(1500)
+			idx = idx + 1
+		}			
+	}
+end
+
+rule "Scenario living read kachel"
+when
+	Item Light_GF_Living_69_BTN3 received update
+then
+	if(Light_GF_Living_69_BTN3.state==ON)
+	{
+		if (Light_GF_Living_VENT_1.state==OFF)
+		{
+			sendCommand(Light_GF_Living_VENT_1, ON)
+		}		
+		else
+		{
+			if (Light_GF_Living_VENT_2.state==OFF)
+				sendCommand(Light_GF_Living_VENT_2, ON)
+			else
+			{
+				if (Light_GF_Living_VENT_3.state==OFF)
+					sendCommand(Light_GF_Living_VENT_3, ON)
+				else
+				{
+		    		sendCommand(Light_GF_Living_VENT_1, OFF)
+					sendCommand(Light_GF_Living_VENT_2, OFF)
+					sendCommand(Light_GF_Living_VENT_3, OFF)
+				}
+			}
+		}		
+	}
+end
+
+rule "Periodically check presence"
+when
+    Time cron "0 */5 * * * ?"
+then
+        if (Presence.state == ON)
+        {
+                if(gMobiles.members.filter(s | s.state == ON).size == 0) {
+                        logInfo("PresenceCheck", "No phone within reach, checking for flapping")
+                        //if(gMobiles.members.filter(s | s.changedSince(now.minusMinutes(5))).size == 0) 
+                        {
+                                logInfo("PresenceCheck", "Nobody is at home")
+                                sendCommand(Presence, OFF)
+                        }
+                }
+        }
+        else
+        {
+                //For initialization. If Presence is undefined or off, although it should be on.
+                if(gMobiles.members.filter(s | s.state == ON).size > 0) {
+                        sendCommand(Presence, ON)
+                }
+                else if (Presence.state == Undefined || Presence.state == Uninitialized) {
+                        sendCommand(Presence, OFF)
+                }
+        }
+
+end
+
+rule "Coming home"
+when
+        Item gMobiles changed
+then
+        if (Presence.state != ON) {
+                if(gMobiles.members.filter(s | s.state == ON).size > 0) {
+                        logInfo("PresenceCheck", "Somebody is home")
+                        sendCommand(Presence, ON)
+                }
+        }
+end
+
+// Rule for handling presence
+rule "Presence action rule"
+when
+	Item Presence received update
+then
+	if(Presence.state==ON)
+	{
+		notifyMyAndroid("Presence detected", "Aanwezigheid gedetecteerd in huis")
+	}
+	
+	if(Presence.state==OFF)
+	{
+		notifyMyAndroid("No presence detected", "Niemand in huis meer gedetecteerd")
+	}
+end

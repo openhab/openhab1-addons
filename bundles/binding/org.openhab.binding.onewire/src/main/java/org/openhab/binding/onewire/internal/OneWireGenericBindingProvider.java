@@ -49,6 +49,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String getBindingType() {
 		return "onewire";
 	}

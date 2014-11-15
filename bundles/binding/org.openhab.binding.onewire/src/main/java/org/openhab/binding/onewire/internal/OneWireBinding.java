@@ -192,6 +192,7 @@ public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider
 		}
 	}
 
+	@Override
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
 

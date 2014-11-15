@@ -88,6 +88,7 @@
     <module>org.openhab.binding.insteonhub</module>
     <module>org.openhab.binding.insteonplm</module>
     <module>org.openhab.binding.pioneeravr</module>
+    <module>org.openhab.binding.bticino</module>
     <module>org.openhab.binding.em.test</module>
     <module>org.openhab.binding.s300th.test</module>
     <module>org.openhab.binding.fht</module>
