@@ -1219,6 +1219,7 @@ public class ZWaveController {
 					
 					switch (nextByte) {
 						case SOF:
+							SOFCount++;
 							int messageLength;
 							
 							try {
@@ -1247,19 +1248,19 @@ public class ZWaveController {
 							logger.trace("Reading message finished" );
 							logger.debug("Receive Message = {}", SerialMessage.bb2hex(buffer));
 							processIncomingMessage(buffer);
-							SOFCount++;
 							break;
 						case ACK:
-	    					logger.trace("Received ACK");
 							ACKCount++;
+	    					logger.trace("Received ACK");
 							break;
 						case NAK:
+							NAKCount++;
 	    					logger.error("Message not acklowledged by controller (NAK), discarding");
 	    					transactionCompleted.release();
 	    					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
-							NAKCount++;
 							break;
 						case CAN:
+							CANCount++;
 	    					logger.error("Message cancelled by controller (CAN), resending");
 							try {
 								Thread.sleep(100);
@@ -1269,12 +1270,11 @@ public class ZWaveController {
 	    					enqueue(lastSentMessage);
 	    					transactionCompleted.release();
 	    					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
-							CANCount++;
 							break;
 						default:
+	    					OOFCount++;
 							logger.warn(String.format("Out of Frame flow. Got 0x%02X. Sending NAK.", nextByte));
 	    					sendResponse(NAK);
-	    					OOFCount++;
 	    					break;
 					}
 				}
