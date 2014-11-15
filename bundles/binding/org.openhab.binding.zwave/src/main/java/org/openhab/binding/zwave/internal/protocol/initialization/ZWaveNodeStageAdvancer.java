@@ -484,7 +484,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				currentStage = currentStage.getNextStage();
 				stageAdvanced = true;
 				logger.debug("NODE {}: Node advancer - advancing to {}.", this.node.getNodeId(),
-						currentStage.getLabel());
+						currentStage.toString());
 			}
 		} while (msgQueue.isEmpty());
 	}
@@ -637,12 +637,6 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			}
 
 			logger.debug("NODE {}: Wakeup during initialisation.", this.node.getNodeId());
-			
-			// If the stage is PING, then move on to the next stage
-			if(currentStage == NodeStage.PING) {
-				currentStage = currentStage.getNextStage();
-				this.msgQueue.clear();
-			}
 
 			advanceNodeStage(null);
 		}

@@ -55,10 +55,16 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 
 	@XStreamOmitField
 	private ArrayBlockingQueue<SerialMessage> wakeUpQueue;
-	
+
+	// From interval report
+	@XStreamOmitField
+	private boolean initReportDone = false;
 	private int targetNodeId = 0;
 	private int interval = 0;
-	
+
+	// From capabilities report
+	@XStreamOmitField
+	private boolean initCapabilitiesDone = false;
 	private int minInterval = 0;
 	private int maxInterval = 0;
 	private int defaultInterval = 0;
@@ -66,9 +72,6 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	
 	@XStreamOmitField
 	private volatile boolean isAwake = false;
-	
-	@XStreamOmitField
-	private boolean initializationComplete = false;
 	
 	@XStreamOmitField
 	private Timer timer = null;
@@ -125,7 +128,6 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
-		logger.trace("Handle Message Wake Up Request");
 		logger.debug("NODE {}: Received Wake Up Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 
@@ -137,7 +139,8 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				logger.warn(String.format("Command 0x%02X not implemented.", command));
 				return;
 			case WAKE_UP_INTERVAL_REPORT:
-				logger.trace("Process Wake Up Interval");
+				logger.trace("NODE {}: Process Wake Up Interval", this.getNode().getNodeId());
+				initReportDone = true;
 				
 				// according to open-zwave: it seems that some devices send incorrect interval report messages. Don't know if they are spurious.
 				// if not we should advance the node stage.
@@ -152,13 +155,13 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
                 
 				this.interval = receivedInterval;
 				logger.debug("NODE {}: Wake up interval set", this.getNode().getNodeId());
-				
-				this.initializationComplete = true;
+
 				ZWaveWakeUpEvent event = new ZWaveWakeUpEvent(getNode().getNodeId(), WAKE_UP_INTERVAL_REPORT);
 				this.getController().notifyEventListeners(event);
 				break;
 			case WAKE_UP_INTERVAL_CAPABILITIES_REPORT:
-				logger.trace("Process Wake Up Interval Capabilities");
+				logger.trace("NODE {}: Process Wake Up Interval Capabilities", this.getNode().getNodeId());
+				initCapabilitiesDone = true;
 				
                 this.minInterval = ((serialMessage.getMessagePayloadByte(offset + 1)) << 16) | ((serialMessage.getMessagePayloadByte(offset + 2)) << 8) | (serialMessage.getMessagePayloadByte(offset + 3));
                 this.maxInterval = ((serialMessage.getMessagePayloadByte(offset + 4)) << 16) | ((serialMessage.getMessagePayloadByte(offset + 5)) << 8) | (serialMessage.getMessagePayloadByte(offset + 6));
@@ -170,13 +173,8 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				logger.debug("NODE {}: Maximum interval = {}", this.getNode().getNodeId(), this.maxInterval);
 				logger.debug("NODE {}: Default interval = {}", this.getNode().getNodeId(), this.defaultInterval);
 				logger.debug("NODE {}: Interval step    = {}", this.getNode().getNodeId(), this.intervalStep);
-                
-				this.initializationComplete = true;
-				initialiseDone = true;
 				break;
 			case WAKE_UP_NOTIFICATION:
-				logger.trace("Process Wake Up Notification");
-				
 				logger.debug("NODE {}: Received WAKE_UP_NOTIFICATION", this.getNode().getNodeId());
 				serialMessage.setTransActionCanceled(true);
 
@@ -317,13 +315,19 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	@Override
 	public Collection<SerialMessage> initialize(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>(2);
-		if(refresh == true || initialiseDone == false) {
+		if(refresh == true) {
+			initReportDone = false;
+			initCapabilitiesDone = false;
+		}
+		
+		if(initReportDone == false) {
 			// get wake up interval.
-			result.add(getIntervalMessage()); 
-			if (this.getVersion() > 1) {
-				// get default values for wake up interval.
-				result.add(getIntervalCapabilitiesMessage());
-			}
+			result.add(getIntervalMessage());
+		}
+		
+		if(initCapabilitiesDone == false && this.getVersion() > 1) {
+			// get default values for wake up interval.
+			result.add(getIntervalCapabilitiesMessage());
 		}
 		return result;
 	}
