@@ -25,11 +25,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Callback implementation for updating numbers Supports reauthorization
+ * Callback implementation for updating multiple numbers decoded from a xml
+ * response. Supports reauthorization.
+ * 
+ * In future versions this callback type could replace the other two used AVM
+ * switch commands <b>getswitchpower</b> and <b>getswitchenergy</b>. Replacement
+ * should be combined this XML reponse caching because up to 3 item bindings can
+ * be updated by one request without loosing accuracy.
  * 
  * @author Robert Bausdorf
- * @since 1.5.1
+ * @since 1.6
  */
+@SuppressWarnings("restriction")
 public class FritzahaWebserviceUpdateXmlCallback extends FritzahaReauthCallback {
 	static final Logger logger = LoggerFactory
 			.getLogger(FritzahaWebserviceUpdateXmlCallback.class);
@@ -48,6 +55,7 @@ public class FritzahaWebserviceUpdateXmlCallback extends FritzahaReauthCallback 
 	 * Ain of requested device
 	 */
 	private String deviceAin;
+
 	/**
 	 * Constructor for retriable authentication and state updating
 	 * 
@@ -90,20 +98,20 @@ public class FritzahaWebserviceUpdateXmlCallback extends FritzahaReauthCallback 
 						.unmarshal(new StringReader(response));
 				ArrayList<DeviceModel> list = model.getDevicelist();
 				for (DeviceModel device : list) {
-					if( device.getIdentifier().equals(this.deviceAin) ) {
-						// BigDecimal meterValue = new BigDecimal(response.trim());
+					if (device.getIdentifier().equals(this.deviceAin)) {
 						BigDecimal meterValueScaled = new BigDecimal(0);
 						switch (type) {
 						case POWER:
-							meterValueScaled = device.getPowermeter().getPower()
-									.scaleByPowerOfTen(-3);
+							meterValueScaled = device.getPowermeter()
+									.getPower().scaleByPowerOfTen(-3);
 							break;
 						case ENERGY:
-							meterValueScaled = device.getPowermeter().getEnergy();
+							meterValueScaled = device.getPowermeter()
+									.getEnergy();
 							break;
 						case TEMPERATURE:
-							meterValueScaled = device.getTemperature().getCelsius()
-									.scaleByPowerOfTen(-1);
+							meterValueScaled = device.getTemperature()
+									.getCelsius().scaleByPowerOfTen(-1);
 							break;
 						default:
 							logger.warn("unknown meter type: " + type);
@@ -113,7 +121,8 @@ public class FritzahaWebserviceUpdateXmlCallback extends FritzahaReauthCallback 
 						webIface.postUpdate(itemName, new DecimalType(
 								meterValueScaled));
 					} else {
-						logger.trace("device " + device.getIdentifier() + " was not requested");
+						logger.trace("device " + device.getIdentifier()
+								+ " was not requested");
 					}
 				}
 			} catch (JAXBException e) {
@@ -121,5 +130,4 @@ public class FritzahaWebserviceUpdateXmlCallback extends FritzahaReauthCallback 
 			}
 		}
 	}
-
 }
