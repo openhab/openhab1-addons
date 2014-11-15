@@ -510,14 +510,24 @@ public class PersistenceExtensions implements ManagedService {
 	
 	/**
 	 * Returns the previous state of a given <code>item</code>. 
-	 * If the item is uninitialized/undefined, the last saved state is returned.
 	 * 
-	 * @param item the item to get the average state value for
-	 * @return the parent state not equal the current state
+	 * @param item the item to get the previous state value for
+	 * @return the previous state
 	 */
 	static public HistoricItem previousState(Item item) {
+		return previousState(item, false);
+	}
+
+	/**
+	 * Returns the previous state of a given <code>item</code>. 
+	 * 
+	 * @param item the item to get the previous state value for
+	 * @param skipEqual if true, skips equal state values and searches the first state not equal the current state
+	 * @return the previous state
+	 */
+	static public HistoricItem previousState(Item item, boolean skipEqual) {
 		if (isDefaultServiceAvailable()) {
-			return previousState(item, defaultService);
+			return previousState(item, skipEqual, defaultService);
 		} else {
 			return null;
 		}
@@ -526,12 +536,13 @@ public class PersistenceExtensions implements ManagedService {
 	/**
 	 * Returns the previous state of a given <code>item</code>. 
 	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
-	 * If the item is uninitialized/undefined, the last saved state is returned.
 	 * 
-	 * @param item the item to get the average state value for
-	 * @return the parent state not equal the current state
+	 * @param item the item to get the previous state value for
+	 * @param skipEqual if true, skips equal state values and searches the first state not equal the current state
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the previous state
 	 */
-	static public HistoricItem previousState(Item item, String serviceName) {
+	static public HistoricItem previousState(Item item, boolean skipEqual, String serviceName) {
 		PersistenceService service = services.get(serviceName);
 		if (service instanceof QueryablePersistenceService) {
 			QueryablePersistenceService qService = (QueryablePersistenceService) service;
@@ -539,7 +550,7 @@ public class PersistenceExtensions implements ManagedService {
 			filter.setItemName(item.getName());
 			filter.setOrdering(Ordering.DESCENDING);
 
-			filter.setPageSize(1000);
+			filter.setPageSize(skipEqual ? 1000 : 1);
 			int startPage = 0;
 			filter.setPageNumber(startPage);
 
@@ -550,10 +561,10 @@ public class PersistenceExtensions implements ManagedService {
 				while (itemIterator.hasNext()) {
 					HistoricItem historicItem = itemIterator.next(); 
 					itemCount++;
-					if (!historicItem.getState().equals(item.getState())) {
+					if (!skipEqual || (skipEqual && !historicItem.getState().equals(item.getState()))) {
 						return historicItem;
 					}
-				}					
+				}
 				if (itemCount == filter.getPageSize()) {
 					filter.setPageNumber(++startPage);
 					items = qService.query(filter);
