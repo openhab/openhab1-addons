@@ -111,6 +111,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		this.controller = controller;
 
 		currentStage = NodeStage.EMPTYNODE;
+		queryStageTimeStamp = Calendar.getInstance().getTime();
 
 		// Initialise the message queue
 		msgQueue = new ArrayBlockingQueue<SerialMessage>(MAX_BUFFFER_LEN, true);
@@ -223,10 +224,6 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		do {
 			logger.debug("NODE {}: Node advancer loop - {}: stageAdvanced({})", this.node.getNodeId(),
 					currentStage.toString(), stageAdvanced);
-
-			// Remember the time so we can handle retries and keep users
-			// informed
-			queryStageTimeStamp = Calendar.getInstance().getTime();
 
 			switch (currentStage) {
 			case EMPTYNODE:
@@ -485,6 +482,10 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				stageAdvanced = true;
 				logger.debug("NODE {}: Node advancer - advancing to {}.", this.node.getNodeId(),
 						currentStage.toString());
+				
+				// Remember the time so we can handle retries and keep users
+				// informed
+				queryStageTimeStamp = Calendar.getInstance().getTime();
 			}
 		} while (msgQueue.isEmpty());
 	}
@@ -624,9 +625,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			default:
 			}
 		}
-		// WAKEUP EVENT?.
 		else if (event instanceof ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) {
-			// We only care about the wake-up notification
+			// WAKEUP EVENT
 			if (((ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) event).getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_NOTIFICATION) {
 				return;
 			}

@@ -97,8 +97,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		
 		if(!isZwaveNetworkReady){
 			logger.debug("Zwave Network isn't ready yet!");
-			if (this.zController != null)
+			if (this.zController != null) {
 				this.zController.checkForDeadOrSleepingNodes();
+			}
 			return;
 		}
 		

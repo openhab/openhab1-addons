@@ -33,6 +33,7 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePr
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass.ZWaveWakeUpEvent;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
@@ -83,6 +84,7 @@ public class ZWaveController {
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveController.class);
 	
 	private static final int QUERY_STAGE_TIMEOUT = 120000;
+	private static final int QUERY_STAGE_RETRY = 20000;
 	private static final int ZWAVE_RESPONSE_TIMEOUT = 5000;		// 5000 ms ZWAVE_RESPONSE TIMEOUT
 	private static final int ZWAVE_RECEIVE_TIMEOUT = 1000;		// 1000 ms ZWAVE_RECEIVE_TIMEOUT
 	private static final int INITIAL_QUEUE_SIZE = 128; 
@@ -606,28 +608,33 @@ public class ZWaveController {
 			}
 		}
 
-		logger.trace("Checking for Dead or Sleeping Nodes.");
+		logger.debug("Checking for Dead or Sleeping Nodes.");
 		for (Map.Entry<Integer, ZWaveNode> entry : zwaveNodes.entrySet()){
 			if (entry.getValue().getNodeStage() == NodeStage.EMPTYNODE) {
 				continue;
 			}
 
-			logger.debug("NODE {}: In Stage {} since {}, listening={}, FLiRS={}", entry.getKey(),
-					entry.getValue().getNodeStage().getLabel(), entry.getValue().getQueryStageTimeStamp().toString(),
+			logger.debug("NODE {}: In Stage {} since {} ({}), listening={}, FLiRS={}", entry.getKey(),
+					entry.getValue().getNodeStage().toString(), entry.getValue().getQueryStageTimeStamp().toString(),
+					(Calendar.getInstance().getTimeInMillis() - entry.getValue().getQueryStageTimeStamp().getTime() / 1000),
 					entry.getValue().isListening(), entry.getValue().isFrequentlyListening());
-			
+
+			if(Calendar.getInstance().getTimeInMillis() < (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_RETRY)) {
+				ZWaveNodeStatusEvent event = new ZWaveNodeStatusEvent(entry.getKey(), ZWaveNodeStatusEvent.State.Alive);
+				notifyEventListeners(event);
+			}
+
 			if(entry.getValue().getNodeStage() == NodeStage.DONE || entry.getValue().isDead() == true
 					 || (!entry.getValue().isListening() && !entry.getValue().isFrequentlyListening())) {
 				completeCount++;
 				continue;
 			}
-			
-			logger.trace("NODE {}: Checking if {} miliseconds have passed in current stage.", entry.getKey(), QUERY_STAGE_TIMEOUT);
-			
-			if(Calendar.getInstance().getTimeInMillis() < (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_TIMEOUT))
+
+			if(Calendar.getInstance().getTimeInMillis() < (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_TIMEOUT)) {
 				continue;
+			}
 			
-			logger.warn(String.format("NODE %d: May be dead, setting stage to DEAD.", entry.getKey()));
+			logger.warn("NODE %d: May be dead, setting stage to DEAD.", entry.getKey());
 			entry.getValue().setNodeStage(NodeStage.DEAD);
 
 			completeCount++;
