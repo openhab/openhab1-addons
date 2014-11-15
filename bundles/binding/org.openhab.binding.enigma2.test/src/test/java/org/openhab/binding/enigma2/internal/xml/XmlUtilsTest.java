@@ -7,6 +7,9 @@ import org.junit.Test;
 
 /**
  * Test class for XMLUtils
+ * 
+ * @author Sebastian Kutschbach
+ * @since 1.6.0
  */
 public class XmlUtilsTest {
 
