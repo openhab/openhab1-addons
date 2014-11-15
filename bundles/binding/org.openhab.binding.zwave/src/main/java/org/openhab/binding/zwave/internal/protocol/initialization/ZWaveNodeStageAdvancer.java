@@ -184,7 +184,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	 * after a response is received. We don't necessarily know if the response
 	 * is to the frame we requested though, so to be sure the initialisation
 	 * gets all the information it needs, the command class itself gets queried.
-	 * This method also handles the sending of frames. Since the intialisation
+	 * This method also handles the sending of frames. Since the initialisation
 	 * phase is a busy one we try and only have one outstanding request. Again
 	 * though, we can't be sure that a response is aligned with the node
 	 * advancer request so it is possible that more than one packet can be
@@ -196,8 +196,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			return;
 		}
 
-		logger.debug("NODE {}: Node advancer - {} - queue length {} - free to send {}.", this.node.getNodeId(),
-				currentStage.getLabel(), msgQueue.size(), freeToSend);
+		logger.debug("NODE {}: Node advancer - {}: queue length({}), free to send ({})", this.node.getNodeId(),
+				currentStage.toString(), msgQueue.size(), freeToSend);
 
 		// If event class is null, then this call isn't the result of an incoming frame
 		// It could be a wakeup
@@ -211,9 +211,19 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			return;
 		}
 
+		// The stageAdvanced flag is used to tell command classes that this
+		// is the first iteration.
+		// During the first iteration all messages are queued. After this,
+		// only outstanding requests are returned.
+		// This continues until there are no requests required.
+		stageAdvanced = false;
+
 		// We run through all stages until one queues a message.
 		// Then we will wait for the response before continuing
 		do {
+			logger.debug("NODE {}: Node advancer loop - {}: stageAdvanced ({})", this.node.getNodeId(),
+					currentStage.toString(), stageAdvanced);
+
 			// Remember the time so we can handle retries and keep users
 			// informed
 			queryStageTimeStamp = Calendar.getInstance().getTime();
@@ -464,17 +474,11 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				break;
 			}
 
-			// The stageAdvanced flag is used to tell command classes that this
-			// is the first iteration.
-			// During the first iteration all messages are queued. After this,
-			// only outstanding requests
-			// are returned. This continues until there are no requests
-			// required.
-			stageAdvanced = false;
-
 			// If there are messages queued, send one.
 			// If there are none, then it means we're happy that we have all the
 			// data for this stage.
+			// If we have all the data, set stageAdvanced to true to tell the system
+			// that we're starting again, then loop around again.
 			if (sendMessage() == false) {
 				// Move on to the next stage
 				currentStage = currentStage.getNextStage();
@@ -492,6 +496,9 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	 *            the message collection
 	 */
 	private void addToQueue(SerialMessage serialMessage) {
+		if(serialMessage == null) {
+			return;
+		}
 		if (!this.msgQueue.contains(serialMessage)) {
 			this.msgQueue.add(serialMessage);
 		}
@@ -504,6 +511,9 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	 *            the message collection
 	 */
 	private void addToQueue(Collection<SerialMessage> msgs) {
+		if(msgs == null) {
+			return;
+		}
 		for (SerialMessage serialMessage : msgs) {
 			addToQueue(serialMessage);
 		}
@@ -520,6 +530,9 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	 *            the endpoint number
 	 */
 	private void addToQueue(Collection<SerialMessage> msgs, ZWaveCommandClass commandClass, int endpointId) {
+		if(msgs == null) {
+			return;
+		}
 		for (SerialMessage serialMessage : msgs) {
 			addToQueue(this.node.encapsulate(serialMessage, commandClass, endpointId));
 		}
