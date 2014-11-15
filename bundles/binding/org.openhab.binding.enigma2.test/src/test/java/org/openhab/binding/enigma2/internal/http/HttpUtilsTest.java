@@ -6,6 +6,9 @@ import org.junit.Test;
 
 /**
  * Test class for HttpUtils
+ * 
+ * @author Sebastian Kutschbach
+ * @since 1.6.0
  */
 public class HttpUtilsTest {
 
