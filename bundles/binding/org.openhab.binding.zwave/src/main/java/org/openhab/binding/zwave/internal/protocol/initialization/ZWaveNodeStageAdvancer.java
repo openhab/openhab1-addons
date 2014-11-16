@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * the initialization of a node.
  * 
  * Node initialisation is handled solely within the NodeStageAdvancer. It is not
- * based on time - it waits for the transactions to complete. Time can not be
+ * based on time - it waits for the transactions to complete. Time cannot be
  * used since with larger networks, it may take a long time for the
  * initialisation. This is especially true if there are battery nodes since the
  * PING phase, used to detect if a node is active, will time-out for battery
@@ -54,7 +54,9 @@ import org.slf4j.LoggerFactory;
  * We use the 'listening' flag to prioritise the initialisation of nodes. Rather
  * than kicking off all nodes at the same time and have battery nodes timing out
  * and delaying the initialisation of mains nodes, we try and initialise nodes
- * that are listening first.
+ * that are listening first. This is checked after the protocol information
+ * is received, and non-listening nodes are held at a WAIT state until the
+ * transmit queue drops below 2 frames when they are allowed to proceed to PING.
  * 
  * The NodeStageAdvancer registers an event listener during the initialisation
  * of a node. This allows it to be notified when each transaction is complete,
@@ -73,8 +75,8 @@ import org.slf4j.LoggerFactory;
  * lot of messages on the network, we try and ensure that only 1 packet is
  * outstanding to any node at once.
  * 
- * Each time we receive an ack for a message, the node advancer gets called, and
- * we see if this is an ack for a message that's part of the initialisation. If
+ * Each time we receive an ACK for a message, the node advancer gets called, and
+ * we see if this is an ACK for a message that's part of the initialisation. If
  * it is, the message gets removed from the list.
  * 
  * Each time we receive a command message, the node advancer gets called. This
@@ -190,7 +192,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
 				if (msg.getMessageClass() == SerialMessageClass.SendData) {
 					controller.sendData(msg);
-				} else {
+				}
+				else {
 					controller.enqueue(msg);
 				}
 
@@ -366,7 +369,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 						logger.debug("NODE {}: Node advancer: VERSION - queued   {}", node.getNodeId(), zwaveVersionClass
 								.getCommandClass().getLabel());
 						addToQueue(version.checkVersion(zwaveVersionClass));
-					} else {
+					}
+					else {
 						zwaveVersionClass.setVersion(1);
 					}
 				}
@@ -662,6 +666,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				// by checking to see if the transmit queue is now empty.
 				// This will allow battery devices stuck in WAIT state to get moving.
 				if(controller.getTxQueueLength() < 2 && currentStage == NodeStage.WAIT) {
+					logger.debug("NODE {}: Node advancer - WAIT: The WAIT is over!", node.getNodeId());
+
 					currentStage = currentStage.getNextStage();
 					handleNodeQueue(null);
 				}
