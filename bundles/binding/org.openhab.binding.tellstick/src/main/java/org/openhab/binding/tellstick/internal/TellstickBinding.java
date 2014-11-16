@@ -308,7 +308,8 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 			resetTellstick();
 
 		}
-		if ((System.currentTimeMillis() - lastRefresh) > updateFromTellstickInterval) {
+		if (lastRefresh <= 0) {
+			//Only read from tellstick once, the status is sometimes wrong.
 			refreshFromTellstick();
 		}
 	}
