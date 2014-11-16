@@ -31,11 +31,18 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage,
 			SerialMessage incomingMessage) {
 		logger.trace("Handle Message Send Data Response");
-		if (incomingMessage.getMessagePayloadByte(0) != 0x00)
+		if (incomingMessage.getMessagePayloadByte(0) != 0x00) {
 			logger.debug("Sent Data successfully placed on stack.");
-		else
+		}
+		else {
+			// This is an error. This means that the transaction is complete!
+			// Set the flag, and return false.
 			logger.error("Sent Data was not placed on stack due to error {}.", incomingMessage.getMessagePayloadByte(0));
-
+			transactionComplete = true;
+			
+			return false;
+		}
+		
 		return true;
 	}
 
