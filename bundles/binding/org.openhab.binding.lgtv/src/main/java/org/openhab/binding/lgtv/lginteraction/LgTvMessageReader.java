@@ -1,13 +1,11 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * LGInteraction / Implementation of LG API
- * Author Martin Fluch martinfluch@gmx.net 
  */
 
 
@@ -214,7 +212,6 @@ public class LgTvMessageReader extends HttpServlet {
 	}
 
 	
-	//
 	public void startserver() throws IOException {
 
 		if (status == 0) {
@@ -261,13 +258,10 @@ public class LgTvMessageReader extends HttpServlet {
                         throws ServletException, IOException {
 
 
-                        //String requestMethod = exchange.getRequestMethod();
                         BufferedReader rd = null;
                         StringBuilder sb = null;
 
-                        logger.debug("myhandler / get / called");
                         if (1==1) {
-                         //       OutputStream responseBody = res.getOutputStream();
 
 
                                 LgtvStatusUpdateEvent event = new LgtvStatusUpdateEvent(this);
@@ -276,9 +270,6 @@ public class LgTvMessageReader extends HttpServlet {
                                                 req.getInputStream()));
                                 sb = new StringBuilder();
                                 String line;
-                         //       while ((line = rd.readLine()) != null) {
-                         //               sb.append(line + '\n');
-                         //       }
 
 
                                 String remoteaddr = req.getRemoteAddr();
@@ -299,8 +290,6 @@ public class LgTvMessageReader extends HttpServlet {
                                         t = remoteaddr;
                                 remoteaddr = t;
 
-                                logger.debug("httphandler called from remoteaddr=" + remoteaddr
-                                                + " result=" + sb.toString());
 
    PrintWriter out = res.getWriter();
     res.setStatus(200);
@@ -312,11 +301,6 @@ public class LgTvMessageReader extends HttpServlet {
 	 res.setContentType("text/plain");
 	if (value.equals("geturl"))
  	{
-		//remoteaddr
-		//geturl from varaiable
-		//BROWSER_URL
-
-
 
 						if (bindingprovider!=null&&itemregistry!=null)
 						{
@@ -330,18 +314,14 @@ public class LgTvMessageReader extends HttpServlet {
                                                                 String[] commandParts = values.get(cmd).split(":");
                                                                 String deviceCmd = commandParts[1];
                                                                 String deviceId = commandParts[0];
-                                                                // logger.debug("check: "+values.get(cmd));
-                                                                //out.println("found: "+deviceCmd+" "+deviceId);
                                                                 boolean match = false;
 
                                                                 if (deviceId.equals(devicename) && deviceCmd.equals("BROWSER_URL"))
                                                                 {
-                                                                        //out.println("name="+itemName+" val="+cmd+" "+values.get(cmd));
 									try {
 										Item i=itemregistry.getItem(itemName);
 										State state=i.getState();
                                                                                 String va=state.toString();
-                                                                                //out.println("val="+va);
 										out.print(va);
 
 									} catch (ItemNotFoundException e)
@@ -354,12 +334,14 @@ public class LgTvMessageReader extends HttpServlet {
 
 						}else logger.error("itemregistry=null or bindingprovider=null");
 
-		//out.println("http://www.derstandard.at");
 	} else out.println("command: "+value);
 
  
    }else
    {
+    String url=req.getRequestURL().toString();
+	// String devicename=req.getParameter("devicename");
+
     res.setContentType("text/html");
     out.println("<HTML>");
     out.println("<HEAD>");
@@ -375,7 +357,7 @@ public class LgTvMessageReader extends HttpServlet {
     out.println(" } })");	
     out.println("}");
     out.println("function LoadPage(){");
-    out.println(" serviceaddress=window.top.location.href+\'&command=geturl\'");
+    out.println(" serviceaddress=\'"+url+"?command=geturl&devicename="+devicename+"\'");
     out.println(" CallRegular(); ");
     out.println(" setInterval(CallRegular,10000);");
     out.println("}");
@@ -398,11 +380,9 @@ public class LgTvMessageReader extends HttpServlet {
 			throws ServletException, IOException {
 
 
-			//String requestMethod = exchange.getRequestMethod();
 			BufferedReader rd = null;
 			StringBuilder sb = null;
 
-			logger.debug("myhandler / post / called");
 			if (1==1) {
 				res.setContentType("text/plain");	
 				res.setStatus(200);
