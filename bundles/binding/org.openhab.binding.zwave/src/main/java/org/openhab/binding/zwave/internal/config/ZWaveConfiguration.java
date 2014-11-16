@@ -434,23 +434,22 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "Power", "Power", true);
-				if(node.getNodeStage().getStage() <= NodeStage.DETAILS.getStage()) {
+				ZWaveBatteryCommandClass batteryCommandClass = (ZWaveBatteryCommandClass) node
+						.getCommandClass(CommandClass.BATTERY);
+				if (batteryCommandClass != null) {
+					if(batteryCommandClass.getBatteryLevel() == null) {
+						record.value = "BATTERY " + "UNKNOWN";
+					}
+					else {
+						record.value = "BATTERY " + batteryCommandClass.getBatteryLevel() + "%";
+					}
+				}
+				else if(node.getNodeStage().getStage() <= NodeStage.DETAILS.getStage()) {
+					// If we haven't passed the DETAILS stage, then we don't know the source
 					record.value = "UNKNOWN";
 				}
 				else {
-					// If we haven't passed the DETAILS stage, then we don't know the source
-					ZWaveBatteryCommandClass batteryCommandClass = (ZWaveBatteryCommandClass) node
-							.getCommandClass(CommandClass.BATTERY);
-					if (batteryCommandClass != null) {
-						if(batteryCommandClass.getBatteryLevel() == null) {
-							record.value = "BATTERY " + "UNKNOWN";
-						}
-						else {
-							record.value = "BATTERY " + batteryCommandClass.getBatteryLevel() + "%";
-						}
-					} else {
-						record.value = "MAINS";
-					}
+					record.value = "MAINS";
 				}
 				records.add(record);
 
