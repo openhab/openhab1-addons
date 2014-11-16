@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
 		<Id>0000</Id>
@@ -1379,6 +1379,16 @@
 			<Label lang="en">Contact and temp sensor</Label>
 			<ConfigFile>wintop/itemp.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>6131</Type>
+				<Id>4501</Id>
+			</Reference>
+			<Model>WTRFID</Model>
+			<Label lang="en">Mini Keypad RFID/Z-Wave</Label>
+			<ConfigFile>wintop/wtrfid.xml</ConfigFile>
+		</Product>
+
 	</Manufacturer>
 	<Manufacturer>
 		<Id>84</Id>
