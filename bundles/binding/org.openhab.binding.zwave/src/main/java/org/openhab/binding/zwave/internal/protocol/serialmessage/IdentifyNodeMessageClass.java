@@ -55,8 +55,8 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 		logger.debug("NODE {}: Listening = {}", nodeId, listening);
 		logger.debug("NODE {}: Routing = {}", nodeId, routing);
 		logger.debug("NODE {}: Version = {}", nodeId, version);
-		logger.debug("NODE {}: fLIRS = {}", nodeId, frequentlyListening);
-		
+		logger.debug("NODE {}: FLIRS = {}", nodeId, frequentlyListening);
+
 		node.setListening(listening);
 		node.setRouting(routing);
 		node.setVersion(version);
