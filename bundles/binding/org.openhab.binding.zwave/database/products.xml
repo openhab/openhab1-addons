@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
 		<Id>0000</Id>
@@ -1379,6 +1379,16 @@
 			<Label lang="en">Contact and temp sensor</Label>
 			<ConfigFile>wintop/itemp.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>6131</Type>
+				<Id>4501</Id>
+			</Reference>
+			<Model>WTRFID</Model>
+			<Label lang="en">Mini Keypad RFID/Z-Wave</Label>
+			<ConfigFile>wintop/wtrfid.xml</ConfigFile>
+		</Product>
+
 	</Manufacturer>
 	<Manufacturer>
 		<Id>84</Id>
@@ -1391,6 +1401,19 @@
 			<Model>MIMOlite</Model>
 			<Label lang="en">Digital or Analog Voltage input and/or Dry Contact Relay</Label>
 			<ConfigFile>fortrezz/mimolite.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>008a</Id>
+		<Name>BeNext</Name>
+		<Product>
+			<Reference>
+				<Type>0018</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>plugInDimmer</Model>
+			<Label lang="en">BeNext Plug-in Dimmer</Label>
+			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>
