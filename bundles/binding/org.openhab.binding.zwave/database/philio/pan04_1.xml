@@ -55,7 +55,7 @@
 							to access the endpoint of PAN04, you may configure
 							the endpoint value to react the Basic Command Class</Help>
 			<Help lang="de">Wenn der Controller die Multi_Channel command class nicht unterstützt,
-							kann durch die Endpunkt Selektion der endpunkt gewählt werden
+							kann durch die Endpunktselektion der Endpunkt gewählt werden,
 							der auf die Basic Command Class reagiert</Help>
 			<Item>
 				<Value>1</Value>
