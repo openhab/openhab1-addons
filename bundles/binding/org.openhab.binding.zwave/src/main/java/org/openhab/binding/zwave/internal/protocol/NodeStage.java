@@ -20,23 +20,24 @@ import java.util.Map;
 public enum NodeStage {
 	EMPTYNODE(0, "Empty New Node"),
 	PROTOINFO(1, "Protocol Information"),
-	PING(2, "Ping Node"),
-	DETAILS(3, "Node Information"),
-	MANUFACTURER(4, "Manufacture Name and Product Identification"),
-	VERSION(5, "Command Class Versions"),
-	APP_VERSION(6, "Application Version"),
-	ENDPOINTS(7, "Command Class Endpoints"),
-	STATIC_VALUES(8, "Static Information"),
+	WAIT(2, "Waiting"),
+	PING(3, "Ping Node"),
+	DETAILS(4, "Node Information"),
+	MANUFACTURER(5, "Manufacture Name and Product Identification"),
+	VERSION(6, "Command Class Versions"),
+	APP_VERSION(7, "Application Version"),
+	ENDPOINTS(8, "Command Class Endpoints"),
+	STATIC_VALUES(9, "Static Information"),
 	// States below are not restored from the configuration files
-	SESSION_START(9, "Restore Marker"),
-	NEIGHBORS(10, "Node Neighbor Information"),
-	SESSION(11, "Infrequently Changed Information"),
-	DYNAMIC_VALUES(12, "Frequently Changed Information"),
-	CONFIG(13, "Parameter Information"),
-	DONE(14, "Node Complete"),
-	INIT(15, "Node Not Started"),
-	DEAD(16, "Node Dead"),
-	FAILED(17,"Node Failed");
+	SESSION_START(10, "Restore Marker"),
+	NEIGHBORS(11, "Node Neighbor Information"),
+	SESSION(12, "Infrequently Changed Information"),
+	DYNAMIC_VALUES(13, "Frequently Changed Information"),
+	CONFIG(14, "Parameter Information"),
+	DONE(15, "Node Complete"),
+	INIT(16, "Node Not Started"),
+	DEAD(17, "Node Dead"),
+	FAILED(18,"Node Failed");
 	
 	private int stage;
 	private String label;

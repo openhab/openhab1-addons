@@ -83,7 +83,6 @@ public class ZWaveController {
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveController.class);
 	
 	private static final int QUERY_STAGE_TIMEOUT = 120000;
-	private static final int QUERY_STAGE_RETRY = 20000;
 
 	private static final int ZWAVE_RESPONSE_TIMEOUT = 5000;		// 5000 ms ZWAVE_RESPONSE TIMEOUT
 	private static final int ZWAVE_RECEIVE_TIMEOUT = 1000;		// 1000 ms ZWAVE_RECEIVE_TIMEOUT
@@ -246,7 +245,7 @@ public class ZWaveController {
 				break;
 			case SerialApiGetInitData:
 				this.isConnected = true;
-				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {	
+				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
 					ZWaveNode node = null;
 					try {
 						ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
@@ -1034,6 +1033,14 @@ public class ZWaveController {
 		return timeOutCount.get();
 	}
 	
+	/**
+	 * Returns the number of frames in the transmit queue(s)
+	 * @return
+	 */
+	public int getTxQueueLength() {
+		return this.sendQueue.size();
+	}
+	
 	// Nested classes and enumerations
 	
 	/**
@@ -1081,31 +1088,42 @@ public class ZWaveController {
 						}
 					}
 					
+					// A transaction consists of 3 parts -:
+					// 1) We send a REQUEST to the controller
+					// 2) The controller sends a RESPONSE almost immediately
+					// 3) The controller sends a REQUEST once it's received
+					//    the response from the device
+					
 					// Clear the semaphore used to acknowledge the response.
 					transactionCompleted.drainPermits();
 					
-					// Send the message to the controller
+					// Send the REQUEST message TO the controller
 					byte[] buffer = lastSentMessage.getMessageBuffer();
-					logger.debug("NODE {}: Sending Message = {}", lastSentMessage.getMessageNode(), SerialMessage.bb2hex(buffer));
+					logger.debug("NODE {}: Sending REQUEST Message = {}", lastSentMessage.getMessageNode(), SerialMessage.bb2hex(buffer));
 					lastMessageStartTime = System.currentTimeMillis();
 					try {
 						synchronized (serialPort.getOutputStream()) {
 							serialPort.getOutputStream().write(buffer);
 							serialPort.getOutputStream().flush();
 						}
-					} catch (IOException e) {
+					}
+					catch (IOException e) {
 						logger.error("Got I/O exception {} during sending. exiting thread.", e.getLocalizedMessage());
 						break;
 					}
 					
-					// Now wait for the response...
+					// Now wait for the REQUEST message FROM the controller
 					try {
+						logger.debug("NODE {}: Wait for response", lastSentMessage.getMessageNode());
 						if (!transactionCompleted.tryAcquire(1, zWaveResponseTimeout, TimeUnit.MILLISECONDS)) {
+							logger.debug("NODE {}: NO response = {}", lastSentMessage.getMessageNode());
 							timeOutCount.incrementAndGet();
+							// If this is a SendData message, then we need to abort
+							// TODO: CDJ - not according to the doc? Should check this.
+							// TODO: CDJ - SendDataBort is sent if no response is received to the request!
 							if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
-								
 								buffer = new SerialMessage(SerialMessageClass.SendDataAbort, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.High).getMessageBuffer();
-								logger.debug("NODE {}: Sending Message = {}", lastSentMessage.getMessageNode(), SerialMessage.bb2hex(buffer));
+								logger.debug("NODE {}: Sending ABORT Message = {}", lastSentMessage.getMessageNode(), SerialMessage.bb2hex(buffer));
 								try {
 									synchronized (serialPort.getOutputStream()) {
 										serialPort.getOutputStream().write(buffer);
@@ -1138,12 +1156,14 @@ public class ZWaveController {
 						}
 						logger.debug("Response processed after {}ms/{}ms.", responseTime, longestResponseTime);
 						logger.trace("Acquired. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
-					} catch (InterruptedException e) {
+					}
+					catch (InterruptedException e) {
 						break;
 					}
 					
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				logger.error("Got an exception during sending. exiting thread.", e);
 			}
 			logger.debug("Stopped Z-Wave send thread");

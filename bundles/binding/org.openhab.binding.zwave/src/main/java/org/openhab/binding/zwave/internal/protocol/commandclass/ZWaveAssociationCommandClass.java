@@ -402,7 +402,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 
 	@Override
 	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
-		logger.debug("NODE {}: Initialising associations. MaxGroups={}", this.getNode(), maxGroups);
+		logger.debug("NODE {}: Initialising associations. MaxGroups={}", this.getNode().getNodeId(), maxGroups);
 
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
 		// If we're already initialized, then don't do it again unless we're refreshing
