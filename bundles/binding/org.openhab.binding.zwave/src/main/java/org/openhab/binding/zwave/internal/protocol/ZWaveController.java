@@ -33,7 +33,6 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePr
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass.ZWaveWakeUpEvent;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
@@ -85,6 +84,7 @@ public class ZWaveController {
 	
 	private static final int QUERY_STAGE_TIMEOUT = 120000;
 	private static final int QUERY_STAGE_RETRY = 20000;
+
 	private static final int ZWAVE_RESPONSE_TIMEOUT = 5000;		// 5000 ms ZWAVE_RESPONSE TIMEOUT
 	private static final int ZWAVE_RECEIVE_TIMEOUT = 1000;		// 1000 ms ZWAVE_RECEIVE_TIMEOUT
 	private static final int INITIAL_QUEUE_SIZE = 128; 
@@ -246,14 +246,7 @@ public class ZWaveController {
 				break;
 			case SerialApiGetInitData:
 				this.isConnected = true;
-				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
-//					if(nodeId != 5)
-	//					continue;
-					
-					
-					
-					
-					
+				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {	
 					ZWaveNode node = null;
 					try {
 						ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
@@ -608,33 +601,37 @@ public class ZWaveController {
 			}
 		}
 
-		logger.debug("Checking for Dead or Sleeping Nodes.");
+		logger.debug("------ Checking for Dead or Sleeping Nodes.");
 		for (Map.Entry<Integer, ZWaveNode> entry : zwaveNodes.entrySet()){
 			if (entry.getValue().getNodeStage() == NodeStage.EMPTYNODE) {
 				continue;
 			}
 
-			logger.debug("NODE {}: In Stage {} since {} ({}), listening={}, FLiRS={}", entry.getKey(),
+			logger.debug("NODE {}: In Stage {} since {} ({}s), listening={}, FLiRS={}", entry.getKey(),
 					entry.getValue().getNodeStage().toString(), entry.getValue().getQueryStageTimeStamp().toString(),
-					(Calendar.getInstance().getTimeInMillis() - entry.getValue().getQueryStageTimeStamp().getTime() / 1000),
+					(Calendar.getInstance().getTimeInMillis() - entry.getValue().getQueryStageTimeStamp().getTime()) / 1000,
 					entry.getValue().isListening(), entry.getValue().isFrequentlyListening());
 
-			if(Calendar.getInstance().getTimeInMillis() < (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_RETRY)) {
-				ZWaveNodeStatusEvent event = new ZWaveNodeStatusEvent(entry.getKey(), ZWaveNodeStatusEvent.State.Alive);
-				notifyEventListeners(event);
-			}
+			// If we've exceeded the retry time, send the Alive event which will be received in the init code
+//			if(Calendar.getInstance().getTimeInMillis() > (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_RETRY)) {
+//				logger.debug("NODE {}: Exceeded stage retry time. Sending Alive event to kickstart initialisation.", entry.getKey());
+//				ZWaveNodeStatusEvent event = new ZWaveNodeStatusEvent(entry.getKey(), ZWaveNodeStatusEvent.State.Alive);
+//				notifyEventListeners(event);
+//			}
 
+			// If we're done, or dead, then we consider this node is done (!)
 			if(entry.getValue().getNodeStage() == NodeStage.DONE || entry.getValue().isDead() == true
 					 || (!entry.getValue().isListening() && !entry.getValue().isFrequentlyListening())) {
 				completeCount++;
 				continue;
 			}
 
+			// Otherwise let the node complete it's time.
 			if(Calendar.getInstance().getTimeInMillis() < (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_TIMEOUT)) {
 				continue;
 			}
 			
-			logger.warn("NODE %d: May be dead, setting stage to DEAD.", entry.getKey());
+			logger.warn("NODE {}: May be dead, setting stage to DEAD.", entry.getKey());
 			entry.getValue().setNodeStage(NodeStage.DEAD);
 
 			completeCount++;
@@ -1119,7 +1116,9 @@ public class ZWaveController {
 									break;
 								}
 							}
-	
+
+							// Check if we've exceeded the number of retries.
+							// Requeue if we're ok, otherwise discard the message
 							if (--lastSentMessage.attempts >= 0) {
 								logger.error("NODE {}: Timeout while sending message. Requeueing!", lastSentMessage.getMessageNode());
 								if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
@@ -1128,9 +1127,8 @@ public class ZWaveController {
 								else {
 									enqueue(lastSentMessage);
 								}
-							} else
-							{
-								logger.warn("NODE {}: Discarding message: {}", lastSentMessage.getMessageNode(), lastSentMessage.toString());
+							} else {
+								logger.warn("NODE {}: Too many retries. Discarding message: {}", lastSentMessage.getMessageNode(), lastSentMessage.toString());
 							}
 							continue;
 						}

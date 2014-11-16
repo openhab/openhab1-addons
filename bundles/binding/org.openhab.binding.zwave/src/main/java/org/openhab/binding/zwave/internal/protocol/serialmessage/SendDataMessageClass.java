@@ -39,7 +39,7 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			// Set the flag, and return false.
 			logger.error("Sent Data was not placed on stack due to error {}.", incomingMessage.getMessagePayloadByte(0));
 			transactionComplete = true;
-			
+
 			return false;
 		}
 		
