@@ -49,7 +49,8 @@ import org.slf4j.LoggerFactory;
  * initialisation. This is especially true if there are battery nodes since the
  * PING phase, used to detect if a node is active, will time-out for battery
  * devices. A timeout takes 5 seconds, and if there are retries active, this may
- * be extended to 15 seconds.
+ * be extended to 15 seconds. For a network with 8 battery nodes, this could
+ * mean a delay of 2 minutes!
  * 
  * We use the 'listening' flag to prioritise the initialisation of nodes. Rather
  * than kicking off all nodes at the same time and have battery nodes timing out
@@ -73,7 +74,8 @@ import org.slf4j.LoggerFactory;
  * For each stage, the advancer builds a list of all messages that need to be
  * sent to the node. Since the initialisation phase is an intense period, with a
  * lot of messages on the network, we try and ensure that only 1 packet is
- * outstanding to any node at once.
+ * outstanding to any node at once to avoid filling up the main transmit queue
+ * which could impact on the performance of other nodes.
  * 
  * Each time we receive an ACK for a message, the node advancer gets called, and
  * we see if this is an ACK for a message that's part of the initialisation. If
