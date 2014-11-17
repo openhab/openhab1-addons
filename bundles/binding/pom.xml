@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>org.openhab.binding.lgtv</module>
     <module>org.openhab.binding.bluetooth</module>
     <module>org.openhab.binding.knx</module>
     <module>org.openhab.binding.knx.test</module>
