@@ -12,9 +12,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.config.core">
    <implementation class="org.openhab.config.core.ConfigDispatcher"/>
    
-   <service>
-      <provide interface="org.osgi.service.cm.ManagedService"/>
-   </service>
-   <property name="service.pid" type="String" value="org.openhab.mainconfig"/>
+   <property name="service.pid" type="String" value="org.openhab.config.dispatcher"/>
    
 </scr:component>

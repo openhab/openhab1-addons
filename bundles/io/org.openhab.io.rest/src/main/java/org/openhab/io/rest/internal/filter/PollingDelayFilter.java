@@ -59,10 +59,10 @@ public class PollingDelayFilter implements PerRequestBroadcastFilter {
 		                try {
 		                    Thread.sleep(300);
 							GeneralBroadcaster delayedBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, delayedBroadcasterName);
-							delayedBroadcaster.broadcast(message, resource);
-							
+							if(delayedBroadcaster != null)
+								delayedBroadcaster.broadcast(message, resource);
 						} catch (Exception e) {
-							logger.error(e.getMessage());
+							logger.error("Could not broadcast message",e);
 						} 
 		            }
 		        });
