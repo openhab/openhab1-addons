@@ -22,6 +22,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ This class is responsible for parsing the binding configuration. A valid
+ * items binding configuration file will look like the following:
+ * Replace <AC_NAME> with the name of the configured air conditioner, e.g. Livingroom
+ * 
+ * <pre>
+ * Number ac_current_temp "Current temp [%.1f]" {samsungac="[<AC_NAME>|AC_FUN_TEMPNOW]"}
+ * Switch ac_power 								{samsungac="[<AC_NAME>|AC_FUN_POWER]"}
+ * Number ac_mode "Convenience mode"			{samsungac="[<AC_NAME>|AC_FUN_COMODE]"}
+ * Number ac_op_mode "Operation mode"			{samsungac="[<AC_NAME>|AC_FUN_OPMODE]"}
+ * Number ac_set_temp "Set temp [%.1f]"			{samsungac="[<AC_NAME>|AC_FUN_TEMPSET]"}
+ * Number ac_direction "Direction"				{samsungac="[<AC_NAME>|AC_FUN_DIRECTION]"}
+ * Number ac_windlevel "Windlevel"				{samsungac="[<AC_NAME>|AC_FUN_WINDLEVEL]"}
+ * </pre>
+ * 
  * @author Stein Tore Tøsse
  * @since 1.6.0
  */

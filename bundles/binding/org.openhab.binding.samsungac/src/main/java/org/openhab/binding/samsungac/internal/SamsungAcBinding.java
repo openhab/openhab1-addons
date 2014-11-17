@@ -57,7 +57,6 @@ public class SamsungAcBinding extends
 
 	public void activate() {
 		logger.info("active");
-		setProperlyConfigured(true);
 	}
 
 	public void deactivate() {
@@ -204,9 +203,7 @@ public class SamsungAcBinding extends
 				host.setToken(value);
 			}
 			hosts.put(hostname, host);
-			setProperlyConfigured(true);
 		}
-
 		nameHostMapper = hosts;
 		
 		if (nameHostMapper == null || nameHostMapper.size() == 0) {
@@ -219,6 +216,8 @@ public class SamsungAcBinding extends
 			} else {
 				logger.warn("No Samsung Air Conditioner has been configured, and we could not find one either");
 			}
+		} else {
+			setProperlyConfigured(true);
 		}
 	}
 

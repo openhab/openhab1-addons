@@ -31,6 +31,18 @@ import org.openhab.binding.samsungac.internal.CommandEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Class to that connects to the air conditioner, using IP-address and 
+ * MAC-address.
+ * This class talks to the air conditioner and makes sure the connections
+ * is up and running. Otherwise it will reconnect. 
+ * Also if no token is given to the constructor, a token will be requested from
+ * the air conditioner at the first login 
+ * 
+ * @author Stein Tore Tøsse
+ * @since 1.6.0
+ *
+ */
 public class AirConditioner {
 
 	private static Logger logger = LoggerFactory
@@ -43,6 +55,17 @@ public class AirConditioner {
 	private Map<CommandEnum, String> statusMap = new HashMap<CommandEnum, String>();
 	private SSLSocket socket;
 
+	/**
+	 * This is the method to call first, it will try to connect to the given IP-, and MAC-
+	 * address. If no token is specified, it will try to ask the air conditioner to give
+	 * it a token.
+	 * 
+	 * When a token has been received from the air conditioner, we will try to login with this token.
+	 * If a connection is established, the method will return itself. 
+	 * 
+	 * @return An instance of itself, which holds the state of the air conditioner
+	 * @throws Exception If something goes wrong while trying to connect
+	 */
 	public AirConditioner login() throws Exception {
 		try {
 			connect();
@@ -56,6 +79,12 @@ public class AirConditioner {
 		return this;
 	}
 
+	/**
+	 * Method should be called when all communication has finished. 
+	 * For example when OpenHAB is being shut down.
+	 * 
+	 * Will only disconnect if we are already connected.
+	 */
 	public void disconnect() {
 		if (isConnected()) {
 			try {
@@ -69,6 +98,10 @@ public class AirConditioner {
 		}
 	}
 
+	/**
+	 * 
+	 * @return true if connected to air conditioner, otherwise false
+	 */
 	public boolean isConnected() {
 		return socket != null && socket.isConnected();
 	}
@@ -92,10 +125,24 @@ public class AirConditioner {
 		logger.debug("Token has been acquired: " + TOKEN_STRING);
 	}
 
+	/**
+	 * Handle response when we are not waiting for a specific answer.
+	 * 
+	 * @throws Exception
+	 */
 	private void handleResponse() throws Exception {
 		handleResponse(null);
 	}
 
+	/**
+	 * Handling of the responses is done by reading a response from the air conditioner,
+	 * until there's no more responses to read. This is because the air conditioner will
+	 * send us messages each time some presses the remote or some state of the air conditioner
+	 * changes.
+	 * 
+	 * @param commandId An id of the command we are waiting for a response on. Not mandatory
+	 * @throws Exception Is thrown if we cannot parse the response from the air conditioner
+	 */
 	private void handleResponse(String commandId) throws Exception {
 		String line;
 		while ((line = readLine(socket)) != null) {
@@ -229,6 +276,15 @@ public class AirConditioner {
 		handleResponse();
 	}
 
+	/**
+	 * Method to send a command to the air conditioner. Will generate a "unique" id for each
+	 * command we send, so that we can wait and check the return value of our sent command.
+	 * 
+	 * @param command The command to send to the air conditioner
+	 * @param value Value to change to
+	 * @return the generated command id
+	 * @throws Exception If we cannot write to the air conditioner or if we cannot handle the response
+	 */
 	public String sendCommand(CommandEnum command, String value) throws Exception {
 		logger.debug("Sending command: '" + command.toString() + "' with value: '" + value + "'");
 		String id = "cmd" + Math.round(Math.random() * 10000);
@@ -239,6 +295,12 @@ public class AirConditioner {
 		return id;
 	}
 
+	/**
+	 * Get the status for each of the commands in {@link CommandEnum}
+	 * 
+	 * @return A Map of the current air conditioner status
+	 * @throws Exception If we cannot send a command or if there is a problem parsing the results
+	 */
 	public Map<CommandEnum, String> getStatus() throws Exception {
 		try {
 			writeLine("<Request Type=\"DeviceState\" DUID=\"" + MAC
@@ -250,18 +312,34 @@ public class AirConditioner {
 		return statusMap;
 	}
 	
+	/**
+	 * 
+	 * @return the configured IP-address of the air conditioner
+	 */
 	public String getIpAddress() {
 		return IP;
 	}
 	
+	/**
+	 * 
+	 * @param ipAddress The IP-address of the air conditioner
+	 */
 	public void setIpAddress(String ipAddress) {
 		IP = ipAddress;
 	}
 	
+	/**
+	 * 
+	 * @param macAddress The MAC-address of the air conditioner
+	 */
 	public void setMacAddress(String macAddress) {
 		MAC = macAddress;
 	}
 	
+	/**
+	 * 
+	 * @param token The token to use when connecting to the air conditioner
+	 */
 	public void setToken(String token) {
 		TOKEN_STRING = token;
 	}

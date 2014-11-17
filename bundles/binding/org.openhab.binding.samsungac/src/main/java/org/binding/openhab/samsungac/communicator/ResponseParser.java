@@ -24,16 +24,34 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
-
+/**
+ * Parser to read the response from the air conditioner. 
+ * Will check responses and see what type they are, and if 
+ * they contain any important information.
+ * 
+ * @author Stein Tore Tøsse
+ * @since 1.6.0
+ */
 public class ResponseParser {
 	
 	private static final Logger logger = LoggerFactory
 			.getLogger(ResponseParser.class);
 	
+	/**
+	 * See if the response from the air conditioner contains a token-
+	 * 
+	 * @param response The response from the air conditioner
+	 * @return true if the response contains a token, otherwise false
+	 */
 	public static boolean isResponseWithToken(String response) {
         return response.contains("Update Type=\"GetToken\" Status=\"Completed\" Token=\"");
     }
 
+	/**
+	 * Parses the token in the response.
+	 * @param response The response from the AC
+	 * @return the token
+	 */
 	public static String parseTokenFromResponse(String response) {
     	Pattern pattern = Pattern.compile("Token=\"(.+)\"");
         Matcher matcher = pattern.matcher(response);
@@ -41,52 +59,102 @@ public class ResponseParser {
         return matcher.group().replaceFirst("Token=\"", "").replaceAll("\"", "");
     }
 
-    public static boolean isFailedAuthenticationResponse(String line) {
-        return line.contains("<Response Status=\"Fail\" Type=\"Authenticate\" ErrorCode=\"301\" />");
+	/**
+	 * @param response The response from the AC
+	 * @return true if authentication failed, otherwise false
+	 */
+    public static boolean isFailedAuthenticationResponse(String response) {
+        return response.contains("<Response Status=\"Fail\" Type=\"Authenticate\" ErrorCode=\"301\" />");
     }
 
-    public static boolean isFailedResponse(String line) {
-        return line.contains("<Response Status=\"Fail\" Type=\"Authenticate\" ErrorCode=\"103\" />");
+    /**
+     * 
+     * @param response The response from the AC
+     * @return true if response if marked as failed, otherwise false
+     */
+    public static boolean isFailedResponse(String response) {
+        return response.contains("<Response Status=\"Fail\" Type=\"Authenticate\" ErrorCode=\"103\" />");
     }
 
-    public static boolean isCorrectCommandResponse(String line, String commandId) {
-        return line.contains("CommandID=\"" + commandId + "\"");
+    /**
+     * 
+     * @param response The response from the AC
+     * @param commandId The id of the command we sent
+     * @return true if the response is the correct response, otherwise false
+     */
+    public static boolean isCorrectCommandResponse(String response, String commandId) {
+        return response.contains("CommandID=\"" + commandId + "\"");
     }
 
-    public static boolean isSuccessfulLoginResponse(String line) {
-        return line.contains("Response Type=\"AuthToken\" Status=\"Okay\"");
+    /**
+     * 
+     * @param response The response from the AC
+     * @return true if we logged in to the AC successfully, otherwise false
+     */
+    public static boolean isSuccessfulLoginResponse(String response) {
+        return response.contains("Response Type=\"AuthToken\" Status=\"Okay\"");
     }
 
-    public static boolean isFirstLine(String line) {
-        return line.contains("DRC-1.00");
+    /**
+     * 
+     * @param response The response from the AC
+     * @return true if it is the first line, otherwise false
+     */
+    public static boolean isFirstLine(String response) {
+        return response.contains("DRC-1.00");
     }
 
-    public static boolean isNotLoggedInResponse(String line) {
-        return line.contains("Type=\"InvalidateAccount\"");
+    /**
+     * 
+     * @param response The response from the AC
+     * @return true if response lets us know we are not logged in, otherwise false
+     */
+    public static boolean isNotLoggedInResponse(String response) {
+        return response.contains("Type=\"InvalidateAccount\"");
     }
 
-    public static boolean isReadyForTokenResponse(String line) {
-        return line.contains("<Response Type=\"GetToken\" Status=\"Ready\"/>");
+    /**
+     * 
+     * @param response The response from the AC
+     * @return true if air conditioner is ready for sending a token, otherwise false
+     */
+    public static boolean isReadyForTokenResponse(String response) {
+        return response.contains("<Response Type=\"GetToken\" Status=\"Ready\"/>");
     }
 
-    public static boolean isDeviceControl(String line) {
-        return line.contains("Response Type=\"DeviceControl\"");
+    /**
+     * 
+     * @param response The response from the AC
+     * @return true if response is someone controlling the device(e.g. from a remote), otherwise false
+     */
+    public static boolean isDeviceControl(String response) {
+        return response.contains("Response Type=\"DeviceControl\"");
     }
 
-    public static boolean isDeviceState(String line) {
-        return line.contains("Response Type=\"DeviceState\" Status=\"Okay\"") && !line.contains("CommandID=\"cmd");
+    /**
+     * 
+     * @param response The response from the AC
+     * @return true if we get a state from the ac, otherwise false
+     */
+    public static boolean isDeviceState(String response) {
+        return response.contains("Response Type=\"DeviceState\" Status=\"Okay\"") && !response.contains("CommandID=\"cmd");
     }
     
-    public static boolean isUpdateStatus(String line){
-    	return line.contains("Update Type=\"Status\"");
+    /**
+     * 
+     * @param response The response from the AC
+     * @return true if we get a status update, otherwise false
+     */
+    public static boolean isUpdateStatus(String response){
+    	return response.contains("Update Type=\"Status\"");
     }
 
-    public static String getStatusValue(String line) {
-    	Pattern pattern = Pattern.compile("(\\w*)");
-    	Matcher matcher = pattern.matcher(line);
-        return matcher.group();
-    }
-
+    /**
+     * 
+     * @param response The response from the AC
+     * @return A Map with all the commands and the status of each item
+     * @throws SAXException If we cannot read the response from the AC
+     */
     public static Map<CommandEnum, String> parseStatusResponse(String response) throws SAXException {
     	logger.info("Response is: " + response);
     	Map<CommandEnum, String> status = new HashMap<CommandEnum, String>();
@@ -102,6 +170,13 @@ public class ResponseParser {
         return status;
     }
     
+    /**
+     * Class to hold the status and to parse the XML from the air conditioner
+     * 
+     * @author Stein Tore Tøsse
+     * @since 1.6.0
+     *
+     */
     static private class StatusHandler extends DefaultHandler {
     	
     	private Map<CommandEnum, String> values = new HashMap<CommandEnum, String>();
