@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.zibase.internal;
 
 import java.io.IOException;
@@ -9,7 +17,7 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openhab.binding.zibase.internal.zibaseBindingConfig;
+import org.openhab.binding.zibase.internal.ZibaseBindingConfig;
 import org.openhab.core.events.EventPublisher;
 
 import org.slf4j.Logger;
@@ -17,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import fr.zapi.ZbResponse;
 import fr.zapi.Zibase;
-import fr.zapi.utils.XmlSimpleParse;
 
 /**
  * Zibase Listener Thread class
@@ -29,11 +36,20 @@ public class ZibaseListener extends Thread {
 	/**
 	 * generic logger
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(zibaseBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(ZibaseBinding.class);
 
-	private static final Pattern x10ChaconPattern 	= Pattern.compile(": ([A-Z][0-9]{1,2})(_)");
-	private static final Pattern radioIdPattern 	= Pattern.compile(": (<id>)([A-Z]{2}[0-9]*)");
-	private static final Pattern scenarioPattern 	= Pattern.compile(": ([0-9]{1,3})");
+	/**
+	 * Regex pattern to extact X10 / Chacon RfId from zibase log
+	 */
+	private static final Pattern X10CHACONPATTERN 	= Pattern.compile(": ([A-Z][0-9]{1,2})(_)");
+	/**
+	 * Regex pattern to extact Radio ID from zibase log
+	 */
+	private static final Pattern RADIODIDPATTERM 	= Pattern.compile(": (<id>)([A-Z]{2}[0-9]*)");
+	/**
+	 * Regex pattern to extact Scenario id from zibase log
+	 */
+	private static final Pattern SCENARIOPATTERN 	= Pattern.compile(": ([0-9]{1,3})");
 	
 	/**
 	 * zibase instance to listen to
@@ -121,6 +137,7 @@ public class ZibaseListener extends Thread {
 		
 		if(zibase != null && eventPubisher !=null) {       
 			try {
+				// register to zibase for listening
 	        	zibase.hostRegistering(listenerHost, listenerPort);
 				DatagramSocket serverSocket = new DatagramSocket(listenerPort);  // bind
 	        
@@ -128,7 +145,7 @@ public class ZibaseListener extends Thread {
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				running=true;
 				
-				// the real thread work is their : read message and analyse it 
+				// the real thread work is their : read message and analyse it to publish events on openhab bus 
 				while (running) {
 	            	serverSocket.receive(receivePacket);	
 	            	ZbResponse zbResponse = new ZbResponse(receivePacket.getData());
@@ -151,23 +168,23 @@ public class ZibaseListener extends Thread {
 	}
 	
 	/**
-	 * 
+	 * Get Item's id from zibase log
 	 * @param zbResponseStr
 	 * @return
 	 */
 	protected String extractIdFromZbResponse(String zbResponseStr) {		
 		
-		Matcher matcher = this.x10ChaconPattern.matcher(zbResponseStr);
+		Matcher matcher = ZibaseListener.X10CHACONPATTERN.matcher(zbResponseStr);
 		if(matcher.find()) {
 			return matcher.group(1);
 		}
 		
-		matcher = this.scenarioPattern.matcher(zbResponseStr);
+		matcher = ZibaseListener.SCENARIOPATTERN.matcher(zbResponseStr);
 		if(matcher.find()) {
 			return matcher.group(1);
 		}
 		
-		matcher = this.radioIdPattern.matcher(zbResponseStr);
+		matcher = ZibaseListener.RADIODIDPATTERM.matcher(zbResponseStr);
 		if(matcher.find()) {
 			return matcher.group(2);
 		}
@@ -188,18 +205,18 @@ public class ZibaseListener extends Thread {
 		if(id == null) return;
 		
 		// ...retreive all itemNames that use this id...
-		Vector<String> listOfItemNames = zibaseBinding.getBindingProvider().getItemNamesById(id);
+		Vector<String> listOfItemNames = ZibaseBinding.getBindingProvider().getItemNamesById(id);
 		if (listOfItemNames == null) return;
 		
 		logger.debug("trying to publish events for " + id);
 		
 		// then post update for all items that use this id
 		for(String itemName : listOfItemNames) {
-			zibaseBindingConfig config = zibaseBinding.getBindingProvider().getItemConfig(itemName);
+			ZibaseBindingConfig config = ZibaseBinding.getBindingProvider().getItemConfig(itemName);
 			logger.debug("Getting config for " + itemName);
 			
 			if (config != null) {
-				org.openhab.core.types.State value = config.getOpenhabStateFromZibaseValue(zbResponseStr);
+				org.openhab.core.types.State value = config.getOpenhabStateFromZibaseValue(zibase, zbResponseStr);
 				logger.debug("publishing update for " + itemName + " : " + value);
 				eventPubisher.postUpdate(itemName, value);
 			}

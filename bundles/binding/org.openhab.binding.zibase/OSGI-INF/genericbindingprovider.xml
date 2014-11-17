@@ -10,11 +10,11 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.zibase.genericbindingprovider">
-   <implementation class="org.openhab.binding.zibase.internal.zibaseGenericBindingProvider"/>
+   <implementation class="org.openhab.binding.zibase.internal.ZibaseGenericBindingProvider"/>
    
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.binding.zibase.zibaseBindingProvider"/>
+      <provide interface="org.openhab.binding.zibase.ZibaseBindingProvider"/>
    </service>
    
 </scr:component>

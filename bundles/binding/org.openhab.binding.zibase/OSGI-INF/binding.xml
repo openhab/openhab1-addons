@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.zibase.binding">
-	<implementation class="org.openhab.binding.zibase.internal.zibaseBinding" />
+	<implementation class="org.openhab.binding.zibase.internal.ZibaseBinding" />
 
 	<service>
 		<provide interface="org.osgi.service.event.EventHandler" />
@@ -21,6 +21,6 @@
 	<property name="service.pid" type="String" value="org.openhab.zibase" />
 
 	<reference bind="setEventPublisher" cardinality="1..1" interface="org.openhab.core.events.EventPublisher" name="EventPublisher"	policy="dynamic" unbind="unsetEventPublisher" />
-	<reference bind="addBindingProvider" cardinality="1..n"	interface="org.openhab.binding.zibase.zibaseBindingProvider" name="zibaseBindingProvider" policy="dynamic" unbind="removeBindingProvider" />
+	<reference bind="addBindingProvider" cardinality="1..n"	interface="org.openhab.binding.zibase.ZibaseBindingProvider" name="ZibaseBindingProvider" policy="dynamic" unbind="removeBindingProvider" />
 	
 </scr:component>
