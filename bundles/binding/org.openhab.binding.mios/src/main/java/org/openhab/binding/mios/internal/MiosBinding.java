@@ -467,7 +467,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 				MiosBindingProviderImpl miosProvider = (MiosBindingProviderImpl) provider;
 
 				for (String itemName : miosProvider
-						.getItemsForProperty(property)) {
+						.getItemNamesForProperty(property)) {
 
 					MiosBindingConfig config = miosProvider
 							.getMiosBindingConfig(itemName);
