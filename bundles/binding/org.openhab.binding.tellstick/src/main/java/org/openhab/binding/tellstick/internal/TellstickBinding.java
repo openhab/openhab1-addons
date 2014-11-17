@@ -199,7 +199,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	private void handleDeviceEvent(TellstickDeviceEvent event) {
 		TellstickDevice device = event.getDevice();
 		controller.setLastSend(System.currentTimeMillis());
-		logger.debug("Got deviceEvent for " + device + " name:" + device + " method" + event.getMethod());
+		logger.debug("Got deviceEvent for " + device + " name:" + device + " method " + event.getMethod());
 		if (device != null) {
 			State cmd = resolveCommand(event.getMethod(), event.getData());
 			TellstickBindingConfig conf = findTellstickBindingConfig(device.getId(), null, null);
