@@ -72,7 +72,7 @@ public class TellstickController {
 		if (strValue != null) {
 			 value = Double.valueOf(strValue);
 		}
-		int precent = (int) ((value / 255) * 100);
+		int precent = (int) Math.round((value / 255) * 100);
 		if (IncreaseDecreaseType.INCREASE == increaseDecreaseType) {			
 			precent = Math.min(precent + 10, 100);			
 		} else if (IncreaseDecreaseType.DECREASE == increaseDecreaseType) {

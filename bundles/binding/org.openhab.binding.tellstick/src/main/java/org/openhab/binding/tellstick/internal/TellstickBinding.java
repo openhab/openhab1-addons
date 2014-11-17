@@ -218,8 +218,8 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 		} else if (method == Method.TURNOFF) {
 			cmd = OnOffType.OFF;
 		} else if (method == Method.DIM) {
-			double value = ((Double.valueOf(data)) / 255);
-			cmd = new PercentType((int) (value * 100));
+			double value = ((Double.valueOf(data)*100) / 255);
+			cmd = new PercentType((int) Math.round(value));
 		}
 		return cmd;
 	}
