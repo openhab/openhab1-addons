@@ -7,7 +7,6 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-
 package org.openhab.binding.lgtv.lginteraction;
 
 import java.io.BufferedWriter;
@@ -38,14 +37,10 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Martin Fluch
  * @since 1.6.0
- * 
  */
-
 public class LgTvChannelSet {
-	
-	private static Logger logger = LoggerFactory
-			.getLogger(LgtvConnection.class);
 
+	private static Logger logger = LoggerFactory.getLogger(LgtvConnection.class);
 
 	@XmlRootElement(name = "envelope")
 	@XmlAccessorType(XmlAccessType.FIELD)
@@ -158,15 +153,14 @@ public class LgTvChannelSet {
 
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-			writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(f), "utf-8"));
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "utf-8"));
 			marshaller.marshal(envel, writer);
 		} catch (PropertyException e) {
-			logger.error("error in savetofile",e);
+			logger.error("error in savetofile", e);
 		} catch (JAXBException e) {
-			logger.error("error in savetofile",e);
+			logger.error("error in savetofile", e);
 		} catch (IOException ex) {
-			logger.error("error in savetofile",ex);
+			logger.error("error in savetofile", ex);
 		} finally {
 			try {
 				writer.close();

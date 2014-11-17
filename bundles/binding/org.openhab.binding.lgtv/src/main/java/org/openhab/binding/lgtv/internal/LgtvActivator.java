@@ -9,12 +9,11 @@
 package org.openhab.binding.lgtv.internal;
 
 import org.osgi.framework.BundleActivator;
+
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-import org.openhab.binding.lgtv.lginteraction.LgTvMessageReader;
 /**
  * Extension of the default OSGi bundle activator
  * 

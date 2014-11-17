@@ -6,8 +6,6 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
-
 package org.openhab.binding.lgtv;
 
 import java.util.HashMap;
@@ -68,4 +66,5 @@ public interface LgtvBindingProvider extends BindingProvider {
 	 *         commands could be found.
 	 */
 	public HashMap<String, String> getDeviceCommands(String itemName);
+
 }

@@ -43,17 +43,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Binding listening to openHAB event bus and send commands to LGTV devices
- * when certain commands are received.
+ * Binding listening to openHAB event bus and send commands to LGTV devices when
+ * certain commands are received.
  * 
  * @author Martin Fluch
  * @since 1.6.0
  */
-public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
-		ManagedService, BindingChangeListener, LgtvEventListener {
+public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements ManagedService, BindingChangeListener,
+		LgtvEventListener {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(LgtvBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(LgtvBinding.class);
 
 	protected static final String ADVANCED_COMMAND_KEY = "#";
 	protected static final String WILDCARD_COMMAND_KEY = "*";
@@ -73,6 +72,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 	public LgtvBinding() {
 	}
 
+	@Override
 	public void activate() {
 		logger.debug("Activate");
 
@@ -88,6 +88,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 
 	}
 
+	@Override
 	public void deactivate() {
 		logger.debug("Deactivate");
 		closeAllConnections();
@@ -111,23 +112,17 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 	protected void internalReceiveCommand(String itemName, Command command) {
 
 		if (itemName != null) {
-			LgtvBindingProvider provider = findFirstMatchingBindingProvider(
-					itemName, command.toString());
+			LgtvBindingProvider provider = findFirstMatchingBindingProvider(itemName, command.toString());
 
 			if (provider == null) {
-				logger.warn(
-						"Doesn't find matching binding provider [itemName={}, command={}]",
-						itemName, command);
+				logger.warn("Doesn't find matching binding provider [itemName={}, command={}]", itemName, command);
 				return;
 			}
 
-			logger.debug(
-					"Received command (item='{}', state='{}', class='{}')",
-					new Object[] { itemName, command.toString(),
-							command.getClass().toString() });
+			logger.debug("Received command (item='{}', state='{}', class='{}')",
+					new Object[] { itemName, command.toString(), command.getClass().toString() });
 
-			String tmp = provider
-					.getDeviceCommand(itemName, command.toString());
+			String tmp = provider.getDeviceCommand(itemName, command.toString());
 
 			if (tmp == null) {
 				tmp = provider.getDeviceCommand(itemName, WILDCARD_COMMAND_KEY);
@@ -157,8 +152,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 
 						// lgtv command is a template where value should be
 						// updated
-						deviceCmd = convertOpenHabCommandToDeviceCommand(
-								command, deviceCmd);
+						deviceCmd = convertOpenHabCommandToDeviceCommand(command, deviceCmd);
 					}
 
 				} else {
@@ -172,8 +166,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 
 						// eISCP command is a template where value should be
 						// updated
-						deviceCmd = convertOpenHabCommandToDeviceCommand(
-								command, deviceCmd);
+						deviceCmd = convertOpenHabCommandToDeviceCommand(command, deviceCmd);
 					}
 				}
 
@@ -182,14 +175,11 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 					remoteController.send(deviceCmd, command.toString());
 
 				} else {
-					logger.warn("Cannot convert value '{}' to LgTV format",
-							command);
+					logger.warn("Cannot convert value '{}' to LgTV format", command);
 				}
 
 			} else {
-				logger.warn(
-						"Cannot find connection details for device id '{}'",
-						deviceId);
+				logger.warn("Cannot find connection details for device id '{}'", deviceId);
 			}
 		}
 	}
@@ -202,24 +192,20 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 	 * 
 	 * @return
 	 */
-	private String convertOpenHabCommandToDeviceCommand(Command command,
-			String cmdTemplate) {
+	private String convertOpenHabCommandToDeviceCommand(Command command, String cmdTemplate) {
 		String deviceCmd = null;
 
 		if (command instanceof OnOffType) {
-			deviceCmd = String.format(cmdTemplate, command == OnOffType.ON ? 1
-					: 0);
+			deviceCmd = String.format(cmdTemplate, command == OnOffType.ON ? 1 : 0);
 
 		} else if (command instanceof StringType) {
 			deviceCmd = String.format(cmdTemplate, command);
 
 		} else if (command instanceof DecimalType) {
-			deviceCmd = String.format(cmdTemplate,
-					((DecimalType) command).intValue());
+			deviceCmd = String.format(cmdTemplate, ((DecimalType) command).intValue());
 
 		} else if (command instanceof PercentType) {
-			deviceCmd = String.format(cmdTemplate,
-					((DecimalType) command).intValue());
+			deviceCmd = String.format(cmdTemplate, ((DecimalType) command).intValue());
 		}
 
 		return deviceCmd;
@@ -234,13 +220,11 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 	 * @return the matching binding provider or <code>null</code> if no binding
 	 *         provider could be found
 	 */
-	private LgtvBindingProvider findFirstMatchingBindingProvider(
-			String itemName, String command) {
+	private LgtvBindingProvider findFirstMatchingBindingProvider(String itemName, String command) {
 		LgtvBindingProvider firstMatchingProvider = null;
 
 		for (LgtvBindingProvider provider : this.providers) {
-			String tmp = provider
-					.getDeviceCommand(itemName, command.toString());
+			String tmp = provider.getDeviceCommand(itemName, command.toString());
 			if (tmp != null) {
 				firstMatchingProvider = provider;
 				break;
@@ -249,8 +233,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 
 		if (firstMatchingProvider == null) {
 			for (LgtvBindingProvider provider : this.providers) {
-				String tmp = provider.getDeviceCommand(itemName,
-						WILDCARD_COMMAND_KEY);
+				String tmp = provider.getDeviceCommand(itemName, WILDCARD_COMMAND_KEY);
 				if (tmp != null) {
 					firstMatchingProvider = provider;
 					break;
@@ -266,11 +249,9 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 	 * @{inheritDoc
 	 */
 
-	public void updated(Dictionary<String, ?> config)
-			throws ConfigurationException {
+	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 
-		logger.debug("Configuration updated, config {}", config != null ? true
-				: false);
+		logger.debug("Configuration updated, config {}", config != null ? true : false);
 
 		if (config != null) {
 			Enumeration<String> keys = config.keys();
@@ -280,7 +261,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 			}
 
 			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
+				String key = keys.nextElement();
 
 				// the config-key enumeration contains additional keys that we
 				// don't want to process here ...
@@ -291,8 +272,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 				Matcher matcher = EXTRACT_CONFIG_PATTERN.matcher(key);
 
 				if (!matcher.matches()) {
-					logger.debug("given config key '"
-							+ key
+					logger.debug("given config key '" + key
 							+ "' does not follow the expected pattern '<id>.<host|port>'");
 					continue;
 				}
@@ -325,17 +305,14 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 				} else if ("checkalive".equals(configKey)) {
 					deviceConfig.checkalive = Integer.valueOf(value);
 				} else
-					throw new ConfigurationException(configKey,
-							"the given configKey '" + configKey
-									+ "' is unknown");
+					throw new ConfigurationException(configKey, "the given configKey '" + configKey + "' is unknown");
 
 			}
 		}
 
 		// open connection to all receivers
 		for (String device : deviceConfigCache.keySet()) {
-			LgtvConnection connection = deviceConfigCache.get(device)
-					.getConnection();
+			LgtvConnection connection = deviceConfigCache.get(device).getConnection();
 			if (connection != null) {
 				connection.addEventListener(this); // MF25012014
 				connection.openConnection();
@@ -359,8 +336,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 					String[] commandParts = initCmd.split(":");
 					String deviceId = commandParts[0];
 
-					if (currentdeviceid == ""
-							|| deviceId.equals(currentdeviceid)) {
+					if (currentdeviceid == "" || deviceId.equals(currentdeviceid)) {
 						initializeItem(itemName);
 					}
 
@@ -376,8 +352,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 		if (deviceConfigCache != null && deviceConfigCache.size() > 0) {
 			for (String device : deviceConfigCache.keySet()) {
 				// logger.debug("checkalive: device="+device);
-				LgtvConnection connection = deviceConfigCache.get(device)
-						.getConnection();
+				LgtvConnection connection = deviceConfigCache.get(device).getConnection();
 				if (connection != null) {
 					connection.checkalive();
 				}
@@ -390,8 +365,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 	private void closeAllConnections() {
 		if (deviceConfigCache != null) {
 			for (String device : deviceConfigCache.keySet()) {
-				LgtvConnection connection = deviceConfigCache.get(device)
-						.getConnection();
+				LgtvConnection connection = deviceConfigCache.get(device).getConnection();
 				if (connection != null) {
 					connection.closeConnection();
 					connection.removeEventListener(this);
@@ -426,9 +400,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 		DeviceConfig deviceConfig = findDevice(ip);
 
 		if (deviceConfig != null) {
-			logger.debug(
-					"Received status update '{}' from ip {} for deviceId {}",
-					data, ip, deviceConfig.deviceId);
+			logger.debug("Received status update '{}' from ip {} for deviceId {}", data, ip, deviceConfig.deviceId);
 
 			if (data.startsWith("CONNECTION_STATUS=1")) {
 				initializeallitems(deviceConfig.deviceId);
@@ -441,8 +413,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 			for (LgtvBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
 					// Update all items which refer to command
-					HashMap<String, String> values = provider
-							.getDeviceCommands(itemName);
+					HashMap<String, String> values = provider.getDeviceCommands(itemName);
 
 					for (String cmd : values.keySet()) {
 						String[] commandParts = values.get(cmd).split(":");
@@ -451,27 +422,18 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 						// logger.debug("check: "+values.get(cmd));
 						boolean match = false;
 
-						if (deviceCmd.equals(cmdname) && deviceId.equals(deviceConfig.deviceId))
-							{
-								match = true;
-							}
-						
+						if (deviceCmd.equals(cmdname) && deviceId.equals(deviceConfig.deviceId)) {
+							match = true;
+						}
+
 						if (match) {
-							 logger.debug("statusupdaterec match found itemname="
-							 + itemName
-							 + " cmd="
-							 + cmdname
-							 + " deviceId="
-							 + deviceConfig.deviceId
-							 + " value="
-							 + cmdval);
-							Class<? extends Item> itemType = provider
-									.getItemType(itemName);
-							State v = convertDeviceValueToOpenHabState(
-									itemType, cmdval);
+							logger.debug("statusupdaterec match found itemname=" + itemName + " cmd=" + cmdname
+									+ " deviceId=" + deviceConfig.deviceId + " value=" + cmdval);
+							Class<? extends Item> itemType = provider.getItemType(itemName);
+							State v = convertDeviceValueToOpenHabState(itemType, cmdval);
 							eventPublisher.postUpdate(itemName, v);
-							//break; 
-							match=false; 
+							// break;
+							match = false;
 						} // match
 					} // for (String cmd : values.keySet()) {
 
@@ -488,8 +450,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 	 * 
 	 * @return
 	 */
-	private State convertDeviceValueToOpenHabState(
-			Class<? extends Item> itemType, String data) {
+	private State convertDeviceValueToOpenHabState(Class<? extends Item> itemType, String data) {
 		State state = UnDefType.UNDEF;
 
 		try {
@@ -516,8 +477,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 				state = new StringType(data);
 			}
 		} catch (Exception e) {
-			logger.debug("Cannot convert value '{}' to data type {}", data,
-					itemType);
+			logger.debug("Cannot convert value '{}' to data type {}", data, itemType);
 		}
 		// logger.debug("Convert value=" + data + " to openhab type="
 		// + itemType.toString() + " val=" + state.toString());
@@ -550,15 +510,12 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 				}
 
 				if (remoteController == null) {
-					logger.debug(
-							"Initialize item {} canceled - remotecontroller not initialized",
-							itemName);
+					logger.debug("Initialize item {} canceled - remotecontroller not initialized", itemName);
 					return;
 				}
 
 				if (remoteController.ispaired() == false) {
-					logger.debug("Initialize item {} canceled - not paired",
-							itemName);
+					logger.debug("Initialize item {} canceled - not paired", itemName);
 					return;
 				}
 
@@ -580,17 +537,13 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 
 					logger.debug("send result=" + result);
 					if (!result.startsWith("#")) {
-						Class<? extends Item> itemType = provider
-								.getItemType(itemName);
-						State v = convertDeviceValueToOpenHabState(itemType,
-								result);
+						Class<? extends Item> itemType = provider.getItemType(itemName);
+						State v = convertDeviceValueToOpenHabState(itemType, result);
 						eventPublisher.postUpdate(itemName, v);
 					}
 
 				} else {
-					logger.warn(
-							"Cannot find connection details for device id '{}'",
-							deviceId);
+					logger.warn("Cannot find connection details for device id '{}'", deviceId);
 				}
 			}
 		}
@@ -642,14 +595,12 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 
 		@Override
 		public String toString() {
-			return "Device [id=" + deviceId + ", host=" + host + ", port="
-					+ port + ", serverport=" + localport + "]";
+			return "Device [id=" + deviceId + ", host=" + host + ", port=" + port + ", serverport=" + localport + "]";
 		}
 
 		LgtvConnection getConnection() {
 			if (connection == null) {
-				connection = new LgtvConnection(host, port, localport, pairkey,
-						xmldatafiles, checkalive);
+				connection = new LgtvConnection(host, port, localport, pairkey, xmldatafiles, checkalive);
 			}
 			return connection;
 		}

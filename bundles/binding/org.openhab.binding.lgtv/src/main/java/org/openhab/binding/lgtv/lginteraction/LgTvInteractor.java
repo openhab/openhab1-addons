@@ -9,8 +9,6 @@
  * LGInteraction / Implementation of LG API
  * Author Martin Fluch martinfluch@gmx.net 
  */
-
-
 package org.openhab.binding.lgtv.lginteraction;
 
 import java.io.BufferedReader;
@@ -34,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class handles the interaction between one tv and the plugin 
+ * This class handles the interaction between one tv and the plugin
  * 
  * @author Martin Fluch
  * @since 1.6.0
@@ -50,8 +48,7 @@ public class LgTvInteractor implements LgtvEventListener {
 	/**
 	 * @param args
 	 */
-	private static Logger logger = LoggerFactory
-			.getLogger(LgtvConnection.class);
+	private static Logger logger = LoggerFactory.getLogger(LgtvConnection.class);
 	private int lgport = 8080; // tv's communication port
 	private String lgip; // tv's ip
 	private int lglocalport; // local port for message server
@@ -79,8 +76,7 @@ public class LgTvInteractor implements LgtvEventListener {
 		if (startpt >= 0) {
 			int endpt = sourcestring.indexOf("</" + tag + ">");
 			if (endpt >= 0) {
-				retval = sourcestring.substring(startpt + starttag.length(),
-						endpt);
+				retval = sourcestring.substring(startpt + starttag.length(), endpt);
 			}
 		}
 		return retval;
@@ -97,13 +93,11 @@ public class LgTvInteractor implements LgtvEventListener {
 
 	public void setconnectionstatus(lgtvconnectionstatus s) {
 		if (s != connectionstatus) {
-			logger.info("lgtv connectionstatus of ip=" + lgip
-					+ " changed from " + connectionstatus + " to " + s);
+			logger.info("lgtv connectionstatus of ip=" + lgip + " changed from " + connectionstatus + " to " + s);
 			connectionstatus = s;
 
 			if (associatedreader != null) {
-				String status = "CONNECTION_STATUS="
-						+ ((s == lgtvconnectionstatus.CS_PAIRED) ? "1" : "0");
+				String status = "CONNECTION_STATUS=" + ((s == lgtvconnectionstatus.CS_PAIRED) ? "1" : "0");
 				LgtvStatusUpdateEvent event = new LgtvStatusUpdateEvent(this);
 				associatedreader.sendtohandlers(event, lgip, status);
 
@@ -128,8 +122,7 @@ public class LgTvInteractor implements LgtvEventListener {
 		return (connectionstatus == lgtvconnectionstatus.CS_PAIRED);
 	}
 
-	public LgTvInteractor(String ip, int port, int localport, String xmldf)
-			throws InterruptedException {
+	public LgTvInteractor(String ip, int port, int localport, String xmldf) throws InterruptedException {
 
 		lgip = ip;
 		lgport = port;
@@ -163,8 +156,7 @@ public class LgTvInteractor implements LgtvEventListener {
 		message = "";
 		String answer = "#notpaired";
 		if (ispaired()) {
-			answer = sendtotv("GET", "udap/api/data?target=cur_channel",
-					message);
+			answer = sendtotv("GET", "udap/api/data?target=cur_channel", message);
 		}
 		return new String(answer);
 	}
@@ -175,8 +167,7 @@ public class LgTvInteractor implements LgtvEventListener {
 		String answer = "#notpaired";
 
 		if (ispaired()) {
-			answer = sendtotv("GET", "udap/api/data?target=channel_list",
-					message);
+			answer = sendtotv("GET", "udap/api/data?target=channel_list", message);
 
 			try {
 				channelset.loadchannels(answer);
@@ -185,22 +176,18 @@ public class LgTvInteractor implements LgtvEventListener {
 				answer = s;
 				if (this.xmldatafiles.length() > 0) {
 
-					String filename = this.xmldatafiles + lgip
-							+ "_lgtvallchannels.xml";
-					logger.debug("xmldatafiles is set - writing file="
-							+ filename);
+					String filename = this.xmldatafiles + lgip + "_lgtvallchannels.xml";
+					logger.debug("xmldatafiles is set - writing file=" + filename);
 					channelset.savetofile(filename);
 
 				}
 
 			} catch (JAXBException e) {
 
-				logger.error("exception in getallchannels: ",e);
-				org.xml.sax.SAXParseException f = (org.xml.sax.SAXParseException) e
-						.getLinkedException();
-				logger.error("parse exception e=" + e.toString() + " line="
-						+ f.getLineNumber() + " columns=" + f.getColumnNumber()
-						+ " local=" + f.getLocalizedMessage());
+				logger.error("exception in getallchannels: ", e);
+				org.xml.sax.SAXParseException f = (org.xml.sax.SAXParseException) e.getLinkedException();
+				logger.error("parse exception e=" + e.toString() + " line=" + f.getLineNumber() + " columns="
+						+ f.getColumnNumber() + " local=" + f.getLocalizedMessage());
 			}
 		}
 
@@ -212,10 +199,7 @@ public class LgTvInteractor implements LgtvEventListener {
 		message = "";
 		String answer = "#notpaired";
 		if (ispaired()) {
-			answer = sendtotv(
-					"GET",
-					"udap/api/data?target=applist_get&type=1&index=1&number=1024",
-					message);
+			answer = sendtotv("GET", "udap/api/data?target=applist_get&type=1&index=1&number=1024", message);
 
 			logger.debug("answer: " + answer);
 			try {
@@ -226,22 +210,18 @@ public class LgTvInteractor implements LgtvEventListener {
 
 				if (this.xmldatafiles.length() > 0) {
 
-					String filename = this.xmldatafiles + lgip
-							+ "_lgtvallapps.xml";
-					logger.debug("xmldatafiles is set - writing file="
-							+ filename);
+					String filename = this.xmldatafiles + lgip + "_lgtvallapps.xml";
+					logger.debug("xmldatafiles is set - writing file=" + filename);
 					appset.savetofile(filename);
 
 				}
 
 			} catch (JAXBException e) {
 
-				logger.error("error in getallapps", e); 
-				org.xml.sax.SAXParseException f = (org.xml.sax.SAXParseException) e
-						.getLinkedException();
-				logger.error("parse exception e=" + e.toString() + " line="
-						+ f.getLineNumber() + " columns=" + f.getColumnNumber()
-						+ " local=" + f.getLocalizedMessage());
+				logger.error("error in getallapps", e);
+				org.xml.sax.SAXParseException f = (org.xml.sax.SAXParseException) e.getLinkedException();
+				logger.error("parse exception e=" + e.toString() + " line=" + f.getLineNumber() + " columns="
+						+ f.getColumnNumber() + " local=" + f.getLocalizedMessage());
 			}
 
 		}
@@ -254,8 +234,7 @@ public class LgTvInteractor implements LgtvEventListener {
 		String answer = "#notpaired";
 
 		if (dontcheckpairing == 1 || ispaired()) {
-			answer = sendtotv("GET", "udap/api/data?target=volume_info",
-					message);
+			answer = sendtotv("GET", "udap/api/data?target=volume_info", message);
 			logger.debug("answer: " + answer);
 		}
 
@@ -278,14 +257,12 @@ public class LgTvInteractor implements LgtvEventListener {
 			String currentvol = quickfind(res, "level");
 			int cvol = Integer.parseInt(currentvol);
 			int todo = val - cvol;
-			logger.debug("currentvolume=" + cvol + " newvolume=" + val
-					+ " todo=" + todo);
+			logger.debug("currentvolume=" + cvol + " newvolume=" + val + " todo=" + todo);
 
 			LgTvCommand volup = LgTvCommand.valueOf("VOLUME_UP");
 			LgTvCommand voldown = LgTvCommand.valueOf("VOLUME_DOWN");
 
-			String usecommand = todo > 0 ? volup.getLgSendCommand() : voldown
-					.getLgSendCommand();
+			String usecommand = todo > 0 ? volup.getLgSendCommand() : voldown.getLgSendCommand();
 
 			if (todo < 0)
 				todo = todo * -1;
@@ -293,8 +270,7 @@ public class LgTvInteractor implements LgtvEventListener {
 				handlekeyinput(usecommand);
 			}
 
-			logger.debug("currentvolume=" + cvol + " newvolume=" + val
-					+ " todo=" + todo + " usecommand=" + usecommand);
+			logger.debug("currentvolume=" + cvol + " newvolume=" + val + " todo=" + todo + " usecommand=" + usecommand);
 
 			if (todo != 0) {
 				res = getvolumeinfo(0);
@@ -302,8 +278,7 @@ public class LgTvInteractor implements LgtvEventListener {
 
 				if (associatedreader != null) {
 					String volume = "VOLUME_CURRENT=" + val;
-					LgtvStatusUpdateEvent event = new LgtvStatusUpdateEvent(
-							this);
+					LgtvStatusUpdateEvent event = new LgtvStatusUpdateEvent(this);
 					associatedreader.sendtohandlers(event, lgip, volume);
 				}
 
@@ -330,12 +305,10 @@ public class LgTvInteractor implements LgtvEventListener {
 
 		long duration = System.currentTimeMillis() - byebyeseen;
 
-		nobyebyeproblem = ((duration > (waitafterbyebye * 1000)) == true) ? 1
-				: 0;
+		nobyebyeproblem = ((duration > (waitafterbyebye * 1000)) == true) ? 1 : 0;
 
 		if (byebyeseen == -1 || nobyebyeproblem == 1) {
-			if (connectionstatus != lgtvconnectionstatus.CS_PAIRED
-					&& pairkey.length() > 0) {
+			if (connectionstatus != lgtvconnectionstatus.CS_PAIRED && pairkey.length() > 0) {
 				sendpairkey();
 			} else if (pairkey.length() == 0)
 				logger.error("no pairkey defined");
@@ -346,10 +319,7 @@ public class LgTvInteractor implements LgtvEventListener {
 	public String sendpairkey() {
 		logger.debug("sending pairkey key=" + pairkey);
 		String message = "<?xml version=\"1.0\" encoding=\"utf-8\"?><envelope><api type=\"pairing\"><name>hello</name><value>"
-				+ pairkey
-				+ "</value><port>"
-				+ Integer.toString(lglocalport)
-				+ "</port></api></envelope>";
+				+ pairkey + "</value><port>" + Integer.toString(lglocalport) + "</port></api></envelope>";
 		String answer = sendtotv("POST", "udap/api/pairing", message);
 		logger.debug("answer: " + answer);
 		String success = "";
@@ -358,8 +328,7 @@ public class LgTvInteractor implements LgtvEventListener {
 			setconnectionstatus(lgtvconnectionstatus.CS_PAIRED);
 		}
 
-		logger.info("sendpairkey with result=" + answer + " " + success
-				+ "connectionstatus=" + connectionstatus.name());
+		logger.info("sendpairkey with result=" + answer + " " + success + "connectionstatus=" + connectionstatus.name());
 		return new String(answer);
 	}
 
@@ -383,7 +352,8 @@ public class LgTvInteractor implements LgtvEventListener {
 				+ "</auid><appname>"
 				+ appname
 				+ "</appname><contentId>"
-				+ contentid + "</contentId></api></envelope>";
+				+ contentid
+				+ "</contentId></api></envelope>";
 		if (ispaired()) {
 			answer = sendtotv("POST", "udap/api/command", message);
 			logger.debug("answer: " + answer);
@@ -407,10 +377,9 @@ public class LgTvInteractor implements LgtvEventListener {
 
 			oneapp e = appset.getenvel().find(name);
 			if (e != null) {
-				
+
 				cid = String.valueOf(e.getcpid());
 				id = e.getid();
-				
 
 				return new String(appexecute(name, id, cid));
 			} else {
@@ -419,16 +388,12 @@ public class LgTvInteractor implements LgtvEventListener {
 			}
 		}
 
-		
 	}
 
 	public String appterminate(String appname, String id) {
 
 		String message = "<?xml version=\"1.0\" encoding=\"utf-8\"?><envelope><api type=\"command\"><name>AppTerminate</name><auid>"
-				+ id
-				+ "</auid><appname>"
-				+ appname
-				+ "</appname></api></envelope>";
+				+ id + "</auid><appname>" + appname + "</appname></api></envelope>";
 		String answer = "#notpaired";
 		if (ispaired()) {
 			answer = sendtotv("POST", "udap/api/command", message);
@@ -439,26 +404,24 @@ public class LgTvInteractor implements LgtvEventListener {
 
 	public String appterminateeasy(String name) {
 		String id = "";
-		
+
 		if (name.length() == 0)
 			return new String("#appnotfound");
 
 		oneapp e = appset.getenvel().find(name);
 		if (e != null) {
-			
+
 			id = e.getid();
-			
+
 			return new String(appterminate(name, id));
 		} else {
 			id = name = "";
 			return new String("#appnotfound");
 		}
 
-		
 	}
 
-	public String handlechannelchange(String major, String minor,
-			String sourceindex, int phys) {
+	public String handlechannelchange(String major, String minor, String sourceindex, int phys) {
 		String message = "<?xml version=\"1.0\" encoding=\"utf-8\"?><envelope><api type=\"command\"><name>HandleChannelChange</name><major>"
 				+ major
 				+ "</major><minor>"
@@ -466,8 +429,7 @@ public class LgTvInteractor implements LgtvEventListener {
 				+ "</minor><sourceIndex>"
 				+ sourceindex
 				+ "</sourceIndex>"
-				+ "<physicalNum>"
-				+ String.valueOf(phys) + "</physicalNum>" + "</api></envelope>";
+				+ "<physicalNum>" + String.valueOf(phys) + "</physicalNum>" + "</api></envelope>";
 		String answer = "#notpaired";
 		if (ispaired()) {
 			answer = sendtotv("POST", "udap/api/command", message);
@@ -530,11 +492,9 @@ public class LgTvInteractor implements LgtvEventListener {
 
 		conf_tv_url = "http://" + lgip + ":" + Integer.toString(lgport); // 192.168.77.15:8080";
 
-		logger.debug("sendtotv: url=" + conf_tv_url + " typ=" + typ
-				+ " command=" + command + " s=" + s);
+		logger.debug("sendtotv: url=" + conf_tv_url + " typ=" + typ + " command=" + command + " s=" + s);
 		if (connectionstatus != lgtvconnectionstatus.CS_PAIRED)
-			logger.error("sendtotv but connection status is "
-					+ connectionstatus.name());
+			logger.error("sendtotv but connection status is " + connectionstatus.name());
 
 		BufferedReader rd = null;
 		StringBuilder sb = null;
@@ -552,14 +512,11 @@ public class LgTvInteractor implements LgtvEventListener {
 			// Set up the initial connection
 			connection = (HttpURLConnection) serverAddress.openConnection();
 
-			connection.setRequestProperty("content-type",
-					"text/xml; charset=utf-8");
-			connection.setRequestProperty("Host",
-					lgip + ":" + Integer.toString(lgport)); // "192.168.77.15:8080");
+			connection.setRequestProperty("content-type", "text/xml; charset=utf-8");
+			connection.setRequestProperty("Host", lgip + ":" + Integer.toString(lgport)); // "192.168.77.15:8080");
 
 			connection.setRequestProperty("Connection", "close");
-			connection.setRequestProperty("User-Agent",
-					"Linux/2.6.18 UDAP/2.0 CentOS/5.8");
+			connection.setRequestProperty("User-Agent", "Linux/2.6.18 UDAP/2.0 CentOS/5.8");
 			connection.setUseCaches(false);
 			connection.setReadTimeout(10000);
 
@@ -577,8 +534,7 @@ public class LgTvInteractor implements LgtvEventListener {
 			}
 
 			// read the result from the server
-			rd = new BufferedReader(new InputStreamReader(
-					connection.getInputStream()));
+			rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			sb = new StringBuilder();
 
 			while ((line = rd.readLine()) != null) {
@@ -591,17 +547,14 @@ public class LgTvInteractor implements LgtvEventListener {
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			logger.error("MalformedUrlException at Connection to: "
-					+ serverAddressString);
+			logger.error("MalformedUrlException at Connection to: " + serverAddressString);
 			returnmessage = "#error/url";
 		} catch (ProtocolException e) {
 			e.printStackTrace();
-			logger.error("Protocol Exception at Connection to: "
-					+ serverAddressString);
+			logger.error("Protocol Exception at Connection to: " + serverAddressString);
 			returnmessage = "#error/protocol";
 		} catch (IOException e) {
-			logger.error("IO Exception at Connection to: "
-					+ serverAddressString);
+			logger.error("IO Exception at Connection to: " + serverAddressString);
 			// logger.debug(e.toString());
 			returnmessage = "#error/connect";
 			setconnectionstatus(lgtvconnectionstatus.CS_NOTCONNECTED);
@@ -622,9 +575,9 @@ public class LgTvInteractor implements LgtvEventListener {
 	}
 
 	public void statusUpdateReceived(EventObject event, String ip, String data) {
-	
+
 		if (ip.equals(lgip)) {
-			
+
 			if (data.startsWith("BYEBYE_SEEN") == true) {
 				byebyeseen = System.currentTimeMillis(); // as tv keeps alive
 															// for ~10secs we

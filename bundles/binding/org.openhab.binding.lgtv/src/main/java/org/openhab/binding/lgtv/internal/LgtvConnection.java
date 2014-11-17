@@ -23,7 +23,6 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-
 import org.osgi.service.http.HttpService;
 
 /**
@@ -34,12 +33,10 @@ import org.osgi.service.http.HttpService;
  */
 public class LgtvConnection implements LgtvEventListener {
 
-	private static Logger logger = LoggerFactory
-			.getLogger(LgtvConnection.class);
+	private static Logger logger = LoggerFactory.getLogger(LgtvConnection.class);
 
 	private String ip = "";
 	private int port = 0;
-	private int localport = 0;
 	private int checkalive = 0;
 	private int lastvolume = -1;
 
@@ -63,7 +60,6 @@ public class LgtvConnection implements LgtvEventListener {
 
 			long millis = System.currentTimeMillis();
 
-
 			if (connection.getconnectionstatus() == LgTvInteractor.lgtvconnectionstatus.CS_PAIRED
 					&& connection.getlastsuccessfulinteraction() < (millis - checkalive * 1000)) {
 				String res = connection.getvolumeinfo(1);
@@ -74,8 +70,7 @@ public class LgtvConnection implements LgtvEventListener {
 				if (lastvolume != cvol && reader != null) {
 
 					String volume = "VOLUME_CURRENT=" + cvol;
-					LgtvStatusUpdateEvent event = new LgtvStatusUpdateEvent(
-							this);
+					LgtvStatusUpdateEvent event = new LgtvStatusUpdateEvent(this);
 					reader.sendtohandlers(event, ip, volume);
 				}
 
@@ -92,21 +87,19 @@ public class LgtvConnection implements LgtvEventListener {
 				} catch (IOException e) {
 					// Don't handle - it's normal to get an exception when tv
 					// switched off
-								}
+				}
 
 			}
 
 		}
 	}
 
-	public LgtvConnection(String ip, int port, int localport, String pkey,
-			String xmldf, int checkalive) {
+	public LgtvConnection(String ip, int port, int localport, String pkey, String xmldf, int checkalive) {
 		this.ip = ip;
 		this.port = port;
-		this.localport = port;
 		this.checkalive = checkalive;
 
-		bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext(); 
+		bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
 		try {
 			connection = new LgTvInteractor(ip, port, localport, xmldf);
 			connection.setpairkey(pkey);
@@ -116,20 +109,19 @@ public class LgtvConnection implements LgtvEventListener {
 		}
 
 		if (localport != 0 && reader == null) {
-	 			reader = new LgTvMessageReader(localport);
-				HttpService h=null;
+			reader = new LgTvMessageReader(localport);
+			HttpService h = null;
 
-				 if (bundleContext!=null)
-                		{
-                        		ServiceReference<?> serviceReference = bundleContext.getServiceReference(HttpService.class.getName());
-                        		if (serviceReference!=null)
-                        		{
-                                		h = (HttpService) bundleContext.getService(serviceReference);
-						reader.setHttpService(h);
-                        		}else logger.error("serviceRefeerence=null");
-                		}else logger.error("bundleContext=null");
+			if (bundleContext != null) {
+				ServiceReference<?> serviceReference = bundleContext.getServiceReference(HttpService.class.getName());
+				if (serviceReference != null) {
+					h = (HttpService) bundleContext.getService(serviceReference);
+					reader.setHttpService(h);
+				} else
+					logger.error("serviceRefeerence=null");
+			} else
+				logger.error("bundleContext=null");
 		}
-
 
 		if (connection != null)
 			addEventListener(connection);
@@ -167,11 +159,13 @@ public class LgtvConnection implements LgtvEventListener {
 	}
 
 	public void addEventListener(LgtvEventListener listener) {
-		if (reader!=null) reader.addEventListener(listener);
+		if (reader != null)
+			reader.addEventListener(listener);
 	}
 
 	public void removeEventListener(LgtvEventListener listener) {
-		if (reader!=null) reader.removeEventListener(listener);
+		if (reader != null)
+			reader.removeEventListener(listener);
 	}
 
 	public String quickfind(String sourcestring, String tag) {
@@ -181,8 +175,7 @@ public class LgtvConnection implements LgtvEventListener {
 		if (startpt >= 0) {
 			int endpt = sourcestring.indexOf("</" + tag + ">");
 			if (endpt >= 0) {
-				retval = sourcestring.substring(startpt + starttag.length(),
-						endpt);
+				retval = sourcestring.substring(startpt + starttag.length(), endpt);
 			}
 		}
 		return retval;
@@ -208,13 +201,11 @@ public class LgtvConnection implements LgtvEventListener {
 			try {
 				LgTvCommand lgcmd = LgTvCommand.valueOf(cmd);
 
-				logger.debug("send to tv ip=" + ip + " command=" + cmd
-						+ " type=" + lgcmd.getCommandType() + " val=" + val
-						+ " lgsendparam=" + lgcmd.getLgSendCommand());
+				logger.debug("send to tv ip=" + ip + " command=" + cmd + " type=" + lgcmd.getCommandType() + " val="
+						+ val + " lgsendparam=" + lgcmd.getLgSendCommand());
 				switch (lgcmd.getCommandType()) {
 				case 0:
-					result = connection
-							.handlekeyinput(lgcmd.getLgSendCommand());
+					result = connection.handlekeyinput(lgcmd.getLgSendCommand());
 					break;
 				case 1:
 					result = connection.requestpairkey();
@@ -236,14 +227,11 @@ public class LgtvConnection implements LgtvEventListener {
 						ismuted = "0";
 
 					String level = quickfind(answer, "level");
-					logger.debug("getvolume answer=" + answer + " ismuted="
-							+ ismuted + " level=" + level);
+					logger.debug("getvolume answer=" + answer + " ismuted=" + ismuted + " level=" + level);
 
 					String setter = "#nothing";
-					setter = (lgcmd.getLgSendCommand() == "LEVEL") ? level
-							: setter;
-					setter = (lgcmd.getLgSendCommand() == "ISMUTED") ? ismuted
-							: setter;
+					setter = (lgcmd.getLgSendCommand() == "LEVEL") ? level : setter;
+					setter = (lgcmd.getLgSendCommand() == "ISMUTED") ? ismuted : setter;
 					result = setter;
 
 				}
@@ -255,17 +243,13 @@ public class LgtvConnection implements LgtvEventListener {
 					String displaymajor = quickfind(answer, "displayMajor");
 					String chname = quickfind(answer, "chname");
 					String progname = quickfind(answer, "progName");
-					logger.debug("getcurrentchannel answer=" + answer
-							+ " displayMajor=" + displaymajor + " chname="
+					logger.debug("getcurrentchannel answer=" + answer + " displayMajor=" + displaymajor + " chname="
 							+ chname + " progname=" + progname);
 
 					String setter = "#nothing";
-					setter = (lgcmd.getLgSendCommand() == "NUMBER") ? displaymajor
-							: setter;
-					setter = (lgcmd.getLgSendCommand() == "PROG") ? progname
-							: setter;
-					setter = (lgcmd.getLgSendCommand() == "NAME") ? chname
-							: setter;
+					setter = (lgcmd.getLgSendCommand() == "NUMBER") ? displaymajor : setter;
+					setter = (lgcmd.getLgSendCommand() == "PROG") ? progname : setter;
+					setter = (lgcmd.getLgSendCommand() == "NAME") ? chname : setter;
 					result = setter;
 				}
 					;
@@ -304,29 +288,25 @@ public class LgtvConnection implements LgtvEventListener {
 					;
 					break;
 				case 12: {
-					//dummy / fuer browser
-					result="";
-				}	; break;
-
-
+					// dummy / fuer browser
+					result = "";
+				}
+					;
+					break;
 
 				}
 			} catch (Exception e) {
 
-				logger.error("Could not send command to device on {} : {}", ip
-						+ ":" + port, e);
+				logger.error("Could not send command to device on {} : {}", ip + ":" + port, e);
 			}
 
 		}
 		return new String(result);
 	}
 
-	
-	public void statusUpdateReceived(EventObject event, String ip, String data) 
-	{
+	public void statusUpdateReceived(EventObject event, String ip, String data) {
 		logger.debug("Mf: statusupdaterec ip=" + ip + " data=" + data);
-		if (data.startsWith("CONNECTION_STATUS=CS_PAIRED")) 
-		{
+		if (data.startsWith("CONNECTION_STATUS=CS_PAIRED")) {
 			logger.debug("paired in connection object");
 		}
 	}

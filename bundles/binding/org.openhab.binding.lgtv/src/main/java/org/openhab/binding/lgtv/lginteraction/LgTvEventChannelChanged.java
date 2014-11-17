@@ -6,8 +6,6 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
-
 package org.openhab.binding.lgtv.lginteraction;
 
 import java.io.StringReader;
@@ -22,10 +20,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-
 /**
- * This class handles xml encoded channel changed messages 
- * receiver.
+ * This class handles xml encoded channel changed messages receiver.
  * 
  * @author Martin Fluch
  * @since 1.6.0

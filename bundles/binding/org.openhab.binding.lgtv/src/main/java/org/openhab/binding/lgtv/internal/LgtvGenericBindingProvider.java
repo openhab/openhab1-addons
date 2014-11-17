@@ -23,8 +23,6 @@ import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
-//import org.openhab.binding.lgtv.internal.eiscp.EiscpCommand;
-
 /**
  * <p>
  * This class can parse information from the generic binding format and provides
@@ -45,15 +43,13 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 
  * <ul>
  * <li><code>lgtv="ON:Livingroom:POWER_ON, OFF:Livingroom:POWER_OFF"</code></li>
- * <li><code>lgtv="UP:Livingroom:VOLUME_UP, DOWN:Livingroom:VOLUME_DOWN"</code>
- * </li>
+ * <li><code>lgtv="UP:Livingroom:VOLUME_UP, DOWN:Livingroom:VOLUME_DOWN"</code></li>
  * </ul>
  * 
  * @author Martin Fluch
  * @since 1.6.0
  */
-public class LgtvGenericBindingProvider extends AbstractGenericBindingProvider
-		implements LgtvBindingProvider {
+public class LgtvGenericBindingProvider extends AbstractGenericBindingProvider implements LgtvBindingProvider {
 
 	protected static final String ADVANCED_COMMAND_KEY = "#";
 	protected static final String WILDCARD_COMMAND_KEY = "*";
@@ -69,10 +65,8 @@ public class LgtvGenericBindingProvider extends AbstractGenericBindingProvider
 	/**
 	 * @{inheritDoc
 	 */
-	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof NumberItem
-				|| item instanceof DimmerItem
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+		if (!(item instanceof SwitchItem || item instanceof NumberItem || item instanceof DimmerItem
 				|| item instanceof RollershutterItem || item instanceof StringItem)) {
 			throw new BindingConfigParseException(
 					"item '"
@@ -87,8 +81,8 @@ public class LgtvGenericBindingProvider extends AbstractGenericBindingProvider
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item,
-			String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item, String bindingConfig)
+			throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		LgtvBindingConfig config = new LgtvBindingConfig();
@@ -97,18 +91,16 @@ public class LgtvGenericBindingProvider extends AbstractGenericBindingProvider
 		addBindingConfig(item, config);
 	}
 
-	protected void parseBindingConfig(String bindingConfigs,
-			LgtvBindingConfig config) throws BindingConfigParseException {
+	protected void parseBindingConfig(String bindingConfigs, LgtvBindingConfig config)
+			throws BindingConfigParseException {
 
 		String bindingConfig = StringUtils.substringBefore(bindingConfigs, ",");
-		String bindingConfigTail = StringUtils.substringAfter(bindingConfigs,
-				",");
+		String bindingConfigTail = StringUtils.substringAfter(bindingConfigs, ",");
 
 		String[] configParts = bindingConfig.trim().split(":");
 
 		if (configParts.length != 3) {
-			throw new BindingConfigParseException(
-					"Lgtv binding must contain three parts separated by ':'");
+			throw new BindingConfigParseException("Lgtv binding must contain three parts separated by ':'");
 		}
 
 		String command = StringUtils.trim(configParts[0]);
@@ -122,8 +114,7 @@ public class LgtvGenericBindingProvider extends AbstractGenericBindingProvider
 			try {
 				LgTvCommand.valueOf(deviceCommand);
 			} catch (Exception e) {
-				throw new BindingConfigParseException("Unregonized command '"
-						+ deviceCommand + "'");
+				throw new BindingConfigParseException("Unregonized command '" + deviceCommand + "'");
 			}
 
 		}
@@ -141,8 +132,7 @@ public class LgtvGenericBindingProvider extends AbstractGenericBindingProvider
 	 */
 	// mfcheck @Override
 	public Class<? extends Item> getItemType(String itemName) {
-		LgtvBindingConfig config = (LgtvBindingConfig) bindingConfigs
-				.get(itemName);
+		LgtvBindingConfig config = (LgtvBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.itemType : null;
 	}
 
@@ -151,8 +141,7 @@ public class LgtvGenericBindingProvider extends AbstractGenericBindingProvider
 	 */
 	// mfcheck @Override
 	public String getDeviceCommand(String itemName, String command) {
-		LgtvBindingConfig config = (LgtvBindingConfig) bindingConfigs
-				.get(itemName);
+		LgtvBindingConfig config = (LgtvBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.get(command) : null;
 	}
 
@@ -161,8 +150,7 @@ public class LgtvGenericBindingProvider extends AbstractGenericBindingProvider
 	 */
 	// mfcheck @Override
 	public HashMap<String, String> getDeviceCommands(String itemName) {
-		LgtvBindingConfig config = (LgtvBindingConfig) bindingConfigs
-				.get(itemName);
+		LgtvBindingConfig config = (LgtvBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config : null;
 	}
 
@@ -171,8 +159,7 @@ public class LgtvGenericBindingProvider extends AbstractGenericBindingProvider
 	 */
 	// mfcheck @Override
 	public String getItemInitCommand(String itemName) {
-		LgtvBindingConfig config = (LgtvBindingConfig) bindingConfigs
-				.get(itemName);
+		LgtvBindingConfig config = (LgtvBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.get(INIT_COMMAND_KEY) : null;
 	}
 
@@ -181,8 +168,7 @@ public class LgtvGenericBindingProvider extends AbstractGenericBindingProvider
 	 * config strings and use it to answer the requests to the LGTV binding
 	 * provider.
 	 */
-	static class LgtvBindingConfig extends HashMap<String, String> implements
-			BindingConfig {
+	static class LgtvBindingConfig extends HashMap<String, String> implements BindingConfig {
 
 		Class<? extends Item> itemType;
 
