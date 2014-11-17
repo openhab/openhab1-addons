@@ -49,9 +49,8 @@ import tuwien.auto.calimero.process.ProcessListener;
  * @since 0.3.0
  *
  */
-public class KNXBinding extends AbstractBinding<KNXBindingProvider> 
-implements ProcessListener, KNXConnectionListener {
-	//	implements KNXConnectionListener {
+public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
+		ProcessListener, KNXConnectionListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(KNXBinding.class);
 
@@ -69,14 +68,14 @@ implements ProcessListener, KNXConnectionListener {
 
 	public void activate(ComponentContext componentContext) {
 		logger.info("Calimero library version {}", Settings.getLibraryVersion());
-		logger.debug("KNXBinding: activating");
+		logger.trace("KNXBinding: activating");
 		KNXConnection.addConnectionListener(this);
 		mKNXBusReaderScheduler.start();
 
 	}
 
 	public void deactivate(ComponentContext componentContext) {
-		logger.debug("KNXBinding: deactivating");
+		logger.trace("KNXBinding: deactivating");
 		KNXConnection.removeConnectionListener(this);
 		for (KNXBindingProvider provider : providers) {
 			provider.removeBindingChangeListener(this);
@@ -99,7 +98,7 @@ implements ProcessListener, KNXConnectionListener {
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		logger.debug("Received command (item='{}', command='{}')", itemName, command.toString());
+		logger.trace("Received command (item='{}', command='{}')", itemName, command.toString());
 		if (!isEcho(itemName, command)) {
 			writeToKNX(itemName, command);
 		}
@@ -120,7 +119,7 @@ implements ProcessListener, KNXConnectionListener {
 		String ignoreEventListKey = itemName + type.toString();
 		if (ignoreEventList.contains(ignoreEventListKey)) {
 			ignoreEventList.remove(ignoreEventListKey);
-			logger.debug("We received this event (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, type.toString());
+			logger.trace("We received this event (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, type.toString());
 			return true;
 		}
 		else {
@@ -198,7 +197,7 @@ implements ProcessListener, KNXConnectionListener {
 							// we need to make sure that we won't send out this event to
 							// the knx bus again, when receiving it on the openHAB bus
 							ignoreEventList.add(itemName + type.toString());
-							logger.debug("Added event (item='{}', type='{}') to the ignore event list", itemName, type.toString());
+							logger.trace("Added event (item='{}', type='{}') to the ignore event list", itemName, type.toString());
 
 							if (type instanceof Command && isCommandGA(destination)) {
 								eventPublisher.postCommand(itemName, (Command) type);
@@ -208,7 +207,7 @@ implements ProcessListener, KNXConnectionListener {
 								throw new IllegalClassException("Cannot process datapoint of type " + type.toString());
 							}								
 
-							logger.debug("Processed event (item='{}', type='{}', destination='{}')", itemName, type.toString(), destination.toString());
+							logger.trace("Processed event (item='{}', type='{}', destination='{}')", itemName, type.toString(), destination.toString());
 							return;
 						}
 						else {
@@ -239,7 +238,7 @@ implements ProcessListener, KNXConnectionListener {
 	 */
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
-		logger.debug("bindingChanged() for item {} msg received.", itemName);
+		logger.trace("bindingChanged() for item {} msg received.", itemName);
 		if  (mKNXConnectionEstablished) {
 			if (provider instanceof KNXBindingProvider) {
 				KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
@@ -260,7 +259,7 @@ implements ProcessListener, KNXConnectionListener {
 	 */
 	@Override
 	public void allBindingsChanged(BindingProvider provider) {
-		logger.debug("allBindingsChanged() msg received.");
+		logger.trace("allBindingsChanged() msg received.");
 		if  (mKNXConnectionEstablished) {
 			logger.debug("Initializing readable DPs.");
 			if (provider instanceof KNXBindingProvider) {
@@ -286,7 +285,7 @@ implements ProcessListener, KNXConnectionListener {
 	 */
 	@Override
 	public void connectionEstablished() {
-		logger.debug("connectionEstablished() msg received. Initializing readable DPs.");
+		logger.trace("connectionEstablished() msg received. Initializing readable DPs.");
 		mKNXConnectionEstablished=true;
 		for (KNXBindingProvider knxProvider : providers) {
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
@@ -307,7 +306,7 @@ implements ProcessListener, KNXConnectionListener {
 	 */
 	@Override
 	public void connectionLost() {
-		logger.debug("connectionLost() msg received.");
+		logger.trace("connectionLost() msg received.");
 		mKNXConnectionEstablished=false;
 		mKNXBusReaderScheduler.clear();
 	}
