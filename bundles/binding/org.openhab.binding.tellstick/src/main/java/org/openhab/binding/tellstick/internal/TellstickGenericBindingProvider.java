@@ -149,7 +149,9 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 
 	public void resetTellstickListener() throws SupportedMethodsException {
 		try {
-			listener.remove();
+			if(listener != null) {
+				listener.remove();
+			}
 		} catch (Exception e) {
 			logger.error("Failed to remove telldus core listeners", e);
 		}
