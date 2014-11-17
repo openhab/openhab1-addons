@@ -170,9 +170,9 @@ public class Enigma2Binding extends
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		logger.debug("internalReceiveCommand() called");
-		logger.debug("itemName={}", itemName);
-		logger.debug("command={}", command);
+		logger.debug(
+				"internalReceiveCommand() called, itemName={}, command={}",
+				itemName, command);
 		/*
 		 * do we have a binding for this item at all?
 		 */
@@ -209,7 +209,7 @@ public class Enigma2Binding extends
 				case MUTE:
 					node.sendMuteUnmute(command);
 					break;
-				case REMOTE_CONTROL:
+				case REMOTECONTROL:
 					node.sendRcCommand(command, bindingConfig.getCmdValue());
 					break;
 				case POWERSTATE:
@@ -229,24 +229,9 @@ public class Enigma2Binding extends
 	 * @{inheritDoc
 	 */
 	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
 		if (config != null) {
-
-			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like
-			// <bindingName>:refresh=<intervalInMs>
 			String refreshIntervalString = (String) config.get("refresh");
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);

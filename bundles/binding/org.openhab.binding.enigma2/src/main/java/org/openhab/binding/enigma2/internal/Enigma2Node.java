@@ -1,13 +1,12 @@
 package org.openhab.binding.enigma2.internal;
 
-import java.io.IOException;
-
-import org.openhab.binding.enigma2.internal.http.HttpUtils;
 import org.openhab.binding.enigma2.internal.xml.XmlUtils;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
+import org.openhab.io.net.http.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,10 +18,11 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class Enigma2Node {
+
 	private static final Logger logger = LoggerFactory
 			.getLogger(Enigma2Node.class);
 
-	private static final String SUFFIX_REMOTE_CONTROL = "/web/remotecontrol?command=";
+	private static final String GET = "GET";
 
 	/*
 	 * Remote control codes from
@@ -30,6 +30,7 @@ public class Enigma2Node {
 	 * +How+To+-+Enigma+2+Digitalbox
 	 * #OpenRemote2.0HowTo-Enigma2Digitalbox-Nicetohave%3AD
 	 */
+	private static final String SUFFIX_REMOTE_CONTROL = "/web/remotecontrol?command=";
 	private static final String RC_CHANNEL_UP = "402";
 	private static final String RC_CHANNEL_DOWN = "403";
 	private static final String RC_VOLUME_DOWN = "114";
@@ -45,6 +46,7 @@ public class Enigma2Node {
 	private String hostName;
 	private String userName;
 	private String password;
+	private int timeOut = 5000;
 
 	/*
 	 * Getter
@@ -81,28 +83,20 @@ public class Enigma2Node {
 	 * @return requests the current value the volume
 	 */
 	public String getVolume() {
-		try {
-			String content = HttpUtils.getGetResponse(this.getHostName(),
-					SUFFIX_VOLUME, this.getUserName(), this.getPassword());
-			return XmlUtils.getContentOfElement(content, "e2current");
-		} catch (IOException e) {
-			logger.error("getVolume failed with IOException", e);
-			return null;
-		}
+		String content = HttpUtil.executeUrl(GET,
+				createUserPasswordHostnamePrefix() + SUFFIX_VOLUME,
+				this.timeOut);
+		return XmlUtils.getContentOfElement(content, "e2current");
 	}
 
 	/**
 	 * @return requests the current channel
 	 */
 	public String getChannel() {
-		try {
-			String content = HttpUtils.getGetResponse(this.getHostName(),
-					SUFFIX_CHANNEL, this.getUserName(), this.getPassword());
-			return XmlUtils.getContentOfElement(content, "e2servicename");
-		} catch (IOException e) {
-			logger.error("getChannel failed with IOException", e);
-			return null;
-		}
+		String content = HttpUtil.executeUrl(GET,
+				createUserPasswordHostnamePrefix() + SUFFIX_CHANNEL,
+				this.timeOut);
+		return XmlUtils.getContentOfElement(content, "e2servicename");
 	}
 
 	/**
@@ -111,16 +105,12 @@ public class Enigma2Node {
 	 * @return <code>true</code>, if the device is on, else <code>false</code>
 	 */
 	public String getOnOff() {
-		try {
-			String content = HttpUtils.getGetResponse(this.getHostName(),
-					SUFFIX_POWERSTATE, this.getUserName(), this.getPassword());
-			content = XmlUtils.getContentOfElement(content, "e2instandby");
-			return content.equals("true") ? OnOffType.OFF.name() : OnOffType.ON
-					.name();
-		} catch (IOException e) {
-			logger.error("getOnOff failed with IOException", e);
-			return null;
-		}
+		String content = HttpUtil.executeUrl(GET,
+				createUserPasswordHostnamePrefix() + SUFFIX_POWERSTATE,
+				this.timeOut);
+		content = XmlUtils.getContentOfElement(content, "e2instandby");
+		return content.equals("true") ? OnOffType.OFF.name() : OnOffType.ON
+				.name();
 	}
 
 	/**
@@ -130,16 +120,12 @@ public class Enigma2Node {
 	 *         <code>false</code>
 	 */
 	public String getMuteUnmute() {
-		try {
-			String content = HttpUtils.getGetResponse(this.getHostName(),
-					SUFFIX_VOLUME, this.getUserName(), this.getPassword());
-			content = XmlUtils.getContentOfElement(content, "e2ismuted");
-			return content.toLowerCase().equals("True") ? OnOffType.ON.name()
-					: OnOffType.OFF.name();
-		} catch (IOException e) {
-			logger.error("getMuteUnmute failed with IOException", e);
-			return null;
-		}
+		String content = HttpUtil.executeUrl(GET,
+				createUserPasswordHostnamePrefix() + SUFFIX_VOLUME,
+				this.timeOut);
+		content = XmlUtils.getContentOfElement(content, "e2ismuted");
+		return content.toLowerCase().equals("True") ? OnOffType.ON.name()
+				: OnOffType.OFF.name();
 	}
 
 	/*
@@ -157,14 +143,9 @@ public class Enigma2Node {
 							: RC_VOLUME_DOWN);
 		} else if (command instanceof DecimalType) {
 			// set absolute value
-			try {
-				int value = ((DecimalType) command).intValue();
-				HttpUtils.getGetResponse(this.getHostName(), SUFFIX_VOLUME
-						+ SUFFIX_VOLUME_SET + value, this.getUserName(),
-						this.getPassword());
-			} catch (IOException e) {
-				logger.error("setVolume failed with IOException", e);
-			}
+			int value = ((DecimalType) command).intValue();
+			HttpUtil.executeUrl(GET, createUserPasswordHostnamePrefix()
+					+ SUFFIX_VOLUME + SUFFIX_VOLUME_SET + value, this.timeOut);
 		} else {
 			logger.error("Unsupported command type");
 		}
@@ -174,10 +155,12 @@ public class Enigma2Node {
 	 * Sets the channel
 	 */
 	public void setChannel(Command command) {
-		if (command instanceof IncreaseDecreaseType) {
+		if (command instanceof StringType
+				|| command instanceof IncreaseDecreaseType) {
 			sendRcCommand(
 					command,
-					((IncreaseDecreaseType) command) == IncreaseDecreaseType.INCREASE ? RC_CHANNEL_UP
+					command.toString().equals(
+							IncreaseDecreaseType.INCREASE.toString()) ? RC_CHANNEL_UP
 							: RC_CHANNEL_DOWN);
 		} else {
 			logger.error("Unsupported command type: {}", command.getClass()
@@ -214,13 +197,9 @@ public class Enigma2Node {
 	 */
 	public void sendOnOff(Command command, Enigma2PowerState powerState) {
 		if (command instanceof OnOffType) {
-			try {
-				HttpUtils.getGetResponse(hostName, SUFFIX_POWERSTATE
-						+ "?newstate=" + powerState.getValue(), userName,
-						password);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			HttpUtil.executeUrl(GET, createUserPasswordHostnamePrefix()
+					+ SUFFIX_POWERSTATE + "?newstate=" + powerState.getValue(),
+					this.timeOut);
 		} else {
 			logger.error("Unsupported command type: {}", command.getClass()
 					.getName());
@@ -234,11 +213,13 @@ public class Enigma2Node {
 		if (commandValue == null) {
 			logger.error("Error in item configuration. No remote control code provided (third part of item config)");
 		}
-		try {
-			HttpUtils.getGetResponse(hostName, SUFFIX_REMOTE_CONTROL
-					+ commandValue, userName, password);
-		} catch (IOException e) {
-			logger.error("sendRcCommand failed with IOException", e);
-		}
+		HttpUtil.executeUrl(GET, createUserPasswordHostnamePrefix()
+				+ SUFFIX_REMOTE_CONTROL + commandValue, this.timeOut);
+	}
+
+	private String createUserPasswordHostnamePrefix() {
+		return new StringBuffer("http://" + this.getUserName()).append(":")
+				.append(this.getPassword()).append("@")
+				.append(this.getHostName()).toString();
 	}
 }

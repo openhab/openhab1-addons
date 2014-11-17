@@ -21,6 +21,20 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
+ * Some valid examples are:
+ * 
+ * Number actualVolume {enigma2="[main:volume]"}
+ * 
+ * String actualChannel {enigma2="[main:channel]"}
+ * 
+ * Switch pause {enigma2="main:pause"}
+ * 
+ * Switch mute {enigma2="main:mute"}
+ * 
+ * Switch power {enigma2="main:powerstate"}
+ * 
+ * Switch customRcCommand {enigma2="main:remotecontrol:113"}
+ * 
  * @author Sebastian Kutschbach
  * @since 1.6.0
  */
@@ -63,6 +77,13 @@ public class Enigma2GenericBindingProvider extends
 	public void processBindingConfiguration(String context, Item item,
 			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
+
+		if (bindingConfig == null || item == null) {
+			logger.error(
+					"invalid input for processBindingConfiguration, item={}, bindingConfig={}",
+					item, bindingConfig);
+			return;
+		}
 
 		/*
 		 * remove unnecessary chars
