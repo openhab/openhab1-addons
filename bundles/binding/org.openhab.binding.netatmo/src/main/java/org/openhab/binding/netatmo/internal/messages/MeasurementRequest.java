@@ -18,6 +18,7 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.netatmo.internal.NetatmoException;
+import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
 
 /**
  * Queries the Netatmo API for the measures of a single device or module.
@@ -81,8 +82,8 @@ public class MeasurementRequest extends AbstractRequest {
 	 *            the name of a supported measure, e.g. "Temperature" or
 	 *            "Humidity"
 	 */
-	public void addMeasure(final String measure) {
-		this.measures.add(measure);
+	public void addMeasure(final NetatmoMeasureType measureType) {
+		this.measures.add(measureType.getMeasure());
 	}
 
 	@Override

@@ -8,11 +8,6 @@
  */
 package org.openhab.binding.insteonplm.internal.driver;
 
-import java.util.HashMap;
-
-import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
-import org.openhab.binding.insteonplm.internal.device.InsteonDevice;
-
 /**
  * Interface for classes that want to listen to notifications from
  * the driver.
@@ -22,7 +17,6 @@ import org.openhab.binding.insteonplm.internal.device.InsteonDevice;
  */
 
 public interface DriverListener {
-	abstract HashMap<InsteonAddress, InsteonDevice> getDeviceList();
 	/**
 	 * Notification that querying of the modems on all ports has successfully completed.
 	 */

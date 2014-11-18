@@ -151,7 +151,7 @@ public class ZWaveInfoConverter extends ZWaveConverterBase {
 			case REPORT_TIME_OUT:
 				return this.getController().getTimeOutCount();
 			case REPORT_LASTUPDATE:
-				return node.getLastUpdated();
+				return node.getLastReceived();
 		}
         
         return null;

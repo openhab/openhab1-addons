@@ -66,7 +66,7 @@ public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider 
 			throw new BindingConfigParseException(segments[1] + " is not a valid node id.");
 		}
 		
-		int endpoint = 1;
+		int endpoint = 0;
 		Integer refreshInterval = null;
 		Map<String, String> arguments = new HashMap<String, String>();
 		

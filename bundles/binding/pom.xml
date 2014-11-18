@@ -16,6 +16,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>org.openhab.binding.lgtv</module>
     <module>org.openhab.binding.bluetooth</module>
     <module>org.openhab.binding.knx</module>
     <module>org.openhab.binding.knx.test</module>
@@ -49,6 +50,7 @@
     <module>org.openhab.binding.dmx.artnet</module>
     <module>org.openhab.binding.dmx.test</module>
     <module>org.openhab.binding.rfxcom</module>
+    <module>org.openhab.binding.samsungac</module>
     <module>org.openhab.binding.samsungtv</module>
     <module>org.openhab.binding.pulseaudio</module>
     <module>org.openhab.binding.homematic</module>
@@ -122,6 +124,10 @@
     <module>org.openhab.binding.alarmdecoder</module>
     <module>org.openhab.binding.davis</module>
     <module>org.openhab.binding.xpl</module>
+    <module>org.openhab.binding.dscalarm</module>
+    <module>org.openhab.binding.benqprojector</module>
+    <module>org.openhab.binding.ehealth</module>
+    <module>org.openhab.binding.anel</module>
   </modules>
 
 </project>

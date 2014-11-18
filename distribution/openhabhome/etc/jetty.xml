@@ -52,6 +52,16 @@
 	<Call name="addConnector">
 		<Arg>
 			<New class="org.eclipse.jetty.server.ssl.SslSelectChannelConnector">
+				<!-- prevent poodle attack see also https://groups.google.com/d/msg/scmmanager/sX_Ydy-wAPA/-Dvs5i7RHtQJ -->
+				<Arg>
+					<New class="org.eclipse.jetty.http.ssl.SslContextFactory">
+						<Set name="ExcludeProtocols">
+							<Array type="java.lang.String">
+								<Item>SSLv3</Item>
+							</Array>
+						</Set>
+					</New>
+				</Arg>
 				<Set name="port"><Property name="jetty.port.ssl" /></Set>
 				<Set name="maxIdleTime">30000</Set>
 				<Set name="Acceptors">2</Set>

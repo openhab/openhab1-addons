@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -1012,7 +1013,6 @@
             <type>jar</type>
         </dependency>
         <dependency>
- 
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.energenie</artifactId>
             <version>${project.version}</version>
@@ -1024,12 +1024,12 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-		<dependency>
-			<groupId>org.openhab.binding</groupId>
-			<artifactId>org.openhab.binding.davis</artifactId>
-			<version>${project.version}</version>
-			<type>jar</type>
-		</dependency>
+        <dependency> 
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.davis</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
         <dependency> 
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.ekey</artifactId>
@@ -1042,8 +1042,56 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-
-        <dependency>
+        <dependency> 
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.dscalarm</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency> 
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.benqprojector</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency> 
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.ehealth</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency> 
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.anel</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency> 
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.openpaths</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency> 
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.ecotouch</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency> 
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.lgtv</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+	<dependency>
+              <groupId>org.openhab.binding</groupId>
+              <artifactId>org.openhab.binding.samsungac</artifactId>
+              <version>${project.version}</version>
+	      <type>jar</type>                                                 
+          </dependency>
+        
+	<dependency>
             <groupId>org.openhab.io</groupId>
             <artifactId>org.openhab.io.cv</artifactId>
             <version>${project.version}</version>
