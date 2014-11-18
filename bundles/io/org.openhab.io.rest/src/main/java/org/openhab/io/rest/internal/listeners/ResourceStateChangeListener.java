@@ -39,7 +39,6 @@ import org.openhab.io.rest.internal.resources.ItemResource;
  */
 abstract public class ResourceStateChangeListener {
 
-	final static ConcurrentMap<String, Object> map = new ConcurrentHashMap<String, Object>();
 
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
@@ -62,9 +61,6 @@ abstract public class ResourceStateChangeListener {
 		this.broadcaster = broadcaster;
 	}
 	
-	public static ConcurrentMap<String, Object> getMap() {
-		return map;
-	}
 	
 	public void registerItems(){
 	        broadcaster.getBroadcasterConfig().setBroadcasterCache(new UUIDBroadcasterCache()); 
