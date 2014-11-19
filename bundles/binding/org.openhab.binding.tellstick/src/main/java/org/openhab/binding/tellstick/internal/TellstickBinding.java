@@ -295,15 +295,16 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 			String prevMessage = prevMessages.get(sensorEvent.getDataType());
 			if (!thisMsg.equals(prevMessage)) {
 				prevMessages.put(sensorEvent.getDataType(), thisMsg);
+				TellstickValueSelector sensorBindingType = getSensorBindingType(sensorEvent.getDataType());
 				TellstickBindingConfig device = findTellstickBindingConfig(sensorEvent.getSensorId(),
-						getSensorBindingType(sensorEvent.getDataType()),sensorEvent.getProtocol());
-				logger.debug("Got sensorEvent for " + sensorEvent.getSensorId() + " name:" + device + " value:"
+						sensorBindingType,sensorEvent.getProtocol());
+				logger.debug("Got sensorEvent for " + sensorEvent.getSensorId() +" type "+sensorBindingType+" proto "+sensorEvent.getProtocol()+ " name:" + device + " value:"
 						+ sensorEvent.getData());
 				if (device != null) {
 					handleSensorEvent(sensorEvent, device);
 				}
 			} else {
-				logger.debug("Ignored message for " + sensorEvent.getSensorId() + " value:" + sensorEvent.getData());
+				logger.debug("Ignored duplicate message for " + sensorEvent.getSensorId() + " value:" + sensorEvent.getData());
 			}
 		}
 

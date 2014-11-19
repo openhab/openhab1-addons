@@ -165,13 +165,13 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 	}
 
 	@Override
-	public TellstickBindingConfig getTellstickBindingConfig(int id, TellstickValueSelector valueSel, String model) {
+	public TellstickBindingConfig getTellstickBindingConfig(int id, TellstickValueSelector valueSel, String protocol) {
 		TellstickBindingConfig name = null;
 		for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
 			TellstickBindingConfig bv = (TellstickBindingConfig) entry.getValue();
 			if (bv.getId() == id) {
 				if (valueSel == null || valueSel.equals(bv.getValueSelector())) {
-					if (model == null || model.equals(bv.getProtocol())) {
+					if (protocol == null || bv.getProtocol() == null || protocol.equals(bv.getProtocol())) {
 						name = bv;
 						break;
 					}

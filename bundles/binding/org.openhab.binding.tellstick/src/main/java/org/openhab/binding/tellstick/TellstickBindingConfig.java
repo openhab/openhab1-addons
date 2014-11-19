@@ -23,6 +23,7 @@ public class TellstickBindingConfig implements BindingConfig {
 
 	/**
 	 * Get the deviceId.
+	 * The deviceID in Telldus Center (tdtool -l)
 	 * 
 	 * @return The id of the device
 	 */
@@ -94,6 +95,7 @@ public class TellstickBindingConfig implements BindingConfig {
 	}
 
 	/** Get the model of a sensor value.
+	 * oregon, fineoffset, madolyn
 	 * 
 	 * @return the model
 	 */
