@@ -26,7 +26,6 @@ import org.openhab.binding.weather.internal.utils.ItemIterator;
 import org.openhab.binding.weather.internal.utils.ItemIterator.ItemIteratorCallback;
 import org.openhab.binding.weather.internal.utils.PropertyUtils;
 import org.openhab.binding.weather.internal.utils.UnitUtils;
-import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
@@ -94,7 +93,7 @@ public class WeatherPublisher {
 			new ItemIterator().iterate(new ItemIteratorCallback() {
 
 				@Override
-				public void next(WeatherBindingConfig bindingConfig, Item item) {
+				public void next(WeatherBindingConfig bindingConfig, String itemName) {
 					if (bindingConfig.getLocationId().equals(locationId)) {
 						try {
 							Weather instance = getInstance(weather, bindingConfig);
@@ -116,9 +115,9 @@ public class WeatherPublisher {
 									}
 								}
 
-								if (!equalsCachedValue(value, item)) {
-									publishValue(item, value, bindingConfig);
-									itemCache.put(item.getName(), value);
+								if (!equalsCachedValue(value, itemName)) {
+									publishValue(itemName, value, bindingConfig);
+									itemCache.put(itemName, value);
 								}
 							}
 						} catch (Exception ex) {
@@ -166,8 +165,8 @@ public class WeatherPublisher {
 	/**
 	 * Returns true, if the cached value is equal to the new value.
 	 */
-	private boolean equalsCachedValue(Object value, Item item) {
-		int cachedValueHashCode = ObjectUtils.hashCode(itemCache.get(item.getName()));
+	private boolean equalsCachedValue(Object value, String itemName) {
+		int cachedValueHashCode = ObjectUtils.hashCode(itemCache.get(itemName));
 		int valueHashCode = ObjectUtils.hashCode(value);
 		return cachedValueHashCode == valueHashCode;
 	}
@@ -175,33 +174,20 @@ public class WeatherPublisher {
 	/**
 	 * Publishes the item with the value.
 	 */
-	private void publishValue(Item item, Object value, WeatherBindingConfig bindingConfig) {
+	private void publishValue(String itemName, Object value, WeatherBindingConfig bindingConfig) {
 		if (value == null) {
-			context.getEventPublisher().postUpdate(item.getName(), UnDefType.UNDEF);
+			context.getEventPublisher().postUpdate(itemName, UnDefType.UNDEF);
 		} else if (value instanceof Calendar) {
 			Calendar calendar = (Calendar) value;
-			if (item.getAcceptedDataTypes().contains(DateTimeType.class)) {
-				context.getEventPublisher().postUpdate(item.getName(), new DateTimeType(calendar));
-			} else {
-				logger.warn("Unsupported type for item {}, only DateTimeType supported!", item.getName());
-			}
+			context.getEventPublisher().postUpdate(itemName, new DateTimeType(calendar));
 		} else if (value instanceof Number) {
-			if (item.getAcceptedDataTypes().contains(DecimalType.class)) {
-				context.getEventPublisher().postUpdate(item.getName(),
-						new DecimalType(round(value.toString(), bindingConfig)));
-			} else {
-				logger.warn("Unsupported type for item {}, only DecimalType supported!", item.getName());
-			}
+			context.getEventPublisher().postUpdate(itemName, new DecimalType(round(value.toString(), bindingConfig)));
 		} else if (value instanceof String || value instanceof Enum) {
-			if (item.getAcceptedDataTypes().contains(StringType.class)) {
-				if (value instanceof Enum) {
-					String enumValue = WordUtils.capitalizeFully(StringUtils.replace(value.toString(), "_", " "));
-					context.getEventPublisher().postUpdate(item.getName(), new StringType(enumValue));
-				} else {
-					context.getEventPublisher().postUpdate(item.getName(), new StringType(value.toString()));
-				}
+			if (value instanceof Enum) {
+				String enumValue = WordUtils.capitalizeFully(StringUtils.replace(value.toString(), "_", " "));
+				context.getEventPublisher().postUpdate(itemName, new StringType(enumValue));
 			} else {
-				logger.warn("Unsupported type for item {}, only String supported!", item.getName());
+				context.getEventPublisher().postUpdate(itemName, new StringType(value.toString()));
 			}
 		} else {
 			logger.warn("Unsupported value type {}", value.getClass().getSimpleName());

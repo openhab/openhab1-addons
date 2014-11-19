@@ -10,7 +10,6 @@ package org.openhab.binding.weather;
 
 import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.items.Item;
 
 /**
  * The interface to implement to provide a binding for Weather.
@@ -19,11 +18,6 @@ import org.openhab.core.items.Item;
  * @since 1.6.0
  */
 public interface WeatherBindingProvider extends BindingProvider {
-
-	/**
-	 * Returns the item object by itemName.
-	 */
-	public Item getItem(String itemName);
 
 	/**
 	 * Returns the WeatherBindingConfig for an item by name.

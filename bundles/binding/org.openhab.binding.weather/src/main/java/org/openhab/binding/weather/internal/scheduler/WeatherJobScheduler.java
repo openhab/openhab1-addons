@@ -23,7 +23,6 @@ import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
 import org.openhab.binding.weather.internal.utils.DelayedExecutor;
 import org.openhab.binding.weather.internal.utils.ItemIterator;
 import org.openhab.binding.weather.internal.utils.ItemIterator.ItemIteratorCallback;
-import org.openhab.core.items.Item;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -95,9 +94,9 @@ public class WeatherJobScheduler {
 		new ItemIterator().iterate(new ItemIteratorCallback() {
 
 			@Override
-			public void next(WeatherBindingConfig bindingConfig, Item item) {
+			public void next(WeatherBindingConfig bindingConfig, String itemName) {
 				if (context.getConfig().getLocationConfig(bindingConfig.getLocationId()) == null) {
-					throw new RuntimeException("Unknown locationId in item '" + item.getName() + "' with binding "
+					throw new RuntimeException("Unknown locationId in item '" + itemName + "' with binding "
 							+ bindingConfig);
 				}
 			}

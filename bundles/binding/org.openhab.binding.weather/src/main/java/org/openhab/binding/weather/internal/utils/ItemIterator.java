@@ -11,7 +11,6 @@ package org.openhab.binding.weather.internal.utils;
 import org.openhab.binding.weather.WeatherBindingProvider;
 import org.openhab.binding.weather.internal.common.WeatherContext;
 import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
-import org.openhab.core.items.Item;
 
 /**
  * Iterates through all weather items.
@@ -29,8 +28,7 @@ public class ItemIterator {
 		for (WeatherBindingProvider provider : context.getProviders()) {
 			for (String itemName : provider.getItemNames()) {
 				WeatherBindingConfig bindingConfig = provider.getBindingFor(itemName);
-				Item item = provider.getItem(itemName);
-				callback.next(bindingConfig, item);
+				callback.next(bindingConfig, itemName);
 			}
 		}
 	}
@@ -39,7 +37,7 @@ public class ItemIterator {
 	 * This callback interface is executed for every item in all providers.
 	 */
 	public interface ItemIteratorCallback {
-		public void next(WeatherBindingConfig bindingConfig, Item item);
+		public void next(WeatherBindingConfig bindingConfig, String itemName);
 	}
 
 }

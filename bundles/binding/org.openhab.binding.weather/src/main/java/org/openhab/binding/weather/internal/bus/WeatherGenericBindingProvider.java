@@ -8,9 +8,6 @@
  */
 package org.openhab.binding.weather.internal.bus;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openhab.binding.weather.WeatherBindingProvider;
 import org.openhab.binding.weather.internal.common.binding.WeatherBindingConfig;
 import org.openhab.core.binding.BindingConfig;
@@ -31,7 +28,6 @@ public class WeatherGenericBindingProvider extends AbstractGenericBindingProvide
 	private static final Logger logger = LoggerFactory.getLogger(WeatherGenericBindingProvider.class);
 
 	private BindingConfigParser parser = new BindingConfigParser();
-	private Map<String, Item> items = new HashMap<String, Item>();
 
 	/**
 	 * {@inheritDoc}
@@ -59,7 +55,6 @@ public class WeatherGenericBindingProvider extends AbstractGenericBindingProvide
 
 		WeatherBindingConfig config = parser.parse(item, bindingConfig);
 		logger.debug("Adding item {} with {}", item.getName(), config);
-		items.put(item.getName(), item);
 		addBindingConfig(item, config);
 	}
 
@@ -69,14 +64,6 @@ public class WeatherGenericBindingProvider extends AbstractGenericBindingProvide
 	@Override
 	public WeatherBindingConfig getBindingFor(String itemName) {
 		return (WeatherBindingConfig) bindingConfigs.get(itemName);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Item getItem(String itemName) {
-		return items.get(itemName);
 	}
 
 	/**
