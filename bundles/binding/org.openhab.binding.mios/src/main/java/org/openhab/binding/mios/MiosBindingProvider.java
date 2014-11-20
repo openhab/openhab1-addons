@@ -45,7 +45,7 @@ public interface MiosBindingProvider extends BindingProvider {
 	 */
 	String getProperty(String itemName);
 
-	public List<String> getItemsForProperty(String property);
+	public List<String> getItemNamesForProperty(String property);
 
 	/**
 	 * Gets the ItemRegistry (catalog) used by this BindingProvider.

@@ -253,7 +253,7 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<String> getItemsForProperty(String property) {
+	public List<String> getItemNamesForProperty(String property) {
 		ArrayList<String> result = new ArrayList<String>();
 
 		// TODO: Make a reverse map somewhere, and keep it around as this is
@@ -266,7 +266,7 @@ public class MiosBindingProviderImpl extends AbstractGenericBindingProvider
 
 				if (p.equals(property)) {
 					logger.trace(
-							"getItemsForProperty: MATCH property '{}' against BindingConfig.toProperty '{}'",
+							"getItemNamesForProperty: MATCH property '{}' against BindingConfig.toProperty '{}'",
 							property, p);
 
 					String itemName = bindingConfigEntry.getKey();

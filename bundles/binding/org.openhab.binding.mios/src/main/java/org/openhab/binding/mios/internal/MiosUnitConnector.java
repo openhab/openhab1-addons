@@ -68,7 +68,6 @@ public class MiosUnitConnector {
 			.getLogger(MiosUnitConnector.class);
 
 	private static final String ENCODING_CHARSET = "utf-8";
-	private static int FORCE_FULL_POLL = 10;
 
 	private static final String BIND_COMMAND_VALUE = "??";
 	private static final String BIND_ITEM_INCREMENT = "?++";
@@ -389,8 +388,6 @@ public class MiosUnitConnector {
 		private static final String STATUS2_INCREMENTAL_URL = STATUS2_URL
 				+ "&LoadTime=%d&DataVersion=%d&Timeout=%d";
 
-		private static final int MAX_FULL_REFRESH_COUNT = 5000;
-
 		public LongPoll() {
 		}
 
@@ -403,21 +400,21 @@ public class MiosUnitConnector {
 		}
 
 		private String getUri(boolean full) {
-			// Force a full poll of the dataSet every MAX_FAILURES,
-			// "just in case".
-			boolean force = full || (failures != 0)
-					&& ((failures % FORCE_FULL_POLL) == 0);
-
+			// Force a full poll of the dataSet every time the MiOS Unit
+			// configuration indicates to do so
 			MiosUnit unit = getMiosUnit();
+			int errorCount = unit.getErrorCount();
+			boolean force = full || (errorCount != 0) && (failures != 0)
+					&& ((failures % errorCount) == 0);
+
 
 			if (!force && loadTime != null && dataVersion != null) {
 				AsyncHttpClientConfig c = getAsyncHttpClient().getConfig();
 
-				// Use a timeout on the MiOS URL call that's about 1/3 of what
-				// the
-				// connection timeout is.
+				// Use a timeout on the MiOS URL call that's about 2/3 of what
+				// the connection timeout is.
 				int t = Math.min(c.getIdleConnectionTimeoutInMs(),
-						c.getRequestTimeoutInMs()) / 1000 / 3;
+						unit.getTimeout()) / 500 / 3;
 
 				return String.format(Locale.US, STATUS2_INCREMENTAL_URL,
 						unit.getHostname(), unit.getPort(), loadTime,
@@ -724,17 +721,14 @@ public class MiosUnitConnector {
 
 		@Override
 		public void run() {
-			int loopCount = 0;
+			long loopCount = 0;
 
 			do {
 				try {
-					// Force a full fresh every 5000 cycles.
 					String uri = getUri(loopCount == 0);
 
 					logger.debug("run: URI Built was '{}' loop '{}'", uri,
 							loopCount);
-
-					loopCount = ((loopCount + 1) % MAX_FULL_REFRESH_COUNT);
 
 					Future<Response> f = getAsyncHttpClient().prepareGet(uri)
 							.execute();
@@ -747,6 +741,15 @@ public class MiosUnitConnector {
 
 					connected = true;
 					processResponse(json);
+
+					// Reset the Loop count only once we've successfully
+					// processed the Response. Otherwise there's a potential for
+					// it to never perform a full (initial) fetch call.
+					int c = getMiosUnit().getRefreshCount();
+					loopCount = loopCount + 1;
+					if (c != 0) {
+						loopCount = (loopCount % c);
+					}
 				} catch (Exception e) {
 					connected = false;
 					logger.debug(

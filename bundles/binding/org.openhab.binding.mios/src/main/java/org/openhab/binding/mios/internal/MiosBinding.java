@@ -372,11 +372,11 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 			}
 
 			boolean created = false;
-			String hackUnitName = (unitName == null) ? "_default" : unitName;
+			String hackUnitName = (unitName == null) ? MiosUnit.CONFIG_DEFAULT_UNIT : unitName;
 			MiosUnit unit = units.get(hackUnitName);
 
 			if (unit == null) {
-				unit = new MiosUnit(unitName);
+				unit = new MiosUnit(hackUnitName);
 				created = true;
 			}
 
@@ -386,6 +386,10 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 				unit.setPort(Integer.valueOf(value));
 			} else if ("timeout".equals(key)) {
 				unit.setTimeout(Integer.valueOf(value));
+			} else if ("refreshCount".equals(key)) {
+				unit.setRefreshCount(Integer.valueOf(value));
+			} else if ("errorCount".equals(key)) {
+				unit.setErrorCount(Integer.valueOf(value));
 			} else {
 				logger.warn("Unexpected configuration parameter {}", key);
 				created = false;
@@ -463,7 +467,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 				MiosBindingProviderImpl miosProvider = (MiosBindingProviderImpl) provider;
 
 				for (String itemName : miosProvider
-						.getItemsForProperty(property)) {
+						.getItemNamesForProperty(property)) {
 
 					MiosBindingConfig config = miosProvider
 							.getMiosBindingConfig(itemName);
