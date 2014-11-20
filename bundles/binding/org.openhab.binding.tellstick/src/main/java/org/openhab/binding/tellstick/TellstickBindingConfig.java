@@ -14,6 +14,7 @@ public class TellstickBindingConfig implements BindingConfig {
 	private TellstickValueSelector valueSelector;
 	private TellstickValueSelector usageSelector;
 	private String itemName;
+	private String protocol;
 	private int resend = 1;
 
 	public TellstickBindingConfig() {
@@ -22,6 +23,7 @@ public class TellstickBindingConfig implements BindingConfig {
 
 	/**
 	 * Get the deviceId.
+	 * The deviceID in Telldus Center (tdtool -l)
 	 * 
 	 * @return The id of the device
 	 */
@@ -92,4 +94,21 @@ public class TellstickBindingConfig implements BindingConfig {
 		return resend;
 	}
 
+	/** Get the model of a sensor value.
+	 * oregon, fineoffset, madolyn
+	 * 
+	 * @return the model
+	 */
+	public String getProtocol() {
+		return protocol;
+	}
+
+	/** Set the model.
+	 * 
+	 * @param model the model to set
+	 */
+	public void setProtocol(String proto) {
+		this.protocol = proto;
+	}
+	
 }
