@@ -10,28 +10,17 @@ package org.openhab.binding.withings.internal.api;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
-import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthProvider;
 import oauth.signpost.exception.OAuthException;
-import oauth.signpost.http.HttpParameters;
-import oauth.signpost.signature.AuthorizationHeaderSigningStrategy;
-import oauth.signpost.signature.HmacSha1MessageSigner;
 
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.component.ComponentContext;
@@ -51,6 +40,7 @@ import org.slf4j.LoggerFactory;
  * {@link WithingsAuthenticator#contentDir} folder.
  * 
  * @see http://www.withings.com/de/api/oauthguide
+ * 
  * @author Dennis Nobel
  * @author Thomas.Eichstaedt-Engelen
  * @since 1.5.0
@@ -77,11 +67,7 @@ public class WithingsAuthenticator implements ManagedService {
 
 	private static final String OAUTH_REQUEST_TOKEN_ENDPOINT = "https://oauth.withings.com/account/request_token";
 
-	private static final String FILE_NAME_CFG = "withings.cfg";
-	
-	private static final String CONTENT_DIR = "." + File.separator + "configurations" + File.separator + "services";
-
-	private static final String DEFAULT_ACCOUNT_ID = "DEFAULT_ACCOUNT_ID";
+	static final String DEFAULT_ACCOUNT_ID = "DEFAULT_ACCOUNT_ID";
 
 	/** Redirect URL to which the user is redirected after the login */
 	private String redirectUrl = DEFAULT_REDIRECT_URL;
@@ -91,7 +77,7 @@ public class WithingsAuthenticator implements ManagedService {
 	private ComponentContext componentContext;
 	
 	private Map<String, WithingsAccount> accountsCache =
-		new HashMap<String, WithingsAuthenticator.WithingsAccount>();
+		new HashMap<String, WithingsAccount>();
 	
 	
 	protected void activate(ComponentContext componentContext) {
@@ -163,11 +149,12 @@ public class WithingsAuthenticator implements ManagedService {
 		} catch (OAuthException ex) {
 			logger.error(ex.getMessage(), ex);
 			printAuthenticationFailed(ex);
+			return;
 		}
 
-		withingsAccount.setOuathToken(
-			consumer.getToken(), consumer.getTokenSecret());
-		withingsAccount.registerAccount();
+		withingsAccount.userId = userId;
+		withingsAccount.setOuathToken(consumer.getToken(), consumer.getTokenSecret());
+		withingsAccount.registerAccount(componentContext.getBundleContext());
 		withingsAccount.persist();
 
 		printAuthenticationSuccessful();
@@ -237,8 +224,12 @@ public class WithingsAuthenticator implements ManagedService {
 				}
 
 
-				WithingsAccount account = new WithingsAccount(accountId);
-				
+				WithingsAccount account = accountsCache.get(accountId);
+				if (account == null) {
+					account = new WithingsAccount(accountId);
+					accountsCache.put(accountId, account);
+				}
+
 				String value = (String) config.get(configKeyTail);
 				
 				if ("userid".equals(configKeyTail)) {
@@ -258,11 +249,8 @@ public class WithingsAuthenticator implements ManagedService {
 					account.tokenSecret = value;
 				}
 				else {
-					throw new ConfigurationException(
-						configKey, "the given configKey '" + configKey + "' is unknown");
+					throw new ConfigurationException(configKey, "The given configuration key is unknown!");
 				}
-				
-				accountsCache.put(accountId, account);
 			}
 			
 			registerAccounts();
@@ -276,7 +264,7 @@ public class WithingsAuthenticator implements ManagedService {
 			WithingsAccount account = entry.getValue();
 			
 			if (account.isAuthenticated()) {
-				account.registerAccount();
+				account.registerAccount(componentContext.getBundleContext());
 			} else if (account.isValid()) {
 				printAuthenticationInfo(accountId);
 			} else {
@@ -291,112 +279,4 @@ public class WithingsAuthenticator implements ManagedService {
 		}
 	}
 	
-
-	public final class WithingsAccount {
-		
-		private String accountId;
-		
-		String userId;
-		String consumerKey;
-		String consumerSecret;
-		String token;
-		String tokenSecret;
-		
-		OAuthConsumer consumer;
-		
-		ServiceRegistration<?> clientServiceRegistration;
-
-		public WithingsAccount(String accountId) {
-			this.accountId = accountId;
-		}
-
-		public boolean isValid() {
-			return isNotBlank(userId)
-				&& isNotBlank(consumerKey) && isNotBlank(consumerSecret);
-		}
-		
-		public void registerAccount() {
-			
-			Dictionary<String, Object> serviceProperties = new Hashtable<String, Object>();
-				serviceProperties.put("withings.accountid", accountId);
-				serviceProperties.put("withings.userid", userId);
-
-			if (this.clientServiceRegistration != null) {
-				this.clientServiceRegistration.unregister();
-			}
-
-			this.clientServiceRegistration = componentContext.getBundleContext().registerService(
-					WithingsApiClient.class.getName(), 
-					new WithingsApiClient(consumer, userId), serviceProperties);
-		}
-
-		public boolean isAuthenticated() {
-			return isNotBlank(userId)
-				&& isNotBlank(consumerKey) && isNotBlank(consumerSecret)
-				&& isNotBlank(token) && isNotBlank(tokenSecret);
-		}
-		
-		public OAuthConsumer createConsumer() {
-			consumer = new DefaultOAuthConsumer(consumerKey, consumerSecret);
-			consumer.setSigningStrategy(new AuthorizationHeaderSigningStrategy());
-			consumer.setMessageSigner(new HmacSha1MessageSigner());
-			return consumer;
-		}
-		
-		public void setOuathToken(String token, String tokenSecret) {
-			consumer.setTokenWithSecret(token, tokenSecret);
-			consumer.setAdditionalParameters(new HttpParameters());
-		}
-		
-		public void unregisterAccount() {
-			if (this.clientServiceRegistration != null) {
-				this.clientServiceRegistration.unregister();
-			}
-		}
-		
-		public void persist() {
-			Properties config = new Properties();
-			
-			File file = new File(CONTENT_DIR + File.separator + FILE_NAME_CFG);
-			
-			try {
-				if (!file.exists()) {
-					file.getParentFile().mkdirs();
-					file.createNewFile();
-				}
-				
-				config.load(new FileInputStream(file));
-				
-				String prefix = "";
-				
-				// if an account different from the default account is used
-				// it get's prefixed separated by "."
-				if (!DEFAULT_ACCOUNT_ID.equals(accountId)) {
-					prefix = accountId + ".";
-				}
-				
-				config.put(prefix + "userid", userId);
-				config.put(prefix + "consumerkey", consumerKey);
-				config.put(prefix + "consumersecret", consumerSecret);
-				config.put(prefix + "token", token);
-				config.put(prefix + "tokensecret", tokenSecret);
-				
-				config.store(new FileOutputStream(file), "");
-				
-				logger.debug("Saved WithingsAccount to file '{}'.", file.getAbsolutePath());
-			}
-			catch (IOException ioe) {
-				logger.error("Couldn't write WithingsAccount to file '{}'.", file.getAbsolutePath());
-			}
-		}
-
-		@Override
-		public String toString() {
-			return "WithingsAccount [userId=" + userId + ", consumerKey="
-					+ consumerKey + ", consumerSecret=" + consumerSecret
-					+ ", token=" + token + ", tokenSecret=" + tokenSecret + "]";
-		}
-		
-	}
-
 }

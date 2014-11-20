@@ -167,14 +167,14 @@ public class WithingsBinding extends
 		}
 	}
 	
-	private void addWithingsApiClient(WithingsApiClient withingsApiClient) {
+	protected void addWithingsApiClient(WithingsApiClient withingsApiClient) {
 		this.withingsApiClients.add(withingsApiClient);
 		if (!isProperlyConfigured()) {
 			setProperlyConfigured(true);
 		}
 	}
 
-	private void removeWithingsApiClient(WithingsApiClient withingsApiClient) {
+	protected void removeWithingsApiClient(WithingsApiClient withingsApiClient) {
 		this.withingsApiClients.remove(withingsApiClient);
 		if (withingsApiClients.isEmpty()) {
 			setProperlyConfigured(false);
