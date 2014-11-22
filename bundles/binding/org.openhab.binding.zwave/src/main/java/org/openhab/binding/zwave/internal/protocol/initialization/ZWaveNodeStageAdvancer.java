@@ -419,6 +419,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 								.getCommandClass().getLabel());
 						ZWaveCommandClassInitialization zcci = (ZWaveCommandClassInitialization) zwaveStaticClass;
 						int instances = zwaveStaticClass.getInstances();
+						logger.debug("NODE {}: Found {} instances of {}", node.getNodeId(), instances, zwaveStaticClass.getCommandClass());
 						if (instances == 1) {
 							addToQueue(zcci.initialize(stageAdvanced));
 						}
@@ -458,6 +459,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 								.getCommandClass().getLabel());
 						ZWaveCommandClassDynamicState zdds = (ZWaveCommandClassDynamicState) zwaveDynamicClass;
 						int instances = zwaveDynamicClass.getInstances();
+						logger.debug("NODE {}: Found {} instances of {}", node.getNodeId(), instances, zwaveDynamicClass.getCommandClass());
 						if (instances == 1) {
 							addToQueue(zdds.getDynamicValues(stageAdvanced));
 						}
