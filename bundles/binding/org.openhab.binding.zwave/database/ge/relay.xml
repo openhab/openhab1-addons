@@ -15,11 +15,15 @@
 			<Label lang="en">Night Light</Label>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">No</Label>
+				<Label lang="en">Yes</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Yes</Label>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Always Off</Label>
 			</Item>
 			<Help lang="en">In night-light mode the LED on the switch will turn ON when the switch is turned OFF.</Help>
 		</Parameter>
