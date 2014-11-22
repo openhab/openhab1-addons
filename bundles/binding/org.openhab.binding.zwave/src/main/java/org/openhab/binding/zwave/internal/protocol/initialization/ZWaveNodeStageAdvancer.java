@@ -372,7 +372,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 								.getCommandClass().getLabel());
 						addToQueue(version.checkVersion(zwaveVersionClass));
 					}
-					else {
+					else if (zwaveVersionClass.getVersion() == 0) {
+						logger.debug("NODE {}: Node advancer: VERSION - VERSION default to 1", node.getNodeId());
 						zwaveVersionClass.setVersion(1);
 					}
 				}
@@ -384,6 +385,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 						.getCommandClass(CommandClass.VERSION);
 
 				if (versionCommandClass == null) {
+					logger.debug("NODE {}: Node advancer: APP_VERSION - VERSION node supported", node.getNodeId());
 					break;
 				}
 
