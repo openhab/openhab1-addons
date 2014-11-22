@@ -314,7 +314,7 @@ public class JNA {
 	}
 
 	static {
-		if (Platform.isWindows()) {
+		if (Platform.isWindows() || Platform.isMac()) {
 			JNA.library = "TelldusCore";
 		} else {
 			JNA.library = "telldus-core";
