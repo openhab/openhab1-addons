@@ -785,6 +785,12 @@
         </dependency>
         <dependency>
             <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.pilight</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.fritzaha</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
@@ -1074,6 +1080,24 @@
         <dependency> 
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.ecotouch</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency> 
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.lgtv</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+		<dependency>
+        	<groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.samsungac</artifactId>
+            <version>${project.version}</version>
+	      	<type>jar</type>                                                 
+       	</dependency>
+        <dependency> 
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.enigma2</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
