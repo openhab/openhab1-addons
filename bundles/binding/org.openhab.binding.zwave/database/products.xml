@@ -1402,10 +1402,28 @@
 			<Label lang="en">Digital or Analog Voltage input and/or Dry Contact Relay</Label>
 			<ConfigFile>fortrezz/mimolite.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0313</Type>
+				<Id>0108</Id>
+			</Reference>
+			<Model>SSA1/SSA2</Model>
+			<Label lang="en">Siren & Strobe Alarm</Label>
+			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>008a</Id>
 		<Name>BeNext</Name>
+		<Product>
+			<Reference>
+				<Type>000d</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>plugInDimmer</Model>
+			<Label lang="en">BeNext Plug-in Dimmer</Label>
+			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0018</Type>
