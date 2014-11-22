@@ -142,7 +142,7 @@ public class DeviceTypeLoader {
 	 * Singleton instance function, creates DeviceTypeLoader
 	 * @return DeviceTypeLoader singleton reference
 	 */
-	public static DeviceTypeLoader s_instance() {
+	public static synchronized DeviceTypeLoader s_instance() {
 		if (s_deviceTypeLoader == null) {
 			s_deviceTypeLoader = new DeviceTypeLoader();
 			InputStream input = DeviceTypeLoader.class.getResourceAsStream("/device_types.xml");
