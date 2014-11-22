@@ -1119,6 +1119,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 	 * @param event
 	 */
 	void handleInclusionEvent(ZWaveInclusionEvent event) {
+		boolean endInclusion = false;
+
 		switch(event.getEvent()) {
 		case IncludeStart:
 			break;
@@ -1127,8 +1129,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		case IncludeControllerFound:
 			break;
 		case IncludeFail:
+			endInclusion = true;
 			break;
 		case IncludeDone:
+			endInclusion = true;
 			break;
 		case ExcludeStart:
 			break;
@@ -1137,9 +1141,15 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		case ExcludeControllerFound:
 			break;
 		case ExcludeFail:
+			endInclusion = true;
 			break;
 		case ExcludeDone:
+			endInclusion = true;
 			break;
+		}
+		
+		if(endInclusion) {
+			stopInclusionTimer();
 		}
 	}
 
@@ -1194,28 +1204,13 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		}
 	}
 
-	// The following timer implements a re-triggerable timer to stop the inclusion
+	// The following timer class implements a re-triggerable timer to stop the inclusion
 	// mode after 30 seconds.
 	private class InclusionTimerTask extends TimerTask {
-		ZWaveController zController;
-//		boolean inclusion;
-
-//		InclusionTimerTask(ZWaveController zController, boolean inclusion) {
-		InclusionTimerTask(ZWaveController zController) {
-			this.zController = zController;
-//			this.inclusion = inclusion;
-		}
-
 		@Override
 		public void run() {
 			logger.debug("Ending inclusion mode.");
-			if(inclusion)
-				zController.requestAddNodesStop();
-			else
-				zController.requestRemoveNodesStop();
-			
-			inclusion = false;
-			exclusion = false;
+			stopInclusionTimer();
 		}
 	}
 	
@@ -1226,11 +1221,36 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 		}
 
 		// Create the timer task
-//		timerTask = new InclusionTimerTask(zController, inclusion);
-		timerTask = new InclusionTimerTask(zController);
+		timerTask = new InclusionTimerTask();
 
-		// Start the timer
+		// Start the timer for 30 seconds
 		timer.schedule(timerTask, 30000);
+	}
+
+	/**
+	 * Stops any pending inclusion/exclusion.
+	 * Resets flags, and signals to controller.
+	 */
+	public synchronized void stopInclusionTimer() {
+		logger.debug("Stopping inclusion timer.");
+		if(inclusion) {
+			zController.requestAddNodesStop();
+		}
+		else if(exclusion) {
+			zController.requestRemoveNodesStop();
+		}
+		else {
+			logger.error("Neither inclusion nor exclusion was active!");
+		}
+
+		inclusion = false;
+		exclusion = false;
+
+		// Stop the timer
+		if(timerTask != null) {
+			timerTask.cancel();
+			timerTask = null;
+		}
 	}
 
 	/**
