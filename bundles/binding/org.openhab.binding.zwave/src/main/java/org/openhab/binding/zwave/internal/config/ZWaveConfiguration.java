@@ -828,20 +828,23 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					if (networkMonitor != null)
 						networkMonitor.rescheduleHeal();
 				}
-				if (inclusion == false && exclusion == false) {
-					if (action.equals("Include")) {
-						inclusion = true;
-						zController.requestAddNodesStart();
-						setInclusionTimer();
+				if (action.equals("Include") || action.equals("Exclude")) {
+					// Only do include/exclude if it's not already in progress
+					if(inclusion == false && exclusion == false) {
+						if (action.equals("Include")) {
+							inclusion = true;
+							zController.requestAddNodesStart();
+							setInclusionTimer();
+						}
+						if (action.equals("Exclude")) {
+							exclusion = true;
+							zController.requestRemoveNodesStart();
+							setInclusionTimer();
+						}
 					}
-					if (action.equals("Exclude")) {
-						exclusion = true;
-						zController.requestRemoveNodesStart();
-						setInclusionTimer();
+					else {
+						logger.debug("Exclusion/Inclusion already in progress.");
 					}
-				}
-				else {
-					logger.debug("Exclusion/Inclusion already in progress.");
 				}
 			}
 		}
