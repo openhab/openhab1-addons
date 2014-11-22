@@ -256,10 +256,12 @@ public class DeviceFeature {
 	 */
 	public static DeviceFeature s_makeDeviceFeature(String s) {
 		DeviceFeature f = null;
-		if (s_features.containsKey(s)) {
-			f = s_features.get(s).build();
-		} else {
-			logger.error("unimplemented feature requested: {}", s);
+		synchronized(s_features) {
+			if (s_features.containsKey(s)) {
+				f = s_features.get(s).build();
+			} else {
+				logger.error("unimplemented feature requested: {}", s);
+			}
 		}
 		return f;
 	}
@@ -270,8 +272,10 @@ public class DeviceFeature {
 	public static void s_readFeatureTemplates(InputStream input) {
 		try {
 			ArrayList<FeatureTemplate> features = FeatureTemplateLoader.s_readTemplates(input);
-			for (FeatureTemplate f : features) {
-				s_features.put(f.getName(), f);
+			synchronized (s_features) {
+				for (FeatureTemplate f : features) {
+					s_features.put(f.getName(), f);
+				}
 			}
 		} catch (IOException e) {
 			logger.error("IOException while reading device features", e);
