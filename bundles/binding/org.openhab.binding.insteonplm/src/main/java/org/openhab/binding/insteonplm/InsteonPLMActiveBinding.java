@@ -318,6 +318,8 @@ public class InsteonPLMActiveBinding
 	 */
 	private void initialize() {
 		logger.debug("initializing...");
+		//Ensure all device types are loaded prior to initializing anything else.
+		DeviceTypeLoader.s_instance();
 		
 		HashSet<String> ports = new HashSet<String>();
 
