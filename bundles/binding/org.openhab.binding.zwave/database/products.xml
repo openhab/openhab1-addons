@@ -1417,6 +1417,15 @@
 		<Name>BeNext</Name>
 		<Product>
 			<Reference>
+				<Type>000d</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>plugInDimmer</Model>
+			<Label lang="en">BeNext Plug-in Dimmer</Label>
+			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0018</Type>
 				<Id>0100</Id>
 			</Reference>
