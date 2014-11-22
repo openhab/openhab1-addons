@@ -1071,9 +1071,9 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
-            <artifactId>org.openhab.binding.openpaths</artifactId>
+            <artifactId>org.openhab.binding.weather</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
