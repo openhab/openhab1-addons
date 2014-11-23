@@ -9,8 +9,10 @@
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
@@ -28,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Multi Instance / Multi Channel command class. The
@@ -36,6 +39,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * of the command class can also handle multiple instances of different
  * command classes. The instances are called endpoints in this version.
  * @author Jan-Willem Spuij
+ * @author Chris Jackson
  * @since 1.3.0
  */
 @XStreamAlias("multiInstanceCommandClass")
@@ -61,6 +65,19 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	private final Map<Integer, ZWaveEndpoint> endpoints = new HashMap<Integer, ZWaveEndpoint>();
 	
 	private boolean endpointsAreTheSameDeviceClass;
+	
+	// List of classes that DO NOT support multi instance
+	// This is used to reduce the number of requests during initialisation
+	// Only add a class to this list if you are sure it doesn't support multiple instances!
+	@XStreamOmitField
+	private static final List<CommandClass> singleInstanceClasses = Arrays.asList(
+					CommandClass.NO_OPERATION,
+					CommandClass.ASSOCIATION,
+					CommandClass.MULTI_INSTANCE_ASSOCIATION,
+					CommandClass.CONFIGURATION,
+					CommandClass.CLOCK
+			);
+
 	
 	/**
 	 * Creates a new instance of the ZWaveMultiInstanceCommandClass class.
@@ -518,14 +535,17 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			case 1:
 				// Get number of instances for all command classes on this node.
 				for (ZWaveCommandClass commandClass : this.getNode().getCommandClasses()) {
-					// TODO: Change this so that it uses a list of classes known to support multi-instance
-					// This allows us to reduce the number of frames we send 
-					// where we already know it doesn't support multi-instance
-					if (commandClass.getCommandClass() == CommandClass.NO_OPERATION) {
+					// Skip classes known NOT to support multiple instances.
+					// This allows us to reduce the number of frames we send during initialisation 
+					// where we already know it doesn't support multi-instance.
+					if (singleInstanceClasses.contains(commandClass.getCommandClass())) {
+						commandClass.setInstances(1);
+						logger.debug("NODE {}: ENDPOINTS - skipping {}", this.getNode().getNodeId(),
+								commandClass.getCommandClass().toString());
 						continue;
 					}
 					logger.debug("NODE {}: ENDPOINTS - checking {}, Instances {}", this.getNode().getNodeId(),
-							commandClass.getCommandClass().getLabel(), commandClass.getInstances());
+							commandClass.getCommandClass().toString(), commandClass.getInstances());
 					// Instances is set to 1 after it's initialised
 					if (commandClass.getInstances() == 0) {
 						logger.debug("NODE {}: ENDPOINTS - found    {}", this.getNode().getNodeId(),
@@ -549,7 +569,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 				break;
 			default:
 				logger.warn(String.format("NODE %d: Unknown version %d for command class %s (0x%02x)", 
-						this.getNode().getNodeId(), this.getVersion(), this.getCommandClass().getLabel(), this.getCommandClass().getKey()));
+						this.getNode().getNodeId(), this.getVersion(), this.getCommandClass().toString(), this.getCommandClass().getKey()));
 				break;
 		}
 
