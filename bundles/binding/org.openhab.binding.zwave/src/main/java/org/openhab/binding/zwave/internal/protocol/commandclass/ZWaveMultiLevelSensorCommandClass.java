@@ -123,8 +123,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 			initialiseDone = true;
 			break;
 		case SENSOR_MULTI_LEVEL_REPORT:
-			logger.trace("Process Multi Level Sensor Report");
-			logger.debug("NODE {}: Sensor Multi Level report received", this.getNode().getNodeId());
+			logger.debug("NODE {}: Sensor Multi Level REPORT received", this.getNode().getNodeId());
 
 			int sensorTypeCode = serialMessage.getMessagePayloadByte(offset + 1);
 			int sensorScale = (serialMessage.getMessagePayloadByte(offset + 2) >> 3) & 0x03;
@@ -137,18 +136,21 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 				return;
 			}
 
-			// sensor type seems to be supported, add it to the list.
+			// Sensor type seems to be supported, add it to the list.
 			Sensor sensor = sensors.get(sensorType);
 			if (sensor == null) {
 				sensor = new Sensor(sensorType);
 				this.sensors.put(sensorType, sensor);
 			}
 			sensor.setInitialised();
+			
+			// Set the global flag. This is mainly used for version < 4
+			dynamicDone = true;
 
 			try {
 				BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
 
-				logger.debug(String.format("NODE %d: Sensor Value = (%f)", this.getNode().getNodeId(), value));
+				logger.debug("NODE %d: Sensor Value = ({})", this.getNode().getNodeId(), value);
 				
 				ZWaveMultiLevelSensorValueEvent zEvent = new ZWaveMultiLevelSensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, sensorScale, value);
 				this.getController().notifyEventListeners(zEvent);
@@ -255,16 +257,26 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
 
-		if(refresh == true || dynamicDone == false) {
-			if (this.getVersion() > 4) {
-				for (Map.Entry<SensorType, Sensor> entry : this.sensors.entrySet()) {
-					if(refresh == true || entry.getValue().getInitialised() == false) {
-						result.add(this.getMessage(entry.getValue().getSensorType()));
-					}
-				}
-			} else {
-				result.add(this.getValueMessage());
+		// If we want to refresh, then reset the init flag on all sensors
+		if(refresh == true && this.getVersion() > 4) {
+			logger.debug("=========== Resetting init flag!");
+			for (Map.Entry<SensorType, Sensor> entry : this.sensors.entrySet()) {
+				entry.getValue().resetInitialised();
 			}
+			
+			dynamicDone = false;
+		}
+
+		if (this.getVersion() > 4) {
+			for (Map.Entry<SensorType, Sensor> entry : this.sensors.entrySet()) {
+				if(entry.getValue().getInitialised() == false) {
+					logger.debug("============ Requesting {}!", entry.getValue().getSensorType());
+					result.add(this.getMessage(entry.getValue().getSensorType()));
+				}
+			}
+		}
+		else if(dynamicDone == false){
+			result.add(this.getValueMessage());
 		}
 
 		return result;
@@ -378,9 +390,13 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 		public SensorType getSensorType() {			
 			return sensorType;
 		}
-		
+
 		public void setInitialised() {
 			initialised = true;
+		}
+
+		public void resetInitialised() {
+			initialised = false;
 		}
 		
 		public boolean getInitialised() {
