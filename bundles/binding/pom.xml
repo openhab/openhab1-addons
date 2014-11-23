@@ -71,6 +71,7 @@
     <module>org.openhab.binding.milight</module>
     <module>org.openhab.binding.systeminfo</module>
     <module>org.openhab.binding.piface</module>
+    <module>org.openhab.binding.pilight</module>
     <module>org.openhab.binding.fritzaha</module>
     <module>org.openhab.binding.tinkerforge</module>
     <module>org.openhab.binding.nibeheatpump</module>
@@ -111,6 +112,7 @@
     <module>org.openhab.binding.iec6205621meter</module>
     <module>org.openhab.binding.freebox</module>
     <module>org.openhab.binding.xbmc</module>
+    <module>org.openhab.binding.mios</module>
     <module>org.openhab.binding.daikin</module>
     <module>org.openhab.binding.jointspace</module>
     <module>org.openhab.binding.oceanic</module>
@@ -119,6 +121,7 @@
     <module>org.openhab.binding.energenie</module>
     <module>org.openhab.binding.maxcul</module>
     <module>org.openhab.binding.wemo</module>
+    <module>org.openhab.binding.weather</module>
     <module>org.openhab.binding.ekey</module>
     <module>org.openhab.binding.alarmdecoder</module>
     <module>org.openhab.binding.davis</module>
@@ -127,6 +130,8 @@
     <module>org.openhab.binding.benqprojector</module>
     <module>org.openhab.binding.ehealth</module>
     <module>org.openhab.binding.anel</module>
+    <module>org.openhab.binding.enigma2</module>
+    <module>org.openhab.binding.enigma2.test</module>
   </modules>
 
 </project>

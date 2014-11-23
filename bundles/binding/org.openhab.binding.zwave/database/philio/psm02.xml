@@ -141,12 +141,12 @@
 		<Group>
 			<Index>1</Index>
 			<Maximum>7</Maximum>
-			<Label lang="en">Light Control</Label>
+			<Label lang="en">Reports</Label>
 		</Group>
 		<Group>
 			<Index>2</Index>
 			<Maximum>7</Maximum>
-			<Label lang="en">Reports</Label>
+			<Label lang="en">Light Control</Label>
 		</Group>
 	</Associations>
 </Product>
