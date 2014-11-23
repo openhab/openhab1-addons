@@ -75,7 +75,8 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 					CommandClass.ASSOCIATION,
 					CommandClass.MULTI_INSTANCE_ASSOCIATION,
 					CommandClass.CONFIGURATION,
-					CommandClass.CLOCK
+					CommandClass.CLOCK,
+					CommandClass.WAKE_UP
 			);
 
 	
