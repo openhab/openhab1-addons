@@ -113,6 +113,12 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 						    
 						    // (n)th bit is set. n is the index for the setpoint type enumeration.
 						    SetpointType setpointTypeToAdd = SetpointType.getSetpointType(index);
+
+                            if (setpointTypeToAdd == null) {
+                                logger.warn("NODE {}: Unknown Setpoint Type = {}, ignoring report.", this.getNode().getNodeId(),index);
+                                return;
+                            }
+
 							this.setpointTypes.add(setpointTypeToAdd);
 							logger.debug("NODE {}: Added setpoint type {} {}", this.getNode().getNodeId(), setpointTypeToAdd.getLabel(), index);
 					}
@@ -194,7 +200,11 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 	public Collection<SerialMessage> getDynamicValues() {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
 		for (SetpointType setpointType : this.setpointTypes) {
-			result.add(getMessage(setpointType));
+            if(setpointType==null){
+                logger.warn("NODE {}: Ignoring null setpointType in setpointTypes", this.getNode().getNodeId());
+            } else {
+			    result.add(getMessage(setpointType));
+            }
 		}
 		return result;
 	}
