@@ -290,7 +290,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	public void execute() {
 		// Don't start the next node if there's a queue
 		if (zController.getSendQueueLength() > 1) {
-			logger.debug("Queue length is {} - deferring HEAL.", zController.getSendQueueLength());
+			logger.debug("Network Monitor: Queue length is {} - deferring network monitor functions.", zController.getSendQueueLength());
 			return;
 		}
 
@@ -325,6 +325,9 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				if (zwaveCommandClass != null) {
 					zController.sendData(zwaveCommandClass.getNoOperationMessage());
 				}
+			}
+			else {
+				logger.debug("Network Monitor: No nodes to ping!");
 			}
 
 			// To reduce congestion, we don't do anything else during this

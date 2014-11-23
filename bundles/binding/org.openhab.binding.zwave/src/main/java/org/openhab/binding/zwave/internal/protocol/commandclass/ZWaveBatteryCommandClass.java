@@ -118,7 +118,11 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 	 */
 	@Override
 	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
-		if(refresh == false && dynamicDone ==true) {
+		if (refresh == true) {
+			dynamicDone = false;
+		}
+
+		if (dynamicDone == true) {
 			return null;
 		}
 
@@ -126,7 +130,7 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 		result.add(getValueMessage());
 		return result;
 	}
-	
+
 	/**
 	 * Returns the current battery level. If the battery level is unknown, returns null
 	 * @return

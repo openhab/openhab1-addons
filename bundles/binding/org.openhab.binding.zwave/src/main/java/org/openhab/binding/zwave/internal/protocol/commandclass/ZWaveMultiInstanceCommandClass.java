@@ -66,8 +66,8 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	
 	private boolean endpointsAreTheSameDeviceClass;
 	
-	// List of classes that DO NOT support multi instance
-	// This is used to reduce the number of requests during initialisation
+	// List of classes that DO NOT support multiple instances.
+	// This is used to reduce the number of requests during initialisation.
 	// Only add a class to this list if you are sure it doesn't support multiple instances!
 	@XStreamOmitField
 	private static final List<CommandClass> singleInstanceClasses = Arrays.asList(
