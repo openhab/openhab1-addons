@@ -581,4 +581,14 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 			}
 		}
 	}
+
+	@Override
+	public void errorOccured(EventObject event, IhcExecption e) {
+		logger.warn(
+				"Error occured on communication to IHC controller: {}",
+				e.getMessage());
+				
+		logger.debug("Reconnection request");
+		setReconnectRequest(true);
+	}
 }

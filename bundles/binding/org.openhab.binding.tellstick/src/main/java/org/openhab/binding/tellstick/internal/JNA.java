@@ -60,7 +60,9 @@ public class JNA {
 	}
 
 	public enum DataType {
-		HUMIDITY(CLibrary.TELLSTICK_HUMIDITY), TEMPERATURE(CLibrary.TELLSTICK_TEMPERATURE);
+		HUMIDITY(CLibrary.TELLSTICK_HUMIDITY), TEMPERATURE(CLibrary.TELLSTICK_TEMPERATURE),
+		WINDAVERAGE(CLibrary.TELLSTICK_WINDAVERAGE), WINDDIRECTION(CLibrary.TELLSTICK_WINDDIRECTION),
+		WINDGUST(CLibrary.TELLSTICK_WINDGUST);
 
 		private int nativeInt;
 
@@ -312,7 +314,7 @@ public class JNA {
 	}
 
 	static {
-		if (Platform.isWindows()) {
+		if (Platform.isWindows() || Platform.isMac()) {
 			JNA.library = "TelldusCore";
 		} else {
 			JNA.library = "telldus-core";

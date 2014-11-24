@@ -64,7 +64,7 @@ public class SelectConfigFolderAction extends Action {
 	private boolean isValidConfigurationFolder(File dir) {
 		if(dir.isDirectory()) {
 			for(File file : dir.listFiles()) {
-				if(file.getName().equals(ConfigConstants.DEFAULT_CONFIG_FILENAME)) {
+				if(file.getName().equals(ConfigConstants.DEFAULT_SERVICE_CFG_FILE)) {
 					return true;
 				}
 			}

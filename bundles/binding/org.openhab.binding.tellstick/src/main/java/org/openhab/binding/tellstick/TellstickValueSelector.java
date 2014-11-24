@@ -32,7 +32,7 @@ public enum TellstickValueSelector {
 			"Humidity", NumberItem.class), HUMIDITY_STATUS("HumidityStatus", StringItem.class), BATTERY_LEVEL(
 			"BatteryLevel", NumberItem.class), PRESSURE("Pressure", NumberItem.class), FORECAST("Forecast",
 			NumberItem.class), RAIN_RATE("RainRate", NumberItem.class), RAIN_TOTAL("RainTotal", NumberItem.class), WIND_DIRECTION(
-			"WindDirection", NumberItem.class), WIND_SPEED("WindSpeed", NumberItem.class), INSTANT_POWER(
+			"WindDirection", NumberItem.class), WIND_AVG("WindAvg", NumberItem.class),WIND_GUST("WindGust", NumberItem.class), INSTANT_POWER(
 			"InstantPower", NumberItem.class), MOTION("Motion", SwitchItem.class), TOTAL_USAGE("TotalUsage",
 			NumberItem.class);
 
