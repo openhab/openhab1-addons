@@ -25,14 +25,15 @@ public class TellstickController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TellstickController.class);
 	private long lastSend = 0;
-	private static final int INTERVAL_BETWEEN_SEND = 250;
+	public static final long DEFAULT_INTERVAL_BETWEEN_SEND = 250;
 
 	public void handleSendEvent(TellstickBindingConfig config, TellstickDevice dev, Command command)
 			throws TellstickException {
 
 		int resend = config.getResend();
+		long resendInterval = config.getResendInterval();
 		for (int i = 0; i < resend; i++) {
-			checkLastAndWait();
+			checkLastAndWait(resendInterval);
 			logger.info("Send " + command + " to " + dev + " time=" + i + " conf " + config);
 			switch (config.getValueSelector()) {
 
@@ -40,7 +41,7 @@ public class TellstickController {
 				if (command == OnOffType.ON) {
 					if (config.getUsageSelector() == TellstickValueSelector.DIMMABLE) {
 						turnOff(dev);
-						checkLastAndWait();
+						checkLastAndWait(resendInterval);
 					}
 					turnOn(config, dev);
 				} else if (command == OnOffType.OFF) {
@@ -84,14 +85,8 @@ public class TellstickController {
 
 	private void dim(TellstickDevice dev, PercentType command) throws TellstickException {
 		double value = command.doubleValue();
-		
-		// 0 means OFF and 100 means ON
-		if(value == 0 && dev instanceof DeviceIntf) {
-			((DeviceIntf) dev).off();
-		} else if(value == 100 && dev instanceof DeviceIntf) {
-			((DeviceIntf) dev).on();
-		} else if (dev instanceof DimmableDeviceIntf) {
-			long tdVal = Math.round((value / 100) * 255);
+		double tdVal = (value / 100) * 255;
+		if (dev instanceof DimmableDeviceIntf) {
 			((DimmableDeviceIntf) dev).dim((int) tdVal);
 		} else {
 			throw new RuntimeException("Cannot send DIM to " + dev);
@@ -114,11 +109,11 @@ public class TellstickController {
 		}
 	}
 
-	private void checkLastAndWait() {
-		while ((System.currentTimeMillis() - lastSend) < INTERVAL_BETWEEN_SEND) {
-			logger.info("Wait for " + INTERVAL_BETWEEN_SEND + " millisec");
+	private void checkLastAndWait(long resendInterval) {
+		while ((System.currentTimeMillis() - lastSend) < resendInterval) {
+			logger.info("Wait for " + resendInterval + " millisec");
 			try {
-				Thread.sleep(INTERVAL_BETWEEN_SEND);
+				Thread.sleep(resendInterval);
 			} catch (InterruptedException e) {
 				logger.error("Failed to sleep", e);
 			}

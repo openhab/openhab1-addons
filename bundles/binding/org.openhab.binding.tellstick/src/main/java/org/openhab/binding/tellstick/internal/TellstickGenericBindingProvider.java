@@ -101,6 +101,11 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 		if (configParts.length > 3) {
 			if (isIntegerRegex(configParts[3])) {
 				config.setResend(Integer.parseInt(configParts[3]));
+			} else if (configParts[3].matches("^([0-9]+)/([0-9]+)$")) {
+				// Parse ie '3/300' into resend=3 and resendInterval=300
+				String[] resendParts = configParts[3].split("/");
+				config.setResend(Integer.parseInt(resendParts[0]));
+				config.setResendInterval(Long.parseLong(resendParts[1]));
 			} else {
 				config.setProtocol(configParts[3]);
 			}
