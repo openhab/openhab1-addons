@@ -14,8 +14,6 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.jna.Platform;
-
 /**
  * Tellstick activator, starts the JNA connection to Telldus Center.
  * 
