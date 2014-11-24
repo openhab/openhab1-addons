@@ -85,8 +85,14 @@ public class TellstickController {
 
 	private void dim(TellstickDevice dev, PercentType command) throws TellstickException {
 		double value = command.doubleValue();
-		double tdVal = (value / 100) * 255;
-		if (dev instanceof DimmableDeviceIntf) {
+		
+		// 0 means OFF and 100 means ON
+		if(value == 0 && dev instanceof DeviceIntf) {
+			((DeviceIntf) dev).off();
+		} else if(value == 100 && dev instanceof DeviceIntf) {
+			((DeviceIntf) dev).on();
+		} else if (dev instanceof DimmableDeviceIntf) {
+			long tdVal = Math.round((value / 100) * 255);
 			((DimmableDeviceIntf) dev).dim((int) tdVal);
 		} else {
 			throw new RuntimeException("Cannot send DIM to " + dev);
