@@ -281,7 +281,12 @@ public class InsteonPLMActiveBinding
 				logger.error("error reading additional devices from {}", fileName, e);
 			}
 		}
-		
+		if (m_config.containsKey("more_features")) {
+			String fileName = m_config.get("more_features");
+			logger.info("reading additional feature templates from {}", fileName);
+			DeviceFeature.s_readFeatureTemplates(fileName);
+		}
+ 		
 		m_deadDeviceTimeout = m_devicePollInterval * deadDeviceCount;
 		logger.info("dead device timeout set to {}s", m_deadDeviceTimeout / 1000);
 		logger.debug("configuration update complete!");

@@ -1,0 +1,4 @@
+Off=urn:upnp-org:serviceId:HVAC_UserOperatingMode1/SetModeTarget(NewModeTarget=Off)
+HeatOn=urn:upnp-org:serviceId:HVAC_UserOperatingMode1/SetModeTarget(NewModeTarget=HeatOn)
+CoolOn=urn:upnp-org:serviceId:HVAC_UserOperatingMode1/SetModeTarget(NewModeTarget=CoolOn)
+AutoChangeOver=urn:upnp-org:serviceId:HVAC_UserOperatingMode1/SetModeTarget(NewModeTarget=AutoChangeOver)
