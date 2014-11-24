@@ -537,7 +537,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			// If we have all the data, set stageAdvanced to true to tell the
 			// system
 			// that we're starting again, then loop around again.
-			if (sendMessage() == false) {
+			if (currentStage != NodeStage.DONE && sendMessage() == false) {
 				// Move on to the next stage
 				currentStage = currentStage.getNextStage();
 				stageAdvanced = true;
