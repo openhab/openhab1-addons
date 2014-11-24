@@ -1408,7 +1408,7 @@
 				<Id>0108</Id>
 			</Reference>
 			<Model>SSA1/SSA2</Model>
-			<Label lang="en">Siren & Strobe Alarm</Label>
+			<Label lang="en">Siren and Strobe Alarm</Label>
 			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
