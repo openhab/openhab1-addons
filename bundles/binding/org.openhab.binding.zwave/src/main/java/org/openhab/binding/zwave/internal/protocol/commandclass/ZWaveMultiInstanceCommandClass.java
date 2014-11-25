@@ -537,6 +537,9 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			case 1:
 				// Get number of instances for all command classes on this node.
 				for (ZWaveCommandClass commandClass : this.getNode().getCommandClasses()) {
+					logger.debug("NODE {}: ENDPOINTS - checking {}, Instances {}", this.getNode().getNodeId(),
+							commandClass.getCommandClass().toString(), commandClass.getInstances());
+
 					// Skip classes known NOT to support multiple instances.
 					// This allows us to reduce the number of frames we send during initialisation 
 					// where we already know it doesn't support multi-instance.
@@ -546,12 +549,10 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 								commandClass.getCommandClass().toString());
 						continue;
 					}
-					logger.debug("NODE {}: ENDPOINTS - checking {}, Instances {}", this.getNode().getNodeId(),
-							commandClass.getCommandClass().toString(), commandClass.getInstances());
 					// Instances is set to 1 after it's initialised
 					if (commandClass.getInstances() == 0) {
 						logger.debug("NODE {}: ENDPOINTS - found    {}", this.getNode().getNodeId(),
-								commandClass.getCommandClass().getLabel());
+								commandClass.getCommandClass().toString());
 						result.add(getMultiInstanceGetMessage(commandClass.getCommandClass()));
 					}
 				}

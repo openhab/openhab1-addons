@@ -409,6 +409,13 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					addToQueue(multiInstance.initEndpoints(stageAdvanced));
 					logger.debug("NODE {}: Node advancer: ENDPOINTS - queued {} frames", node.getNodeId(), msgQueue.size());
 				}
+				else {
+					logger.debug("NODE {}: Node advancer: ENDPOINTS - MultiInstance not supported.", node.getNodeId());
+					// Set all classes to 1 instance.
+					for (ZWaveCommandClass commandClass : node.getCommandClasses()) {
+						commandClass.setInstances(1);
+					}
+				}
 				break;
 
 			case STATIC_VALUES:
