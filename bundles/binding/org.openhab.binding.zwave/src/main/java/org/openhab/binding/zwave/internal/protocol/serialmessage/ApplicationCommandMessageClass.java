@@ -39,7 +39,7 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 		// If the node is DEAD, but we've just received a message from it, then it's not dead!
 		if(node.isDead()) {
 			node.setAlive();
-			logger.debug("NODE {}: Node has risen from the DEAD. Set stage to {}.", nodeId, node.getNodeStage().toString());			
+			logger.debug("NODE {}: Node has risen from the DEAD. Stage set to {}.", nodeId, node.getNodeStage().toString());			
 		}
 		
 		node.resetResendCount();

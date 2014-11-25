@@ -212,6 +212,7 @@ public class ZWaveNode {
 			this.nodeStageAdvancer.setCurrentStage(NodeStage.DONE);
 		}
 		else {
+			logger.debug("NODE {}: Node is now ALIVE - initialisation NOT complete.", this.nodeId);
 			this.nodeStageAdvancer.setCurrentStage(NodeStage.DYNAMIC_VALUES);
 			this.nodeStageAdvancer.advanceNodeStage(null);
 		}

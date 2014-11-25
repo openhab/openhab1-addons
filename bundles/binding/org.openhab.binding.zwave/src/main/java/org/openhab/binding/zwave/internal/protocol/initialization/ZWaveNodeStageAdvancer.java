@@ -546,14 +546,10 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			// that we're starting again, then loop around again.
 			if (currentStage != NodeStage.DONE && sendMessage() == false) {
 				// Move on to the next stage
-				currentStage = currentStage.getNextStage();
+				setCurrentStage(currentStage.getNextStage());
 				stageAdvanced = true;
 				logger.debug("NODE {}: Node advancer - advancing to {}.", node.getNodeId(),
 						currentStage.toString());
-
-				// Remember the time so we can handle retries and keep users
-				// informed
-				queryStageTimeStamp = Calendar.getInstance().getTime();
 			}
 		} while (msgQueue.isEmpty());
 	}
@@ -621,6 +617,10 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	 */
 	public void setCurrentStage(NodeStage newStage) {
 		currentStage = newStage;
+
+		// Remember the time so we can handle retries and keep users
+		// informed
+		queryStageTimeStamp = Calendar.getInstance().getTime();
 	}
 
 	/**
@@ -737,6 +737,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				advanceNodeStage(null);
 				break;
 			}
+			logger.trace("NODE {}: Node Status event during initialisation processed", statusEvent.getNodeId());
 		}
 	}
 }
