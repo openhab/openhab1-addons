@@ -20,3 +20,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/action.xml
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
+Require-Bundle: org.openhab.io.transport.xpl;bundle-version="1.6.0"
