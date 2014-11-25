@@ -1114,9 +1114,7 @@ public class ZWaveController {
 					
 					// Now wait for the REQUEST message FROM the controller
 					try {
-						logger.debug("NODE {}: Wait for response", lastSentMessage.getMessageNode());
 						if (!transactionCompleted.tryAcquire(1, zWaveResponseTimeout, TimeUnit.MILLISECONDS)) {
-							logger.debug("NODE {}: NO response = {}", lastSentMessage.getMessageNode());
 							timeOutCount.incrementAndGet();
 							// If this is a SendData message, then we need to abort
 							// TODO: CDJ - not according to the doc? Should check this.
