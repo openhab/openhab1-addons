@@ -12,9 +12,10 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 
 /**
- * Binding config for FS20 devices.
+ * Binding config for Onewire devices.
  * 
- * @author Till Klocke
+ * @author Robert Delbrück
+ * @since 1.6.0
  * 
  */
 public class OnewireCunoBindingConfig implements BindingConfig {
@@ -24,23 +25,10 @@ public class OnewireCunoBindingConfig implements BindingConfig {
 	 */
 	private String address;
 	private Item item;
-	/***
-	 * possible extra options when communicating with the device. currently
-	 * unused.
-	 */
-	private String extraOpts;
 
 	public OnewireCunoBindingConfig(String address, Item item) {
 		this.address = address;
 		this.item = item;
-	}
-
-	public String getExtraOpts() {
-		return extraOpts;
-	}
-
-	public void setExtraOpts(String extraOpts) {
-		this.extraOpts = extraOpts;
 	}
 
 	public String getAddress() {

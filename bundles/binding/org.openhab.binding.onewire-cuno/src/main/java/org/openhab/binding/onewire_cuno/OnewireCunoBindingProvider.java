@@ -11,8 +11,8 @@ package org.openhab.binding.onewire_cuno;
 import org.openhab.core.binding.BindingProvider;
 
 /**
- * @author Till Klocke
- * @since 1.4.0
+ * @author Robert Delbrück
+ * @since 1.6.0
  */
 public interface OnewireCunoBindingProvider extends BindingProvider {
 

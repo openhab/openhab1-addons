@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * RF received updates are received directly, there is no polling.
  * 
  * @author Robert Delbrück
- * @since 1.4.0
+ * @since 1.6.0
  */
 public class OnewireCunoBinding extends AbstractActiveBinding<OnewireCunoBindingProvider>
 		implements ManagedService, CULListener {
