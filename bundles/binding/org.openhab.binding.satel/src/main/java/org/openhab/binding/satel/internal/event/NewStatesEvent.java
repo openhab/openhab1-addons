@@ -61,8 +61,8 @@ public class NewStatesEvent implements SatelEvent {
 			if (newStatesStr.length() > 0) {
 				newStatesStr.append(",");
 			}
-			newStatesStr.append(String.format("%02X", i + 1));
+			newStatesStr.append(String.format("%02X", i));
 		}
-		return String.format("NewStatesEvent: changed = {%s}", newStatesStr);
+		return String.format("NewStatesEvent: changed = [%s]", newStatesStr);
 	}
 }

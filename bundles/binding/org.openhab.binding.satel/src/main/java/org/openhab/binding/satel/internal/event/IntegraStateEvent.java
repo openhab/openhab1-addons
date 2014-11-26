@@ -92,8 +92,8 @@ public class IntegraStateEvent implements SatelEvent {
 			if (bitsStr.length() > 0) {
 				bitsStr.append(",");
 			}
-			bitsStr.append(String.format("%02X", i + 1));
+			bitsStr.append(Integer.toString(i + 1));
 		}
-		return String.format("IntegraStateEvent: state = %s, changed = %s", stateType, bitsStr);
+		return String.format("IntegraStateEvent: state = %s, active = [%s]", stateType, bitsStr);
 	}
 }
