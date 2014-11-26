@@ -1145,6 +1145,17 @@
 			<Label lang="de">Living Connect Z Thermostat FW2.51</Label>
 			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>8005</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>LCZ</Model>
+			<Label lang="en">Living Connect Z Thermostat FW2.50?</Label>
+			<Label lang="de">Living Connect Z Thermostat FW2.50?</Label>
+			<!--Use the same as 2.51 as I cannot see any difference http://www.pepper1.net/zwavedb/device/6-->
+			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>013C</Id>
