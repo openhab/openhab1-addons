@@ -200,7 +200,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	private void handleDeviceEvent(TellstickDeviceEvent event) {
 		TellstickDevice device = event.getDevice();
 		controller.setLastSend(System.currentTimeMillis());
-		logger.debug("Got deviceEvent for " + device + " name:" + device + " method" + event.getMethod());
+		logger.debug("Got deviceEvent for " + device + " name:" + device + " method " + event.getMethod());
 		if (device != null) {
 			State cmd = resolveCommand(event.getMethod(), event.getData());
 			TellstickBindingConfig conf = findTellstickBindingConfig(device.getId(), null, null);
@@ -219,8 +219,8 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 		} else if (method == Method.TURNOFF) {
 			cmd = OnOffType.OFF;
 		} else if (method == Method.DIM) {
-			double value = ((Double.valueOf(data)) / 255);
-			cmd = new PercentType((int) (value * 100));
+			double value = ((Double.valueOf(data)*100) / 255);
+			cmd = new PercentType((int) Math.round(value));
 		}
 		return cmd;
 	}

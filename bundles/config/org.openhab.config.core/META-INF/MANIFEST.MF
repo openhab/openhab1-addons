@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Config Core
 Bundle-SymbolicName: org.openhab.config.core
-Bundle-Version: 1.6.0.qualifier
+Bundle-Version: 1.7.0.qualifier
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.apache.commons.io,
@@ -18,4 +18,3 @@ Import-Package: org.apache.commons.io,
 Bundle-Activator: org.openhab.config.core.internal.ConfigActivator
 Export-Package: org.openhab.config.core
 Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/configdispatcher.xml
