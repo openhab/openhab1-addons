@@ -206,7 +206,11 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
 		for (Map.Entry<SetpointType, Setpoint> entry : this.setpoints.entrySet()) {
 			if(refresh == true || entry.getValue().getInitialised() == false) {
-				result.add(getMessage(entry.getValue().getSetpointType()));
+				if(getMessage(entry.getValue().getSetpointType()) == null){
+					logger.warn("NODE {}: Ignoring null setpointType in setpointTypes", this.getNode().getNodeId());
+				} else {
+					result.add(getMessage(entry.getValue().getSetpointType()));
+				}
 			}
 		}
 		return result;
