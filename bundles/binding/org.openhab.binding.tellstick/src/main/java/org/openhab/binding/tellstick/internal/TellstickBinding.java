@@ -51,7 +51,8 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	 * Max time without receiving any events.
 	 */
 	private static final int MAX_IDLE_BEFORE_RESTART = 600000;
-
+	private static BigDecimal HUNDRED = new BigDecimal("100");
+	
 	private int restartTimeout;
 
 	private long lastRefresh = 0;
@@ -263,8 +264,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 						break;
 					case HUMIDITY:
 					default:
-						double val = Math.min(100, dValue.doubleValue());
-						cmd = new PercentType((int) val);
+						cmd = new PercentType(HUNDRED.min(dValue));
 	
 					}
 				break;
