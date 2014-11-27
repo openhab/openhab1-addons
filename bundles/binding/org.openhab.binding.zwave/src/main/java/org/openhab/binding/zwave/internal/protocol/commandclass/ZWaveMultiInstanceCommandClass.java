@@ -366,6 +366,9 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 				if (parentClass != null) {
 					commandClass.setVersion(parentClass.getVersion());
 				}
+
+				// With V2, we only have a single instance
+				commandClass.setInstances(1);
 			}
 		}
 
@@ -558,7 +561,12 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 				}
 				break;
 			case 2:
-				// First request the number of endpoints
+				// Set all classes to a single instance
+				for (ZWaveCommandClass commandClass : this.getNode().getCommandClasses()) {
+					commandClass.setInstances(1);
+				}
+
+				// Request the number of endpoints
 				if(refresh == true || this.endpoints.size() == 0) {
 					result.add(getMultiChannelEndpointGetMessage());
 				}

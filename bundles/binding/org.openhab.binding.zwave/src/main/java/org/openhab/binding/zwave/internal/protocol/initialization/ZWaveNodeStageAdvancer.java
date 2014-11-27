@@ -331,6 +331,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
 				// If the incoming frame is the IdentifyNode, then we continue
 				if (eventClass == SerialMessageClass.RequestNodeInfo) {
+					logger.debug("NODE {}: Node advancer: received RequestNodeInfo", node.getNodeId());
 					break;
 				}
 
