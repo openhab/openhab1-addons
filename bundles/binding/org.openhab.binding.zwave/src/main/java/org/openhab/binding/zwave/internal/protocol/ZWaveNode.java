@@ -78,9 +78,6 @@ public class ZWaveNode {
 	private Date lastReceived;
 
 	@XStreamOmitField
-	private volatile NodeStage nodeStage;
-
-	@XStreamOmitField
 	private int resendCount = 0;
 
 	@XStreamOmitField
@@ -107,7 +104,6 @@ public class ZWaveNode {
 		this.nodeId = nodeId;
 		this.controller = controller;
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
-		this.nodeStage = NodeStage.EMPTYNODE;
 		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN, Generic.NOT_KNOWN, Specific.NOT_USED);
 		this.lastSent = null;
 		this.lastReceived = null;
@@ -123,7 +119,7 @@ public class ZWaveNode {
 		// Create the initialisation advancer and tell it we've loaded from file
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
 		this.nodeStageAdvancer.setRestoredFromConfigfile();
-		this.nodeStage = NodeStage.EMPTYNODE;
+		nodeStageAdvancer.setCurrentStage(NodeStage.EMPTYNODE);
 	}
 
 	/**
@@ -195,7 +191,7 @@ public class ZWaveNode {
 	 * @return
 	 */
 	public boolean isDead() {
-		if(this.nodeStage == NodeStage.DEAD || this.nodeStage == NodeStage.FAILED) {
+		if(nodeStageAdvancer.getCurrentStage() == NodeStage.DEAD || nodeStageAdvancer.getCurrentStage() == NodeStage.FAILED) {
 			return true;
 		}
 		else {
@@ -351,7 +347,7 @@ public class ZWaveNode {
 	 * @param nodeStage the nodeStage to set
 	 */
 	public void setNodeStage(NodeStage nodeStage) {
-		this.nodeStage = nodeStage;
+		nodeStageAdvancer.setCurrentStage(nodeStage);
 	}
 
 	/**
@@ -426,7 +422,7 @@ public class ZWaveNode {
 	public void resetResendCount() {
 		this.resendCount = 0;
 		if (this.nodeStageAdvancer.isInitializationComplete() && this.isDead() == false) {
-			this.nodeStage = NodeStage.DONE;
+			nodeStageAdvancer.setCurrentStage(NodeStage.DONE);
 		}
 	}
 

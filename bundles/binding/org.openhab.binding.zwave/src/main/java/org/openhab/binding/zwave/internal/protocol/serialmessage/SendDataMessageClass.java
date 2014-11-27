@@ -110,8 +110,15 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 
 		ZWaveNode node = zController.getNode(originalMessage.getMessageNode());
 
+		logger.trace("NODE {}: handling failed message.", node.getNodeId());
+
+		// Increment the resend count.
+		// This will set the node to DEAD if we've exceeded the retries.
+		node.incrementResendCount();
+
 		// No retries if the node is DEAD or FAILED
 		if (node.isDead()) {
+			logger.error("NODE {}: Node is DEAD. Dropping message.", node.getNodeId());
 			return false;
 		}
 
@@ -128,10 +135,9 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 				return false;
 			}
 		} else if (!node.isListening() && !node.isFrequentlyListening()
-				&& originalMessage.getPriority() == SerialMessagePriority.Low)
+				&& originalMessage.getPriority() == SerialMessagePriority.Low) {
 			return false;
-
-		node.incrementResendCount();
+		}
 
 		logger.error("NODE {}: Got an error while sending data. Resending message.", node.getNodeId());
 		zController.sendData(originalMessage);

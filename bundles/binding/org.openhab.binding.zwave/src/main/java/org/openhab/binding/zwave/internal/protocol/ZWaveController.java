@@ -1112,7 +1112,10 @@ public class ZWaveController {
 						break;
 					}
 					
-					// Now wait for the REQUEST message FROM the controller
+					// Now wait for the RESPONSE, or REQUEST message FROM the controller
+					// This will terminate when the transactionCompleted flag gets set
+					// So, this might complete on a RESPONSE if there's an error (or no further REQUEST expected)
+					// or it might complete on a subsequent REQUEST.
 					try {
 						if (!transactionCompleted.tryAcquire(1, zWaveResponseTimeout, TimeUnit.MILLISECONDS)) {
 							timeOutCount.incrementAndGet();
@@ -1136,7 +1139,8 @@ public class ZWaveController {
 							// Check if we've exceeded the number of retries.
 							// Requeue if we're ok, otherwise discard the message
 							if (--lastSentMessage.attempts >= 0) {
-								logger.error("NODE {}: Timeout while sending message. Requeueing!", lastSentMessage.getMessageNode());
+								logger.error("NODE {}: Timeout while sending message. Requeueing - {} attempts left!",
+										lastSentMessage.getMessageNode(), lastSentMessage.attempts);
 								if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 									handleFailedSendDataRequest(lastSentMessage);
 								}
