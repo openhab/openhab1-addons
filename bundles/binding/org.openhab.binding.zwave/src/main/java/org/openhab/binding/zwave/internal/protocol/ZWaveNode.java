@@ -76,6 +76,8 @@ public class ZWaveNode {
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
 	private Date lastSent;
 	private Date lastReceived;
+	
+	private boolean applicationUpdateReceived = false;
 
 	@XStreamOmitField
 	private int resendCount = 0;
@@ -706,5 +708,23 @@ public class ZWaveNode {
 	 */
 	public int getSendCount() {
 		return sendCount;
+	}
+
+	/**
+	 * Gets the applicationUpdateReceived flag.
+	 * This is set to indicate that we have received the required information from the device
+	 * @return true if information received
+	 */
+	public boolean getApplicationUpdateReceived() {
+		return applicationUpdateReceived;
+	}
+
+	/**
+	 * Sets the applicationUpdateReceived flag.
+	 * This is set to indicate that we have received the required information from the device
+	 * @param received true if received
+	 */
+	public void setApplicationUpdateReceived(boolean received) {
+		applicationUpdateReceived = received;
 	}
 }

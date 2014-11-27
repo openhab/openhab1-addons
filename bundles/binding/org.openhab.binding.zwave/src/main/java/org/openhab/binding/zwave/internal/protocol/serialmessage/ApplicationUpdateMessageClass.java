@@ -43,6 +43,9 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			
 			node.resetResendCount();
 
+			// Remember that we've received this so we can continue initialisation
+			node.setApplicationUpdateReceived(true);
+
 			if(node.getNodeStage() == NodeStage.DONE) {
 				// If this node supports associations, then assume this should be handled through that mechanism
 				if(node.getCommandClass(CommandClass.ASSOCIATION) == null) {
