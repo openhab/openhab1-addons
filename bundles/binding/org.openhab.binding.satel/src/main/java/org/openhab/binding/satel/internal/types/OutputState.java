@@ -9,7 +9,7 @@
 package org.openhab.binding.satel.internal.types;
 
 /**
- * Available output states.
+ * TODO document me!
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0

@@ -9,7 +9,7 @@
 package org.openhab.binding.satel.internal.types;
 
 /**
- * Available Integra types.
+ * TODO document me!
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0
@@ -22,26 +22,22 @@ public enum IntegraType {
 	private int code;
 	private String name;
 
-	IntegraType(int code, String name) {
+	private IntegraType(int code, String name) {
 		this.code = code;
 		this.name = name;
 	}
 
-	/**
-	 * @return name of Integra type
-	 */
+	public int getCode() {
+		return this.code;
+	}
+
 	public String getName() {
 		return this.name;
 	}
 
-	/**
-	 * Returns Integra type for given code.
-	 * @param code code to get type for
-	 * @return Integra type object
-	 */
 	public static IntegraType valueOf(int code) {
 		for (IntegraType val : IntegraType.values()) {
-			if (val.code == code)
+			if (val.getCode() == code)
 				return val;
 		}
 		return UNKNOWN;

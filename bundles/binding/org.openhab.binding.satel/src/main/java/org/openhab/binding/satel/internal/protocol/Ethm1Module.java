@@ -19,9 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Represents Satel ETHM-1 module. Implements method required to connect and
- * communicate with that module over TCP/IP protocol. The module must have
- * integration protocol enable in DLOADX configuration options.
+ * TODO document me!
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0
@@ -34,23 +32,9 @@ public class Ethm1Module extends SatelModule {
 	private String encryptionKey;
 	private Socket socket;
 
-	/**
-	 * Creates new instance with host, port, timeout and encryption key set to
-	 * specified values.
-	 * 
-	 * @param host
-	 *            host name or IP of ETHM-1 module
-	 * @param port
-	 *            TCP port the module listens on
-	 * @param timeout
-	 *            timeout value in milliseconds for connect/read/write
-	 *            operations
-	 * @param encryptionKey
-	 *            encryption key for encrypted communication
-	 */
 	public Ethm1Module(String host, int port, int timeout, String encryptionKey) {
 		super(timeout);
-
+		
 		this.host = host;
 		this.port = port;
 		this.encryptionKey = encryptionKey;
@@ -60,7 +44,7 @@ public class Ethm1Module extends SatelModule {
 	@Override
 	protected CommunicationChannel connect() {
 		logger.info("Connecting to ETHM-1 module at {}:{}", this.host, this.port);
-
+		
 		try {
 			if (StringUtils.isNotBlank(this.encryptionKey)) {
 				// TODO implement encryption
@@ -69,18 +53,16 @@ public class Ethm1Module extends SatelModule {
 			}
 			this.socket = new Socket();
 			this.socket.connect(new InetSocketAddress(this.host, this.port), this.getTimeout());
-
+			
 			return new CommunicationChannel() {
 				@Override
 				public InputStream getInputStream() throws IOException {
 					return Ethm1Module.this.socket.getInputStream();
 				}
-
 				@Override
 				public OutputStream getOutputStream() throws IOException {
 					return Ethm1Module.this.socket.getOutputStream();
 				}
-
 				@Override
 				public void disconnect() {
 					logger.info("Closing connection to ETHM-1 module");
@@ -97,7 +79,7 @@ public class Ethm1Module extends SatelModule {
 		} catch (IOException e) {
 			logger.error("IO error occurred during connecting socket", e);
 		}
-
+		
 		return null;
 	}
 }

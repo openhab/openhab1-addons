@@ -9,14 +9,14 @@
 package org.openhab.binding.satel.internal.types;
 
 /**
- * Available zone control types.
+ * TODO document me!
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0
  */
 public enum ZoneControl implements ControlType {
-	arm_mode_0(0x80), arm_mode_1(0x81), arm_mode_2(0x82), arm_mode_3(0x83), disarm(0x84), clear_alarm(0x85), force_arm_mode_0(
-			0xa0), force_arm_mode_1(0xa1), force_arm_mode_2(0xa2), force_arm_mode_3(0xa3);
+	// TODO add force arming
+	arm_mode_0(0x80), arm_mode_1(0x81), arm_mode_2(0x82), arm_mode_3(0x83), disarm(0x84);
 
 	private byte controlCommand;
 
