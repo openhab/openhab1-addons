@@ -9,7 +9,7 @@
 package org.openhab.binding.satel.internal.types;
 
 /**
- * TODO document me!
+ * Available output control types.
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0

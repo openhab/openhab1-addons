@@ -14,68 +14,110 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO document me!
+ * Represents a message sent to (a command) or received from (a response)
+ * {@link SatelModule}. It consists of one byte that specifies command type or
+ * response status and certain number of payload bytes. Number of payload byte
+ * depends on command type. The class allows to serialize a command to bytes and
+ * deserialize a response from given bytes. It also computes and validates
+ * message checksum.
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0
  */
 public class SatelMessage {
 	private static final Logger logger = LoggerFactory.getLogger(SatelMessage.class);
-	
+
 	private byte command;
 	private byte[] payload;
-	
+
 	private static final byte[] EMPTY_PAYLOAD = new byte[0];
-	
+
+	/**
+	 * Creates new instance with specified command code and payload.
+	 * 
+	 * @param command
+	 *            command code
+	 * @param payload
+	 *            command payload
+	 */
 	public SatelMessage(byte command, byte[] payload) {
 		this.command = command;
 		this.payload = payload;
 	}
-	
+
+	/**
+	 * Creates new instance with specified command code and empty payload.
+	 * 
+	 * @param command
+	 *            command code
+	 */
 	public SatelMessage(byte command) {
 		this(command, EMPTY_PAYLOAD);
 	}
-	
+
+	/**
+	 * Deserializes new message instance from specified byte buffer.
+	 * 
+	 * @param buffer
+	 *            bytes to deserialize a message from
+	 * @return deserialized message instance
+	 */
 	public static SatelMessage fromBytes(byte[] buffer) {
 		// we need at least command and checksum
 		if (buffer.length < 3) {
 			logger.error("Invalid message length: {}", buffer.length);
 			return null;
 		}
-		
+
 		// check crc
-		int receivedCrc = 0xffff & ((buffer[buffer.length-2] << 8) | (buffer[buffer.length-1] & 0xff));
-		int expectedCrc = calculateChecksum(buffer, buffer.length-2);
+		int receivedCrc = 0xffff & ((buffer[buffer.length - 2] << 8) | (buffer[buffer.length - 1] & 0xff));
+		int expectedCrc = calculateChecksum(buffer, buffer.length - 2);
 		if (receivedCrc != expectedCrc) {
 			logger.error("Invalid message checksum: received = {}, expected = {}", receivedCrc, expectedCrc);
 			return null;
 		}
-		
-		SatelMessage message = new SatelMessage(buffer[0], new byte[buffer.length-3]);
+
+		SatelMessage message = new SatelMessage(buffer[0], new byte[buffer.length - 3]);
 		if (message.payload.length > 0)
-			System.arraycopy(buffer, 1, message.payload, 0, buffer.length-3);
+			System.arraycopy(buffer, 1, message.payload, 0, buffer.length - 3);
 		return message;
 	}
-	
+
+	/**
+	 * Returns command byte.
+	 * 
+	 * @return the command
+	 */
 	public byte getCommand() {
 		return this.command;
 	}
-	
+
+	/**
+	 * Returns the payload bytes.
+	 * 
+	 * @return payload as byte array
+	 */
 	public byte[] getPayload() {
 		return this.payload;
 	}
 
+	/**
+	 * Returns the message serialized as array of bytes with checksum calculated
+	 * at last two bytes.
+	 * 
+	 * @return the message as array of bytes
+	 */
 	public byte[] getBytes() {
-		byte buffer[] = new byte[this.payload.length+3];
+		byte buffer[] = new byte[this.payload.length + 3];
 		buffer[0] = this.command;
 		if (this.payload.length > 0)
 			System.arraycopy(this.payload, 0, buffer, 1, this.payload.length);
-		int checksum = calculateChecksum(buffer, buffer.length-2);
-		buffer[buffer.length-2] = (byte) ((checksum >> 8) & 0xff);
-		buffer[buffer.length-1] = (byte) (checksum & 0xff);
+		int checksum = calculateChecksum(buffer, buffer.length - 2);
+		buffer[buffer.length - 2] = (byte) ((checksum >> 8) & 0xff);
+		buffer[buffer.length - 1] = (byte) (checksum & 0xff);
 		return buffer;
 	}
-	
+
 	private String getPayloadAsHex() {
 		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < this.payload.length; ++i) {
@@ -106,15 +148,13 @@ public class SatelMessage {
 	}
 
 	/**
-	 * Returns a string representation of this object.
-	 * The string contains message class, message type and buffer contents.
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
 		return String.format("Message: command = %02X, payload = %s", this.command, getPayloadAsHex());
 	};
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -122,18 +162,18 @@ public class SatelMessage {
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
-		
+
 		if (!obj.getClass().equals(this.getClass()))
 			return false;
-		
+
 		SatelMessage other = (SatelMessage) obj;
-		
+
 		if (other.command != this.command)
 			return false;
-		
-		if (! Arrays.equals(other.payload, this.payload))
+
+		if (!Arrays.equals(other.payload, this.payload))
 			return false;
-		
+
 		return true;
 	}
 }

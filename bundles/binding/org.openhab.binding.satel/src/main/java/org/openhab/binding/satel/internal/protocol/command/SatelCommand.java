@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO document me!
+ * Base class for all command classes.
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0
@@ -30,10 +30,41 @@ public abstract class SatelCommand {
 	private EventDispatcher eventDispatcher;
 
 	/**
+	 * Creates new instance with given event dispatcher. This dispatcher will be
+	 * used to distribute events created during response handling.
+	 * 
 	 * @param eventDispatcher
+	 *            event dispatcher object for all events created by this command
 	 */
 	public SatelCommand(EventDispatcher eventDispatcher) {
 		this.eventDispatcher = eventDispatcher;
+	}
+
+	/**
+	 * Must be overridden in derived classes to handle response for specific
+	 * command or group of commands.
+	 * 
+	 * @param response
+	 *            module response message
+	 */
+	public abstract void handleResponse(SatelMessage response);
+
+	/**
+	 * Builds a message for specific command.
+	 * 
+	 * @param commandCode
+	 *            command code
+	 * @param extended
+	 *            if <code>true</code> command will be sent as extended (256
+	 *            inputs or outputs)
+	 * @return new instance of message class
+	 */
+	public static SatelMessage buildMessage(byte commandCode, boolean extended) {
+		if (extended) {
+			return new SatelMessage(commandCode, EXTENDED_CMD_PAYLOAD);
+		} else {
+			return new SatelMessage(commandCode);
+		}
 	}
 
 	protected EventDispatcher getEventDispatcher() {
@@ -45,7 +76,7 @@ public abstract class SatelCommand {
 			throw new IllegalArgumentException("User code too long");
 		}
 		byte[] bytes = new byte[8];
-		int digitsNbr = 2*bytes.length;
+		int digitsNbr = 2 * bytes.length;
 		for (int i = 0; i < digitsNbr; ++i) {
 			if (i < userCode.length()) {
 				char digit = userCode.charAt(i);
@@ -53,24 +84,24 @@ public abstract class SatelCommand {
 					throw new IllegalArgumentException("User code must contain digits only");
 				}
 				if (i % 2 == 0) {
-					bytes[i/2] = (byte) ((digit - '0') << 4);
+					bytes[i / 2] = (byte) ((digit - '0') << 4);
 				} else {
-					bytes[i/2] |= (byte) (digit - '0');
+					bytes[i / 2] |= (byte) (digit - '0');
 				}
 			} else if (i % 2 == 0) {
-				bytes[i/2] = (byte) 0xff;
+				bytes[i / 2] = (byte) 0xff;
 			} else if (i == userCode.length()) {
-				bytes[i/2] |= 0x0f;
+				bytes[i / 2] |= 0x0f;
 			}
 		}
 
 		return bytes;
 	}
-	
+
 	protected boolean commandSucceeded(SatelMessage response) {
 		byte responseCode = response.getPayload()[0];
 		String errorMsg;
-		
+
 		switch (responseCode) {
 		case 0:
 			// success
@@ -115,26 +146,8 @@ public abstract class SatelCommand {
 				errorMsg = String.format("Unknown response code: {}", responseCode);
 			}
 		}
-		
+
 		logger.error(errorMsg);
 		return false;
-	}
-
-	/**
-	 * @param response
-	 */
-	public abstract void handleResponse(SatelMessage response);
-
-	/**
-	 * @param commandCode
-	 * @param extended
-	 * @return
-	 */
-	public static SatelMessage buildMessage(byte commandCode, boolean extended) {
-		if (extended) {
-			return new SatelMessage(commandCode, EXTENDED_CMD_PAYLOAD);
-		} else {
-			return new SatelMessage(commandCode);
-		}
 	}
 }
