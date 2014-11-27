@@ -16,7 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO document me!
+ * Command class for commands that return state of Integra objects, like zones
+ * (armed, alarm, entry time), inputs (violation, tamper, alarm), outputs and
+ * doors (opened, opened long).
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0
@@ -26,15 +28,36 @@ public class IntegraStateCommand extends SatelCommand {
 
 	private StateType stateType;
 
+	/**
+	 * Creates new command class instance for specified type of state.
+	 * 
+	 * @param stateType
+	 *            type of state
+	 * @param eventDispatcher
+	 *            event dispatcher for event distribution
+	 */
 	public IntegraStateCommand(StateType stateType, EventDispatcher eventDispatcher) {
 		super(eventDispatcher);
 		this.stateType = stateType;
 	}
 
+	/**
+	 * Builds message to get stae of objects for specified type.
+	 * 
+	 * @param stateType
+	 *            tpye of state to get
+	 * @param extended
+	 *            if <code>true</code> command will be sent as extended (256
+	 *            inputs or outputs)
+	 * @return built message object
+	 */
 	public static SatelMessage buildMessage(StateType stateType, boolean extended) {
 		return SatelCommand.buildMessage(stateType.getRefreshCommand(), extended);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void handleResponse(SatelMessage response) {
 		// validate response

@@ -9,7 +9,7 @@
 package org.openhab.binding.satel.internal.types;
 
 /**
- * TODO document me!
+ * Available zone states.
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0

@@ -41,7 +41,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO document me!
+ * This class represents abstract communication module and is responsible for
+ * exchanging data between the binding and connected physical module.
+ * Communication happens by sending commands and receiving response from the
+ * module. Each command class must extend {@link SatelCommand} and be added to
+ * <code>SatelModule.supportedCommands</code> map in
+ * <code>SatelModule.registerCommands</code> method.
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0
@@ -88,6 +93,13 @@ public abstract class SatelModule extends EventDispatcher implements EventListen
 		void stop();
 	}
 
+	/**
+	 * Creates new instance of the class.
+	 * 
+	 * @param timeout
+	 *            timeout value in milliseconds for connect/read/write
+	 *            operations
+	 */
 	public SatelModule(int timeout) {
 		this.integraType = IntegraType.UNKNOWN;
 		this.timeout = timeout;
@@ -96,10 +108,20 @@ public abstract class SatelModule extends EventDispatcher implements EventListen
 		registerCommands();
 	}
 
+	/**
+	 * Returns type of Integra connected to the module.
+	 * 
+	 * @return Integra type
+	 */
 	public IntegraType getIntegraType() {
 		return this.integraType;
 	}
 
+	/**
+	 * Returns configured timeout value.
+	 * 
+	 * @return timeout value as milliseconds
+	 */
 	public int getTimeout() {
 		return this.timeout;
 	}
@@ -108,16 +130,28 @@ public abstract class SatelModule extends EventDispatcher implements EventListen
 		return this.channel != null;
 	}
 
+	/**
+	 * Returns status of initialization.
+	 * 
+	 * @return <code>true</code> if module is properly initialized and ready for
+	 *         sending commands
+	 */
 	public boolean isInitialized() {
 		return this.integraType != IntegraType.UNKNOWN;
 	}
 
 	protected abstract CommunicationChannel connect();
 
+	/**
+	 * Starts communication. 
+	 */
 	public synchronized void open() {
 		this.communicationWatchdog = new CommunicationWatchdog();
 	}
 
+	/**
+	 * Stops communication by disconnecting from the module and stopping all background tasks. 
+	 */
 	public synchronized void close() {
 		if (this.communicationWatchdog != null) {
 			this.communicationWatchdog.close();
@@ -125,6 +159,11 @@ public abstract class SatelModule extends EventDispatcher implements EventListen
 		}
 	}
 
+	/**
+	 * Enqueues specified command in send queue if not already enqueued.
+	 * @param cmd command to enqueue
+	 * @return <code>true</code> if operation succeeded
+	 */
 	public boolean sendCommand(SatelMessage cmd) {
 		try {
 			if (this.sendQueue.contains(cmd)) {
@@ -139,6 +178,9 @@ public abstract class SatelModule extends EventDispatcher implements EventListen
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void incomingEvent(SatelEvent event) {
 		if (event instanceof IntegraVersionEvent) {

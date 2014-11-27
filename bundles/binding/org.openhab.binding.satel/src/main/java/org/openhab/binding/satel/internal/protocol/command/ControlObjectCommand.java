@@ -21,27 +21,51 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO document me!
+ * Command class for commands that control (change) state of Integra objects,
+ * like zones (arm, disarm), inputs (bypass, unbypass) outputs (on, off,
+ * switch), etc.
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0
  */
 public class ControlObjectCommand extends SatelCommand {
 	private static final Logger logger = LoggerFactory.getLogger(ControlObjectCommand.class);
-	
-	public static final byte RESPONSE_CODE = (byte) 0xef;
+
+	private static final byte RESPONSE_CODE = (byte) 0xef;
 
 	private ControlType controlType;
 
+	/**
+	 * Creates new command class instance for specified type of control.
+	 * 
+	 * @param controlType
+	 *            type of control
+	 * @param eventDispatcher
+	 *            event dispatcher for event distribution
+	 */
 	public ControlObjectCommand(ControlType controlType, EventDispatcher eventDispatcher) {
 		super(eventDispatcher);
 		this.controlType = controlType;
 	}
 
+	/**
+	 * Builds message to control objects of specified type.
+	 * 
+	 * @param controlType
+	 *            type of controlled objects
+	 * @param objects
+	 *            bits that represents objects to control
+	 * @param userCode
+	 *            code of the user on behalf the control is made
+	 * @return built message object
+	 */
 	public static SatelMessage buildMessage(ControlType controlType, byte[] objects, String userCode) {
 		return new SatelMessage(controlType.getControlCommand(), ArrayUtils.addAll(userCodeToBytes(userCode), objects));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void handleResponse(SatelMessage response) {
 		// validate response
