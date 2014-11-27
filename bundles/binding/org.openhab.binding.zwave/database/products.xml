@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
 		<Id>0000</Id>
@@ -463,6 +463,15 @@
 		<Name>Aeon Labs</Name>
 		<Product>
 			<Reference>
+				<Type>0019</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>DSD37-ZW</Model>
+			<Label lang="en">Range Extender</Label>
+			<ConfigFile>aeon/dsd37-zw.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -616,6 +625,10 @@
 			<Reference>
 				<Type>0001</Type>
 				<Id>001E</Id>
+			</Reference>
+			<Reference>
+				<Type>1E10</Type>
+				<Id>0158</Id>
 			</Reference>
 			<Reference>
 				<Type>1E12</Type>
@@ -1132,6 +1145,17 @@
 			<Label lang="de">Living Connect Z Thermostat FW2.51</Label>
 			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>8005</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>LCZ</Model>
+			<Label lang="en">Living Connect Z Thermostat FW2.50?</Label>
+			<Label lang="de">Living Connect Z Thermostat FW2.50?</Label>
+			<!--Use the same as 2.51 as I cannot see any difference http://www.pepper1.net/zwavedb/device/6-->
+			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>013C</Id>
@@ -1370,6 +1394,16 @@
 			<Label lang="en">Contact and temp sensor</Label>
 			<ConfigFile>wintop/itemp.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>6131</Type>
+				<Id>4501</Id>
+			</Reference>
+			<Model>WTRFID</Model>
+			<Label lang="en">Mini Keypad RFID/Z-Wave</Label>
+			<ConfigFile>wintop/wtrfid.xml</ConfigFile>
+		</Product>
+
 	</Manufacturer>
 	<Manufacturer>
 		<Id>84</Id>
@@ -1382,6 +1416,37 @@
 			<Model>MIMOlite</Model>
 			<Label lang="en">Digital or Analog Voltage input and/or Dry Contact Relay</Label>
 			<ConfigFile>fortrezz/mimolite.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0313</Type>
+				<Id>0108</Id>
+			</Reference>
+			<Model>SSA1/SSA2</Model>
+			<Label lang="en">Siren and Strobe Alarm</Label>
+			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>008a</Id>
+		<Name>BeNext</Name>
+		<Product>
+			<Reference>
+				<Type>000d</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>plugInDimmer</Model>
+			<Label lang="en">BeNext Plug-in Dimmer</Label>
+			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0018</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>plugInDimmer</Model>
+			<Label lang="en">BeNext Plug-in Dimmer</Label>
+			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

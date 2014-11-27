@@ -15,13 +15,17 @@
 			<Label lang="en">Night Light</Label>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">No</Label>
+				<Label lang="en">LED on when switch is OFF</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Yes</Label>
+				<Label lang="en">LED on when switch is ON</Label>
 			</Item>
-			<Help lang="en">In night-light mode the LED on the switch will turn ON when the switch is turned OFF.</Help>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">LED always off</Label>
+			</Item>
+			<Help lang="en">Defines the behavior of the blue LED. Default is Night Light mode where LED is on when switch is off.</Help>
 		</Parameter>
 		
 		<Parameter>

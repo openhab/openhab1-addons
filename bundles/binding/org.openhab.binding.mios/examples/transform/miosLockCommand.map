@@ -1,0 +1,2 @@
+ON=urn:micasaverde-com:serviceId:DoorLock1/SetTarget(newTargetValue=1)
+OFF=urn:micasaverde-com:serviceId:DoorLock1/SetTarget(newTargetValue=0)

@@ -22,17 +22,19 @@ import org.slf4j.LoggerFactory;
  * Base class for devices provided by the MAX!Cube protocol.
  * 
  * @author Andreas Heil (info@aheil.de)
+ * @author Bernd Michael Helm (bernd.helm at helmundwalter.de)
  * @since 1.4.0
  */
 public abstract class Device {
 
-	private final static Logger logger = LoggerFactory.getLogger(Device.class);
+	protected final static Logger logger = LoggerFactory.getLogger(Device.class);
 
 	private String serialNumber = "";
 	private String rfAddress = "";
 	private int roomId = -1;
 
 	private boolean batteryLow;
+	private boolean batteryLowUpdated;
 
 	private boolean initialized;
 	private boolean answer;
@@ -80,7 +82,6 @@ public abstract class Device {
 	}
 
 	public static Device create(byte[] raw, List<Configuration> configurations) {
-
 		if (raw.length == 0) {
 			return null;
 		}
@@ -94,7 +95,14 @@ public abstract class Device {
 		if (device == null) {
 			logger.warn("Can't create device from received message, returning NULL.");
 		}
+		
+		return Device.update(raw,configurations, device);
+	}
+	
+	public static Device update(byte[] raw, List<Configuration> configurations, Device device) {
 
+		String rfAddress = device.getRFAddress();
+		
 		// byte 4 is skipped
 
 		// multiple device information are encoded in those particular bytes
@@ -186,11 +194,20 @@ public abstract class Device {
 	}
 
 	private final void setBatteryLow(boolean batteryLow) {
+		if(this.batteryLow != batteryLow) {
+			this.batteryLowUpdated = true;
+		}else {
+			this.batteryLowUpdated = false;
+		}
 		this.batteryLow = batteryLow;
 	}
 
 	public final StringType getBatteryLow() {
 		return new StringType(this.batteryLow ? "low" : "ok");
+	}
+	
+	public boolean isBatteryLowUpdated() {
+		return this.batteryLowUpdated;
 	}
 
 	public final String getRFAddress() {

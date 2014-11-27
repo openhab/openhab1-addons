@@ -25,17 +25,25 @@ public interface IhcEventListener extends EventListener {
 	/**
 	 * Event for receive status update from IHC controller.
 	 * 
-	 * @param data
-	 *            Received data.
+	 * @param status
+	 *            Received status update from controller.
 	 */
 	void statusUpdateReceived(EventObject event, WSControllerState status);
 
 	/**
 	 * Event for receive resource value updates from IHC controller.
 	 * 
-	 * @param data
-	 *            Received data.
+	 * @param value
+	 *            Received value update from controller.
 	 */
 	void resourceValueUpdateReceived(EventObject event, WSResourceValue value);
+	
+	/**
+	 * Event for fatal error on communication to IHC controller.
+	 * 
+	 * @param e
+	 *            IhcException occurred.
+	 */
+	void errorOccured(EventObject event, IhcExecption e);
 	
 }
