@@ -380,6 +380,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				record = new OpenHABConfigurationRecord(domain + "info/", "Information");
 				records.add(record);
 			} else if (arg.equals("info/")) {
+				record = new OpenHABConfigurationRecord(domain, "NodeID", "Node ID", true);
+				record.value = Integer.toString(node.getDeviceId());
+
 				if (node.getManufacturer() != Integer.MAX_VALUE) {
 					if (database.FindManufacturer(node.getManufacturer()) == true) {
 						record = new OpenHABConfigurationRecord(domain, "Manufacturer", "Manufacturer", true);
