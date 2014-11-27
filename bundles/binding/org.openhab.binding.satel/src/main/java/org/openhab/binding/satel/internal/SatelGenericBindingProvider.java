@@ -61,10 +61,7 @@ public class SatelGenericBindingProvider extends AbstractGenericBindingProvider 
 			throws BindingConfigParseException {
 		logger.trace("Processing binding configuration for item {}", item.getName());
 		super.processBindingConfiguration(context, item, bindingConfig);
-		
-		SatelBindingConfig bc = this.createBindingConfig(bindingConfig);
-		logger.debug("Adding binding configuration for item {}: {}", item.getName(), bc);
-		addBindingConfig(item, bc);
+		addBindingConfig(item, this.createBindingConfig(bindingConfig));
 	}
 
 	/**

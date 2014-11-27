@@ -8,9 +8,6 @@
  */
 package org.openhab.binding.satel.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openhab.binding.satel.SatelBindingConfig;
 import org.openhab.binding.satel.internal.event.IntegraStateEvent;
 import org.openhab.binding.satel.internal.event.SatelEvent;
@@ -50,12 +47,10 @@ public class IntegraStateBindingConfig implements SatelBindingConfig {
 
 	private StateType stateType;
 	private int objectNumber;
-	private Map<String, String> options;
 
-	private IntegraStateBindingConfig(StateType stateType, int objectNumber, Map<String, String> options) {
+	private IntegraStateBindingConfig(StateType stateType, int objectNumber) {
 		this.stateType = stateType;
 		this.objectNumber = objectNumber;
-		this.options = options;
 	}
 
 	/**
@@ -73,7 +68,6 @@ public class IntegraStateBindingConfig implements SatelBindingConfig {
 		int idx = 0;
 		ObjectType objectType;
 
-		// parse object type, mandatory
 		try {
 			objectType = ObjectType.valueOf(configElements[idx++]);
 		} catch (Exception e) {
@@ -81,7 +75,6 @@ public class IntegraStateBindingConfig implements SatelBindingConfig {
 			return null;
 		}
 
-		// parse state type, mandatory except for output
 		StateType stateType = null;
 		int objectNumber = 0;
 
@@ -104,7 +97,6 @@ public class IntegraStateBindingConfig implements SatelBindingConfig {
 			throw new BindingConfigParseException(String.format("Invalid state type: {}", bindingConfig));
 		}
 
-		// parse object number, if provided
 		if (idx < configElements.length) {
 			try {
 				objectNumber = Integer.parseInt(configElements[idx++]);
@@ -113,25 +105,12 @@ public class IntegraStateBindingConfig implements SatelBindingConfig {
 			}
 		}
 
-		// parse options: comma separated pairs of <name>=<value>
-		Map<String, String> options = new HashMap<String, String>();
-		if (idx < configElements.length) {
-			for (String option : configElements[idx++].split(",")) {
-				if (option.contains("=")) {
-					String[] keyVal = option.split("=", 2);
-					options.put(keyVal[0], keyVal[1]);
-				} else {
-					options.put(option, "");
-				}
-			}
-		}
-
 		if (idx < configElements.length) {
 			// if anything left, throw exception
 			throw new BindingConfigParseException(String.format("Too many elements: {}", bindingConfig));
 		}
 
-		return new IntegraStateBindingConfig(stateType, objectNumber, options);
+		return new IntegraStateBindingConfig(stateType, objectNumber);
 	}
 
 	/**
@@ -176,14 +155,15 @@ public class IntegraStateBindingConfig implements SatelBindingConfig {
 	@Override
 	public SatelMessage handleCommand(Command command, IntegraType integraType, String userCode) {
 		if (command instanceof OnOffType && this.objectNumber > 0) {
-			boolean switchOn = ((OnOffType) command == OnOffType.ON);
-			boolean force_arm = this.options.containsKey("force_arm");
 
 			switch (this.stateType.getObjectType()) {
 			case output:
 				byte[] outputs = getObjectBitset((integraType == IntegraType.I256_PLUS) ? 32 : 16);
-				return ControlObjectCommand.buildMessage(switchOn ? OutputControl.on : OutputControl.off, outputs,
-						userCode);
+				if ((OnOffType) command == OnOffType.ON) {
+					return ControlObjectCommand.buildMessage(OutputControl.on, outputs, userCode);
+				} else {
+					return ControlObjectCommand.buildMessage(OutputControl.off, outputs, userCode);
+				}
 
 			case doors:
 				break;
@@ -193,38 +173,10 @@ public class IntegraStateBindingConfig implements SatelBindingConfig {
 
 			case zone:
 				byte[] zones = getObjectBitset(4);
-				switch ((ZoneState) this.stateType) {
-				// clear alarms on OFF command
-				case alarm:
-				case alarm_memory:
-				case fire_alarm:
-				case fire_alarm_memory:
-				case verified_alarms:
-				case warning_alarms:
-					if (switchOn) {
-						return null;
-					} else {
-						return ControlObjectCommand.buildMessage(ZoneControl.clear_alarm, zones, userCode);
-					}
-
-					// arm or disarm, depending on command
-				case armed:
-				case really_armed:
-					return ControlObjectCommand.buildMessage(switchOn ? (force_arm ? ZoneControl.force_arm_mode_0
-							: ZoneControl.arm_mode_0) : ZoneControl.disarm, zones, userCode);
-				case armed_mode_1:
-					return ControlObjectCommand.buildMessage(switchOn ? (force_arm ? ZoneControl.force_arm_mode_1
-							: ZoneControl.arm_mode_1) : ZoneControl.disarm, zones, userCode);
-				case armed_mode_2:
-					return ControlObjectCommand.buildMessage(switchOn ? (force_arm ? ZoneControl.force_arm_mode_2
-							: ZoneControl.arm_mode_2) : ZoneControl.disarm, zones, userCode);
-				case armed_mode_3:
-					return ControlObjectCommand.buildMessage(switchOn ? (force_arm ? ZoneControl.force_arm_mode_3
-							: ZoneControl.arm_mode_3) : ZoneControl.disarm, zones, userCode);
-
-					// do nothing for other types of state
-				default:
-					break;
+				if ((OnOffType) command == OnOffType.ON) {
+					return ControlObjectCommand.buildMessage(ZoneControl.arm_mode_0, zones, userCode);
+				} else {
+					return ControlObjectCommand.buildMessage(ZoneControl.disarm, zones, userCode);
 				}
 			}
 		}
@@ -238,15 +190,6 @@ public class IntegraStateBindingConfig implements SatelBindingConfig {
 	@Override
 	public SatelMessage buildRefreshMessage(IntegraType integraType) {
 		return IntegraStateCommand.buildMessage(this.stateType, integraType == IntegraType.I256_PLUS);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return String.format("IntegraStateBindingConfig: object = %s, state = %s, object nbr = %d, options = %s",
-				this.stateType.getObjectType(), this.stateType, this.objectNumber, this.options);
 	}
 
 	private byte[] getObjectBitset(int size) {
