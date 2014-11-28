@@ -268,7 +268,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		try {
 			this.setProperlyConfigured(true);
 			this.deactivate();
-			this.zController = new ZWaveController(isSUC, port, timeout);
+			this.zController = new ZWaveController(isSUC, port, timeout, softReset);
 			this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
 			zController.initialize();
 			zController.addEventListener(this);

@@ -119,6 +119,7 @@ public class ZWaveController {
 	private boolean setSUC = false;
 	private ZWaveDeviceType controllerType = ZWaveDeviceType.UNKNOWN;
 	private int sucID = 0;
+	private boolean softReset = false;
 	
 	private int SOFCount = 0;
 	private int CANCount = 0;
@@ -139,13 +140,16 @@ public class ZWaveController {
 	 * communication with the Z-Wave controller stick.
 	 * @throws SerialInterfaceException when a connection error occurs.
 	 */
-	public ZWaveController(final boolean isSUC, final String serialPortName, final Integer timeout) throws SerialInterfaceException {
+	public ZWaveController(final boolean isSUC, final String serialPortName, final Integer timeout, final boolean reset)
+							throws SerialInterfaceException {
 			logger.info("Starting Z-Wave controller");
 			this.setSUC = isSUC;
+			this.softReset = reset;
+
 			if(timeout != null && timeout >= 1500 && timeout <= 10000) {
 				zWaveResponseTimeout = timeout;
 			}
-			logger.info("Z-Wave timeout is set to {}ms.", zWaveResponseTimeout);
+			logger.info("Z-Wave timeout is set to {}ms. Soft reset is {}.", zWaveResponseTimeout, reset);
 			connect(serialPortName);
 			this.watchdog = new Timer(true);
 			this.watchdog.schedule(
@@ -1229,7 +1233,24 @@ public class ZWaveController {
 	
 				// Send a NAK to resynchronise communications
 				sendResponse(NAK);
-	
+
+				// If we want to do a soft reset on the serial interfaces, do it here.
+				// It seems there's no response to this message, so sending it through
+				// 'normal' channels will cause a timeout.
+				if(softReset == true) {
+					try {
+						synchronized (serialPort.getOutputStream()) {
+							SerialMessage resetMsg = new SerialApiSoftResetMessageClass().doRequest();
+							byte[] buffer = resetMsg.getMessageBuffer();
+
+							serialPort.getOutputStream().write(buffer);
+							serialPort.getOutputStream().flush();
+						}
+					} catch (IOException e) {
+						logger.error("Error sending soft reset on initialisation: {}", e.getMessage());
+					}
+				}
+
 				while (!interrupted()) {
 					int nextByte;
 					
