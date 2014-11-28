@@ -56,6 +56,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private boolean isSUC = false;
 	private boolean softReset = false;
 	private Integer healtime = null;
+	private Integer aliveCheckPeriod = null;
 	private Integer timeout = null;
 	private volatile ZWaveController zController;
 	private volatile ZWaveConverterHandler converterHandler;
@@ -277,6 +278,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			if(healtime != null) {
 				this.networkMonitor.setHealTime(healtime);
 			}
+			if(aliveCheckPeriod != null) {
+				this.networkMonitor.setPollPeriod(aliveCheckPeriod);
+			}
 			if(softReset != false) {
 				this.networkMonitor.resetOnError(softReset);
 			}
@@ -330,6 +334,15 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			} catch (NumberFormatException e) {
 				pollingQueue = 2;
 				logger.error("Error parsing 'pollingQueue'. This must be a single number time in milliseconds.");
+			}
+		}
+		if (StringUtils.isNotBlank((String) config.get("aliveCheckPeriod"))) {
+			try {
+				aliveCheckPeriod = Integer.parseInt((String) config.get("aliveCheckPeriod"));
+				logger.info("Update config, aliveCheckPeriod = {}", aliveCheckPeriod);
+			} catch (NumberFormatException e) {
+				aliveCheckPeriod = null;
+				logger.error("Error parsing 'aliveCheckPeriod'. This must be an Integer.");
 			}
 		}
 		if (StringUtils.isNotBlank((String) config.get("timeout"))) {
