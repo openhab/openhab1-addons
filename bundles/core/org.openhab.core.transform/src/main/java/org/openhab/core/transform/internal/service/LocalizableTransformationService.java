@@ -25,6 +25,13 @@ import org.openhab.core.transform.internal.TransformationActivator;
  */
 public class LocalizableTransformationService {
 	
+	/**
+	 * Returns the name of the localized transformation file 
+	 * if it exists, keeps the original in the other case
+	 * 
+	 * @param filename name of the requested transformation file
+	 * @return original or localized transformation file to use
+	 */
 	final String getLocalizedProposedFilename(String filename) {
 		
 		String basename = FilenameUtils.getBaseName(filename);
@@ -33,10 +40,10 @@ public class LocalizableTransformationService {
 		String basePath = ConfigDispatcher.getConfigFolder() + File.separator + TransformationActivator.TRANSFORM_FOLDER_NAME + File.separator;
 		
 		String path = basePath + filename;
-		// something like : .../configurations/transform/test.scale
+		// something like : .../configurations/transform/test.extension
 		
 		String alternatePath = basePath + basename + "_" + locale + "." + extension;
-		// something like : .../configurations/transform/test_en.scale
+		// something like : .../configurations/transform/test_en.extension
 
 		File f = new File(alternatePath);
 		if (f.exists()) {
