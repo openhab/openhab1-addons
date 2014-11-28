@@ -617,6 +617,15 @@
 			<Label lang="en">Home Energy Meter G2</Label>
 			<ConfigFile>aeon/hemg2.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0050</Id>
+			</Reference>
+			<Model>DSD31</Model>
+			<Label lang="en">Outlet Plugable Siren</Label>
+			<ConfigFile>aeon/dsd31.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
