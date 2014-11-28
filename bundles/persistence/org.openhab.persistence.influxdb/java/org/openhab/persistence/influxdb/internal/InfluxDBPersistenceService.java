@@ -36,6 +36,7 @@ import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
+import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -79,6 +80,16 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private String password;
   private boolean isProperlyConfigured;
   private boolean connected;
+  
+  private PersistentStateRestorer persistentStateRestorer;
+
+  public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
+	this.persistentStateRestorer = persistentStateRestorer;
+  }
+	
+  public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
+	this.persistentStateRestorer = null;
+  }
 
   public void setItemRegistry(ItemRegistry itemRegistry) {
     this.itemRegistry = itemRegistry;
@@ -244,6 +255,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     if ( ! checkConnection()){
       logger.error("database connection does not work for now, will retry to use the database.");
     }
+	persistentStateRestorer.initializeItems(getName());
   }
 
   @Override
