@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @since 0.3.0
  */
-public class ConfigDispatcher {
+public class ConfigDispatcher implements ManagedService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConfigDispatcher.class);
 
