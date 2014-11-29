@@ -14,7 +14,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.PersistenceService;
-import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.io.net.http.HttpUtil;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -42,16 +41,6 @@ public class SenseService implements PersistenceService, ManagedService {
 	private final static String DEFAULT_EVENT_URL = "http://api.sen.se/events/?sense_key=";
 
 	private boolean initialized = false;
-	
-	private PersistentStateRestorer persistentStateRestorer;
-	
-	public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = persistentStateRestorer;
-	}
-		
-	public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
-		this.persistentStateRestorer = null;
-	}
 
 	/**
 	 * @{inheritDoc}
@@ -101,7 +90,6 @@ public class SenseService implements PersistenceService, ManagedService {
 			}
 			
 			initialized = true;
-			persistentStateRestorer.initializeItems(getName());
 		}
 	}
 	
