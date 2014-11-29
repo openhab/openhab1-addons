@@ -104,7 +104,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 				}
 
 				logger.debug("NODE {}: Requested Command Class = {}, Version = {}", this.getNode().getNodeId(), commandClass.getLabel(),
-						commandClassCode, commandClassVersion);
+						commandClassVersion);
 
 				// The version is set on the command class for this node. By updating the version, extra functionality is unlocked in the command class.
 				// The messages are backwards compatible, so it's not a problem that there is a slight delay when the command class version is queried on the
@@ -115,18 +115,22 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 					return;
 				}
 				
+				// If the device reports version 0, it means it doesn't support this command class!
+				if(commandClassVersion == 0) {
+					logger.info("NODE {}: Command Class {} has version 0!", this.getNode().getNodeId(), commandClass.getLabel());
+
+					// TODO: We should remove the class
+					// For now, just set the version to 1 to avoid a loop on initialisation
+					commandClassVersion = 1;
+//					this.getNode().removeCommandClass(zwaveCommandClass);
+				}
+				
 				if (commandClassVersion > zwaveCommandClass.getMaxVersion()) {
 					zwaveCommandClass.setVersion( zwaveCommandClass.getMaxVersion() );
 					logger.debug("NODE {}: Version = {}, version set to maximum supported by the binding. Enabling extra functionality.", this.getNode().getNodeId(), zwaveCommandClass.getMaxVersion());
 				} else {
 					zwaveCommandClass.setVersion( commandClassVersion );
 					logger.debug("NODE {}: Version = {}, version set. Enabling extra functionality.", this.getNode().getNodeId(), commandClassVersion);
-				}
-				
-				for (ZWaveCommandClass zCC : this.getNode().getCommandClasses()) {
-					// wait for all nodes to get/set version information before advancing to the next stage.
-					if (zCC.getVersion() == 0)
-						return;
 				}
 				break;
 			default:
