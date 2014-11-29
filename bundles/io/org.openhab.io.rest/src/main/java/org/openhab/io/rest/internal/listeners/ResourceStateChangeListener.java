@@ -75,8 +75,7 @@ abstract public class ResourceStateChangeListener {
 	
 	public void registerItems(){
 		StartCacheExecutor();
-			final UUIDBroadcasterCache uuidCache = new UUIDBroadcasterCache();
-	        broadcaster.getBroadcasterConfig().setBroadcasterCache(uuidCache); 
+	        broadcaster.getBroadcasterConfig().setBroadcasterCache(new UUIDBroadcasterCache()); 
 	        broadcaster.getBroadcasterConfig().getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
 	        broadcaster.getBroadcasterConfig().getBroadcasterCache().start();
 		
