@@ -1412,7 +1412,15 @@
 			<Label lang="en">Mini Keypad RFID/Z-Wave</Label>
 			<ConfigFile>wintop/wtrfid.xml</ConfigFile>
 		</Product>
-
+		<Product>
+			<Reference>
+				<Type>6131</Type>
+				<Id>4501</Id>
+			</Reference>
+			<Model>EasyPlug</Model>
+			<Label lang="en">Wall Plug</Label>
+			<ConfigFile>wintop/easyplug.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>84</Id>
