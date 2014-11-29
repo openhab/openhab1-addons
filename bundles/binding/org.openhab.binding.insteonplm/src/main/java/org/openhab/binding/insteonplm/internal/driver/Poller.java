@@ -213,7 +213,7 @@ public class Poller {
 		}
 	}
 	
-	public static Poller s_instance() {
+	public static synchronized Poller s_instance() {
 		if (s_poller == null) {
 			s_poller = new Poller();
 		}

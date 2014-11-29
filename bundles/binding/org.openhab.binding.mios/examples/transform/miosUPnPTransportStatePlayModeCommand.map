@@ -1,0 +1,3 @@
+PLAYING=urn:upnp-org:serviceId:AVTransport/Play()
+STOPPED=urn:upnp-org:serviceId:AVTransport/Stop()
+PAUSED=urn:upnp-org:serviceId:AVTransport/Pause()

@@ -535,7 +535,7 @@ public class ZWaveNode {
 		}
 		else if (multiInstanceCommandClass.getVersion() == 1) {
 			ZWaveCommandClass result = getCommandClass(commandClass);
-			if (endpointId <= result.getInstances()) {
+			if (result != null && endpointId <= result.getInstances()) {
 				return result;
 			}
 		} else {
