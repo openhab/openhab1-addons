@@ -73,6 +73,7 @@
     <provider name="ForecastIO" icons="snow"/>
     <provider name="WorldWeatherOnline" ids="395, 371, 335, 338, 332"/>
     <provider name="Hamweather" ids="S"/>
+    <provider name="Wunderground" icons="snow"/>
   </common-id-mapping>
   <common-id-mapping id="sleet">
     <provider name="Yahoo" ids="18"/>

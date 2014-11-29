@@ -384,8 +384,9 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	 */
 	private void nextHealStage(HealNode healing) {
 		// Don't do anything if it's failed already
-		if (healing.state == HealState.FAILED)
+		if (healing.state == HealState.FAILED) {
 			return;
+		}
 
 		healing.lastChange = Calendar.getInstance().getTime();
 
@@ -394,25 +395,30 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// to avoid congestion and false timeouts.
 		pingNodeTime = System.currentTimeMillis() + HEAL_TIMEOUT_PERIOD + 20000;
 
+		// Set the timeout
+		networkHealNextTime = System.currentTimeMillis() + HEAL_TIMEOUT_PERIOD;
+
 		// Handle retries
 		healing.retryCnt++;
 		if (healing.retryCnt >= HEAL_MAX_RETRIES) {
-			logger.debug("NODE {}: Network heal has exceeded maximum retries", healing.nodeId);
-			healing.failState = healing.state;
-			healing.state = HealState.FAILED;
-			networkHealNextTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
-
-			// Save the XML file. This serialises the data we've just updated
-			// (neighbors etc)
-			healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
-			
-			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-			nodeSerializer.SerializeNode(healing.node);
-			return;
+			// Since the GETNEIGHBORS state fails often, it seems better to
+			// continue with the heal than to abort here.
+			if (healing.state == HealState.GETNEIGHBORS) {
+				healing.state = healing.stateNext;
+			} else {
+				logger.debug("NODE {}: Network heal has exceeded maximum retries", healing.nodeId);
+				healing.failState = healing.state;
+				healing.state = HealState.FAILED;
+	
+				// Save the XML file. This serialises the data we've just updated
+				// (neighbors etc)
+				healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
+				
+				ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+				nodeSerializer.SerializeNode(healing.node);
+				return;
+			}
 		}
-
-		// Set the timeout
-		networkHealNextTime = System.currentTimeMillis() + HEAL_TIMEOUT_PERIOD;
 
 		switch (healing.state) {
 		case WAITING:
