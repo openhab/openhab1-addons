@@ -1424,7 +1424,7 @@
 	</Manufacturer>
 	<Manufacturer>
 		<Id>84</Id>
-		<Name>Fortrezz</Name>
+		<Name>FortrezZ</Name>
 		<Product>
 			<Reference>
 				<Type>453</Type>
@@ -1440,6 +1440,15 @@
 				<Id>0108</Id>
 			</Reference>
 			<Model>SSA1/SSA2</Model>
+			<Label lang="en">Siren and Strobe Alarm</Label>
+			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0341</Type>
+				<Id>0205</Id>
+			</Reference>
+			<Model>SSA3</Model>
 			<Label lang="en">Siren and Strobe Alarm</Label>
 			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
 		</Product>
