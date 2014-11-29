@@ -1475,4 +1475,17 @@
 			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>008c</Id>
+		<Name>MIOS</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>Vera</Model>
+			<Label lang="en">Vera Home Gateway</Label>
+			<ConfigFile>mios/vera.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
