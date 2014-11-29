@@ -21,8 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.atmosphere.cache.UUIDBroadcasterCache;
 import org.atmosphere.cpr.AtmosphereResource;
-import org.atmosphere.cpr.AtmosphereResourceFactory;
-import org.atmosphere.cpr.BroadcastFilter.BroadcastAction;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.GenericItem;
@@ -52,7 +50,7 @@ abstract public class ResourceStateChangeListener {
 	
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
-	private GeneralBroadcaster broadcaster;
+	protected GeneralBroadcaster broadcaster;
 
 	public ResourceStateChangeListener(){
 		
@@ -108,23 +106,6 @@ abstract public class ResourceStateChangeListener {
 		broadcaster.getBroadcasterConfig().addFilter(new SendPageUpdateFilter());
 		broadcaster.getBroadcasterConfig().addFilter(new DuplicateBroadcastProtectionFilter());
 		broadcaster.getBroadcasterConfig().addFilter(new ResponseObjectFilter());
-		
-		//if other filters have let this through then clear out any cached messages for the client.
-		//There should at most be only one message (version of the sitemap) in the cache for a client.
-		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
-			
-			@Override
-			public BroadcastAction filter(Object originalMessage, Object message) {
-				return new BroadcastAction(ACTION.CONTINUE,  message);
-			}
-
-			@Override
-			public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
-				//this will clear any cached messages before we add the new one
-				uuidCache.retrieveFromCache(null,resource);
-				return new BroadcastAction(ACTION.CONTINUE,  message);
-			}
-		});
 		
 		stateChangeListener = new StateChangeListener() {
 			// don't react on update events
