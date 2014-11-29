@@ -78,7 +78,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	private long HEAL_TIMEOUT_PERIOD = 90000;
 	private long HEAL_DELAY_PERIOD = 4000;
 	private int HEAL_MAX_RETRIES = 5;
-	private long PING_PERIOD = 90000;
+	private long pollPeriod = 90000;
 
 	private int networkHealNightlyHour = -1;
 	private long networkHealNextTime = Long.MAX_VALUE;
@@ -148,6 +148,21 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// Calculate the next heal time
 		networkHealNightlyTime = calculateNextHeal();
 		networkHealNextTime = networkHealNightlyTime;
+	}
+	
+	/**
+	 * Sets the polling period (in milliseconds) between each network health
+	 * ping.
+	 * @param time period in seconds
+	 */
+	public void setPollPeriod(Integer time) {
+		pollPeriod = time;
+		if (pollPeriod >= 3600000) {
+			pollPeriod = 3600000;
+		}
+		else if (pollPeriod <= 15000) {
+			pollPeriod = 15000;
+		}
 	}
 	
 	/**
@@ -296,16 +311,17 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 		if (pingNodeTime < System.currentTimeMillis()) {
 			// Update the time and send a ping...
-			pingNodeTime = System.currentTimeMillis() + PING_PERIOD;
+			pingNodeTime = System.currentTimeMillis() + pollPeriod;
 
-			// Find the node that we haven't communicated with for the longest
-			// time
+			// Find the node that we haven't communicated with for the longest time
 			ZWaveNode oldestNode = null;
 			for (ZWaveNode node : zController.getNodes()) {
 				// Ignore the controller and nodes that aren't listening
 				if (node.getNodeId() == zController.getOwnNodeId() || node.isListening() == false) {
 					continue;
 				}
+				// Use the last sent time for comparisson.
+				// This avoids the situation where we only poll a dead node if we use the received time!
 				if (oldestNode == null) {
 					oldestNode = node;
 				} else if (node.getLastSent().getTime() < oldestNode.getLastSent().getTime()) {
@@ -314,7 +330,8 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			}
 
 			// We now have the oldest node that we've heard from - ping it!
-			if (oldestNode != null) {
+			// If we've actually received from this node recently, the don't bother to ping
+			if (oldestNode != null && oldestNode.getLastReceived().getTime() < System.currentTimeMillis() - pollPeriod) {
 				logger.debug("NODE {}: Sending periodic PING.", oldestNode.getNodeId());
 
 				// Reset the resend count - also resets the lastUpdate timer
@@ -687,7 +704,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			networkHealNextTime = networkHealNightlyTime;
 
 			// Set the next PING time
-			pingNodeTime = System.currentTimeMillis() + PING_PERIOD;
+			pingNodeTime = System.currentTimeMillis() + pollPeriod;
 		}
 	}
 
