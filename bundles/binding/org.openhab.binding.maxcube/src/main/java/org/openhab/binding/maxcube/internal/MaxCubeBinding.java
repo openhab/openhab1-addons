@@ -361,8 +361,15 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					commandThermoType = ThermostatModeType.AUTOMATIC;
 				} else if (commandContent.contentEquals(ThermostatModeType.BOOST.toString())) {
 					commandThermoType = ThermostatModeType.BOOST;
+				} else if (commandContent.contentEquals(ThermostatModeType.MANUAL.toString())) {
+					commandThermoType = ThermostatModeType.MANUAL;
+					Double setTemp = Double.parseDouble( ((HeatingThermostat) device).getTemperatureSetpoint().toString());
+					S_Command cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType, setTemp);
+					commandString = cmd.getCommandString();
+					logger.debug("updates to MANUAL mode with temperature '{}'", setTemp);
+					return;
 				} else {
-					logger.debug("Only updates to AUTOMATIC & BOOST supported, received value ;'{}'", commandContent);
+					logger.debug("Only updates to AUTOMATIC, MANUAL & BOOST supported, received value ;'{}'", commandContent);
 					continue;
 				}
 
