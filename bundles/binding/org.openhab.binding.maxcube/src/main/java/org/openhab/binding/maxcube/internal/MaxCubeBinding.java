@@ -352,7 +352,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					decimalType = OnOffType.ON.equals(command) ? DEFAULT_ON_TEMPERATURE : DEFAULT_OFF_TEMPERATURE;
 				}
 
-				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), decimalType.doubleValue());
+				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), ((HeatingThermostat) device).getMode(), decimalType.doubleValue());
 				commandString = cmd.getCommandString();
 			} else if (command instanceof StringType) {
 				String commandContent = command.toString().trim().toUpperCase();
