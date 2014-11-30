@@ -272,17 +272,18 @@ public class Connection {
 
 		int startPosition = 0;
 		while (startPosition < numBytesReadTotal) {
-			if (buffer[startPosition] == (byte) 0x00
-					| buffer[startPosition] == (byte) 0x7F) {
+			if(buffer[startPosition] == (byte) 0x00 | buffer[startPosition] == (byte) 0x7F)
+			{
 				startPosition++;
-			} else {
+			}
+			else
+			{
 				break;
 			}
 		}
-
-		byte[] bytes = new byte[numBytesReadTotal - startPosition];
-		System.arraycopy(buffer, startPosition, bytes, 0, numBytesReadTotal
-				- startPosition);
+		
+		byte[] bytes = new byte[numBytesReadTotal-startPosition];
+		System.arraycopy(buffer, startPosition, bytes, 0, numBytesReadTotal-startPosition);
 
 		baudRateSetting = bytes[offset + 4];
 		baudRate = getBaudRate(baudRateSetting);
@@ -398,20 +399,26 @@ public class Connection {
 			index = 1;
 			endIndex = numBytesReadTotal - 5;
 			if (buffer[0] != 0x02) {
-
+			
 				startPosition = 0;
 				while (startPosition < numBytesReadTotal) {
-					if (buffer[startPosition] == (byte) 0x02) {
+					if(buffer[startPosition] == (byte) 0x02 )
+					{
 						break;
-					} else {
-						if (startPosition < numBytesReadTotal - 2) {
-							startPosition++;
-						} else {
+					}
+					else
+					{
+						if (startPosition < numBytesReadTotal-2)
+						{
+							startPosition++;							
+						}
+						else
+						{
 							throw new IOException(
 									"STX (0x02) character is expected but not received as first byte of data message.");
 						}
 					}
-				}
+				}				
 			}
 		} else {
 			if (numBytesReadTotal < 5) {
