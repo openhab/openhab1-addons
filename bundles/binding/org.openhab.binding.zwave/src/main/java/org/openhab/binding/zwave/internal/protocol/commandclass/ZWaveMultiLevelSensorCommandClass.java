@@ -150,7 +150,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 			try {
 				BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
 
-				logger.debug("NODE %d: Sensor Value = ({})", this.getNode().getNodeId(), value);
+				logger.debug("NODE {}: Sensor Value = {}", this.getNode().getNodeId(), value);
 				
 				ZWaveMultiLevelSensorValueEvent zEvent = new ZWaveMultiLevelSensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, sensorScale, value);
 				this.getController().notifyEventListeners(zEvent);
