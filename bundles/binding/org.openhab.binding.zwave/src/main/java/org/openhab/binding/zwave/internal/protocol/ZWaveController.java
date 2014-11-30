@@ -604,16 +604,16 @@ public class ZWaveController {
 			}
 		}
 
-		logger.debug("------ Checking for Dead or Sleeping Nodes.");
-		for (Map.Entry<Integer, ZWaveNode> entry : zwaveNodes.entrySet()){
-			if (entry.getValue().getNodeStage() == NodeStage.EMPTYNODE) {
-				continue;
-			}
-
+		logger.debug("------ Checking for Dead or Sleeping Nodes ({} nodes).", this.zwaveNodes.size());
+		for (Map.Entry<Integer, ZWaveNode> entry : zwaveNodes.entrySet()) {
 			logger.debug("NODE {}: In Stage {} since {} ({}s), listening={}, FLiRS={}", entry.getKey(),
 					entry.getValue().getNodeStage().toString(), entry.getValue().getQueryStageTimeStamp().toString(),
 					(Calendar.getInstance().getTimeInMillis() - entry.getValue().getQueryStageTimeStamp().getTime()) / 1000,
 					entry.getValue().isListening(), entry.getValue().isFrequentlyListening());
+
+			if (entry.getValue().getNodeStage() == NodeStage.EMPTYNODE) {
+				continue;
+			}
 
 			// If we've exceeded the retry time, send the Alive event which will be received in the init code
 //			if(Calendar.getInstance().getTimeInMillis() > (entry.getValue().getQueryStageTimeStamp().getTime() + QUERY_STAGE_RETRY)) {
