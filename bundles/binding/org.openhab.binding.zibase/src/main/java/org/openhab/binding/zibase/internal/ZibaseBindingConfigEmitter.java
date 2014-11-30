@@ -12,6 +12,7 @@ import java.lang.annotation.Inherited;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
@@ -72,7 +73,7 @@ public class ZibaseBindingConfigEmitter extends ZibaseBindingConfig {
 		try {
 			constructor = valueStateMap.get(configParameters[ZibaseBindingConfig.POS_VALUES]).getConstructor(String.class);
 		} catch (Exception ex) {
-			logger.error("unable to initialise item ID " + this.getId() + "for values : " + configParameters[ZibaseBindingConfig.POS_VALUES]);
+			logger.debug("unsupported value " +configParameters[ZibaseBindingConfig.POS_VALUES]+ " for item ID " + this.getId() + " => value will be passed as is..." );
 		}
 	}
 
@@ -94,11 +95,11 @@ public class ZibaseBindingConfigEmitter extends ZibaseBindingConfig {
 		
 		if (ZibaseBindingConfigEmitter.getValueStateMap().containsKey(this.values[ZibaseBindingConfig.POS_VALUES])) {
 			logger.info("Config OK for Receiver item " + this.getId());
-			return true;
 		} else {	
-			logger.error("Unsupported value identifier for item " + this.getId());
-			return false;
+			logger.info("Unsupported value identifier for item " + this.getId() + " => value will be passed as is");
 		}
+		
+		return true;
 	}
 	
 	
@@ -124,8 +125,8 @@ public class ZibaseBindingConfigEmitter extends ZibaseBindingConfig {
 				logger.error("unable to convert zibase value to openHab State : " + e.toString());
 					e.printStackTrace();
 				}
-			} 
-			
-		return null;
+			}
+	
+		return new StringType(this.values[ZibaseBindingConfig.POS_VALUES]);
 	}
 }

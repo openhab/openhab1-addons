@@ -212,8 +212,8 @@ public class ZibaseListener extends Thread {
 		
 		// then post update for all items that use this id
 		for(String itemName : listOfItemNames) {
-			ZibaseBindingConfig config = ZibaseBinding.getBindingProvider().getItemConfig(itemName);
-			logger.debug("Getting config for " + itemName);
+			ZibaseBindingConfig config = ZibaseBinding.getBindingProvider().getItemConfigByUniqueId(itemName+"_"+id);
+			logger.debug("Getting config for " + itemName + " (id = "+ id +") ");
 			
 			if (config != null) {
 				org.openhab.core.types.State value = config.getOpenhabStateFromZibaseValue(zibase, zbResponseStr);

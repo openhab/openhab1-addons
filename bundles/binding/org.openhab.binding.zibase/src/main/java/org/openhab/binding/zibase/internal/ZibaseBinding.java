@@ -167,7 +167,7 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider> 
 		// the frequently executed code (polling) goes here ...
 		logger.debug("execute() method is called!");
 		
-		Collection<ZibaseBindingConfig> configs = (Collection<ZibaseBindingConfig>) ZibaseGenericBindingProvider.itemMap.values();
+		Collection<ZibaseBindingConfig> configs = (Collection<ZibaseBindingConfig>) ZibaseGenericBindingProvider.itemNameMap.values();
 		for(ZibaseBindingConfig config : configs ) {
 	
 			// Update receivers state
