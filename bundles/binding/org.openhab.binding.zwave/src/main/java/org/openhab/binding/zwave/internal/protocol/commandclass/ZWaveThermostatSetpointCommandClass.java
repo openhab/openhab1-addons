@@ -49,6 +49,10 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 	private static final byte THERMOSTAT_SETPOINT_SUPPORTED_GET    = 0x4;
 	private static final byte THERMOSTAT_SETPOINT_SUPPORTED_REPORT = 0x5;
 	
+	//Some Thermostats (Honywell) will not report on all the setpoints they claim to support.
+	//If we try this many times for the initial dynamic queries, give up.
+	private static final int MAX_DYNAMIC_TRIES = 5;
+	
 	private final Map<SetpointType, Setpoint> setpoints = new HashMap<SetpointType, Setpoint>();
 
 	@XStreamOmitField
@@ -206,10 +210,12 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
 		for (Map.Entry<SetpointType, Setpoint> entry : this.setpoints.entrySet()) {
 			if(refresh == true || entry.getValue().getInitialised() == false) {
-				if(getMessage(entry.getValue().getSetpointType()) == null){
+				SerialMessage mesg = getMessage(entry.getValue().getSetpointType());
+				entry.getValue().incrementInitCount();
+				if(mesg == null){
 					logger.warn("NODE {}: Ignoring null setpointType in setpointTypes", this.getNode().getNodeId());
 				} else {
-					result.add(getMessage(entry.getValue().getSetpointType()));
+					result.add(mesg);
 				}
 			}
 		}
@@ -239,7 +245,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 			return null;
 		}
 
-		logger.debug("NODE {}: Creating new message for application command THERMOSTAT_SETPOINT_GET", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command THERMOSTAT_SETPOINT_GET ({})", this.getNode().getNodeId(),setpointType.getLabel());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Get);
 		byte[] payload = {
 				(byte) this.getNode().getNodeId(),
@@ -402,7 +408,8 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 	private class Setpoint {
 		SetpointType setpointType;
 		boolean initialised = false;
-
+		int initCount = 0;
+		
 		public Setpoint(SetpointType type) {
 			setpointType = type;
 		}
@@ -413,10 +420,19 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 
 		public void setInitialised() {
 			initialised = true;
+			initCount = 0;
 		}
 
 		public boolean getInitialised() {
 			return initialised;
+		}
+		
+		public void incrementInitCount(){
+			initCount++;
+			if(initCount >= MAX_DYNAMIC_TRIES) {
+				setInitialised();
+				logger.warn("Reached max tries to init the setpont {}, this will be our last attempt ", setpointType.getLabel());
+			}
 		}
 	}
 

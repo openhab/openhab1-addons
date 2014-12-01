@@ -42,8 +42,6 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	private static final byte THERMOSTAT_OPERATING_STATE_GET              = 0x2;
 	private static final byte THERMOSTAT_OPERATING_STATE_REPORT           = 0x3;
 
-	private final Map<OperatingStateType, OperatingState> operatingStates = new HashMap<OperatingStateType, OperatingState>();
-
 	@XStreamOmitField
 	private boolean dynamicDone = false;
 
@@ -116,14 +114,8 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 			return;
 		}
 
-		// operatingState type seems to be supported, add it to the list.
-		OperatingState state = operatingStates.get(operatingStateType);
-		if (state == null) {
-			state = new OperatingState(operatingStateType);
-			operatingStates.put(operatingStateType, state);
-		}
-		state.setInitialised();
-
+		dynamicDone = true;
+		
 		logger.debug("NODE {}: Operating State Type = {} ({})", this.getNode().getNodeId(), operatingStateType.getLabel(), value);
 
 		logger.debug("NODE {}: Thermostat Operating State Report value = {}", this.getNode().getNodeId(), operatingStateType.getLabel());
@@ -234,31 +226,6 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		 */
 		public String getLabel() {
 			return label;
-		}
-	}
-	
-	/**
-	 * Class to hold operating state
-	 * @author Chris Jackson
-	 */
-	private class OperatingState {
-		OperatingStateType operatingStateType;
-		boolean initialised = false;
-
-		public OperatingState(OperatingStateType type) {
-			operatingStateType = type;
-		}
-
-		public OperatingStateType getModeType() {			
-			return operatingStateType;
-		}
-
-		public void setInitialised() {
-			initialised = true;
-		}
-
-		public boolean getInitialised() {
-			return initialised;
 		}
 	}
 }
