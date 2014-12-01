@@ -50,7 +50,7 @@ abstract public class ResourceStateChangeListener {
 	
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
-	private GeneralBroadcaster broadcaster;
+	protected GeneralBroadcaster broadcaster;
 
 	public ResourceStateChangeListener(){
 		
@@ -79,7 +79,7 @@ abstract public class ResourceStateChangeListener {
 	        broadcaster.getBroadcasterConfig().getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
 	        broadcaster.getBroadcasterConfig().getBroadcasterCache().start();
 		
-		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
+	        broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override
 			public BroadcastAction filter(Object originalMessage, Object message) {
