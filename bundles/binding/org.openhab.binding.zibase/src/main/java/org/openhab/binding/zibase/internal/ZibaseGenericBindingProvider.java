@@ -88,7 +88,9 @@ public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider
 		itemUniqueIdMap.put(item.getName()+"_"+id, config);
 		
 		if (itemIdNameMap.containsKey(id)) {
-			itemIdNameMap.get(id).add(item.getName());
+			if(!itemIdNameMap.get(id).contains(item.getName())) {
+				itemIdNameMap.get(id).add(item.getName());
+			}
 		} else {
 			Vector<String> vector = new Vector<String>();
 			vector.add(item.getName());
@@ -96,23 +98,10 @@ public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider
 		}
 		
 		logger.info("Added " + item.getName() + " (id=" + id + ")");
+		
 		addBindingConfig(item, config);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void removeConfigurations(String context) {
-		// empty hashmap for safe reloading 
-		itemNameMap.clear();
-		itemUniqueIdMap.clear();
-		itemIdNameMap.clear();
-	
-		logger.debug("Cleaned items hashmap, reloading can be done safely...");
-		
-		super.removeConfigurations(context);
-	}
 
 	/**
 	 * get item config by its name. In case an item is assigned several zibase items RfId, using this method may lead to 
