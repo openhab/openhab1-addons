@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>plugInDimmer</Model>
+	<Label lang="en">BeNext Plug-in Dimmer</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x26</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x31</id>
+		</Class>
+		<Class>
+			<id>0x32</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+	</CommandClasses>
+	
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>256</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Reset to factory settings</Label>
+			<Help lang="en">Set all configuration values to default values (factory settings).</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">The way how the button reacts when press/released</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Toggle light when button is pressed, no action when button is released.</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Toggle light when button is released, Start dimming when button pressed.</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Toggle light when button is pressed and when button is Released, start dimming when quickly press and release button.</Label>
+			</Item>
+			<Help lang="en">The way how the button reacts when press/released</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">The way the Built-in Dimmer reacts when light is turned on/off with button</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch own light on and send a Z-Wave message to all associated nodes (direct and extern)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Don.t switch own light on but only send a Z-Wave message to associated node. (extern only).</Label>
+			</Item>
+			<Help lang="en">The way the Built-in Dimmer reacts when light is turned on/off with button</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Enable dimming</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable</Label>
+			</Item>
+			<Help lang="en">This parameter is used to enable the dimming option of the product. When disabled the dimming and fading routine are disabled.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>byte</Type>
+			<Default>200</Default>
+			<Size>2</Size>
+			<Label lang="en">Maximum load</Label>			
+			<Help lang="en">The maximum powerload in watts when light is turned on, when measured higher then this value the Inline Dimmer is automatically turned off.</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Dimming speed</Label>			
+			<Help lang="en">The speed of dimming when activated (manual and RF). Dim speed is 1% per value (* 10 ms)</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Fading down speed</Label>			
+			<Help lang="en">The speed of fading when activated (manual and RF). Fade speed is 1% per value (* 10 ms)</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>byte</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Fading up speed</Label>			
+			<Help lang="en">The speed of fading when activated (manual and RF). Fade speed is 1% per value (* 10 ms)</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>byte</Type>
+			<Default>50</Default>
+			<Size>1</Size>
+			<Label lang="en">Toggle time</Label>			
+			<Help lang="en">The time window to repress button to start dimming. Toggle time is value (* 10ms)</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>20</Default>
+			<Size>1</Size>
+			<Label lang="en">Auto meter report: percentage</Label>			
+			<Help lang="en">A percentage that an energy value must be different compared to a previous sent value before an unsolicited meter report is sent. Minimum value = 10%  Maximum value = 100%</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Auto meter report: watt</Label>			
+			<Help lang="en">A watt value that an energy value must be different compared to a previous sent value before an unsolicited meter report is sent. Minimum value = 5 watt  Maximum value = 255 watt</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Label lang="en">Auto meter report: time</Label>			
+			<Help lang="en">A time value that has to be passed compared to a previous sent value before a unsolicited meter report is sent. Minimum value = 10 seconds  Maximum value = 255 seconds</Help>
+   		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Last known status</Label>			
+			<Help lang="en">What to do with lamp status when power applied. If 0x00: Always switch light off when power applied. If > 0x00: Switch lamp on/off depending on last known lampstatus before power was disconnected.</Help>
+   		</Parameter>
+	</Configuration>
+	
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>8</Maximum>
+			<Label lang="en">Group 1</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Group 2</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Group 3</Label>
+		</Group>
+	</Associations>
+</Product>

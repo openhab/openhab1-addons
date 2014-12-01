@@ -15,5 +15,5 @@ package org.openhab.binding.maxcube.internal.message;
 * @since 1.4.0
 */
 public enum MessageType {
-	H, M, C, L
+	H, M, C, L, S
 }

@@ -34,6 +34,8 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.jna.Platform;
+
 /**
  * This class coordinates between the events in openHAB and the Tellstick
  * device. It uses a JNA bridge to talk to the C api of the tellstick.
@@ -134,15 +136,29 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 
 		this.restartTimeout = MAX_IDLE_BEFORE_RESTART;
+		String libraryPath = null;
+		if (Platform.isWindows()) {
+			libraryPath = "C:/Program Files/Telldus/;C:/Program Files (x86)/Telldus/";			
+		}
 
 		logger.info("Called with config " + config);
 		if (config != null) {
 			String maxIdle = (String) config.get("max_idle");
-			
+			String confLibraryPath = (String) config.get("library_path");
 			if (maxIdle != null) {
 				this.restartTimeout = Integer.valueOf(maxIdle);
 			}
-			
+			if (confLibraryPath != null) {
+				libraryPath = confLibraryPath;
+			}
+		
+		}
+		
+		if (libraryPath != null) {
+			logger.info("Loading "+JNA.library+" from "+libraryPath);
+			System.setProperty("jna.library.path", libraryPath);
+		} else {
+			logger.info("Loading "+JNA.library+" from system default paths");
 		}
 		resetTellstick();
 		setProperlyConfigured(true);
@@ -183,7 +199,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	private void handleDeviceEvent(TellstickDeviceEvent event) {
 		TellstickDevice device = event.getDevice();
 		controller.setLastSend(System.currentTimeMillis());
-		logger.debug("Got deviceEvent for " + device + " name:" + device + " method" + event.getMethod());
+		logger.debug("Got deviceEvent for " + device + " name:" + device + " method " + event.getMethod());
 		if (device != null) {
 			State cmd = resolveCommand(event.getMethod(), event.getData());
 			TellstickBindingConfig conf = findTellstickBindingConfig(device.getId(), null, null);
@@ -202,8 +218,8 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 		} else if (method == Method.TURNOFF) {
 			cmd = OnOffType.OFF;
 		} else if (method == Method.DIM) {
-			double value = ((Double.valueOf(data)) / 255);
-			cmd = new PercentType((int) (value * 100));
+			double value = ((Double.valueOf(data)*100) / 255);
+			cmd = new PercentType((int) Math.round(value));
 		}
 		return cmd;
 	}
@@ -343,6 +359,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	private void resetTellstick() {
 		logger.warn("Will do a reinit of listeners, no message received for " + restartTimeout / 1000 + " seconds");
 		try {
+			
 			deRegisterListeners();
 			logger.info("Listeners removed");
 			resetTelldusProvider();

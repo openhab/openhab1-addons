@@ -205,9 +205,10 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.knx.config.KNXBindingProvider#isCommandGA(tuwien.auto.calimero.GroupAddress)
 	 */
+	@Override
 	public boolean isCommandGA(final GroupAddress groupAddress) {
 		synchronized(bindingConfigs) {
 			for (BindingConfig config : bindingConfigs.values()) {
@@ -232,9 +233,10 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 		return false;
 	}
 	
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.knx.config.KNXBindingProvider#getReadableDatapoints()
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Iterable<Datapoint> getReadableDatapoints() {
 		synchronized(bindingConfigs) {
@@ -257,6 +259,34 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.knx.config.KNXBindingProvider#isAutoRefreshEnabled(tuwien.auto.calimero.datapoint.Datapoint)
+	 */
+	@Override
+	public boolean isAutoRefreshEnabled(Datapoint dataPoint) {
+		return (getAutoRefreshTime(dataPoint)!=0);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.knx.config.KNXBindingProvider#getAutoRefreshTime(tuwien.auto.calimero.datapoint.Datapoint)
+	 */
+	@Override
+	public int getAutoRefreshTime(Datapoint dataPoint) {
+		synchronized(bindingConfigs) {
+			for (BindingConfig config : bindingConfigs.values()) {
+				KNXBindingConfig knxConfig = (KNXBindingConfig) config;
+				for (KNXBindingConfigItem configItem : knxConfig) {
+					if ((configItem.readableDataPoint!=null)&&(configItem.readableDataPoint.equals(dataPoint))) {
+						return configItem.autoRefreshInSecs;
+					}
+				}
+			}
+		}
+		return 0;
+	}
+	/* (non-Javadoc)
+	 * @see org.openhab.core.autoupdate.AutoUpdateBindingProvider#autoUpdate(java.lang.String)
+	 */
 	@Override
 	public Boolean autoUpdate(String itemName) {
 		BindingConfig config = bindingConfigs.get(itemName);
@@ -318,11 +348,37 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 						continue;
 					}
 					
-					// check for the readable flag
 					boolean isReadable = false;
+					int autoRefreshTimeInSecs =0;
+					// check for the readable flag
 					if (dataPoint.startsWith("<")) {
 						isReadable = true;
 						dataPoint = dataPoint.substring(1);
+						// check for the auto refresh parameter
+						if (dataPoint.startsWith("(")) {
+							int endIndex=dataPoint.indexOf(")");
+							if (endIndex>-1) {
+								dataPoint = dataPoint.substring(1);
+								if (endIndex>1) {
+									try {
+										autoRefreshTimeInSecs = Integer.parseInt(dataPoint.substring(0, endIndex-1));
+										dataPoint = dataPoint.substring(endIndex);
+										if (autoRefreshTimeInSecs ==0) {
+											throw new BindingConfigParseException("Autorefresh time cannot be 0.");
+										}
+									}
+									catch (NumberFormatException nfe) {
+										throw new BindingConfigParseException("Autorefresh time must be a number, bust was '"+dataPoint.substring(1, endIndex)+"'.");
+									}
+								}
+								else {
+									throw new BindingConfigParseException("Autorefresh time paramter: missing time. Empty brackets are not allowed.");
+								}
+							}
+							else {
+								throw new BindingConfigParseException("Closing ')' missing on autorefresh time paramter.");
+							}
+						}
 					}
 					
 					// find the DPT for this entry
@@ -355,6 +411,9 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 					}
 					if (isReadable) {
 						configItem.readableDataPoint = dp;
+						if (autoRefreshTimeInSecs>0) {
+							configItem.autoRefreshInSecs=autoRefreshTimeInSecs;
+						}
 					}
 					if(!configItem.allDataPoints.contains(dp)) {
 						configItem.allDataPoints.add(dp);
@@ -407,5 +466,6 @@ public class KNXGenericBindingProvider extends AbstractGenericBindingProvider im
 		public Datapoint mainDataPoint = null;
 		public Datapoint readableDataPoint = null;
 		public DatapointMap allDataPoints = new DatapointMap();
+		public int autoRefreshInSecs = 0;
 	}
 }
