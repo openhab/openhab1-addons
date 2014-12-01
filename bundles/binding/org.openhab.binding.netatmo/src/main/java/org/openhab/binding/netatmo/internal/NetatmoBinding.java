@@ -115,7 +115,7 @@ public class NetatmoBinding extends
 
                         State state = null;
                         switch (measureType) {
-                            case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE:
+                            case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE: case RAIN:
                                     final String requestKey = createKey(deviceId, moduleId);
                                     state = new DecimalType(deviceMeasureValueMap.get(requestKey).get(measureType.getMeasure()));
                                     break;
@@ -311,7 +311,7 @@ public class NetatmoBinding extends
                 final String requestKey = createKey(deviceId, moduleId);
 
                 switch (measureType) {
-                    case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE:
+                    case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE: case RAIN:
                         OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
                         if (oauthCredentials != null) {
                             if (!requests.containsKey(requestKey)) {

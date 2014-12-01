@@ -45,7 +45,7 @@ public class DeleteReturnRouteMessageClass extends ZWaveCommandProcessor {
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
 			logger.debug("NODE {}: DeleteReturnRoute command in progress.", nodeId);
 		} else {
-			logger.error("NODE {}: DeleteReturnRoute command failed.");
+			logger.error("NODE {}: DeleteReturnRoute command failed.", nodeId);
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.DeleteReturnRoute, nodeId,
 					ZWaveNetworkEvent.State.Failure));
 		}
@@ -59,7 +59,7 @@ public class DeleteReturnRouteMessageClass extends ZWaveCommandProcessor {
 
 		logger.debug("NODE {}: Got DeleteReturnRoute request.", nodeId);
 		if(incomingMessage.getMessagePayloadByte(1) != 0x00) {
-			logger.error("NODE {}: Delete return routes failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(0)));
+			logger.error("NODE {}: Delete return routes failed with error 0x{}.", nodeId, Integer.toHexString(incomingMessage.getMessagePayloadByte(1)));
 
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.DeleteReturnRoute, nodeId,
 					ZWaveNetworkEvent.State.Failure));
