@@ -400,7 +400,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	 *            The node on which to perform the heal
 	 */
 	private void nextHealStage(HealNode healing) {
-		logger.debug("NODE {}: Heal advancing - state {}, retries {}", healing.state, healing.retryCnt);
+		logger.debug("NODE {}: Heal advancing - state {}, retries {}", healing.nodeId, healing.state, healing.retryCnt);
 
 		// Don't do anything if it's failed already
 		if (healing.state == HealState.FAILED) {
@@ -425,6 +425,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			// Since the GETNEIGHBORS state fails often, it seems better to
 			// continue with the heal than to abort here.
 			if (healing.state == HealState.UPDATENEIGHBORS) {
+				healing.retryCnt = 0;
 				healing.state = healing.stateNext;
 				logger.debug("NODE {}: Heal - continuing to state {}", healing.nodeId, healing.stateNext);
 			} else {
