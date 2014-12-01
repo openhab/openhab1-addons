@@ -6,11 +6,10 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.openhab.binding.maxcube.internal.message;
 
-import java.util.Calendar;
 
-import org.openhab.binding.maxcube.internal.Utils;
 import org.slf4j.Logger;
 
 
@@ -19,6 +18,7 @@ import org.slf4j.Logger;
 * 
 * @author Andreas Heil (info@aheil.de)
 * @author Bernd Michael Helm (bernd.helm at helmundwalter.de)
+* @author Marcel Verpaalen - OH2 version
 * @since 1.6.0
 */
 public final class S_Message extends Message {
@@ -34,7 +34,8 @@ public final class S_Message extends Message {
 
 	@Override
 	public void debug(Logger logger) {
-
+		logger.debug("=== S_Message === ");
+		logger.debug("\tRAW : {}", this.getPayload());
 	}
 
 	@Override

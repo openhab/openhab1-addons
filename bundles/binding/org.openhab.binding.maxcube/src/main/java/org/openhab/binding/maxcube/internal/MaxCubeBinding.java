@@ -356,24 +356,23 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				commandString = cmd.getCommandString();
 			} else if (command instanceof StringType) {
 				String commandContent = command.toString().trim().toUpperCase();
+				S_Command cmd = null;
 				ThermostatModeType commandThermoType = null;
 				if (commandContent.contentEquals(ThermostatModeType.AUTOMATIC.toString())) {
 					commandThermoType = ThermostatModeType.AUTOMATIC;
+					cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType);
 				} else if (commandContent.contentEquals(ThermostatModeType.BOOST.toString())) {
 					commandThermoType = ThermostatModeType.BOOST;
+					cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType);
 				} else if (commandContent.contentEquals(ThermostatModeType.MANUAL.toString())) {
 					commandThermoType = ThermostatModeType.MANUAL;
 					Double setTemp = Double.parseDouble( ((HeatingThermostat) device).getTemperatureSetpoint().toString());
-					S_Command cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType, setTemp);
-					commandString = cmd.getCommandString();
+					cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType, setTemp);
 					logger.debug("updates to MANUAL mode with temperature '{}'", setTemp);
-					return;
 				} else {
 					logger.debug("Only updates to AUTOMATIC, MANUAL & BOOST supported, received value ;'{}'", commandContent);
 					continue;
 				}
-
-				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType);
 				commandString = cmd.getCommandString();
 			}
 
