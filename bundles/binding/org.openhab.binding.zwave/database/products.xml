@@ -345,6 +345,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>4001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064367</Model>
+			<Label lang="en">Insert blind control</Label>
+			<ConfigFile>reitz/064367.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0000</Id>
 			</Reference>
@@ -461,6 +470,15 @@
 	<Manufacturer>
 		<Id>0086</Id>
 		<Name>Aeon Labs</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>000a</Id>
+			</Reference>
+			<Model>HDS</Model>
+			<Label lang="en">Heavy Duty Switch</Label>
+			<ConfigFile>aeon/hds.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0019</Type>
