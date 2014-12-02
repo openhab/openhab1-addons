@@ -1540,12 +1540,12 @@ public class KNXCoreTypeMapperTest {
 
 				/* 
 				 * Reference testcase
-				 * Monday, January 1st, 1900 00:00:00, Fault: Normal (no fault), Working Day: Bank day (No working day), Working Day Field: valid,
+				 * Monday, January 1st, 1900 01:02:03, Fault: Normal (no fault), Working Day: Bank day (No working day), Working Day Field: valid,
 				 * Year Field valid, Months and Day fields valid, Day of week field valid, Hour of day, Minutes and Seconds fields valid,
 				 * Standard Summer Time: Time = UT+X, Quality of Clock: clock without ext. sync signal
 				 */
-				Type type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x00, 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "1900-01-01 00:00:00");
+				Type type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x00, 0x00 }, DateTimeType.class);
+				testToDPTValue(dpt, type, "1900-01-01 01:02:03");
 
 				/* 
 				 * Reference testcase + Fault: Fault => not supported
@@ -1561,21 +1561,21 @@ public class KNXCoreTypeMapperTest {
 				 */
 				assertNull("KNXCoreTypeMapper.toType() should return null (date but no day and month)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x08, 0x00 }, DateTimeType.class));
 				/* 
-				 * Reference testcase + Year Field invalid + Months and Day fields invalid
+				 * Reference testcase + Year, Months and Day fields invalid
 				 */
-				type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x18, 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "1970-01-01 00:00:00");
+				type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x18, 0x00 }, DateTimeType.class);
+				testToDPTValue(dpt, type, "1970-01-01 01:02:03");
 				/* 
-				 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
+				 * Reference testcase + Year , Months and Day fields invalid + Day of week field invalid
 				 */
-				type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x1C, 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "1970-01-01 00:00:00");
+				type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x1C, 0x00 }, DateTimeType.class);
+				testToDPTValue(dpt, type, "1970-01-01 01:02:03");
 				/* 
-				 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
+				 * Reference testcase + Year, Months and Day fields invalid + Day of week field invalid
 				 * Working day field invalid
 				 */
-				type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3C, 0x00 }, DateTimeType.class);
-				testToDPTValue(dpt, type, "1970-01-01 00:00:00");
+				type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x21, 0x02, 0x03, 0x3C, 0x00 }, DateTimeType.class);
+				testToDPTValue(dpt, type, "1970-01-01 01:02:03");
 				/* 
 				 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
 				 * Working day field invalid + Hour of day, Minutes and Seconds fields invalid
@@ -1583,7 +1583,7 @@ public class KNXCoreTypeMapperTest {
 				assertNull("KNXCoreTypeMapper.toType() should return null (neither date nor time)", testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3E, 0x00 }, DateTimeType.class));
 
 				/* 
-				 * Reference testcase + Year Field invalid + Months and Day fields invalid + Day of week field invalid
+				 * Reference testcase + Year, Months and Day fields invalid + Day of week field invalid
 				 * Working day field invalid + Hour of day, Minutes and Seconds fields invalid, Standard Summer Time: Time = UT+X+1
 				 */
 				assertNull("KNXCoreTypeMapper.toType() should return null (neither date nor time, but summertime flag)", type=testToType(dpt, new byte[] { 0x00, 0x01, 0x01, 0x20, 0x00, 0x00, 0x3F, 0x00 }, DateTimeType.class));
