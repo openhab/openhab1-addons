@@ -12,7 +12,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
@@ -21,6 +23,7 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageTy
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveThermostatModeCommandClass.ModeType;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +45,8 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	private static final byte THERMOSTAT_FAN_STATE_GET              = 0x2;
 	private static final byte THERMOSTAT_FAN_STATE_REPORT           = 0x3;
 
-	private final Map<FanStateType, FanState> fanStates = new HashMap<FanStateType, FanState>();
-
+	private final Set<FanStateType> fanStateTypes = new HashSet<FanStateType>();
+	
 	@XStreamOmitField
 	private boolean dynamicDone = false;
 
@@ -117,13 +120,11 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		}
 
 		// fanState type seems to be supported, add it to the list.
-		FanState fanState = fanStates.get(fanStateType);
-		if (fanState == null) {
-			fanState = new FanState(fanStateType);
-			fanStates.put(fanStateType, fanState);
-		}
-		fanState.setInitialised();
-
+		if(!fanStateTypes.contains(fanStateType))
+			fanStateTypes.add(fanStateType);
+		
+		dynamicDone = true;
+		
 		logger.debug("NODE {}: Thermostat fan state  Report value = {}", this.getNode().getNodeId(), fanStateType.getLabel());
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
 		this.getController().notifyEventListeners(zEvent);
@@ -232,31 +233,6 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		 */
 		public String getLabel() {
 			return label;
-		}
-	}
-	
-	/**
-	 * Class to hold fan state
-	 * @author Chris Jackson
-	 */
-	private class FanState {
-		FanStateType fanStateType;
-		boolean initialised = false;
-
-		public FanState(FanStateType type) {
-			fanStateType = type;
-		}
-
-		public FanStateType getFanStateType() {			
-			return fanStateType;
-		}
-
-		public void setInitialised() {
-			initialised = true;
-		}
-
-		public boolean getInitialised() {
-			return initialised;
 		}
 	}
 }

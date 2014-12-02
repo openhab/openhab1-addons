@@ -12,7 +12,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
@@ -46,7 +48,7 @@ ZWaveCommandClassDynamicState {
 	private static final byte THERMOSTAT_MODE_SUPPORTED_GET    = 0x4;
 	private static final byte THERMOSTAT_MODE_SUPPORTED_REPORT = 0x5;
 
-	private final Map<ModeType, Mode> modes = new HashMap<ModeType, Mode>();
+	private final Set<ModeType> modeTypes = new HashSet<ModeType>();
 
 	@XStreamOmitField
 	private boolean initialiseDone = false;
@@ -113,8 +115,7 @@ ZWaveCommandClassDynamicState {
 					// (n)th bit is set. n is the index for the mode type enumeration.
 					ModeType modeTypeToAdd = ModeType.getModeType(index);
 					if(modeTypeToAdd != null){
-						Mode newMode = new Mode(modeTypeToAdd);
-						this.modes.put(modeTypeToAdd, newMode);
+						this.modeTypes.add(modeTypeToAdd);
 						logger.debug("NODE {}: Added mode type {} ({})", this.getNode().getNodeId(), modeTypeToAdd.getLabel(), index);
 					}
 					else {
@@ -159,13 +160,12 @@ ZWaveCommandClassDynamicState {
 		}
 
 		// mode type seems to be supported, add it to the list.
-		Mode mode = modes.get(modeType);
-		if (mode == null) {
-			mode = new Mode(modeType);
-			modes.put(modeType, mode);
+		if (!modeTypes.contains(modeType)) {
+			modeTypes.add(modeType);
 		}
-		mode.setInitialised();
-
+		
+		dynamicDone = true;
+		
 		logger.debug("NODE {}: Thermostat Mode Report, value = {}", this.getNode().getNodeId(), modeType.getLabel());
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
 		this.getController().notifyEventListeners(zEvent);
@@ -235,16 +235,15 @@ ZWaveCommandClassDynamicState {
 	@Override
 	public SerialMessage setValueMessage(int value) {
 
-		logger.debug("NODE {}: setValueMessage {}, modeType empty {}", this.getNode().getNodeId(), value, modes.isEmpty());
+		logger.debug("NODE {}: setValueMessage {}, modeType empty {}", this.getNode().getNodeId(), value, modeTypes.isEmpty());
 
 		//if we do not have any mode types yet, get them
-		if(modes.isEmpty()) {
+		if(modeTypes.isEmpty()) {
 			return this.getSupportedMessage();
 		}
 
-		if(!modes.containsKey(ModeType.getModeType(value))){
+		if(modeTypes.contains(ModeType.getModeType(value))){
 			logger.error("NODE {}: Unsupported mode type {}", this.getNode().getNodeId(), value);
-
 			return null;
 		}
 
@@ -332,31 +331,6 @@ ZWaveCommandClassDynamicState {
 		 */
 		public String getLabel() {
 			return label;
-		}
-	}
-	
-	/**
-	 * Class to hold fan state
-	 * @author Chris Jackson
-	 */
-	private class Mode {
-		ModeType modeType;
-		boolean initialised = false;
-
-		public Mode(ModeType type) {
-			modeType = type;
-		}
-
-		public ModeType getModeType() {			
-			return modeType;
-		}
-
-		public void setInitialised() {
-			initialised = true;
-		}
-
-		public boolean getInitialised() {
-			return initialised;
 		}
 	}
 }
