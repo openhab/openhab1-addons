@@ -468,6 +468,27 @@ public class ZWaveController {
 	 * @param serialMessage the serial message to enqueue.
 	 */
 	public void enqueue(SerialMessage serialMessage) {
+		// First try and get the node
+		// If we're sending to a node, then this obviously isn't to the controller, and we should
+		// queue anything to a battery node!
+		logger.debug("***ENQUEUE: node {}", serialMessage.getMessageNode());
+    	ZWaveNode node = this.getNode(serialMessage.getMessageNode());
+    	if (node != null) {
+    		logger.debug("***ENQUEUE: node {} - node found", serialMessage.getMessageNode());
+	    	// Keep track of the number of packets sent to this device
+	    	node.incrementSendCount();
+	
+	    	if (!node.isListening() && !node.isFrequentlyListening() && serialMessage.getPriority() != SerialMessagePriority.Low) {
+				ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
+	
+				// If it's a battery operated device, check if it's awake or place in wake-up queue.
+				if (wakeUpCommandClass != null && !wakeUpCommandClass.processOutgoingWakeupMessage(serialMessage)) {
+					return;
+				}
+			}
+    	}
+
+		// Add the message to the queue
 		this.sendQueue.add(serialMessage);
 		logger.debug("Enqueueing message. Queue length = {}", this.sendQueue.size());
 	}
@@ -862,7 +883,8 @@ public class ZWaveController {
     		logger.error("Only request messages can be sent");
     		return;
     	}
-    	
+/*
+    	This code has moved to enqueue...
     	ZWaveNode node = this.getNode(serialMessage.getMessageNode());
     	
     	// Keep track of the number of packets sent to this device
@@ -876,7 +898,8 @@ public class ZWaveController {
 				return;
 			}
 		}
-    	
+    	*/
+
     	serialMessage.setTransmitOptions(TRANSMIT_OPTION_ACK | TRANSMIT_OPTION_AUTO_ROUTE | TRANSMIT_OPTION_EXPLORE);
     	serialMessage.setCallbackId(getCallbackId());
     	this.enqueue(serialMessage);
@@ -1079,7 +1102,7 @@ public class ZWaveController {
 					// If this message is a data packet to a node
 					// then make sure the node is not a battery device.
 					// If it's a battery device, it needs to be awake, or we queue the frame until it is.
-					if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
+//					if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 						ZWaveNode node = getNode(lastSentMessage.getMessageNode());
 						
 						if (node != null && !node.isListening() && !node.isFrequentlyListening() && lastSentMessage.getPriority() != SerialMessagePriority.Low) {
@@ -1090,7 +1113,7 @@ public class ZWaveController {
 								continue;
 							}
 						}
-					}
+//					}
 					
 					// A transaction consists of 3 parts -:
 					// 1) We send a REQUEST to the controller

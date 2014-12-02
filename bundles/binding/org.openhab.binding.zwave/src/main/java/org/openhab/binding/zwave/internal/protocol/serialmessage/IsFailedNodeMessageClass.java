@@ -28,7 +28,7 @@ public class IsFailedNodeMessageClass  extends ZWaveCommandProcessor {
 		
 	public SerialMessage doRequest(int nodeId) {
 		logger.debug("NODE {}: Requesting IsFailedNode status from controller.", nodeId);
-		SerialMessage newMessage = new SerialMessage(nodeId, SerialMessageClass.IsFailedNodeID, SerialMessageType.Request, SerialMessageClass.IsFailedNodeID, SerialMessagePriority.High);
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.IsFailedNodeID, SerialMessageType.Request, SerialMessageClass.IsFailedNodeID, SerialMessagePriority.High);
     	byte[] newPayload = { (byte) nodeId };
     	newMessage.setMessagePayload(newPayload);
     	return newMessage;

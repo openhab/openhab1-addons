@@ -25,7 +25,7 @@ public class RequestNodeInfoMessageClass  extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(RequestNodeInfoMessageClass.class);
 
 	public SerialMessage doRequest(int nodeId) {
-		SerialMessage newMessage = new SerialMessage(nodeId, SerialMessageClass.RequestNodeInfo, SerialMessageType.Request, SerialMessageClass.ApplicationUpdate, SerialMessagePriority.High);
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RequestNodeInfo, SerialMessageType.Request, SerialMessageClass.ApplicationUpdate, SerialMessagePriority.High);
     	byte[] newPayload = { (byte) nodeId };
     	newMessage.setMessagePayload(newPayload);
     	return newMessage;

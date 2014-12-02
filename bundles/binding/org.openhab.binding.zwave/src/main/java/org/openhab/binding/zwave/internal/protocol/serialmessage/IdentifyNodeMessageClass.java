@@ -32,7 +32,7 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(IdentifyNodeMessageClass.class);
 
 	public SerialMessage doRequest(int nodeId) {
-		SerialMessage newMessage = new SerialMessage(nodeId, SerialMessageClass.IdentifyNode, SerialMessageType.Request, SerialMessageClass.IdentifyNode, SerialMessagePriority.High);
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.IdentifyNode, SerialMessageType.Request, SerialMessageClass.IdentifyNode, SerialMessagePriority.High);
     	byte[] newPayload = { (byte) nodeId };
     	newMessage.setMessagePayload(newPayload);
     	return newMessage;

@@ -232,7 +232,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 			this.wakeUpQueue.remove(serialMessage);
 		}
 
-		logger.debug("NODE {}: Putting message in wakeup queue.", this.getNode().getNodeId());
+		logger.debug("NODE {}: Putting message {} in wakeup queue.", this.getNode().getNodeId(), serialMessage.getMessageClass());
 		this.wakeUpQueue.add(serialMessage);
 		
 		// This message has been queued - don't send it now...
