@@ -20,9 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.jxpath.AbstractFactory;
-import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.jxpath.Pointer;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.Converter;
 import org.openhab.binding.ecobee.EcobeeBindingProvider;
 import org.openhab.binding.ecobee.internal.messages.AbstractFunction;
 import org.openhab.binding.ecobee.internal.messages.ApiResponse;
@@ -34,15 +33,6 @@ import org.openhab.binding.ecobee.internal.messages.Selection.SelectionType;
 import org.openhab.binding.ecobee.internal.messages.Status;
 import org.openhab.binding.ecobee.internal.messages.Temperature;
 import org.openhab.binding.ecobee.internal.messages.Thermostat;
-import org.openhab.binding.ecobee.internal.messages.Thermostat.Climate;
-import org.openhab.binding.ecobee.internal.messages.Thermostat.EquipmentSetting;
-import org.openhab.binding.ecobee.internal.messages.Thermostat.GeneralSetting;
-import org.openhab.binding.ecobee.internal.messages.Thermostat.HouseDetails;
-import org.openhab.binding.ecobee.internal.messages.Thermostat.LimitSetting;
-import org.openhab.binding.ecobee.internal.messages.Thermostat.Location;
-import org.openhab.binding.ecobee.internal.messages.Thermostat.NotificationSettings;
-import org.openhab.binding.ecobee.internal.messages.Thermostat.Program;
-import org.openhab.binding.ecobee.internal.messages.Thermostat.Settings;
 import org.openhab.binding.ecobee.internal.messages.ThermostatRequest;
 import org.openhab.binding.ecobee.internal.messages.ThermostatResponse;
 import org.openhab.binding.ecobee.internal.messages.ThermostatSummaryRequest;
@@ -92,6 +82,24 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 	protected static final String CONFIG_APP_KEY = "appkey";
 	protected static final String CONFIG_SCOPE = "scope";
 	protected static final String CONFIG_TEMP_SCALE = "tempscale";
+
+	static {
+		// Register bean type converters
+		ConvertUtils.register(new Converter() {
+
+			@SuppressWarnings("rawtypes")
+			@Override
+			public Object convert(Class type, Object value) {
+				if (value instanceof DecimalType) {
+					return Temperature
+							.fromLocalTemperature(((DecimalType) value)
+									.doubleValue());
+				} else {
+					return null;
+				}
+			}
+		}, Temperature.class);
+	}
 
 	private ConfigurationAdmin configAdmin;
 
@@ -312,80 +320,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 		} // end if there were any changed thermostats to fetch
 	}
 
-	private JXPathContext sharedContext = null;
-
-	/**
-	 * Used a shared JXPath context when creating new ones for different beans
-	 * in order to re-use a shared configuration.
-	 * 
-	 * @return the shared JXPathContext
-	 * @see <a
-	 *      href="http://commons.apache.org/proper/commons-jxpath/users-guide.html#Nested_Contexts">Nested
-	 *      Contexts</a>
-	 */
-	private JXPathContext getSharedContext() {
-		if (this.sharedContext == null) {
-			this.sharedContext = JXPathContext.newContext(null);
-			this.sharedContext.setLenient(true);
-			this.sharedContext.setFactory(new AbstractFactory() {
-				public boolean createObject(JXPathContext context,
-						Pointer pointer, Object parent, String name, int index) {
-					if (parent instanceof Thermostat) {
-						if (name.equals("settings")) {
-							((Thermostat) parent).setSettings(new Settings());
-							return true;
-						} else if (name.equals("location")) {
-							((Thermostat) parent).setLocation(new Location());
-							return true;
-						} else if (name.equals("program")) {
-							((Thermostat) parent).setProgram(new Program());
-							return true;
-						} else if (name.equals("houseDetails")) {
-							((Thermostat) parent)
-									.setHouseDetails(new HouseDetails());
-							return true;
-						} else if (name.equals("notificationSettings")) {
-							((Thermostat) parent)
-									.setNotificationSettings(new NotificationSettings());
-							return true;
-						}
-					} else if (parent instanceof Program) {
-						if (name.equals("schedule")) {
-							((Program) parent)
-									.setSchedule(new ArrayList<List<String>>());
-							return true;
-						}
-						if (name.equals("climates")) {
-							((Program) parent)
-									.setClimates(new ArrayList<Climate>());
-							return true;
-						}
-					} else if (parent instanceof NotificationSettings) {
-						if (name.equals("emailAddresses")) {
-							((NotificationSettings) parent)
-									.setEmailAddresses(new ArrayList<String>());
-							return true;
-						} else if (name.equals("equipment")) {
-							((NotificationSettings) parent)
-									.setEquipment(new ArrayList<EquipmentSetting>());
-							return true;
-						} else if (name.equals("general")) {
-							((NotificationSettings) parent)
-									.setGeneral(new ArrayList<GeneralSetting>());
-							return true;
-						} else if (name.equals("limit")) {
-							((NotificationSettings) parent)
-									.setLimit(new ArrayList<LimitSetting>());
-							return true;
-						}
-					}
-					return false;
-				}
-			});
-		}
-		return this.sharedContext;
-	}
-
 	/**
 	 * Give a binding provider, a map of thermostats, and an item name, return
 	 * the corresponding state object.
@@ -396,7 +330,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 	 *            a map of thermostat identifiers to {@link Thermostat} objects
 	 * @param itemName
 	 *            the item name from the items file.
-	 * @return
+	 * @return the State object for the named item
 	 */
 	private State getState(EcobeeBindingProvider provider,
 			Map<String, Thermostat> thermostats, String itemName) {
@@ -404,28 +338,38 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 		final String thermostatIdentifier = provider
 				.getThermostatIdentifier(itemName);
 		final String property = provider.getProperty(itemName);
-		final Thermostat t = thermostats.get(thermostatIdentifier);
+		final Thermostat thermostat = thermostats.get(thermostatIdentifier);
 
-		JXPathContext context = JXPathContext.newContext(getSharedContext(), t);
-		Object o = context.getValue(property);
-
-		if (o instanceof String) {
-			return StringType.valueOf((String) o);
-		} else if (o instanceof Integer) {
-			return new DecimalType((Integer) o);
-		} else if (o instanceof Boolean) {
-			return o.equals(Boolean.TRUE) ? OnOffType.ON : OnOffType.OFF;
-		} else if (o instanceof Date) {
-			Calendar c = Calendar.getInstance();
-			c.setTime((Date) o);
-			return new DateTimeType(c);
-		} else if (o instanceof Temperature) {
-			return new DecimalType(((Temperature) o).toLocalTemperature());
-		} else if (o != null) {
-			return StringType.valueOf(o.toString());
+		if (thermostat == null) {
+			logger.error(
+					"Did not receive thermostat '{}' for item '{}'; skipping.",
+					thermostatIdentifier, itemName);
 		} else {
-			return UnDefType.NULL;
+			try {
+				Object o = thermostat.getProperty(property);
+
+				if (o instanceof String) {
+					return StringType.valueOf((String) o);
+				} else if (o instanceof Integer) {
+					return new DecimalType((Integer) o);
+				} else if (o instanceof Boolean) {
+					return o.equals(Boolean.TRUE) ? OnOffType.ON
+							: OnOffType.OFF;
+				} else if (o instanceof Date) {
+					Calendar c = Calendar.getInstance();
+					c.setTime((Date) o);
+					return new DateTimeType(c);
+				} else if (o instanceof Temperature) {
+					return new DecimalType(
+							((Temperature) o).toLocalTemperature());
+				} else if (o != null) {
+					return StringType.valueOf(o.toString());
+				}
+			} catch (Exception e) {
+				logger.error("Unable to get state from thermostat", e);
+			}
 		}
+		return UnDefType.NULL;
 	}
 
 	/**
@@ -483,6 +427,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 				break;
 			}
 		}
+
 		if (provider == null) {
 			logger.warn(
 					"no matching binding provider found [itemName={}, newState={}]",
@@ -495,39 +440,46 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 
 			String property = provider.getProperty(itemName);
 
-			final Thermostat thermostat = new Thermostat(null);
-			JXPathContext context = JXPathContext.newContext(getSharedContext(), thermostat);
-			context.createPathAndSetValue(property, newState.toString()); //FIXME: figure out types
-			logger.debug("Thermostat for update: {}", thermostat);
+			try {
+				final Thermostat thermostat = new Thermostat(null);
 
-			OAuthCredentials oauthCredentials = getOAuthCredentials(provider
-					.getUserid(itemName));
+				// FIXME: figure out type conversions
+				thermostat.setProperty(property, newState);
 
-			if (oauthCredentials == null) {
-				logger.warn(
-						"Unable to locate credentials for item {}; aborting update.",
-						itemName);
-				return;
-			}
+				logger.debug("Thermostat for update: {}", thermostat);
 
-			if (oauthCredentials.noAccessToken()) {
-				if (!oauthCredentials.refreshTokens()) {
-					logger.warn("Sending updated skipped.");
+				OAuthCredentials oauthCredentials = getOAuthCredentials(provider
+						.getUserid(itemName));
+
+				if (oauthCredentials == null) {
+					logger.warn(
+							"Unable to locate credentials for item {}; aborting update.",
+							itemName);
 					return;
 				}
-			}
 
-			UpdateThermostatRequest request = new UpdateThermostatRequest(
-					oauthCredentials.accessToken, selection, functions,
-					thermostat);
-			ApiResponse response = request.execute();
-			if (response.isError()) {
-				final Status status = response.getStatus();
-				if (status.isAccessTokenExpired()) {
-					oauthCredentials.refreshTokens();
-				} else {
-					logger.error("Error updating thermostat(s): {}", response);
+				if (oauthCredentials.noAccessToken()) {
+					if (!oauthCredentials.refreshTokens()) {
+						logger.warn("Sending updated skipped.");
+						return;
+					}
 				}
+
+				UpdateThermostatRequest request = new UpdateThermostatRequest(
+						oauthCredentials.accessToken, selection, functions,
+						thermostat);
+				ApiResponse response = request.execute();
+				if (response.isError()) {
+					final Status status = response.getStatus();
+					if (status.isAccessTokenExpired()) {
+						oauthCredentials.refreshTokens();
+					} else {
+						logger.error("Error updating thermostat(s): {}",
+								response);
+					}
+				}
+			} catch (Exception e) {
+				logger.error("Unable to update thermostat(s)", e);
 			}
 		}
 	}

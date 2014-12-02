@@ -157,7 +157,7 @@ public class EcobeeItemMapping {
 			}
 		});
 		// ...
-		mappers.put("runtime/actualTemperature", new ItemMapper(
+		mappers.put("runtime.actualTemperature", new ItemMapper(
 				DecimalType.class) {
 			public State getState(Thermostat t) {
 				return new DecimalType(t.getRuntime().getActualTemperature()
@@ -168,7 +168,7 @@ public class EcobeeItemMapping {
 				return null;
 			}
 		});
-		mappers.put("runtime/actualHumidity",
+		mappers.put("runtime.actualHumidity",
 				new ItemMapper(DecimalType.class) {
 					public State getState(Thermostat t) {
 						return new DecimalType(t.getRuntime()
@@ -180,7 +180,7 @@ public class EcobeeItemMapping {
 					}
 				});
 		// ...
-		mappers.put("settings/hvacMode", new ItemMapper(StringType.class) {
+		mappers.put("settings.hvacMode", new ItemMapper(StringType.class) {
 			public State getState(Thermostat t) {
 				return StringType
 						.valueOf(t.getSettings().getHvacMode().value());
@@ -195,7 +195,7 @@ public class EcobeeItemMapping {
 			}
 		});
 		// ...
-		mappers.put("version/thermostatFirmwareVersion", new ItemMapper(StringType.class) {
+		mappers.put("version.thermostatFirmwareVersion", new ItemMapper(StringType.class) {
 			public State getState(Thermostat t) {
 				return StringType
 						.valueOf(t.getVersion().getThermostatFirmwareVersion());
