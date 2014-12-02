@@ -471,13 +471,11 @@ public class ZWaveController {
 		// First try and get the node
 		// If we're sending to a node, then this obviously isn't to the controller, and we should
 		// queue anything to a battery node!
-		logger.debug("***ENQUEUE: node {}", serialMessage.getMessageNode());
     	ZWaveNode node = this.getNode(serialMessage.getMessageNode());
     	if (node != null) {
-    		logger.debug("***ENQUEUE: node {} - node found", serialMessage.getMessageNode());
 	    	// Keep track of the number of packets sent to this device
 	    	node.incrementSendCount();
-	
+
 	    	if (!node.isListening() && !node.isFrequentlyListening() && serialMessage.getPriority() != SerialMessagePriority.Low) {
 				ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
 	

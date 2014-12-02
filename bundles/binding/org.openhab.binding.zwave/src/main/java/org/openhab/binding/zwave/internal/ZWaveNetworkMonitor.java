@@ -257,6 +257,8 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			heal.listening = false;
 		}
 		healNodes.put(nodeId, heal);
+		
+		logger.debug("NODE {}: Starting heal", nodeId);
 
 		// Start the first heal next time around the loop
 		networkHealNextTime = 0;
@@ -283,6 +285,8 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 			healNode(node.getNodeId());
 		}
+
+		logger.debug("Network Monitor: {} nodes to heal!", healNodes.size());
 
 		if (healNodes.size() == 0) {
 			return false;

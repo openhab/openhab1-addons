@@ -534,7 +534,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				break;
 
 			default:
-				logger.error("NODE {}: Node advancer: Unknown node state {} encountered.", node.getNodeId(), node
+				logger.debug("NODE {}: Node advancer: Unknown node state {} encountered.", node.getNodeId(), node
 						.getNodeStage().toString());
 				break;
 			}
