@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Application Status command class.
@@ -32,6 +33,7 @@ public class ZWaveApplicationStatusClass extends ZWaveCommandClass {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveApplicationStatusClass.class);
 	
+	@XStreamOmitField
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	 
 	private static final int ApplicationStatusBusy = 0x1;
