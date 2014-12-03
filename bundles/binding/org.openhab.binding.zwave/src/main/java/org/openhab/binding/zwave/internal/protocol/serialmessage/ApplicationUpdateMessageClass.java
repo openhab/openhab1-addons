@@ -40,6 +40,10 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			logger.debug("NODE {}: Application update request, node information received.", nodeId);			
 			int length = incomingMessage.getMessagePayloadByte(2);
 			ZWaveNode node = zController.getNode(nodeId);
+			if(node == null) {
+				logger.debug("NODE {}: Application update request, node not known!", nodeId);			
+				break;
+			}
 			
 			node.resetResendCount();
 

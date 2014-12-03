@@ -324,30 +324,33 @@ public class ZWaveConverterHandler {
 		String commandClassName = bindingConfiguration.getArguments().get("command");
 		
 		if (commandClassName != null) {
-			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName), bindingConfiguration.getEndpoint());
-			
+			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName),
+					bindingConfiguration.getEndpoint());
+
 			if (commandClass == null) {
-				 logger.warn("No command class found for item = {}, command class name = {}, ignoring command.", itemName, commandClassName);
-				 return;
+				logger.warn("NODE {}: No command class found for item = {}. Class = {}({}), endpoint = {}. Ignoring command.",
+						node.getNodeId(), itemName, commandClassName,
+						CommandClass.getCommandClass(commandClassName).toString(), bindingConfiguration.getEndpoint());
+				return;
 			}
 		} else {
-			commandClass = resolveConverter(provider.getItem(itemName), node
-				, bindingConfiguration.getEndpoint());
+			commandClass = resolveConverter(provider.getItem(itemName), node, bindingConfiguration.getEndpoint());
 		}
-		
-		 if (commandClass == null) {
-			 logger.warn("No converter found for item = {}, ignoring command.", itemName);
-			 return;
-		 }
-		 
-		 ZWaveCommandClassConverter<ZWaveCommandClass> converter = (ZWaveCommandClassConverter<ZWaveCommandClass>) getConverter(commandClass.getCommandClass());
-		 
-		 if (converter == null) {
-			 logger.warn("No converter found for item = {}, ignoring command.", itemName);
-			 return;
-		 }
-		 
-		 converter.receiveCommand(provider.getItem(itemName), command, node, commandClass, bindingConfiguration.getEndpoint(), bindingConfiguration.getArguments());
+
+		if (commandClass == null) {
+			logger.warn("NODE {}: No converter found for item = {}, ignoring command.", node.getNodeId(), itemName);
+			return;
+		}
+
+		ZWaveCommandClassConverter<ZWaveCommandClass> converter = (ZWaveCommandClassConverter<ZWaveCommandClass>) getConverter(commandClass
+				.getCommandClass());
+
+		if (converter == null) {
+			logger.warn("NODE {}: No converter found for item = {}, ignoring command.", node.getNodeId(), itemName);
+			return;
+		}
+
+		converter.receiveCommand(provider.getItem(itemName), command, node, commandClass, bindingConfiguration.getEndpoint(), bindingConfiguration.getArguments());
 	}
 		
 }
