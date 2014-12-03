@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Thermostat OperatingState command class.
@@ -39,6 +40,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class ZWaveThermostatOperatingStateCommandClass extends ZWaveCommandClass
 implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatOperatingStateCommandClass.class);
 
 	private static final byte THERMOSTAT_OPERATING_STATE_GET              = 0x2;
