@@ -68,13 +68,17 @@ public class InsteonDevice {
 	public String			getProductKey()		{ return m_productKey; }
 	public boolean 			hasModemDBEntry()	{ return m_hasModemDBEntry; }
 	public DeviceStatus 	getStatus()			{ return m_status; }
-	public InsteonAddress	getAddress() 		{ return (m_address);	}
+	public InsteonAddress	getAddress() 		{ return (m_address); }
 	public Driver			getDriver()			{ return m_driver; }
 	public boolean 			hasValidPorts()		{ return (!m_ports.isEmpty());	}
 	public long				getPollInterval()	{ return m_pollInterval; }
 	public boolean			isModem()	 		{ return m_isModem; }
 	public DeviceFeature	getFeature(String f) { 	return m_features.get(f);	}
 	public HashMap<String, DeviceFeature> getFeatures() { return m_features; }
+	public byte				getX10HouseCode()	{ return (m_address.getX10HouseCode()); }
+	public byte				getX10UnitCode()	{ return (m_address.getX10UnitCode()); }
+
+	
 	public boolean			hasProductKey(String key) {
 		return m_productKey != null && m_productKey.equals(key);
 	}
@@ -230,6 +234,15 @@ public class InsteonDevice {
 		m.setByte("messageFlags", flags);
 		m.setByte("command1", cmd1);
 		m.setByte("command2", cmd2);
+		return m;
+	}
+
+	public Msg makeX10Message(byte rawX10, byte X10Flag)
+			throws FieldException, IOException {
+		Msg m = Msg.s_makeMessage("SendX10Message");
+		m.setByte("rawX10", rawX10);
+		m.setByte("X10Flag", X10Flag);
+		m.setQuietTime(300L);
 		return m;
 	}
 

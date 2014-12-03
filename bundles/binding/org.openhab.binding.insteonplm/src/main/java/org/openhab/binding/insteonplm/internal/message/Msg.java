@@ -198,6 +198,17 @@ public class Msg {
 		return false;
 	}
 	
+	public boolean isX10() {
+		try {
+			int cmd = getByte("Cmd") & 0xff;
+			if (cmd == 0x63 || cmd == 0x52) {
+				return true;
+			} 
+		} catch (FieldException e) {
+		}
+		return false;
+	}
+	
 	public void setDefinition(MsgDefinition d) {	m_definition = d; }
 	public void setQuietTime(long t) { m_quietTime = t; }
 

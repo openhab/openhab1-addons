@@ -457,6 +457,69 @@ public abstract class MessageHandler {
 		}
 	}
 	/**
+	 * Process X10 messages that are generated when another controller
+	 * changes the state of an X10 device.
+	 */
+	public static class X10OnHandler extends  MessageHandler {
+		X10OnHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			InsteonAddress a = f.getDevice().getAddress();
+			logger.info("X10OnHandler: set X10 device {} to ON", a);
+			m_feature.publishAll(OnOffType.ON);
+		}
+	}
+	public static class X10OffHandler extends  MessageHandler {
+		X10OffHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			InsteonAddress a = f.getDevice().getAddress();
+			logger.info("X10OffHandler: set X10 device {} to OFF", a);
+			m_feature.publishAll(OnOffType.OFF);
+		}
+	}
+	public static class X10BrightHandler extends  MessageHandler {
+		X10BrightHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			InsteonAddress a = f.getDevice().getAddress();
+			logger.debug("X10BrightHandler: ignoring brighten message for device {}", a);
+		}
+	}
+	public static class X10DimHandler extends  MessageHandler {
+		X10DimHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			InsteonAddress a = f.getDevice().getAddress();
+			logger.debug("X10DimHandler: ignoring dim message for device {}", a);
+		}
+	}
+	public static class X10OpenHandler extends  MessageHandler {
+		X10OpenHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			InsteonAddress a = f.getDevice().getAddress();
+			logger.info("X10OpenHandler: set X10 device {} to OPEN", a);
+			m_feature.publishAll(OpenClosedType.OPEN);
+		}
+	}
+	public static class X10ClosedHandler extends  MessageHandler {
+		X10ClosedHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			InsteonAddress a = f.getDevice().getAddress();
+			logger.info("X10ClosedHandler: set X10 device {} to CLOSED", a);
+			m_feature.publishAll(OpenClosedType.CLOSED);
+		}
+	}
+
+	/**
 	 * Factory method for creating handlers of a given name using java reflection
 	 * @param name the name of the handler to create
 	 * @param f the feature for which to create the handler
