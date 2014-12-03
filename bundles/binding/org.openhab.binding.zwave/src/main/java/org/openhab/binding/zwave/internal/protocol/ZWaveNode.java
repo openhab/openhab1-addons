@@ -53,13 +53,14 @@ public class ZWaveNode {
 	@XStreamOmitField
 	private ZWaveNodeStageAdvancer nodeStageAdvancer;
 
-	private int homeId;
-	private int nodeId;
+	@XStreamConverter(HexToIntegerConverter.class)
+	private int homeId = Integer.MAX_VALUE;
+	private int nodeId = Integer.MAX_VALUE;
 	private int version = Integer.MAX_VALUE;
 	
 	private String name;
 	private String location;
-	
+
 	@XStreamConverter(HexToIntegerConverter.class)
 	private int manufacturer = Integer.MAX_VALUE;
 	@XStreamConverter(HexToIntegerConverter.class)
