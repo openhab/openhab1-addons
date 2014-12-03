@@ -38,6 +38,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("binarySensorCommandClass")
 public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveBinarySensorCommandClass.class);
 
 	private static final int MAX_SUPPORTED_VERSION = 2;

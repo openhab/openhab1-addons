@@ -41,6 +41,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 	implements ZWaveCommandClassInitialization, ZWaveCommandClassDynamicState{
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveAssociationCommandClass.class);
 
 	private static final int ASSOCIATIONCMD_SET = 0x01;

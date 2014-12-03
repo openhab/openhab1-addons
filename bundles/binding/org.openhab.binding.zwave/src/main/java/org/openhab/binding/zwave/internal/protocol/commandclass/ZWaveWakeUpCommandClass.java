@@ -40,6 +40,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("WakeUpCommandClass")
 public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveCommandClassInitialization, ZWaveEventListener {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveWakeUpCommandClass.class);
 	private static final int MAX_SUPPORTED_VERSION = 2;
 

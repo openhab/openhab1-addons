@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Version command class. The Version Command Class is 
@@ -35,6 +36,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("versionCommandClass")
 public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveVersionCommandClass.class);
 
 	public static final int VERSION_GET = 0x11;

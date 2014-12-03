@@ -43,6 +43,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGetCommands,
 		ZWaveCommandClassInitialization, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveMeterCommandClass.class);
 	private static final int MAX_SUPPORTED_VERSION = 3;
 

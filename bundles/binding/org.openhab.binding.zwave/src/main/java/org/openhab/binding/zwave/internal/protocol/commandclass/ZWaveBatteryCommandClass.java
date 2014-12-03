@@ -37,6 +37,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("batteryCommandClass")
 public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveBatteryCommandClass.class);
 	
 	private static final int BATTERY_GET = 0x02;

@@ -36,6 +36,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("binarySwitchCommandClass")
 public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements ZWaveBasicCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveBinarySwitchCommandClass.class);
 	
 	private static final int SWITCH_BINARY_SET = 0x01;

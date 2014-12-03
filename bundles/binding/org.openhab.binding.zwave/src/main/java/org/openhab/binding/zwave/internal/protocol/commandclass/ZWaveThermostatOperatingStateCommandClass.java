@@ -37,6 +37,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 public class ZWaveThermostatOperatingStateCommandClass extends ZWaveCommandClass
 implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatOperatingStateCommandClass.class);
 
 	private static final byte THERMOSTAT_OPERATING_STATE_GET              = 0x2;

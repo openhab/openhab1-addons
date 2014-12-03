@@ -37,6 +37,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 public class ZWaveAlarmCommandClass extends ZWaveCommandClass 
 	implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveAlarmCommandClass.class);
 	
 	private static final int ALARM_GET = 0x04;

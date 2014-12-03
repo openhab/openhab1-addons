@@ -40,6 +40,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("multiLevelSwitchCommandClass")
 public class ZWaveMultiLevelSwitchCommandClass extends ZWaveCommandClass implements ZWaveBasicCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveMultiLevelSwitchCommandClass.class);
 	private static final int MAX_SUPPORTED_VERSION = 3;
 
