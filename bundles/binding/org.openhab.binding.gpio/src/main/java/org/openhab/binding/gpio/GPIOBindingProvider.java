@@ -18,16 +18,16 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface GPIOBindingProvider extends BindingProvider {
 
-	public static final int PINNUMBER_UNDEFINED = -1;
+	public static final String PINNAME_UNDEFINED = "Undefined Name";
 	public static final long DEBOUNCEINTERVAL_UNDEFINED = -1;
 
 	/**
-	 * Query for configured pin number.
+	 * Query for configured pin name.
 	 * 
 	 * @param itemName the name of the item for which we make query
-	 * @return the configured pin number
+	 * @return the configured pin name
 	 */
-	public int getPinNumber(String itemName);
+	public String getPinName(String itemName);
 
 	/**
 	 * Query for configured debounce interval.

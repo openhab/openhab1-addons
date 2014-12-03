@@ -11,6 +11,7 @@ package org.openhab.io.gpio.internal;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import org.eclipse.osgi.framework.console.CommandProvider;
 import org.openhab.io.gpio.GPIO;
 import org.openhab.io.gpio.linux.GPIOLinux;
 import org.osgi.framework.BundleActivator;
@@ -46,6 +47,7 @@ public class GPIOActivator implements BundleActivator {
 
 			context.registerService(GPIO.class, gpioLinux, null);
 			context.registerService(ManagedService.class, gpioLinux, properties);
+			context.registerService(CommandProvider.class, gpioLinux, null);
 		} else {
 			/* Throwing exception is not implemented because it's causing Equinox to constantly trying to start the bundle */
 			logger.error("No supported operating system was found, GPIO service won't be available");

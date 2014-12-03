@@ -25,15 +25,15 @@ public interface GPIO {
 	 * Further pin manipulations are made using methods exposed by
 	 * <code>GPIOPin</code> interface.
 	 * 
-	 * @param pinNumber platform specific pin number
+	 * @param pinName the name of pin
 	 * @return object representing the GPIO pin 
 	 * @throws IOException in case of inability to initialize the pin
 	 */
-	public GPIOPin reservePin(Integer pinNumber) throws IOException;
+	public GPIOPin reservePin(String pinName) throws IOException;
 
 	/**
 	 * Uninitializes backend object and free used resources. Further
-	 * using of this pin object is invalid.
+	 * use of this pin object is invalid.
 	 * 
 	 * @param pin object representing already initialized GPIO pin
 	 * @throws IOException in case of inability to uninitialize the pin
@@ -45,5 +45,13 @@ public interface GPIO {
 	 * 
 	 * @return current default debounce interval
 	 */
-	public long getDefaultDebounceInterval();
+	public long getDefaultDebounceInterval() throws IOException;
+
+	/**
+	 * Provides mapping between pin numbers and names. If no mapping exists
+	 * and the argument is a number this number will be returned.
+	 * 
+	 * @return pin number corresponding to provided name
+	 */
+	public int getPinNumberByName(String pinName) throws IOException;
 }

@@ -216,10 +216,17 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 						/* Existing or new item */
 						if (gpioPin != null) {
 
-							/* Pin number change requires deletion of old and creation of new backend object */ 
-							if (gpioPin.getPinNumber() != provider.getPinNumber(itemName)) {
-								deleteItem(itemName);
-								newItem(provider, itemName);
+							String newPinName = provider.getPinName(itemName);
+
+							if (gpioPin.getPinName() != newPinName) {
+								/* In some case both pinmap and items files can be changed for same name/number */
+								if (gpioPin.getPinNumber() != gpio.getPinNumberByName(newPinName)) {
+									/* Pin number change requires deletion of old and creation of new backend object */
+									deleteItem(itemName);
+									newItem(provider, itemName);
+								} else {
+									gpioPin.setPinName(newPinName);
+								}
 							} else {
 								int newActiveLow = provider.getActiveLow(itemName);
 								int currentDirection = gpioPin.getDirection();
@@ -292,7 +299,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 		try {
 			int direction;
 
-			GPIOPin gpioPin = gpio.reservePin(provider.getPinNumber(itemName));
+			GPIOPin gpioPin = gpio.reservePin(provider.getPinName(itemName));
 
 			gpioPin.setActiveLow(provider.getActiveLow(itemName));
 
