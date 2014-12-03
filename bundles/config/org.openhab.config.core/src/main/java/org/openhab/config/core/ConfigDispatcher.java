@@ -216,25 +216,24 @@ public class ConfigDispatcher implements ManagedService {
 
 	private static String[] parseLine(final String filePath, final String line) {
 		String trimmedLine = line.trim();
+		
 		if (trimmedLine.startsWith("#") || trimmedLine.isEmpty()) {
 			return null;
 		}
-
-		if (trimmedLine.substring(1).contains(":")) {
-			String pid = StringUtils.substringBefore(trimmedLine, ":");
-			String rest = trimmedLine.substring(pid.length() + 1);
-			if (!pid.contains(".")) {
+		
+		if (trimmedLine.substring(1).contains(":")) { 
+			String pid = StringUtils.substringBefore(line, ":");
+			String rest = line.substring(pid.length() + 1);
+			if(!pid.contains(".")) {
 				pid = "org.openhab." + pid;
 			}
-			if (!rest.isEmpty() && rest.substring(1).contains("=")) {
+			if(!rest.isEmpty() && rest.substring(1).contains("=")) {
 				String property = StringUtils.substringBefore(rest, "=");
 				String value = rest.substring(property.length() + 1);
-				String[] parsedLine = { pid.trim(), property.trim(), value.trim() };
-				logger.debug("Parsed configuration line {}:{}={}", (Object[]) parsedLine);
-				return parsedLine;
+				return new String[] { pid.trim(), property.trim(), value.trim() };
 			}
 		}
-
+		
 		logger.warn("Cannot parse line '{}' of main configuration file '{}'.", line, filePath);
 		return null;
 	}
@@ -358,5 +357,4 @@ public class ConfigDispatcher implements ManagedService {
 		
 	}
 
-	
 }

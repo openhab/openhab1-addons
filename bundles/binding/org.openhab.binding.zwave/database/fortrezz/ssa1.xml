@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>SSA1/SSA2</Model>
+	<Label lang="en">Siren and Strobe Alarm</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x22</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Delay before accept of Basic Set Off</Label>
+			<Help lang="en">Delay, from the time the siren-strobe turns on, before the Basic Set Off command is accepted. This could be used, for example, to avoid the situation where an associated window/door sensor turns the SSA1 alarm on and then immediately off when the window/door is opened and then quickly closed.
+			-128 seconds - -1 seconds	  ->  	Interpreted as unsigned integer for negative values sent in set command.</Help>
+		</Parameter>
+	</Configuration>
+</Product>

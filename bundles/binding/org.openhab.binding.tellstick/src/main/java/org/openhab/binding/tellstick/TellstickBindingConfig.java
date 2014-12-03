@@ -1,5 +1,6 @@
 package org.openhab.binding.tellstick;
 
+import org.openhab.binding.tellstick.internal.TellstickController;
 import org.openhab.core.binding.BindingConfig;
 
 /**
@@ -14,7 +15,9 @@ public class TellstickBindingConfig implements BindingConfig {
 	private TellstickValueSelector valueSelector;
 	private TellstickValueSelector usageSelector;
 	private String itemName;
+	private String protocol;
 	private int resend = 1;
+	private long resendInterval = TellstickController.DEFAULT_INTERVAL_BETWEEN_SEND;
 
 	public TellstickBindingConfig() {
 		super();
@@ -22,6 +25,7 @@ public class TellstickBindingConfig implements BindingConfig {
 
 	/**
 	 * Get the deviceId.
+	 * The deviceID in Telldus Center (tdtool -l)
 	 * 
 	 * @return The id of the device
 	 */
@@ -92,4 +96,37 @@ public class TellstickBindingConfig implements BindingConfig {
 		return resend;
 	}
 
+	/** Get the model of a sensor value.
+	 * oregon, fineoffset, madolyn
+	 * 
+	 * @return the model
+	 */
+	public String getProtocol() {
+		return protocol;
+	}
+
+	/** Set the model.
+	 * 
+	 * @param model the model to set
+	 */
+	public void setProtocol(String proto) {
+		this.protocol = proto;
+	}
+
+	/** 
+	 * Resend interval for this device. 
+	 * @return the interval in ms
+	 */
+	public long getResendInterval() {
+		return resendInterval;
+	}
+
+	/**
+	 * Set the resend interval for this device. 
+	 * @param resendInterval in ms
+	 */
+	public void setResendInterval(long resendInterval) {
+		this.resendInterval = resendInterval;
+	}
+	
 }

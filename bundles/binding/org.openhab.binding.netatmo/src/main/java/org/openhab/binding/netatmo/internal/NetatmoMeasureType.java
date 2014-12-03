@@ -18,11 +18,12 @@ import org.apache.commons.lang.StringUtils;
  * to be retrieved by the Netatmo binding
  */
 public enum NetatmoMeasureType {
-	CO2("co2"),
+	CO2("Co2"),
 	TEMPERATURE("Temperature"),
 	HUMIDITY("Humidity"),
 	NOISE("Noise"),
 	PRESSURE("Pressure"),
+	RAIN("Rain"),
 	WIFISTATUS("WifiStatus"),
 	ALTITUDE("Altitude"),
 	LATITUDE("Latitude"),
