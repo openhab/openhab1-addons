@@ -270,11 +270,10 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				logger.debug("NODE {}: Node advancer: PROTOINFO - send IdentifyNode", node.getNodeId());
 				addToQueue(new IdentifyNodeMessageClass().doRequest(node.getNodeId()));
 				break;
-				
+
 			case WAIT:
 				// If the node is listening, then we progress.
 				// If it's not listening, we'll wait a while before progressing with initialisation.
-				// TODO: How to progress? Wait for wakeup or some other message?
 				if(node.isListening() == true || node.isFrequentlyListening() == true) {
 					break;
 				}
@@ -707,7 +706,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				break;
 			}
 		} else if (event instanceof ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) {
-			// WAKEUP EVENT
+			// WAKEUP EVENT - only act if this is a wakeup notification
 			if (((ZWaveWakeUpCommandClass.ZWaveWakeUpEvent) event).getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_NOTIFICATION) {
 				return;
 			}
