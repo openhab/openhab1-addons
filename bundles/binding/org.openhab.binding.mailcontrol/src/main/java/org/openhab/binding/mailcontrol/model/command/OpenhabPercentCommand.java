@@ -17,11 +17,9 @@ import org.openhab.core.library.types.PercentType;
  * @author Andrey.Pereverzin
  * @since 1.6.0
  */
-public class OpenhabPercentCommand implements OpenhabCommandTransformable {
-    private final PercentDataType data;
-    
+public class OpenhabPercentCommand extends OpenhabCommand<PercentDataType, PercentCommand> implements OpenhabCommandTransformable<PercentType> {
     public OpenhabPercentCommand(PercentCommand command) {
-        this.data = (PercentDataType)command.getData();
+        super(command);
     }
 
     @Override

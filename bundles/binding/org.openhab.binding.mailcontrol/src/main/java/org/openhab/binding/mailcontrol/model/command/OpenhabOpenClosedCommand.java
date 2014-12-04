@@ -17,11 +17,9 @@ import org.openhab.core.library.types.OpenClosedType;
  * @author Andrey.Pereverzin
  * @since 1.6.0
  */
-public class OpenhabOpenClosedCommand implements OpenhabCommandTransformable {
-    private final OpenClosedDataType data;
-    
+public class OpenhabOpenClosedCommand extends OpenhabCommand<OpenClosedDataType, OpenClosedCommand> implements OpenhabCommandTransformable<OpenClosedType> {
     public OpenhabOpenClosedCommand(OpenClosedCommand command) {
-        this.data = (OpenClosedDataType)command.getData();
+        super(command);
     }
 
     @Override

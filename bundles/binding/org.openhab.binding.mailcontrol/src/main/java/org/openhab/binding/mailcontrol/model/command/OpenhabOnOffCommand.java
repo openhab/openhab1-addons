@@ -18,11 +18,9 @@ import org.openhab.core.library.types.OnOffType;
  * @author Andrey.Pereverzin
  * @since 1.6.0
  */
-public class OpenhabOnOffCommand implements OpenhabCommandTransformable {
-    private final OnOffDataType data;
-    
+public class OpenhabOnOffCommand extends OpenhabCommand<OnOffDataType, OnOffCommand> implements OpenhabCommandTransformable<OnOffType> {
     public OpenhabOnOffCommand(OnOffCommand command) {
-        this.data = (OnOffDataType)command.getData();
+        super(command);
     }
 
     @Override

@@ -27,23 +27,23 @@ import org.slf4j.LoggerFactory;
  * @author Andrey.Pereverzin
  * @since 1.6.0
  */
-public class MessagesProcessor {
+public class MessagesProcessor <T extends Command >{
     private static final Logger logger = LoggerFactory.getLogger(MessagesProcessor.class);
     
     private final GenericMessageTransformer messageTransformer;
-    private final ItemCommandProcessor itemCommandProcessor;
+    private final ItemCommandProcessor<T> itemCommandProcessor;
     
     public MessagesProcessor(EventPublisher eventPublisher) {
-        this.itemCommandProcessor = new ItemCommandProcessor(eventPublisher);
+        this.itemCommandProcessor = new ItemCommandProcessor<T>(eventPublisher);
         this.messageTransformer = new GenericMessageTransformer();
     }
     
-    public MessagesProcessor(ItemCommandProcessor itemCommandProcessor, GenericMessageTransformer messageTransformer) {
+    public MessagesProcessor(ItemCommandProcessor<T> itemCommandProcessor, GenericMessageTransformer messageTransformer) {
         this.itemCommandProcessor = itemCommandProcessor;
         this.messageTransformer = messageTransformer;
     }
     
-    public <T extends Command> void processReceivedMessages(Set<Object> messages) throws TransformException {
+    public void processReceivedMessages(Set<Object> messages) throws TransformException {
         logger.debug("Processing messages");
         for (Object msg: messages) {
             if (msg instanceof String) {

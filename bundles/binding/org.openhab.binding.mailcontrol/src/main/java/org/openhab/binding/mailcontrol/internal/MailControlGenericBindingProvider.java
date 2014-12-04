@@ -11,8 +11,6 @@ package org.openhab.binding.mailcontrol.internal;
 import org.openhab.binding.mailcontrol.MailControlBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
-import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 

@@ -13,6 +13,7 @@ import java.util.Set;
 import org.creek.mailcontrol.model.message.AbstractMessage;
 import org.creek.mailcontrol.model.message.TransformException;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,29 +21,30 @@ import org.creek.accessemail.connector.mail.ConnectorException;
 import org.creek.accessemail.connector.mail.MailConnector;
 
 /**
+ * Receives messages in JSON format and submits them for further processing.
  * 
  * @author Andrey.Pereverzin
  * @since 1.6.0
  */
-public class MessagesService {
+public class MessagesService <T extends Command> {
     private static final Logger logger = LoggerFactory.getLogger(MessagesService.class);
     
     private final MailConnector mailConnector;
-    private final MessagesProcessor messagesProcessor;
+    private final MessagesProcessor<T> messagesProcessor;
     
     static final String MAIL_SUBJECT_PREFIX = "OpenHAB";
 
     public MessagesService(MailConnector mailConnector, EventPublisher eventPublisher) {
         this.mailConnector = mailConnector;
-        this.messagesProcessor = new MessagesProcessor(eventPublisher);
+        this.messagesProcessor = new MessagesProcessor<T>(eventPublisher);
     }
 
-    public MessagesService(MailConnector mailConnector, MessagesProcessor messagesProcessor) {
+    public MessagesService(MailConnector mailConnector, MessagesProcessor<T> messagesProcessor) {
         this.mailConnector = mailConnector;
         this.messagesProcessor = messagesProcessor;
     }
 
-    public <T extends AbstractMessage>void sendMessage(T message, String... emails) throws ServiceException {
+    public <U extends AbstractMessage>void sendMessage(U message, String... emails) throws ServiceException {
         try {
             mailConnector.sendMessage(MAIL_SUBJECT_PREFIX, message.getSenderEmail(), message.toJSON().toString(), emails);
         } catch(ConnectorException ex) {

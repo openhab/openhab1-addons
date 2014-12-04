@@ -34,9 +34,9 @@ import org.slf4j.LoggerFactory;
  * @author Andrey.Pereverzin
  * @since 1.6.0
  */
-public class MailControlBinding extends AbstractActiveBinding<MailControlBindingProvider> implements ManagedService {
+public class MailControlBinding <T extends Command> extends AbstractActiveBinding<MailControlBindingProvider> implements ManagedService {
     private ConnectorBuilder connectorBuilder;
-    private MessagesService service;
+    private MessagesService<T> service;
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(MailControlBinding.class);
@@ -87,7 +87,7 @@ public class MailControlBinding extends AbstractActiveBinding<MailControlBinding
         logger.debug("execute() method is called!");
         try {
             MailConnector connector = connectorBuilder.createAndCheckMailConnector();
-            service = new MessagesService(connector, eventPublisher);
+            service = new MessagesService<T>(connector, eventPublisher);
             service.receiveMessages();
         } catch(ServiceException ex) {
             logger.error("Cannot receive messages", ex);

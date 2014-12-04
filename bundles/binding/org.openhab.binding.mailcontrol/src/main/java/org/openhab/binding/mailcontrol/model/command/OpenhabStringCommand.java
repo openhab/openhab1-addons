@@ -17,11 +17,9 @@ import org.openhab.core.library.types.StringType;
  * @author Andrey.Pereverzin
  * @since 1.6.0
  */
-public class OpenhabStringCommand implements OpenhabCommandTransformable {
-    private final StringDataType data;
-    
+public class OpenhabStringCommand extends OpenhabCommand<StringDataType, StringCommand> implements OpenhabCommandTransformable<StringType> {
     public OpenhabStringCommand(StringCommand command) {
-        this.data = (StringDataType)command.getData();
+        super(command);
     }
 
     @Override

@@ -19,11 +19,9 @@ import org.openhab.core.library.types.PercentType;
  * @author Andrey.Pereverzin
  * @since 1.6.0
  */
-public class OpenhabHSBCommand implements OpenhabCommandTransformable {
-    private final HSBDataType data;
-    
+public class OpenhabHSBCommand extends OpenhabCommand<HSBDataType, HSBCommand> implements OpenhabCommandTransformable<HSBType> {
     public OpenhabHSBCommand(HSBCommand command) {
-        this.data = (HSBDataType)command.getData();
+        super(command);
     }
 
     @Override

@@ -8,13 +8,18 @@
  */
 package org.openhab.binding.mailcontrol.model.command;
 
-import org.openhab.core.types.Command;
+import org.creek.mailcontrol.model.command.AbstractCommand;
+import org.creek.mailcontrol.model.types.GenericDataType;
 
 /**
  * 
  * @author Andrey.Pereverzin
  * @since 1.6.0
  */
-public interface OpenhabCommandTransformable<T extends Command> {
-    T getCommandValue();
+public abstract class OpenhabCommand<T extends GenericDataType, U extends AbstractCommand<T>> {
+    protected final T data;
+
+    protected OpenhabCommand(U command) {
+        this.data = command.getData();
+    }
 }

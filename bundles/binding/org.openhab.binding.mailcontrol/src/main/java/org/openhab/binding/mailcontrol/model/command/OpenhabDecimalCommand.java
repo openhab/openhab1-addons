@@ -17,11 +17,9 @@ import org.openhab.core.library.types.DecimalType;
  * @author Andrey.Pereverzin
  * @since 1.6.0
  */
-public class OpenhabDecimalCommand implements OpenhabCommandTransformable {
-    private final DecimalDataType data;
-
+public class OpenhabDecimalCommand extends OpenhabCommand<DecimalDataType, DecimalCommand> implements OpenhabCommandTransformable<DecimalType> {
     public OpenhabDecimalCommand(DecimalCommand command) {
-        this.data = (DecimalDataType)command.getData();
+        super(command);
     }
 
     @Override

@@ -17,11 +17,9 @@ import org.openhab.core.library.types.IncreaseDecreaseType;
  * @author Andrey.Pereverzin
  * @since 1.6.0
  */
-public class OpenhabIncreaseDecreaseCommand implements OpenhabCommandTransformable {
-    private final IncreaseDecreaseDataType data;
-    
+public class OpenhabIncreaseDecreaseCommand extends OpenhabCommand<IncreaseDecreaseDataType, IncreaseDecreaseCommand> implements OpenhabCommandTransformable<IncreaseDecreaseType> {
     public OpenhabIncreaseDecreaseCommand(IncreaseDecreaseCommand command) {
-        this.data = (IncreaseDecreaseDataType)command.getData();
+        super(command);
     }
 
     @Override

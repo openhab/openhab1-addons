@@ -47,42 +47,42 @@ import org.openhab.core.types.Command;
  * @author Andrey.Pereverzin
  * @since 1.6.0
  */
-public class ItemCommandProcessor {
+public class ItemCommandProcessor <T extends Command> {
     private final EventPublisher eventPublisher;
 
     public ItemCommandProcessor(EventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
     }
 
-    public <T extends Command> void processItemCommand(ItemCommand itemCommand) {
+    public void processItemCommand(ItemCommand itemCommand) {
         CommandTransformable command = itemCommand.getCommand();
         
-        OpenhabCommandTransformable openhabCommand = getOpenhabCommand(command);
+        OpenhabCommandTransformable<T> openhabCommand = getOpenhabCommand(command);
         eventPublisher.postCommand(itemCommand.getItemId(), openhabCommand.getCommandValue());
     }
 
-    private OpenhabCommandTransformable getOpenhabCommand(CommandTransformable command) {
+    @SuppressWarnings("unchecked")
+    private OpenhabCommandTransformable<T> getOpenhabCommand(CommandTransformable command) {
         CommandType commandType = command.getCommandType();
-        OpenhabCommandTransformable openhabCommand;
+
         if (commandType == DECIMAL) {
-            openhabCommand = new OpenhabDecimalCommand((DecimalCommand)command);
+            return (OpenhabCommandTransformable<T>)new OpenhabDecimalCommand((DecimalCommand)command);
         } else if (commandType == HSB) {
-            openhabCommand = new OpenhabHSBCommand((HSBCommand)command);
+            return (OpenhabCommandTransformable<T>)new OpenhabHSBCommand((HSBCommand)command);
         } else if (commandType == INCREASE_DECREASE) {
-            openhabCommand = new OpenhabIncreaseDecreaseCommand((IncreaseDecreaseCommand)command);
+            return (OpenhabCommandTransformable<T>)new OpenhabIncreaseDecreaseCommand((IncreaseDecreaseCommand)command);
         } else if (commandType == ON_OFF) {
-            openhabCommand = new OpenhabOnOffCommand((OnOffCommand)command);
+            return (OpenhabCommandTransformable<T>)new OpenhabOnOffCommand((OnOffCommand)command);
         } else if (commandType == OPEN_CLOSED) {
-            openhabCommand = new OpenhabOpenClosedCommand((OpenClosedCommand)command);
+            return (OpenhabCommandTransformable<T>)new OpenhabOpenClosedCommand((OpenClosedCommand)command);
         } else if (commandType == PERCENT) {
-            openhabCommand = new OpenhabPercentCommand((PercentCommand)command);
+            return (OpenhabCommandTransformable<T>)new OpenhabPercentCommand((PercentCommand)command);
         } else if (commandType == STOP_MOVE) {
-            openhabCommand = new OpenhabStopMoveCommand((StopMoveCommand)command);
+            return (OpenhabCommandTransformable<T>)new OpenhabStopMoveCommand((StopMoveCommand)command);
         } else if (commandType == STRING) {
-            openhabCommand = new OpenhabStringCommand((StringCommand)command);
+            return (OpenhabCommandTransformable<T>)new OpenhabStringCommand((StringCommand)command);
         } else /*if (commandType == UP_DOWN)*/ {
-            openhabCommand = new OpenhabUpDownCommand((UpDownCommand)command);
+            return (OpenhabCommandTransformable<T>)new OpenhabUpDownCommand((UpDownCommand)command);
         }
-        return openhabCommand;
     }
 }
