@@ -156,4 +156,20 @@ Example:
      <feature name="contact">GenericContact</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
+ <device productKey="X00.00.01">
+	 <model>X10 switch</model>
+	 <description>any simple X10 switch</description>
+	 <feature name="switch">X10Switch</feature>
+ </device>
+ <device productKey="X00.00.02">
+	 <model>X10 dimmer</model>
+	 <description>Generic X10 Dimmer without preset</description>
+	<feature name="switch">X10Switch</feature>
+	<feature name="dimmer">X10Dimmer</feature>
+ </device>
+ <device productKey="X00.00.03">
+	 <model>X10 motion sensor</model>
+	 <description>Generic X10 motion sensor</description>
+	<feature name="contact">X10Contact</feature>
+ </device>
 </xml>

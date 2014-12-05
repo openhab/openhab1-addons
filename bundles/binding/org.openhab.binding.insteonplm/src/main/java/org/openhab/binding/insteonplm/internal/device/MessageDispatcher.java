@@ -107,6 +107,24 @@ public abstract class MessageDispatcher {
 		}
 	}
 
+	private static class X10Dispatcher extends MessageDispatcher {
+		X10Dispatcher(DeviceFeature f) { super(f); }
+		@Override
+		public boolean dispatch(Msg msg, String port) {
+			try {
+				byte rawX10	= msg.getByte("rawX10");
+				int cmd = (rawX10 & 0x0f);
+				MessageHandler h = m_feature.getMsgHandlers().get(cmd);
+				if (h == null) h = m_feature.getDefaultMsgHandler();
+				logger.debug("{}:{}->{} {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+								h.getClass().getSimpleName(), msg);
+						h.handleMessage((byte)cmd, msg, m_feature, port);
+			} catch (FieldException e) {
+				logger.error("error parsing {}: ", msg, e);
+			}
+			return false;
+		}
+	}
 
 	private static class PassThroughDispatcher extends MessageDispatcher {
 		PassThroughDispatcher(DeviceFeature f) { super(f); }
@@ -131,6 +149,7 @@ public abstract class MessageDispatcher {
 		if (name.equals("PassThroughDispatcher")) return new PassThroughDispatcher(f);
 		else if (name.equals("DefaultDispatcher")) return new DefaultDispatcher(f);
 		else if (name.equals("GreedyDispatcher")) return new GreedyDispatcher(f);
+		else if (name.equals("X10Dispatcher")) return new X10Dispatcher(f);
 		else {
 			logger.error("unimplemented message dispatcher requested: {}", name);
 			return null;

@@ -209,6 +209,23 @@
 		<byte name = "userData14"/>
 		<byte name = "ACK/NACK"/>
 	</msg>
+	<msg name = "SendX10Message" length="4" direction = "TO_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x63</byte>
+		</header>
+		<byte name = "rawX10"></byte>
+		<byte name = "X10Flag">0x00</byte>
+	</msg>
+	<msg name = "SendX10MessageReply" length="5" direction = "FROM_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x63</byte>
+		</header>
+		<byte name = "rawX10"></byte>
+		<byte name = "X10Flag">0x00</byte>
+		<byte name = "ACK/NACK"/>
+	</msg>
 	<msg name = "GetFirstALLLinkRecord" length="2" direction = "TO_MODEM">
 		<header length="2">
 		 	<byte>0x02</byte>
