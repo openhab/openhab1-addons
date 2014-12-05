@@ -39,6 +39,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("associationCommandClass")
 public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveAssociationCommandClass.class);
 
 	private static final int ASSOCIATIONCMD_SET = 0x01;

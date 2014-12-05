@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Battery command class. Devices that support this
@@ -37,6 +38,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("batteryCommandClass")
 public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveBatteryCommandClass.class);
 	
 	private static final int BATTERY_GET = 0x02;

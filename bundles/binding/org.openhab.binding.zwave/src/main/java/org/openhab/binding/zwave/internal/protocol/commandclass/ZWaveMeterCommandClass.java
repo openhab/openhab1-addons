@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Meter command class. The Meter Command Class is intended for all
@@ -43,6 +44,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGetCommands,
 		ZWaveCommandClassInitialization, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveMeterCommandClass.class);
 	private static final int MAX_SUPPORTED_VERSION = 3;
 

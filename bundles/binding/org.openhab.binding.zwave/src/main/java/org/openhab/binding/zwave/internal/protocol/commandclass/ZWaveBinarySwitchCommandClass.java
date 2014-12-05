@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Binary Switch command class. Binary switches can be turned
@@ -36,6 +37,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("binarySwitchCommandClass")
 public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements ZWaveBasicCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveBinarySwitchCommandClass.class);
 	
 	private static final int SWITCH_BINARY_SET = 0x01;
