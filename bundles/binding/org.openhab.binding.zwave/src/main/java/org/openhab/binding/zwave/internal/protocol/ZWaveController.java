@@ -1086,7 +1086,7 @@ public class ZWaveController {
 			logger.debug("Starting Z-Wave send thread");
 			try {
 				while (!interrupted()) {
-					
+					// Take the next message from the send queue
 					try {
 						lastSentMessage = sendQueue.take();
 						logger.debug("Took message from queue for sending. Queue length = {}", sendQueue.size());
@@ -1094,32 +1094,42 @@ public class ZWaveController {
 						break;
 					}
 					
-					if (lastSentMessage == null)
+					// Check we got a message
+					if (lastSentMessage == null) {
 						continue;
-					
-					// If this message is a data packet to a node
-					// then make sure the node is not a battery device.
+					}
+
 					// If it's a battery device, it needs to be awake, or we queue the frame until it is.
-//					if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
-						ZWaveNode node = getNode(lastSentMessage.getMessageNode());
-						
-						if (node != null && !node.isListening() && !node.isFrequentlyListening() && lastSentMessage.getPriority() != SerialMessagePriority.Low) {
-							ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
-	
-							// If it's a battery operated device, check if it's awake or place in wake-up queue.
-							if (wakeUpCommandClass != null && !wakeUpCommandClass.processOutgoingWakeupMessage(lastSentMessage)) {
-								continue;
-							}
+					ZWaveNode node = getNode(lastSentMessage.getMessageNode());
+					
+					if (node != null && !node.isListening() && !node.isFrequentlyListening() && lastSentMessage.getPriority() != SerialMessagePriority.Low) {
+						ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
+
+						// If it's a battery operated device, check if it's awake or place in wake-up queue.
+						if (wakeUpCommandClass != null && !wakeUpCommandClass.processOutgoingWakeupMessage(lastSentMessage)) {
+							continue;
 						}
-//					}
+					}
 					
 					// A transaction consists of 3 parts -:
-					// 1) We send a REQUEST to the controller
-					// 2) The controller sends a RESPONSE almost immediately
+					// 1) We send a REQUEST to the controller.
+					// 2) The controller sends a RESPONSE almost immediately.
+					//    This RESPONSE typically tells us that the message was,
+					//    or wasn't, added to the sticks queue.
 					// 3) The controller sends a REQUEST once it's received
-					//    the response from the device
+					//    the response from the device.
+					//    We need to be aware that there is no synchronization of
+					//    messages between steps 2 and 3 so we can get other messages
+					//    received at step 3 that are not related to our original
+					//    request.
+					//
+					//    A transaction is completed at the completion of step 3.
+					//    However, for some messages, there may not be a further REQUEST
+					//    so the transaction is terminated at step 2. This is handled
+					//    by the serial message class processor by setting
+					//    transactionCompleted.
 					
-					// Clear the semaphore used to acknowledge the response.
+					// Clear the semaphore used to acknowledge the completed transaction.
 					transactionCompleted.drainPermits();
 					
 					// Send the REQUEST message TO the controller
@@ -1136,7 +1146,7 @@ public class ZWaveController {
 						logger.error("Got I/O exception {} during sending. exiting thread.", e.getLocalizedMessage());
 						break;
 					}
-					
+
 					// Now wait for the RESPONSE, or REQUEST message FROM the controller
 					// This will terminate when the transactionCompleted flag gets set
 					// So, this might complete on a RESPONSE if there's an error (or no further REQUEST expected)
@@ -1145,7 +1155,7 @@ public class ZWaveController {
 						if (!transactionCompleted.tryAcquire(1, zWaveResponseTimeout, TimeUnit.MILLISECONDS)) {
 							timeOutCount.incrementAndGet();
 							// If this is a SendData message, then we need to abort
-							// TODO: CDJ - not according to the doc? Should check this.
+							// TODO: CDJ - not according to the doc? Should check this. We don't know if this is after the response or not!
 							// TODO: CDJ - SendDataBort is sent if no response is received to the request!
 							if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 								buffer = new SerialMessage(SerialMessageClass.SendDataAbort, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.High).getMessageBuffer();

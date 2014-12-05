@@ -79,7 +79,11 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 		logger.trace("NODE {}: Found Command Class {}, passing to handleApplicationCommandRequest", nodeId, zwaveCommandClass.getCommandClass().getLabel());
 		zwaveCommandClass.handleApplicationCommandRequest(incomingMessage, 4, 0);
 
-		checkTransactionComplete(lastSentMessage, incomingMessage);
+		if(node.getNodeId() == lastSentMessage.getMessageNode()) {
+			checkTransactionComplete(lastSentMessage, incomingMessage);
+		} else {
+			logger.debug("Transaction not completed: node address inconsistent.");
+		}
 
 		return true;
 	}
