@@ -286,7 +286,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			healNode(node.getNodeId());
 		}
 
-		if (healNodes.size() == 0)
+		if (healNodes.size() == 0) {
 			return false;
 		}
 
