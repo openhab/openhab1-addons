@@ -19,7 +19,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Andrey.Pereverzin
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class MailControlGenericBindingProvider extends AbstractGenericBindingProvider implements MailControlBindingProvider {
 

@@ -14,7 +14,7 @@ import org.creek.mailcontrol.model.types.GenericDataType;
 /**
  * 
  * @author Andrey.Pereverzin
- * @since 1.6.0
+ * @since 1.7.0
  */
 public abstract class OpenhabCommand<T extends GenericDataType, U extends AbstractCommand<T>> {
     protected final T data;

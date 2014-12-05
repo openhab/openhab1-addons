@@ -24,7 +24,7 @@ import org.creek.accessemail.connector.mail.MailConnector;
  * Receives messages in JSON format and submits them for further processing.
  * 
  * @author Andrey.Pereverzin
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class MessagesService <T extends Command> {
     private static final Logger logger = LoggerFactory.getLogger(MessagesService.class);

@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author Andrey.Pereverzin
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class MessagesProcessor <T extends Command >{
     private static final Logger logger = LoggerFactory.getLogger(MessagesProcessor.class);

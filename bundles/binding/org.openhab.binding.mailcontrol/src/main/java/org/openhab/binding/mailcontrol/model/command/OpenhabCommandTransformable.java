@@ -13,7 +13,7 @@ import org.openhab.core.types.Command;
 /**
  * 
  * @author Andrey.Pereverzin
- * @since 1.6.0
+ * @since 1.7.0
  */
 public interface OpenhabCommandTransformable<T extends Command> {
     T getCommandValue();

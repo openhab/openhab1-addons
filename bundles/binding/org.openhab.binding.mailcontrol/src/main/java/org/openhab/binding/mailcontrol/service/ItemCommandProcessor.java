@@ -45,7 +45,7 @@ import org.openhab.core.types.Command;
 /**
  * 
  * @author Andrey.Pereverzin
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class ItemCommandProcessor <T extends Command> {
     private final EventPublisher eventPublisher;

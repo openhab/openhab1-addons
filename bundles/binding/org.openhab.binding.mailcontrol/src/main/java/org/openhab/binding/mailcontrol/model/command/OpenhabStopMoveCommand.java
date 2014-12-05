@@ -15,7 +15,7 @@ import org.openhab.core.library.types.StopMoveType;
 /**
  * 
  * @author Andrey.Pereverzin
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class OpenhabStopMoveCommand extends OpenhabCommand<StopMoveDataType, StopMoveCommand> implements OpenhabCommandTransformable<StopMoveType> {
     public OpenhabStopMoveCommand(StopMoveCommand command) {

@@ -34,7 +34,7 @@ import org.creek.accessemail.connector.mail.MailConnector;
 /**
  * 
  * @author Andrey.Pereverzin
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class ConnectorBuilder {
     Properties mailProperties;

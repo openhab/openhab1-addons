@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * like querying a Website/Device.
  * 
  * @author Andrey.Pereverzin
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class MailControlBinding <T extends Command> extends AbstractActiveBinding<MailControlBindingProvider> implements ManagedService {
     private ConnectorBuilder connectorBuilder;

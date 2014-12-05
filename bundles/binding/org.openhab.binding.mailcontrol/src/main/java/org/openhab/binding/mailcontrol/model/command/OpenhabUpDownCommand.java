@@ -15,7 +15,7 @@ import org.openhab.core.library.types.UpDownType;
 /**
  * 
  * @author Andrey.Pereverzin
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class OpenhabUpDownCommand extends OpenhabCommand<UpDownDataType, UpDownCommand> implements OpenhabCommandTransformable<UpDownType> {
     public OpenhabUpDownCommand(UpDownCommand command) {

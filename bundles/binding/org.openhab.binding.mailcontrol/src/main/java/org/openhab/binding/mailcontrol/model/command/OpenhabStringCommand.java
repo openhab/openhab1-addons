@@ -15,7 +15,7 @@ import org.openhab.core.library.types.StringType;
 /**
  * 
  * @author Andrey.Pereverzin
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class OpenhabStringCommand extends OpenhabCommand<StringDataType, StringCommand> implements OpenhabCommandTransformable<StringType> {
     public OpenhabStringCommand(StringCommand command) {
