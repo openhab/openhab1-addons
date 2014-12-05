@@ -331,7 +331,8 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 			// We now have the oldest node that we've heard from - ping it!
 			// If we've actually received from this node recently, the don't bother to ping
-			if (oldestNode != null && oldestNode.getLastReceived().getTime() < System.currentTimeMillis() - pollPeriod) {
+			if (oldestNode != null && oldestNode.getLastReceived() != null &&
+					oldestNode.getLastReceived().getTime() < System.currentTimeMillis() - pollPeriod) {
 				logger.debug("NODE {}: Sending periodic PING.", oldestNode.getNodeId());
 
 				// Reset the resend count - also resets the lastUpdate timer
