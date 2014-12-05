@@ -326,15 +326,13 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				// This avoids the situation where we only poll a dead node if we use the received time!
 				if (oldestNode == null) {
 					oldestNode = node;
-				} else if (node.getLastSent().getTime() < oldestNode.getLastSent().getTime()) {
+				} else if (node.getLastSent() == null || node.getLastSent().getTime() < oldestNode.getLastSent().getTime()) {
 					oldestNode = node;
 				}
 			}
 
-			// We now have the oldest node that we've heard from - ping it!
-			// If we've actually received from this node recently, the don't bother to ping
-			if (oldestNode != null && oldestNode.getLastReceived() != null &&
-					oldestNode.getLastReceived().getTime() < System.currentTimeMillis() - pollPeriod) {
+			// We now have the oldest node that we've sent to - ping it!
+			if (oldestNode != null) {
 				logger.debug("NODE {}: Sending periodic PING.", oldestNode.getNodeId());
 
 				// Reset the resend count - also resets the lastUpdate timer
