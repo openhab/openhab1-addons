@@ -419,18 +419,27 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// Handle retries
 		healing.retryCnt++;
 		if (healing.retryCnt >= HEAL_MAX_RETRIES) {
-			logger.debug("NODE {}: Network heal has exceeded maximum retries", healing.nodeId);
-			healing.failState = healing.state;
-			healing.state = HealState.FAILED;
-			networkHealNextTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
+			logger.debug("NODE {}: Maximum retries in state {}", healing.nodeId, healing.state);
 
-			// Save the XML file. This serialises the data we've just updated
-			// (neighbors etc)
-			healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
-			
-			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
-			nodeSerializer.SerializeNode(healing.node);
-			return;
+			// Since the GETNEIGHBORS state fails often, it seems better to
+			// continue with the heal than to abort here.
+			if (healing.state == HealState.GETNEIGHBORS) {
+				healing.state = healing.stateNext;
+				healing.retryCnt = 0;
+				logger.debug("NODE {}: Heal - continuing to state {}", healing.nodeId, healing.stateNext);
+			} else {
+				logger.debug("NODE {}: Network heal has exceeded maximum retries!", healing.nodeId);
+				healing.failState = healing.state;
+				healing.state = HealState.FAILED;
+	
+				// Save the XML file. This serialises the data we've just updated
+				// (neighbors etc)
+				healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
+				
+				ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
+				nodeSerializer.SerializeNode(healing.node);
+				return;
+			}
 		}
 
 		// Set the timeout
