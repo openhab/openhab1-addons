@@ -97,7 +97,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
+		logger.trace("execute() method is called!");
 		
 		try {
 			openPort();
@@ -123,11 +123,11 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 			logger.error(e.getMessage());					
 		}
 				
-		logger.debug("execute() method is finished!");
+		logger.trace("execute() method is finished!");
 	}
 		
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		logger.debug("update() method is called!");
+		logger.trace("update() method is called!");
 		if (config != null) {
 			// to override the default refresh interval one has to add a 
 			// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
@@ -200,10 +200,8 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
 	protected void resetAfterError() {
 		//Drop the rest
 		try {
-			//sleep(500);
 			logger.warn("error, dropping remaining data!");
 			readResponse();
-			//sleep(100);
 			wakeup();
 			writeString("RXTEST\n");
 			byte[] buf = readResponse();
