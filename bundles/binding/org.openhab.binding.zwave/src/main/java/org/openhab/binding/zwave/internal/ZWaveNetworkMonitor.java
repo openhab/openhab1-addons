@@ -230,10 +230,12 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		heal.lastChange = Calendar.getInstance().getTime();
 
 		// Find out if this is a listening device
-		if (node.isListening())
+		if (node.isListening()) {
 			heal.listening = true;
-		else
+		}
+		else {
 			heal.listening = false;
+		}
 		healNodes.put(nodeId, heal);
 
 		// Start the first heal next time around the loop
@@ -396,6 +398,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			// continue with the heal than to abort here.
 			if (healing.state == HealState.GETNEIGHBORS) {
 				healing.state = healing.stateNext;
+				healing.retryCnt = 0;
 				logger.debug("NODE {}: Heal - continuing to state {}", healing.nodeId, healing.stateNext);
 			} else {
 				logger.debug("NODE {}: Network heal has exceeded maximum retries!", healing.nodeId);
