@@ -41,7 +41,7 @@ public class SenseService implements PersistenceService, ManagedService {
 	private final static String DEFAULT_EVENT_URL = "http://api.sen.se/events/?sense_key=";
 
 	private boolean initialized = false;
-	
+
 	/**
 	 * @{inheritDoc}
 	 */

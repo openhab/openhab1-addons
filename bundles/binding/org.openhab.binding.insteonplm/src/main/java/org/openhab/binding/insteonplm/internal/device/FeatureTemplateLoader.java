@@ -21,6 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.openhab.binding.insteonplm.internal.utils.Utils;
 import org.openhab.binding.insteonplm.internal.utils.Utils.ParsingException;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
@@ -100,7 +101,8 @@ public class FeatureTemplateLoader {
 		if (e.getAttribute("default").equals("true")) {
 			f.setDefaultMessageHandler(handler);
 		} else {
-			int command = Utils.from0xHexString(e.getAttribute("cmd"));
+			String attr = e.getAttribute("cmd");
+			int command = (attr == null) ? 0 : Utils.from0xHexString(attr);
 			f.addMessageHandler(command, handler);
 		}
 	}
@@ -129,6 +131,7 @@ public class FeatureTemplateLoader {
 		if (c.equals("OnOffType")) return OnOffType.class;
 		else if (c.equals("PercentType")) return PercentType.class;
 		else if (c.equals("DecimalType")) return DecimalType.class;
+		else if (c.equals("IncreaseDecreaseType")) return IncreaseDecreaseType.class;
 		else throw new ParsingException("Unknown Command Type");
 	}
 	

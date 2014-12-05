@@ -89,6 +89,91 @@ public abstract class CommandHandler {
 			}
 		}
 	}
+	
+	public static class X10OnOffCommandHandler extends CommandHandler {
+		X10OnOffCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				byte houseCode = dev.getX10HouseCode();
+				byte houseUnitCode = (byte) (houseCode << 4 | dev.getX10UnitCode());
+				if (cmd == OnOffType.ON || cmd == OnOffType.OFF) {
+					byte houseCommandCode = (byte) (houseCode << 4 | (cmd == OnOffType.ON ?
+							X10.Command.ON.code() : X10.Command.OFF.code()));
+				Msg munit = dev.makeX10Message(houseUnitCode,(byte)0x00); // send unit code
+				dev.enqueueMessage(munit, m_feature);
+				Msg mcmd = dev.makeX10Message(houseCommandCode,(byte)0x80); // send command code
+				dev.enqueueMessage(mcmd, m_feature);
+					String onOff = cmd == OnOffType.ON ? "ON" : "OFF";
+					logger.info("X10OnOffCommandHandler: sent msg to switch {} {}", dev.getAddress(), onOff);
+				}
+			} catch (IOException e) {
+				logger.error("command send i/o error: ", e);
+			} catch (FieldException e) {
+				logger.error("command send message creation error ", e);
+			}
+		}
+	}
+
+	public static class X10PercentCommandHandler extends CommandHandler {
+		X10PercentCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				//
+				// I did not have hardware that would respond to the PRESET_DIM codes.
+				// This code path needs testing.
+				//
+				byte houseCode = dev.getX10HouseCode();
+				byte houseUnitCode = (byte) (houseCode << 4 | dev.getX10UnitCode());
+				Msg munit = dev.makeX10Message(houseUnitCode, (byte)0x00); // send unit code
+				dev.enqueueMessage(munit, m_feature);
+				PercentType pc = (PercentType)cmd;
+				logger.debug("changing level of {} to {}", dev.getAddress(), pc.intValue());
+				int level = (pc.intValue() * 32) / 100;
+				byte cmdCode = (level >= 16) ?
+							X10.Command.PRESET_DIM_2.code() : X10.Command.PRESET_DIM_1.code();
+				level = level % 16;
+				if (level <= 0) level = 0;
+				houseCode = (byte) s_X10CodeForLevel[level];
+				cmdCode |= (houseCode << 4);
+				Msg mcmd = dev.makeX10Message(cmdCode,(byte)0x80); // send command code
+				dev.enqueueMessage(mcmd, m_feature);
+			} catch (IOException e) {
+				logger.error("command send i/o error: ", e);
+			} catch (FieldException e) {
+				logger.error("command send message creation error ", e);
+			}
+		}
+		static private final int [] s_X10CodeForLevel = {0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
+	}
+
+	public static class X10IncreaseDecreaseCommandHandler extends CommandHandler {
+		X10IncreaseDecreaseCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				byte houseCode = dev.getX10HouseCode();
+				byte houseUnitCode = (byte) (houseCode << 4 | dev.getX10UnitCode());
+				if (cmd == IncreaseDecreaseType.INCREASE || cmd == IncreaseDecreaseType.DECREASE) {
+					byte houseCommandCode = (byte) (houseCode << 4 |
+								(cmd == IncreaseDecreaseType.INCREASE ?
+										X10.Command.BRIGHT.code() : X10.Command.DIM.code()));
+					Msg munit = dev.makeX10Message(houseUnitCode,(byte)0x00); // send unit code
+					dev.enqueueMessage(munit, m_feature);
+					Msg mcmd = dev.makeX10Message(houseCommandCode,(byte)0x80); // send command code
+					dev.enqueueMessage(mcmd, m_feature);
+					String bd = cmd == IncreaseDecreaseType.INCREASE ? "BRIGHTEN" : "DIM";
+					logger.info("X10IncreaseDecreaseCommandHandler: sent msg to switch {} {}",
+								dev.getAddress(), bd);
+				}
+			} catch (IOException e) {
+				logger.error("command send i/o error: ", e);
+			} catch (FieldException e) {
+				logger.error("command send message creation error ", e);
+			}
+		}
+	}
 
 	public static class IOLincOnOffCommandHandler extends CommandHandler {
 		IOLincOnOffCommandHandler(DeviceFeature f) { super(f); }

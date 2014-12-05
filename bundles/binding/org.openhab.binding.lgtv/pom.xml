@@ -10,6 +10,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.lgtv</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.lgtv</bundle.namespace>
+		<deb.name>openhab-addon-binding-lgtv</deb.name>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -20,7 +22,7 @@
 
 	<packaging>eclipse-plugin</packaging>
 
-<build>
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.vafer</groupId>
