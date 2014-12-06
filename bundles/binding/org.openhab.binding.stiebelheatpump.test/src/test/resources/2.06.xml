@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<requests>
+    <request name="Version" description="Read version information" requestByte="FD">
+        <recordDefinition name="Version" position="4" length="2" scale="0.01" dataType="Status" min="0" max="0" step="0.0" unit="" bitPosition="0"/>
+    </request>
+    <request name="Time" description="Reads Time" requestByte="FC">
+        <recordDefinition name="WeekDay" position="5" length="1" scale="1.0" dataType="Settings" min="0" max="6" step="1.0" unit="d" bitPosition="0"/>
+        <recordDefinition name="Hours" position="6" length="1" scale="1.0" dataType="Settings" min="0" max="23" step="1.0" unit="h" bitPosition="0"/>
+        <recordDefinition name="Minutes" position="7" length="1" scale="1.0" dataType="Settings" min="0" max="59" step="1.0" unit="min" bitPosition="0"/>
+        <recordDefinition name="Seconds" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="59" step="1.0" unit="s" bitPosition="0"/>
+        <recordDefinition name="Year" position="9" length="1" scale="1.0" dataType="Settings" min="0" max="99" step="1.0" unit="Y" bitPosition="0"/>
+        <recordDefinition name="Month" position="11" length="1" scale="1.0" dataType="Settings" min="1" max="12" step="1.0" unit="M" bitPosition="0"/>
+        <recordDefinition name="Day" position="12" length="1" scale="1.0" dataType="Settings" min="1" max="31" step="1.0" unit="d" bitPosition="0"/>
+    </request>
+    <request name="OperationCounters" description="Reads Operation counters and Time" requestByte="09">
+        <recordDefinition name="CompressorA" position="4" length="2" scale="1.0" dataType="Status" min="0" max="0" step="0.0" unit="h" bitPosition="0"/>
+        <recordDefinition name="CompressorB" position="6" length="2" scale="1.0" dataType="Status" min="0" max="0" step="0.0" unit="h" bitPosition="0"/>
+        <recordDefinition name="HeatingMode" position="8" length="2" scale="1.0" dataType="Status" min="0" max="0" step="0.0" unit="h" bitPosition="0"/>
+        <recordDefinition name="DHWMode" position="10" length="2" scale="1.0" dataType="Status" min="0" max="0" step="0.0" unit="h" bitPosition="0"/>
+        <recordDefinition name="CoolingMode" position="12" length="2" scale="1.0" dataType="Status" min="0" max="0" step="0.0" unit="h" bitPosition="0"/>
+    </request>
+    <request name="CurrentValues" description="Reads measurements" requestByte="FB">
+        <recordDefinition name="CollectorTemperatur" position="4" length="2" scale="0.1" dataType="Sensor" min="0" max="0" step="0.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="OutsideTemperature" position="6" length="2" scale="0.1" dataType="Sensor" min="0" max="0" step="0.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="FlowTemperature" position="8" length="2" scale="0.1" dataType="Sensor" min="0" max="0" step="0.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="ReturnTemperature" position="10" length="2" scale="0.1" dataType="Sensor" min="0" max="0" step="0.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="HotGasTemperature" position="12" length="2" scale="0.1" dataType="Sensor" min="0" max="0" step="0.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="CylinderTemperature" position="14" length="2" scale="0.1" dataType="Sensor" min="0" max="0" step="0.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="EvaporatorTemperature" position="20" length="2" scale="0.1" dataType="Sensor" min="0" max="0" step="0.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="CondenserTemperature" position="22" length="2" scale="0.1" dataType="Sensor" min="0" max="0" step="0.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="ExtractFanSpeed" position="30" length="1" scale="1.0" dataType="Sensor" min="0" max="0" step="0.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="SupplyFanSpeed" position="31" length="1" scale="1.0" dataType="Sensor" min="0" max="0" step="0.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="ExhaustFanSpeed" position="32" length="1" scale="1.0" dataType="Sensor" min="0" max="0" step="0.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="FilteredOutsideTemperature" position="34" length="2" scale="0.1" dataType="Sensor" min="0" max="0" step="0.0" unit="°C" bitPosition="0"/>
+    </request>
+    <request name="SettingsNominalValues" description="Reads nominal setting values" requestByte="17">
+        <recordDefinition name="P01RoomTemperatureStandardMode" position="4" length="2" scale="0.1" dataType="Settings" min="10" max="30" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P02RoomTemperatureSetbackMode" position="6" length="2" scale="0.1" dataType="Settings" min="10" max="30" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P03RoomTemperatureStandby" position="8" length="2" scale="0.1" dataType="Settings" min="10" max="30" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P04DHWTemperatureStandardMode" position="10" length="2" scale="0.1" dataType="Settings" min="10" max="55" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P05DHWTemperaturSetbackMode" position="12" length="2" scale="0.1" dataType="Settings" min="10" max="55" step="1.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P06DHWTemperatureStandby" position="14" length="2" scale="0.1" dataType="Settings" min="10" max="55" step="1.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P07FanStageStandardMode" position="16" length="1" scale="1.0" dataType="Settings" min="0" max="3" step="1.0" unit="" bitPosition="0"/>
+        <recordDefinition name="P08FanStageSetbackMode" position="17" length="1" scale="1.0" dataType="Settings" min="0" max="3" step="1.0" unit="" bitPosition="0"/>
+        <recordDefinition name="P09FanStageStandby" position="18" length="1" scale="1.0" dataType="Settings" min="0" max="3" step="1.0" unit="" bitPosition="0"/>
+        <recordDefinition name="P10HeatingCircuitTemperatureManualMode" position="19" length="2" scale="0.1" dataType="Settings" min="10" max="65" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P11DHWTemperatureManualMode" position="21" length="2" scale="0.1" dataType="Settings" min="10" max="65" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P12FanStageManualMode" position="23" length="1" scale="1.0" dataType="Settings" min="0" max="3" step="1.0" unit="" bitPosition="0"/>
+    </request>
+    <request name="SettingsVentilation" description="Reads ventilation setting values" requestByte="01">
+        <recordDefinition name="P37FanStageSupplyAir1" position="4" length="2" scale="1.0" dataType="Settings" min="60" max="280" step="1.0" unit="m^3/s" bitPosition="0"/>
+        <recordDefinition name="P38FanStageSupplyAir2" position="6" length="2" scale="1.0" dataType="Settings" min="60" max="280" step="1.0" unit="m^3/s" bitPosition="0"/>
+        <recordDefinition name="P39FanStageSupplyAir3" position="8" length="2" scale="1.0" dataType="Settings" min="60" max="280" step="1.0" unit="m^3/s" bitPosition="0"/>
+        <recordDefinition name="P40FanStageExtractyAir1" position="10" length="2" scale="1.0" dataType="Settings" min="60" max="280" step="1.0" unit="m^3/s" bitPosition="0"/>
+        <recordDefinition name="P41FanStageExtractyAir2" position="12" length="2" scale="1.0" dataType="Settings" min="60" max="280" step="1.0" unit="m^3/s" bitPosition="0"/>
+        <recordDefinition name="P42FanStageExtractyAir3" position="14" length="2" scale="1.0" dataType="Settings" min="60" max="280" step="1.0" unit="m^3/s" bitPosition="0"/>
+        <recordDefinition name="P43VentilationTimeUnscheduledStage3" position="16" length="2" scale="1.0" dataType="Settings" min="0" max="1000" step="1.0" unit="min" bitPosition="0"/>
+        <recordDefinition name="P44VentilationTimeUnscheduledStage2" position="18" length="2" scale="1.0" dataType="Settings" min="0" max="1000" step="1.0" unit="min" bitPosition="0"/>
+        <recordDefinition name="P45VentilationTimeUnscheduledStage1" position="20" length="2" scale="1.0" dataType="Settings" min="0" max="1000" step="1.0" unit="min" bitPosition="0"/>
+        <recordDefinition name="P46VentilationTimeUnscheduledStage0" position="22" length="2" scale="1.0" dataType="Settings" min="0" max="1000" step="1.0" unit="min" bitPosition="0"/>
+        <recordDefinition name="P75OperatingModePassiveCooling" position="24" length="1" scale="1.0" dataType="Settings" min="0" max="2" step="1.0" unit="" bitPosition="0"/>
+        <recordDefinition name="StoveFireplaceOperation" position="25" length="1" scale="1.0" dataType="Settings" min="0" max="4" step="1.0" unit="" bitPosition="0"/>
+    </request>
+    <request name="SettingsHeating1" description="Read heating setting values" requestByte="06">
+        <recordDefinition name="P21HysteresisHeating1" position="4" length="1" scale="0.1" dataType="Settings" min="0" max="10" step="0.1" unit="K" bitPosition="0"/>
+        <recordDefinition name="P22HysteresisHeating2" position="5" length="1" scale="0.1" dataType="Settings" min="0" max="10" step="0.1" unit="K" bitPosition="0"/>
+        <recordDefinition name="P23HysteresisHeating3" position="6" length="1" scale="0.1" dataType="Settings" min="0" max="5" step="0.1" unit="K" bitPosition="0"/>
+        <recordDefinition name="P24HysteresisHeating4" position="7" length="1" scale="0.1" dataType="Settings" min="0" max="5" step="0.1" unit="K" bitPosition="0"/>
+        <recordDefinition name="P25HysteresisHeating5" position="8" length="1" scale="0.1" dataType="Settings" min="0" max="5" step="0.1" unit="K" bitPosition="0"/>
+        <recordDefinition name="P26HysteresisHeating6" position="9" length="1" scale="0.1" dataType="Settings" min="0" max="5" step="0.1" unit="K" bitPosition="0"/>
+        <recordDefinition name="P27HysteresisHeating7" position="10" length="1" scale="0.1" dataType="Settings" min="0" max="5" step="0.1" unit="K" bitPosition="0"/>
+        <recordDefinition name="P28HysteresisHeating8" position="11" length="1" scale="0.1" dataType="Settings" min="0" max="5" step="0.1" unit="K" bitPosition="0"/>
+        <recordDefinition name="P29SwitchingHysteresisAsymmetry" position="12" length="1" scale="1.0" dataType="Settings" min="1" max="5" step="1.0" unit="" bitPosition="0"/>
+        <recordDefinition name="P30SwitchingValueIntegralPortionHeating" position="13" length="2" scale="1.0" dataType="Settings" min="1" max="999" step="1.0" unit="Kmin" bitPosition="0"/>
+        <recordDefinition name="P31AmountOfUnlockedElectricalBoosterStages" position="15" length="1" scale="1.0" dataType="Settings" min="0" max="3" step="1.0" unit="" bitPosition="0"/>
+        <recordDefinition name="MaximumFlowTemperatureHeatingMode" position="16" length="2" scale="0.1" dataType="Settings" min="10" max="75" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P49ChangeoverTemperatureSummerWinter" position="18" length="2" scale="0.1" dataType="Settings" min="10" max="25" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P50HysteresisChangeoverTemperatureSummerWinter" position="20" length="2" scale="0.1" dataType="Settings" min="1" max="5" step="0.1" unit="K" bitPosition="0"/>
+        <recordDefinition name="P77OutsideTemperatureAdjustment" position="22" length="2" scale="1.0" dataType="Settings" min="0" max="24" step="1.0" unit="h" bitPosition="0"/>
+        <recordDefinition name="P78BivalencePoint" position="24" length="2" scale="0.1" dataType="Settings" min="-10" max="20" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P79DelayedEnableReheating" position="26" length="1" scale="1.0" dataType="Settings" min="0" max="60" step="1.0" unit="min" bitPosition="0"/>
+        <recordDefinition name="OutputElectricalHeatingStage1" position="27" length="1" scale="0.1" dataType="Settings" min="0" max="10" step="1.0" unit="kW" bitPosition="0"/>
+    </request>
+    <request name="SettingsHeating2" description="Read heating setting values" requestByte="05">
+        <recordDefinition name="P13IncreaseHeatingHC1" position="4" length="2" scale="0.1" dataType="Settings" min="1" max="5" step="0.1" unit="" bitPosition="0"/>
+        <recordDefinition name="P14LowEndPointHeatingHC1" position="6" length="2" scale="0.1" dataType="Settings" min="1" max="20" step="0.1" unit="K" bitPosition="0"/>
+        <recordDefinition name="P15RoomInfluenceHeatingHC1" position="8" length="2" scale="0.1" dataType="Settings" min="1" max="10" step="0.1" unit="" bitPosition="0"/>
+        <recordDefinition name="P16IncreaseHeatingHC2" position="10" length="1" scale="0.1" dataType="Settings" min="0" max="5" step="0.1" unit="" bitPosition="0"/>
+        <recordDefinition name="P17LowEndPointHeatingHC2" position="11" length="2" scale="0.1" dataType="Settings" min="0" max="20" step="0.1" unit="K" bitPosition="0"/>
+        <recordDefinition name="P18RoomInfluenceHeatingHC2" position="13" length="2" scale="0.1" dataType="Settings" min="0" max="10" step="0.1" unit="" bitPosition="0"/>
+        <recordDefinition name="P19TemperatureCaptureReturnFlowHC1" position="15" length="1" scale="1.0" dataType="Settings" min="1" max="100" step="1.0" unit="%" bitPosition="0"/>
+        <recordDefinition name="P20TemperatureCaptureReturnFlowHC2" position="16" length="2" scale="1.0" dataType="Settings" min="1" max="100" step="1.0" unit="%" bitPosition="0"/>
+        <recordDefinition name="MaxSetHeatingCircuitTemperatureHC1" position="18" length="2" scale="0.1" dataType="Settings" min="20" max="65" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="MinSetHeatingCircuitTemperatureHC1" position="20" length="2" scale="0.1" dataType="Settings" min="5" max="40" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="MaxSetHeatingCircuitTemperatureHC2" position="22" length="2" scale="0.1" dataType="Settings" min="20" max="65" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="MinSetHeatingCircuitTemperatureHC2" position="24" length="2" scale="0.1" dataType="Settings" min="5" max="40" step="0.1" unit="°C" bitPosition="0"/>
+    </request>
+    <request name="SettingsEvaporator1" description="Read evaporator settings values" requestByte="03">
+        <recordDefinition name="UpperLimitEvaporatorTemperatureForDefrostEnd" position="4" length="2" scale="0.1" dataType="Settings" min="10" max="30" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="MaxEvaporatorDefrostTime" position="6" length="2" scale="1.0" dataType="Settings" min="2" max="20" step="1.0" unit="min" bitPosition="0"/>
+        <recordDefinition name="LimitTemperatureCondenserElectricalReheating" position="8" length="2" scale="0.1" dataType="Settings" min="10" max="30" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="LimitTemperatureCondenserDefrostTermination" position="10" length="2" scale="0.1" dataType="Settings" min="5" max="10" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P47CompressorRestartDelay" position="12" length="1" scale="1.0" dataType="Settings" min="0" max="20" step="1.0" unit="min" bitPosition="0"/>
+        <recordDefinition name="P48ExhaustFanSpeed" position="13" length="1" scale="1.0" dataType="Settings" min="10" max="100" step="1.0" unit="%" bitPosition="0"/>
+    </request>
+    <request name="SettingsEvaporator2" description="Read evaporator settings values" requestByte="04">
+        <recordDefinition name="MaxDefrostDurationAAExchanger" position="4" length="1" scale="1.0" dataType="Settings" min="0" max="120" step="1.0" unit="min" bitPosition="0"/>
+        <recordDefinition name="DefrostStartThreshold" position="5" length="2" scale="0.1" dataType="Settings" min="0" max="10" step="0.1" unit="%" bitPosition="0"/>
+        <recordDefinition name="VolumeFlowFilterReplacement" position="7" length="2" scale="1.0" dataType="Settings" min="50" max="100" step="1.0" unit="%" bitPosition="0"/>
+        <recordDefinition name="P85DefrostModeAAHE" position="9" length="1" scale="1.0" dataType="Settings" min="1" max="5" step="1.0" unit="" bitPosition="0"/>
+    </request>
+    <request name="SettingsDryHeatingProgram" description="Read dry heatingprogram settings values" requestByte="10">
+        <recordDefinition name="P70Start" position="4" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="1.0" unit="" bitPosition="0"/>
+        <recordDefinition name="P71BaseTemperature" position="5" length="2" scale="0.1" dataType="Settings" min="20" max="40" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P72PeakTemperature" position="7" length="2" scale="0.1" dataType="Settings" min="25" max="50" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P73BaseTemperatureDuration" position="9" length="2" scale="1.0" dataType="Settings" min="0" max="5" step="1.0" unit="days" bitPosition="0"/>
+        <recordDefinition name="P74Increase" position="11" length="2" scale="0.1" dataType="Settings" min="1" max="10" step="0.1" unit="K/days" bitPosition="0"/>
+    </request>
+    <request name="SettingsCirculationPump" description="Read circulation pump setting values" requestByte="0A">
+        <recordDefinition name="P54minStartupCycles" position="4" length="1" scale="1.0" dataType="Settings" min="1" max="24" step="1.0" unit="per/day" bitPosition="0"/>
+        <recordDefinition name="P55maxStartupCycles" position="5" length="2" scale="1.0" dataType="Settings" min="1" max="288" step="1.0" unit="per/day" bitPosition="0"/>
+        <recordDefinition name="P56OutsideTemperatureMinHeatingCycles" position="7" length="2" scale="0.1" dataType="Settings" min="0" max="20" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P57OutsideTemperatureMaxHeatingCycles" position="9" length="2" scale="0.1" dataType="Settings" min="0" max="25" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P58SuppressTemperatureCaptureDuringPumpStart" position="11" length="2" scale="1.0" dataType="Settings" min="0" max="120" step="1.0" unit="sec" bitPosition="0"/>
+    </request>
+    <request name="SettingsHeatingProgram" description="Read heating program 1 and 2 setting values" requestByte="0B">
+        <recordDefinition name="HP1StartTime" position="4" length="2" scale="1.0" dataType="Settings" min="0" max="2359" step="1.0" unit="hh:mm" bitPosition="0"/>
+        <recordDefinition name="HP1StopTime" position="6" length="2" scale="1.0" dataType="Settings" min="0" max="2359" step="1.0" unit="hh:mm" bitPosition="0"/>
+        <recordDefinition name="HP1Monday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="7"/>
+        <recordDefinition name="HP1Tuesday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="6"/>
+        <recordDefinition name="HP1Wednesday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="5"/>
+        <recordDefinition name="HP1Thusday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="4"/>
+        <recordDefinition name="HP1Friday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="3"/>
+        <recordDefinition name="HP1Saturday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="2"/>
+        <recordDefinition name="HP1Sunday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="1"/>
+        <recordDefinition name="HP1Enabled" position="9" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="On/Off" bitPosition="1"/>
+        <recordDefinition name="HP2StartTime" position="10" length="2" scale="1.0" dataType="Settings" min="0" max="2359" step="1.0" unit="hh:mm" bitPosition="0"/>
+        <recordDefinition name="HP2StopTime" position="12" length="2" scale="1.0" dataType="Settings" min="0" max="2359" step="1.0" unit="hh:mm" bitPosition="0"/>
+        <recordDefinition name="HP2Monday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="7"/>
+        <recordDefinition name="HP2Tuesday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="6"/>
+        <recordDefinition name="HP2Wednesday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="5"/>
+        <recordDefinition name="HP2Thusday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="4"/>
+        <recordDefinition name="HP2Friday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="3"/>
+        <recordDefinition name="HP2Saturday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="2"/>
+        <recordDefinition name="HP2Sunday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="1"/>
+        <recordDefinition name="HP2Enabled" position="15" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="On/Off" bitPosition="1"/>
+    </request>
+    <request name="SettingsDomesticHotWaterProgram" description="Read Domestic Water program setting values" requestByte="0C">
+        <recordDefinition name="BP1StartTime" position="4" length="2" scale="1.0" dataType="Settings" min="0" max="2359" step="1.0" unit="hh:mm" bitPosition="0"/>
+        <recordDefinition name="BP1StopTime" position="6" length="2" scale="1.0" dataType="Settings" min="0" max="2359" step="1.0" unit="hh:mm" bitPosition="0"/>
+        <recordDefinition name="BP1Monday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="7"/>
+        <recordDefinition name="BP1Tuesday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="6"/>
+        <recordDefinition name="BP1Wednesday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="5"/>
+        <recordDefinition name="BP1Thusday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="4"/>
+        <recordDefinition name="BP1Friday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="3"/>
+        <recordDefinition name="BP1Saturday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="2"/>
+        <recordDefinition name="BP1Sunday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="1"/>
+        <recordDefinition name="BP1Enabled" position="9" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="On/Off" bitPosition="1"/>
+    </request>
+    <request name="SettingsVentilationProgram" description="Read ventilation program 1 and 2 setting values" requestByte="0D">
+        <recordDefinition name="LP1StartTime" position="4" length="2" scale="1.0" dataType="Settings" min="0" max="2359" step="1.0" unit="hh:mm" bitPosition="0"/>
+        <recordDefinition name="LP1StopTime" position="6" length="2" scale="1.0" dataType="Settings" min="0" max="2359" step="1.0" unit="hh:mm" bitPosition="0"/>
+        <recordDefinition name="LP1Monday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="7"/>
+        <recordDefinition name="LP1Tuesday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="6"/>
+        <recordDefinition name="LP1Wednesday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="5"/>
+        <recordDefinition name="LP1Thusday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="4"/>
+        <recordDefinition name="LP1Friday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="3"/>
+        <recordDefinition name="LP1Saturday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="2"/>
+        <recordDefinition name="LP1Sunday" position="8" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="1"/>
+        <recordDefinition name="LP1Enabled" position="9" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="On/Off" bitPosition="1"/>
+        <recordDefinition name="LP2StartTime" position="10" length="2" scale="1.0" dataType="Settings" min="0" max="2359" step="1.0" unit="hh:mm" bitPosition="0"/>
+        <recordDefinition name="LP2StopTime" position="12" length="2" scale="1.0" dataType="Settings" min="0" max="2359" step="1.0" unit="hh:mm" bitPosition="0"/>
+        <recordDefinition name="LP2Monday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="7"/>
+        <recordDefinition name="LP2Tuesday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="6"/>
+        <recordDefinition name="LP2Wednesday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="5"/>
+        <recordDefinition name="LP2Thusday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="4"/>
+        <recordDefinition name="LP2Friday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="3"/>
+        <recordDefinition name="LP2Saturday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="2"/>
+        <recordDefinition name="LP2Sunday" position="14" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="weekday" bitPosition="1"/>
+        <recordDefinition name="LP2Enabled" position="15" length="1" scale="1.0" dataType="Settings" min="0" max="0" step="0.0" unit="On/Off" bitPosition="1"/>
+    </request>
+    <request name="SettingsAbsenceProgram" description="Read absence program setting values" requestByte="0F">
+        <recordDefinition name="AP0DurationUntilAbsenceStart" position="4" length="2" scale="0.1" dataType="Settings" min="0" max="2388" step="0.1" unit="h" bitPosition="0"/>
+        <recordDefinition name="AP0AbsenceDuration" position="6" length="2" scale="0.1" dataType="Settings" min="0" max="2388" step="0.1" unit="h" bitPosition="0"/>
+        <recordDefinition name="AP0EnableAbsenceProgram" position="7" length="1" scale="1.0" dataType="Settings" min="0" max="1" step="1.0" unit="" bitPosition="0"/>
+    </request>
+    <request name="SettingsRestartAndMixerTime" description="Read restart and mixer time setting values" requestByte="0E">
+        <recordDefinition name="P59RestartBeforSetbackEnd" position="4" length="2" scale="1.0" dataType="Settings" min="0" max="300" step="1.0" unit="min" bitPosition="0"/>
+        <recordDefinition name="MixerProportionalRange" position="6" length="2" scale="0.1" dataType="Settings" min="1" max="100" step="0.1" unit="%" bitPosition="0"/>
+        <recordDefinition name="DerivativeMixerTime" position="8" length="2" scale="0.1" dataType="Settings" min="1" max="100" step="0.1" unit="sec" bitPosition="0"/>
+        <recordDefinition name="MixerTimeInterval" position="10" length="2" scale="1.0" dataType="Settings" min="1" max="10" step="0.1" unit="K/day" bitPosition="0"/>
+    </request>
+    <request name="SettingsDomesticHotWater" description="Read Domestic Water setting values" requestByte="07">
+        <recordDefinition name="P32StartupHysteresisDHWTemperature" position="4" length="1" scale="0.1" dataType="Settings" min="2" max="10" step="0.1" unit="K" bitPosition="0"/>
+        <recordDefinition name="P33TimeDelayElectricalReheating" position="5" length="1" scale="1.0" dataType="Settings" min="0" max="240" step="1.0" unit="min" bitPosition="0"/>
+        <recordDefinition name="P34OutsideTemperatureLimitForImmElectricalReheating" position="6" length="2" scale="0.1" dataType="Settings" min="-10" max="10" step="1.0" unit="°C" bitPosition="0"/>
+        <recordDefinition name="P35PasteurisationInterval" position="8" length="1" scale="1.0" dataType="Settings" min="1" max="30" step="1.0" unit="K/day" bitPosition="0"/>
+        <recordDefinition name="P36MaxDurationDHWLoading" position="9" length="1" scale="1.0" dataType="Settings" min="6" max="12" step="1.0" unit="h" bitPosition="0"/>
+        <recordDefinition name="PasteurisationHeatupTemperature" position="10" length="2" scale="0.1" dataType="Settings" min="10" max="65" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="NoOfEnabledElectricalReheatStagesDHWLoading" position="12" length="1" scale="1.0" dataType="Settings" min="0" max="3" step="1.0" unit="" bitPosition="0"/>
+        <recordDefinition name="MaxFlowTemperatureDHWMode" position="13" length="2" scale="0.1" dataType="Settings" min="10" max="75" step="0.1" unit="°C" bitPosition="0"/>
+        <recordDefinition name="CompressorShutdownDHWLoading" position="15" length="1" scale="1.0" dataType="Settings" min="0" max="1" step="1.0" unit="" bitPosition="0"/>
+    </request>
+</requests>
