@@ -45,7 +45,6 @@ public class EcoTouchGenericBindingProvider extends
 	/**
 	 * @{inheritDoc}
 	 */
-	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
 		if (!(item instanceof NumberItem)) {
@@ -122,6 +121,14 @@ public class EcoTouchGenericBindingProvider extends
 			}
 		}
 		return itemNames.toArray(new String[itemNames.size()]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public EcoTouchTags getTypeForItemName(String itemName) {
+		EcoTouchBindingConfig heatpumpConfig = (EcoTouchBindingConfig) bindingConfigs.get(itemName);
+		return heatpumpConfig.getType();
 	}
 
 	/**

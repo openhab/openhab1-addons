@@ -77,7 +77,7 @@ public class EcoTouchBinding extends
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
 	@Override
 	protected void execute() {
@@ -161,12 +161,10 @@ public class EcoTouchBinding extends
 	}
 
 	/**
-	 * @{inheritDoc
+	 * @{inheritDoc}
 	 */
-	@Override
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
-		// logger.debug("updated() is called!");
 
 		setProperlyConfigured(false);
 
@@ -202,4 +200,49 @@ public class EcoTouchBinding extends
 		}
 	}
 
+	@Override
+	protected void internalReceiveCommand(String itemName, Command command) {
+		// find the EcoTouch binding for the itemName
+		EcoTouchTags tag = null;
+		for (EcoTouchBindingProvider provider : providers) {
+			try {
+				tag = provider.getTypeForItemName(itemName);
+				break;
+			} catch (Exception e) {}
+		}
+
+		EcoTouchConnector connector = new EcoTouchConnector(ip, username,
+				password, cookies);
+		int value = 0;
+		switch (tag.getType()) {
+		case Analog:
+			value = (int)(Double.parseDouble(command.toString()) * 10);
+			break;
+		case Word:
+			value = Integer.parseInt(command.toString());
+			break;
+		case Bitfield:
+			try {
+				value = connector.getValue(tag.getTagName());
+				int bitmask = 1 << tag.getBitNum();
+				if (Integer.parseInt(command.toString()) == 0) {
+					value = value & ~bitmask;
+				} else
+					value = value | bitmask;
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				return;
+			}
+		}
+		
+		try {
+			connector.setValue(tag.getTagName(), value);
+			// It does not make sense to check the returned value from setValue().
+			// Even if the tag is read only, one would get the newly set value back. 
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
