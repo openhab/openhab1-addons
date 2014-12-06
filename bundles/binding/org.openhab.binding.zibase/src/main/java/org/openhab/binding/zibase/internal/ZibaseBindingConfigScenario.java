@@ -10,6 +10,7 @@ package org.openhab.binding.zibase.internal;
 
 import java.lang.annotation.Inherited;
 
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 
@@ -27,7 +28,7 @@ public class ZibaseBindingConfigScenario extends ZibaseBindingConfig {
 	public ZibaseBindingConfigScenario(String[] configParameters) {
 		super(configParameters);
 		
-		scenarionNumber = Integer.parseInt(configParameters[ZibaseBindingConfig.POS_VALUES]);
+		scenarionNumber = Integer.parseInt(configParameters[ZibaseBindingConfig.POS_ID]);
 	}
 
 	/**
@@ -46,7 +47,7 @@ public class ZibaseBindingConfigScenario extends ZibaseBindingConfig {
 		logger.info("Checking config for scenario item " + this.getId());
 		
 		try {
-			Integer.parseInt(this.values[ZibaseBindingConfig.POS_VALUES]);
+			Integer.parseInt(this.values[ZibaseBindingConfig.POS_ID]);
 			return true;
 		} catch (NumberFormatException ex) {
 			logger.error("bad scenario id : " + this.getId());
@@ -56,13 +57,11 @@ public class ZibaseBindingConfigScenario extends ZibaseBindingConfig {
 	}
 
 	/**
-	 * TODO : check whether info about executed scenario can be used
 	 * {@link Inherited}
 	 */
 	@Override
 	public State getOpenhabStateFromZibaseValue(Zibase zibase, String zbResponseStr) {
-		// TODO Auto-generated method stub
-		return null;
+		return new DecimalType(System.currentTimeMillis());
 	}
 
 }
