@@ -8,24 +8,15 @@
  */
 package org.openhab.binding.stiebelheatpump.internal;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.DatatypeConverter;
-
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.stiebelheatpump.StiebelHeatPumpBindingProvider;
-import org.openhab.binding.stiebelheatpump.protocol.DataParser;
-import org.openhab.binding.stiebelheatpump.protocol.ProtocolConnector;
-import org.openhab.binding.stiebelheatpump.protocol.RecordDefinition;
 import org.openhab.binding.stiebelheatpump.protocol.Request;
-import org.openhab.binding.stiebelheatpump.protocol.SerialConnector;
-import org.openhab.binding.stiebelheatpump.protocol.RecordDefinition.Type;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;

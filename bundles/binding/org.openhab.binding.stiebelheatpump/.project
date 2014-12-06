@@ -3,6 +3,7 @@
 	<name>org.openhab.binding.stiebelheatpump</name>
 	<comment>This is the dmlsMeter binding of the open Home Automation Bus (openHAB)</comment>
 	<projects>
+		<project>org.openhab.core.persistence</project>
 		<project>org.openhab.io.transport.serial</project>
 	</projects>
 	<buildSpec>
