@@ -47,7 +47,21 @@ public class EcoTouchGenericBindingProvider extends
 	 */
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		if (!(item instanceof NumberItem)) {
+		boolean ok = true;
+		try {
+			EcoTouchTags tag = EcoTouchTags.fromString(bindingConfig);
+			if (!tag.getItemClass().isInstance(item)) {
+				throw new BindingConfigParseException(
+						"item '"
+								+ item.getName()
+								+ "' is of type '"
+								+ item.getClass().getSimpleName()
+								+ "', only " + tag.getItemClass().getSimpleName() + " are allowed - please check your *.items configuration");
+			}
+		} catch (Exception e) {
+			ok = false;
+		}
+		if (!ok) {
 			throw new BindingConfigParseException(
 					"item '"
 							+ item.getName()

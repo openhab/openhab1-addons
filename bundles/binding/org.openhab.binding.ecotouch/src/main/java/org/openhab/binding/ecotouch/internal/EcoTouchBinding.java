@@ -19,7 +19,9 @@ import org.openhab.binding.ecotouch.EcoTouchBindingProvider;
 import org.openhab.binding.ecotouch.EcoTouchTags;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -131,12 +133,28 @@ public class EcoTouchBinding extends
 						handleEventType(new DecimalType(decimal), item);
 					} else if (item.getType() == EcoTouchTags.Type.Word) {
 						// integer
-						handleEventType(new DecimalType(heatpumpValue), item);
+						if (item.getItemClass() == NumberItem.class)
+							handleEventType(new DecimalType(heatpumpValue), item);
+						else {
+							// assume SwitchItem
+							if (heatpumpValue == 0)
+								handleEventType(OnOffType.OFF, item);
+							else
+								handleEventType(OnOffType.ON, item);
+						}
 					} else {
 						// bit field
 						heatpumpValue >>= item.getBitNum();
 						heatpumpValue &= 1;
-						handleEventType(new DecimalType(heatpumpValue), item);
+						if (item.getItemClass() == NumberItem.class)
+							handleEventType(new DecimalType(heatpumpValue), item);
+						else {
+							// assume SwitchItem
+							if (heatpumpValue == 0)
+								handleEventType(OnOffType.OFF, item);
+							else
+								handleEventType(OnOffType.ON, item);
+						}
 					}
 				}
 			}
@@ -219,13 +237,18 @@ public class EcoTouchBinding extends
 			value = (int)(Double.parseDouble(command.toString()) * 10);
 			break;
 		case Word:
-			value = Integer.parseInt(command.toString());
+			if (command == OnOffType.ON)
+				value = 1;
+			else if (command == OnOffType.OFF)
+				value = 0;
+			else
+				value = Integer.parseInt(command.toString());
 			break;
 		case Bitfield:
 			try {
 				value = connector.getValue(tag.getTagName());
 				int bitmask = 1 << tag.getBitNum();
-				if (Integer.parseInt(command.toString()) == 0) {
+				if (command == OnOffType.OFF || Integer.parseInt(command.toString()) == 0) {
 					value = value & ~bitmask;
 				} else
 					value = value | bitmask;
