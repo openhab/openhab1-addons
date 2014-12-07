@@ -96,7 +96,10 @@ Example:
  <device productKey="F00.00.10">
      <model>2342-2</model>
      <description>Mini Remote</description>
-     <feature name="switch">MultiButtonRemote</feature>
+     <feature name="buttonA">RemoteButtonA</feature>
+     <feature name="buttonB">RemoteButtonB</feature>
+     <feature name="buttonC">RemoteButtonC</feature>
+     <feature name="buttonD">RemoteButtonD</feature>     
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -156,6 +159,18 @@ Example:
      <feature name="contact">GenericContact</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
+ 
+ <device productKey="F00.00.15">
+     <model>2487S</model>
+     <description>KeypadLinc On/Off 6-Button Scene Control </description>
+     <feature name="loadswitch">LoadButton</feature>
+     <feature name="keypadbuttonA">KeyPadButtonA</feature>
+     <feature name="keypadbuttonB">KeyPadButtonB</feature>
+     <feature name="keypadbuttonC">KeyPadButtonC</feature>
+     <feature name="keypadbuttonD">KeyPadButtonD</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+ 
  <device productKey="X00.00.01">
 	 <model>X10 switch</model>
 	 <description>any simple X10 switch</description>
