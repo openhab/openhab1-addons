@@ -5,11 +5,6 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
- * @author Tom De Vlaminck
- * @serial 1.0
- * @since 1.5.0
- * 
  */
 package org.openhab.binding.bticino.internal;
 
@@ -24,7 +19,6 @@ import org.slf4j.LoggerFactory;
  * @author Tom De Vlaminck
  * @serial 1.0
  * @since 1.5.0
- * 
  */
 public final class BticinoActivator implements BundleActivator
 {

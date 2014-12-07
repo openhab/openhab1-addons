@@ -5,11 +5,6 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
- * @author Tom De Vlaminck
- * @serial 1.0
- * @since 1.5.0
- * 
  */
 package org.openhab.binding.bticino.internal;
 
@@ -32,15 +27,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * This class implements a binding of bticino devices to openHAB. The binding
  * configurations are provided by the {@link GenericItemProvider}.
- * </p>
  * 
  * @author Tom De Vlaminck
  * @serial 1.0
  * @since 1.5.0
- * 
  */
 public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
 		implements ManagedService
@@ -65,7 +57,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
 	private Map<String, BticinoConfig> m_bticino_devices_config = new HashMap<String, BticinoConfig>();
 	// (interfaceid, device)
 	private Map<String, BticinoDevice> m_bticino_devices = new HashMap<String, BticinoDevice>();
-	
+
 	static class BticinoConfig
 	{
 		String id;
@@ -78,8 +70,8 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
 		@Override
 		public String toString()
 		{
-			return "Bticino [id=" + id + ", host=" + host + ", port=" + port + ", rescan secs=" + rescan_secs
-					+ "]";
+			return "Bticino [id=" + id + ", host=" + host + ", port=" + port
+					+ ", rescan secs=" + rescan_secs + "]";
 		}
 	}
 
@@ -132,7 +124,8 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
 	}
 
 	/**
-	 * Returns the BticinoBindingConfig(s) associated with the who / where config
+	 * Returns the BticinoBindingConfig(s) associated with the who / where
+	 * config
 	 * 
 	 * @param who
 	 * @param where
@@ -265,12 +258,10 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
 				else if ("port".equals(configKey))
 				{
 					l_bticino_config.port = Integer.valueOf(value);
-				} 
-				else if ("rescan_secs".equals(configKey))
+				} else if ("rescan_secs".equals(configKey))
 				{
 					l_bticino_config.rescan_secs = Integer.valueOf(value);
-				} 
-				else
+				} else
 				{
 					throw new ConfigurationException(configKey,
 							"the given configKey '" + configKey
@@ -303,7 +294,8 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider>
 			l_bticino_device.setEventPublisher(eventPublisher);
 			l_bticino_device.setHost(l_current_device_config.host);
 			l_bticino_device.setPort(l_current_device_config.port);
-			l_bticino_device.setRescanInterval(l_current_device_config.rescan_secs);
+			l_bticino_device
+					.setRescanInterval(l_current_device_config.rescan_secs);
 			try
 			{
 				l_bticino_device.initialize();

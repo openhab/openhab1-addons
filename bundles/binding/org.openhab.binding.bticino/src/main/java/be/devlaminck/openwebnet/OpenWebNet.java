@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2014, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package be.devlaminck.openwebnet;
 
 import java.io.IOException;
@@ -14,21 +22,13 @@ import com.myhome.fcrisciani.exception.MalformedCommandOPEN;
 /**
  * OpenWebNet - OpenHab device communicator Based on code from Mauro Cicolella
  * (as part of the FREEDOMOTIC framework)
- * (https://github.com/freedomotic/freedomotic/tree/master/plugins/devices/openwebnet) 
- * and on code of Flavio Fcrisciani released as EPL
- * (https://github.com/fcrisciani/java-myhome-library)
- * 
- * Copyright (c) 2010-2014, openHAB.org and others.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * (https://github.com/freedomotic/freedomotic
+ * /tree/master/plugins/devices/openwebnet) and on code of Flavio Fcrisciani
+ * released as EPL (https://github.com/fcrisciani/java-myhome-library)
  * 
  * @author Tom De Vlaminck
  * @serial 1.0
  * @since 1.5.0
- * 
  */
 public class OpenWebNet extends Thread
 {
@@ -76,18 +76,20 @@ public class OpenWebNet extends Thread
 		// create thread
 		monitorSessionThread = new MonitorSessionThread(this, host, port);
 		// start first bus scan 30 secs later
-		m_last_bus_scan = new Date((new Date()).getTime() - (1000 * m_bus_scan_interval_secs) + (1000 * m_first_scan_delay_secs));
+		m_last_bus_scan = new Date((new Date()).getTime()
+				- (1000 * m_bus_scan_interval_secs)
+				+ (1000 * m_first_scan_delay_secs));
 		// start thread
 		monitorSessionThread.start();
-		logger.info("Connected to [" + host + ":" + port + "], Rescan bus every [" + 
-		m_bus_scan_interval_secs + 
-		"] seconds, first scan over [" + 
-		(((new Date()).getTime() - m_last_bus_scan.getTime()) / 1000) + 
-		"] seconds.");
+		logger.info("Connected to [" + host + ":" + port
+				+ "], Rescan bus every [" + m_bus_scan_interval_secs
+				+ "] seconds, first scan over ["
+				+ (((new Date()).getTime() - m_last_bus_scan.getTime()) / 1000)
+				+ "] seconds.");
 		// start the processing thread
 		start();
 	}
-	
+
 	/*
 	 * Actuator side
 	 */
@@ -121,12 +123,11 @@ public class OpenWebNet extends Thread
 		} catch (Exception p_i_ex)
 		{
 			logger.error("Openwebnet.run, Exception : " + p_i_ex.getMessage());
-		}
-		  finally
+		} finally
 		{
-		    // interrupt handler on monitor thread will stop thread
-	        monitorSessionThread.interrupt();
-	        logger.info("Stopped monitorSessionThread thread");
+			// interrupt handler on monitor thread will stop thread
+			monitorSessionThread.interrupt();
+			logger.info("Stopped monitorSessionThread thread");
 		}
 		logger.info("Stopped OpenWebNet thread");
 	}

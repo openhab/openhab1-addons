@@ -5,11 +5,6 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * @author Tom De Vlaminck
- * @serial 1.0
- * @since 1.5.0
- * 
  */
 package org.openhab.binding.bticino.internal;
 
@@ -109,7 +104,6 @@ public class BticinoGenericBindingProvider extends
 		return new BticinoBindingConfig(item, bindingConfig);
 	}
 
-
 	public BticinoBindingConfig getConfig(String name)
 	{
 		return (BticinoBindingConfig) bindingConfigs.get(name);
@@ -130,7 +124,7 @@ public class BticinoGenericBindingProvider extends
 		 * bus
 		 */
 		String gatewayID;
-		
+
 		/**
 		 * WHO
 		 */
@@ -143,7 +137,7 @@ public class BticinoGenericBindingProvider extends
 		 * WHERE
 		 */
 		String where;
-		
+
 		/**
 		 * OpenHAB Item to be configured
 		 */
@@ -174,7 +168,7 @@ public class BticinoGenericBindingProvider extends
 			try
 			{
 				HashMap<String, String> l_decom_config = bticinoBindingConfigDecompose(config);
-				
+
 				// the gateway name is defined with the "if" property
 				// when this is not defined, we revert to default (this
 				// must be present in openhab*.cfg
@@ -182,49 +176,51 @@ public class BticinoGenericBindingProvider extends
 				if (l_decom_config.containsKey("if"))
 					gateway = l_decom_config.get("if");
 				gatewayID = gateway;
-				
+
 				// WHO
 				if (l_decom_config.containsKey("who"))
 				{
 					who = l_decom_config.get("who");
-				}
-				else
+				} else
 				{
-					throw new Exception("who is missing in the configuration : " + config);
+					throw new Exception(
+							"who is missing in the configuration : " + config);
 				}
-				
+
 				// WHAT
 				if (l_decom_config.containsKey("what"))
 				{
 					what = l_decom_config.get("what");
-				}
-				else
+				} else
 				{
-					throw new Exception("what is missing in the configuration : " + config);
+					throw new Exception(
+							"what is missing in the configuration : " + config);
 				}
-				
+
 				// WHERE
 				if (l_decom_config.containsKey("where"))
 				{
 					where = l_decom_config.get("where");
-				}
-				else
+				} else
 				{
-					throw new Exception("where is missing in the configuration : " + config);
+					throw new Exception(
+							"where is missing in the configuration : " + config);
 				}
 			} catch (Exception e)
 			{
 				throw new BindingConfigParseException(e.getMessage());
 			}
 		}
-		
+
 		/**
-		 * bticino="if=0;who=1;what=1;where=23"
-		 * if => support for multiple MH200 devices (= several houses through VPN (wet dreams :,) )
+		 * bticino="if=0;who=1;what=1;where=23" if => support for multiple MH200
+		 * devices (= several houses through VPN (wet dreams :,) )
+		 * 
 		 * @param p_binding_config
 		 * @return
 		 */
-		private HashMap<String, String> bticinoBindingConfigDecompose(String p_binding_config)
+		private HashMap<String, String> bticinoBindingConfigDecompose(
+				String p_binding_config)
 		{
 			HashMap<String, String> l_configuration_hm = new HashMap<String, String>();
 			// who=1;what=1;where=23

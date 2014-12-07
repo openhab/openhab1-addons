@@ -5,11 +5,6 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
- * @author Tom De Vlaminck
- * @serial 1.0
- * @since 1.5.0
- * 
  */
 package org.openhab.binding.bticino.internal;
 
@@ -39,7 +34,6 @@ import org.slf4j.LoggerFactory;
  * @author Tom De Vlaminck
  * @serial 1.0
  * @since 1.5.0
- * 
  */
 public class BticinoDevice implements IBticinoEventListener
 {
@@ -185,8 +179,10 @@ public class BticinoDevice implements IBticinoEventListener
 				// CEN Basic & Evolved
 				case 15:
 				{
-					// Only for the on type, send a CEN event (aka a pushbutton device)
-					// the CEN can start a scenario on eg. a MH200N gateway device
+					// Only for the on type, send a CEN event (aka a pushbutton
+					// device)
+					// the CEN can start a scenario on eg. a MH200N gateway
+					// device
 					if (OnOffType.ON.equals(command))
 						l_pr.addProperty("what", itemBindingConfig.what);
 					break;
@@ -242,9 +238,10 @@ public class BticinoDevice implements IBticinoEventListener
 						.equalsIgnoreCase("lighting"))
 				{
 					logger.debug("Gateway [" + m_gateway_id
-							+ "], RECEIVED EVENT FOR SwitchItem [" + l_item.getName()
+							+ "], RECEIVED EVENT FOR SwitchItem ["
+							+ l_item.getName()
 							+ "], TRANSLATE TO OPENHAB BUS EVENT");
-					
+
 					if (p_protocol_read.getProperty("messageDescription")
 							.equalsIgnoreCase("Light ON"))
 					{
@@ -267,47 +264,52 @@ public class BticinoDevice implements IBticinoEventListener
 							.getProperty("what")))
 					{
 						logger.debug("Gateway [" + m_gateway_id
-								+ "], RECEIVED EVENT FOR SwitchItem [" + l_item.getName()
+								+ "], RECEIVED EVENT FOR SwitchItem ["
+								+ l_item.getName()
 								+ "], TRANSLATE TO OPENHAB BUS EVENT");
-						
+
 						if (p_protocol_read.getProperty("messageDescription")
 								.equalsIgnoreCase("Virtual pressure"))
 						{
 							// only returns when finished
-							eventPublisher.sendCommand(l_item.getName(), OnOffType.ON);
+							eventPublisher.sendCommand(l_item.getName(),
+									OnOffType.ON);
 						} else if (p_protocol_read.getProperty(
 								"messageDescription").equalsIgnoreCase(
 								"Virtual release after short pressure"))
 						{
 							// only returns when finished
-							eventPublisher.sendCommand(l_item.getName(), OnOffType.ON);
+							eventPublisher.sendCommand(l_item.getName(),
+									OnOffType.ON);
 						} else if (p_protocol_read.getProperty(
 								"messageDescription").equalsIgnoreCase(
 								"Virtual release after an extended pressure"))
 						{
 							// only returns when finished
-							eventPublisher.sendCommand(l_item.getName(), OnOffType.ON);
+							eventPublisher.sendCommand(l_item.getName(),
+									OnOffType.ON);
 						} else if (p_protocol_read.getProperty(
 								"messageDescription").equalsIgnoreCase(
 								"Virtual extended pressure"))
 						{
 							// only returns when finished
-							eventPublisher.sendCommand(l_item.getName(), OnOffType.ON);
+							eventPublisher.sendCommand(l_item.getName(),
+									OnOffType.ON);
 						}
 					}
 				}
 			} else if (l_item instanceof RollershutterItem)
 			{
 				logger.debug("Gateway [" + m_gateway_id
-						+ "], RECEIVED EVENT FOR RollershutterItem [" + l_item.getName()
+						+ "], RECEIVED EVENT FOR RollershutterItem ["
+						+ l_item.getName()
 						+ "], TRANSLATE TO OPENHAB BUS EVENT");
-				
+
 				if (p_protocol_read.getProperty("messageType")
 						.equalsIgnoreCase("automation"))
 				{
 
-					if (p_protocol_read
-							.getProperty("messageDescription")
+					if (p_protocol_read.getProperty("messageDescription")
 							.equalsIgnoreCase("Automation UP"))
 					{
 						eventPublisher.postUpdate(l_item.getName(),

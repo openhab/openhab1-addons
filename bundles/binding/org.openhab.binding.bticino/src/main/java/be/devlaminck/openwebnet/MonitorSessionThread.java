@@ -1,10 +1,4 @@
-/**
- * MonitorThread for OpenWebNet - OpenHab binding
- * Based on code from Mauro Cicolella (as part of the FREEDOMOTIC framework)
- * (https://github.com/freedomotic/freedomotic/tree/master/plugins/devices/openwebnet)
- * and on code of Flavio Fcrisciani (https://github.com/fcrisciani/java-myhome-library)
- * released under EPL
- *  
+/** 
  * Copyright (c) 2010-2014, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
@@ -16,21 +10,23 @@
 package be.devlaminck.openwebnet;
 
 import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
 
 /**
-* @author Tom De Vlaminck
-* @serial 1.0
-* @since 1.5.0
-* 
-* This thread reads every event on the bticino bus and the converts & publishes
-* it to the openhab
-* 
-*/
+ * This thread reads every event on the bticino bus and the converts & publishes
+ * it to the openhab
+ * 
+ * Based on code from Mauro Cicolella (as part of the FREEDOMOTIC framework)
+ * (https ://github.com/freedomotic/freedomotic/tree/master/plugins/devices/
+ * openwebnet) and on code of Flavio Fcrisciani
+ * (https://github.com/fcrisciani/java-myhome-library) released under EPL
+ * 
+ * @author Tom De Vlaminck
+ * @serial 1.0
+ * @since 1.5.0
+ */
 public class MonitorSessionThread extends Thread
 {
 	private static final Logger logger = LoggerFactory
@@ -59,8 +55,7 @@ public class MonitorSessionThread extends Thread
 							+ ex.getMessage());
 				}
 			}
-		} 
-		catch (IOException ex)
+		} catch (IOException ex)
 		{
 			logger.error("MonitorSessionThread.run, exception : "
 					+ ex.getMessage());
@@ -776,13 +771,11 @@ public class MonitorSessionThread extends Thread
 					{
 						// type of pressure
 						messageDescription = "Virtual release after short pressure";
-					}
-					else if (what_parts[0].equalsIgnoreCase("2"))
+					} else if (what_parts[0].equalsIgnoreCase("2"))
 					{
 						// type of pressure
 						messageDescription = "Virtual release after an extended pressure";
-					}
-					else if (what_parts[0].equalsIgnoreCase("3"))
+					} else if (what_parts[0].equalsIgnoreCase("3"))
 					{
 						// type of pressure
 						messageDescription = "Virtual extended pressure";
