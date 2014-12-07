@@ -274,13 +274,14 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					//all devices have a battery state, so this is type-independent
 					if (provider.getBindingType(itemName) == BindingType.BATTERY && device.isBatteryLowUpdated()) {
 						eventPublisher.postUpdate(itemName, device.getBatteryLow());
-					} else {
+					} else if  (provider.getBindingType(itemName) != BindingType.BATTERY) {
 					switch (device.getType()) {
 						case HeatingThermostatPlus:
 						case HeatingThermostat:
 							if (provider.getBindingType(itemName) == BindingType.VALVE
 									&& ((HeatingThermostat) device).isValvePositionUpdated()) {
 								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getValvePosition());
+								break;
 							}
 							//omitted break, fall through
 						case WallMountedThermostat: // and also HeatingThermostat
