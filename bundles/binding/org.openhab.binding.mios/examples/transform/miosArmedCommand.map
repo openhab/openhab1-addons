@@ -1,0 +1,2 @@
+ON=urn:micasaverde-com:serviceId:SecuritySensor1/SetArmed(newArmedValue=1)
+OFF=urn:micasaverde-com:serviceId:SecuritySensor1/SetArmed(newArmedValue=0)

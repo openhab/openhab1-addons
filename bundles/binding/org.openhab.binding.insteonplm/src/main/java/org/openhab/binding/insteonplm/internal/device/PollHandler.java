@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.5.0
  */
 public abstract class PollHandler {
-	private static final Logger logger = LoggerFactory.getLogger(MessageDispatcher.class);		
+	private static final Logger logger = LoggerFactory.getLogger(PollHandler.class);		
 	DeviceFeature m_feature = null;
 	/**
 	 * Constructor

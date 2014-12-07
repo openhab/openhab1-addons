@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the no operation command class. The No Operation command class is used 
@@ -32,6 +33,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("noOperationCommandClass")
 public class ZWaveNoOperationCommandClass extends ZWaveCommandClass {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveNoOperationCommandClass.class);
 	
 	/**

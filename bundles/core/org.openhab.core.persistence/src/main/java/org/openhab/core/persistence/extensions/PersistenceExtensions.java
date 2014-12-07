@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @author Kai Kreuzer
  * @author Chris Jackson
+ * @author Gaël L'hopital
  * @since 1.0.0
  *
  */
@@ -459,13 +460,16 @@ public class PersistenceExtensions implements ManagedService {
 	 * @return the difference between now and then, null if not calculable
 	 */
 	static public DecimalType deltaSince(Item item, AbstractInstant timestamp, String serviceName) {
-		HistoricItem itemThen = historicState(item, timestamp);
-		DecimalType valueThen = (DecimalType) itemThen.getState();
-		DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);
 		DecimalType result = null;
-		if (( valueThen != null) && ( valueNow != null)) {
-			result = new DecimalType(valueNow.doubleValue() - valueThen.doubleValue());
-		};
+		HistoricItem itemThen = historicState(item, timestamp);
+		if (itemThen != null) {
+			DecimalType valueThen = (DecimalType) itemThen.getState();
+			DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);
+		
+			if (( valueThen != null) && ( valueNow != null)) {
+				result = new DecimalType(valueNow.doubleValue() - valueThen.doubleValue());
+			};
+		}
 		return result;
  	}
 	
@@ -498,13 +502,16 @@ public class PersistenceExtensions implements ManagedService {
 	 * 			null if not calculable
 	 */
 	static public DecimalType evolutionRate(Item item, AbstractInstant timestamp, String serviceName) {
-		HistoricItem itemThen = historicState(item, timestamp);
-		DecimalType valueThen = (DecimalType) itemThen.getState();
-		DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);
 		DecimalType result = null;
-		if (( valueThen != null) && ( valueNow != null)) {
-			result = new DecimalType(100 * (valueNow.doubleValue() - valueThen.doubleValue()) / valueThen.doubleValue());
-		};
+		HistoricItem itemThen = historicState(item, timestamp);
+		if (itemThen != null) {
+			DecimalType valueThen = (DecimalType) itemThen.getState();
+			DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);
+		
+			if (( valueThen != null) && ( valueNow != null)) {
+				result = new DecimalType(100 * (valueNow.doubleValue() - valueThen.doubleValue()) / valueThen.doubleValue());
+			};
+		}
 		return result;
  	}
 	
