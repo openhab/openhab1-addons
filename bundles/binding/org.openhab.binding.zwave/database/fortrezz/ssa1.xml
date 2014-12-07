@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>SSA1/SSA2</Model>
-	<Label lang="en">Siren & Strobe Alarm</Label>
+	<Label lang="en">Siren and Strobe Alarm</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x22</id></Class>
