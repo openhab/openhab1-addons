@@ -152,7 +152,9 @@ public class InsteonDevice {
 		logger.debug("processing command {} features: {}", command, m_features.size());
 		synchronized(m_features) {
 			for (DeviceFeature i : m_features.values()) {
-				i.handleCommand(c, command);
+				if (i.isReferencedByItem(c.getItemName())) {
+					i.handleCommand(c, command);
+				}
 			}
 		}
 	}

@@ -32,7 +32,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class CommandHandler {
 	private static final Logger logger = LoggerFactory.getLogger(CommandHandler.class);
-	DeviceFeature m_feature = null; // related DeviceFeature
+	DeviceFeature			m_feature = null; // related DeviceFeature
+	HashMap<String, String> m_parameters  = new HashMap<String, String>();
 	/**
 	 * Constructor
 	 * @param feature The DeviceFeature for which this command was intended.
@@ -50,6 +51,24 @@ public abstract class CommandHandler {
 	 */
 	public abstract void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice device);
 
+	/**
+	 * Returns parameter as integer
+	 * @param key key of parameter
+	 * @param def default
+	 * @return integer value of parameter
+	 */
+	protected int getIntParameter(String key, int def) {
+		try {
+			if (m_parameters.get(key) != null) {
+				return Integer.parseInt(m_parameters.get(key));
+			}
+		} catch (NumberFormatException e) {
+			logger.error("malformed int parameter in command handler: {}", key);
+		}
+		return def;
+	}
+
+	void setParameters(HashMap<String, String> hm) { m_parameters = hm; }
 	
 	public static class WarnCommandHandler extends CommandHandler {
 		WarnCommandHandler(DeviceFeature f) { super(f); }
@@ -82,6 +101,54 @@ public abstract class CommandHandler {
 					logger.info("LightOnOffCommandHandler: sent msg to switch {} off", dev.getAddress());
 				}
 				// expect to get a direct ack after this!
+			} catch (IOException e) {
+				logger.error("command send i/o error: ", e);
+			} catch (FieldException e) {
+				logger.error("command send message creation error ", e);
+			}
+		}
+	}
+	/**
+	 * This Handler was supposed to set the LEDs of the 2487S, but it doesn't work.
+	 * The parameters were modeledafter the 2486D, it may work for that one,
+	 * leaving it in for now.
+	 * 
+	 * From the HouseLinc PLM traffic log, the following commands (in the D2 data field)
+	 * of the 2486D are supported:
+	 * 
+	 * 0x02: LED follow mask may work or not
+	 * 0x03: LED OFF mask
+	 * 0x04: X10 addr setting
+	 * 0x05: ramp rate
+	 * 0x06: on Level for button
+	 * 0x07: global LED brightness (could not see any effect during testing)
+	 * 0x0B: set nontoggle on/off command
+	 *
+	 * crucially, the 0x09 command does not work (NACK from device)
+	 * @author Bernd Pfrommer
+	 */
+	public static class LEDOnOffCommandHandler extends CommandHandler {
+		LEDOnOffCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				int button = this.getIntParameter("button", -1);
+				if (cmd == OnOffType.ON) {
+					Msg m = dev.makeExtendedMessage((byte) 0x1f, (byte)0x2e,  (byte)0x00);
+					m.setByte("userData1", (byte)button);
+					  // set command for 2486D, does not work for 2487S. Putting a 0x00 here will send query
+					m.setByte("userData2", (byte) 0x09);
+					m.setByte("userData3", (byte) 0x01);
+					dev.enqueueMessage(m, m_feature);
+					logger.info("LEDOnOffCommandHandler: sent msg to switch {} on", dev.getAddress());
+				} else if (cmd == OnOffType.OFF) {
+					Msg m = dev.makeExtendedMessage((byte) 0x1f, (byte)0x2e,  (byte)0x00);
+					m.setByte("userData1", (byte)button);
+					m.setByte("userData2", (byte) 0x09);
+					m.setByte("userData3", (byte) 0x00);
+					dev.enqueueMessage(m, m_feature);
+					logger.info("LEDOnOffCommandHandler: sent msg to switch {} off", dev.getAddress());
+				}
 			} catch (IOException e) {
 				logger.error("command send i/o error: ", e);
 			} catch (FieldException e) {
@@ -309,16 +376,19 @@ public abstract class CommandHandler {
 	/**
 	 * Factory method for creating handlers of a given name using java reflection
 	 * @param name the name of the handler to create
+	 * @param params 
 	 * @param f the feature for which to create the handler
 	 * @return the handler which was created
 	 */
-	public static <T extends CommandHandler> T s_makeHandler(String name, DeviceFeature f) {
+	public static <T extends CommandHandler> T s_makeHandler(String name, HashMap<String, String> params, DeviceFeature f) {
 		String cname = CommandHandler.class.getName() + "$" + name;
 		try {
 			Class<?> c = Class.forName(cname);
 			@SuppressWarnings("unchecked")
 			Class<? extends T> dc = (Class <? extends T>) c;
-			return dc.getDeclaredConstructor(DeviceFeature.class).newInstance(f);
+			T ch = dc.getDeclaredConstructor(DeviceFeature.class).newInstance(f);
+			ch.setParameters(params);
+			return ch;
 		} catch (Exception e) {
 			logger.error("error trying to create message handler: {}", name, e);
 		}
