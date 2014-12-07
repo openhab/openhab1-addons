@@ -450,7 +450,7 @@ public enum DavisValueType {
 	UV {
 		{
 			key = "uv";
-			data_type = DataTypeUV.class;
+			data_type = DataTypeNumber.class;
 			command = DavisCommandType.LOOP;
 			data_offset = 43;
 			data_size = 1;	
