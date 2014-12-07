@@ -1514,4 +1514,17 @@
 			<ConfigFile>mios/vera.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0154</Id>
+		<Name>POPP</Name>
+		<Product>
+			<Reference>
+				<Type>1100</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>Dimmer</Model>
+			<Label lang="en"></Label>
+			<ConfigFile>popp/dimmer.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
