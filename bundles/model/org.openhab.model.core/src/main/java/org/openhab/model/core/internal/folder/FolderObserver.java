@@ -150,12 +150,13 @@ public class FolderObserver extends Thread implements ManagedService {
 		}
 		
 		// check for files that have been deleted meanwhile
-		if(lastFileNames.get(foldername)!=null) {;
-			for(String fileName : lastFileNames.get(foldername)) {
-				if(!currentFileNames.contains(fileName)) {
+		if (lastFileNames.get(foldername) != null) {
+			for (String fileName : lastFileNames.get(foldername)) {
+				if (!currentFileNames.contains(fileName)) {
 					logger.info("File '{}' has been deleted", fileName);
-					if(modelRepo!=null) {
+					if (modelRepo != null) {
 						modelRepo.removeModel(fileName);
+						lastCheckedMap.remove(fileName);
 					}
 				}
 			}
