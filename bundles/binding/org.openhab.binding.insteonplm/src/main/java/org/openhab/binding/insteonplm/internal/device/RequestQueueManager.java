@@ -120,7 +120,7 @@ public class RequestQueueManager {
 			return (int)(m_expirationTime - a.m_expirationTime);
 		}
 	}
-	public static RequestQueueManager s_instance() {
+	public static synchronized RequestQueueManager s_instance() {
 		if (s_instance == null) {
 			s_instance = new RequestQueueManager();
 		}

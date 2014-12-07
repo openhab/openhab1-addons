@@ -345,6 +345,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>4001</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>064367</Model>
+			<Label lang="en">Insert blind control</Label>
+			<ConfigFile>reitz/064367.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0001</Type>
 				<Id>0000</Id>
 			</Reference>
@@ -461,6 +470,19 @@
 	<Manufacturer>
 		<Id>0086</Id>
 		<Name>Aeon Labs</Name>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>000a</Id>
+			</Reference>
+			<Reference>
+				<Type>0003</Type>
+				<Id>004e</Id>
+			</Reference>
+			<Model>HDS</Model>
+			<Label lang="en">Heavy Duty Switch</Label>
+			<ConfigFile>aeon/hds.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0019</Type>
@@ -617,6 +639,15 @@
 			<Label lang="en">Home Energy Meter G2</Label>
 			<ConfigFile>aeon/hemg2.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0050</Id>
+			</Reference>
+			<Model>DSD31</Model>
+			<Label lang="en">Outlet Plugable Siren</Label>
+			<ConfigFile>aeon/dsd31.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
@@ -627,7 +658,15 @@
 				<Id>001E</Id>
 			</Reference>
 			<Reference>
+				<Type>1E10</Type>
+				<Id>0158</Id>
+			</Reference>
+			<Reference>
 				<Type>1E12</Type>
+				<Id>015E</Id>
+			</Reference>
+			<Reference>
+				<Type>3200</Type>
 				<Id>015E</Id>
 			</Reference>
 			<Reference>
@@ -1141,6 +1180,17 @@
 			<Label lang="de">Living Connect Z Thermostat FW2.51</Label>
 			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>8005</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>LCZ</Model>
+			<Label lang="en">Living Connect Z Thermostat FW2.50?</Label>
+			<Label lang="de">Living Connect Z Thermostat FW2.50?</Label>
+			<!--Use the same as 2.51 as I cannot see any difference http://www.pepper1.net/zwavedb/device/6-->
+			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>013C</Id>
@@ -1388,11 +1438,19 @@
 			<Label lang="en">Mini Keypad RFID/Z-Wave</Label>
 			<ConfigFile>wintop/wtrfid.xml</ConfigFile>
 		</Product>
-
+		<Product>
+			<Reference>
+				<Type>6131</Type>
+				<Id>4501</Id>
+			</Reference>
+			<Model>EasyPlug</Model>
+			<Label lang="en">Wall Plug</Label>
+			<ConfigFile>wintop/easyplug.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>84</Id>
-		<Name>Fortrezz</Name>
+		<Name>FortrezZ</Name>
 		<Product>
 			<Reference>
 				<Type>453</Type>
@@ -1402,10 +1460,37 @@
 			<Label lang="en">Digital or Analog Voltage input and/or Dry Contact Relay</Label>
 			<ConfigFile>fortrezz/mimolite.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0313</Type>
+				<Id>0108</Id>
+			</Reference>
+			<Model>SSA1/SSA2</Model>
+			<Label lang="en">Siren and Strobe Alarm</Label>
+			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0341</Type>
+				<Id>0205</Id>
+			</Reference>
+			<Model>SSA3</Model>
+			<Label lang="en">Siren and Strobe Alarm</Label>
+			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>008a</Id>
 		<Name>BeNext</Name>
+		<Product>
+			<Reference>
+				<Type>000d</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>plugInDimmer</Model>
+			<Label lang="en">BeNext Plug-in Dimmer</Label>
+			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0018</Type>
@@ -1414,6 +1499,19 @@
 			<Model>plugInDimmer</Model>
 			<Label lang="en">BeNext Plug-in Dimmer</Label>
 			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>008c</Id>
+		<Name>MIOS</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>Vera</Model>
+			<Label lang="en">Vera Home Gateway</Label>
+			<ConfigFile>mios/vera.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Thermostat Mode command class.
@@ -40,6 +41,7 @@ public class ZWaveThermostatModeCommandClass extends ZWaveCommandClass
 implements ZWaveBasicCommands, ZWaveCommandClassInitialization,
 ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatModeCommandClass.class);
 
 	private static final byte THERMOSTAT_MODE_SET              = 0x1;

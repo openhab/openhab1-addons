@@ -46,15 +46,31 @@ public class InsteonAddress {
 	}
 	/**
 	 * Constructor
-	 * @param address string must have format of e.g. '2a.3c.40'
+	 * @param address string must have format of e.g. '2a.3c.40' or (for X10) 'H.UU'
 	 */
-	public InsteonAddress(String address) {
-		String[] parts = address.split("\\.");
-		if (parts.length != 3) 
-			throw new IllegalArgumentException("Address string must have 3 bytes, has: " + parts.length);
-		highByte	= (byte) Utils.fromHexString(parts[0]);
-		middleByte	= (byte) Utils.fromHexString(parts[1]);
-		lowByte		= (byte) Utils.fromHexString(parts[2]);
+	public InsteonAddress(String address) throws IllegalArgumentException {
+		if (X10.s_isValidAddress(address)) {
+			highByte = 0;
+			middleByte = 0;
+			lowByte = X10.s_addressToByte(address);
+		} else {
+			String[] parts = address.split("\\.");
+			if (parts.length != 3) 
+				throw new IllegalArgumentException("Address string must have 3 bytes, has: " + parts.length);
+			highByte	= (byte) Utils.fromHexString(parts[0]);
+			middleByte	= (byte) Utils.fromHexString(parts[1]);
+			lowByte		= (byte) Utils.fromHexString(parts[2]);
+		}
+	}
+	/**
+	 * Constructor for an InsteonAddress that wraps an X10 address.
+	 * Simply stuff the X10 address into the lowest byte.
+	 * @param aX10HouseUnit the house & unit number as encoded by the X10 protocol
+	 */
+	public InsteonAddress(byte aX10HouseUnit)  {
+		highByte	= 0;
+		middleByte	= 0;
+		lowByte		= aX10HouseUnit;
 	}
 	
 	public void setHighByte(byte h)		{highByte	= h;}
@@ -65,6 +81,10 @@ public class InsteonAddress {
 	public byte getMiddleByte()	{return middleByte;}
 	public byte getLowByte()	{return lowByte;}
 
+	public byte getX10HouseCode() { return (byte) ((lowByte & 0xf0) >> 4); }
+	public byte getX10UnitCode() { return (byte) ((lowByte & 0x0f)); }
+	public boolean isX10() { return highByte == 0 && middleByte == 0 && lowByte != 0; }
+	
 	public void storeBytes(byte[] bytes, int offset) {
 		bytes[offset] 		= getHighByte();
 		bytes[offset + 1] 	= getMiddleByte();
@@ -78,9 +98,17 @@ public class InsteonAddress {
 
 	@Override
 	public String toString() {
-		String s = Utils.getHexString(highByte) + "." + 
+		String s = null;
+		if (isX10()) {
+			byte house = (byte) (((getLowByte() & 0xf0) >> 4) & 0xff);
+			byte unit  = (byte) ((getLowByte() & 0x0f) & 0xff);
+			s = X10.s_houseToString(house) + "." + X10.s_unitToInt(unit);
+			//s = Utils.getHexString(lowByte);
+		} else {
+			s = Utils.getHexString(highByte) + "." + 
 			Utils.getHexString(middleByte) + "." + 
 			Utils.getHexString(lowByte);
+		}
 		return s;
 	}
 	@Override
@@ -100,10 +128,11 @@ public class InsteonAddress {
 
 	/**
 	 * Test if Insteon address is valid
-	 * @return true if address is in valid AB.CD.EF format
+	 * @return true if address is in valid AB.CD.EF or (for X10) H.UU format
 	 */
 	public static boolean s_isValid(String addr) {
 		if (addr == null) return false;
+		if (X10.s_isValidAddress(addr)) return true;
 		String[] fields = addr.split("\\.");
 		if (fields.length != 3) return false;
 		try{
