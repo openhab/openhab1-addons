@@ -35,8 +35,9 @@ public class Serial {
 	// Example
 	@ActionDoc(text="Method to send data via serial devices.", 
 			returns="<code>true</code>, if successful and <code>false</code> otherwise.")
-	public static boolean sendSerial(@ParamDoc(name="deviceName", text="Serial device name.") String deviceName, 
-			@ParamDoc(name="message", text="Serial command")String message) {
+	public static boolean sendSerial(
+			@ParamDoc(name="deviceName", text="Serial device name.") String deviceName, 
+			@ParamDoc(name="message", text="Serial command") String message) {
 		
 		logger.debug("Send '" + message + "' to '" + deviceName + "'.");
 		if(!SerialService.isProperlyConfigured()) {
@@ -45,6 +46,7 @@ public class Serial {
 		}
 		
 		SerialDeviceHandler device = SerialService.getHandler(deviceName);
+		logger.debug("Got device");
 		try {
 			device.open();
 			device.send(message);
