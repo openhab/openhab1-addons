@@ -47,6 +47,8 @@ public class Connection {
 
 	private DataOutputStream os;
 	private DataInputStream is;
+	
+	private static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
 	private static final byte[] REQUEST_MESSAGE = new byte[] { (byte) 0x2F,
 			(byte) 0x3F, (byte) 0x21, (byte) 0x0D, (byte) 0x0A };
@@ -272,12 +274,17 @@ public class Connection {
 
 		int startPosition = 0;
 		while (startPosition < numBytesReadTotal) {
-			if (buffer[startPosition] == (byte) 0x00
-					| buffer[startPosition] == (byte) 0x7F) {
-				startPosition++;
-			} else {
-				break;
-			}
+			if (buffer[startPosition] == (byte) 0x2F) {
+				
+				if (buffer[startPosition+1] == (byte) 0x00
+						| buffer[startPosition+1] == (byte) 0x7F) {
+					startPosition++;
+				} else {
+					break;
+				}
+				continue;
+			} 
+			startPosition++;
 		}
 
 		byte[] bytes = new byte[numBytesReadTotal - startPosition];
@@ -292,7 +299,7 @@ public class Connection {
 
 		if (baudRate == -1) {
 			throw new IOException(
-					"Syntax error in identification message received: unknown baud rate received.");
+					"Syntax error in identification message received: unknown baud rate received." + bytesToHex(bytes));
 		}
 
 		ACKNOWLEDGE[2] = (byte) baudRateSetting;
@@ -408,7 +415,7 @@ public class Connection {
 							startPosition++;
 						} else {
 							throw new IOException(
-									"STX (0x02) character is expected but not received as first byte of data message.");
+									"STX (0x02) character is expected but not received as first byte of data message." + bytesToHex(buffer));
 						}
 					}
 				}
@@ -424,12 +431,12 @@ public class Connection {
 
 		if (buffer[endIndex + 1] != 0x0D) {
 			throw new IOException(
-					"CR (0x0D) character is expected but not received after data block of data message.");
+					"CR (0x0D) character is expected but not received after data block of data message." + bytesToHex(buffer));
 		}
 
 		if (buffer[endIndex + 2] != 0x0A) {
 			throw new IOException(
-					"LF (0x0A) character is expected but not received after data block of data message.");
+					"LF (0x0A) character is expected but not received after data block of data message."+ bytesToHex(buffer));
 		}
 
 		List<DataSet> dataSets = new ArrayList<DataSet>();
@@ -448,7 +455,7 @@ public class Connection {
 			}
 			if (id == null) {
 				throw new IOException(
-						"'(' (0x28) character is expected but not received inside data block of data message.");
+						"'(' (0x28) character is expected but not received inside data block of data message."+ bytesToHex(buffer));
 			}
 
 			String value = "";
@@ -482,7 +489,7 @@ public class Connection {
 			}
 			if (buffer[index - 1] != 0x29) {
 				throw new IOException(
-						"')' (0x29) character is expected but not received inside data block of data message.");
+						"')' (0x29) character is expected but not received inside data block of data message." + bytesToHex(buffer));
 			}
 
 			dataSets.add(new DataSet(id, value, unit));
@@ -529,5 +536,36 @@ public class Connection {
 			break;
 		}
 		return result;
+	}
+	
+	/**
+	 * Converts a byte array to good readable string.
+	 * 
+	 * @param bytes
+	 *            to be converted
+	 * @return string representing the bytes
+	 */
+	private String bytesToHex(byte[] bytes) {
+		int dwords = bytes.length / 4 + 1;
+		char[] hexChars = new char[bytes.length * 3 + dwords * 4];
+		int position = 0;
+		for (int j = 0; j < bytes.length; j++) {
+			int v = bytes[j] & 0xFF;
+			if (j % 4 == 0) {
+				String str = "(" + String.format("%02d", j) + ")";
+				char[] charArray = str.toCharArray();
+				for (char character : charArray) {
+					hexChars[position] = character;
+					position++;
+				}
+			}
+			hexChars[position] = hexArray[v >>> 4];
+			position++;
+			hexChars[position] = hexArray[v & 0x0F];
+			position++;
+			hexChars[position] = ' ';
+			position++;
+		}
+		return new String(hexChars);
 	}
 }
