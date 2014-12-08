@@ -156,6 +156,42 @@ Example:
      <feature name="contact">GenericContact</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
+
+ <device productKey="F00.00.11">
+     <model>2466D</model>
+     <description>ToggleLinc Dimmer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.12">
+     <model>2466S</model>
+     <description>ToggleLinc Switch</description>
+     <feature name="switch">GenericSwitch</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.13">
+     <model>2334-232</model>
+     <description>KeypadLinc Dimmer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.14">
+     <model>2672-222</model>
+     <description>LED Bulb</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="0x000041">
+     <model>2484DWH8</model>
+     <description>KeypadLinc Countdown Timer</description>
+     <feature name="dimmer">GenericDimmer</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
  <device productKey="X00.00.01">
 	 <model>X10 switch</model>
 	 <description>any simple X10 switch</description>
