@@ -168,5 +168,15 @@ public class UnitUtils {
 		}
 		return value;
 	}
+	
+	/**
+	 * Computes the sea level pressure depending of observed pressure,
+	 * temperature and altitude of the observed point
+	 */
+	public static double getSeaLevelPressure(double pressure, double temp,double altitude) {
+		double x = 0.0065 * altitude;
+		x = (1 - x/(temp + x + 273.15));
+		return pressure * Math.pow(x,-5.257);
+	}
 
 }

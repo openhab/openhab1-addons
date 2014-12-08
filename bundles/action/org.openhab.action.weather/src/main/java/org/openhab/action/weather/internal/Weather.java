@@ -10,6 +10,7 @@ package org.openhab.action.weather.internal;
 
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
+import org.openhab.binding.weather.internal.utils.UnitUtils;
 
 
 /**
@@ -19,23 +20,20 @@ import org.openhab.core.scriptengine.action.ParamDoc;
  * @since 1.7.0
  */
 public class Weather {
-
+	
 	/**
 	 * Compute the Humidex index"
 	 * http://en.wikipedia.org/wiki/Humidex
 	 * @param temperature in (°C)
 	 * @param hygro relative level (%)
-	 * @return distance between the two points in meters
+	 * @return Humidex index value
 	 */
 	@ActionDoc(text="Compute the Humidex index given temperature and hygrometry",
 					returns="Humidex index value")
 	public static double getHumidex(
 			@ParamDoc(name="Temperature") double temperature,
-			@ParamDoc(name="Relative hygro level") double hygro) {
-		
-		double result = 6.112 * Math.pow(10, 7.5 * temperature/(237.7 + temperature)) * hygro/100;
-		result = temperature + 0.555555556 * (result - 10);
-		return result;
+			@ParamDoc(name="Relative hygro level") int hygro) {
+		return UnitUtils.getHumidex(temperature, hygro);
 	}
 	
 	/**
@@ -48,23 +46,8 @@ public class Weather {
 				returns="Beaufort Index between 0 and 12")
 	public static int getBeaufortIndex(
 			@ParamDoc(name="WindSpeed") double speed) {
-
-		int result;
-		if (speed < 0.3) result = 0;
-		else if (speed < 1.6) result = 1;
-		else if (speed < 3.4) result = 2;
-		else if (speed < 5.5) result = 3;
-		else if (speed < 8) result = 4;
-		else if (speed < 10.8) result = 5;
-		else if (speed < 13.9) result = 6;
-		else if (speed < 17.2) result = 7;
-		else if (speed < 20.8) result = 8;
-		else if (speed < 24.5) result = 9;
-		else if (speed < 28.5) result = 10;
-		else if (speed < 32.7) result = 11;
-		else result = 12;
-		
-		return result;
+		Double kmh = UnitUtils.mpsToKmh(speed);
+		return UnitUtils.kmhToBeaufort(kmh).intValue();
 	}
 	
 	/**
@@ -83,12 +66,23 @@ public class Weather {
 				@ParamDoc(name="absolute pressure hPa") double pressure,
 				@ParamDoc(name="temperature (°C)") 		double temp,
 				@ParamDoc(name="Altitude in meter") 	double altitude) {
-
-		double x = 0.0065 * altitude;
-		x = (1 - x/(temp + x + 273.15));
-		double result = pressure * Math.pow(x,-5.257);
 		
-		return result;
+		return UnitUtils.getSeaLevelPressure(pressure, temp, altitude);
 	}
+	
+	/**
+	 * Transform an orientation angle to its
+	 * cardinal string equivalent
+	 * @param orientation in °
+	 * @return String representing the direction
+	 */
+	@ActionDoc(text="Transform a direction angle to its cardinal string equivalent",
+				returns="String representing the direction")
+	public static String getWindDirection(
+			@ParamDoc(name="Orientation angle") int degree) { 
+	
+		return UnitUtils.getWindDirection(degree);
+	}	
 
 }
+

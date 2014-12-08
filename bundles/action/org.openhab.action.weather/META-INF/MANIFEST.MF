@@ -11,10 +11,11 @@ Bundle-ManifestVersion: 2
 Bundle-Description: This is the Weather action of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.lang,
- org.openhab.core.scriptengine.action,
+ org.openhab.binding.weather.internal.utils,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
+ org.openhab.core.scriptengine.action,
  org.openhab.core.types,
  org.osgi.framework,
  org.osgi.service.cm,

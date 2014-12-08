@@ -47,4 +47,5 @@ Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml, OS
 Bundle-ClassPath: .,
  lib/jackson-core-2.4.1.1.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.openhab.binding.weather.internal.utils
 
