@@ -4,7 +4,12 @@ Bundle-Name: openHAB Serial Transport Bundle
 Bundle-SymbolicName: org.openhab.io.transport.serial
 Bundle-Version: 1.7.0.qualifier
 Bundle-Vendor: openHAB.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-ClassPath: lib/nrjavaserial-3.8.8.jar
-Export-Package: gnu.io
-Import-Package: gnu.io
+Bundle-ClassPath: .,
+ lib/nrjavaserial-3.8.8.jar
+Export-Package: gnu.io,org.openhab.io.transport.serial
+Import-Package: gnu.io,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.slf4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/serial-service.xml

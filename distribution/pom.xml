@@ -494,7 +494,7 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-		
+
         <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.alarmdecoder</artifactId>
@@ -1023,49 +1023,49 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.wemo</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.davis</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.ekey</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.xpl</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.dscalarm</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.benqprojector</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.ehealth</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.anel</artifactId>
             <version>${project.version}</version>
@@ -1073,17 +1073,11 @@
         </dependency>
         <dependency>
             <groupId>org.openhab.binding</groupId>
-            <artifactId>org.openhab.binding.weather</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
-        <dependency> 
-            <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.ecotouch</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.lgtv</artifactId>
             <version>${project.version}</version>
@@ -1093,27 +1087,27 @@
         	<groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.samsungac</artifactId>
             <version>${project.version}</version>
-	      	<type>jar</type>                                                 
+	      	<type>jar</type>
        	</dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.enigma2</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.em</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.maxcul</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency> 
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.mios</artifactId>
             <version>${project.version}</version>
@@ -1150,7 +1144,7 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-		
+
         <dependency>
             <groupId>org.openhab.io</groupId>
             <artifactId>org.openhab.io.multimedia.tts.macintalk</artifactId>
@@ -1175,7 +1169,7 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-		
+
         <dependency>
             <groupId>org.openhab.io</groupId>
             <artifactId>org.openhab.io.transport.cul</artifactId>
@@ -1254,6 +1248,12 @@
             <artifactId>org.openhab.persistence.influxdb</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+          <groupId>org.openhab.action</groupId>
+          <artifactId>org.openhab.action.serial</artifactId>
+          <version>${project.version}</version>
+          <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.openhab.persistence</groupId>
