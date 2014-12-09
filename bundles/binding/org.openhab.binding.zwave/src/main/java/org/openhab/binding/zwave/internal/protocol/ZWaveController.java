@@ -470,7 +470,7 @@ public class ZWaveController {
 	public void enqueue(SerialMessage serialMessage) {
 		// First try and get the node
 		// If we're sending to a node, then this obviously isn't to the controller, and we should
-		// queue anything to a battery node!
+		// queue anything to a battery node (ie a node supporting the WAKEUP class)!
     	ZWaveNode node = this.getNode(serialMessage.getMessageNode());
     	if (node != null) {
 	    	// Keep track of the number of packets sent to this device
@@ -641,7 +641,7 @@ public class ZWaveController {
 //				notifyEventListeners(event);
 //			}
 
-			// If we're done, or dead, then we consider this node is done (!)
+			// If we're done, or dead, or not listening, then we consider this node is done (!)
 			if(entry.getValue().getNodeStage() == NodeStage.DONE || entry.getValue().isDead() == true
 					 || (!entry.getValue().isListening() && !entry.getValue().isFrequentlyListening())) {
 				completeCount++;
