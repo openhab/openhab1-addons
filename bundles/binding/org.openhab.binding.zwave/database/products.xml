@@ -1524,11 +1524,20 @@
 		<Product>
 			<Reference>
 				<Type>1100</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>Wall Plug Switch</Model>
+			<Label lang="en"></Label>
+			<ConfigFile>popp/123610.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1100</Type>
 				<Id>0002</Id>
 			</Reference>
-			<Model>Dimmer</Model>
+			<Model>Wall Plug Dimmer</Model>
 			<Label lang="en"></Label>
-			<ConfigFile>popp/dimmer.xml</ConfigFile>
+			<ConfigFile>popp/123580.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>
