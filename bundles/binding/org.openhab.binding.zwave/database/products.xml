@@ -289,6 +289,7 @@
 			</Reference>
 			<Model>ST812</Model>
 			<Label lang="en">Flood Sensor</Label>
+			<ConfigFile>everspring/st812.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
