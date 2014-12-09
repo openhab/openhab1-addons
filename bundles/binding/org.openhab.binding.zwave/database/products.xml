@@ -289,6 +289,7 @@
 			</Reference>
 			<Model>ST812</Model>
 			<Label lang="en">Flood Sensor</Label>
+			<ConfigFile>everspring/st812.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -885,6 +886,10 @@
 			<ConfigFile>fibaro/fgs211.xml</ConfigFile>
 		</Product>
 		<Product>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0102</Id>
+			</Reference>
 			<Reference>
 				<Type>0200</Type>
 				<Id>0104</Id>
@@ -1512,6 +1517,28 @@
 			<Model>Vera</Model>
 			<Label lang="en">Vera Home Gateway</Label>
 			<ConfigFile>mios/vera.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0154</Id>
+		<Name>POPP</Name>
+		<Product>
+			<Reference>
+				<Type>1100</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>Wall Plug Switch</Model>
+			<Label lang="en"></Label>
+			<ConfigFile>popp/123610.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1100</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>Wall Plug Dimmer</Model>
+			<Label lang="en"></Label>
+			<ConfigFile>popp/123580.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>
