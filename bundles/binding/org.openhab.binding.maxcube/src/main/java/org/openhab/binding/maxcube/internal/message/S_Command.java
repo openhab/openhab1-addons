@@ -57,6 +57,9 @@ public class S_Command {
 		if (mode.equals(ThermostatModeType.MANUAL)){
 			bits[7] = false;  // A (MSB)
 			bits[6] = true;   // B
+		} else if (mode.equals(ThermostatModeType.BOOST)){
+			bits[7] = true;   // A (MSB)
+			bits[6] = true;   // B
 		} else
 		{
 			bits[7] = false ;  // A (MSB)
