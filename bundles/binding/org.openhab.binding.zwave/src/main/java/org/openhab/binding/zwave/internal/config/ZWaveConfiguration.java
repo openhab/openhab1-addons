@@ -447,6 +447,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					else {
 						record.value = "BATTERY " + batteryCommandClass.getBatteryLevel() + "%";
 					}
+
+					// If the node is reporting low battery, mark it up...
+					if(batteryCommandClass.getBatteryLow() == true) {
+						record.value += " LOW";
+					}
 				}
 				else if(node.getNodeStage().getStage() <= NodeStage.DETAILS.getStage()) {
 					// If we haven't passed the DETAILS stage, then we don't know the source

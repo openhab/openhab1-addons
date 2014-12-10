@@ -75,12 +75,11 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
-		logger.trace("Handle Message Battery Request");
 		logger.debug("NODE {}: Received Battery Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 			case BATTERY_GET:
-				logger.warn(String.format("Command 0x%02X not implemented.", command));
+				logger.warn("Command {} not implemented.", command);
 				return;
 			case BATTERY_REPORT:
 				logger.trace("Process Battery Report");
@@ -110,7 +109,7 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 				dynamicDone = true;
 				break;
 			default:
-			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
+				logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
 					command, 
 					this.getCommandClass().getLabel(),
 					this.getCommandClass().getKey()));
@@ -122,7 +121,7 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 	 * @return the serial message
 	 */
 	public SerialMessage getValueMessage() {
-		logger.debug("Node {}: Creating new message for application command BATTERY_GET", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command BATTERY_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
