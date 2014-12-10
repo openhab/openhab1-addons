@@ -32,6 +32,16 @@
                 </Group>
         </Associations>
         <Configuration>
+        	<Parameter>
+        		<Index>1</Index>
+        		<Type>integer</Type>
+        		<Size>2</Size>
+        		<Default>240</Default>
+        		<Minimum>0</Minimum>
+        		<Maximum>32000</Maximum>
+        		<Label lang="en">Voltage to calculate power</Label>
+        		<Help lang="en"></Help>
+        	</Parameter>
                 <Parameter>
                         <Index>3</Index>
                         <Type>byte</Type>
