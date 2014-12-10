@@ -177,6 +177,12 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private void rebuildPollingTable() {
 		// Rebuild the polling table
 		pollingList.clear();
+		
+		if(converterHandler == null) {
+			logger.debug("ConverterHandler not initialised. Polling disabled.");
+			
+			return;
+		}
 
 		// Loop all binding providers for the Z-wave binding.
 		for (ZWaveBindingProvider eachProvider : providers) {
@@ -215,15 +221,17 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		logger.trace("internalReceiveCommand(itemname = {}, Command = {})", itemName, command.toString());
 		for (ZWaveBindingProvider provider : providers) {
 
-			if (!provider.providesBindingFor(itemName))
+			if (!provider.providesBindingFor(itemName)) {
 				continue;
+			}
 			
 			converterHandler.receiveCommand(provider, itemName, command);
 			handled = true;
 		}
 
-		if (!handled)
+		if (!handled) {
 			logger.warn("No converter found for item = {}, command = {}, ignoring.", itemName, command.toString());
+		}
 	}
 	
 	/**
@@ -267,6 +275,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	 */
 	private void initialise() throws ConfigurationException {
 		try {
+			logger.debug("Initialising zwave binding");
 			this.setProperlyConfigured(true);
 			this.deactivate();
 			this.zController = new ZWaveController(isSUC, port, timeout, softReset);
