@@ -84,32 +84,6 @@ public class MiosUnitConnector {
 					+ "(?<serviceAction>.+)"
 					+ "\\(((?<serviceParam>[a-zA-Z]+[a-zA-Z0-9]*)(=(?<serviceValue>.+))?)?\\)");
 
-	// Certain properties are really "dates" in one-form-or-another. We keep a
-	// list of them in this properties file so they can be fixed up on the way
-	// into the system.
-	//
-	// In some really special cases, the value inbound might be represented by
-	// either a String OR an Integer in the JSON, and you can't tell which
-	// you're going to get ahead of time.
-	private static Properties datetimeMap = new Properties();
-	private static String DATETIME_FIXES = "org/openhab/binding/mios/internal/DatetimeVariables.properties";
-
-	static {
-		InputStream input = DeviceBindingConfig.class.getClassLoader()
-				.getResourceAsStream(DATETIME_FIXES);
-
-		try {
-			datetimeMap.load(input);
-			logger.debug(
-					"Successfully loaded Datetime fixes from '{}', entries '{}'",
-					DATETIME_FIXES, datetimeMap.size());
-		} catch (Exception e) {
-			// Pre-shipped with the Binding, so it should never error out.
-			logger.error("Failed to load Datetime fixes file '{}', Exception",
-					DATETIME_FIXES, e);
-		}
-	}
-
 	// the MiOS instance and openHAB event publisher handles
 	private final MiosUnit unit;
 	private final MiosBinding binding;
@@ -407,7 +381,6 @@ public class MiosUnitConnector {
 			boolean force = full || (errorCount != 0) && (failures != 0)
 					&& ((failures % errorCount) == 0);
 
-
 			if (!force && loadTime != null && dataVersion != null) {
 				AsyncHttpClientConfig c = getAsyncHttpClient().getConfig();
 
@@ -531,18 +504,16 @@ public class MiosUnitConnector {
 						}
 
 						// TODO: Consider putting the Device's ID attribute last
-						// in
-						// the list. When multiple value changes are being made,
-						// people may want something to indicate
+						// in the list. When multiple value changes are being
+						// made, people may want something to indicate
 						// "these are the last" [bundle] of changes for this
 						// device.
+						//
 						// Otherwise they'll come out in JSON order
 						// (unpredictable)
 						// which may not be the order they're normally changed
-						// at
-						// the MiOS end. Making this last would be like having
-						// an
-						// "end of [device] transaction" marker.
+						// at the MiOS end. Making this last would be like
+						// having an "end of [device] transaction" marker.
 
 						String property = "device:" + deviceId + '/'
 								+ da.getKey();
@@ -574,12 +545,6 @@ public class MiosUnitConnector {
 
 					// Can be String or Integer
 					Object value = (Object) state.get("value");
-
-					// TODO: Externalize this, make it configurable
-					if (datetimeMap.containsKey(var)) {
-						value = fixTimestamp(value);
-					}
-
 					publish(property, value);
 				}
 			}
