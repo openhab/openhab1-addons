@@ -21,7 +21,7 @@ Example entry:
 
  -->
 
-<!--	----------------------------------------------------
+<!--	#################################################
 	   devices with regular insteon product keys
 -->
 
@@ -83,7 +83,7 @@ Example entry:
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
-<!--	----------------------------------------------------
+<!--	  #################################################
 	   X10 devices with made-up product keys Xaa.bb.cc
 -->
 
@@ -104,7 +104,7 @@ Example entry:
 	<feature name="contact">X10Contact</feature>
  </device>
 
-<!--	----------------------------------------------------
+<!--	   ###################################################
 	   Insteon devices with made-up product keys Faa.bb.cc
 -->
 
