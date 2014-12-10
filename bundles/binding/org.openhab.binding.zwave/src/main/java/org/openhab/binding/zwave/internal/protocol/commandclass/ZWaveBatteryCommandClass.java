@@ -43,8 +43,9 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 	
 	private static final int BATTERY_GET = 0x02;
 	private static final int BATTERY_REPORT = 0x03;
-	
+
 	private Integer batteryLevel = null;
+	private Boolean batteryLow = null;
 	
 	/**
 	 * Creates a new instance of the ZWaveBatteryCommandClass class.
@@ -82,8 +83,25 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 			case BATTERY_REPORT:
 				logger.trace("Process Battery Report");
 				
-				batteryLevel = serialMessage.getMessagePayloadByte(offset + 1); 
-				logger.debug(String.format("Node %d: Battery report value = 0x%02X", this.getNode().getNodeId(), batteryLevel));
+				batteryLevel = serialMessage.getMessagePayloadByte(offset + 1);
+				logger.debug("NODE {}: Battery report value = {}", this.getNode().getNodeId(), batteryLevel);
+
+				// A Battery level of 255 means battery low.
+				// Set battery level to 0
+				if(batteryLevel == 255) {
+					batteryLevel = 0;
+					batteryLow = true;
+					logger.warn("NODE {}: BATTERY LOW!", this.getNode().getNodeId());
+				}
+				else {
+					batteryLow = false;
+				}
+
+				// If the battery level is outside bounds, then we don't know what's up!
+				if(batteryLevel < 0 || batteryLevel > 100) {
+					logger.warn("NODE {}: Battery state unknown ({})!", this.getNode().getNodeId(), batteryLevel);
+					batteryLevel = null;
+				}
 				ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), batteryLevel);
 				this.getController().notifyEventListeners(zEvent);
 
@@ -127,9 +145,20 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 	
 	/**
 	 * Returns the current battery level. If the battery level is unknown, returns null
-	 * @return
+	 * @return battery level
 	 */
 	public Integer getBatteryLevel() {
 		return batteryLevel;
+	}
+
+	/**
+	 * Returns the current battery warning state.
+	 * @return true if device is saying battery is low
+	 */
+	public Boolean getBatteryLow() {
+		if(batteryLow == null) {
+			return false;
+		}
+		return batteryLow;
 	}
 }
