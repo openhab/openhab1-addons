@@ -669,29 +669,24 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					// First we build a list of all nodes, starting with the group members
 					// This ensures that old nodes included in a group, but not now part
 					// of the network will still be listed, and can be removed.
-					List<Integer> nodes = associationCommandClass.getGroupMembers(groupId);
+					List<Integer> nodes = new ArrayList<Integer>();
+					nodes.addAll(associationCommandClass.getGroupMembers(groupId));
 					for(ZWaveNode nodeList : zController.getNodes()) {
-						logger.error("************ Doing node {}", nodeList.getNodeId());
-
 						// Don't allow an association with itself
 						if(nodeList.getNodeId() == node.getNodeId()) {
 							continue;
 						}
-						logger.error("************ Still doing node {}", nodeList.getNodeId());
 						if(!nodes.contains(nodeList.getNodeId())) {
 							nodes.add(nodeList.getNodeId());
-							logger.error("************ Added node {}, length {}", nodeList.getNodeId(), nodes.size());
 						}
 					}
-					logger.error("************ Completed length {} ---- {}", nodes.size(), nodes.toString());
 					// Let's sort them!
 					Collections.sort(nodes);
-					logger.error("************ Completed final length {} ------- {}", nodes.size(), nodes.toString());
 
 					// Now we loop through the node list and create an entry for each node.
 					List<Integer> members = associationCommandClass.getGroupMembers(groupId);
-					for(Integer nodeNum : nodes) {
-						logger.error("************ Now adding node {}", nodeNum);
+					for(int i = 0; i < nodes.size(); i++) {
+						int nodeNum = nodes.get(i);
 						ZWaveNode nodeList = zController.getNode(nodeNum);
 						// Add the member
 						if (nodeList.getName() == null || nodeList.getName().isEmpty()) {
@@ -705,7 +700,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						record.addValue("false", "Non-Member");
 
 						if (members != null && members.contains(nodeList.getNodeId())) {
-							members.remove(nodeList.getNodeId());
 							record.value = "true";
 						} else {
 							record.value = "false";
