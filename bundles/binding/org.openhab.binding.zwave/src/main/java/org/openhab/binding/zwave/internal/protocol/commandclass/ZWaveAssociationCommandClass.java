@@ -226,18 +226,18 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 	 */
 	protected void processGroupingsReport(SerialMessage serialMessage, int offset) {
 		maxGroups = serialMessage.getMessagePayloadByte(offset + 1);
-		logger.debug("NODE {} processGroupingsReport number of groups {}", getNode(), maxGroups);
-		
+		logger.debug("NODE {}: processGroupingsReport number of groups {}", getNode(), maxGroups);
+
 		initialiseDone = true;
+
+		// Start the process to query these nodes
+//		updateAssociationsNode = 1;
 		
-		//Start the process to query these nodes
-		updateAssociationsNode = 1;
-		
-		configAssociations.clear();
-		SerialMessage sm = getAssociationMessage(updateAssociationsNode);
-		if(sm != null) {
-			this.getController().sendData(sm);
-		}
+//		configAssociations.clear();
+//		SerialMessage sm = getAssociationMessage(updateAssociationsNode);
+//		if(sm != null) {
+//			this.getController().sendData(sm);
+//		}
 	}
 
 	/**

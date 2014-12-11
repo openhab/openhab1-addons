@@ -107,7 +107,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	private boolean initializationComplete = false;
 	private boolean restoredFromConfigfile = false;
 
-	private static final int MAX_BUFFFER_LEN = 32;
+	private static final int MAX_BUFFFER_LEN = 256;
 	private ArrayBlockingQueue<SerialMessage> msgQueue;
 	private boolean freeToSend = true;
 	private boolean stageAdvanced = true;
