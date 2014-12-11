@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>ZD2102</Model>
-	<Endpoints>1</Endpoints>
 	<Label lang="en">Door Window Sensor</Label>
 	<Label lang="de">Tür-Fenster-Sensor</Label>
 	<CommandClasses>

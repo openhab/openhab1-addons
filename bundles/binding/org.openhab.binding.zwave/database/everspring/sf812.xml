@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>ST814</Model>
-	<Endpoints>1</Endpoints>
 	<Label lang="en">Smoke Sensor</Label>
 	<Label lang="de">Rauchmelder</Label>
 	<CommandClasses>

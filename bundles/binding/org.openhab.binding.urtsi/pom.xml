@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>binding</artifactId>
-		<version>1.5.0-SNAPSHOT</version>
+		<version>1.7.0-SNAPSHOT</version>
 	</parent>
 
 	<name>openHAB Somfy URTSI II Binding</name>
@@ -15,7 +15,8 @@
 		<bundle.symbolicName>org.openhab.binding.urtsi</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.urtsi</bundle.namespace>
 		<deb.name>openhab-addon-binding-urtsi</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
+		<deb.depends>openhab-addon-io-serial</deb.depends>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -24,18 +25,6 @@
 
 	<packaging>eclipse-plugin</packaging>
 
-	<repositories>
-		<repository>
-			<id>xtend</id>
-			<url>http://build.eclipse.org/common/xtend/maven/</url>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>xtend</id>
-			<url>http://build.eclipse.org/common/xtend/maven/</url>
-		</pluginRepository>
-	</pluginRepositories>
 	<build>
 		<plugins>
 			<plugin>
@@ -92,5 +81,19 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<repositories>
+		<repository>
+			<id>xtend</id>
+			<url>http://build.eclipse.org/common/xtend/maven/</url>
+		</repository>
+	</repositories>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>xtend</id>
+			<url>http://build.eclipse.org/common/xtend/maven/</url>
+		</pluginRepository>
+	</pluginRepositories>
 	
 </project>

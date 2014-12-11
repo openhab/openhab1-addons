@@ -5,12 +5,14 @@
   <parent>
   	<groupId>org.openhab.bundles</groupId>
   	<artifactId>io</artifactId>
-  	<version>1.5.0-SNAPSHOT</version>
+  	<version>1.7.0-SNAPSHOT</version>
   </parent>
 
   <properties>
     <bundle.symbolicName>org.openhab.io.transport.serial</bundle.symbolicName>
     <bundle.namespace>org.openhab.io.transport.serial</bundle.namespace>
+    <deb.name>openhab-addon-io-serial</deb.name>
+    <deb.description>${project.name}</deb.description>
   </properties>
 
   <groupId>org.openhab.io</groupId>
@@ -19,5 +21,13 @@
   <name>openHAB Serial Transport</name>
 
   <packaging>eclipse-plugin</packaging>
+  	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.vafer</groupId>
+				<artifactId>jdeb</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

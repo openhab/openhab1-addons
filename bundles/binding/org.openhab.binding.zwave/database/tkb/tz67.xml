@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>TZ68</Model>
+	<Label lang="en">Wall Plug</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x77</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">LED Behavior</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">blue indicates off</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">blue indicates on</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines the behavior of the blue LED]]></Help>
+		</Parameter>
+	</Configuration>
+</Product>
+

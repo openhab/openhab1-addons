@@ -8,9 +8,12 @@
  */
 package org.openhab.io.rest.internal.resources;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -29,6 +32,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend.SCOPE;
+import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
@@ -86,7 +90,11 @@ public class SitemapResource {
     protected static final String SITEMAP_FILEEXT = ".sitemap";
 
 	public static final String PATH_SITEMAPS = "sitemaps";
-    
+	
+	public static final String ATMOS_TIMEOUT_HEADER = "X-Atmosphere-Timeout";
+	
+	public static final int DEFAULT_TIMEOUT_SECS = 300;
+	
 	@Context UriInfo uriInfo;
 	@Context Broadcaster sitemapBroadcaster;
 
@@ -141,17 +149,28 @@ public class SitemapResource {
 			if(responseType!=null) {
 		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
 		    			new JSONWithPadding(getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build()), callback) : getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build());
-		    	throw new WebApplicationException(Response.ok(responseObject, responseType).build());
+		    	throw new WebApplicationException(Response.ok(responseObject, responseType).header(ATMOS_TIMEOUT_HEADER, DEFAULT_TIMEOUT_SECS + "").build());
 			} else {
 				throw new WebApplicationException(Response.notAcceptable(null).build());
 			}
 		}
-		GeneralBroadcaster sitemapBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
+		
+		GeneralBroadcaster sitemapBroadcaster = BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
 		sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
+		
+		boolean resume = false;
+		try {
+		AtmosphereRequest request = resource.getRequest();
+		resume = !ResponseTypeHelper.isStreamingTransport(request);
+		} catch (Exception e) {
+			logger.debug(e.getMessage());
+		}
+
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
 			.scope(SCOPE.REQUEST)
-			.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))
+			.resumeOnBroadcast(resume)
 			.broadcaster(sitemapBroadcaster)
+			.period(DEFAULT_TIMEOUT_SECS, TimeUnit.SECONDS)
 			.outputComments(true).build(); 
     }
 	
@@ -351,34 +370,51 @@ public class SitemapResource {
     		List listWidget = (List) widget;
     		bean.separator = listWidget.getSeparator();
     	}
-    	if(widget instanceof Image) {
-    		Image imageWidget = (Image) widget;
-    		String wId = itemUIRegistry.getWidgetId(widget);
-			if (uri.getPort() < 0 || uri.getPort() == 80) {
-				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
-			} else {
-				bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
+    	if (widget instanceof Image ||
+    		widget instanceof Video ||
+    		widget instanceof Webview) {
+
+        	if(widget instanceof Image) {
+        		Image imageWidget = (Image) widget;
+        		if(imageWidget.getRefresh() > 0) {
+        			bean.refresh = imageWidget.getRefresh(); 
+        		}
+        		bean.url = imageWidget.getUrl();
+        	}
+        	else if (widget instanceof Video) {
+        		Video videoWidget = (Video) widget;
+        		if(videoWidget.getEncoding() != null) {
+        			bean.encoding = videoWidget.getEncoding();
+        		}
+        		bean.url = videoWidget.getUrl();
+        	}
+        	else {
+				Webview webViewWidget = (Webview) widget;
+				bean.height = webViewWidget.getHeight();
+				bean.url = webViewWidget.getUrl();
+        	}
+
+			String wId = itemUIRegistry.getWidgetId(widget);
+
+			StringBuilder sbBaseUrl = new StringBuilder();
+			sbBaseUrl.append(uri.getScheme()).append("://").append(uri.getHost());
+			if (uri.getPort() >= 0 && uri.getPort() != 80) {
+				sbBaseUrl.append(":").append(uri.getPort());
 			}
-    		if(imageWidget.getRefresh()>0) {
-    			bean.refresh = imageWidget.getRefresh(); 
-    		}
-    	}
-    	if(widget instanceof Video) {
-    		Video videoWidget = (Video) widget;
-    		String wId = itemUIRegistry.getWidgetId(widget);
-    		if(videoWidget.getEncoding()!=null) {
-    			bean.encoding = videoWidget.getEncoding();
-    		}
-			if (uri.getPort() < 0 || uri.getPort() == 80) {
-				bean.url = uri.getScheme() + "://" + uri.getHost() + "/proxy?sitemap=" + sitemapName + ".sitemap&widgetId=" + wId;
-			} else {
-				bean.url = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/proxy?sitemap=" + sitemapName	+ ".sitemap&widgetId=" + wId;
+			StringBuilder sb = new StringBuilder();
+			sb.append("/proxy?");
+			sb.append("sitemap=").append(sitemapName).append(".sitemap&");
+			sb.append("widgetId=").append(wId);
+			if (bean.url != null && bean.url.startsWith("/")) {
+	        	try {
+	        		sb.append("&").append("baseUrl=").append(URLEncoder.encode(sbBaseUrl.toString(), "UTF-8"));
+	        	}
+				catch (UnsupportedEncodingException ex) {
+					throw new RuntimeException(ex.getMessage(), ex);
+				}
 			}
-    	}
-    	if(widget instanceof Webview) {
-    		Webview webViewWidget = (Webview) widget;
-    		bean.url = webViewWidget.getUrl();
-    		bean.height = webViewWidget.getHeight();
+			sbBaseUrl.append(sb.toString());
+			bean.url = sbBaseUrl.toString();
     	}
     	if(widget instanceof Chart) {
     		Chart chartWidget = (Chart) widget;

@@ -5,28 +5,6 @@ import org.openhab.model.script.actions.*
 var Number counter = 1
 var Timer timer = null
 
-rule Startup
-when 
-	System started
-then
-	say("Welcome at openHab!")
-end
-
-rule Goodbye
-when 
-	System shuts down
-then
-	say("Good bye!")
-end
-
-rule "Crontest"
-	when 
-		Time cron "0/15 * * * * ?"
-	then
-		say(counter)
-		counter = counter + 1
-end	
-
 /**
  * This is a demo rule which simulates a real dimmer by reacting to increase/decrease commands 
  * and posting an updated state on the bus 
@@ -78,13 +56,6 @@ rule "Volume control"
 		postUpdate(Volume, masterVolume * 100)
 end
 
-rule "Say temperature on update"
-	when 
-		Item Weather_Temperature received update
-	then
-		say("The temperature outside is " + Weather_Temperature.state.format("%d") + " degrees celsius")
-end
-
 /**
  * The following rules help initializing the demo items with some helpful states.
  */
@@ -134,6 +105,7 @@ when
 then	
 	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight).state)
 	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight).state)
+	logInfo("Weather","Temperature evolved of " + Weather_Temperature.deltaSince(now.minusMinutes(2)).toString + " degrees.")
 end
 
 /** shows how to use sensor values from the past */
@@ -188,4 +160,17 @@ when
   Item Weather_Temperature received update
 then
   postUpdate(Weather_LastUpdate, new DateTimeType())
+end
+
+// This rule will be used to test Scale transformation service
+rule "Compute humidex"
+when Item Weather_Temperature changed or
+	 Item Weather_Humidity changed 
+then
+	var Number T = Weather_Temperature.state as DecimalType
+	var Number H = Weather_Humidity.state as DecimalType	
+	var Number x = 7.5 * T/(237.7 + T)
+	var Number e = 6.112 * Math::pow(10, x.doubleValue) * H/100
+	var Number humidex = T + (new Double(5) / new Double(9)) * (e - 10)
+	Weather_Humidex.postUpdate(humidex)
 end

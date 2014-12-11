@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openhab.binding.maxcube.internal.MaxTokenizer;
+import org.openhab.binding.maxcube.internal.Utils;
 import org.slf4j.Logger;
 
 /**
@@ -46,11 +47,45 @@ public final class L_Message extends Message {
 
 		return devices;
 	}
+	
+	public Collection<? extends Device> updateDevices(List<Device> devices, List<Configuration> configurations) {
 
+		byte[] decodedRawMessage = Base64.decodeBase64(getPayload().getBytes());
+
+		MaxTokenizer tokenizer = new MaxTokenizer(decodedRawMessage);
+
+		while (tokenizer.hasMoreElements()) {
+			byte[] token = tokenizer.nextElement();
+			String rfAddress = Utils.toHex(token[0] & 0xFF, token[1] & 0xFF, token[2] & 0xFF);
+			//logger.debug("token: "+token+" rfaddress: "+rfAddress);
+			
+			Device foundDevice = null;
+			for (Device device : devices) {
+				//logger.debug(device.getRFAddress().toUpperCase()+ " vs "+rfAddress);
+				if (device.getRFAddress().toUpperCase().equals(rfAddress)) {
+					//logger.debug("Updating device..."+rfAddress);
+					foundDevice = device;
+				}
+			}
+			if(foundDevice!= null) {
+				foundDevice = Device.update(token, configurations, foundDevice);
+				//devices.remove(token);
+				//devices.add(foundDevice);
+			}else{
+				Device tempDevice = Device.create(token, configurations);
+				if (tempDevice != null) {
+					devices.add(tempDevice);
+				}
+			}
+		}
+
+		return devices;
+	}
+	
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== L_Message === ");
-		logger.debug("\tRAW:" + this.getPayload());
+		logger.trace("\tRAW:" + this.getPayload());
 	}
 
 	@Override

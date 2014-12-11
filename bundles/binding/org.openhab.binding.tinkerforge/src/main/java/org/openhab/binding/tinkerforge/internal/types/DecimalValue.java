@@ -33,9 +33,9 @@ public class DecimalValue extends Number implements TinkerforgeValue, Comparable
 		this.value = value;
 	}
 
-	public DecimalValue(long value) {
-		this.value = new BigDecimal(value);
-	}
+    public DecimalValue(long value) {
+      this.value = new BigDecimal(value);
+  }
 
 	public DecimalValue(double value) {
 		this.value = new BigDecimal(value);
@@ -50,10 +50,14 @@ public class DecimalValue extends Number implements TinkerforgeValue, Comparable
 	}
 
 	public static DecimalValue valueOf(String value) {
-		return new DecimalValue(value);
-	}
+      return new DecimalValue(value);
+  }
 
-	@Override
+    public static DecimalValue valueOf(BigDecimal value) {
+      return new DecimalValue(value);
+  }
+
+    @Override
 	public int intValue() {
 		return value.intValue();
 	}
@@ -73,10 +77,29 @@ public class DecimalValue extends Number implements TinkerforgeValue, Comparable
 		return value.doubleValue();
 	}
 
-	@Override
-	public int compareTo(DecimalValue o) {
-		return value.compareTo(o.toBigDecimal());
+	public BigDecimal bigDecimalValue() {
+	  return value;
 	}
+	
+	@Override
+    public int compareTo(DecimalValue o) {
+      return value.compareTo(o.toBigDecimal());
+  }
+
+	/*
+	 * Compare two values taking a threshold into account.
+	 * 
+	 * If the absolute difference between the values is less then
+	 * threshold 0 is returned elsewhere the values are compared
+	 * using the compareTo function of BigDecimal.
+	 */
+    public int compareTo(DecimalValue o, BigDecimal threshold) {
+      BigDecimal difference = value.subtract(o.toBigDecimal()).abs();
+      if (difference.compareTo(threshold) < 0){
+        return 0;
+      }
+      return value.compareTo(o.toBigDecimal());
+    }
 
 	private BigDecimal toBigDecimal() {
 		return value;

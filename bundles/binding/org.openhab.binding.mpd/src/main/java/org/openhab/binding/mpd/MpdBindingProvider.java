@@ -20,13 +20,15 @@ import org.openhab.core.binding.BindingProvider;
  * taken into account.
  * 
  * @author Thomas.Eichstaedt-Engelen
+ * @author Matthew Bowman
+ * 
  * @since 0.8.0
  */
 public interface MpdBindingProvider extends BindingProvider {
 
 	/**
 	 * Returns the matching player command (associated to <code>itemName</code>
-	 * and <code>comnand</code>) or <code>null</code> if no playerCommand could
+	 * and <code>command</code>) or <code>null</code> if no playerCommand could
 	 * be found.
 	 * 
 	 * @param itemName the item for which to find a mpdPlayerCommand
@@ -36,6 +38,21 @@ public interface MpdBindingProvider extends BindingProvider {
 	 * mpdPlayerCommand could be found.
 	 */
 	String getPlayerCommand(String itemName, String command);
+	
+	/**
+	 * Returns the matching player command param (associated to <code>itemName</code>
+	 * and <code>command</code>) or <code>null</code> if no playerCommand param could
+	 * be found.
+	 * 
+	 * @param itemName the item for which to find a mpdPlayerCommand param
+	 * @param command the openHAB command for which to find a mpdPlayerCommand param
+	 * 
+	 * @return the matching mpdPlayerCommand param or <code>null</code> if no matching
+	 * mpdPlayerCommand param could be found.
+	 * 
+	 * @since 1.6.0
+	 */
+	String getPlayerCommandParam(String itemName, String command);
 	
 	/**
 	 * Returns all Items associated to <code>playerId</code> and <code>playerCommand</code> 
@@ -48,4 +65,19 @@ public interface MpdBindingProvider extends BindingProvider {
 	 */
 	String[] getItemNamesByPlayerAndPlayerCommand(String playerId, PlayerCommandTypeMapping playerCommand);
 
+	/**
+	 * Returns all Items associated to <code>playerId</code> and that have a 
+	 * <code>playerCommand</code>=<code>outputId</code> binding.
+	 * 
+	 * @param playerId the id of the player for which items should be returned
+	 * @param playerCommand the openHAB command for which items should be returned
+	 * @param outputId the MPD output id for which items should be returned
+	 *  
+	 * @return the name of all items which are associated to <code>playerId</code>
+	 * and have a <code>playerCommand</code>=<code>outputId</code> binding.
+	 * 
+	 * @since 1.6.0
+	 */
+	String[] getItemNamesByPlayerOutputCommand(String playerId, PlayerCommandTypeMapping playerCommand, int outputId);
+	
 }

@@ -25,7 +25,8 @@ import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFIOActorConfigurationImpl#isDefaultState <em>Default State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFIOActorConfigurationImpl#getDefaultState <em>Default State</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFIOActorConfigurationImpl#isKeepOnReconnect <em>Keep On Reconnect</em>}</li>
  * </ul>
  * </p>
  *
@@ -34,24 +35,44 @@ import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
 public class TFIOActorConfigurationImpl extends MinimalEObjectImpl.Container implements TFIOActorConfiguration
 {
   /**
-   * The default value of the '{@link #isDefaultState() <em>Default State</em>}' attribute.
+   * The default value of the '{@link #getDefaultState() <em>Default State</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isDefaultState()
+   * @see #getDefaultState()
    * @generated
    * @ordered
    */
-  protected static final boolean DEFAULT_STATE_EDEFAULT = false;
+  protected static final String DEFAULT_STATE_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #isDefaultState() <em>Default State</em>}' attribute.
+   * The cached value of the '{@link #getDefaultState() <em>Default State</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isDefaultState()
+   * @see #getDefaultState()
    * @generated
    * @ordered
    */
-  protected boolean defaultState = DEFAULT_STATE_EDEFAULT;
+  protected String defaultState = DEFAULT_STATE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isKeepOnReconnect() <em>Keep On Reconnect</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isKeepOnReconnect()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean KEEP_ON_RECONNECT_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isKeepOnReconnect() <em>Keep On Reconnect</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isKeepOnReconnect()
+   * @generated
+   * @ordered
+   */
+  protected boolean keepOnReconnect = KEEP_ON_RECONNECT_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -79,7 +100,7 @@ public class TFIOActorConfigurationImpl extends MinimalEObjectImpl.Container imp
    * <!-- end-user-doc -->
    * @generated
    */
-  public boolean isDefaultState()
+  public String getDefaultState()
   {
     return defaultState;
   }
@@ -89,12 +110,35 @@ public class TFIOActorConfigurationImpl extends MinimalEObjectImpl.Container imp
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setDefaultState(boolean newDefaultState)
+  public void setDefaultState(String newDefaultState)
   {
-    boolean oldDefaultState = defaultState;
+    String oldDefaultState = defaultState;
     defaultState = newDefaultState;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE, oldDefaultState, defaultState));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public boolean isKeepOnReconnect()
+  {
+    return keepOnReconnect;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setKeepOnReconnect(boolean newKeepOnReconnect)
+  {
+    boolean oldKeepOnReconnect = keepOnReconnect;
+    keepOnReconnect = newKeepOnReconnect;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TFIO_ACTOR_CONFIGURATION__KEEP_ON_RECONNECT, oldKeepOnReconnect, keepOnReconnect));
   }
 
   /**
@@ -108,7 +152,9 @@ public class TFIOActorConfigurationImpl extends MinimalEObjectImpl.Container imp
     switch (featureID)
     {
       case ModelPackage.TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE:
-        return isDefaultState();
+        return getDefaultState();
+      case ModelPackage.TFIO_ACTOR_CONFIGURATION__KEEP_ON_RECONNECT:
+        return isKeepOnReconnect();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -124,7 +170,10 @@ public class TFIOActorConfigurationImpl extends MinimalEObjectImpl.Container imp
     switch (featureID)
     {
       case ModelPackage.TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE:
-        setDefaultState((Boolean)newValue);
+        setDefaultState((String)newValue);
+        return;
+      case ModelPackage.TFIO_ACTOR_CONFIGURATION__KEEP_ON_RECONNECT:
+        setKeepOnReconnect((Boolean)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -143,6 +192,9 @@ public class TFIOActorConfigurationImpl extends MinimalEObjectImpl.Container imp
       case ModelPackage.TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE:
         setDefaultState(DEFAULT_STATE_EDEFAULT);
         return;
+      case ModelPackage.TFIO_ACTOR_CONFIGURATION__KEEP_ON_RECONNECT:
+        setKeepOnReconnect(KEEP_ON_RECONNECT_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -158,7 +210,9 @@ public class TFIOActorConfigurationImpl extends MinimalEObjectImpl.Container imp
     switch (featureID)
     {
       case ModelPackage.TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE:
-        return defaultState != DEFAULT_STATE_EDEFAULT;
+        return DEFAULT_STATE_EDEFAULT == null ? defaultState != null : !DEFAULT_STATE_EDEFAULT.equals(defaultState);
+      case ModelPackage.TFIO_ACTOR_CONFIGURATION__KEEP_ON_RECONNECT:
+        return keepOnReconnect != KEEP_ON_RECONNECT_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -176,6 +230,8 @@ public class TFIOActorConfigurationImpl extends MinimalEObjectImpl.Container imp
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (defaultState: ");
     result.append(defaultState);
+    result.append(", keepOnReconnect: ");
+    result.append(keepOnReconnect);
     result.append(')');
     return result.toString();
   }

@@ -3,8 +3,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="/org.openhab.core.persistence/lib/joda-time-2.1.jar" sourcepath="/Users/thomasee/.m2/repository/joda-time/joda-time/2.1/joda-time-2.1-sources.jar"/>
-	<classpathentry kind="lib" path="/org.openhab.core.scheduler/lib/quartz-all-2.1.7.jar"/>
 	<classpathentry kind="lib" path="/org.openhab.io.gcal/lib/gdata-calendar-2.0.jar"/>
 	<classpathentry kind="lib" path="/org.openhab.io.gcal/lib/gdata-client-1.0.jar"/>
 	<classpathentry kind="lib" path="/org.openhab.io.gcal/lib/gdata-core-1.0.jar"/>

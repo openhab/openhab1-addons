@@ -11,10 +11,10 @@ package org.openhab.binding.zwave.internal.converter;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.converter.command.ZWaveCommandConverter;
-import org.openhab.binding.zwave.internal.converter.state.BinaryDecimalTypeConverter;
-import org.openhab.binding.zwave.internal.converter.state.BinaryPercentTypeConverter;
+import org.openhab.binding.zwave.internal.converter.state.IntegerDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerOnOffTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerOpenClosedTypeConverter;
+import org.openhab.binding.zwave.internal.converter.state.IntegerPercentTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -51,8 +51,8 @@ public class ZWaveAlarmSensorConverter extends ZWaveCommandClassConverter<ZWaveA
 		super(controller, eventPublisher);
 		
 		// State and commmand converters used by this converter. 
-		this.addStateConverter(new BinaryDecimalTypeConverter());
-		this.addStateConverter(new BinaryPercentTypeConverter());
+		this.addStateConverter(new IntegerDecimalTypeConverter());
+		this.addStateConverter(new IntegerPercentTypeConverter());
 		this.addStateConverter(new IntegerOnOffTypeConverter());
 		this.addStateConverter(new IntegerOpenClosedTypeConverter());
 	}

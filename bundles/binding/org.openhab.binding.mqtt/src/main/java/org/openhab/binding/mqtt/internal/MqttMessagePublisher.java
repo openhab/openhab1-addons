@@ -84,6 +84,7 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements
 				throw new BindingConfigParseException("Missing transformation configuration.");
 			} else {
 				setTransformationRule(config[4].trim());
+				initTransformService();
 			}
 
 		} catch (BindingConfigParseException e) {
@@ -144,6 +145,7 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements
 
 		if (getTransformationServiceName() != null
 				&& getTransformationService() == null) {
+			logger.debug("Sending message before transformation service '{}' was initialized.");
 			initTransformService();
 		}
 
@@ -199,7 +201,7 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements
 	 * @return true if this publisher has been activated by the
 	 *         MqttBrokerConnection.
 	 */
-	public boolean isActived() {
+	public boolean isActivated() {
 		return senderChannel != null;
 	}
 

@@ -107,6 +107,18 @@ public class SwegonVentilationBinding extends
 			}
 		}
 		
+		if (messageListener != null) {
+
+			logger.debug("Close previous message listener");
+
+			messageListener.setInterrupted(true);
+			try {
+				messageListener.join();
+			} catch (InterruptedException e) {
+				logger.info("Previous message listener closing interrupted", e);
+			}
+		}
+		
 		messageListener = new MessageListener();
 		messageListener.start();
 
@@ -177,6 +189,11 @@ public class SwegonVentilationBinding extends
 				logger.error(
 						"Error occured when connecting to Swegon ventilation system",
 						e);
+
+				logger.warn("Closing Swegon ventilation system message listener");
+				
+				// exit
+				interrupted = true;
 			}
 
 			// as long as no interrupt is requested, continue running

@@ -13,6 +13,9 @@ import com.tinkerforge.BrickletIndustrialQuadRelay;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MIndustrial Quad Relay Bricklet</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.4.0
  * <!-- end-user-doc -->
  *
  *

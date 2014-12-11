@@ -99,23 +99,30 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 
 			if (configParts.length == 1) {
 				config.outBindingOnly = true;
-				config.resourceId = Integer.parseInt(configParts[0].replace(
-						">", ""));
+				String resourceId = configParts[0].replace(">", "");
+
+				if (resourceId.startsWith("0x")) {
+					config.resourceId = Integer.parseInt(
+							resourceId.replace("0x", ""), 16);
+				} else {
+					config.resourceId = Integer.parseInt(resourceId);
+				}
+				
 			} else {
 				throw new BindingConfigParseException(
 						"When configuration start with '>', refresh interval is not supported ");
-
 			}
 
 		} else {
 
 			String resourceId = configParts[0];
 
-			if (resourceId.startsWith("0x"))
+			if (resourceId.startsWith("0x")) {
 				config.resourceId = Integer.parseInt(
 						resourceId.replace("0x", ""), 16);
-			else
+			} else {
 				config.resourceId = Integer.parseInt(resourceId);
+			}
 
 			if (configParts.length == 2)
 				config.refreshInterval = Integer.parseInt(configParts[1]);
@@ -171,7 +178,6 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		logger.debug("Validate item type for item {}", item.getName());
 
 		if (!(item instanceof NumberItem || item instanceof SwitchItem
 				|| item instanceof ContactItem || item instanceof StringItem
@@ -190,14 +196,20 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 
 	@Override
 	public Boolean autoUpdate(String itemName) {
+
 		// Cancel auto update functionality for items, which are handled on this binding
+
 		if (providesBindingFor(itemName)) {
-			if (!isOutBindingOnly(itemName)) {
+
+			if (isOutBindingOnly(itemName) == false) {
+				
 				// Cancel auto update functionality only if item is not 'out binding only'
+
 				logger.debug("AutoUpdate for item {} canceled", itemName);
-				return Boolean.FALSE;
+				return false;
 			}
 		}
+
 		return null;
 	}
 

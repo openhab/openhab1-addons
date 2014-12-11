@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Battery command class. Devices that support this
@@ -37,10 +38,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("batteryCommandClass")
 public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveBatteryCommandClass.class);
 	
 	private static final int BATTERY_GET = 0x02;
 	private static final int BATTERY_REPORT = 0x03;
+	
+	private Integer batteryLevel = null;
 	
 	/**
 	 * Creates a new instance of the ZWaveBatteryCommandClass class.
@@ -78,9 +82,9 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 			case BATTERY_REPORT:
 				logger.trace("Process Battery Report");
 				
-				int value = serialMessage.getMessagePayloadByte(offset + 1); 
-				logger.debug(String.format("Node %d: Battery report value = 0x%02X", this.getNode().getNodeId(), value));
-				ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
+				batteryLevel = serialMessage.getMessagePayloadByte(offset + 1); 
+				logger.debug(String.format("Node %d: Battery report value = 0x%02X", this.getNode().getNodeId(), batteryLevel));
+				ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), batteryLevel);
 				this.getController().notifyEventListeners(zEvent);
 
 				if (this.getNode().getNodeStage() != NodeStage.DONE)
@@ -119,5 +123,13 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 		result.add(getValueMessage());
 		
 		return result;
+	}
+	
+	/**
+	 * Returns the current battery level. If the battery level is unknown, returns null
+	 * @return
+	 */
+	public Integer getBatteryLevel() {
+		return batteryLevel;
 	}
 }

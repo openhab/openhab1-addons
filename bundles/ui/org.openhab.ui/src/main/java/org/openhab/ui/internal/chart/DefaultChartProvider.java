@@ -13,6 +13,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +26,8 @@ import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
@@ -212,7 +215,7 @@ public class DefaultChartProvider implements ChartProvider {
 			xData.add(endTime);
 			yData.add(0);
 
-			Series series = chart.addDateSeries("NONE", xData, yData);
+			Series series = chart.addSeries("NONE", xData, yData);
 			series.setMarker(SeriesMarker.NONE);
 			series.setLineStyle(new BasicStroke(0f));
 		}
@@ -232,6 +235,28 @@ public class DefaultChartProvider implements ChartProvider {
 		Graphics2D lGraphics2D = lBufferedImage.createGraphics();
 		chart.paint(lGraphics2D);
 		return lBufferedImage;
+	}
+	
+	double convertData(org.openhab.core.types.State state) {
+		if (state instanceof DecimalType) {
+			return ((DecimalType) state).doubleValue();				
+		}
+		else if(state instanceof OnOffType) {
+			if(state == OnOffType.OFF)
+				return 0;
+			else
+				return 1;
+		}
+		else if(state instanceof OpenClosedType) {
+			if(state == OpenClosedType.CLOSED)
+				return 0;
+			else
+				return 1;
+		}
+		else {
+			logger.debug("Unsupported item type in chart: {}", state.getClass().toString());
+			return 0;
+		}
 	}
 
 	boolean addItem(Chart chart, QueryablePersistenceService service, Date timeBegin, Date timeEnd, Item item,
@@ -274,10 +299,8 @@ public class DefaultChartProvider implements ChartProvider {
 			HistoricItem historicItem = result.iterator().next();
 
 			state = historicItem.getState();
-			if (state instanceof DecimalType) {
-				xData.add(timeBegin);
-				yData.add((DecimalType) state);
-			}
+			xData.add(timeBegin);
+			yData.add(convertData(state));
 		}
 
 		// Now, get all the data between the start and end time
@@ -293,17 +316,26 @@ public class DefaultChartProvider implements ChartProvider {
 		// Iterate through the data
 		while (it.hasNext()) {
 			HistoricItem historicItem = it.next();
-			state = historicItem.getState();
-			if (state instanceof DecimalType) {
-				xData.add(historicItem.getTimestamp());
-				yData.add((DecimalType) state);
+			
+			// For 'binary' states, we need to replicate the data
+			// to avoid diagonal lines
+			if(state instanceof OnOffType || state instanceof OpenClosedType) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(historicItem.getTimestamp());
+				cal.add(Calendar.MILLISECOND, -1);
+				xData.add(cal.getTime());
+				yData.add(convertData(state));
 			}
+
+			state = historicItem.getState();
+			xData.add(historicItem.getTimestamp());
+			yData.add(convertData(state));
 		}
 
 		// Lastly, add the final state at the endtime
-		if (state != null && state instanceof DecimalType) {
+		if (state != null) {
 			xData.add(timeEnd);
-			yData.add((DecimalType) state);
+			yData.add(convertData(state));
 		}
 
 		// Add the new series to the chart - only if there's data elements to display
@@ -319,7 +351,7 @@ public class DefaultChartProvider implements ChartProvider {
 			yData.add(yData.iterator().next());
 		}
 
-		Series series = chart.addDateSeries(label, xData, yData);
+		Series series = chart.addSeries(label, xData, yData);
 		series.setLineStyle(new BasicStroke(1.5f));
 		series.setMarker(SeriesMarker.NONE);
 		series.setLineColor(color);
@@ -327,7 +359,7 @@ public class DefaultChartProvider implements ChartProvider {
 		// If the start value is below the median, then count legend position down
 		// Otherwise count up.
 		// We use this to decide whether to put the legend in the top or bottom corner.
-		if(yData.iterator().next().floatValue() > ((series.getyMax().floatValue() - series.getyMin().floatValue()) / 2 + series.getyMin().floatValue())) {
+		if(yData.iterator().next().floatValue() > ((series.getYMax() - series.getYMin()) / 2 + series.getYMin())) {
 			legendPosition++;
 		}
 		else {

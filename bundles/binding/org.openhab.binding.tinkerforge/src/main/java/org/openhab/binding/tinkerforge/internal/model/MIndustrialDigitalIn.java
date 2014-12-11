@@ -14,6 +14,9 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MIndustrial Digital In</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.5.0
  * <!-- end-user-doc -->
  *
  *

@@ -81,8 +81,8 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	/* RegEx to extract and parse a function String <code>'\[(.*?)\((.*)\):(.*)\]'</code> */
 	protected static final Pattern EXTRACT_TRANSFORMFUNCTION_PATTERN = Pattern.compile("\\[(.*?)\\((.*)\\):(.*)\\]");
 	
-	/* RegEx to identify format patterns */
-	protected static final String IDENTIFY_FORMAT_PATTERN_PATTERN = "%(\\d\\$)?(<)?(\\.\\d)?[a-zA-Z]{1,2}";
+	/* RegEx to identify format patterns. See java.util.Formatter#formatSpecifier (without the '%' at the very end). */
+	protected static final String IDENTIFY_FORMAT_PATTERN_PATTERN = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z])";
 
 	protected Set<ItemUIProvider> itemUIProviders = new HashSet<ItemUIProvider>();
 
@@ -249,11 +249,15 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 				// The following exception handling has been added to work around a Java bug with formatting
 				// numbers. See http://bugs.sun.com/view_bug.do?bug_id=6476425
 				// Without this catch, the whole sitemap, or page can not be displayed!
+				// This also handles IllegalFormatConverionException, which is a subclass of IllegalArgument.
 				try {
-				formatPattern = ((Type) state).format(formatPattern);
-			}
+					formatPattern = ((Type) state).format(formatPattern);
+				}
 				catch(IllegalArgumentException e) {
-					formatPattern = new String("Err"); 
+					logger.warn(
+							"Exception while formatting value '{}' of item {} with format '{}': {}",
+							state, itemName, formatPattern, e);
+					formatPattern = new String("Err");
 				}
 			}
 
@@ -294,8 +298,14 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 	protected String formatUndefined(String formatPattern) {
 		String undefinedFormatPattern = 
 			formatPattern.replaceAll(IDENTIFY_FORMAT_PATTERN_PATTERN, "%1\\$s");
-		String formattedValue = String.format(undefinedFormatPattern, "-");
-		return formattedValue;
+		try {
+			return String.format(undefinedFormatPattern, "-");
+		} catch (Exception e) {
+			logger.warn(
+					"Exception while formatting undefined value [sourcePattern={}, targetPattern={}, {}]",
+					formatPattern, undefinedFormatPattern, e);
+			return "Err";
+		}
 	}
 	
 	/*

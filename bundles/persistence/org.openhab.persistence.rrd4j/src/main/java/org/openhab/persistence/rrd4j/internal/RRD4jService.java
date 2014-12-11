@@ -58,7 +58,7 @@ public class RRD4jService implements QueryablePersistenceService {
 
 	private static final String DATASOURCE_STATE = "state";
 
-	protected final static String DB_FOLDER = "etc/rrd4j";
+	protected final static String DB_FOLDER = getUserDataFolder() + File.separator + "rrd4j";
 	
 	private static final Logger logger = LoggerFactory.getLogger(RRD4jService.class);
 
@@ -84,7 +84,7 @@ public class RRD4jService implements QueryablePersistenceService {
 	/**
 	 * @{inheritDoc}
 	 */
-	public void store(final Item item, final String alias) {
+	public synchronized void store(final Item item, final String alias) {
 		final String name = alias==null ? item.getName() : alias;
 		ConsolFun function = getConsolidationFunction(item);
 		RrdDb db = getDB(name, function);
@@ -304,4 +304,13 @@ public class RRD4jService implements QueryablePersistenceService {
 		return new DecimalType(value);
 	}
 	
+	static private String getUserDataFolder() {
+		String progArg = System.getProperty("smarthome.userdata");
+		if (progArg != null) {
+			return progArg;
+		} else {
+			return "etc";
+		}
+	}
+
 }

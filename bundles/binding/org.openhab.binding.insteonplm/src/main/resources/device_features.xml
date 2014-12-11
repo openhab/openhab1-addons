@@ -1,0 +1,142 @@
+<xml>
+
+<feature name="GenericSwitch">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13">LightOffHandler</message-handler>
+	<message-handler cmd="0x19">LightStateSwitchHandler</message-handler>
+	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
+	<poll-handler>DefaultPollHandler</poll-handler>
+</feature>
+<feature name="MultiButtonRemote">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">LightOnMultiHandler</message-handler>
+	<message-handler cmd="0x13">LightOffMultiHandler</message-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="GenericLastTime" statusFeature="true">
+	<message-dispatcher>PassThroughDispatcher</message-dispatcher>
+	<message-handler default="true">LastTimeHandler</message-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+</feature>
+<feature name="GenericDimmer">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">LightOnDimmerHandler</message-handler>
+	<message-handler cmd="0x13">LightOffHandler</message-handler>
+	<message-handler cmd="0x17">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x18">StopManualChangeHandler</message-handler>
+	<message-handler cmd="0x19">LightStateDimmerHandler</message-handler>
+	<command-handler command="PercentType">PercentHandler</command-handler>
+	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
+	<poll-handler>DefaultPollHandler</poll-handler>
+</feature>
+<feature name="IOLincContact">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">OpenedContactHandler</message-handler>
+	<message-handler cmd="0x13">ClosedContactHandler</message-handler>
+	<message-handler cmd="0x19">StateContactHandler</message-handler>
+	<command-handler command="OnOffType">NoOpCommandHandler</command-handler>
+	<poll-handler>ContactPollHandler</poll-handler>
+</feature>
+<feature name="IOLincSwitch">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x13">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x19">LightStateSwitchHandler</message-handler>
+	<command-handler command="OnOffType">IOLincOnOffCommandHandler</command-handler>
+	<poll-handler>DefaultPollHandler</poll-handler>
+</feature>
+<feature name="WirelessMotionSensorContact">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">OpenedSleepingContactHandler</message-handler>
+	<message-handler cmd="0x13">ClosedSleepingContactHandler</message-handler>
+	<message-handler cmd="0x19">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x2e">NoOpMsgHandler</message-handler>
+	<command-handler command="OnOffType">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="MotionSensorLightLevel">
+	<message-dispatcher>GreedyDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x13">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x2e">MotionSensorLightReplyHandler</message-handler>
+	<command-handler command="OnOffType">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="MotionSensorBatteryLevel">
+	<message-dispatcher>GreedyDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x13">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x2e">MotionSensorBatteryReplyHandler</message-handler>
+	<command-handler command="OnOffType">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="GenericContact">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">OpenedContactHandler</message-handler>
+	<message-handler cmd="0x13">ClosedContactHandler</message-handler>
+	<command-handler command="OnOffType">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="LeakSensorContact">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11">OpenedOrClosedContactHandler</message-handler>
+	<command-handler command="OnOffType">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="GenericModemControl">
+	<message-dispatcher>PassThroughDispatcher</message-dispatcher>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="OnOffType">ModemCommandHandler</command-handler>
+</feature>
+<feature name="X10Dimmer">
+	<message-dispatcher>X10Dispatcher</message-dispatcher>
+	<message-handler cmd="0x02">X10OnHandler</message-handler>
+	<message-handler cmd="0x03">X10OffHandler</message-handler>
+	<message-handler cmd="0x05">X10BrightHandler</message-handler>
+	<message-handler cmd="0x04">X10DimHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="OnOffType">X10OnOffCommandHandler</command-handler>
+	<command-handler command="PercentType">X10PercentCommandHandler</command-handler>
+	<command-handler command="IncreaseDecreaseType">X10IncreaseDecreaseCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="X10Switch">
+	<message-dispatcher>X10Dispatcher</message-dispatcher>
+	<message-handler cmd="0x02">X10OnHandler</message-handler>
+	<message-handler cmd="0x03">X10OffHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler command="OnOffType">X10OnOffCommandHandler</command-handler>
+	<command-handler command="PercentType">NoOpCommandHandler</command-handler>
+	<command-handler command="IncreaseDecreaseType">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+<feature name="X10Contact">
+	<message-dispatcher>X10Dispatcher</message-dispatcher>
+	<message-handler cmd="0x02">X10OpenHandler</message-handler>
+	<message-handler cmd="0x03">X10ClosedHandler</message-handler>
+	<message-handler default="true">NoOpMsgHandler</message-handler>
+	<command-handler default="true">NoOpCommandHandler</command-handler>
+	<poll-handler>NoPollHandler</poll-handler>
+</feature>
+</xml>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>HRT4-ZW</Model>
-	<Endpoints>1</Endpoints>
 	<Label lang="en">Battery Powered Wall Thermostat</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>

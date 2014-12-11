@@ -35,6 +35,11 @@ public interface OneWireBindingProvider extends BindingProvider {
 	 */
 	public String getUnitId(String itemName);
 
+	/**
+	 * @return the filter for the given <code>itemName</code>
+	 */
+	public String getFilter(String itemName);
+
 	public Item getItem(String itemName);
 	
 }

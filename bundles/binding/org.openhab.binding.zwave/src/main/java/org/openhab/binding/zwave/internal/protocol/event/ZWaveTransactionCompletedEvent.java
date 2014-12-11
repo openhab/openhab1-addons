@@ -26,7 +26,7 @@ public class ZWaveTransactionCompletedEvent extends ZWaveEvent {
 	 * @param completedMessage the original {@link SerialMessage} that has been completed.
 	 */
 	public ZWaveTransactionCompletedEvent(SerialMessage completedMessage) {
-		super(completedMessage.getMessageNode(), 1);
+		super(completedMessage.getMessageNode());
 
 		this.completedMessage = completedMessage;
 	}

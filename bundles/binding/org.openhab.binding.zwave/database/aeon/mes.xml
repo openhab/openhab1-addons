@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
         <Model>MES</Model>
-        <Endpoints>1</Endpoints>
         <Label lang="en">Switching Insert</Label>
         <CommandClasses>
                 <Class><id>0x20</id></Class>

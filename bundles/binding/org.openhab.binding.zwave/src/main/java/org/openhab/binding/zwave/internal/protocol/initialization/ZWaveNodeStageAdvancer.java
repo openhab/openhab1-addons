@@ -25,7 +25,6 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveManufacture
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNoOperationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,6 +72,8 @@ public class ZWaveNodeStageAdvancer {
 					this.node.getNodeStage().getLabel(), targetStage.getLabel()));
 			return;
 		}
+		logger.debug(String.format("NODE %d: Setting stage. current = %s, requested = %s", this.node.getNodeId(),
+				this.node.getNodeStage().getLabel(), targetStage.getLabel()));
 
 		this.node.setQueryStageTimeStamp(Calendar.getInstance().getTime());
 		switch (this.node.getNodeStage()) {
@@ -317,49 +318,9 @@ public class ZWaveNodeStageAdvancer {
 	}
 
 	/**
-	 * Restores a node from an XML file using the @ ZWaveNodeSerializer} class.
-	 * 
-	 * @return true if succeeded, false otherwise.
+	 * Sets the flag to indicate that this node was restored from file
 	 */
-	public boolean restoreFromConfig() {
-		ZWaveNode restoredNode = nodeSerializer.DeserializeNode(this.node.getNodeId());
-		
-		if (restoredNode == null)
-			return false;
-
-		if (restoredNode.getVersion() != this.node.getVersion()
-				|| restoredNode.isListening() != this.node.isListening()
-				|| restoredNode.isFrequentlyListening() != this.node.isFrequentlyListening()
-				|| restoredNode.isRouting() != this.node.isRouting()
-				|| !restoredNode.getDeviceClass().equals(this.node.getDeviceClass())) {
-			logger.warn("NODE {}: Config file differs from controler information, ignoring config.",
-					this.node.getNodeId());
-			return false;
-		}
-		
-		this.node.setDeviceId(restoredNode.getDeviceId());
-		this.node.setDeviceType(restoredNode.getDeviceType());
-		this.node.setManufacturer(restoredNode.getManufacturer());
-
-		for (ZWaveCommandClass commandClass : restoredNode.getCommandClasses()) {
-			commandClass.setController(this.controller);
-			commandClass.setNode(this.node);
-			
-			if (commandClass instanceof ZWaveMultiInstanceCommandClass) {
-				for (ZWaveEndpoint endPoint : ((ZWaveMultiInstanceCommandClass)commandClass).getEndpoints()) {
-					for (ZWaveCommandClass endpointCommandClass : endPoint.getCommandClasses()) {
-						endpointCommandClass.setController(this.controller);
-						endpointCommandClass.setNode(this.node);
-						endpointCommandClass.setEndpoint(endPoint);
-					}
-				}
-			}
-			
-			this.node.addCommandClass(commandClass);
-		}
-
-		logger.debug("NODE {}: Restored from config.", this.node.getNodeId());
+	public void setRestoredFromConfigfile() {
 		restoredFromConfigfile = true;
-		return true;
 	}
 }

@@ -23,8 +23,6 @@
 
 	<packaging>eclipse-plugin</packaging>
 
-	<version>${version}-SNAPSHOT</version>
-
 	<build>
 		<plugins>
 			<plugin>

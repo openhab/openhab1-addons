@@ -123,6 +123,18 @@ public class OpenEnergyMonitorBinding extends
 				dataParser = new OpenEnergyMonitorDataParser(parsingRules);
 			}
 			
+			if (messageListener != null) {
+
+				logger.debug("Close previous message listener");
+
+				messageListener.setInterrupted(true);
+				try {
+					messageListener.join();
+				} catch (InterruptedException e) {
+					logger.info("Previous message listener closing interrupted", e);
+				}
+			}
+			
 			messageListener = new MessageListener();
 			messageListener.start();
 		}
@@ -167,6 +179,11 @@ public class OpenEnergyMonitorBinding extends
 				logger.error(
 						"Error occured when connecting to Open Energy Monitor device",
 						e);
+
+				logger.warn("Closing Open Energy Monitor message listener");
+
+				// exit
+				interrupted = true;
 			}
 
 			// as long as no interrupt is requested, continue running

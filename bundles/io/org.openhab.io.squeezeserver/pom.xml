@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.openhab.bundles</groupId>
 		<artifactId>io</artifactId>
-		<version>1.5.0-SNAPSHOT</version>
+		<version>1.7.0-SNAPSHOT</version>
 	</parent>
 
 	<name>openHAB Squeeze Server</name>
@@ -15,7 +15,7 @@
 		<bundle.symbolicName>org.openhab.io.squeezeserver</bundle.symbolicName>
 		<bundle.namespace>org.openhab.io.squeezeserver</bundle.namespace>
 		<deb.name>openhab-addon-io-squeezeserver</deb.name>
-		<deb.description>${name}</deb.description>
+		<deb.description>${project.name}</deb.description>
 	</properties>
 
 	<groupId>org.openhab.io</groupId>

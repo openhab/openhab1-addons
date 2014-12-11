@@ -20,6 +20,7 @@ import org.openhab.binding.sonos.SonosBindingProvider;
 import org.openhab.binding.sonos.internal.Direction;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.types.DecimalType;
@@ -138,14 +139,9 @@ implements SonosBindingProvider {
 
 				Command command = null;
 				if(commandAsString == null) {
-
-					if(item instanceof NumberItem || item instanceof StringItem){
-						command = createCommandFromString(item,Integer.toString(counter));
-						counter++;
-						config.put(command, newElement);
-					} else {
-						logger.warn("Only NumberItem or StringItem can have undefined command types");
-					}								
+					command = createCommandFromString(null,Integer.toString(counter));
+					counter++;
+					config.put(command, newElement);								
 				} else { 
 					command = createCommandFromString(item, commandAsString);
 					config.put(command, newElement);
@@ -161,7 +157,7 @@ implements SonosBindingProvider {
 	 * Creates a {@link Command} out of the given <code>commandAsString</code>
 	 * incorporating the {@link TypeParser}.
 	 *  
-	 * @param item
+	 * @param item, or null if the Command has to be of the StringType type
 	 * @param commandAsString
 	 * 
 	 * @return an appropriate Command (see {@link TypeParser} for more 
@@ -174,8 +170,16 @@ implements SonosBindingProvider {
 	 */
 	private Command createCommandFromString(Item item, String commandAsString) throws BindingConfigParseException {
 
-		Command command = TypeParser.parseCommand(
-				item.getAcceptedCommandTypes(), commandAsString);
+		List<Class<? extends Command>> acceptedTypes = new ArrayList<Class<? extends Command>>();
+
+		if(item!=null) {
+			acceptedTypes = item.getAcceptedCommandTypes();
+		}
+		else {
+			acceptedTypes.add(StringType.class);
+		}
+		
+		Command command = TypeParser.parseCommand(acceptedTypes, commandAsString);
 
 		if (command == null) {
 			throw new BindingConfigParseException("couldn't create Command from '" + commandAsString + "' ");

@@ -875,7 +875,7 @@ function addsWidget(id, data, container, nav_parent) {
 	} else if (data.type == "Webview") {
 		widget = createWebviewWidget(data.item ? data.item.name : '', data.url, data.height, data.label, data.icon);
 	} else if (data.type == "Chart") {
-		widget = createChartWidget(data.item ? data.item.name : '', id, data.w, data.h, data.period, data.refresh, data.item ? data.item.type : '', data.label, data.icon);	
+		widget = createChartWidget(data.item ? data.item.name : '', id, data.w, data.h, data.period, data.refresh, data.item ? data.item.type : '', data.label, data.icon, data.service);	
 	} else if (data.type == "Text") {
         if (data.linkedPage) {
             if (deviceType == "Phone") {
@@ -911,7 +911,7 @@ function addsWidget(id, data, container, nav_parent) {
             }
             buildUIArray(data.linkedPage, navigation_parent);
         } else {
-            widget = createImageWidget(data.url);
+            widget = createImageWidget(id, data.url, data.refresh || 0);
         }
 
     } else if (data.type == "Frame") {
@@ -1779,6 +1779,10 @@ Ext.define('Oph.field.Chart', {
 		//config.img_src = '/'+chart_servlet+'?'+chartType+'='+config.oph_item+'&period='+config.oph_period+'&w='+config.oph_w+'&h='+config.oph_h;
 		
 		config.img_src = '/'+chart_servlet+'?'+chartType+'='+config.oph_item+'&period='+config.oph_period;
+
+		if(config.oph_service != null)
+			config.img_src += '&service='+config.oph_service;
+
 		this.callParent([config]);
         this.setHtml('<div style="width:100%;padding:0.4em;"><img id="img'+config.oph_id+'" src="'+config.img_src+'&random=' + new Date().getTime() + '" style="width:100%;"></div>');
 		
@@ -1829,13 +1833,30 @@ Ext.define('Oph.field.Image', {
         if (config.url.substr(0, 4) != "http" && config.url.substr(0, 1) != "/") {
             config.url = "/" + config.url;
         }
-        this.setHtml('<div style="width:100%;padding:0.4em;"><img src="' + config.url + '" style="width:100%;"></div>');
+        this.setHtml('<div style="width:100%;padding:0.4em;"><img id="img'+config.oph_id+'" src="' + config.url + '" style="width:100%;"></div>');
     },
 
     initialize: function () {
         this.callParent();
+        this.on({
+            painted: function (component) {
+                if(component.config.oph_refresh > 0){
+                      component.config.refreshInterval = window.setInterval(function(){component.updateImage(component);}, component.config.oph_refresh);
+                }
+            },
+            erased: function (component) {
+                if(component.config.oph_refresh > 0){
+                    window.clearInterval(component.config.refreshInterval);
+                }
+            }
+        });
 
-    }, setValueData: function (newValue) {}
+    }, setValueData: function (newValue) {},
+    updateImage: function (container)
+       {
+            Ext.fly('img'+container.config.oph_id).dom.src = container.config.url+'&random=' + new Date().getTime();
+       }
+
 });
 
 
@@ -2080,17 +2101,27 @@ function createUnsupportedWidget() {
 }
 
 
-function createImageWidget(url) {
-    return {
-        xtype: 'oph_imagefield',
-        url: url,
-        cls: 'x-image-field',
-    };
-
+function createImageWidget(id, url, oph_refresh) {
+    if (oph_refresh > 0) {
+        return {
+            xtype: 'oph_imagefield',
+            url: url,
+            oph_id: id,
+            oph_refresh: oph_refresh,
+            cls: 'x-image-field',
+	    };
+    } else {
+        return {
+            xtype: 'oph_imagefield',
+            oph_id: id,
+            url: url,
+            cls: 'x-image-field',
+	    };
+    }
 }
 
 
-function createChartWidget(oph_item, oph_id, oph_w, oph_h, oph_period, oph_refresh, oph_type, oph_label, oph_icon) {
+function createChartWidget(oph_item, oph_id, oph_w, oph_h, oph_period, oph_refresh, oph_type, oph_label, oph_icon, oph_service) {
     return {
         xtype: 'oph_chartfield',
         oph_item: oph_item,
@@ -2100,7 +2131,8 @@ function createChartWidget(oph_item, oph_id, oph_w, oph_h, oph_period, oph_refre
 		oph_refresh: oph_refresh,
 		oph_id: oph_id,
 		oph_type: oph_type,
-		img_src: ''
+		img_src: '',
+		oph_service: oph_service
     };
 
 }
@@ -2245,7 +2277,6 @@ var oph_app = Ext.application({
                         this.goToNode(node.parentNode);
                     }
                 } else {
-                    broadCrumb.pop();
                     this.goToNode(node.parentNode);
                 }
                 clickOnLeaf = false;

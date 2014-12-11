@@ -24,7 +24,6 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openhab.binding.nikobus.internal.NikobusBinding;
 import org.openhab.binding.nikobus.internal.core.NikobusCommand;
-import org.openhab.binding.nikobus.internal.util.CommandCache;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
@@ -39,9 +38,6 @@ public class ModuleChannelGroupTest {
 	@Mock
 	private NikobusBinding binding;
 
-	@Mock
-	private CommandCache cache;
-
 	@Captor
 	ArgumentCaptor<NikobusCommand> command;
 
@@ -52,14 +48,6 @@ public class ModuleChannelGroupTest {
 	@Before
 	public void setup() throws URISyntaxException {
 
-		Mockito.when(binding.getCache()).thenReturn(cache);
-
-		Mockito.when(cache.get("$666")).thenReturn("999");
-		Mockito.when(cache.get("$10126C946CE5")).thenReturn("A0");
-		Mockito.when(cache.get("$10176C948715")).thenReturn("BB");
-		Mockito.when(cache.get("$1E156C94000000FF0000FF60E1")).thenReturn("49");
-		Mockito.when(cache.get("$1E166C940000000000FFFF9972")).thenReturn("95");
-
 		group1 = new ModuleChannelGroup("6C94", 1);
 		group2 = new ModuleChannelGroup("6C94", 2);
 		group3 = new ModuleChannelGroup("5FCB", 1);
@@ -69,7 +57,7 @@ public class ModuleChannelGroupTest {
 	@Test
 	public void canRequestGroup1Status() throws Exception {
 
-		NikobusCommand cmd = group1.getStatusRequestCommand(binding);
+		NikobusCommand cmd = group1.getStatusRequestCommand();
 		assertEquals("$10126C946CE5A0", cmd.getCommand());
 		assertEquals("$1C6C94", cmd.getAck());
 
@@ -78,7 +66,7 @@ public class ModuleChannelGroupTest {
 	@Test
 	public void canRequestGroup2Status() throws Exception {
 
-		NikobusCommand cmd = group2.getStatusRequestCommand(binding);
+		NikobusCommand cmd = group2.getStatusRequestCommand();
 		assertEquals("$10176C948715BB", cmd.getCommand());
 		assertEquals("$1C6C94", cmd.getAck());
 	}
@@ -88,16 +76,29 @@ public class ModuleChannelGroupTest {
 
 		ModuleChannel item = group1.addChannel("test4", 4, new ArrayList<Class<? extends Command>>());
 		item.setState(OnOffType.ON);
-		Mockito.when(cache.get(Mockito.anyString())).thenReturn("49");
 
 		group1.publishStateToNikobus(item, binding);
 
-		Mockito.verify(binding, Mockito.times(1)).getCache();
 		Mockito.verify(binding, Mockito.times(1)).sendCommand(
 				command.capture());
 
 		NikobusCommand cmd = command.getAllValues().get(0);
 		assertEquals("$1E156C94000000FF0000FF60E149", cmd.getCommand());
+	}
+	
+	@Test
+	public void canSendGroup1DimmerUpdate() throws Exception {
+
+		ModuleChannel item = group1.addChannel("test4", 4, new ArrayList<Class<? extends Command>>());
+		item.setState(new PercentType(25));
+
+		group1.publishStateToNikobus(item, binding);
+
+		Mockito.verify(binding, Mockito.times(1)).sendCommand(
+				command.capture());
+
+		NikobusCommand cmd = command.getAllValues().get(0);
+		assertEquals("$1E156C94000000400000FF45DE7B", cmd.getCommand());
 	}
 
 	@Test
@@ -105,11 +106,9 @@ public class ModuleChannelGroupTest {
 
 		ModuleChannel item2 = group2.addChannel("test12", 12, new ArrayList<Class<? extends Command>>());
 		item2.setState(OnOffType.ON);
-		Mockito.when(cache.get(Mockito.anyString())).thenReturn("95");
 
 		group2.publishStateToNikobus(item2, binding);
 
-		Mockito.verify(binding, Mockito.times(1)).getCache();
 		Mockito.verify(binding, Mockito.times(1)).sendCommand(
 				command.capture());
 

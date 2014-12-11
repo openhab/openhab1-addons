@@ -5,8 +5,11 @@ bin/
 bundles/io/org.openhab.io.multimedia.tts.marytts/lib/
 .antlr*
 .metadata/
+.DS_Store
 */plugin.xml_gen
 
 distribution/openhabhome/logs/*.log
 distribution/openhabhome/*.zip
 distribution/openhabhome/etc/rrd4j/*.rrd
+*.xml_gen
+*.xml_gen

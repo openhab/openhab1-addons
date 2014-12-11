@@ -72,7 +72,7 @@ public class ItemRegistryImpl implements ItemRegistry, ItemsChangeListener {
 	public Item getItem(String name) throws ItemNotFoundException {
 		for(Collection<Item> items : itemMap.values()) {
 			for(Item item : items) {
-				if(item.getName().matches(name)) {
+				if(item.getName().equals(name)) {
 					return item;
 				}
 			}

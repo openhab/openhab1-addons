@@ -450,7 +450,7 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implem
 		String fullAddress = device + "0" + actuatorNumber;
 		FHTBindingConfig config = getConfig(fullAddress, Datapoint.VALVE);
 		if (config != null) {
-			logger.debug("Updating item " + config.getItem().getName() + "with new valve opening");
+			logger.debug("Updating item " + config.getItem().getName() + " with new valve opening");
 			DecimalType state = new DecimalType(valve);
 			eventPublisher.postUpdate(config.getItem().getName(), state);
 		} else {
@@ -506,8 +506,9 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implem
 		JobKey jobKey = null;
 		try {
 			Scheduler sched = StdSchedulerFactory.getDefaultScheduler();
-			JobDetail detail = JobBuilder.newJob(jobClass).withIdentity("FHT time update job", "cul").build();
-
+			JobDetail detail = JobBuilder.newJob(jobClass).withIdentity("FHT "+jobClass.getSimpleName(), "cul").build();
+			detail.getJobDataMap().put(FHTBinding.class.getName(), this);
+			
 			CronTrigger trigger = TriggerBuilder.newTrigger().forJob(detail)
 					.withSchedule(CronScheduleBuilder.cronSchedule(cronExpression)).build();
 			jobKey = detail.getKey();
@@ -589,19 +590,20 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implem
 		writeRegister(config.getFullAddress(), "66", "FF");
 	}
 
-	private class UpdateFHTTimeJob implements Job {
+	public static class UpdateFHTTimeJob implements Job {
 
 		private long updateInterval = 300000;
 
 		@Override
 		public void execute(JobExecutionContext arg0) throws JobExecutionException {
+			FHTBinding binding=(FHTBinding)arg0.getJobDetail().getJobDataMap().get(FHTBinding.class.getName());
 			List<FHTBindingConfig> configs = new ArrayList<FHTBindingConfig>();
-			for (FHTBindingProvider provider : providers) {
+			for (FHTBindingProvider provider : binding.providers) {
 				configs.addAll(provider.getAllFHT80bBindingConfigs());
 			}
 
 			for (FHTBindingConfig config : configs) {
-				updateTime(config);
+				binding.updateTime(config);
 				try {
 					Thread.sleep(updateInterval);
 				} catch (InterruptedException e) {
@@ -613,19 +615,20 @@ public class FHTBinding extends AbstractActiveBinding<FHTBindingProvider> implem
 
 	}
 
-	private class RequestReportsJob implements Job {
+	public static class RequestReportsJob implements Job {
 
 		private long requestInterval = 120000;
 
 		@Override
 		public void execute(JobExecutionContext arg0) throws JobExecutionException {
+			FHTBinding binding=(FHTBinding)arg0.getJobDetail().getJobDataMap().get(FHTBinding.class.getName());
 			List<FHTBindingConfig> configs = new ArrayList<FHTBindingConfig>();
-			for (FHTBindingProvider provider : providers) {
+			for (FHTBindingProvider provider : binding.providers) {
 				configs.addAll(provider.getAllFHT80bBindingConfigs());
 			}
 
 			for (FHTBindingConfig config : configs) {
-				requestReport(config);
+				binding.requestReport(config);
 				try {
 					Thread.sleep(requestInterval);
 				} catch (InterruptedException e) {

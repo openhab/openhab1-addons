@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>SmartDimmer</Model>
+	<Label lang="en">RAone SmartDimmer 200W</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x28</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x77</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8e</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>0</Index>
+			<Type>byte</Type>
+			<Default>99</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Label lang="en">Maximum dim level</Label>
+			<Help lang="en">Maximum Level, a limit on the maximum level the dimmer can reach. Levels larger than 99 will simply be interpreted as 99 ie. no limit.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Report node</Label>
+			<Help lang="en">Report Node, reports changes in level to this node id. Disabled if 0.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">B&O IR support</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">enabled</Label>
+			</Item>
+			<Help lang="en">B&O IR support is disabled if 0 otherwise enabled.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Dimming type</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Trailing edge</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Leading edge</Label>
+			</Item>
+			<Help lang="en">Dimming Type, trailing edge enabled if 0 otherwise leading edge enabled.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>8</Default>
+			<Size>1</Size>
+			<Label lang="en">Dimming level duration</Label>
+			<Help lang="en">Default Dimming Level Duration, how long time it takes to dim one level in 0.01s.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>5</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Set level duration</Label>
+			<Help lang="en">Default Set Level Duration, how long time it takes to set one level in 0.01s.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>6</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Default>158</Default>
+			<Size>1</Size>
+			<Label lang="en">Long dim duration</Label>
+			<Help lang="en">Long Dim Duration, time to use dimming to level 0 when double clicking. Format is the same as multilevel switch duration.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>7</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>50</Default>
+			<Size>1</Size>
+			<Label lang="en">Touch press time</Label>
+			<Help lang="en">Touch Press Time, time for presses to register as seperate and not part of a sequence, measured in 0.01s. 0 is interpreted as a 1.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>8</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Default>100</Default>
+			<Size>1</Size>
+			<Label lang="en">Touch Multiple Press Time</Label>
+			<Help lang="en">Touch Multiple Press Time, has no specific usage is this product, shouldn't be changed.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>9</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Default>40</Default>
+			<Size>1</Size>
+			<Label lang="en">Touch Hold Time</Label>			
+			<Help lang="en">Touch Hold Time, time for presses to register as being held down in 0.01s. 0 is interpreted asa1.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>10</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>65536</Maximum>
+			<Default>168</Default>
+			<Size>2</Size>
+			<Label lang="en">Network Update Interval</Label>			
+			<Help lang="en">Network Update Interval, time between network updates in 256 seconds. Disabled if 0.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>65536</Maximum>
+			<Default>2362</Default>
+			<Size>2</Size>
+			<Label lang="en">Rediscover Interval</Label>			
+			<Help lang="en">Rediscover Interval, time between rediscoveries in 256 seconds. Disabled if 0.</Help>
+		</Parameter>
+	
+		</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Dimmer</Label>
+		</Group>
+	</Associations>
+</Product>
+

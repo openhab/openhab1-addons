@@ -21,4 +21,5 @@ public interface UrtsiBindingProvider extends AutoUpdateBindingProvider {
 	String getDeviceId(String itemName);
 	
 	int getChannel (String itemName);
+	int getAddress (String itemName);
 }

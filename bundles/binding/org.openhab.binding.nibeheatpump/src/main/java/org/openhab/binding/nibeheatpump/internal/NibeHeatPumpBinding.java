@@ -86,6 +86,18 @@ public class NibeHeatPumpBinding extends
 				simulateHeatPump = Boolean.parseBoolean(testPortString);
 			}
 			
+			if (messageListener != null) {
+
+				logger.debug("Close previous message listener");
+
+				messageListener.setInterrupted(true);
+				try {
+					messageListener.join();
+				} catch (InterruptedException e) {
+					logger.info("Previous message listener closing interrupted", e);
+				}
+			}
+			
 			messageListener = new NibeHeatPumpMessageListener();
 			messageListener.start();
 		}
@@ -141,6 +153,11 @@ public class NibeHeatPumpBinding extends
 				connector.connect();
 			} catch (NibeHeatPumpException e) {
 				logger.error("Error occured when connecting to heat pump", e);
+				
+				logger.warn("Closing Nibe heatpump message listener");
+
+				// exit
+				interrupted = true;
 			}
 
 			// as long as no interrupt is requested, continue running

@@ -21,6 +21,9 @@ import org.slf4j.Logger;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MBrickd</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  *
  * <p>
@@ -32,6 +35,7 @@ import org.slf4j.Logger;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getPort <em>Port</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isIsConnected <em>Is Connected</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isAutoReconnect <em>Auto Reconnect</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isReconnected <em>Reconnected</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getTimeout <em>Timeout</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getMdevices <em>Mdevices</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#getEcosystem <em>Ecosystem</em>}</li>
@@ -203,6 +207,33 @@ public interface MBrickd extends EObject
    * @generated
    */
   void setAutoReconnect(boolean value);
+
+  /**
+   * Returns the value of the '<em><b>Reconnected</b></em>' attribute.
+   * The default value is <code>"false"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Reconnected</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Reconnected</em>' attribute.
+   * @see #setReconnected(boolean)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickd_Reconnected()
+   * @model default="false" unique="false"
+   * @generated
+   */
+  boolean isReconnected();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickd#isReconnected <em>Reconnected</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Reconnected</em>' attribute.
+   * @see #isReconnected()
+   * @generated
+   */
+  void setReconnected(boolean value);
 
   /**
    * Returns the value of the '<em><b>Timeout</b></em>' attribute.

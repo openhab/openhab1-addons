@@ -74,6 +74,7 @@ public class MqttGenericBindingProvider extends AbstractGenericBindingProvider i
 					for (MqttMessageSubscriber subscriber : itemConfig.getMessageSubscribers()) {
 						mqttService.unregisterMessageConsumer(subscriber.getBroker(), subscriber);
 					}
+					removeBindingChangeListener(this);
 				}
 			}
 
@@ -84,6 +85,7 @@ public class MqttGenericBindingProvider extends AbstractGenericBindingProvider i
 					for (MqttMessageSubscriber subscriber : itemConfig.getMessageSubscribers()) {
 						mqttService.unregisterMessageConsumer(subscriber.getBroker(), subscriber);
 					}
+					removeBindingChangeListener(this);
 				}
 			}
 		});
@@ -105,6 +107,7 @@ public class MqttGenericBindingProvider extends AbstractGenericBindingProvider i
 					for (MqttMessagePublisher publisher : itemConfig.getMessagePublishers()) {
 						mqttService.unregisterMessageProducer(publisher.getBroker(), publisher);
 					}
+					removeBindingChangeListener(this);
 				}
 			}
 
@@ -115,6 +118,7 @@ public class MqttGenericBindingProvider extends AbstractGenericBindingProvider i
 					for (MqttMessagePublisher publisher : itemConfig.getMessagePublishers()) {
 						mqttService.unregisterMessageProducer(publisher.getBroker(), publisher);
 					}
+					removeBindingChangeListener(this);
 				}
 			}
 		});

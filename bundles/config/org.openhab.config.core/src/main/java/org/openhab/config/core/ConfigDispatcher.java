@@ -216,6 +216,7 @@ public class ConfigDispatcher implements ManagedService {
 
 	private static String[] parseLine(final String filePath, final String line) {
 		String trimmedLine = line.trim();
+		
 		if (trimmedLine.startsWith("#") || trimmedLine.isEmpty()) {
 			return null;
 		}
@@ -356,5 +357,4 @@ public class ConfigDispatcher implements ManagedService {
 		
 	}
 
-	
 }

@@ -24,4 +24,9 @@ public interface OpenSprinklerBindingProvider extends BindingProvider {
 	 */
 	public int getStationNumber(String itemName);
 	
+	/**
+	 * Returns the command value for item {@code itemName}.
+	 */
+	public String getCommand(String itemName);
+
 }

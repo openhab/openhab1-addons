@@ -1,0 +1,40 @@
+Hi Everybody, 
+
+I'm happy to announce first version of the lgtv binding (My first lines of code since 6 years or so ;-) The Binding is based on UDAP Spec http://developer.lgappstv.com/TV_HELP/topic/lge.tvsdk.references.book/html/UDAP/UDAP/UDAP%20Specifications%20For%20Second%20Screen%20TV%20and%20Companion%20Apps.htm
+covering LGTV Models with netcast 3.0 platform (2012&2013) based on UDAP Specification http://developer.lgappstv.com/TV_HELP/topic/lge.tvsdk.references.book/html/UDAP/UDAP/UDAP%20Specifications%20For%20Second%20Screen%20TV%20and%20Companion%20Apps.htm
+
+Thanks to the work of Pauli Anttila / the binding is based on the Onkyo Binding. 
+
+The following commands of the interface are implemented:
+- pairing
+- handlekeyinput  (every key of the remote control) 
+- handlechannelchange
+- load application list
+- load channel list
+- start application
+- stop application
+- getvolume 
+- handlevolumechange (wrapper as the api only supports keyinput) 
+
+The following events are implemented
+- handlechannelchange
+- byebye
+
+As there is no event covering changes of the volume the regular keepalive check is done via getvolume command. 
+
+A server thread waits for connections from the tv to receive the events. 
+A checkavailiability thread checks if the tv comes up to fire a statechange - so rules can wait for the tv coming up. 
+
+To get the availiable channels an the availiable applications xml files are created if configuration is set. 
+
+The binding is running in my house with a LG60LA7408 since about one week now - especially sourcode documentation & logging have to be optimized / currently messages are sent only in "debug" level. 
+
+For details regarding the functionalities & configuration consult the attached readme. Sourcecode will follow when I'm happy with the sourcedoc. 
+
+To announce beforehand my availiabilty in the group & via mail is really bad - so prepare for late answers. 
+
+If there is anybody in the group who has an installed lgtv development environ: I would appreciate a small lgtv app which implemnts the lgtv app2app api to "remote control" the lg's browser. 
+thats the main reason for the binding - with this function your tv get's an openhab console / remote controlled by the rules engine.  
+
+
+Martin Fluch

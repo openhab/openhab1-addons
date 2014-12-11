@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>HSM02</Model>
-	<Endpoints>1</Endpoints>
 	<Label lang="en">Door/Window Detector</Label>
 	<Label lang="de">Tür/Fenster Kontakt</Label>
 	<CommandClasses>

@@ -31,6 +31,15 @@ public abstract class ZWaveEvent {
 	}
 	
 	/**
+	 * Constructor. Creates a new instance of the Z-Wave event class
+	 * with default endpoint.
+	 * @param nodeId the nodeId of the event
+	 */
+	public ZWaveEvent(int nodeId) {
+		this(nodeId, 0);
+	}
+	
+	/**
 	 * Gets the node ID of this event.
 	 * @return
 	 */

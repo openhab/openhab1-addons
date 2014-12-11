@@ -65,6 +65,9 @@ public class ZWaveSceneConverter extends ZWaveCommandClassConverter<ZWaveBasicCo
 
 	@Override
 	void handleEvent(ZWaveCommandClassValueEvent event, Item item, Map<String, String> arguments) {
+		if(arguments.get("scene")==null)
+			return;
+		
 		int scene = Integer.parseInt(arguments.get("scene"));
 		if(scene != (Integer)event.getValue())
 			return;

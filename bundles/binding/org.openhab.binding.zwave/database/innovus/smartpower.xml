@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>SmartDimmer</Model>
+	<Label lang="en">RAone SmartPower</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x28</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x77</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8e</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Report node</Label>
+			<Help lang="en">Report Node, reports changes in level to this node id. Disabled if 0. -> Copied from SmartDimmer, as there's no config information available.</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">B&O IR support</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">enabled</Label>
+			</Item>
+			<Help lang="en">B&O IR support is disabled if 0 otherwise enabled. -> Copied from SmartDimmer, as there's no config information available.</Help>
+		</Parameter>
+	
+		</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Switch</Label>
+		</Group>
+	</Associations>
+</Product>
+

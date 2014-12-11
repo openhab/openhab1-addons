@@ -5,12 +5,13 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB XMPP Action
 Bundle-SymbolicName: org.openhab.action.xmpp
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.5.0.qualifier
+Bundle-Version: 1.7.0.qualifier
 Bundle-Activator: org.openhab.action.xmpp.internal.XMPPActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the XMPP action of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.apache.commons.lang,
+Import-Package: org.apache.commons.io,
+ org.apache.commons.lang,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
@@ -25,7 +26,8 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/xmppsupport.xml, OSGI-INF/action.xml
 Bundle-ClassPath: .,
- lib/smack.jar,
- lib/smackx-jingle.jar,
- lib/smackx.jar
+ lib/smack-core-4.0.5.jar,
+ lib/smack-extensions-4.0.5.jar,
+ lib/smack-resolver-javax-4.0.5.jar,
+ lib/smack-tcp-4.0.5.jar
 Bundle-ActivationPolicy: lazy

@@ -86,6 +86,9 @@ public class SqueezeboxGenericBindingProvider extends AbstractGenericBindingProv
 		String extra = null;		
 		if (configParts.length > 2)
 			extra = configParts[2];
+			for(int i=3;i<configParts.length;i++) {
+				extra += ":"+configParts[i];
+			}
 
 		return new SqueezeboxBindingConfig(playerId, commandType, extra);
 	}

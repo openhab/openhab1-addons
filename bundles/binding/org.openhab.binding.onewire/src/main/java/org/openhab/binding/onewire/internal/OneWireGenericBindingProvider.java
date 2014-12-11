@@ -8,8 +8,10 @@
  */
 package org.openhab.binding.onewire.internal;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.core.binding.BindingConfig;
@@ -43,7 +45,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 0.6.0
  */
 public class OneWireGenericBindingProvider extends AbstractGenericBindingProvider implements OneWireBindingProvider {
-
+	private static final TreeSet<String> filterTypes = new TreeSet<String>(Arrays.asList("tukey"));
 	/**
 	 * {@inheritDoc}
 	 */
@@ -77,8 +79,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 		OneWireBindingConfig config = new OneWireBindingConfig();
 		
 		config.sensorId = configParts[0];
-		config.unit = configParts[1];
-									
+		parseParameters(config, configParts[1]); // extract unit and parameters
 		addBindingConfig(item, config);
 		
 		Set<Item> items = contextMap.get(context);
@@ -88,11 +89,45 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 		}
 		items.add(item);
 	}
-		
+	/**
+	 * Parses everything after the # separator. Parameters such as filters are
+	 * separated by the pipe '|' character.
+	 * @param config reference to configuration to be set
+	 * @param unitString binding configuration text after the '#' separator
+	 * @throws BindingConfigParseException thrown if parameters are not of the form key=value
+	 */
+	private void parseParameters(OneWireBindingConfig config, String unitString) throws BindingConfigParseException {
+		String[] unitParts = unitString.split("\\|");
+		if (unitParts.length > 1) {
+			// parameters are present, parse them
+			config.unit = unitParts[0]; // first token is just the unit 
+			for (int i = 1; i < unitParts.length; i++) {
+				String[] keyValue = unitParts[i].trim().split("=");
+				if (keyValue.length != 2) {
+					throw new BindingConfigParseException("Onewire sensor parameters " +
+							"must be of form parameter=value, you have: " + unitParts[i].trim());
+				}
+				if (keyValue[0].equals("filter")) {
+					if (filterTypes.contains(keyValue[1])) {
+						config.filter = keyValue[1];
+					} else {
+						throw new BindingConfigParseException("Onewire sensor unknown filter type: " + keyValue[1]);
+					}
+				} else {
+					throw new BindingConfigParseException("Onewire sensor unknown parameter: " + keyValue[0]);
+				}
+			}
+		} else {
+			// unit string has no parameters
+			config.unit = unitString;
+		}
+	}
+	
 	
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String getSensorId(String itemName) {
 		OneWireBindingConfig config = (OneWireBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.sensorId : null;
@@ -101,11 +136,20 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String getUnitId(String itemName) {
 		OneWireBindingConfig config = (OneWireBindingConfig) bindingConfigs.get(itemName);
 		return config != null ? config.unit : null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getFilter(String itemName) {
+		OneWireBindingConfig config = (OneWireBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.filter : null;
+	}
 	
 	/**
 	 * This is an internal data structure to store information from the binding
@@ -117,6 +161,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	static private class OneWireBindingConfig implements BindingConfig {
 		public String sensorId;
 		public String unit;
+		public String filter = null;
 	}
 
 

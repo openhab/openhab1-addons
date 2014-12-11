@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>FGMS01</Model>
+	<Label lang="en">Motion Sensor</Label>
+	<CommandClasses>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x8f</id></Class>
+		<Class><id>0x56</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x8e</id></Class>
+		<Class><id>0x7a</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x9c</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>int</Type>
+			<Default>10</Default>
+			<Minimum>8</Minimum>
+			<Maximum>255</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Motion Sensor Sensitivity</Label>
+			<Help lang="en"><![CDATA[The lower the value, the more sensitive the PIR sensor. Available settings: 8 - 255
+￼￼￼1. MO [byte]]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>int</Type>
+			<Default>15</Default>
+			<Minimum>0</Minimum>
+			<Maximum>15</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Motion Sensor Blind Time</Label>
+			<Help lang="en"><![CDATA[Period of time through which the PIR sensor is “blind” (insensitive) to motion. After this time period the PIR sensor will be again able to detect motion. The longer the insensitivity period, the longer the battery life. If the sensor is required to detect motion quickly, the time period may be shortened. The time of insensitivity should be shorter that the time period set in parameter 6.
+Available settings: 0 - 15
+Formula to calculate the time: time [s] = 0.5 x (value + 1)]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>int</Type>
+			<Default>1</Default>
+			<Minimum>0</Minimum>
+			<Maximum>3</Maximum>
+			<Size>1</Size>
+			<Label lang="en">PIR Sensor Pulse Time</Label>
+			<Help lang="en"><![CDATA[Sets the number of moves required for the PIR sensor to report motion. The lower the value, the less sensitive the PIR sensor. It’s not recommended to modify this parameter settings.
+Available settings: 0 - 3
+Formula to calculate the number of pulses: pulses = (value + 1)]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>int</Type>
+			<Default>2</Default>
+			<Minimum>0</Minimum>
+			<Maximum>3</Maximum>
+			<Size>1</Size>
+			<Label lang="en">PIR Sensor Window Time</Label>
+			<Help lang="en"><![CDATA[Sets the number of moves required for the PIR sensor to report motion. The lower the value, the less sensitive the PIR sensor. It’s not recommended to modify this parameter settings.
+Available settings: 0 - 3
+Formula to calculate the number of pulses: pulses = (value + 1)]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>int</Type>
+			<Default>30</Default>
+			<Minimum>1</Minimum>
+			<Maximum>65535</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Motion Alarm Cancellation Delay</Label>
+			<Help lang="en"><![CDATA[Motion alarm will be cancelled in the main controller and the associated devices after the period of time set in this parameter. Any motion detected during the cancellation delay time countdown will result in the countdown being restarted. In case of small values, below 10 seconds, the value of parameter 2 must be modified (PIR sensor’s “Blind Time”).
+Available settings: 1 - 65535]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">PIR sensor always active</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">PIR sensor active during the day only</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">PIR sensor active during the night only</Label>
+			</Item>
+			<Label lang="en">PIR Sensor Operating Mode</Label>
+			<Help lang="en"><![CDATA[The parameter determines the part of day in which the PIR sensor will be active. This parameter influences only the motion reports and associations. Tamper, light intensity and temperature measurements will be still active, regardless of this parameter settings.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>9</Index>
+			<Type>int</Type>
+			<Default>200</Default>
+			<Size>2</Size>
+			<Minimum>1</Minimum>
+			<Maximum>65535</Maximum>
+			<Label lang="en">NIGHT / DAY</Label>
+			<Help lang="en"><![CDATA[The parameter defines the difference between night and day, in terms of light intensity, used in parameter 8.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">BASIC ON and BASIC OFF command frames sent in Basic Command Class.</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Only the BASIC ON command frame sent in Basic Command Class.</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">only the BASIC OFF command frame sent in Basic Command Class.</Label>
+			</Item>
+			<Label lang="en">BASIC COMMAND CLASS FRAMES CONFIGURATION</Label>
+			<Help lang="en"><![CDATA[The parameter determines the command frames sent in 1-st association group, assigned to PIR sensor.Values of BASIC ON and BASIC OFF command frames may be modified by dedicated parameters.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Label lang="en">BASIC ON command frame value</Label>
+			<Help lang="en"><![CDATA[The value of 255 allows to turn ON a device. In case of the Dimmer, the value of 255 means turning ON at the last memorized state, e.g. the Dimmer turned ON at 30% and turned OFF using the value of 255, and then turned OFF, will be turned ON at 30%, i.e. the last memorized state.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>16</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Label lang="en">BASIC OFF command frame value</Label>
+			<Help lang="en"><![CDATA[The command frame sent at the moment of motion alarm cancellation, after the cancellation delay time, specified in parameter 6, has passed. The value of 0 allows to turn a device OFF while the value of 255 allows to turn ON a device. In case of the Dimmer, the value of 255 means turning ON at the last memorized state, e.g. the Dimmer turned ON at 30% and turned OFF using the value of 255, and then turned OFF, will be turned ON at 30%, i.e. the last memorized state. ]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>20</Index>
+			<Type>int</Type>
+			<Default>15</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>122</Maximum>
+			<Label lang="en">TAMPER SENSITIVITY</Label>
+			<Help lang="en"><![CDATA[The parameter determines the chages in forces acting on the Fibaro Motion Sensor resulting in tamper alarm beig reported - g-force acceleration.    Available settigs: 0 - 122 (0.08 - 2g; multiply by 0.016g; 0 = tamper inactive) ]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>22</Index>
+			<Type>int</Type>
+			<Default>30</Default>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Label lang="en">TAMPER ALARM CANCELLATION DELAY</Label>
+			<Help lang="en"><![CDATA[Time period after which a tamper alarm will be cacelled. Another tampering detected durig the countdown to cancellation will not extend the delay.  ]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>24</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Tamper alarm is reported in Sensor Alarm command class / Cancellation is not reported</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Tamper alarm is reported in Sensor Alarm command class / Cancellation is reported in Sensor Alarm commad class after the time period set in parameter 22 (Tamper Alarm Cancellation Delay)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Tamper alarm is reported in Sensor Alarm command class / Cancellation is not reported.</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Tamper alarm is reported in Sensor Alarm command class / Cancellation is reported in Sensor Alarm commad class after the time period set in parameter 22. Sensor’s orientation in space is reported in Fibar Commad Class after the time period set in paramer 22.</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">The maximum level of vibrations recorded in the time period set in parameter 22 is reported. Reports stop being sent when the vibrations cease. The reports are sent in Sensor Alarm command class. Value displayed in the “value” field (0 - 100) depends on the vibrations force. Reports to the association groups are sent using Sensor Alarm command class</Label>
+			</Item>
+			<Label lang="en">TAMPER OPERATING MODES</Label>
+			<Help lang="en"><![CDATA[The parameter determines the behaviour of tamper and how it reports.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>26</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Tamper alarm is not sent in broadcast mode.</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Tamper alarm sent in broadcast mode.</Label>
+			</Item>
+			<Label lang="en">TAMPER ALARM BROADCAST MODE</Label>
+			<Help lang="en"><![CDATA[The parameter determines whether the tamper alarm frame will or will not be sent in broadcast mode. Alarm frames sent in broadcast mode may be received by all of the devices within communication range (if they accept such frames). ]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>40</Index>
+			<Type>int</Type>
+			<Default>200</Default>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Label lang="en">ILLUMINATION REPORT THRESHOLD</Label>
+			<Help lang="en"><![CDATA[The parameter determines the change in light intensity level resulting in illumination report being sent to the main controller. ]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>42</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Label lang="en">ILLUMINATION REPORTS INTERVAL</Label>
+			<Help lang="en"><![CDATA[Time interval between consecutive illumination reports. The reports are sent even if there are no changes in the light intensity.]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>60</Index>
+			<Type>int</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Label lang="en">TEMPERATURE REPORT THRESHOLD</Label>
+			<Help lang="en"><![CDATA[The parameter determines the change in level of temperature resulting in temperature report being sent to the main controller.    Available settings: 0 - 255 (0.1 - 25.5oC; 0 = reports are not sent) ]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>62</Index>
+			<Type>int</Type>
+			<Default>900</Default>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Label lang="en">INTERVAL OF TEMPERATURE MEASURING</Label>
+			<Help lang="en"><![CDATA[The parameter determines how often the temperature will be measured. The shorter the time, the more frequently the temperature will be measured, but the battery life will shorten.    Available settings: 0 - 65535 (1 - 65535 seconds; 0 = temperature will not be measured)]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>64</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Label lang="en">TEMPERATURE REPORTS INTERVAL</Label>
+			<Help lang="en"><![CDATA[The parameter determines how often the temperature reports will be sent to the main controller.    Available settings: 0 - 65535 (1 - 65535 sekund; 0 = reports are not sent) ]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>66</Index>
+			<Type>int</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
+			<Label lang="en">TEMPERATURE OFFSET</Label>
+			<Help lang="en"><![CDATA[The value to be added to the actual temperature, measured by the sensor (temperature compensation).    Available settings: 0 - 100 (0 to 100oC) or 64536 - 65535 (-100 to -0.10oC) ]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>80</Index>
+			<Type>list</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">LED inactive.</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">LED colour depends on the temperature. Set by parameters 86 and 87.</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Flashlight mode - LED glows in white for 10 seconds.</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">White.</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Red.</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Green.</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Blue.</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Yellow.</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Cyan.</Label>
+			</Item>
+			<Item>
+				<Value>9</Value>
+				<Label lang="en">Magenta.</Label>
+			</Item>
+			<Item>
+				<Value>10</Value>
+				<Label lang="en">LED colour depends on the temperature. Set by parameters 86 and 87.</Label>
+			</Item>
+			<Item>
+				<Value>11</Value>
+				<Label lang="en">Flashlight mode - LED glows in white through 10 seconds. Each next detected motion extends the glowing by next 10 seconds.</Label>
+			</Item>
+			<Item>
+				<Value>12</Value>
+				<Label lang="en">White.</Label>
+			</Item>
+			<Item>
+				<Value>13</Value>
+				<Label lang="en">Red.</Label>
+			</Item>
+			<Item>
+				<Value>14</Value>
+				<Label lang="en">Green.</Label>
+			</Item>
+			<Item>
+				<Value>15</Value>
+				<Label lang="en">Blue.</Label>
+			</Item>
+			<Item>
+				<Value>16</Value>
+				<Label lang="en">Yellow.</Label>
+			</Item>
+			<Item>
+				<Value>17</Value>
+				<Label lang="en">Cyan.</Label>
+			</Item>
+			<Item>
+				<Value>18</Value>
+				<Label lang="en">Magenta.</Label>
+			</Item>
+				<Item>
+				<Value>19</Value>
+				<Label lang="en">LED colour depends on the temperature. Set by parameters 86 and 87.</Label>
+			</Item>
+		    <Item>
+				<Value>20</Value>
+				<Label lang="en">White.</Label>
+			</Item>
+			<Item>
+				<Value>21</Value>
+				<Label lang="en">Red.</Label>
+			</Item>
+			<Item>
+				<Value>22</Value>
+				<Label lang="en">Green.</Label>
+			</Item>
+			<Item>
+				<Value>23</Value>
+				<Label lang="en">Blue.</Label>
+			</Item>
+			<Item>
+				<Value>24</Value>
+				<Label lang="en">Yellow.</Label>
+			</Item>
+			<Item>
+				<Value>25</Value>
+				<Label lang="en">Cyan.</Label>
+			</Item>
+			<Item>
+				<Value>26</Value>
+				<Label lang="en">Magenta.</Label>
+			</Item>
+			<Label lang="en">LED SIGNALING MODE</Label>
+			<Help lang="en"><![CDATA[The parameter determines the way in which LED diode behaves after motion has been detected. Values from 1 to 9 = single long blink at the moment of reporting motion. No other motion will be indicated until alarm is cancelled.
+Values from 10 to 18 = single long blink at the moment of reporting motion and one short blink each time the motion is detected again.
+Values from 19 to 26 = single long blink at the moment of reporting motion and two short blinks each time the motion is detected again]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>81</Index>
+			<Type>int</Type>
+			<Default>50</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Label lang="en">LED BRIGHTNESS</Label>
+			<Help lang="en"><![CDATA[The parameter determines the brightness of LED when indicating motion.<BR/>Available settings: 0 - 100 (1 - 100%; 0 = brightness determined by the ambient lighting - see parameters 82 and 83) ]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>82</Index>
+			<Type>int</Type>
+			<Default>100</Default>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Label lang="en">AMBIENT ILLUMINATION LEVEL BELOW WHICH LED BRIGHTNESS IS SET TO 1%</Label>
+			<Help lang="en"><![CDATA[The parameter is relevant only when the parameter 81 is set to 0.<BR/>Available settings:  0 to  parameter 83 value]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>83</Index>
+			<Type>int</Type>
+			<Default>1000</Default>
+			<Size>2</Size>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Label lang="en">AMBIENT ILLUMINATION LEVEL ABOVE WHICH LED BRIGHTNESS IS SET TO 100%</Label>
+			<Help lang="en"><![CDATA[The parameter is relevant only when the parameter 81 is set to 0.    Available settings: parameter 82 value to 65535 Default setting: 1 000 (1 000 lux)]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>86</Index>
+			<Type>int</Type>
+			<Default>18</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>87</Maximum>
+			<Label lang="en">MINIMUM TEMPERATURE RESULTING IN BLUE LED ILLUMINATION</Label>
+			<Help lang="en"><![CDATA[This parameter is relevant only when parameter 80 has been properly configured.<BR/>Available settings: 0 to parameter 87 value (degrees celsius)<BR/>Default setting: 18 (18oC)]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>87</Index>
+			<Type>int</Type>
+			<Default>28</Default>
+			<Size>1</Size>
+			<Minimum>86</Minimum>
+			<Maximum>255</Maximum>
+			<Label lang="en">MAXIMUM TEMPERATURE RESULTING IN RED LED ILLUMINATION</Label>
+			<Help lang="en"><![CDATA[This parameter is relevant only when parameter 80 has been properly configured.<BR/>
+			Available settings: parameter 86 value to 255 (degrees celsius)<BR/>Default setting: 28 (28oC) ]]>
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Index>89</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">LED does not indicate tamper alarm.</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">LED indicates tamper alarm.</Label>
+			</Item>
+			<Label lang="en">LED INDICATING TAMPER ALARM</Label>
+			<Help lang="en"><![CDATA[Indicating mode resembles a police car (white, red and blue ]]>
+			</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Device Status</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Tamper Alarm</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>1</Maximum>
+			<Label lang="en">Controller Updates</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>
+

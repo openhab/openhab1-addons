@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>CT30</Model>
+	<Label lang="en">CT30 ZWave Thermostat</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x40</id></Class>
+		<Class><id>0x42</id></Class>
+		<Class><id>0x43</id></Class>
+		<Class><id>0x44</id></Class>
+		<Class><id>0x45</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x81</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x87</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Temperature Reporting Threshold</Label>
+            <Help lang="en">The Temperature Reporting Threshold Configuration Set Command sets the reporting threshold for changes in the ambient temperature as detected by the thermostat.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">0.5 �F</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">1.0 �F</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">1.5 �F</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">2.0 �F</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Utility Lock Enable/Disable</Label>
+            <Help lang="en">The Utility Lock Configuration Set command enables or disables the utility lock. If the utility lock is enabled, the setpoint cannot be modified directly via the thermostat screen.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Utility lock disable</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Utility lock enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Humidity Reporting Threshold</Label>
+            <Help lang="en">The Humidity Threshold Configuration Set Command sets the reporting threshold for changes in the relative humidity as detected by the thermostat.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">3% RH</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">5% RH</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">10%RH</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Auxiliary/Emergency</Label>
+            <Help lang="en">The Auxiliary/Emergency configuration command enables or disables auxiliary / emergency heating in the thermostat. Auxiliary / emergency heating is only available if the thermostat is configured in heat pump mode and with at least one stage of auxiliary heating. This command enables auxiliary / emergency heating when the thermostat is in Auto mode. The Thermostat Set Mode command with mode Auxiliary/Emergency Heat will enable emergency heating but only if the thermostat is in Heat mode. This command should only be used on thermsotats that support Auxiliary/Emergency Heat thermostat mode.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Auxiliary/Emergency heat disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Auxiliary/Emergency heat enable</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Thermostat Swing Temperature</Label>
+            <Help lang="en">The Thermostat Swing Temperature configuration command sets swing temperature on the thermostat. The swing temperature is applied to the setpoint to determine when the thermostat will turn on the HVAC system. If the thermostat is heating, the swing temperature is subtracted from the heat setpoint. If the thermostat is cooling, the swing temperature is added to the cool setpoint.</Help>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">0.05F</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">0.1F</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">4F</Label>
+			</Item>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>list</Type>
+			<Default>4</Default>
+			<Size>1</Size>
+			<Label lang="en">Thermostat Diff Temperature</Label>
+            <Help lang="en">The Thermostat Differential Temperature configuration command sets the differential temperature for multi-stage HVAC systems. The differential temperature delta defines when the thermostat will turn on additional stages. There are two differential temperatures, one for multistage cool systems and one for multistage heat systems. If the thermostat is not configured for multistage HVAC systems then these parameters have no effect.</Help>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">2.0 F</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">4.0 F</Label>
+			</Item>
+			<Item>
+				<Value>12</Value>
+				<Label lang="en">6.0 F</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>2</Maximum>
+			<Label lang="en">Send report about Thermostat Mode, Thermostat Operating State, Fan Mode, Fan State, Setpoint, Sensor Multilevel</Label>
+		</Group>
+	</Associations>
+</Product>
+

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
 	<Model>054313</Model>
-	<Endpoints>1</Endpoints>
 	<Label lang="en">Single button wall switch</Label>
 	<Label lang="de">Wandschalter</Label>
 	<CommandClasses>

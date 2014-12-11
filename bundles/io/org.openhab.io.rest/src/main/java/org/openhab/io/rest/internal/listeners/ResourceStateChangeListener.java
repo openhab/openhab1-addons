@@ -13,20 +13,22 @@ package org.openhab.io.rest.internal.listeners;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.atmosphere.cache.UUIDBroadcasterCache;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.GenericItem;
-import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.types.State;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
 import org.openhab.io.rest.internal.filter.DuplicateBroadcastProtectionFilter;
-import org.openhab.io.rest.internal.filter.MessageTypeFilter;
 import org.openhab.io.rest.internal.filter.PollingDelayFilter;
 import org.openhab.io.rest.internal.filter.ResponseObjectFilter;
 import org.openhab.io.rest.internal.filter.SendPageUpdateFilter;
@@ -40,13 +42,19 @@ import org.openhab.io.rest.internal.resources.ItemResource;
  */
 abstract public class ResourceStateChangeListener {
 
-	final static ConcurrentMap<String, Object> map = new ConcurrentHashMap<String, Object>();
-
+	final static long CACHE_TIME = 300 * 1000; // 5 mins
+	
+	final static ConcurrentMap<String, CacheEntry> cachedEntries = new ConcurrentHashMap<String, CacheEntry>();
+	
+	static ScheduledFuture<?> executorFuture;
+	
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
-	private GeneralBroadcaster broadcaster;
+	protected GeneralBroadcaster broadcaster;
 
-	public ResourceStateChangeListener(){}
+	public ResourceStateChangeListener(){
+		
+	}
 
 
 	public ResourceStateChangeListener(GeneralBroadcaster broadcaster){
@@ -61,23 +69,35 @@ abstract public class ResourceStateChangeListener {
 		this.broadcaster = broadcaster;
 	}
 	
-	public static ConcurrentMap<String, Object> getMap() {
-		return map;
+	public static ConcurrentMap<String, CacheEntry> getCachedEntries() {
+		return cachedEntries;
 	}
 	
 	public void registerItems(){
-		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
+		StartCacheExecutor();
+	        broadcaster.getBroadcasterConfig().setBroadcasterCache(new UUIDBroadcasterCache()); 
+	        broadcaster.getBroadcasterConfig().getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
+	        broadcaster.getBroadcasterConfig().getBroadcasterCache().start();
+		
+	        broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override
 			public BroadcastAction filter(Object originalMessage, Object message) {
-				// TODO Auto-generated method stub
 				return new BroadcastAction(ACTION.CONTINUE,  message);
 			}
 
 			@Override
 			public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
-				 HttpServletRequest request = resource.getRequest();
-				 return new BroadcastAction(ACTION.CONTINUE,  getResponseObject(request));
+				HttpServletRequest request = null;
+				BroadcastAction result = null;
+				try {
+				 request = resource.getRequest();
+				 Object responce = getResponseObject(request);
+				 result = new BroadcastAction(ACTION.CONTINUE,  responce);
+				} catch (Exception e) {
+					result = new BroadcastAction(ACTION.ABORT,  getResponseObject(request));					
+				}
+				 return result;
 			}
 		});
 		
@@ -85,33 +105,43 @@ abstract public class ResourceStateChangeListener {
 		broadcaster.getBroadcasterConfig().addFilter(new SendPageUpdateFilter());
 		broadcaster.getBroadcasterConfig().addFilter(new DuplicateBroadcastProtectionFilter());
 		broadcaster.getBroadcasterConfig().addFilter(new ResponseObjectFilter());
-		broadcaster.getBroadcasterConfig().addFilter(new MessageTypeFilter());
-		
-		
 		
 		stateChangeListener = new StateChangeListener() {
 			// don't react on update events
 			public void stateUpdated(Item item, State state) {
+				broadcaster.broadcast(item);
 				// if the group has a base item and thus might calculate its state
 				// as a DecimalType or other, we also consider it to be necessary to
 				// send an update to the client as the label of the item might have changed,
 				// even though its state is yet the same.
-				if(item instanceof GroupItem) {
-					GroupItem gItem = (GroupItem) item;
-					if(gItem.getBaseItem()!=null) {
-						if(!broadcaster.getAtmosphereResources().isEmpty()) {
-							broadcaster.broadcast(item);
-						}
-					}
-				}
+//				if(item instanceof GroupItem) {
+//					GroupItem gItem = (GroupItem) item;
+//					if(gItem.getBaseItem()!=null) {
+//						Collection<AtmosphereResource> resources = broadcaster.getAtmosphereResources();
+//						if(!resources.isEmpty()) {
+//							for (AtmosphereResource resource : resources) {
+//								broadcaster.broadcast(item, resource);
+//							}
+//						}
+//					}
+//				}
 			}
 			
-			public void stateChanged(final Item item, State oldState, State newState) {	
-				if(!broadcaster.getAtmosphereResources().isEmpty()) {
-					broadcaster.broadcast(item);
-				}
+			public void stateChanged(final Item item, State oldState, State newState) {
+				broadcaster.broadcast(item);
+//				Collection<AtmosphereResource> resources = broadcaster.getAtmosphereResources();
+//				if(!resources.isEmpty()) {
+//					for (AtmosphereResource resource : resources) {
+//						broadcaster.broadcast(item, resource);
+//					}
+//				}
+
+//				if(!broadcaster.getAtmosphereResources().isEmpty()) {
+//					broadcaster.broadcast(item);
+//				}
 			}
 		};
+		
 		registerStateChangeListenerOnRelevantItems(broadcaster.getID(), stateChangeListener);
 	}
 	
@@ -186,4 +216,63 @@ abstract public class ResourceStateChangeListener {
 	 * @return the response content
 	 */
 	abstract protected Object getSingleResponseObject(Item item, final HttpServletRequest request);
+	
+	static void StartCacheExecutor(){
+		if(executorFuture == null || executorFuture.isCancelled()){
+			executorFuture = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(new Runnable() {
+				@Override
+				public void run() {
+					cleanCache();
+				}
+			}, CACHE_TIME, CACHE_TIME, TimeUnit.MILLISECONDS);
+		}
+	}
+	
+	/**
+	 * Clean up expired entries in our cache.
+	 */
+	static void cleanCache(){
+		/*
+		 * This map object will start to collect dead uuid entries over time, but its 
+		 * difficult to know when these uuid's are really not valid anymore.
+		 */
+		long invalidCacheTime = System.currentTimeMillis() - CACHE_TIME;
+		for(String uuid : cachedEntries.keySet()){
+			if(cachedEntries.get(uuid).getCacheTime() <= invalidCacheTime )
+				cachedEntries.remove(uuid);
+		}
+	}
+	
+	/**
+	 * A CacheEntry object is stored in our static cache map to prevent duplicate messages
+	 * @author Dan Cunningham
+	 *
+	 */
+	public static class CacheEntry {
+		long cacheTime;
+		Object data;
+		/**
+		 * Create a new CacheEntry object the data to cache
+		 * @param data
+		 */
+		public CacheEntry(Object data) {
+			super();
+			this.data = data;
+			this.cacheTime = System.currentTimeMillis();
+		}
+		/**
+		 * 
+		 * @return the time the entry was cached
+		 */
+		public long getCacheTime() {
+			return cacheTime;
+		}
+		/**
+		 * 
+		 * @return the cached data
+		 */
+		public Object getData() {
+			return data;
+		}
+	}
 }

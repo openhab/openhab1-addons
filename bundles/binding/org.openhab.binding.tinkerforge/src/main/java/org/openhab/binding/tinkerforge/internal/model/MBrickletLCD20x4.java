@@ -13,6 +13,9 @@ import com.tinkerforge.BrickletLCD20x4;
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>MBricklet LCD2 0x4</b></em>'.
+ * 
+ * @author Theo Weiss
+ * @since 1.3.0
  * <!-- end-user-doc -->
  *
  * <p>

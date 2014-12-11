@@ -9,6 +9,7 @@
 package org.openhab.binding.maxcube.internal.message;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 * Base message received by the MAX!Cube protocol. 
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 public abstract class Message {
 
 	public static final String DELIMETER = ",";
+	protected final static Logger logger = LoggerFactory.getLogger(Device.class);
 	
 	private String raw = null;
 	
