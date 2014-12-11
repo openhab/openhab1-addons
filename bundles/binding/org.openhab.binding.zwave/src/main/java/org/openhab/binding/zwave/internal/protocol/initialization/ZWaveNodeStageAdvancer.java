@@ -564,7 +564,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		if (serialMessage == null) {
 			return;
 		}
-		if (!msgQueue.contains(serialMessage)) {
+		if (!msgQueue.contains(serialMessage) && msgQueue.remainingCapacity() > 1) {
 			msgQueue.add(serialMessage);
 		}
 	}
