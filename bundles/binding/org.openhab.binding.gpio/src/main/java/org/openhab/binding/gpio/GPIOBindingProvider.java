@@ -54,7 +54,7 @@ public interface GPIOBindingProvider extends BindingProvider {
 	public int getDirection(String itemName);
 
 	/**
-	 * Query has item configuration or not.
+	 * Query has the item been configured or not.
 	 * 
 	 * @param itemName the name of the item for which we make query
 	 * @return <code>true</code> if the item has configuration,

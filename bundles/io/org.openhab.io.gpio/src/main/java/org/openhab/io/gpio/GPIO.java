@@ -49,7 +49,9 @@ public interface GPIO {
 
 	/**
 	 * Provides mapping between pin numbers and names. If no mapping exists
-	 * and the argument is a number this number will be returned.
+	 * and the argument is a number this number will be returned, in this
+	 * way pin numbers could be used instead of names and pinmap file won't
+	 * required.
 	 * 
 	 * @return pin number corresponding to provided name
 	 */

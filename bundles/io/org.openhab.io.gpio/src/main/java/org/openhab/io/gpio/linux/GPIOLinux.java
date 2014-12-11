@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -61,7 +62,9 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 	/** Default debounce interval in milliseconds */
 	private volatile long defaultDebounceInterval = 0;
 
-	/** Pinmap */
+	/**
+	 * Pinmap file name without extension part, in case no pinmap file is
+	 * used contains a special value <code>none<code> */
 	private String pinMap = PINMAP_DEFAULT_VALUE;
 
 	/** GPIO subsystem read/write lock. */
@@ -70,11 +73,13 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 	/** Database for GPIO pins which are in use. */
 	private final BidiMap gpioRegistry = new DualHashBidiMap();
 
+	/** Pinmap lock, protects all changes to pinmap */
 	private final ReentrantReadWriteLock pinMapLock = new ReentrantReadWriteLock();
 
-	/** Bidirectional map pin Name<->Number */
+	/** Bidirectional map pin Name<->Number, used by pinmap code */
 	private BidiMap pinNameNumberMap = new DualHashBidiMap(); 
 
+	/** Hash map pin Number->SysfsSuffix, used by pinmap code */
 	private HashMap<Integer, String> pinNumberSysfsSuffixMap = new HashMap<Integer, String>();
 
 	/**
@@ -144,6 +149,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 						if (pinMap == null) {
 							pinMap = PINMAP_DEFAULT_VALUE;
 						}
+						loadPinMap();
 					} finally {
 						pinMapLock.writeLock().unlock();
 					}
@@ -152,11 +158,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 					throw new ConfigurationException(PROP_PINMAP, "Write GPIO pinmap lock can't be aquired for " + LOCK_TIMEOUT + " " + LOCK_TIMEOUT_UNITS.toString());
 				}
 			} catch (InterruptedException e) {
-				throw new ConfigurationException(PROP_PINMAP, "The thread was interrupted while waiting for write GPIO pinmap lock");
-			}
-
-			try {
-				loadPinMap();
+				throw new ConfigurationException(PROP_PINMAP, "The thread was interrupted while waiting for write GPIO pinmap lock.");
 			} catch (IOException e){
 				logger.error("Error occured while loading pinmap file: " + e.getMessage());
 				throw new ConfigurationException(PROP_PINMAP, "Error occured while loading pinmap file: " + e.getMessage());	
@@ -214,78 +216,77 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 		return false;
 	}
 
+	/**
+	 * Loads pinmap file into two map structures.
+	 * Helper function for <code>updated()</code>.
+	 * Assumes that write pinMapLock is held by the caller!
+	 * 
+	 * @throws IOException if reading or parsing of pinmap file fails
+	 */
 	private void loadPinMap() throws IOException {
 
+		final String PINMAP_COMMENT = "#";
 		final String PINMAP_FOLDER = ConfigDispatcher.getConfigFolder() + File.separator + "pinmaps";
 		final String PINMAP_EXTENSION = ".pinmap";
 
-		try {
-			if (pinMapLock.writeLock().tryLock(LOCK_TIMEOUT, LOCK_TIMEOUT_UNITS)) {
-				try {
-					if (pinMap.equals(PINMAP_DEFAULT_VALUE)) {
-						pinNameNumberMap.clear();
-						pinNumberSysfsSuffixMap.clear();
-						return;
-					}
-
-					List<String> pinMapLines = Files.readAllLines(Paths.get(PINMAP_FOLDER + File.separator + pinMap + PINMAP_EXTENSION), DEFAULT_ENCODING);
-
-					BidiMap newPinNameNumberMap = new DualHashBidiMap(); 
-					HashMap<Integer, String> newPinNumberSysfsSuffixMap = new HashMap<Integer, String>();
-					int pinNumber;
-					int lineNumber = 0;
-
-					for(String pinMapRecord : pinMapLines) {
-
-						lineNumber++;
-
-						if (pinMapRecord.isEmpty() || pinMapRecord.startsWith("#")) {
-							continue;
-						}
-
-						String[] pinMapRecordFields = pinMapRecord.split(PINMAP_FIELD_SEPARATOR);
-
-						if (pinMapRecordFields.length < 2 || pinMapRecordFields.length > 3) {
-							throw new IOException("Line " + lineNumber + ": Unsupported number of fields - " + pinMapRecordFields.length);
-						}
-
-						if (pinMapRecordFields[0].isEmpty() || pinMapRecordFields[1].isEmpty()) {
-							throw new IOException("Line " + lineNumber + ": Pin name and/or number are missing");
-						}
-
-						try {
-							pinNumber = Integer.parseInt(pinMapRecordFields[1]);
-						} catch (NumberFormatException e) {
-							throw new IOException("Line " + lineNumber + ": The value in pin number field is not numeric");
-						}
-
-						if (newPinNameNumberMap.containsKey(pinMapRecordFields[0]) || newPinNameNumberMap.containsValue(pinNumber)) {
-							throw new IOException("Line " + lineNumber + ": Duplicate pin name and/or number");
-						}
-
-						newPinNameNumberMap.put(pinMapRecordFields[0], pinNumber);
-
-						if (pinMapRecordFields.length == 3) {
-							String sysfsSuffix = pinMapRecordFields[2].replace("${pinName}", pinMapRecordFields[0]).replace("${pinNumber}", pinMapRecordFields[1]);
-							if (newPinNumberSysfsSuffixMap.containsValue(sysfsSuffix)) {
-								throw new IOException("Line " + lineNumber + ": Duplicate sysfs suffix");
-							}
-							newPinNumberSysfsSuffixMap.put(pinNumber, sysfsSuffix);
-						}
-					}
-
-					pinNameNumberMap = newPinNameNumberMap;
-					pinNumberSysfsSuffixMap = newPinNumberSysfsSuffixMap;
-				} finally {
-					pinMapLock.writeLock().unlock();
-				}
-			} else {
-				/* Something wrong happened, throw an exception and move on or we are risking to block the whole system */
-				throw new IOException("Write GPIO pinmap lock can't be aquired for " + LOCK_TIMEOUT + " " + LOCK_TIMEOUT_UNITS.toString());
-			}
-		} catch (InterruptedException e) {
-			throw new IOException("The thread was interrupted while waiting for write GPIO pinmap lock");
+		if (pinMap.equals(PINMAP_DEFAULT_VALUE)) {
+			pinNameNumberMap.clear();
+			pinNumberSysfsSuffixMap.clear();
+			return;
 		}
+
+		List<String> pinMapLines = Files.readAllLines(Paths.get(PINMAP_FOLDER + File.separator + pinMap + PINMAP_EXTENSION), DEFAULT_ENCODING);
+
+		BidiMap newPinNameNumberMap = new DualHashBidiMap(); 
+		HashMap<Integer, String> newPinNumberSysfsSuffixMap = new HashMap<Integer, String>();
+		int pinNumber;
+		int lineNumber = 0;
+
+		for(String pinMapRecord : pinMapLines) {
+
+			lineNumber++;
+
+			if (pinMapRecord.isEmpty() || pinMapRecord.startsWith(PINMAP_COMMENT)) {
+				continue;
+			}
+
+			String[] pinMapRecordFields = pinMapRecord.split(PINMAP_FIELD_SEPARATOR);
+
+			if (pinMapRecordFields.length < 2 || pinMapRecordFields.length > 3) {
+				throw new IOException("Line " + lineNumber + ": Unsupported number of fields - " + pinMapRecordFields.length);
+			}
+
+			if (pinMapRecordFields[0].isEmpty() || pinMapRecordFields[1].isEmpty()) {
+				throw new IOException("Line " + lineNumber + ": Pin name and/or number are missing");
+			}
+
+			if (pinMapRecordFields[0].contains(" ") || pinMapRecordFields[0].contains(":")) {
+				throw new IOException("Line " + lineNumber + ": Pin name contains illegal characters as space and/or ':'");
+			}
+
+			try {
+				pinNumber = Integer.parseInt(pinMapRecordFields[1]);
+			} catch (NumberFormatException e) {
+				throw new IOException("Line " + lineNumber + ": The value in pin number field is not numeric");
+			}
+
+			if (newPinNameNumberMap.containsKey(pinMapRecordFields[0]) || newPinNameNumberMap.containsValue(pinNumber)) {
+				throw new IOException("Line " + lineNumber + ": Duplicate pin name and/or number");
+			}
+
+			newPinNameNumberMap.put(pinMapRecordFields[0], pinNumber);
+
+			if (pinMapRecordFields.length == 3) {
+				String sysfsSuffix = pinMapRecordFields[2].replace("${pinName}", pinMapRecordFields[0]).replace("${pinNumber}", pinMapRecordFields[1]);
+				if (newPinNumberSysfsSuffixMap.containsValue(sysfsSuffix)) {
+					throw new IOException("Line " + lineNumber + ": Duplicate sysfs suffix");
+				}
+				newPinNumberSysfsSuffixMap.put(pinNumber, sysfsSuffix);
+			}
+		}
+
+		pinNameNumberMap = newPinNameNumberMap;
+		pinNumberSysfsSuffixMap = newPinNumberSysfsSuffixMap;
 	}
 
 	/**
@@ -306,7 +307,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 
 		/* Sanity check, empty pin name is illegal. */
 		if (pinName.isEmpty()) {
-			throw new IllegalArgumentException("Unsupported argument for 'pinName' parameter (" + pinName + ")");
+			throw new IllegalArgumentException("Unsupported argument for 'pinName' parameter (" + pinName + ").");
 		}
 
 		/* Acquiring write lock guarantees atomic check/set operation */ 
@@ -317,7 +318,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 					Integer pinNumber = getPinNumberByName(pinName);
 
 					if (gpioRegistry.containsValue(pinNumber)) {
-						throw new IllegalArgumentException("The pin with number '" + pinNumber + "' is already registered");
+						throw new IllegalArgumentException("The pin with number '" + pinNumber + "' is already registered.");
 					}
 
 					/* Exports the pin to user space. */
@@ -340,7 +341,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 							throw new IOException("Read GPIO pinmap lock can't be aquired for " + LOCK_TIMEOUT + " " + LOCK_TIMEOUT_UNITS.toString());
 						}
 					} catch (InterruptedException e) {
-						throw new IOException("The thread was interrupted while waiting for read GPIO pinmap lock");
+						throw new IOException("The thread was interrupted while waiting for read GPIO pinmap lock.");
 					}
 
 					/* Register the pin */
@@ -354,7 +355,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 				throw new IOException("Write GPIO lock can't be aquired for " + LOCK_TIMEOUT + " " + LOCK_TIMEOUT_UNITS.toString());
 			}
 		} catch (InterruptedException e) {
-			throw new IOException("The thread was interrupted while waiting for write GPIO lock");
+			throw new IOException("The thread was interrupted while waiting for write GPIO lock.");
 		}
 
 		return pin;
@@ -412,7 +413,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 						try {
 							pinNumber = Integer.parseInt(pinName);
 						} catch (NumberFormatException e) {
-							throw new IOException("Unsupported, not numeric 'pin' value", e);
+							throw new IOException("Non-numeric 'pin' value is used without proper pinmap.", e);
 						}
 					}
 				} finally {
@@ -423,68 +424,85 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 				throw new IOException("Read GPIO pinmap lock can't be aquired for " + LOCK_TIMEOUT + " " + LOCK_TIMEOUT_UNITS.toString());
 			}
 		} catch (InterruptedException e) {
-			throw new IOException("The thread was interrupted while waiting for read GPIO pinmap lock");
+			throw new IOException("The thread was interrupted while waiting for read GPIO pinmap lock.");
 		}
 
 		return pinNumber;
 	}
 
 	public String getHelp() {
-
-		StringBuffer buffer = new StringBuffer();
-
-		buffer.append("---GPIO commands---\n\t");
-		buffer.append("gpio globals - lists global variables\n\t");
-		buffer.append("gpio pin NUMBER - shows detailed information about pin\n\t");
-		buffer.append("gpio pinmap - lists currently used pinmap\n\t");
-		buffer.append("gpio pins - lists registered pins\n");
-
-		return buffer.toString();
+		return "---GPIO sub commands---\n" +
+			"gpio globals         : lists global variables\n" +
+			"gpio pin NAME|NUMBER : shows detailed information about pin\n" +
+			"gpio pinmap          : lists currently used pinmap\n" +
+			"gpio pins            : lists registered pins\n";
 }
 
+	/**
+	 * Implements GPIO console commands.
+	 * 
+	 * @param console command interpreter
+	 * @return null
+	 */
 	public Object _gpio(CommandInterpreter console) {
 
 		StringBuffer buffer = new StringBuffer();
 		String argument = console.nextArgument();
 
 		if (argument == null) {
-			console.println("Error: missing argument(s).");
-			console.println();
-			console.print(getHelp());
+			console.print("Error: Missing sub command.\n\n" + getHelp());
 			return null;
 		}
 
 		if (argument.equals("globals")) {
-			console.println(PROP_DEBOUNCE_INTERVAL + ": " + defaultDebounceInterval);
-			console.println(PROP_PINMAP + ": " + pinMap);
-			console.println(SYSFS_VFSTYPE + ": " + sysFS);			
+
+			if (console.nextArgument() != null) {
+				console.print("Error: Extra argument(s).\n\n" + getHelp());
+			} else {
+				console.println("debounce : " + defaultDebounceInterval + "\n  pinmap : " + pinMap + "\n   sysfs : " + sysFS);
+			}
 		} else if (argument.equals("pins")) {
+
+			if (console.nextArgument() != null) {
+				console.print("Error: Extra argument(s).\n\n" + getHelp());
+				return null;
+			}
+
 			try {
+
+				TreeMap<Integer, String> pinNumberNameMap = new TreeMap<Integer, String>();
+
 				if (gpioLock.readLock().tryLock(LOCK_TIMEOUT, LOCK_TIMEOUT_UNITS)) {
 					try {
 						if (!gpioRegistry.isEmpty()) {
-							buffer.append("Number\tName\n");
 							try {
 								for (Object pin : gpioRegistry.keySet()) {
-									buffer.append(((GPIOPin)pin).getPinNumber() + "\t" + ((GPIOPin)pin).getPinName() + "\n");
+									pinNumberNameMap.put(((GPIOPin)pin).getPinNumber(), ((GPIOPin)pin).getPinName());
 								}
 							} catch (IOException e) {
-								buffer.setLength(0);
 								buffer.append("Error: " + e.getMessage() + "\n");
 							}
+						} else {
+							buffer.append("No GPIO pins are currently used.\n");
 						}
 					} finally {
 						gpioLock.readLock().unlock();
 					}
+
+					if (!pinNumberNameMap.isEmpty() && (buffer.length() == 0)) {
+						buffer.append("Number     Name\n");
+						for (Integer pinNumber : pinNumberNameMap.keySet()) {
+							buffer.append(String.format("%1$-10d", pinNumber) + " " + pinNumberNameMap.get(pinNumber) + "\n");
+						}
+					}
+
+					console.print(buffer);
 				} else {
 					/* Something wrong happened, print error and move on or we are risking to block the whole system */
-					buffer.append("Error: Read GPIO lock can't be aquired for " + LOCK_TIMEOUT + " " + LOCK_TIMEOUT_UNITS.toString() + "\n");
+					console.println("Error: Read GPIO lock can't be aquired for " + LOCK_TIMEOUT + " " + LOCK_TIMEOUT_UNITS.toString());
 				}
 			} catch (InterruptedException e) {
-				buffer.append("Error: The thread was interrupted while waiting for read GPIO lock\n");
-			}
-			if (buffer.length() > 0) {
-				console.print(buffer);
+				console.println("Error: The thread was interrupted while waiting for read GPIO lock.");
 			}
 		} else if (argument.equals("pin")) {
 
@@ -492,18 +510,19 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 
 			argument = console.nextArgument();
 			if (argument == null) {
-				console.println("Error: too few arguments.");
-				console.println();
-				console.print(getHelp());
+				console.print("Error: Missing pin name|number argument.\n\n" + getHelp());
+				return null;
+			}
+
+			if (console.nextArgument() != null) {
+				console.print("Error: Extra argument(s).\n\n" + getHelp());
 				return null;
 			}
 
 			try {
 				pinNumber = getPinNumberByName(argument);
 			} catch (IOException e) {
-				console.println("Error: the argument isn't a valid pin.");
-				console.println();
-				console.print(getHelp());
+				console.print("Error: The argument isn't a valid pin name or number.\n\n" + getHelp());
 				return null;
 			}
 
@@ -513,16 +532,16 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 						if (gpioRegistry.containsValue(pinNumber)) {
 							GPIOPin pin = (GPIOPin) gpioRegistry.getKey(pinNumber);
 							try {
-								buffer.append("Number:            " + pin.getPinNumber() + "\n");
-								buffer.append("Name:              " + pin.getPinName() + "\n");
-								buffer.append("ActiveLow:         ");
+								buffer.append("        number : " + pin.getPinNumber() + "\n");
+								buffer.append("          name : " + pin.getPinName() + "\n");
+								buffer.append("     activelow : ");
 								if (pin.getActiveLow() == GPIOPin.ACTIVELOW_DISABLED) {
 									buffer.append("disabled\n");
 								} else {
 									buffer.append("enabled\n");
 								}
-								buffer.append("Debounce Interval: " + pin.getDebounceInterval() + " ms\n");
-								buffer.append("Direction:         ");
+								buffer.append("      debounce : " + pin.getDebounceInterval() + " ms\n");
+								buffer.append("     direction : ");
 								switch (pin.getDirection()) {
 									case GPIOPin.DIRECTION_IN:
 										buffer.append("in\n");
@@ -537,7 +556,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 										buffer.append("out low\n");
 										break;
 								}
-								buffer.append("Edge Detection:    ");
+								buffer.append("edge detection : ");
 								switch (pin.getEdgeDetection()) {
 									case GPIOPin.EDGEDETECTION_BOTH:
 										buffer.append("both\n");
@@ -552,56 +571,95 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 										buffer.append("rising\n");
 										break;
 								}
-								buffer.append("Value:             " + pin.getValue() + "\n");
+								buffer.append("         value : ");
+								if (pin.getValue() == GPIOPin.VALUE_HIGH) {
+									buffer.append("high\n");									
+								} else {
+									buffer.append("low\n");																		
+								}
 							} catch (IOException e) {
 								buffer.setLength(0);
 								buffer.append("Error: " + e.getMessage() + "\n");
 							}
 						} else {
-							buffer.append("Pin '" + argument + "' isn't in use\n");
+							buffer.append("Pin '" + argument + "' isn't currently used.\n");
 						}
 					} finally {
 						gpioLock.readLock().unlock();
 					}
+
+					console.print(buffer);
 				} else {
 					/* Something wrong happened, print error and move on or we are risking to block the whole system */
-					buffer.append("Error: Read GPIO lock can't be aquired for " + LOCK_TIMEOUT + " " + LOCK_TIMEOUT_UNITS.toString() + "\n");
+					console.println("Error: Read GPIO lock can't be aquired for " + LOCK_TIMEOUT + " " + LOCK_TIMEOUT_UNITS.toString());
 				}
 			} catch (InterruptedException e) {
-				buffer.append("Error: The thread was interrupted while waiting for read GPIO lock\n");
-			}
-			if (buffer.length() > 0) {
-				console.print(buffer);
+				console.println("Error: The thread was interrupted while waiting for read GPIO lock.");
 			}
 		} else if (argument.equals("pinmap")) {
+
+			if (console.nextArgument() != null) {
+				console.print("Error: Extra argument(s).\n\n" + getHelp());
+				return null;
+			}
+
 			try {
 				if (pinMapLock.readLock().tryLock(LOCK_TIMEOUT, LOCK_TIMEOUT_UNITS)) {
 					try {
 						if (!pinNameNumberMap.isEmpty()) {
-							buffer.append("Number\tName\tSysfs Suffix\n");
+
+							TreeMap<Integer, String> pinNumberNameMap = new TreeMap<Integer, String>();
+
+							int largestNameLenght = 5;
 							for (Object pinName : pinNameNumberMap.keySet()) {
-								int pinNumber = (Integer) pinNameNumberMap.get(pinName);
-								String sysfsSuffix = pinNumberSysfsSuffixMap.get(pinNumber);
-								buffer.append(pinNumber + "\t" + pinName + "\t" + sysfsSuffix + "\n");
+
+								pinNumberNameMap.put((Integer) pinNameNumberMap.get(pinName), (String) pinName);
+
+								int pinNameLenght = ((String)pinName).length();
+								if (pinNameLenght > largestNameLenght) {
+									largestNameLenght = pinNameLenght;
+								}
+							}							
+
+							buffer.append("Number     Name  ");
+							for (int i = 5; i < largestNameLenght; i++) {
+								buffer.append(" ");
 							}
+							buffer.append("Suffix\n");
+
+							for (Integer pinNumber : pinNumberNameMap.keySet()) {
+
+								String pinName = pinNumberNameMap.get(pinNumber);
+
+								buffer.append(String.format("%1$-10d", pinNumber) + " " + pinName);
+
+								String sysfsSuffix = pinNumberSysfsSuffixMap.get(pinNumber);
+								if (sysfsSuffix == null) {
+									buffer.append("\n");
+								} else {
+									for (int i = pinName.length(); i < largestNameLenght; i++) {
+										buffer.append(" ");
+									}
+									buffer.append(" " + sysfsSuffix + "\n");
+								}
+							}
+						} else {
+							buffer.append("No pinmap is configured or it's empty.\n");
 						}
 					} finally {
 						pinMapLock.readLock().unlock();
 					}
+
+					console.print(buffer);
 				} else {
 					/* Something wrong happened, print error and move on or we are risking to block the whole system */
-					buffer.append("Error: Read GPIO pinmap lock can't be aquired for " + LOCK_TIMEOUT + " " + LOCK_TIMEOUT_UNITS.toString() + "\n");
+					console.println("Error: Read GPIO pinmap lock can't be aquired for " + LOCK_TIMEOUT + " " + LOCK_TIMEOUT_UNITS.toString());
 				}
 			} catch (InterruptedException e) {
-				buffer.append("Error: The thread was interrupted while waiting for read GPIO pinmap lock\n");
-			}
-			if (buffer.length() > 0) {
-				console.print(buffer);
+				console.println("Error: The thread was interrupted while waiting for read GPIO pinmap lock.");
 			}
 		} else {
-			console.println("Error: unknown argument.");
-			console.println();
-			console.print(getHelp());
+			console.print("Error: Unknown sub command.\n\n" + getHelp());
 		}
 
 		return null;

@@ -69,6 +69,7 @@ public class GPIOPinLinux implements GPIOPin {
 	 * GPIO framework.
 	 * 
 	 * @param pinNumber the pin number as seen by the kernel
+	 * @param pinName the pin name
 	 * @param gpioPinDirectory path to pin directory in <code>sysfs</code>,
 	 * 		e.g. "/sys/class/gpio/gpio1"
 	 * @param debounceInterval default debounce interval
@@ -432,7 +433,12 @@ public class GPIOPinLinux implements GPIOPin {
 
 		try {
 			if (pinLock.readLock().tryLock(PINLOCK_TIMEOUT, PINLOCK_TIMEOUT_UNITS)) {
-				pinName = this.pinName;
+				try {
+					pinName = this.pinName;
+				}
+				finally {
+					pinLock.readLock().unlock();
+				}
 			} else {
 
 				/* Something wrong happened, throw an exception and move on or we are risking to block the whole system */
@@ -453,7 +459,12 @@ public class GPIOPinLinux implements GPIOPin {
 
 		try {
 			if (pinLock.writeLock().tryLock(PINLOCK_TIMEOUT, PINLOCK_TIMEOUT_UNITS)) {
-				this.pinName = pinName;
+				try {
+					this.pinName = pinName;
+				}
+				finally {
+					pinLock.writeLock().unlock();
+				}
 			} else {
 				/* Something wrong happened, throw an exception and move on or we are risking to block the whole system */
 				throw new IOException("Write GPIO pin lock can't be aquired for " + PINLOCK_TIMEOUT + " " + PINLOCK_TIMEOUT_UNITS.toString());
@@ -469,7 +480,12 @@ public class GPIOPinLinux implements GPIOPin {
 
 		try {
 			if (pinLock.readLock().tryLock(PINLOCK_TIMEOUT, PINLOCK_TIMEOUT_UNITS)) {
-				debounceInterval = this.debounceInterval;
+				try {
+					debounceInterval = this.debounceInterval;
+				}
+				finally {
+					pinLock.readLock().unlock();
+				}
 			} else {
 
 				/* Something wrong happened, throw an exception and move on or we are risking to block the whole system */

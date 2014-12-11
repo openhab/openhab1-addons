@@ -38,8 +38,8 @@ import org.slf4j.LoggerFactory;
 public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements GPIOPinEventHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(GPIOBinding.class);
-	private static final long REGISTRYLOCK_TIMEOUT = 10;
-	private static final TimeUnit REGISTRYLOCK_TIMEOUT_UNITS = TimeUnit.SECONDS;
+	private static final long LOCK_TIMEOUT = 10;
+	private static final TimeUnit LOCK_TIMEOUT_UNITS = TimeUnit.SECONDS;
 
 	/** Read/write lock protecting item/pin object registry. */
 	private final ReentrantReadWriteLock registryLock = new ReentrantReadWriteLock();
@@ -79,7 +79,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 
 		if (gpio != null) {
 			try {
-				if (registryLock.readLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+				if (registryLock.readLock().tryLock(LOCK_TIMEOUT, LOCK_TIMEOUT_UNITS)) {
 					try {
 						GPIOPin gpioPin = (GPIOPin) registry.get(itemName);
 
@@ -147,7 +147,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 	public void onEvent(GPIOPin pin, int value) {
 
 		try {
-			if (registryLock.readLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+			if (registryLock.readLock().tryLock(LOCK_TIMEOUT, LOCK_TIMEOUT_UNITS)) {
 				try {
 					String itemName = (String) registry.getKey(pin);
 
@@ -177,7 +177,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 		logger.error("Error occured in pin event processing, exception: " + exception.getMessage());
 
 		try {
-			if (registryLock.readLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+			if (registryLock.readLock().tryLock(LOCK_TIMEOUT, LOCK_TIMEOUT_UNITS)) {
 				try {
 					itemName = (String) registry.getKey(pin);
 				} finally {
@@ -209,7 +209,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 			/* The item configuration was changed */
 
 			try {
-				if (registryLock.writeLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+				if (registryLock.writeLock().tryLock(LOCK_TIMEOUT, LOCK_TIMEOUT_UNITS)) {
 					try {
 						GPIOPin gpioPin = (GPIOPin) registry.get(itemName);
 
@@ -320,7 +320,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 
 			/* Register the pin */
 			try {
-				if (registryLock.writeLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+				if (registryLock.writeLock().tryLock(LOCK_TIMEOUT, LOCK_TIMEOUT_UNITS)) {
 					try {
 						registry.put(itemName, gpioPin);
 					} finally {
@@ -371,7 +371,7 @@ public class GPIOBinding extends AbstractBinding<GPIOBindingProvider> implements
 	private void deleteItem(String itemName) {
 
 		try {
-			if (registryLock.writeLock().tryLock(REGISTRYLOCK_TIMEOUT, REGISTRYLOCK_TIMEOUT_UNITS)) {
+			if (registryLock.writeLock().tryLock(LOCK_TIMEOUT, LOCK_TIMEOUT_UNITS)) {
 				try {
 
 					/* Remove the item from registry */
