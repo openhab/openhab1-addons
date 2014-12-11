@@ -80,23 +80,23 @@ public class SerialConnector implements ProtocolConnector {
 
 	@Override
 	public void disconnect() {
-		logger.debug("Interrupt serial connection");
+		logger.debug("Interrupt reading thread");
 		byteStreamPipe.stopTask();
 
-		logger.debug("Close serial stream");
+		logger.debug("Closing serial connection");
 		try {
 			out.close();
 			serialPort.close();
 			buffer.stop();
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 			}
 		} catch (IOException e) {
 			logger.warn("Could not fully shut down heat pump driver", e);
 		}
 
-		logger.debug("Ready");
+		logger.debug("Disconnected");
 	}
 
 	@Override

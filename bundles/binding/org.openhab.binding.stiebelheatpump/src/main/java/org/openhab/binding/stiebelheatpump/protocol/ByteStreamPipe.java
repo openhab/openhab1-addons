@@ -42,6 +42,7 @@ public class ByteStreamPipe implements Runnable {
 
 	public void startTask() {
 		taskThread = new Thread(this);
+		taskThread.setName("StiebelConnectorThread");
 		taskThread.start();
 	}
 

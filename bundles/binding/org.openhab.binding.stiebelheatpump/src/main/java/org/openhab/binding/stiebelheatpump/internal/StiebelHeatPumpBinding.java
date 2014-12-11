@@ -104,21 +104,20 @@ public class StiebelHeatPumpBinding extends
 					serialPort, baudRate, heatPumpConfiguration);
 			Map<String, String> data = new HashMap<String, String>();
 			
-			data = communicationService.getStatus();
+			communicationService.getStatus().putAll(data);
 			for (Map.Entry<String, String> entry : data.entrySet()) {
 				logger.info("Data {} has value {}", entry.getKey(),
 						entry.getValue());
 			}
-			publishValues(data);
-			data = communicationService.getSensors();
+			communicationService.getSensors().putAll(data);
 			for (Map.Entry<String, String> entry : data.entrySet()) {
 				logger.info("Data {} has value {}", entry.getKey(),
 						entry.getValue());
 			}
-			publishValues(data);
 
 			communicationService.finalizer();
-			
+
+			publishValues(data);
 		} catch (StiebelHeatPumpException e) {
 			logger.error("Could not read data from heat pump! "
 					+ e.toString());
@@ -156,6 +155,8 @@ public class StiebelHeatPumpBinding extends
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand() is called!");
+		logger.debug("Received command {} for item {}", newState, itemName);
+
 	}
 
 	/**
@@ -204,6 +205,7 @@ public class StiebelHeatPumpBinding extends
 					serialPort, baudRate, version);
 
 			setProperlyConfigured(isInitialized);
+			
 		}
 	}
 
@@ -222,29 +224,27 @@ public class StiebelHeatPumpBinding extends
 			String version = communicationService.getversion();
 			logger.info("Heat pump has version {}", version);
 
-			data = communicationService.getSettings();
+			communicationService.getSettings().putAll(data);
 			for (Map.Entry<String, String> entry : data.entrySet()) {
 				logger.info("Data {} has value {}", entry.getKey(),
 						entry.getValue());
 			}
-			publishValues(data);
-
-			data = communicationService.getStatus();
+			communicationService.getStatus().putAll(data);
 			for (Map.Entry<String, String> entry : data.entrySet()) {
 				logger.info("Data {} has value {}", entry.getKey(),
 						entry.getValue());
 			}
-			publishValues(data);
-			data = communicationService.getSensors();
+			communicationService.getSensors().putAll(data);
 			for (Map.Entry<String, String> entry : data.entrySet()) {
 				logger.info("Data {} has value {}", entry.getKey(),
 						entry.getValue());
 			}
-			publishValues(data);
 			
 			communicationService.setTime();
 			
 			communicationService.finalizer();
+
+			publishValues(data);
 			
 			return true;
 		} catch (StiebelHeatPumpException e) {

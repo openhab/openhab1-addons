@@ -30,7 +30,7 @@ public class CommunicationService {
 
 	private static ProtocolConnector connector;
 	private String serialPortName;
-	private static final int MAXRETRIES = 1000;
+	private static final int MAXRETRIES = 100;
 	private final int INPUT_BUFFER_LENGTH = 1024;
 	private byte buffer[] = new byte[INPUT_BUFFER_LENGTH];
 
@@ -64,13 +64,12 @@ public class CommunicationService {
 		connector = getStiebelHeatPumpConnector();
 		connector.connect(serialPortName, baudRate);
 		heatPumpConfiguration = configuration;
+		categorizeHeatPumpConfiguration();
 		return;
 	}
 
 	public void finalizer() {
-		logger.info("Disconnecting heat pump.");
 		connector.disconnect();
-		logger.info("Heat pump disconnected.");
 	}
 
 	/**
@@ -279,46 +278,57 @@ public class CommunicationService {
 			logger.info("Configuration file contains {} requests.",
 					heatPumpConfiguration.size());
 
-			logger.debug("Loading heat pump configuration ...");
-
-			for (Request request : heatPumpConfiguration) {
-				logger.debug(
-						"Request : Name -> {}, Description -> {} , RequestByte -> {}",
-						request.getName(), request.getDescription(),
-						DatatypeConverter.printHexBinary(new byte[] { request
-								.getRequestByte() }));
-				if (request.getName().equalsIgnoreCase("Version")) {
-					versionRequest = request;
-					logger.debug("Loaded Request : "
-							+ versionRequest.getDescription());
-					continue;
-				}
-
-				for (RecordDefinition record : request.getRecordDefinitions()) {
-					if (record.getDataType() == Type.Settings
-							&& !heatPumpSettingConfiguration.contains(request)) {
-						heatPumpSettingConfiguration.add(request);
-					}
-					if (record.getDataType() == Type.Status
-							&& !heatPumpStatusConfiguration.contains(request)) {
-						heatPumpStatusConfiguration.add(request);
-					}
-					if (record.getDataType() == Type.Sensor
-							&& !heatPumpSensorConfiguration.contains(request)) {
-						heatPumpSensorConfiguration.add(request);
-					}
-				}
-			}
-
-			if (versionRequest == null) {
-				logger.debug("version request could not be found in configuration");
+			if (categorizeHeatPumpConfiguration()) {
 				return heatPumpConfiguration;
 			}
-			return heatPumpConfiguration;
 		}
 		logger.warn("Could not load heat pump configuration file for {}!",
 				configFile);
 		return null;
+	}
+
+	/**
+	 * This method categorize the heat pump configuration into 
+	 * setting, sensor and status
+	 * 
+	 * @return true if heat pump configuration for version could be found and
+	 *         loaded
+	 */
+	private boolean categorizeHeatPumpConfiguration() {
+		for (Request request : heatPumpConfiguration) {
+			logger.debug(
+					"Request : Name -> {}, Description -> {} , RequestByte -> {}",
+					request.getName(), request.getDescription(),
+					DatatypeConverter.printHexBinary(new byte[] { request
+							.getRequestByte() }));
+			if (request.getName().equalsIgnoreCase("Version")) {
+				versionRequest = request;
+				logger.debug("Loaded Request : "
+						+ versionRequest.getDescription());
+				continue;
+			}
+
+			for (RecordDefinition record : request.getRecordDefinitions()) {
+				if (record.getDataType() == Type.Settings
+						&& !heatPumpSettingConfiguration.contains(request)) {
+					heatPumpSettingConfiguration.add(request);
+				}
+				if (record.getDataType() == Type.Status
+						&& !heatPumpStatusConfiguration.contains(request)) {
+					heatPumpStatusConfiguration.add(request);
+				}
+				if (record.getDataType() == Type.Sensor
+						&& !heatPumpSensorConfiguration.contains(request)) {
+					heatPumpSensorConfiguration.add(request);
+				}
+			}
+		}
+
+		if (versionRequest == null) {
+			logger.debug("version request could not be found in configuration");
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -561,7 +571,7 @@ public class CommunicationService {
 					return true;
 				}
 				logger.debug("retry request!");
-
+				startCommunication();
 			}
 			if (!dataAvailable) {
 				logger.warn("heat pump has no data available for request!");
