@@ -382,7 +382,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				records.add(record);
 			} else if (arg.equals("info/")) {
 				record = new OpenHABConfigurationRecord(domain, "NodeID", "Node ID", true);
-				record.value = Integer.toString(node.getDeviceId());
+				record.value = Integer.toString(node.getNodeId());
 				records.add(record);
 
 				if (node.getManufacturer() != Integer.MAX_VALUE) {
@@ -620,8 +620,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 									.getCommandClass(CommandClass.ASSOCIATION);
 							int memberCnt = 0;
 							List<Integer> members = associationCommandClass.getGroupMembers(group.Index);
-							if(members != null)
+							if(members != null) {
 								memberCnt = members.size();
+							}
 							record.value = memberCnt + " of " + group.Maximum + " group members";
 
 							// Add the action for refresh
@@ -689,24 +690,24 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						int nodeNum = nodes.get(i);
 						ZWaveNode nodeList = zController.getNode(nodeNum);
 						// Add the member
-						if (nodeList.getName() == null || nodeList.getName().isEmpty()) {
-							record = new OpenHABConfigurationRecord(domain, "node" + nodeList.getNodeId(), "Node " + nodeList.getNodeId(), false);
+						if (nodeList == null || nodeList.getName() == null || nodeList.getName().isEmpty()) {
+							record = new OpenHABConfigurationRecord(domain, "node" + nodeNum, "Node " + nodeNum, false);
 						} else {
-							record = new OpenHABConfigurationRecord(domain, "node" + nodeList.getNodeId(), nodeList.getName(), false);
+							record = new OpenHABConfigurationRecord(domain, "node" + nodeNum, nodeList.getName(), false);
 						}
 
 						record.type = OpenHABConfigurationRecord.TYPE.LIST;
 						record.addValue("true", "Member");
 						record.addValue("false", "Non-Member");
 
-						if (members != null && members.contains(nodeList.getNodeId())) {
+						if (members != null && members.contains(nodeNum)) {
 							record.value = "true";
 						} else {
 							record.value = "false";
 						}
 
 						// If the value is in our PENDING list, then use that instead
-						Integer pendingValue = PendingCfg.Get(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), nodeId, groupId, nodeList.getNodeId());
+						Integer pendingValue = PendingCfg.Get(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), nodeId, groupId, nodeNum);
 						if(pendingValue != null) {
 							if(pendingValue == 1) {
 								record.value = "true";

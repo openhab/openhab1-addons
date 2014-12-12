@@ -8,11 +8,16 @@
  */
 package org.openhab.binding.zwave.internal.protocol.initialization;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import org.openhab.binding.zwave.internal.config.OpenHABConfigurationRecord;
+import org.openhab.binding.zwave.internal.config.ZWaveDbAssociationGroup;
+import org.openhab.binding.zwave.internal.config.ZWaveProductDatabase;
 import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -23,6 +28,7 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageCl
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass.LibraryType;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassInitialization;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveManufacturerSpecificCommandClass;
@@ -249,7 +255,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		// only outstanding requests are returned.
 		// This continues until there are no requests required.
 		stageAdvanced = false;
-
+		
 		// We run through all stages until one queues a message.
 		// Then we will wait for the response before continuing
 		do {
@@ -497,6 +503,46 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					}
 				}
 				logger.debug("NODE {}: Node advancer: DYNAMIC_VALUES - queued {} frames", node.getNodeId(), msgQueue.size());
+				break;
+
+			case ASSOCIATIONS:
+				// Do we support associations
+				ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node.getCommandClass(CommandClass.ASSOCIATION);
+				if(associationCommandClass == null) {
+					break;
+				}
+
+				// For now, we have no-way of knowing if we've received an update to the association
+				// so just do this once
+				if(stageAdvanced == false) {
+					break;
+				}
+
+				// Open the product database
+				ZWaveProductDatabase database = new ZWaveProductDatabase();
+				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == true) {
+					// We have this device in the database
+					// Assume the database is correct since some devices report invalid number of groups!
+					List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
+
+					// No groups known
+					if (groupList == null) {
+						logger.debug("NODE {}: Node advancer: ASSOCIATIONS - none in database", node.getNodeId());
+						break;
+					}
+
+					// Request every group
+					for (ZWaveDbAssociationGroup group : groupList) {
+						logger.debug("NODE {}: Node advancer: ASSOCIATIONS request group {}", node.getNodeId(), group.Index);
+						addToQueue(associationCommandClass.getAssociationMessage(group.Index));
+					}
+				}
+				else {
+					for(int group = 1; group <= associationCommandClass.getMaxGroups(); group++) {
+						logger.debug("NODE {}: Node advancer: ASSOCIATIONS request group {}", node.getNodeId(), group);
+						addToQueue(associationCommandClass.getAssociationMessage(group));
+					}
+				}
 				break;
 
 			case NEIGHBORS:

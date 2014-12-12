@@ -39,7 +39,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 @XStreamAlias("associationCommandClass")
 public class ZWaveAssociationCommandClass extends ZWaveCommandClass
-	implements ZWaveCommandClassInitialization, ZWaveCommandClassDynamicState{
+	implements ZWaveCommandClassInitialization {
 
 	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveAssociationCommandClass.class);
@@ -65,8 +65,6 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 
 	@XStreamOmitField
 	private boolean initialiseDone = false;
-	@XStreamOmitField
-	private boolean dynamicDone = false;
 
 	/**
 	 * Creates a new instance of the ZWaveAssociationCommandClass class.
@@ -328,13 +326,13 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 	 * a group with no members.
 	 */
 	public void getAllAssociations() {
-		SerialMessage serialMessage = getGroupingsMessage();
+		updateAssociationsNode = 1;
+		SerialMessage serialMessage = getAssociationMessage(updateAssociationsNode);
 		if(serialMessage != null) {
-			updateAssociationsNode = 1;
 			this.getController().sendData(serialMessage);
 		}
 	}
-	
+
 	/**
 	 * Returns a list of nodes that are currently members of the association
 	 * group. This method only returns the list that is currently in the
@@ -347,8 +345,9 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 	 * @return List of nodes in the group
 	 */
 	public List<Integer> getGroupMembers(int group) {
-		if(configAssociations.get(group) == null)
+		if(configAssociations.get(group) == null) {
 			return null;
+		}
 		return configAssociations.get(group).getNodes();
 	}
 
@@ -358,6 +357,14 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 	 */
 	public int getGroupCount() {
 		return configAssociations.size();
+	}
+
+	/**
+	 * Returns the maximum number of association groups
+	 * @return Number of association groups
+	 */
+	public int getMaxGroups() {
+		return maxGroups;
 	}
 
 	/**
@@ -399,25 +406,6 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 		public void addMember(int member) {
 			members.add(member);
 		}
-	}
-
-	@Override
-	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
-		logger.debug("NODE {}: Initialising associations. MaxGroups={}", this.getNode().getNodeId(), maxGroups);
-
-		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		// If we're already initialized, then don't do it again unless we're refreshing
-		if(refresh == true || dynamicDone == false) {
-			for(int group = 1; group <= maxGroups; group++) {
-				result.add(this.getAssociationMessage(group));
-			}
-		}
-
-		// Setting dynamicDone here will stop this stage being repeated
-		// However doesn't confirm that all groups are received!
-		dynamicDone = true;
-
-		return result;
 	}
 
 	@Override
