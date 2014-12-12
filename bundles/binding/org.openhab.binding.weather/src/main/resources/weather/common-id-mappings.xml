@@ -6,6 +6,7 @@
     <provider name="WorldWeatherOnline" ids="392, 386, 200, 389"/>
     <provider name="Hamweather" ids="A,T"/>
     <provider name="ForecastIO" icons="hail, thunderstorm, tornado"/>
+    <provider name="Wunderground" icons="tstorms"/>
   </common-id-mapping>
   <common-id-mapping id="storm">
     <provider name="Yahoo" ids="1,2"/>
