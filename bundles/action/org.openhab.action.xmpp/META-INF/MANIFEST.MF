@@ -29,5 +29,6 @@ Bundle-ClassPath: .,
  lib/smack-core-4.0.5.jar,
  lib/smack-extensions-4.0.5.jar,
  lib/smack-resolver-javax-4.0.5.jar,
- lib/smack-tcp-4.0.5.jar
+ lib/smack-tcp-4.0.5.jar,
+ lib/xpp3-1.1.4c.jar
 Bundle-ActivationPolicy: lazy
