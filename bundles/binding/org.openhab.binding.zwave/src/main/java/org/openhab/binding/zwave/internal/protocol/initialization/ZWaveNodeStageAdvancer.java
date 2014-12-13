@@ -8,14 +8,12 @@
  */
 package org.openhab.binding.zwave.internal.protocol.initialization;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import org.openhab.binding.zwave.internal.config.OpenHABConfigurationRecord;
 import org.openhab.binding.zwave.internal.config.ZWaveDbAssociationGroup;
 import org.openhab.binding.zwave.internal.config.ZWaveProductDatabase;
 import org.openhab.binding.zwave.internal.protocol.NodeStage;
@@ -278,13 +276,22 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				break;
 
 			case WAIT:
-				// If the node is listening, then we progress.
-				// If it's not listening, we'll wait a while before progressing with initialisation.
+				// If the node is listening, or frequently listening, then we progress.
 				if(node.isListening() == true || node.isFrequentlyListening() == true) {
 					break;
 				}
 
-				logger.debug("NODE {}: Node advancer: WAIT - send IdentifyNode", node.getNodeId());
+				// If the device supports the wakeup class, then see if we're awake
+				ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass) node
+						.getCommandClass(CommandClass.WAKE_UP);
+				if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake() == true) {
+					logger.debug("NODE {}: Node advancer: WAIT - Node is awake", node.getNodeId());
+					break;
+				}
+
+				// If it's not listening, and not awake,
+				// we'll wait a while before progressing with initialisation.
+				logger.debug("NODE {}: Node advancer: WAIT - Still waiting!", node.getNodeId());
 				return;
 
 			case PING:
@@ -304,14 +311,14 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					break;
 				}
 
-				ZWaveNoOperationCommandClass zwaveCommandClass = (ZWaveNoOperationCommandClass) node
+				ZWaveNoOperationCommandClass noOpCommandClass = (ZWaveNoOperationCommandClass) node
 						.getCommandClass(CommandClass.NO_OPERATION);
-				if (zwaveCommandClass == null) {
+				if (noOpCommandClass == null) {
 					break;
 				}
 
 				logger.debug("NODE {}: Node advancer: PING - send NoOperation", node.getNodeId());
-				SerialMessage msg = zwaveCommandClass.getNoOperationMessage();
+				SerialMessage msg = noOpCommandClass.getNoOperationMessage();
 				if (msg != null) {
 					// We only send out a single PING - no retries at controller
 					// level! This is to try and reduce network congestion during
