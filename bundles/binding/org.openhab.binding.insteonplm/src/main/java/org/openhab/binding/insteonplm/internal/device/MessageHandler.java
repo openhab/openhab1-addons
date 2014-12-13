@@ -84,6 +84,17 @@ public abstract class MessageHandler {
 		return def;
 	}
 
+	protected boolean hasButton() {
+		return this.getIntParameter("button", -1) != -1;
+	}
+
+	protected boolean isMybutton(Msg msg, DeviceFeature f) {
+		int button = getButtonInfo(msg, f);
+		int myButton = this.getIntParameter("button", -1);
+
+		return button != -1 && myButton == button;
+	}
+
 	/**
 	 * Extract button information from message
 	 * @param msg the message to extract from
@@ -139,6 +150,10 @@ public abstract class MessageHandler {
 			//    and the cmd2 code has the new light level
 			// 2) When the switch/dimmer is switched completely on manually,
 			//    i.e. by physically tapping the button. 
+			if (hasButton() && !isMybutton(msg, f)) {
+				return;
+			}
+
 			try {
 				InsteonAddress a = f.getDevice().getAddress();
 				if (msg.isAckOfDirect()) {
@@ -174,7 +189,9 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
-			f.publishAll(OnOffType.ON);
+			if (!hasButton() || isMybutton(msg, f)) {
+				f.publishAll(OnOffType.ON);
+			}
 		}
 	}
 
@@ -183,7 +200,9 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
-			f.publishAll(OnOffType.OFF);
+			if (!hasButton() || isMybutton(msg, f)) {
+				f.publishAll(OnOffType.OFF);
+			}
 		}
 	}
 
@@ -192,9 +211,7 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
-			int button = getButtonInfo(msg, f);
-			int myButton = this.getIntParameter("button", -1);
-			if (button != -1 && myButton == button) {
+			if (isMybutton(msg, f)) {
 				f.publishAll(OnOffType.ON);
 			}
 		}
@@ -205,9 +222,7 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
-			int button = getButtonInfo(msg, f);
-			int myButton = this.getIntParameter("button", -1);
-			if (button != -1 && myButton == button) {
+			if (isMybutton(msg, f)) {
 				f.publishAll(OnOffType.OFF);
 			}
 		}
