@@ -26,11 +26,11 @@
 			<Label lang="en">Enable/Disable ALL ON/OFF</Label>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">ALL ON disabled/ ALL OFF disabled</Label>
+				<Label lang="en">ALL ON disabled / ALL OFF disabled</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">ALL ON disabled/ ALL OFF active</Label>
+				<Label lang="en">ALL ON disabled / ALL OFF active</Label>
 			</Item>
 			<Item>
 				<Value>2</Value>
