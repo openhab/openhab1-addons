@@ -291,7 +291,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 							} else if (provider.getBindingType(itemName) == BindingType.ACTUAL
 									&& ((HeatingThermostat) device).isTemperatureActualUpdated()) {
 								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureActual());
-							} else if (((HeatingThermostat) device).isTemperatureSetpointUpdated()){
+							} else if (((HeatingThermostat) device).isTemperatureSetpointUpdated() && provider.getBindingType(itemName) == null){
 								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureSetpoint());
 							}
 							break;
