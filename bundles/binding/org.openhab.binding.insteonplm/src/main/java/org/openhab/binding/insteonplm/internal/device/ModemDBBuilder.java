@@ -93,7 +93,6 @@ public class ModemDBBuilder implements MsgListener {
 				for (Msg m: lrs) {
 					int recordFlags = m.getByte("RecordFlags") & 0xff;
 					String ms = ((recordFlags & (0x1 << 6)) != 0) ? "CTRL" : "RESP";
-					int group = m.getByte("ALLLinkGroup") & 0xff;
 					logger.debug("MDB {}: {} group: {} data1: {} data2: {} data3: {}",
 								db.getKey(), ms, toHex(m.getByte("ALLLinkGroup")),
 									toHex(m.getByte("LinkData1")), toHex(m.getByte("LinkData2")),
