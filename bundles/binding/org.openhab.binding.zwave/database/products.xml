@@ -634,6 +634,15 @@
 		<Product>
 			<Reference>
 				<Type>0002</Type>
+				<Id>0009</Id>
+			</Reference>
+			<Model>HEM</Model>
+			<Label lang="en">Home Energy Meter</Label>
+			<ConfigFile>aeon/hem.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
 				<Id>001C</Id>
 			</Reference>
 			<Model>HEM-G2</Model>
@@ -648,6 +657,14 @@
 			<Model>DSD31</Model>
 			<Label lang="en">Outlet Plugable Siren</Label>
 			<ConfigFile>aeon/dsd31.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0019</Id>
+			</Reference>
+			<Model>DSC25G2</Model>
+			<Label lang="en">Dimmer G2</Label>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
