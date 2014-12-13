@@ -42,7 +42,7 @@
 	<message-handler cmd="0x13" button="4">LightOffMultiHandler</message-handler>
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
-<feature name="LoadButton">
+<feature name="LoadSwitchButton">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
@@ -52,7 +52,29 @@
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
 	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
-<feature name="KeyPadButtonA">
+<feature name="LoadDimmerButton">
+    <message-dispatcher>DefaultDispatcher</message-dispatcher>
+    <message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+    <message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+    <message-handler cmd="0x11" button="1">LightOnDimmerHandler</message-handler>
+    <message-handler cmd="0x13" button="1">LightOffHandler</message-handler>
+    <message-handler cmd="0x17" button="1">NoOpMsgHandler</message-handler>
+    <message-handler cmd="0x18" button="1">StopManualChangeHandler</message-handler>
+    <message-handler cmd="0x19" button="1">LightStateDimmerHandler</message-handler>
+    <command-handler command="PercentType">PercentHandler</command-handler>
+    <command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
+    <poll-handler>LEDBitPollHandler</poll-handler>
+</feature>
+<feature name="KeyPadButton2">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11" button="2">LightOnMultiHandler</message-handler>
+	<message-handler cmd="0x13" button="2">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x19" button="2">LightStateSwitchHandler</message-handler>
+	<poll-handler>LEDBitPollHandler</poll-handler>
+</feature>
+<feature name="KeyPadButton3">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
@@ -61,7 +83,7 @@
 	<message-handler cmd="0x19" button="3">LightStateSwitchHandler</message-handler>
 	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
-<feature name="KeyPadButtonB">
+<feature name="KeyPadButton4">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
@@ -70,7 +92,7 @@
 	<message-handler cmd="0x19" button="4">LightStateSwitchHandler</message-handler>
 	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
-<feature name="KeyPadButtonC">
+<feature name="KeyPadButton5">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
@@ -79,13 +101,31 @@
 	<message-handler cmd="0x19" button="5">LightStateSwitchHandler</message-handler>
 	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
-<feature name="KeyPadButtonD">
+<feature name="KeyPadButton6">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x11" button="6">LightOnMultiHandler</message-handler>
 	<message-handler cmd="0x13" button="6">LightOffMultiHandler</message-handler>
 	<message-handler cmd="0x19" button="6">LightStateSwitchHandler</message-handler>
+	<poll-handler>LEDBitPollHandler</poll-handler>
+</feature>
+<feature name="KeyPadButton7">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11" button="7">LightOnMultiHandler</message-handler>
+	<message-handler cmd="0x13" button="7">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x19" button="7">LightStateSwitchHandler</message-handler>
+	<poll-handler>LEDBitPollHandler</poll-handler>
+</feature>
+<feature name="KeyPadButton8">
+	<message-dispatcher>DefaultDispatcher</message-dispatcher>
+	<message-handler cmd="0x03">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x06">NoOpMsgHandler</message-handler>
+	<message-handler cmd="0x11" button="8">LightOnMultiHandler</message-handler>
+	<message-handler cmd="0x13" button="8">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x19" button="8">LightStateSwitchHandler</message-handler>
 	<poll-handler>LEDBitPollHandler</poll-handler>
 </feature>
 <feature name="GenericLastTime" statusFeature="true">
