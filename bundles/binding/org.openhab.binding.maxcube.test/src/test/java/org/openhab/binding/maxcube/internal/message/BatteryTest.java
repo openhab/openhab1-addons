@@ -44,7 +44,7 @@ public class BatteryTest {
 		assertTrue("Battery charge should be set to updated "
 				+ "after change to low", battery.isChargeUpdated());
 		battery.setCharge(Charge.LOW);
-		assertFalse("Battery charge should be set to updated "
+		assertFalse("Battery charge should not be set to updated "
 				+ "after setting same charge again", battery.isChargeUpdated());
 		battery.setCharge(Charge.OK);
 		assertTrue("Battery charge should be set to updated "
