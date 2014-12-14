@@ -346,7 +346,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 	 */
 	public List<Integer> getGroupMembers(int group) {
 		if(configAssociations.get(group) == null) {
-			return null;
+			return new ArrayList<Integer>();
 		}
 		return configAssociations.get(group).getNodes();
 	}
