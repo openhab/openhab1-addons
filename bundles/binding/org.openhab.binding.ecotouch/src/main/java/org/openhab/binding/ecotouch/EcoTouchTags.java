@@ -606,6 +606,16 @@ public enum EcoTouchTags {
 		}
 	},
 
+	// German: Temperaturanpassung für die Heizung
+	TYPE_ADAPT_HEATING {
+		{
+			command = "adapt_heating";
+			itemClass = NumberItem.class;
+			tagName = "I263";
+			type = Type.Word; // value range 0..8 => -2K .. +2K
+		}
+	},
+
 
 	;
 

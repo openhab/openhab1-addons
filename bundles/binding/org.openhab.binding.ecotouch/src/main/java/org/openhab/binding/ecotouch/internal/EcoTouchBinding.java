@@ -79,7 +79,7 @@ public class EcoTouchBinding extends
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	@Override
 	protected void execute() {
@@ -126,36 +126,48 @@ public class EcoTouchBinding extends
 						continue;
 					}
 					int heatpumpValue = rawvalues.get(item.getTagName());
+					State value;
 					if (item.getType() == EcoTouchTags.Type.Analog) {
 						// analog value encoded as a scaled integer
 						BigDecimal decimal = new BigDecimal(heatpumpValue)
 								.divide(new BigDecimal(10));
-						handleEventType(new DecimalType(decimal), item);
+						value = new DecimalType(decimal);
 					} else if (item.getType() == EcoTouchTags.Type.Word) {
 						// integer
 						if (item.getItemClass() == NumberItem.class)
-							handleEventType(new DecimalType(heatpumpValue), item);
+							value = new DecimalType(heatpumpValue);
 						else {
 							// assume SwitchItem
 							if (heatpumpValue == 0)
-								handleEventType(OnOffType.OFF, item);
+								value = OnOffType.OFF;
 							else
-								handleEventType(OnOffType.ON, item);
+								value = OnOffType.ON;
 						}
 					} else {
 						// bit field
 						heatpumpValue >>= item.getBitNum();
 						heatpumpValue &= 1;
 						if (item.getItemClass() == NumberItem.class)
-							handleEventType(new DecimalType(heatpumpValue), item);
+							value = new DecimalType(heatpumpValue);
 						else {
 							// assume SwitchItem
 							if (heatpumpValue == 0)
-								handleEventType(OnOffType.OFF, item);
+								value = OnOffType.OFF;
 							else
-								handleEventType(OnOffType.ON, item);
+								value = OnOffType.ON;
 						}
 					}
+
+					// now consider special cases
+					if (item == EcoTouchTags.TYPE_ADAPT_HEATING) {
+						double adapt = ((DecimalType) value).intValue();
+						adapt = Math.max(0, adapt);
+						adapt = Math.min(8, adapt);
+						adapt = (adapt - 4) / 2.0;
+						value = new DecimalType(adapt);
+					}
+
+					handleEventType(value, item);
 				}
 			}
 
@@ -168,8 +180,7 @@ public class EcoTouchBinding extends
 
 	}
 
-	private void handleEventType(org.openhab.core.types.State state,
-			EcoTouchTags heatpumpCommandType) {
+	private void handleEventType(State state, EcoTouchTags heatpumpCommandType) {
 		for (EcoTouchBindingProvider provider : providers) {
 			for (String itemName : provider
 					.getItemNamesForType(heatpumpCommandType)) {
@@ -179,7 +190,7 @@ public class EcoTouchBinding extends
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	public void updated(Dictionary<String, ?> config)
 			throws ConfigurationException {
@@ -226,7 +237,17 @@ public class EcoTouchBinding extends
 			try {
 				tag = provider.getTypeForItemName(itemName);
 				break;
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
+		}
+
+		// consider special cases
+		if (tag == EcoTouchTags.TYPE_ADAPT_HEATING) {
+			double adapt = Double.parseDouble(command.toString());
+			adapt = (adapt + 2) * 2;
+			adapt = Math.max(0, adapt);
+			adapt = Math.min(8, adapt);
+			command = new DecimalType((int) adapt);
 		}
 
 		EcoTouchConnector connector = new EcoTouchConnector(ip, username,
@@ -234,7 +255,7 @@ public class EcoTouchBinding extends
 		int value = 0;
 		switch (tag.getType()) {
 		case Analog:
-			value = (int)(Double.parseDouble(command.toString()) * 10);
+			value = (int) (Double.parseDouble(command.toString()) * 10);
 			break;
 		case Word:
 			if (command == OnOffType.ON)
@@ -248,7 +269,8 @@ public class EcoTouchBinding extends
 			try {
 				value = connector.getValue(tag.getTagName());
 				int bitmask = 1 << tag.getBitNum();
-				if (command == OnOffType.OFF || Integer.parseInt(command.toString()) == 0) {
+				if (command == OnOffType.OFF
+						|| Integer.parseInt(command.toString()) == 0) {
 					value = value & ~bitmask;
 				} else
 					value = value | bitmask;
@@ -258,11 +280,13 @@ public class EcoTouchBinding extends
 				return;
 			}
 		}
-		
+
 		try {
 			connector.setValue(tag.getTagName(), value);
-			// It does not make sense to check the returned value from setValue().
-			// Even if the tag is read only, one would get the newly set value back. 
+			// It does not make sense to check the returned value from
+			// setValue().
+			// Even if the tag is read only, one would get the newly set value
+			// back.
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

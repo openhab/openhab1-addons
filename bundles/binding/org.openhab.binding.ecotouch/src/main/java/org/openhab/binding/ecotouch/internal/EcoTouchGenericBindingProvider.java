@@ -43,31 +43,26 @@ public class EcoTouchGenericBindingProvider extends
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		boolean ok = true;
+		EcoTouchTags tag;
 		try {
-			EcoTouchTags tag = EcoTouchTags.fromString(bindingConfig);
-			if (!tag.getItemClass().isInstance(item)) {
-				throw new BindingConfigParseException(
-						"item '"
-								+ item.getName()
-								+ "' is of type '"
-								+ item.getClass().getSimpleName()
-								+ "', only " + tag.getItemClass().getSimpleName() + " are allowed - please check your *.items configuration");
-			}
+			tag = EcoTouchTags.fromString(bindingConfig);
 		} catch (Exception e) {
-			ok = false;
-		}
-		if (!ok) {
 			throw new BindingConfigParseException(
 					"item '"
 							+ item.getName()
-							+ "' is of type '"
-							+ item.getClass().getSimpleName()
-							+ "', only NumberItems are allowed - please check your *.items configuration");
+							+ "' tries to bind to '"
+							+ bindingConfig
+							+ "', which is unknown - please check your *.items configuration");
+		}
+		if (!tag.getItemClass().isInstance(item)) {
+			throw new BindingConfigParseException("item '" + item.getName()
+					+ "' is of type '" + item.getClass().getSimpleName()
+					+ "', only " + tag.getItemClass().getSimpleName()
+					+ " are allowed - please check your *.items configuration");
 		}
 	}
 
@@ -141,7 +136,8 @@ public class EcoTouchGenericBindingProvider extends
 	 * {@inheritDoc}
 	 */
 	public EcoTouchTags getTypeForItemName(String itemName) {
-		EcoTouchBindingConfig heatpumpConfig = (EcoTouchBindingConfig) bindingConfigs.get(itemName);
+		EcoTouchBindingConfig heatpumpConfig = (EcoTouchBindingConfig) bindingConfigs
+				.get(itemName);
 		return heatpumpConfig.getType();
 	}
 
