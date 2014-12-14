@@ -231,14 +231,36 @@ public class InsteonDevice {
 	 */
 	public Msg makeStandardMessage(byte flags, byte cmd1, byte cmd2)
 			throws FieldException, IOException {
+		return (makeStandardMessage(flags, cmd1, cmd2, -1));
+	}
+	/**
+	 * Helper method to make standard message, possibly with group
+	 * @param flags
+	 * @param cmd1
+	 * @param cmd2
+	 * @param group (-1 if not a group message)
+	 * @return standard message
+	 * @throws FieldException
+	 * @throws IOException
+	 */
+	public Msg makeStandardMessage(byte flags, byte cmd1, byte cmd2, int group)
+			throws FieldException, IOException {
 		Msg m = Msg.s_makeMessage("SendStandardMessage");
-		m.setAddress("toAddress", getAddress());
+		InsteonAddress addr = null;
+		if (group != -1) {
+			flags |= 0xc0; // mark message as group message
+			// and stash the group number into the address
+			addr = new InsteonAddress(0,0,(byte)(group & 0xff));
+		} else {
+			addr = getAddress();
+		}
+		m.setAddress("toAddress", addr);
 		m.setByte("messageFlags", flags);
 		m.setByte("command1", cmd1);
 		m.setByte("command2", cmd2);
 		return m;
 	}
-
+	
 	public Msg makeX10Message(byte rawX10, byte X10Flag)
 			throws FieldException, IOException {
 		Msg m = Msg.s_makeMessage("SendX10Message");
