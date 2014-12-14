@@ -15,7 +15,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,7 +33,6 @@ import org.openhab.binding.maxcube.internal.message.S_Command;
 import org.openhab.binding.maxcube.internal.message.S_Message;
 import org.openhab.binding.maxcube.internal.message.ShutterContact;
 import org.openhab.binding.maxcube.internal.message.ThermostatModeType;
-import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -272,8 +270,8 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 						continue;
 					}
 					//all devices have a battery state, so this is type-independent
-					if (provider.getBindingType(itemName) == BindingType.BATTERY && device.isBatteryLowUpdated()) {
-						eventPublisher.postUpdate(itemName, device.getBatteryLow());
+					if (provider.getBindingType(itemName) == BindingType.BATTERY && device.battery().isChargeUpdated()) {
+						eventPublisher.postUpdate(itemName, device.battery().getCharge());
 					} else if  (provider.getBindingType(itemName) != BindingType.BATTERY) {
 					switch (device.getType()) {
 						case HeatingThermostatPlus:
