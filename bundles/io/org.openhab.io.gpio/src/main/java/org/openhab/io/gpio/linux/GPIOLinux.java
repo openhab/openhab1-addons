@@ -260,7 +260,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 				throw new IOException("Line " + lineNumber + ": Pin name and/or number are missing");
 			}
 
-			if (pinMapRecordFields[0].contains(" ") || pinMapRecordFields[0].contains(":")) {
+			if (pinMapRecordFields[0].contains(" ") || pinMapRecordFields[0].contains(":") || pinMapRecordFields[0].contains("\"")) {
 				throw new IOException("Line " + lineNumber + ": Pin name contains illegal characters as space and/or ':'");
 			}
 
