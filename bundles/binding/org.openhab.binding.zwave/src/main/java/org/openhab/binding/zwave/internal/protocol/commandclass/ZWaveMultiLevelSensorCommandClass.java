@@ -56,6 +56,8 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	private boolean initialiseDone = false;
 	@XStreamOmitField
 	private boolean dynamicDone = false;
+	
+	private boolean isGetSupported = true;
 
 	/**
 	 * Creates a new instance of the ZWaveMultiLevelSensorCommandClass class.
@@ -105,12 +107,14 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 			
 			for(int i = offset + 1; i < payloadLength; ++i ) {
 				for(int bit = 0; bit < 8; ++bit) {
-				    if( ((serialMessage.getMessagePayloadByte(i)) & (1 << bit) ) == 0 )
+				    if( ((serialMessage.getMessagePayloadByte(i)) & (1 << bit) ) == 0 ) {
 				    	continue;
+				    }
 				    
 				    int index = ((i - (offset + 1)) * 8 ) + bit + 1;             
-				    if(index >= SensorType.values().length)
+				    if(index >= SensorType.values().length) {
 				    	continue;
+				    }
 
 				    // (n)th bit is set. n is the index for the sensor type enumeration.
 					SensorType sensorTypeToAdd = SensorType.getSensorType(index);
@@ -221,6 +225,11 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	 * @return the serial message
 	 */
 	public SerialMessage getMessage(SensorType sensorType) {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests for MULTI_LEVEL_SENSOR", this.getNode().getNodeId());
+			return null;
+		}
+
 		logger.debug("NODE {}: Creating new message for command SENSOR_MULTI_LEVEL_GET",
 				this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(),
@@ -235,7 +244,15 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 				};
 		result.setMessagePayload(newPayload);
 		return result;
-	}	
+	}
+	
+	/**
+	 * Allows the class to be marked as not supporting the get request.
+	 * @param supported true if get requests are supported
+	 */
+	public void setGetSupported(boolean supported) {
+		isGetSupported = supported;
+	}
 	
 	/**
 	 * {@inheritDoc}

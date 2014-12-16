@@ -69,11 +69,11 @@ public class AddNodeMessageClass extends ZWaveCommandProcessor {
 	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		switch(incomingMessage.getMessagePayloadByte(1)) {
 		case ADD_NODE_STATUS_LEARN_READY:
-			logger.debug("Remove Node: Learn ready.");
+			logger.debug("Add Node: Learn ready.");
 			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeStart));
 			break;
 		case ADD_NODE_STATUS_NODE_FOUND:
-			logger.debug("Remove Node: New node found.");
+			logger.debug("Add Node: New node found.");
 			break;
 		case ADD_NODE_STATUS_ADDING_SLAVE:
 			logger.debug("NODE {}: Adding slave.", incomingMessage.getMessagePayloadByte(2));
