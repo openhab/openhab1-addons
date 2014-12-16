@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Configuration command class. This allows reading and writing of
@@ -35,6 +36,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("configurationCommandClass")
 public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveConfigurationCommandClass.class);
 
 	private static final int CONFIGURATIONCMD_SET = 0x04;
@@ -196,7 +198,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 		 * @param nodeId the nodeId of the event. Must be set to the controller node.
 		 */
 		public ZWaveConfigurationParameterEvent(int nodeId, ConfigurationParameter parameter) {
-			super(nodeId, 1);
+			super(nodeId);
 			this.parameter = parameter;
 		}
 

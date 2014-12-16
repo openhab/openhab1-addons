@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>5082xx</Model>
+	<Label lang="en">Battery Powered Wall Controller MOVE</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8E</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Switching single-surface</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>44</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Doorbell function</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>52</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">LOWER shutter as long as button is pressed</Label>
+			<Help lang="en">Direction of movement changes after each switching process</Help>
+		</Parameter>
+		<Parameter>
+			<Index>54</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Move shutter single-surface</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>55</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Minimum>0</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">RAISE shutter as long as button is pressed</Label>
+			<Help lang="en"></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>12</Maximum>
+			<Label lang="en">Button</Label>
+		</Group>
+	</Associations>
+</Product>
+

@@ -20,10 +20,10 @@ import org.joda.time.base.AbstractInstant;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.persistence.FilterCriteria;
+import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
 import org.openhab.core.persistence.QueryablePersistenceService;
-import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Thomas.Eichstaedt-Engelen
  * @author Kai Kreuzer
  * @author Chris Jackson
+ * @author Gaël L'hopital
  * @since 1.0.0
  *
  */
@@ -459,13 +460,16 @@ public class PersistenceExtensions implements ManagedService {
 	 * @return the difference between now and then, null if not calculable
 	 */
 	static public DecimalType deltaSince(Item item, AbstractInstant timestamp, String serviceName) {
-		HistoricItem itemThen = historicState(item, timestamp);
-		DecimalType valueThen = (DecimalType) itemThen.getState();
-		DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);
 		DecimalType result = null;
-		if (( valueThen != null) && ( valueNow != null)) {
-			result = new DecimalType(valueNow.doubleValue() - valueThen.doubleValue());
-		};
+		HistoricItem itemThen = historicState(item, timestamp);
+		if (itemThen != null) {
+			DecimalType valueThen = (DecimalType) itemThen.getState();
+			DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);
+		
+			if (( valueThen != null) && ( valueNow != null)) {
+				result = new DecimalType(valueNow.doubleValue() - valueThen.doubleValue());
+			};
+		}
 		return result;
  	}
 	
@@ -498,16 +502,92 @@ public class PersistenceExtensions implements ManagedService {
 	 * 			null if not calculable
 	 */
 	static public DecimalType evolutionRate(Item item, AbstractInstant timestamp, String serviceName) {
-		HistoricItem itemThen = historicState(item, timestamp);
-		DecimalType valueThen = (DecimalType) itemThen.getState();
-		DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);
 		DecimalType result = null;
-		if (( valueThen != null) && ( valueNow != null)) {
-			result = new DecimalType(100 * (valueNow.doubleValue() - valueThen.doubleValue()) / valueThen.doubleValue());
-		};
+		HistoricItem itemThen = historicState(item, timestamp);
+		if (itemThen != null) {
+			DecimalType valueThen = (DecimalType) itemThen.getState();
+			DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);
+		
+			if (( valueThen != null) && ( valueNow != null)) {
+				result = new DecimalType(100 * (valueNow.doubleValue() - valueThen.doubleValue()) / valueThen.doubleValue());
+			};
+		}
 		return result;
  	}
 	
+	/**
+	 * Returns the previous state of a given <code>item</code>. 
+	 * 
+	 * @param item the item to get the previous state value for
+	 * @return the previous state
+	 */
+	static public HistoricItem previousState(Item item) {
+		return previousState(item, false);
+	}
+
+	/**
+	 * Returns the previous state of a given <code>item</code>. 
+	 * 
+	 * @param item the item to get the previous state value for
+	 * @param skipEqual if true, skips equal state values and searches the first state not equal the current state
+	 * @return the previous state
+	 */
+	static public HistoricItem previousState(Item item, boolean skipEqual) {
+		if (isDefaultServiceAvailable()) {
+			return previousState(item, skipEqual, defaultService);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns the previous state of a given <code>item</code>. 
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
+	 * 
+	 * @param item the item to get the previous state value for
+	 * @param skipEqual if true, skips equal state values and searches the first state not equal the current state
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the previous state
+	 */
+	static public HistoricItem previousState(Item item, boolean skipEqual, String serviceName) {
+		PersistenceService service = services.get(serviceName);
+		if (service instanceof QueryablePersistenceService) {
+			QueryablePersistenceService qService = (QueryablePersistenceService) service;
+			FilterCriteria filter = new FilterCriteria();
+			filter.setItemName(item.getName());
+			filter.setOrdering(Ordering.DESCENDING);
+
+			filter.setPageSize(skipEqual ? 1000 : 1);
+			int startPage = 0;
+			filter.setPageNumber(startPage);
+
+			Iterable<HistoricItem> items = qService.query(filter);
+			while (items != null) {
+				Iterator<HistoricItem> itemIterator = items.iterator();
+				int itemCount = 0;
+				while (itemIterator.hasNext()) {
+					HistoricItem historicItem = itemIterator.next(); 
+					itemCount++;
+					if (!skipEqual || (skipEqual && !historicItem.getState().equals(item.getState()))) {
+						return historicItem;
+					}
+				}
+				if (itemCount == filter.getPageSize()) {
+					filter.setPageNumber(++startPage);
+					items = qService.query(filter);
+				}
+				else {
+					items = null;
+				}
+			}
+			return null;
+
+		} else {
+			logger.warn("There is no queryable persistence service registered with the name '{}'", serviceName);
+			return null;
+		}
+	}
+
 	static private Iterable<HistoricItem> getAllStatesSince(Item item, AbstractInstant timestamp, String serviceName) {
 		PersistenceService service = services.get(serviceName);
 		if (service instanceof QueryablePersistenceService) {

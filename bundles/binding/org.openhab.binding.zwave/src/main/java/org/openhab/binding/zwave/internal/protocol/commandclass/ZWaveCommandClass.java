@@ -35,7 +35,9 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 public abstract class ZWaveCommandClass {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveCommandClass.class);
+
 	private static final int MAX_SUPPORTED_VERSION = 1;
 	private static final int SIZE_MASK = 0x07;
 //	private static final SCALE_MASK = 0x18; // unused
@@ -47,7 +49,7 @@ public abstract class ZWaveCommandClass {
 	private ZWaveNode node;
 	@XStreamOmitField
 	private ZWaveController controller;
-	@XStreamOmitField
+
 	private ZWaveEndpoint endpoint;
 	
 	private int version = 0;

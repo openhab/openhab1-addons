@@ -253,7 +253,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// fully optimize the network, this is required
 		for (ZWaveNode node : zController.getNodes()) {
 			// Ignore devices that haven't initialized yet - unless they are
-			// DEAD.
+			// DEAD or FAILED.
 			if (node.isInitializationComplete() == false && node.isDead() == false) {
 				logger.debug("NODE {}: Initialisation NOT yet complete. Skipping heal.", node.getNodeId());
 				continue;
@@ -299,7 +299,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 					continue;
 				if (oldestNode == null) {
 					oldestNode = node;
-				} else if (node.getLastUpdated().getTime() < oldestNode.getLastUpdated().getTime()) {
+				} else if (node.getLastSent().getTime() < oldestNode.getLastSent().getTime()) {
 					oldestNode = node;
 				}
 			}
@@ -612,16 +612,22 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 			switch (statusEvent.getState()) {
 			case Dead:
+			case Failed:
 				ZWaveNode node = zController.getNode(statusEvent.getNodeId());
 				if (node == null) {
 					logger.error("NODE {}: Status event received, but node not found.", statusEvent.getNodeId());
 					return;
 				}
 
+				// If this is a DEAD notification, then ask the controller if it's really FAILED
+				if(statusEvent.getState() == ZWaveNodeStatusEvent.State.Dead) {
+					zController.requestIsFailedNode(node.getNodeId());
+				}
+
 				// The node is dead, but we may have already started a Heal
 				// If so, don't start it again!
 				if (!isNodeHealing(node.getNodeId())) {
-					logger.debug("NODE {}: DEAD node - requesting network heal.", node.getNodeId());
+					logger.debug("NODE {}: {} node - requesting network heal.", node.getNodeId(), statusEvent.getState());
 
 					healNode(node.getNodeId());
 
@@ -633,7 +639,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 					node.resetResendCount();
 				} else {
-					logger.debug("NODE {}: DEAD node - already healing.", node.getNodeId());
+					logger.debug("NODE {}: {} node - already healing.", node.getNodeId(), statusEvent.getState());
 				}
 				break;
 			case Alive:

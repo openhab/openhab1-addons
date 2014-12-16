@@ -39,6 +39,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("associationCommandClass")
 public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveAssociationCommandClass.class);
 
 	private static final int ASSOCIATIONCMD_SET = 0x01;
@@ -218,7 +219,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 	 */
 	protected void processGroupingsReport(SerialMessage serialMessage, int offset) {
 		maxGroups = serialMessage.getMessagePayloadByte(offset + 1);
-		logger.debug("NODE {} processGroupingsReport number of groups {}", getNode(), maxGroups);
+		logger.debug("NODE {} processGroupingsReport number of groups {}", getNode().getNodeId(), maxGroups);
 		//Start the process to query these nodes
 		updateAssociationsNode = 1;
 		configAssociations.clear();
@@ -364,7 +365,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 		 * @param nodeId the nodeId of the event. Must be set to the controller node.
 		 */
 		public ZWaveAssociationEvent(int nodeId, int group) {
-			super(nodeId, 1);
+			super(nodeId);
 			
 			this.group = group;
 		}

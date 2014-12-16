@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>WTRFID</Model>
+	<Label lang="en">Mini Keypad RFID/Z-Wave</Label>
+	<CommandClasses>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x63</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>-1</Default>
+			<Size>1</Size>
+			<Label lang="en">Set to Default</Label>
+			<Help lang="en"><![CDATA[Set all configuration values to default values (factory settings).]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>15</Default>
+			<Size>1</Size>
+			<Label lang="en">Feedback time</Label>
+			<Help lang="en"><![CDATA[To configure the time the beep is automatically turned off in seconds.<BR/>
+						0	   ->  	disabled<BR/>
+						255	   ->  	endless]]></Help>		
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Feedback timeout</Label>
+			<Help lang="en"><![CDATA[To configure the timeout to wait for a WAKEUP_NO_MORE_INFORMATION before the error beep is automatically sound. The error beeps are fixed 8 beeps shortly after each other.<BR/>
+						0	   ->  	disabled]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>2</Default>
+			<Size>1</Size>
+			<Label lang="en">Feedback beeps per Second</Label>
+			<Help lang="en"><![CDATA[To configure the number of beeps per second. Every beep is fixed about 10ms.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>byte</Type>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Operating mode</Label>
+			<Help lang="en"><![CDATA[To configure the operating mode. If any mode other then 3, that value will be reported after a get but will be handled in SW as mode 1.]]></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Group1</Label>
+			<Help lang="en"><![CDATA[]]></Help>
+		</Group>
+	</Associations>
+</Product>

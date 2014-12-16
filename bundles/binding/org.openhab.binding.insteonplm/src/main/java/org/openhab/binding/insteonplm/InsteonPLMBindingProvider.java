@@ -8,9 +8,7 @@
  */
 package org.openhab.binding.insteonplm;
 
-import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
 import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
-import org.openhab.core.items.Item;
 
 /**
  * Binding provider interface. Defines the methods to interact with the binding provider.
@@ -26,28 +24,4 @@ public interface InsteonPLMBindingProvider extends AutoUpdateBindingProvider {
 	 * @return the binding configuration.
 	 */
 	public InsteonPLMBindingConfig getInsteonPLMBindingConfig(String itemName);
-	
-	/**
-	 * Find insteon address of a given item
-	 * @param itemName the name of the item.
-	 * @return the insteon address of the item or null if not found
-	 */
-
-	public InsteonAddress getAddress(String itemName);
-
-	/**
-	 * Find feature string for a given item
-	 * @param itemName the name of the item.
-	 * @return the feature of the insteon device, or null if not found
-	 */
-
-	public String getFeature(String itemName);
-	
-	/**
-	 * Returns the {@link Item} with the specified item name. Returns null
-	 * if the item was not found.
-	 * @param itemName the name of the item.
-	 * @return the item.
-	 */
-	public Item getItem(String itemName);
 }

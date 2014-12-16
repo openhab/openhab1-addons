@@ -56,6 +56,7 @@ public class ModelRepositoryImpl implements ModelRepository {
 					return resource.getContents().get(0);
 				} else {
 					logger.warn("Configuration model '{}' is either empty or cannot be parsed correctly!", name);
+					logger.debug("Errors reported for '{}': {}", name, resource.getErrors());
 					resourceSet.getResources().remove(resource);
 					return null;
 				}

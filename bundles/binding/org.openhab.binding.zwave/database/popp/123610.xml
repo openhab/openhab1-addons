@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>123610</Model>
+	<Label lang="en">Wall Plug Switch</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8e</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Set LED indication mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">On when switch on</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">On when switch off</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Operated by command</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>integer</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatic switch off time</Label>			
+			<Help lang="en">If not zero, automatically switch off after a user defined time (in seconds)</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">RF Off command</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch OFF</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch ON</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch on if load is off else switch off</Label>
+			</Item>
+			<Help lang="en">Defines how to interpret RF Off command. Can be used in conjunction with Auto Off function: Ignore - to switch on the light by motion detectors and switch it off after some amount of time: in case of multiple motion detectors each would try to switch the light off that would break logics; Switch on - to switch on the light on both On and Off paddle press on the remote and switch it off after some amount of time. Button off click will still work (if button operations are not disabled).</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Restore switch state after power cycle</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No - turn OFF</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en">Defines if the switch should restore switch state to the last state prior to device power off (power cycle).</Help>
+		</Parameter>
+		</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Switch State</Label>
+		</Group>
+	</Associations>
+</Product>
+

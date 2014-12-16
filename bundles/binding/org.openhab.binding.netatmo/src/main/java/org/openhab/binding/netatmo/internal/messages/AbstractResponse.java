@@ -17,8 +17,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author Andreas Brenk
  * @since 1.4.0
  */
-public abstract class AbstractResponse extends AbstractMessage implements
-		Response {
+public abstract class AbstractResponse extends AbstractMessage implements Response {
 
 	private NetatmoError error;
 
@@ -43,4 +42,5 @@ public abstract class AbstractResponse extends AbstractMessage implements
 
 		return builder.toString();
 	}
+	
 }

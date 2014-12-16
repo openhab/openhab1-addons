@@ -51,11 +51,12 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 	
 	private static final Logger logger = LoggerFactory.getLogger(ModbusBinding.class);
 
+	private static final String UDP_PREFIX = "udp";
 	private static final String TCP_PREFIX = "tcp";
 	private static final String SERIAL_PREFIX = "serial";
 
 	private static final Pattern EXTRACT_MODBUS_CONFIG_PATTERN =
-		Pattern.compile("^("+TCP_PREFIX+"|"+SERIAL_PREFIX+"|)\\.(.*?)\\.(connection|id|pollInterval|start|length|type|valuetype)$");
+		Pattern.compile("^("+TCP_PREFIX+"|"+UDP_PREFIX+"|"+SERIAL_PREFIX+"|)\\.(.*?)\\.(connection|id|pollInterval|start|length|type|valuetype)$");
 
 	/** Stores instances of all the slaves defined in cfg file */
 	private static Map<String, ModbusSlave> modbusSlaves = new ConcurrentHashMap<String, ModbusSlave>();
@@ -224,7 +225,6 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		// remove all known items if configuration changed
 		modbusSlaves.clear();
-
 		if (config != null) {
 			Enumeration<String> keys = config.keys();
 			while (keys.hasMoreElements()) {
@@ -260,6 +260,8 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 				if (modbusSlave == null) {
 					if (matcher.group(1).equals(TCP_PREFIX)) {
 						modbusSlave = new ModbusTcpSlave(slave);
+                                        } else if (matcher.group(1).equals(UDP_PREFIX)) {
+						modbusSlave = new ModbusUdpSlave(slave);
 					} else if (matcher.group(1).equals(SERIAL_PREFIX)) {
 						modbusSlave = new ModbusSerialSlave(slave);
 					} else {
@@ -273,15 +275,24 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 				
 				if ("connection".equals(configKey)) {
 					String[] chunks = value.split(":");
-					if (modbusSlave instanceof ModbusTcpSlave) {
-						((ModbusTcpSlave) modbusSlave).setHost(chunks[0]);
+					if (modbusSlave instanceof ModbusIPSlave) {
+						((ModbusIPSlave) modbusSlave).setHost(chunks[0]);
 						if (chunks.length == 2) {
-							((ModbusTcpSlave) modbusSlave).setPort(Integer.valueOf(chunks[1]));
+							((ModbusIPSlave) modbusSlave).setPort(Integer.valueOf(chunks[1]));
 						}
 					} else if (modbusSlave instanceof ModbusSerialSlave) {
 						((ModbusSerialSlave) modbusSlave).setPort(chunks[0]);
-						if (chunks.length == 2) {
+						if (chunks.length >= 2) {
 							((ModbusSerialSlave) modbusSlave).setBaud(Integer.valueOf(chunks[1]));
+						}
+						if (chunks.length >= 3) {
+							((ModbusSerialSlave) modbusSlave).setDatabits(Integer.valueOf(chunks[2]));
+						}
+						if (chunks.length >= 4) {
+							((ModbusSerialSlave) modbusSlave).setParity(chunks[3]);
+						}
+						if (chunks.length == 5) {
+							((ModbusSerialSlave) modbusSlave).setStopbits(Integer.valueOf(chunks[4]));
 						}
 					}
 				} else if ("start".equals(configKey)) {

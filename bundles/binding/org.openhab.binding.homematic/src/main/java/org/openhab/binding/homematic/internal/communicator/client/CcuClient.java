@@ -126,8 +126,10 @@ public class CcuClient extends BaseHomematicClient {
 		Map<String, HmRssiInfo> rssiList = rpcClient.getRssiInfo(HmInterface.RF);
 		for (HmDevice device : devices) {
 			addBatteryInfo(device);
+			boolean deviceHasRssiDatapoint = false;
 
 			for (HmChannel channel : device.getChannels()) {
+				boolean isChannelZero = "0".equals(channel.getNumber());
 				for (HmDatapoint dp : channel.getDatapoints()) {
 					DatapointConfig bindingConfig = new DatapointConfig(device.getAddress(), channel.getNumber(),
 							dp.getName());
@@ -135,14 +137,40 @@ public class CcuClient extends BaseHomematicClient {
 					if (rssiInfo != null) {
 						if ("RSSI_DEVICE".equals(bindingConfig.getParameter())) {
 							dp.setValue(rssiInfo.getDevice());
+							deviceHasRssiDatapoint = true;
 						} else if ("RSSI_PEER".equals(bindingConfig.getParameter())) {
 							dp.setValue(rssiInfo.getPeer());
+							deviceHasRssiDatapoint = true;
 						}
 					}
 					callback.iterate(bindingConfig, dp);
 				}
+
+				if (isChannelZero && !deviceHasRssiDatapoint) {
+					HmRssiInfo rssiInfo = rssiList.get(device.getAddress());
+					if (rssiInfo != null) {
+						logger.debug("Adding missing RSSI datapoints to device {} with address {}", device.getType(), device.getAddress());
+						addRssiDatapoint(channel, "RSSI_DEVICE", rssiInfo.getDevice(), callback);
+						addRssiDatapoint(channel, "RSSI_PEER", rssiInfo.getPeer(), callback);
+					}
+				}
 			}
 		}
+	}
+
+	/**
+	 * Generates a missing RSSI datapoint, workaround for a CCU bug.
+	 */
+	private void addRssiDatapoint(HmChannel channel, String name, Object value, HmValueItemIteratorCallback callback) {
+		HmDatapoint dp = new HmDatapoint();
+		dp.setName(name);
+		dp.setValueType(8);
+		dp.setWriteable(false);
+		dp.setValue(value);
+		channel.addDatapoint(dp);
+		DatapointConfig bindingConfig = new DatapointConfig(channel.getDevice().getAddress(), channel.getNumber(),
+				dp.getName());
+		callback.iterate(bindingConfig, dp);
 	}
 
 	/**

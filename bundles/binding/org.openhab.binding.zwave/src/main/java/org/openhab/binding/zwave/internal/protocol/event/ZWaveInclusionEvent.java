@@ -22,13 +22,13 @@ public class ZWaveInclusionEvent extends ZWaveEvent {
 	 * @param nodeId the nodeId of the event.
 	 */
 	public ZWaveInclusionEvent(Type type, int nodeId) {
-		super(nodeId, 1);
+		super(nodeId);
 		
 		this.type = type;
 	}
 
 	public ZWaveInclusionEvent(Type type) {
-		super(255, 1);
+		super(255);
 		
 		this.type = type;
 	}

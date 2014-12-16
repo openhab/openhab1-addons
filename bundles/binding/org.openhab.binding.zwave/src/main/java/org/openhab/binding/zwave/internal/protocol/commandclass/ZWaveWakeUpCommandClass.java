@@ -41,6 +41,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("WakeUpCommandClass")
 public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveCommandClassInitialization, ZWaveEventListener {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveWakeUpCommandClass.class);
 	private static final int MAX_SUPPORTED_VERSION = 2;
 
@@ -183,7 +184,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 
 				// if this node has not gone through it's query stages yet, and there
 				// are no initialization packets on the wake-up queue, restart initialization.
-				if (!this.initializationComplete && (this.wakeUpQueue.isEmpty() || this.getNode().getNodeStage() == NodeStage.DEAD)) {
+				if (!this.initializationComplete && (this.wakeUpQueue.isEmpty() || this.getNode().isDead() == true)) {
 					logger.info("NODE {}: Got Wake Up Notification from node, continuing initialization.", this.getNode().getNodeId());
 					
 					this.getNode().setNodeStage(NodeStage.WAKEUP);

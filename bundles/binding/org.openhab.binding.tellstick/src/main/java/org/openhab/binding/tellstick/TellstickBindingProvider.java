@@ -38,7 +38,7 @@ public interface TellstickBindingProvider extends BindingProvider {
 	 * @param valueSel
 	 * @return The config.
 	 */
-	TellstickBindingConfig getTellstickBindingConfig(int id, TellstickValueSelector valueSel);
+	TellstickBindingConfig getTellstickBindingConfig(int id, TellstickValueSelector valueSel, String protocol);
 
 	/**
 	 * Get a device given its name.
