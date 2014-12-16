@@ -50,8 +50,8 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 	private static final long LOCK_TIMEOUT = 10;
 	private static final TimeUnit LOCK_TIMEOUT_UNITS = TimeUnit.SECONDS;
 	private static final String PROP_DEBOUNCE_INTERVAL = "debounce";
+	private static final String PROP_FORCE = "force";
 	private static final String PROP_PINMAP = "pinmap";
-	private static final String PINMAP_FIELD_SEPARATOR = "\t";
 	private static final String PINMAP_DEFAULT_VALUE = "none";
 
 	private static final Logger logger = LoggerFactory.getLogger(GPIOLinux.class);
@@ -61,6 +61,9 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 
 	/** Default debounce interval in milliseconds */
 	private volatile long defaultDebounceInterval = 0;
+
+	/** Forcibly use the pins after unclean shutdown */
+	private volatile boolean force = false;
 
 	/**
 	 * Pinmap file name without extension part, in case no pinmap file is
@@ -113,9 +116,9 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 						sysFS = propSysFS;
 					} else {
 						logger.error("Configured mount point is invalid, '" + SYSFS_VFSTYPE + "' isn't mounted at '"
-								+ propSysFS + "'");
+								+ propSysFS + "'.");
 						throw new ConfigurationException(SYSFS_VFSTYPE, "Configured mount point is invalid, '"
-								+ SYSFS_VFSTYPE + "' isn't mounted at '" + propSysFS + "'");
+								+ SYSFS_VFSTYPE + "' isn't mounted at '" + propSysFS + "'.");
 					}
 				} catch (IOException e) {
 					logger.error("Checking whether pseudo file system '" + SYSFS_VFSTYPE + "' is mounted or not failed. "
@@ -131,15 +134,20 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 					if (debounceInterval >= 0) {
 						defaultDebounceInterval = debounceInterval;
 					} else {
-						logger.error("Configured " + PROP_DEBOUNCE_INTERVAL + " is invalid, must not be negative value");
+						logger.error("Configured " + PROP_DEBOUNCE_INTERVAL + " is invalid, must not be negative value.");
 						throw new ConfigurationException(PROP_DEBOUNCE_INTERVAL, "Configured " + PROP_DEBOUNCE_INTERVAL
-								+ " is invalid, must not be negative value");	
+								+ " is invalid, must not be negative value.");	
 					}
 				} catch (NumberFormatException e) {
-					logger.error("Configured " + PROP_DEBOUNCE_INTERVAL + " is invalid, must be numeric value");
+					logger.error("Configured " + PROP_DEBOUNCE_INTERVAL + " is invalid, must be numeric value.");
 					throw new ConfigurationException(PROP_DEBOUNCE_INTERVAL, "Configured " + PROP_DEBOUNCE_INTERVAL
-							+ " is invalid, must be numeric value");
+							+ " is invalid, must be numeric value.");
 				}
+			}
+
+			String propForce = (String) properties.get(PROP_FORCE);
+			if (propForce != null) {
+				force = Boolean.parseBoolean(propForce);
 			}
 
 			try {
@@ -246,32 +254,28 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 
 			lineNumber++;
 
-			if (pinMapRecord.isEmpty() || pinMapRecord.startsWith(PINMAP_COMMENT)) {
+			if (pinMapRecord.trim().isEmpty() || pinMapRecord.startsWith(PINMAP_COMMENT)) {
 				continue;
 			}
 
-			String[] pinMapRecordFields = pinMapRecord.split(PINMAP_FIELD_SEPARATOR);
+			String[] pinMapRecordFields = pinMapRecord.trim().split("\\s+");
 
 			if (pinMapRecordFields.length < 2 || pinMapRecordFields.length > 3) {
 				throw new IOException("Line " + lineNumber + ": Unsupported number of fields - " + pinMapRecordFields.length);
 			}
 
-			if (pinMapRecordFields[0].isEmpty() || pinMapRecordFields[1].isEmpty()) {
-				throw new IOException("Line " + lineNumber + ": Pin name and/or number are missing");
-			}
-
-			if (pinMapRecordFields[0].contains(" ") || pinMapRecordFields[0].contains(":") || pinMapRecordFields[0].contains("\"")) {
-				throw new IOException("Line " + lineNumber + ": Pin name contains illegal characters as space and/or ':'");
+			if (pinMapRecordFields[0].contains(":") || pinMapRecordFields[0].contains("\"")) {
+				throw new IOException("Line " + lineNumber + ": Pin name contains illegal characters as double quotes and/or colon(s).");
 			}
 
 			try {
 				pinNumber = Integer.parseInt(pinMapRecordFields[1]);
 			} catch (NumberFormatException e) {
-				throw new IOException("Line " + lineNumber + ": The value in pin number field is not numeric");
+				throw new IOException("Line " + lineNumber + ": The value in pin number field is not numeric.");
 			}
 
 			if (newPinNameNumberMap.containsKey(pinMapRecordFields[0]) || newPinNameNumberMap.containsValue(pinNumber)) {
-				throw new IOException("Line " + lineNumber + ": Duplicate pin name and/or number");
+				throw new IOException("Line " + lineNumber + ": Duplicate pin name and/or number.");
 			}
 
 			newPinNameNumberMap.put(pinMapRecordFields[0], pinNumber);
@@ -279,7 +283,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 			if (pinMapRecordFields.length == 3) {
 				String sysfsSuffix = pinMapRecordFields[2].replace("${pinName}", pinMapRecordFields[0]).replace("${pinNumber}", pinMapRecordFields[1]);
 				if (newPinNumberSysfsSuffixMap.containsValue(sysfsSuffix)) {
-					throw new IOException("Line " + lineNumber + ": Duplicate sysfs suffix");
+					throw new IOException("Line " + lineNumber + ": Duplicate sysfs suffix.");
 				}
 				newPinNumberSysfsSuffixMap.put(pinNumber, sysfsSuffix);
 			}
@@ -302,7 +306,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 
 		/* Variable 'sysFS' may be null if mandatory pseudo file system 'sysfs' isn't mounted or mount point can't be determined. */
 		if (sysFS == null) {
-			throw new IOException("Mount point for '" + SYSFS_VFSTYPE + "' isn't configured and can't be determined");
+			throw new IOException("Mount point for '" + SYSFS_VFSTYPE + "' isn't configured and can't be determined.");
 		}
 
 		/* Sanity check, empty pin name is illegal. */
@@ -322,7 +326,18 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 					}
 
 					/* Exports the pin to user space. */
-					Files.write(Paths.get(SYSFS_CLASS_GPIO + "export"), pinNumber.toString().getBytes());
+					try {
+						Files.write(Paths.get(SYSFS_CLASS_GPIO + "export"), pinNumber.toString().getBytes());
+					} catch (IOException e){
+						if (force) {
+							/* Forcibly use the pin as unexport it and export it again */
+							Files.write(Paths.get(SYSFS_CLASS_GPIO + "unexport"), pinNumber.toString().getBytes());
+							Files.write(Paths.get(SYSFS_CLASS_GPIO + "export"), pinNumber.toString().getBytes());
+							logger.warn("The control on GPIO pin " + pinName + "(" + pinNumber + ") was forcibly acquired.");
+						} else {
+							throw new IOException(e);							
+						}
+					}
 					
 					try {
 						if (pinMapLock.readLock().tryLock(LOCK_TIMEOUT, LOCK_TIMEOUT_UNITS)) {
@@ -376,7 +391,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 					/* Unregister the pin */
 					Integer pinNumber = (Integer) gpioRegistry.remove(pin);
 					if (pinNumber == null) {
-						throw new IllegalArgumentException("The pin object isn't registered");
+						throw new IllegalArgumentException("The pin object isn't registered.");
 					}
 
 					((GPIOPinLinux) pin).stopEventProcessing();
@@ -392,7 +407,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 				throw new IOException("Write GPIO lock can't be aquired for " + LOCK_TIMEOUT + " " + LOCK_TIMEOUT_UNITS.toString());
 			}
 		} catch (InterruptedException e) {
-			throw new IOException("The thread was interrupted while waiting for write GPIO lock");
+			throw new IOException("The thread was interrupted while waiting for write GPIO lock.");
 		}
 	}
 
@@ -459,7 +474,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 			if (console.nextArgument() != null) {
 				console.print("Error: Extra argument(s).\n\n" + getHelp());
 			} else {
-				console.println("debounce : " + defaultDebounceInterval + "\n  pinmap : " + pinMap + "\n   sysfs : " + sysFS);
+				console.println("debounce : " + defaultDebounceInterval + "\nforce    : " + force + "\npinmap   : " + pinMap + "\nsysfs    : " + sysFS);
 			}
 		} else if (argument.equals("pins")) {
 
@@ -532,16 +547,16 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 						if (gpioRegistry.containsValue(pinNumber)) {
 							GPIOPin pin = (GPIOPin) gpioRegistry.getKey(pinNumber);
 							try {
-								buffer.append("        number : " + pin.getPinNumber() + "\n");
-								buffer.append("          name : " + pin.getPinName() + "\n");
-								buffer.append("     activelow : ");
+								buffer.append("number         : " + pin.getPinNumber() + "\n");
+								buffer.append("name           : " + pin.getPinName() + "\n");
+								buffer.append("activelow      : ");
 								if (pin.getActiveLow() == GPIOPin.ACTIVELOW_DISABLED) {
 									buffer.append("disabled\n");
 								} else {
 									buffer.append("enabled\n");
 								}
-								buffer.append("      debounce : " + pin.getDebounceInterval() + " ms\n");
-								buffer.append("     direction : ");
+								buffer.append("debounce       : " + pin.getDebounceInterval() + " ms\n");
+								buffer.append("direction      : ");
 								switch (pin.getDirection()) {
 									case GPIOPin.DIRECTION_IN:
 										buffer.append("in\n");
@@ -571,7 +586,7 @@ public class GPIOLinux implements GPIO, ManagedService, CommandProvider {
 										buffer.append("rising\n");
 										break;
 								}
-								buffer.append("         value : ");
+								buffer.append("value          : ");
 								if (pin.getValue() == GPIOPin.VALUE_HIGH) {
 									buffer.append("high\n");									
 								} else {

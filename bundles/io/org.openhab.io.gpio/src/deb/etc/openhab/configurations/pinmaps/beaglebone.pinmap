@@ -1,4 +1,9 @@
 # Beaglebone and Beaglebone Black boards
+#
+# Format for the name is EXPANSION_HEADER.PIN_NUMBER
+#   where
+# EXPANSION_HEADER is either "P8" or "P9"
+# PIN_NUMBER is the consecutive pin's number in that header
 
 #Name	Number
 P8.3	38
