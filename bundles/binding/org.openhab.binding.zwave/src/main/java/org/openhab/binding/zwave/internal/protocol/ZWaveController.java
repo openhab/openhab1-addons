@@ -873,6 +873,10 @@ public class ZWaveController {
 	 */
 	public void sendData(SerialMessage serialMessage)
 	{
+		if(serialMessage == null) {
+    		logger.error("Null message for sendData");
+			return;
+		}
     	if (serialMessage.getMessageClass() != SerialMessageClass.SendData) {
     		logger.error(String.format("Invalid message class %s (0x%02X) for sendData", serialMessage.getMessageClass().getLabel(), serialMessage.getMessageClass().getKey()));
     		return;
