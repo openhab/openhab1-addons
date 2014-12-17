@@ -28,6 +28,7 @@ import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.items.ItemRegistryChangeListener;
 import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
@@ -193,6 +194,9 @@ public class ItemUIRegistryImpl implements ItemUIRegistry {
 			return SitemapFactory.eINSTANCE.createSwitch();
 		}
 		if (itemType.equals(StringItem.class)) {
+			return SitemapFactory.eINSTANCE.createText();
+		}
+		if (itemType.equals(DateTimeItem.class)) {
 			return SitemapFactory.eINSTANCE.createText();
 		}
 		if (itemType.equals(DimmerItem.class)) {
