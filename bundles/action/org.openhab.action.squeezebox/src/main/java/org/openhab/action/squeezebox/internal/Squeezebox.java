@@ -342,6 +342,18 @@ public class Squeezebox {
 		return true;
 	}
 	
+	@ActionDoc(text = "Issues an arbitrary command to a player", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+	public static boolean squeezeboxPlayerCommand(
+			@ParamDoc(name = "playerId", text = "The Squeezebox to send the URL to") String playerId,
+			@ParamDoc(name = "command", text = "A command to send to the player") String command) {
+	    	SqueezePlayer player = getPlayer(playerId);
+
+	    	if (player == null) return false;
+
+		squeezeServer.playerCommand(playerId, command);
+		return true;
+	}
+	
 	private static SqueezePlayer getPlayer(String playerId) {
 		if (StringUtils.isEmpty(playerId))
 			throw new NullArgumentException("playerId");
