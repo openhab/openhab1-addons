@@ -25,6 +25,7 @@ import org.openhab.core.types.State;
  * API.
  * 
  * @author John Cocula
+ * @since 1.7.0
  */
 public class EcobeeItemMapping {
 	private interface Mapper {

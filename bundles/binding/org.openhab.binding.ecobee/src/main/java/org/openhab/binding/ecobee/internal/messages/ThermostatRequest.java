@@ -22,6 +22,7 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
  * Queries the Ecobee API for thermostats.
  * 
  * @author John Cocula
+ * @since 1.7.0
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostats.shtml">GET Thermostats</a>
  */
 public class ThermostatRequest extends AbstractRequest {

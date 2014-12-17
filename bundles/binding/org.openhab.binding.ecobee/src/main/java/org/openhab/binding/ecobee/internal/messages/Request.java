@@ -13,6 +13,7 @@ package org.openhab.binding.ecobee.internal.messages;
  * 
  * @author Andreas Brenk
  * @author John Cocula
+ * @since 1.7.0
  */
 public interface Request {
 

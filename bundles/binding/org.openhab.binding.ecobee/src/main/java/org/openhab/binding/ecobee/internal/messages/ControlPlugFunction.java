@@ -21,6 +21,7 @@ import org.codehaus.jackson.annotate.JsonValue;
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/functions/ControlPlug.shtml">ControlPlug</a>
  * @author John Cocula
  * @author Ecobee
+ * @since 1.7.0
  */
 public final class ControlPlugFunction extends AbstractFunction {
 

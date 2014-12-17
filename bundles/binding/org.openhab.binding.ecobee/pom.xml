@@ -32,11 +32,4 @@
 		</plugins>
 	</build>
 
-	<dependencies>
-		<dependency>
-			<groupId>commons-jxpath</groupId>
-			<artifactId>commons-jxpath</artifactId>
-			<version>1.4-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
 </project>

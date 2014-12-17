@@ -27,6 +27,7 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/pin-api-authorization.shtml">PIN Authorization Strategy</a>
  * @author John Cocula
  * @author Ecobee
+ * @since 1.7.0
  */
 public class AuthorizeRequest extends AbstractRequest {
 

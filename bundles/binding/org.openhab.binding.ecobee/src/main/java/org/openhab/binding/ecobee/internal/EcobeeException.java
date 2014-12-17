@@ -10,6 +10,7 @@ package org.openhab.binding.ecobee.internal;
 
 /**
  * @author John Cocula
+ * @since 1.7.0
  */
 public class EcobeeException extends RuntimeException {
 

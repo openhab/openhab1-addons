@@ -30,6 +30,7 @@ import java.util.Date;
  * 
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/functions/SetHold.shtml">SetHold</a>
  * @author John Cocula
+ * @since 1.7.0
  */
 public final class SetHoldFunction extends AbstractFunction {
 

@@ -26,6 +26,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/pin-api-authorization.shtml">PIN Authorization Strategy</a>
  * @author John Cocula
  * @author Ecobee
+ * @since 1.7.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthorizeResponse extends AbstractAuthResponse {

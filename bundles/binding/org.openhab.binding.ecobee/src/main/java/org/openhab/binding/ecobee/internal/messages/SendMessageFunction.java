@@ -14,6 +14,7 @@ package org.openhab.binding.ecobee.internal.messages;
  * 
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/functions/SendMessage.shtml">SendMessage</a>
  * @author John Cocula
+ * @since 1.7.0
  */
 public final class SendMessageFunction extends AbstractFunction {
 

@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
  * XBMC.
  * 
  * @author John Cocula
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 		implements ManagedService {
@@ -377,10 +377,9 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.trace("internalReceiveCommand() is called!");
+		logger.trace("internalReceiveCommand(item='{}', command='{}')",
+				itemName, command);
+		commandEcobee(itemName, command);
 	}
 
 	/**
@@ -392,8 +391,110 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 		logger.trace("Received update (item='{}', state='{}')", itemName,
 				newState.toString());
 		if (!isEcho(itemName, newState)) {
-			writeToEcobee(itemName, newState);
+			updateEcobee(itemName, newState);
 		}
+	}
+
+	private interface EcobeeCommand {
+
+	}
+
+	static final Map<String, EcobeeCommand> ECOBEE_COMMANDS = new HashMap<String, EcobeeCommand>();
+
+	static {
+		ECOBEE_COMMANDS.put("sendMessage", new EcobeeCommand() {
+
+		});
+	}
+
+	/**
+	 * Perform the given {@code command} against all targets referenced in
+	 * {@code itemName}.
+	 * 
+	 * @param command
+	 *            the command to execute
+	 * @param the
+	 *            target(s) against which to execute this command
+	 */
+	private void commandEcobee(final String itemName, final Command command) {
+
+		// Find the first binding provider for this itemName.
+		EcobeeBindingProvider provider = null;
+		String selectionMatch = null;
+		for (EcobeeBindingProvider p : this.providers) {
+			selectionMatch = p.getThermostatIdentifier(itemName);
+			if (selectionMatch != null) {
+				provider = p;
+				break;
+			}
+		}
+
+		if (provider == null) {
+			logger.warn(
+					"no matching binding provider found [itemName={}, command={}]",
+					itemName, command);
+			return;
+		} else {
+			final Selection selection = new Selection(selectionMatch);
+			List<AbstractFunction> functions = new ArrayList<AbstractFunction>();
+			String property = provider.getProperty(itemName);
+
+			try {
+				final Thermostat thermostat = null;
+
+				// FIXME: figure out type conversions
+				EcobeeCommand cmd = ECOBEE_COMMANDS.get(property);
+
+				OAuthCredentials oauthCredentials = getOAuthCredentials(provider
+						.getUserid(itemName));
+
+				if (oauthCredentials == null) {
+					logger.warn(
+							"Unable to locate credentials for item {}; aborting command.",
+							itemName);
+					return;
+				}
+
+				if (oauthCredentials.noAccessToken()) {
+					if (!oauthCredentials.refreshTokens()) {
+						logger.warn("Sending command skipped.");
+						return;
+					}
+				}
+
+				UpdateThermostatRequest request = new UpdateThermostatRequest(
+						oauthCredentials.accessToken, selection, functions,
+						null);
+				ApiResponse response = request.execute();
+				if (response.isError()) {
+					final Status status = response.getStatus();
+					if (status.isAccessTokenExpired()) {
+						if (oauthCredentials.refreshTokens()) {
+							commandEcobee(itemName, command);
+						}
+					} else {
+						logger.error(
+								"Error sending thermostat function(s): {}",
+								response);
+					}
+				}
+			} catch (Exception e) {
+				logger.error("Unable to send thermostat function(s)", e);
+			}
+		}
+
+		// acknowledge
+		// controlPlug
+		// createVacation
+		// deleteVacation
+		// resumeProgram
+		// sendMessage
+		// setHold @FIXME how?
+		// incHeatSetpoint
+		// decHeatSetpoint
+		// incCoolSetpoint
+		// decCoolSetpoint
+
 	}
 
 	private boolean isEcho(String itemName, State state) {
@@ -415,7 +516,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 	 * @param itemName
 	 * @param newState
 	 */
-	private void writeToEcobee(String itemName, State newState) {
+	private void updateEcobee(final String itemName, final State newState) {
 
 		// Find the first binding provider for this itemName.
 		EcobeeBindingProvider provider = null;
@@ -460,7 +561,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 
 				if (oauthCredentials.noAccessToken()) {
 					if (!oauthCredentials.refreshTokens()) {
-						logger.warn("Sending updated skipped.");
+						logger.warn("Sending update skipped.");
 						return;
 					}
 				}
@@ -472,7 +573,9 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 				if (response.isError()) {
 					final Status status = response.getStatus();
 					if (status.isAccessTokenExpired()) {
-						oauthCredentials.refreshTokens();
+						if (oauthCredentials.refreshTokens()) {
+							updateEcobee(itemName, newState);
+						}
 					} else {
 						logger.error("Error updating thermostat(s): {}",
 								response);
@@ -764,7 +867,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 	 * 
 	 * @author Thomas.Eichstaedt-Engelen
 	 * @author John Cocula
-	 * @since 1.6.0
+	 * @since 1.7.0
 	 */
 	static class OAuthCredentials {
 

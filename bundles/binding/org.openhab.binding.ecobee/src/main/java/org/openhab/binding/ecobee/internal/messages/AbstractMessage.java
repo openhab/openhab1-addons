@@ -16,7 +16,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * Base class for all messages.
  * 
  * @author John Cocula
- * @author Andreas Brenk
+ * @since 1.7.0
  */
 public class AbstractMessage {
 

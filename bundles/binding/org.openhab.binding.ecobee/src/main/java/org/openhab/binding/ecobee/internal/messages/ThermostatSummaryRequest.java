@@ -36,6 +36,7 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostat-summary.shtml">GET Thermostat Summary (Polling)</a>
  * @author John Cocula
  * @author Ecobee
+ * @since 1.7.0
  */
 public class ThermostatSummaryRequest extends AbstractRequest {
 

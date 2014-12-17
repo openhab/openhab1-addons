@@ -64,6 +64,7 @@ import org.codehaus.jackson.annotate.JsonValue;
  *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Selection.shtml">Selection</a>
  * @author John Cocula
  * @author Ecobee
+ * @since 1.7.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Selection extends AbstractMessagePart {

@@ -18,7 +18,7 @@ import org.openhab.core.binding.BindingProvider;
  * taken into account.
  * 
  * @author John Cocula
- * @since 1.6.0
+ * @since 1.7.0
  */
 public interface EcobeeBindingProvider extends BindingProvider {
 

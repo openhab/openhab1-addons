@@ -24,6 +24,7 @@ import java.util.Date;
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/functions/CreateVacation.shtml">CreateVacation</a>
  * @author John Cocula
  * @author Ecobee
+ * @since 1.7.0
  */
 public final class CreateVacationFunction extends AbstractFunction {
 

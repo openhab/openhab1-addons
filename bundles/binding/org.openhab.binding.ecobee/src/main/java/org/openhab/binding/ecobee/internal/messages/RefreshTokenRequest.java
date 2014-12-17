@@ -25,6 +25,7 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/token-refresh.shtml">Refreshing Your Tokens</a>
  * @author John Cocula
  * @author Ecobee
+ * @since 1.7.0
  */
 public class RefreshTokenRequest extends AbstractRequest {
 

@@ -19,6 +19,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * 
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/auth-req-resp.shtml">Authorization Requests and Errors</a>
  * @author John Cocula
+ * @since 1.7.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractAuthResponse extends AbstractMessage implements Response {

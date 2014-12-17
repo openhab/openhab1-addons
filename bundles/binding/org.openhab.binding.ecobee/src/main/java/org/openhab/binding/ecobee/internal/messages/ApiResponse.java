@@ -15,6 +15,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * Base class for all Ecobee API responses.
  * 
  * @author John Cocula
+ * @since 1.7.0
  */
 public class ApiResponse extends AbstractMessage implements Response {
 

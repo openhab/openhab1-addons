@@ -17,6 +17,7 @@ package org.openhab.binding.ecobee.internal.messages;
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/functions/DeleteVacation.shtml">DeleteVacation</a>
  * @author John Cocula
  * @author Ecobee
+ * @since 1.7.0
  */
 public class DeleteVacationFunction extends AbstractFunction {
 

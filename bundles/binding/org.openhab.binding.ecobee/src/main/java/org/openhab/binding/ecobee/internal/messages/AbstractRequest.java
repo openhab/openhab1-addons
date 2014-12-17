@@ -21,6 +21,7 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
  * 
  * @author Andreas Brenk
  * @author John Cocula
+ * @since 1.7.0
  */
 public abstract class AbstractRequest extends AbstractMessage implements
 		Request {

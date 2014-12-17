@@ -20,6 +20,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * 
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Status.shtml">Status</a>
  * @author John Cocula
+ * @since 1.7.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Status extends AbstractMessagePart {

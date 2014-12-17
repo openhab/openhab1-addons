@@ -27,6 +27,7 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
  * Updates thermostats to the Ecobee API.
  * 
  * @author John Cocula
+ * @since 1.7.0
  * @see <a
  *      href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostats.shtml">GET
  *      Thermostats</a>

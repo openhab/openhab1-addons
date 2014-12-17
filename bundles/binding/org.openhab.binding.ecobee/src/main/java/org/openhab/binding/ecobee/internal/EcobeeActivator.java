@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator
  * 
  * @author John Cocula
- * @since 1.6.0
+ * @since 1.7.0
  */
 public final class EcobeeActivator implements BundleActivator {
 

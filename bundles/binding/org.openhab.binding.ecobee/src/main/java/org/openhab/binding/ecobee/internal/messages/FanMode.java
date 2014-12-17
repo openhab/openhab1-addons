@@ -16,6 +16,7 @@ import org.codehaus.jackson.annotate.JsonValue;
  * 
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Event.shtml">Event</a>
  * @author John Cocula
+ * @since 1.7.0
  */
 public enum FanMode {
 	AUTO("auto"),

@@ -28,6 +28,7 @@ import org.codehaus.jackson.annotate.JsonValue;
  *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Thermostat.shtml">Thermostat</a>
  * @author John Cocula
  * @author Ecobee
+ * @since 1.7.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Thermostat extends AbstractMessagePart {

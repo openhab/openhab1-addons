@@ -29,6 +29,7 @@ import org.codehaus.jackson.annotate.JsonValue;
  *      href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml#representation">Values
  *      and Representation</a>
  * @author John Cocula
+ * @since 1.7.0
  */
 public class Temperature {
 
