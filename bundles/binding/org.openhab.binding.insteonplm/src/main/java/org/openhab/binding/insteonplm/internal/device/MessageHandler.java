@@ -11,8 +11,6 @@ package org.openhab.binding.insteonplm.internal.device;
 import java.io.IOException;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
@@ -38,8 +36,6 @@ public abstract class MessageHandler {
 	
 	DeviceFeature			m_feature	 	= null;
 	HashMap<String, String> m_parameters	= new HashMap<String, String>();
-	Map<String, Long>		m_lastReceived	= new ConcurrentHashMap<String, Long>();
-
 	/**
 	 * Constructor
 	 * @param p state publishing object for dissemination of state changes
@@ -120,26 +116,6 @@ public abstract class MessageHandler {
 		}
 		return -1;
 	}
-
-	protected boolean isDuplicateMessage(byte cmd1, Msg msg, DeviceFeature f) {
-		String a = f.getDevice().getAddress().toString();
-		int b = hasButton() ? getButtonInfo(msg, f) : -1;
-		String key = a + "b" + b;
-		long currentTime = System.currentTimeMillis();
-		long lastTime = m_lastReceived.containsKey(key) ? m_lastReceived .get(key) : 0;
-		m_lastReceived.put(key, currentTime);
-
-		// ignore duplicate messages within 2 seconds
-		if ((currentTime - lastTime) < 2000) {
-			logger.debug("ignoring duplicate message for device {}|{}command1:{}|gap {} ms",
-					a, (b == -1 ? "" : "button:" + b + "|"), Utils.getHexByte(cmd1),
-					(currentTime - lastTime));
-
-			return true;
-		}
-
-		return false;
-	}
 	/**
 	 * Set parameter map
 	 * @param hm the parameter map for this message handler
@@ -174,7 +150,7 @@ public abstract class MessageHandler {
 			//    and the cmd2 code has the new light level
 			// 2) When the switch/dimmer is switched completely on manually,
 			//    i.e. by physically tapping the button. 
-			if ((hasButton() && !isMybutton(msg, f)) || isDuplicateMessage(cmd1, msg, f)) {
+			if (hasButton() && !isMybutton(msg, f)) {
 				return;
 			}
 
@@ -213,7 +189,7 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
-			if ((!hasButton() || isMybutton(msg, f)) && !isDuplicateMessage(cmd1, msg, f)) {
+			if (!hasButton() || isMybutton(msg, f)) {
 				f.publishAll(OnOffType.ON);
 			}
 		}
@@ -224,7 +200,7 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
-			if ((!hasButton() || isMybutton(msg, f)) && !isDuplicateMessage(cmd1, msg, f)) {
+			if (!hasButton() || isMybutton(msg, f)) {
 				f.publishAll(OnOffType.OFF);
 			}
 		}
@@ -235,7 +211,7 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
-			if (isMybutton(msg, f) && !isDuplicateMessage(cmd1, msg, f)) {
+			if (isMybutton(msg, f)) {
 				f.publishAll(OnOffType.ON);
 			}
 		}
@@ -246,7 +222,7 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
-			if (isMybutton(msg, f) && !isDuplicateMessage(cmd1, msg, f)) {
+			if (isMybutton(msg, f)) {
 				f.publishAll(OnOffType.OFF);
 			}
 		}
@@ -265,10 +241,6 @@ public abstract class MessageHandler {
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
 			try {
-				if (isDuplicateMessage(cmd1, msg, f)) {
-					return;
-				}
-
 				InsteonAddress a = f.getDevice().getAddress();
 				int cmd2	= (int) (msg.getByte("command2") & 0xff);
 				int button	= this.getIntParameter("button", -1);
@@ -339,10 +311,6 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
-			if (isDuplicateMessage(cmd1, msg, f)) {
-				return;
-			}
-
 			InsteonDevice dev = f.getDevice();
 			try {
 				int cmd2 = (int) (msg.getByte("command2") & 0xff);
