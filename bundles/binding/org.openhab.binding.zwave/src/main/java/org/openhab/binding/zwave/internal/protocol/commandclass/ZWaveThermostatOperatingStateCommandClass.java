@@ -46,6 +46,8 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	@XStreamOmitField
 	private boolean dynamicDone = false;
 
+	private boolean isGetSupported = true;
+
 	/**
 	 * Creates a new instance of the ZWaveThermostatOperatingStateCommandClass class.
 	 * @param node the node this command class belongs to
@@ -142,6 +144,11 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	 */
 	@Override
 	public SerialMessage getValueMessage() {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+		
 		logger.debug("NODE {}: Creating new message for application command THERMOSTAT_OPERATING_STATE_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Get);
 		byte[] payload = {
@@ -154,6 +161,11 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 		return result;
 	}
 
+	@Override
+	public void setGetSupported(Boolean supported) {
+		isGetSupported = supported;
+	}
+	
 	/**
 	 * Z-Wave OperatingStateType enumeration. The operating state type indicates the type
 	 * of operating state that is reported from the thermostat.

@@ -46,6 +46,8 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 	@XStreamOmitField
 	private boolean dynamicDone = false;
 
+	private boolean isGetSupported = true;
+
 	/**
 	 * Creates a new instance of the ZWaveBinarySwitchCommandClass class.
 	 * @param node the node this command class belongs to
@@ -128,13 +130,18 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
     	result.setMessagePayload(newPayload);
     	return result;		
 	}
-	
+
 	/**
 	 * Gets a SerialMessage with the SWITCH_BINARY_SET command 
 	 * @param the level to set. 0 is mapped to off, > 0 is mapped to on.
 	 * @return the serial message
 	 */
 	public SerialMessage setValueMessage(int level) {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+		
 		logger.debug("Creating new message for application command SWITCH_BINARY_SET for node {}", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
@@ -145,6 +152,11 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 								};
     	result.setMessagePayload(newPayload);
     	return result;		
+	}
+	
+	@Override
+	public void setGetSupported(Boolean supported) {
+		isGetSupported = supported;
 	}
 	
 	/**

@@ -55,6 +55,8 @@ public class ZWaveMultiLevelSwitchCommandClass extends ZWaveCommandClass impleme
 	@XStreamOmitField
 	private boolean dynamicDone = false;
 
+	private boolean isGetSupported = true;
+
 	/**
 	 * Creates a new instance of the ZWaveMultiLevelSwitchCommandClass class.
 	 * @param node the node this command class belongs to
@@ -127,6 +129,11 @@ public class ZWaveMultiLevelSwitchCommandClass extends ZWaveCommandClass impleme
 	 * @return the serial message
 	 */
 	public SerialMessage getValueMessage() {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+		
 		logger.debug("NODE {}: Creating new message for command SWITCH_MULTILEVEL_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
@@ -135,6 +142,11 @@ public class ZWaveMultiLevelSwitchCommandClass extends ZWaveCommandClass impleme
 								(byte) SWITCH_MULTILEVEL_GET };
     	result.setMessagePayload(newPayload);
     	return result;		
+	}
+
+	@Override
+	public void setGetSupported(Boolean supported) {
+		isGetSupported = supported;
 	}
 	
 	/**

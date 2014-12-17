@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.openhab.binding.zwave.internal.config.ZWaveDbAssociationGroup;
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.config.ZWaveProductDatabase;
 import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
@@ -25,6 +26,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveGetCommands;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass.LibraryType;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
@@ -431,6 +433,29 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				}
 				break;
 
+			case UPDATE_DATABASE:
+				// This stage reads information from the database to allow us to modify the configuration
+				logger.debug("NODE {}: Node advancer: UPDATE_DATABASE", node.getNodeId());
+
+				// We now should know all the command classes, so run through the database and set any options
+				ZWaveProductDatabase database = new ZWaveProductDatabase();
+				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == true) {
+					List<ZWaveDbCommandClass> classList = database.getProductCommandClasses();
+
+					if (classList != null) {
+						// Loop through the command classes and add to the records...
+						for (ZWaveDbCommandClass dbClass : classList) {
+							if(dbClass.isGetSupported != null) {
+								ZWaveCommandClass zwaveClass = node.getCommandClass(CommandClass.getCommandClass(dbClass.Id));
+								if(zwaveClass instanceof ZWaveGetCommands) {
+									((ZWaveGetCommands)zwaveClass).setGetSupported(dbClass.isGetSupported);
+								}
+							}
+						}
+					}
+				}
+				break;
+				
 			case STATIC_VALUES:
 				// Loop through all classes looking for static initialisation
 				for (ZWaveCommandClass zwaveStaticClass : node.getCommandClasses()) {
@@ -526,11 +551,11 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				}
 
 				// Open the product database
-				ZWaveProductDatabase database = new ZWaveProductDatabase();
-				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == true) {
+				ZWaveProductDatabase associations = new ZWaveProductDatabase();
+				if(associations.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == true) {
 					// We have this device in the database
 					// Assume the database is correct since some devices report invalid number of groups!
-					List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
+					List<ZWaveDbAssociationGroup> groupList = associations.getProductAssociationGroups();
 
 					// No groups known
 					if (groupList == null) {

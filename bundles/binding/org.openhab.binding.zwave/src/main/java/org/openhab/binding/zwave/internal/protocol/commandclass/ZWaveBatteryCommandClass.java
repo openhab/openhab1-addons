@@ -49,6 +49,8 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 	@XStreamOmitField
 	private boolean dynamicDone = false;
 	
+	private boolean isGetSupported = true;
+
 	/**
 	 * Creates a new instance of the ZWaveBatteryCommandClass class.
 	 * @param node the node this command class belongs to
@@ -121,6 +123,11 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 	 * @return the serial message
 	 */
 	public SerialMessage getValueMessage() {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+
 		logger.debug("NODE {}: Creating new message for application command BATTERY_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
@@ -129,6 +136,11 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 								(byte) BATTERY_GET };
     	result.setMessagePayload(newPayload);
     	return result;		
+	}
+
+	@Override
+	public void setGetSupported(Boolean supported) {
+		isGetSupported = supported;
 	}
 	
 	/**

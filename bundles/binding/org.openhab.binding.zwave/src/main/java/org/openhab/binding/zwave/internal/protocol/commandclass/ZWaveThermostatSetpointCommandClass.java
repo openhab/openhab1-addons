@@ -61,6 +61,8 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 	@XStreamOmitField
 	private boolean dynamicDone = false;
 
+	private boolean isGetSupported = true;
+
 	/**
 	 * Creates a new instance of the ZWaveThermostatSetpointCommandClass class.
 	 * @param node the node this command class belongs to
@@ -228,6 +230,11 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 	 */
 	@Override
 	public SerialMessage getValueMessage() {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+		
 		for (Map.Entry<SetpointType, Setpoint> entry : this.setpoints.entrySet()) {
 			return getMessage(entry.getValue().getSetpointType());
 		}
@@ -236,6 +243,11 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 		return this.getSupportedMessage();
 	}
 
+	@Override
+	public void setGetSupported(Boolean supported) {
+		isGetSupported = supported;
+	}
+	
 	/**
 	 * Gets a SerialMessage with the THERMOSTAT_SETPOINT_GET command 
 	 * @param setpointType the setpoint type to get

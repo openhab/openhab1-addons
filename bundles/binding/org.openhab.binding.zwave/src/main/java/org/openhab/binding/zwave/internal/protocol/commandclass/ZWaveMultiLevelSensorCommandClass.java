@@ -56,7 +56,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	private boolean initialiseDone = false;
 	@XStreamOmitField
 	private boolean dynamicDone = false;
-	
+
 	private boolean isGetSupported = true;
 
 	/**
@@ -177,6 +177,11 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	 * @return the serial message
 	 */
 	public SerialMessage getValueMessage() {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+		
 		// TODO: Why does this return???!!!???
 		if (this.getVersion() > 4) {
 			for (Map.Entry<SensorType, Sensor> entry : this.sensors.entrySet()) {
@@ -250,7 +255,8 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	 * Allows the class to be marked as not supporting the get request.
 	 * @param supported true if get requests are supported
 	 */
-	public void setGetSupported(boolean supported) {
+	@Override
+	public void setGetSupported(Boolean supported) {
 		isGetSupported = supported;
 	}
 	

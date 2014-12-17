@@ -65,6 +65,8 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 	@XStreamOmitField
 	private boolean dynamicDone = false;
 
+	private boolean isGetSupported = true;
+
 	/**
 	 * Creates a new instance of the ZWaveMeterCommandClass class.
 	 * 
@@ -218,6 +220,11 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 	 * @return the serial message
 	 */
 	public SerialMessage getValueMessage() {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+		
 		logger.debug("NODE {}: Creating new message for application command METER_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
 				SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
@@ -225,6 +232,11 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 				(byte) METER_GET };
 		result.setMessagePayload(newPayload);
 		return result;
+	}
+
+	@Override
+	public void setGetSupported(Boolean supported) {
+		isGetSupported = supported;
 	}
 
 	/**

@@ -23,4 +23,5 @@ public class ZWaveDbCommandClass {
 	@XStreamAlias("id")
 	@XStreamConverter(HexToIntegerConverter.class)
 	public Integer Id;
+	public Boolean isGetSupported;
 }

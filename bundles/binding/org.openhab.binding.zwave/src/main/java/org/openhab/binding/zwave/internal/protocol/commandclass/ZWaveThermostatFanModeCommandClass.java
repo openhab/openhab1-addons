@@ -56,6 +56,8 @@ ZWaveCommandClassDynamicState {
 	@XStreamOmitField
 	private boolean dynamicDone = false;
 
+	private boolean isGetSupported = true;
+
 	/**
 	 * Creates a new instance of the ZWaveThermostatFanModeCommandClass class.
 	 * @param node the node this command class belongs to
@@ -201,6 +203,11 @@ ZWaveCommandClassDynamicState {
 	 */
 	@Override
 	public SerialMessage getValueMessage() {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+		
 		logger.debug("NODE {}: Creating new message for application command THERMOSTAT_FAN_MODE_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Get);
 		byte[] payload = {
@@ -213,6 +220,11 @@ ZWaveCommandClassDynamicState {
 		return result;
 	}
 
+	@Override
+	public void setGetSupported(Boolean supported) {
+		isGetSupported = supported;
+	}
+	
 	/**
 	 * Gets a SerialMessage with the THERMOSTAT_FAN_MODE_SUPPORTED_GET command 
 	 * @return the serial message, or null if the supported command is not supported.
