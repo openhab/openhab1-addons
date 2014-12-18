@@ -1096,6 +1096,10 @@
 				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
 			<Model>EZMotion Express</Model>
 			<Label lang="en">Wireless 3-in-1 Sensor</Label>
 			<ConfigFile>homeseer/ezmotionexpress.xml</ConfigFile>
