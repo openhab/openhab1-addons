@@ -1522,9 +1522,9 @@
 				<Type>000d</Type>
 				<Id>0100</Id>
 			</Reference>
-			<Model>plugInDimmer</Model>
-			<Label lang="en">BeNext Plug-in Dimmer</Label>
-			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
+			<Model>builtInDimmer</Model>
+			<Label lang="en">BeNext Built-in Dimmer</Label>
+			<ConfigFile>benext/builtindimmer.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
