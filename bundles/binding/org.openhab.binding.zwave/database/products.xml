@@ -323,6 +323,15 @@
 			<ConfigFile>ge/relay.xml</ConfigFile>
 		</Product>
 		<Product>
+           <Reference>
+               <Type>4450</Type>
+               <Id>3030</Id>
+           </Reference>
+           <Model>ZW3101</Model>
+           <Label lang="en">Lamp Module</Label>
+           <ConfigFile>ge/ZW3101.xml</ConfigFile>
+        </Product>
+		<Product>
 			<Reference>
 				<Type>5252</Type>
 				<Id>3530</Id>
