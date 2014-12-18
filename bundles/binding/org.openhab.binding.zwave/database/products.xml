@@ -1096,6 +1096,10 @@
 				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
+			</Reference>
 			<Model>EZMotion Express</Model>
 			<Label lang="en">Wireless 3-in-1 Sensor</Label>
 			<ConfigFile>homeseer/ezmotionexpress.xml</ConfigFile>
@@ -1522,9 +1526,9 @@
 				<Type>000d</Type>
 				<Id>0100</Id>
 			</Reference>
-			<Model>plugInDimmer</Model>
-			<Label lang="en">BeNext Plug-in Dimmer</Label>
-			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
+			<Model>builtInDimmer</Model>
+			<Label lang="en">BeNext Built-in Dimmer</Label>
+			<ConfigFile>benext/builtindimmer.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
