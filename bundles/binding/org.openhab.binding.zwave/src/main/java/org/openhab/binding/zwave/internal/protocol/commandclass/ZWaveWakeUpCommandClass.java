@@ -220,6 +220,8 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	public boolean processOutgoingWakeupMessage(SerialMessage serialMessage) {
 		// The message is Ok, if we're awake, send it now...
 		if(isAwake) {
+			// We're sending a frame, so we need to stop the timer if it's running
+			resetSleepTimer();
 			return true;
 		}
 
@@ -235,7 +237,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 
 		logger.debug("NODE {}: Putting message {} in wakeup queue.", this.getNode().getNodeId(), serialMessage.getMessageClass());
 		this.wakeUpQueue.add(serialMessage);
-		
+
 		// This message has been queued - don't send it now...
 		return false;
 	}
@@ -344,15 +346,15 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		if (!(event instanceof ZWaveTransactionCompletedEvent)) {
 			return;
 		}
-		
+
 		SerialMessage serialMessage = ((ZWaveTransactionCompletedEvent)event).getCompletedMessage();
-		
+
 		if (serialMessage.getMessageClass() != SerialMessageClass.SendData && serialMessage.getMessageType() != SerialMessageType.Request) {
 			return;
 		}
-				
+
 		byte[] payload = serialMessage.getMessagePayload();
-		
+
 		// Check if it's addressed to this node
 		if (payload.length == 0 || (payload[0] & 0xFF) != this.getNode().getNodeId()) {
 			return;
@@ -481,12 +483,10 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 			wakeup.getController().sendData(wakeup.getNoMoreInformationMessage());
 		}
 	}
-	
+
 	public synchronized void setSleepTimer() {
 		// Stop any existing timer
-		if(timerTask != null) {
-			timerTask.cancel();
-		}
+		resetSleepTimer();
 
 		// Create the timer task
 		timerTask = new WakeupTimerTask(this);
@@ -494,7 +494,15 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		// Start the timer
 		timer.schedule(timerTask, 2000);
 	}
-	
+
+	public synchronized void resetSleepTimer() {
+		// Stop any existing timer
+		if(timerTask != null) {
+			timerTask.cancel();
+		}
+		timerTask = null;
+	}
+
 	/**
 	 * ZWave wake-up event.
 	 * Notifies users that a device has woken up or changed its wakeup parameters
@@ -514,7 +522,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 			super(nodeId, 1);
 			this.event = event;
 		}
-		
+
 		public int getEvent() {
 			return this.event;
 		}
