@@ -55,6 +55,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private String port;
 	private boolean isSUC = false;
 	private boolean softReset = false;
+	private boolean masterController = false;
 	private Integer healtime = null;
 	private Integer aliveCheckPeriod = null;
 	private Integer timeout = null;
@@ -278,7 +279,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			logger.debug("Initialising zwave binding");
 			this.setProperlyConfigured(true);
 			this.deactivate();
-			this.zController = new ZWaveController(isSUC, port, timeout, softReset);
+			this.zController = new ZWaveController(masterController, isSUC, port, timeout, softReset);
 			this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
 			zController.initialize();
 			zController.addEventListener(this);
@@ -382,7 +383,16 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				logger.error("Error parsing 'softReset'. This must be boolean.");
 			}
 		}
-
+		if (StringUtils.isNotBlank((String) config.get("masterController"))) {
+			try {
+				masterController = Boolean.parseBoolean((String) config.get("masterController"));
+				logger.info("Update config, masterController = {}", masterController);
+			} catch (NumberFormatException e) {
+				masterController = false;
+				logger.error("Error parsing 'masterController'. This must be boolean.");
+			}
+		}
+		
 		// Now that we've read ALL the configuration, initialise the binding.
 		initialise();
 	}

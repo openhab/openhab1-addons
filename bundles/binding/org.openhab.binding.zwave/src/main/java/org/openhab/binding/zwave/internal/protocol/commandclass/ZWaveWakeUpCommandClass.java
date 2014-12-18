@@ -137,23 +137,23 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 			case WAKE_UP_INTERVAL_GET:
 			case WAKE_UP_INTERVAL_CAPABILITIES_GET:
 			case WAKE_UP_NO_MORE_INFORMATION:
-				logger.warn(String.format("Command 0x%02X not implemented.", command));
+				logger.warn("Command {} not implemented.", command);
 				return;
 			case WAKE_UP_INTERVAL_REPORT:
 				logger.trace("NODE {}: Process Wake Up Interval", this.getNode().getNodeId());
 				initReportDone = true;
-				
+
 				// according to open-zwave: it seems that some devices send incorrect interval report messages. Don't know if they are spurious.
 				// if not we should advance the node stage.
                 if(serialMessage.getMessagePayload().length < offset + 4) {
-                		logger.error("NODE {}: Unusual response: WAKE_UP_INTERVAL_REPORT with length = {}. Ignored.", this.getNode().getNodeId(), serialMessage.getMessagePayload().length);
-                		return;
+                	logger.error("NODE {}: Unusual response: WAKE_UP_INTERVAL_REPORT with length = {}. Ignored.", this.getNode().getNodeId(), serialMessage.getMessagePayload().length);
+                	return;
                 }
-                
+
                 targetNodeId = serialMessage.getMessagePayloadByte(offset +4);
                 int receivedInterval = ((serialMessage.getMessagePayloadByte(offset + 1)) << 16) | ((serialMessage.getMessagePayloadByte(offset + 2)) << 8) | (serialMessage.getMessagePayloadByte(offset + 3));
-				logger.debug(String.format("NODE %d: Wake up interval report, value = %d seconds, targetNodeId = %d", this.getNode().getNodeId(), receivedInterval, targetNodeId));
-                
+				logger.debug("NODE {}: Wake up interval report, value = {} seconds, targetNodeId = {}", this.getNode().getNodeId(), receivedInterval, targetNodeId);
+
 				this.interval = receivedInterval;
 				logger.debug("NODE {}: Wake up interval set", this.getNode().getNodeId());
 

@@ -120,6 +120,7 @@ public class ZWaveController {
 	private ZWaveDeviceType controllerType = ZWaveDeviceType.UNKNOWN;
 	private int sucID = 0;
 	private boolean softReset = false;
+	private boolean masterController = false;
 	
 	private int SOFCount = 0;
 	private int CANCount = 0;
@@ -140,9 +141,10 @@ public class ZWaveController {
 	 * communication with the Z-Wave controller stick.
 	 * @throws SerialInterfaceException when a connection error occurs.
 	 */
-	public ZWaveController(final boolean isSUC, final String serialPortName, final Integer timeout, final boolean reset)
+	public ZWaveController(final boolean masterController, final boolean isSUC, final String serialPortName, final Integer timeout, final boolean reset)
 							throws SerialInterfaceException {
 			logger.info("Starting Z-Wave controller");
+			this.masterController = masterController;
 			this.setSUC = isSUC;
 			this.softReset = reset;
 
@@ -985,6 +987,15 @@ public class ZWaveController {
 	 */
 	public int getSucId() {
 		return sucID;
+	}
+
+	/**
+	 * Returns true if the binding is the master controller in the network.
+	 * The master controller simply means that we get notifications.
+	 * @return true if this is the master
+	 */
+	public boolean isMasterController() {
+		return masterController;
 	}
 
 	/**
