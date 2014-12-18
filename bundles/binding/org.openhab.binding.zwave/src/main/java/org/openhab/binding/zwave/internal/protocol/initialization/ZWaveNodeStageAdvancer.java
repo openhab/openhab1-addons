@@ -595,14 +595,20 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				ZWaveWakeUpCommandClass wakeupCommandClass = (ZWaveWakeUpCommandClass) node.getCommandClass(CommandClass.WAKE_UP);
 
 				if (wakeupCommandClass == null) {
-					logger.error("NODE {}: Error getting wakeupCommandClass", node.getNodeId());
+					logger.debug("NODE {}: Node advancer: WAKEUP - Wakeup command class not supported", node.getNodeId());
 					break;
 				}
 
-				logger.debug("NODE {}: Node advancer: NEIGHBORS - Set wakeup node", node.getNodeId());
+				if (wakeupCommandClass.getTargetNodeId() == controller.getOwnNodeId()) {
+					logger.debug("NODE {}: Node advancer: WAKEUP - TargetNode is set to controller", node.getNodeId());
+					break;
+				}
 
-				// Set the wake-up interval
-				controller.sendData(wakeupCommandClass.setInterval(wakeupCommandClass.getInterval()));
+				logger.debug("NODE {}: Node advancer: WAKEUP - Set wakeup node to controller ({})", node.getNodeId(), controller.getOwnNodeId());
+
+				// Set the wake-up interval, and request an update
+				addToQueue(wakeupCommandClass.setInterval(wakeupCommandClass.getInterval()));
+				addToQueue(wakeupCommandClass.getIntervalMessage());
 				break;
 
 			case DONE:

@@ -36,10 +36,11 @@ public enum NodeStage {
 	DYNAMIC_VALUES(14, "Frequently Changed Information"),
 	CONFIG(15, "Parameter Information"),
 	ASSOCIATIONS(16, "Associations"),
-	DONE(17, "Node Complete"),
-	INIT(18, "Node Not Started"),
-	DEAD(19, "Node Dead"),
-	FAILED(20,"Node Failed");
+	WAKEUP(17, "Wakeup Target"),
+	DONE(18, "Node Complete"),
+	INIT(19, "Node Not Started"),
+	DEAD(20, "Node Dead"),
+	FAILED(21,"Node Failed");
 	
 	private int stage;
 	private String label;
