@@ -72,7 +72,7 @@ public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProv
 				logger.error("parameter {} does not have format a=b", params[i]);
 			}
 		}
-		InsteonPLMBindingConfig config = new InsteonPLMBindingConfig(addr, feature, parts[1], args);
+		InsteonPLMBindingConfig config = new InsteonPLMBindingConfig(item.getName(), addr, feature, parts[1], args);
 		addBindingConfig(item, config);
 
 		logger.trace("processing item \"{}\" read from .items file with cfg string {}",
