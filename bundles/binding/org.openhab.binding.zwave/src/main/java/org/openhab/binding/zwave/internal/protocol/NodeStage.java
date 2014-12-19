@@ -38,9 +38,8 @@ public enum NodeStage {
 	ASSOCIATIONS(16, "Associations"),
 	WAKEUP(17, "Wakeup Target"),
 	DONE(18, "Node Complete"),
-	INIT(19, "Node Not Started"),
-	DEAD(20, "Node Dead"),
-	FAILED(21,"Node Failed");
+	DEAD(19, "Node Dead"),
+	FAILED(20,"Node Failed");
 	
 	private int stage;
 	private String label;

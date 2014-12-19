@@ -887,22 +887,6 @@ public class ZWaveController {
     		logger.error("Only request messages can be sent");
     		return;
     	}
-/*
-    	This code has moved to enqueue...
-    	ZWaveNode node = this.getNode(serialMessage.getMessageNode());
-    	
-    	// Keep track of the number of packets sent to this device
-    	node.incrementSendCount();
-
-    	if (!node.isListening() && !node.isFrequentlyListening() && serialMessage.getPriority() != SerialMessagePriority.Low) {
-			ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
-
-			// If it's a battery operated device, check if it's awake or place in wake-up queue.
-			if (wakeUpCommandClass != null && !wakeUpCommandClass.processOutgoingWakeupMessage(serialMessage)) {
-				return;
-			}
-		}
-    	*/
 
     	serialMessage.setTransmitOptions(TRANSMIT_OPTION_ACK | TRANSMIT_OPTION_AUTO_ROUTE | TRANSMIT_OPTION_EXPLORE);
     	serialMessage.setCallbackId(getCallbackId());
