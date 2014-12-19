@@ -155,7 +155,6 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				logger.debug("NODE {}: Wake up interval report, value = {} seconds, targetNodeId = {}", this.getNode().getNodeId(), receivedInterval, targetNodeId);
 
 				this.interval = receivedInterval;
-				logger.debug("NODE {}: Wake up interval set", this.getNode().getNodeId());
 
 				ZWaveWakeUpEvent event = new ZWaveWakeUpEvent(getNode().getNodeId(), WAKE_UP_INTERVAL_REPORT);
 				this.getController().notifyEventListeners(event);
@@ -434,7 +433,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	 */
 	public SerialMessage setInterval(int interval) {
 		logger.debug("NODE {}: Creating new message for application command WAKE_UP_INTERVAL_SET to {}", this.getNode().getNodeId(), interval);
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							6, 
 								(byte) getCommandClass().getKey(), 

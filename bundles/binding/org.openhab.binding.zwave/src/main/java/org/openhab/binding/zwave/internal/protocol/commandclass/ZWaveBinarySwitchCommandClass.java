@@ -86,7 +86,7 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 				processSwitchBinaryReport(serialMessage, offset, endpoint);
 				break;
 			case SWITCH_BINARY_GET:
-				logger.warn(String.format("Command 0x%02X not implemented.", command));
+				logger.warn("Command {} not implemented.", command);
 				return;
 			case SWITCH_BINARY_REPORT:
 				logger.trace("Process Switch Binary Report");
@@ -111,7 +111,7 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 	protected void processSwitchBinaryReport(SerialMessage serialMessage, int offset,
 			int endpoint) {
 		int value = serialMessage.getMessagePayloadByte(offset + 1); 
-		logger.debug(String.format("Switch Binary report from nodeId = %d, value = 0x%02X", this.getNode().getNodeId(), value));
+		logger.debug(String.format("NODE {}: Switch Binary report, value = 0x%02X", this.getNode().getNodeId(), value));
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
 		this.getController().notifyEventListeners(zEvent);
 	}
@@ -121,7 +121,7 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 	 * @return the serial message
 	 */
 	public SerialMessage getValueMessage() {
-		logger.debug("Creating new message for application command SWITCH_BINARY_GET for node {}", this.getNode().getNodeId());
+		logger.debug("NODE {}: Creating new message for application command SWITCH_BINARY_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
@@ -141,8 +141,8 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
 			return null;
 		}
-		
-		logger.debug("Creating new message for application command SWITCH_BINARY_SET for node {}", this.getNode().getNodeId());
+
+		logger.debug("NODE {}: Creating new message for application command SWITCH_BINARY_SET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							3, 

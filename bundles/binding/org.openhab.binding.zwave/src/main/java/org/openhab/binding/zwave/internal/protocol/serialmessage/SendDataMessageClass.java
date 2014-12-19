@@ -32,12 +32,15 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			SerialMessage incomingMessage) {
 		logger.trace("Handle Message Send Data Response");
 		if (incomingMessage.getMessagePayloadByte(0) != 0x00) {
-			logger.debug("Sent Data successfully placed on stack.");
+			logger.debug("NODE {}: Sent Data successfully placed on stack.", lastSentMessage.getMessageNode());
 		}
 		else {
 			// This is an error. This means that the transaction is complete!
 			// Set the flag, and return false.
-			logger.error("Sent Data was not placed on stack due to error {}.", incomingMessage.getMessagePayloadByte(0));
+			logger.error("NODE {}: Sent Data was not placed on stack due to error {}.", lastSentMessage.getMessageNode(), 
+					incomingMessage.getMessagePayloadByte(0));
+			
+			// TODO: We ought to cancel the transaction
 //			transactionComplete = true;
 
 			return false;
@@ -53,14 +56,14 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 
 		int callbackId = incomingMessage.getMessagePayloadByte(0);
 		TransmissionState status = TransmissionState.getTransmissionState(incomingMessage.getMessagePayloadByte(1));
-		SerialMessage originalMessage = lastSentMessage;
+//		SerialMessage originalMessage = lastSentMessage; don't see any need for this duplication?????
 
 		if (status == null) {
 			logger.warn("Transmission state not found, ignoring.");
 			return false;
 		}
 
-		ZWaveNode node = zController.getNode(originalMessage.getMessageNode());
+		ZWaveNode node = zController.getNode(lastSentMessage.getMessageNode());
 		if(node == null) {
 			logger.warn("Node not found!");
 			return false;
@@ -68,7 +71,7 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 
 		logger.debug("NODE {}: SendData Request. CallBack ID = {}, Status = {}({})", node.getNodeId(), callbackId, status.getLabel(), status.getKey());
 
-		if (originalMessage == null || originalMessage.getCallbackId() != callbackId) {
+		if (lastSentMessage == null || lastSentMessage.getCallbackId() != callbackId) {
 			logger.warn("NODE {}: Already processed another send data request for this callback Id, ignoring.", node.getNodeId());
 			return false;
 		}
@@ -94,7 +97,7 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 		case COMPLETE_NOT_IDLE:
 		case COMPLETE_NOROUTE:
 			try {
-				handleFailedSendDataRequest(zController, originalMessage);
+				handleFailedSendDataRequest(zController, lastSentMessage);
 			} finally {
 				transactionComplete = true;
 			}
@@ -110,7 +113,7 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 
 		ZWaveNode node = zController.getNode(originalMessage.getMessageNode());
 
-		logger.trace("NODE {}: handling failed message.", node.getNodeId());
+		logger.trace("NODE {}: Handling failed message.", node.getNodeId());
 
 		// Increment the resend count.
 		// This will set the node to DEAD if we've exceeded the retries.
