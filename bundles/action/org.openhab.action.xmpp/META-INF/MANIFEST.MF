@@ -26,8 +26,9 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/xmppsupport.xml, OSGI-INF/action.xml
 Bundle-ClassPath: .,
- lib/smack-core-4.0.5.jar,
- lib/smack-extensions-4.0.5.jar,
- lib/smack-resolver-javax-4.0.5.jar,
- lib/smack-tcp-4.0.5.jar
+ lib/smack-core-4.0.6.jar,
+ lib/smack-extensions-4.0.6.jar,
+ lib/smack-resolver-javax-4.0.6.jar,
+ lib/smack-tcp-4.0.6.jar,
+ lib/xpp3-1.1.4c.jar
 Bundle-ActivationPolicy: lazy

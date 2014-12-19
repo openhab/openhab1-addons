@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -46,6 +47,7 @@ public class XMPPConnect implements ManagedService {
 	private static String chatnickname;
 	private static String chatpassword;
 	private static String[] consoleUsers;
+	private static SecurityMode securityMode = SecurityMode.disabled;
 
 	private static boolean initialized = false;
 
@@ -66,6 +68,11 @@ public class XMPPConnect implements ManagedService {
 			XMPPConnect.chatroom = (String) config.get("chatroom");
 			XMPPConnect.chatnickname = (String) config.get("chatnickname");
 			XMPPConnect.chatpassword = (String) config.get("chatpassword");
+
+			String securityModeString = (String) config.get("securitymode");
+			if (securityModeString != null) {
+				securityMode = SecurityMode.valueOf(securityModeString);
+			}
 
 			String users = (String) config.get("consoleusers");
 
@@ -104,6 +111,7 @@ public class XMPPConnect implements ManagedService {
 			} else {
 				config = new ConnectionConfiguration(servername, port);
 			}
+			config.setSecurityMode(securityMode);
 
 			if (connection != null && connection.isConnected()) {
 				try {
