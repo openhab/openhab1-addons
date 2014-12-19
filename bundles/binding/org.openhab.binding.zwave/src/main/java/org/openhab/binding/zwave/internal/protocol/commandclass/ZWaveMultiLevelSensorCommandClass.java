@@ -312,7 +312,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	 * @author Jan-Willem Spuij
 	 * @since 1.3.0
 	 */
-	@XStreamAlias("sensorType")
+	@XStreamAlias("multilevelSensorType")
 	public enum SensorType
 	{
 		TEMPERATURE(1,"Temperature"),
@@ -402,6 +402,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 	 * Class to hold alarm state
 	 * @author Chris Jackson
 	 */
+	@XStreamAlias("multilevelSensor")
 	private class Sensor {
 		SensorType sensorType;
 		boolean initialised = false;

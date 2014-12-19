@@ -210,19 +210,25 @@ public class SerialMessage {
 		try {
 			resultByteBuffer.write(messagePayload);
 		} catch (IOException e) {
-			
+			logger.error("Error getting message buffer: ", e);
 		}
 
-		// callback ID and transmit options for a Send Data message.
+		// Callback ID and transmit options for a Send Data message.
 		if (this.messageClass == SerialMessageClass.SendData && this.messageType == SerialMessageType.Request) {
 			resultByteBuffer.write(transmitOptions);
 			resultByteBuffer.write(callbackId);
 		}
 		
+		// Make space in the array for the checksum
 		resultByteBuffer.write((byte) 0x00);
+		
+		// Convert to a byte array
 		result = resultByteBuffer.toByteArray();
+		
+		// Calculate the checksum
 		result[result.length - 1] = 0x01;
 		result[result.length - 1] = calculateChecksum(result);
+		
 		logger.debug("Assembled message buffer = " + SerialMessage.bb2hex(result));
 		return result;
 	}

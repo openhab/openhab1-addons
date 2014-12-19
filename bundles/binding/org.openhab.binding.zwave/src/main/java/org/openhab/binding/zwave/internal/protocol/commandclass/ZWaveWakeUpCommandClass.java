@@ -420,6 +420,9 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				setSleepTimer();
 			}
 		}
+		else {
+			logger.debug("NODE {}: Is sleeping", this.getNode().getNodeId());
+		}
 	}
 
 	/**
@@ -441,6 +444,8 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				                (byte)( interval & 0xff ),
 				                (byte) getController().getOwnNodeId()};
     	result.setMessagePayload(newPayload);
+		byte[] buffer = result.getMessageBuffer();
+		logger.debug("NODE {}: Sending REQUEST Message = {}", result.getMessageNode(), SerialMessage.bb2hex(buffer));
     	return result;		
 	}
 
