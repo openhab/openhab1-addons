@@ -119,6 +119,7 @@ public class DeviceFeature {
 		logger.trace("{} set query status to: {}", m_name, status);
 		m_queryStatus = status;
 	}
+
 	/**
 	 * Add a listener (item) to a device feature
 	 * @param l the listener
@@ -133,12 +134,12 @@ public class DeviceFeature {
 			m_listeners.add(l);
 		}
 	}
+
 	/**
 	 * removes a DeviceFeatureListener from this feature
 	 * @param aItemName name of the item to remove as listener
 	 * @return true if a listener was removed 
 	 */
-	
 	public boolean removeListener(String aItemName) {
 		boolean listenerRemoved = false;
 		synchronized(m_listeners) {
@@ -152,6 +153,16 @@ public class DeviceFeature {
 		}
 		return listenerRemoved;
 	}
+	
+	public boolean isReferencedByItem(String aItemName) {
+		synchronized(m_listeners) {
+			for (DeviceFeatureListener fl : m_listeners) {
+				if (fl.getItemName().equals(aItemName)) return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * Called when message is incoming. Dispatches message according to message dispatcher
 	 * @param msg The message to dispatch

@@ -137,6 +137,12 @@ public class SqueezeboxBinding extends AbstractBinding<SqueezeboxBindingProvider
 						else if (command.equals(OnOffType.OFF))
 							squeezeServer.unSyncPlayer(bindingConfig.getExtra());
 						break;
+					case COMMAND:
+					    if (command instanceof StringType)
+					    	squeezeServer.playerCommand(playerId, command.toString());
+					    else
+						squeezeServer.playerCommand(playerId, bindingConfig.getExtra());
+					    	break;
 
 					default:
 						logger.warn("Unsupported command type '{}'", bindingConfig.getCommandType()); 
