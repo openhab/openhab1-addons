@@ -41,7 +41,15 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			int length = incomingMessage.getMessagePayloadByte(2);
 			ZWaveNode node = zController.getNode(nodeId);
 			if(node == null) {
-				logger.debug("NODE {}: Application update request, node not known!", nodeId);			
+				logger.debug("NODE {}: Application update request, node not known!", nodeId);
+				
+				// We've received a NIF from a node we don't know.
+				// This could happen if we add a new node using a different controller than OH.
+				// We handle this the same way as if included through an AddNode packet.
+				// This allows everyone to be notified.
+				if(nodeId > 0 && nodeId <= 232) {
+					zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.IncludeDone, incomingMessage.getMessagePayloadByte(2)));
+				}
 				break;
 			}
 			
