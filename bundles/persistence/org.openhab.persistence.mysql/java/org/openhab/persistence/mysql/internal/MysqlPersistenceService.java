@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
  * 
  * Item-Type    Data-Type          MySQL-Type 
  * =========    =========          ========== 
- * ColorItem         HSBType       CHAR(25)
+ * ColorItem         HSBType       CHAR(40)
  * ContactItem       OnOffType     CHAR(6)
  * DateTimeItem      DateTimeType  DATETIME
  * DimmerItem        PercentType   TINYINT
@@ -113,7 +113,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	
 	public void activate() {
 		// Initialise the type array
-		sqlTypes.put("COLORITEM", "CHAR(25)");
+		sqlTypes.put("COLORITEM", "CHAR(40)");
 		sqlTypes.put("CONTACTITEM", "VARCHAR(6)");
 		sqlTypes.put("DATETIMEITEM", "DATETIME(3)");
 		sqlTypes.put("DIMMERITEM", "TINYINT");
