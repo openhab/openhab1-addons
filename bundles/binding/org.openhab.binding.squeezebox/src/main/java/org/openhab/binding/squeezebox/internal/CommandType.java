@@ -45,7 +45,9 @@ public enum CommandType {
 	REMOTETITLE("remotetitle"),
 	GENRE("genre"),
 	
-	IRCODE("ircode");
+	IRCODE("ircode"),
+	
+	COMMAND("command");
 	
 	/** Represents the player command as it will be used in *.items configuration */
 	String command;

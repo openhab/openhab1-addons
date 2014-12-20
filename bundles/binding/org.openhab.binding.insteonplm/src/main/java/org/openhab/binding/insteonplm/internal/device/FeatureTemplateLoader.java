@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,6 +29,7 @@ import org.openhab.core.types.Command;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -95,25 +97,36 @@ public class FeatureTemplateLoader {
 		
 		return feature;
 	}
-	private static void s_parseMessageHandler(Element e, FeatureTemplate f) throws DOMException, ParsingException {
+	private static HandlerEntry s_makeHandlerEntry(Element e) throws ParsingException {
 		String handler = e.getTextContent();
-		if (handler == null) throw new ParsingException("Could not find MessageHandler for: " + e.getTextContent());
+		if (handler == null) throw new ParsingException("Could not find Handler for: " + e.getTextContent());
+		
+		NamedNodeMap attributes = e.getAttributes();
+		HashMap<String, String> params = new HashMap<String, String>();
+		for (int i = 0; i < attributes.getLength(); i++) {
+			Node n = attributes.item(i);
+			params.put(n.getNodeName(), n.getNodeValue());
+		}
+		return new HandlerEntry(handler, params);
+	}
+
+	private static void s_parseMessageHandler(Element e, FeatureTemplate f) throws DOMException, ParsingException {
+		HandlerEntry he = s_makeHandlerEntry(e);
 		if (e.getAttribute("default").equals("true")) {
-			f.setDefaultMessageHandler(handler);
+			f.setDefaultMessageHandler(he);
 		} else {
 			String attr = e.getAttribute("cmd");
 			int command = (attr == null) ? 0 : Utils.from0xHexString(attr);
-			f.addMessageHandler(command, handler);
+			f.addMessageHandler(command, he);
 		}
 	}
 	private static void s_parseCommandHandler(Element e, FeatureTemplate f) throws ParsingException {
-		String handler = e.getTextContent();
-		if (handler == null) throw new ParsingException("Could not find CommandHandler for: " + e.getTextContent());
+		HandlerEntry he = s_makeHandlerEntry(e);
 		if (e.getAttribute("default").equals("true")) {
-			f.setDefaultCommandHandler(handler);
+			f.setDefaultCommandHandler(he);
 		} else {
 			Class<? extends Command> command = s_parseCommandClass(e.getAttribute("command"));
-			f.addCommandHandler(command, handler);
+			f.addCommandHandler(command, he);
 		}
 	}
 	private static void s_parseMessageDispatcher(Element e, FeatureTemplate f) throws DOMException, ParsingException {
@@ -122,9 +135,8 @@ public class FeatureTemplateLoader {
 		f.setMessageDispatcher(dispatcher);
 	}
 	private static void s_parsePollHandler(Element e, FeatureTemplate f) throws ParsingException {
-		String pollHandler = e.getTextContent();
-		if (pollHandler == null) throw new ParsingException("Could not find PollHandler: " + pollHandler);
-		f.setPollHandler(pollHandler);
+		HandlerEntry he = s_makeHandlerEntry(e);
+		f.setPollHandler(he);
 	}
 	
 	private static Class<? extends Command> s_parseCommandClass(String c) throws ParsingException {
@@ -144,7 +156,7 @@ public class FeatureTemplateLoader {
 			System.out.println(feature);
 			System.out.println("\tPOLL: " + feature.getPollHandler() + "\n\tDISPATCH: " + feature.getDispatcher());
 			System.out.println("\tDCH: " + feature.getDefaultCommandHandler() + "\n\tDMH: " + feature.getDefaultMessageHandler());
-			System.out.println("\tMSG HANDLERS: " + feature.getMessageHandlers());
+			System.out.println("\tMSG HANDLERS: " + feature.getMessageHandlers().size());
 			System.out.println("\tCMD HANDLERS: " + feature.getCommandHandlers());
 		}
 	}

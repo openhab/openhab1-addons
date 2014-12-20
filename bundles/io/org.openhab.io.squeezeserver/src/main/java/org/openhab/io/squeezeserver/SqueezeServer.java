@@ -347,6 +347,18 @@ public class SqueezeServer implements ManagedService {
 				+ line2 + " duration:" + String.valueOf(duration));
 	}
 	
+	/**
+	 * Send a generic command to a given player
+	 * @param playerId
+	 * @param command
+	 */
+	public void playerCommand(String playerId, String command) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return;
+		sendCommand(player.getMacAddress() + " " + command);
+	}
+	
 	public String language() {
 		return language;
 	}
