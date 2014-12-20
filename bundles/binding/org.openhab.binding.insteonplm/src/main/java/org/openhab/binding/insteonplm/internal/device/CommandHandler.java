@@ -70,7 +70,7 @@ public abstract class CommandHandler {
 
 	protected int getMaxLightLevel(InsteonPLMBindingConfig conf, int defaultLevel) {
 		HashMap<String, String> params = conf.getParameters();
-		if (conf.getFeature().equals("dimmer") && params.containsKey("dimmermax")) {
+		if (conf.getFeature().contains("dimmer") && params.containsKey("dimmermax")) {
 			String item = conf.getItemName();
 			String dimmerMax = params.get("dimmermax");
 			try {
