@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ebus;
+package org.openhab.binding.ebus.internal;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -16,14 +16,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
-import org.openhab.binding.ebus.connection.AbstractEBusConnector;
-import org.openhab.binding.ebus.connection.EBusCommandProcessor;
-import org.openhab.binding.ebus.connection.EBusConnectorEventListener;
-import org.openhab.binding.ebus.connection.EBusSerialConnector;
-import org.openhab.binding.ebus.connection.EBusTCPConnector;
-import org.openhab.binding.ebus.parser.EBusConfigurationProvider;
-import org.openhab.binding.ebus.parser.EBusTelegramParser;
-import org.openhab.binding.ebus.parser.EBusUtils;
+import org.openhab.binding.ebus.EBusBindingProvider;
+import org.openhab.binding.ebus.internal.connection.AbstractEBusConnector;
+import org.openhab.binding.ebus.internal.connection.EBusCommandProcessor;
+import org.openhab.binding.ebus.internal.connection.EBusConnectorEventListener;
+import org.openhab.binding.ebus.internal.connection.EBusSerialConnector;
+import org.openhab.binding.ebus.internal.connection.EBusTCPConnector;
+import org.openhab.binding.ebus.internal.parser.EBusConfigurationProvider;
+import org.openhab.binding.ebus.internal.parser.EBusTelegramParser;
+import org.openhab.binding.ebus.internal.utils.EBusUtils;
+import org.openhab.binding.ebus.internal.utils.StateUtils;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -132,7 +134,7 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 				} else {
 					logger.debug("Load eBus Parser Configuration \"{}\" ...", elem.trim());
 					configurationUrl = this.getClass().getResource(
-							"/META-INF/" + elem.trim() + "-configuration.json");
+							"/" + elem.trim() + "-configuration.json");
 				}
 
 				if(configurationUrl != null) {

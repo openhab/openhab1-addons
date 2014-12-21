@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ebus.parser;
+package org.openhab.binding.ebus.internal.parser;
 
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
@@ -20,7 +20,9 @@ import javax.script.CompiledScript;
 import javax.script.ScriptException;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.openhab.binding.ebus.EBusTelegram;
+import org.openhab.binding.ebus.internal.EBusTelegram;
+import org.openhab.binding.ebus.internal.utils.EBusUtils;
+import org.openhab.binding.ebus.internal.utils.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ebus.connection;
+package org.openhab.binding.ebus.internal.connection;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.openhab.binding.ebus.EBusTelegram;
-import org.openhab.binding.ebus.parser.EBusUtils;
+import org.openhab.binding.ebus.internal.EBusTelegram;
+import org.openhab.binding.ebus.internal.utils.EBusUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
