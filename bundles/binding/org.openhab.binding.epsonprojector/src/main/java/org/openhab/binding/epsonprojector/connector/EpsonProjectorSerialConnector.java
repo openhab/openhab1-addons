@@ -11,6 +11,8 @@ package org.openhab.binding.epsonprojector.connector;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Pauli Anttila
  * @since 1.3.0
  */
-public class EpsonProjectorSerialConnector implements EpsonProjectorConnector {
+public class EpsonProjectorSerialConnector implements EpsonProjectorConnector, SerialPortEventListener {
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(EpsonProjectorSerialConnector.class);
@@ -65,7 +67,11 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector {
 			if (in.markSupported()) {
 				in.reset();
 			}
-
+			
+			// RXTX serial port library causes high CPU load
+			// Start event listener, which will just sleep and slow down event loop
+			serialPort.addEventListener(this);
+			serialPort.notifyOnDataAvailable(true);
 		} catch (Exception e) {
 			throw new EpsonProjectorException(e);
 		}
@@ -88,6 +94,8 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector {
 			logger.debug("Close serial port");
 			serialPort.close();
 		}
+		
+		serialPort.removeEventListener();
 		
 		serialPort = null;
 		out = null;
@@ -151,4 +159,12 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector {
 		return null;
 	}
 
+	@Override
+	public void serialEvent(SerialPortEvent arg0) {
+		try {
+			logger.trace("RXTX library CPU load workaround, sleep forever");
+			Thread.sleep(Long.MAX_VALUE);
+		} catch (InterruptedException e) {
+		}
+	}
 }
