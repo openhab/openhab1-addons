@@ -57,6 +57,7 @@ public class GPIOPinLinux implements GPIOPin {
 	private EventListener eventListenerThread = null;
 
 	private int pinNumber;
+	private String pinName;
 	private long debounceInterval;
 	private Path activelowPath = null;
 	private Path directionPath = null;
@@ -68,13 +69,15 @@ public class GPIOPinLinux implements GPIOPin {
 	 * GPIO framework.
 	 * 
 	 * @param pinNumber the pin number as seen by the kernel
+	 * @param pinName the pin name
 	 * @param gpioPinDirectory path to pin directory in <code>sysfs</code>,
 	 * 		e.g. "/sys/class/gpio/gpio1"
 	 * @param debounceInterval default debounce interval
 	 */
-	public GPIOPinLinux(int pinNumber, String gpioPinDirectory, long debounceInterval) {
+	public GPIOPinLinux(int pinNumber, String pinName, String gpioPinDirectory, long debounceInterval) {
 
 		this.pinNumber = pinNumber;
+		this.pinName = pinName;
 
 		activelowPath = Paths.get(gpioPinDirectory + "/active_low");
 
@@ -424,7 +427,74 @@ public class GPIOPinLinux implements GPIOPin {
 		return pinNumber;
 	}
 
-	public long getDebounceInterval() {
+	public String getPinName() throws IOException {
+
+		String pinName;
+
+		try {
+			if (pinLock.readLock().tryLock(PINLOCK_TIMEOUT, PINLOCK_TIMEOUT_UNITS)) {
+				try {
+					pinName = this.pinName;
+				}
+				finally {
+					pinLock.readLock().unlock();
+				}
+			} else {
+
+				/* Something wrong happened, throw an exception and move on or we are risking to block the whole system */
+				throw new IOException("Read GPIO pin lock can't be aquired for " + PINLOCK_TIMEOUT + " " + PINLOCK_TIMEOUT_UNITS.toString());
+			}
+		} catch (InterruptedException e) {
+			throw new IOException("The thread was interrupted while waiting for read GPIO pin lock");
+		}
+
+		return pinName;
+	}
+
+	public void setPinName(String pinName) throws IOException {
+
+		if (pinName.isEmpty()) {
+			throw new IllegalArgumentException("Unsupported argument for 'pinName' parameter (" + pinName + ")");
+		}
+
+		try {
+			if (pinLock.writeLock().tryLock(PINLOCK_TIMEOUT, PINLOCK_TIMEOUT_UNITS)) {
+				try {
+					this.pinName = pinName;
+				}
+				finally {
+					pinLock.writeLock().unlock();
+				}
+			} else {
+				/* Something wrong happened, throw an exception and move on or we are risking to block the whole system */
+				throw new IOException("Write GPIO pin lock can't be aquired for " + PINLOCK_TIMEOUT + " " + PINLOCK_TIMEOUT_UNITS.toString());
+			}
+		} catch (InterruptedException e) {
+			throw new IOException("The thread was interrupted while waiting for write GPIO pin lock");
+		}	
+	}
+
+	public long getDebounceInterval() throws IOException {
+
+		long debounceInterval;
+
+		try {
+			if (pinLock.readLock().tryLock(PINLOCK_TIMEOUT, PINLOCK_TIMEOUT_UNITS)) {
+				try {
+					debounceInterval = this.debounceInterval;
+				}
+				finally {
+					pinLock.readLock().unlock();
+				}
+			} else {
+
+				/* Something wrong happened, throw an exception and move on or we are risking to block the whole system */
+				throw new IOException("Read GPIO pin lock can't be aquired for " + PINLOCK_TIMEOUT + " " + PINLOCK_TIMEOUT_UNITS.toString());
+			}
+		} catch (InterruptedException e) {
+			throw new IOException("The thread was interrupted while waiting for read GPIO pin lock");
+		}
+
 		return debounceInterval;
 	}
 

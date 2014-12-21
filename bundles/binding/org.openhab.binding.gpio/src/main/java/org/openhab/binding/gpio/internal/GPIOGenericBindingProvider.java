@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * 
  * <p>Allowed item configuration string is following:</p>
  * <p><code>
- * gpio="pin:PIN_NUMBER [debounce:DEBOUNCE_INTERVAL] [activelow:yes|no]"
+ * gpio="pin:PIN_NAME [debounce:DEBOUNCE_INTERVAL] [activelow:yes|no]"
  * </code></p>
  * <p>where:</p>
  * <p>
@@ -40,19 +40,22 @@ import org.slf4j.LoggerFactory;
  * "activelow" is set to "no", "debounce" - to global option in openHAB
  * configuration file (gpio:debounce) or 0 (zero) if neither is specified
  * <br>
- * PIN_NUMBER is the number of the pin as seen by the kernel
+ * PIN_NAME is the name of the pin, if pinmap file is used it should have
+ * corresponding entry there, if no pinmap file is used the value should be the
+ * pin number as seen by the kernel
  * <br>
  * DEBOUNCE_INTERVAL is the time interval in milliseconds when pin interrupts
  * are ignored to prevent bounce effect mainly on buttons. Note that underlying
- * OS isn't realtime nor the application is, so debounce implementation isn't
+ * OS isn't real time nor the application is, so debounce implementation isn't
  * something on which you can rely on 100%. You need to experiment with the
  * value here.</p>
  * <p>
  * Examples:</p>
  * <p><code>
+ * gpio="pin:P8_11"<br>
  * gpio="pin:49"<br>
  * gpio="pin:49 debounce:10"<br>
- * gpio="pin:49 activelow:yes"<br>
+ * gpio="pin:P8_11 activelow:yes"<br>
  * gpio="pin:49 debounce:10 activelow:yes"</code></p>
  * 
  * @author Dancho Penev
@@ -85,7 +88,7 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 
 		GPIOPinBindingConfig config = new GPIOPinBindingConfig();
 
-		/* Configuration string should be in the form "pin:NUMBER [debounse:NUMBER] [activelow:yes|no]" */
+		/* Configuration string should be in the form "pin:NAME [debounse:NUMBER] [activelow:yes|no]" */
 		String[] properties = bindingConfig.split(" ");
 
 		if (properties.length > 3) {
@@ -108,18 +111,7 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 			String value = keyValueStructure[1];
 
 			if (key.compareToIgnoreCase("pin") == 0) {
-				try {
-					config.pinNumber = Integer.parseInt(value);
-					if (config.pinNumber < 0) {
-						logger.error("Unsupported, negative value for pin number (" + value + ") in configuration string '" + bindingConfig + "'");
-						throw new BindingConfigParseException("Unsupported, negative value for pin number (" + value + ") in configuration string '"
-								+ bindingConfig + "'");
-					}
-				} catch (NumberFormatException e) {
-					logger.error("Unsupported, not numeric value for pin number (" + value + ") in configuration string '" + bindingConfig + "'");
-					throw new BindingConfigParseException("Unsupported, not numeric value for pin number (" + value + ") in configuration string '"
-							+ bindingConfig + "'");
-				}
+				config.pinName = value;
 			} else if (key.compareToIgnoreCase("debounce") == 0) {
 				try {
 					config.debounceInterval = Long.parseLong(value);
@@ -147,8 +139,8 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 			}
 		}
 		
-		/* Pin number wasn't configured */
-		if (config.pinNumber == GPIOBindingProvider.PINNUMBER_UNDEFINED) {
+		/* Pin name wasn't configured */
+		if (config.pinName == GPIOBindingProvider.PINNAME_UNDEFINED) {
 			logger.error("Mandatory paratemer (pin) is missing in configuration string '" + bindingConfig + "'");
 			throw new BindingConfigParseException("Mandatory paratemer (pin) is missing in configuration string '" + bindingConfig + "'");
 		}
@@ -163,7 +155,7 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 		addBindingConfig(item, config);
 	}
 
-	public int getPinNumber(String itemName) {
+	public String getPinName(String itemName) {
 		
 		GPIOPinBindingConfig config = (GPIOPinBindingConfig) bindingConfigs.get(itemName);
 
@@ -171,7 +163,7 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 			throw new IllegalArgumentException("The item name '" + itemName + "'is invalid or the item isn't configured");
 		}
 
-		return config.pinNumber; 
+		return config.pinName; 
 	}
 
 	public long getDebounceInterval(String itemName) {
@@ -220,12 +212,12 @@ public class GPIOGenericBindingProvider extends AbstractGenericBindingProvider i
 	 * GPIO binding configuration data structure.
 	 * 
 	 * @author Dancho Penev
-	 * @since 1.3.1
+	 * @since 1.5.0
 	 */
 	public class GPIOPinBindingConfig implements BindingConfig {
 
-		/** Configured pin number */
-		public int pinNumber = GPIOBindingProvider.PINNUMBER_UNDEFINED;
+		/** Configured pin name */
+		public String pinName = GPIOBindingProvider.PINNAME_UNDEFINED;
 
 		/** Configured pin debounce interval in milliseconds */
 		public long debounceInterval = GPIOBindingProvider.DEBOUNCEINTERVAL_UNDEFINED;

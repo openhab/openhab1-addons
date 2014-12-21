@@ -345,10 +345,23 @@
 									<data>
                                         <src>${basedir}/target/distribution-${project.version}-runtime.zip</src>
                                         <type>archive</type>
-                                        <excludes>configurations/**,contexts/**,etc/**,start.bat,start.sh,start_debug.bat,start_debug.sh</excludes>
+                                        <excludes>configurations/**,contexts/**,etc/**,webapps/static/**,start.bat,start.sh,start_debug.bat,start_debug.sh</excludes>
                                         <mapper>
                                             <type>perm</type>
                                             <prefix>/usr/share/openhab</prefix>
+                                            <user>root</user>
+                                            <group>root</group>
+                                            <filemode>644</filemode>
+                                            <dirmode>755</dirmode>
+                                        </mapper>
+                                    </data>
+									<data>
+                                        <src>${basedir}/target/distribution-${project.version}-runtime.zip</src>
+                                        <type>archive</type>
+                                        <includes>webapps/static/**</includes>
+                                        <mapper>
+                                            <type>perm</type>
+                                            <prefix>/var/lib/openhab</prefix>
                                             <user>root</user>
                                             <group>root</group>
                                             <filemode>644</filemode>

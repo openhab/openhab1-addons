@@ -11,6 +11,7 @@ package org.openhab.io.gpio.internal;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import org.eclipse.osgi.framework.console.CommandProvider;
 import org.openhab.io.gpio.GPIO;
 import org.openhab.io.gpio.linux.GPIOLinux;
 import org.osgi.framework.BundleActivator;
@@ -36,6 +37,8 @@ public class GPIOActivator implements BundleActivator {
 	 */
 	public void start(BundleContext context) throws Exception {
 
+		logger.debug("GPIO IO module has been started.");
+
 		/* Linux user space GPIO implementation, "sysfs" based */
 		if (System.getProperty("os.name").toLowerCase().startsWith("linux")) {
 
@@ -44,8 +47,9 @@ public class GPIOActivator implements BundleActivator {
 			Dictionary<String, String> properties = new Hashtable<String, String>();
 			properties.put("service.pid", "org.openhab.gpio");
 
-			context.registerService(GPIO.class, gpioLinux, null);
 			context.registerService(ManagedService.class, gpioLinux, properties);
+			context.registerService(CommandProvider.class, gpioLinux, null);
+			context.registerService(GPIO.class, gpioLinux, null);
 		} else {
 			/* Throwing exception is not implemented because it's causing Equinox to constantly trying to start the bundle */
 			logger.error("No supported operating system was found, GPIO service won't be available");
@@ -55,5 +59,7 @@ public class GPIOActivator implements BundleActivator {
 	/**
 	 * Called when this bundle is stopped by OSGi Framework.
 	 */
-	public void stop(BundleContext context) throws Exception {}
+	public void stop(BundleContext context) throws Exception {
+		logger.debug("GPIO IO module has been stopped.");
+	}
 }

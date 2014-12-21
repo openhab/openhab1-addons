@@ -28,6 +28,40 @@
       <plugin>
         <groupId>org.vafer</groupId>
         <artifactId>jdeb</artifactId>
+		<executions>
+		  <execution>
+			<phase>package</phase>
+			<goals>
+			  <goal>jdeb</goal>
+			</goals>
+			<configuration>
+			  <controlDir combine.self="override">${basedir}/src/deb/control</controlDir>
+			  <dataSet combine.self="override">
+				<data>
+				  <type>directory</type>
+				  <src>${basedir}/src/deb/etc/openhab/configurations</src>
+				  <mapper>
+				    <type>perm</type>
+					<prefix>/etc/openhab/configurations</prefix>
+					<user>root</user>
+				    <group>root</group>
+				  </mapper>
+				</data>
+				<data>
+				  <src>${basedir}/target/${project.artifactId}-${project.version}.jar</src>
+				  <type>file</type>
+				  <mapper>
+					<type>perm</type>
+					<prefix>/usr/share/openhab/addons</prefix>
+					<user>root</user>
+					<group>root</group>
+					<filemode>644</filemode>
+				  </mapper>
+				</data>
+			  </dataSet>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

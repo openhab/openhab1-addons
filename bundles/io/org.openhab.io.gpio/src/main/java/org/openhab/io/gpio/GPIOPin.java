@@ -64,6 +64,23 @@ public interface GPIOPin {
 	public int getPinNumber() throws IOException;
 
 	/**
+	 * Query the pin name.
+	 * 
+	 * @return current pin name
+	 * @throws IOException in case of inability to query the name
+	 */
+	public String getPinName() throws IOException;
+
+
+	/**
+	 * Sets pin name.
+	 * 
+	 * @param pinName new pin name
+	 * @throws IOException in case of inability to set pin name
+	 */
+	public void setPinName(String pinName) throws IOException;
+
+	/**
 	 * Query the debounce interval.
 	 * 
 	 * @return current debounce interval in milliseconds
