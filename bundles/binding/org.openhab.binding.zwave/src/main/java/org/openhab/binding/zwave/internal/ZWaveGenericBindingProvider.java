@@ -66,10 +66,12 @@ public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider 
 		try {
 			nodeId = Integer.parseInt(segments[0]);
 		} catch (Exception e) {
-			throw new BindingConfigParseException(segments[1] + " is not a valid node id.");
+			logger.error("{}: Invalid node ID '{}'", item.getName(), segments[0]);
+			throw new BindingConfigParseException(segments[0] + " is not a valid node id.");
 		}
 
 		if(nodeId <= 0 || nodeId > 232) {
+			logger.error("{}: Invalid node ID '{}'", item.getName(), nodeId);
 			throw new BindingConfigParseException(nodeId + " is not a valid node number.");			
 		}
 
@@ -83,23 +85,30 @@ public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider 
 					for (String keyValuePairString : segments[i].split(",")) {
 						String[] pair = keyValuePairString.split("=");
 						String key = pair[0].trim().toLowerCase();
+						String value = pair[1].trim().toLowerCase();
 
 						if (key.equals("refresh_interval")) {
-							refreshInterval = Integer.parseInt(pair[1].trim());
+							refreshInterval = Integer.parseInt(value);
 						} else {
-							arguments.put(key, pair[1].trim().toLowerCase());
+							arguments.put(key, value);
 						}
 
 						// Sanity check the command class
 						if (key.equals("command")) {
-							if(ZWaveCommandClass.CommandClass.getCommandClass(key) == null) {
-								throw new BindingConfigParseException("Invalid command class " + key);
+							if(ZWaveCommandClass.CommandClass.getCommandClass(pair[1]) == null &&
+									value.equals("info") == false) {
+								logger.error("{}: Invalid command class '{}'", item.getName(), pair[1].toUpperCase());
+								throw new BindingConfigParseException("Invalid command class " + pair[1].toUpperCase());
 							}
 						}
-
 					}
 				} else {
-					endpoint = Integer.parseInt(segments[i]); 
+					try {
+						endpoint = Integer.parseInt(segments[i]); 
+					} catch (Exception e) {
+						logger.error("{}: Invalid endpoint ID '{}'", item.getName(), segments[i]);
+						throw new BindingConfigParseException(segments[i] + " is not a valid endpoint.");
+					}
 				}
 			} catch (Exception e){
 				throw new BindingConfigParseException(segments[i] + " is not a valid argument.");
