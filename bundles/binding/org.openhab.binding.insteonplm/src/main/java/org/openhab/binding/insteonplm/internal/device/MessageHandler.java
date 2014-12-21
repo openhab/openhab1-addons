@@ -314,16 +314,10 @@ public abstract class MessageHandler {
 				if (button < 0) {
 					handleNoButtons(cmd2, a, msg);
 				} else {
-					// For the 2487S observed cmd1=19 replies with screwed
-					// up cmd2. Filter just on cmd1== 0
-					if (cmd1 == 0) {
-						boolean isOn = isLEDLit(cmd2, button);
-						logger.info("{}: dev {} button {} switched to {}", nm(),
-														a, button, isOn ? "ON" : "OFF");
-						m_feature.publish(isOn ? OnOffType.ON : OnOffType.OFF, StateChangeType.CHANGED);
-					} else {
-						logger.debug("{} dropping status reply with cmd {}", nm(), Utils.getHexString(cmd1));
-					}
+					boolean isOn = isLEDLit(cmd2, button);
+					logger.info("{}: dev {} button {} switched to {}", nm(),
+													a, button, isOn ? "ON" : "OFF");
+					m_feature.publish(isOn ? OnOffType.ON : OnOffType.OFF, StateChangeType.CHANGED);
 				}
 			} catch (FieldException e) {
 				logger.error("error parsing {}: ", msg, e);

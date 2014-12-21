@@ -55,7 +55,7 @@
     <message-handler cmd="0x19" button="1" group="1">DimmerRequestReplyHandler</message-handler>
     <command-handler command="PercentType">PercentHandler</command-handler>
     <command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
-    <poll-handler>LEDBitPollHandler</poll-handler>
+    <poll-handler>DefaultPollHandler</poll-handler>
 </feature>
 <feature name="KeyPadButton2">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
