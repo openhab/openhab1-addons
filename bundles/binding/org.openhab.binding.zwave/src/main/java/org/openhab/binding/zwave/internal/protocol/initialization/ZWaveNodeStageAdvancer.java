@@ -117,6 +117,9 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	private ArrayBlockingQueue<SerialMessage> msgQueue;
 	private boolean freeToSend = true;
 	private boolean stageAdvanced = true;
+	
+	private static final int MAX_RETRIES = 10;
+	private int retryCount = 0;
 
 	private Date queryStageTimeStamp;
 	private NodeStage currentStage;
@@ -255,12 +258,27 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		// only outstanding requests are returned.
 		// This continues until there are no requests required.
 		stageAdvanced = false;
-		
+
 		// We run through all stages until one queues a message.
 		// Then we will wait for the response before continuing
 		do {
-			logger.debug("NODE {}: Node advancer: loop - {}: stageAdvanced({})", node.getNodeId(),
-					currentStage.toString(), stageAdvanced);
+			// Ensure we don't get stuck in an endless loop trying to initialise
+			// something that is broken, or not responding to a particular request
+			if(stageAdvanced == true) {
+				retryCount = 0;
+			} else {
+				retryCount++;
+				
+				if(retryCount > MAX_RETRIES) {
+					logger.error("NODE {}: Node advancer: Retries exceeded at {}. Node is DEAD!", 
+							node.getNodeId(), currentStage.toString());
+					currentStage = NodeStage.DEAD;
+					break;
+				}
+			}
+
+			logger.debug("NODE {}: Node advancer: loop - {} try {}: stageAdvanced({})", node.getNodeId(),
+					currentStage.toString(), retryCount, stageAdvanced);
 
 			switch (currentStage) {
 			case EMPTYNODE:
@@ -278,8 +296,11 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				break;
 
 			case WAIT:
+				logger.debug("NODE {}: Node advancer: WAIT - Listening={}, FrequentlyListening={}", node.getNodeId(),
+						node.isListening(), node.isFrequentlyListening());
 				// If the node is listening, or frequently listening, then we progress.
 				if(node.isListening() == true || node.isFrequentlyListening() == true) {
+					logger.debug("NODE {}: Node advancer: WAIT - Advancing", node.getNodeId());
 					break;
 				}
 
@@ -798,9 +819,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 						node.getNodeId(), currentStage.toString(), serialMessage.getMessageClass(),
 						serialMessage.getMessageType(), completeEvent.getState());
 
-				// If this frame was successfully sent, then handle the stage
-				// advancer
-				if (((ZWaveTransactionCompletedEvent) event).getState()) {
+				// If this frame was successfully sent, then handle the stage advancer
+				if (((ZWaveTransactionCompletedEvent) event).getState() == true) {
 					handleNodeQueue(serialMessage);
 				}
 				break;
