@@ -625,6 +625,11 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					break;
 				}
 
+				if (wakeupCommandClass.getInterval() == 0) {
+					logger.debug("NODE {}: Node advancer: WAKEUP - Interval is currently 0. Skipping stage.", node.getNodeId(), controller.getOwnNodeId());
+					break;
+				}
+
 				logger.debug("NODE {}: Node advancer: WAKEUP - Set wakeup node to controller ({})", node.getNodeId(), controller.getOwnNodeId());
 
 				// Set the wake-up interval, and request an update
