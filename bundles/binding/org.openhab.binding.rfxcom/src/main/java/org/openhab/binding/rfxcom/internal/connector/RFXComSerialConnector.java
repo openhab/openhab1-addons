@@ -13,6 +13,8 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TooManyListenersException;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -123,7 +126,7 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 		_listeners.remove(listener);
 	}
 
-	public class SerialReader extends Thread {
+	public class SerialReader extends Thread implements SerialPortEventListener {
 		boolean interrupted = false;
 		InputStream in;
 
@@ -150,6 +153,14 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 			boolean start_found = false;
 
 			logger.debug("Data listener started");
+			
+			// RXTX serial port library causes high CPU load
+			// Start event listener, which will just sleep and slow down event loop
+			try {
+				serialPort.addEventListener(this);
+				serialPort.notifyOnDataAvailable(true);
+			} catch (TooManyListenersException e) {
+			}
 			
 			try {
 
@@ -219,7 +230,17 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 				logger.error("Reading from serial port failed", e);
 			}
 			
+			serialPort.removeEventListener();
 			logger.debug("Data listener stopped");
+		}
+
+		@Override
+		public void serialEvent(SerialPortEvent arg0) {
+			try {
+				logger.trace("RXTX library CPU load workaround, sleep forever");
+				sleep(Long.MAX_VALUE);
+			} catch (InterruptedException e) {
+			}
 		}
 	}
 }
