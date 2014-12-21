@@ -6,12 +6,11 @@
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-v10.html
 */
-package org.openhab.binding.ebus.connection;
+package org.openhab.binding.ebus.internal.connection;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
-import gnu.io.RXTXVersion;
 import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
@@ -49,9 +48,7 @@ public class EBusSerialConnector extends AbstractEBusConnector {
 	public boolean connect() throws IOException {
 		try {
 			final CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port);
-			logger.debug("Use RXTX Version {}", RXTXVersion.getVersion());
-			
-			
+
 			if(portIdentifier != null) {
 				serialPort = (SerialPort) portIdentifier.open("openhab-ebus", 5000);
 				serialPort.setSerialPortParams(2400, SerialPort.DATABITS_8,

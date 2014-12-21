@@ -6,9 +6,9 @@
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-v10.html
 */
-package org.openhab.binding.ebus.connection;
+package org.openhab.binding.ebus.internal.connection;
 
-import org.openhab.binding.ebus.EBusTelegram;
+import org.openhab.binding.ebus.internal.EBusTelegram;
 
 /**
 * @author Christian Sowada

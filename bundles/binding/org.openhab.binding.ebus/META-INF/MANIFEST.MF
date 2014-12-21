@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: eBus Binding
 Bundle-SymbolicName: org.openhab.binding.ebus;singleton:=true
 Bundle-Version: 1.7.0.qualifier
-Bundle-Activator: org.openhab.binding.ebus.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.lang,
  org.codehaus.jackson,

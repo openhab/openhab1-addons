@@ -6,13 +6,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ebus.parser;
+package org.openhab.binding.ebus.internal.utils;
 
 import java.nio.ByteBuffer;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.openhab.binding.ebus.EBusTelegram;
+import org.openhab.binding.ebus.internal.EBusTelegram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

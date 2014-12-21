@@ -6,7 +6,7 @@
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-v10.html
 */
-package org.openhab.binding.ebus.connection;
+package org.openhab.binding.ebus.internal.connection;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -54,9 +54,7 @@ public class EBusTCPConnector extends AbstractEBusConnector {
 			
 			inputStream = socket.getInputStream();
 			outputStream = socket.getOutputStream();
-			
-			logger.debug("TCP connection established ...");
-			
+
 			return true;
 		} catch (Exception e) {
 			logger.error(e.toString(), e);
@@ -69,9 +67,6 @@ public class EBusTCPConnector extends AbstractEBusConnector {
 	 */
 	@Override
 	public boolean disconnect() throws IOException  {
-		
-		logger.debug("TCP connection disconnected ...");
-		
 		if(socket != null) {
 			socket.close();
 			socket = null;

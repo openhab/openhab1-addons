@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.ebus.connection;
+package org.openhab.binding.ebus.internal.connection;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.ebus.EBusBindingProvider;
-import org.openhab.binding.ebus.parser.EBusConfigurationProvider;
-import org.openhab.binding.ebus.parser.EBusUtils;
+import org.openhab.binding.ebus.internal.parser.EBusConfigurationProvider;
+import org.openhab.binding.ebus.internal.utils.EBusUtils;
 import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingProvider;
 import org.slf4j.Logger;
