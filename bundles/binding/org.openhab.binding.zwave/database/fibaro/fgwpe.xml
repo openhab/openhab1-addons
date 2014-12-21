@@ -343,7 +343,52 @@ Available settings: 1 000 - 32 000 (100W - 3200W).]]></Help>
 			</Item>
 			<Help lang="en"><![CDATA[  ]]></Help>
 		</Parameter>
-		
+
+		<Parameter>
+			<Index>62</Index>
+			<Type>byte</Type>
+			<Default>8</Default>
+			<Size>1</Size>
+			<Label lang="en">LED color when device is off</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">LED will use predefined steps depending on the last power when on</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">White illumination</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Red illumination</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Green illumination</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Blue illumination</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Yellow illumination</Label>
+			</Item>
+			<Item>
+				<Value>6</Value>
+				<Label lang="en">Cyan illumination</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Magenta illumination</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">NO illumination</Label>
+			</Item>
+			<Help lang="en"><![CDATA[  ]]></Help>
+		</Parameter>
+
 		<Parameter>
 			<Index>63</Index>
 			<Type>byte</Type>

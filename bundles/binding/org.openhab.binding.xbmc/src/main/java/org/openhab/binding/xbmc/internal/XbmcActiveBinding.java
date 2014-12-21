@@ -129,8 +129,15 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			connector.addItem(itemName, property);
 			
 			// update the player status so any current value is initialised
-			if (connector.isConnected())
+			if (connector.isConnected()) {
 				connector.updatePlayerStatus();
+			}
+			
+			if (property.startsWith("Application")) {
+				connector.requestApplicationUpdate();
+			} else if (property.equals("System.State")) {
+				connector.updateSystemStatus();
+			}
 		}
 	}
 	
@@ -164,6 +171,18 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 				XbmcBindingProvider xbmcProvider = (XbmcBindingProvider) provider;
 				if (xbmcProvider.getItemNames().contains(itemName)) {
 					return xbmcProvider.isInBound(itemName);
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean isOutBound(String itemName) {
+		for (BindingProvider provider : providers) {
+			if (provider instanceof XbmcBindingProvider) {
+				XbmcBindingProvider xbmcProvider = (XbmcBindingProvider) provider;
+				if (xbmcProvider.getItemNames().contains(itemName)) {
+					return xbmcProvider.isOutBound(itemName);
 				}
 			}
 		}
@@ -229,6 +248,8 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			if (connector.isConnected()) {
 				// we are still connected but send a ping to make sure
 				connector.ping();
+				// refresh all players
+				connector.updatePlayerStatus(true);
 			} else {
 				// broken connection so attempt to reconnect
 				logger.debug("Broken connection found for '{}', attempting to reconnect...", entry.getKey());
@@ -247,7 +268,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
         // only interested in 'outbound' items
-		if (isInBound(itemName)) {
+		if (!isOutBound(itemName)) {
 			logger.warn("Received command ({}) for item {} which is configured as 'in-bound', ignoring", command.toString(), itemName);
 			return;
 		}
@@ -270,12 +291,22 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			// TODO: handle other commands
 			if (property.equals("Player.PlayPause"))
 				connector.playerPlayPause();
-			if (property.equals("Player.Stop"))			
+			else if (property.equals("Player.Open"))
+				connector.playerOpen(command.toString());
+			else if (property.equals("Player.Stop"))			
 				connector.playerStop();
-			if (property.equals("GUI.ShowNotification"))
+			else if (property.equals("GUI.ShowNotification"))
 				connector.showNotification("openHAB", command.toString());
-			if (property.equals("System.Shutdown") && command == OnOffType.OFF)
+			else if (property.equals("System.Shutdown") && command == OnOffType.OFF)
 				connector.systemShutdown();
+			else if (property.equals("System.Suspend") && command == OnOffType.OFF)
+				connector.systemSuspend();
+			else if (property.equals("System.Hibernate") && command == OnOffType.OFF)
+				connector.systemHibernate();
+			else if (property.equals("System.Reboot") && command == OnOffType.OFF)
+				connector.systemReboot();
+			else if (property.equals("Application.Volume"))
+				connector.applicationSetVolume(command.toString());
 		} catch (Exception e) {
 			logger.error("Error handling command", e);
 		}
@@ -288,23 +319,28 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 	protected void internalReceiveUpdate(String itemName, State newState) {
 		try {
 			String property = getProperty(itemName);
-			
-			// TODO: handle other updates
-			if (property.equals("GUI.ShowNotification")) {
-				String xbmcInstance = getXbmcInstance(itemName);
-				XbmcConnector connector = getXbmcConnector(xbmcInstance);
 
-				if (connector == null) {
-					logger.warn("Received update ({}) for item {} but no XBMC connector found for {}, ignoring", newState.toString(), itemName, xbmcInstance);
-					return;
-				}
-				if (!connector.isConnected()) {
-					logger.warn("Received update ({}) for item {} but the connection to the XBMC instance {} is down, ignoring", newState.toString(), itemName, xbmcInstance);
-					return;
-				}
+			String xbmcInstance = getXbmcInstance(itemName);
+			XbmcConnector connector = getXbmcConnector(xbmcInstance);
 
-				connector.showNotification("openHAB", newState.toString());
+			if (connector == null) {
+				logger.warn("Received update ({}) for item {} but no XBMC connector found for {}, ignoring", newState.toString(), itemName, xbmcInstance);
+				return;
 			}
+			if (!connector.isConnected()) {
+				logger.warn("Received update ({}) for item {} but the connection to the XBMC instance {} is down, ignoring", newState.toString(), itemName, xbmcInstance);
+				return;
+			}
+
+			// TODO: handle other updates
+			if (property.equals("GUI.ShowNotification")) { 
+				connector.showNotification("openHAB", newState.toString());			
+			} else if (property.equals("Player.Open")) {
+				connector.playerOpen(newState.toString());
+			} else if (property.equals("Application.SetVolume")) {
+				connector.applicationSetVolume(newState.toString());
+			}
+
 		} catch (Exception e) {
 			logger.error("Error handling update", e);
 		}

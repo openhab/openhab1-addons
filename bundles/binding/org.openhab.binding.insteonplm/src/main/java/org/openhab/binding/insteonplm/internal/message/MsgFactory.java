@@ -60,8 +60,9 @@ public class MsgFactory {
 	 * processData() needs to be called until it returns null, indicating that no
 	 * more messages can be formed from the data buffer.
 	 * @return a valid message, or null if the message is not complete
+	 * @throws IOException if data was received with unknown command codes
 	 */
-	public Msg processData() {
+	public Msg processData() throws IOException {
 		// handle the case where we get a pure nack
 		if (m_end > 0 && m_buf[0] == 0x15) {
 			logger.trace("got pure nack!");
@@ -77,6 +78,7 @@ public class MsgFactory {
 		if (m_end > 0 && m_buf[0] != 0x02) {
 			logger.error("incoming message does not start with 0x02, searching for start");
 			drainBuffer();
+			throw new IOException("message does not start with 0x02!");
 		}
 		// Now see if we have enough data for a complete message.
 		// If not, we return null, and expect this method to be called again
@@ -89,11 +91,13 @@ public class MsgFactory {
 			isExtended = Msg.s_isExtended(m_buf, m_end, headerLength);
 			logger.trace("header length expected: {} extended: {}", headerLength, isExtended);
 			if (headerLength < 0) {
-				logger.debug("got unknown command code {}, draining!", Utils.getHexByte(m_buf[1]));
+				String cmdCode = Utils.getHexByte(m_buf[1]);
+				logger.debug("got unknown command code {}, draining!", cmdCode);
 				// got unknown command code, drain the buffer and wait for more data
 				removeFromBuffer(1); // get rid of the leading 0x02
 				drainBuffer(); // this will drain until end or it finds the next 0x02
 				msgLen = -1; // signal that we don't have a message
+				throw new IOException("got unknown command code: " + cmdCode);
 			} else if (headerLength >= 2) {
 				if (m_end >= headerLength) {
 					// only when the header is complete do we know that isExtended is correct!

@@ -25,14 +25,15 @@ public class TellstickController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TellstickController.class);
 	private long lastSend = 0;
-	private static final int INTERVAL_BETWEEN_SEND = 250;
+	public static final long DEFAULT_INTERVAL_BETWEEN_SEND = 250;
 
 	public void handleSendEvent(TellstickBindingConfig config, TellstickDevice dev, Command command)
 			throws TellstickException {
 
 		int resend = config.getResend();
+		long resendInterval = config.getResendInterval();
 		for (int i = 0; i < resend; i++) {
-			checkLastAndWait();
+			checkLastAndWait(resendInterval);
 			logger.info("Send " + command + " to " + dev + " time=" + i + " conf " + config);
 			switch (config.getValueSelector()) {
 
@@ -40,7 +41,7 @@ public class TellstickController {
 				if (command == OnOffType.ON) {
 					if (config.getUsageSelector() == TellstickValueSelector.DIMMABLE) {
 						turnOff(dev);
-						checkLastAndWait();
+						checkLastAndWait(resendInterval);
 					}
 					turnOn(config, dev);
 				} else if (command == OnOffType.OFF) {
@@ -72,20 +73,26 @@ public class TellstickController {
 		if (strValue != null) {
 			 value = Double.valueOf(strValue);
 		}
-		int precent = (int) ((value / 255) * 100);
+		int percent = (int) Math.round((value / 255) * 100);
 		if (IncreaseDecreaseType.INCREASE == increaseDecreaseType) {			
-			precent = Math.min(precent + 10, 100);			
+			percent = Math.min(percent + 10, 100);			
 		} else if (IncreaseDecreaseType.DECREASE == increaseDecreaseType) {
-			precent = Math.max(precent - 10, 0);				
+			percent = Math.max(percent - 10, 0);				
 		}
 		
-		dim(dev, new PercentType(precent));
+		dim(dev, new PercentType(percent));
 	}
 
 	private void dim(TellstickDevice dev, PercentType command) throws TellstickException {
 		double value = command.doubleValue();
-		double tdVal = (value / 100) * 255;
-		if (dev instanceof DimmableDeviceIntf) {
+		
+		// 0 means OFF and 100 means ON
+		if(value == 0 && dev instanceof DeviceIntf) {
+			((DeviceIntf) dev).off();
+		} else if(value == 100 && dev instanceof DeviceIntf) {
+			((DeviceIntf) dev).on();
+		} else if (dev instanceof DimmableDeviceIntf) {
+			long tdVal = Math.round((value / 100) * 255);
 			((DimmableDeviceIntf) dev).dim((int) tdVal);
 		} else {
 			throw new RuntimeException("Cannot send DIM to " + dev);
@@ -108,11 +115,11 @@ public class TellstickController {
 		}
 	}
 
-	private void checkLastAndWait() {
-		while ((System.currentTimeMillis() - lastSend) < INTERVAL_BETWEEN_SEND) {
-			logger.info("Wait for " + INTERVAL_BETWEEN_SEND + " millisec");
+	private void checkLastAndWait(long resendInterval) {
+		while ((System.currentTimeMillis() - lastSend) < resendInterval) {
+			logger.info("Wait for " + resendInterval + " millisec");
 			try {
-				Thread.sleep(INTERVAL_BETWEEN_SEND);
+				Thread.sleep(resendInterval);
 			} catch (InterruptedException e) {
 				logger.error("Failed to sleep", e);
 			}

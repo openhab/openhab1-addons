@@ -57,7 +57,7 @@
         <Label lang="en">ALL ON active / ALL OFF disabled</Label>
       </Item>
       <Item>
-        <Value>255</Value>
+        <Value>-1</Value>
         <Label lang="en">ALL ON active / ALL OFF active</Label>
       </Item>
       <Help lang="en">Activate/Deactive ALL ON/OFF</Help>

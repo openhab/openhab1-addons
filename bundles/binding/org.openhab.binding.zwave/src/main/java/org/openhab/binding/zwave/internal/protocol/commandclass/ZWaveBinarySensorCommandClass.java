@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Binary Sensor command class. Binary sensors indicate there
@@ -38,6 +39,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("binarySensorCommandClass")
 public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveBinarySensorCommandClass.class);
 
 	private static final int MAX_SUPPORTED_VERSION = 2;
@@ -83,7 +85,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 				int value = serialMessage.getMessagePayloadByte(offset + 1);
 
 				SensorType sensorType = SensorType.UNKNOWN;
-				if(this.getVersion() > 1) {
+				if(this.getVersion() > 1 && serialMessage.getMessagePayload().length > offset + 2) {
 					logger.debug("Processing Sensor Type {}", serialMessage.getMessagePayloadByte(offset + 2));
 					// For V2, we have the sensor type after the value
 					sensorType = SensorType.getSensorType(serialMessage.getMessagePayloadByte(offset + 2));

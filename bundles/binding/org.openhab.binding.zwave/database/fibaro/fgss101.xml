@@ -130,6 +130,17 @@ In the case of alarm frames the alarm priority is specified. Possible parameter 
 			<Help lang="en"><![CDATA[Transmitting the alarm or control frame in "broadcast" mode (i.e. to all devices within range), information sent in this mode is not repeated by the mesh network.<BR/><B>NOTE:</B> If the broadcast mode of information transmission is activated for a given channel, then transmission of information in singlecast mode to devices assigned to the association group of this channel is deactivated.]]></Help>
 		</Parameter>
 		<Parameter>
+			<Index>73</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Minimum>-1000</Minimum>
+			<Maximum>1000</Maximum>
+			<Label lang="en">Temperature measurement compensation</Label>
+			<Help lang="en"><![CDATA[Temperature value to be added to or deducted from the current measured temperature<BR/>
+			-1000 0,1°C - 1000 0,1°C]]></Help>
+		</Parameter>
+		<Parameter>
 			<Index>80</Index>
 			<Type>byte</Type>
 			<Default>1</Default>
@@ -137,6 +148,15 @@ In the case of alarm frames the alarm priority is specified. Possible parameter 
 			<Label lang="en">Z-Wave range test interval</Label>
 			<Help lang="en"><![CDATA[Time period between the consecutive Z-Wave network range tests.<BR/>
 			0 10min[10min-24h] - 17 10min[10min-24h]	   ->  	0 – Z-Wave network range test inactive]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>81</Index>
+			<Type>byte</Type>
+			<Default>54</Default>
+			<Size>1</Size>
+			<Label lang="en">Temperature alarm threshold</Label>
+			<Help lang="en"><![CDATA[0	   ->  	0 – temperature alarm inactive<BR/>
+			2 °C - 100 °C	   ->  Temperature]]></Help>
 		</Parameter>
 		<Parameter>
 			<Index>82</Index>
@@ -177,6 +197,86 @@ In the case of alarm frames the alarm priority is specified. Possible parameter 
 			</Item>
 			<Label lang="en">Black Box sensitivity level</Label>
 			<Help lang="en"><![CDATA[Parameter specifies temperature and smoke level after which the Black Box starts recording them.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>84</Index>
+			<Type>byte</Type>
+			<Default>10</Default>
+			<Minimum>-126</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Malfunction alarm</Label>
+			<Help lang="en"><![CDATA[Time interval in which malfuntion alarm, if detected, is repeated using visual and acoustic alarms.<BR/>
+			-126 100ms[100ms-25,5s] - 127 100ms[100ms-25,5s]]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>85</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Minimum>-126</Minimum>
+			<Maximum>127</Maximum>
+			<Size>1</Size>
+			<Label lang="en">Temperature alarm</Label>
+			<Help lang="en"><![CDATA[Time interval in which temperature alarm, if detected, is repeated using visual and acoustic alarms.<BR/>
+			-126 100ms[100ms-25,5s] - 127 100ms[100ms-25,5s] -> 5 means 500ms]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>86</Index>
+			<Type>byte</Type>
+			<Default>360</Default>
+			<Minimum>1</Minimum>
+			<Maximum>17280</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Lack of the Z-Wave range alarm</Label>
+			<Help lang="en"><![CDATA[Time interval in which lack of the Z-Wave network alarm, if detected, is repeated using visual and acoustic alarms.<BR/>
+			1 5s [5s-24h] - 17280 5s [5s-24h]	   ->  	360 means 30min]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>87</Index>
+			<Type>byte</Type>
+			<Default>360</Default>
+			<Minimum>1</Minimum>
+			<Maximum>17280</Maximum>
+			<Size>2</Size>
+			<Label lang="en">Low battery alarm</Label>
+			<Help lang="en"><![CDATA[Time interval in which low battery alarm, if detected, is repeated using visual and acoustic alarms.<BR/>
+			1 5s [5s-24h] - 17280 5s [5s-24h]	   ->  	360 means 30min]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>88</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Ignore temperature compensation</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Include temperature compensation</Label>
+			</Item>
+			<Label lang="en">Temperature measurement compensation for report</Label>
+			<Help lang="en"><![CDATA[Consider temperature measurement compensation (parameter 73) when sending temperature report.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>89</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Tamper alarm inactive</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Tamper alarm active, with cancellation option available</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Tamper alarm active, without cancellation option</Label>
+			</Item>
+			<Label lang="en">Tamper alarm</Label>
+			<Help lang="en"><![CDATA[Activates/inactivates temper switch alarm]]></Help>
 		</Parameter>
 	</Configuration>
 

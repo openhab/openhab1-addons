@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+        <Model>HEM-G2</Model>
+        <Label lang="en">Home Energy Meter G2</Label>
+        <CommandClasses>
+                <Class><id>0x20</id></Class>
+                <Class><id>0x31</id></Class>
+                <Class><id>0x32</id></Class>
+                <Class><id>0x60</id></Class>
+                <Class><id>0x70</id></Class>
+                <Class><id>0x72</id></Class>
+                <Class><id>0x80</id></Class>
+                <Class><id>0x84</id></Class>
+                <Class><id>0x85</id></Class>
+                <Class><id>0x86</id></Class>				
+        </CommandClasses>
+        <Associations>
+                <Group>
+                        <Index>1</Index>
+                        <Maximum>5</Maximum>
+                        <Label lang="en">Group 1</Label>
+                </Group>
+                <Group>
+                        <Index>2</Index>
+                        <Maximum>5</Maximum>
+                        <Label lang="en">Group 2</Label>
+                </Group>
+                <Group>
+                        <Index>3</Index>
+                        <Maximum>5</Maximum>
+                        <Label lang="en">Group 3</Label>
+                </Group>
+        </Associations>
+        <Configuration>
+                <Parameter>
+                        <Index>3</Index>
+                        <Type>byte</Type>
+                        <Minimum>0</Minimum>
+                        <Maximum>16</Maximum>
+                        <Default>1</Default>
+                        <Size>1</Size>
+                        <Label lang="en">Selective Reporting</Label>
+						<Help lang="en">Enable selective reporting only when power change reaches
+a certain threshold or percentage set in 4-11 below. This is
+used to reduce network traffic.
+(Bit 0: Whole HEM ,
+Bit 1:Clamp 1,
+Bit 2:Clamp 2,
+Bit 3:Clamp 3)</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>4</Index>
+                        <Type>byte</Type>
+                        <Default>50</Default>
+                        <Minimum>0</Minimum>
+                        <Maximum>60000</Maximum>
+                        <Size>2</Size>
+                        <Label lang="en">Current Threshold - Whole HEM</Label>
+                        <Help lang="en">Threshold change in wattage to induce a automatic report (Whole HEM). (Valid values 0-60000)</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>5</Index>
+                        <Type>byte</Type>
+                        <Default>50</Default>
+                        <Minimum>0</Minimum>
+                        <Maximum>60000</Maximum>
+                        <Size>2</Size>
+                        <Label lang="en">Current Threshold - Clamp 1</Label>
+                        <Help lang="en">Threshold change in wattage to induce a automatic report (Clamp 1). (Valid values 0-60000)</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>6</Index>
+                        <Type>byte</Type>
+                        <Default>50</Default>
+                        <Minimum>0</Minimum>
+                        <Maximum>60000</Maximum>
+                        <Size>2</Size>
+                        <Label lang="en">Current Threshold - Clamp 2</Label>
+                        <Help lang="en">Threshold change in wattage to induce a automatic report (Clamp 2). (Valid values 0-60000)</Help>
+                </Parameter>
+               <Parameter>
+                        <Index>7</Index>
+                        <Type>byte</Type>
+                        <Default>50</Default>
+                        <Minimum>0</Minimum>
+                        <Maximum>60000</Maximum>
+                        <Size>2</Size>
+                        <Label lang="en">Current Threshold - Clamp 3</Label>
+                        <Help lang="en">Threshold change in wattage to induce a automatic report (Clamp 3). (Valid values 0-60000)</Help>
+                </Parameter>
+                 <Parameter>
+                        <Index>8</Index>
+                        <Type>byte</Type>
+                        <Default>50</Default>
+                        <Minimum>0</Minimum>
+                        <Maximum>100</Maximum>
+                        <Size>1</Size>
+                        <Label lang="en">Percent Change - Whole HEM</Label>
+                        <Help lang="en">Percentage change in wattage to induce a automatic report (Whole HEM). (Valid values 0-100)</Help>
+                </Parameter>
+                 <Parameter>
+                        <Index>9</Index>
+                        <Type>byte</Type>
+                        <Default>50</Default>
+                        <Minimum>0</Minimum>
+                        <Maximum>100</Maximum>
+                        <Size>1</Size>
+                        <Label lang="en">Percent Change - Clamp 1</Label>
+                        <Help lang="en">Percentage change in wattage to induce a automatic report (Clamp 1). (Valid values 0-100)</Help>
+                </Parameter>
+                  <Parameter>
+                        <Index>10</Index>
+                        <Type>byte</Type>
+                        <Default>50</Default>
+                        <Minimum>0</Minimum>
+                        <Maximum>100</Maximum>
+                        <Size>1</Size>
+                        <Label lang="en">Percent Change - Clamp 2</Label>
+                        <Help lang="en">Percentage change in wattage to induce a automatic report (Clamp 2). (Valid values 0-100)</Help>
+                </Parameter>
+                 <Parameter>
+                        <Index>11</Index>
+                        <Type>byte</Type>
+                        <Default>50</Default>
+                        <Minimum>0</Minimum>
+                        <Maximum>100</Maximum>
+                        <Size>1</Size>
+                        <Label lang="en">Percent Change - Clamp 3</Label>
+                        <Help lang="en">Percentage change in wattage to induce a automatic report (Clamp 3). (Valid values 0-100)</Help>
+                </Parameter>
+ 
+ 
+ 
+ 
+                <Parameter>
+                        <Index>101</Index>
+                        <Type>int</Type>
+                        <Default>8</Default>
+                        <Size>4</Size>
+                        <Label lang="en">Which reports need to send automatically for group 1</Label>
+                        <Help lang="en">1	  ->  	Battery Report
+2	  ->  	MultiSensor Report for the whole device
+4	  ->  	Meter Report for Watt for the whole device
+8	  ->  	Meter Report for kWh for the whole device
+256	  ->  	Meter Report for Watt for clamp 1
+512	  ->  	Meter Report for Watt for clamp 2
+1024	  ->  	Meter Report for Watt for clamp 3
+2048	  ->  	Meter Report for kWh for clamp 1
+4096	  ->  	Meter Report for Watt for clamp 2
+8192	  ->  	Meter Report for kWh for clamp 3</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>102</Index>
+                        <Type>int</Type>
+                        <Default>8</Default>
+                        <Size>4</Size>
+                        <Label lang="en">Which reports need to send automatically for group 2</Label>
+                        <Help lang="en">1	  ->  	Battery Report
+2	  ->  	MultiSensor Report for the whole device
+4	  ->  	Meter Report for Watt for the whole device
+8	  ->  	Meter Report for kWh for the whole device
+256	  ->  	Meter Report for Watt for clamp 1
+512	  ->  	Meter Report for Watt for clamp 2
+1024	  ->  	Meter Report for Watt for clamp 3
+2048	  ->  	Meter Report for kWh for clamp 1
+4096	  ->  	Meter Report for Watt for clamp 2
+8192	  ->  	Meter Report for kWh for clamp 3</Help>
+                </Parameter>
+                <Parameter>
+                        <Index>101</Index>
+                        <Type>int</Type>
+                        <Default>8</Default>
+                        <Size>4</Size>
+                        <Label lang="en">Which reports need to send automatically for group 3</Label>
+                        <Help lang="en">1	  ->  	Battery Report
+2	  ->  	MultiSensor Report for the whole device
+4	  ->  	Meter Report for Watt for the whole device
+8	  ->  	Meter Report for kWh for the whole device
+256	  ->  	Meter Report for Watt for clamp 1
+512	  ->  	Meter Report for Watt for clamp 2
+1024	  ->  	Meter Report for Watt for clamp 3
+2048	  ->  	Meter Report for kWh for clamp 1
+4096	  ->  	Meter Report for Watt for clamp 2
+8192	  ->  	Meter Report for kWh for clamp 3</Help>
+                </Parameter>
+                                
+                
+                
+                <Parameter>
+                        <Index>111</Index>
+                        <Type>int</Type>
+                        <Minimum>1</Minimum>
+                        <Maximum>2678400</Maximum>
+                        <Default>720</Default>
+                        <Size>4</Size>
+                        <Label lang="en">Interval to send out reports of group 1</Label>
+                        <Label lang="de">Interval in welchem die Berichte der Gruppe 1 gesendet werden</Label>
+                </Parameter>
+                <Parameter>
+                        <Index>112</Index>
+                        <Type>int</Type>
+                        <Minimum>1</Minimum>
+                        <Maximum>2678400</Maximum>
+                        <Default>720</Default>
+                        <Size>4</Size>
+                        <Label lang="en">Interval to send out reports of group 2</Label>
+                        <Label lang="de">Interval in welchem die Berichte der Gruppe 2 gesendet werden</Label>
+                </Parameter>
+                <Parameter>
+                        <Index>113</Index>
+                        <Type>int</Type>
+                        <Minimum>1</Minimum>
+                        <Maximum>2678400</Maximum>
+                        <Default>720</Default>
+                        <Size>4</Size>
+                        <Label lang="en">Interval to send out reports of group 3</Label>
+                        <Label lang="de">Interval in welchem die Berichte der Gruppe 3 gesendet werden</Label>
+                </Parameter>
+        </Configuration>
+</Product>

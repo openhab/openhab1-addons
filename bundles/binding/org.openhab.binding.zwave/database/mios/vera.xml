@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>Vera</Model>
+	<Label lang="en">Vera Home Gateway</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x40</id></Class>
+		<Class><id>0x43</id></Class>
+		<Class><id>0x44</id></Class>
+		<Class><id>0x62</id></Class>
+		<Class><id>0x63</id></Class>
+		<Class><id>0x98</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+</Product>
+

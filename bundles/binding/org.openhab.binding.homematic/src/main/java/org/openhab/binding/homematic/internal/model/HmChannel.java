@@ -66,6 +66,14 @@ public class HmChannel {
 	}
 
 	/**
+	 * Adds a datapoint to the channel.
+	 */
+	public void addDatapoint(HmDatapoint datapoint) {
+		datapoint.setChannel(this);
+		datapoints.add(datapoint);
+	}
+
+	/**
 	 * Returns channel address.
 	 */
 	public String getAddress() {

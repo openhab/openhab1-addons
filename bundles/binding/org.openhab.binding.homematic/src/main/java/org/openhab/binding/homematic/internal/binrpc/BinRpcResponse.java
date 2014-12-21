@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Decodes a BIN-RPC message from the CCU.
+ * Decodes a BIN-RPC message from the Homematic server.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0
@@ -38,7 +38,7 @@ public class BinRpcResponse {
 	private byte data[];
 	private int dataoffset = 0;
 	private String methodName;
-	private List<Object> responseData = new ArrayList<Object>();
+	private Object[] responseData;
 
 	/**
 	 * Decodes a BIN-RPC message from the given InputStream.
@@ -75,9 +75,12 @@ public class BinRpcResponse {
 			readInt();
 		}
 
+		List<Object> values = new ArrayList<Object>();
 		while (dataoffset < data.length) {
-			responseData.add(readRpcValue());
+			values.add(readRpcValue());
 		}
+		responseData = values.toArray();
+		values.clear();
 		data = null;
 	}
 
@@ -91,7 +94,7 @@ public class BinRpcResponse {
 	/**
 	 * Returns the decoded data.
 	 */
-	public List<Object> getResponseData() {
+	public Object[] getResponseData() {
 		return responseData;
 	}
 
@@ -127,7 +130,7 @@ public class BinRpcResponse {
 			while (numElements-- > 0) {
 				array.add(readRpcValue());
 			}
-			return array;
+			return array.toArray();
 		case 0x101:
 			// Struct
 			numElements = readInt();
@@ -159,7 +162,7 @@ public class BinRpcResponse {
 		return sb.toString();
 	}
 
-	private void dumpCollection(Collection<?> c, StringBuilder sb, int indent) {
+	private void dumpCollection(Object[] c, StringBuilder sb, int indent) {
 		if (indent > 0) {
 			for (int in = 0; in < indent - 1; in++) {
 				sb.append('\t');
@@ -169,8 +172,8 @@ public class BinRpcResponse {
 		for (Object o : c) {
 			if (o instanceof Map) {
 				dumpMap((Map<?, ?>) o, sb, indent + 1);
-			} else if (o instanceof Collection) {
-				dumpCollection((Collection<?>) o, sb, indent + 1);
+			} else if (o instanceof Object[]) {
+				dumpCollection((Object[]) o, sb, indent + 1);
 			} else {
 				for (int in = 0; in < indent; in++) {
 					sb.append('\t');
@@ -204,9 +207,9 @@ public class BinRpcResponse {
 			if (o instanceof Map<?, ?>) {
 				sb.append("\n");
 				dumpMap((Map<?, ?>) o, sb, indent + 1);
-			} else if (o instanceof Collection<?>) {
+			} else if (o instanceof Object[]) {
 				sb.append("\n");
-				dumpCollection((Collection<?>) o, sb, indent + 1);
+				dumpCollection((Object[]) o, sb, indent + 1);
 			} else {
 				sb.append(o);
 				sb.append('\n');

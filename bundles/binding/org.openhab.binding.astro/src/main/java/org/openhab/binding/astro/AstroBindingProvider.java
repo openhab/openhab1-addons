@@ -8,9 +8,9 @@
  */
 package org.openhab.binding.astro;
 
-import org.openhab.binding.astro.internal.common.AstroType;
 import org.openhab.binding.astro.internal.config.AstroBindingConfig;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
 
 /**
  * The interface to implement to provide a binding for Astro.
@@ -26,8 +26,12 @@ public interface AstroBindingProvider extends BindingProvider {
 	public AstroBindingConfig getBindingFor(String itemName);
 
 	/**
-	 * Returns true, if this provider has a binding for the specified AstroType.
+	 * Returns the item object by itemName.
 	 */
-	public boolean providesBindingFor(AstroType astroType);
+	public Item getItem(String itemName);
 
+	/**
+	 * Returns true, if the specified binding is available.
+	 */
+	public boolean hasBinding(AstroBindingConfig bindingConfig);
 }

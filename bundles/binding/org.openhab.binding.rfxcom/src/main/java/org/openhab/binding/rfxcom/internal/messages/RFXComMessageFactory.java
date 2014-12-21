@@ -38,6 +38,7 @@ public class RFXComMessageFactory {
 					put(PacketType.FAN,"RFXComFanMessage");
 					put(PacketType.CURTAIN1, "RFXComCurtain1Message");
 					put(PacketType.BLINDS1, "RFXComBlinds1Message");
+					put(PacketType.RFY, "RFXComRfyMessage");
 					put(PacketType.SECURITY1, "RFXComSecurity1Message");
 					put(PacketType.CAMERA1, "RFXComCamera1Message");
 					put(PacketType.REMOTE_CONTROL, "RFXComRemoteControlMessage");

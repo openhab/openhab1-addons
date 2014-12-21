@@ -28,7 +28,7 @@ public abstract class ValueBindingConfig extends HomematicBindingConfig {
 	}
 
 	/**
-	 * Returns true for always sending the value to the CCU.
+	 * Returns true for always sending the value to the Homematic server.
 	 */
 	public boolean isForceUpdate() {
 		return forceUpdate;

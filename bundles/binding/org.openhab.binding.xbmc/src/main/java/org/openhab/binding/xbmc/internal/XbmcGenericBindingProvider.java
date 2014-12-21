@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import org.openhab.binding.xbmc.XbmcBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -35,10 +36,11 @@ public class XbmcGenericBindingProvider extends AbstractGenericBindingProvider i
 
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof StringItem) && !(item instanceof SwitchItem)){
+		if (!(item instanceof StringItem) && !(item instanceof SwitchItem) &&
+				!(item instanceof DimmerItem)){
 			throw new BindingConfigParseException( "item '"+item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', but only String or Switch items are allowed.");
+					+ "', but only String, Switch or Dimmer items are allowed.");
 		}
 	}
 	
@@ -55,11 +57,26 @@ public class XbmcGenericBindingProvider extends AbstractGenericBindingProvider i
 		} else if (bindingConfig.startsWith(">")) {
 			XbmcBindingConfig config = parseOutgoingBindingConfig(item, bindingConfig);		
 			addBindingConfig(item, config);
+		} else if (bindingConfig.startsWith("=")) {
+			XbmcBindingConfig config = parseBidirectionalBindingConfig(item, bindingConfig);		
+			addBindingConfig(item, config);
 		} else {
-			throw new BindingConfigParseException("Item '"+item.getName()+"' does not start with < or >.");			
+			throw new BindingConfigParseException("Item '"+item.getName()+"' does not start with <, > or =.");			
 		}
 	}
 	
+	private XbmcBindingConfig parseBidirectionalBindingConfig( Item item, String bindingConfig) throws BindingConfigParseException{
+		Matcher matcher = CONFIG_PATTERN.matcher(bindingConfig);
+		
+		if( !matcher.matches())
+			throw new BindingConfigParseException("Config for item '"+item.getName()+"' could not be parsed.");
+
+		String xbmcInstance = matcher.group(1);
+		String property = matcher.group(2);
+		
+		return new XbmcBindingConfig(xbmcInstance, property, true, true);
+	}
+
 	private XbmcBindingConfig parseIncomingBindingConfig( Item item, String bindingConfig) throws BindingConfigParseException{
 		Matcher matcher = CONFIG_PATTERN.matcher(bindingConfig);
 		
@@ -69,7 +86,7 @@ public class XbmcGenericBindingProvider extends AbstractGenericBindingProvider i
 		String xbmcInstance = matcher.group(1);
 		String property = matcher.group(2);
 		
-		return new XbmcBindingConfig(xbmcInstance, property, true);
+		return new XbmcBindingConfig(xbmcInstance, property, true, false);
 	}
 	
 	private XbmcBindingConfig parseOutgoingBindingConfig( Item item, String bindingConfig) throws BindingConfigParseException{
@@ -81,7 +98,7 @@ public class XbmcGenericBindingProvider extends AbstractGenericBindingProvider i
 		String xbmcInstance = matcher.group(1);
 		String property = matcher.group(2);
 		
-		return new XbmcBindingConfig(xbmcInstance, property, false);
+		return new XbmcBindingConfig(xbmcInstance, property, false, true);
 	}
 	
 	@Override
@@ -102,18 +119,32 @@ public class XbmcGenericBindingProvider extends AbstractGenericBindingProvider i
 		return bindingConfig != null ? bindingConfig.isInBound(): false;
 	}
 
+	@Override
+	public boolean isOutBound(String itemname) {
+		XbmcBindingConfig bindingConfig = (XbmcBindingConfig) bindingConfigs.get(itemname);
+		return bindingConfig != null ? bindingConfig.isOutBound(): false;
+	}
+
 	class XbmcBindingConfig implements BindingConfig {
 		
 		private String xbmcInstance;
 		private String property;
-		private boolean inBound;
+		private boolean inBound = false;
+		private boolean outBound = false;
 		
 		public XbmcBindingConfig(String xbmcInstance, String property, boolean inBound) {
 			this.xbmcInstance = xbmcInstance;
 			this.property = property;
 			this.inBound = inBound;
 		}
-		
+
+		public XbmcBindingConfig(String xbmcInstance, String property, boolean inBound, boolean outBound) {
+			this.xbmcInstance = xbmcInstance;
+			this.property = property;
+			this.inBound = inBound;
+			this.outBound = outBound;
+		}
+
 		public String getXbmcInstance() {
 			return xbmcInstance;
 		}
@@ -124,6 +155,10 @@ public class XbmcGenericBindingProvider extends AbstractGenericBindingProvider i
 		
 		public boolean isInBound() {
 			return inBound;
+		}
+
+		public boolean isOutBound() {
+			return outBound;
 		}
 	}
 }

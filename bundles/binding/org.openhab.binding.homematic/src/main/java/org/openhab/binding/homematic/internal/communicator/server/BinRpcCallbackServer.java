@@ -10,29 +10,30 @@ package org.openhab.binding.homematic.internal.communicator.server;
 
 import org.openhab.binding.homematic.internal.common.HomematicConfig;
 import org.openhab.binding.homematic.internal.common.HomematicContext;
-import org.openhab.binding.homematic.internal.communicator.CcuCallbackReceiver;
-import org.openhab.binding.homematic.internal.communicator.CcuCallbackServer;
+import org.openhab.binding.homematic.internal.communicator.HomematicCallbackReceiver;
+import org.openhab.binding.homematic.internal.communicator.HomematicCallbackServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Server implementation for receiving messages via BIN-RPC from the CCU.
+ * Server implementation for receiving messages via BIN-RPC from the Homematic
+ * server.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0
  */
-public class BinRpcCallbackServer implements CcuCallbackServer {
+public class BinRpcCallbackServer implements HomematicCallbackServer {
 	private final static Logger logger = LoggerFactory.getLogger(BinRpcCallbackServer.class);
 
 	private Thread networkServiceThread;
 	private BinRpcNetworkService networkService;
-	private CcuCallbackReceiver callbackReceiver;
+	private HomematicCallbackReceiver callbackReceiver;
 	private HomematicConfig config = HomematicContext.getInstance().getConfig();
 
 	/**
 	 * Creates the server and registers a callbackReceiver.
 	 */
-	public BinRpcCallbackServer(CcuCallbackReceiver callbackReceiver) {
+	public BinRpcCallbackServer(HomematicCallbackReceiver callbackReceiver) {
 		this.callbackReceiver = callbackReceiver;
 	}
 

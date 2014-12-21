@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>KFOB</Model>
-	<Label lang="en">4 button keyfob</Label>
+	<Model>WCD2</Model>
+	<Label lang="en">Double Paddle Wall Controller</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x26</id></Class>

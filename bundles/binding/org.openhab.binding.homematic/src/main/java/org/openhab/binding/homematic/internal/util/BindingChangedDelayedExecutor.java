@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.openhab.binding.homematic.internal.communicator.CcuCommunicator;
+import org.openhab.binding.homematic.internal.communicator.HomematicCommunicator;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.core.items.Item;
 
@@ -25,14 +25,14 @@ import org.openhab.core.items.Item;
  * @since 1.5.0
  */
 public class BindingChangedDelayedExecutor extends DelayedExecutor {
-	private CcuCommunicator communicator;
+	private HomematicCommunicator communicator;
 
 	private Map<Item, HomematicBindingConfig> bindingConfigs = new HashMap<Item, HomematicBindingConfig>();
 
 	/**
 	 * Creates the Executor for the communicator.
 	 */
-	public BindingChangedDelayedExecutor(CcuCommunicator communicator) {
+	public BindingChangedDelayedExecutor(HomematicCommunicator communicator) {
 		this.communicator = communicator;
 	}
 

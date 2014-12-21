@@ -1106,7 +1106,7 @@ class SonosZonePlayer {
 	}
 
 	public boolean updateCurrentURIFormatted() {
-
+		
 		if(stateMap != null && isConfigured()) {
 
 			String currentURI = null;
@@ -1157,12 +1157,13 @@ class SonosZonePlayer {
 							logger.error("Could not parse RadioTime from String {}",response);
 						}
 
-						if(fields != null) {
+						resultString = new String();
 
-							resultString = new String();
-							// radio name should be first field
-							title = fields.get(0);
+						if(fields != null && fields.size()>1) {
 
+							artist = fields.get(0);
+							title = fields.get(1);
+							
 							Iterator<String> listIterator = fields.listIterator();
 							while(listIterator.hasNext()){
 								String field = listIterator.next();
@@ -1175,12 +1176,18 @@ class SonosZonePlayer {
 					} else {
 						resultString = stateMap.get("CurrentURIFormatted").getValue().toString();
 						title = stateMap.get("CurrentTitle").getValue().toString();
+						artist = stateMap.get("CurrentArtist").getValue().toString();
 					}
 
 
 				} else {
 					if(currentTrack != null) {
-						if(!currentTrack.getTitle().contains("x-sonosapi-stream")) {
+						if(currentTrack.getResource().contains("x-rincon-stream")) {
+							title = currentTrack.getTitle();
+							album = " ";
+							artist = " ";
+							resultString = title;
+						} else if(!currentTrack.getResource().contains("x-sonosapi-stream")) {
 							if (currentTrack.getAlbumArtist().equals("")) {
 								resultString = currentTrack.getCreator() + " - " + currentTrack.getAlbum() + " - " + currentTrack.getTitle();
 								artist = currentTrack.getCreator();
@@ -1191,18 +1198,26 @@ class SonosZonePlayer {
 
 							album = currentTrack.getAlbum();
 							title = currentTrack.getTitle();
-						}
+							
+							if(album.equals("")) {
+								album= " ";
+							}
 
+							if(artist.equals("")) {
+								artist= " ";
+							}
+						}
 					} else {
-						resultString = "";
+						title=" ";
+						album = " ";
+						artist = " ";
+						resultString = " ";
 					}
 				}
 
 				StateVariable newVariable = new StateVariable("CurrentURIFormatted",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));
 				StateVariableValue newValue = new StateVariableValue(newVariable, resultString);
-
 				processStateVariableValue(newVariable.getName(),newValue);		
-
 
 				// update individual variables
 				newVariable = new StateVariable("CurrentArtist",new StateVariableTypeDetails(Datatype.Builtin.STRING.getDatatype()));

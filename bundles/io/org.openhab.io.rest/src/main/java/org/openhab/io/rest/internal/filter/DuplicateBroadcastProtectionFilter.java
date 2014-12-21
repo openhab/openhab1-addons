@@ -8,7 +8,6 @@
  */
 package org.openhab.io.rest.internal.filter;
 
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.atmosphere.cpr.AtmosphereResource;
@@ -16,6 +15,7 @@ import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener;
+import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener.CacheEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,17 +63,23 @@ public class DuplicateBroadcastProtectionFilter implements PerRequestBroadcastFi
 		if(clientId == null || clientId.isEmpty()){
 			return false;
 		}
-		ObjectMapper mapper = new ObjectMapper();
 		try{
-			String firedResponse =  mapper.writeValueAsString(ResourceStateChangeListener.getMap().put(clientId, responseEntity)); 
-			String responseValue =  mapper.writeValueAsString(responseEntity);
-            if(responseValue.equals(firedResponse)) {
-            	return true;
+			CacheEntry entry = ResourceStateChangeListener.getCachedEntries().put(clientId, new CacheEntry(responseEntity));
+			//there was an existing cached entry, see if its the same
+			if(entry != null){
+				ObjectMapper mapper = new ObjectMapper();
+				//cached data
+				String firedResponse =  mapper.writeValueAsString(entry.getData()); 
+				//new data
+				String responseValue =  mapper.writeValueAsString(responseEntity);
+				//the same ?
+	            if(responseValue.equals(firedResponse)) {
+	            	return true;
+				}
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error("Could not check if double broadcast",e);
 		} 
         return false;
 	}
-
 }

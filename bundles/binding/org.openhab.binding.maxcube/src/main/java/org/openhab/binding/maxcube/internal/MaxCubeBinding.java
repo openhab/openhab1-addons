@@ -9,9 +9,9 @@
 package org.openhab.binding.maxcube.internal;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -31,6 +31,7 @@ import org.openhab.binding.maxcube.internal.message.M_Message;
 import org.openhab.binding.maxcube.internal.message.Message;
 import org.openhab.binding.maxcube.internal.message.MessageType;
 import org.openhab.binding.maxcube.internal.message.S_Command;
+import org.openhab.binding.maxcube.internal.message.S_Message;
 import org.openhab.binding.maxcube.internal.message.ShutterContact;
 import org.openhab.binding.maxcube.internal.message.ThermostatModeType;
 import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
@@ -54,6 +55,7 @@ import org.slf4j.LoggerFactory;
  * are sent then the cube no longer sends the data out.
  * 
  * @author Andreas Heil (info@aheil.de)
+ * @author Bernd Michael Helm (bernd.helm at helmundwalter.de)
  * @since 1.4.0
  */
 public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider> implements ManagedService {
@@ -71,6 +73,22 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 
 	/** The refresh interval which is used to poll given MAX!Cube */
 	private static long refreshInterval = 10000;
+	
+	/** If set to true, the binding will leave the connection to the cube
+	 * open and just request new informations.
+	 * This allows much higher poll rates and causes less load than the
+	 * non-exclusive polling but has the drawback that no other apps
+	 * (i.E. original software) can use the cube while this binding is
+	 * running.
+	 */
+	private static boolean exclusive = false;
+	
+	/**
+	 * in exclusive mode, how many requests are allowed until connection is closed and reopened
+	 */
+	private static int maxRequestsPerConnection = 1000;
+	
+	private int requestCount = 0;
 
 	/** MaxCube's default off temperature */
 	private static final DecimalType DEFAULT_OFF_TEMPERATURE = new DecimalType(4.5);
@@ -84,7 +102,14 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 */
 	private ArrayList<Configuration> configurations = new ArrayList<Configuration>();
 	private ArrayList<Device> devices = new ArrayList<Device>();
-
+	
+	/**
+	 * connection socket and reader/writer for execute method
+	 */
+	private Socket socket = null;
+	private BufferedReader reader = null;
+	private OutputStreamWriter writer = null;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -109,25 +134,48 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		super.activate();
 		setProperlyConfigured(false);
 	}
+	
+	@Override
+	public void deactivate() {
+		if(socket!=null) {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+			}
+			socket = null;
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void execute() {
-		Socket socket = null;
-		BufferedReader reader = null;
-
 		if (ip == null) {
 			logger.debug("Update prior to completion of interface IP configuration");
 			return;
 		}
 		try {
 			String raw = null;
-
-			socket = new Socket(ip, port);
-			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
+			if(socket == null) {
+				this.socketConnect();
+			}if(maxRequestsPerConnection > 0 && requestCount >= maxRequestsPerConnection) {
+				logger.debug("maxRequestsPerConnection reached, reconnecting.");
+				socket.close();
+				this.socketConnect();
+				requestCount = 0;
+			}else {
+			
+				/* if the connection is already open (this happens in exclusive mode), just send a "l:\r\n" to get the latest live informations
+				 * note that "L:\r\n" or "l:\n" would not work.
+				 */
+				logger.debug("Sending state request #"+this.requestCount+" to Maxcube");
+				writer.write("l:"+'\r'+'\n');
+				writer.flush();
+				requestCount++;
+			}
+			
 			boolean cont = true;
 			while (cont) {
 				raw = reader.readLine();
@@ -177,21 +225,14 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 							} else {
 								c.setValues((C_Message) message);
 							}
+						} else if (message.getType() == MessageType.S) {
+							/** TODO: Implement handling of S: messages for proper command SET confirmation*/
+							cont=false;
 						} else if (message.getType() == MessageType.L) {
-							Collection<? extends Device> tempDevices = ((L_Message) message).getDevices(configurations);
-
-							for (Device d : tempDevices) {
-								Device existingDevice = findDevice(d.getSerialNumber(), devices);
-								if (existingDevice == null) {
-									devices.add(d);
-								} else {
-									devices.remove(existingDevice);
-									devices.add(d);
-								}
-							}
-
+							((L_Message) message).updateDevices(devices, configurations);
+							
 							logger.debug("{} devices found.", devices.size());
-
+							
 							// the L message is the last one, while the reader
 							// would hang trying to read a new line and
 							// eventually the
@@ -205,8 +246,10 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					logger.debug(Utils.getStackTrace(e));
 				}
 			}
-
-			socket.close();
+			if(!exclusive) {
+				socket.close();
+				socket = null;
+			}
 
 			for (MaxCubeBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
@@ -228,41 +271,49 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 						}
 						continue;
 					}
-
+					//all devices have a battery state, so this is type-independent
+					if (provider.getBindingType(itemName) == BindingType.BATTERY && device.isBatteryLowUpdated()) {
+						eventPublisher.postUpdate(itemName, device.getBatteryLow());
+					} else if  (provider.getBindingType(itemName) != BindingType.BATTERY) {
 					switch (device.getType()) {
-					case HeatingThermostatPlus:
-					case HeatingThermostat:
-						if (provider.getBindingType(itemName) == BindingType.VALVE) {
-							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getValvePosition());
-						} else if (provider.getBindingType(itemName) == BindingType.MODE) {
-							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getModeString());
-						} else if (provider.getBindingType(itemName) == BindingType.BATTERY) {
-							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getBatteryLow());
-						} else {
-							eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureSetpoint());
-						}
-						break;
-					case ShutterContact:
-						if (provider.getBindingType(itemName) == BindingType.BATTERY) {
-							eventPublisher.postUpdate(itemName, ((ShutterContact) device).getBatteryLow());
-						} else {
-							eventPublisher.postUpdate(itemName, ((ShutterContact) device).getShutterState());
-						}
-						break;
-					case WallMountedThermostat:
-						eventPublisher.postUpdate(itemName, ((WallMountedThermostat) device).getTemperatureSetpoint());
-						break;
-					default:
-						// no further devices supported yet
+						case HeatingThermostatPlus:
+						case HeatingThermostat:
+							if (provider.getBindingType(itemName) == BindingType.VALVE
+									&& ((HeatingThermostat) device).isValvePositionUpdated()) {
+								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getValvePosition());
+								break;
+							}
+							//omitted break, fall through
+						case WallMountedThermostat: // and also HeatingThermostat
+							if (provider.getBindingType(itemName) == BindingType.MODE
+									&& ((HeatingThermostat) device).isModeUpdated()) {
+								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getModeString());
+							} else if (provider.getBindingType(itemName) == BindingType.ACTUAL
+									&& ((HeatingThermostat) device).isTemperatureActualUpdated()) {
+								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureActual());
+							} else if (((HeatingThermostat) device).isTemperatureSetpointUpdated()){
+								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureSetpoint());
+							}
+							break;
+						case ShutterContact:
+							if(((ShutterContact) device).isShutterStateUpdated()){
+								eventPublisher.postUpdate(itemName, ((ShutterContact) device).getShutterState());
+							}
+							break;
+						default:
+							// no further devices supported yet
+					}
 					}
 				}
 			}
 		} catch (UnknownHostException e) {
 			logger.info("Cannot establish connection with MAX!Cube lan gateway while connecting to '{}'", ip);
 			logger.debug(Utils.getStackTrace(e));
+			socket = null;
 		} catch (IOException e) {
 			logger.info("Cannot read data from MAX!Cube lan gateway while connecting to '{}'", ip);
 			logger.debug(Utils.getStackTrace(e));
+			socket = null; //reconnect on next execution
 		}
 	}
 
@@ -302,34 +353,47 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					decimalType = OnOffType.ON.equals(command) ? DEFAULT_ON_TEMPERATURE : DEFAULT_OFF_TEMPERATURE;
 				}
 
-				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), decimalType.doubleValue());
+				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), ((HeatingThermostat) device).getMode(), decimalType.doubleValue());
 				commandString = cmd.getCommandString();
 			} else if (command instanceof StringType) {
 				String commandContent = command.toString().trim().toUpperCase();
+				S_Command cmd = null;
 				ThermostatModeType commandThermoType = null;
 				if (commandContent.contentEquals(ThermostatModeType.AUTOMATIC.toString())) {
 					commandThermoType = ThermostatModeType.AUTOMATIC;
+					cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType);
 				} else if (commandContent.contentEquals(ThermostatModeType.BOOST.toString())) {
 					commandThermoType = ThermostatModeType.BOOST;
+					cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType);
+				} else if (commandContent.contentEquals(ThermostatModeType.MANUAL.toString())) {
+					commandThermoType = ThermostatModeType.MANUAL;
+					Double setTemp = Double.parseDouble( ((HeatingThermostat) device).getTemperatureSetpoint().toString());
+					cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType, setTemp);
+					logger.debug("updates to MANUAL mode with temperature '{}'", setTemp);
 				} else {
-					logger.debug("Only updates to AUTOMATIC & BOOST supported, received value ;'{}'", commandContent);
+					logger.debug("Only updates to AUTOMATIC, MANUAL & BOOST supported, received value ;'{}'", commandContent);
 					continue;
 				}
-
-				S_Command cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType);
 				commandString = cmd.getCommandString();
 			}
 
 			if (commandString != null) {
-				Socket socket = null;
+
 				try {
-					socket = new Socket(ip, port);
-					DataOutputStream stream = new DataOutputStream(socket.getOutputStream());
+					if(socket == null) {
+						this.socketConnect();
+					}
+					/*DataOutputStream stream = new DataOutputStream(socket.getOutputStream());
 
 					byte[] b = commandString.getBytes();
-					stream.write(b);
-					socket.close();
-
+					stream.write(b);*/
+					writer.write(commandString);
+					logger.debug(commandString);
+					writer.flush();
+					if(!exclusive) {
+						socket.close();
+						socket = null;
+					}
 				} catch (UnknownHostException e) {
 					logger.warn("Cannot establish connection with MAX!cube lan gateway while sending command to '{}'", ip);
 					logger.debug(Utils.getStackTrace(e));
@@ -342,6 +406,14 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				logger.debug("Null Command not sent to {}", ip);
 			}
 		}
+	}
+	
+	private boolean socketConnect() throws UnknownHostException, IOException {
+		socket = new Socket(ip, port);
+		logger.debug("open new connection... to "+ip+" port "+port);
+		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		writer = new OutputStreamWriter(socket.getOutputStream());
+		return true;
 	}
 
 	private Device findDevice(String serialNumber, ArrayList<Device> devices) {
@@ -371,9 +443,12 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			return new C_Message(raw);
 		} else if (raw.startsWith("L:")) {
 			return new L_Message(raw);
+		} else if (raw.startsWith("S:")) {
+			return new S_Message(raw);
+		} else {
+			logger.debug("Unknown message block: '{}'",raw);
 		}
-
-		return null;
+			return null;
 	}
 
 	/**
@@ -397,6 +472,16 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			String refreshIntervalString = (String) config.get("refreshInterval");
 			if (refreshIntervalString != null && !refreshIntervalString.isEmpty()) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
+			}
+			
+			String exclusiveString = (String) config.get("exclusive");
+			if (StringUtils.isNotBlank(exclusiveString)) {
+				exclusive = Boolean.parseBoolean(exclusiveString);
+			}
+			
+			String maxRequestsPerConnectionString = (String) config.get("maxRequestsPerConnection");
+			if (maxRequestsPerConnectionString != null && !maxRequestsPerConnectionString.isEmpty()) {
+				maxRequestsPerConnection = Integer.parseInt(maxRequestsPerConnectionString);
 			}
 		} else {
 			ip = discoveryGatewayIp();

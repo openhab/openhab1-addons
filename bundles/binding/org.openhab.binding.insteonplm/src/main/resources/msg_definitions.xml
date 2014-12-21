@@ -167,22 +167,22 @@
 			<address name = "toAddress"/>
 			<byte name = "messageFlags">0x10</byte>
 		</header>
-		<byte name="command1"/>
-		<byte name="command2"/>
-		<byte name = "userData1"/>
-		<byte name = "userData2"/>
-		<byte name = "userData3"/>
-		<byte name = "userData4"/>
-		<byte name = "userData5"/>
-		<byte name = "userData6"/>
-		<byte name = "userData7"/>
-		<byte name = "userData8"/>
-		<byte name = "userData9"/>
-		<byte name = "userData10"/>
-		<byte name = "userData11"/>
-		<byte name = "userData12"/>
-		<byte name = "userData13"/>
-		<byte name = "userData14"/>
+		<byte name="command1">0x00</byte>
+		<byte name="command2">0x00</byte>
+		<byte name = "userData1">0x00</byte>
+		<byte name = "userData2">0x00</byte>
+		<byte name = "userData3">0x00</byte>
+		<byte name = "userData4">0x00</byte>
+		<byte name = "userData5">0x00</byte>
+		<byte name = "userData6">0x00</byte>
+		<byte name = "userData7">0x00</byte>
+		<byte name = "userData8">0x00</byte>
+		<byte name = "userData9">0x00</byte>
+		<byte name = "userData10">0x00</byte>
+		<byte name = "userData11">0x00</byte>
+		<byte name = "userData12">0x00</byte>
+		<byte name = "userData13">0x00</byte>
+		<byte name = "userData14">0x00</byte>
 	</msg>
 	<msg name = "SendExtendedMessageReply" length="23" direction = "FROM_MODEM">
 		<header length="6">
@@ -207,6 +207,23 @@
 		<byte name = "userData12"/>
 		<byte name = "userData13"/>
 		<byte name = "userData14"/>
+		<byte name = "ACK/NACK"/>
+	</msg>
+	<msg name = "SendX10Message" length="4" direction = "TO_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x63</byte>
+		</header>
+		<byte name = "rawX10"></byte>
+		<byte name = "X10Flag">0x00</byte>
+	</msg>
+	<msg name = "SendX10MessageReply" length="5" direction = "FROM_MODEM">
+		<header length="2">
+		 	<byte>0x02</byte>
+			<byte name = "Cmd">0x63</byte>
+		</header>
+		<byte name = "rawX10"></byte>
+		<byte name = "X10Flag">0x00</byte>
 		<byte name = "ACK/NACK"/>
 	</msg>
 	<msg name = "GetFirstALLLinkRecord" length="2" direction = "TO_MODEM">

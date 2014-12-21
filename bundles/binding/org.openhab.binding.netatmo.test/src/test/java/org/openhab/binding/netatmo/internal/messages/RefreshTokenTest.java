@@ -48,10 +48,9 @@ public class RefreshTokenTest {
 		assertFalse(response.isError());
 		assertNull(response.getError());
 
-		assertEquals(
-				"grant_type=refresh_token&refresh_token=" + REFRESH_TOKEN
-						+ "&client_id=" + CLIENT_ID + "&client_secret="
-						+ CLIENT_SECRET, request.getContent());
+		assertEquals("grant_type=refresh_token&refresh_token=" + REFRESH_TOKEN
+				+ "&client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET
+				+ "&scope=read_station", request.getContent());
 		assertEquals(
 				"000000000000000000000000|11111111111111111111111111111111",
 				response.getAccessToken());
