@@ -17,11 +17,12 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageCl
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class processes a serial message from the zwave controller
+ * This class processes a Node Information Frame (NIF) message from the zwave controller
  * @author Chris Jackson
  * @since 1.5.0
  */
@@ -30,18 +31,20 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 
 	@Override
 	public  boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		int nodeId = incomingMessage.getMessagePayloadByte(1);
-		logger.trace("NODE {}: Application Update Request", nodeId);
-
+		int nodeId;
+		boolean result = true;
 		UpdateState updateState = UpdateState.getUpdateState(incomingMessage.getMessagePayloadByte(0));
-		
+
 		switch (updateState) {
 		case NODE_INFO_RECEIVED:
-			logger.debug("NODE {}: Application update request, node information received.", nodeId);			
+			// We've received a NIF, and this contains the node ID.
+			nodeId = incomingMessage.getMessagePayloadByte(1);
+			logger.debug("NODE {}: Application update request. Node information received.", nodeId);
+			
 			int length = incomingMessage.getMessagePayloadByte(2);
 			ZWaveNode node = zController.getNode(nodeId);
 			if(node == null) {
-				logger.debug("NODE {}: Application update request, node not known!", nodeId);
+				logger.debug("NODE {}: Application update request. Node not known!", nodeId);
 				
 				// We've received a NIF from a node we don't know.
 				// This could happen if we add a new node using a different controller than OH.
@@ -52,7 +55,7 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 				}
 				break;
 			}
-			
+
 			node.resetResendCount();
 
 			// Remember that we've received this so we can continue initialisation
@@ -64,7 +67,7 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 					// If we receive an Application Update Request and the node is already
 					// fully initialised we assume this is a request to the controller to 
 					// re-get the current node values
-					logger.debug("NODE {}: Application update request, requesting node state.", nodeId);
+					logger.debug("NODE {}: Application update request. Requesting node state.", nodeId);
 
 					zController.pollNode(node);
 				}
@@ -83,8 +86,6 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 					}
 				}
 			}
-			
-			checkTransactionComplete(lastSentMessage, incomingMessage);
 
 			// Treat the node information frame as a wakeup
 			ZWaveWakeUpCommandClass wakeUp = (ZWaveWakeUpCommandClass)node.getCommandClass(ZWaveCommandClass.CommandClass.WAKE_UP);
@@ -93,27 +94,36 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			}
 			break;
 		case NODE_INFO_REQ_FAILED:
-			logger.debug("NODE {}: Application update request, Node Info Request Failed.", nodeId);
-
-			SerialMessage requestInfoMessage = lastSentMessage;
-
-			if (requestInfoMessage.getMessageClass() != SerialMessageClass.RequestNodeInfo) {
-				logger.warn("NODE {}: Got application update request without node info request, ignoring. Last message was {}.", nodeId, requestInfoMessage.getMessageClass());
+			// Make sure we can correlate the request before we use the nodeId
+			if (lastSentMessage.getMessageClass() != SerialMessageClass.RequestNodeInfo) {
+				logger.warn("Got ApplicationUpdateMessage without request, ignoring. Last message was {}.", lastSentMessage.getMessageClass());
 				return false;
 			}
-				
-			if (--requestInfoMessage.attempts >= 0) {
-				logger.error("NODE {}: Got Node Info Request Failed while sending this serial message. Requeueing", nodeId);
-				zController.enqueue(requestInfoMessage);
+
+			// The failed message doesn't contain the node number, so use the info from the request.
+			nodeId = lastSentMessage.getMessageNode();
+			logger.debug("NODE {}: Application update request. Node Info Request Failed.", nodeId);
+
+			// Handle retries
+			if (--lastSentMessage.attempts >= 0) {
+				logger.error("NODE {}: Got Node Info Request Failed. Requeueing", nodeId);
+				zController.enqueue(lastSentMessage);
 			}
 			else {
 				logger.warn("NODE {}: Node Info Request Failed 3x. Discarding message: {}", nodeId, lastSentMessage.toString());
 			}
-			transactionComplete = true;
+
+			// Transaction is not successful
+			incomingMessage.setTransactionCanceled(true);
+			result = false;
 			break;
 		default:
 			logger.warn("TODO: Implement Application Update Request Handling of {} ({}).", updateState.getLabel(), updateState.getKey());
-		}		
-		return true;
+		}
+		
+		// Check if this completes the transaction
+		checkTransactionComplete(lastSentMessage, incomingMessage);
+
+		return result;
 	}
 }
