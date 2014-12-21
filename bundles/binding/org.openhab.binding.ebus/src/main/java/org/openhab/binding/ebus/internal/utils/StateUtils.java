@@ -26,6 +26,11 @@ public class StateUtils {
 	private static final Logger logger = LoggerFactory
 			.getLogger(StateUtils.class);
 	
+	/**
+	 * Converts a value to a openhab state
+	 * @param value A value to converrt
+	 * @return A converted state or null
+	 */
 	public static State convertToState(Object value) {
 
 		if(value instanceof BigDecimal) {

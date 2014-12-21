@@ -153,7 +153,7 @@ public class EBusUtils {
 	}
 
 	/**
-	 * Convert EBus Type DATA2c
+	 * Convert eBus Type DATA2c
 	 * @param highData The encoded high byte
 	 * @param lowData The encoded low byte
 	 * @return The decoded value
@@ -179,6 +179,7 @@ public class EBusUtils {
 	}
 
 	/**
+	 * Convert eBus Type WORD
 	 * @param highData
 	 * @param lowData
 	 * @return
@@ -187,36 +188,81 @@ public class EBusUtils {
 		return ((highData & 0xFF)<<8) + (lowData & 0xFF);
 	}
 
+	/**
+	 * Convert eBus Type CHAR
+	 * @param data
+	 * @return
+	 */
 	public static int decodeChar(byte data) {
 		return data;
 	}
 	
+	/**
+	 * Convert eBus Type UCHAR
+	 * @param data
+	 * @return
+	 */
 	public static int decodeUChar(byte data) {
 		return data & 0xFF;
 	}
 	
+	/**
+	 * Convert eBus Type BYTE
+	 * @param data
+	 * @return
+	 */
 	public static int decodeByte(byte data) {
 		return data;
 	}
 	
+	/**
+	 * Convert eBus Type BIT
+	 * @param data
+	 * @param bit
+	 * @return
+	 */
 	public static boolean decodeBit(byte data, short bit) {
 		return ((byte)data >> bit& 0x1) == 1;
 	}
 	
+	/**
+	 * Convert eBus Type Int, same as WORD
+	 * @param highData
+	 * @param lowData
+	 * @return
+	 */
 	public static int decodeInt(byte highData, byte lowData) {
 		return decodeWORD(highData, lowData);
 	}
 	
+	/**
+	 * Convert eBus Type UInt
+	 * @param highData
+	 * @param lowData
+	 * @return
+	 */
 	public static int decodeUInt(byte highData, byte lowData) {
 		int v = decodeInt(highData, lowData);
 		long unsignedValue = v & 0xffffffffl;
 		return (int) unsignedValue;
 	}
 	
+	/**
+	 * Convert eBus Type Long, same as WORD
+	 * @param highData
+	 * @param lowData
+	 * @return
+	 */
 	public static int decodeLng(byte highData, byte lowData) {
 		return decodeWORD(highData, lowData);
 	}
 	
+	/**
+	 * Convert eBus Type ULong
+	 * @param highData
+	 * @param lowData
+	 * @return
+	 */
 	public static int decodeULng(byte highData, byte lowData) {
 		int v = decodeInt(highData, lowData);
 		long unsignedValue = v & 0xffffffffl;
@@ -393,6 +439,11 @@ public class EBusUtils {
 		return String.format("%02X", (0xFF & data));
 	}
 
+	/**
+	 * Converts a hex string to byte array
+	 * @param hexDumpString
+	 * @return
+	 */
 	static public byte[] toByteArray(String hexDumpString) {
 		return DatatypeConverter.parseHexBinary(
 				hexDumpString.replaceAll(" ", ""));
@@ -436,16 +487,4 @@ public class EBusUtils {
 		}
 		return sb;
 	}
-
-	
-	
-//	/**
-//	 * Converts a signed int (java default) to a unsigned int
-//	 * @param signedInt The signed int
-//	 * @return The unsigned int
-//	 */
-//	static int unsignedInt(int signedInt) {
-//		return (signedInt << 24) >>> 24;
-//	}
-
 }

@@ -18,8 +18,8 @@ public class NumberUtils {
 
 	/**
 	 * Convert number object to BigDecimal
-	 * @param obj
-	 * @return
+	 * @param obj Any kind of primitive datatype
+	 * @return A converted BigDecimal
 	 */
 	public static BigDecimal toBigDecimal(Object obj) {
 		

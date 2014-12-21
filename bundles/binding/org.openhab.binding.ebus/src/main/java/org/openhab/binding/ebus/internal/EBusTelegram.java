@@ -37,6 +37,7 @@ public class EBusTelegram {
 	private ByteBuffer data;
 	
 	/**
+	 * Constructor
 	 * @param data
 	 */
 	public EBusTelegram(ByteBuffer data) {
@@ -44,6 +45,7 @@ public class EBusTelegram {
 	}
 	
 	/**
+	 * Constructor
 	 * @param data
 	 */
 	public EBusTelegram(byte[] data) {

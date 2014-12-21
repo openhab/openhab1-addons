@@ -55,12 +55,15 @@ public class EBusGenericBindingProvider extends
 		String id = uniqueId;
 		String className = null;
 		
+		// Split the unique back into class and id part
 		if(uniqueId.contains(".")) {
 			String[] split = StringUtils.split(uniqueId, '.');
 			id = split[1];
 			className = split[0];
 		}
 		
+		
+		// Search for id and class
 		for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
 			EBusBindingConfig cfg = (EBusBindingConfig) entry.getValue();
 			if(cfg.map.containsKey("id")) {
@@ -144,6 +147,7 @@ public class EBusGenericBindingProvider extends
 	}
 
 	/**
+	 * Simple get a value from binding configuration or use default value.
 	 * @param itemName
 	 * @param type
 	 * @param defaultValue
@@ -188,11 +192,17 @@ public class EBusGenericBindingProvider extends
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.ebus.EBusBindingProvider#getCommand(java.lang.String)
+	 */
 	@Override
 	public String getCommand(String itemName) {
 		return get(itemName, "cmd", null);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.ebus.EBusBindingProvider#getCommandClass(java.lang.String)
+	 */
 	@Override
 	public String getCommandClass(String itemName) {
 		return get(itemName, "class", null);
@@ -213,6 +223,4 @@ public class EBusGenericBindingProvider extends
 	public Byte getTelegramDestination(String itemName) {
 		return get(itemName, "dst", null);
 	}
-	
-	
 }

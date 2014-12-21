@@ -43,6 +43,7 @@ public class EBusTelegramParser {
 
 	private Map<String, Object> settings;
 
+	// The configuration provider to parse the ebus telegram
 	private EBusConfigurationProvider configurationProvider; 
 
 	public EBusTelegramParser(EBusConfigurationProvider configurationProvider) {
@@ -64,7 +65,9 @@ public class EBusTelegramParser {
 
 		BigDecimal repVal = null;
 
+		// requested pos is greater as whole buffer
 		if(pos > byteBuffer.position()) {
+			//FIXME: Do something
 			logger.warn("Wow, buffer pos error!");
 		}
 
@@ -132,13 +135,16 @@ public class EBusTelegramParser {
 			break;
 		}
 
+		// if replace value paramter set
 		if(replaceValue != null) {
 			repVal = replaceValue;
 		}
 
+		// if BigDecimal check for min, max and replace value
 		if(value instanceof BigDecimal) {
 			BigDecimal b = (BigDecimal)value;
 
+			// equals replace value, than return null
 			if(repVal != null && b.compareTo(repVal) == 0) {
 				logger.trace("Replace value found, skip value ...");
 				value = b = null;
@@ -150,10 +156,12 @@ public class EBusTelegramParser {
 				value = b = b.multiply(factor);
 			}
 			
+			// value is below min value, return null
 			if(min != null && b != null && b.compareTo(min) == -1) {
 				logger.trace("Minimal value reached, skip value ...");
 				value = b = null;
 				
+			// value is above max value, return null
 			} else if (max != null && b != null && b.compareTo(max) == 1) {
 				logger.trace("Maximal value reached, skip value ...");
 				value = b = null;
@@ -165,22 +173,27 @@ public class EBusTelegramParser {
 	}
 
 	/**
-	 * @param entry
-	 * @param bindings2
-	 * @return
+	 * Evaluates the compiled script of a entry.
+	 * @param entry The configuration entry to evaluate
+	 * @param scopeValues All known values for script scope
+	 * @return The computed value
 	 * @throws ScriptException
 	 */
-	private Object evaluateScript(Entry<String, Map<String, Object>> entry, Map<String, Object> bindings2) throws ScriptException {
+	private Object evaluateScript(Entry<String, Map<String, Object>> entry, Map<String, Object> scopeValues) throws ScriptException {
+		
 		Object value = null;
+		
+		// executes compiled script
 		if(entry.getValue().containsKey("cscript")) {
 			CompiledScript cscript = (CompiledScript) entry.getValue().get("cscript");
 
 			// Add global variables thisValue and keyName to JavaScript context
 			Bindings bindings = cscript.getEngine().createBindings();
-			bindings.putAll(bindings2);
+			bindings.putAll(scopeValues);
 			value = cscript.eval(bindings);
 		}
 
+		// try to convert the returned value to BigDecimal
 		value = ObjectUtils.defaultIfNull(
 				NumberUtils.toBigDecimal(value), value);
 
@@ -193,6 +206,7 @@ public class EBusTelegramParser {
 	}
 
 	/**
+	 * A function show data from unknown telegrams
 	 * @param telegram
 	 */
 	private void bruteforceEBusTelegram(EBusTelegram telegram) {
@@ -203,18 +217,22 @@ public class EBusTelegramParser {
 		loggerBrutforce.trace("    " + format);
 		loggerBrutforce.trace("    -----------------------------------------------------------------------------");
 
+		// Check all possible positions with known data types
 		for (int i = 0; i < data.length; i++) {
 
 			Object word = i == data.length-1 ? "---" : EBusUtils.decodeWORD(data[i+1], data[i]);
 			Object data2b = i == data.length-1 ? "---" : EBusUtils.decodeDATA2b(data[i+1], data[i]);
 			Object data2c = i == data.length-1 ? "---" : EBusUtils.decodeDATA2c(data[i+1], data[i]);
 			Object data1c = i == data.length-1 ? "---" : EBusUtils.decodeDATA1c(data[i+1]);
+			
 			int bcd = EBusUtils.decodeBCD(data[i]);
 			int uint = data[i] & 0xFF;
+			
 			format = String.format("%-4s%-13s%-13s%-13s%-13s%-13s%-13s", i+6, word, uint, data2b, data2c, data1c, bcd);
 			loggerBrutforce.trace("    " + format);
 		}
 
+		// Parse slave data
 		if(telegram.getType() == EBusTelegram.MASTER_SLAVE) {
 			data = telegram.getSlaveData();
 
@@ -226,6 +244,7 @@ public class EBusTelegramParser {
 				Object data2b = i == data.length-1 ? "---" : EBusUtils.decodeDATA2b(data[i+1], data[i]);
 				Object data2c = i == data.length-1 ? "---" : EBusUtils.decodeDATA2c(data[i+1], data[i]);
 				Object data1c = i == data.length-1 ? "---" : EBusUtils.decodeDATA1c(data[i+1]);
+				
 				int bcd = EBusUtils.decodeBCD(data[i]);
 				int uint = data[i] & 0xFF;
 
@@ -237,30 +256,44 @@ public class EBusTelegramParser {
 	}
 
 	/**
-	 * @param telegram
-	 * @return
+	 * Parses a valid eBus telegram an returns a map with key/values based on
+	 * configuration registry.
+	 * @param telegram The eBus telegram
+	 * @return A Map with parsed key/values
 	 */
 	public Map<String, Object> parse(EBusTelegram telegram) {
 
+		// Check if a configuration provider is set
 		if(configurationProvider == null) {
 			logger.error("Configuration not loaded, can't parse telegram!");
+			// FIXME: Return empty map
 			return null;
 		}
 
-		final Map<String, Object> valueRegistry = new HashMap<String, Object>();
-		final Map<String, Object> valueRegistry2 = new HashMap<String, Object>();
-
+		// Secure null check
 		if(telegram == null) {
+			// FIXME: Return empty map
 			return null;
 		}
+		
+		// All parsed values
+		final Map<String, Object> valueRegistry = new HashMap<String, Object>();
+		
+		// All parsed values with short keys, used for script evaluation
+		final Map<String, Object> valueRegistryShortKeys = new HashMap<String, Object>();
 
+		// Get as byte buffer
 		final ByteBuffer byteBuffer = telegram.getBuffer();
+		
+		// Get hex string for debugging
 		final String bufferString = EBusUtils.toHexDumpString(byteBuffer).toString();
 
+		// queries the configuration provider for matching registry entries
 		final List<Map<String, Object>> matchedTelegramRegistry = configurationProvider.getCommandsByFilter(bufferString);
 
 		loggerAnalyses.debug(bufferString);
 
+		// No registry entries found, so this is a unknown telegram
 		if(matchedTelegramRegistry.isEmpty()) {
 			loggerAnalyses.debug("  >>> Unknown ----------------------------------------");
 			if(loggerBrutforce.isTraceEnabled()) {
@@ -268,26 +301,33 @@ public class EBusTelegramParser {
 				bruteforceEBusTelegram(telegram);
 			}
 
+			// FIXME: Return empty map
 			return null;
 		}
 
 		// loop thru all matching telegrams from registry
 		for (Map<String, Object> registryEntry : matchedTelegramRegistry) {
 
-			String classKey = registryEntry.containsKey("class") ? (String) registryEntry.get("class") : "";
-
 			int debugLevel = 0;
+			
+			// get class key if used
+			String classKey = registryEntry.containsKey("class") ? 
+					(String) registryEntry.get("class") : "";
+
+			// load debug level for this configuration entry if available
 			if(registryEntry.containsKey("debug")) {
 				debugLevel = ((Integer)registryEntry.get("debug"));
 			}
 
-			// get values block
+			// get values block of configuration
 			@SuppressWarnings("unchecked")
 			Map<String, Map<String, Object>> values = (Map<String, Map<String, Object>>) registryEntry.get("values");
 
+			// debug
 			loggerAnalyses.debug("  >>> {}", registryEntry.containsKey("comment") ? 
 					registryEntry.get("comment") : "<No comment available>");
 
+			// loop over all entries
 			for (Entry<String, Map<String, Object>> entry : values.entrySet()) {
 
 				String uniqueKey = (classKey != "" ? classKey + "." : "") + entry.getKey();
@@ -296,30 +336,36 @@ public class EBusTelegramParser {
 				String type = ((String) settings.get("type")).toLowerCase();
 				int pos = settings.containsKey("pos") ? ((Integer) settings.get("pos")).intValue() : -1;
 
+				// load possible min, max, replace values and a factor from configuration
 				BigDecimal valueMin = NumberUtils.toBigDecimal(settings.get("min"));
 				BigDecimal valueMax = NumberUtils.toBigDecimal(settings.get("max"));
 				BigDecimal replaceValue = NumberUtils.toBigDecimal(settings.get("replaceValue"));
 				BigDecimal factor = NumberUtils.toBigDecimal(settings.get("factor"));
 
+				// Extract the value from byte buffer
 				Object value = getValue(byteBuffer, type, pos,
 						valueMin, valueMax, replaceValue, factor);
 
-
-				// Add global variables thisValue and keyName to JavaScript context
-				HashMap<String, Object> bindings = new HashMap<String, Object>();
-				bindings.put(entry.getKey(), value);
-				bindings.put(uniqueKey, value);
-				bindings.put("thisValue", value);
-
+				// If compiled script available for this key, execute it now
 				if(settings.containsKey("cscript")) {
 					try {
+						
+						// Add global variables thisValue and keyName to JavaScript context
+						HashMap<String, Object> bindings = new HashMap<String, Object>();
+						bindings.put(entry.getKey(), value);	// short key
+						bindings.put(uniqueKey, value);			// full key
+						bindings.put("thisValue", value);		// alias thisValue
+						
+						// Evaluates script
 						value = evaluateScript(entry, bindings);
+						
 					} catch (ScriptException e) {
 						logger.error("Error on evaluating JavaScript!", e);
 						break;
 					}
 				}
 
+				// debug
 				String label = (String) (settings.containsKey("label") ? settings.get("label") : "");
 				String format = String.format("%-35s%-10s%s", uniqueKey, value, label);
 				if(debugLevel >= 2) {
@@ -328,24 +374,35 @@ public class EBusTelegramParser {
 					loggerAnalyses.trace("    >>> " + format);
 				}
 
+				// Add result to registry
 				valueRegistry.put(uniqueKey, value);
-				valueRegistry2.put(entry.getKey(), value);
+				
+				// Add result to temp. short key registry, used for scripts
+				valueRegistryShortKeys.put(entry.getKey(), value);
 			}
 
 			// computes values available? if not exit here
 			if(!registryEntry.containsKey("computed_values"))
 				continue;
 
+			// post execute the computes_values block
 			@SuppressWarnings("unchecked")
 			Map<String, Map<String, Object>> cvalues = (Map<String, Map<String, Object>>) registryEntry.get("computed_values");
 			for (Entry<String, Map<String, Object>> entry : cvalues.entrySet()) {
+				
 				String uniqueKey = (classKey != "" ? classKey + "." : "") + entry.getKey();
+				
+				// Add all values to script scope
 				HashMap<String, Object> bindings = new HashMap<String, Object>();
+				bindings.putAll(valueRegistryShortKeys);
 				bindings.putAll(valueRegistry);
-				bindings.putAll(valueRegistry2);
+				
 				Object value;
 				try {
+					// Evaluates script
 					value = evaluateScript(entry, bindings);
+					
+					// Add result to registry
 					valueRegistry.put(entry.getKey(), value);
 
 					if(debugLevel >= 2) {

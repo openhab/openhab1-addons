@@ -19,12 +19,14 @@ import org.openhab.core.binding.BindingProvider;
 public interface EBusBindingProvider extends BindingProvider {
 	
 	/**
+	 * Return the configurated command for this item or null if not set
 	 * @param itemName
 	 * @return
 	 */
 	public String getCommand(String itemName);
 
 	/**
+	 * Return the configurated class for this item or null if not set
 	 * @param itemName
 	 * @return
 	 */
@@ -60,12 +62,14 @@ public interface EBusBindingProvider extends BindingProvider {
 	public byte[] getTelegramData(String itemName, String type);
 	
 	/**
+	 * Return the configurated destination for this item or null if not set
 	 * @param itemName
 	 * @return
 	 */
 	public Byte getTelegramDestination(String itemName);
 	
 	/**
+	 * Return the configurated source for this item or null if not set
 	 * @param itemName
 	 * @return
 	 */

@@ -40,10 +40,16 @@ public class EBusConfigurationProvider {
 	private static final Logger logger = LoggerFactory
 			.getLogger(EBusConfigurationProvider.class);
 
+	// The registry with all loaded configuration entries
 	private ArrayList<Map<String, Object>> telegramRegistry = new ArrayList<>();
 
+	// The script engine if available
 	private Compilable compEngine; 
 
+	/**
+	 * Return if the provider is empty.
+	 * @return
+	 */
 	public boolean isEmpty() {
 		return telegramRegistry.isEmpty();
 	}
@@ -53,17 +59,23 @@ public class EBusConfigurationProvider {
 	 */
 	public EBusConfigurationProvider() {
 		final ScriptEngineManager mgr = new ScriptEngineManager();
-		final ScriptEngine engine = mgr.getEngineByName("JavaScript");
 		
-		if(engine == null) {
-			logger.warn("Unable to load \"JavaScript\" engine! Skip every eBus value calculated by JavaScript.");
+		if(mgr != null) {
+			final ScriptEngine engine = mgr.getEngineByName("JavaScript");
 			
-		} else if (engine instanceof Compilable) {
-			compEngine = (Compilable) engine;
-			
+			if(engine == null) {
+				logger.warn("Unable to load \"JavaScript\" engine! Skip every eBus value calculated by JavaScript.");
+				
+			} else if (engine instanceof Compilable) {
+				compEngine = (Compilable) engine;
+				
+			}
 		}
 	}
 
+	/**
+	 * Clears all loaded configurations
+	 */
 	public void clear() {
 		if(telegramRegistry != null) {
 			telegramRegistry.clear();
@@ -71,7 +83,8 @@ public class EBusConfigurationProvider {
 	}
 	
 	/**
-	 * @param url
+	 * Loads a JSON configuration file by url
+	 * @param url The url to a configuration file
 	 * @throws IOException
 	 * @throws ParseException
 	 */
@@ -100,30 +113,39 @@ public class EBusConfigurationProvider {
 	@SuppressWarnings("unchecked")
 	protected void transformDataTypes(Map<String, Object> configurationEntry) {
 		
+		// Use filter property if set
 		if(configurationEntry.get("filter") instanceof String) {
 			String filter = (String)configurationEntry.get("filter");
 			filter = filter.replaceAll("\\?\\?", "[0-9A-Z]{2}");
 			logger.trace("Compile RegEx filter: {}", filter);
 			configurationEntry.put("cfilter", Pattern.compile(filter));
-			
+		
 		} else {
+			// Build filter string
+			
+			
+			// Always ignore first two hex bytes
 			String filter = "[0-9A-Z]{2} [0-9A-Z]{2}";
+			
+			// Add command to filter string
 			if(configurationEntry.containsKey("command")) {
 				filter += " " + configurationEntry.get("command");
 				filter += " [0-9A-Z]{2}";
 			}
 			
+			// Add commdata to filter string
 			if(configurationEntry.containsKey("data")) {
 				filter += " " + configurationEntry.get("data");
 			}
 			
+			// Finally add .* to end with everthing
 			filter += " .*";
 			
 			logger.trace("Compile RegEx filter: {}", filter);
 			configurationEntry.put("cfilter", Pattern.compile(filter));
 		}
 		
-		// compile scipt's if available
+		// compile scipt's if available also once
 		if(configurationEntry.containsKey("values")) {
 			Map<String, Map<String, Object>> values = (Map<String, Map<String, Object>>) configurationEntry.get("values");
 			for (Entry<String, Map<String, Object>> entry : values.entrySet()) {
@@ -166,8 +188,9 @@ public class EBusConfigurationProvider {
 	}
 	
 	/**
-	 * @param bufferString
-	 * @return
+	 * Return all configuration which filter match the bufferString paramter
+	 * @param bufferString The byte string to check against all loaded filters
+	 * @return All configurations with matching filter
 	 */
 	public List<Map<String, Object>> getCommandsByFilter(String bufferString) {
 
@@ -186,9 +209,10 @@ public class EBusConfigurationProvider {
 	}
 
 	/**
-	 * @param commandId
-	 * @param commandClass
-	 * @return
+	 * Return all configurations by command id and class
+	 * @param commandId The command id
+	 * @param commandClass The command class
+	 * @return All matching configurations
 	 */
 	public Map<String, Object> getCommandById(String commandId, String commandClass) {
 		for (Map<String, Object> entry : telegramRegistry) {
@@ -198,6 +222,7 @@ public class EBusConfigurationProvider {
 			}
 		}
 
+		//FIXME: Return empty map
 		return null;
 	}
 

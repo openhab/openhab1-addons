@@ -45,11 +45,19 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 	private static final Logger logger = LoggerFactory
 			.getLogger(EBusBinding.class);
 
+	// Used to process the commands incl. polling
 	private EBusCommandProcessor commandProcessor;
+	
+	// The connector to serial or ethernet
 	private AbstractEBusConnector connector;
+	
+	// The parser to converts received bytes to key/value maps
 	private EBusTelegramParser parser;
 
+	// Used to check binding configuration
 	private ConfigurationAdmin configurationAdminService;
+	
+	// 
 	private EBusConfigurationProvider configurationProvider;
 
 	/* (non-Javadoc)
@@ -84,6 +92,9 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 		this.configurationAdminService = null;
 	}
 
+	/**
+	 * Check and initialize if needed the configuration provider
+	 */
 	private void checkConfigurationProvider() {
 		if(configurationProvider == null)
 			configurationProvider = new EBusConfigurationProvider();
@@ -185,6 +196,9 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openhab.core.binding.AbstractBinding#addBindingProvider(org.openhab.core.binding.BindingProvider)
+	 */
 	@Override
 	public void addBindingProvider(EBusBindingProvider provider) {
 		super.addBindingProvider(provider);
@@ -202,6 +216,9 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 		provider.addBindingChangeListener(commandProcessor);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openhab.core.binding.AbstractBinding#removeBindingProvider(org.openhab.core.binding.BindingProvider)
+	 */
 	@Override
 	public void removeBindingProvider(EBusBindingProvider provider) {
 		super.removeBindingProvider(provider);
