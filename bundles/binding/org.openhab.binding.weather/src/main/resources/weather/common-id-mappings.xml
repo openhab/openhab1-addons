@@ -85,6 +85,7 @@
     <provider name="Yahoo" ids="19"/>
     <provider name="WorldWeatherOnline" ids="143"/>
     <provider name="Hamweather" ids="BD, BN"/>
+    <provider name="Wunderground" icons="hazy"/>
   </common-id-mapping>
   <common-id-mapping id="fog">
     <provider name="Yahoo" ids="20, 21, 22"/>
