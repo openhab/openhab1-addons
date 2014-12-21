@@ -250,7 +250,7 @@ public class InsteonDevice {
 		if (group != -1) {
 			flags |= 0xc0; // mark message as group message
 			// and stash the group number into the address
-			addr = new InsteonAddress(0,0,(byte)(group & 0xff));
+			addr = new InsteonAddress((byte) 0, (byte) 0, (byte) (group & 0xff));
 		} else {
 			addr = getAddress();
 		}
