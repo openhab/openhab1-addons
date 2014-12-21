@@ -134,7 +134,9 @@ public abstract class MessageHandler {
 				isDuplicate = !updateGroupState(group, hops,
 								GroupMessage.CLEAN);
 			}
-		} catch (IllegalArgumentException | FieldException e) {
+		} catch (IllegalArgumentException e) {
+			logger.error("cannot parse msg: {}", msg, e);			
+		} catch (FieldException e) {
 			logger.error("cannot parse msg: {}", msg, e);
 		}
 		return (isDuplicate);
