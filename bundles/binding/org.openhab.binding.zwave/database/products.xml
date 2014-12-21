@@ -323,6 +323,15 @@
 			<ConfigFile>ge/relay.xml</ConfigFile>
 		</Product>
 		<Product>
+           <Reference>
+               <Type>4450</Type>
+               <Id>3030</Id>
+           </Reference>
+           <Model>ZW3101</Model>
+           <Label lang="en">Lamp Module</Label>
+           <ConfigFile>ge/ZW3101.xml</ConfigFile>
+        </Product>
+		<Product>
 			<Reference>
 				<Type>5252</Type>
 				<Id>3530</Id>
@@ -634,6 +643,15 @@
 		<Product>
 			<Reference>
 				<Type>0002</Type>
+				<Id>0009</Id>
+			</Reference>
+			<Model>HEM</Model>
+			<Label lang="en">Home Energy Meter</Label>
+			<ConfigFile>aeon/hem.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
 				<Id>001C</Id>
 			</Reference>
 			<Model>HEM-G2</Model>
@@ -648,6 +666,14 @@
 			<Model>DSD31</Model>
 			<Label lang="en">Outlet Plugable Siren</Label>
 			<ConfigFile>aeon/dsd31.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>0019</Id>
+			</Reference>
+			<Model>DSC25G2</Model>
+			<Label lang="en">Dimmer G2</Label>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -801,6 +827,10 @@
 			<Reference>
 				<Type>0800</Type>
 				<Id>1001</Id>
+			</Reference>
+			<Reference>
+				<Type>0800</Type>
+				<Id>2001</Id>
 			</Reference>
 			<Reference>
 				<Type>0800</Type>
@@ -1065,6 +1095,10 @@
 			<Reference>
 				<Type>0002</Type>
 				<Id>0002</Id>
+			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0001</Id>
 			</Reference>
 			<Model>EZMotion Express</Model>
 			<Label lang="en">Wireless 3-in-1 Sensor</Label>
@@ -1445,7 +1479,7 @@
 		</Product>
 		<Product>
 			<Reference>
-				<Type>6131</Type>
+				<Type>6943</Type>
 				<Id>4501</Id>
 			</Reference>
 			<Model>EasyPlug</Model>
@@ -1492,9 +1526,9 @@
 				<Type>000d</Type>
 				<Id>0100</Id>
 			</Reference>
-			<Model>plugInDimmer</Model>
-			<Label lang="en">BeNext Plug-in Dimmer</Label>
-			<ConfigFile>benext/plugindimmer.xml</ConfigFile>
+			<Model>builtInDimmer</Model>
+			<Label lang="en">BeNext Built-in Dimmer</Label>
+			<ConfigFile>benext/builtindimmer.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
