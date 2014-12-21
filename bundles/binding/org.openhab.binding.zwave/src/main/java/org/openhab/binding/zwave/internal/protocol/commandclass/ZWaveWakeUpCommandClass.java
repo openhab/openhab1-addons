@@ -176,7 +176,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				break;
 			case WAKE_UP_NOTIFICATION:
 				logger.debug("NODE {}: Received WAKE_UP_NOTIFICATION", this.getNode().getNodeId());
-				serialMessage.setTransActionCanceled(true);
+				serialMessage.setTransactionCanceled(true);
 
 				// Set the awake flag. This will also empty the queue
 				this.setAwake(true);

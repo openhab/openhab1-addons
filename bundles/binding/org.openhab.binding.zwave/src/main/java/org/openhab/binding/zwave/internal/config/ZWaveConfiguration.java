@@ -725,7 +725,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						.getCommandClass(CommandClass.WAKE_UP);
 
 				if(wakeupCommandClass == null) {
-					logger.error("NODE {}: Error getting wakeupCommandClass", nodeId);
+					logger.debug("NODE {}: wakeupCommandClass not supported", nodeId);
 					return null;
 				}
 

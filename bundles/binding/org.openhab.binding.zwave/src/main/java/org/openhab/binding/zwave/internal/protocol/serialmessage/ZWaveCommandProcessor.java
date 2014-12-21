@@ -54,8 +54,8 @@ public abstract class ZWaveCommandProcessor {
 	protected void checkTransactionComplete(SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.debug("Sent message {}", lastSentMessage.toString());
 		logger.debug("Recv message {}", incomingMessage.toString());
-		logger.debug("Checking transaction complete: class={}, expected={}, cancelled={}", incomingMessage.getMessageClass(), lastSentMessage.getExpectedReply(), incomingMessage.isTransActionCanceled());
-		if (incomingMessage.getMessageClass() == lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
+		logger.debug("Checking transaction complete: class={}, expected={}, cancelled={}", incomingMessage.getMessageClass(), lastSentMessage.getExpectedReply(), incomingMessage.isTransactionCanceled());
+		if (incomingMessage.getMessageClass() == lastSentMessage.getExpectedReply() && !incomingMessage.isTransactionCanceled()) {
 			transactionComplete = true;
 			logger.debug("         transaction complete!");
 		}

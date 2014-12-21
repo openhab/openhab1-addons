@@ -42,6 +42,12 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.trace("Handle Message Get Node ProtocolInfo Response");
 		
+		// Check that this request is consistent with the response
+		if(lastSentMessage.getMessageClass() != SerialMessageClass.IdentifyNode) {
+			logger.warn("Got IdentifyNodeMessage without request, ignoring. Last message was {}.", lastSentMessage.getMessageClass());
+			return false;
+		}
+
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 		logger.debug("NODE {}: ProtocolInfo", nodeId);
 		

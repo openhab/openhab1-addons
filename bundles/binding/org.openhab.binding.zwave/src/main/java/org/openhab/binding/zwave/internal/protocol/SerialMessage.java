@@ -57,7 +57,7 @@ public class SerialMessage {
 	private int transmitOptions = 0;
 	private int callbackId = 0;
 	
-	private boolean transActionCanceled = false;
+	private boolean transactionCanceled = false;
 
 	/**
 	 * Indicates whether the serial message is valid.
@@ -365,18 +365,18 @@ public class SerialMessage {
 
 	/**
 	 * Indicates that the transaction for the incoming message is canceled by a command class
-	 * @return the transActionCanceled
+	 * @return the transactionCanceled
 	 */
-	public boolean isTransActionCanceled() {
-		return transActionCanceled;
+	public boolean isTransactionCanceled() {
+		return transactionCanceled;
 	}
 
 	/**
 	 * Sets the transaction for the incoming message to canceled.
-	 * @param transActionCanceled the transActionCanceled to set
+	 * @param transactionCanceled the transActionCanceled to set
 	 */
-	public void setTransActionCanceled(boolean transActionCanceled) {
-		this.transActionCanceled = transActionCanceled;
+	public void setTransactionCanceled(boolean transactionCanceled) {
+		this.transactionCanceled = transactionCanceled;
 	}
 
 	/**

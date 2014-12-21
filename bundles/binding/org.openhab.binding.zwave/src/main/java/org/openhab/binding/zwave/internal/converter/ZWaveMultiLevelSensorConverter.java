@@ -97,8 +97,9 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 		}
 		
 		// Don't trigger event if this item is bound to another sensor type
-		if (sensorType != null && SensorType.getSensorType(Integer.parseInt(sensorType)) != sensorEvent.getSensorType())
+		if (sensorType != null && SensorType.getSensorType(Integer.parseInt(sensorType)) != sensorEvent.getSensorType()) {
 			return;
+		}
 
 		Object val = event.getValue();
 		// Perform a scale conversion if needed

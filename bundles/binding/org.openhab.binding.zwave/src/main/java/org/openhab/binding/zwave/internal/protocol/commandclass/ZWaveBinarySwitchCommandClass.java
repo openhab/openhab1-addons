@@ -111,7 +111,7 @@ public class ZWaveBinarySwitchCommandClass extends ZWaveCommandClass implements 
 	protected void processSwitchBinaryReport(SerialMessage serialMessage, int offset,
 			int endpoint) {
 		int value = serialMessage.getMessagePayloadByte(offset + 1); 
-		logger.debug(String.format("NODE {}: Switch Binary report, value = 0x%02X", this.getNode().getNodeId(), value));
+		logger.debug(String.format("NODE %d: Switch Binary report, value = 0x%02X", this.getNode().getNodeId(), value));
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
 		this.getController().notifyEventListeners(zEvent);
 	}
