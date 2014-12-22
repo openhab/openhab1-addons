@@ -18,6 +18,7 @@
   <modules>
     <module>org.openhab.binding.lgtv</module>
     <module>org.openhab.binding.bluetooth</module>
+	<module>org.openhab.binding.caldav</module>
     <module>org.openhab.binding.knx</module>
     <module>org.openhab.binding.knx.test</module>
     <module>org.openhab.binding.serial</module>
@@ -133,6 +134,8 @@
     <module>org.openhab.binding.enigma2</module>
     <module>org.openhab.binding.enigma2.test</module>
 	<module>org.openhab.binding.onewire-cuno</module>
+	<module>org.openhab.binding.pcf8591</module>
+	<module>org.openhab.binding.gpio-switch</module>
   </modules>
 
 </project>

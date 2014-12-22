@@ -17,6 +17,7 @@
 
   <modules>
     <module>org.openhab.library.tel</module>
+	<module>org.openhab.library.location</module>
   </modules>
 
 </project>

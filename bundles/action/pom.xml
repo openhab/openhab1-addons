@@ -27,6 +27,7 @@
     <module>org.openhab.action.nma</module>
     <module>org.openhab.action.homematic</module>
     <module>org.openhab.action.openwebif</module>
+	<module>org.openhab.action.carddav</module>
   </modules>
 
 </project>

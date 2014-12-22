@@ -19,6 +19,7 @@
     <module>org.openhab.io.cv</module>
     <module>org.openhab.io.console</module>
     <module>org.openhab.io.dropbox</module>
+	<module>org.openhab.io.caldav</module>
     <module>org.openhab.io.gcal</module>
     <module>org.openhab.io.gcal.test</module>
     <module>org.openhab.io.gpio</module>

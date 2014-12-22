@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: openHAB GPIO Raspberry IO Module
+Bundle-SymbolicName: org.openhab.io.gpio_raspberry;singleton:=true
+Bundle-Version: 1.6.1
+Bundle-Vendor: Robert Delbrück
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.openhab.core.binding,
+ org.openhab.core.items,
+ org.openhab.core.library.types,
+ org.openhab.core.service,
+ org.openhab.core.types,
+ org.osgi.framework,
+ org.osgi.service.cm,
+ org.slf4j
+Bundle-ClassPath: .,
+ lib/pi4j-core-1.0-SNAPSHOT.jar
+Service-Component: OSGI-INF/gpioloader.xml
+Bundle-Activator: org.openhab.io.gpio_raspberry.internal.GpioActivator
+Export-Package: org.openhab.io.gpio_raspberry;uses:="org.openhab.io.gpio_raspberry.internal.device",
+ org.openhab.io.gpio_raspberry.device,
+ org.openhab.io.gpio_raspberry.internal,
+ org.openhab.io.gpio_raspberry.item
+Bundle-ActivationPolicy: lazy
