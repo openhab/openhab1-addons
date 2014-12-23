@@ -181,8 +181,9 @@ public class JeeLinkBinding extends
 		int b = new Integer(parts[5]);
 		double temp = (a * 256 + b - 1000) * 0.1;
 		temp = Math.round(10.0 * temp) / 10.0;
-		int lf = new Integer(parts[6]);
-
+		int lf = Integer.parseInt(parts[6]) & 0x7f;
+		int batteryLow = (Integer.parseInt(parts[6]) & 0x80) >> 7;
+		
 		JeeLinkBindingConfig configHum = null;
 		for (JeeLinkBindingProvider provider : providers) {
 			configHum = provider.getConfigForAddress(id + ";H");
@@ -210,8 +211,21 @@ public class JeeLinkBinding extends
 			configTemp.setTimestamp(System.currentTimeMillis());
 		}
 
-		if (configTemp == null || configHum == null) {
-			logger.debug("Received message for unknown device " + id);
+		JeeLinkBindingConfig configBat = null;
+		for (JeeLinkBindingProvider provider : providers) {
+			configBat = provider.getConfigForAddress(id + ";B");
+			if (configBat != null) {
+				break;
+			}
+		}
+		if (configBat != null && needsUpate(configBat) && configBat.getItem() != null) {
+			State state = new DecimalType(batteryLow);
+			eventPublisher.postUpdate(configBat.getItem().getName(), state);
+			configBat.setTimestamp(System.currentTimeMillis());
+		}
+		
+		if (configTemp == null) {
+			logger.info("Received message for unknown device " + id);
 		}
 	}
 
