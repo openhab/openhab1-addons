@@ -126,6 +126,7 @@
     <module>org.openhab.binding.ehealth</module>
     <module>org.openhab.binding.anel</module>
     <module>org.openhab.binding.xbcdrc</module>
+    <module>org.openhab.binding.jeelinkec3k</module>
   </modules>
 
 </project>
