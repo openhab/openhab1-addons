@@ -8,12 +8,12 @@
  */
 package org.openhab.persistence.mysql.internal;
 
-import java.text.SimpleDateFormat;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -46,10 +46,11 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.persistence.FilterCriteria;
+import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
+import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
-import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
@@ -96,6 +97,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 	private boolean initialized = false;
 	protected ItemRegistry itemRegistry;
+	private PersistentStateRestorer persistentStateRestorer;
 
 	// Error counter - used to reconnect to database on error
 	private int errCnt;
@@ -108,6 +110,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	private Map<String, String> sqlTables = new HashMap<String, String>();
 	private Map<String, String> sqlTypes = new HashMap<String, String>();
 
+	
 	public void activate() {
 		// Initialise the type array
 		sqlTypes.put("COLORITEM", "CHAR(25)");
@@ -132,6 +135,14 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
 		this.itemRegistry = null;
+	}
+	
+	public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
+		this.persistentStateRestorer = persistentStateRestorer;
+	}
+	
+	public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
+		this.persistentStateRestorer = null;
 	}
 
 	/**
@@ -431,6 +442,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	 * @{inheritDoc
 	 */
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
+		logger.debug("mySQL configuration starting");
 		if (config != null) {
 			Enumeration<String> keys = config.keys();
 
@@ -484,25 +496,33 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 				waitTimeout = Integer.parseInt(tmpString);
 			}
 
+			// reconnect to the database in case the configuration has changed.
 			disconnectFromDatabase();
 			connectToDatabase();
 
 			// connection has been established ... initialization completed!
 			initialized = true;
+			
+			logger.debug("mySQL configuration complete.");
+			persistentStateRestorer.initializeItems(getName());
 		}
 
 	}
 
 	@Override
 	public Iterable<HistoricItem> query(FilterCriteria filter) {
-		if (!initialized)
+		if (!initialized) {
+			logger.debug("Query aborted on item {} - mySQL not initialised!", filter.getItemName());
 			return Collections.emptyList();
+		}
 
 		if (!isConnected())
 			connectToDatabase();
 
-		if (!isConnected())
+		if (!isConnected()) {
+			logger.debug("Query aborted on item {} - mySQL not connected!", filter.getItemName());
 			return Collections.emptyList();
+		}
 
 		SimpleDateFormat mysqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -522,10 +542,10 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			item = null;
 		}
                    
-                if(item instanceof GroupItem){
-                    // For Group Items is BaseItem needed to get correct Type of Value.
-                    item = GroupItem.class.cast(item).getBaseItem();
-                }
+        if(item instanceof GroupItem){
+            // For Group Items is BaseItem needed to get correct Type of Value.
+            item = GroupItem.class.cast(item).getBaseItem();
+        }
 
 		String table = sqlTables.get(itemName);
 		if (table == null) {

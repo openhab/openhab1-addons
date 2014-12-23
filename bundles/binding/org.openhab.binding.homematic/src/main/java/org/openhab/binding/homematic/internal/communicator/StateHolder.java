@@ -17,8 +17,10 @@ import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.ProviderItemIterator.ProviderItemIteratorCallback;
 import org.openhab.binding.homematic.internal.communicator.client.BaseHomematicClient.HmValueItemIteratorCallback;
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
+import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.converter.state.Converter;
+import org.openhab.binding.homematic.internal.model.HmRssiInfo;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 import org.openhab.core.items.Item;
 import org.openhab.core.types.State;
@@ -136,6 +138,48 @@ public class StateHolder {
 	}
 
 	/**
+	 * Reloads all RSSI values from the Homematic server and publishes only
+	 * changed values to the openHAB bus.
+	 */
+	public void reloadRssi() {
+		reloadExecutorPool.execute(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					logger.debug("Reloading Homematic server RSSI values");
+					Map<String, HmRssiInfo> rssiList = context.getHomematicClient().getRssiInfo();
+					for (String address : rssiList.keySet()) {
+						HmRssiInfo rssiInfo = rssiList.get(address);
+						updateRssiInfo(new DatapointConfig(address, "0", "RSSI_DEVICE"), rssiInfo.getDevice());
+						updateRssiInfo(new DatapointConfig(address, "0", "RSSI_PEER"), rssiInfo.getPeer());
+					}
+					logger.debug("Finished reloading {} Homematic server RSSI values", rssiList.size());
+				} catch (HomematicClientException ex) {
+					logger.error(ex.getMessage(), ex);
+				}
+			}
+		});
+	}
+
+	/**
+	 * Upates the RSSI datapoint if available.
+	 */
+	private void updateRssiInfo(DatapointConfig bindingConfig, Integer rssiValue) {
+		HmValueItem valueItem = datapoints.get(bindingConfig);
+		if (valueItem != null) {
+			if (!valueItem.getValue().equals(rssiValue)) {
+				logger.debug("Value changed from '{}' to '{}' for binding {}",
+						valueItem == null ? "null" : valueItem.getValue(), rssiValue, bindingConfig);
+				valueItem.setValue(rssiValue);
+				publish(bindingConfig, valueItem);
+			}
+		} else {
+			logger.debug("Rssi info not found: {}", bindingConfig);
+		}
+	}
+
+	/**
 	 * Loads all variables from the Homematic server, only executed at startup.
 	 */
 	public void loadVariables() throws HomematicClientException {
@@ -233,5 +277,4 @@ public class StateHolder {
 			}
 		});
 	}
-
 }

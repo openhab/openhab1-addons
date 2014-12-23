@@ -19,6 +19,7 @@ import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
 import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener;
+import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener.CacheEntry;
 import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
 import org.slf4j.Logger;
@@ -102,8 +103,9 @@ public class SendPageUpdateFilter implements PerRequestBroadcastFilter {
 			return false;
 		}
 		
-		Object firedEntity =  ResourceStateChangeListener.getMap().get(clientId); 
-		if(firedEntity==null || firedEntity instanceof PageBean){
+		CacheEntry entry =  ResourceStateChangeListener.getCachedEntries().get(clientId); 
+		if(entry ==null || entry.getData() instanceof PageBean){
+			Object firedEntity = entry.getData();
 			if( firedEntity == null ||  ((PageBean)firedEntity).icon != ((PageBean)responseEntity).icon ||  ((PageBean)firedEntity).title != ((PageBean)responseEntity).title    ) {
 		    	return true;
 		    }

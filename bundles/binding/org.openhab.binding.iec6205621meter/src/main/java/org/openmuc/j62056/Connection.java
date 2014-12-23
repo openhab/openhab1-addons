@@ -270,7 +270,21 @@ public class Connection {
 		// .println("Got the following identification message: " +
 		// getByteArrayString(buffer, numBytesReadTotal));
 
-		baudRateSetting = buffer[offset + 4];
+		int startPosition = 0;
+		while (startPosition < numBytesReadTotal) {
+			if (buffer[startPosition] == (byte) 0x00
+					| buffer[startPosition] == (byte) 0x7F) {
+				startPosition++;
+			} else {
+				break;
+			}
+		}
+
+		byte[] bytes = new byte[numBytesReadTotal - startPosition];
+		System.arraycopy(buffer, startPosition, bytes, 0, numBytesReadTotal
+				- startPosition);
+
+		baudRateSetting = bytes[offset + 4];
 		baudRate = getBaudRate(baudRateSetting);
 
 		String identification = new String(buffer, offset + 5,
@@ -335,7 +349,7 @@ public class Connection {
 					SerialPort.STOPBITS_1, SerialPort.PARITY_EVEN);
 		} catch (UnsupportedCommOperationException e) {
 			throw new IOException("Serial Port does not support " + baudRate
-					+ "bd 8N1");
+					+ "bd 7E1");
 		}
 
 		readSuccessful = false;
@@ -384,8 +398,20 @@ public class Connection {
 			index = 1;
 			endIndex = numBytesReadTotal - 5;
 			if (buffer[0] != 0x02) {
-				throw new IOException(
-						"STX (0x02) character is expected but not received as first byte of data message.");
+
+				startPosition = 0;
+				while (startPosition < numBytesReadTotal) {
+					if (buffer[startPosition] == (byte) 0x02) {
+						break;
+					} else {
+						if (startPosition < numBytesReadTotal - 2) {
+							startPosition++;
+						} else {
+							throw new IOException(
+									"STX (0x02) character is expected but not received as first byte of data message.");
+						}
+					}
+				}
 			}
 		} else {
 			if (numBytesReadTotal < 5) {

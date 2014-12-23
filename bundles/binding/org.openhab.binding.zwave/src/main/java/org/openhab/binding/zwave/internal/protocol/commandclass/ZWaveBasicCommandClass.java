@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Basic command class. Almost all devices support 
@@ -34,6 +35,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("basicCommandClass")
 public class ZWaveBasicCommandClass extends ZWaveCommandClass implements ZWaveBasicCommands {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveBasicCommandClass.class);
 	
 	private static final int BASIC_SET = 0x01;

@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Multi Level Sensor command class. Multi level sensors indicate
@@ -43,8 +44,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass implements ZWaveGetCommands, 
 	ZWaveCommandClassDynamicState, ZWaveCommandClassInitialization {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(ZWaveMultiLevelSensorCommandClass.class);
+	@XStreamOmitField
+	private static final Logger logger = LoggerFactory.getLogger(ZWaveMultiLevelSensorCommandClass.class);
 	private static final int MAX_SUPPORTED_VERSION = 5;
 	
 	private static final int SENSOR_MULTI_LEVEL_SUPPORTED_GET = 0x01;
@@ -139,12 +140,17 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 			if (!sensors.contains(sensorType))
 				this.sensors.add(sensorType);
 
-			BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
+			try {
+				BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
 
-			logger.debug(String.format("NODE %d: Sensor Value = (%f)", this.getNode().getNodeId(), value));
-			
-			ZWaveMultiLevelSensorValueEvent zEvent = new ZWaveMultiLevelSensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, sensorScale, value);
-			this.getController().notifyEventListeners(zEvent);
+				logger.debug(String.format("NODE %d: Sensor Value = (%f)", this.getNode().getNodeId(), value));
+				
+				ZWaveMultiLevelSensorValueEvent zEvent = new ZWaveMultiLevelSensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, sensorScale, value);
+				this.getController().notifyEventListeners(zEvent);
+			}
+			catch (NumberFormatException e) {
+				return;
+			}
 			
 			if (this.getNode().getNodeStage() != NodeStage.DONE)
 				this.getNode().advanceNodeStage(NodeStage.DONE);

@@ -43,6 +43,7 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 		}
 		
 		node.resetResendCount();
+		node.incrementReceiveCount();
 		
 		int commandClassCode = incomingMessage.getMessagePayloadByte(3);
 		CommandClass commandClass = CommandClass.getCommandClass(commandClassCode);
@@ -76,7 +77,7 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 		}
 		
 		logger.trace("NODE {}: Found Command Class {}, passing to handleApplicationCommandRequest", nodeId, zwaveCommandClass.getCommandClass().getLabel());
-		zwaveCommandClass.handleApplicationCommandRequest(incomingMessage, 4, 1);
+		zwaveCommandClass.handleApplicationCommandRequest(incomingMessage, 4, 0);
 
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 		

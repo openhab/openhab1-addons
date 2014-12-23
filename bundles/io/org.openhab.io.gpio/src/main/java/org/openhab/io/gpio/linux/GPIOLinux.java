@@ -200,7 +200,9 @@ public class GPIOLinux implements GPIO, ManagedService {
 
 					/* Exports the pin to user space. */
 					Files.write(Paths.get(SYSFS_CLASS_GPIO + "export"), pinNumber.toString().getBytes());
-					
+
+					/* Wait for the export to proceed */
+					Thread.sleep(500);
 					/* Create backend object */
 					pin = new GPIOPinLinux(pinNumber, SYSFS_CLASS_GPIO + "gpio" + pinNumber, defaultDebounceInterval);
 

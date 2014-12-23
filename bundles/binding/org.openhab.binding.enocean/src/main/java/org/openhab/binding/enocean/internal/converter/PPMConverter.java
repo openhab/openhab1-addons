@@ -10,8 +10,8 @@ package org.openhab.binding.enocean.internal.converter;
 
 import java.math.BigDecimal;
 
-import org.enocean.java.common.values.NumberWithUnit;
-import org.enocean.java.common.values.Unit;
+import org.opencean.core.common.values.NumberWithUnit;
+import org.opencean.core.common.values.Unit;
 import org.openhab.core.library.types.DecimalType;
 
 /**

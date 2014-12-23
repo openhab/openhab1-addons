@@ -36,7 +36,8 @@ public enum NodeStage {
 	CONFIG(14, "Parameter Information"),
 	DONE(15, "Node Complete"),
 	INIT(16, "Node Not Started"),
-	DEAD(17, "Node Dead");
+	DEAD(17, "Node Dead"),
+	FAILED(18,"Node Failed");
 	
 	private int stage;
 	private String label;

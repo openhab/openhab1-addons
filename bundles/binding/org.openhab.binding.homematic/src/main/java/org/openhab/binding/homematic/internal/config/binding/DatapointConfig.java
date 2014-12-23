@@ -35,7 +35,7 @@ public class DatapointConfig extends ValueBindingConfig {
 	public DatapointConfig(HmInterface hmInterface, String addressWithChannel, String parameter) {
 		this.hmInterface = hmInterface;
 		String[] configParts = StringUtils.trimToEmpty(addressWithChannel).split(":");
-		this.address = configParts[0];
+		setAddress(configParts[0]);
 		this.channel = configParts[1];
 		this.parameter = parameter;
 	}
@@ -52,7 +52,7 @@ public class DatapointConfig extends ValueBindingConfig {
 	 */
 	public DatapointConfig(String address, String channel, String parameter, Converter<?> converter,
 			BindingAction action, boolean forceUpdate) {
-		this.address = address;
+		setAddress(address);
 		this.channel = channel;
 		this.parameter = parameter;
 		this.converter = converter;
@@ -65,6 +65,13 @@ public class DatapointConfig extends ValueBindingConfig {
 	 */
 	public String getAddress() {
 		return address;
+	}
+	
+	/**
+	 * Sets the address, strips a leading CCU team marker.
+	 */
+	private void setAddress(String address) {
+		this.address = StringUtils.stripStart(address, "*");
 	}
 
 	/**

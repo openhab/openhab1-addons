@@ -3,7 +3,7 @@ Private-Package: org.openhab.binding.irtrans.internal
 Ignore-Package: org.openhab.binding.irtrans.internal
 Bundle-Name: openHAB irTrans Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.6.0.qualifier
+Bundle-Version: 1.7.0.qualifier
 Bundle-Activator: org.openhab.binding.irtrans.internal.IRtransActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
@@ -23,7 +23,6 @@ Import-Package: com.google.common.base,
  org.openhab.core.library.types,
  org.openhab.core.transform,
  org.openhab.core.types,
- org.openhab.model.core,
  org.openhab.model.item.binding,
  org.osgi.framework,
  org.osgi.service.cm,
@@ -35,7 +34,3 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/irtransbinding.xml
 Bundle-ClassPath: .
-Require-Bundle: org.openhab.core,
- org.openhab.model.item,
- org.openhab.core.library,
- org.openhab.model.core
