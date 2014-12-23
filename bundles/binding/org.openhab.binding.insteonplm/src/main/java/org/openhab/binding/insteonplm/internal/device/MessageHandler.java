@@ -209,33 +209,13 @@ public abstract class MessageHandler {
 			if (isDuplicate(msg) || (hasButton() && !isMybutton(msg, f))) {
 				return;
 			}
-			try {
-				InsteonAddress a = f.getDevice().getAddress();
-				if (msg.isAckOfDirect()) {
-					// got this in response to query, check cmd2 for light level
-					int cmd2 = (int) (msg.getByte("command2") & 0xff);
-					if (cmd2 > 0) {
-						if (cmd2 == 0xff) {
-							// only if it's fully on should we send
-							// an ON status message
-							logger.info("{}: device {} was turned fully on", nm(), a);
-							m_feature.publish(OnOffType.ON, StateChangeType.CHANGED);
-						} else {
-							int level = Math.max(1, (cmd2*100)/255);
-							logger.info("{}: device {} was set to level {}", nm(), a, level);
-							m_feature.publish(new PercentType(level), StateChangeType.CHANGED);
-						}
-					} else {
-						logger.info("{}: device {} was turned fully off", nm(), a);
-						m_feature.publish(OnOffType.OFF, StateChangeType.CHANGED);
-					}
-				} else {
-					// if we get this via broadcast, ignore the light level and just switch on
-					logger.info("{}: device {} was turned fully on.", nm(), a);
-					m_feature.publish(OnOffType.ON, StateChangeType.CHANGED);
-				}
-			}  catch (FieldException e) {
-				logger.error("error parsing {}: ", msg, e);
+			InsteonAddress a = f.getDevice().getAddress();
+			if (msg.isAckOfDirect()) {
+				logger.error("{}: device {}: ignoring ack of direct.", nm(), a);
+			} else {
+				// if we get this via broadcast, ignore the light level and just switch on
+				logger.info("{}: device {} was turned fully on.", nm(), a);
+				m_feature.publish(OnOffType.ON, StateChangeType.ALWAYS);
 			}
 		}
 	}
