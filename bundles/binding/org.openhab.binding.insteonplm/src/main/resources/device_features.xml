@@ -11,36 +11,36 @@
 <feature name="RemoteButtonA">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="1" group="1">LightOnMultiHandler</message-handler>
-	<message-handler cmd="0x13" button="1" group="1">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x11" button="1" group="1">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13" button="1" group="1">LightOffHandler</message-handler>
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
 <feature name="RemoteButtonB">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="2">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="2" group="2">LightOnMultiHandler</message-handler>
-	<message-handler cmd="0x13" button="2" group="2">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x11" button="2" group="2">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13" button="2" group="2">LightOffHandler</message-handler>
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
 <feature name="RemoteButtonC">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="3">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="3" group="3">LightOnMultiHandler</message-handler>
-	<message-handler cmd="0x13" button="3" group="3">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x11" button="3" group="3">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13" button="3" group="3">LightOffHandler</message-handler>
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
 <feature name="RemoteButtonD">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="4">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="4" group="4">LightOnMultiHandler</message-handler>
-	<message-handler cmd="0x13" button="4" group="4">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x11" button="4" group="4">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13" button="4" group="4">LightOffHandler</message-handler>
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>
 <feature name="LoadSwitchButton">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="1" group="1">LightOnMultiHandler</message-handler>
-	<message-handler cmd="0x13" button="1" group="1">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x11" button="1" group="1">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13" button="1" group="1">LightOffHandler</message-handler>
 	<message-handler cmd="0x19" button="1" group="1">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
 	<poll-handler>LEDBitPollHandler</poll-handler>
@@ -60,8 +60,8 @@
 <feature name="KeyPadButton2">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="2" group="2">LightOnMultiHandler</message-handler>
-	<message-handler cmd="0x13" button="2" group="2">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x11" button="2" group="2">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13" button="2" group="2">LightOffHandler</message-handler>
 	<message-handler cmd="0x19" button="2" group="2">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
 	<poll-handler>LEDBitPollHandler</poll-handler>
@@ -69,8 +69,8 @@
 <feature name="KeyPadButton3">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="3" group="3">LightOnMultiHandler</message-handler>
-	<message-handler cmd="0x13" button="3" group="3">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x11" button="3" group="3">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13" button="3" group="3">LightOffHandler</message-handler>
 	<message-handler cmd="0x19" button="3" group="3">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
 	<poll-handler>LEDBitPollHandler</poll-handler>
@@ -78,8 +78,8 @@
 <feature name="KeyPadButton4">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="4" group="4">LightOnMultiHandler</message-handler>
-	<message-handler cmd="0x13" button="4" group="4">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x11" button="4" group="4">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13" button="4" group="4">LightOffHandler</message-handler>
 	<message-handler cmd="0x19" button="4" group="4">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
 	<poll-handler>LEDBitPollHandler</poll-handler>
@@ -87,8 +87,8 @@
 <feature name="KeyPadButton5">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="5" group="5">LightOnMultiHandler</message-handler>
-	<message-handler cmd="0x13" button="5" group="5">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x11" button="5" group="5">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13" button="5" group="5">LightOffHandler</message-handler>
 	<message-handler cmd="0x19" button="5" group="5">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
 	<poll-handler>LEDBitPollHandler</poll-handler>
@@ -96,8 +96,8 @@
 <feature name="KeyPadButton6">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="6" group="6">LightOnMultiHandler</message-handler>
-	<message-handler cmd="0x13" button="6" group="6">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x11" button="6" group="6">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13" button="6" group="6">LightOffHandler</message-handler>
 	<message-handler cmd="0x19" button="6" group="6">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
 	<poll-handler>LEDBitPollHandler</poll-handler>
@@ -105,8 +105,8 @@
 <feature name="KeyPadButton7">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="7" group="7">LightOnMultiHandler</message-handler>
-	<message-handler cmd="0x13" button="7" group="7">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x11" button="7" group="7">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13" button="7" group="7">LightOffHandler</message-handler>
 	<message-handler cmd="0x19" button="7" group="7">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>
 	<poll-handler>LEDBitPollHandler</poll-handler>
@@ -114,8 +114,8 @@
 <feature name="KeyPadButton8">
 	<message-dispatcher>DefaultDispatcher</message-dispatcher>
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x11" button="8" group="8">LightOnMultiHandler</message-handler>
-	<message-handler cmd="0x13" button="8" group="8">LightOffMultiHandler</message-handler>
+	<message-handler cmd="0x11" button="8" group="8">LightOnSwitchHandler</message-handler>
+	<message-handler cmd="0x13" button="8" group="8">LightOffHandler</message-handler>
 	<message-handler cmd="0x19" button="8" group="8">SwitchRequestReplyHandler</message-handler>
 	<command-handler command="OnOffType">LightOnOffCommandHandler</command-handler>	
 	<poll-handler>LEDBitPollHandler</poll-handler>

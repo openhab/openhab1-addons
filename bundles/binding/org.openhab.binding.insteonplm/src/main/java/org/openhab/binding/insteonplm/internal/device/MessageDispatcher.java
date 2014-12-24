@@ -14,7 +14,6 @@ import org.openhab.binding.insteonplm.internal.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Does preprocessing of messages to decide which handler should be called.
  * 
@@ -32,7 +31,12 @@ public abstract class MessageDispatcher {
 	MessageDispatcher(DeviceFeature f) {
 		m_feature = f;
 	}
-	
+	/**
+	 * Generic handling of incoming ALL LINK messages
+	 * @param msg the message received
+	 * @param port the port on which the message was received
+	 * @return true if the message was handled by this function
+	 */
 	protected boolean handleAllLinkMessage(Msg msg, String port) {
 		if (!msg.isAllLink()) {
 			return false;
@@ -73,6 +77,12 @@ public abstract class MessageDispatcher {
 	 */
 	public abstract boolean dispatch(Msg msg, String port);
 
+	//
+	//
+	// ------------ implementations of MessageDispatchers start here ------------------
+	//
+	//
+	
 	private static class DefaultDispatcher extends MessageDispatcher {
 		DefaultDispatcher(DeviceFeature f) { super(f); }
 		@Override

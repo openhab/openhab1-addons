@@ -101,18 +101,27 @@ public abstract class MessageHandler {
 		}
 		return def;
 	}
-
-	protected boolean hasButton() {
-		return this.getIntParameter("button", -1) != -1;
-	}
-
+	/**
+	 * Test if message refers to the button configured for given feature
+	 * @param msg received message
+	 * @param f device feature to test
+	 * @return true if we have no button configured or the message is for this button
+	 */
 	protected boolean isMybutton(Msg msg, DeviceFeature f) {
+		int myButton = getIntParameter("button", -1);
+		// if there is no button configured for this handler
+		// the message is assumed to refer to this feature
+		// no matter what button is addressed in the message
+		if (myButton == -1) return true;
+		
 		int button = getButtonInfo(msg, f);
-		int myButton = this.getIntParameter("button", -1);
-
 		return button != -1 && myButton == button;
 	}
-	
+	/**
+	 * Determines is an incoming ALL LINK message is a duplicate
+	 * @param msg the received ALL LINK message
+	 * @return true if this message is a duplicate
+	 */
 	protected boolean isDuplicate(Msg msg) {
 		boolean isDuplicate = false;
 		try {
@@ -141,7 +150,14 @@ public abstract class MessageHandler {
 		}
 		return (isDuplicate);
 	}
-	
+	/**
+	 * Advance the state of the state machine that suppresses duplicates
+	 * 
+	 * @param group the insteon group of the broadcast message
+	 * @param hops number of hops left
+	 * @param a what type of group message came in (action etc)
+	 * @return true if this is message is NOT a duplicate
+	 */
 	private boolean updateGroupState(int group, int hops, GroupMessage a) {
 		GroupMessageStateMachine m = m_groupState.get(new Integer(group));
 		if (m == null) {
@@ -172,7 +188,11 @@ public abstract class MessageHandler {
 		}
 		return -1;
 	}
-
+	
+	/**
+	 * Shorthand to return class name for logging purposes
+	 * @return name of the class
+	 */
 	protected String nm() {
 		return (this.getClass().getSimpleName());
 	}
@@ -182,6 +202,13 @@ public abstract class MessageHandler {
 	 * @param hm the parameter map for this message handler
 	 */
 	public void setParameters(HashMap<String, String> hm) { m_parameters = hm; }
+	
+	
+	//
+	//
+	// ---------------- the various command handler start here -------------------
+	//
+	//
 	
 	public static class DefaultMsgHandler extends MessageHandler {
 		DefaultMsgHandler(DeviceFeature p) { super(p); }
@@ -206,16 +233,20 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(int group, byte cmd1, Msg msg,
 				DeviceFeature f, String fromPort) {
-			if (isDuplicate(msg) || (hasButton() && !isMybutton(msg, f))) {
+			if (isDuplicate(msg) || !isMybutton(msg, f)) {
 				return;
 			}
 			InsteonAddress a = f.getDevice().getAddress();
 			if (msg.isAckOfDirect()) {
 				logger.error("{}: device {}: ignoring ack of direct.", nm(), a);
 			} else {
-				// if we get this via broadcast, ignore the light level and just switch on
-				logger.info("{}: device {} was turned fully on.", nm(), a);
+				logger.info("{}: device {} was turned on.", nm(), a);
 				m_feature.publish(OnOffType.ON, StateChangeType.ALWAYS);
+				// need to poll to find out what level the dimmer is at now.
+				// it may not be at 100% because dimmers can be configured
+				// to switch to e.g. 75% when turned on.
+				Msg m = f.makePollMsg();
+				if (m != null)	f.getDevice().enqueueMessage(m, f);
 			}
 		}
 	}
@@ -225,7 +256,7 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(int group, byte cmd1, Msg msg,
 				DeviceFeature f, String fromPort) {
-			if (!isDuplicate(msg) && (!hasButton() || isMybutton(msg, f))) {
+			if (!isDuplicate(msg) && isMybutton(msg, f)) {
 				logger.info("{}: device {} was switched on.", nm(),
 								f.getDevice().getAddress());
 				f.publish(OnOffType.ON, StateChangeType.ALWAYS);
@@ -238,36 +269,7 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(int group, byte cmd1, Msg msg,
 				DeviceFeature f, String fromPort) {
-			if (!isDuplicate(msg) && 
-					(!hasButton() || isMybutton(msg, f))) {
-				logger.info("{}: device {} was switched off.", nm(),
-						f.getDevice().getAddress());
-				f.publish(OnOffType.OFF, StateChangeType.ALWAYS);
-			}
-		}
-	}
-
-	public static class LightOnMultiHandler extends MessageHandler {
-		LightOnMultiHandler(DeviceFeature p) { super(p); }
-		@Override
-		public void handleMessage(int group, byte cmd1, Msg msg,
-				DeviceFeature f, String fromPort) {
-			if (!isDuplicate(msg) && 
-					(!hasButton() || isMybutton(msg, f))) {
-				logger.info("{}: device {} was switched on.", nm(),
-						f.getDevice().getAddress());
-				f.publish(OnOffType.ON, StateChangeType.ALWAYS);
-			}
-		}
-	}
-
-	public static class LightOffMultiHandler extends MessageHandler {
-		LightOffMultiHandler(DeviceFeature p) { super(p); }
-		@Override
-		public void handleMessage(int group, byte cmd1, Msg msg,
-				DeviceFeature f, String fromPort) {
-			if (!isDuplicate(msg) && 
-					(!hasButton() || isMybutton(msg, f))) {
+			if (!isDuplicate(msg) && isMybutton(msg, f)) {
 				logger.info("{}: device {} was switched off.", nm(),
 						f.getDevice().getAddress());
 				f.publish(OnOffType.OFF, StateChangeType.ALWAYS);
@@ -276,12 +278,11 @@ public abstract class MessageHandler {
 	}
 
 	/**
-	 * A message handler which reads the command2 field
-	 * if command2 == 0xFF then the light has been turned on
+	 * A message handler that processes replies to queries.
+	 * If command2 == 0xFF then the light has been turned on
 	 * else if command2 == 0x00 then the light has been turned off
-	 * it should ideally be mapped to the 0x19 command byte so that it reads
-	 * the status request acks sent back by the switch
 	 */
+
 	public static class SwitchRequestReplyHandler extends  MessageHandler {
 		SwitchRequestReplyHandler(DeviceFeature p) { super(p); }
 		@Override

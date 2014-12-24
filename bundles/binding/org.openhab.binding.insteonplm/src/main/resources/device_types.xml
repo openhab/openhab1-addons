@@ -223,24 +223,13 @@ Example entry:
  </device>
 
  <device productKey="F00.00.13">
-     <model>2334-232</model>
-     <description>Keypad Dimmer Switch, 6-Button </description>
-     <feature name="loaddimmer">LoadDimmerButton</feature>
-     <feature name="keypadbuttonA">KeyPadButton3</feature>
-     <feature name="keypadbuttonB">KeyPadButton4</feature>
-     <feature name="keypadbuttonC">KeyPadButton5</feature>
-     <feature name="keypadbuttonD">KeyPadButton6</feature>
-     <feature name="lastheardfrom">GenericLastTime</feature>
- </device>
-
- <device productKey="F00.00.14">
      <model>2672-222</model>
      <description>LED Bulb</description>
      <feature name="dimmer">GenericDimmer</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
- <device productKey="F00.00.15">
+ <device productKey="F00.00.14">
      <model>2487S</model>
      <description>KeypadLinc On/Off 6-Button Scene Control </description>
      <feature name="loadswitch">LoadSwitchButton</feature>
@@ -251,6 +240,17 @@ Example entry:
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
  
+ <device productKey="F00.00.15">
+     <model>2334-232</model>
+     <description>Keypad Dimmer Switch, 6-Button </description>
+     <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="keypadbuttonA">KeyPadButton3</feature>
+     <feature name="keypadbuttonB">KeyPadButton4</feature>
+     <feature name="keypadbuttonC">KeyPadButton5</feature>
+     <feature name="keypadbuttonD">KeyPadButton6</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
  <device productKey="F00.00.16">
      <model>2334-232</model>
      <description>Keypad Dimmer Switch, 8-Button </description>
