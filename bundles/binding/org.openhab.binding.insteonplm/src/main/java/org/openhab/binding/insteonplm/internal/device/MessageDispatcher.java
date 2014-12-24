@@ -10,6 +10,7 @@ package org.openhab.binding.insteonplm.internal.device;
 
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
+import org.openhab.binding.insteonplm.internal.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,39 @@ public abstract class MessageDispatcher {
 	 */
 	MessageDispatcher(DeviceFeature f) {
 		m_feature = f;
+	}
+	
+	protected boolean handleAllLinkMessage(Msg msg, String port) {
+		if (!msg.isAllLink()) {
+			return false;
+		}
+		try {
+			InsteonAddress a = msg.getAddress("toAddress");
+			// ALL_LINK_BROADCAST and ALL_LINK_CLEANUP
+			// have a valid Command1 field
+			// but the CLEANUP_SUCCESS (of type ALL_LINK_BROADCAST!)
+			// message has cmd1 = 0x06 and the cmd as the
+			// high byte of the toAddress.
+			byte cmd1 = msg.getByte("command1");
+			if (!msg.isCleanup() && cmd1 == 0x06) {
+				cmd1 = a.getHighByte();
+			}
+			// For ALL_LINK_BROADCAST messages, the group is
+			// in the low byte of the toAddress. For direct
+			// ALL_LINK_CLEANUP, it is in Command2
+			
+			int group = (msg.isCleanup() ? msg.getByte("command2") : a.getLowByte()) & 0xff;
+			MessageHandler h = m_feature.getMsgHandlers().get(cmd1 & 0xFF);
+			if (h == null) h = m_feature.getDefaultMsgHandler();
+			logger.debug("{}:{}->{} cmd1:{} group {}/{}:{}", m_feature.getDevice().getAddress(), m_feature.getName(),
+						h.getClass().getSimpleName(), Utils.getHexByte(cmd1), group, h.getGroup(), msg);
+			if (h.getGroup() == group) {
+				h.handleMessage(group, cmd1, msg, m_feature, port);
+			}
+		} catch (FieldException e) {
+			logger.error("couldn't parse ALL_LINK message: {}", msg, e);
+		}
+		return true;
 	}
 	/**
 	 * Dispatches message
@@ -54,6 +88,9 @@ public abstract class MessageDispatcher {
 				logger.debug("no command found, dropping msg {}", msg);
 				return isConsumed;
 			}
+			if (handleAllLinkMessage(msg, port)) {
+				return isConsumed;
+			}
 			if (msg.isAckOfDirect()) {
 				// in the case of direct ack, the cmd1 code is useless.
 				// you have to know what message was sent before to
@@ -73,9 +110,9 @@ public abstract class MessageDispatcher {
 			if (key != -1 || m_feature.isStatusFeature()) {
 				MessageHandler h = m_feature.getMsgHandlers().get(key);
 				if (h == null) h = m_feature.getDefaultMsgHandler();
-				logger.trace("{}:{}->{} {}", m_feature.getDevice().getAddress(), m_feature.getName(),
+				logger.trace("{}:{}->{} DIRECT: {}", m_feature.getDevice().getAddress(), m_feature.getName(),
 						h.getClass().getSimpleName(), msg);
-				h.handleMessage(cmd1, msg, m_feature, port);
+				h.handleMessage(-1, cmd1, msg, m_feature, port);
 			}
 			if (isConsumed) {
 				m_feature.setQueryStatus(DeviceFeature.QueryStatus.QUERY_ANSWERED);
@@ -92,6 +129,9 @@ public abstract class MessageDispatcher {
 			byte cmd1 = 0x00;
 			boolean isConsumed = false;
 			try {
+				if (handleAllLinkMessage(msg, port)) {
+					return isConsumed;
+				}
 				cmd1 = msg.getByte("command1");
 			} catch (FieldException e) {
 				logger.debug("no cmd1 found, dropping msg {}", msg);
@@ -102,7 +142,7 @@ public abstract class MessageDispatcher {
 			if (h == null) h = m_feature.getDefaultMsgHandler();
 			logger.trace("{}:{}->{} {}", m_feature.getDevice().getAddress(), m_feature.getName(),
 					h.getClass().getSimpleName(), msg);
-			h.handleMessage(cmd1, msg, m_feature, port);
+			h.handleMessage(-1, cmd1, msg, m_feature, port);
 			return isConsumed;
 		}
 	}
@@ -118,7 +158,7 @@ public abstract class MessageDispatcher {
 				if (h == null) h = m_feature.getDefaultMsgHandler();
 				logger.debug("{}:{}->{} {}", m_feature.getDevice().getAddress(), m_feature.getName(),
 								h.getClass().getSimpleName(), msg);
-						h.handleMessage((byte)cmd, msg, m_feature, port);
+						h.handleMessage(-1, (byte)cmd, msg, m_feature, port);
 			} catch (FieldException e) {
 				logger.error("error parsing {}: ", msg, e);
 			}
@@ -133,7 +173,7 @@ public abstract class MessageDispatcher {
 			MessageHandler h = m_feature.getDefaultMsgHandler();
 			logger.trace("{}:{}->{} {}", m_feature.getDevice().getAddress(), m_feature.getName(),
 					h.getClass().getSimpleName(), msg);
-			h.handleMessage((byte)0x01, msg, m_feature, port);
+			h.handleMessage(-1, (byte)0x01, msg, m_feature, port);
 			return false;
 		}
 	}

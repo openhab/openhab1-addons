@@ -166,36 +166,27 @@ public class Msg {
 		return isPureNack() || !isUnsolicited();
 	}
 	
-	public boolean isBroadcast() {
+	public boolean isOfType(MsgType mt) {
 		try {
 			MsgType t = MsgType.s_fromValue(getByte("messageFlags"));
-			if (t == MsgType.ALL_LINK_BROADCAST || t == MsgType.BROADCAST) {
-				return true;
-			}
+			return (t == mt);
 		} catch (FieldException e) {
 			return false;
 		}
-		return true;
+	}
+
+	public boolean isBroadcast() {
+		return isOfType(MsgType.ALL_LINK_BROADCAST) || isOfType(MsgType.BROADCAST);
 	}
 	public boolean isCleanup() {
-		try {
-			MsgType t = MsgType.s_fromValue(getByte("messageFlags"));
-			if (t == MsgType.ALL_LINK_CLEANUP) {
-				return true;
-			}
-		} catch (FieldException e) {
-			return false;
-		}
-		return false;
+		return isOfType(MsgType.ALL_LINK_CLEANUP);
+	}
+	public boolean isAllLink() {
+		return isOfType(MsgType.ALL_LINK_BROADCAST) || isOfType(MsgType.ALL_LINK_CLEANUP);
 	}
 
 	public boolean isAckOfDirect() {
-		try {
-			MsgType t = MsgType.s_fromValue(getByte("messageFlags"));
-			if (t == MsgType.ACK_OF_DIRECT)	return true;
-		} catch (FieldException e) {
-		}
-		return false;
+		return isOfType(MsgType.ACK_OF_DIRECT);
 	}
 	
 	public boolean isX10() {
@@ -217,18 +208,6 @@ public class Msg {
 		m_definition.addField(f);
 	}
 	
-	public MsgType getBroadcastType() {
-		if (m_definition == null ||
-				!m_definition.containsField("msgType"))
-			return MsgType.INVALID;
-		try {
-			return MsgType.s_fromValue(getByte("msgType"));
-		} catch (FieldException e) {
-			// do noting;
-		}
-		return MsgType.INVALID;
-	}
-	
 	public InsteonAddress getAddr(String name) {
 		if (m_definition == null) return null;
 		InsteonAddress a = null;
@@ -238,6 +217,11 @@ public class Msg {
 			// do nothing, we'll return null
 		}
 		return a;
+	}
+	
+	public int getHopsLeft() throws FieldException {
+		int hops = (getByte("messageFlags") & 0x0c) >> 2;
+		return hops;
 	}
 	
 	/**

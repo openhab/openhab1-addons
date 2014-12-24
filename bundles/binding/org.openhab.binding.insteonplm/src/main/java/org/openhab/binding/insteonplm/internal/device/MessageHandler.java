@@ -12,8 +12,11 @@ import java.io.IOException;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
+import org.openhab.binding.insteonplm.internal.device.DeviceFeatureListener.StateChangeType;
+import org.openhab.binding.insteonplm.internal.device.GroupMessageStateMachine.GroupMessage;
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
+import org.openhab.binding.insteonplm.internal.message.MsgType;
 import org.openhab.binding.insteonplm.internal.utils.Utils;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
@@ -34,8 +37,9 @@ import org.slf4j.LoggerFactory;
 public abstract class MessageHandler {
 	private static final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
 	
-	DeviceFeature			m_feature	 	= null;
-	HashMap<String, String> m_parameters	= new HashMap<String, String>();
+	DeviceFeature				m_feature	 	= null;
+	HashMap<String, String> 	m_parameters	= new HashMap<String, String>();
+	HashMap<Integer, GroupMessageStateMachine>	m_groupState = new HashMap<Integer, GroupMessageStateMachine>();
 	/**
 	 * Constructor
 	 * @param p state publishing object for dissemination of state changes
@@ -47,14 +51,15 @@ public abstract class MessageHandler {
 	 * Method that processes incoming message. The cmd1 parameter
 	 * has been extracted earlier already (to make a decision which message handler to call),
 	 * and is passed in as an argument so cmd1 does not have to be extracted from the message again.
+	 * @param group all-link group or -1 if not specified
 	 * @param cmd1 the insteon cmd1 field
 	 * @param msg the received insteon message
 	 * @param feature the DeviceFeature to which this message handler is attached
 	 * @param fromPort the device (/dev/ttyUSB0) from which the message has been received
 	 */
-	public abstract void handleMessage(byte cmd1, Msg msg, DeviceFeature feature,
-			String fromPort);
-
+	public abstract void handleMessage(int group, byte cmd1, Msg msg,
+			DeviceFeature feature, String fromPort);
+	
 	/**
 	 * Method to send an extended insteon message for querying a device
 	 * @param f		DeviceFeature that is being currently handled
@@ -73,6 +78,19 @@ public abstract class MessageHandler {
 			logger.warn("field exception sending query message to device {}", d.getAddress());
 		}
 	}
+	/**
+	 * Retrieve group parameter or -1 if no group is specified
+	 * @return group parameter
+	 */
+	public int getGroup() {
+		return (getIntParameter("group", -1));
+	}
+	/**
+	 * Helper function to get an integer parameter for the handler
+	 * @param key name of the int parameter (as specified in device features!)
+	 * @param def default to return if parameter not found
+	 * @return value of int parameter (or default if not found)
+	 */
 	protected int getIntParameter(String key, int def) {
 		try {
 			if (m_parameters.get(key) != null) {
@@ -94,7 +112,43 @@ public abstract class MessageHandler {
 
 		return button != -1 && myButton == button;
 	}
-
+	
+	protected boolean isDuplicate(Msg msg) {
+		boolean isDuplicate = false;
+		try {
+			MsgType t = MsgType.s_fromValue(msg.getByte("messageFlags"));
+			int hops = msg.getHopsLeft();
+			if (t == MsgType.ALL_LINK_BROADCAST) {
+				int group = (int) (msg.getAddress("toAddress").getLowByte() & 0xff);
+				byte cmd1 = msg.getByte("command1");
+				// if the command is 0x06, then it's success message
+				// from the original broadcaster, with which the device
+				// confirms that it got all cleanup replies successfully.
+				GroupMessage gm = (cmd1 == 0x06) ? GroupMessage.SUCCESS :
+										GroupMessage.BCAST;
+				isDuplicate = !updateGroupState(group, hops, gm);
+			} else if (t == MsgType.ALL_LINK_CLEANUP) {
+				// the cleanup messages are direct messages, so the
+				// group # is not in the toAddress, but in cmd2 
+				int group = (int)(msg.getByte("command2") & 0xff);
+				isDuplicate = !updateGroupState(group, hops,
+								GroupMessage.CLEAN);
+			}
+		} catch (IllegalArgumentException | FieldException e) {
+			logger.error("cannot parse msg: {}", msg, e);
+		}
+		return (isDuplicate);
+	}
+	
+	private boolean updateGroupState(int group, int hops, GroupMessage a) {
+		GroupMessageStateMachine m = m_groupState.get(new Integer(group));
+		if (m == null) {
+			m = new GroupMessageStateMachine();
+			m_groupState.put(new Integer(group), m);
+		}
+		return (m.action(a, hops));
+	}
+	
 	/**
 	 * Extract button information from message
 	 * @param msg the message to extract from
@@ -108,7 +162,7 @@ public abstract class MessageHandler {
 			int bclean = (int) (msg.getByte("command2") & 0xff);
 			int bbcast = (int) (msg.getAddress("toAddress").getLowByte() & 0xff);
 			int button = msg.isCleanup() ? bclean : bbcast;
-			logger.debug("{} button: {} bclean: {} bbcast: {}",
+			logger.trace("{} button: {} bclean: {} bbcast: {}",
 					f.getDevice().getAddress(), button, bclean, bbcast);
 			return button;
 		}  catch (FieldException e) {
@@ -116,6 +170,11 @@ public abstract class MessageHandler {
 		}
 		return -1;
 	}
+
+	protected String nm() {
+		return (this.getClass().getSimpleName());
+	}
+	
 	/**
 	 * Set parameter map
 	 * @param hm the parameter map for this message handler
@@ -125,35 +184,29 @@ public abstract class MessageHandler {
 	public static class DefaultMsgHandler extends MessageHandler {
 		DefaultMsgHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
-			logger.debug("drop unimpl message {}: {}", Utils.getHexByte(cmd1), msg);
+		public void handleMessage(int group, byte cmd1, Msg msg,
+					DeviceFeature f, String fromPort) {
+			logger.debug("{} drop unimpl message {}: {}", nm(), Utils.getHexByte(cmd1), msg);
 		}
 	}
 
 	public static class NoOpMsgHandler extends MessageHandler {
 		NoOpMsgHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
-			logger.debug("ignore msg {}: {}", Utils.getHexByte(cmd1), msg);
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			logger.debug("{} ignore msg {}: {}", nm(), Utils.getHexByte(cmd1), msg);
 		}
 	}
 
 	public static class LightOnDimmerHandler extends MessageHandler {
 		LightOnDimmerHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
-			// There are two ways we can get cmd1 == 0x11 messages:
-			// 1) When we query (poll). In this case, we get a DIRECT_ACK back,
-			//    and the cmd2 code has the new light level
-			// 2) When the switch/dimmer is switched completely on manually,
-			//    i.e. by physically tapping the button. 
-			if (hasButton() && !isMybutton(msg, f)) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			if (isDuplicate(msg) || (hasButton() && !isMybutton(msg, f))) {
 				return;
 			}
-
 			try {
 				InsteonAddress a = f.getDevice().getAddress();
 				if (msg.isAckOfDirect()) {
@@ -163,20 +216,21 @@ public abstract class MessageHandler {
 						if (cmd2 == 0xff) {
 							// only if it's fully on should we send
 							// an ON status message
-							logger.info("LightOnDimmerHandler: device {} was turned fully on", a);
-							m_feature.publishAll(OnOffType.ON);
+							logger.info("{}: device {} was turned fully on", nm(), a);
+							m_feature.publish(OnOffType.ON, StateChangeType.CHANGED);
 						} else {
 							int level = Math.max(1, (cmd2*100)/255);
-							logger.info("LightOnDimmerHandler: device {} was set to level {}", a, level);
-							m_feature.publishAll(new PercentType(level));
+							logger.info("{}: device {} was set to level {}", nm(), a, level);
+							m_feature.publish(new PercentType(level), StateChangeType.CHANGED);
 						}
 					} else {
-						logger.info("LightOnDimmerHandler: device {} was turned fully off", a);
-						m_feature.publishAll(OnOffType.OFF);
+						logger.info("{}: device {} was turned fully off", nm(), a);
+						m_feature.publish(OnOffType.OFF, StateChangeType.CHANGED);
 					}
 				} else {
 					// if we get this via broadcast, ignore the light level and just switch on
-					m_feature.publishAll(OnOffType.ON);
+					logger.info("{}: device {} was turned fully on.", nm(), a);
+					m_feature.publish(OnOffType.ON, StateChangeType.CHANGED);
 				}
 			}  catch (FieldException e) {
 				logger.error("error parsing {}: ", msg, e);
@@ -187,10 +241,12 @@ public abstract class MessageHandler {
 	public static class LightOnSwitchHandler extends MessageHandler {
 		LightOnSwitchHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
-			if (!hasButton() || isMybutton(msg, f)) {
-				f.publishAll(OnOffType.ON);
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			if (!isDuplicate(msg) && (!hasButton() || isMybutton(msg, f))) {
+				logger.info("{}: device {} was switched on.", nm(),
+								f.getDevice().getAddress());
+				f.publish(OnOffType.ON, StateChangeType.ALWAYS);
 			}
 		}
 	}
@@ -198,10 +254,13 @@ public abstract class MessageHandler {
 	public static class LightOffHandler extends MessageHandler {
 		LightOffHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
-			if (!hasButton() || isMybutton(msg, f)) {
-				f.publishAll(OnOffType.OFF);
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			if (!isDuplicate(msg) && 
+					(!hasButton() || isMybutton(msg, f))) {
+				logger.info("{}: device {} was switched off.", nm(),
+						f.getDevice().getAddress());
+				f.publish(OnOffType.OFF, StateChangeType.ALWAYS);
 			}
 		}
 	}
@@ -209,10 +268,13 @@ public abstract class MessageHandler {
 	public static class LightOnMultiHandler extends MessageHandler {
 		LightOnMultiHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
-			if (isMybutton(msg, f)) {
-				f.publishAll(OnOffType.ON);
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			if (!isDuplicate(msg) && 
+					(!hasButton() || isMybutton(msg, f))) {
+				logger.info("{}: device {} was switched on.", nm(),
+						f.getDevice().getAddress());
+				f.publish(OnOffType.ON, StateChangeType.ALWAYS);
 			}
 		}
 	}
@@ -220,10 +282,13 @@ public abstract class MessageHandler {
 	public static class LightOffMultiHandler extends MessageHandler {
 		LightOffMultiHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
-			if (isMybutton(msg, f)) {
-				f.publishAll(OnOffType.OFF);
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			if (!isDuplicate(msg) && 
+					(!hasButton() || isMybutton(msg, f))) {
+				logger.info("{}: device {} was switched off.", nm(),
+						f.getDevice().getAddress());
+				f.publish(OnOffType.OFF, StateChangeType.ALWAYS);
 			}
 		}
 	}
@@ -235,11 +300,11 @@ public abstract class MessageHandler {
 	 * it should ideally be mapped to the 0x19 command byte so that it reads
 	 * the status request acks sent back by the switch
 	 */
-	public static class LightStateSwitchHandler extends  MessageHandler {
-		LightStateSwitchHandler(DeviceFeature p) { super(p); }
+	public static class SwitchRequestReplyHandler extends  MessageHandler {
+		SwitchRequestReplyHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			try {
 				InsteonAddress a = f.getDevice().getAddress();
 				int cmd2	= (int) (msg.getByte("command2") & 0xff);
@@ -251,11 +316,11 @@ public abstract class MessageHandler {
 					// up cmd2. Filter just on cmd1== 0
 					if (cmd1 == 0) {
 						boolean isOn = isLEDLit(cmd2, button);
-						logger.info("LightStateSwitchHandler: dev {} button {} switched to {}",
+						logger.info("{}: dev {} button {} switched to {}", nm(),
 														a, button, isOn ? "ON" : "OFF");
-						m_feature.publishAll(isOn ? OnOffType.ON : OnOffType.OFF);
+						m_feature.publish(isOn ? OnOffType.ON : OnOffType.OFF, StateChangeType.CHANGED);
 					} else {
-						logger.debug("dropping status reply with cmd {}", Utils.getHexString(cmd1));
+						logger.debug("{} dropping status reply with cmd {}", nm(), Utils.getHexString(cmd1));
 					}
 				}
 			} catch (FieldException e) {
@@ -270,14 +335,14 @@ public abstract class MessageHandler {
 		 */
 		void handleNoButtons(int cmd2, InsteonAddress a, Msg msg) {
 			if (cmd2 == 0) {
-				logger.info("LightStateSwitchHandler: set device {} to OFF", a);
-				m_feature.publishAll(OnOffType.OFF);
+				logger.info("{}: set device {} to OFF", nm(), a);
+				m_feature.publish(OnOffType.OFF, StateChangeType.CHANGED);
 			} else if (cmd2 == 0xff) {
-				logger.info("LightStateSwitchHandler: set device {} to ON", a);
-				m_feature.publishAll(OnOffType.ON);
+				logger.info("{}: set device {} to ON", nm(), a);
+				m_feature.publish(OnOffType.ON, StateChangeType.CHANGED);
 			} else {
-				logger.warn("LightStateSwitchHandler: {} ignoring unexpected" +
-						" cmd2 in msg: {}", a, msg);
+				logger.warn("{}: {} ignoring unexpected cmd2 in msg: {}",
+							nm(), a, msg);
 			}	
 		}
 		/**
@@ -302,15 +367,14 @@ public abstract class MessageHandler {
 	}
 
 	/**
-	 * Similar to the LightStateSwitchHandler, but for a dimmer
+	 * Handles Dimmer replies to status requests.
 	 * In the dimmers case the command2 byte represents the light level from 0-255
-	 * @see LightStateSwitchHandler
 	 */
-	public static class LightStateDimmerHandler extends  MessageHandler {
-		LightStateDimmerHandler(DeviceFeature p) { super(p); }
+	public static class DimmerRequestReplyHandler extends  MessageHandler {
+		DimmerRequestReplyHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			try {
 				int cmd2 = (int) (msg.getByte("command2") & 0xff);
@@ -322,20 +386,20 @@ public abstract class MessageHandler {
 				int level = cmd2*100/255;
 				if (level == 0 && cmd2 > 0) level = 1;
 				if (cmd2 == 0) {
-					logger.info("LightStateDimmerHandler: set device {} to OFF",
+					logger.info("{}: set device {} to OFF", nm(),
 							dev.getAddress());
-					m_feature.publishAll(OnOffType.OFF);
+					m_feature.publish(OnOffType.OFF, StateChangeType.CHANGED);
 				} else if (cmd2 == 0xff) {
-					logger.info("LightStateDimmerHandler: set device {} to ON",
+					logger.info("{}: set device {} to ON", nm(),
 							dev.getAddress());
-					m_feature.publishAll(OnOffType.ON);
+					m_feature.publish(OnOffType.ON, StateChangeType.CHANGED);
 				} else {
-					logger.info("LightStateDimmerHandler: set device {} to level {}",
+					logger.info("{}: set device {} to level {}", nm(),
 							dev.getAddress(), level);
-					m_feature.publishAll(new PercentType(level));
+					m_feature.publish(new PercentType(level), StateChangeType.CHANGED);
 				}
 			} catch (FieldException e) {
-				logger.error("error parsing {}: ", msg, e);
+				logger.error("{}: error parsing {}: ", nm(), msg, e);
 			}
 		}
 	}
@@ -343,8 +407,8 @@ public abstract class MessageHandler {
 	public static class StopManualChangeHandler extends MessageHandler {
 		StopManualChangeHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			Msg m = f.makePollMsg();
 			if (m != null)	f.getDevice().enqueueMessage(m, f);
 		}
@@ -353,8 +417,8 @@ public abstract class MessageHandler {
 	public static class InfoRequestReplyHandler extends MessageHandler {
 		InfoRequestReplyHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			if (!msg.isExtended()) {
 				logger.warn("device {} expected extended msg as info reply, got {}", dev.getAddress(), msg);
@@ -386,8 +450,8 @@ public abstract class MessageHandler {
 	public static class MotionSensorLightReplyHandler extends MessageHandler {
 		MotionSensorLightReplyHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			if (!msg.isExtended()) {
 				logger.trace("device {} ignoring non-extended msg {}", dev.getAddress(), msg);
@@ -399,7 +463,7 @@ public abstract class MessageHandler {
 				case 0x00: // this is a product data response message
 					int lightLevel = msg.getByte("userData11") & 0xff;
 					logger.debug("{} got light level {}", dev.getAddress(), lightLevel);
-					m_feature.publishAll(new DecimalType(lightLevel));
+					m_feature.publish(new DecimalType(lightLevel), StateChangeType.CHANGED);
 					break;
 				default:
 					logger.warn("unknown cmd2 = {} in info reply message {}", cmd2, msg);
@@ -414,8 +478,8 @@ public abstract class MessageHandler {
 	public static class MotionSensorBatteryReplyHandler extends MessageHandler {
 		MotionSensorBatteryReplyHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			InsteonDevice dev = f.getDevice();
 			if (!msg.isExtended()) {
 				logger.warn("device {} expected extended msg as info reply, got {}", dev.getAddress(), msg);
@@ -427,7 +491,7 @@ public abstract class MessageHandler {
 				case 0x00: // this is a product data response message
 					int batteryLevel = msg.getByte("userData12") & 0xff;
 					logger.debug("{} got battery level {}", dev.getAddress(), batteryLevel);
-					m_feature.publishAll(new DecimalType(batteryLevel));
+					m_feature.publish(new DecimalType(batteryLevel), StateChangeType.CHANGED);
 					break;
 				default:
 					logger.warn("unknown cmd2 = {} in info reply message {}", cmd2, msg);
@@ -442,20 +506,20 @@ public abstract class MessageHandler {
 	public static class LastTimeHandler extends MessageHandler {
 		LastTimeHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1a, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1a, Msg msg,
+				DeviceFeature f, String fromPort) {
 			GregorianCalendar calendar = new GregorianCalendar();
 			calendar.setTimeInMillis(System.currentTimeMillis());
 			DateTimeType t = new DateTimeType(calendar);
-			m_feature.publishAll(t);
+			m_feature.publish(t, StateChangeType.ALWAYS);
 		}
 	}
 
-	public static class StateContactHandler extends MessageHandler {
-		StateContactHandler(DeviceFeature p) { super(p); }
+	public static class ContactRequestReplyHandler extends MessageHandler {
+		ContactRequestReplyHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1a, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1a, Msg msg,
+				DeviceFeature f, String fromPort) {
 			byte cmd  = 0x00;
 			byte cmd2 = 0x00;
 			try {
@@ -468,8 +532,8 @@ public abstract class MessageHandler {
 			if (msg.isAckOfDirect() && (f.getQueryStatus() == DeviceFeature.QueryStatus.QUERY_PENDING)
 					&& cmd == 0x50) {
 				OpenClosedType oc = (cmd2 == 0) ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
-				logger.info("StateContactHandler: set contact {} to: {}", f.getDevice().getAddress(), oc);
-				m_feature.publishAll(oc);
+				logger.info("{}: set contact {} to: {}", nm(), f.getDevice().getAddress(), oc);
+				m_feature.publish(oc, StateChangeType.CHANGED);
 			}
 		}
 	}
@@ -477,35 +541,35 @@ public abstract class MessageHandler {
 	public static class ClosedContactHandler extends MessageHandler {
 		ClosedContactHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
-			m_feature.publishAll(OpenClosedType.CLOSED);
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			m_feature.publish(OpenClosedType.CLOSED, StateChangeType.ALWAYS);
 		}
 	}
 
 	public static class OpenedContactHandler extends MessageHandler {
 		OpenedContactHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
-			m_feature.publishAll(OpenClosedType.OPEN);
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			m_feature.publish(OpenClosedType.OPEN, StateChangeType.ALWAYS);
 		}
 	}
 
 	public static class OpenedOrClosedContactHandler extends MessageHandler {
 		OpenedOrClosedContactHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			if (cmd1 != 0x11) return;
 			try {
 				byte cmd2 = msg.getByte("command2");
 				switch (cmd2) {
 				case 0x02:
-					m_feature.publishAll(OpenClosedType.CLOSED);
+					m_feature.publish(OpenClosedType.CLOSED, StateChangeType.CHANGED);
 					break;
 				case 0x01:
-					m_feature.publishAll(OpenClosedType.OPEN);
+					m_feature.publish(OpenClosedType.OPEN, StateChangeType.CHANGED);
 					break;
 				default: // do nothing
 					break;
@@ -521,9 +585,9 @@ public abstract class MessageHandler {
 	public static class ClosedSleepingContactHandler extends MessageHandler {
 		ClosedSleepingContactHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
-			m_feature.publishAll(OpenClosedType.CLOSED);
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			m_feature.publish(OpenClosedType.CLOSED, StateChangeType.ALWAYS);
 			sendExtendedQuery(f, (byte)0x2e, (byte) 00);
 		}
 	}
@@ -531,9 +595,9 @@ public abstract class MessageHandler {
 	public static class OpenedSleepingContactHandler extends MessageHandler {
 		OpenedSleepingContactHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
-			m_feature.publishAll(OpenClosedType.OPEN);
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			m_feature.publish(OpenClosedType.OPEN, StateChangeType.ALWAYS);
 			sendExtendedQuery(f, (byte)0x2e, (byte) 00);
 		}
 	}
@@ -544,59 +608,59 @@ public abstract class MessageHandler {
 	public static class X10OnHandler extends  MessageHandler {
 		X10OnHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			InsteonAddress a = f.getDevice().getAddress();
-			logger.info("X10OnHandler: set X10 device {} to ON", a);
-			m_feature.publishAll(OnOffType.ON);
+			logger.info("{}: set X10 device {} to ON", nm(), a);
+			m_feature.publish(OnOffType.ON, StateChangeType.ALWAYS);
 		}
 	}
 	public static class X10OffHandler extends  MessageHandler {
 		X10OffHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			InsteonAddress a = f.getDevice().getAddress();
-			logger.info("X10OffHandler: set X10 device {} to OFF", a);
-			m_feature.publishAll(OnOffType.OFF);
+			logger.info("{}: set X10 device {} to OFF", nm(), a);
+			m_feature.publish(OnOffType.OFF, StateChangeType.ALWAYS);
 		}
 	}
 	public static class X10BrightHandler extends  MessageHandler {
 		X10BrightHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			InsteonAddress a = f.getDevice().getAddress();
-			logger.debug("X10BrightHandler: ignoring brighten message for device {}", a);
+			logger.debug("{}: ignoring brighten message for device {}", nm(), a);
 		}
 	}
 	public static class X10DimHandler extends  MessageHandler {
 		X10DimHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			InsteonAddress a = f.getDevice().getAddress();
-			logger.debug("X10DimHandler: ignoring dim message for device {}", a);
+			logger.debug("{}: ignoring dim message for device {}", nm(), a);
 		}
 	}
 	public static class X10OpenHandler extends  MessageHandler {
 		X10OpenHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			InsteonAddress a = f.getDevice().getAddress();
-			logger.info("X10OpenHandler: set X10 device {} to OPEN", a);
-			m_feature.publishAll(OpenClosedType.OPEN);
+			logger.info("{}: set X10 device {} to OPEN", nm(), a);
+			m_feature.publish(OpenClosedType.OPEN, StateChangeType.ALWAYS);
 		}
 	}
 	public static class X10ClosedHandler extends  MessageHandler {
 		X10ClosedHandler(DeviceFeature p) { super(p); }
 		@Override
-		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
-				String fromPort) {
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
 			InsteonAddress a = f.getDevice().getAddress();
-			logger.info("X10ClosedHandler: set X10 device {} to CLOSED", a);
-			m_feature.publishAll(OpenClosedType.CLOSED);
+			logger.info("{}: set X10 device {} to CLOSED", nm(), a);
+			m_feature.publish(OpenClosedType.CLOSED, StateChangeType.ALWAYS);
 		}
 	}
 
