@@ -340,6 +340,15 @@
 			<Label lang="en">Duplex Receptacle</Label>
 			<ConfigFile>ge/relay.xml</ConfigFile>
 		</Product>
+		<Product>
+	        <Reference>
+		        <Type>4952</Type>
+		        <Id>3031</Id>
+	        </Reference>
+	        <Model>45605</Model>
+	        <Label lang="en">Smart Outlet</Label>
+	        <ConfigFile>ge/receptacle.xml</ConfigFile>
+        </Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0064</Id>
@@ -1214,9 +1223,9 @@
 				<Type>0005</Type>
 				<Id>0003</Id>
 			</Reference>
-			<Model>LCZ</Model>
-			<Label lang="en">Living Connect Z Thermostat FW2.51</Label>
-			<Label lang="de">Living Connect Z Thermostat FW2.51</Label>
+			<Model>LCZ251</Model>
+			<Label lang="en">Living Connect Z Thermostat 2.51</Label>
+			<Label lang="de">Living Connect Z Thermostat 2.51</Label>
 			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -1225,9 +1234,20 @@
 				<Id>0001</Id>
 			</Reference>
 			<Model>LCZ</Model>
-			<Label lang="en">Living Connect Z Thermostat FW2.50?</Label>
-			<Label lang="de">Living Connect Z Thermostat FW2.50?</Label>
+			<Label lang="en">Living Connect Z Thermostat</Label>
+			<Label lang="de">Living Connect Z Thermostat</Label>
 			<!--Use the same as 2.51 as I cannot see any difference http://www.pepper1.net/zwavedb/device/6-->
+			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>8005</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>LC-13</Model>
+			<Label lang="en">Living Connect Z Thermostat</Label>
+			<Label lang="de">Living Connect Z Thermostat</Label>
+			<!--Use the same as 2.51 as I cannot see any difference http://www.pepper1.net/zwavedb/device/489-->
 			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
