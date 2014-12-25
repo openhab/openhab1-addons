@@ -1135,6 +1135,10 @@
 				<Type>0100</Type>
 				<Id>0002</Id>
 			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0102</Id>
+			</Reference>
 			<Model>KFOB</Model>
 			<Label lang="en">4 button keyfob</Label>
 			<ConfigFile>zwaveme/kfob.xml</ConfigFile>
