@@ -32,7 +32,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class CommandHandler {
 	private static final Logger logger = LoggerFactory.getLogger(CommandHandler.class);
-	DeviceFeature m_feature = null; // related DeviceFeature
+	DeviceFeature			m_feature = null; // related DeviceFeature
+	HashMap<String, String> m_parameters  = new HashMap<String, String>();
 	/**
 	 * Constructor
 	 * @param feature The DeviceFeature for which this command was intended.
@@ -50,6 +51,24 @@ public abstract class CommandHandler {
 	 */
 	public abstract void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice device);
 
+	/**
+	 * Returns parameter as integer
+	 * @param key key of parameter
+	 * @param def default
+	 * @return integer value of parameter
+	 */
+	protected int getIntParameter(String key, int def) {
+		try {
+			if (m_parameters.get(key) != null) {
+				return Integer.parseInt(m_parameters.get(key));
+			}
+		} catch (NumberFormatException e) {
+			logger.error("malformed int parameter in command handler: {}", key);
+		}
+		return def;
+	}
+
+	void setParameters(HashMap<String, String> hm) { m_parameters = hm; }
 	
 	public static class WarnCommandHandler extends CommandHandler {
 		WarnCommandHandler(DeviceFeature f) { super(f); }
@@ -82,6 +101,139 @@ public abstract class CommandHandler {
 					logger.info("LightOnOffCommandHandler: sent msg to switch {} off", dev.getAddress());
 				}
 				// expect to get a direct ack after this!
+			} catch (IOException e) {
+				logger.error("command send i/o error: ", e);
+			} catch (FieldException e) {
+				logger.error("command send message creation error ", e);
+			}
+		}
+	}
+	/**
+	 * This Handler was supposed to set the LEDs of the 2487S, but it doesn't work.
+	 * The parameters were modeledafter the 2486D, it may work for that one,
+	 * leaving it in for now.
+	 * 
+	 * From the HouseLinc PLM traffic log, the following commands (in the D2 data field)
+	 * of the 2486D are supported:
+	 * 
+	 * 0x02: LED follow mask may work or not
+	 * 0x03: LED OFF mask
+	 * 0x04: X10 addr setting
+	 * 0x05: ramp rate
+	 * 0x06: on Level for button
+	 * 0x07: global LED brightness (could not see any effect during testing)
+	 * 0x0B: set nontoggle on/off command
+	 *
+	 * crucially, the 0x09 command does not work (NACK from device)
+	 * @author Bernd Pfrommer
+	 */
+	public static class LEDOnOffCommandHandler extends CommandHandler {
+		LEDOnOffCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				int button = this.getIntParameter("button", -1);
+				if (cmd == OnOffType.ON) {
+					Msg m = dev.makeExtendedMessage((byte) 0x1f, (byte)0x2e,  (byte)0x00);
+					m.setByte("userData1", (byte)button);
+					  // set command for 2486D, does not work for 2487S. Putting a 0x00 here will send query
+					m.setByte("userData2", (byte) 0x09);
+					m.setByte("userData3", (byte) 0x01);
+					dev.enqueueMessage(m, m_feature);
+					logger.info("LEDOnOffCommandHandler: sent msg to switch {} on", dev.getAddress());
+				} else if (cmd == OnOffType.OFF) {
+					Msg m = dev.makeExtendedMessage((byte) 0x1f, (byte)0x2e,  (byte)0x00);
+					m.setByte("userData1", (byte)button);
+					m.setByte("userData2", (byte) 0x09);
+					m.setByte("userData3", (byte) 0x00);
+					dev.enqueueMessage(m, m_feature);
+					logger.info("LEDOnOffCommandHandler: sent msg to switch {} off", dev.getAddress());
+				}
+			} catch (IOException e) {
+				logger.error("command send i/o error: ", e);
+			} catch (FieldException e) {
+				logger.error("command send message creation error ", e);
+			}
+		}
+	}
+	
+	public static class X10OnOffCommandHandler extends CommandHandler {
+		X10OnOffCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				byte houseCode = dev.getX10HouseCode();
+				byte houseUnitCode = (byte) (houseCode << 4 | dev.getX10UnitCode());
+				if (cmd == OnOffType.ON || cmd == OnOffType.OFF) {
+					byte houseCommandCode = (byte) (houseCode << 4 | (cmd == OnOffType.ON ?
+							X10.Command.ON.code() : X10.Command.OFF.code()));
+				Msg munit = dev.makeX10Message(houseUnitCode,(byte)0x00); // send unit code
+				dev.enqueueMessage(munit, m_feature);
+				Msg mcmd = dev.makeX10Message(houseCommandCode,(byte)0x80); // send command code
+				dev.enqueueMessage(mcmd, m_feature);
+					String onOff = cmd == OnOffType.ON ? "ON" : "OFF";
+					logger.info("X10OnOffCommandHandler: sent msg to switch {} {}", dev.getAddress(), onOff);
+				}
+			} catch (IOException e) {
+				logger.error("command send i/o error: ", e);
+			} catch (FieldException e) {
+				logger.error("command send message creation error ", e);
+			}
+		}
+	}
+
+	public static class X10PercentCommandHandler extends CommandHandler {
+		X10PercentCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				//
+				// I did not have hardware that would respond to the PRESET_DIM codes.
+				// This code path needs testing.
+				//
+				byte houseCode = dev.getX10HouseCode();
+				byte houseUnitCode = (byte) (houseCode << 4 | dev.getX10UnitCode());
+				Msg munit = dev.makeX10Message(houseUnitCode, (byte)0x00); // send unit code
+				dev.enqueueMessage(munit, m_feature);
+				PercentType pc = (PercentType)cmd;
+				logger.debug("changing level of {} to {}", dev.getAddress(), pc.intValue());
+				int level = (pc.intValue() * 32) / 100;
+				byte cmdCode = (level >= 16) ?
+							X10.Command.PRESET_DIM_2.code() : X10.Command.PRESET_DIM_1.code();
+				level = level % 16;
+				if (level <= 0) level = 0;
+				houseCode = (byte) s_X10CodeForLevel[level];
+				cmdCode |= (houseCode << 4);
+				Msg mcmd = dev.makeX10Message(cmdCode,(byte)0x80); // send command code
+				dev.enqueueMessage(mcmd, m_feature);
+			} catch (IOException e) {
+				logger.error("command send i/o error: ", e);
+			} catch (FieldException e) {
+				logger.error("command send message creation error ", e);
+			}
+		}
+		static private final int [] s_X10CodeForLevel = {0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
+	}
+
+	public static class X10IncreaseDecreaseCommandHandler extends CommandHandler {
+		X10IncreaseDecreaseCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			try {
+				byte houseCode = dev.getX10HouseCode();
+				byte houseUnitCode = (byte) (houseCode << 4 | dev.getX10UnitCode());
+				if (cmd == IncreaseDecreaseType.INCREASE || cmd == IncreaseDecreaseType.DECREASE) {
+					byte houseCommandCode = (byte) (houseCode << 4 |
+								(cmd == IncreaseDecreaseType.INCREASE ?
+										X10.Command.BRIGHT.code() : X10.Command.DIM.code()));
+					Msg munit = dev.makeX10Message(houseUnitCode,(byte)0x00); // send unit code
+					dev.enqueueMessage(munit, m_feature);
+					Msg mcmd = dev.makeX10Message(houseCommandCode,(byte)0x80); // send command code
+					dev.enqueueMessage(mcmd, m_feature);
+					String bd = cmd == IncreaseDecreaseType.INCREASE ? "BRIGHTEN" : "DIM";
+					logger.info("X10IncreaseDecreaseCommandHandler: sent msg to switch {} {}",
+								dev.getAddress(), bd);
+				}
 			} catch (IOException e) {
 				logger.error("command send i/o error: ", e);
 			} catch (FieldException e) {
@@ -224,16 +376,19 @@ public abstract class CommandHandler {
 	/**
 	 * Factory method for creating handlers of a given name using java reflection
 	 * @param name the name of the handler to create
+	 * @param params 
 	 * @param f the feature for which to create the handler
 	 * @return the handler which was created
 	 */
-	public static <T extends CommandHandler> T s_makeHandler(String name, DeviceFeature f) {
+	public static <T extends CommandHandler> T s_makeHandler(String name, HashMap<String, String> params, DeviceFeature f) {
 		String cname = CommandHandler.class.getName() + "$" + name;
 		try {
 			Class<?> c = Class.forName(cname);
 			@SuppressWarnings("unchecked")
 			Class<? extends T> dc = (Class <? extends T>) c;
-			return dc.getDeclaredConstructor(DeviceFeature.class).newInstance(f);
+			T ch = dc.getDeclaredConstructor(DeviceFeature.class).newInstance(f);
+			ch.setParameters(params);
+			return ch;
 		} catch (Exception e) {
 			logger.error("error trying to create message handler: {}", name, e);
 		}

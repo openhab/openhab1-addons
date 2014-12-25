@@ -23,6 +23,7 @@ public enum NetatmoMeasureType {
 	HUMIDITY("Humidity"),
 	NOISE("Noise"),
 	PRESSURE("Pressure"),
+	RAIN("Rain"),
 	WIFISTATUS("WifiStatus"),
 	ALTITUDE("Altitude"),
 	LATITUDE("Latitude"),

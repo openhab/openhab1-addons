@@ -72,10 +72,9 @@ public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProv
 				logger.error("parameter {} does not have format a=b", params[i]);
 			}
 		}
-
-		InsteonPLMBindingConfig config = new InsteonPLMBindingConfig(addr, feature, parts[1], args);
+		InsteonPLMBindingConfig config = new InsteonPLMBindingConfig(item.getName(), addr, feature, parts[1], args);
 		addBindingConfig(item, config);
-		
+
 		logger.trace("processing item \"{}\" read from .items file with cfg string {}",
 					item.getName(), bindingConfig);
 		items.put(item.getName(), item);
@@ -127,8 +126,10 @@ public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProv
 		String addr = dev[0];
 		String [] retval = {addr, dev[1], segments[1]};
 		if (!InsteonAddress.s_isValid(addr)) {
-			throw new BindingConfigParseException("invalid insteon device address: "
-					+ addr + " in items file. Must have format AB.CD.EF");
+			String errstr = "invalid insteon or X10 device address: " + addr +
+						" in items file. Must have format AB.CD.EF or (for X10): H.U";
+			logger.error(errstr);
+			throw new BindingConfigParseException(errstr);
 		}
 		return retval;
 	}

@@ -10,6 +10,8 @@ package org.openhab.binding.insteonplm.internal.device;
 
 import java.io.IOException;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+
 import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
 import org.openhab.binding.insteonplm.internal.utils.Utils;
@@ -31,7 +33,9 @@ import org.slf4j.LoggerFactory;
 
 public abstract class MessageHandler {
 	private static final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
-	DeviceFeature m_feature = null;
+	
+	DeviceFeature			m_feature	 	= null;
+	HashMap<String, String> m_parameters	= new HashMap<String, String>();
 	/**
 	 * Constructor
 	 * @param p state publishing object for dissemination of state changes
@@ -69,6 +73,16 @@ public abstract class MessageHandler {
 			logger.warn("field exception sending query message to device {}", d.getAddress());
 		}
 	}
+	protected int getIntParameter(String key, int def) {
+		try {
+			if (m_parameters.get(key) != null) {
+				return Integer.parseInt(m_parameters.get(key));
+			}
+		} catch (NumberFormatException e) {
+			logger.error("malformed int parameter in message handler: {}", key);
+		}
+		return def;
+	}
 
 	/**
 	 * Extract button information from message
@@ -76,7 +90,7 @@ public abstract class MessageHandler {
 	 * @param the device feature (needed for debug printing)
 	 * @return the button number or -1 if no button found
 	 */
-	protected int getButtonInfo(Msg msg, DeviceFeature f) {
+	static protected int getButtonInfo(Msg msg, DeviceFeature f) {
 		// the cleanup messages have the button number in the command2 field
 		// the broadcast messages have it as the lsb of the toAddress
 		try {
@@ -91,8 +105,12 @@ public abstract class MessageHandler {
 		}
 		return -1;
 	}
-
-
+	/**
+	 * Set parameter map
+	 * @param hm the parameter map for this message handler
+	 */
+	public void setParameters(HashMap<String, String> hm) { m_parameters = hm; }
+	
 	public static class DefaultMsgHandler extends MessageHandler {
 		DefaultMsgHandler(DeviceFeature p) { super(p); }
 		@Override
@@ -174,9 +192,10 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
-			int button = this.getButtonInfo(msg, f);
-			if (button != -1) {
-				f.publishFiltered(OnOffType.ON, "button", button);
+			int button = getButtonInfo(msg, f);
+			int myButton = this.getIntParameter("button", -1);
+			if (button != -1 && myButton == button) {
+				f.publishAll(OnOffType.ON);
 			}
 		}
 	}
@@ -186,9 +205,10 @@ public abstract class MessageHandler {
 		@Override
 		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
 				String fromPort) {
-			int button = this.getButtonInfo(msg, f);
-			if (button != -1) {
-				f.publishFiltered(OnOffType.OFF, "button", button);
+			int button = getButtonInfo(msg, f);
+			int myButton = this.getIntParameter("button", -1);
+			if (button != -1 && myButton == button) {
+				f.publishAll(OnOffType.OFF);
 			}
 		}
 	}
@@ -207,20 +227,62 @@ public abstract class MessageHandler {
 				String fromPort) {
 			try {
 				InsteonAddress a = f.getDevice().getAddress();
-				int cmd2 = (int) (msg.getByte("command2") & 0xff);
-				if (cmd2 == 0) {
-					logger.info("LightStateSwitchHandler: set device {} to OFF", a);
-					m_feature.publishAll(OnOffType.OFF);
-				} else if (cmd2 == 0xff) {
-					logger.info("LightStateSwitchHandler: set device {} to ON", a);
-					m_feature.publishAll(OnOffType.ON);
+				int cmd2	= (int) (msg.getByte("command2") & 0xff);
+				int button	= this.getIntParameter("button", -1);
+				if (button < 0) {
+					handleNoButtons(cmd2, a, msg);
 				} else {
-					logger.warn("LightStateSwitchHandler: {} ignoring unexpected" +
-							" cmd2 in msg: {}", a, msg);
+					// For the 2487S observed cmd1=19 replies with screwed
+					// up cmd2. Filter just on cmd1== 0
+					if (cmd1 == 0) {
+						boolean isOn = isLEDLit(cmd2, button);
+						logger.info("LightStateSwitchHandler: dev {} button {} switched to {}",
+														a, button, isOn ? "ON" : "OFF");
+						m_feature.publishAll(isOn ? OnOffType.ON : OnOffType.OFF);
+					} else {
+						logger.debug("dropping status reply with cmd {}", Utils.getHexString(cmd1));
+					}
 				}
 			} catch (FieldException e) {
 				logger.error("error parsing {}: ", msg, e);
 			}
+		}
+		/**
+		 * Handle the case where no buttons have been configured.
+		 * In this situation, the only return values should be 0 (light off)
+		 * or 0xff (light on)
+		 * @param cmd2
+		 */
+		void handleNoButtons(int cmd2, InsteonAddress a, Msg msg) {
+			if (cmd2 == 0) {
+				logger.info("LightStateSwitchHandler: set device {} to OFF", a);
+				m_feature.publishAll(OnOffType.OFF);
+			} else if (cmd2 == 0xff) {
+				logger.info("LightStateSwitchHandler: set device {} to ON", a);
+				m_feature.publishAll(OnOffType.ON);
+			} else {
+				logger.warn("LightStateSwitchHandler: {} ignoring unexpected" +
+						" cmd2 in msg: {}", a, msg);
+			}	
+		}
+		/**
+		 * Test if cmd byte indicates that button is lit.
+		 * The cmd byte has the LED status bitwise from the left:
+		 *       87654321
+		 * Note that the 2487S has buttons assigned like this:
+		 *      22|6543|11
+		 * They used the basis of the 8-button remote, and assigned
+		 * the ON button to 1+2, the OFF button to 7+8
+		 * 
+		 * @param cmd    cmd byte as received in message
+		 * @param button button to test (number in range 1..8)
+		 * @return true if button is lit, false otherwise
+		 */
+		private boolean isLEDLit(int cmd, int button) {
+			boolean isSet = (cmd & (0x1 << (button-1))) != 0;
+			logger.trace("cmd: {} button {}", Integer.toBinaryString(cmd), button);
+			logger.trace("msk: {} isSet: {}", Integer.toBinaryString(0x1 << (button-1)), isSet);
+			return (isSet);
 		}
 	}
 
@@ -457,18 +519,84 @@ public abstract class MessageHandler {
 		}
 	}
 	/**
+	 * Process X10 messages that are generated when another controller
+	 * changes the state of an X10 device.
+	 */
+	public static class X10OnHandler extends  MessageHandler {
+		X10OnHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			InsteonAddress a = f.getDevice().getAddress();
+			logger.info("X10OnHandler: set X10 device {} to ON", a);
+			m_feature.publishAll(OnOffType.ON);
+		}
+	}
+	public static class X10OffHandler extends  MessageHandler {
+		X10OffHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			InsteonAddress a = f.getDevice().getAddress();
+			logger.info("X10OffHandler: set X10 device {} to OFF", a);
+			m_feature.publishAll(OnOffType.OFF);
+		}
+	}
+	public static class X10BrightHandler extends  MessageHandler {
+		X10BrightHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			InsteonAddress a = f.getDevice().getAddress();
+			logger.debug("X10BrightHandler: ignoring brighten message for device {}", a);
+		}
+	}
+	public static class X10DimHandler extends  MessageHandler {
+		X10DimHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			InsteonAddress a = f.getDevice().getAddress();
+			logger.debug("X10DimHandler: ignoring dim message for device {}", a);
+		}
+	}
+	public static class X10OpenHandler extends  MessageHandler {
+		X10OpenHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			InsteonAddress a = f.getDevice().getAddress();
+			logger.info("X10OpenHandler: set X10 device {} to OPEN", a);
+			m_feature.publishAll(OpenClosedType.OPEN);
+		}
+	}
+	public static class X10ClosedHandler extends  MessageHandler {
+		X10ClosedHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(byte cmd1, Msg msg, DeviceFeature f,
+				String fromPort) {
+			InsteonAddress a = f.getDevice().getAddress();
+			logger.info("X10ClosedHandler: set X10 device {} to CLOSED", a);
+			m_feature.publishAll(OpenClosedType.CLOSED);
+		}
+	}
+
+	/**
 	 * Factory method for creating handlers of a given name using java reflection
 	 * @param name the name of the handler to create
+	 * @param params 
 	 * @param f the feature for which to create the handler
 	 * @return the handler which was created
 	 */
-	public static <T extends MessageHandler> T s_makeHandler(String name, DeviceFeature f) {
+	public static <T extends MessageHandler> T s_makeHandler(String name, HashMap<String, String> params, DeviceFeature f) {
 		String cname = MessageHandler.class.getName() + "$" + name;
 		try {
 			Class<?> c = Class.forName(cname);
 			@SuppressWarnings("unchecked")
 			Class<? extends T> dc = (Class <? extends T>) c;
-			return dc.getDeclaredConstructor(DeviceFeature.class).newInstance(f);
+			T mh = dc.getDeclaredConstructor(DeviceFeature.class).newInstance(f);
+			mh.setParameters(params);
+			return mh;
 		} catch (Exception e) {
 			logger.error("error trying to create message handler: {}", name, e);
 		}

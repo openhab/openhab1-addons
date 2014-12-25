@@ -58,6 +58,11 @@ public class Athmosphere {
 			@Provider(name = ProviderName.FORECASTIO, property = "ozone")
 	})
 	private Integer ozone;
+	
+	@ProviderMappings({ 
+		@Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.UV")
+	})
+	private Integer uvIndex;
 
 	/**
 	 * Returns the humidity in percent.
@@ -127,6 +132,20 @@ public class Athmosphere {
 	 */
 	public void setOzone(Integer ozone) {
 		this.ozone = ozone;
+	}
+	
+	/**
+	 * Returns the uv Index.
+	 */
+	public Integer getUvIndex() {
+		return uvIndex;
+	}
+
+	/**
+	 * Sets the uvIndex.
+	 */
+	public void setUvIndex(Integer uvIndex) {				
+		this.uvIndex = uvIndex;
 	}
 
 	/**

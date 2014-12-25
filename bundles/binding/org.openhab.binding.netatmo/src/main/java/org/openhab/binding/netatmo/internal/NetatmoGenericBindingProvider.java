@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
  * <code>{ netatmo="00:00:00:00:00:00#00:00:00:00:00:00#Temperature" }</code></li>
  * <li><code>{ netatmo="00:00:00:00:00:00#00:00:00:00:00:00#Humidity" }</code></li>
  * <li><code>{ netatmo="00:00:00:00:00:00#00:00:00:00:00:00#Co2" }</code></li>
+ * <li><code>{ netatmo="00:00:00:00:00:00#00:00:00:00:00:00#Rain" }</code></li>
  * </ul>
  * </li> </ul>
  * 
