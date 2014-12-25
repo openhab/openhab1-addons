@@ -340,6 +340,15 @@
 			<Label lang="en">Duplex Receptacle</Label>
 			<ConfigFile>ge/relay.xml</ConfigFile>
 		</Product>
+		<Product>
+	        <Reference>
+		        <Type>4952</Type>
+		        <Id>3031</Id>
+	        </Reference>
+	        <Model>45605</Model>
+	        <Label lang="en">Smart Outlet</Label>
+	        <ConfigFile>ge/receptacle.xml</ConfigFile>
+        </Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0064</Id>
@@ -1125,6 +1134,10 @@
 			<Reference>
 				<Type>0100</Type>
 				<Id>0002</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0102</Id>
 			</Reference>
 			<Model>KFOB</Model>
 			<Label lang="en">4 button keyfob</Label>
