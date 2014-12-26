@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.mios.internal.config;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,7 +63,8 @@ import org.slf4j.LoggerFactory;
  * <p>
  * 
  * Each sub-class has a specific format for the <i>miosThing</i>, and examples
- * are outlined in those sub-classes, in addition to the <code>README.md</code> file shipped with the binding.
+ * are outlined in those sub-classes, in addition to the <code>README.md</code>
+ * file shipped with the binding.
  * 
  * 
  * @author Mark Clark
@@ -340,7 +342,23 @@ public abstract class MiosBindingConfig implements BindingConfig {
 			} else if (itemType.isAssignableFrom(RollershutterItem.class)) {
 				result = PercentType.valueOf(value);
 			} else if (itemType.isAssignableFrom(DateTimeItem.class)) {
-				result = DateTimeType.valueOf(value);
+				try {
+					// See if it "looks" like an Epoch-style date. MiOS Units
+					// return these as String/Integer versions of the date and
+					// they need to be converted.
+					//
+					// This logic really belongs inside the OH 1.x core class
+					// DateTimeType, but that's closed to changes... doing it
+					// here also avoids the thread-safety issues present in the
+					// DateTimeType class.
+					//
+					long l = Long.parseLong(value) * 1000;
+					Calendar c = Calendar.getInstance();
+					c.setTimeInMillis(l);
+					result = new DateTimeType(c);
+				} catch (NumberFormatException nfe) {
+					result = DateTimeType.valueOf(value);
+				}
 			} else {
 				result = StringType.valueOf(value);
 			}
