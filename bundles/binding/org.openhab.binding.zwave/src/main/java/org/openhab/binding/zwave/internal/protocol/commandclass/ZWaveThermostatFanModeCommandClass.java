@@ -249,6 +249,7 @@ ZWaveCommandClassDynamicState {
 	public SerialMessage setValueMessage(int value) {
 
 		if(fanModeTypes.isEmpty()) {
+			logger.warn("NODE {}: requesting fan mode types, set request ignored (try again later)", this.getNode().getNodeId());
 			return this.getSupportedMessage();
 		}
 
