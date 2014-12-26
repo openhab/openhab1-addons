@@ -44,6 +44,10 @@ public class MiosUnit {
 	 */
 	private static final int CONFIG_MIN_TIMEOUT = 5000;
 	private static final int CONFIG_DEFAULT_TIMEOUT = 60000;
+
+	private static final int CONFIG_MIN_MINIMUM_DELAY = 0;
+	private static final int CONFIG_DEFAULT_MINIMUM_DELAY = 0;
+
 	private static final int CONFIG_DEFAULT_PORT = 3480;
 	private static final String CONFIG_DEFAULT_HOSTNAME = "127.0.0.1";
 
@@ -51,12 +55,13 @@ public class MiosUnit {
 	private static final int CONFIG_DEFAULT_REFRESH_COUNT = CONFIG_DISABLE_REFRESH_COUNT;
 
 	private static final int CONFIG_DISABLE_ERROR_COUNT = 0;
-	private static final int CONFIG_DEFAULT_ERROR_COUNT = CONFIG_DISABLE_ERROR_COUNT;
+	private static final int CONFIG_DEFAULT_ERROR_COUNT = 1;
 
 	private String name = null;
 	private String hostname = CONFIG_DEFAULT_HOSTNAME;
 	private int port = CONFIG_DEFAULT_PORT;
 	private int timeout = CONFIG_DEFAULT_TIMEOUT;
+	private int minimumDelay = CONFIG_DEFAULT_MINIMUM_DELAY;
 
 	private int refreshCount = CONFIG_DEFAULT_REFRESH_COUNT;
 	private int errorCount = CONFIG_DEFAULT_ERROR_COUNT;
@@ -102,6 +107,20 @@ public class MiosUnit {
 	 */
 	public int getTimeout() {
 		return timeout;
+	}
+
+	/**
+	 * Get the Minimum time, in ms, that the MiOS Unit should wait/delay in
+	 * order to "bundle" changes in their response.
+	 * 
+	 * If this configuration is not specified, then it will default to 0ms, or
+	 * no-delay.
+	 * 
+	 * @return the Minimum Delay for dealing with the MiOS Unit, in
+	 *         milliseconds.
+	 */
+	public int getMinimumDelay() {
+		return minimumDelay;
 	}
 
 	/**
@@ -174,6 +193,23 @@ public class MiosUnit {
 			timeout = CONFIG_MIN_TIMEOUT;
 		}
 		this.timeout = timeout;
+	}
+
+	/**
+	 * Set the Minimum Delay of the MiOS Unit configuration.
+	 * 
+	 * @param delay
+	 *            the minimum delay, in ms, to use for any connections
+	 *            associated with this MiOS Unit.
+	 */
+	public void setMinimumDelay(int delay) {
+		if (delay < CONFIG_MIN_MINIMUM_DELAY) {
+			logger.warn(
+					"Minimum Delay of {} below minimum permitted, {} used.",
+					minimumDelay, CONFIG_MIN_MINIMUM_DELAY);
+			delay = CONFIG_MIN_MINIMUM_DELAY;
+		}
+		this.minimumDelay = delay;
 	}
 
 	/**
