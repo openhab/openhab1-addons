@@ -126,7 +126,7 @@
 				<Id>3500</Id>
 			</Reference>
 			<Model>CA-3560</Model>
-			<Label lang="en">Split Duplex Receptical</Label>
+			<Label lang="en">Split Duplex Receptacle</Label>
 		</Product>
 		<Product>
 			<Reference>
@@ -337,7 +337,7 @@
 				<Id>3530</Id>
 			</Reference>
 			<Model>45605</Model>
-			<Label lang="en">Duplex Receptacle</Label>
+			<Label lang="en">Duplex receptacle</Label>
 			<ConfigFile>ge/relay.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -721,6 +721,10 @@
 			<Reference>
 				<Type>6401</Type>
 				<Id>106</Id>
+			</Reference>
+			<Reference>
+				<Type>6401</Type>
+				<Id>107</Id>
 			</Reference>
 			<Model>CT100</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
