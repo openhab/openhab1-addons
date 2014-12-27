@@ -172,7 +172,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 	 * @author Chris Jackson
 	 * @since 1.5.0
 	 */
-	@XStreamAlias("sensorType")
+	@XStreamAlias("binarySensorType")
 	public enum SensorType {
 		UNKNOWN(0x00, "Unknown"),
 		GENERAL(0x01, "General Purpose"),

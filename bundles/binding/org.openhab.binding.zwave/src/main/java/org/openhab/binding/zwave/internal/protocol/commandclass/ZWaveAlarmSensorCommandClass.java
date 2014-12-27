@@ -280,7 +280,7 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
 	 * @author Jan-Willem Spuij
 	 * @since 1.3.0
 	 */
-	@XStreamAlias("alarmType")
+	@XStreamAlias("alarmSensorType")
 	public enum AlarmType {
 		GENERAL(0, "General"), 
 		SMOKE(1, "Smoke"),
