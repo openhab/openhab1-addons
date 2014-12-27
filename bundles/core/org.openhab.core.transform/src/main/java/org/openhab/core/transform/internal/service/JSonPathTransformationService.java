@@ -41,7 +41,7 @@ public class JSonPathTransformationService implements TransformationService {
 		logger.debug("about to transform '{}' by the function '{}'", source, JSonPathExpression);
 
 		try {
-			String transformationResult = JsonPath.read(source, JSonPathExpression);
+			String transformationResult = JsonPath.read(source, JSonPathExpression).toString();
 			logger.debug("transformation resulted in '{}'", transformationResult);
 			return transformationResult;
 		} catch(InvalidPathException e) {
