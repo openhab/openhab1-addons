@@ -15,7 +15,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,7 +33,6 @@ import org.openhab.binding.maxcube.internal.message.S_Command;
 import org.openhab.binding.maxcube.internal.message.S_Message;
 import org.openhab.binding.maxcube.internal.message.ShutterContact;
 import org.openhab.binding.maxcube.internal.message.ThermostatModeType;
-import org.openhab.binding.maxcube.internal.message.WallMountedThermostat;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -272,8 +270,8 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 						continue;
 					}
 					//all devices have a battery state, so this is type-independent
-					if (provider.getBindingType(itemName) == BindingType.BATTERY && device.isBatteryLowUpdated()) {
-						eventPublisher.postUpdate(itemName, device.getBatteryLow());
+					if (provider.getBindingType(itemName) == BindingType.BATTERY && device.battery().isChargeUpdated()) {
+						eventPublisher.postUpdate(itemName, device.battery().getCharge());
 					} else if  (provider.getBindingType(itemName) != BindingType.BATTERY) {
 					switch (device.getType()) {
 						case HeatingThermostatPlus:
@@ -291,7 +289,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 							} else if (provider.getBindingType(itemName) == BindingType.ACTUAL
 									&& ((HeatingThermostat) device).isTemperatureActualUpdated()) {
 								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureActual());
-							} else if (((HeatingThermostat) device).isTemperatureSetpointUpdated()){
+							} else if (((HeatingThermostat) device).isTemperatureSetpointUpdated() && provider.getBindingType(itemName) == null){
 								eventPublisher.postUpdate(itemName, ((HeatingThermostat) device).getTemperatureSetpoint());
 							}
 							break;
@@ -364,7 +362,8 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType);
 				} else if (commandContent.contentEquals(ThermostatModeType.BOOST.toString())) {
 					commandThermoType = ThermostatModeType.BOOST;
-					cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType);
+					Double setTemp = Double.parseDouble( ((HeatingThermostat) device).getTemperatureSetpoint().toString());
+					cmd = new S_Command(rfAddress, device.getRoomId(), commandThermoType, setTemp);
 				} else if (commandContent.contentEquals(ThermostatModeType.MANUAL.toString())) {
 					commandThermoType = ThermostatModeType.MANUAL;
 					Double setTemp = Double.parseDouble( ((HeatingThermostat) device).getTemperatureSetpoint().toString());

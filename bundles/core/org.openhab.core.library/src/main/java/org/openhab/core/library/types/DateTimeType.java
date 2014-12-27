@@ -14,11 +14,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import org.openhab.core.types.Command;
 import org.openhab.core.types.PrimitiveType;
 import org.openhab.core.types.State;
 
 
-public class DateTimeType implements PrimitiveType, State {
+public class DateTimeType implements PrimitiveType, State, Command {
 	
 	public final static SimpleDateFormat DATE_FORMATTER_WITH_TZ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
 	public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
