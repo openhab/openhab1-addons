@@ -8,7 +8,9 @@
  */
 package org.openhab.binding.pilight.internal;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Date;
 
@@ -129,7 +131,8 @@ public class PilightConnection {
 			Identification id = new Identification(Identification.CLIENT_GUI);
 			outputMapper.writeValue(socket.getOutputStream(), id);
 			
-			Identification response = inputMapper.readValue(socket.getInputStream(), Identification.class);
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			Identification response = inputMapper.readValue(in, Identification.class);
 			
 			if (response.getMessage().equals(Identification.ACCEPTED)) 
 				setSocket(socket);
