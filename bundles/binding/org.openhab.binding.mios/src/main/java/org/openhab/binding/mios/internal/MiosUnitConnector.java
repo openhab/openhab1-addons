@@ -360,7 +360,7 @@ public class MiosUnitConnector {
 		private static final String BASE_URL = "http://%s:%d/data_request";
 		private static final String STATUS2_URL = BASE_URL + "?id=status2";
 		private static final String STATUS2_INCREMENTAL_URL = STATUS2_URL
-				+ "&LoadTime=%d&DataVersion=%d&Timeout=%d";
+				+ "&LoadTime=%d&DataVersion=%d&Timeout=%d&MinimumDelay=%d";
 
 		public LongPoll() {
 		}
@@ -373,25 +373,21 @@ public class MiosUnitConnector {
 			return (List<Object>) data.get(param);
 		}
 
-		private String getUri(boolean full) {
-			// Force a full poll of the dataSet every time the MiOS Unit
-			// configuration indicates to do so
+		private String getUri(boolean incremental) {
 			MiosUnit unit = getMiosUnit();
-			int errorCount = unit.getErrorCount();
-			boolean force = full || (errorCount != 0) && (failures != 0)
-					&& ((failures % errorCount) == 0);
 
-			if (!force && loadTime != null && dataVersion != null) {
+			if (incremental) {
 				AsyncHttpClientConfig c = getAsyncHttpClient().getConfig();
 
 				// Use a timeout on the MiOS URL call that's about 2/3 of what
 				// the connection timeout is.
 				int t = Math.min(c.getIdleConnectionTimeoutInMs(),
 						unit.getTimeout()) / 500 / 3;
+				int d = unit.getMinimumDelay();
 
 				return String.format(Locale.US, STATUS2_INCREMENTAL_URL,
 						unit.getHostname(), unit.getPort(), loadTime,
-						dataVersion, new Integer(t));
+						dataVersion, new Integer(t), new Integer(d));
 			} else {
 				return String.format(Locale.US, STATUS2_URL,
 						unit.getHostname(), unit.getPort());
@@ -414,11 +410,11 @@ public class MiosUnitConnector {
 			}
 		}
 
-		private void publish(String property, Object value) {
+		private void publish(String property, Object value, boolean incremental) {
 			String p = getMiosUnit().formatProperty(property);
 
 			try {
-				getMiosBinding().postPropertyUpdate(p, value);
+				getMiosBinding().postPropertyUpdate(p, value, incremental);
 			} catch (Exception e) {
 				logger.error(
 						"Exception '{}' raised pushing property '{}' value '{}' into openHAB",
@@ -426,7 +422,8 @@ public class MiosUnitConnector {
 			}
 		}
 
-		private void processSystem(Map<String, Object> system) {
+		private void processSystem(Map<String, Object> system,
+				boolean incremental) {
 			for (Map.Entry<String, Object> entry : system.entrySet()) {
 				String key = entry.getKey();
 				Object value = entry.getValue();
@@ -446,7 +443,7 @@ public class MiosUnitConnector {
 						}
 
 						String property = "system:/" + key;
-						publish(property, value);
+						publish(property, value, incremental);
 					} else {
 						// No need to bring these into openHAB, they'll only
 						// bulk up
@@ -463,7 +460,7 @@ public class MiosUnitConnector {
 			}
 		}
 
-		private void processDevices(List<Object> devices) {
+		private void processDevices(List<Object> devices, boolean incremental) {
 			for (Object d : devices) {
 				@SuppressWarnings("unchecked")
 				Map<String, Object> device = (Map<String, Object>) d;
@@ -510,14 +507,14 @@ public class MiosUnitConnector {
 						// device.
 						//
 						// Otherwise they'll come out in JSON order
-						// (unpredictable)
-						// which may not be the order they're normally changed
-						// at the MiOS end. Making this last would be like
-						// having an "end of [device] transaction" marker.
+						// (unpredictable) which may not be the order they're
+						// normally changed at the MiOS end. Making this last
+						// would be like having an "end of [device] transaction"
+						// marker.
 
 						String property = "device:" + deviceId + '/'
 								+ da.getKey();
-						publish(property, value);
+						publish(property, value, incremental);
 					} else {
 						// No need to bring these into openHAB, they'll only
 						// bulk up
@@ -545,12 +542,12 @@ public class MiosUnitConnector {
 
 					// Can be String or Integer
 					Object value = (Object) state.get("value");
-					publish(property, value);
+					publish(property, value, incremental);
 				}
 			}
 		}
 
-		private void processScenes(List<Object> scenes) {
+		private void processScenes(List<Object> scenes, boolean incremental) {
 			for (Object s : scenes) {
 				@SuppressWarnings("unchecked")
 				Map<String, Object> scene = (Map<String, Object>) s;
@@ -587,7 +584,7 @@ public class MiosUnitConnector {
 						}
 
 						String property = "scene:" + sceneId + "/" + key;
-						publish(property, value);
+						publish(property, value, incremental);
 					} else {
 						// No need to bring these into openHAB, they'll only
 						// bulk up
@@ -607,15 +604,16 @@ public class MiosUnitConnector {
 			}
 		}
 
-		private void processRooms(List<Object> rooms) {
+		private void processRooms(List<Object> rooms, boolean incremental) {
 			// TODO: Implement
 		}
 
-		private void processSections(List<Object> sections) {
+		private void processSections(List<Object> sections, boolean incremental) {
 			// TODO: Implement
 		}
 
-		private void processResponse(Map<String, Object> response) {
+		private void processResponse(Map<String, Object> response,
+				boolean incremental) {
 
 			Integer lt = (Integer) response.get("LoadTime");
 			Integer dv = (Integer) response.get("DataVersion");
@@ -635,11 +633,11 @@ public class MiosUnitConnector {
 								Integer.toString(rooms.size()),
 								Integer.toString(sections.size()) });
 
-				processDevices(devices);
-				processScenes(scenes);
-				processRooms(rooms);
-				processSections(sections);
-				processSystem(response);
+				processDevices(devices, incremental);
+				processScenes(scenes, incremental);
+				processRooms(rooms, incremental);
+				processSections(sections, incremental);
+				processSystem(response, incremental);
 
 				// Only reset these once we've successfully loaded/parsed the
 				// content.
@@ -647,10 +645,8 @@ public class MiosUnitConnector {
 				this.dataVersion = dv;
 				this.failures = 0;
 			} else {
-				connected = false;
-				this.failures++;
-				logger.debug("processResponse: failed!  Total failures ({})",
-						Integer.toString(failures));
+				throw new RuntimeException(
+						"Processing error on MiOS JSON Response - malformed");
 			}
 		}
 
@@ -690,7 +686,16 @@ public class MiosUnitConnector {
 
 			do {
 				try {
-					String uri = getUri(loopCount == 0);
+					// Force a full poll of the dataSet every time the MiOS Unit
+					// configuration indicates to do so, or if we get an error.
+					MiosUnit unit = getMiosUnit();
+					int errorCount = unit.getErrorCount();
+					boolean force = (loopCount == 0l) || (errorCount != 0)
+							&& (failures != 0)
+							&& ((failures % errorCount) == 0);
+
+					boolean incremental = (!force && loadTime != null && dataVersion != null);
+					String uri = getUri(incremental);
 
 					logger.debug("run: URI Built was '{}' loop '{}'", uri,
 							loopCount);
@@ -699,13 +704,15 @@ public class MiosUnitConnector {
 							.execute();
 					Response r = (Response) f.get();
 
-					Map<String, Object> json = readJson(r.getResponseBody());
+					// Force the Response Charset to be UTF-8, since MiOS isn't setting
+					// anything in their HTTP response Header.
+					Map<String, Object> json = readJson(r.getResponseBody("UTF-8"));
 
 					if (json.containsKey("error"))
 						throw new IOException(json.get("error").toString());
 
 					connected = true;
-					processResponse(json);
+					processResponse(json, incremental);
 
 					// Reset the Loop count only once we've successfully
 					// processed the Response. Otherwise there's a potential for
@@ -717,9 +724,11 @@ public class MiosUnitConnector {
 					}
 				} catch (Exception e) {
 					connected = false;
+					this.failures++;
 					logger.debug(
-							"run: Exception Error occurred fetching content: {}",
-							e.getMessage(), e);
+							"run: Exception Error occurred fetching/processing content: {},{}.  Total failures ({})",
+							new Object[] { e.getMessage(), e,
+									Integer.toString(failures) });
 
 					// TODO: Make the pause configurable and/or add a backoff
 					// mechanism.
