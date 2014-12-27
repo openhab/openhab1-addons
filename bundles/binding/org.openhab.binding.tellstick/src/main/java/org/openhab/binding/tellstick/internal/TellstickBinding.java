@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.tellstick.internal;
 
+import java.math.BigDecimal;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +51,8 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	 * Max time without receiving any events.
 	 */
 	private static final int MAX_IDLE_BEFORE_RESTART = 600000;
-
+	private static BigDecimal HUNDRED = new BigDecimal("100");
+	
 	private int restartTimeout;
 
 	private long lastRefresh = 0;
@@ -232,8 +234,9 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 		private Map<DataType, String> prevMessages = new HashMap<DataType, String>();
 
 		private void handleSensorEvent(TellstickSensorEvent event, TellstickBindingConfig device) {
-
-			double dValue = Double.valueOf(event.getData());
+			
+			BigDecimal dValue = new BigDecimal(String.valueOf(event.getData()));
+			dValue.setScale(1, BigDecimal.ROUND_HALF_UP);
 			TellstickValueSelector selector = device.getUsageSelector();
 			if (selector == null) {
 				selector = device.getValueSelector();
@@ -242,7 +245,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 			sendToOpenHab(device.getItemName(), cmd);
 		}
 
-		private State getCommand(TellstickSensorEvent event, double dValue, TellstickValueSelector selector) {
+		private State getCommand(TellstickSensorEvent event, BigDecimal dValue, TellstickValueSelector selector) {
 			State cmd = null;
 			switch (event.getDataType()) {
 				case TEMPERATURE:
@@ -261,14 +264,15 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 						break;
 					case HUMIDITY:
 					default:
-						double val = Math.min(100, dValue);
-						cmd = new PercentType((int) val);
+						cmd = new PercentType(HUNDRED.min(dValue));
 	
 					}
 				break;
 				case WINDAVERAGE:
 				case WINDDIRECTION:
-				case WINDGUST:	
+				case WINDGUST:
+				case RAINRATE:
+				case RAINTOTAL:
 					cmd = new DecimalType(dValue);
 					break;
 				default:
@@ -295,6 +299,12 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 				break;
 			case WINDGUST:
 				result = TellstickValueSelector.WIND_GUST;
+				break;
+			case RAINRATE:
+				result = TellstickValueSelector.RAIN_RATE;
+				break;
+			case RAINTOTAL:
+				result = TellstickValueSelector.RAIN_TOTAL;
 				break;
 			default:
 				logger.warn("Sensor of type " + dataType + " not supported");

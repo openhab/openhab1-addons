@@ -68,7 +68,47 @@ public abstract class CommandHandler {
 		return def;
 	}
 
+	protected int getMaxLightLevel(InsteonPLMBindingConfig conf, int defaultLevel) {
+		HashMap<String, String> params = conf.getParameters();
+		if (conf.getFeature().contains("dimmer") && params.containsKey("dimmermax")) {
+			String item = conf.getItemName();
+			String dimmerMax = params.get("dimmermax");
+			try {
+				int i = Integer.parseInt(dimmerMax);
+				if (i > 1 && i <= 99) {
+					int level = (int) Math.ceil((i * 255.0) / 100); // round up
+					if (level < defaultLevel) {
+						logger.info("item {}: using dimmermax value of {}", item, dimmerMax);
+						return level;
+					}
+				} else {
+					logger.error("item {}: dimmermax must be between 1-99 inclusive: {}", item, dimmerMax);
+				}
+			} catch (NumberFormatException e) {
+				logger.error("item {}: invalid int value for dimmermax: {}", item, dimmerMax);
+			}
+		}
+
+		return defaultLevel;
+	}
+	
 	void setParameters(HashMap<String, String> hm) { m_parameters = hm; }
+	
+	/**
+	 * Helper function to extract the group parameter from the binding config,
+	 * @param c the binding configuration to test
+	 * @return the value of the "group" parameter, or -1 if none
+	 */
+	protected static int s_getGroup(InsteonPLMBindingConfig c) {
+		String v = c.getParameters().get("group");
+		int iv = -1;
+		try {
+			iv = (v == null) ? -1 : Integer.parseInt(v);
+		} catch (NumberFormatException e) {
+			logger.error("malformed int parameter in for item {}", c.getItemName());
+		}
+		return iv;
+	}
 	
 	public static class WarnCommandHandler extends CommandHandler {
 		WarnCommandHandler(DeviceFeature f) { super(f); }
@@ -92,11 +132,15 @@ public abstract class CommandHandler {
 		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
 			try {
 				if (cmd == OnOffType.ON) {
-					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x11, (byte) 0xff);
+					int level = getMaxLightLevel(conf, 0xff);
+					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x11, (byte) level,
+								s_getGroup(conf));
 					dev.enqueueMessage(m, m_feature);
-					logger.info("LightOnOffCommandHandler: sent msg to switch {} on", dev.getAddress());
+					logger.info("LightOnOffCommandHandler: sent msg to switch {} to {}", dev.getAddress(),
+							level == 0xff ? "on" : level);
 				} else if (cmd == OnOffType.OFF) {
-					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x13, (byte) 0x00);
+					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x13, (byte) 0x00,
+									s_getGroup(conf));
 					dev.enqueueMessage(m, m_feature);
 					logger.info("LightOnOffCommandHandler: sent msg to switch {} off", dev.getAddress());
 				}
@@ -110,7 +154,7 @@ public abstract class CommandHandler {
 	}
 	/**
 	 * This Handler was supposed to set the LEDs of the 2487S, but it doesn't work.
-	 * The parameters were modeledafter the 2486D, it may work for that one,
+	 * The parameters were modeled after the 2486D, it may work for that one,
 	 * leaving it in for now.
 	 * 
 	 * From the HouseLinc PLM traffic log, the following commands (in the D2 data field)
@@ -306,8 +350,9 @@ public abstract class CommandHandler {
 			try {
 				PercentType pc = (PercentType)cmd;
 				logger.debug("changing level of {} to {}", dev.getAddress(), pc.intValue());
-				int level = (pc.intValue()*255)/100;
+				int level = (int) Math.ceil((pc.intValue() * 255.0) / 100); // round up
 				if (level > 0) { // make light on message with given level
+					level = getMaxLightLevel(conf, level);
 					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x11, (byte) level);
 					dev.enqueueMessage(m, m_feature);
 					logger.info("PercentHandler: sent msg to set {} to {}", dev.getAddress(), level);
