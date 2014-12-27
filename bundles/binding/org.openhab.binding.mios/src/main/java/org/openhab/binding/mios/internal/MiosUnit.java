@@ -207,7 +207,7 @@ public class MiosUnit {
 			logger.warn(
 					"Minimum Delay of {} below minimum permitted, {} used.",
 					minimumDelay, CONFIG_MIN_MINIMUM_DELAY);
-			minimumDelay = CONFIG_MIN_MINIMUM_DELAY;
+			delay = CONFIG_MIN_MINIMUM_DELAY;
 		}
 		this.minimumDelay = delay;
 	}
