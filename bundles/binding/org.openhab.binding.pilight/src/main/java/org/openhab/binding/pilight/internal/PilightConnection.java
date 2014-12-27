@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.binding.pilight.internal.communication.Config;
 import org.openhab.binding.pilight.internal.communication.Identification;
@@ -128,11 +129,18 @@ public class PilightConnection {
 	public boolean connect(ObjectMapper inputMapper, ObjectMapper outputMapper) {
 		try {
 			Socket socket = new Socket(getHostname(), getPort());
+			
 			Identification id = new Identification(Identification.CLIENT_GUI);
 			outputMapper.writeValue(socket.getOutputStream(), id);
 			
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			Identification response = inputMapper.readValue(in, Identification.class);
+			String line = null;
+			do {
+				 line = in.readLine();
+				 logger.debug("pilight response after client identification: {}", line);
+			} while (StringUtils.isBlank(line));
+			
+			Identification response = inputMapper.readValue(line, Identification.class);
 			
 			if (response.getMessage().equals(Identification.ACCEPTED)) 
 				setSocket(socket);
