@@ -296,6 +296,13 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				break;
 
 			case WAIT:
+				// If this is the controller, we're done
+				if (node.getNodeId() == controller.getOwnNodeId()) {
+					logger.debug("NODE {}: Node advancer: WAIT - Controller - terminating initialisation", node.getNodeId());
+					currentStage = NodeStage.DONE;
+					break;
+				}
+
 				logger.debug("NODE {}: Node advancer: WAIT - Listening={}, FrequentlyListening={}", node.getNodeId(),
 						node.isListening(), node.isFrequentlyListening());
 				// If the node is listening, or frequently listening, then we progress.
@@ -318,13 +325,6 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				return;
 
 			case PING:
-				// If this is the controller, we're done
-				if (node.getNodeId() == controller.getOwnNodeId()) {
-					logger.debug("NODE {}: Node advancer: PING - Controller - terminating initialisation", node.getNodeId());
-					currentStage = NodeStage.DONE;
-					break;
-				}
-
 				// Completion of this stage is reception of a SendData frame.
 				// The purpose of this stage is to ensure that the node is awake
 				// before requesting further information.
