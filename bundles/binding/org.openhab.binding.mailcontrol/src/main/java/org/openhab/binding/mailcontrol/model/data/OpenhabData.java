@@ -6,9 +6,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.mailcontrol.model.command;
+package org.openhab.binding.mailcontrol.model.data;
 
-import org.creek.mailcontrol.model.command.AbstractCommand;
+import org.creek.mailcontrol.model.data.AbstractData;
 import org.creek.mailcontrol.model.types.GenericDataType;
 
 /**
@@ -16,10 +16,10 @@ import org.creek.mailcontrol.model.types.GenericDataType;
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
-public abstract class OpenhabCommand<T extends GenericDataType, U extends AbstractCommand<T>> {
+public abstract class OpenhabData<T extends GenericDataType, U extends AbstractData<T>> {
     protected final T data;
 
-    protected OpenhabCommand(U command) {
-        this.data = command.getData();
+    protected OpenhabData(U state) {
+        this.data = state.getData();
     }
 }

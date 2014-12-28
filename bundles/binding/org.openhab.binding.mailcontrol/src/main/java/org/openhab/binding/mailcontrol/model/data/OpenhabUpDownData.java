@@ -6,9 +6,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.mailcontrol.model.command;
+package org.openhab.binding.mailcontrol.model.data;
 
-import org.creek.mailcontrol.model.command.UpDownCommand;
+import org.creek.mailcontrol.model.data.UpDownData;
 import org.creek.mailcontrol.model.types.UpDownDataType;
 import org.openhab.core.library.types.UpDownType;
 
@@ -17,9 +17,9 @@ import org.openhab.core.library.types.UpDownType;
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
-public class OpenhabUpDownCommand extends OpenhabCommand<UpDownDataType, UpDownCommand> implements OpenhabCommandTransformable<UpDownType> {
-    public OpenhabUpDownCommand(UpDownCommand command) {
-        super(command);
+public class OpenhabUpDownData extends OpenhabData<UpDownDataType, UpDownData> implements OpenhabCommandTransformable<UpDownType> {
+    public OpenhabUpDownData(UpDownData data) {
+        super(data);
     }
 
     @Override

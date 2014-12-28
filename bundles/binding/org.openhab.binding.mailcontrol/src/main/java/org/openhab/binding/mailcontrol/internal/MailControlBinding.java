@@ -9,7 +9,6 @@
 package org.openhab.binding.mailcontrol.internal;
 
 import java.util.Dictionary;
-import java.util.Enumeration;
 
 import org.openhab.binding.mailcontrol.MailControlBindingProvider;
 import org.openhab.binding.mailcontrol.connection.ConnectorBuilder;
@@ -38,9 +37,7 @@ public class MailControlBinding <T extends Command> extends AbstractActiveBindin
     private ConnectorBuilder connectorBuilder;
     private MessagesService<T> service;
 
-	private static final Logger logger = 
-		LoggerFactory.getLogger(MailControlBinding.class);
-
+	private static final Logger logger = LoggerFactory.getLogger(MailControlBinding.class);
 	
 	/** 
 	 * the refresh interval which is used to poll values from the MailControl
@@ -85,6 +82,23 @@ public class MailControlBinding <T extends Command> extends AbstractActiveBindin
 	protected void execute() {
         // the frequently executed code (polling) goes here ...
         logger.debug("execute() method is called!");
+
+//        BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+//        if (bundleContext != null) {
+//            ServiceReference<?> serviceReference2 = bundleContext.getServiceReference(ItemRegistry.class.getName());
+//            if (serviceReference2 != null) {
+//                ItemRegistry itemregistry = (ItemRegistry) bundleContext.getService(serviceReference2);
+//                logger.debug("--------itemregistry!=null " + itemregistry.getItems().size());
+//                for (Item item: itemregistry.getItems()) {
+//                    logger.debug("------------: " + item.getName() + " " + item.getState());
+//                }
+//            } else {
+//                logger.error("--------itemregistry=null");
+//            }
+//        } else {
+//            logger.error("-----------bundleContext=null");
+//        }
+
         try {
             MailConnector connector = connectorBuilder.createAndCheckMailConnector();
             service = new MessagesService<T>(connector, eventPublisher);
@@ -123,11 +137,6 @@ public class MailControlBinding <T extends Command> extends AbstractActiveBindin
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        Enumeration<String> en = config.keys();
-        while(en.hasMoreElements()) {
-            String key = en.nextElement();
-            logger.debug(key + " " + config.get(key));
-        }
         if (config != null) {
             this.connectorBuilder = new ConnectorBuilder(config);
             connectorBuilder.createAndCheckMailConnector();

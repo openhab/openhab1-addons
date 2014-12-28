@@ -6,9 +6,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.mailcontrol.model.command;
+package org.openhab.binding.mailcontrol.model.data;
 
-import org.creek.mailcontrol.model.command.IncreaseDecreaseCommand;
+import org.creek.mailcontrol.model.data.IncreaseDecreaseData;
 import org.creek.mailcontrol.model.types.IncreaseDecreaseDataType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 
@@ -17,9 +17,9 @@ import org.openhab.core.library.types.IncreaseDecreaseType;
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
-public class OpenhabIncreaseDecreaseCommand extends OpenhabCommand<IncreaseDecreaseDataType, IncreaseDecreaseCommand> implements OpenhabCommandTransformable<IncreaseDecreaseType> {
-    public OpenhabIncreaseDecreaseCommand(IncreaseDecreaseCommand command) {
-        super(command);
+public class OpenhabIncreaseDecreaseData extends OpenhabData<IncreaseDecreaseDataType, IncreaseDecreaseData> implements OpenhabCommandTransformable<IncreaseDecreaseType> {
+    public OpenhabIncreaseDecreaseData(IncreaseDecreaseData data) {
+        super(data);
     }
 
     @Override

@@ -6,9 +6,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.mailcontrol.model.command;
+package org.openhab.binding.mailcontrol.model.data;
 
-import org.creek.mailcontrol.model.command.PercentCommand;
+import org.creek.mailcontrol.model.data.PercentData;
 import org.creek.mailcontrol.model.types.PercentDataType;
 import org.openhab.core.library.types.PercentType;
 
@@ -17,9 +17,9 @@ import org.openhab.core.library.types.PercentType;
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
-public class OpenhabPercentCommand extends OpenhabCommand<PercentDataType, PercentCommand> implements OpenhabCommandTransformable<PercentType> {
-    public OpenhabPercentCommand(PercentCommand command) {
-        super(command);
+public class OpenhabPercentData extends OpenhabData<PercentDataType, PercentData> implements OpenhabCommandTransformable<PercentType> {
+    public OpenhabPercentData(PercentData data) {
+        super(data);
     }
 
     @Override

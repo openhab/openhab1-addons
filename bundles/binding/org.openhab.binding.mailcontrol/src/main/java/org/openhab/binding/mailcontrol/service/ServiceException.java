@@ -15,6 +15,10 @@ package org.openhab.binding.mailcontrol.service;
  */
 @SuppressWarnings("serial")
 public class ServiceException extends Exception {
+    public ServiceException(String reason) {
+        super(reason);
+    }
+    
     public ServiceException(Throwable ex) {
         super(ex);
     }

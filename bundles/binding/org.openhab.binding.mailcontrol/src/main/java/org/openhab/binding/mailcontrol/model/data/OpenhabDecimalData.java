@@ -6,9 +6,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.mailcontrol.model.command;
+package org.openhab.binding.mailcontrol.model.data;
 
-import org.creek.mailcontrol.model.command.DecimalCommand;
+import org.creek.mailcontrol.model.data.DecimalData;
 import org.creek.mailcontrol.model.types.DecimalDataType;
 import org.openhab.core.library.types.DecimalType;
 
@@ -17,9 +17,9 @@ import org.openhab.core.library.types.DecimalType;
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
-public class OpenhabDecimalCommand extends OpenhabCommand<DecimalDataType, DecimalCommand> implements OpenhabCommandTransformable<DecimalType> {
-    public OpenhabDecimalCommand(DecimalCommand command) {
-        super(command);
+public class OpenhabDecimalData extends OpenhabData<DecimalDataType, DecimalData> implements OpenhabCommandTransformable<DecimalType> {
+    public OpenhabDecimalData(DecimalData data) {
+        super(data);
     }
 
     @Override

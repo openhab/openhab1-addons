@@ -6,9 +6,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.mailcontrol.model.command;
+package org.openhab.binding.mailcontrol.model.data;
 
-import org.creek.mailcontrol.model.command.StopMoveCommand;
+import org.creek.mailcontrol.model.data.StopMoveData;
 import org.creek.mailcontrol.model.types.StopMoveDataType;
 import org.openhab.core.library.types.StopMoveType;
 
@@ -17,9 +17,9 @@ import org.openhab.core.library.types.StopMoveType;
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
-public class OpenhabStopMoveCommand extends OpenhabCommand<StopMoveDataType, StopMoveCommand> implements OpenhabCommandTransformable<StopMoveType> {
-    public OpenhabStopMoveCommand(StopMoveCommand command) {
-        super(command);
+public class OpenhabStopMoveData extends OpenhabData<StopMoveDataType, StopMoveData> implements OpenhabCommandTransformable<StopMoveType> {
+    public OpenhabStopMoveData(StopMoveData data) {
+        super(data);
     }
 
     @Override

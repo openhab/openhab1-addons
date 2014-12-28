@@ -6,15 +6,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.mailcontrol.model.command;
+package org.openhab.binding.mailcontrol.model.data;
 
-import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
 
 /**
  * 
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
-public interface OpenhabCommandTransformable<T extends Command> {
-    T getCommandValue();
+public interface OpenhabStateTransformable<T extends State> {
+    T getStateValue();
 }

@@ -6,9 +6,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.mailcontrol.model.command;
+package org.openhab.binding.mailcontrol.model.data;
 
-import org.creek.mailcontrol.model.command.StringCommand;
+import org.creek.mailcontrol.model.data.StringData;
 import org.creek.mailcontrol.model.types.StringDataType;
 import org.openhab.core.library.types.StringType;
 
@@ -17,9 +17,9 @@ import org.openhab.core.library.types.StringType;
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
-public class OpenhabStringCommand extends OpenhabCommand<StringDataType, StringCommand> implements OpenhabCommandTransformable<StringType> {
-    public OpenhabStringCommand(StringCommand command) {
-        super(command);
+public class OpenhabStringData extends OpenhabData<StringDataType, StringData> implements OpenhabCommandTransformable<StringType> {
+    public OpenhabStringData(StringData data) {
+        super(data);
     }
 
     @Override

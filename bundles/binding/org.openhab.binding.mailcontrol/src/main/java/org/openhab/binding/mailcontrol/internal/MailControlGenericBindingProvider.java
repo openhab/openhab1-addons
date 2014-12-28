@@ -11,8 +11,11 @@ package org.openhab.binding.mailcontrol.internal;
 import org.openhab.binding.mailcontrol.MailControlBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -22,7 +25,12 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 1.7.0
  */
 public class MailControlGenericBindingProvider extends AbstractGenericBindingProvider implements MailControlBindingProvider {
+    // Injected by the OSGi Container through the setItemRegistry and
+    // unsetItemRegistry methods.
+    private ItemRegistry itemRegistry;
 
+    private static final Logger logger = LoggerFactory.getLogger(MailControlGenericBindingProvider.class);
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -60,5 +68,26 @@ public class MailControlGenericBindingProvider extends AbstractGenericBindingPro
 		// put member fields here which holds the parsed values
 	}
 	
-	
+    /**
+     * Invoked by the OSGi Framework.
+     */
+    public void setItemRegistry(ItemRegistry itemRegistry) {
+        logger.debug("setItemRegistry: called");
+        this.itemRegistry = itemRegistry;
+    }
+
+    /**
+     * Invoked by the OSGi Framework.
+     */
+    public void unsetItemRegistry(ItemRegistry itemRegistry) {
+        logger.debug("unsetItemRegistry: called");
+        this.itemRegistry = null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ItemRegistry getItemRegistry() {
+        return this.itemRegistry;
+    }
 }

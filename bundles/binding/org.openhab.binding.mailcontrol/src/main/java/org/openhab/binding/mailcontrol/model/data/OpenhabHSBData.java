@@ -6,9 +6,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.mailcontrol.model.command;
+package org.openhab.binding.mailcontrol.model.data;
 
-import org.creek.mailcontrol.model.command.HSBCommand;
+import org.creek.mailcontrol.model.data.HSBData;
 import org.creek.mailcontrol.model.types.HSBDataType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.HSBType;
@@ -19,9 +19,9 @@ import org.openhab.core.library.types.PercentType;
  * @author Andrey.Pereverzin
  * @since 1.7.0
  */
-public class OpenhabHSBCommand extends OpenhabCommand<HSBDataType, HSBCommand> implements OpenhabCommandTransformable<HSBType> {
-    public OpenhabHSBCommand(HSBCommand command) {
-        super(command);
+public class OpenhabHSBData extends OpenhabData<HSBDataType, HSBData> implements OpenhabCommandTransformable<HSBType> {
+    public OpenhabHSBData(HSBData data) {
+        super(data);
     }
 
     @Override
@@ -30,5 +30,10 @@ public class OpenhabHSBCommand extends OpenhabCommand<HSBDataType, HSBCommand> i
         PercentType s = new PercentType((int)data.getSaturation());
         PercentType b = new PercentType((int)data.getBrightness());
         return new HSBType(h, s, b);
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getName() + ": [data: [" + data.toString() + "]]";
     }
 }

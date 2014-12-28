@@ -10,7 +10,6 @@ package org.openhab.binding.mailcontrol.service;
 
 import java.util.Set;
 
-import org.creek.mailcontrol.model.message.AbstractMessage;
 import org.creek.mailcontrol.model.message.TransformException;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
@@ -32,30 +31,22 @@ public class MessagesService <T extends Command> {
     private final MailConnector mailConnector;
     private final MessagesProcessor<T> messagesProcessor;
     
-    static final String MAIL_SUBJECT_PREFIX = "OpenHAB";
+    static final String REQUEST_SUBJECT = "OpenHABRequest";
 
     public MessagesService(MailConnector mailConnector, EventPublisher eventPublisher) {
         this.mailConnector = mailConnector;
-        this.messagesProcessor = new MessagesProcessor<T>(eventPublisher);
+        this.messagesProcessor = new MessagesProcessor<T>(mailConnector, eventPublisher);
     }
 
     public MessagesService(MailConnector mailConnector, MessagesProcessor<T> messagesProcessor) {
         this.mailConnector = mailConnector;
         this.messagesProcessor = messagesProcessor;
     }
-
-    public <U extends AbstractMessage>void sendMessage(U message, String... emails) throws ServiceException {
-        try {
-            mailConnector.sendMessage(MAIL_SUBJECT_PREFIX, message.getSenderEmail(), message.toJSON().toString(), emails);
-        } catch(ConnectorException ex) {
-            throw new ServiceException(ex);
-        }
-    }
     
     public void receiveMessages() throws ServiceException {
-        logger.debug("Receiving messages: " + MAIL_SUBJECT_PREFIX);
+        logger.debug("Receiving messages: " + REQUEST_SUBJECT);
         try {
-            Set<Object> messages = mailConnector.receiveMessages(MAIL_SUBJECT_PREFIX);
+            Set<Object> messages = mailConnector.receiveMessages(REQUEST_SUBJECT);
             logger.debug("Messages received: " + messages.size());
             
             if (messages.size() > 0) { 
