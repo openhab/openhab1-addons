@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
  * {@link ZWaveMultiLevelSensorCommandClass}. Implements polling of the sensor
  * status and receiving of sensor events.
  * @author Jan-Willem Spuij
+ * @author Chris Jackson
  * @since 1.4.0
  */
 public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<ZWaveMultiLevelSensorCommandClass> {
@@ -92,7 +93,7 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 		ZWaveMultiLevelSensorValueEvent sensorEvent = (ZWaveMultiLevelSensorValueEvent)event;
 
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
+			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring event.", event.getNodeId(), item.getName(), event.getEndpoint());
 			return;
 		}
 		
@@ -104,7 +105,8 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 		Object val = event.getValue();
 		// Perform a scale conversion if needed
 		if (sensorScale != null && Integer.parseInt(sensorScale) != sensorEvent.getSensorScale()) {
-			switch(SensorType.getSensorType(Integer.parseInt(sensorType))) {
+			int scale = Integer.parseInt(sensorScale);
+			switch(SensorType.getSensorType(scale)) {
 			case TEMPERATURE:
 				// For temperature, there are only two scales, so we simplify the conversion
 				if(sensorEvent.getSensorScale() == 0) {
@@ -121,6 +123,9 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 			default:
 				break;
 			}
+
+			logger.debug("NODE {}: Sensor is reporting scale {}, requiring conversion to {}. Value is now {}.",
+					event.getNodeId(), sensorEvent.getSensorScale(), scale, val);
 		}
 
 		State state = converter.convertFromValueToState(val);
