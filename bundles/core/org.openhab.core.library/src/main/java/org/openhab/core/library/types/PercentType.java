@@ -53,4 +53,17 @@ public class PercentType extends DecimalType {
 		return new PercentType(value);
 	}
 
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (getClass() != obj.getClass())
+			return false;
+		return super.equals(obj);
+	}
 }
