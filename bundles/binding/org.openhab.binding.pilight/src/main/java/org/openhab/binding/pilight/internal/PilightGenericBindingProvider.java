@@ -36,10 +36,10 @@ import org.slf4j.LoggerFactory;
 public class PilightGenericBindingProvider extends AbstractGenericBindingProvider implements PilightBindingProvider {
 	
 	/*
-	 * Matches: instance#location:device,property=optional
+	 * Matches: instance#device,property=optional
 	 */
 	private static final Pattern CONFIG_PATTERN = Pattern
-			.compile("^(?<instance>(\\w)+)+#(?<location>(\\w)+)+:(?<device>(\\w)+)+(,(?<properties>(\\w)+=(\\w)+)+)*$");
+			.compile("^(?<instance>(\\w)+)+#(?<device>(\\w)+)+(,(?<properties>(\\w)+=(\\w)+)+)*$");
 	
 	private static final Logger logger = LoggerFactory.getLogger(PilightGenericBindingProvider.class);	
 
@@ -85,13 +85,11 @@ public class PilightGenericBindingProvider extends AbstractGenericBindingProvide
 			PilightBindingConfig config = new PilightBindingConfig();
 			
 			String instance = matcher.group("instance");
-			String location = matcher.group("location");
 			String device = matcher.group("device");
 			
 			config.setItemName(item.getName());
 			config.setItemType(item.getClass());
 			config.setInstance(instance);
-			config.setLocation(location);
 			config.setDevice(device);
 
 			String values = matcher.group("properties");
@@ -113,8 +111,8 @@ public class PilightGenericBindingProvider extends AbstractGenericBindingProvide
 			if (isValueItem && StringUtils.isEmpty(config.getProperty())) {
 				logger.error("No property specified for item {}", config.getItemName());
 			} else {
-				logger.info("pilight:{} item {} bound to device {} in location {}{}", config.getInstance(), config.getItemName(), config.getDevice(), 
-						config.getLocation(), config.getProperty() != null ? ", property " + config.getProperty() : "");
+				logger.info("pilight:{} item {} bound to device {}{}", config.getInstance(), config.getItemName(), config.getDevice(), 
+				config.getProperty() != null ? ", property " + config.getProperty() : "");
 				return config;
 			}
 		} else {
@@ -128,12 +126,12 @@ public class PilightGenericBindingProvider extends AbstractGenericBindingProvide
 		return (PilightBindingConfig) bindingConfigs.get(itemName);
 	}
 	
-	public List<PilightBindingConfig> getBindingConfigs(String instance, String location, String device) {
+	public List<PilightBindingConfig> getBindingConfigs(String instance, String device) {
 		List<PilightBindingConfig> configs = new ArrayList<PilightBindingConfig>();
 		
 		for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
 			PilightBindingConfig config = (PilightBindingConfig) entry.getValue();
-			if (config.getInstance().equals(instance) && config.getLocation().equals(location) && config.getDevice().equals(device))
+			if (config.getInstance().equals(instance) && config.getDevice().equals(device))
 				configs.add(config);
 		}
 		

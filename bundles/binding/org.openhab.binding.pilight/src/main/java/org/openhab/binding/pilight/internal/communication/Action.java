@@ -9,21 +9,28 @@
 package org.openhab.binding.pilight.internal.communication;
 
 /**
- * This object is sent to pilight right after the initial connection. It describes what kind of client we want to be.      
+ * This message is sent when we want to change the state of a device or request the 
+ * current configuration in pilight.  
  * 
  * @author Jeroen Idserda
- * @since 1.0
+ * @since 1.7
  */
-public class Identification {
+public class Action {
 	
-	public static String ACTION_IDENTIFY = "identify";
+	public static String ACTION_SEND = "send";
+	
+	public static String ACTION_CONTROL = "control";
+	
+	public static String ACTION_REQUEST_CONFIG = "request config";
 
 	private String action;
 	
+	private Code code;
+	
 	private Options options;
 	
-	public Identification() {
-		this.action = ACTION_IDENTIFY;
+	public Action(String action) {
+		this.action = action;
 	}
 	
 	public String getAction() {
@@ -32,6 +39,14 @@ public class Identification {
 
 	public void setAction(String action) {
 		this.action = action;
+	}
+	
+	public Code getCode() {
+		return code;
+	}
+
+	public void setCode(Code code) {
+		this.code = code;
 	}
 
 	public Options getOptions() {
