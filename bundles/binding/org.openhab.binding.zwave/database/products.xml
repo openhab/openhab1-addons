@@ -849,9 +849,9 @@
 				<Type>0800</Type>
 				<Id>3001</Id>
 			</Reference>
-			<Model>FGMS01</Model>
+			<Model>FGMS001</Model>
 			<Label lang="en">Motion Sensor</Label>
-			<ConfigFile>fibaro/fgms01.xml</ConfigFile>
+			<ConfigFile>fibaro/fgms001.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
