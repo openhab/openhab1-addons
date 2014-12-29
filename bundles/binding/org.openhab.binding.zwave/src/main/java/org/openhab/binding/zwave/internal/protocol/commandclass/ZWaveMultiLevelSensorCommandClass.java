@@ -131,36 +131,29 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 
 			int sensorTypeCode = serialMessage.getMessagePayloadByte(offset + 1);
 			int sensorScale = (serialMessage.getMessagePayloadByte(offset + 2) >> 3) & 0x03;
-			logger.debug("NODE {}: Sensor Type = ({}), Scale = {}", this.getNode().getNodeId(), sensorTypeCode, sensorScale);
-
-			SensorType sensorType = SensorType.getSensorType(sensorTypeCode);
-			
-			if (sensorType == null) {
-				logger.error("NODE {}: Unknown Sensor Type = {}, ignoring report.", this.getNode().getNodeId(), sensorTypeCode);
-				return;
-			}
 
 			// Sensor type seems to be supported, add it to the list.
-			Sensor sensor = sensors.get(sensorType);
-			if (sensor == null) {
-				sensor = new Sensor(sensorType);
-				this.sensors.put(sensorType, sensor);
-			}
-			sensor.setInitialised();
-			
-			// Set the global flag. This is mainly used for version < 4
-			dynamicDone = true;
+			Sensor sensor = getSensor(sensorTypeCode);
+			if(sensor != null) {
+				sensor.setInitialised();
 
-			try {
-				BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
+				logger.debug("NODE {}: Sensor Type = {}({}), Scale = {}", this.getNode().getNodeId(), 
+						sensor.getSensorType().getLabel(), sensorTypeCode, sensorScale);
 
-				logger.debug("NODE {}: Sensor Value = {}", this.getNode().getNodeId(), value);
-				
-				ZWaveMultiLevelSensorValueEvent zEvent = new ZWaveMultiLevelSensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, sensorScale, value);
-				this.getController().notifyEventListeners(zEvent);
-			}
-			catch (NumberFormatException e) {
-				return;
+				// Set the global flag. This is mainly used for version < 4
+				dynamicDone = true;
+
+				try {
+					BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
+
+					logger.debug("NODE {}: Sensor Value = {}", this.getNode().getNodeId(), value);
+
+					ZWaveMultiLevelSensorValueEvent zEvent = new ZWaveMultiLevelSensorValueEvent(this.getNode().getNodeId(), endpoint, sensor.getSensorType(), sensorScale, value);
+					this.getController().notifyEventListeners(zEvent);
+				}
+				catch (NumberFormatException e) {
+					return;
+				}
 			}
 			break;
 		default:
@@ -169,6 +162,25 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 							command, this.getCommandClass().getLabel(), this
 									.getCommandClass().getKey()));
 		}
+	}
+
+	private Sensor getSensor(int sensorTypeCode) {
+		SensorType sensorType = SensorType.getSensorType(sensorTypeCode);
+		if (sensorType == null) {
+			logger.error("NODE {}: Unknown Sensor Type = {}, ignoring report.", this.getNode().getNodeId(), sensorTypeCode);
+			return null;
+		}
+
+		// Sensor type seems to be supported, add it to the list.
+		Sensor sensor = sensors.get(sensorType);
+		if (sensor == null) {
+			sensor = new Sensor(sensorType);
+			this.sensors.put(sensorType, sensor);
+			logger.debug("NODE {}: Adding new sensor Type = {}({})", this.getNode().getNodeId(), 
+					sensorType.getLabel(), sensorTypeCode);
+		}
+		
+		return sensor;
 	}
 
 	/**
