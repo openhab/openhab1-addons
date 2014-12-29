@@ -295,6 +295,16 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				addToQueue(new IdentifyNodeMessageClass().doRequest(node.getNodeId()));
 				break;
 
+			case NEIGHBORS:
+				// If the incoming frame is the IdentifyNode, then we continue
+				if (eventClass == SerialMessageClass.GetRoutingInfo) {
+					break;
+				}
+
+				logger.debug("NODE {}: Node advancer: NEIGHBORS - send RoutingInfo", node.getNodeId());
+				addToQueue(new GetRoutingInfoMessageClass().doRequest(node.getNodeId()));
+				break;
+
 			case WAIT:
 				// If this is the controller, we're done
 				if (node.getNodeId() == controller.getOwnNodeId()) {
@@ -598,16 +608,6 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				}
 				break;
 
-			case NEIGHBORS:
-				// If the incoming frame is the IdentifyNode, then we continue
-				if (eventClass == SerialMessageClass.GetRoutingInfo) {
-					break;
-				}
-
-				logger.debug("NODE {}: Node advancer: NEIGHBORS - send RoutingInfo", node.getNodeId());
-				addToQueue(new GetRoutingInfoMessageClass().doRequest(node.getNodeId()));
-				break;
-
 			case WAKEUP:
 				if(controller.isMasterController() == false) {
 					break;
@@ -669,8 +669,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			// If there are messages queued, send one.
 			// If there are none, then it means we're happy that we have all the
 			// data for this stage.
-			// If we have all the data, set stageAdvanced to true to tell the
-			// system
+			// If we have all the data, set stageAdvanced to true to tell the system
 			// that we're starting again, then loop around again.
 			if (currentStage != NodeStage.DONE && sendMessage() == false) {
 				// Move on to the next stage
