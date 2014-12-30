@@ -25,3 +25,4 @@ public class DeviceType {
 	public static String VALUE = "3";
 
 }
+
