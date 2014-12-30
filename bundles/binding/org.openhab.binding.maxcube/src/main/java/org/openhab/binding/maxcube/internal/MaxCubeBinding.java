@@ -156,14 +156,15 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		}
 		try {
 			String raw = null;
-			if(socket == null) {
-				this.socketConnect();
-			}if(maxRequestsPerConnection > 0 && requestCount >= maxRequestsPerConnection) {
+			if(maxRequestsPerConnection > 0 && requestCount >= maxRequestsPerConnection) {
 				logger.debug("maxRequestsPerConnection reached, reconnecting.");
 				socket.close();
 				this.socketConnect();
-				requestCount = 0;
-			}else {
+			}
+			if(socket == null) {
+				this.socketConnect();
+			}
+			else {
 			
 				/* if the connection is already open (this happens in exclusive mode), just send a "l:\r\n" to get the latest live informations
 				 * note that "L:\r\n" or "l:\n" would not work.
@@ -412,6 +413,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		logger.debug("open new connection... to "+ip+" port "+port);
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		writer = new OutputStreamWriter(socket.getOutputStream());
+		requestCount = 0;
 		return true;
 	}
 

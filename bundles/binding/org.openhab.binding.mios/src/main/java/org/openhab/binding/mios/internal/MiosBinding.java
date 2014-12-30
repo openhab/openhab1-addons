@@ -26,6 +26,7 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -372,7 +373,8 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 			}
 
 			boolean created = false;
-			String hackUnitName = (unitName == null) ? MiosUnit.CONFIG_DEFAULT_UNIT : unitName;
+			String hackUnitName = (unitName == null) ? MiosUnit.CONFIG_DEFAULT_UNIT
+					: unitName;
 			MiosUnit unit = units.get(hackUnitName);
 
 			if (unit == null) {
@@ -386,6 +388,8 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 				unit.setPort(Integer.valueOf(value));
 			} else if ("timeout".equals(key)) {
 				unit.setTimeout(Integer.valueOf(value));
+			} else if ("minimumDelay".equals(key)) {
+				unit.setMinimumDelay(Integer.valueOf(value));
 			} else if ("refreshCount".equals(key)) {
 				unit.setRefreshCount(Integer.valueOf(value));
 			} else if ("errorCount".equals(key)) {
@@ -429,21 +433,24 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	 * @exception IllegalArgumentException
 	 *                thrown if the value isn't one of the supported types.
 	 */
-	public void postPropertyUpdate(String property, Object value)
-			throws Exception {
+	public void postPropertyUpdate(String property, Object value,
+			boolean incremental) throws Exception {
 		if (value instanceof String) {
 			internalPropertyUpdate(property, new StringType(value == null ? ""
-					: (String) value));
+					: (String) value), incremental);
 		} else if (value instanceof Integer) {
-			internalPropertyUpdate(property, new DecimalType((Integer) value));
+			internalPropertyUpdate(property, new DecimalType((Integer) value),
+					incremental);
 		} else if (value instanceof Calendar) {
-			internalPropertyUpdate(property, new DateTimeType((Calendar) value));
+			internalPropertyUpdate(property,
+					new DateTimeType((Calendar) value), incremental);
 		} else if (value instanceof Double) {
-			internalPropertyUpdate(property, new DecimalType((Double) value));
+			internalPropertyUpdate(property, new DecimalType((Double) value),
+					incremental);
 		} else if (value instanceof Boolean) {
 			postPropertyUpdate(property,
 					((Boolean) value).booleanValue() ? OnOffType.ON.toString()
-							: OnOffType.OFF.toString());
+							: OnOffType.OFF.toString(), incremental);
 		} else {
 			throw new IllegalArgumentException(String.format(
 					"Unexpected Datatype, property=%s datatype=%s", property,
@@ -451,8 +458,8 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		}
 	}
 
-	private void internalPropertyUpdate(String property, State value)
-			throws Exception {
+	private void internalPropertyUpdate(String property, State value,
+			boolean incremental) throws Exception {
 		int bound = 0;
 
 		if (value == null) {
@@ -487,11 +494,45 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 							value = newValue;
 						}
 
-						logger.debug(
-								"internalPropertyUpdate: About to update itemName '{}' with value '{}'",
-								itemName, value);
+						//
+						// Set the value only if:
+						// * we're running Incrementally OR;
+						// * the CURRENT value is UNDEFINED OR;
+						// * the CURRENT value is different from the NEW value
+						//
+						// This is to handle a case where the MiOS Unit
+						// "restarts" and floods us with a bunch of the same
+						// data. In this case, we don't want to flood the Items,
+						// since it may re-trigger a bunch of Rules in an
+						// unnecessary manner.
+						//
+						if (incremental) {
+							logger.debug(
+									"internalPropertyUpdate: Updating (Incremental) itemName '{}' with value '{}'",
+									itemName, value);
 
-						eventPublisher.postUpdate(itemName, value);
+							eventPublisher.postUpdate(itemName, value);
+						} else {
+							ItemRegistry reg = miosProvider.getItemRegistry();
+							State oldValue = reg.getItem(itemName).getState();
+
+							if ((oldValue == null && value != null)
+									|| (UnDefType.UNDEF.equals(oldValue) && !UnDefType.UNDEF
+											.equals(value))
+									|| !oldValue.equals(value)) {
+								logger.debug(
+										"internalPropertyUpdate: Updating (Full) itemName '{}' with value '{}', oldValue '{}'",
+										new Object[] { itemName, value,
+												oldValue });
+
+								eventPublisher.postUpdate(itemName, value);
+							} else {
+								logger.trace(
+										"internalPropertyUpdate: Ignoring (Full) itemName '{}' with value '{}', oldValue '{}'",
+										new Object[] { itemName, value,
+												oldValue });
+							}
+						}
 						bound++;
 					} else {
 						logger.trace(
