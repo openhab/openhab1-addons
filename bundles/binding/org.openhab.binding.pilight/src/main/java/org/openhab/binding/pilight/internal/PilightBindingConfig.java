@@ -9,6 +9,7 @@
 package org.openhab.binding.pilight.internal;
 
 import org.openhab.core.binding.BindingConfig;
+import org.openhab.core.items.Item;
 
 /**
  * openHAB binding config for a single device in pilight
@@ -18,13 +19,19 @@ import org.openhab.core.binding.BindingConfig;
  */
 public class PilightBindingConfig implements BindingConfig {
 	
-		private String itemName;
+		private String itemName; 
 		
+		private Class<? extends Item> itemType;
+	
 		private String instance;
 		
 		private String location;
 		
 		private String device;
+		
+		private String property; 
+		
+		private Integer scale = 1; 
 		
 		public String getItemName() {
 			return itemName;
@@ -34,6 +41,14 @@ public class PilightBindingConfig implements BindingConfig {
 			this.itemName = itemName;
 		}
 
+		public Class<? extends Item> getItemType() {
+			return itemType;
+		}
+		
+		public void setItemType(Class<? extends Item> itemType) {
+			this.itemType = itemType;
+		}
+		
 		public String getInstance() {
 
 			return instance;
@@ -58,4 +73,21 @@ public class PilightBindingConfig implements BindingConfig {
 		public void setDevice(String device) {
 			this.device = device;
 		}
+		
+		public String getProperty() {
+			return property;
+		}
+		
+		public void setProperty(String value) {
+			this.property = value;
+		}
+		
+		public Integer getScale() {
+			return scale;
+		}
+		
+		public void setScale(Integer scale) {
+			this.scale = scale;
+		}
+		
 }

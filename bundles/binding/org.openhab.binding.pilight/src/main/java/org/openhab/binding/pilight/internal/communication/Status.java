@@ -22,12 +22,6 @@ import java.util.Map;
  */
 public class Status {
 	
-	public static String SERVER_UPDATE = "-1";
-	
-	public static String SWITCH_EVENT = "1";
-	
-	public static String DIMMER_EVENT = "2";
-	
 	private String origin;
 	
 	private String type;
