@@ -872,7 +872,7 @@
 				<Id>0106</Id>
 			</Reference>
 			<Model>FGD211</Model>
-			<Label lang="en">Universal Dimmer 500W</Label>
+			<Label lang="en">Universal Dimmer 500W (1.4)</Label>
 			<ConfigFile>fibaro/fgd211-14.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -897,7 +897,7 @@
 				<Id>100A</Id>
 			</Reference>
 			<Model>FGD211</Model>
-			<Label lang="en">Universal Dimmer 500W</Label>
+			<Label lang="en">Universal Dimmer 500W (2.1)</Label>
 			<ConfigFile>fibaro/fgd211-21.xml</ConfigFile>
 		</Product>
 		<Product>
