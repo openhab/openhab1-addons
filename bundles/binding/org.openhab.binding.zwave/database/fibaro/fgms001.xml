@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>FGMS01</Model>
+	<Model>FGMS001</Model>
 	<Label lang="en">Motion Sensor</Label>
 	<CommandClasses>
 		<Class><id>0x30</id></Class>
