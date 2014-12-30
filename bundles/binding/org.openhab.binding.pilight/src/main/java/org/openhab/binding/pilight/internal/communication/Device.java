@@ -36,7 +36,7 @@ public class Device {
 	
 	private Integer dimlevelMinimum;
 	
-	private Integer deviceDecimals;
+	private Integer scale;
 	
 	private Map<String,String> properties = new HashMap<String, String>();
 	
@@ -94,13 +94,13 @@ public class Device {
 		this.dimlevelMinimum = dimlevelMinimum;
 	}
 	
-	public Integer getDeviceDecimals() {
-		return deviceDecimals;
+	public Integer getScale() {
+		return scale;
 	}
 	
 	@JsonProperty("device-decimals")
-	public void setDeviceDecimals(Integer deviceDecimals) {
-		this.deviceDecimals = deviceDecimals;
+	public void setScale(Integer scale) {
+		this.scale = scale;
 	}
 	
 	public void setProperties(Map<String, String> properties) {

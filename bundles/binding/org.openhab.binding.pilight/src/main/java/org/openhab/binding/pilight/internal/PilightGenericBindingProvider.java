@@ -81,7 +81,8 @@ public class PilightGenericBindingProvider extends AbstractGenericBindingProvide
 			String location = matcher.group("location");
 			String device = matcher.group("device");
 			
-			config.setItem(item);
+			config.setItemName(item.getName());
+			config.setItemType(item.getClass());
 			config.setInstance(instance);
 			config.setLocation(location);
 			config.setDevice(device);
@@ -118,7 +119,7 @@ public class PilightGenericBindingProvider extends AbstractGenericBindingProvide
 		return (PilightBindingConfig) bindingConfigs.get(itemName);
 	}
 	
-	public List<PilightBindingConfig> getBindingConfig(String instance, String location, String device) {
+	public List<PilightBindingConfig> getBindingConfigs(String instance, String location, String device) {
 		List<PilightBindingConfig> configs = new ArrayList<PilightBindingConfig>();
 		
 		for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {

@@ -19,8 +19,10 @@ import org.openhab.core.items.Item;
  */
 public class PilightBindingConfig implements BindingConfig {
 	
-		private Item item;
+		private String itemName; 
 		
+		private Class<? extends Item> itemType;
+	
 		private String instance;
 		
 		private String location;
@@ -29,14 +31,22 @@ public class PilightBindingConfig implements BindingConfig {
 		
 		private String property; 
 		
-		private Integer decimals = 1; 
+		private Integer scale = 1; 
 		
-		public Item getItem() {
-			return item;
+		public String getItemName() {
+			return itemName;
+		}
+
+		public void setItemName(String itemName) {
+			this.itemName = itemName;
+		}
+
+		public Class<? extends Item> getItemType() {
+			return itemType;
 		}
 		
-		public void setItem(Item item) {
-			this.item = item;
+		public void setItemType(Class<? extends Item> itemType) {
+			this.itemType = itemType;
 		}
 		
 		public String getInstance() {
@@ -72,19 +82,12 @@ public class PilightBindingConfig implements BindingConfig {
 			this.property = value;
 		}
 		
-		public Integer getDecimals() {
-			return decimals;
+		public Integer getScale() {
+			return scale;
 		}
 		
-		public void setDecimals(Integer decimals) {
-			this.decimals = decimals;
+		public void setScale(Integer scale) {
+			this.scale = scale;
 		}
 		
-		public String getItemName() {
-			return item.getName();
-		}
-
-		public Class<? extends Item> getItemType() {
-			return item.getClass();
-		}
 }

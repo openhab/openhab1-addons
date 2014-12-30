@@ -88,7 +88,7 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 			String location = objectInfo.getKey();
 			String device = objectInfo.getValue().get(0);
 			
-			List<PilightBindingConfig> configs = getConfig(instance, location, device);
+			List<PilightBindingConfig> configs = getConfigs(instance, location, device);
 			
 			if (!configs.isEmpty()) {
 				if (type.equals(DeviceType.SWITCH) || type.equals(DeviceType.DIMMER)) {
@@ -117,8 +117,8 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 		if (config.getItemType().equals(StringItem.class)) {
 			state = new StringType(value);
 		} else if (config.getItemType().equals(NumberItem.class)) {
-			BigDecimal numberValue = new BigDecimal(value).setScale(config.getDecimals());
-			numberValue = numberValue.divide(new BigDecimal(config.getDecimals()*10), config.getDecimals(), RoundingMode.HALF_UP);
+			BigDecimal numberValue = new BigDecimal(value).setScale(config.getScale());
+			numberValue = numberValue.divide(new BigDecimal(config.getScale()*10), config.getScale(), RoundingMode.HALF_UP);
 			state = new DecimalType(numberValue);
 		}
 		
@@ -145,8 +145,9 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 			state = new PercentType(dimLevel);
 		}
 		
-		for (PilightBindingConfig config : configs) 
+		for (PilightBindingConfig config : configs) {
 			eventPublisher.postUpdate(config.getItemName(), state);
+		}
 	}
 	
 	/**
@@ -239,9 +240,9 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 		return null;
 	}
 	
-	private List<PilightBindingConfig> getConfig(String instance, String location, String device) {
+	private List<PilightBindingConfig> getConfigs(String instance, String location, String device) {
 		for (PilightBindingProvider provider : providers) {
-			List<PilightBindingConfig> configs = provider.getBindingConfig(instance, location, device);
+			List<PilightBindingConfig> configs = provider.getBindingConfigs(instance, location, device);
 			 if (!configs.isEmpty())
 				 return configs;
 		}
@@ -342,12 +343,12 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 						if (state.equals(OnOffType.ON))
 							return new PercentType(getPercentageFromDimLevel(dev.getDimlevel().toString()));
 						else
-							return new PercentType(0);
+							return PercentType.ZERO;
 					}
 					
 					return state;
 				} else if (devType.equals(DeviceType.VALUE)) {
-					bindingConfig.setDecimals(dev.getDeviceDecimals());
+					bindingConfig.setScale(dev.getScale());
 					
 					String property = bindingConfig.getProperty();
 					if (dev.getProperties().containsKey(property)) {

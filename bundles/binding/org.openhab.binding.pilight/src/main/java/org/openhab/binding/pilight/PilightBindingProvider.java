@@ -39,5 +39,5 @@ public interface PilightBindingProvider extends BindingProvider {
 	 * @param device Name of the device in pilight
 	 * @return The binding configs for the pilight references or empty list if not found
 	 */
-	public List<PilightBindingConfig> getBindingConfig(String instance, String location, String device);
+	public List<PilightBindingConfig> getBindingConfigs(String instance, String location, String device);
 }
