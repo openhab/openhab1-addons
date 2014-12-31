@@ -1179,8 +1179,16 @@
 				<Type>0002</Type>
 				<Id>0003</Id>
 			</Reference>
-			<Model>ZME_Z-StickC</Model>
+			<Model>ZME_UZB1</Model>
 			<Label lang="en">Z-Wave USB Controller</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ZME_Z-StickC</Model>
+			<Label lang="en">Z-Wave Plus USB Controller</Label>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
