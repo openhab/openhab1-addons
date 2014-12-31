@@ -349,6 +349,15 @@
 	        <Label lang="en">Smart Outlet</Label>
 	        <ConfigFile>ge/receptacle.xml</ConfigFile>
         </Product>
+		<Product>
+	        <Reference>
+		        <Type>5250</Type>
+		        <Id>3130</Id>
+	        </Reference>
+	        <Model>45604</Model>
+	        <Label lang="en">Outdoor Lighting Control Module</Label>
+	        <ConfigFile>ge/45604.xml</ConfigFile>
+        </Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0064</Id>
@@ -1185,6 +1194,14 @@
 			</Reference>
 			<Model>ZME_Z-StickC</Model>
 			<Label lang="en">Z-Wave USB Controller</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ZME_UZB1</Model>
+			<Label lang="en">Z-Wave Plus USB Controller</Label>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
