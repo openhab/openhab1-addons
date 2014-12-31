@@ -349,6 +349,14 @@
 	        <Label lang="en">Smart Outlet</Label>
 	        <ConfigFile>ge/receptacle.xml</ConfigFile>
         </Product>
+		<Product>
+	        <Reference>
+		        <Type>5250</Type>
+		        <Id>3130</Id>
+	        </Reference>
+	        <Model>45604</Model>
+	        <Label lang="en">Outdoor Lighting Control Module</Label>
+        </Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0064</Id>
