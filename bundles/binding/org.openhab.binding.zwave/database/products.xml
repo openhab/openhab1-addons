@@ -349,6 +349,15 @@
 	        <Label lang="en">Smart Outlet</Label>
 	        <ConfigFile>ge/receptacle.xml</ConfigFile>
         </Product>
+		<Product>
+	        <Reference>
+		        <Type>5250</Type>
+		        <Id>3130</Id>
+	        </Reference>
+	        <Model>45604</Model>
+	        <Label lang="en">Outdoor Lighting Control Module</Label>
+	        <ConfigFile>ge/45604.xml</ConfigFile>
+        </Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0064</Id>
@@ -1182,6 +1191,14 @@
 			<Model>ZME_Z-StickC</Model>
 			<Label lang="en">Z-Wave USB Controller</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ZME_UZB1</Model>
+			<Label lang="en">Z-Wave Plus USB Controller</Label>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0118</Id>
@@ -1602,8 +1619,8 @@
 				<Type>1100</Type>
 				<Id>0001</Id>
 			</Reference>
-			<Model>Wall Plug Switch</Model>
-			<Label lang="en"></Label>
+			<Model>123610</Model>
+			<Label lang="en">Wall Plug Switch</Label>
 			<ConfigFile>popp/123610.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -1611,9 +1628,23 @@
 				<Type>1100</Type>
 				<Id>0002</Id>
 			</Reference>
-			<Model>Wall Plug Dimmer</Model>
-			<Label lang="en"></Label>
+			<Model>123580</Model>
+			<Label lang="en">Wall Plug Dimmer</Label>
 			<ConfigFile>popp/123580.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+		<Manufacturer>
+		<Id>0129</Id>
+		<Name>Yale Locks</Name>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>aa00</Id>
+			</Reference>
+			<Model>YRD210</Model>
+			<Label lang="en">Push Button Deadbolt</Label>
+			<ConfigFile>yale/yrd210.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	
 </Manufacturers>
