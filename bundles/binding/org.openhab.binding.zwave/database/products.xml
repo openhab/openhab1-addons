@@ -1643,7 +1643,7 @@
 			</Reference>
 			<Model>YRD210</Model>
 			<Label lang="en">Push Button Deadbolt</Label>
-			<ConfigFile>yale/YRD210.xml</ConfigFile>
+			<ConfigFile>yale/yrd210.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	
