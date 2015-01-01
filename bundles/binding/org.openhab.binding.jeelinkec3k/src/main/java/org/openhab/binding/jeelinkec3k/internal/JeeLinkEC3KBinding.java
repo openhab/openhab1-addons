@@ -87,12 +87,9 @@ public class JeeLinkEC3KBinding extends
 	protected void internalReceiveCommand(String itemName, Command command) {
 		if (itemName != null && command instanceof OnOffType) {
 			OnOffType type = (OnOffType) command;
-
-			String id = StringUtils.substringBefore(itemName, ";");
-			// String type = StringUtils.substringAfter(itemName, ";");
 			for (JeeLinkEC3KBindingProvider provider : providers) {
 				JeeLinkEC3KBindingConfig ecBindingCfg = provider
-						.getConfigForAddress(id);
+						.getConfigForItemName(itemName);
 				ecBindingCfg.setRealTime(type == OnOffType.ON);
 			}
 			logger.info("internalreceivecommand");

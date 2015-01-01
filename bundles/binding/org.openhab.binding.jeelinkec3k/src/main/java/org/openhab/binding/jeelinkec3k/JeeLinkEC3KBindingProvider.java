@@ -17,4 +17,6 @@ import org.openhab.core.binding.BindingProvider;
 public interface JeeLinkEC3KBindingProvider extends BindingProvider {
 	public JeeLinkEC3KBindingConfig getConfigForAddress(String address);
 
+	public JeeLinkEC3KBindingConfig getConfigForItemName(String itemName);
+
 }

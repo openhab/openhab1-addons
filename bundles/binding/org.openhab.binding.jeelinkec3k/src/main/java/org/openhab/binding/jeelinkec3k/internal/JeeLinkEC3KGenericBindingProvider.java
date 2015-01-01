@@ -103,4 +103,12 @@ public class JeeLinkEC3KGenericBindingProvider extends
 		return addressMap.get(address);
 	}
 
+	public JeeLinkEC3KBindingConfig getConfigForItemName(String itemName) {
+		if (super.bindingConfigs.containsKey(itemName)) {
+			return (JeeLinkEC3KBindingConfig) super.bindingConfigs
+					.get(itemName);
+		}
+		return null;
+	}
+
 }
