@@ -35,6 +35,8 @@ public class SpeechDispatcherConnection {
 	}
 
 	public void openConnection() {
+		// Close any existing connection first, if present
+		closeConnection();      
 		try {
 			speechDispatcherClient = new SSIPClient("openhab", null, null, host, port);
 		} catch (SSIPException e) {
@@ -60,7 +62,7 @@ public class SpeechDispatcherConnection {
 	 * @param voice the name of the voice to use or null, if the default voice should be used
 	 */
 	public void say(String text, String voiceName) {
-		if (speechDispatcherClient==null) {
+		if (speechDispatcherClient==null || !speechDispatcherClient.getConnection().isConnected()) {
 			openConnection();
 		}
 		if(text==null) {
