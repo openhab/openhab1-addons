@@ -1623,8 +1623,8 @@
 				<Type>1100</Type>
 				<Id>0001</Id>
 			</Reference>
-			<Model>Wall Plug Switch</Model>
-			<Label lang="en"></Label>
+			<Model>123610</Model>
+			<Label lang="en">Wall Plug Switch</Label>
 			<ConfigFile>popp/123610.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -1632,9 +1632,23 @@
 				<Type>1100</Type>
 				<Id>0002</Id>
 			</Reference>
-			<Model>Wall Plug Dimmer</Model>
-			<Label lang="en"></Label>
+			<Model>123580</Model>
+			<Label lang="en">Wall Plug Dimmer</Label>
 			<ConfigFile>popp/123580.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+		<Manufacturer>
+		<Id>0129</Id>
+		<Name>Yale Locks</Name>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>aa00</Id>
+			</Reference>
+			<Model>YRD210</Model>
+			<Label lang="en">Push Button Deadbolt</Label>
+			<ConfigFile>yale/yrd210.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	
 </Manufacturers>
