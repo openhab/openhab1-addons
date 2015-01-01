@@ -133,6 +133,7 @@
     <module>org.openhab.binding.anel</module>
     <module>org.openhab.binding.enigma2</module>
     <module>org.openhab.binding.enigma2.test</module>
+    <module>org.openhab.binding.mpower</module>
   </modules>
 
 </project>
