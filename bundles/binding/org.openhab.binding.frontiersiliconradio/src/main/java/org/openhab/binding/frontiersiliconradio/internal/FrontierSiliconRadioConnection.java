@@ -75,7 +75,7 @@ public class FrontierSiliconRadioConnection {
 		
 		String url = "http://" + hostname + ":" + port + "/fsapi/CREATE_SESSION?pin=" + pin;
 		
-		logger.debug("Opening URL:" + url);
+		logger.trace("opening URL:" + url);
 		
 		HttpMethod method = new GetMethod( url );
         method.getParams().setSoTimeout( SOCKET_TIMEOUT );
@@ -90,14 +90,14 @@ public class FrontierSiliconRadioConnection {
 
 			String responseBody = IOUtils.toString(method.getResponseBodyAsStream());
 			if (!responseBody.isEmpty()) {
-				logger.debug("login response: " + responseBody);
+				logger.trace("login response: " + responseBody);
 			}
 			
 			try {
 				FrontierSiliconRadioApiResult result = new FrontierSiliconRadioApiResult(responseBody);
 				if( result.isStatusOk() )
 				{
-					logger.debug("login successful");
+					logger.trace("login successful");
 					sessionId = result.getSessionId();
 					isLoggedIn = true;
 				}
@@ -142,7 +142,7 @@ public class FrontierSiliconRadioConnection {
 	 */
 	public FrontierSiliconRadioApiResult doRequest( String requestString, String params) {
 		
-		int retries = 3;
+		int retries = 3; // number of retries upon failure
 		
 		while(retries>0)
 		{

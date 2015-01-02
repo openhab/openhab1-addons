@@ -68,7 +68,7 @@ public class FrontierSiliconRadioApiResult {
 		Element fsApiResult = (Element)xmlDoc.getElementsByTagName("fsapiResponse").item(0);
 		Element statusNode = (Element)fsApiResult.getElementsByTagName("status").item(0);
 		String status = getCharacterDataFromElement( statusNode );
-		logger.debug("status is: "+status);
+		logger.trace("status is: "+status);
 		return status;
 	}
 	
@@ -88,18 +88,12 @@ public class FrontierSiliconRadioApiResult {
 	 */
 	public Boolean getValueU8AsBoolean() {
 		try {
-			Element fsApiResult = (Element)xmlDoc.getElementsByTagName("fsapiResponse").item(0);
-			
-			Element statusNode = (Element)fsApiResult.getElementsByTagName("status").item(0);
-			String status = getCharacterDataFromElement( statusNode );
-			logger.debug("status is: "+status);
-			
-			
+			Element fsApiResult = (Element)xmlDoc.getElementsByTagName("fsapiResponse").item(0);			
 			Element valueNode = (Element) fsApiResult.getElementsByTagName("value").item(0);
 			Element u8Node = (Element) valueNode.getElementsByTagName("u8").item(0);
 			
 			String value = getCharacterDataFromElement( u8Node );
-			logger.debug("value is: "+value);
+			logger.trace("value is: "+value);
 			
 			return ("1".equals(value)?true:false);
 		}
@@ -116,18 +110,13 @@ public class FrontierSiliconRadioApiResult {
 	 */
 	public int getValueU8AsInt() {
 		try {
-			Element fsApiResult = (Element)xmlDoc.getElementsByTagName("fsapiResponse").item(0);
-			
-			Element statusNode = (Element)fsApiResult.getElementsByTagName("status").item(0);
-			String status = getCharacterDataFromElement( statusNode );
-			logger.debug("status is: "+status);
-			
-			
+			Element fsApiResult = (Element)xmlDoc.getElementsByTagName("fsapiResponse").item(0);				
 			Element valueNode = (Element) fsApiResult.getElementsByTagName("value").item(0);
 			Element u8Node = (Element) valueNode.getElementsByTagName("u8").item(0);
 			
 			String value = getCharacterDataFromElement( u8Node );
-			logger.debug("value is: "+value);
+			
+			logger.trace("value is: "+value);
 			
 			return Integer.parseInt(value);
 		}
@@ -146,17 +135,11 @@ public class FrontierSiliconRadioApiResult {
 	public int getValueU32AsInt() {
 		try {
 			Element fsApiResult = (Element)xmlDoc.getElementsByTagName("fsapiResponse").item(0);
-			
-			Element statusNode = (Element)fsApiResult.getElementsByTagName("status").item(0);
-			String status = getCharacterDataFromElement( statusNode );
-			logger.debug("status is: "+status);
-			
-			
 			Element valueNode = (Element) fsApiResult.getElementsByTagName("value").item(0);
 			Element u32Node = (Element) valueNode.getElementsByTagName("u32").item(0);
 			
 			String value = getCharacterDataFromElement( u32Node );
-			logger.debug("value is: "+value);
+			logger.trace("value is: "+value);
 			
 			return Integer.parseInt(value);
 		}
@@ -179,7 +162,7 @@ public class FrontierSiliconRadioApiResult {
 			Element c8Array = (Element) valueNode.getElementsByTagName("c8_array").item(0);
 			
 			String value = getCharacterDataFromElement( c8Array );
-			logger.debug("value is: "+value);
+			logger.trace("value is: "+value);
 			return value;
 		}
 		catch (Exception e) {
@@ -233,6 +216,4 @@ public class FrontierSiliconRadioApiResult {
 	    else
 	    	return "";
 	 }
-	
-	
 }

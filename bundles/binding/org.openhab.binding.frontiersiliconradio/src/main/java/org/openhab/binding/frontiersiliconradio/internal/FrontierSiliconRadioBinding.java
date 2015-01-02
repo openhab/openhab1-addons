@@ -99,8 +99,6 @@ public class FrontierSiliconRadioBinding extends AbstractActiveBinding<FrontierS
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
 		
 		for (FrontierSiliconRadioBindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames() ) {
@@ -250,10 +248,7 @@ public class FrontierSiliconRadioBinding extends AbstractActiveBinding<FrontierS
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
+		
 	}
 		
 	/**
@@ -329,7 +324,7 @@ public class FrontierSiliconRadioBinding extends AbstractActiveBinding<FrontierS
 	}
 	
 	/**
-	 * Hold the binding configuration, consisting of:
+	 * Holds the binding configuration, consisting of:
 	 * - deviceID (e.g. "sleepingroom")
 	 * - host (e.g. "192.167.2.23" )
 	 * - portnumber (defaults to 80)
