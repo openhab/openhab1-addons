@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.mpower.binding">
-	<implementation class="org.openhab.binding.mpower.internal.mPowerBinding" />
+	<implementation class="org.openhab.binding.mpower.internal.MpowerBinding" />
 
 	<service>
 		<provide interface="org.osgi.service.event.EventHandler" />
@@ -24,7 +24,7 @@
 		interface="org.openhab.core.events.EventPublisher" name="EventPublisher"
 		policy="dynamic" unbind="unsetEventPublisher" />
 	<reference bind="addBindingProvider" cardinality="1..n"
-		interface="org.openhab.binding.mpower.mPowerBindingProvider" name="mPowerBindingProvider"
+		interface="org.openhab.binding.mpower.MpowerBindingProvider" name="MpowerBindingProvider"
 		policy="dynamic" unbind="removeBindingProvider" />
 	
 </scr:component>

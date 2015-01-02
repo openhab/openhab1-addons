@@ -8,17 +8,19 @@
  */
 package org.openhab.binding.mpower;
 
-import org.openhab.binding.mpower.internal.mPowerBindingConfig;
+import org.openhab.binding.mpower.internal.MpowerBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 
 /**
+ * Ubiquiti mPower strip binding
+ * 
  * @author magcode
- * @since 1.0.0
  */
-public interface mPowerBindingProvider extends BindingProvider {
 
-	mPowerBindingConfig getConfigForItemName(String itemName);
+public interface MpowerBindingProvider extends BindingProvider {
 
-	mPowerBindingConfig getConfigForAddress(String address);
+	MpowerBindingConfig getConfigForItemName(String itemName);
+
+	MpowerBindingConfig getConfigForAddress(String address);
 
 }

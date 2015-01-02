@@ -9,12 +9,12 @@
 package org.openhab.binding.mpower.internal;
 
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-
-import org.openhab.binding.mpower.mPowerBindingProvider;
+import org.openhab.binding.mpower.MpowerBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -26,38 +26,41 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
+ * Ubiquiti mPower strip binding
  * 
  * @author magcode
- * @since 1.0.0
  */
-public class mPowerBinding extends AbstractActiveBinding<mPowerBindingProvider>
+public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 		implements ManagedService {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(mPowerBinding.class);
+			.getLogger(MpowerBinding.class);
 
 	/**
 	 * the refresh interval which is used to poll values from the mPower server
 	 * (optional, defaults to 60000ms)
 	 */
 	private long refreshInterval = 60000;
+	private static final String CONFIG_USERNAME = "user";
+	private static final String CONFIG_HOST = "host";
+	private static final String CONFIG_PASSWORD = "password";
+	private static final String CONFIG_SECURE = "secure";
 
-	private Map<String, mPowerConnector> connectors = new HashMap<String, mPowerConnector>();
+	private Map<String, MpowerConnector> connectors = new HashMap<String, MpowerConnector>();
 
-	public mPowerBinding() {
+	public MpowerBinding() {
 	}
 
 	public void activate() {
-		mPowerConnector conn = new mPowerConnector("mpower.lan", "mp1", this);
-		connectors.put("mp1", conn);
-		conn.start();
+		// MpowerConnector conn = new MpowerConnector("mpower.lan", "mp1",
+		// this);
+		// connectors.put("mp1", conn);
+		// conn.start();
 	}
 
 	public void deactivate() {
 		// stop all connectors
-		for (mPowerConnector connector : connectors.values()) {
+		for (MpowerConnector connector : connectors.values()) {
 			connector.stop();
 			connector = null;
 		}
@@ -119,6 +122,66 @@ public class mPowerBinding extends AbstractActiveBinding<mPowerBindingProvider>
 			throws ConfigurationException {
 		if (config != null) {
 
+			Enumeration<String> keys = config.keys();
+			//
+			// put all configurations into a nice structure
+			//
+			HashMap<String, MpowerConfig> bindingConfigs = new HashMap<String, MpowerConfig>();
+
+			while (keys.hasMoreElements()) {
+				String key = keys.nextElement();
+				String mpowerId = StringUtils.substringBefore(key, ".");
+				String configOption = StringUtils.substringAfterLast(key, ".");
+				if (!"service".equals(mpowerId)) {
+
+					MpowerConfig aConfig = null;
+					if (bindingConfigs.containsKey(mpowerId)) {
+						aConfig = bindingConfigs.get(mpowerId);
+					} else {
+						aConfig = new MpowerConfig();
+						aConfig.setId(mpowerId);
+						bindingConfigs.put(mpowerId, aConfig);
+					}
+
+					if (CONFIG_USERNAME.equals(configOption)) {
+						aConfig.setUser((String) config.get(key));
+					}
+
+					if (CONFIG_PASSWORD.equals(configOption)) {
+						aConfig.setPassword((String) config.get(key));
+					}
+
+					if (CONFIG_HOST.equals(configOption)) {
+						aConfig.setHost((String) config.get(key));
+					}
+				}
+			}
+
+			//
+			// now start or stop the connectors
+			//
+			for (Map.Entry<String, MpowerConfig> entry : bindingConfigs
+					.entrySet()) {
+				// we already know this mpower instance, lets stop and remove it
+				if (connectors.containsKey(entry.getKey())) {
+					MpowerConnector connector = connectors.get(entry.getKey());
+					logger.debug("Stopping existing connector ", entry.getKey());
+					connector.stop();
+					connectors.remove(entry.getKey());
+					connector = null;
+				}
+
+				// create and start
+				MpowerConfig aConfig = entry.getValue();
+				logger.debug("Creating and starting new connector ",
+						aConfig.getId());
+				MpowerConnector conn = new MpowerConnector(aConfig.getHost(),
+						aConfig.getId(), aConfig.getUser(),
+						aConfig.getPassword(), aConfig.isSecure(), this);
+				connectors.put(aConfig.getId(), conn);
+				conn.start();
+			}
+
 			// to override the default refresh interval one has to add a
 			// parameter to openhab.cfg like
 			// <bindingName>:refresh=<intervalInMs>
@@ -133,16 +196,17 @@ public class mPowerBinding extends AbstractActiveBinding<mPowerBindingProvider>
 		}
 	}
 
-	public void receivedData(SocketState state) {
-		for (mPowerBindingProvider provider : providers) {
-			mPowerBindingConfig bindingCfg = provider.getConfigForAddress(state
+	public void receivedData(MpowerSocketState state) {
+		for (MpowerBindingProvider provider : providers) {
+			MpowerBindingConfig bindingCfg = provider.getConfigForAddress(state
 					.getAddress());
 			String volItemName = bindingCfg.getVoltageItemName(state
 					.getSocket());
 			State itemState = new DecimalType(state.getVoltage());
 			eventPublisher.postUpdate(volItemName, itemState);
-			
-			String powerItemname = bindingCfg.getPowerItemName(state.getSocket());
+
+			String powerItemname = bindingCfg.getPowerItemName(state
+					.getSocket());
 			itemState = new DecimalType(state.getPower());
 			eventPublisher.postUpdate(powerItemname, itemState);
 		}

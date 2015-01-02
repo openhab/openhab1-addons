@@ -4,15 +4,21 @@ import java.util.HashMap;
 
 import org.openhab.core.binding.BindingConfig;
 
-public class mPowerBindingConfig implements BindingConfig {
-	private String mPowerInstance;
-	private HashMap<Integer, mPowerSocket> sockets = new HashMap<Integer, mPowerSocket>();
 
-	public mPowerBindingConfig(String id) {
+/**
+ * Ubiquiti mPower strip binding
+ * 
+ * @author magcode
+ */
+public class MpowerBindingConfig implements BindingConfig {
+	private String mPowerInstance;
+	private HashMap<Integer, MpowerSocket> sockets = new HashMap<Integer, MpowerSocket>();
+
+	public MpowerBindingConfig(String id) {
 		setmPowerInstance(id);
 		// prepare 9 sockets (for US mPower pro)
 		for (int i = 1; i < 10; i++) {
-			sockets.put(i, new mPowerSocket());
+			sockets.put(i, new MpowerSocket());
 		}
 	}
 

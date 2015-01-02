@@ -13,22 +13,21 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openhab.binding.mpower.mPowerBindingProvider;
+import org.openhab.binding.mpower.MpowerBindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 
 /**
- * This class is responsible for parsing the binding configuration.
+ * Ubiquiti mPower strip binding
  * 
  * @author magcode
- * @since 1.0.0
  */
-public class mPowerGenericBindingProvider extends
-		AbstractGenericBindingProvider implements mPowerBindingProvider {
+public class MpowerGenericBindingProvider extends
+		AbstractGenericBindingProvider implements MpowerBindingProvider {
 	private static final Pattern CONFIG_PATTERN = Pattern
 			.compile("(.*):(.*):(.*)");
-	private Map<String, mPowerBindingConfig> addressMap = new HashMap<String, mPowerBindingConfig>();
+	private Map<String, MpowerBindingConfig> addressMap = new HashMap<String, MpowerBindingConfig>();
 
 	/**
 	 * {@inheritDoc}
@@ -69,11 +68,11 @@ public class mPowerGenericBindingProvider extends
 		String socket = matcher.group(2);
 		String variable = matcher.group(3);
 
-		mPowerBindingConfig config = null;
+		MpowerBindingConfig config = null;
 		if (addressMap.containsKey(mPowerInstance)) {
 			config = addressMap.get(mPowerInstance);
 		} else {
-			config = new mPowerBindingConfig(mPowerInstance);
+			config = new MpowerBindingConfig(mPowerInstance);
 			addressMap.put(mPowerInstance, config);
 		}
 
@@ -93,15 +92,16 @@ public class mPowerGenericBindingProvider extends
 	}
 
 	@Override
-	public mPowerBindingConfig getConfigForItemName(String itemName) {
+	public MpowerBindingConfig getConfigForItemName(String itemName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public mPowerBindingConfig getConfigForAddress(String address) {
-		if (super.bindingConfigs.containsKey(address)) {
-			return (mPowerBindingConfig) super.bindingConfigs.get(address);
+	public MpowerBindingConfig getConfigForAddress(String address) {
+		if (addressMap.containsKey(address))
+		{
+			return addressMap.get(address);
 		}
 		return null;
 	}

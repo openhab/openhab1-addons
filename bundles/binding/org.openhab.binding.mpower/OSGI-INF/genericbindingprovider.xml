@@ -10,11 +10,11 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.mpower.genericbindingprovider">
-   <implementation class="org.openhab.binding.mpower.internal.mPowerGenericBindingProvider"/>
+   <implementation class="org.openhab.binding.mpower.internal.MpowerGenericBindingProvider"/>
    
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.binding.mpower.mPowerBindingProvider"/>
+      <provide interface="org.openhab.binding.mpower.MpowerBindingProvider"/>
    </service>
    
 </scr:component>

@@ -6,7 +6,7 @@ Bundle-Name: openHAB mPower Binding
 Bundle-SymbolicName: org.openhab.binding.mpower
 Bundle-Vendor: openHAB.org
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.openhab.binding.mpower.internal.mPowerActivator
+Bundle-Activator: org.openhab.binding.mpower.internal.MpowerActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the mPower binding of the open Home Aut
  omation Bus (openHAB)

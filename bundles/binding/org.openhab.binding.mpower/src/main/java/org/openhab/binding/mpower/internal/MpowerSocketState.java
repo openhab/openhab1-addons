@@ -6,19 +6,21 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
+ * 
+ * Ubiquiti mPower strip binding
  * This transforms the JSON data into a nice object
  * 
  * @author magcode
- *
  */
-public class SocketState {
+
+public class MpowerSocketState {
 	private double voltage;
 	private double power;
 	private boolean on;
 	private int socket;
 	private String address;
 
-	public SocketState(String json, String address) {
+	public MpowerSocketState(String json, String address) {
 		setAddress(address);
 		JSONParser parser = new JSONParser();
 

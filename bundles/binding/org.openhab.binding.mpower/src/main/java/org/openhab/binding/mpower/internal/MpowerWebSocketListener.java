@@ -9,14 +9,21 @@ import org.slf4j.LoggerFactory;
 import com.ning.http.client.websocket.WebSocket;
 import com.ning.http.client.websocket.WebSocketTextListener;
 
-public class WebSocketListener implements WebSocketTextListener {
-	private mPowerBinding binding;
+/**
+ * Ubiquiti mPower strip binding
+ * 
+ * Websocket listener
+ * 
+ * @author magcode
+ */
+public class MpowerWebSocketListener implements WebSocketTextListener {
+	private MpowerBinding binding;
 	private String address;
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(WebSocketListener.class);
+			.getLogger(MpowerWebSocketListener.class);
 
-	public WebSocketListener(String address, mPowerBinding binding) {
+	public MpowerWebSocketListener(String address, MpowerBinding binding) {
 		this.address = address;
 		this.binding = binding;
 	}
@@ -25,16 +32,17 @@ public class WebSocketListener implements WebSocketTextListener {
 	public void onOpen(WebSocket webSocket) {
 		webSocket.sendTextMessage("{\"time\":4000}");
 		logger.debug("[{}]: Websocket opened", "");
-
 	}
 
 	@Override
 	public void onError(Throwable e) {
 		if (e instanceof ConnectException) {
+			
 			logger.debug("[{}]: Websocket connection error", "");
 		} else if (e instanceof TimeoutException) {
 			logger.debug("[{}]: Websocket timeout error", "");
 		} else {
+			logger.debug(e.getStackTrace().toString(), "");
 			logger.error("[{}]: Websocket error: {}", "", e.getMessage());
 		}
 	}
@@ -48,7 +56,7 @@ public class WebSocketListener implements WebSocketTextListener {
 
 	@Override
 	public void onMessage(String message) {
-		SocketState state = new SocketState(message,this.address);
+		MpowerSocketState state = new MpowerSocketState(message, this.address);
 		binding.receivedData(state);
 	}
 

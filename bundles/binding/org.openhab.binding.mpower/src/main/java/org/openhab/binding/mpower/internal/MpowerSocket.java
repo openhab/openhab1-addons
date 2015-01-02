@@ -1,6 +1,11 @@
 package org.openhab.binding.mpower.internal;
 
-public class mPowerSocket {
+/**
+ * Ubiquiti mPower strip binding
+ * 
+ * @author magcode
+ */
+public class MpowerSocket {
 
 	private String voltageItemName;
 	private String powerItemName;

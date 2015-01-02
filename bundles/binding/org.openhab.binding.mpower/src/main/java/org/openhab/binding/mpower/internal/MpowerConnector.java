@@ -21,21 +21,31 @@ import com.ning.http.client.websocket.WebSocketUpgradeHandler;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-public class mPowerConnector {
+/**
+ * Ubiquiti mPower strip binding
+ * 
+ * @author magcode
+ */
+public class MpowerConnector {
+	private static final int WSPORT= 7681;
 	private AsyncHttpClient webSocketHTTPClient;
 	private String host;
+	private String user;
+	private String password;
+	private Boolean secure;
 	private WebSocket webSocket;
 	private HttpClient httpClient;
-	private mPowerBinding binding;
-	private String address;
+	private MpowerBinding binding;
+	private String id;
 
-	public mPowerConnector(String host, String address, mPowerBinding bind) {
+	public MpowerConnector(String host, String id, String user, String password, boolean secure, MpowerBinding bind) {
 		this.binding = bind;
 		this.host = host;
-		this.address = address;
+		this.id = id;
+		this.user = user;
+		this.password = password;
+		this.secure = secure;
 		// ProxyServer ps = new ProxyServer(ProxyServer.Protocol.HTTP,
 		// "127.0.0.1", 8888, "", "");
 
@@ -57,12 +67,13 @@ public class mPowerConnector {
 
 			WebSocketUpgradeHandler.Builder builder = new WebSocketUpgradeHandler.Builder();
 
-			builder.addWebSocketListener(new WebSocketListener(this.address, this.binding));
+			builder.addWebSocketListener(new MpowerWebSocketListener(
+					this.id, this.binding));
 			builder.setProtocol("mfi-protocol");
 
 			BoundRequestBuilder brb = webSocketHTTPClient.prepareGet("ws://"
-					+ this.host + ":7681/?c=" + id);
-			Cookie cookie = new Cookie("AIROS_SESSIONID", id, id, "mpower.lan",
+					+ this.host + ":" + WSPORT + "/?c=" + id);
+			Cookie cookie = new Cookie("AIROS_SESSIONID", id, id, this.host,
 					"/", 0, 0, false, false);
 			brb.addCookie(cookie);
 			// brb.setProxyServer(ps);
@@ -110,16 +121,14 @@ public class mPowerConnector {
 	 * @return
 	 */
 	private String getSession() {
-		String user = "ubnt";
-		String password = "ubnt";
 		String targetDummy = "/index.cgi";
 		// httpClient.getHostConfiguration().setProxy("127.0.0.1", 8888);
 		String id = RandomStringUtils.randomNumeric(32);
-		PostMethod post = new PostMethod("http://mpower.lan/login.cgi");
+		PostMethod post = new PostMethod("http://" + this.host + "/login.cgi");
 		post.setRequestHeader("Cookie", "AIROS_SESSIONID=" + id);
 
-		Part[] parts = { new StringPart("username", user),
-				new StringPart("password", password),
+		Part[] parts = { new StringPart("username", this.user),
+				new StringPart("password", this.password),
 				new StringPart("uri", targetDummy) };
 
 		post.setRequestEntity(new MultipartRequestEntity(parts, post
@@ -127,7 +136,7 @@ public class mPowerConnector {
 		try {
 			int returnCode = httpClient.executeMethod(post);
 			String result = post.getResponseBodyAsString();
-			int a = result.length() + returnCode;
+			// todo check
 			return id;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

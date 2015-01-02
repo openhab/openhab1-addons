@@ -15,14 +15,14 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Extension of the default OSGi bundle activator
+ * Ubiquiti mPower strip binding
  * 
  * @author magcode
- * @since 1.0.0
  */
-public final class mPowerActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(mPowerActivator.class); 
+public final class MpowerActivator implements BundleActivator {
+
+	private static Logger logger = LoggerFactory.getLogger(MpowerActivator.class); 
 	
 	private static BundleContext context;
 	
