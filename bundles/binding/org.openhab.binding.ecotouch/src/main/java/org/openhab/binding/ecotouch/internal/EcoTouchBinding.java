@@ -134,7 +134,7 @@ public class EcoTouchBinding extends
 						value = new DecimalType(decimal);
 					} else if (item.getType() == EcoTouchTags.Type.Word) {
 						// integer
-						if (item.getItemClass() == NumberItem.class)
+						if (NumberItem.class.equals(item.getItemClass()))
 							value = new DecimalType(heatpumpValue);
 						else {
 							// assume SwitchItem
@@ -147,7 +147,7 @@ public class EcoTouchBinding extends
 						// bit field
 						heatpumpValue >>= item.getBitNum();
 						heatpumpValue &= 1;
-						if (item.getItemClass() == NumberItem.class)
+						if (NumberItem.class.equals(item.getItemClass()))
 							value = new DecimalType(heatpumpValue);
 						else {
 							// assume SwitchItem
@@ -267,6 +267,7 @@ public class EcoTouchBinding extends
 			break;
 		case Bitfield:
 			try {
+				// read-modify-write style
 				value = connector.getValue(tag.getTagName());
 				int bitmask = 1 << tag.getBitNum();
 				if (command == OnOffType.OFF
@@ -275,8 +276,8 @@ public class EcoTouchBinding extends
 				} else
 					value = value | bitmask;
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				// connector.getValue() already logged a specific debug message
+				logger.warn("cannot send command '" + command + "' to item '" + itemName + "'");
 				return;
 			}
 		}
@@ -288,8 +289,8 @@ public class EcoTouchBinding extends
 			// Even if the tag is read only, one would get the newly set value
 			// back.
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// connector.setValue() already logged a specific debug message
+			logger.warn("cannot send command '" + command + "' to item '" + itemName + "'");
 		}
 	}
 }
