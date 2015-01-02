@@ -1,9 +1,9 @@
 package org.openhab.binding.mpower.internal;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.openhab.core.binding.BindingConfig;
-
 
 /**
  * Ubiquiti mPower strip binding
@@ -48,5 +48,24 @@ public class MpowerBindingConfig implements BindingConfig {
 
 	public String getPowerItemName(int socket) {
 		return sockets.get(socket).getPowerItemName();
+	}
+
+	public int findSocketForItemName(String itemName) {
+		for (Map.Entry<Integer, MpowerSocket> entry : sockets.entrySet()) {
+			if (entry.getValue().getSwitchItemName().equals(itemName)) {
+				return entry.getKey();
+			}
+		}
+		return 0;
+	}
+
+	public boolean containsItemName(String itemName) {
+		for (Map.Entry<Integer, MpowerSocket> entry : sockets.entrySet()) {
+			MpowerSocket socket = entry.getValue();
+			if (socket.getSwitchItemName().equals(itemName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

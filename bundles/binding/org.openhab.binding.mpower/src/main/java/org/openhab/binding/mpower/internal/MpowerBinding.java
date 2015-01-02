@@ -98,8 +98,16 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
 		if (itemName != null && command instanceof OnOffType) {
-			OnOffType type = (OnOffType) command;
-			connectors.get("mp1").send(6, type);
+			for (MpowerBindingProvider provider : providers) {
+				// search through all mpower's and itemnames
+				MpowerBindingConfig bindingConf = provider
+						.getConfigForItemName(itemName);
+				int socket = bindingConf.findSocketForItemName(itemName);
+				OnOffType type = (OnOffType) command;
+				connectors.get(bindingConf.getmPowerInstance()).send(socket,
+						type);
+			}
+
 		}
 	}
 

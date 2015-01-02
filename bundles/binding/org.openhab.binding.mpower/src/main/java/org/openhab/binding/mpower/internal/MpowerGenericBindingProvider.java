@@ -93,17 +93,20 @@ public class MpowerGenericBindingProvider extends
 
 	@Override
 	public MpowerBindingConfig getConfigForItemName(String itemName) {
-		// TODO Auto-generated method stub
+		for (Map.Entry<String, MpowerBindingConfig> entry : addressMap
+				.entrySet()) {
+			if (entry.getValue().containsItemName(itemName)) {
+				return entry.getValue();
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public MpowerBindingConfig getConfigForAddress(String address) {
-		if (addressMap.containsKey(address))
-		{
+		if (addressMap.containsKey(address)) {
 			return addressMap.get(address);
 		}
 		return null;
 	}
-
 }

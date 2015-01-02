@@ -19,8 +19,10 @@ import org.openhab.core.binding.BindingProvider;
 
 public interface MpowerBindingProvider extends BindingProvider {
 
-	MpowerBindingConfig getConfigForItemName(String itemName);
+	public MpowerBindingConfig getConfigForItemName(String itemName);
 
-	MpowerBindingConfig getConfigForAddress(String address);
+	public MpowerBindingConfig getConfigForAddress(String address);
+	
+	
 
 }
