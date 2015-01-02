@@ -71,68 +71,57 @@ public class EBusTelegramParser {
 			logger.warn("Wow, buffer pos error!");
 		}
 
-		switch (type) {
-		case "data2b":
+		if(type.equals("data2b")) {
 			hByte = byteBuffer.get(pos);
 			lByte = byteBuffer.get(pos-1);
 			repVal = BigDecimal.valueOf(-128);
 			value = new BigDecimal(EBusUtils.decodeDATA2b(hByte, lByte));
-			break;
 
-		case "data2c":
+		} else if(type.equals("data2c")) {
 			hByte = byteBuffer.get(pos);
 			lByte = byteBuffer.get(pos-1);
 			repVal = BigDecimal.valueOf(-2048);
 			value = new BigDecimal(EBusUtils.decodeDATA2c(hByte, lByte));
-			break;
 
-		case "data1c":
+		} else if(type.equals("data1c")) {
 			lByte = byteBuffer.get(pos-1);
 			repVal = BigDecimal.valueOf(255);
 			value = new BigDecimal(EBusUtils.decodeDATA1c(lByte));
-			break;
 
-		case "data1b":
+		} else if(type.equals("data1b")) {
 			lByte = byteBuffer.get(pos-1);
 			repVal = BigDecimal.valueOf(-128);
 			value = new BigDecimal(EBusUtils.decodeDATA1b(lByte));
-			break;
 
-		case "bcd":
+		} else if(type.equals("bcd")) {
 			lByte = byteBuffer.get(pos-1);
 			repVal = BigDecimal.valueOf(266);
 			value = new BigDecimal(EBusUtils.decodeBCD(lByte));
-			break;
 
-		case "word":
+		} else if(type.equals("word")) {
 			hByte = byteBuffer.get(pos);
 			lByte = byteBuffer.get(pos-1);
 			repVal = BigDecimal.valueOf(65535);
 			value = new BigDecimal(EBusUtils.decodeWORD(hByte, lByte));
-			break;
 
-		case "uchar":
-		case "byte":
+		} else if(type.equals("uchar") || type.equals("byte")) {
 			repVal = BigDecimal.valueOf(255);
 			value = new BigDecimal(byteBuffer.get(pos-1) & 0xFF);
-			break;
 
-		case "char":
+		} else if(type.equals("char")) {
 			repVal = BigDecimal.valueOf(255);
 			value = new BigDecimal(byteBuffer.get(pos-1));
-			break;
 
-		case "bit":
+		} else if(type.equals("bit")) {
 			int bit = ((Integer) settings.get("bit"));
 			value = byteBuffer.get(pos-1);
 
-			boolean isSet = ((byte)value >> bit& 0x1) == 1;
+			boolean isSet = ((Byte)value >> bit& 0x1) == 1;
 			value = isSet;
-			break;
 
-		default:
+		} else {
 			logger.warn("Configuration Error: Unknown command type! {}", type);
-			break;
+
 		}
 
 		// if replace value paramter set

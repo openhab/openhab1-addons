@@ -50,7 +50,7 @@ public class EBusGenericBindingProvider extends
 	@Override
 	public List<String> getItemNames(String uniqueId) {
 		
-		ArrayList<String> list = new ArrayList<>();
+		ArrayList<String> list = new ArrayList<String>();
 		
 		String id = uniqueId;
 		String className = null;
@@ -143,7 +143,7 @@ public class EBusGenericBindingProvider extends
 	 * config strings.
 	 */
 	class EBusBindingConfig implements BindingConfig {
-		public HashMap<String, Object> map = new HashMap<>();
+		public HashMap<String, Object> map = new HashMap<String, Object>();
 	}
 
 	/**

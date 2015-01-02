@@ -201,7 +201,9 @@ public abstract class AbstractEBusConnector extends Thread {
 
 				try {
 					reconnect();
-				} catch (IOException | InterruptedException e1) {
+				} catch (IOException e1) {
+					logger.error(e.toString(), e);
+				} catch (InterruptedException e1) {
 					logger.error(e.toString(), e);
 				}
 

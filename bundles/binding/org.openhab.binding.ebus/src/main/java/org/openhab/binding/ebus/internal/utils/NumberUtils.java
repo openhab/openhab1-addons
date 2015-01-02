@@ -24,15 +24,15 @@ public class NumberUtils {
 	public static BigDecimal toBigDecimal(Object obj) {
 		
 		if(obj instanceof Integer) {
-			return BigDecimal.valueOf((int)obj);
+			return BigDecimal.valueOf((Integer)obj);
 		} else if (obj instanceof Long ) {
-			return BigDecimal.valueOf((long)obj);
+			return BigDecimal.valueOf((Long)obj);
 		} else if (obj instanceof Short ) {
-			return BigDecimal.valueOf((short)obj);
+			return BigDecimal.valueOf((Short)obj);
 		} else if (obj instanceof Double ) {
-			return BigDecimal.valueOf((double)obj);
+			return BigDecimal.valueOf((Double)obj);
 		} else if (obj instanceof Float ) {
-			return BigDecimal.valueOf((float)obj);
+			return BigDecimal.valueOf((Float)obj);
 		} else if(obj instanceof BigDecimal) {
 			return (BigDecimal) obj;
 		}

@@ -37,7 +37,7 @@ public class StateUtils {
 			return new DecimalType((BigDecimal)value);
 			
 		} else if(value instanceof Boolean) {
-			return (boolean)value ? OnOffType.ON : OnOffType.OFF;
+			return (Boolean)value ? OnOffType.ON : OnOffType.OFF;
 			
 		} else if(value instanceof String) {
 			return  new StringType((String)value);

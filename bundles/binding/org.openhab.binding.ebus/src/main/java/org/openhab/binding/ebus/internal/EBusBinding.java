@@ -258,8 +258,11 @@ public class EBusBinding extends AbstractBinding<EBusBindingProvider> implements
 						}
 					}
 
-				} catch (InterruptedException | ConfigurationException | 
-						IOException e) {
+				} catch (InterruptedException e) {
+					logger.error(e.toString(), e);
+				} catch (ConfigurationException e) {
+					logger.error(e.toString(), e);
+				} catch (IOException e) {
 					logger.error(e.toString(), e);
 				}
 

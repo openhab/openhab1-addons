@@ -41,7 +41,7 @@ public class EBusConfigurationProvider {
 			.getLogger(EBusConfigurationProvider.class);
 
 	// The registry with all loaded configuration entries
-	private ArrayList<Map<String, Object>> telegramRegistry = new ArrayList<>();
+	private ArrayList<Map<String, Object>> telegramRegistry = new ArrayList<Map<String, Object>>();
 
 	// The script engine if available
 	private Compilable compEngine; 
