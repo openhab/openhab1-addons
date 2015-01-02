@@ -16,10 +16,9 @@ package com.myhome.fcrisciani.datastructure.command;
  * 
  * @author Flavio Crisciani
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class DelayInterval extends CommandOPEN
-{
+public class DelayInterval extends CommandOPEN {
 	// ----- TYPES ----- //
 
 	// ---- MEMBERS ---- //
@@ -38,11 +37,9 @@ public class DelayInterval extends CommandOPEN
 	 * @param delayInMillisecond
 	 *            delay to wait express in milliseconds [ms]
 	 */
-	public DelayInterval(String who, String where, long delayInMillisecond)
-	{
+	public DelayInterval(String who, String where, long delayInMillisecond) {
 		super("", 6, who, where);
-		if (delayInMillisecond < 0)
-		{
+		if (delayInMillisecond < 0) {
 			delayInMillisecond = 0;
 		}
 		this.delayInMillisecond = delayInMillisecond;
@@ -53,14 +50,12 @@ public class DelayInterval extends CommandOPEN
 	 * 
 	 * @return the delay
 	 */
-	public long getDelayInMillisecond()
-	{
+	public long getDelayInMillisecond() {
 		return delayInMillisecond;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("DelayInterval [delayInMillisecond=");
 		builder.append(delayInMillisecond);

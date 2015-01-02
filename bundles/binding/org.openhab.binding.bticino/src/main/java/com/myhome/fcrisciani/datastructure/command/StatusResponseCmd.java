@@ -14,10 +14,9 @@ package com.myhome.fcrisciani.datastructure.command;
  * 
  * @author Flavio Crisciani
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class StatusResponseCmd extends CommandOPEN
-{
+public class StatusResponseCmd extends CommandOPEN {
 
 	// ----- TYPES ----- //
 
@@ -39,8 +38,7 @@ public class StatusResponseCmd extends CommandOPEN
 	 *            where field
 	 */
 	public StatusResponseCmd(String commandString, String who, String what,
-			String where)
-	{
+			String where) {
 		super(commandString, 2, who, where);
 		this.what = what;
 	}
@@ -56,8 +54,7 @@ public class StatusResponseCmd extends CommandOPEN
 	 * @param where
 	 *            where field
 	 */
-	public StatusResponseCmd(String who, String what, String where)
-	{
+	public StatusResponseCmd(String who, String what, String where) {
 		super("*" + who + "*" + what + "*" + where + "##", 2, who, where);
 		this.what = what;
 	}
@@ -67,8 +64,7 @@ public class StatusResponseCmd extends CommandOPEN
 	 * 
 	 * @return what field
 	 */
-	public String getWhat()
-	{
+	public String getWhat() {
 		return what;
 	}
 }

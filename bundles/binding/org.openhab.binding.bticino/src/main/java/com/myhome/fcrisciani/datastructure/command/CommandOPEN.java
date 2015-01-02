@@ -15,10 +15,9 @@ package com.myhome.fcrisciani.datastructure.command;
  * 
  * @author Flavio Crisciani
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class CommandOPEN
-{
+public class CommandOPEN {
 	// ----- TYPES ----- //
 
 	// ---- MEMBERS ---- //
@@ -42,8 +41,7 @@ public class CommandOPEN
 	 *            where field of the command
 	 */
 	public CommandOPEN(String commandString, int commandType, String who,
-			String where)
-	{
+			String where) {
 		super();
 		this.commandString = commandString;
 		this.commandType = commandType;
@@ -52,8 +50,7 @@ public class CommandOPEN
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "CommandOPEN [commandString=" + commandString + "]";
 	}
 
@@ -62,8 +59,7 @@ public class CommandOPEN
 	 * 
 	 * @return the command as a string
 	 */
-	public String getCommandString()
-	{
+	public String getCommandString() {
 		return commandString;
 	}
 
@@ -72,8 +68,7 @@ public class CommandOPEN
 	 * 
 	 * @return who
 	 */
-	public String getWho()
-	{
+	public String getWho() {
 		return who;
 	}
 
@@ -82,8 +77,7 @@ public class CommandOPEN
 	 * 
 	 * @return where
 	 */
-	public String getWhere()
-	{
+	public String getWhere() {
 		return where;
 	}
 

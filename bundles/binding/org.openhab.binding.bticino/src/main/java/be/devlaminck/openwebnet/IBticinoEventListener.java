@@ -17,9 +17,10 @@ package be.devlaminck.openwebnet;
  * 
  * @author Tom De Vlaminck
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public interface IBticinoEventListener
-{
-	public void handleEvent(ProtocolRead p_protocol_read) throws Exception;
+public interface IBticinoEventListener {
+	
+	void handleEvent(ProtocolRead p_protocol_read) throws Exception;
+	
 }

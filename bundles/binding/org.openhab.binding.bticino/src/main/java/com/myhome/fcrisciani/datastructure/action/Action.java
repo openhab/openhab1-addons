@@ -19,10 +19,9 @@ import com.myhome.fcrisciani.datastructure.command.CommandOPEN;
  * 
  * @author Flavio Crisciani
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class Action
-{
+public class Action {
 	// ----- TYPES ----- //
 
 	// ---- MEMBERS ---- //
@@ -61,8 +60,7 @@ public class Action
 	 * @param sensorIdInibitionList
 	 *            list of sensors ids
 	 */
-	public Action(String description, Integer[] sensorIdInibitionList)
-	{
+	public Action(String description, Integer[] sensorIdInibitionList) {
 		super();
 		this.resetCommandList = new ArrayList<CommandOPEN>();
 		this.preDelayCommandList = new ArrayList<CommandOPEN>();
@@ -83,8 +81,7 @@ public class Action
 	 *            queue priority {1 = HIGH, 2 = MEDIUM, 3 = LOW}
 	 */
 	public Action(String description, Integer[] sensorIdInibitionList,
-			int priority)
-	{
+			int priority) {
 		this(description, sensorIdInibitionList);
 		this.commandPriority = priority;
 	}
@@ -95,8 +92,7 @@ public class Action
 	 * @param resetCommandList
 	 *            command to put on front of the command list
 	 */
-	public void addResetCommandProcedure(ArrayList<CommandOPEN> resetCommandList)
-	{
+	public void addResetCommandProcedure(ArrayList<CommandOPEN> resetCommandList) {
 		this.resetCommandList.addAll(resetCommandList);
 	}
 
@@ -106,8 +102,7 @@ public class Action
 	 * @param command
 	 *            command to put on front of the command list
 	 */
-	public void addPreDelayCommand(CommandOPEN command)
-	{
+	public void addPreDelayCommand(CommandOPEN command) {
 		preDelayCommandList.add(command);
 	}
 
@@ -117,8 +112,7 @@ public class Action
 	 * @param command
 	 *            command to put on front of the command list
 	 */
-	public int getPreDelayCommandListLength()
-	{
+	public int getPreDelayCommandListLength() {
 		return preDelayCommandList.size();
 	}
 
@@ -128,8 +122,7 @@ public class Action
 	 * @param command
 	 *            command to put on front of the command list
 	 */
-	public void addDelayCommand(CommandOPEN command)
-	{
+	public void addDelayCommand(CommandOPEN command) {
 		commandWithDelay = true;
 		delayCommand = command;
 	}
@@ -140,8 +133,7 @@ public class Action
 	 * @param command
 	 *            command to put on front of the command list
 	 */
-	public void addPostDelayCommand(CommandOPEN command)
-	{
+	public void addPostDelayCommand(CommandOPEN command) {
 		postDelayCommandList.add(command);
 	}
 
@@ -150,16 +142,13 @@ public class Action
 	 * 
 	 * @return list of command
 	 */
-	public ArrayList<CommandOPEN> getCommandList()
-	{
+	public ArrayList<CommandOPEN> getCommandList() {
 		ArrayList<CommandOPEN> returnList = new ArrayList<CommandOPEN>();
-		if (resetCommandList != null)
-		{
+		if (resetCommandList != null) {
 			returnList.addAll(resetCommandList);
 		}
 		returnList.addAll(preDelayCommandList);
-		if (commandWithDelay)
-		{
+		if (commandWithDelay) {
 			returnList.add(delayCommand);
 			returnList.addAll(postDelayCommandList);
 		}
@@ -172,8 +161,7 @@ public class Action
 	 * 
 	 * @return list of sensor id
 	 */
-	public Integer[] getSensorIdInibitionList()
-	{
+	public Integer[] getSensorIdInibitionList() {
 		return sensorIdInhibitionList;
 	}
 
@@ -182,8 +170,7 @@ public class Action
 	 * 
 	 * @return Action description
 	 */
-	public String getDescription()
-	{
+	public String getDescription() {
 		return description;
 	}
 
@@ -192,8 +179,7 @@ public class Action
 	 * 
 	 * @return command priority set
 	 */
-	public int getCommandPriority()
-	{
+	public int getCommandPriority() {
 		return commandPriority;
 	}
 
@@ -202,23 +188,18 @@ public class Action
 	 * 
 	 * @return true if the Action has a delay in the command list
 	 */
-	public boolean isCommandWithDelay()
-	{
+	public boolean isCommandWithDelay() {
 		return commandWithDelay;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder resultString = new StringBuilder();
 		resultString.append("Action: " + description + " [commandList:");
-		for (CommandOPEN command : getCommandList())
-		{
-			if (command != null)
-			{
+		for (CommandOPEN command : getCommandList()) {
+			if (command != null) {
 				resultString.append(command);
-			} else
-			{
+			} else {
 				resultString.append("null");
 			}
 		}

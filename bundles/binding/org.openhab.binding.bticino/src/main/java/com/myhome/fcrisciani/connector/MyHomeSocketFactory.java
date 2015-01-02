@@ -22,10 +22,9 @@ import java.util.ArrayList;
  * 
  * @author Flavio Crisciani
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class MyHomeSocketFactory
-{
+public class MyHomeSocketFactory {
 	// ----- TYPES ----- //
 
 	// ---- MEMBERS ---- //
@@ -48,8 +47,7 @@ public class MyHomeSocketFactory
 	 *             in case of problem with the input stream, close the stream
 	 */
 	protected static String readUntilDelimiter(final BufferedReader inputStream)
-			throws IOException, SocketTimeoutException
-	{
+			throws IOException, SocketTimeoutException {
 		StringBuffer response = new StringBuffer();
 		int ci = 0;
 		char c = ' ';
@@ -57,27 +55,23 @@ public class MyHomeSocketFactory
 
 		// Cycle that reads one char each cycle and stop when the sequence ends
 		// with ## that is the OpenWebNet delimiter of each message
-		do
-		{
+		do {
 			ci = inputStream.read();
-			if (ci == -1)
-			{
+			if (ci == -1) {
 				System.err.println("Socket already closed by server \n");
 				inputStream.close();
 				throw new IOException();
-			} else
-			{
+			} else {
 				c = (char) ci;
-				if (c == '#' && canc == false)
-				{ // Found first #
+				if (c == '#' && canc == false) { // Found first #
 					response.append(c);
 					canc = true;
-				} else if (c == '#')
-				{ // Found second # command terminated correctly EXIT
+				} else if (c == '#') { // Found second # command terminated
+										// correctly EXIT
 					response.append(c);
 					break;
-				} else if (c != '#')
-				{ // Append char and start again finding the first #
+				} else if (c != '#') { // Append char and start again finding
+										// the first #
 					response.append(c);
 					canc = false;
 				}
@@ -98,15 +92,13 @@ public class MyHomeSocketFactory
 	 *             in case of problem with the input stream, close the stream
 	 */
 	protected static String[] readUntilAckNack(final BufferedReader inputStream)
-			throws IOException
-	{
+			throws IOException {
 		ArrayList<String> result = new ArrayList<String>();
 		String commandReceived = null;
 		// Call multiple times the previous function to read more messages.
 		// A sequence of multiple messages end always with an ACK or NACK so
 		// stop this cycle when the message is one of them
-		do
-		{
+		do {
 			commandReceived = readUntilDelimiter(inputStream);
 			result.add(commandReceived);
 		} while (commandReceived != null && isACK(commandReceived) != true
@@ -122,8 +114,7 @@ public class MyHomeSocketFactory
 	 *            string to be controlled
 	 * @return true if the message is an ACK
 	 */
-	public static Boolean isACK(final String str)
-	{
+	public static Boolean isACK(final String str) {
 		return str.contentEquals("*#*1##");
 	}
 
@@ -134,8 +125,7 @@ public class MyHomeSocketFactory
 	 *            string to be controlled
 	 * @return true if the message is an NACK
 	 */
-	public static Boolean isNACK(final String str)
-	{
+	public static Boolean isNACK(final String str) {
 		return str.contentEquals("*#*0##");
 	}
 
@@ -151,8 +141,7 @@ public class MyHomeSocketFactory
 	 *             if there is some problem with the socket opening
 	 */
 	public static Socket openCommandSession(final String ip, final int port)
-			throws IOException
-	{
+			throws IOException {
 		Socket sk = new Socket(ip, port);
 
 		BufferedReader inputStream = new BufferedReader(new InputStreamReader(
@@ -166,8 +155,7 @@ public class MyHomeSocketFactory
 
 		response = readUntilDelimiter(inputStream);
 
-		if (isACK(response) != true)
-		{
+		if (isACK(response) != true) {
 			throw new IOException();
 		}
 
@@ -186,8 +174,7 @@ public class MyHomeSocketFactory
 	 *             if there is some problem with the socket opening
 	 */
 	public static Socket openMonitorSession(final String ip, final int port)
-			throws IOException
-	{
+			throws IOException {
 		Socket sk = new Socket(ip, port);
 		sk.setSoTimeout(45 * 1000);
 
@@ -202,8 +189,7 @@ public class MyHomeSocketFactory
 
 		response = readUntilDelimiter(inputStream);
 
-		if (isACK(response) != true)
-		{
+		if (isACK(response) != true) {
 			throw new IOException();
 		}
 
@@ -218,8 +204,7 @@ public class MyHomeSocketFactory
 	 * @throws IOException
 	 *             if there is some problem with the socket closure
 	 */
-	public static void disconnect(final Socket sk) throws IOException
-	{
+	public static void disconnect(final Socket sk) throws IOException {
 		sk.close();
 	}
 

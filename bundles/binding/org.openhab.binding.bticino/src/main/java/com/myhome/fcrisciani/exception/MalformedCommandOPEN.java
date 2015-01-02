@@ -13,10 +13,10 @@ package com.myhome.fcrisciani.exception;
  * 
  * @author Flavio Crisciani
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class MalformedCommandOPEN extends Exception
-{
+public class MalformedCommandOPEN extends Exception {
+	
 	// ----- TYPES ----- //
 
 	// ---- MEMBERS ---- //
@@ -26,15 +26,13 @@ public class MalformedCommandOPEN extends Exception
 
 	// ---- METHODS ---- //
 
-	public MalformedCommandOPEN(String commandNotRecognised)
-	{
+	public MalformedCommandOPEN(String commandNotRecognised) {
 		super();
 		this.commandNotRecognised = commandNotRecognised;
 	}
 
 	@Override
-	public String getLocalizedMessage()
-	{
+	public String getLocalizedMessage() {
 		StringBuilder builder = new StringBuilder();
 
 		builder.append("Command OPEN: ").append(commandNotRecognised)

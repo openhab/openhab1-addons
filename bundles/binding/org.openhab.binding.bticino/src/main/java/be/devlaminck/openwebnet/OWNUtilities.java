@@ -21,22 +21,19 @@ import java.util.GregorianCalendar;
  * 
  * @author Tom De Vlaminck
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  * 
  */
-public class OWNUtilities
-{
+public class OWNUtilities {
 
 	/*
-	 * 
 	 * OWN Control Messages
 	 */
 	public final static String MSG_OPEN_ACK = "*#*1##";
 	public final static String MSG_OPEN_NACK = "*#*0##";
 
 	// create the frame to send to the own gateway
-	public static String createFrame(ProtocolRead c)
-	{
+	public static String createFrame(ProtocolRead c) {
 		String frame = null;
 		String address[] = null;
 		String who = null;
@@ -51,18 +48,15 @@ public class OWNUtilities
 		return (frame);
 	}
 
-	public static String getDateTime()
-	{
+	public static String getDateTime() {
 		Calendar calendar = new GregorianCalendar();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		return (sdf.format(calendar.getTime()));
 	}
 
-	public static String convertTemperature(String temperature)
-	{
+	public static String convertTemperature(String temperature) {
 		String temp = "";
-		if (!temperature.substring(0, 1).equalsIgnoreCase("0"))
-		{
+		if (!temperature.substring(0, 1).equalsIgnoreCase("0")) {
 			temp += "-";
 		}
 		temp += temperature.substring(1, 3);
@@ -71,11 +65,9 @@ public class OWNUtilities
 		return (temp);
 	}
 
-	public static String dayName(String dayNumber)
-	{
+	public static String dayName(String dayNumber) {
 		String dayName = null;
-		switch (Integer.parseInt(dayNumber))
-		{
+		switch (Integer.parseInt(dayNumber)) {
 		case (0):
 			dayName = "Sunday";
 			break;
@@ -103,11 +95,9 @@ public class OWNUtilities
 		return (dayName);
 	}
 
-	public static String gatewayModel(String modelNumber)
-	{
+	public static String gatewayModel(String modelNumber) {
 		String model = null;
-		switch (new Integer(Integer.parseInt(modelNumber)))
-		{
+		switch (new Integer(Integer.parseInt(modelNumber))) {
 		case (2):
 			model = "MHServer";
 		case (4):

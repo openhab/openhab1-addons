@@ -25,38 +25,32 @@ import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
  * 
  * @author Tom De Vlaminck
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class MonitorSessionThread extends Thread
-{
-	private static final Logger logger = LoggerFactory
-			.getLogger(MonitorSessionThread.class);
+public class MonitorSessionThread extends Thread {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MonitorSessionThread.class);
 
 	private OpenWebNet pluginReference = null;
 	private String ipAddress = null;
 	private Integer port = 0;
 
-	public void run()
-	{
+	@Override
+	public void run() {
 		// connect to own gateway
 		pluginReference.myPlant = new MyHomeJavaConnector(ipAddress, port);
-		try
-		{
+		try {
 			pluginReference.myPlant.startMonitoring();
-			while (!Thread.interrupted())
-			{
-				try
-				{
+			while (!Thread.interrupted()) {
+				try {
 					String readFrame = pluginReference.myPlant.readMonitoring();
 					buildEventFromFrame(readFrame);
-				} catch (InterruptedException ex)
-				{
+				} catch (InterruptedException ex) {
 					logger.error("MonitorSessionThread.run, exception : "
 							+ ex.getMessage());
 				}
 			}
-		} catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			logger.error("MonitorSessionThread.run, exception : "
 					+ ex.getMessage());
 		}
@@ -64,15 +58,13 @@ public class MonitorSessionThread extends Thread
 	}
 
 	public MonitorSessionThread(OpenWebNet pluginReference, String ipAddress,
-			Integer port)
-	{
+			Integer port) {
 		this.pluginReference = pluginReference;
 		this.ipAddress = ipAddress;
 		this.port = port;
 	}
 
-	public void buildEventFromFrame(String frame)
-	{
+	public void buildEventFromFrame(String frame) {
 		logger.info("Received OpenWebNet frame '" + frame
 				+ "' now translate it to an event.");
 		String who = null;
@@ -86,27 +78,23 @@ public class MonitorSessionThread extends Thread
 		ProtocolRead event = null;
 
 		int length = frame.length();
-		if (frame.isEmpty() || !frame.endsWith("##"))
-		{
+		if (frame.isEmpty() || !frame.endsWith("##")) {
 			logger.error("Malformed frame " + frame + " "
 					+ frame.substring(length - 2, length));
 			return;
 		}
 
-		if (frame.equals(OWNUtilities.MSG_OPEN_ACK))
-		{
+		if (frame.equals(OWNUtilities.MSG_OPEN_ACK)) {
 			messageType = "ack";
 			return;
 		}
 
-		if (frame.equals(OWNUtilities.MSG_OPEN_NACK))
-		{
+		if (frame.equals(OWNUtilities.MSG_OPEN_NACK)) {
 			messageType = "nack";
 			return;
 		}
 
-		if (frame.substring(0, 2).equalsIgnoreCase("*#"))
-		{
+		if (frame.substring(0, 2).equalsIgnoreCase("*#")) {
 			// remove *# and ##
 			frame = frame.substring(2, length - 2);
 
@@ -118,139 +106,112 @@ public class MonitorSessionThread extends Thread
 			objectName = who + "*" + where;
 			event = new ProtocolRead(frame);
 
-			if (who.equalsIgnoreCase("1"))
-			{
+			if (who.equalsIgnoreCase("1")) {
 				objectClass = "Light";
 				objectName = who + "*" + where;
-				if (frameParts[2].equalsIgnoreCase("1"))
-				{
+				if (frameParts[2].equalsIgnoreCase("1")) {
 					String level = frameParts[3];
 					String speed = frameParts[4];
 					messageDescription = "Luminous intensity change";
-					if (level != null)
-					{
+					if (level != null) {
 						event.addProperty("level", level);
 					}
-					if (speed != null)
-					{
+					if (speed != null) {
 						event.addProperty("speed", speed);
 					}
 				}
-				if (frameParts[2].equalsIgnoreCase("2"))
-				{
+				if (frameParts[2].equalsIgnoreCase("2")) {
 					String hour = frameParts[3];
 					String min = frameParts[4];
 					String sec = frameParts[5];
 					messageDescription = "Luminous intensity change";
-					if (hour != null)
-					{
+					if (hour != null) {
 						event.addProperty("hour", hour);
 					}
-					if (min != null)
-					{
+					if (min != null) {
 						event.addProperty("min", min);
 					}
-					if (sec != null)
-					{
+					if (sec != null) {
 						event.addProperty("sec", sec);
 					}
 				}
 			}
 			// POWER MANAGEMENT
-			if (who.equalsIgnoreCase("3"))
-			{
+			if (who.equalsIgnoreCase("3")) {
 				objectClass = "Powermeter";
 				objectName = who + "*" + where;
 				String voltage = null;
 				String current = null;
 				String power = null;
 				String energy = null;
-				if (frameParts[3].equalsIgnoreCase("0"))
-				{
+				if (frameParts[3].equalsIgnoreCase("0")) {
 					voltage = frameParts[3];
 					current = frameParts[4];
 					power = frameParts[5];
 					energy = frameParts[6];
 					messageDescription = "Load control status";
-					if (voltage != null)
-					{
+					if (voltage != null) {
 						event.addProperty("voltage", voltage);
 					}
-					if (current != null)
-					{
+					if (current != null) {
 						event.addProperty("current", current);
 					}
-					if (power != null)
-					{
+					if (power != null) {
 						event.addProperty("power", power);
 					}
-					if (energy != null)
-					{
+					if (energy != null) {
 						event.addProperty("energy", energy);
 					}
 				}
-				if (frameParts[3].equalsIgnoreCase("1"))
-				{
+				if (frameParts[3].equalsIgnoreCase("1")) {
 					voltage = frameParts[3];
-					if (voltage != null)
-					{
+					if (voltage != null) {
 						event.addProperty("voltage", voltage);
 					}
 					messageDescription = "Voltage status";
 				}
-				if (frameParts[3].equalsIgnoreCase("2"))
-				{
+				if (frameParts[3].equalsIgnoreCase("2")) {
 					current = frameParts[3];
-					if (current != null)
-					{
+					if (current != null) {
 						event.addProperty("current", current);
 					}
 					messageDescription = "Current status";
 				}
-				if (frameParts[3].equalsIgnoreCase("3"))
-				{
+				if (frameParts[3].equalsIgnoreCase("3")) {
 					power = frameParts[3];
-					if (power != null)
-					{
+					if (power != null) {
 						event.addProperty("power", power);
 					}
 					messageDescription = "Power status";
 				}
-				if (frameParts[3].equalsIgnoreCase("4"))
-				{
+				if (frameParts[3].equalsIgnoreCase("4")) {
 					energy = frameParts[3];
-					if (energy != null)
-					{
+					if (energy != null) {
 						event.addProperty("energy", energy);
 					}
 					messageDescription = "Energy status";
 				}
 			}
 			// TERMOREGULATION
-			if (who.equalsIgnoreCase("4"))
-			{
+			if (who.equalsIgnoreCase("4")) {
 				objectClass = "Thermo";
 				objectName = who + "*" + where;
 
 				String temperature = null;
-				if (frameParts[2].equalsIgnoreCase("0"))
-				{
+				if (frameParts[2].equalsIgnoreCase("0")) {
 					temperature = frameParts[3];
 					temperature = OWNUtilities.convertTemperature(temperature);
 					messageDescription = "Temperature value";
-					if (temperature != null)
-					{
+					if (temperature != null) {
 						event.addProperty("temperature", temperature);
 					}
-				} else
-				{
+				} else {
 					logger.debug("other temperature message");
 
 				}
 			}
 			// GATEWAY CONTROL
-			if (who.equalsIgnoreCase("13"))
-			{
+			if (who.equalsIgnoreCase("13")) {
 				objectClass = "Gateway";
 				objectName = who;
 
@@ -265,58 +226,47 @@ public class MonitorSessionThread extends Thread
 				String version = null;
 				String release = null;
 				String build = null;
-				if (frameParts[2].equalsIgnoreCase("0"))
-				{
+				if (frameParts[2].equalsIgnoreCase("0")) {
 					hour = frameParts[3];
 					minute = frameParts[4];
 					second = frameParts[5];
 					timeZone = frameParts[6]; // aggiungere funzione conversione
 					messageType = "gatewayControl";
 					messageDescription = "Time request";
-					if (hour != null)
-					{
+					if (hour != null) {
 						event.addProperty("hour", hour);
 					}
-					if (minute != null)
-					{
+					if (minute != null) {
 						event.addProperty("minute", minute);
 					}
-					if (second != null)
-					{
+					if (second != null) {
 						event.addProperty("second", second);
 					}
-					if (timeZone != null)
-					{
+					if (timeZone != null) {
 						event.addProperty("timeZone", timeZone);
 					}
 				}
-				if (frameParts[2].equalsIgnoreCase("1"))
-				{
+				if (frameParts[2].equalsIgnoreCase("1")) {
 					dayWeek = OWNUtilities.dayName(frameParts[3]);
 					day = frameParts[4];
 					month = frameParts[5];
 					year = frameParts[6];
 					messageType = "gatewayControl";
 					messageDescription = "Date request";
-					if (dayWeek != null)
-					{
+					if (dayWeek != null) {
 						event.addProperty("dayWeek", dayWeek);
 					}
-					if (day != null)
-					{
+					if (day != null) {
 						event.addProperty("day", day);
 					}
-					if (month != null)
-					{
+					if (month != null) {
 						event.addProperty("month", month);
 					}
-					if (year != null)
-					{
+					if (year != null) {
 						event.addProperty("year", year);
 					}
 				}
-				if (frameParts[2].equalsIgnoreCase("10"))
-				{
+				if (frameParts[2].equalsIgnoreCase("10")) {
 					String ip1 = frameParts[3];
 					String ip2 = frameParts[4];
 					String ip3 = frameParts[5];
@@ -326,8 +276,7 @@ public class MonitorSessionThread extends Thread
 					event.addProperty("ip-address", ip1 + "." + ip2 + "." + ip3
 							+ "." + ip4);
 				}
-				if (frameParts[2].equalsIgnoreCase("11"))
-				{
+				if (frameParts[2].equalsIgnoreCase("11")) {
 					String netmask1 = frameParts[3];
 					String netmask2 = frameParts[4];
 					String netmask3 = frameParts[5];
@@ -337,8 +286,7 @@ public class MonitorSessionThread extends Thread
 					event.addProperty("netmask", netmask1 + "." + netmask2
 							+ "." + netmask3 + "." + netmask4);
 				}
-				if (frameParts[2].equalsIgnoreCase("12"))
-				{
+				if (frameParts[2].equalsIgnoreCase("12")) {
 					String mac1 = frameParts[3];
 					String mac2 = frameParts[4];
 					String mac3 = frameParts[5];
@@ -350,15 +298,13 @@ public class MonitorSessionThread extends Thread
 					event.addProperty("mac-address", mac1 + ":" + mac2 + ":"
 							+ mac3 + ":" + mac4 + ":" + mac5 + ":" + mac6);
 				}
-				if (frameParts[2].equalsIgnoreCase("15"))
-				{
+				if (frameParts[2].equalsIgnoreCase("15")) {
 					String model = OWNUtilities.gatewayModel(frameParts[3]);
 					messageType = "gatewayControl";
 					messageDescription = "Model request";
 					event.addProperty("model", model);
 				}
-				if (frameParts[2].equalsIgnoreCase("16"))
-				{
+				if (frameParts[2].equalsIgnoreCase("16")) {
 					version = frameParts[3];
 					release = frameParts[4];
 					build = frameParts[5];
@@ -367,8 +313,7 @@ public class MonitorSessionThread extends Thread
 					event.addProperty("firmware - version", version + "."
 							+ release + "." + build);
 				}
-				if (frameParts[2].equalsIgnoreCase("17"))
-				{
+				if (frameParts[2].equalsIgnoreCase("17")) {
 					String days = frameParts[3];
 					String hours = frameParts[4];
 					String minutes = frameParts[5];
@@ -378,8 +323,7 @@ public class MonitorSessionThread extends Thread
 					event.addProperty("uptime ", days + "D:" + hours + "H:"
 							+ minutes + "m:" + seconds + "s");
 				}
-				if (frameParts[2].equalsIgnoreCase("22"))
-				{
+				if (frameParts[2].equalsIgnoreCase("22")) {
 					hour = frameParts[3];
 					minute = frameParts[4];
 					second = frameParts[5];
@@ -395,8 +339,7 @@ public class MonitorSessionThread extends Thread
 					event.addProperty("time", hour + ":" + minute + ":"
 							+ second + " (" + timeZone + ")");
 				}
-				if (frameParts[2].equalsIgnoreCase("23"))
-				{
+				if (frameParts[2].equalsIgnoreCase("23")) {
 					version = frameParts[3];
 					release = frameParts[4];
 					build = frameParts[5];
@@ -405,8 +348,7 @@ public class MonitorSessionThread extends Thread
 					event.addProperty("kernel - version", version + "."
 							+ release + "." + build);
 				}
-				if (frameParts[2].equalsIgnoreCase("24"))
-				{
+				if (frameParts[2].equalsIgnoreCase("24")) {
 					version = frameParts[3];
 					release = frameParts[4];
 					build = frameParts[5];
@@ -417,59 +359,49 @@ public class MonitorSessionThread extends Thread
 				}
 			}
 			// Basic and evolved CEN
-			if (who.equalsIgnoreCase("15"))
-			{
+			if (who.equalsIgnoreCase("15")) {
 				objectClass = "CEN_Basic_Evolved";
 				objectName = who + "*" + where;
 				what = frameParts[2];
 				String[] what_parts = what.split("#");
 
-				if (what_parts.length == 1)
-				{
+				if (what_parts.length == 1) {
 					// push button n
 					event.addProperty("push_button_n", what_parts[0]);
 					// type of pressure
 					event.addProperty("pressure", "Virtual pressure");
 
-				} else if (what_parts.length == 2)
-				{
+				} else if (what_parts.length == 2) {
 					// push button n
 					event.addProperty("push_button_n", what_parts[0]);
-					if (what_parts[0].equalsIgnoreCase("1"))
-					{
+					if (what_parts[0].equalsIgnoreCase("1")) {
 						// type of pressure
 						event.addProperty("pressure",
 								"Virtual release after short pressure");
 					}
-					if (what_parts[0].equalsIgnoreCase("2"))
-					{
+					if (what_parts[0].equalsIgnoreCase("2")) {
 						// type of pressure
 						event.addProperty("pressure",
 								"Virtual release after an extended pressure");
 					}
-					if (what_parts[0].equalsIgnoreCase("3"))
-					{
+					if (what_parts[0].equalsIgnoreCase("3")) {
 						// type of pressure
 						event.addProperty("pressure",
 								"Virtual extended pressure");
 					}
-				} else
-				{
+				} else {
 					logger.debug("other CEN Basic or Evolved message");
 				}
 			}
 
 			event.addProperty("who", who);
-			if (where != null)
-			{
+			if (where != null) {
 				event.addProperty("where", where);
 			}
-			if (messageDescription != null)
-			{
+			if (messageDescription != null) {
 				event.addProperty("messageDescription", messageDescription);
 			}
-			if (messageType != null)
-			{
+			if (messageType != null) {
 				event.addProperty("messageType", messageType);
 			}
 			// notify event
@@ -479,8 +411,7 @@ public class MonitorSessionThread extends Thread
 		}
 
 		if (!(frame.substring(0, 2).equalsIgnoreCase("*#"))
-				&& (frame.substring(0, 1).equalsIgnoreCase("*")))
-		{
+				&& (frame.substring(0, 1).equalsIgnoreCase("*"))) {
 			// remove delimiter chars * and ##
 			frame = frame.substring(1, length - 2);
 			frameParts = frame.split("\\*"); // * is reserved so it must be
@@ -503,8 +434,7 @@ public class MonitorSessionThread extends Thread
 			// todo
 			boolean virtual_where = (where.length() == 4);
 
-			switch (Integer.parseInt(who))
-			{
+			switch (Integer.parseInt(who)) {
 			// LIGHTING
 			case 1:
 				messageType = "Lighting";
@@ -512,15 +442,13 @@ public class MonitorSessionThread extends Thread
 
 				// For virtual configuration we receive for light on 1000#1
 				// so assuming the second part is the what
-				if (virtual_where)
-				{
+				if (virtual_where) {
 					String[] what_parts = what.split("#");
 					// take the last part for the what
 					what = what_parts[what_parts.length - 1];
 				}
 
-				switch (Integer.parseInt(what))
-				{
+				switch (Integer.parseInt(what)) {
 				// Light OFF
 				case 0:
 					messageDescription = "Light OFF";
@@ -531,8 +459,7 @@ public class MonitorSessionThread extends Thread
 					break;
 				default:
 					if (Integer.parseInt(what) >= 2
-							&& Integer.parseInt(what) <= 10)
-					{
+							&& Integer.parseInt(what) <= 10) {
 						messageDescription = "Light Dimmer";
 					}
 					break;
@@ -544,8 +471,7 @@ public class MonitorSessionThread extends Thread
 				messageType = "Automation";
 				objectClass = "Automation";
 
-				switch (Integer.parseInt(what))
-				{
+				switch (Integer.parseInt(what)) {
 				case 0:
 					messageDescription = "Automation STOP";
 					break;
@@ -562,8 +488,7 @@ public class MonitorSessionThread extends Thread
 			case 3:
 				objectClass = "Powermeter";
 				messageType = "Power management";
-				switch (Integer.parseInt(what))
-				{
+				switch (Integer.parseInt(what)) {
 				case 0:
 					messageDescription = "Load disable";
 					break;
@@ -584,8 +509,7 @@ public class MonitorSessionThread extends Thread
 				messageType = "thermoregulation";
 				objectClass = "Temperature";
 
-				switch (Integer.parseInt(what))
-				{
+				switch (Integer.parseInt(what)) {
 				case 0:
 					messageDescription = "Conditioning";
 					break;
@@ -651,8 +575,7 @@ public class MonitorSessionThread extends Thread
 				messageType = "alarm";
 				objectClass = "Alarm";
 
-				switch (Integer.parseInt(what))
-				{
+				switch (Integer.parseInt(what)) {
 				case 0:
 					messageDescription = "System on maintenance";
 					break;
@@ -730,8 +653,7 @@ public class MonitorSessionThread extends Thread
 				messageType = "Sound System";
 				objectClass = "Sound";
 
-				switch (Integer.parseInt(what))
-				{
+				switch (Integer.parseInt(what)) {
 				case 0:
 					messageDescription = "ON Baseband";
 					break;
@@ -760,60 +682,47 @@ public class MonitorSessionThread extends Thread
 
 				String[] what_parts = what.split("#");
 
-				if (what_parts.length == 1)
-				{
+				if (what_parts.length == 1) {
 					// type of pressure
 					messageDescription = "Virtual pressure";
 
-				} else if (what_parts.length == 2)
-				{
-					if (what_parts[0].equalsIgnoreCase("1"))
-					{
+				} else if (what_parts.length == 2) {
+					if (what_parts[0].equalsIgnoreCase("1")) {
 						// type of pressure
 						messageDescription = "Virtual release after short pressure";
-					} else if (what_parts[0].equalsIgnoreCase("2"))
-					{
+					} else if (what_parts[0].equalsIgnoreCase("2")) {
 						// type of pressure
 						messageDescription = "Virtual release after an extended pressure";
-					} else if (what_parts[0].equalsIgnoreCase("3"))
-					{
+					} else if (what_parts[0].equalsIgnoreCase("3")) {
 						// type of pressure
 						messageDescription = "Virtual extended pressure";
 					}
-				} else
-				{
+				} else {
 					messageDescription = "other CEN Basic or Evolved message";
 				}
 			} // close switch(who)
 
-			if (who != null)
-			{
+			if (who != null) {
 				event.addProperty("who", who);
 			}
-			if (what != null)
-			{
+			if (what != null) {
 				event.addProperty("what", what);
 			}
-			if (where != null)
-			{
+			if (where != null) {
 				event.addProperty("where", where);
 				// Indicate virtual where message
 				event.addProperty("virtual", virtual_where ? "true" : "false");
 			}
-			if (messageType != null)
-			{
+			if (messageType != null) {
 				event.addProperty("messageType", messageType);
 			}
-			if (messageDescription != null)
-			{
+			if (messageDescription != null) {
 				event.addProperty("messageDescription", messageDescription);
 			}
-			if (objectClass != null)
-			{
+			if (objectClass != null) {
 				event.addProperty("object.class", objectClass);
 			}
-			if (objectName != null)
-			{
+			if (objectName != null) {
 				event.addProperty("object.name", objectName);
 			}
 

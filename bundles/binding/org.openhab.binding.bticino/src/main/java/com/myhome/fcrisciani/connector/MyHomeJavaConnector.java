@@ -33,10 +33,9 @@ import com.myhome.fcrisciani.queue.PriorityQueueThread;
  * 
  * @author Flavio Crisciani
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class MyHomeJavaConnector
-{
+public class MyHomeJavaConnector {
 	// ----- TYPES ----- //
 
 	// ---- MEMBERS ---- //
@@ -59,10 +58,8 @@ public class MyHomeJavaConnector
 	 *            is the command in string format
 	 * @return returns true if the format is correct
 	 */
-	private boolean checkCommandFormat(String commandString)
-	{
-		if (commandString.matches("\\*[#0-9]+[*#0-9]*##"))
-		{
+	private boolean checkCommandFormat(String commandString) {
+		if (commandString.matches("\\*[#0-9]+[*#0-9]*##")) {
 			return true;
 		}
 		return false;
@@ -79,10 +76,8 @@ public class MyHomeJavaConnector
 	 *             in case of communication error
 	 */
 	private void sendCommandOPEN(final Socket sk, final String command)
-			throws IOException
-	{
-		if (command != null)
-		{
+			throws IOException {
+		if (command != null) {
 			PrintWriter output = new PrintWriter(sk.getOutputStream());
 			output.write(command);
 			output.flush();
@@ -98,8 +93,7 @@ public class MyHomeJavaConnector
 	 * @throws IOException
 	 *             in case of communication error
 	 */
-	private String[] receiveCommandOPEN(final Socket sk) throws IOException
-	{
+	private String[] receiveCommandOPEN(final Socket sk) throws IOException {
 		BufferedReader inputStream = new BufferedReader(new InputStreamReader(
 				sk.getInputStream()));
 		String[] newMessage = MyHomeSocketFactory.readUntilAckNack(inputStream);
@@ -116,8 +110,7 @@ public class MyHomeJavaConnector
 	 * @throws IOException
 	 *             in case of communication error
 	 */
-	private String receiveMonitorOPEN(final Socket sk) throws IOException
-	{
+	private String receiveMonitorOPEN(final Socket sk) throws IOException {
 		BufferedReader inputStream = new BufferedReader(new InputStreamReader(
 				sk.getInputStream()));
 		String newMessage = MyHomeSocketFactory.readUntilDelimiter(inputStream);
@@ -135,8 +128,7 @@ public class MyHomeJavaConnector
 	 * @param port
 	 *            port number of the webserver
 	 */
-	public MyHomeJavaConnector(final String ip, final int port)
-	{
+	public MyHomeJavaConnector(final String ip, final int port) {
 		super();
 		this.ip = ip;
 		this.port = port;
@@ -160,23 +152,18 @@ public class MyHomeJavaConnector
 	 * @throws MalformedCommandOPEN
 	 */
 	public String[] sendCommandSync(final String command)
-			throws MalformedCommandOPEN
-	{
-		if (checkCommandFormat(command))
-		{
-			try
-			{
+			throws MalformedCommandOPEN {
+		if (checkCommandFormat(command)) {
+			try {
 				commandMutex.acquire();
-			} catch (InterruptedException e1)
-			{
+			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
 
 			/** START CRITICAL SECTION */
 			String[] result = null;
 
-			try
-			{
+			try {
 				commandSk = MyHomeSocketFactory.openCommandSession(ip, port);
 
 				sendCommandOPEN(commandSk, command);
@@ -187,11 +174,9 @@ public class MyHomeJavaConnector
 				Thread.sleep(300);
 
 				MyHomeSocketFactory.disconnect(commandSk);
-			} catch (IOException e)
-			{
+			} catch (IOException e) {
 				e.printStackTrace();
-			} catch (InterruptedException e)
-			{
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 
@@ -199,8 +184,7 @@ public class MyHomeJavaConnector
 			/** END CRITICAL SECTION */
 
 			return result;
-		} else
-		{
+		} else {
 			throw new MalformedCommandOPEN(command);
 		}
 	}
@@ -216,8 +200,7 @@ public class MyHomeJavaConnector
 	 * @throws MalformedCommandOPEN
 	 */
 	public String[] sendCommandSync(final CommandOPEN command)
-			throws MalformedCommandOPEN
-	{
+			throws MalformedCommandOPEN {
 		return sendCommandSync(command.getCommandString());
 	}
 
@@ -233,22 +216,16 @@ public class MyHomeJavaConnector
 	 * @throws MalformedCommandOPEN
 	 */
 	public void sendCommandAsync(final String command, final int priority)
-			throws MalformedCommandOPEN
-	{
-		if (checkCommandFormat(command))
-		{
-			if (priority == 1)
-			{
+			throws MalformedCommandOPEN {
+		if (checkCommandFormat(command)) {
+			if (priority == 1) {
 				commandQueue.addHighLevel(command);
-			} else if (priority == 2)
-			{
+			} else if (priority == 2) {
 				commandQueue.addMediumLevel(command);
-			} else
-			{
+			} else {
 				commandQueue.addLowLevel(command);
 			}
-		} else
-		{
+		} else {
 			throw new MalformedCommandOPEN(command);
 		}
 	}
@@ -264,8 +241,7 @@ public class MyHomeJavaConnector
 	 * @throws MalformedCommandOPEN
 	 */
 	public void sendCommandAsync(final CommandOPEN command, final int priority)
-			throws MalformedCommandOPEN
-	{
+			throws MalformedCommandOPEN {
 		sendCommandAsync(command.getCommandString(), priority);
 	}
 
@@ -280,10 +256,8 @@ public class MyHomeJavaConnector
 	 * @throws MalformedCommandOPEN
 	 */
 	public void sendCommandListAsync(final CommandOPEN[] commandList,
-			final int priority) throws MalformedCommandOPEN
-	{
-		for (CommandOPEN command : commandList)
-		{
+			final int priority) throws MalformedCommandOPEN {
+		for (CommandOPEN command : commandList) {
 			sendCommandAsync(command.getCommandString(), priority);
 		}
 	}
@@ -299,26 +273,19 @@ public class MyHomeJavaConnector
 	 * @throws MalformedCommandOPEN
 	 */
 	public void sendAction(final Action action, final int priority)
-			throws MalformedCommandOPEN
-	{
+			throws MalformedCommandOPEN {
 		ArrayList<CommandOPEN> commandList = action.getCommandList();
-		for (CommandOPEN command : commandList)
-		{
-			if (command != null)
-			{
+		for (CommandOPEN command : commandList) {
+			if (command != null) {
 				if (command instanceof DelayInterval
-						&& ((DelayInterval) command).getDelayInMillisecond() > 0)
-				{
-					try
-					{
+						&& ((DelayInterval) command).getDelayInMillisecond() > 0) {
+					try {
 						Thread.sleep(((DelayInterval) command)
 								.getDelayInMillisecond());
-					} catch (InterruptedException e)
-					{
+					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-				} else
-				{
+				} else {
 					sendCommandAsync(command, priority);
 				}
 			}
@@ -333,8 +300,7 @@ public class MyHomeJavaConnector
 	 * @throws IOException
 	 *             in case of communication error
 	 */
-	public void startMonitoring() throws IOException
-	{
+	public void startMonitoring() throws IOException {
 		monitorSk = MyHomeSocketFactory.openMonitorSession(ip, port);
 	}
 
@@ -352,33 +318,25 @@ public class MyHomeJavaConnector
 	 * @throws InterruptedException
 	 *             notify problem on sleep method
 	 */
-	public String readMonitoring() throws InterruptedException
-	{
+	public String readMonitoring() throws InterruptedException {
 		String result = null;
 		int retry = 0;
-		do
-		{
-			try
-			{
+		do {
+			try {
 				result = receiveMonitorOPEN(monitorSk);
-			} catch (IOException e)
-			{
-				try
-				{
+			} catch (IOException e) {
+				try {
 					MyHomeSocketFactory.disconnect(monitorSk);
-				} catch (IOException e1)
-				{
+				} catch (IOException e1) {
 				}
 				retry++;
 				Thread.sleep(1000);
 				System.err
 						.println("Monitor connection problem retry temptative: "
 								+ retry);
-				try
-				{
+				try {
 					startMonitoring();
-				} catch (IOException e1)
-				{
+				} catch (IOException e1) {
 				}
 				continue;
 			}
@@ -393,8 +351,7 @@ public class MyHomeJavaConnector
 	 * @throws IOException
 	 *             in case of communication error
 	 */
-	public void stopMonitoring() throws IOException
-	{
+	public void stopMonitoring() throws IOException {
 		MyHomeSocketFactory.disconnect(monitorSk);
 	}
 

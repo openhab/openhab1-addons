@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,11 +25,10 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Tom De Vlaminck
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
 public class BticinoGenericBindingProvider extends
-		AbstractGenericBindingProvider implements BticinoBindingProvider
-{
+		AbstractGenericBindingProvider implements BticinoBindingProvider {
 
 	static final Logger logger = LoggerFactory
 			.getLogger(BticinoGenericBindingProvider.class);
@@ -43,8 +42,7 @@ public class BticinoGenericBindingProvider extends
 	 * 
 	 * @see org.openhab.model.item.binding.BindingConfigReader#getBindingType()
 	 */
-	public String getBindingType()
-	{
+	public String getBindingType() {
 		return BINDING_TYPE;
 	}
 
@@ -52,11 +50,9 @@ public class BticinoGenericBindingProvider extends
 	 * @{inheritDoc
 	 */
 	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException
-	{
+			throws BindingConfigParseException {
 
-		if (!(item instanceof SwitchItem || item instanceof RollershutterItem))
-		{
+		if (!(item instanceof SwitchItem || item instanceof RollershutterItem)) {
 			throw new BindingConfigParseException(
 					"item '"
 							+ item.getName()
@@ -72,17 +68,14 @@ public class BticinoGenericBindingProvider extends
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item,
-			String bindingConfig) throws BindingConfigParseException
-	{
+			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
-		if (bindingConfig != null)
-		{
+		if (bindingConfig != null) {
 			BticinoBindingConfig config = parseBindingConfig(item,
 					bindingConfig);
 			addBindingConfig(item, config);
-		} else
-		{
+		} else {
 			logger.warn("bindingConfig is NULL (item=" + item
 					+ ") -> processing bindingConfig aborted!");
 		}
@@ -99,13 +92,11 @@ public class BticinoGenericBindingProvider extends
 	 *             if bindingConfig is no valid binding type
 	 */
 	protected BticinoBindingConfig parseBindingConfig(Item item,
-			String bindingConfig) throws BindingConfigParseException
-	{
+			String bindingConfig) throws BindingConfigParseException {
 		return new BticinoBindingConfig(item, bindingConfig);
 	}
 
-	public BticinoBindingConfig getConfig(String name)
-	{
+	public BticinoBindingConfig getConfig(String name) {
 		return (BticinoBindingConfig) bindingConfigs.get(name);
 	}
 
@@ -115,10 +106,9 @@ public class BticinoGenericBindingProvider extends
 	 * 
 	 * @author Tom De Vlaminck
 	 * @serial 1.0
-	 * @since 1.5.0
+	 * @since 1.7.0
 	 */
-	public class BticinoBindingConfig implements BindingConfig
-	{
+	public class BticinoBindingConfig implements BindingConfig {
 		/**
 		 * Name of the openweb device (MH200) instance to read/write data to the
 		 * bus
@@ -143,13 +133,11 @@ public class BticinoGenericBindingProvider extends
 		 */
 		private Item item = null;
 
-		public Item getItem()
-		{
+		public Item getItem() {
 			return item;
 		}
 
-		State getItemState()
-		{
+		State getItemState() {
 			return item.getState();
 		}
 
@@ -161,12 +149,10 @@ public class BticinoGenericBindingProvider extends
 		 * @throws BindingConfigParseException
 		 */
 		BticinoBindingConfig(Item item, String config)
-				throws BindingConfigParseException
-		{
+				throws BindingConfigParseException {
 			this.item = item;
 
-			try
-			{
+			try {
 				HashMap<String, String> l_decom_config = bticinoBindingConfigDecompose(config);
 
 				// the gateway name is defined with the "if" property
@@ -178,36 +164,29 @@ public class BticinoGenericBindingProvider extends
 				gatewayID = gateway;
 
 				// WHO
-				if (l_decom_config.containsKey("who"))
-				{
+				if (l_decom_config.containsKey("who")) {
 					who = l_decom_config.get("who");
-				} else
-				{
+				} else {
 					throw new Exception(
 							"who is missing in the configuration : " + config);
 				}
 
 				// WHAT
-				if (l_decom_config.containsKey("what"))
-				{
+				if (l_decom_config.containsKey("what")) {
 					what = l_decom_config.get("what");
-				} else
-				{
+				} else {
 					throw new Exception(
 							"what is missing in the configuration : " + config);
 				}
 
 				// WHERE
-				if (l_decom_config.containsKey("where"))
-				{
+				if (l_decom_config.containsKey("where")) {
 					where = l_decom_config.get("where");
-				} else
-				{
+				} else {
 					throw new Exception(
 							"where is missing in the configuration : " + config);
 				}
-			} catch (Exception e)
-			{
+			} catch (Exception e) {
 				throw new BindingConfigParseException(e.getMessage());
 			}
 		}
@@ -220,13 +199,11 @@ public class BticinoGenericBindingProvider extends
 		 * @return
 		 */
 		private HashMap<String, String> bticinoBindingConfigDecompose(
-				String p_binding_config)
-		{
+				String p_binding_config) {
 			HashMap<String, String> l_configuration_hm = new HashMap<String, String>();
 			// who=1;what=1;where=23
 			String[] l_key_value_pairs = p_binding_config.split(";");
-			for (int l_idx = 0; l_idx < l_key_value_pairs.length; l_idx++)
-			{
+			for (int l_idx = 0; l_idx < l_key_value_pairs.length; l_idx++) {
 				String[] l_key_value = l_key_value_pairs[l_idx].split("=");
 				l_configuration_hm.put(l_key_value[0], l_key_value[1]);
 			}
@@ -235,8 +212,7 @@ public class BticinoGenericBindingProvider extends
 	}
 
 	@Override
-	public void removeConfigurations(String context)
-	{
+	public void removeConfigurations(String context) {
 		super.removeConfigurations(context);
 	}
 

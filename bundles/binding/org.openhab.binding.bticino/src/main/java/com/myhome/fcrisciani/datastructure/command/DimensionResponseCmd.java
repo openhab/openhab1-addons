@@ -14,10 +14,9 @@ package com.myhome.fcrisciani.datastructure.command;
  * 
  * @author Flavio Crisciani
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class DimensionResponseCmd extends CommandOPEN
-{
+public class DimensionResponseCmd extends CommandOPEN {
 
 	// ----- TYPES ----- //
 
@@ -43,8 +42,7 @@ public class DimensionResponseCmd extends CommandOPEN
 	 *            list of values of the specified dimension
 	 */
 	public DimensionResponseCmd(String commandString, String who, String where,
-			String dimension, String[] values)
-	{
+			String dimension, String[] values) {
 		super(commandString, 4, who, where);
 		this.dimension = Integer.parseInt(dimension);
 		this.values = values;
@@ -55,8 +53,7 @@ public class DimensionResponseCmd extends CommandOPEN
 	 * 
 	 * @return dimension type
 	 */
-	public int getDimension()
-	{
+	public int getDimension() {
 		return dimension;
 	}
 
@@ -65,8 +62,7 @@ public class DimensionResponseCmd extends CommandOPEN
 	 * 
 	 * @return
 	 */
-	public String[] getValues()
-	{
+	public String[] getValues() {
 		return values;
 	}
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,10 +33,10 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Tom De Vlaminck
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class BticinoDevice implements IBticinoEventListener
-{
+public class BticinoDevice implements IBticinoEventListener {
+	
 	// The ID of this gateway (corresponds with the .cfg)
 	private String m_gateway_id;
 	// The Bticino binding object (needed to send the events back + retrieve
@@ -55,39 +55,32 @@ public class BticinoDevice implements IBticinoEventListener
 	// The openweb object that handles connections and events
 	private OpenWebNet m_open_web_net;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(BticinoDevice.class);
+	private static final Logger logger = LoggerFactory.getLogger(BticinoDevice.class);
 
 	private EventPublisher eventPublisher;
 
-	public BticinoDevice(String p_gateway_id, BticinoBinding p_bticino_binding)
-	{
+	public BticinoDevice(String p_gateway_id, BticinoBinding p_bticino_binding) {
 		m_gateway_id = p_gateway_id;
 		m_bticino_binding = p_bticino_binding;
 	}
 
-	public void setHost(String p_host)
-	{
+	public void setHost(String p_host) {
 		m_host = p_host;
 	}
 
-	public void setPort(int p_port)
-	{
+	public void setPort(int p_port) {
 		m_port = p_port;
 	}
 
-	public void setRescanInterval(int p_rescan_interval_secs)
-	{
+	public void setRescanInterval(int p_rescan_interval_secs) {
 		m_rescan_interval_secs = p_rescan_interval_secs;
 	}
 
-	public void setEventPublisher(EventPublisher eventPublisher)
-	{
+	public void setEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
 	}
 
-	public void unsetEventPublisher(EventPublisher eventPublisher)
-	{
+	public void unsetEventPublisher(EventPublisher eventPublisher) {
 		this.eventPublisher = null;
 	}
 
@@ -96,8 +89,7 @@ public class BticinoDevice implements IBticinoEventListener
 	 * 
 	 * @throws InitializationException
 	 */
-	public void initialize() throws InitializationException
-	{
+	public void initialize() throws InitializationException {
 		// Add other initialization stuff here
 		logger.debug("Gateway [" + m_gateway_id + "], initialize OK");
 	}
@@ -106,10 +98,8 @@ public class BticinoDevice implements IBticinoEventListener
 	 * Start this device
 	 * 
 	 */
-	public void startDevice()
-	{
-		if (m_open_web_net == null)
-		{
+	public void startDevice() {
+		if (m_open_web_net == null) {
 			m_open_web_net = new OpenWebNet(m_host, m_port,
 					m_rescan_interval_secs);
 			m_open_web_net.addEventListener(this);
@@ -119,28 +109,22 @@ public class BticinoDevice implements IBticinoEventListener
 		logger.debug("Gateway [" + m_gateway_id + "], started OK");
 	}
 
-	public void stopDevice()
-	{
-		if (m_open_web_net != null)
-		{
+	public void stopDevice() {
+		if (m_open_web_net != null) {
 			m_open_web_net.interrupt();
 			m_open_web_net = null;
 		}
 		m_device_is_started = false;
 	}
 
-	public boolean isDeviceStarted()
-	{
+	public boolean isDeviceStarted() {
 		return m_device_is_started;
 	}
 
 	public void receiveCommand(String itemName, Command command,
-			BticinoBindingConfig itemBindingConfig)
-	{
-		try
-		{
-			synchronized (m_lock)
-			{
+			BticinoBindingConfig itemBindingConfig) {
+		try {
+			synchronized (m_lock) {
 				// An command is received from the openHab system
 				// analyse it and execute it
 				logger.debug(
@@ -154,11 +138,9 @@ public class BticinoDevice implements IBticinoEventListener
 				l_pr.addProperty("address", itemBindingConfig.where);
 
 				int l_who = Integer.parseInt(itemBindingConfig.who);
-				switch (l_who)
-				{
+				switch (l_who) {
 				// Lights
-				case 1:
-				{
+				case 1: {
 					if (OnOffType.ON.equals(command))
 						l_pr.addProperty("what", "1");
 					else
@@ -166,8 +148,7 @@ public class BticinoDevice implements IBticinoEventListener
 					break;
 				}
 				// Shutter
-				case 2:
-				{
+				case 2: {
 					if (UpDownType.UP.equals(command))
 						l_pr.addProperty("what", "1");
 					else if (UpDownType.DOWN.equals(command))
@@ -177,8 +158,7 @@ public class BticinoDevice implements IBticinoEventListener
 					break;
 				}
 				// CEN Basic & Evolved
-				case 15:
-				{
+				case 15: {
 					// Only for the on type, send a CEN event (aka a pushbutton
 					// device)
 					// the CEN can start a scenario on eg. a MH200N gateway
@@ -191,16 +171,14 @@ public class BticinoDevice implements IBticinoEventListener
 
 				m_open_web_net.onCommand(l_pr);
 			}
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			logger.error("Gateway [" + m_gateway_id
 					+ "], Error processing receiveCommand '{}'",
 					(Object[]) new String[] { e.getMessage() });
 		}
 	}
 
-	public void handleEvent(ProtocolRead p_protocol_read) throws Exception
-	{
+	public void handleEvent(ProtocolRead p_protocol_read) throws Exception {
 		// the events on the bus are now received
 		// map them to events on the openhab bus
 		logger.debug("Gateway [" + m_gateway_id + "], Bticino WHO ["
@@ -216,8 +194,7 @@ public class BticinoDevice implements IBticinoEventListener
 						p_protocol_read.getProperty("where"));
 
 		// log it when an event has occured that no item is bound to
-		if (l_binding_configs.isEmpty())
-		{
+		if (l_binding_configs.isEmpty()) {
 			logger.debug("Gateway [" + m_gateway_id
 					+ "], No Item found for bticino event, WHO ["
 					+ p_protocol_read.getProperty("who") + "], WHAT ["
@@ -226,98 +203,83 @@ public class BticinoDevice implements IBticinoEventListener
 		}
 
 		// every item associated with this who/where update the status
-		for (BticinoBindingConfig l_binding_config : l_binding_configs)
-		{
+		for (BticinoBindingConfig l_binding_config : l_binding_configs) {
 			// Get the Item out of the config
 			Item l_item = l_binding_config.getItem();
 
-			if (l_item instanceof SwitchItem)
-			{
+			if (l_item instanceof SwitchItem) {
 				// Lights
 				if (p_protocol_read.getProperty("messageType")
-						.equalsIgnoreCase("lighting"))
-				{
+						.equalsIgnoreCase("lighting")) {
 					logger.debug("Gateway [" + m_gateway_id
 							+ "], RECEIVED EVENT FOR SwitchItem ["
 							+ l_item.getName()
 							+ "], TRANSLATE TO OPENHAB BUS EVENT");
 
 					if (p_protocol_read.getProperty("messageDescription")
-							.equalsIgnoreCase("Light ON"))
-					{
+							.equalsIgnoreCase("Light ON")) {
 						eventPublisher.postUpdate(l_item.getName(),
 								OnOffType.ON);
 					} else if (p_protocol_read
 							.getProperty("messageDescription")
-							.equalsIgnoreCase("Light OFF"))
-					{
+							.equalsIgnoreCase("Light OFF")) {
 						eventPublisher.postUpdate(l_item.getName(),
 								OnOffType.OFF);
 					}
 				}
 				// CENs
 				else if (p_protocol_read.getProperty("messageType")
-						.equalsIgnoreCase("CEN Basic and Evolved"))
-				{
+						.equalsIgnoreCase("CEN Basic and Evolved")) {
 					// Pushbutton virtual address must match
 					if (l_binding_config.what.equalsIgnoreCase(p_protocol_read
-							.getProperty("what")))
-					{
+							.getProperty("what"))) {
 						logger.debug("Gateway [" + m_gateway_id
 								+ "], RECEIVED EVENT FOR SwitchItem ["
 								+ l_item.getName()
 								+ "], TRANSLATE TO OPENHAB BUS EVENT");
 
 						if (p_protocol_read.getProperty("messageDescription")
-								.equalsIgnoreCase("Virtual pressure"))
-						{
+								.equalsIgnoreCase("Virtual pressure")) {
 							// only returns when finished
 							eventPublisher.sendCommand(l_item.getName(),
 									OnOffType.ON);
 						} else if (p_protocol_read.getProperty(
 								"messageDescription").equalsIgnoreCase(
-								"Virtual release after short pressure"))
-						{
+								"Virtual release after short pressure")) {
 							// only returns when finished
 							eventPublisher.sendCommand(l_item.getName(),
 									OnOffType.ON);
 						} else if (p_protocol_read.getProperty(
 								"messageDescription").equalsIgnoreCase(
-								"Virtual release after an extended pressure"))
-						{
+								"Virtual release after an extended pressure")) {
 							// only returns when finished
 							eventPublisher.sendCommand(l_item.getName(),
 									OnOffType.ON);
 						} else if (p_protocol_read.getProperty(
 								"messageDescription").equalsIgnoreCase(
-								"Virtual extended pressure"))
-						{
+								"Virtual extended pressure")) {
 							// only returns when finished
 							eventPublisher.sendCommand(l_item.getName(),
 									OnOffType.ON);
 						}
 					}
 				}
-			} else if (l_item instanceof RollershutterItem)
-			{
+			} else if (l_item instanceof RollershutterItem) {
 				logger.debug("Gateway [" + m_gateway_id
 						+ "], RECEIVED EVENT FOR RollershutterItem ["
 						+ l_item.getName()
 						+ "], TRANSLATE TO OPENHAB BUS EVENT");
 
 				if (p_protocol_read.getProperty("messageType")
-						.equalsIgnoreCase("automation"))
-				{
+						.equalsIgnoreCase("automation")) {
 
 					if (p_protocol_read.getProperty("messageDescription")
-							.equalsIgnoreCase("Automation UP"))
-					{
+							.equalsIgnoreCase("Automation UP")) {
 						eventPublisher.postUpdate(l_item.getName(),
 								UpDownType.UP);
 					} else if (p_protocol_read
 							.getProperty("messageDescription")
-							.equalsIgnoreCase("Automation DOWN"))
-					{
+							.equalsIgnoreCase("Automation DOWN")) {
 						eventPublisher.postUpdate(l_item.getName(),
 								UpDownType.DOWN);
 					}

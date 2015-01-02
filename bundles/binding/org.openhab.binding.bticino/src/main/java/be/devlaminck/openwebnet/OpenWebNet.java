@@ -28,12 +28,11 @@ import com.myhome.fcrisciani.exception.MalformedCommandOPEN;
  * 
  * @author Tom De Vlaminck
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class OpenWebNet extends Thread
-{
-	private static final Logger logger = LoggerFactory
-			.getLogger(OpenWebNet.class);
+public class OpenWebNet extends Thread {
+	
+	private static final Logger logger = LoggerFactory.getLogger(OpenWebNet.class);
 
 	/*
 	 * Initializations
@@ -61,8 +60,7 @@ public class OpenWebNet extends Thread
 	 */
 	private List<IBticinoEventListener> m_event_listener_list = new LinkedList<IBticinoEventListener>();
 
-	public OpenWebNet(String p_host, int p_port, int p_rescan_interval_secs)
-	{
+	public OpenWebNet(String p_host, int p_port, int p_rescan_interval_secs) {
 		host = p_host;
 		port = p_port;
 		m_bus_scan_interval_secs = p_rescan_interval_secs;
@@ -71,8 +69,7 @@ public class OpenWebNet extends Thread
 	/*
 	 * Sensor side
 	 */
-	public void onStart()
-	{
+	public void onStart() {
 		// create thread
 		monitorSessionThread = new MonitorSessionThread(this, host, port);
 		// start first bus scan 30 secs later
@@ -93,38 +90,29 @@ public class OpenWebNet extends Thread
 	/*
 	 * Actuator side
 	 */
-	public void onCommand(ProtocolRead c) throws IOException, Exception
-	{
-		try
-		{
+	public void onCommand(ProtocolRead c) throws IOException, Exception {
+		try {
 			myPlant.sendCommandAsync(OWNUtilities.createFrame(c), 1);
-		} catch (MalformedCommandOPEN ex)
-		{
+		} catch (MalformedCommandOPEN ex) {
 			logger.error("onCommand error : " + ex.getMessage());
 		}
 	}
 
 	@Override
-	public void run()
-	{
-		try
-		{
-			while (!Thread.interrupted())
-			{
+	public void run() {
+		try {
+			while (!Thread.interrupted()) {
 				// synchronizes the software with the system status
 				// Every x seconds do a full bus scan
 				checkForBusScan();
 				Thread.sleep(1000);
 			}
-		} catch (InterruptedException p_i_ex)
-		{
+		} catch (InterruptedException p_i_ex) {
 			logger.error("Openwebnet.run, InterruptedException : "
 					+ p_i_ex.getMessage());
-		} catch (Exception p_i_ex)
-		{
+		} catch (Exception p_i_ex) {
 			logger.error("Openwebnet.run, Exception : " + p_i_ex.getMessage());
-		} finally
-		{
+		} finally {
 			// interrupt handler on monitor thread will stop thread
 			monitorSessionThread.interrupt();
 			logger.info("Stopped monitorSessionThread thread");
@@ -132,21 +120,17 @@ public class OpenWebNet extends Thread
 		logger.info("Stopped OpenWebNet thread");
 	}
 
-	private void checkForBusScan()
-	{
+	private void checkForBusScan() {
 		Date l_now = new Date();
-		if (((l_now.getTime() - m_last_bus_scan.getTime()) / 1000) > m_bus_scan_interval_secs)
-		{
+		if (((l_now.getTime() - m_last_bus_scan.getTime()) / 1000) > m_bus_scan_interval_secs) {
 			m_last_bus_scan = l_now;
 			initSystem();
 		}
 	}
 
 	// sends diagnostic frames to initialize the system
-	public void initSystem()
-	{
-		try
-		{
+	public void initSystem() {
+		try {
 			logger.info("Sending " + LIGHTNING_DIAGNOSTIC_FRAME
 					+ " frame to (re)initialize LIGHTNING");
 			myPlant.sendCommandSync(LIGHTNING_DIAGNOSTIC_FRAME);
@@ -159,33 +143,26 @@ public class OpenWebNet extends Thread
 			logger.info("Sending " + POWER_MANAGEMENT_DIAGNOSTIC_FRAME
 					+ " frame to (re)initialize POWER MANAGEMENT");
 			myPlant.sendCommandSync(POWER_MANAGEMENT_DIAGNOSTIC_FRAME);
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			logger.error("initSystem failed : " + e.getMessage());
 		}
 	}
 
-	public void notifyEvent(ProtocolRead p_i_event)
-	{
-		for (IBticinoEventListener l_event_listener : m_event_listener_list)
-		{
-			try
-			{
+	public void notifyEvent(ProtocolRead p_i_event) {
+		for (IBticinoEventListener l_event_listener : m_event_listener_list) {
+			try {
 				l_event_listener.handleEvent(p_i_event);
-			} catch (Exception p_ex)
-			{
+			} catch (Exception p_ex) {
 				logger.error("notifyEvent, Exception : " + p_ex.getMessage());
 			}
 		}
 	}
 
-	public void addEventListener(IBticinoEventListener p_i_event_listener)
-	{
+	public void addEventListener(IBticinoEventListener p_i_event_listener) {
 		m_event_listener_list.add(p_i_event_listener);
 	}
 
-	public void removeEventListener(IBticinoEventListener p_i_event_listener)
-	{
+	public void removeEventListener(IBticinoEventListener p_i_event_listener) {
 		m_event_listener_list.remove(p_i_event_listener);
 	}
 

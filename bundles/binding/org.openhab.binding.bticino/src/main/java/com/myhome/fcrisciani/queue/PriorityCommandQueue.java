@@ -16,10 +16,10 @@ import java.util.concurrent.Semaphore;
  * 
  * @author Flavio Crisciani
  * @serial 1.0
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class PriorityCommandQueue
-{
+public class PriorityCommandQueue {
+	
 	// ----- TYPES ----- //
 
 	// ---- MEMBERS ---- //
@@ -38,8 +38,7 @@ public class PriorityCommandQueue
 	 *            command to queue
 	 * @return true if correctly queued
 	 */
-	public void addHighLevel(String c)
-	{
+	public void addHighLevel(String c) {
 		this.level1.add(c);
 		commandsAvailable.release();
 	}
@@ -51,8 +50,7 @@ public class PriorityCommandQueue
 	 *            command to queue
 	 * @return true if correctly queued
 	 */
-	public void addMediumLevel(String c)
-	{
+	public void addMediumLevel(String c) {
 		this.level2.add(c);
 		commandsAvailable.release();
 	}
@@ -64,8 +62,7 @@ public class PriorityCommandQueue
 	 *            command to queue
 	 * @return true if correctly queued
 	 */
-	public void addLowLevel(String c)
-	{
+	public void addLowLevel(String c) {
 		this.level3.add(c);
 		commandsAvailable.release();
 	}
@@ -76,18 +73,14 @@ public class PriorityCommandQueue
 	 * 
 	 * @return the command to execute
 	 */
-	public String getCommand()
-	{
+	public String getCommand() {
 		String resultCommand = null;
-		try
-		{
-			if (commandsAvailable.availablePermits() == 0)
-			{
+		try {
+			if (commandsAvailable.availablePermits() == 0) {
 				// System.out.println("CommandTail: Non ci sono comandi da eseguire nelle code mi sospendo");
 			}
 			commandsAvailable.acquire();
-		} catch (InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 			System.err
 					.println("PriorityCommandQueue: Exception during suspetion on the semaphore: "
 							+ e.toString());
@@ -108,8 +101,7 @@ public class PriorityCommandQueue
 	 * 
 	 * @return the number of command available
 	 */
-	public int numCommands()
-	{
+	public int numCommands() {
 		return commandsAvailable.availablePermits();
 	}
 
