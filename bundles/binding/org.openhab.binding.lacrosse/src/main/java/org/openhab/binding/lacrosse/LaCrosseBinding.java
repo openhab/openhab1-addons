@@ -53,8 +53,7 @@ public class LaCrosseBinding extends AbstractBinding<LaCrosseBindingProvider> im
 
 	@Override
 	public void receiveCommand(String itemName, Command command) {
-		// TODO Auto-generated method stub
-		System.out.println("LaCrosseBinding.receiveCommand()");
+		//TODO: Add set timer command for BY_ACTION mode
 		super.receiveCommand(itemName, command);
 	}
 
@@ -135,10 +134,9 @@ public class LaCrosseBinding extends AbstractBinding<LaCrosseBindingProvider> im
 					autoMap = true;
 				}
 
-				
-				
 				if(autoMap) {
-					List<Integer> lostSensors = getLostSensors(60*1000, 240*1000);
+					// sensors between 1min to 30days
+					List<Integer> lostSensors = getLostSensors(60*1000, 30*24*60*60*1000);
 					if(lostSensors.isEmpty()) {
 						logger.debug("Currently no offline sensor available to replace.");
 						
@@ -165,26 +163,30 @@ public class LaCrosseBinding extends AbstractBinding<LaCrosseBindingProvider> im
 		}
 	}
 	
+	/**
+	 * Search sensors with last update between min and max offset
+	 * @param minOffset
+	 * @param maxOffset
+	 * @return
+	 */
 	private List<Integer> getLostSensors(long minOffset, long maxOffset) {
 		long min = System.currentTimeMillis() - minOffset;
 		long max = System.currentTimeMillis() - maxOffset;
 		
-		ArrayList<Integer> x = new ArrayList<Integer>();
+		ArrayList<Integer> lostSensorList = new ArrayList<Integer>();
 		ArrayList<Integer> cleanupList = new ArrayList<Integer>();
-		// 100 - 40 = 60
-		// 100 - 60 = 40
-		// 55
+
 		for (Entry<Integer, Long> entry : lastSensorUpdate.entrySet()) {
 			if(entry.getValue() < min) {
 				
 				logger.info("Lost sensor " + entry.getKey() + " found ...");
-				x.add(entry.getKey());
+				lostSensorList.add(entry.getKey());
 				
 				if(entry.getValue() < max) {
 					logger.info("Outdated lost sensor " + entry.getKey() + " found ...");
 					
 					cleanupList.add(entry.getKey());
-					x.remove(entry.getKey());
+					lostSensorList.remove(entry.getKey());
 				}
 				
 			}
@@ -197,14 +199,21 @@ public class LaCrosseBinding extends AbstractBinding<LaCrosseBindingProvider> im
 			}
 		}
 		
-		return x;
+		return lostSensorList;
 	}
 	
+	/**
+	 * Returns the mapping file
+	 * @return
+	 */
 	private File getMappingFile() {
 		String defaultConfigFilePath = ConfigDispatcher.getConfigFolder();
 		return new File(defaultConfigFilePath, "lacrosse-mapping.json");
 	}
 	
+	/**
+	 * write the current mapping to a json file
+	 */
 	private void writeMappingFile() {
 		try {
 			final ObjectMapper mapper = new ObjectMapper();
@@ -218,6 +227,9 @@ public class LaCrosseBinding extends AbstractBinding<LaCrosseBindingProvider> im
 		}
 	}
 	
+	/**
+	 * read the json file to the current mapping object
+	 */
 	@SuppressWarnings("unchecked")
 	private void readMappingFile() {
 		try {
@@ -259,6 +271,11 @@ public class LaCrosseBinding extends AbstractBinding<LaCrosseBindingProvider> im
 		}
 	}
 	
+	/**
+	 * Converts boolean to a valid OnOffType
+	 * @param state
+	 * @return
+	 */
 	private OnOffType getOnOff(boolean state) {
 		return state ? OnOffType.ON : OnOffType.OFF;
 	}

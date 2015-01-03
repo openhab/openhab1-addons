@@ -12,14 +12,21 @@ import org.slf4j.LoggerFactory;
 public class LaCrosseGenericBindingProvider extends
 		AbstractGenericBindingProvider implements LaCrosseBindingProvider {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory
 			.getLogger(LaCrosseGenericBindingProvider.class);
 	
+	/* (non-Javadoc)
+	 * @see org.openhab.model.item.binding.BindingConfigReader#getBindingType()
+	 */
 	@Override
 	public String getBindingType() {
 		return "lacrosse";
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.lacrosse.LaCrosseBindingProvider#getItemName(java.lang.String)
+	 */
 	@Override
 	public String getItemName(String id) {
 		for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
@@ -32,6 +39,9 @@ public class LaCrosseGenericBindingProvider extends
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.openhab.binding.lacrosse.LaCrosseBindingProvider#getType(java.lang.String)
+	 */
 	public String getType(String itemName) {
 		LaCrosseBindingConfig bindingConfig = (LaCrosseBindingConfig) bindingConfigs.get(itemName);
 		if(bindingConfig != null) {
@@ -40,15 +50,15 @@ public class LaCrosseGenericBindingProvider extends
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.openhab.model.item.binding.AbstractGenericBindingProvider#processBindingConfiguration(java.lang.String, org.openhab.core.items.Item, java.lang.String)
+	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item,
 			String bindingConfig) throws BindingConfigParseException {
 		
 		super.processBindingConfiguration(context, item, bindingConfig);
 
-		logger.debug("Process binding cfg for {} with settings {} [Context:{}]",
-				item.getName(), bindingConfig, context);
-		
 		LaCrosseBindingConfig config = new LaCrosseBindingConfig();
 		for (String set : bindingConfig.trim().split(",")) {
 			String[] configParts = set.split(":");
@@ -67,6 +77,9 @@ public class LaCrosseGenericBindingProvider extends
 		addBindingConfig(item, config);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openhab.model.item.binding.BindingConfigReader#validateItemType(org.openhab.core.items.Item, java.lang.String)
+	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {

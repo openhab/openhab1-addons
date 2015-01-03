@@ -27,7 +27,9 @@ public class LaCrosseConnector {
 			.getLogger(LaCrosseConnector.class);
 
 	private BufferedReader input;
+	
 	private SerialPort serialPort;
+	
 	private String port;
 
 	private Map<String, NumberAverage> avarage = new HashMap<String, NumberAverage>();
@@ -38,10 +40,17 @@ public class LaCrosseConnector {
 		this.binding = binding;
 	}
 	
+	/**
+	 * Is serial connection open
+	 * @return
+	 */
 	public boolean isOpen() {
 		return (serialPort != null);
 	}
 
+	/**
+	 * close serial connection
+	 */
 	public void close() {
 		if(serialPort != null) {
 			serialPort.close();
@@ -182,6 +191,12 @@ public class LaCrosseConnector {
 										int battery_low = (Integer.parseInt(parts[4]) & 0x80) >> 7;
 	 */
 
+	/**
+	 * @param key
+	 * @param size
+	 * @param scale
+	 * @return
+	 */
 	private NumberAverage getAverage(String key, int size, int scale) {
 		if(!avarage.containsKey(key)) {
 			avarage.put(key, new NumberAverage(3, scale));
@@ -190,6 +205,13 @@ public class LaCrosseConnector {
 		return avarage.get(key);
 	}
 	
+	/**
+	 * @param address
+	 * @param temperature
+	 * @param humidity
+	 * @param batteryNew
+	 * @param batteryWeak
+	 */
 	public void onDataReceived(int address, BigDecimal temperature, BigDecimal humidity, boolean batteryNew, boolean batteryWeak) {
 		binding.postSensorData(address, temperature, humidity, batteryNew, batteryWeak);
 	}
