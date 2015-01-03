@@ -73,11 +73,13 @@
     <provider name="ForecastIO" icons="snow"/>
     <provider name="WorldWeatherOnline" ids="395, 371, 335, 338, 332"/>
     <provider name="Hamweather" ids="S"/>
+    <provider name="Wunderground" icons="snow, chancesnow"/>
   </common-id-mapping>
   <common-id-mapping id="sleet">
     <provider name="Yahoo" ids="18"/>
     <provider name="WorldWeatherOnline" ids="377, 350, 317, 182"/>
     <provider name="Hamweather" ids="IC, IP"/>
+    <provider name="Wunderground" icons="sleet"/>
   </common-id-mapping>
   <common-id-mapping id="dust">
     <provider name="Yahoo" ids="19"/>
@@ -108,7 +110,7 @@
     <provider name="ForecastIO" icons="cloudy"/>
     <provider name="Wunderground" icons="nt_cloudy, cloudy"/>
     <provider name="WorldWeatherOnline" ids="122"/>
-    <provider name="Hamweather" ids="OV"/>
+    <provider name="Hamweather" ids="OV, FZBR"/>
   </common-id-mapping>
   <common-id-mapping id="mostly-cloudy-night">
     <provider name="Yahoo" ids="27"/>
