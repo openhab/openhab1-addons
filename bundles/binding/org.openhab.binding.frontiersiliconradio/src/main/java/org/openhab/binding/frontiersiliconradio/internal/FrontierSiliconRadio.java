@@ -36,6 +36,8 @@ public class FrontierSiliconRadio
 	// The http connection/session used for controlling the radio
 	private FrontierSiliconRadioConnection conn;
 
+	// the volume of the radio. we cache it for fast increase/decrease
+	private int currentVolume=0;
 	
 	/**
 	 *  Constructor for the Radio class
@@ -102,7 +104,8 @@ public class FrontierSiliconRadio
 	public int getVolume() {
 		try {
 			FrontierSiliconRadioApiResult result = conn.doRequest("GET/netRemote.sys.audio.volume");
-			return result.getValueU8AsInt();
+			currentVolume = result.getValueU8AsInt();
+			return currentVolume;
 		}
 		catch (Exception e) {
 			logger.error("request failed");
@@ -118,11 +121,30 @@ public class FrontierSiliconRadio
 	public void setVolume( int volume ) {
 		try {
 			conn.doRequest("SET/netRemote.sys.audio.volume", "value="+volume );
+			currentVolume = volume;
 			return;
 		}
 		catch (Exception e) {
 			logger.error("request failed");
 		}
+	}
+	
+	/**
+	 * increase radio volume by 1 step
+	 * 
+	 */
+	public void increaseVolume() {
+		if( currentVolume < 32)
+			setVolume( currentVolume+1 );
+	}
+	
+	/**
+	 * decrease radio volume by 1 step
+	 * 
+	 */
+	public void decreaseVolume() {
+		if( currentVolume>0)
+		setVolume( currentVolume-1 );
 	}
 	
 	

@@ -21,10 +21,12 @@ import org.openhab.binding.frontiersiliconradio.FrontierSiliconRadioBindingProvi
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -139,7 +141,7 @@ public class FrontierSiliconRadioBinding extends AbstractActiveBinding<FrontierS
 								if( provider.getItemType(itemName) == DimmerItem.class )
 									eventPublisher.postUpdate(itemName, new PercentType( radio.convertVolumeToPercent(volume) ) );
 								else
-									eventPublisher.postUpdate(itemName, new DecimalType( volume ) );
+									eventPublisher.postUpdate(itemName, new DecimalType( radio.convertVolumeToPercent(volume) ) );
 								break;
 							case "PLAYINFONAME":
 								String playInfoName = radio.getPlayInfoName();
@@ -162,7 +164,7 @@ public class FrontierSiliconRadioBinding extends AbstractActiveBinding<FrontierS
 						}
 		
 					} else {
-						logger.error("deviceConf is null");								
+						logger.error("deviceConf is null, no config found for deviceId: '" + deviceId +"'. Check binding config.");								
 					}
 				}
 			}
@@ -209,13 +211,23 @@ public class FrontierSiliconRadioBinding extends AbstractActiveBinding<FrontierS
 									radio.setPower(false);
 								}
 								break;
-							case "VOLUME":	
-								Integer volumeCommand = ((DecimalType) command).intValue() ;
-								if (command instanceof PercentType) {
+							case "VOLUME":
+								if (command instanceof IncreaseDecreaseType) {
+									if (command.equals(IncreaseDecreaseType.INCREASE) )
+										radio.increaseVolume();
+									else
+										radio.decreaseVolume();
+								}
+								else if (command instanceof UpDownType) {
+									if (command.equals(UpDownType.UP) )
+										radio.increaseVolume();
+									else
+										radio.decreaseVolume();
+								}
+								else {
+									Integer volumeCommand = ((DecimalType) command).intValue();
 									Integer absoluteVolume = radio.convertPercentToVolume(volumeCommand);
 									radio.setVolume( absoluteVolume );
-								} else {
-									radio.setVolume(volumeCommand);
 								}
 								break;
 							case "MODE":
