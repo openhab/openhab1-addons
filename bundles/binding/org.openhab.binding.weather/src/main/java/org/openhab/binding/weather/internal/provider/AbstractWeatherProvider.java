@@ -15,6 +15,7 @@ import java.util.Calendar;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.lang.StringUtils;
@@ -49,6 +50,7 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
 		params.setConnectionManagerTimeout(5000);
 		params.setSoTimeout(30000);
 		params.setContentCharset("UTF-8");
+		params.setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
 	}
 
 	public AbstractWeatherProvider(WeatherParser parser) {
