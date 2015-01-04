@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,11 +19,12 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface DSMRBindingProvider extends BindingProvider {
 	/**
-	 * Returns the DSMR item the binding represents
+	 * Returns the DMSR item identifier the binding represents
 	 * 
-	 * @param String OpenHab itemName to get the DSMR item for
+	 * @param String
+	 *            openHAB itemName to get the DSMR item ID for
 	 * 
-	 * @return String containing the DSMR item
+	 * @return String containing the DMSR item ID
 	 */
-	public String getItem(String itemName);
+	public String getDSMRItemID(String itemName);
 }

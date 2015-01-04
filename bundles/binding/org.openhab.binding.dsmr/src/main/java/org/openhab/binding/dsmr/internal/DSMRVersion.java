@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.dsmr.internal;
 
 /**
@@ -5,12 +13,11 @@ package org.openhab.binding.dsmr.internal;
  * <p>
  * The following versions are special versions:
  * <p>
- * <ul> 
- * <li>NONE - This can be used for filtering purposes 
+ * <ul>
+ * <li>NONE - This can be used for filtering purposes
  * <li>ALL - This can be used to identify all versions
  * <p>
- * This enumeration also has some convenience arrays for grouping
- * versions
+ * This enumeration also has some convenience arrays for grouping versions
  * 
  * @author M. Volaart
  * @since 1.7.0
@@ -37,7 +44,8 @@ public enum DSMRVersion {
 	/**
 	 * Construct a new Enum type
 	 * 
-	 * @param version String representation of the Enum
+	 * @param version
+	 *            String representation of the Enum
 	 */
 	private DSMRVersion(String version) {
 		this.version = version;
@@ -69,11 +77,13 @@ public enum DSMRVersion {
 			V404 };
 
 	/**
-	 * Returns the DSMRVersion object for the specified version.
-	 * If the version is not found the NONE version is returned
+	 * Returns the DSMRVersion object for the specified version. If the version
+	 * is not found the NONE version is returned
 	 * 
-	 * @param version String containing the version
-	 * @return corresponding {@link DMSRVersion} or NONE if a unknown version is specified
+	 * @param version
+	 *            String containing the version
+	 * @return corresponding {@link DMSRVersion} or NONE if a unknown version is
+	 *         specified
 	 */
 	public static DSMRVersion getDSMRVersion(String version) {
 		for (DSMRVersion t : DSMRVersion.values()) {

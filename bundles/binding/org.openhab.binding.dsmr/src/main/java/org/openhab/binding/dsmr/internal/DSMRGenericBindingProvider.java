@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -59,7 +59,7 @@ public class DSMRGenericBindingProvider extends AbstractGenericBindingProvider
 		super.processBindingConfiguration(context, item, bindingConfig);
 		DSMRBindingConfig config = new DSMRBindingConfig();
 
-		config.bindingItem = bindingConfig.trim();
+		config.dsmrItemID = bindingConfig.trim();
 
 		addBindingConfig(item, config);
 	}
@@ -68,12 +68,12 @@ public class DSMRGenericBindingProvider extends AbstractGenericBindingProvider
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getItem(String itemName) {
+	public String getDSMRItemID(String itemName) {
 		DSMRBindingConfig config = (DSMRBindingConfig) bindingConfigs
 				.get(itemName);
 
 		if (config != null) {
-			return config.bindingItem;
+			return config.dsmrItemID;
 		} else {
 			return null;
 		}
@@ -84,13 +84,13 @@ public class DSMRGenericBindingProvider extends AbstractGenericBindingProvider
 	 * <p>
 	 * The binding configuration consists only of the OBIS item.
 	 * <p>
-	 * Binding configuration for an OpenHab Item looks like:
+	 * Binding configuration for an openHAB Item looks like:
 	 * dsmr="<OBIS item>"
 	 * 
 	 * @author M. Volaart
 	 * @since 1.7.0
 	 */
 	class DSMRBindingConfig implements BindingConfig {
-		public String bindingItem;
+		public String dsmrItemID;
 	}
 }
