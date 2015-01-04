@@ -11,6 +11,7 @@ package org.openhab.binding.zwave.internal.protocol.serialmessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.slf4j.Logger;
@@ -39,9 +40,9 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 		
 		// If the node is DEAD, but we've just received a message from it, then it's not dead!
 		if(node.isDead()) {
-			node.setAlive();
+			node.setNodeState(ZWaveNodeState.ALIVE);
 		}
-		
+
 		node.resetResendCount();
 		node.incrementReceiveCount();
 		

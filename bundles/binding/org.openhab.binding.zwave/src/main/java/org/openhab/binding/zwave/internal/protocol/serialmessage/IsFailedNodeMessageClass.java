@@ -10,11 +10,11 @@ package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,15 +40,22 @@ public class IsFailedNodeMessageClass  extends ZWaveCommandProcessor {
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 
+		ZWaveNode node = zController.getNode(nodeId);
+		if(node == null) {
+			logger.error("NODE {}: Failed node message for unknown node", nodeId);
+			incomingMessage.setTransactionCanceled(true);
+			return false;
+		}
+
 		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
 			logger.warn("NODE {}: Is currently marked as failed by the controller!", nodeId);
-			zController.notifyEventListeners(new ZWaveNodeStatusEvent(nodeId, ZWaveNodeState.FAILED));
+			node.setNodeState(ZWaveNodeState.FAILED);
 		}
 		else {
 			logger.debug("NODE {}: Is currently marked as healthy by the controller", nodeId);
 		}
-		
-		transactionComplete = true;
+
+		checkTransactionComplete(lastSentMessage, incomingMessage);
 
 		return true;
 	}

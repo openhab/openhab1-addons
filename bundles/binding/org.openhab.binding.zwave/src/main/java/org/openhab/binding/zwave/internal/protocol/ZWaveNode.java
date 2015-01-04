@@ -78,9 +78,9 @@ public class ZWaveNode {
 	
 	private Map<CommandClass, ZWaveCommandClass> supportedCommandClasses = new HashMap<CommandClass, ZWaveCommandClass>();
 	private List<Integer> nodeNeighbors = new ArrayList<Integer>();
-	private Date lastSent;
-	private Date lastReceived;
-	
+	private Date lastSent = null;
+	private Date lastReceived = null;
+
 	private boolean applicationUpdateReceived = false;
 
 	@XStreamOmitField
@@ -111,17 +111,20 @@ public class ZWaveNode {
 		this.controller = controller;
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
 		this.deviceClass = new ZWaveDeviceClass(Basic.NOT_KNOWN, Generic.NOT_KNOWN, Specific.NOT_USED);
-		this.lastSent = null;
-		this.lastReceived = null;
 	}
 
 	/**
-	 * Configures the node after it's been restored from file
+	 * Configures the node after it's been restored from file.
+	 * NOTE: XStream doesn't run any default constructor. So, any initialisation
+	 * made in a constructor, or statically, won't be performed!!!
+	 * Set defaults here if it's important!!!
 	 * @param controller the wave controller instance
 	 */
 	public void setRestoredFromConfigfile(ZWaveController controller) {
+		nodeState = ZWaveNodeState.ALIVE;
+
 		this.controller = controller;
-		
+
 		// Create the initialisation advancer and tell it we've loaded from file
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
 		this.nodeStageAdvancer.setRestoredFromConfigfile();
@@ -197,7 +200,7 @@ public class ZWaveNode {
 	 * @return
 	 */
 	public boolean isDead() {
-		if(nodeStageAdvancer.getCurrentStage() == ZWaveNodeInitStage.DEAD || nodeStageAdvancer.getCurrentStage() == ZWaveNodeInitStage.FAILED) {
+		if(nodeState == ZWaveNodeState.DEAD || nodeState == ZWaveNodeState.FAILED) {
 			return true;
 		}
 		else {
@@ -208,25 +211,39 @@ public class ZWaveNode {
 	/**
 	 * Sets the node to be 'undead'.
 	 */
-	public void setAlive() {
-		if(this.nodeStageAdvancer.isInitializationComplete()) {
-			logger.debug("NODE {}: Node is now ALIVE", this.nodeId);
-			this.nodeStageAdvancer.setCurrentStage(ZWaveNodeInitStage.DONE);
+	public void setNodeState(ZWaveNodeState state) {
+		// Make sure we only handle real state changes
+		if(state == nodeState) {
+			return;
+		}
+
+		switch(state) {
+		case ALIVE:
+			logger.debug("NODE {}: Node has risen from the DEAD. Init stage is {}:{}.", nodeId,
+					this.getNodeInitializationStage().toString());			
+	
+			// Reset the resend counter
+			this.resendCount = 0;
+			break;
+
+		case FAILED:
+		case DEAD:
+			this.deadCount++;
+			this.deadTime = Calendar.getInstance().getTime();
+			logger.debug("NODE {}: Node is DEAD.", this.nodeId);
+			break;
+		}
+
+		// Don't alert state changes while we're still initialising
+		if(nodeStageAdvancer.isInitializationComplete() == true) {
+			ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeState.DEAD);
+			controller.notifyEventListeners(zEvent);
 		}
 		else {
-			logger.debug("NODE {}: Node is now ALIVE - initialisation NOT complete.", this.nodeId);
-			this.nodeStageAdvancer.setCurrentStage(ZWaveNodeInitStage.DYNAMIC_VALUES);
-			this.nodeStageAdvancer.advanceNodeStage(null);
+			logger.debug("NODE {}: Initialisation incomplete, not signalling state change.", this.nodeId);				
 		}
-		logger.debug("NODE {}: Node has risen from the DEAD. Stage set to {}:{}.", nodeId,
-				this.getNodeState().toString(), this.getNodeInitializationStage().toString());			
 
-		// Reset the resend counter
-		this.resendCount = 0;
-
-		// Alert anyone who wants to know...
-		ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeState.ALIVE);
-		controller.notifyEventListeners(zEvent);
+		nodeState = state;
 	}
 	
 	/**
@@ -410,21 +427,11 @@ public class ZWaveNode {
 	 * Increments the resend counter.
 	 * On three increments the node stage is set to DEAD and no
 	 * more messages will be sent.
+	 * This is only used for SendData messages.
 	 */
 	public void incrementResendCount() {
 		if (++resendCount >= 3) {
-			this.nodeStageAdvancer.setCurrentStage(ZWaveNodeInitStage.DEAD);
-			this.deadCount++;
-			this.deadTime = Calendar.getInstance().getTime();
-			logger.debug("NODE {}: Retry count exceeded. Node is DEAD.", this.nodeId);
-
-			if(nodeStageAdvancer.isInitializationComplete() == true) {
-				ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeState.DEAD);
-				controller.notifyEventListeners(zEvent);
-			}
-			else {
-				logger.debug("NODE {}: Initialisation incomplete, not signalling DEAD node.", this.nodeId);				
-			}
+			setNodeState(ZWaveNodeState.DEAD);
 		}
 		this.retryCount++;
 	}

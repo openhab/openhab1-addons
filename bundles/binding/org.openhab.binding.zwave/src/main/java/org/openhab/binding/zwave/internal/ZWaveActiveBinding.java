@@ -23,8 +23,6 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
@@ -62,8 +60,6 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private volatile ZWaveController zController;
 	private volatile ZWaveConverterHandler converterHandler;
 
-	private boolean isZwaveNetworkReady = false;
-	
 	private Iterator<ZWavePollItem> pollingIterator = null;
 	private List<ZWavePollItem> pollingList = new ArrayList<ZWavePollItem>();
 	
@@ -96,15 +92,6 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	 */
 	@Override
 	protected void execute() {
-		
-		if(!isZwaveNetworkReady){
-			logger.debug("Zwave Network isn't ready yet!");
-			if (this.zController != null) {
-				this.zController.checkForDeadOrSleepingNodes();
-			}
-			return;
-		}
-		
 		// Call the network monitor
 		networkMonitor.execute();
 
@@ -214,8 +201,8 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		boolean handled = false;
 		
 		// if we are not yet initialized, don't waste time and return
-		if((this.isProperlyConfigured() == false) | (isZwaveNetworkReady == false)) {
-			logger.debug("internalReceiveCommand Called, But Not Properly Configure yet or Zwave Network Isn't Ready, returning.");
+		if(this.isProperlyConfigured() == false) {
+			logger.debug("internalReceiveCommand Called, But Not Properly Configure yet, returning.");
 			return;
 		}
 
@@ -251,7 +238,6 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	 */
 	@Override
 	public void deactivate() {
-		isZwaveNetworkReady = false;
 		if (this.converterHandler != null) {
 			this.converterHandler = null;
 		}
@@ -416,7 +402,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		if (!this.isProperlyConfigured())
 			return;
 		
-		if (!isZwaveNetworkReady) {
+/*
+ 		// TODO: This needs to listen to an event for each node completing initialisation
+ 		if (!isZwaveNetworkReady) {
 			if (event instanceof ZWaveInitializationCompletedEvent) {
 				logger.debug("ZWaveIncomingEvent Called, Network Event, Init Done. Setting ZWave Network Ready.");
 				isZwaveNetworkReady = true;
@@ -427,14 +415,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				return;
 			}		
 		}
-		
+*/		
 		logger.debug("ZwaveIncomingEvent");
-		
-		// ignore transaction completed events.
-		if (event instanceof ZWaveTransactionCompletedEvent) {
-			return;
-		}
-		
+
 		// handle command class value events.
 		if (event instanceof ZWaveCommandClassValueEvent) {
 			handleZWaveCommandClassValueEvent((ZWaveCommandClassValueEvent)event);

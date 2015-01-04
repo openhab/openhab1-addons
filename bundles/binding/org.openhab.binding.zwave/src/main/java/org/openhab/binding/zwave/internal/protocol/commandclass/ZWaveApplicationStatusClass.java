@@ -90,7 +90,7 @@ public class ZWaveApplicationStatusClass extends ZWaveCommandClass {
 						scheduler.schedule(new Runnable() {
 							@Override
 							public void run() {
-								if (node== null || node.getNodeState() != ZWaveNodeState.ALIVE)
+								if (node == null || node.getNodeState() != ZWaveNodeState.ALIVE)
 									return;
 								controller.pollNode(node);
 								

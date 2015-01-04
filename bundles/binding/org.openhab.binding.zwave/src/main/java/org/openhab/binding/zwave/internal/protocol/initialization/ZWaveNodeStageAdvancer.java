@@ -19,10 +19,12 @@ import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.config.ZWaveProductDatabase;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveGetCommands;
@@ -40,6 +42,7 @@ import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetRoutingInfoMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.IdentifyNodeMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.IsFailedNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeInfoMessageClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,6 +101,17 @@ import org.slf4j.LoggerFactory;
  * assume this stage is completed. If we've missed anything, then we continue
  * until there are no messages to send.
  * 
+ * If a node is DEAD (or FAILED) then we still try to initialise. No HEAL is
+ * performed on initialising nodes, so we need to do enough here to find out
+ * if the node comes back to life.
+ * A 'is node failed' check is performed at the beginning of the init process.
+ * This asks the controller if it thinks the node is dead - if it is, then we
+ * treat the node as dead until it comes back to life.
+ * A DEAD node will use a backoff to reduce the traffic. We start sending data
+ * reasonably quickly, but if it fails, then we reduce the retry timer by a
+ * factor of 2 until BACKOFF_TIMER_MAX is reached.
+ * << NOTE THAT THE ABOVE BACKOFF ISN'T IMPLEMENTED YET >>
+ * 
  * @author Jan-Willem Spuij
  * @author Chris Jackson
  * @since 1.4.0
@@ -109,7 +123,6 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
 	private ZWaveNode node;
 	private ZWaveController controller;
-	private boolean initializationComplete = false;
 	private boolean restoredFromConfigfile = false;
 
 	private static final int MAX_BUFFFER_LEN = 256;
@@ -119,6 +132,10 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	
 	private static final int MAX_RETRIES = 10;
 	private int retryCount = 0;
+
+	private final int BACKOFF_TIMER_START = 5000;
+	private final int BACKOFF_TIMER_MAX = 1800000;			// 30 minutes max backoff
+	private int retryTimer = BACKOFF_TIMER_START;
 
 	private Date queryStageTimeStamp;
 	private ZWaveNodeInitStage currentStage;
@@ -147,7 +164,6 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		controller.addEventListener(this);
 
 		// Reset the state variables
-		initializationComplete = false;
 		currentStage = ZWaveNodeInitStage.EMPTYNODE;
 		queryStageTimeStamp = Calendar.getInstance().getTime();
 
@@ -165,7 +181,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		// If initialisation is complete, then just return.
 		// This probably shouldn't be necessary since we remove the event
 		// handler when we're done, but just to be sure...
-		if (initializationComplete) {
+		if (currentStage == ZWaveNodeInitStage.DONE) {
 			return;
 		}
 
@@ -230,13 +246,17 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		// If initialisation is complete, then just return.
 		// This probably shouldn't be necessary since we remove the event
 		// handler when we're done, but just to be sure...
-		if (initializationComplete) {
+		if (currentStage == ZWaveNodeInitStage.DONE) {
 			return;
 		}
 
 		logger.debug("NODE {}: Node advancer - {}: queue length({}), free to send({})", node.getNodeId(),
 				currentStage.toString(), msgQueue.size(), freeToSend);
 
+		// Start the retry timer
+//		if(retryTimer
+		
+		
 		// If event class is null, then this call isn't the result of an
 		// incoming frame.
 		// It could be a wakeup, or the node is now alive. Get things moving
@@ -267,11 +287,11 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				retryCount = 0;
 			} else {
 				retryCount++;
-				
+				// TODO: This needs to change!
 				if(retryCount > MAX_RETRIES) {
 					logger.error("NODE {}: Node advancer: Retries exceeded at {}. Node is DEAD!", 
 							node.getNodeId(), currentStage.toString());
-					currentStage = ZWaveNodeInitStage.DEAD;
+					node.setNodeState(ZWaveNodeState.DEAD);
 					break;
 				}
 			}
@@ -305,8 +325,10 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				break;
 
 			case FAILED_CHECK:
-				// If this is the controller, we're done
-				if (node.getNodeId() == controller.getOwnNodeId()) {
+				// It seems that PC_CONTROLLERs don't respond to a lot of requests, so let's
+				// just assume their OK!
+				// If this is a controller, we're done
+				if (node.getDeviceClass().getSpecificDeviceClass() == Specific.PC_CONTROLLER) {
 					logger.debug("NODE {}: Node advancer: FAILED_CHECK - Controller - terminating initialisation", node.getNodeId());
 					currentStage = ZWaveNodeInitStage.DONE;
 					break;
@@ -316,7 +338,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				if (eventClass == SerialMessageClass.IsFailedNodeID) {
 					break;
 				}
-				
+
+				addToQueue(new IsFailedNodeMessageClass().doRequest(node.getNodeId()));
 				break;
 
 			case WAIT:
@@ -645,10 +668,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				break;
 
 			case DONE:
-				initializationComplete = true;
 				logger.debug("NODE {}: Node advancer: Initialisation complete!", node.getNodeId());
-			case DEAD:
-			case FAILED:
+
 				// Save the node information to file
 				nodeSerializer.SerializeNode(node);
 
@@ -773,7 +794,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	 * @return true if initialization has completed. False otherwise.
 	 */
 	public boolean isInitializationComplete() {
-		return initializationComplete;
+		return (currentStage == ZWaveNodeInitStage.DONE);
 	}
 
 	/**
@@ -795,7 +816,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	@Override
 	public void ZWaveIncomingEvent(ZWaveEvent event) {
 		// If we've already completed initialisation, then we're done!
-		if (initializationComplete == true) {
+		if (currentStage == ZWaveNodeInitStage.DONE) {
 			return;
 		}
 
@@ -826,6 +847,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			case IdentifyNode:
 			case RequestNodeInfo:
 			case GetRoutingInfo:
+			case IsFailedNodeID:
 				logger.debug("NODE {}: Node advancer - {}: Transaction complete ({}:{}) success({})",
 						node.getNodeId(), currentStage.toString(), serialMessage.getMessageClass(),
 						serialMessage.getMessageType(), completeEvent.getState());

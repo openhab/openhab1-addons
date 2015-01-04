@@ -69,7 +69,7 @@ public class ZWaveHailCommandClass extends ZWaveCommandClass {
 				logger.debug("NODE {}: Request an update of the dynamic values", this.getNode().getNodeId());
 				
 				// We only re-request dynamic values for nodes that are completely initialized.
-				if (this.getNode().getNodeState() != ZWaveNodeState.ALIVE) {
+				if (this.getNode().getNodeState() != ZWaveNodeState.ALIVE || this.getNode().isInitializationComplete() == false) {
 					return;
 				}
 				

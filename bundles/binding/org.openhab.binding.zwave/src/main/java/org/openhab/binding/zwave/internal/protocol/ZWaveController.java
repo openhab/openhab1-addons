@@ -17,7 +17,6 @@ import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,12 +37,9 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstan
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent.State;
-import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeInitStage;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AddNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRouteMessageClass;
@@ -82,7 +78,7 @@ public class ZWaveController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveController.class);
 	
-	private static final int QUERY_STAGE_TIMEOUT = 120000;
+//	private static final int QUERY_STAGE_TIMEOUT = 120000;
 
 	private static final int ZWAVE_RESPONSE_TIMEOUT = 5000;		// 5000 ms ZWAVE_RESPONSE TIMEOUT
 	private static final int ZWAVE_RECEIVE_TIMEOUT = 1000;		// 1000 ms ZWAVE_RECEIVE_TIMEOUT
@@ -252,6 +248,11 @@ public class ZWaveController {
 			case SerialApiGetInitData:
 				this.isConnected = true;
 				for(Integer nodeId : ((SerialApiGetInitDataMessageClass)processor).getNodes()) {
+	//				if(nodeId != 35)
+		//				continue;
+					
+					
+					
 					ZWaveNode node = null;
 					try {
 						ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
@@ -549,19 +550,6 @@ public class ZWaveController {
 		} else if(event instanceof ZWaveNetworkEvent) {
 			ZWaveNetworkEvent networkEvent = (ZWaveNetworkEvent)event;
 			switch(networkEvent.getEvent()) {
-				case FailedNode:
-					if(getNode(networkEvent.getNodeId()) == null) {
-						logger.debug("NODE {}: Deleting a node that doesn't exist.", networkEvent.getNodeId());
-						break;
-					}
-					if (networkEvent.getState() == State.Success) {
-						logger.warn("NODE {}: Marking node as FAILED because its on the controllers failed node list.", networkEvent.getNodeId());
-						getNode(networkEvent.getNodeId()).setNodeStage(ZWaveNodeInitStage.FAILED);
-						
-						ZWaveEvent zEvent = new ZWaveNodeStatusEvent(networkEvent.getNodeId(), ZWaveNodeState.FAILED);
-						this.notifyEventListeners(zEvent);
-						break;
-					}
 				case DeleteNode:
 					if(getNode(networkEvent.getNodeId()) == null) {
 						logger.debug("NODE {}: Deleting a node that doesn't exist.", networkEvent.getNodeId());
@@ -587,6 +575,7 @@ public class ZWaveController {
 				return;
 			}
 
+			// Handle node state changes
 			switch (statusEvent.getState()) {
 			case DEAD:
 				break;
@@ -628,6 +617,7 @@ public class ZWaveController {
 	 * Checks for dead or sleeping nodes during Node initialization.
 	 * JwS: merged checkInitComplete and checkForDeadOrSleepingNodes to prevent possibly looping nodes multiple times.
 	 */
+	/*
 	public void checkForDeadOrSleepingNodes(){
 		int completeCount = 0;
 
@@ -674,7 +664,8 @@ public class ZWaveController {
 			}
 			
 			logger.warn("NODE {}: May be dead, setting stage to DEAD.", entry.getKey());
-			entry.getValue().setNodeStage(ZWaveNodeInitStage.DEAD);
+			entry.getValue().setNodeState(ZWaveNodeState.DEAD);
+			setNodeStage(ZWaveNodeInitStage.DEAD);
 
 			completeCount++;
 		}
@@ -702,7 +693,7 @@ public class ZWaveController {
 			}
 		}
 	}
-
+*/
 	/**
 	 * Polls a node for any dynamic information
 	 * @param node
@@ -1116,9 +1107,10 @@ public class ZWaveController {
 						continue;
 					}
 
-					// If it's a battery device, it needs to be awake, or we queue the frame until it is.
+					// Get the node for this message
 					ZWaveNode node = getNode(lastSentMessage.getMessageNode());
-					
+
+					// If it's a battery device, it needs to be awake, or we queue the frame until it is.
 					if (node != null && !node.isListening() && !node.isFrequentlyListening() && lastSentMessage.getPriority() != SerialMessagePriority.Low) {
 						ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
 
@@ -1172,8 +1164,6 @@ public class ZWaveController {
 						if (!transactionCompleted.tryAcquire(1, zWaveResponseTimeout, TimeUnit.MILLISECONDS)) {
 							timeOutCount.incrementAndGet();
 							// If this is a SendData message, then we need to abort
-							// TODO: CDJ - not according to the doc? Should check this. We don't know if this is after the response or not!
-							// TODO: CDJ - SendDataBort is sent if no response is received to the request!
 							if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
 								buffer = new SerialMessage(SerialMessageClass.SendDataAbort, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.High).getMessageBuffer();
 								logger.debug("NODE {}: Sending ABORT Message = {}", lastSentMessage.getMessageNode(), SerialMessage.bb2hex(buffer));
@@ -1200,7 +1190,8 @@ public class ZWaveController {
 									enqueue(lastSentMessage);
 								}
 							} else {
-								logger.warn("NODE {}: Too many retries. Discarding message: {}", lastSentMessage.getMessageNode(), lastSentMessage.toString());
+								logger.warn("NODE {}: Too many retries. Discarding message: {}",
+										lastSentMessage.getMessageNode(), lastSentMessage.toString());
 							}
 							continue;
 						}

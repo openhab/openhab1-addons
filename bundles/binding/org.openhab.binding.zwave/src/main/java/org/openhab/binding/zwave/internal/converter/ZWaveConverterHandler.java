@@ -161,7 +161,7 @@ public class ZWaveConverterHandler {
 			}
 			
 			// ignore nodes that are not initialized or dead.
-			if (node.getNodeState() != ZWaveNodeState.ALIVE) {
+			if (node.getNodeState() != ZWaveNodeState.ALIVE || node.isInitializationComplete() == false) {
 				return;
 			}
 			

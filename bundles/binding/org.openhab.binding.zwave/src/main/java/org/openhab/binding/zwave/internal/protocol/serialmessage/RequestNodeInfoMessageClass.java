@@ -40,7 +40,7 @@ public class RequestNodeInfoMessageClass  extends ZWaveCommandProcessor {
 		else {
 			logger.error("Request node info not placed on stack due to error.");
 		}
-		
+
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 
 		return true;
