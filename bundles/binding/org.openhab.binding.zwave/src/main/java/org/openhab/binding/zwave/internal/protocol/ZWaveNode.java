@@ -106,6 +106,7 @@ public class ZWaveNode {
 	 * @param controller the wave controller instance
 	 */
 	public ZWaveNode(int homeId, int nodeId, ZWaveController controller) {
+		nodeState = ZWaveNodeState.ALIVE;
 		this.homeId = homeId;
 		this.nodeId = nodeId;
 		this.controller = controller;
