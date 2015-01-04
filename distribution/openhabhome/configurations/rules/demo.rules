@@ -166,8 +166,7 @@ end
 rule "Compute humidex"
 when
         Item Weather_Temperature changed or
-	Item Weather_Humidity changed or
-	System started 
+	Item Weather_Humidity changed
 then
 	var Number T = Weather_Temperature.state as DecimalType
 	var Number H = Weather_Humidity.state as DecimalType	
