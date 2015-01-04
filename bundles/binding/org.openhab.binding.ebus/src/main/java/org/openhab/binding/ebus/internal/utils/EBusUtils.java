@@ -362,6 +362,8 @@ public class EBusUtils {
 			// check calculted crc with received crc
 			if(crc != uc_crc) {
 
+				byte[] array = buffer.array();
+				
 				logger.warn("EBus telegram sender-crc invalid, skip data! Data: {}", toHexDumpString(data));
 
 				// invalid, return null

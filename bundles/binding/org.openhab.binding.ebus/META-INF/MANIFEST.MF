@@ -25,3 +25,4 @@ Require-Bundle: org.openhab.io.transport.serial;resolution:=optional
 Service-Component: OSGI-INF/ebusbinding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
+Export-Package: org.openhab.binding.ebus

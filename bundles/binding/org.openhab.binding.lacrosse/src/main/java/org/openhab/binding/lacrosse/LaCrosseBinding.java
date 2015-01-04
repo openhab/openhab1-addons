@@ -92,7 +92,7 @@ public class LaCrosseBinding extends AbstractBinding<LaCrosseBindingProvider> im
 
 		// search for a set mapping
 		if(addressMapping.containsKey(address)) {
-			logger.info("Use lacrosse id " + addressMapping.get(address) +
+			logger.debug("Use lacrosse id " + addressMapping.get(address) +
 					" for sensor id " + address);
 			
 			// Found mapping for this address, use that
