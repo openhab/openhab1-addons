@@ -1,0 +1,233 @@
+[
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Aktuelle Geräteleistung in %",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"performance",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 6F 01",
+
+		"values": {
+			"performance_burner":	{"type": "word", "pos": 12, "label": "Aktuelle Geräteleistung (%)", "min":0, "max":100}
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Drehzahl Pumpe",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"performance_pump",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 57 27",
+
+		"values": {
+			"performance_pump":		{"type": "word", "pos": 12, "label": "Drehzahl Pumpe (%)", "min":0, "max":100}
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Anlagendruck (bar)",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"system_pressure",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 1A 27",
+
+		"values": {
+			"system_pressure":		{"type": "word", "pos": 12, "label": "Anlagedruck (bar)", "factor": 0.01 }
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Software Version Brenner",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"fw_version",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 9A 01",
+
+		"values": {
+			"fw_version":			{"type": "word", "pos": 12, "label": "Brenner Software Version", "factor": 0.01 }
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Anzahl Zündungen",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"no_of_firing",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 26 02",
+
+		"values": {
+			"no_of_firing":			{"type": "word", "pos": 12, "label": "Anz. Zündungen"}
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Ionisierung",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"ionisation",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 4F 27",
+
+		"values": {
+			"ionisation":			{"type": "word", "pos": 12, "label": "Ionisation"}
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Anzahl Netz-Ein",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"no_of_power_on",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 5E 27",
+
+		"values": {
+			"no_of_power_on":		{"type": "word", "pos": 12, "label": "Anz. Netz-Ein"}
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Betriebsstunden Brenner",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"op_hrs_heating_unit",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 2A 02",
+
+		"values": {
+			"op_hrs_heating_unit":	{"type": "word", "pos": 12, "label": "Betriebsstunden Brenner"}
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder: Abgas-Temperatur",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"temp_exhaust",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 1D 27",
+
+		"values": {
+			"temp_exhaust":			{"type": "word", "pos": 12, "label": "Abgas-Temperatur", "factor": 0.1 , "min": 1, "max":140 }
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder: Betriebsstd. a Netz",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"op_hrs_supply",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 28 02",
+
+		"values": {
+			"op_hrs_supply":		{"type": "word", "pos": 12, "label": "Betriebsstunden am Netz"}
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Kessel-Temperatur IST",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"temp_vessel",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 0D 00",
+
+		"values": {
+			"temp_vessel":			{"type": "word", "pos": 12, "label": "Kessel Ist", "factor": 0.1, "min": 1, "max": 100 }
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Warmwasser-Temperatur",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"temp_boiler",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 0E 00",
+
+		"values": {
+			"temp_boiler":			{"type": "word", "pos": 12, "label": "Warmwasser-Temperatur", "factor": 0.1 , "min": 1, "max": 100}
+		}
+	},
+
+	{
+		"comment":	"<Regler> Kromschröder/Wolf: Rücklauf-Temperatur",
+		"device":	"Wolf CSZ-2 > CGB-2 > HCM-2/GBC-e, FW: 1.6",
+		"id":		"temp_return",
+		"class":	"heating_kw",
+		"command":	"50 22",
+		"data": 	"CC 16 00",
+
+		"values": {
+			"temp_return":			{"type": "word", "pos": 12, "label": "Rücklauftemp", "factor": 0.1, "min": 1, "max": 100}
+		}
+	},
+
+	{
+		"comment":	"<Solar> Kromschröder/Wolf: Solar",
+		"device":	"Wolf CSZ-2 > SM1, FW: 10/2014",
+		"filter":	"?? ?? 50 17 .*",
+		"id":		"solar_data",
+		"class":	"solar_kw",
+
+		"values": {
+			"solar_status":			{"type": "byte", "pos":6, "label": "Solarstatus (Solarpumpe an?)"},
+			"solar_pump":			{"type": "bit", "pos":6, "bit": 0, "label": "Solarpumpe"},
+			"_unknown1":			{"type": "byte", "pos":7},
+			"temp_collector":		{"type": "data2c", "pos":8, "label": "Kollektortemperatur °C", "min":-20, "max":160},
+			"temp_reservoir_1":		{"type": "data2c", "pos":10, "label": "Warmwassertemperatur °C", "min":1, "max":100}
+		}
+	},
+
+	{
+		"comment":	"<Solar> Kromschröder/Wolf: Solarerträge",
+		"device":	"Wolf CSZ-2 > SM1, FW: 10/2014",
+		"filter":	"?? ?? 50 18 .*",
+		"id":		"solar_yield",
+		"class":	"solar_kw",
+
+		"values": {
+			"solar_current":		{"type": "data2c", "pos": 6},
+			"yield_day_l":			{"type": "word", "pos":8},
+			"yield_day_h":			{"type": "word", "pos":10},
+			"yield_sum_l":			{"type": "word", "pos":12},
+			"yield_sum_h":			{"type": "word", "pos":14},
+			"yield_sum_m":			{"type": "word", "pos":16}
+		},
+		"computed_values": {
+			"yield_day":			{"type": "script", "script": "(yield_day_h * 1000 + yield_day_l) / 1000", "label": "Tagesertrag kW/h"},
+			"yield_sum":			{"type": "script", "script": "(yield_sum_m * 1000000  + yield_sum_h * 1000 + yield_sum_l) / 1000", "label": "Gesamtertrag kW/h"}
+		}
+	},
+
+	{
+		"comment":	"<Solar> Kromschröder/Wolf: Betriebsstunden Pumpe 1",
+		"device":	"Wolf CSZ-2 > SM1, FW: 10/2014",
+		"id":		"op_hrs_pump1",
+		"class":	"solar_kw",
+		"command":	"50 22",
+		"data": 	"CC F9 02",
+
+		"values": {
+			"op_hrs_pump1":			{"type": "word", "pos": 12, "label": "Betriebsstunden Pumpe 1"}
+		}
+	},
+
+	{
+		"comment":	"<Solar> Kromschröder/Wolf: E1 (hier Solar-Rücklauf-Temp.)",
+		"device":	"Wolf CSZ-2 > SM1, FW: 10/2014",
+		"id":		"e1",
+		"class":	"solar_kw",
+		"command":	"50 22",
+		"data": 	"CC 2B 0A",
+
+		"values": {
+			"e1":					{"type": "word", "pos": 12, "label": "Solar-Rücklauf-Temp.", "factor": 0.1, "min": 1, "max": 120}
+		}
+	}
+]
