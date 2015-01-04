@@ -133,7 +133,7 @@ public class XMPP {
 					is = url.openStream();
 					OutgoingFileTransfer.setResponseTimeout(10000);
 					transfer.sendStream(is, url.getFile(), is.available(), message);
-					logger.debug("Sent message '{}' with attachment '{}' to '{}'.", new String[] { message, attachmentUrl, to });
+					logger.debug("Sent message '{}' with attachment '{}' to '{}'.", (Object[]) new String[] { message, attachmentUrl, to });
 					success = true;
 				} catch (IOException e) {
 					logger.error("Could not open url '{}' for sending it via XMPP", attachmentUrl, e);
