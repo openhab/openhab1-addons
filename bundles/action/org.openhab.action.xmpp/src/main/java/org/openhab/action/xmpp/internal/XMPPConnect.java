@@ -56,115 +56,115 @@ public class XMPPConnect implements ManagedService {
 
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config) throws ConfigurationException {
-		if (config != null) {
-			XMPPConnect.servername = (String) config.get("servername");
-			XMPPConnect.proxy = (String) config.get("proxy");
-			String portString = (String) config.get("port");
-			if (portString != null) {
-				XMPPConnect.port = Integer.valueOf(portString);
-			}
-			XMPPConnect.username = (String) config.get("username");
-			XMPPConnect.password = (String) config.get("password");
-			XMPPConnect.chatroom = (String) config.get("chatroom");
-			XMPPConnect.chatnickname = (String) config.get("chatnickname");
-			XMPPConnect.chatpassword = (String) config.get("chatpassword");
-
-			String securityModeString = (String) config.get("securitymode");
-			if (securityModeString != null) {
-				securityMode = SecurityMode.valueOf(securityModeString);
-			}
-
-			String users = (String) config.get("consoleusers");
-
-			if (!StringUtils.isEmpty(users)) {
-				XMPPConnect.consoleUsers = users.split(",");
-			} else {
-				XMPPConnect.consoleUsers = new String[0];
-			}
-
-			// check mandatory settings
-			if (servername == null || servername.isEmpty())
-				return;
-			if (username == null || username.isEmpty())
-				return;
-			if (password == null || password.isEmpty())
-				return;
-
-			// set defaults for optional settings
-			if (port == null) {
-				port = 5222;
-			}
-			if (chatnickname == null || chatnickname.isEmpty()) {
-				chatnickname = "openhab-bot";
-			}
-
-			establishConnection();
+		if (config == null) {
+			return;
 		}
+		XMPPConnect.servername = (String) config.get("servername");
+		XMPPConnect.proxy = (String) config.get("proxy");
+		String portString = (String) config.get("port");
+		if (portString != null) {
+			XMPPConnect.port = Integer.valueOf(portString);
+		}
+		XMPPConnect.username = (String) config.get("username");
+		XMPPConnect.password = (String) config.get("password");
+		XMPPConnect.chatroom = (String) config.get("chatroom");
+		XMPPConnect.chatnickname = (String) config.get("chatnickname");
+		XMPPConnect.chatpassword = (String) config.get("chatpassword");
+
+		String securityModeString = (String) config.get("securitymode");
+		if (securityModeString != null) {
+			securityMode = SecurityMode.valueOf(securityModeString);
+		}
+
+		String users = (String) config.get("consoleusers");
+
+		if (!StringUtils.isEmpty(users)) {
+			XMPPConnect.consoleUsers = users.split(",");
+		} else {
+			XMPPConnect.consoleUsers = new String[0];
+		}
+
+		// check mandatory settings
+		if (servername == null || servername.isEmpty()) return;
+		if (username == null || username.isEmpty()) return;
+		if (password == null || password.isEmpty()) return;
+
+		// set defaults for optional settings
+		if (port == null) {
+			port = 5222;
+		}
+		if (chatnickname == null || chatnickname.isEmpty()) {
+			chatnickname = "openhab-bot";
+		}
+
+		establishConnection();
 	}
 
 	private static void establishConnection() {
-		if (servername != null) {
-			ConnectionConfiguration config;
-			// Create a connection to the jabber server on the given port
-			if (proxy != null) {
-				config = new ConnectionConfiguration(servername, port, proxy);
-			} else {
-				config = new ConnectionConfiguration(servername, port);
-			}
-			config.setSecurityMode(securityMode);
+		if (servername == null) {
+			return;
+		}
+		ConnectionConfiguration config;
+		// Create a connection to the jabber server on the given port
+		if (proxy != null) {
+			config = new ConnectionConfiguration(servername, port, proxy);
+		} else {
+			config = new ConnectionConfiguration(servername, port);
+		}
+		config.setSecurityMode(securityMode);
 
-			if (connection != null && connection.isConnected()) {
-				try {
-					connection.disconnect();
-				} catch (NotConnectedException e) {
-					logger.debug("Already disconnected", e);
-				}
-			}
-
-			connection = new XMPPTCPConnection(config);
-
+		if (connection != null && connection.isConnected()) {
 			try {
-				connection.connect();
-				connection.login(username, password);
-				if (consoleUsers.length > 0) {
-					ChatManager.getInstanceFor(connection).addChatListener(new XMPPConsole(consoleUsers));
-					connection.addConnectionListener(new XMPPConnectionListener());
-				}
-				logger.info("Connection to XMPP as '{}' has been established.",
-						username);
-				initialized = true;
-			} catch (Exception e) {
-				logger.error("Could not establish connection to XMPP server '" + servername + ":" + port + "': {}", e.getMessage());
+				connection.disconnect();
+			} catch (NotConnectedException e) {
+				logger.debug("Already disconnected", e);
 			}
+		}
+
+		connection = new XMPPTCPConnection(config);
+
+		try {
+			connection.connect();
+			connection.login(username, password);
+			if (consoleUsers.length > 0) {
+				ChatManager.getInstanceFor(connection).addChatListener(
+						new XMPPConsole(consoleUsers));
+				connection.addConnectionListener(new XMPPConnectionListener());
+			}
+			logger.info("Connection to XMPP as '{}' has been established.", username);
+			initialized = true;
+		} catch (Exception e) {
+			logger.error("Could not establish connection to XMPP server '" + servername + ":"
+					+ port + "': {}", e.getMessage());
 		}
 	}
 
 	private static void joinChat() throws NotInitializedException {
-		if (chatroom != null) {
+		if (chatroom == null) {
+			return;
+		}
+		if (!initialized) {
+			establishConnection();
 			if (!initialized) {
-				establishConnection();
-				if (!initialized) {
-					throw new NotInitializedException();
-				}
-			}	
-			
-			chat = new MultiUserChat(connection, chatroom);
-			
-			try {
-				if (chatpassword != null) {
-					chat.join(chatnickname, chatpassword);
-				} else {
-					chat.join(chatnickname);
-				}
-				logger.info("Successfuly joined chat '{}' with nickname '{}'.",
-						chatroom, chatnickname);				
-			} catch (XMPPException e) {
-				logger.error("Could not join chat '{}' with nickname '{}': {}",
-						chatroom, chatnickname, e.getMessage());
-			} catch (SmackException e) {
-				logger.error("Could not join chat '{}' with nickname '{}': {}",
-						chatroom, chatnickname, e.getMessage());
+				throw new NotInitializedException();
 			}
+		}
+
+		chat = new MultiUserChat(connection, chatroom);
+
+		try {
+			if (chatpassword != null) {
+				chat.join(chatnickname, chatpassword);
+			} else {
+				chat.join(chatnickname);
+			}
+			logger.info("Successfuly joined chat '{}' with nickname '{}'.", chatroom, chatnickname);
+		} catch (XMPPException e) {
+			logger.error("Could not join chat '{}' with nickname '{}': {}", chatroom, chatnickname,
+					e.getMessage());
+		} catch (SmackException e) {
+			logger.error("Could not join chat '{}' with nickname '{}': {}", chatroom, chatnickname,
+					e.getMessage());
 		}
 	}
 	
