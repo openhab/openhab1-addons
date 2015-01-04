@@ -7,14 +7,15 @@ import org.json.simple.parser.ParseException;
 
 /**
  * 
- * Ubiquiti mPower strip binding
- * This transforms the JSON data into a nice object
+ * Ubiquiti mPower strip binding This transforms the JSON data into a nice
+ * object
  * 
  * @author magcode
  */
 
 public class MpowerSocketState {
 	private double voltage;
+	private long energy;
 	private double power;
 	private boolean on;
 	private int socket;
@@ -30,21 +31,33 @@ public class MpowerSocketState {
 			JSONObject oneSensor = (JSONObject) sensors.get(0);
 			Object ob = oneSensor.get("voltage");
 			if (ob instanceof Double) {
-				setVoltage((Double) ob);
+				Double val = (Double) ob;
+				setVoltage(val.intValue());
 			}
 			ob = oneSensor.get("power");
 			if (ob instanceof Double) {
-				setPower((Double) ob);
+				Double val = (double) Math.round((Double) ob * 10) / 10;
+
+				setPower(val);
 			}
 			ob = oneSensor.get("port");
 			if (ob instanceof Long) {
 				Long sock = (Long) ob;
 				setSocket(sock.intValue());
 			}
+			ob = oneSensor.get("energy");
+			if (ob instanceof Double) {
+				Double val = (Double) ob;
+				setEnergy(val.longValue());
+			}
 
+			ob = oneSensor.get("output");
+			if (ob instanceof Long) {
+				Boolean on = (Long) ob == 1;
+				setOn(on);
+			}
 		} catch (ParseException pe) {
-			System.out.println("position: " + pe.getPosition());
-			System.out.println(pe);
+			// TODO
 		}
 	}
 
@@ -86,5 +99,30 @@ public class MpowerSocketState {
 
 	public void setSocket(int socket) {
 		this.socket = socket;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof MpowerSocketState) {
+			MpowerSocketState givenState = (MpowerSocketState) object;
+			boolean sameVolt = givenState.getVoltage() == getVoltage();
+			boolean samePower = givenState.getPower() == getPower();
+			boolean sameEnergy = givenState.getEnergy() == getEnergy();
+			boolean sameONOFFstate = givenState.isOn() == isOn();
+			if (sameVolt && samePower && sameONOFFstate && sameEnergy) {
+				return true;
+			}
+
+		}
+		return false;
+
+	}
+
+	public long getEnergy() {
+		return energy;
+	}
+
+	public void setEnergy(long energy) {
+		this.energy = energy;
 	}
 }

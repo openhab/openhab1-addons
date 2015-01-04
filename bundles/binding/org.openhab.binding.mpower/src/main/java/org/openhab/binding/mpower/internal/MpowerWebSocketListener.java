@@ -30,14 +30,14 @@ public class MpowerWebSocketListener implements WebSocketTextListener {
 
 	@Override
 	public void onOpen(WebSocket webSocket) {
-		webSocket.sendTextMessage("{\"time\":4000}");
+		// webSocket.sendTextMessage("{\"time\":4000}");
 		logger.debug("[{}]: Websocket opened", "");
 	}
 
 	@Override
 	public void onError(Throwable e) {
 		if (e instanceof ConnectException) {
-			
+
 			logger.debug("[{}]: Websocket connection error", "");
 		} else if (e instanceof TimeoutException) {
 			logger.debug("[{}]: Websocket timeout error", "");

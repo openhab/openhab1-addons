@@ -41,15 +41,41 @@ public class MpowerBindingConfig implements BindingConfig {
 	public void setSwitchItemName(int socket, String name) {
 		sockets.get(socket).setSwitchItemName(name);
 	}
+	
+	public String getSwitchItemName(int socket) {
+		return sockets.get(socket).getSwitchItemName();
+	}
 
 	public String getVoltageItemName(int socket) {
 		return sockets.get(socket).getVoltageItemName();
 	}
+	
+	public String getEnergyItemName(int socket) {
+		return sockets.get(socket).getEnergyItemName();
+	}
 
+	public void setEnergyItemName(int socket, String name) {
+		sockets.get(socket).setEnergyItemName(name);
+	}
 	public String getPowerItemName(int socket) {
 		return sockets.get(socket).getPowerItemName();
 	}
 
+	public MpowerSocketState getCachedState(int socket) {
+		return sockets.get(socket).getValueCache();
+	}
+
+	public void setCachedState(int socket, MpowerSocketState state) {
+		sockets.get(socket).setValueCache(state);
+	}
+
+	/**
+	 * looks through all sockets and returns the number for a given switch item
+	 * name
+	 * 
+	 * @param itemName
+	 * @return
+	 */
 	public int findSocketForItemName(String itemName) {
 		for (Map.Entry<Integer, MpowerSocket> entry : sockets.entrySet()) {
 			if (entry.getValue().getSwitchItemName().equals(itemName)) {
@@ -59,6 +85,12 @@ public class MpowerBindingConfig implements BindingConfig {
 		return 0;
 	}
 
+	/**
+	 * Checks if the given switch item name is part of this strip
+	 * 
+	 * @param itemName
+	 * @return
+	 */
 	public boolean containsItemName(String itemName) {
 		for (Map.Entry<Integer, MpowerSocket> entry : sockets.entrySet()) {
 			MpowerSocket socket = entry.getValue();
@@ -67,5 +99,9 @@ public class MpowerBindingConfig implements BindingConfig {
 			}
 		}
 		return false;
+	}
+
+	public MpowerSocketState getCacheForSocket(int socketNumber) {
+		return sockets.get(socketNumber).getValueCache();
 	}
 }

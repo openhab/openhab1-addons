@@ -65,7 +65,8 @@ public class MpowerGenericBindingProvider extends
 					+ item.getName() + "' could not be parsed.");
 
 		String mPowerInstance = matcher.group(1);
-		String socket = matcher.group(2);
+		String socketString = matcher.group(2);
+		int socket = Integer.parseInt(socketString);
 		String variable = matcher.group(3);
 
 		MpowerBindingConfig config = null;
@@ -77,15 +78,19 @@ public class MpowerGenericBindingProvider extends
 		}
 
 		if ("voltage".equals(variable)) {
-			config.setVoltageItemName(Integer.parseInt(socket), item.getName());
+			config.setVoltageItemName(socket, item.getName());
 		}
 
 		if ("power".equals(variable)) {
-			config.setPowerItemName(Integer.parseInt(socket), item.getName());
+			config.setPowerItemName(socket, item.getName());
 		}
 
 		if ("switch".equals(variable)) {
-			config.setSwitchItemName(Integer.parseInt(socket), item.getName());
+			config.setSwitchItemName(socket, item.getName());
+		}
+
+		if ("energy".equals(variable)) {
+			config.setEnergyItemName(socket, item.getName());
 		}
 
 		addBindingConfig(item, config);

@@ -52,19 +52,10 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 	}
 
 	public void activate() {
-		// MpowerConnector conn = new MpowerConnector("mpower.lan", "mp1",
-		// this);
-		// connectors.put("mp1", conn);
-		// conn.start();
 	}
 
 	public void deactivate() {
-		// stop all connectors
-		for (MpowerConnector connector : connectors.values()) {
-			connector.stop();
-			connector = null;
-		}
-		connectors.clear();
+		shutDown();
 	}
 
 	/**
@@ -80,7 +71,7 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 	 */
 	@Override
 	protected String getName() {
-		return "mPower Refresh Service";
+		return "Ubiquiti mPower Binding";
 	}
 
 	/**
@@ -90,6 +81,17 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
 		logger.debug("execute() method is called!");
+	}
+
+	/**
+	 * stop all connectors
+	 */
+	private void shutDown() {
+		for (MpowerConnector connector : connectors.values()) {
+			connector.stop();
+			connector = null;
+		}
+		connectors.clear();
 	}
 
 	/**
@@ -130,6 +132,8 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 			throws ConfigurationException {
 		if (config != null) {
 
+			shutDown();
+
 			Enumeration<String> keys = config.keys();
 			//
 			// put all configurations into a nice structure
@@ -162,24 +166,20 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 					if (CONFIG_HOST.equals(configOption)) {
 						aConfig.setHost((String) config.get(key));
 					}
+
+					if (CONFIG_SECURE.equals(configOption)) {
+						Boolean secure = Boolean.parseBoolean((String) config
+								.get(key));
+						aConfig.setSecure(secure);
+					}
 				}
 			}
 
 			//
-			// now start or stop the connectors
+			// now start the connectors
 			//
 			for (Map.Entry<String, MpowerConfig> entry : bindingConfigs
 					.entrySet()) {
-				// we already know this mpower instance, lets stop and remove it
-				if (connectors.containsKey(entry.getKey())) {
-					MpowerConnector connector = connectors.get(entry.getKey());
-					logger.debug("Stopping existing connector ", entry.getKey());
-					connector.stop();
-					connectors.remove(entry.getKey());
-					connector = null;
-				}
-
-				// create and start
 				MpowerConfig aConfig = entry.getValue();
 				logger.debug("Creating and starting new connector ",
 						aConfig.getId());
@@ -204,19 +204,58 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 		}
 	}
 
-	public void receivedData(MpowerSocketState state) {
+	/**
+	 * Called from websocket listener This method will update the OH items if
+	 * 
+	 * a) the refresh time has passed and the item has changed
+	 * 
+	 * b) or we run on 'real time mode' and the item has changed
+	 * 
+	 * @param state
+	 *            new data received from mPower
+	 */
+	public void receivedData(MpowerSocketState socketState) {
 		for (MpowerBindingProvider provider : providers) {
-			MpowerBindingConfig bindingCfg = provider.getConfigForAddress(state
-					.getAddress());
-			String volItemName = bindingCfg.getVoltageItemName(state
-					.getSocket());
-			State itemState = new DecimalType(state.getVoltage());
-			eventPublisher.postUpdate(volItemName, itemState);
+			MpowerBindingConfig bindingCfg = provider
+					.getConfigForAddress(socketState.getAddress());
 
-			String powerItemname = bindingCfg.getPowerItemName(state
-					.getSocket());
-			itemState = new DecimalType(state.getPower());
-			eventPublisher.postUpdate(powerItemname, itemState);
+			int socketNumber = socketState.getSocket();
+			MpowerSocketState cachedState = bindingCfg
+					.getCacheForSocket(socketNumber);
+			// only proceed if the data has changed
+			if (cachedState == null || !cachedState.equals(socketState)) {
+
+				// update voltage
+				String volItemName = bindingCfg.getVoltageItemName(socketState
+						.getSocket());
+				State itemState = new DecimalType(socketState.getVoltage());
+				eventPublisher.postUpdate(volItemName, itemState);
+
+				// update power
+				String powerItemname = bindingCfg.getPowerItemName(socketState
+						.getSocket());
+				itemState = new DecimalType(socketState.getPower());
+				eventPublisher.postUpdate(powerItemname, itemState);
+
+				// update energy
+				String energyItemname = bindingCfg
+						.getEnergyItemName(socketState.getSocket());
+				itemState = new DecimalType(socketState.getEnergy());
+				eventPublisher.postUpdate(energyItemname, itemState);
+
+				// update switch
+				String switchItemname = bindingCfg
+						.getSwitchItemName(socketState.getSocket());
+				OnOffType state = socketState.isOn() ? OnOffType.ON
+						: OnOffType.OFF;
+				eventPublisher.postUpdate(switchItemname, state);
+
+				// update the cache
+				bindingCfg.setCachedState(socketNumber, socketState);
+			} else {
+				logger.trace("suppressing update as socket state has not changed");
+			}
+
 		}
 
 	}

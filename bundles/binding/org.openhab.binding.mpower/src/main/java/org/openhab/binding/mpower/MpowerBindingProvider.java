@@ -22,7 +22,5 @@ public interface MpowerBindingProvider extends BindingProvider {
 	public MpowerBindingConfig getConfigForItemName(String itemName);
 
 	public MpowerBindingConfig getConfigForAddress(String address);
-	
-	
 
 }

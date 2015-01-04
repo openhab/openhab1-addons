@@ -28,7 +28,7 @@ import org.json.simple.JSONObject;
  * @author magcode
  */
 public class MpowerConnector {
-	private static final int WSPORT= 7681;
+	private static final int WSPORT = 7681;
 	private AsyncHttpClient webSocketHTTPClient;
 	private String host;
 	private String user;
@@ -39,7 +39,8 @@ public class MpowerConnector {
 	private MpowerBinding binding;
 	private String id;
 
-	public MpowerConnector(String host, String id, String user, String password, boolean secure, MpowerBinding bind) {
+	public MpowerConnector(String host, String id, String user,
+			String password, boolean secure, MpowerBinding bind) {
 		this.binding = bind;
 		this.host = host;
 		this.id = id;
@@ -67,8 +68,8 @@ public class MpowerConnector {
 
 			WebSocketUpgradeHandler.Builder builder = new WebSocketUpgradeHandler.Builder();
 
-			builder.addWebSocketListener(new MpowerWebSocketListener(
-					this.id, this.binding));
+			builder.addWebSocketListener(new MpowerWebSocketListener(this.id,
+					this.binding));
 			builder.setProtocol("mfi-protocol");
 
 			BoundRequestBuilder brb = webSocketHTTPClient.prepareGet("ws://"
@@ -122,7 +123,6 @@ public class MpowerConnector {
 	 */
 	private String getSession() {
 		String targetDummy = "/index.cgi";
-		// httpClient.getHostConfiguration().setProxy("127.0.0.1", 8888);
 		String id = RandomStringUtils.randomNumeric(32);
 		PostMethod post = new PostMethod("http://" + this.host + "/login.cgi");
 		post.setRequestHeader("Cookie", "AIROS_SESSIONID=" + id);
