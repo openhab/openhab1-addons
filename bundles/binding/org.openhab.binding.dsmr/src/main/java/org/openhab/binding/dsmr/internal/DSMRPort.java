@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.dsmr.internal;
 
 import java.io.BufferedReader;
@@ -5,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
@@ -15,18 +22,17 @@ import gnu.io.UnsupportedCommOperationException;
 
 import org.openhab.binding.dsmr.internal.messages.OBISMessage;
 import org.openhab.binding.dsmr.internal.messages.OBISMsgFactory;
-import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class that implements the DSMR port for energy meters that comply to
- * the Dutch Smart Meter Requirements.
+ * Class that implements the DSMR port for energy meters that comply to the
+ * Dutch Smart Meter Requirements.
  * <p>
  * This class provides a simple public interface: read and close.
- * <p> 
- * The read method will claim OS resources if necessary. If the read
- * method encounters problems it will automatically close itselves
+ * <p>
+ * The read method will claim OS resources if necessary. If the read method
+ * encounters problems it will automatically close itself
  * <p>
  * The close method can be called asynchronous and will release OS resources.
  * <p>
@@ -55,10 +61,10 @@ import org.slf4j.LoggerFactory;
  * (00000.000)<br>
  * 0-1:24.4.0(1)<br>
  * !<br>
- * </code>  
+ * </code>
+ * 
  * @author M. Volaart
  * @since 1.7.0
- *         
  */
 public class DSMRPort {
 	/* Internal state based on DSMR specification */
@@ -74,97 +80,119 @@ public class DSMRPort {
 	private final String portName;
 	private final DSMRVersion version;
 	private final int timeoutMSec;
-	
+
 	/* serial port resources */
 	private SerialPort serialPort;
 	private BufferedReader reader;
-	
+
 	/* state variables */
 	private ReadState readerState;
 	private boolean isOpen = false;
-	
+
 	/* helpers */
 	private OBISMsgFactory factory;
-	
-	/* 
-	 * The portLock is used for the shared data used when opening and closing the port.
-	 * The following shared data must be guarded by the lock:
+
+	/*
+	 * The portLock is used for the shared data used when opening and closing
+	 * the port. The following shared data must be guarded by the lock:
 	 * SerialPort, BufferedReader, isOpen
 	 */
 	private Object portLock = new Object();
-	
+
 	/**
-	 * Creates a new DSMRPort. This is only a reference to a port.
-	 * The port will not be opened nor it is checked if the DSMR Port can
-	 * successfully be opened.
+	 * Creates a new DSMRPort. This is only a reference to a port. The port will
+	 * not be opened nor it is checked if the DSMR Port can successfully be
+	 * opened.
 	 * 
-	 * @param portName Device identifier of the post (e.g. /dev/ttyUSB0)
-	 * @param version Version of the DSMR Specification. See {@link DSMRVersion}
-	 * @param timeoutMSec communication timeout in milliseconds
+	 * @param portName
+	 *            Device identifier of the post (e.g. /dev/ttyUSB0)
+	 * @param version
+	 *            Version of the DSMR Specification. See {@link DSMRVersion}
+	 * @param dsmrMeters
+	 *            List of available {@link DSMRMeter} in the binding
+	 * @param timeoutMSec
+	 *            communication timeout in milliseconds
 	 */
-	public DSMRPort(String portName, DSMRVersion version, int timeoutMSec) {
+	public DSMRPort(String portName, DSMRVersion version,
+			List<DSMRMeter> dsmrMeters, int timeoutMSec) {
 		this.portName = portName;
 		this.version = version;
 		this.timeoutMSec = timeoutMSec;
 
-		factory = new OBISMsgFactory(version);
+		factory = new OBISMsgFactory(version, dsmrMeters);
 	}
-	
+
 	/**
 	 * Returns whether or not the port is open
 	 * 
 	 * @return true if the DSMRPort is open, false otherwise
 	 */
 	public boolean isOpen() {
-		synchronized(portLock) {
-			return isOpen;
-		}
+		return isOpen;
 	}
 
 	/**
 	 * Closes the DSMRPort and release OS resources
 	 */
 	public void close() {
-		closePort();
+		synchronized (portLock) {
+			logger.info("Closing DSMR port");
+
+			isOpen = false;
+			// Close resources
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException ioe) {
+					logger.debug("Failed to close reader", ioe);
+				}
+			}
+			if (serialPort != null) {
+				serialPort.close();
+			}
+
+			// Release resources
+			reader = null;
+			serialPort = null;
+		}
 	}
 
 	/**
 	 * Reads a complete telegram from the DSMR port.
 	 * <p>
-	 * If the read is successful a list of received @{link OBISMessage} is returned.
-	 * If the read encounters problems the port will be closed and a list of received 
-	 * {@link OBISMessage} is returned.
+	 * If the read is successful a list of received @{link OBISMessage} is
+	 * returned. If the read encounters problems the port will be closed and a
+	 * list of received {@link OBISMessage} is returned.
 	 * <p>
-	 * It is a technically valid that the read succeeds with an empty list. 
-	 * Most likely there is a configuration problem of the global DSMR binding
+	 * It is a technically valid that the read succeeds with an empty list. Most
+	 * likely there is a configuration problem of the global DSMR binding
 	 * 
 	 * @return List of {@link OBISMessage} with 0 or more entries
 	 */
-	public List<OBISMessage<? extends State>> read() {
-		List<OBISMessage<? extends State>> messages = new ArrayList<OBISMessage<? extends State>>();
+	public List<OBISMessage> read() {
+		List<OBISMessage> messages = new ArrayList<OBISMessage>();
 		long startTime = System.currentTimeMillis();
 
 		// open port if it is not open
-		if (!openPort()) {
+		if (!open()) {
 			logger.warn("Could not open DSMRPort, no values will be read");
-			
-			closePort();
-			
+
+			close();
+
 			return messages;
 		}
 
 		// Initialize readerState
 		readerState = ReadState.WAIT_FOR_START;
-		
+
 		try {
 			// wait till we reached the end of the telegram or a timeout
 			while (readerState != ReadState.END
-					&& ((System.currentTimeMillis() - startTime) < (2 * timeoutMSec)) 
-			) {
+					&& ((System.currentTimeMillis() - startTime) < (2 * timeoutMSec))) {
 				String line = reader.readLine();
 				logger.trace(line);
 				logger.debug("Reader state: " + readerState);
-	
+
 				switch (readerState) {
 				case WAIT_FOR_START:
 					if (line.startsWith("/")) {
@@ -177,10 +205,10 @@ public class DSMRPort {
 					}
 					break;
 				case DATA:
-					if (line.equals("!")) {
+					if (line.startsWith("!")) {
 						readerState = ReadState.END;
 					} else {
-						OBISMessage<? extends State> msg = factory.getMessage(line);
+						OBISMessage msg = factory.getMessage(line);
 						if (msg != null) {
 							messages.add(msg);
 						}
@@ -195,11 +223,10 @@ public class DSMRPort {
 			}
 			if (readerState != ReadState.END) {
 				logger.error("Reading took too long and is aborted (readingtime: "
-						+ (System.currentTimeMillis() - startTime)
-						+ " ms)");
+						+ (System.currentTimeMillis() - startTime) + " ms)");
 			}
 		} catch (IOException ioe) {
-			/* 
+			/*
 			 * Read is interrupted. This can be due to a broken connection or
 			 * closing the port
 			 */
@@ -208,48 +235,51 @@ public class DSMRPort {
 				logger.info("Read aborted: DSMRPort is closed");
 			} else {
 				// Closing due to broken connection
-				
+
 				logger.warn("DSMRPort is not available anymore, closing port");
 				logger.debug("Caused by:", ioe);
-				
-				closePort();
+
+				close();
 			}
 		} catch (NullPointerException npe) {
 			if (!isOpen) {
 				// Port was closed
-				logger.info("Read aborted: DSMRPort is closed");					
+				logger.info("Read aborted: DSMRPort is closed");
 			} else {
 				logger.error("Unexpected problem occured", npe);
 
-				closePort();
+				close();
 			}
 		}
 
 		// Return all received messages
 		return messages;
 	}
-	
+
 	/**
 	 * Opens the Operation System Serial Port
 	 * <p>
-	 * This method opens the port and set Serial Port parameters
-	 * according to the DSMR specification. Since the specification
-	 * is clear about these parameters there are not configurable.
+	 * This method opens the port and set Serial Port parameters according to
+	 * the DSMR specification. Since the specification is clear about these
+	 * parameters there are not configurable.
 	 * <p>
-	 * If there are problem while opening the port, it is the responsibility of the
-	 * calling method to handle this situation (and for example close the port again).
+	 * If there are problem while opening the port, it is the responsibility of
+	 * the calling method to handle this situation (and for example close the
+	 * port again).
 	 * <p>
-	 * Opening an already open port is harmless. The method will return immediately
+	 * Opening an already open port is harmless. The method will return
+	 * immediately
 	 * 
-	 * @return true if opening was successful (or port was already open), false otherwise
+	 * @return true if opening was successful (or port was already open), false
+	 *         otherwise
 	 */
-	private boolean openPort() {
-		synchronized(portLock) {
+	private boolean open() {
+		synchronized (portLock) {
 			// Sanity check
 			if (isOpen) {
 				return true;
 			}
-	
+
 			try {
 				// Opening Operating System Serial Port
 				logger.debug("Creating CommPortIdentifier");
@@ -262,7 +292,7 @@ public class DSMRPort {
 				serialPort = (SerialPort) commPort;
 				serialPort.enableReceiveThreshold(1);
 				serialPort.enableReceiveTimeout(timeoutMSec);
-	
+
 				// Configure Serial Port based on specified DSMR version
 				logger.debug("Configure serial port based on version "
 						+ version);
@@ -274,34 +304,34 @@ public class DSMRPort {
 							SerialPort.STOPBITS_1, SerialPort.PARITY_EVEN);
 					serialPort.setDTR(false);
 					serialPort.setRTS(true);
-	
+
 					break;
 				case V40:
 				case V404:
 					serialPort.setSerialPortParams(115200,
 							SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
 							SerialPort.PARITY_NONE);
-	
+
 					break;
 				default:
 					logger.error("Invalid version, closing port");
-	
+
 					return false;
 				}
 			} catch (NoSuchPortException nspe) {
 				logger.error("Could not open port: " + portName, nspe);
-				
+
 				return false;
 			} catch (PortInUseException piue) {
 				logger.error("Port already in use: " + portName, piue);
-				
+
 				return false;
 			} catch (UnsupportedCommOperationException ucoe) {
 				logger.error("Port is not suitable: " + portName, ucoe);
-				
+
 				return false;
 			}
-	
+
 			// SerialPort is ready, open the reader
 			logger.info("SerialPort opened successful");
 			try {
@@ -311,40 +341,14 @@ public class DSMRPort {
 				logger.error(
 						"Failed to get inputstream for serialPort. Closing port",
 						ioe);
-				
+
 				return false;
 			}
 			logger.info("DSMR Port opened successful");
-			
+
 			isOpen = true;
-			
+
 			return isOpen;
-		}
-	}
-	
-	/**
-	 * Closes the port by closing and release the OS resources
-	 */
-	private void closePort() {
-		synchronized(portLock) {
-			logger.info("Closing DSMR port");
-			
-			isOpen = false;
-			// Close resources
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException ioe) {
-					logger.debug("Failed to close reader", ioe);
-				}
-			}
-			if (serialPort != null) {
-				serialPort.close();
-			}
-			
-			// Release resources
-			reader = null;
-			serialPort = null;
 		}
 	}
 }
