@@ -112,10 +112,8 @@ public class MpowerSocketState {
 			if (sameVolt && samePower && sameONOFFstate && sameEnergy) {
 				return true;
 			}
-
 		}
 		return false;
-
 	}
 
 	public long getEnergy() {
