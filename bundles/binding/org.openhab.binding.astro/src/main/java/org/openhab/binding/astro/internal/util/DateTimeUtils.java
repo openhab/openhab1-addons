@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -144,5 +144,15 @@ public class DateTimeUtils {
 			}
 		}
 		return next;
+	}
+	
+	/**
+	 * Returns the midnight Calendar for the first day next year.
+	 */
+	public static Calendar getFirstDayOfNextYear() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_YEAR, 1);
+		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR) + 1);
+		return truncateToMidnight(cal);
 	}
 }
