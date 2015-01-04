@@ -27,6 +27,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeInitStage;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeStageAdvancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,8 @@ public class ZWaveNode {
 	private ZWaveController controller;
 	@XStreamOmitField
 	private ZWaveNodeStageAdvancer nodeStageAdvancer;
+	@XStreamOmitField
+	private ZWaveNodeState nodeState;
 
 	@XStreamConverter(HexToIntegerConverter.class)
 	private int homeId = Integer.MAX_VALUE;
@@ -122,7 +125,7 @@ public class ZWaveNode {
 		// Create the initialisation advancer and tell it we've loaded from file
 		this.nodeStageAdvancer = new ZWaveNodeStageAdvancer(this, controller);
 		this.nodeStageAdvancer.setRestoredFromConfigfile();
-		nodeStageAdvancer.setCurrentStage(NodeStage.EMPTYNODE);
+		nodeStageAdvancer.setCurrentStage(ZWaveNodeInitStage.EMPTYNODE);
 	}
 
 	/**
@@ -194,7 +197,7 @@ public class ZWaveNode {
 	 * @return
 	 */
 	public boolean isDead() {
-		if(nodeStageAdvancer.getCurrentStage() == NodeStage.DEAD || nodeStageAdvancer.getCurrentStage() == NodeStage.FAILED) {
+		if(nodeStageAdvancer.getCurrentStage() == ZWaveNodeInitStage.DEAD || nodeStageAdvancer.getCurrentStage() == ZWaveNodeInitStage.FAILED) {
 			return true;
 		}
 		else {
@@ -208,19 +211,21 @@ public class ZWaveNode {
 	public void setAlive() {
 		if(this.nodeStageAdvancer.isInitializationComplete()) {
 			logger.debug("NODE {}: Node is now ALIVE", this.nodeId);
-			this.nodeStageAdvancer.setCurrentStage(NodeStage.DONE);
+			this.nodeStageAdvancer.setCurrentStage(ZWaveNodeInitStage.DONE);
 		}
 		else {
 			logger.debug("NODE {}: Node is now ALIVE - initialisation NOT complete.", this.nodeId);
-			this.nodeStageAdvancer.setCurrentStage(NodeStage.DYNAMIC_VALUES);
+			this.nodeStageAdvancer.setCurrentStage(ZWaveNodeInitStage.DYNAMIC_VALUES);
 			this.nodeStageAdvancer.advanceNodeStage(null);
 		}
+		logger.debug("NODE {}: Node has risen from the DEAD. Stage set to {}:{}.", nodeId,
+				this.getNodeState().toString(), this.getNodeInitializationStage().toString());			
 
 		// Reset the resend counter
 		this.resendCount = 0;
 
 		// Alert anyone who wants to know...
-		ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeStatusEvent.State.Alive);
+		ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeState.ALIVE);
 		controller.notifyEventListeners(zEvent);
 	}
 	
@@ -329,13 +334,21 @@ public class ZWaveNode {
 	}
 
 	/**
+	 * Gets the node state.
+	 * @return the nodeState
+	 */
+	public ZWaveNodeState getNodeState() {
+		return this.nodeState;
+	}
+
+	/**
 	 * Gets the node stage.
 	 * @return the nodeStage
 	 */
-	public NodeStage getNodeStage() {
+	public ZWaveNodeInitStage getNodeInitializationStage() {
 		return this.nodeStageAdvancer.getCurrentStage();
 	}
-	
+
 	/**
 	 * Gets the initialization state
 	 * @return true if initialization has been completed
@@ -349,7 +362,7 @@ public class ZWaveNode {
 	 * Sets the node stage.
 	 * @param nodeStage the nodeStage to set
 	 */
-	public void setNodeStage(NodeStage nodeStage) {
+	public void setNodeStage(ZWaveNodeInitStage nodeStage) {
 		nodeStageAdvancer.setCurrentStage(nodeStage);
 	}
 
@@ -400,13 +413,13 @@ public class ZWaveNode {
 	 */
 	public void incrementResendCount() {
 		if (++resendCount >= 3) {
-			this.nodeStageAdvancer.setCurrentStage(NodeStage.DEAD);
+			this.nodeStageAdvancer.setCurrentStage(ZWaveNodeInitStage.DEAD);
 			this.deadCount++;
 			this.deadTime = Calendar.getInstance().getTime();
 			logger.debug("NODE {}: Retry count exceeded. Node is DEAD.", this.nodeId);
 
 			if(nodeStageAdvancer.isInitializationComplete() == true) {
-				ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeStatusEvent.State.Dead);
+				ZWaveEvent zEvent = new ZWaveNodeStatusEvent(this.getNodeId(), ZWaveNodeState.DEAD);
 				controller.notifyEventListeners(zEvent);
 			}
 			else {
@@ -425,7 +438,7 @@ public class ZWaveNode {
 	public void resetResendCount() {
 		this.resendCount = 0;
 		if (this.nodeStageAdvancer.isInitializationComplete() && this.isDead() == false) {
-			nodeStageAdvancer.setCurrentStage(NodeStage.DONE);
+			nodeStageAdvancer.setCurrentStage(ZWaveNodeInitStage.DONE);
 		}
 	}
 

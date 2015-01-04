@@ -23,6 +23,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNoOperationCommandClass;
@@ -234,10 +235,16 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	 *            Node to perform the heal on
 	 * @return true if the heal is scheduled
 	 */
-	public boolean healNode(int nodeId) {
+	public boolean startNodeHeal(int nodeId) {
 		ZWaveNode node = zController.getNode(nodeId);
 		if (node == null) {
 			logger.error("NODE {}: Heal node - can't be found.", nodeId);
+			return false;
+		}
+		
+		// If so, don't start it again!
+		if (isNodeHealing(nodeId)) {
+			logger.debug("NODE {}: Node is already healing.", node.getNodeId());
 			return false;
 		}
 
@@ -276,14 +283,13 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// The list is built multiple times since it seems that in order to
 		// fully optimize the network, this is required
 		for (ZWaveNode node : zController.getNodes()) {
-			// Ignore devices that haven't initialized yet - unless they are
-			// DEAD or FAILED.
-			if (node.isInitializationComplete() == false && node.isDead() == false) {
+			// Ignore devices that haven't initialized yet
+			if (node.isInitializationComplete() == false) {
 				logger.debug("NODE {}: Initialisation NOT yet complete. Skipping heal.", node.getNodeId());
 				continue;
 			}
 
-			healNode(node.getNodeId());
+			startNodeHeal(node.getNodeId());
 		}
 
 		if (healNodes.size() == 0) {
@@ -667,8 +673,8 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			logger.debug("NODE {}: Node Status event - Node is {}", statusEvent.getNodeId(), statusEvent.getState());
 
 			switch (statusEvent.getState()) {
-			case Dead:
-			case Failed:
+			case DEAD:
+			case FAILED:
 				ZWaveNode node = zController.getNode(statusEvent.getNodeId());
 				if (node == null) {
 					logger.error("NODE {}: Status event received, but node not found.", statusEvent.getNodeId());
@@ -676,29 +682,15 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				}
 
 				// If this is a DEAD notification, then ask the controller if it's really FAILED
-				if(statusEvent.getState() == ZWaveNodeStatusEvent.State.Dead) {
+				if(statusEvent.getState() == ZWaveNodeState.DEAD) {
 					zController.requestIsFailedNode(node.getNodeId());
 				}
 
 				// The node is dead, but we may have already started a Heal
-				// If so, don't start it again!
-				if (!isNodeHealing(node.getNodeId())) {
-					logger.debug("NODE {}: {} node - requesting network heal.", node.getNodeId(), statusEvent.getState());
-
-					healNode(node.getNodeId());
-
-					// Reset the node stage to PING.
-					// This will also set the state back to DONE in
-					// resetResendCount if the node
-					// has already completed initialisation.
-					// node.setNodeStage(NodeStage.PING);
-
-					node.resetResendCount();
-				} else {
-					logger.debug("NODE {}: {} node - already healing.", node.getNodeId(), statusEvent.getState());
-				}
+				// If so, it won't be started again!
+				startNodeHeal(node.getNodeId());
 				break;
-			case Alive:
+			case ALIVE:
 				break;
 			}
 		} else if (event instanceof ZWaveInitializationCompletedEvent) {

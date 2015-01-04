@@ -20,7 +20,6 @@ import java.util.TimerTask;
 
 import org.openhab.binding.zwave.internal.ZWaveNetworkMonitor;
 import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceType;
@@ -37,6 +36,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionComm
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeInitStage;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
@@ -274,7 +274,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 				// Set the state
 				boolean canDelete = false;
-				switch(node.getNodeStage()) {
+				switch(node.getNodeState()) {
 				case DEAD:
 					record.state = OpenHABConfigurationRecord.STATE.ERROR;
 					break;
@@ -282,7 +282,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.state = OpenHABConfigurationRecord.STATE.ERROR;
 					canDelete = true;
 					break;
-				case DONE:
+				case ALIVE:
 					Date lastDead = node.getDeadTime();
 					Long timeSinceLastDead = Long.MAX_VALUE;
 					if(lastDead != null) {
@@ -454,7 +454,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						record.value += " LOW";
 					}
 				}
-				else if(node.getNodeStage().getStage() <= NodeStage.DETAILS.getStage()) {
+				else if(node.getNodeInitializationStage().getStage() <= ZWaveNodeInitStage.DETAILS.getStage()) {
 					// If we haven't passed the DETAILS stage, then we don't know the source
 					record.value = "UNKNOWN";
 				}
@@ -530,7 +530,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 
 				record = new OpenHABConfigurationRecord(domain, "NodeStage", "Node Stage", true);
-				record.value = node.getNodeStage() + " @ " + df.format(node.getQueryStageTimeStamp());
+				record.value = node.getNodeState() + " " + node.getNodeInitializationStage() + " " + df.format(node.getQueryStageTimeStamp());
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "Packets", "Packet Statistics", true);
@@ -904,7 +904,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					logger.debug("NODE {}: Heal node", nodeId);
 
 					if (networkMonitor != null)
-						networkMonitor.healNode(nodeId);
+						networkMonitor.startNodeHeal(nodeId);
 				}
 
 				if (action.equals("Save")) {
@@ -1151,7 +1151,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					// When associations change, we should ensure routes are configured
 					// So, let's start a network heal - just for this node right now
 					if(networkMonitor != null)
-						networkMonitor.healNode(nodeId);
+						networkMonitor.startNodeHeal(nodeId);
 				}
 			}
 		}

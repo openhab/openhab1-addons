@@ -8,16 +8,17 @@
  */
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.UpdateState;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeInitStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,7 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			// Remember that we've received this so we can continue initialisation
 			node.setApplicationUpdateReceived(true);
 
-			if(node.getNodeStage() == NodeStage.DONE) {
+			if(node.getNodeState() == ZWaveNodeState.ALIVE) {
 				// If this node supports associations, then assume this should be handled through that mechanism
 				if(node.getCommandClass(CommandClass.ASSOCIATION) == null) {
 					// If we receive an Application Update Request and the node is already

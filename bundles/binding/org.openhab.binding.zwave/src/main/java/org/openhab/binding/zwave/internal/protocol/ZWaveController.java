@@ -31,7 +31,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
@@ -44,6 +43,7 @@ import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent.State;
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeInitStage;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeSerializer;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AddNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.AssignReturnRouteMessageClass;
@@ -546,8 +546,7 @@ public class ZWaveController {
 			default:
 				break;
 			}
-		}
-		if(event instanceof ZWaveNetworkEvent) {
+		} else if(event instanceof ZWaveNetworkEvent) {
 			ZWaveNetworkEvent networkEvent = (ZWaveNetworkEvent)event;
 			switch(networkEvent.getEvent()) {
 				case FailedNode:
@@ -557,9 +556,9 @@ public class ZWaveController {
 					}
 					if (networkEvent.getState() == State.Success) {
 						logger.warn("NODE {}: Marking node as FAILED because its on the controllers failed node list.", networkEvent.getNodeId());
-						getNode(networkEvent.getNodeId()).setNodeStage(NodeStage.FAILED);
+						getNode(networkEvent.getNodeId()).setNodeStage(ZWaveNodeInitStage.FAILED);
 						
-						ZWaveEvent zEvent = new ZWaveNodeStatusEvent(networkEvent.getNodeId(), ZWaveNodeStatusEvent.State.Failed);
+						ZWaveEvent zEvent = new ZWaveNodeStatusEvent(networkEvent.getNodeId(), ZWaveNodeState.FAILED);
 						this.notifyEventListeners(zEvent);
 						break;
 					}
@@ -576,6 +575,25 @@ public class ZWaveController {
 					break;
 				default:
 					break;
+			}
+		} else if (event instanceof ZWaveNodeStatusEvent) {
+			ZWaveNodeStatusEvent statusEvent = (ZWaveNodeStatusEvent) event;
+			logger.debug("NODE {}: Node Status event - Node is {}", statusEvent.getNodeId(), statusEvent.getState());
+
+			// Get the node
+			ZWaveNode node = getNode(event.getNodeId());
+			if (node == null) {
+				logger.error("NODE {}: Node is unknown!", statusEvent.getNodeId());
+				return;
+			}
+
+			switch (statusEvent.getState()) {
+			case DEAD:
+				break;
+			case FAILED:
+				break;
+			case ALIVE:
+				break;
 			}
 		}
 	}
@@ -628,11 +646,11 @@ public class ZWaveController {
 		logger.debug("------ Checking for Dead or Sleeping Nodes ({} nodes).", this.zwaveNodes.size());
 		for (Map.Entry<Integer, ZWaveNode> entry : zwaveNodes.entrySet()) {
 			logger.debug("NODE {}: In Stage {} since {} ({}s), listening={}, FLiRS={}", entry.getKey(),
-					entry.getValue().getNodeStage().toString(), entry.getValue().getQueryStageTimeStamp().toString(),
+					entry.getValue().getNodeInitializationStage().toString(), entry.getValue().getQueryStageTimeStamp().toString(),
 					(Calendar.getInstance().getTimeInMillis() - entry.getValue().getQueryStageTimeStamp().getTime()) / 1000,
 					entry.getValue().isListening(), entry.getValue().isFrequentlyListening());
 
-			if (entry.getValue().getNodeStage() == NodeStage.EMPTYNODE) {
+			if (entry.getValue().getNodeInitializationStage() == ZWaveNodeInitStage.EMPTYNODE) {
 				continue;
 			}
 
@@ -644,7 +662,7 @@ public class ZWaveController {
 //			}
 
 			// If we're done, or dead, or not listening, then we consider this node is done (!)
-			if(entry.getValue().getNodeStage() == NodeStage.DONE || entry.getValue().isDead() == true
+			if(entry.getValue().getNodeInitializationStage() == ZWaveNodeInitStage.DONE || entry.getValue().isDead() == true
 					 || (!entry.getValue().isListening() && !entry.getValue().isFrequentlyListening())) {
 				completeCount++;
 				continue;
@@ -656,7 +674,7 @@ public class ZWaveController {
 			}
 			
 			logger.warn("NODE {}: May be dead, setting stage to DEAD.", entry.getKey());
-			entry.getValue().setNodeStage(NodeStage.DEAD);
+			entry.getValue().setNodeStage(ZWaveNodeInitStage.DEAD);
 
 			completeCount++;
 		}
@@ -674,11 +692,11 @@ public class ZWaveController {
 			// If there are DEAD nodes, send a Node Status event
 			// We do that here to avoid messing with the binding initialisation
 			for(ZWaveNode node : this.getNodes()) {
-				logger.debug("NODE {}: Checking completion state - {}.", node.getNodeId(), node.getNodeStage());
+				logger.debug("NODE {}: Checking completion state - {}.", node.getNodeId(), node.getNodeInitializationStage());
 				if (node.isDead()) {
 					logger.debug("NODE {}: DEAD node.", node.getNodeId());
 
-					zEvent = new ZWaveNodeStatusEvent(node.getNodeId(), ZWaveNodeStatusEvent.State.Dead);
+					zEvent = new ZWaveNodeStatusEvent(node.getNodeId(), ZWaveNodeState.DEAD);
 					this.notifyEventListeners(zEvent);
 				}
 			}

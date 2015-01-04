@@ -13,7 +13,7 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,9 +68,10 @@ public class ZWaveHailCommandClass extends ZWaveCommandClass {
 				
 				logger.debug("NODE {}: Request an update of the dynamic values", this.getNode().getNodeId());
 				
-				// We only rerequest dynamic values for nodes that are completely initialized.
-				if (this.getNode().getNodeStage() != NodeStage.DONE)
+				// We only re-request dynamic values for nodes that are completely initialized.
+				if (this.getNode().getNodeState() != ZWaveNodeState.ALIVE) {
 					return;
+				}
 				
 				getController().pollNode(getNode());
 				

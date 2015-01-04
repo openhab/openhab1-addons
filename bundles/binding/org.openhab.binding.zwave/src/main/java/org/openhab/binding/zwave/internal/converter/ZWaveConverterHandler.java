@@ -16,7 +16,7 @@ import org.openhab.binding.zwave.ZWaveBindingConfig;
 import org.openhab.binding.zwave.ZWaveBindingProvider;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
@@ -161,8 +161,9 @@ public class ZWaveConverterHandler {
 			}
 			
 			// ignore nodes that are not initialized or dead.
-			if (node.getNodeStage() != NodeStage.DONE)
+			if (node.getNodeState() != ZWaveNodeState.ALIVE) {
 				return;
+			}
 			
 			commandClass = node.resolveCommandClass(CommandClass.getCommandClass(commandClassName), bindingConfiguration.getEndpoint());
 			

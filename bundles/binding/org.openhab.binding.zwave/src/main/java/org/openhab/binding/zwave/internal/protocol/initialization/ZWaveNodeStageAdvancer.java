@@ -17,7 +17,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import org.openhab.binding.zwave.internal.config.ZWaveDbAssociationGroup;
 import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.config.ZWaveProductDatabase;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -122,7 +121,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	private int retryCount = 0;
 
 	private Date queryStageTimeStamp;
-	private NodeStage currentStage;
+	private ZWaveNodeInitStage currentStage;
 
 	/**
 	 * Constructor. Creates a new instance of the ZWaveNodeStageAdvancer class.
@@ -149,7 +148,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
 		// Reset the state variables
 		initializationComplete = false;
-		currentStage = NodeStage.EMPTYNODE;
+		currentStage = ZWaveNodeInitStage.EMPTYNODE;
 		queryStageTimeStamp = Calendar.getInstance().getTime();
 
 		// Get things moving...
@@ -272,7 +271,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				if(retryCount > MAX_RETRIES) {
 					logger.error("NODE {}: Node advancer: Retries exceeded at {}. Node is DEAD!", 
 							node.getNodeId(), currentStage.toString());
-					currentStage = NodeStage.DEAD;
+					currentStage = ZWaveNodeInitStage.DEAD;
 					break;
 				}
 			}
@@ -305,14 +304,22 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				addToQueue(new GetRoutingInfoMessageClass().doRequest(node.getNodeId()));
 				break;
 
-			case WAIT:
+			case FAILED_CHECK:
 				// If this is the controller, we're done
 				if (node.getNodeId() == controller.getOwnNodeId()) {
-					logger.debug("NODE {}: Node advancer: WAIT - Controller - terminating initialisation", node.getNodeId());
-					currentStage = NodeStage.DONE;
+					logger.debug("NODE {}: Node advancer: FAILED_CHECK - Controller - terminating initialisation", node.getNodeId());
+					currentStage = ZWaveNodeInitStage.DONE;
 					break;
 				}
+				
+				// If the incoming frame is the IdentifyNode, then we continue
+				if (eventClass == SerialMessageClass.IsFailedNodeID) {
+					break;
+				}
+				
+				break;
 
+			case WAIT:
 				logger.debug("NODE {}: Node advancer: WAIT - Listening={}, FrequentlyListening={}", node.getNodeId(),
 						node.isListening(), node.isFrequentlyListening());
 				// If the node is listening, or frequently listening, then we progress.
@@ -370,7 +377,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				// stage.
 				if (isRestoredFromConfigfile()) {
 					logger.debug("NODE {}: Node advancer: Restored from file - skipping static initialisation", node.getNodeId());
-					currentStage = NodeStage.SESSION_START;
+					currentStage = ZWaveNodeInitStage.SESSION_START;
 					break;
 				}
 
@@ -661,8 +668,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				break;
 
 			default:
-				logger.debug("NODE {}: Node advancer: Unknown node state {} encountered.", node.getNodeId(), node
-						.getNodeStage().toString());
+				logger.debug("NODE {}: Node advancer: Unknown node state {} encountered.",
+						node.getNodeId(), currentStage.toString().toString());
 				break;
 			}
 
@@ -671,7 +678,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			// data for this stage.
 			// If we have all the data, set stageAdvanced to true to tell the system
 			// that we're starting again, then loop around again.
-			if (currentStage != NodeStage.DONE && sendMessage() == false) {
+			if (currentStage != ZWaveNodeInitStage.DONE && sendMessage() == false) {
 				// Move on to the next stage
 				setCurrentStage(currentStage.getNextStage());
 				stageAdvanced = true;
@@ -735,14 +742,14 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	 * 
 	 * @return current node stage
 	 */
-	public NodeStage getCurrentStage() {
+	public ZWaveNodeInitStage getCurrentStage() {
 		return currentStage;
 	}
 
 	/**
 	 * Sets the current node stage
 	 */
-	public void setCurrentStage(NodeStage newStage) {
+	public void setCurrentStage(ZWaveNodeInitStage newStage) {
 		currentStage = newStage;
 
 		// Remember the time so we can handle retries and keep users
@@ -805,7 +812,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				// We use this as a trigger to kick things off again if they've stalled
 				// by checking to see if the transmit queue is now empty.
 				// This will allow battery devices stuck in WAIT state to get moving.
-				if(controller.getTxQueueLength() < 2 && currentStage == NodeStage.WAIT) {
+				if(controller.getTxQueueLength() < 2 && currentStage == ZWaveNodeInitStage.WAIT) {
 					logger.debug("NODE {}: Node advancer - WAIT: The WAIT is over!", node.getNodeId());
 
 					currentStage = currentStage.getNextStage();
@@ -856,10 +863,10 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					statusEvent.getState());
 
 			switch (statusEvent.getState()) {
-			case Dead:
-			case Failed:
+			case DEAD:
+			case FAILED:
 				break;
-			case Alive:
+			case ALIVE:
 				advanceNodeStage(null);
 				break;
 			}
