@@ -41,7 +41,7 @@ public class MpowerBindingConfig implements BindingConfig {
 	public void setSwitchItemName(int socket, String name) {
 		sockets.get(socket).setSwitchItemName(name);
 	}
-	
+
 	public String getSwitchItemName(int socket) {
 		return sockets.get(socket).getSwitchItemName();
 	}
@@ -49,7 +49,7 @@ public class MpowerBindingConfig implements BindingConfig {
 	public String getVoltageItemName(int socket) {
 		return sockets.get(socket).getVoltageItemName();
 	}
-	
+
 	public String getEnergyItemName(int socket) {
 		return sockets.get(socket).getEnergyItemName();
 	}
@@ -57,6 +57,7 @@ public class MpowerBindingConfig implements BindingConfig {
 	public void setEnergyItemName(int socket, String name) {
 		sockets.get(socket).setEnergyItemName(name);
 	}
+
 	public String getPowerItemName(int socket) {
 		return sockets.get(socket).getPowerItemName();
 	}
@@ -66,6 +67,7 @@ public class MpowerBindingConfig implements BindingConfig {
 	}
 
 	public void setCachedState(int socket, MpowerSocketState state) {
+		sockets.get(socket).setLastUpdated(System.currentTimeMillis());
 		sockets.get(socket).setValueCache(state);
 	}
 
@@ -103,5 +105,11 @@ public class MpowerBindingConfig implements BindingConfig {
 
 	public MpowerSocketState getCacheForSocket(int socketNumber) {
 		return sockets.get(socketNumber).getValueCache();
+	}
+
+	public boolean needsUpdate(int socketNumber, long refreshTime) {
+		Long lastUpdated = sockets.get(socketNumber).getLastUpdated();
+		Long currentTime = System.currentTimeMillis();
+		return currentTime - refreshTime > lastUpdated;
 	}
 }

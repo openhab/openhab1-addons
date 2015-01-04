@@ -6,6 +6,8 @@ public class MpowerConfig {
 	private String host;
 	private String password;
 	private boolean secure;
+	private long refreshInterval;
+	
 	public String getId() {
 		return id;
 	}
@@ -35,5 +37,11 @@ public class MpowerConfig {
 	}
 	public void setHost(String host) {
 		this.host = host;
+	}
+	public long getRefreshInterval() {
+		return refreshInterval;
+	}
+	public void setRefreshInterval(long refreshInterval) {
+		this.refreshInterval = refreshInterval;
 	}
 }

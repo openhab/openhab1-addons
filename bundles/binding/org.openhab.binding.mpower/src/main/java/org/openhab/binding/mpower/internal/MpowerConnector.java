@@ -31,6 +31,7 @@ public class MpowerConnector {
 	private static final int WSPORT = 7681;
 	private AsyncHttpClient webSocketHTTPClient;
 	private String host;
+	private long refreshInterval=30000;
 	private String user;
 	private String password;
 	private Boolean secure;
@@ -40,13 +41,14 @@ public class MpowerConnector {
 	private String id;
 
 	public MpowerConnector(String host, String id, String user,
-			String password, boolean secure, MpowerBinding bind) {
+			String password, boolean secure, long refreshInterval, MpowerBinding bind) {
 		this.binding = bind;
 		this.host = host;
 		this.id = id;
 		this.user = user;
 		this.password = password;
 		this.secure = secure;
+		this.refreshInterval = refreshInterval;
 		// ProxyServer ps = new ProxyServer(ProxyServer.Protocol.HTTP,
 		// "127.0.0.1", 8888, "", "");
 
@@ -147,5 +149,13 @@ public class MpowerConnector {
 
 	private void logout() {
 
+	}
+
+	public long getRefreshInterval() {
+		return refreshInterval;
+	}
+
+	public void setRefreshInterval(long refreshInterval) {
+		this.refreshInterval = refreshInterval;
 	}
 }

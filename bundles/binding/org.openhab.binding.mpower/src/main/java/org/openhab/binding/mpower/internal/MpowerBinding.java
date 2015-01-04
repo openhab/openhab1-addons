@@ -45,6 +45,7 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 	private static final String CONFIG_HOST = "host";
 	private static final String CONFIG_PASSWORD = "password";
 	private static final String CONFIG_SECURE = "secure";
+	private static final String CONFIG_REFRESH = "refresh";
 
 	private Map<String, MpowerConnector> connectors = new HashMap<String, MpowerConnector>();
 
@@ -79,8 +80,7 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
+		// we don't care
 	}
 
 	/**
@@ -172,6 +172,11 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 								.get(key));
 						aConfig.setSecure(secure);
 					}
+
+					if (CONFIG_REFRESH.equals(configOption)) {
+						Long refresh = Long.parseLong((String) config.get(key));
+						aConfig.setRefreshInterval(refresh);
+					}
 				}
 			}
 
@@ -185,20 +190,16 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 						aConfig.getId());
 				MpowerConnector conn = new MpowerConnector(aConfig.getHost(),
 						aConfig.getId(), aConfig.getUser(),
-						aConfig.getPassword(), aConfig.isSecure(), this);
+						aConfig.getPassword(), aConfig.isSecure(),
+						aConfig.getRefreshInterval(), this);
 				connectors.put(aConfig.getId(), conn);
 				conn.start();
 			}
 
-			// to override the default refresh interval one has to add a
-			// parameter to openhab.cfg like
-			// <bindingName>:refresh=<intervalInMs>
-			String refreshIntervalString = (String) config.get("refresh");
+			String refreshIntervalString = (String) config.get(CONFIG_REFRESH);
 			if (StringUtils.isNotBlank(refreshIntervalString)) {
 				refreshInterval = Long.parseLong(refreshIntervalString);
 			}
-
-			// read further config parameters here ...
 
 			setProperlyConfigured(true);
 		}
@@ -222,8 +223,12 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 			int socketNumber = socketState.getSocket();
 			MpowerSocketState cachedState = bindingCfg
 					.getCacheForSocket(socketNumber);
+			long refresh = connectors.get(bindingCfg.getmPowerInstance())
+					.getRefreshInterval();
+			boolean needsUpdate = bindingCfg.needsUpdate(socketNumber, refresh);
 			// only proceed if the data has changed
-			if (cachedState == null || !cachedState.equals(socketState)) {
+			if (needsUpdate
+					&& (cachedState == null || !cachedState.equals(socketState))) {
 
 				// update voltage
 				String volItemName = bindingCfg.getVoltageItemName(socketState
