@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,13 +8,14 @@
  */
 package org.openhab.binding.dsmr.internal;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 import org.openhab.binding.dsmr.DSMRBindingProvider;
+import org.openhab.binding.dsmr.internal.cosem.CosemValue;
 import org.openhab.binding.dsmr.internal.messages.OBISMessage;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
-import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -25,8 +26,8 @@ import org.slf4j.LoggerFactory;
  * This class periodically read out the P1 port of the Smart Meter.
  * <p>
  * The frequency is once every 10 seconds. This frequency is based on the update
- * interval of the Smart Meter.
- * The resulting values will be posted to the event bus.
+ * interval of the Smart Meter. The resulting values will be posted to the event
+ * bus.
  * <p>
  * At this moment the binding supports only a single Smart Meter.
  * <p>
@@ -37,7 +38,8 @@ import org.slf4j.LoggerFactory;
  * <li>dsmr.version {@link DSMRVersion}
  * </ul>
  * <p>
- * The implementation of the binding is based on the Dutch Smart Meter Requirements (DSMR)
+ * The implementation of the binding is based on the Dutch Smart Meter
+ * Requirements (DSMR)
  * 
  * @author M.Volaart
  * @since 1.7.0
@@ -56,18 +58,20 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>
 	private String port = "";
 	/* DSMR Version (configurable via openhab.cfg) */
 	private DSMRVersion version = DSMRVersion.NONE;
-	
+	/* Meter - channel mapping (configurable via openhab.cfg) */
+	private final List<DSMRMeter> dsmrMeters = new ArrayList<>();
+
 	/* DSMR Port object */
 	private DSMRPort dsmrPort;
 
 	/*
 	 * the refresh interval which is used to poll values from the DSMR server
 	 * 
-	 * Since we the device only updates every 10 seconds we let OpenHab
+	 * Since we the device only updates every 10 seconds we let openHAB
 	 * introduce a pause before execute is called again.
 	 * 
-	 * We use here half the update interval time so we have some time
-	 * to read the serial port (refreshInterval starts after previous executes ends) 
+	 * We use here half the update interval time so we have some time to read
+	 * the serial port (refreshInterval starts after previous executes ends)
 	 */
 	private long refreshInterval = DSMR_UPDATE_INTERVAL / 2;
 
@@ -80,8 +84,8 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>
 	/**
 	 * Activate the binding. We don't do anything special here.
 	 * <p>
-	 * To simplify synchronization issues we initiate the DSMR Port
-	 * in the execute() method
+	 * To simplify synchronization issues we initiate the DSMR Port in the
+	 * execute() method
 	 */
 	public void activate() {
 		logger.debug("Activate DSMRBinding");
@@ -121,56 +125,42 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>
 	}
 
 	/**
-	 * The execute method of the DSMR binding will execute if:
-	 * <p>
-	 * <ul>
-	 * <li>Global binding is properly configured (i.e. port and version are set properly)
-	 * <li>Item bindings are present
-	 * </ul>
-	 * <p>
-	 * If there is no DSMR port yet, or the port is closed for some reason a new DSMR Port
-	 * is created.
-	 * <p>
-	 * The DSMR port is read and received messages are posted on the bus.
+	 * @{inhearticDoc
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
-
-		// Check valid global Binding configuration
-		if (!isProperlyConfigured()) {
-			logger.debug("Binding is not yet configured");
-			return;
-		}
-
 		// Check if there are any item bindings
 		if (!bindingsExist()) {
 			logger.debug("There is no existing DSMR binding configuration => refresh cycle aborted!");
 			return;
 		}
-		
+
 		// Check if a valid DSMR port exists. Open a new one if necessary
 		if (dsmrPort == null || !dsmrPort.isOpen()) {
 			logger.debug("Creating DSMR Port:" + port);
-			dsmrPort = new DSMRPort(port, version, DSMR_UPDATE_INTERVAL);
+			dsmrPort = new DSMRPort(port, version, dsmrMeters,
+					DSMR_UPDATE_INTERVAL);
 		}
 
 		// Read the DSMRPort
-		List<OBISMessage<? extends State>> messages = dsmrPort.read();
+		List<OBISMessage> messages = dsmrPort.read();
 
 		// Publish messages on the event bus
-		for (OBISMessage<? extends State> msg : messages) {
+		for (OBISMessage msg : messages) {
 			logger.debug("Read message:" + msg);
 			for (DSMRBindingProvider provider : providers) {
 				for (String itemName : provider.getItemNames()) {
-					String item = provider.getItem(itemName);
-					if (item.equals(msg.getType().bindingReference)) {
-						logger.debug("Publish data(" + item + ") to "
-								+ itemName);
+					String dsmrItemId = provider.getDSMRItemID(itemName);
+					for (CosemValue<? extends State> openHABValue : msg
+							.getOpenHABValues()) {
+						// DSMR items with an empty dsmrItemId are filtered automatically 
+						if (dsmrItemId.equals(openHABValue.getDsmrItemId())) {
+							logger.debug("Publish data(" + dsmrItemId + ") to "
+									+ itemName);
 
-						eventPublisher.postUpdate(itemName,
-								msg.getOpenHabValue());
+							eventPublisher.postUpdate(itemName,
+									openHABValue.getValue());
+						}
 					}
 				}
 			}
@@ -178,31 +168,8 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>
 	}
 
 	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate() is called!");
-	}
-
-	/**
-	 * Read the following properties:
-	 * - dsmr:port. Serial port where DSMR can be read (e.g. /dev/ttyUSB0) 
-	 * - dsmr:version. Version of the DSMR protocol of
+	 * Read the following properties: - dsmr:port. Serial port where DSMR can be
+	 * read (e.g. /dev/ttyUSB0) - dsmr:version. Version of the DSMR protocol of
 	 * the meter. See also {@link DSMRVersion}
 	 */
 	@Override
@@ -212,19 +179,54 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>
 		if (config != null) {
 			// Read port string
 			String portString = (String) config.get("port");
-			logger.debug("Set port:" + portString);
+			logger.debug("dsmr:port=" + portString);
 			if (StringUtils.isNotBlank(portString)) {
 				port = portString;
 			} else {
-				logger.warn("DSMR setting is empty");
+				logger.warn("dsmr:port setting is empty");
 			}
-			
+
 			// Read version string
 			String versionString = (String) config.get("version");
-			logger.debug("Version:" + versionString);
-			version = DSMRVersion.getDSMRVersion(versionString);
+			logger.debug("dsmr:version=" + versionString);
+			if (StringUtils.isNotBlank(versionString)) {
+				version = DSMRVersion.getDSMRVersion(versionString);
+			} else {
+				logger.warn("dsmr:version setting is empty");
+			}
 
-			// Validate configuration
+			/*
+			 * Read the channel configuration
+			 */
+			dsmrMeters.clear();
+
+			for (DSMRMeterType meterType : DSMRMeterType.values()) {
+				String channelConfigValue = (String) config
+						.get(meterType.channelConfigKey);
+				logger.debug("dsmr:" + meterType.channelConfigKey + "="
+						+ channelConfigValue);
+
+				if (StringUtils.isNotBlank(channelConfigValue)) {
+					try {
+						dsmrMeters.add(new DSMRMeter(meterType, Integer
+								.parseInt(channelConfigValue)));
+					} catch (NumberFormatException nfe) {
+						logger.warn("Invalid value " + channelConfigValue
+								+ " for dsmr:" + meterType.channelConfigKey
+								+ ". Ignore mapping!", nfe);
+					}
+				} else {
+					switch (meterType) {
+					case NA: break; // Filter special DSMRMeterType
+					case ELECTRICITY: break; // Always channel 0, configuration not needed
+					default:
+						logger.info("dsmr:" + meterType.channelConfigKey
+								+ " setting is empty");
+					}
+				}
+			}
+
+			// Validate minimal configuration
 			if (version != DSMRVersion.NONE && port.length() > 0) {
 				logger.debug("Configuration succeeded");
 				setProperlyConfigured(true);
