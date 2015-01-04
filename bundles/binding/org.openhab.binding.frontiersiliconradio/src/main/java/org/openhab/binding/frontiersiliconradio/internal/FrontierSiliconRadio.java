@@ -219,8 +219,10 @@ public class FrontierSiliconRadio
 	 * @param presetId
 	 */
 	public void setPreset(Integer presetId) {
-		try {
+		try {		
+			conn.doRequest("SET/netRemote.nav.state", "value=1");
 			conn.doRequest("SET/netRemote.nav.action.selectPreset", "value="+presetId.toString() );
+			conn.doRequest("SET/netRemote.nav.state", "value=0");
 			return;
 		}
 		catch (Exception e) {

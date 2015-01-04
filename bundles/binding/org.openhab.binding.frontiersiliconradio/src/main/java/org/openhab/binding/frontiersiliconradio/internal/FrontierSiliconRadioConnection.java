@@ -172,6 +172,9 @@ public class FrontierSiliconRadioConnection {
 				int statusCode = httpClient.executeMethod(method);
 				if (statusCode != HttpStatus.SC_OK) {
 					logger.warn("Method failed: " + method.getStatusLine());
+					isLoggedIn = false;
+					method.releaseConnection();
+					continue;
 				}
 	
 				String responseBody = IOUtils.toString(method.getResponseBodyAsStream());
@@ -180,12 +183,17 @@ public class FrontierSiliconRadioConnection {
 				}
 				else {
 					logger.debug("got empty result" );
+					isLoggedIn = false;
+					method.releaseConnection();
+					continue;
 				}
 				
 				FrontierSiliconRadioApiResult result = new FrontierSiliconRadioApiResult(responseBody);
 				if( result.isStatusOk() )
 					return result;
 				else {
+					isLoggedIn = false;
+					method.releaseConnection();
 					continue; // try again
 				}
 			}
