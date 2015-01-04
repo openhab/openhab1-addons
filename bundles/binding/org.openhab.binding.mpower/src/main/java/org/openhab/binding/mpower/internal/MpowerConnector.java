@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.SimpleHttpConnectionManager;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
@@ -34,6 +37,7 @@ import org.json.simple.JSONObject;
  * @author magcode
  */
 public class MpowerConnector {
+	private static final String COOKIE_NAME = "AIROS_SESSIONID";
 	private static final int WSPORT = 7681;
 	private static final int WSPORT_SECURE = 7682;
 	private AsyncHttpClient webSocketHTTPClient;
@@ -46,6 +50,7 @@ public class MpowerConnector {
 	private HttpClient httpClient;
 	private MpowerBinding binding;
 	private String id;
+	private String sessionId;
 	private static final Logger logger = LoggerFactory
 			.getLogger(MpowerConnector.class);
 
@@ -74,8 +79,8 @@ public class MpowerConnector {
 	}
 
 	public void start() {
-		String id = getSession();
-		if (id == null) {
+		sessionId = getSession();
+		if (sessionId == null) {
 			return;
 		}
 
@@ -90,9 +95,9 @@ public class MpowerConnector {
 			String protocol = secure ? "wss" : "ws";
 			int port = secure ? WSPORT_SECURE : WSPORT;
 			BoundRequestBuilder brb = webSocketHTTPClient.prepareGet(protocol
-					+ "://" + this.host + ":" + port + "/?c=" + id);
-			Cookie cookie = new Cookie("AIROS_SESSIONID", id, id, this.host,
-					"/", 0, 0, false, false);
+					+ "://" + this.host + ":" + port + "/?c=" + sessionId);
+			Cookie cookie = new Cookie("AIROS_SESSIONID", sessionId, sessionId,
+					this.host, "/", 0, 0, false, false);
 			brb.addCookie(cookie);
 			// brb.setProxyServer(ps);
 			brb.setHeader("Sec-WebSocket-Protocol", "mfi-protocol");
@@ -172,6 +177,29 @@ public class MpowerConnector {
 	}
 
 	private void logout() {
+		org.apache.commons.httpclient.Cookie mycookie = new org.apache.commons.httpclient.Cookie(
+				this.host, COOKIE_NAME, sessionId, "/", null, false);
+		HttpState initialState = new HttpState();
+		initialState.addCookie(mycookie);
+		httpClient.setState(initialState);
+		String protocol = this.secure ? "https" : "http";
+		GetMethod get = new GetMethod(protocol + "://" + this.host
+				+ "/logout.cgi?" + System.currentTimeMillis());
+		get.setFollowRedirects(false);
+		try {
+			int returnCode = httpClient.executeMethod(get);
+			if (returnCode != HttpStatus.SC_MOVED_TEMPORARILY) {
+				logger.error("Could not logout.");
+			} else {
+				logger.info("Logout successful");
+			}
+		} catch (HttpException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
