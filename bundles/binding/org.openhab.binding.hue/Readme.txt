@@ -1,4 +1,4 @@
-Thsi provides Binduiings for Philips hue.
+This provides Binduiings for Philips hue.
 
 Integrating tap switches:
 
@@ -71,5 +71,26 @@ Conclusion:
 
 Var 1 is needed anyway, so best build it; V2 can be added later.
 
+Prototype Configs:
+Tap:
+	contains last button , change date "1;date","2;date"
+	
+	(from samples: Switch Garage_Gate { binding="xxx", autoupdate="false"})
+	
+	// possibly cleanest
+	Switch  Tap1_1   {hue="tap;1;1", autoupdate="false"}
+	Switch  Tap1_2   {hue="tap;1;2", autoupdate="false"}
+	
+	will react to events only..
+	oder 
+	
+	Number Tap1  {hue="tap;1"}	// will be 1..4; receives events; maybe "0" is acc??
 
+Rule:
+	String rule1 {hue="rule;myname}
+	The string value contains the rule (as json string??)
+	alternative: actions? ist sauberer: hueSetRule("myName",rule...); better: hueSetAction(Tap1_1,"whatever to do..."
+	
+	correlation between items in switches, action unclear.
+	
 	

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openhab.binding.hue.HueBindingProvider;
-import org.openhab.binding.hue.internal.HueBindingConfig.BindingType;
+import org.openhab.binding.hue.internal.HueLightBindingConfig.BindingType;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ColorItem;
@@ -45,6 +45,9 @@ import org.slf4j.LoggerFactory;
  * </li>
  * <li>
  * <code>{hue="1;colorTemperature;30"} - Connects to bulb 1 and dims the bulbs color temperature without changing the brightness. The step size is set to 30.</code>
+ * </li>
+ * <li>
+ * <code>{hue="tap;2;1",autoupdate="false} - Connects to sensor tap 2, button 1.</code>
  * </li>
  * </ul>
  * 
@@ -91,19 +94,28 @@ public class HueGenericBindingProvider extends AbstractGenericBindingProvider
 				String[] configParts = bindingConfig.split(";");
 
 				if (item instanceof ColorItem) {
-					BindingConfig hueBindingConfig = (BindingConfig) new HueBindingConfig(
+					BindingConfig hueBindingConfig = (BindingConfig) new HueLightBindingConfig(
 							configParts[0], BindingType.rgb.name(), null);
 					addBindingConfig(item, hueBindingConfig);
 				} else if (item instanceof DimmerItem) {
-					BindingConfig hueBindingConfig = (BindingConfig) new HueBindingConfig(
+					BindingConfig hueBindingConfig = (BindingConfig) new HueLightBindingConfig(
 							configParts[0], configParts.length < 2 ? null
 									: configParts[1],
 							configParts.length < 3 ? null : configParts[2]);
 					addBindingConfig(item, hueBindingConfig);
 				} else if (item instanceof SwitchItem) {
-					BindingConfig hueBindingConfig = (BindingConfig) new HueBindingConfig(
-							configParts[0], BindingType.switching.name(), null);
-					addBindingConfig(item, hueBindingConfig);
+					
+					if(configParts[0].matches("[0-9]+")){
+						// first config is number: bulb configuration
+						BindingConfig hueBindingConfig = (BindingConfig) new HueLightBindingConfig(
+								configParts[0], BindingType.switching.name(), null);
+						addBindingConfig(item, hueBindingConfig);
+					}else{
+						// a sensor? a Tap!
+						BindingConfig hueBindingConfig = (BindingConfig) new HueTapBindingConfig(
+								configParts[1], configParts[2]);
+						addBindingConfig(item, hueBindingConfig);
+					}
 				}
 
 			} else {
@@ -118,8 +130,8 @@ public class HueGenericBindingProvider extends AbstractGenericBindingProvider
 	}
 
 	@Override
-	public HueBindingConfig getItemConfig(String itemName) {
-		return (HueBindingConfig) bindingConfigs.get(itemName);
+	public AbstractHueBindingConfig getItemConfig(String itemName) {
+		return (AbstractHueBindingConfig) bindingConfigs.get(itemName);
 	}
 
 	/**
