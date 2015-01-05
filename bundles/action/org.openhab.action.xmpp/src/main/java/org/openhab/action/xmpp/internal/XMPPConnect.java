@@ -93,15 +93,15 @@ public class XMPPConnect implements ManagedService {
 		}
 
 		// check mandatory settings
-		if (servername == null || servername.isEmpty()) return;
-		if (username == null || username.isEmpty()) return;
-		if (password == null || password.isEmpty()) return;
+		if (StringUtils.isEmpty(servername)) return;
+		if (StringUtils.isEmpty(username)) return;
+		if (StringUtils.isEmpty(password)) return;
 
 		// set defaults for optional settings
 		if (port == null) {
 			port = 5222;
 		}
-		if (chatnickname == null || chatnickname.isEmpty()) {
+		if (StringUtils.isEmpty(chatnickname)) {
 			chatnickname = "openhab-bot";
 		}
 
