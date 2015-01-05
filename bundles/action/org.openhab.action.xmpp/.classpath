@@ -9,5 +9,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/java-pinning-jar-1.0.0.jar" sourcepath="lib-src/java-pinning-jar-1.0.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/xpp3-1.1.4c.jar" sourcepath="lib-src/xpp3-1.1.4c-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
