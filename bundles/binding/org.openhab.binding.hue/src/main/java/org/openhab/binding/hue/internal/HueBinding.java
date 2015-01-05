@@ -100,10 +100,11 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			// Observation : If the power of a hue lamp is removed, the status is not updated in hue hub.
 			// The heartbeat functionality should fix this, but 
 			HueSettings settings = activeBridge.getSettings();
-			Set<String> pressedTaps=tapStates.findPressedTapDevices(settings);
-		//TODO: handl actions here!
+			Map<Integer,HueTapState> pressedTaps=tapStates.findPressedTapDevices(settings);
+
 			if(pressedTaps.size()>0){
-				logger.debug("fuond pressed taps");
+				logger.debug("pressed "+pressedTaps.size()+" taps");
+				
 			}
 			
 			for (int i = 1; i <= settings.getLightsCount(); i++) {
@@ -125,6 +126,8 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 						
 						if(deviceConfig instanceof HueLightBindingConfig){
 							executeBulb(hueItemName, (HueLightBindingConfig) deviceConfig);
+						}else if(deviceConfig instanceof HueTapBindingConfig){
+							executeTap( hueItemName, (HueTapBindingConfig) deviceConfig,pressedTaps);
 						}
 					}
 				}
@@ -136,9 +139,24 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 	
 	
 	
-	// no 1:1 between Tap Devices and Items!!
-	private void executeTap(String hueItemName, HueLightBindingConfig deviceConfig) {
-		eventPublisher.postUpdate(hueItemName, OnOffType.ON);
+	/**
+	 * check if this config is among the pressed ones and act accordingly
+	 * @param hueItemName
+	 * @param deviceConfig
+	 * @param pressedTaps
+	 */
+	private void executeTap(String hueItemName, HueTapBindingConfig deviceConfig,Map<Integer,HueTapState> pressedTaps) {
+		
+		// has this tap device changed?
+		HueTapState pressed=pressedTaps.get(deviceConfig.deviceNumber);
+		if(pressed!=null){
+			SwitchId id=deviceConfig.switchId;
+			if(pressed.getButtonEvent()==id.getButtonEvent()){
+				eventPublisher.postUpdate(hueItemName, OnOffType.ON);
+			}
+		}
+		
+		
 	}
 	
 	/**

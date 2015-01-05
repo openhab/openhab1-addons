@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.hue.internal.hardware;
 
-import org.openhab.binding.hue.internal.HueTapBindingConfig.SwitchId;
+import org.openhab.binding.hue.internal.SwitchId;
 import org.openhab.binding.hue.internal.data.HueSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -125,8 +125,8 @@ public class HueSettings {
 	 * retrieve a Map of all tap States. Key is the Tap Sensor id
 	 * @return
 	 */
-	public Map<String,HueTapState> getTapStates(){
-		Map<String,HueTapState> states=new HashMap<String,HueTapState>();
+	public Map<Integer,HueTapState> getTapStates(){
+		Map<Integer,HueTapState> states=new HashMap<Integer,HueTapState>();
 		SettingsTree sensors=settingsData.node("sensors");
 		for(int deviceNumber=1;deviceNumber<=sensors.count();deviceNumber++){ //TODO: make iterator!!
 			SettingsTree tn=sensors.node(Integer.toString(deviceNumber));
@@ -136,7 +136,7 @@ public class HueSettings {
 				
 				HueTapState state=new HueTapState((Integer)stateNode.value("buttonevent"),(String)stateNode.value("lastupdated"));
 				
-				states.put(Integer.toString(deviceNumber), state);
+				states.put(deviceNumber, state);
 			}
 		}
 		return states;

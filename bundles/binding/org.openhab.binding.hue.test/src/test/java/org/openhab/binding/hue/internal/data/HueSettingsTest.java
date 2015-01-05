@@ -52,13 +52,13 @@ public class HueSettingsTest {
 		String settingsString=readFileToString("/basic1.json");
 		
 		HueSettings s1=new HueSettings(settingsString);
-		Map<String,HueTapState> states=s1.getTapStates();
+		Map<Integer,HueTapState> states=s1.getTapStates();
 		assertEquals(1,states.size());
 		
 		
 		// a new handler
 		HueTapStatesHandler handler=new HueTapStatesHandler();		
-		Set<String> pressed=handler.findPressedTapDevices(s1);
+		Map<Integer,HueTapState> pressed=handler.findPressedTapDevices(s1);
 		assertEquals(0,pressed.size());
 		
 		// again, no actions inbetween

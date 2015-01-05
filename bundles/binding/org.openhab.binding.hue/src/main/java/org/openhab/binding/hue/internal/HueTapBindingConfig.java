@@ -33,21 +33,6 @@ public class HueTapBindingConfig extends AbstractHueBindingConfig implements Bin
 	static final Logger logger = LoggerFactory.getLogger(HueTapBindingConfig.class);
 
 	/**
-	 * The binding type of the hue item.
-	 * <ul>
-	 * <li>switch1 - . </li>
-	 * <li>switch2 - : </li>
-	 * <li>switch3 - :. </li>
-	 * <li>switch4 - :: </li>
-	 * </ul>
-	 */
-	public enum SwitchId {
-		switch1, switch2, switch3, switch4
-		
-		
-	}
-	
-	/**
 	 * The switch number 1-4 of the tap device
 	 */
 	protected final SwitchId switchId;
@@ -80,13 +65,17 @@ public class HueTapBindingConfig extends AbstractHueBindingConfig implements Bin
 	private SwitchId parseSwitchIdConfigString(String configString)
 			throws BindingConfigParseException {
 		
-		switch(configString){
-			case "1":	return SwitchId.switch1;
-			case "2":	return SwitchId.switch2;
-			case "3":	return SwitchId.switch3;
-			case "4":	return SwitchId.switch4;
-			default: throw new BindingConfigParseException("Error parsing switch id '"+configString+"'");
-		}		
+		try {
+			int configId=Integer.parseInt(configString);
+			SwitchId id=SwitchId.switchIdForConfigId(configId);
+			
+			if(id!=null) return id;
+			throw new BindingConfigParseException("Error parsing switch id '"+configString+"'");
+		} catch (NumberFormatException e) {
+			throw new BindingConfigParseException("Error parsing switch id '"+configString+"'",e);
+		}
+		
+		
 	}
 	
 }

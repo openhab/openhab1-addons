@@ -2,6 +2,13 @@ package org.openhab.binding.hue.internal;
 
 import org.openhab.model.item.binding.BindingConfigParseException;
 
+/**
+ * a base class for all hue binding configs
+ * 
+ * @author Gernot Eger
+ * @since 1.7.0
+ *
+ */
 public abstract class AbstractHueBindingConfig {
 
 	/**

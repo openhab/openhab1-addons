@@ -16,4 +16,8 @@ public class BindingConfigParseException extends Exception {
 		super(msg);
 	}
 
+	public BindingConfigParseException(String arg0, Throwable arg1) {
+		super(arg0, arg1);
+	}
+
 }

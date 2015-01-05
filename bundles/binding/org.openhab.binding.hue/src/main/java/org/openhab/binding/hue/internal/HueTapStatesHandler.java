@@ -1,8 +1,7 @@
 package org.openhab.binding.hue.internal;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.openhab.binding.hue.internal.data.HueSettings;
 import org.openhab.binding.hue.internal.hardware.HueTapState;
@@ -16,23 +15,24 @@ public class HueTapStatesHandler {
 	/**
 	 * tap states when last checked
 	 */
-	private Map<String,HueTapState> lastTapStates = null;
+	private Map<Integer,HueTapState> lastTapStates = null;
 	
 	/**
 	 * find tap devices that were pressed since last call
 	 * @param settings
 	 */
-	public Set<String> findPressedTapDevices(HueSettings settings){
-		Map<String,HueTapState> states=settings.getTapStates();
-		HashSet<String> foundDevices=new HashSet<String>();
+	public Map<Integer, HueTapState> findPressedTapDevices(HueSettings settings){
+		Map<Integer,HueTapState> states=settings.getTapStates();
+		Map<Integer,HueTapState> foundDevices=new HashMap<Integer,HueTapState>();
 		if(lastTapStates!=null){
 			// iterate over all saved states
-			for(String deviceId:lastTapStates.keySet()){
+			for(Integer deviceId:lastTapStates.keySet()){
 				HueTapState s1=lastTapStates.get(deviceId);
 				HueTapState s2=states.get(deviceId);
 				if(s2!=null){
 					if(!s2.equals(s1)){
-						foundDevices.add(deviceId);
+						//TODO: what if 2 events on the same switch occurred? unlikely, but possible; only the younger one should prevail
+						foundDevices.put(deviceId,s2);
 					}
 				}
 			}
