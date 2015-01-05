@@ -242,13 +242,13 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			String itemName, HueBridge bridge) {
 		
 		AbstractHueBindingConfig abstractDeviceConfig = getConfigForItemName(itemName);
+		if (abstractDeviceConfig == null) {
+			return;
+		}
 		
 		if(abstractDeviceConfig instanceof HueLightBindingConfig ){
 			HueLightBindingConfig deviceConfig = (HueLightBindingConfig)abstractDeviceConfig ;
 	
-			if (deviceConfig == null) {
-				return;
-			}
 	
 			HueBulb bulb = bulbCache.get(deviceConfig.getDeviceNumber());
 			if (bulb == null) {
