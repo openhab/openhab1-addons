@@ -152,7 +152,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 		if(pressed!=null){
 			SwitchId id=deviceConfig.switchId;
 			if(pressed.getButtonEvent()==id.getButtonEvent()){
-				eventPublisher.postUpdate(hueItemName, OnOffType.ON);
+				eventPublisher.postCommand(hueItemName, OnOffType.ON);
 			}
 		}
 		
@@ -292,8 +292,8 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 				}
 			}
 		}else {
-			//TODO: make some errors here??
-			logger.warn("Item '"+itemName+"' is no hue bulb! Command ignored.");
+			//do nothing for tap devices; my self-crated commands will arrive here 
+			//logger.warn("Item '"+itemName+"' is no hue bulb! Command ignored.");
 		}
 	}
 
