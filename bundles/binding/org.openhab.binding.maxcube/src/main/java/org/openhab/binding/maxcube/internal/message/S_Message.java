@@ -9,34 +9,59 @@
 package org.openhab.binding.maxcube.internal.message;
 
 
+import org.openhab.binding.maxcube.internal.MaxCubeBinding;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
-* The S message contains information about Command execution results (guessed) 
-* 
-* @author Andreas Heil (info@aheil.de)
-* @author Bernd Michael Helm (bernd.helm at helmundwalter.de)
-* @author Marcel Verpaalen - OH2 version
-* @since 1.6.0
-*/
+ * The S message contains information about Command execution results
+ * 
+ * @author Andreas Heil (info@aheil.de)
+ * @author Bernd Michael Helm (bernd.helm at helmundwalter.de)
+ * @author Marcel Verpaalen - OH2 version + parsing of the message
+ * @since 1.6.0
+ */
 public final class S_Message extends Message {
+	
+	private int dutyCycle;
+	private int freeMemorySlots;
+	private boolean commandDiscarded = false;
+	Logger logger = LoggerFactory.getLogger(MaxCubeBinding.class);
+	
 	public S_Message(String raw) {
 		super(raw);
-
 		String[] tokens = this.getPayload().split(Message.DELIMETER);
-
-		/**
-		 * TODO: Implement S Message
-		 */
+		if (tokens.length == 3){
+			try{
+				dutyCycle = Integer.parseInt(tokens[0],16);
+				commandDiscarded = tokens[1] == "1";
+				freeMemorySlots = Integer.parseInt(tokens[2],16);
+			} catch(Exception e) {
+				logger.debug("Exception occurred during parsing of S message: {}", e.getMessage(), e);
+			}
+		}else
+		{
+			logger.debug("Unexpected # of tolkens ({}) received in S message: {}",tokens.length,this.getPayload());
+		}
 	}
-
+	public int getDutyCycle() {
+		return dutyCycle;
+	}
+	public int getFreeMemorySlots() {
+		return freeMemorySlots;
+	}
+	public boolean isCommandDiscarded() {
+		return commandDiscarded;
+	}
 	@Override
 	public void debug(Logger logger) {
 		logger.debug("=== S_Message === ");
-		logger.debug("\tRAW : {}", this.getPayload());
+		logger.trace("\tRAW : {}", this.getPayload());
+		logger.debug("\tDutyCycle : {}", this.dutyCycle);
+		logger.debug("\tCommand Discarded : {}", this.commandDiscarded);
+		logger.debug("\tFreeMemorySlots : {}", this.freeMemorySlots);
 	}
-
 	@Override
 	public MessageType getType() {
 		return MessageType.S;
