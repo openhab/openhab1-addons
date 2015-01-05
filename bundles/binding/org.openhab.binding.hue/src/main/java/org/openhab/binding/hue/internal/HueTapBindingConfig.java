@@ -9,9 +9,6 @@
 package org.openhab.binding.hue.internal;
 
 import org.openhab.core.binding.BindingConfig;
-import org.openhab.core.library.types.HSBType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.PercentType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

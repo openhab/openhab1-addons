@@ -9,11 +9,11 @@
 package org.openhab.binding.hue.internal.data;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.openhab.binding.hue.internal.HueSettingsParseException;
 import org.openhab.binding.hue.internal.hardware.HueTapState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,18 +125,16 @@ public class HueSettings {
 	 * retrieve a Map of all tap States. Key is the Tap Sensor id
 	 * @return
 	 */
-	public Map<Integer,HueTapState> getTapStates(){
+	public Map<Integer,HueTapState> getTapStates() throws HueSettingsParseException{
 		Map<Integer,HueTapState> states=new HashMap<Integer,HueTapState>();
 		SettingsTree sensors=settingsData.node("sensors");
-		for(int deviceNumber=1;deviceNumber<=sensors.count();deviceNumber++){ //TODO: make iterator!!
-			SettingsTree tn=sensors.node(Integer.toString(deviceNumber));
+			
+		for(String deviceID:sensors.nodes()){
+			SettingsTree tn=sensors.node(deviceID);
 			if(tn.value("type").equals("ZGPSwitch")){
 				SettingsTree stateNode=tn.node("state");
-				//TODO: error handling should go here!
-				
-				HueTapState state=new HueTapState((Integer)stateNode.value("buttonevent"),(String)stateNode.value("lastupdated"));
-				
-				states.put(deviceNumber, state);
+				HueTapState state=new HueTapState((Integer)stateNode.value("buttonevent"),(String)stateNode.value("lastupdated"));				
+				states.put(Integer.parseInt(deviceID),state);
 			}
 		}
 		return states;
@@ -270,9 +268,9 @@ public class HueSettings {
 			return dataMap.get(valueName);
 		}
 
-//		protected Iterator<String> nodes(){
-//			return dataMap.values();
-//		}
+		protected Set<String> nodes(){
+			return dataMap.keySet();
+		}
 	}
 
 }

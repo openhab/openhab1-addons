@@ -11,9 +11,7 @@ package org.openhab.binding.hue.internal;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.hue.HueBindingProvider;
@@ -100,7 +98,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			// Observation : If the power of a hue lamp is removed, the status is not updated in hue hub.
 			// The heartbeat functionality should fix this, but 
 			HueSettings settings = activeBridge.getSettings();
-			Map<Integer,HueTapState> pressedTaps=tapStates.findPressedTapDevices(settings);
+			Map<Integer, HueTapState> pressedTaps = tapStates.findPressedTapDevices(settings);
 
 			if(pressedTaps.size()>0){
 				logger.debug("pressed "+pressedTaps.size()+" taps");
@@ -346,6 +344,8 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 				
 				// RefreshInterval is specified in openhap.cfg, therefore enable polling
 				setProperlyConfigured(true);
+			}else{
+				logger.warn("no refreshInterval defined for hue service. Hue tap detection will not work." );
 			}
 		}
 

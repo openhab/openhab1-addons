@@ -1,6 +1,6 @@
 package org.openhab.binding.hue.internal;
 
-import org.openhab.model.item.binding.BindingConfigParseException;
+import java.util.HashMap;
 
 /**
  * The binding type of the hue item.
@@ -47,19 +47,28 @@ public enum SwitchId {
 		return buttonEvent;
 	}
 
-
+	/**
+	 * cache for my ids
+	 */
+	private static HashMap<Integer,SwitchId> ids=null;
+	
 	/**
 	 * returns the switch id for this config value
 	 * @param configId
 	 * @return SwitchId or null if none is matching
 	 */
 	public static SwitchId switchIdForConfigId(int configId){
-		//TODO: find more efficient way (via Array)
-		for(SwitchId id:SwitchId.values()){
-			if(id.getConfigId()==configId) return id;
+		
+		if(ids==null){
+			//lazily build lookupmap
+			ids=new HashMap<Integer,SwitchId>();
+
+			for(SwitchId id:SwitchId.values()){
+				ids.put(id.configId, id);
+			}
 		}
-		return null;
-			
+		
+		return ids.get(configId);
 	}
 	
 }

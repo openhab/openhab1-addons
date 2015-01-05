@@ -11,13 +11,11 @@ package org.openhab.binding.hue.internal.data;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.binding.hue.internal.HueTapStatesHandler;
 import org.openhab.binding.hue.internal.hardware.HueTapState;
-import org.openhab.core.items.Item;
 
 
 /**
