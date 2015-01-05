@@ -288,15 +288,18 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					if(lastDead != null) {
 						timeSinceLastDead = System.currentTimeMillis() - lastDead.getTime();
 					}
-					if(node.getDeadCount() > 0 && timeSinceLastDead < 86400000)
+					if(node.getNodeInitializationStage() != ZWaveNodeInitStage.DONE) {
+						record.state = OpenHABConfigurationRecord.STATE.INITIALIZING;
+					}
+					else if(node.getDeadCount() > 0 && timeSinceLastDead < 86400000) {
 						record.state = OpenHABConfigurationRecord.STATE.WARNING;
-					else if(node.getSendCount() > 0 && (node.getRetryCount() * 100 / node.getSendCount()) > 5)
+					}
+					else if(node.getSendCount() > 0 && (node.getRetryCount() * 100 / node.getSendCount()) > 5) {
 						record.state = OpenHABConfigurationRecord.STATE.WARNING;
-					else
+					}
+					else {
 						record.state = OpenHABConfigurationRecord.STATE.OK;
-					break;
-				default:
-					record.state = OpenHABConfigurationRecord.STATE.INITIALIZING;
+					}
 					break;
 				}
 

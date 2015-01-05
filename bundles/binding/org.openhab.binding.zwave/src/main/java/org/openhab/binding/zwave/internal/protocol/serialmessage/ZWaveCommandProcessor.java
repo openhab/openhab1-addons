@@ -114,6 +114,7 @@ public abstract class ZWaveCommandProcessor {
 			messageMap.put(SerialMessage.SerialMessageClass.SendData, SendDataMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.SerialApiGetCapabilities, SerialApiGetCapabilitiesMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.SerialApiGetInitData, SerialApiGetInitDataMessageClass.class);
+			messageMap.put(SerialMessage.SerialMessageClass.SerialApiSetTimeouts, SerialApiSetTimeoutsMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.SetSucNodeID, SetSucNodeMessageClass.class);
 		}
 

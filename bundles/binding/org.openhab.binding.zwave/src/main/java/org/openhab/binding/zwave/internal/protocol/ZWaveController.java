@@ -56,6 +56,7 @@ import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveFailedNod
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeInfoMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetRoutingInfoMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SendDataMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.SerialApiSetTimeoutsMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SerialApiSoftResetMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SetSucNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.ZWaveCommandProcessor;
@@ -594,9 +595,10 @@ public class ZWaveController {
 		this.enqueue(new GetVersionMessageClass().doRequest());
 		this.enqueue(new MemoryGetIdMessageClass().doRequest());
 		this.enqueue(new SerialApiGetCapabilitiesMessageClass().doRequest());
+		this.enqueue(new SerialApiSetTimeoutsMessageClass().doRequest(150, 15));
 		this.enqueue(new GetSucNodeIdMessageClass().doRequest());
 	}
-	
+
 	/**
 	 * Send Identify Node message to the controller.
 	 * @param nodeId the nodeId of the node to identify
@@ -1052,7 +1054,7 @@ public class ZWaveController {
 
 	/**
 	 * Returns the number of Out of Order frames received.
-	 * @return the oOFCount
+	 * @return the OOFCount
 	 */
 	public int getOOFCount() {
 		return OOFCount;
@@ -1060,7 +1062,7 @@ public class ZWaveController {
 	
 	/**
 	 * Returns the number of Time-Outs while sending.
-	 * @return the oOFCount
+	 * @return the timeoutCount
 	 */
 	public int getTimeOutCount() {
 		return timeOutCount.get();
@@ -1256,6 +1258,7 @@ public class ZWaveController {
     			sendResponse(ACK);
     		} else {
     			logger.error("Message is not valid, discarding");
+    			sendResponse(NAK);
     			return;
     		}
     		
