@@ -1201,7 +1201,7 @@ public class ZWaveController {
 						if(responseTime > longestResponseTime) {
 							longestResponseTime = responseTime;
 						}
-						logger.debug("Response processed after {}ms/{}ms.", responseTime, longestResponseTime);
+						logger.debug("NODE {}: Response processed after {}ms/{}ms.", lastSentMessage.getMessageNode(), responseTime, longestResponseTime);
 						logger.trace("Acquired. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 					}
 					catch (InterruptedException e) {
