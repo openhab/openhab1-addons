@@ -626,7 +626,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				}
 
 				if (wakeupCommandClass.getInterval() == 0) {
-					logger.debug("NODE {}: Node advancer: WAKEUP - Interval is currently 0. Skipping stage.", node.getNodeId(), controller.getOwnNodeId());
+					logger.debug("NODE {}: Node advancer: WAKEUP - Interval is currently 0. Skipping stage", node.getNodeId(), controller.getOwnNodeId());
 					break;
 				}
 
@@ -675,7 +675,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				// Move on to the next stage
 				setCurrentStage(currentStage.getNextStage());
 				stageAdvanced = true;
-				logger.debug("NODE {}: Node advancer - advancing to {}.", node.getNodeId(),
+				logger.debug("NODE {}: Node advancer - advancing to {}", node.getNodeId(),
 						currentStage.toString());
 			}
 		} while (msgQueue.isEmpty());
