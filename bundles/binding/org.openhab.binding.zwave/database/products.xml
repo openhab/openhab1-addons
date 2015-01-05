@@ -1185,6 +1185,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>1000</Type>
+				<Id>300</Id>
+			</Reference>
+			<Model>ZME_RC2</Model>
+			<Label lang="en">Z-Wave Remote Control+</Label>
+			<ConfigFile>zwaveme/zme_rc2.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0003</Id>
 			</Reference>
