@@ -45,23 +45,28 @@ public final class S_Message extends Message {
 			logger.debug("Unexpected # of tolkens ({}) received in S message: {}",tokens.length,this.getPayload());
 		}
 	}
+	
 	public int getDutyCycle() {
 		return dutyCycle;
 	}
+	
 	public int getFreeMemorySlots() {
 		return freeMemorySlots;
 	}
+	
 	public boolean isCommandDiscarded() {
 		return commandDiscarded;
 	}
+	
 	@Override
 	public void debug(Logger logger) {
-		logger.debug("=== S_Message === ");
+		logger.trace("=== S_Message === ");
 		logger.trace("\tRAW : {}", this.getPayload());
-		logger.debug("\tDutyCycle : {}", this.dutyCycle);
-		logger.debug("\tCommand Discarded : {}", this.commandDiscarded);
-		logger.debug("\tFreeMemorySlots : {}", this.freeMemorySlots);
+		logger.trace("\tDutyCycle : {}", this.dutyCycle);
+		logger.trace("\tCommand Discarded : {}", this.commandDiscarded);
+		logger.trace("\tFreeMemorySlots : {}", this.freeMemorySlots);
 	}
+	
 	@Override
 	public MessageType getType() {
 		return MessageType.S;
