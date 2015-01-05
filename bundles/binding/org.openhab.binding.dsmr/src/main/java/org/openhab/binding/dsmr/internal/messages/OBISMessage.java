@@ -49,7 +49,7 @@ public class OBISMessage {
 	public OBISMessage(OBISMsgType msgType) {
 		this.msgType = msgType;
 
-		cosemValues = new ArrayList<>();
+		cosemValues = new ArrayList<CosemValue<? extends State>>();
 	}
 
 	/**

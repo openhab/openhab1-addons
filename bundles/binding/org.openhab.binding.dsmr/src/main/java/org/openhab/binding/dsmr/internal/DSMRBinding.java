@@ -59,7 +59,7 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>
 	/* DSMR Version (configurable via openhab.cfg) */
 	private DSMRVersion version = DSMRVersion.NONE;
 	/* Meter - channel mapping (configurable via openhab.cfg) */
-	private final List<DSMRMeter> dsmrMeters = new ArrayList<>();
+	private final List<DSMRMeter> dsmrMeters = new ArrayList<DSMRMeter>();
 
 	/* DSMR Port object */
 	private DSMRPort dsmrPort;

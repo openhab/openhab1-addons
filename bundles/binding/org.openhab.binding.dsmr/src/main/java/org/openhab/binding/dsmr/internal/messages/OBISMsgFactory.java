@@ -63,11 +63,11 @@ public class OBISMsgFactory {
 		 * Fill a lookup table with OBIS messages belonging to the specified
 		 * DSMR version and channel - MeterType mapping
 		 */
-		obisLookupTable = new HashMap<>();
-		
+		obisLookupTable = new HashMap<String, OBISMsgType>();
+
 		// Create a convenience lookup table for a channel based on meter type
-		Map<DSMRMeterType, Integer> meterChannelMapping = new HashMap<>();
-		for(DSMRMeter meter : dsmrMeters) {
+		Map<DSMRMeterType, Integer> meterChannelMapping = new HashMap<DSMRMeterType, Integer>();
+		for (DSMRMeter meter : dsmrMeters) {
 			meterChannelMapping.put(meter.getMeterType(), meter.getChannel());
 		}
 		fillLookupTable(version, meterChannelMapping);
@@ -90,25 +90,26 @@ public class OBISMsgFactory {
 			if (m.matches()) {
 				logger.debug("Received valid OBIS String:" + obisStr);
 
-				List<String> cosemStringValues = new ArrayList<>();
-				
+				List<String> cosemStringValues = new ArrayList<String>();
+
 				// Get identifier and all the values as a single String
 				OBISMsgType msgType = getOBISMsgType(m.group(1));
-				
+
 				if (msgType != OBISMsgType.UNKNOWN) {
 					// Get the individual COSEM String values
 					String allCosemStringValues = m.group(2);
-					Matcher valueMatcher = obisValuePattern.matcher(allCosemStringValues);
-					
+					Matcher valueMatcher = obisValuePattern
+							.matcher(allCosemStringValues);
+
 					while (valueMatcher.find()) {
 						cosemStringValues.add(valueMatcher.group(1));
 					}
-	
+
 					logger.debug("OBIS message type:" + msgType + ", values:"
 							+ cosemStringValues);
-	
+
 					msg = new OBISMessage(msgType);
-	
+
 					try {
 						msg.parseCosemValues(cosemStringValues);
 					} catch (ParseException pe) {
@@ -171,9 +172,9 @@ public class OBISMsgFactory {
 						 */
 
 						Integer channel = mapping.get(t.meterType);
-						logger.debug("Change OBIS-identifier "
-								+ t.obisId + " for meter " + t.meterType
-								+ " on channel " + channel);
+						logger.debug("Change OBIS-identifier " + t.obisId
+								+ " for meter " + t.meterType + " on channel "
+								+ channel);
 
 						String obisSpecificIdentifier = m.replaceFirst("$1-"
 								+ channel + ":$3.$4.$5");
