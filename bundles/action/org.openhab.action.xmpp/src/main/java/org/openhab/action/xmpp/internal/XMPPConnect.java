@@ -8,7 +8,11 @@
  */
 package org.openhab.action.xmpp.internal;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Dictionary;
+
+import javax.net.ssl.SSLContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.jivesoftware.smack.AbstractConnectionListener;
@@ -25,6 +29,8 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import eu.geekplace.javapinning.JavaPinning;
 
 /**
  * This class provides XMPP access. An account can be configured, which is then
@@ -48,6 +54,7 @@ public class XMPPConnect implements ManagedService {
 	private static String chatpassword;
 	private static String[] consoleUsers;
 	private static SecurityMode securityMode = SecurityMode.disabled;
+	private static String tlsPin;
 
 	private static boolean initialized = false;
 
@@ -75,6 +82,7 @@ public class XMPPConnect implements ManagedService {
 		if (securityModeString != null) {
 			securityMode = SecurityMode.valueOf(securityModeString);
 		}
+		XMPPConnect.tlsPin = (String) config.get("tlspin");
 
 		String users = (String) config.get("consoleusers");
 
@@ -112,6 +120,14 @@ public class XMPPConnect implements ManagedService {
 			config = new ConnectionConfiguration(servername, port);
 		}
 		config.setSecurityMode(securityMode);
+		if (tlsPin != null) {
+			try {
+				SSLContext sc = JavaPinning.forPin(tlsPin);
+				config.setCustomSSLContext(sc);
+			} catch (KeyManagementException | NoSuchAlgorithmException e) {
+				logger.error("Could not create TLS Pin for XMPP connection", e);
+			}
+		}
 
 		if (connection != null && connection.isConnected()) {
 			try {
