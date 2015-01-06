@@ -71,4 +71,5 @@ public final class S_Message extends Message {
 	public MessageType getType() {
 		return MessageType.S;
 	}
+	
 }
