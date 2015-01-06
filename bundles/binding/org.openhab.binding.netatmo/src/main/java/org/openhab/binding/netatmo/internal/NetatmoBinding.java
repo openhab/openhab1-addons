@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -115,7 +115,7 @@ public class NetatmoBinding extends
 
                         State state = null;
                         switch (measureType) {
-                            case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE:
+                            case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE: case RAIN:
                                     final String requestKey = createKey(deviceId, moduleId);
                                     state = new DecimalType(deviceMeasureValueMap.get(requestKey).get(measureType.getMeasure()));
                                     break;
@@ -311,7 +311,7 @@ public class NetatmoBinding extends
                 final String requestKey = createKey(deviceId, moduleId);
 
                 switch (measureType) {
-                    case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE:
+                    case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE: case RAIN:
                         OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
                         if (oauthCredentials != null) {
                             if (!requests.containsKey(requestKey)) {

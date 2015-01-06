@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,12 +8,12 @@
  */
 package org.openhab.persistence.mysql.internal;
 
-import java.text.SimpleDateFormat;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -46,10 +46,11 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.persistence.FilterCriteria;
+import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
+import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
-import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
@@ -96,6 +97,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 	private boolean initialized = false;
 	protected ItemRegistry itemRegistry;
+	private PersistentStateRestorer persistentStateRestorer;
 
 	// Error counter - used to reconnect to database on error
 	private int errCnt;
@@ -108,6 +110,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	private Map<String, String> sqlTables = new HashMap<String, String>();
 	private Map<String, String> sqlTypes = new HashMap<String, String>();
 
+	
 	public void activate() {
 		// Initialise the type array
 		sqlTypes.put("COLORITEM", "CHAR(25)");
@@ -132,6 +135,14 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 
 	public void unsetItemRegistry(ItemRegistry itemRegistry) {
 		this.itemRegistry = null;
+	}
+	
+	public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
+		this.persistentStateRestorer = persistentStateRestorer;
+	}
+	
+	public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
+		this.persistentStateRestorer = null;
 	}
 
 	/**
@@ -493,6 +504,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 			initialized = true;
 			
 			logger.debug("mySQL configuration complete.");
+			persistentStateRestorer.initializeItems(getName());
 		}
 
 	}

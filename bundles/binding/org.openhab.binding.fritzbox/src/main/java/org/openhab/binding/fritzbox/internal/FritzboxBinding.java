@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -67,7 +67,8 @@ public class FritzboxBinding extends
 
 	private static HashMap<String, String> commandMap = new HashMap<String, String>();
 	private static HashMap<String, String> queryMap = new HashMap<String, String>();
-	
+
+
 	// TODO: configurable?
 	// daily cron schedule
 	private final String cronSchedule = "0 0 0 * * ?";
@@ -115,6 +116,9 @@ public class FritzboxBinding extends
 
 	/* The password of the FritzBox to access via Telnet */
 	protected static String password;
+
+	/* The username, if used for telnet connections */
+	protected static String username;
 
 	/**
 	 * Reference to this instance to be used with the reconnection job which is
@@ -216,6 +220,11 @@ public class FritzboxBinding extends
 			if (StringUtils.isNotBlank(password)) {
 				FritzboxBinding.password = password;
 			}
+
+			String username = (String) config.get("user");
+			if (StringUtils.isNotBlank(username)) {
+				FritzboxBinding.username = username;
+			}
 		}
 	}
 
@@ -285,6 +294,10 @@ public class FritzboxBinding extends
 				 * could be done via a sperate thread but for just sending one
 				 * command it is not necessary
 				 */
+				if (username != null) {
+					receive(client); // user:
+					send(client, username);
+				}
 				receive(client); // password:
 				send(client, password);
 				receive(client); // welcome text
@@ -602,6 +615,10 @@ public class FritzboxBinding extends
 					if (client == null){
 						client = new TelnetClient();
 						client.connect(ip);
+						if (username != null) {
+							receive(client);
+							send(client, username);
+						}
 						receive(client);
 						send(client, password);
 						receive(client);

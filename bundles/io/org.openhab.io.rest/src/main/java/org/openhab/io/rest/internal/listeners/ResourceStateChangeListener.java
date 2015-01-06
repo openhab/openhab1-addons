@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,9 @@ package org.openhab.io.rest.internal.listeners;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,11 +42,15 @@ import org.openhab.io.rest.internal.resources.ItemResource;
  */
 abstract public class ResourceStateChangeListener {
 
-	final static ConcurrentMap<String, Object> map = new ConcurrentHashMap<String, Object>();
-
+	final static long CACHE_TIME = 300 * 1000; // 5 mins
+	
+	final static ConcurrentMap<String, CacheEntry> cachedEntries = new ConcurrentHashMap<String, CacheEntry>();
+	
+	static ScheduledFuture<?> executorFuture;
+	
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
-	private GeneralBroadcaster broadcaster;
+	protected GeneralBroadcaster broadcaster;
 
 	public ResourceStateChangeListener(){
 		
@@ -62,16 +69,17 @@ abstract public class ResourceStateChangeListener {
 		this.broadcaster = broadcaster;
 	}
 	
-	public static ConcurrentMap<String, Object> getMap() {
-		return map;
+	public static ConcurrentMap<String, CacheEntry> getCachedEntries() {
+		return cachedEntries;
 	}
 	
 	public void registerItems(){
+		StartCacheExecutor();
 	        broadcaster.getBroadcasterConfig().setBroadcasterCache(new UUIDBroadcasterCache()); 
 	        broadcaster.getBroadcasterConfig().getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
 	        broadcaster.getBroadcasterConfig().getBroadcasterCache().start();
 		
-		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
+	        broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override
 			public BroadcastAction filter(Object originalMessage, Object message) {
@@ -208,4 +216,63 @@ abstract public class ResourceStateChangeListener {
 	 * @return the response content
 	 */
 	abstract protected Object getSingleResponseObject(Item item, final HttpServletRequest request);
+	
+	static void StartCacheExecutor(){
+		if(executorFuture == null || executorFuture.isCancelled()){
+			executorFuture = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(new Runnable() {
+				@Override
+				public void run() {
+					cleanCache();
+				}
+			}, CACHE_TIME, CACHE_TIME, TimeUnit.MILLISECONDS);
+		}
+	}
+	
+	/**
+	 * Clean up expired entries in our cache.
+	 */
+	static void cleanCache(){
+		/*
+		 * This map object will start to collect dead uuid entries over time, but its 
+		 * difficult to know when these uuid's are really not valid anymore.
+		 */
+		long invalidCacheTime = System.currentTimeMillis() - CACHE_TIME;
+		for(String uuid : cachedEntries.keySet()){
+			if(cachedEntries.get(uuid).getCacheTime() <= invalidCacheTime )
+				cachedEntries.remove(uuid);
+		}
+	}
+	
+	/**
+	 * A CacheEntry object is stored in our static cache map to prevent duplicate messages
+	 * @author Dan Cunningham
+	 *
+	 */
+	public static class CacheEntry {
+		long cacheTime;
+		Object data;
+		/**
+		 * Create a new CacheEntry object the data to cache
+		 * @param data
+		 */
+		public CacheEntry(Object data) {
+			super();
+			this.data = data;
+			this.cacheTime = System.currentTimeMillis();
+		}
+		/**
+		 * 
+		 * @return the time the entry was cached
+		 */
+		public long getCacheTime() {
+			return cacheTime;
+		}
+		/**
+		 * 
+		 * @return the cached data
+		 */
+		public Object getData() {
+			return data;
+		}
+	}
 }

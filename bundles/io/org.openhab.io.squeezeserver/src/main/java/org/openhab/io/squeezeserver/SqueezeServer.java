@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -345,6 +345,18 @@ public class SqueezeServer implements ManagedService {
 			return;
 		sendCommand(player.getMacAddress() + " show line1:" + line1 + " line2:"
 				+ line2 + " duration:" + String.valueOf(duration));
+	}
+	
+	/**
+	 * Send a generic command to a given player
+	 * @param playerId
+	 * @param command
+	 */
+	public void playerCommand(String playerId, String command) {
+		SqueezePlayer player = getPlayer(playerId);
+		if (player == null)
+			return;
+		sendCommand(player.getMacAddress() + " " + command);
 	}
 	
 	public String language() {

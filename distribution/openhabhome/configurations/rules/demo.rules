@@ -105,7 +105,7 @@ when
 then	
 	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight).state)
 	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight).state)
-	logInfo("Weather","Temperature evolved of " + Weather_Temperature.deltaSince(now.minusMinutes(2)).toString + " degrees.")
+	logInfo("Weather", "Temperature evolved of " + Weather_Temperature.deltaSince(now.minusMinutes(2)) + " degrees.")
 end
 
 /** shows how to use sensor values from the past */
@@ -114,7 +114,7 @@ when
 	Time cron "0 * * * * ?"
 then	
 	if(Weather_Temperature.changedSince(now.minusMinutes(1))) {
-		println("2 minutes ago, the temperature was " + Weather_Temperature.historicState(now.minusMinutes(2)) + " degrees.")		
+		logInfo("PersistenceDemo", "2 minutes ago, the temperature was " + Weather_Temperature.historicState(now.minusMinutes(2)) + " degrees.")
 	}
 end
 
@@ -127,7 +127,7 @@ when
 	Item DemoSwitch received command
 then
 	if(!DemoSwitch.changedSince(now.minusSeconds(5))) {
-		logInfo("Persistence Demo", "You did not press this button during the last 5 seconds!")
+		logInfo("PersistenceDemo2", "You did not press this button during the last 5 seconds!")
 	}
 end
 

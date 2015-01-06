@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -99,22 +99,29 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 			config.setUsageSelector(TellstickValueSelector.getValueSelector(configParts[2].trim()));
 		}
 		if (configParts.length > 3) {
-			config.setResend(Integer.parseInt(configParts[3]));
+			if (isIntegerRegex(configParts[3])) {
+				config.setResend(Integer.parseInt(configParts[3]));
+			} else if (configParts[3].matches("^([0-9]+)/([0-9]+)$")) {
+				// Parse ie '3/300' into resend=3 and resendInterval=300
+				String[] resendParts = configParts[3].split("/");
+				config.setResend(Integer.parseInt(resendParts[0]));
+				config.setResendInterval(Long.parseLong(resendParts[1]));
+			} else {
+				config.setProtocol(configParts[3]);
+			}
 		}
 
 		logger.debug("Context:" + context + " Item " + item + " Conf:" + config);
 		addBindingConfig(item, config);
 	}
-
+	public static boolean isIntegerRegex(String str) {
+	    return str.matches("^[0-9]+$");
+	}
 	private void validateBinding(Item item, String[] configParts, TellstickDevice device)
 			throws BindingConfigParseException {
 		if (device == null && !StringUtils.isNumeric(configParts[0].trim())) {
 			throw new BindingConfigParseException("item '" + item.getName() + "' telldus device "
 					+ configParts[0].trim() + " not found");
-		}
-		if (configParts.length > 3 && !StringUtils.isNumeric(configParts[3].trim())) {
-			throw new BindingConfigParseException("item '" + item.getName() + "' resend config wrong"
-					+ configParts[3].trim() + " not a number");
 		}
 	}
 
@@ -147,7 +154,9 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 
 	public void resetTellstickListener() throws SupportedMethodsException {
 		try {
-			listener.remove();
+			if(listener != null) {
+				listener.remove();
+			}
 		} catch (Exception e) {
 			logger.error("Failed to remove telldus core listeners", e);
 		}
@@ -163,13 +172,19 @@ public class TellstickGenericBindingProvider extends AbstractGenericBindingProvi
 	}
 
 	@Override
-	public TellstickBindingConfig getTellstickBindingConfig(int id, TellstickValueSelector valueSel) {
+	public TellstickBindingConfig getTellstickBindingConfig(int id, TellstickValueSelector valueSel, String protocol) {
 		TellstickBindingConfig name = null;
 		for (Entry<String, BindingConfig> entry : bindingConfigs.entrySet()) {
 			TellstickBindingConfig bv = (TellstickBindingConfig) entry.getValue();
 			if (bv.getId() == id) {
-				if (valueSel == null || valueSel.equals(bv.getValueSelector()))
-					name = bv;
+				if (valueSel == null || valueSel.equals(bv.getValueSelector())) {
+					if (protocol == null || bv.getProtocol() == null || protocol.equals(bv.getProtocol())) {
+						name = bv;
+						break;
+					}
+					
+				}
+					
 			}
 		}
 		return name;

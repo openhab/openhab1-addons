@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriBuilder;
 
+import org.atmosphere.cache.UUIDBroadcasterCache;
+import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.PerRequestBroadcastFilter;
+import org.atmosphere.cpr.BroadcastFilter.BroadcastAction;
+import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.RESTApplication;
 import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
@@ -37,12 +42,37 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Kai Kreuzer
  * @author Oliver Mazur
+ * @author Dan Cunningham
  * @since 0.9.0
  *
  */
 public class SitemapStateChangeListener extends ResourceStateChangeListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(SitemapStateChangeListener.class);
+	
+	@Override
+	public void registerItems() {
+		super.registerItems();
+		//if other filters have let this through then clear out any cached messages for the client.
+		//There should at most be only one message (version of the sitemap) in the cache for a client.
+		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
+			
+			@Override
+			public BroadcastAction filter(Object originalMessage, Object message) {
+				return new BroadcastAction(ACTION.CONTINUE,  message);
+			}
+
+			@Override
+			public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
+				//this will clear any cached messages before we add the new one
+				UUIDBroadcasterCache uuidCache = (UUIDBroadcasterCache)broadcaster.getBroadcasterConfig().getBroadcasterCache();
+				List<Object> entries = uuidCache.retrieveFromCache(null,resource);
+				if(entries != null)
+					logger.trace("UUID {} had {} previous messages", resource.uuid(), entries.size());
+				return new BroadcastAction(ACTION.CONTINUE,  message);
+			}
+		});
+	}
 	
 	@Override
 	protected Object getResponseObject(HttpServletRequest request) {
