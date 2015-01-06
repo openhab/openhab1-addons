@@ -1151,6 +1151,15 @@
 		<Product>
 			<Reference>
 				<Type>0100</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>WALLC-S</Model>
+			<Label lang="en">Wall Controller</Label>
+			<ConfigFile>zwaveme/zme_wallc.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
 				<Id>0001</Id>
 			</Reference>
 			<Reference>
