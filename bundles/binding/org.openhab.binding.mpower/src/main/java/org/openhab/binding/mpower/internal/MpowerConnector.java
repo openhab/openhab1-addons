@@ -99,19 +99,15 @@ public class MpowerConnector {
 			Cookie cookie = new Cookie("AIROS_SESSIONID", sessionId, sessionId,
 					this.host, "/", 0, 0, false, false);
 			brb.addCookie(cookie);
-			// brb.setProxyServer(ps);
 			brb.setHeader("Sec-WebSocket-Protocol", "mfi-protocol");
 			webSocket = brb.execute(builder.build()).get();
 
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Websocket error", e);
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Websocket error", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Websocket error", e);
 		}
 	}
 
@@ -168,8 +164,7 @@ public class MpowerConnector {
 			}
 			return id;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Could not get a session.");
 		} finally {
 			post.releaseConnection();
 		}
@@ -194,11 +189,9 @@ public class MpowerConnector {
 				logger.info("Logout successful");
 			}
 		} catch (HttpException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Logout error", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Logout error", e);
 		}
 
 	}

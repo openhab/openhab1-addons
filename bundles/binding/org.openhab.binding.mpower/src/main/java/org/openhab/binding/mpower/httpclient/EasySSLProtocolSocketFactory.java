@@ -16,7 +16,8 @@ import org.apache.commons.httpclient.HttpClientError;
 import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.commons.httpclient.protocol.SecureProtocolSocketFactory;
 
-public class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory {
+public class EasySSLProtocolSocketFactory implements
+		SecureProtocolSocketFactory {
 	/** Log object for this class. */
 
 	private SSLContext sslcontext = null;

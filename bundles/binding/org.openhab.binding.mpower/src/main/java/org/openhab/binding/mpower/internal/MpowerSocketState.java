@@ -4,6 +4,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -20,6 +22,8 @@ public class MpowerSocketState {
 	private boolean on;
 	private int socket;
 	private String address;
+	private static final Logger logger = LoggerFactory
+			.getLogger(MpowerSocketState.class);
 
 	public MpowerSocketState(String json, String address) {
 		setAddress(address);
@@ -57,7 +61,7 @@ public class MpowerSocketState {
 				setOn(on);
 			}
 		} catch (ParseException pe) {
-			// TODO
+			logger.error("Failed to parse json {}", json);
 		}
 	}
 

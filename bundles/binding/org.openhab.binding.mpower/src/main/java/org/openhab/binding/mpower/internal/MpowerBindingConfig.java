@@ -16,7 +16,7 @@ public class MpowerBindingConfig implements BindingConfig {
 
 	public MpowerBindingConfig(String id) {
 		setmPowerInstance(id);
-		// prepare 9 sockets (for US mPower pro)
+		// prepare max 9 sockets (for US mPower pro)
 		for (int i = 1; i < 10; i++) {
 			sockets.put(i, new MpowerSocket());
 		}

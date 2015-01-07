@@ -36,10 +36,6 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 	private static final Logger logger = LoggerFactory
 			.getLogger(MpowerBinding.class);
 
-	/**
-	 * the refresh interval which is used to poll values from the mPower server
-	 * (optional, defaults to 60000ms)
-	 */
 	private long refreshInterval = 60000;
 	private static final String CONFIG_USERNAME = "user";
 	private static final String CONFIG_HOST = "host";
@@ -99,6 +95,7 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
+		// this is called as soon as a switch item gets triggered
 		if (itemName != null && command instanceof OnOffType) {
 			for (MpowerBindingProvider provider : providers) {
 				// search through all mpower's and itemnames
@@ -109,7 +106,6 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 				connectors.get(bindingConf.getmPowerInstance()).send(socket,
 						type);
 			}
-
 		}
 	}
 
@@ -118,10 +114,7 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
+		// we don't care
 	}
 
 	/**
@@ -132,6 +125,7 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 			throws ConfigurationException {
 		if (config != null) {
 
+			// clean up first
 			shutDown();
 
 			Enumeration<String> keys = config.keys();
@@ -233,27 +227,35 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 				// update voltage
 				String volItemName = bindingCfg.getVoltageItemName(socketState
 						.getSocket());
-				State itemState = new DecimalType(socketState.getVoltage());
-				eventPublisher.postUpdate(volItemName, itemState);
+				if (StringUtils.isNotBlank(volItemName)) {
+					State itemState = new DecimalType(socketState.getVoltage());
+					eventPublisher.postUpdate(volItemName, itemState);
+				}
 
 				// update power
 				String powerItemname = bindingCfg.getPowerItemName(socketState
 						.getSocket());
-				itemState = new DecimalType(socketState.getPower());
-				eventPublisher.postUpdate(powerItemname, itemState);
+				if (StringUtils.isNotBlank(powerItemname)) {
+					State itemState = new DecimalType(socketState.getPower());
+					eventPublisher.postUpdate(powerItemname, itemState);
+				}
 
 				// update energy
 				String energyItemname = bindingCfg
 						.getEnergyItemName(socketState.getSocket());
-				itemState = new DecimalType(socketState.getEnergy());
-				eventPublisher.postUpdate(energyItemname, itemState);
+				if (StringUtils.isNotBlank(energyItemname)) {
+					State itemState = new DecimalType(socketState.getEnergy());
+					eventPublisher.postUpdate(energyItemname, itemState);
+				}
 
 				// update switch
 				String switchItemname = bindingCfg
 						.getSwitchItemName(socketState.getSocket());
-				OnOffType state = socketState.isOn() ? OnOffType.ON
-						: OnOffType.OFF;
-				eventPublisher.postUpdate(switchItemname, state);
+				if (StringUtils.isNotBlank(energyItemname)) {
+					OnOffType state = socketState.isOn() ? OnOffType.ON
+							: OnOffType.OFF;
+					eventPublisher.postUpdate(switchItemname, state);
+				}
 
 				// update the cache
 				bindingCfg.setCachedState(socketNumber, socketState);

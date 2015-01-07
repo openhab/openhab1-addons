@@ -30,7 +30,6 @@ public class MpowerWebSocketListener implements WebSocketTextListener {
 
 	@Override
 	public void onOpen(WebSocket webSocket) {
-		// webSocket.sendTextMessage("{\"time\":4000}");
 		logger.debug("[{}]: Websocket opened", "");
 	}
 
@@ -49,7 +48,7 @@ public class MpowerWebSocketListener implements WebSocketTextListener {
 
 	@Override
 	public void onClose(WebSocket webSocket) {
-		logger.warn("[{}]: Websocket closed", "");
+		logger.debug("[{}]: Websocket closed", "");
 		webSocket = null;
 
 	}
