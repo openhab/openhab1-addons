@@ -1155,7 +1155,7 @@
 			</Reference>
 			<Model>WALLC-S</Model>
 			<Label lang="en">Wall Controller</Label>
-			<ConfigFile>zwaveme/zme_wallc.xml</ConfigFile>
+			<ConfigFile>zwaveme/zme_wallcs.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
