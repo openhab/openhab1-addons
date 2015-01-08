@@ -21,7 +21,9 @@ import fr.zapi.utils.XmlSimpleParse;
 
 /**
  * This Class handle emitter items recognized by the zibase
- * @author vagrant
+ * 
+ * @author Julien Tiphaine
+ * @since 1.7.0
  *
  */
 public class ZibaseBindingConfigEmitter extends ZibaseBindingConfig {

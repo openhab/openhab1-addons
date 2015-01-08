@@ -26,11 +26,13 @@ import fr.zapi.Zibase;
 
 
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
+ * Main class for Zibase Binding..
+ * 
+ * It launch a Zibase listener to translate zibase activity has event, 
+ * poll xml sensors file (http) and handle command to be sent to the zibase 
  * 
  * @author Julien Tiphaine
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider> implements ManagedService {
 
@@ -90,7 +92,8 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider> 
 	public static ZibaseGenericBindingProvider getBindingProvider() {
 		return bindingProvider;
 	}
-		
+	
+	
 	/**
 	 * @{inheritDoc}
 	 */
@@ -98,6 +101,9 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider> 
 		
 	}
 	
+	/**
+	 * start the binding : connect to the zibase.
+	 */
 	private void launch() {
 		// insure that lister is not yet running
 		if(zibaseListener!=null) {
@@ -105,27 +111,19 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider> 
 		}
 		
 		// connect to zibase
-		try {
-			zibase = new Zibase(ip);
-			logger.info("connected to zibase for command sending");
-						
-		} catch(Throwable th)	{
-			logger.info("Error connecting to zibase using specified ip address");
-		}
-		
+		zibase = new Zibase(ip);
+		logger.info("connected to zibase for command sending");			
+				
 		// start listener thread for all events the zibase is sending 
-		try {
-			logger.info("Starting zibase listener thread...");
-			zibaseListener = new ZibaseListener();
-			zibaseListener.setZibase(zibase);
-			zibaseListener.setEventPubisher(eventPublisher);
-			zibaseListener.setListenerHost(listenerHost);
-			zibaseListener.setListenerPort(listenerPort);
-			zibaseListener.start();
-		} catch(Throwable th)	{
-			logger.info("Error connecting to zibase for listening");
-		}
+		logger.info("Starting zibase listener thread...");
+		zibaseListener = new ZibaseListener();
+		zibaseListener.setZibase(zibase);
+		zibaseListener.setEventPubisher(eventPublisher);
+		zibaseListener.setListenerHost(listenerHost);
+		zibaseListener.setListenerPort(listenerPort);
+		zibaseListener.start();
 	}
+	
 	
 	/**
 	 * @{inheritDoc}
@@ -164,9 +162,6 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider> 
 	 */
 	@Override
 	protected void execute() {
-		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
-		
 		Collection<ZibaseBindingConfig> configs = (Collection<ZibaseBindingConfig>) ZibaseGenericBindingProvider.itemNameMap.values();
 		for(ZibaseBindingConfig config : configs ) {
 	
@@ -194,18 +189,6 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider> 
 		logger.debug("internalReceiveCommand() is called with ITEM = " + itemName + " / COMMAND = " + command.toString());
 		ZibaseBindingConfig config = bindingProvider.getItemConfig(itemName);
 		config.sendCommand(zibase, command, -1);
-	}
-	
-	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate() is called!");
 	}
 	
 	

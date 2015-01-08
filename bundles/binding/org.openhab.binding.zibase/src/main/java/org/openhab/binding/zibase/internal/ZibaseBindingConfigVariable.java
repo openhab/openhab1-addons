@@ -16,7 +16,9 @@ import fr.zapi.Zibase;
 
 /**
  * This Class handle variables stored in Zibase (32 volatiles + 32 non volatiles)
+ * 
  * @author Julien Tiphaine
+ * @since 1.7.0
  *
  */
 public class ZibaseBindingConfigVariable extends ZibaseBindingConfig {

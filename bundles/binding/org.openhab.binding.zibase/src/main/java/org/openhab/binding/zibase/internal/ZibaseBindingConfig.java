@@ -21,8 +21,13 @@ import fr.zapi.Zibase;
 
 /**
  * Zibase item's config class
+ * 
+ * Parent class for all item types. 
+ * This class is also used as a factory for all item's config
+ * 
  * @author Julien Tiphaine
- *
+ * @since 1.7.0
+ * 
  */
 abstract class ZibaseBindingConfig implements BindingConfig {
 
@@ -63,13 +68,9 @@ abstract class ZibaseBindingConfig implements BindingConfig {
 	static {
 		prefixClasses = new HashMap<String, Class<?>>();
 		prefixClasses.put("VAR", org.openhab.binding.zibase.internal.ZibaseBindingConfigVariable.class);	// Variable
-		prefixClasses.put("CAL", org.openhab.binding.zibase.internal.ZibaseBindingConfigCalendar.class);	// Calendar
 		prefixClasses.put("SCE", org.openhab.binding.zibase.internal.ZibaseBindingConfigScenario.class);	// Scenario
-		prefixClasses.put("SCR", org.openhab.binding.zibase.internal.ZibaseBindingConfigScript.class);		// Script
 		prefixClasses.put("RCV", org.openhab.binding.zibase.internal.ZibaseBindingConfigReceiver.class);	// Receiver
 		prefixClasses.put("EMT", org.openhab.binding.zibase.internal.ZibaseBindingConfigEmitter.class);		// Emitter
-		prefixClasses.put("X10", org.openhab.binding.zibase.internal.ZibaseBindingConfigX10Event.class);	// X10 events
-		prefixClasses.put("ZWA", org.openhab.binding.zibase.internal.ZibaseBindingConfigZwaveEvent.class);	// ZWave events
 	}
 
 	

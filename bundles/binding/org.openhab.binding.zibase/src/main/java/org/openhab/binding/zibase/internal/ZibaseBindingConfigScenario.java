@@ -18,7 +18,9 @@ import fr.zapi.Zibase;
 
 /**
  * This class handle scenarios stored in Zibase memory
+ * 
  * @author Julien Tiphaine
+ * @since 1.7.0
  *
  */
 public class ZibaseBindingConfigScenario extends ZibaseBindingConfig {

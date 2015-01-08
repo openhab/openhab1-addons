@@ -20,8 +20,10 @@ import fr.zapi.ZbProtocol;
 import fr.zapi.Zibase;
 
 /**
- * This class handle emitters items the Zibase can manage @see authorizedProtocols
+ * This class handle receiver items the Zibase can manage @see authorizedProtocols
+ * 
  * @author Julien Tiphaine
+ * @since 1.7.0
  *
  */
 public class ZibaseBindingConfigReceiver extends ZibaseBindingConfig {

@@ -22,9 +22,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
+ * All Items are then stored internally with their specific settings.
  *
  * @author Julien Tiphaine
- * @since 1.6.0
+ * @since 1.7.0
  */
 public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider implements ZibaseBindingProvider {
 

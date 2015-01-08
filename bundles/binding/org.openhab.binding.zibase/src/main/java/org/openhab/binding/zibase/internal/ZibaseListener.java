@@ -28,7 +28,13 @@ import fr.zapi.Zibase;
 
 /**
  * Zibase Listener Thread class
+ * 
+ * This class is used to connect to the zibase as a "listener" so it receive 
+ * every details about the zibase activity (RF orders, scenarios execution...).
+ * Each supported activities is then sent on openHab bus as events.
+ * 
  * @author Julien Tiphaine
+ * @since 1.7.0
  *
  */
 public class ZibaseListener extends Thread {
