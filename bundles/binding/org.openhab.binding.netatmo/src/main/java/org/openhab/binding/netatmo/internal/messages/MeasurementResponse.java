@@ -15,7 +15,6 @@ import java.util.List;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.openhab.core.library.types.DateTimeType;
 
 /**
  * Java Bean to represent a JSON response to a <code>getmeasure</code> API

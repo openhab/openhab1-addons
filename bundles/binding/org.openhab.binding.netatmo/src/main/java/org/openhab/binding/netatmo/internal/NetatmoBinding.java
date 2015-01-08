@@ -12,7 +12,6 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequest.createKey;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
