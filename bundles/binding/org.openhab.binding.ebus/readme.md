@@ -134,53 +134,7 @@ temp_return            | solar_v           | temp_return            | Vaillant  
 
 
 ### Example for item configuration
-H
-
-
-	/** Heating **/
-	Group HeatingUnit					"Heating"												(All)
-	Group Solar							"Solar"													(All)
-	
-	Group SOL_Chart1																			(HeatingUnit)
-	Group SOL_Chart2																			(HeatingUnit)
-	Group HU_Chart1																				(HeatingUnit)
-	Group HU_Chart2																				(HeatingUnit)
-	Number HU_Temp_Warm_Wather			"Hotwater temp.[%.1f °C]"			<__temperature>		(HeatingUnit,SOL_Chart1)	{ ebus="id:temp_boiler, class:heating_kw"}
-	Number HU_Temp_M_Warm_Wather		"Hotwater min. temp.[%.1f °C]"		<__temperature>		(HeatingUnit)				{ ebus="id:temp_t_boiler, class:controller"}
-	Number HU_Temp_T_Warm_Wather		"Hotwater temp(target)[%.1f °C]"	<__temperature>		(HeatingUnit)				{ ebus="id:temp_t_boiler, class:controller2, src:F1"}
-	
-	Number HU_Temp_Heat_Vessel			"Boiler temp. [%.1f °C]"		<__temperature>		(HeatingUnit,HU_Chart1)		{ ebus="id:temp_vessel, class:auto_stroker, src:03"}
-	Number HU_Temp_T_Heat_Vessel		"Boiler temp. (target) [%.1f °C]"	<__temperature>		(HeatingUnit,HU_Chart1)		{ ebus="id:temp_t_vessel, class:controller"}
-	Number HU_Temp_Heat_Return			"HU. Return [%.1f °C]"			<__temperature>		(HeatingUnit,HU_Chart1)		{ ebus="id:temp_return, class:heating_kw"}
-	Number HU_Temp_Heat_Exhaust			"Exhaust temp. [%.1f °C]"		<__temperature>		(HeatingUnit)				{ ebus="id:temp_exhaust, class:heating_kw"}
-	Number HU_Temp_AvgOutdoor			"Avg. temp. outdoor [%.1f °C]"		<__temperature>		(HeatingUnit)				{ ebus="id:temp_outdoor, class:controller2, src:F1"}
-	Number HU_Temp_Outdoor				"Temp. outdoor [%.1f °C]"				<__temperature>		(HeatingUnit)				{ ebus="id:temp_outdoor, class:controller2, src:03"}
-	
-	/** Heating - Solar **/
-	Switch SOL_Status_Pump				"Solar pump"						<switch>			(Solar,SOL_Chart2)			{ ebus="id:solar_pump, class:solar_kw"}
-	Number SOL_Temp_Collector			"Sol. collektor temp. [%.1f °C]"	<__temperature>		(Solar,SOL_Chart1)			{ ebus="id:temp_collector, class:solar_kw"}
-	Number SOL_Temp_Return				"Sol. return temp. [%.1f °C]"		<__temperature>		(Solar,SOL_Chart1)			{ ebus="id:e1, class:solar_kw"}
-	Number SOL_Temp_Reservoir			"Sol. store temp. [%.1f °C]"		<__temperature>		(Solar,SOL_Chart1)			{ ebus="id:temp_reservoir_1, class:solar_kw"}
-	Number SOL_Yield_Sum				"Sol. sum yield [%.1f kW/h]"		<__bar_chart>		(Solar)						{ ebus="id:yield_sum, class:solar_kw"}
-	Number SOL_Yield_Day				"Sol. day yield [%.2f kW/h]"		<__bar_chart>		(Solar)						{ ebus="id:yield_day, class:solar_kw"}
-	Number SOL_Yield_Current			"Current output[%.2f kW]"			<__bar_chart>		(Solar,SOL_Chart2)			{ ebus="id:solar_current, class:solar_kw"}
-	
-	/** Heating - Common Data **/
-	Number HU_Performance_Burner		"Unit output [%s %%]"			<__bar_chart>		(HeatingUnit)				{ ebus="id:performance_burner, class:heating_kw"}
-	Number HU_Performance_Pump			"Pump output[%s %%]"				<__bar_chart>		(HeatingUnit)				{ ebus="id:performance_pump, class:heating_kw"}
-	Number HU_No_Of_Firing				"No. of Firing[%s]"					<__bar_chart>		(HeatingUnit)				{ ebus="id:no_of_firing, class:heating_kw"}
-	Number HU_Op_Hrs					"Op. hours unit[%s h]"				<__bar_chart>		(HeatingUnit)				{ ebus="id:op_hrs_heating_unit, class:heating_kw"}
-	Switch HU_Status_Alarm				"Alarm [MAP(yesno_de.map):%s]"		<siren>				(HeatingUnit)				{ ebus="id:state_alarm, class:auto_stroker, src:03"}
-	Switch HU_Status_Fire				"HU. flame [MAP(de.map):%s]"		<__gas2>			(HeatingUnit,HU_Chart1)		{ ebus="id:state_flame, class:auto_stroker, src:03"}
-	Number HU_Status					"HU. status [%s]"					<settings>			(HeatingUnit)				{ ebus="id:status_auto_stroker, class:auto_stroker, src:03"}
-	Number HU_Pressure_System			"System pressue [%.2f bar]"			<__temperature>		(HeatingUnit)				{ ebus="id:system_pressure, class:heating_kw"}
-	Number HU_FW_Version				"Version[%.2f]"						<__bar_chart>		(HeatingUnit)				{ ebus="id:fw_version, class:heating_kw"}
-	
-	Number HU_Status_Burner			"Status burner [MAP(hu_CC5427_de.map):%s]"	<__temperature>		(HeatingUnit)				{ ebus="id:_w_unknown2, class:burnerw"}
-	Number HU_Status_OpMode			"Op. mode [MAP(hu_CC7301_de.map):%s]"	<__temperature>		(HeatingUnit)				{ ebus="id:_w_unknown4, class:burnerw"}
-	
-	Number HU_PollingExample				"Polling example [%s]"									(HeatingUnit)				{ ebus="id:fw_version2, data:FF 08 50 22 03 CC 9A 01 00, refresh:60"}
-	Number HU_PollingExample2				"Polling example [%s]"										(HeatingUnit)				{ ebus="id:no_of_firing, class:heating_kw, cmd:no_of_firing, dst:08, refresh:10"}
+Here is a longer example.
 
 	/** Heating **/
 	Group HeatingUnit					"Heating"												(All)
@@ -221,8 +175,8 @@ H
 	Number HU_Pressure_System			"System pressue [%.2f bar]"			<__temperature>		(HeatingUnit)				{ ebus="id:system_pressure, class:heating_kw"}
 	Number HU_FW_Version				"Version[%.2f]"						<__bar_chart>		(HeatingUnit)				{ ebus="id:fw_version, class:heating_kw"}
 	
-	Number HU_Status_Burner			"Status burner [MAP(hu_CC5427_de.map):%s]"	<__temperature>		(HeatingUnit)				{ ebus="id:_w_unknown2, class:burnerw"}
-	Number HU_Status_OpMode			"Op. mode [MAP(hu_CC7301_de.map):%s]"	<__temperature>		(HeatingUnit)				{ ebus="id:_w_unknown4, class:burnerw"}
+	Number HU_Status_Burner				"Status burner [MAP(hu_CC5427_de.map):%s]"	<__temperature>		(HeatingUnit)				{ ebus="id:_w_unknown2, class:burnerw"}
+	Number HU_Status_OpMode				"Op. mode [MAP(hu_CC7301_de.map):%s]"	<__temperature>		(HeatingUnit)				{ ebus="id:_w_unknown4, class:burnerw"}
 	
-	Number HU_PollingExample1				"Polling Example 1 [%s]"									(HeatingUnit)				{ ebus="id:fw_version2, data:FF 08 50 22 03 CC 9A 01 00, refresh:60"}
-	Number HU_PollingExample2				"Polling Example 1 [%s]"										(HeatingUnit)				{ ebus="id:no_of_firing, class:heating_kw, cmd:no_of_firing, dst:08, refresh:10"}
+	Number HU_PollingExample1			"Polling Example 1 [%s]"									(HeatingUnit)				{ ebus="id:fw_version2, data:FF 08 50 22 03 CC 9A 01 00, refresh:60"}
+	Number HU_PollingExample2			"Polling Example 2 [%s]"										(HeatingUnit)				{ ebus="id:no_of_firing, class:heating_kw, cmd:no_of_firing, dst:08, refresh:10"}
