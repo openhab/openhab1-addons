@@ -31,8 +31,8 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .,
- lib/async-http-client-1.8.14.jar,
- lib/netty-3.9.0.Final.jar,
+ lib/async-http-client-1.9.3.jar,
+ lib/netty-3.10.0.Final.jar,
  lib/json-simple-1.1.1.jar
 Require-Bundle: org.apache.commons.httpclient
 

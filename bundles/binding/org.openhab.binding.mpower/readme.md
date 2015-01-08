@@ -26,7 +26,7 @@ mpower:<smybolic name>.secure=<true|false>
 mpower:<smybolic name>.refresh=<refresh intervall in ms>
 ```
 
-For multiple strips replicate this section with another symbolic name:
+For multiple strips replicate this section with another symbolic name. E.g.:
 
 ```
 mpower:mp1.host=192.168.0.15
@@ -43,16 +43,16 @@ mpower:mp2.refresh=60000
 ```
 
 Remarks:
-- "refresh" defines how often the items are updated (in ms). In case the data has not changed (same voltage etc) no update will be performed.
-- "secure" use "true" or "false" to enable a HTTPS connection.
+- for the option "refresh": it defines how often the items are updated (in ms). In case the data has not changed (same voltage etc) no update will be performed.
+- for the option "secure": use values "true" or "false" to enable a HTTPS connection.
 
 
 # Item Binding Configuration
 
 For your item bindings the following item addressing is available:
-
+```
 {mpower}="<smybolic name>:<socket number>:<switch|voltage|energy|power>
-
+```
 For example this is a full set of items for a 6-port mPower strip
 
 ```

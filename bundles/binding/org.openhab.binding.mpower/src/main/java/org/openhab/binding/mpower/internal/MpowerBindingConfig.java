@@ -103,6 +103,12 @@ public class MpowerBindingConfig implements BindingConfig {
 		return false;
 	}
 
+	/**
+	 * Returns the cached (last) state of the socket
+	 * 
+	 * @param socketNumber
+	 * @return
+	 */
 	public MpowerSocketState getCacheForSocket(int socketNumber) {
 		return sockets.get(socketNumber).getValueCache();
 	}

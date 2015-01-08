@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder;
 import com.ning.http.client.cookie.Cookie;
-import com.ning.http.client.websocket.WebSocket;
-import com.ning.http.client.websocket.WebSocketUpgradeHandler;
+import com.ning.http.client.ws.WebSocket;
+import com.ning.http.client.ws.WebSocketUpgradeHandler;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -91,7 +91,7 @@ public class MpowerConnector {
 
 			builder.addWebSocketListener(new MpowerWebSocketListener(this.id,
 					this.binding));
-			builder.setProtocol("mfi-protocol");
+			// builder.setProtocol("mfi-protocol");
 			String protocol = secure ? "wss" : "ws";
 			int port = secure ? WSPORT_SECURE : WSPORT;
 			BoundRequestBuilder brb = webSocketHTTPClient.prepareGet(protocol
@@ -105,8 +105,6 @@ public class MpowerConnector {
 		} catch (InterruptedException e) {
 			logger.error("Websocket error", e);
 		} catch (ExecutionException e) {
-			logger.error("Websocket error", e);
-		} catch (IOException e) {
 			logger.error("Websocket error", e);
 		}
 	}
@@ -131,7 +129,7 @@ public class MpowerConnector {
 		sensors.add(sensor);
 		JSONObject wrap = new JSONObject();
 		wrap.put("sensors", sensors);
-		webSocket.sendTextMessage(wrap.toJSONString());
+		webSocket.sendMessage(wrap.toJSONString());
 	}
 
 	/**

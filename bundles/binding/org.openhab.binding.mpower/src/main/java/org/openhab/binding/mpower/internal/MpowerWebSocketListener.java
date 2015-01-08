@@ -6,8 +6,8 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ning.http.client.websocket.WebSocket;
-import com.ning.http.client.websocket.WebSocketTextListener;
+import com.ning.http.client.ws.WebSocket;
+import com.ning.http.client.ws.WebSocketTextListener;
 
 /**
  * Ubiquiti mPower strip binding
@@ -59,7 +59,4 @@ public class MpowerWebSocketListener implements WebSocketTextListener {
 		binding.receivedData(state);
 	}
 
-	@Override
-	public void onFragment(String fragment, boolean last) {
-	}
 }
