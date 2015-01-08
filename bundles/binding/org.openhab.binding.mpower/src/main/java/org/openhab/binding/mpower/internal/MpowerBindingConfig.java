@@ -96,7 +96,8 @@ public class MpowerBindingConfig implements BindingConfig {
 	public boolean containsItemName(String itemName) {
 		for (Map.Entry<Integer, MpowerSocket> entry : sockets.entrySet()) {
 			MpowerSocket socket = entry.getValue();
-			if (socket.getSwitchItemName().equals(itemName)) {
+			if (socket.getSwitchItemName() != null
+					&& socket.getSwitchItemName().equals(itemName)) {
 				return true;
 			}
 		}
