@@ -134,9 +134,9 @@ temp_return            | solar_v           | temp_return            | Vaillant  
 
 
 ### Example for item configuration
-Hier ein Beispiel um wichtige Heizungsdaten anzuzeigen.
+H
 
-<<<<<<< HEAD
+
 	/** Heating **/
 	Group HeatingUnit					"Heating"												(All)
 	Group Solar							"Solar"													(All)
@@ -181,9 +181,9 @@ Hier ein Beispiel um wichtige Heizungsdaten anzuzeigen.
 	
 	Number HU_PollingExample				"Polling example [%s]"									(HeatingUnit)				{ ebus="id:fw_version2, data:FF 08 50 22 03 CC 9A 01 00, refresh:60"}
 	Number HU_PollingExample2				"Polling example [%s]"										(HeatingUnit)				{ ebus="id:no_of_firing, class:heating_kw, cmd:no_of_firing, dst:08, refresh:10"}
-=======
-	/** Heizung **/
-	Group HeatingUnit					"Heizung"												(All)
+
+	/** Heating **/
+	Group HeatingUnit					"Heating"												(All)
 	Group Solar							"Solar"													(All)
 	
 	Group SOL_Chart1																			(HeatingUnit)
@@ -201,7 +201,7 @@ Hier ein Beispiel um wichtige Heizungsdaten anzuzeigen.
 	Number HU_Temp_AvgOutdoor			"Avg. temp. outdoor [%.1f °C]"		<__temperature>		(HeatingUnit)				{ ebus="id:temp_outdoor, class:controller2, src:F1"}
 	Number HU_Temp_Outdoor				"Temp. outdoor [%.1f °C]"				<__temperature>		(HeatingUnit)				{ ebus="id:temp_outdoor, class:controller2, src:03"}
 	
-	/** Heizung - Solar **/
+	/** Heating - Solar **/
 	Switch SOL_Status_Pump				"Solar pump"						<switch>			(Solar,SOL_Chart2)			{ ebus="id:solar_pump, class:solar_kw"}
 	Number SOL_Temp_Collector			"Sol. collektor temp. [%.1f °C]"	<__temperature>		(Solar,SOL_Chart1)			{ ebus="id:temp_collector, class:solar_kw"}
 	Number SOL_Temp_Return				"Sol. return temp. [%.1f °C]"		<__temperature>		(Solar,SOL_Chart1)			{ ebus="id:e1, class:solar_kw"}
@@ -210,7 +210,7 @@ Hier ein Beispiel um wichtige Heizungsdaten anzuzeigen.
 	Number SOL_Yield_Day				"Sol. day yield [%.2f kW/h]"		<__bar_chart>		(Solar)						{ ebus="id:yield_day, class:solar_kw"}
 	Number SOL_Yield_Current			"Current output[%.2f kW]"			<__bar_chart>		(Solar,SOL_Chart2)			{ ebus="id:solar_current, class:solar_kw"}
 	
-	/** Heizung - Allg. Daten **/
+	/** Heating - Common Data **/
 	Number HU_Performance_Burner		"Unit output [%s %%]"			<__bar_chart>		(HeatingUnit)				{ ebus="id:performance_burner, class:heating_kw"}
 	Number HU_Performance_Pump			"Pump output[%s %%]"				<__bar_chart>		(HeatingUnit)				{ ebus="id:performance_pump, class:heating_kw"}
 	Number HU_No_Of_Firing				"No. of Firing[%s]"					<__bar_chart>		(HeatingUnit)				{ ebus="id:no_of_firing, class:heating_kw"}
@@ -221,9 +221,8 @@ Hier ein Beispiel um wichtige Heizungsdaten anzuzeigen.
 	Number HU_Pressure_System			"System pressue [%.2f bar]"			<__temperature>		(HeatingUnit)				{ ebus="id:system_pressure, class:heating_kw"}
 	Number HU_FW_Version				"Version[%.2f]"						<__bar_chart>		(HeatingUnit)				{ ebus="id:fw_version, class:heating_kw"}
 	
-	Number HU_Status_Burner		"Status burner [MAP(hu_CC5427_de.map):%s]"	<__temperature>		(HeatingUnit)				{ ebus="id:_w_unknown2, class:burnerw"}
-	Number HU_Status_OpMode		"Op. mode [MAP(hu_CC7301_de.map):%s]"	<__temperature>		(HeatingUnit)				{ ebus="id:_w_unknown4, class:burnerw"}
+	Number HU_Status_Burner			"Status burner [MAP(hu_CC5427_de.map):%s]"	<__temperature>		(HeatingUnit)				{ ebus="id:_w_unknown2, class:burnerw"}
+	Number HU_Status_OpMode			"Op. mode [MAP(hu_CC7301_de.map):%s]"	<__temperature>		(HeatingUnit)				{ ebus="id:_w_unknown4, class:burnerw"}
 	
-	Number HU_PollingTest1				"Pollingtest1x [%s]"									(HeatingUnit)				{ ebus="id:fw_version2, data:FF 08 50 22 03 CC 9A 01 00, refresh:60"}
-	Number HU_PollingTest2				"Pollingtest2 [%s]"										(HeatingUnit)				{ ebus="id:no_of_firing, class:heating_kw, cmd:no_of_firing, dst:08, refresh:10"}
->>>>>>> branch 'ebus-init' of https://github.com/csowada/openhab.git
+	Number HU_PollingExample1				"Polling Example 1 [%s]"									(HeatingUnit)				{ ebus="id:fw_version2, data:FF 08 50 22 03 CC 9A 01 00, refresh:60"}
+	Number HU_PollingExample2				"Polling Example 1 [%s]"										(HeatingUnit)				{ ebus="id:no_of_firing, class:heating_kw, cmd:no_of_firing, dst:08, refresh:10"}
