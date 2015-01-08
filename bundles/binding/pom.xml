@@ -49,8 +49,10 @@
     <module>org.openhab.binding.dmx.lib485</module>
     <module>org.openhab.binding.dmx.artnet</module>
     <module>org.openhab.binding.dmx.test</module>
+	<module>org.openhab.binding.dsmr</module>
     <module>org.openhab.binding.rfxcom</module>
     <module>org.openhab.binding.samsungac</module>
+    <module>org.openhab.binding.samsungac.test</module>
     <module>org.openhab.binding.samsungtv</module>
     <module>org.openhab.binding.pulseaudio</module>
     <module>org.openhab.binding.homematic</module>
@@ -132,6 +134,7 @@
     <module>org.openhab.binding.anel</module>
     <module>org.openhab.binding.enigma2</module>
     <module>org.openhab.binding.enigma2.test</module>
+    <module>org.openhab.binding.bticino</module>
   </modules>
 
 </project>

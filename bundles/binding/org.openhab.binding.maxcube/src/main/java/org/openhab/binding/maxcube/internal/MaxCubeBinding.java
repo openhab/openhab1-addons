@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -68,6 +68,17 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 * http://www.elv.de/controller.aspx?cid=824&detail=10&detail2=3484
 	 */
 	private static int port = 62910;
+
+	/**
+	 * Duty cycle of the cube
+	 */
+	private int dutyCycle = 0;
+
+	/**
+	 * The available memory slots of the cube
+	 */
+
+	private int freeMemorySlots;
 
 	/** The refresh interval which is used to poll given MAX!Cube */
 	private static long refreshInterval = 10000;
@@ -156,14 +167,15 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 		}
 		try {
 			String raw = null;
-			if(socket == null) {
-				this.socketConnect();
-			}if(maxRequestsPerConnection > 0 && requestCount >= maxRequestsPerConnection) {
+			if(maxRequestsPerConnection > 0 && requestCount >= maxRequestsPerConnection) {
 				logger.debug("maxRequestsPerConnection reached, reconnecting.");
 				socket.close();
 				this.socketConnect();
-				requestCount = 0;
-			}else {
+			}
+			if(socket == null) {
+				this.socketConnect();
+			}
+			else {
 			
 				/* if the connection is already open (this happens in exclusive mode), just send a "l:\r\n" to get the latest live informations
 				 * note that "L:\r\n" or "l:\n" would not work.
@@ -224,7 +236,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 								c.setValues((C_Message) message);
 							}
 						} else if (message.getType() == MessageType.S) {
-							/** TODO: Implement handling of S: messages for proper command SET confirmation*/
+							sMessageProcessing((S_Message)message);
 							cont=false;
 						} else if (message.getType() == MessageType.L) {
 							((L_Message) message).updateDevices(devices, configurations);
@@ -389,6 +401,12 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					writer.write(commandString);
 					logger.debug(commandString);
 					writer.flush();
+					String raw = reader.readLine();
+					Message message = processRawMessage(raw);
+					if (message !=null) {
+						if (message.getType() == MessageType.S) {
+							sMessageProcessing((S_Message)message);
+						}}
 					if(!exclusive) {
 						socket.close();
 						socket = null;
@@ -406,12 +424,26 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 			}
 		}
 	}
+
+	/**
+	 * Processes the S message and updates Duty Cycle & Free Memory Slots
+	 * @param S_Message message
+	 */
+	private void sMessageProcessing(S_Message message) {
+		dutyCycle =  message.getDutyCycle();
+		freeMemorySlots = message.getFreeMemorySlots();
+		if (message.isCommandDiscarded()) {
+			logger.info("Last Send Command discarded. Duty Cycle: {}, Free Memory Slots: {}",dutyCycle,freeMemorySlots);
+		} else
+			logger.debug("S message. Duty Cycle: {}, Free Memory Slots: {}",dutyCycle,freeMemorySlots);
+	}
 	
 	private boolean socketConnect() throws UnknownHostException, IOException {
 		socket = new Socket(ip, port);
 		logger.debug("open new connection... to "+ip+" port "+port);
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		writer = new OutputStreamWriter(socket.getOutputStream());
+		requestCount = 0;
 		return true;
 	}
 

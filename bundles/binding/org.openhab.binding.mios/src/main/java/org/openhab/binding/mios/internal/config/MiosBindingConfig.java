@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -34,6 +34,7 @@ import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
+import org.openhab.core.types.UnDefType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -332,7 +333,16 @@ public abstract class MiosBindingConfig implements BindingConfig {
 		State result;
 		try {
 			if (itemType.isAssignableFrom(NumberItem.class)) {
-				result = DecimalType.valueOf(value);
+				//
+				// For things like Weather Items when they're bound to
+				// NumberItems.
+				//
+				// eg. Heat Index
+				if ("".equals(value)) {
+					result = UnDefType.NULL;
+				} else {
+					result = DecimalType.valueOf(value);
+				}
 			} else if (itemType.isAssignableFrom(ContactItem.class)) {
 				result = OpenClosedType.valueOf(value);
 			} else if (itemType.isAssignableFrom(SwitchItem.class)) {
@@ -343,19 +353,32 @@ public abstract class MiosBindingConfig implements BindingConfig {
 				result = PercentType.valueOf(value);
 			} else if (itemType.isAssignableFrom(DateTimeItem.class)) {
 				try {
-					// See if it "looks" like an Epoch-style date. MiOS Units
-					// return these as String/Integer versions of the date and
-					// they need to be converted.
 					//
-					// This logic really belongs inside the OH 1.x core class
-					// DateTimeType, but that's closed to changes... doing it
-					// here also avoids the thread-safety issues present in the
-					// DateTimeType class.
+					// If we're presented with the empty string, then consider
+					// it to be the Undefined NULL value.
 					//
-					long l = Long.parseLong(value) * 1000;
-					Calendar c = Calendar.getInstance();
-					c.setTimeInMillis(l);
-					result = new DateTimeType(c);
+					// This has been observed during Full-updates from a MiOS
+					// unit that has Leviton Scene Controllers present
+					// (LastUpdated).
+					//
+					if ("".equals(value)) {
+						result = UnDefType.NULL;
+					} else {
+						//
+						// See if it "looks" like an Epoch-style date. MiOS
+						// Units return these as String/Integer versions of the
+						// date and they need to be converted.
+						//
+						// This logic really belongs inside the OH 1.x core
+						// class DateTimeType, but that's closed to changes...
+						// doing it here also avoids the thread-safety issues
+						// present in the DateTimeType class.
+						//
+						long l = Long.parseLong(value) * 1000;
+						Calendar c = Calendar.getInstance();
+						c.setTimeInMillis(l);
+						result = new DateTimeType(c);
+					}
 				} catch (NumberFormatException nfe) {
 					result = DateTimeType.valueOf(value);
 				}
