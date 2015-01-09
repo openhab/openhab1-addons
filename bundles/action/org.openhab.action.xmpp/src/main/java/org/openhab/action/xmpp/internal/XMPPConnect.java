@@ -125,7 +125,7 @@ public class XMPPConnect implements ManagedService {
 
 			try {
 				connection.connect();
-				connection.login(username, password);
+				connection.login(username, password, null);
 				if (consoleUsers.length > 0) {
 					ChatManager.getInstanceFor(connection).addChatListener(new XMPPConsole(consoleUsers));
 					connection.addConnectionListener(new XMPPConnectionListener());
