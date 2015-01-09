@@ -303,6 +303,7 @@ public class ZWaveDeviceClass {
 				case REPEATER_SLAVE:
 				case TOGGLE_SWITCH:
 				case REMOTE_SWITCH:
+				case REMOTE_SWITCH_2:
 				case WINDOW_COVERING:
 				case THERMOSTAT:
 				case AV_CONTROL_POINT:
