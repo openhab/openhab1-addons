@@ -366,6 +366,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 			logger.info("Telldus reset");
 			registerListeners();
 			logger.info("Listeners restarted");
+			controller.setLastSend(System.currentTimeMillis());
 		} catch (Exception e) {
 			logger.error("Failed to reset listener", e);
 		}
