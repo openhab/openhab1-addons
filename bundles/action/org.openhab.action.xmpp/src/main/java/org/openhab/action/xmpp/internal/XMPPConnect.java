@@ -229,7 +229,9 @@ public class XMPPConnect implements ManagedService {
 		}
 
 		public void connectionClosedOnError(Exception e) {
-			logger.info("XMPP connection has been closed on error: {}", e.getMessage());
+			// Log a warning and the *full* exception as the stacktrace could be useful to diagnose
+			// the issue for uncommon exceptions besides e.g. a broken pipe
+			logger.warn("XMPP connection has been closed on error: {}", e);
 			try {
 				if (!connection.isConnected()) {
 					initialized = false;
