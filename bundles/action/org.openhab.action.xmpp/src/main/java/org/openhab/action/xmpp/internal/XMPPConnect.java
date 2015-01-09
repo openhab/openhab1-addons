@@ -243,9 +243,5 @@ public class XMPPConnect implements ManagedService {
 			}
 		}
 
-		public void reconnectionFailed(Exception e) {
-			logger.debug("XMPP re-connection failed.", e);
-		}
-
 	}
 }
