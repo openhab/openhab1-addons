@@ -248,22 +248,30 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 					eventPublisher.postUpdate(energyItemname, itemState);
 				}
 
-				// update switch
-				String switchItemname = bindingCfg
-						.getSwitchItemName(socketState.getSocket());
-				if (StringUtils.isNotBlank(energyItemname)) {
-					OnOffType state = socketState.isOn() ? OnOffType.ON
-							: OnOffType.OFF;
-					eventPublisher.postUpdate(switchItemname, state);
-				}
-
 				// update the cache
 				bindingCfg.setCachedState(socketNumber, socketState);
 			} else {
 				logger.trace("suppressing update as socket state has not changed");
 			}
 
-		}
+			if (cachedState != null) {
+				// switch changes we forward immediately
+				boolean switchHasChanged = cachedState.isOn() != socketState
+						.isOn();
+				if (switchHasChanged) {
+					// update switch
+					String switchItemname = bindingCfg
+							.getSwitchItemName(socketState.getSocket());
+					if (StringUtils.isNotBlank(switchItemname)) {
+						OnOffType state = socketState.isOn() ? OnOffType.ON
+								: OnOffType.OFF;
+						eventPublisher.postUpdate(switchItemname, state);
+						// update the cache
+						bindingCfg.setCachedState(socketNumber, socketState);
+					}
+				}
 
+			}
+		}
 	}
 }
