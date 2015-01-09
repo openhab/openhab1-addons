@@ -93,6 +93,10 @@ public class MpowerGenericBindingProvider extends
 			config.setEnergyItemName(socket, item.getName());
 		}
 
+		if ("energytoday".equals(variable)) {
+			config.setEnergyTodayItemName(socket, item.getName());
+		}
+
 		addBindingConfig(item, config);
 	}
 

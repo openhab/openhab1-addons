@@ -217,6 +217,7 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 			int socketNumber = socketState.getSocket();
 			MpowerSocketState cachedState = bindingCfg
 					.getCacheForSocket(socketNumber);
+
 			long refresh = connectors.get(bindingCfg.getmPowerInstance())
 					.getRefreshInterval();
 			boolean needsUpdate = bindingCfg.needsUpdate(socketNumber, refresh);
@@ -224,6 +225,17 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 			if (needsUpdate
 					&& (cachedState == null || !cachedState.equals(socketState))) {
 
+				// update consumption today
+				String consumptionTodayItemName = bindingCfg
+						.getEnergyTodayItemName(socketState.getSocket());
+				if (StringUtils.isNotBlank(consumptionTodayItemName)) {
+					State itemState = new DecimalType(socketState.getEnergy()
+							- bindingCfg.getConsumptionAtMidnight(socketState
+									.getSocket()));
+					eventPublisher.postUpdate(consumptionTodayItemName,
+							itemState);
+
+				}
 				// update voltage
 				String volItemName = bindingCfg.getVoltageItemName(socketState
 						.getSocket());

@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 public class MpowerSocketState {
 	private double voltage;
 	private long energy;
+	private long energyPerDay;
 	private double power;
 	private boolean on;
 	private int socket;
@@ -25,44 +26,41 @@ public class MpowerSocketState {
 	private static final Logger logger = LoggerFactory
 			.getLogger(MpowerSocketState.class);
 
-	public MpowerSocketState(String json, String address) {
+	public MpowerSocketState(String json, String address) throws ParseException {
 		setAddress(address);
 		JSONParser parser = new JSONParser();
 
-		try {
-			JSONObject root = (JSONObject) parser.parse(json);
-			JSONArray sensors = (JSONArray) root.get("sensors");
-			JSONObject oneSensor = (JSONObject) sensors.get(0);
-			Object ob = oneSensor.get("voltage");
-			if (ob instanceof Double) {
-				Double val = (Double) ob;
-				setVoltage(val.intValue());
-			}
-			ob = oneSensor.get("power");
-			if (ob instanceof Double) {
-				Double val = (double) Math.round((Double) ob * 10) / 10;
-
-				setPower(val);
-			}
-			ob = oneSensor.get("port");
-			if (ob instanceof Long) {
-				Long sock = (Long) ob;
-				setSocket(sock.intValue());
-			}
-			ob = oneSensor.get("energy");
-			if (ob instanceof Double) {
-				Double val = (Double) ob;
-				setEnergy(val.longValue());
-			}
-
-			ob = oneSensor.get("output");
-			if (ob instanceof Long) {
-				Boolean on = (Long) ob == 1;
-				setOn(on);
-			}
-		} catch (ParseException pe) {
-			logger.error("Failed to parse json {}", json);
+		JSONObject root = (JSONObject) parser.parse(json);
+		JSONArray sensors = (JSONArray) root.get("sensors");
+		JSONObject oneSensor = (JSONObject) sensors.get(0);
+		Object ob = oneSensor.get("voltage");
+		if (ob instanceof Double) {
+			Double val = (Double) ob;
+			setVoltage(val.intValue());
 		}
+		ob = oneSensor.get("power");
+		if (ob instanceof Double) {
+			Double val = (double) Math.round((Double) ob * 10) / 10;
+
+			setPower(val);
+		}
+		ob = oneSensor.get("port");
+		if (ob instanceof Long) {
+			Long sock = (Long) ob;
+			setSocket(sock.intValue());
+		}
+		ob = oneSensor.get("energy");
+		if (ob instanceof Double) {
+			Double val = (Double) ob;
+			setEnergy(val.longValue());
+		}
+
+		ob = oneSensor.get("output");
+		if (ob instanceof Long) {
+			Boolean on = (Long) ob == 1;
+			setOn(on);
+		}
+
 	}
 
 	public double getVoltage() {
@@ -126,5 +124,13 @@ public class MpowerSocketState {
 
 	public void setEnergy(long energy) {
 		this.energy = energy;
+	}
+
+	public long getEnergyPerDay() {
+		return energyPerDay;
+	}
+
+	public void setEnergyPerDay(long energyPerDay) {
+		this.energyPerDay = energyPerDay;
 	}
 }

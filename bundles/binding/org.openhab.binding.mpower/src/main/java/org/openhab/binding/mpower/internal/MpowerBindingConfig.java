@@ -58,6 +58,14 @@ public class MpowerBindingConfig implements BindingConfig {
 		sockets.get(socket).setEnergyItemName(name);
 	}
 
+	public void setEnergyTodayItemName(int socket, String name) {
+		sockets.get(socket).setEnergyTodayItemName(name);
+	}
+
+	public String getEnergyTodayItemName(int socket) {
+		return sockets.get(socket).getEnergyTodayItemName();
+	}
+
 	public String getPowerItemName(int socket) {
 		return sockets.get(socket).getPowerItemName();
 	}
@@ -69,6 +77,7 @@ public class MpowerBindingConfig implements BindingConfig {
 	public void setCachedState(int socket, MpowerSocketState state) {
 		sockets.get(socket).setLastUpdated(System.currentTimeMillis());
 		sockets.get(socket).setValueCache(state);
+		sockets.get(socket).updateTotalConsumptionAtMidnight(state.getEnergy());
 	}
 
 	/**
@@ -112,6 +121,10 @@ public class MpowerBindingConfig implements BindingConfig {
 	 */
 	public MpowerSocketState getCacheForSocket(int socketNumber) {
 		return sockets.get(socketNumber).getValueCache();
+	}
+
+	public long getConsumptionAtMidnight(int socketNumber) {
+		return sockets.get(socketNumber).getTotalConsumptionAtMidnight();
 	}
 
 	public boolean needsUpdate(int socketNumber, long refreshTime) {

@@ -1,5 +1,7 @@
 package org.openhab.binding.mpower.internal;
 
+import java.util.Calendar;
+
 /**
  * Ubiquiti mPower strip binding
  * 
@@ -11,6 +13,9 @@ public class MpowerSocket {
 	private String powerItemName;
 	private String switchItemName;
 	private String energyItemName;
+	private String energyTodayItemName;
+	private int dayOfYear;
+	private long totalConsumptionAtMidnight;
 	private MpowerSocketState valueCache;
 	private long lastUpdated = 0;
 
@@ -51,7 +56,23 @@ public class MpowerSocket {
 	}
 
 	public void setLastUpdated(long lastUpdated) {
+
 		this.lastUpdated = lastUpdated;
+	}
+
+	public void updateTotalConsumptionAtMidnight(double consumption) {
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(lastUpdated);
+		int currentDayOfYear = cal.get(Calendar.DAY_OF_YEAR);
+		if (this.dayOfYear != currentDayOfYear) {
+			dayOfYear = currentDayOfYear;
+			totalConsumptionAtMidnight = (new Double(consumption)).longValue();
+		}
+	}
+
+	public long getTotalConsumptionAtMidnight() {
+		return totalConsumptionAtMidnight;
 	}
 
 	public String getEnergyItemName() {
@@ -61,4 +82,13 @@ public class MpowerSocket {
 	public void setEnergyItemName(String energyItemName) {
 		this.energyItemName = energyItemName;
 	}
+
+	public String getEnergyTodayItemName() {
+		return energyTodayItemName;
+	}
+
+	public void setEnergyTodayItemName(String energyTodayItemName) {
+		this.energyTodayItemName = energyTodayItemName;
+	}
+
 }

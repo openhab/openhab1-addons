@@ -3,6 +3,7 @@ package org.openhab.binding.mpower.internal;
 import java.net.ConnectException;
 import java.util.concurrent.TimeoutException;
 
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +56,14 @@ public class MpowerWebSocketListener implements WebSocketTextListener {
 
 	@Override
 	public void onMessage(String message) {
-		MpowerSocketState state = new MpowerSocketState(message, this.address);
-		binding.receivedData(state);
+		MpowerSocketState state;
+		try {
+			state = new MpowerSocketState(message, this.address);
+			binding.receivedData(state);
+		} catch (ParseException e) {
+			logger.warn("Failed to parse message {}", message);
+		}
+
 	}
 
 }
