@@ -13,6 +13,8 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
@@ -23,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TooManyListenersException;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -393,6 +396,11 @@ public class ZWaveController {
 			this.sendThread = new ZWaveSendThread();
 			this.sendThread.start();
 
+			// RXTX serial port library causes high CPU load
+			// Start event listener, which will just sleep and slow down event loop
+			serialPort.addEventListener(this.receiveThread);
+			serialPort.notifyOnDataAvailable(true);
+
 			logger.info("Serial port is initialized");
 		} catch (NoSuchPortException e) {
 			logger.error("Port {} does not exist", serialPortName);
@@ -403,6 +411,9 @@ public class ZWaveController {
 		} catch (UnsupportedCommOperationException e) {
 			logger.error("Unsupported comm operation on Port {}.", serialPortName);
 			throw new SerialInterfaceException(String.format("Unsupported comm operation on Port %s.", serialPortName), e);
+		} catch (TooManyListenersException e) {
+			logger.error("Too many listeners on Port {}.", serialPortName);
+			e.printStackTrace();
 		}
 	}
 	
@@ -1212,7 +1223,7 @@ public class ZWaveController {
 	 * @author Jan-Willem Spuij
 	 * @since 1.3.0
 	 */	
-	private class ZWaveReceiveThread extends Thread {
+	private class ZWaveReceiveThread extends Thread implements SerialPortEventListener {
 		
 		private static final int SOF = 0x01;
 		private static final int ACK = 0x06;
@@ -1221,6 +1232,15 @@ public class ZWaveController {
 		
 		private final Logger logger = LoggerFactory.getLogger(ZWaveReceiveThread.class);
 
+		@Override
+		public void serialEvent(SerialPortEvent arg0) {
+			try {
+				logger.trace("RXTX library CPU load workaround, sleep forever");
+				Thread.sleep(Long.MAX_VALUE);
+			} catch (InterruptedException e) {
+			}
+		}
+		
 		/**
     	 * Sends 1 byte frame response.
     	 * @param response the response code to send.
@@ -1360,6 +1380,8 @@ public class ZWaveController {
 				logger.error("Got an exception during receiving. exiting thread.", e);
 			}
 			logger.debug("Stopped Z-Wave receive thread");
+			
+			serialPort.removeEventListener();
 		}
 	}
 
