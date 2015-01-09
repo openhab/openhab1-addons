@@ -214,28 +214,31 @@ public class ZWaveDeviceClass {
 	 */
 	public enum Generic {
 		NOT_KNOWN(0, "Not Known"), 
-		REMOTE_CONTROLLER(1, "Remote Controller"), 
-		STATIC_CONTOLLER(2, "Static Controller"), 
-		AV_CONTROL_POINT(3, "A/V Control Point"), 
-		DISPLAY(4, "Display"), 
-		THERMOSTAT(8, "Thermostat"), 
-		WINDOW_COVERING(9, "Window Covering"), 
-		REPEATER_SLAVE( 15, "Repeater Slave"), 
-		BINARY_SWITCH(16, "Binary Switch"), 
-		MULTILEVEL_SWITCH( 17, "Multi-Level Switch"), 
-		REMOTE_SWITCH(18, "Remote Switch"), 
-		TOGGLE_SWITCH( 19, "Toggle Switch"), 
-		Z_IP_GATEWAY(20, "Z/IP Gateway"), 
-		Z_IP_NODE( 21, "Z/IP Node"), 
-		VENTILATION(22, "Ventilation"), 
-		BINARY_SENSOR( 32, "Binary Sensor"), 
-		MULTILEVEL_SENSOR(33, "Multi-Level Sensor"), 
-		PULSE_METER(48, "Pulse Meter"), 
-		METER( 49, "Meter"), 
-		ENTRY_CONTROL(64, "Entry Control"), 
-		SEMI_INTEROPERABLE( 80, "Semi-Interoperable"),
-		ALARM_SENSOR(161, "Alarm Sensor"),
-		NON_INTEROPERABLE(255, "Non-Interoperable");
+		REMOTE_CONTROLLER(0x01, "Remote Controller"), 
+		STATIC_CONTOLLER(0x02, "Static Controller"), 
+		AV_CONTROL_POINT(0x03, "A/V Control Point"), 
+		DISPLAY(0x06, "Display"),
+		GARAGE_DOOR(0x07, "Garage Door"),
+		THERMOSTAT(0x08, "Thermostat"), 
+		WINDOW_COVERING(0x09, "Window Covering"), 
+		REPEATER_SLAVE(0x0f, "Repeater Slave"), 
+		BINARY_SWITCH(0x10, "Binary Switch"), 
+		MULTILEVEL_SWITCH(0x11, "Multi-Level Switch"), 
+		REMOTE_SWITCH(0x12, "Remote Switch"), 
+		TOGGLE_SWITCH(0x13, "Toggle Switch"), 
+		Z_IP_GATEWAY(0x14, "Z/IP Gateway"), 
+		Z_IP_NODE(0x15, "Z/IP Node"),
+		VENTILATION(0x16, "Ventilation"),
+		REMOTE_SWITCH_2(0x18, "Remote Switch 2"),
+		BINARY_SENSOR(0x20, "Binary Sensor"), 
+		MULTILEVEL_SENSOR(0x21, "Multi-Level Sensor"),
+		WATER_CONTROL(0x22, "Water Control"),
+		PULSE_METER(0x30, "Pulse Meter"), 
+		METER(0x31, "Meter"), 
+		ENTRY_CONTROL(0x40, "Entry Control"), 
+		SEMI_INTEROPERABLE(0x50, "Semi-Interoperable"),
+		ALARM_SENSOR(0xa1, "Alarm Sensor"),
+		NON_INTEROPERABLE(0xff, "Non-Interoperable");
 
 		/**
 		 * A mapping between the integer code and its corresponding Generic
@@ -296,6 +299,7 @@ public class ZWaveDeviceClass {
 					return new CommandClass[0];
 				case REMOTE_CONTROLLER:
 				case STATIC_CONTOLLER:
+				case GARAGE_DOOR:
 				case REPEATER_SLAVE:
 				case TOGGLE_SWITCH:
 				case REMOTE_SWITCH:
