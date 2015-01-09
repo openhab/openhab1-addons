@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder;
+import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.cookie.Cookie;
 import com.ning.http.client.ws.WebSocket;
 import com.ning.http.client.ws.WebSocketUpgradeHandler;
@@ -79,16 +80,20 @@ public class MpowerConnector {
 	}
 
 	public void start() {
+		this.sessionId = null;
 		sessionId = getSession();
 		if (sessionId == null) {
 			return;
 		}
+		AsyncHttpClientConfig.Builder configBuilder = new AsyncHttpClientConfig.Builder();
+		AsyncHttpClientConfig config = configBuilder.setWebSocketTimeout(10000)
+				.setAcceptAnyCertificate(true).build();
 
-		webSocketHTTPClient = new AsyncHttpClient();
+		webSocketHTTPClient = new AsyncHttpClient(config);
 		try {
 
 			WebSocketUpgradeHandler.Builder builder = new WebSocketUpgradeHandler.Builder();
-
+			
 			builder.addWebSocketListener(new MpowerWebSocketListener(this.id,
 					this.binding));
 			// builder.setProtocol("mfi-protocol");
