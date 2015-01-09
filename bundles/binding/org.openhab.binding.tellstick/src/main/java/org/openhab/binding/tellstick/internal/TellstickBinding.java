@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.tellstick.internal;
 
+import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -305,8 +306,8 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 		@Override
 		public void onRequest(TellstickSensorEvent sensorEvent) {
 			controller.setLastSend(System.currentTimeMillis());
-
-			String thisMsg = sensorEvent.getProtocol() + sensorEvent.getModel() + sensorEvent.getSensorId()
+			Calendar cal = Calendar.getInstance();
+			String thisMsg = cal.get(Calendar.MINUTE) + sensorEvent.getProtocol() + sensorEvent.getModel() + sensorEvent.getSensorId()
 					+ sensorEvent.getData();
 			String prevMessage = prevMessages.get(sensorEvent.getDataType());
 			if (!thisMsg.equals(prevMessage)) {
