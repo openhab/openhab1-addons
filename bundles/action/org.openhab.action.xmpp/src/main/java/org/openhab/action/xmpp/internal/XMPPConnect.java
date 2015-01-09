@@ -245,17 +245,5 @@ public class XMPPConnect implements ManagedService {
 			logger.debug("XMPP re-connection failed.", e);
 		}
 
-		public void reconnectionSuccessful() {
-			try {
-				if (!connection.isConnected()) {
-					initialized = false;
-					getConnection();
-				}
-				logger.debug("XMPP re-connection succeeded.");
-			} catch (NotInitializedException e) {
-				logger.debug("XMPP re-connection failed, giving up.");
-			}
-		}
-
 	}
 }
