@@ -24,6 +24,7 @@ import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
  * Queries the Netatmo API for the measures of a single device or module.
  * 
  * @author Andreas Brenk
+ * @author Gaël L'hopital
  * @since 1.4.0
  * @see <a href="http://dev.netatmo.com/doc/restapi/getmeasure">getmeasure</a>
  */
