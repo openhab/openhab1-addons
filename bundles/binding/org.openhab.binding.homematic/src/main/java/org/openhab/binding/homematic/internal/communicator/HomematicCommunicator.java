@@ -57,7 +57,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 	private ItemDisabler itemDisabler;
 
 	private long lastEventTime = System.currentTimeMillis();
-
+	private HomematicPublisher publisher = new HomematicPublisher();
 	/**
 	 * Starts the communicator and initializes everything.
 	 */
@@ -300,13 +300,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 		}
 
 		else {
-			if (event.isVariable()) {
-				homematicClient.setVariable(event.getHmValueItem(), event.getNewValue());
-			} else {
-				homematicClient.setDatapointValue((HmDatapoint) event.getHmValueItem(), event.getHmValueItem()
-						.getName(), event.getNewValue());
-			}
-			event.getHmValueItem().setValue(event.getNewValue());
+			publisher.execute(event);
 		}
 	}
 
