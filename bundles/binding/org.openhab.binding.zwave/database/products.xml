@@ -667,7 +667,7 @@
 				<Type>0003</Type>
 				<Id>004B</Id>
 			</Reference>
-			<Model>MSS2E</Model>
+			<Model>SES3</Model>
 			<Label lang="en">Smart Energy Switch 3rd Edition</Label>
 			<ConfigFile>aeon/ses3.xml</ConfigFile>
 		</Product>
