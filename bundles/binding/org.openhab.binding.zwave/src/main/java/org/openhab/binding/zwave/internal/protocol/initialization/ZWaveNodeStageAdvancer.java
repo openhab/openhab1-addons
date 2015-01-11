@@ -805,7 +805,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				// We use this as a trigger to kick things off again if they've stalled
 				// by checking to see if the transmit queue is now empty.
 				// This will allow battery devices stuck in WAIT state to get moving.
-				if(controller.getTxQueueLength() < 2 && currentStage == NodeStage.WAIT) {
+				if(controller.getSendQueueLength() < 2 && currentStage == NodeStage.WAIT) {
 					logger.debug("NODE {}: Node advancer - WAIT: The WAIT is over!", node.getNodeId());
 
 					currentStage = currentStage.getNextStage();

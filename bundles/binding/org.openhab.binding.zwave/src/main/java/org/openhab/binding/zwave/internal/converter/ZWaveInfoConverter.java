@@ -153,7 +153,7 @@ public class ZWaveInfoConverter extends ZWaveConverterBase {
 			case REPORT_TIME_OUT:
 				return this.getController().getTimeOutCount();
 			case REPORT_TX_QUEUE:
-				return this.getController().getTxQueueLength();
+				return this.getController().getSendQueueLength();
 		}
         
         return null;
