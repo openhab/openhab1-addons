@@ -664,6 +664,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0003</Type>
+				<Id>004B</Id>
+			</Reference>
+			<Model>MSS2E</Model>
+			<Label lang="en">Smart Energy Switch 3rd Edition</Label>
+			<ConfigFile>aeon/ses3.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0009</Id>
 			</Reference>
