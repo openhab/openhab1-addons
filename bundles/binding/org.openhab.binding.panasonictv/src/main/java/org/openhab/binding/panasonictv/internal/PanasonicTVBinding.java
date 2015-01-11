@@ -85,15 +85,6 @@ public class PanasonicTVBinding extends
 	 * @{inheritDoc
 	 */
 	@Override
-	protected void execute() {
-		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
-	}
-
-	/**
-	 * @{inheritDoc
-	 */
-	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
@@ -101,15 +92,21 @@ public class PanasonicTVBinding extends
 		logger.debug("internalReceiveCommand() for item: " + itemName
 				+ " with command: " + command.toString());
 
+		if (this.providers.isEmpty()) {
+			logger.error("Binding is properly configured or loaded. No provider was found.");
+			return;
+		}
+
 		for (PanasonicTVBindingProvider provider : this.providers) {
 			PanasonicTVBindingConfig config = provider
 					.getBindingConfigForItem(itemName);
 			if (config == null)
 				continue;
 			int response = sendCommand(config);
-			if(response != 200)
-			{
-				logger.warn("Command "+ config.getCommand() +" to TV with IP " + registeredTVs.get(config.getTv()) + " failed with HTTP Reponse Code " + response);
+			if (response != 200) {
+				logger.warn("Command " + config.getCommand()
+						+ " to TV with IP " + registeredTVs.get(config.getTv())
+						+ " failed with HTTP Reponse Code " + response);
 				continue;
 			}
 			eventPublisher.postUpdate(itemName, OnOffType.OFF);
@@ -148,7 +145,7 @@ public class PanasonicTVBinding extends
 				if (tv.equalsIgnoreCase("service.pid")
 						|| tv.equalsIgnoreCase("refresh"))
 					continue;
-				logger.debug("TV registered '" + tv + "' with IP '"
+				logger.info("TV registered '" + tv + "' with IP '"
 						+ config.get(tv) + "'");
 				registeredTVs.put(tv, config.get(tv).toString());
 			}
@@ -205,17 +202,23 @@ public class PanasonicTVBinding extends
 					inFromServer));
 
 			String response = reader.readLine();
-			
+
 			client.close();
-			
+
 			logger.debug("TV Response from " + tvIp + ": " + response);
 
 			return Integer.parseInt(response.split(" ")[1]);
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			return 0;
+		} catch (Exception e) {
+			logger.error("Exception in binding during execution of command: "
+					+ e.getStackTrace());
 		}
+		return 0;
 	}
 
+	@Override
+	protected void execute() {
+
+	}
 }
