@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for the Hue binding
+Bundle-SymbolicName: org.openhab.action.hue.test
+Bundle-Version: 1.7.0.qualifier
+Bundle-Vendor: openHAB.org
+Fragment-Host: org.openhab.action.hue
+Bundle-RequiredExecutionEnvironment: J2SE-1.7
+Require-Bundle: org.junit;bundle-version="4.8.1"
+Import-Package: org.codehaus.jackson.map;version="1.9.2",
+ org.junit

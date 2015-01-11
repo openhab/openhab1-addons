@@ -1,0 +1,631 @@
+{
+	"lights": {
+		"1": {
+			"state": {
+				"on": true,
+				"bri": 219,
+				"hue": 33849,
+				"sat": 44,
+				"xy": [
+					0.3693,
+					0.3695
+				],
+				"ct": 234,
+				"alert": "none",
+				"effect": "none",
+				"colormode": "xy",
+				"reachable": true
+			},
+			"type": "Extended color light",
+			"name": "Küche",
+			"modelid": "LCT001",
+			"uniqueid": "00:17:88:01:00:fd:0b:88-0b",
+			"swversion": "66013452",
+			"pointsymbol": {
+				"1": "none",
+				"2": "none",
+				"3": "none",
+				"4": "none",
+				"5": "none",
+				"6": "none",
+				"7": "none",
+				"8": "none"
+			}
+		},
+		"2": {
+			"state": {
+				"on": true,
+				"bri": 254,
+				"hue": 14922,
+				"sat": 144,
+				"xy": [
+					0.4595,
+					0.4105
+				],
+				"ct": 369,
+				"alert": "none",
+				"effect": "none",
+				"colormode": "ct",
+				"reachable": false
+			},
+			"type": "Extended color light",
+			"name": "Schlafzimmer",
+			"modelid": "LCT001",
+			"uniqueid": "00:17:88:01:00:ff:3e:05-0b",
+			"swversion": "66009663",
+			"pointsymbol": {
+				"1": "none",
+				"2": "none",
+				"3": "none",
+				"4": "none",
+				"5": "none",
+				"6": "none",
+				"7": "none",
+				"8": "none"
+			}
+		},
+		"3": {
+			"state": {
+				"on": true,
+				"bri": 219,
+				"hue": 33849,
+				"sat": 44,
+				"xy": [
+					0.3693,
+					0.3695
+				],
+				"ct": 234,
+				"alert": "none",
+				"effect": "none",
+				"colormode": "hs",
+				"reachable": true
+			},
+			"type": "Extended color light",
+			"name": "Wohnzimmer Eck",
+			"modelid": "LCT001",
+			"uniqueid": "00:17:88:01:00:fd:11:6a-0b",
+			"swversion": "66009663",
+			"pointsymbol": {
+				"1": "none",
+				"2": "none",
+				"3": "none",
+				"4": "none",
+				"5": "none",
+				"6": "none",
+				"7": "none",
+				"8": "none"
+			}
+		}
+	},
+	"groups": {},
+	"config": {
+		"name": "Philips hue",
+		"zigbeechannel": 11,
+		"mac": "00:17:88:17:12:db",
+		"dhcp": true,
+		"ipaddress": "192.168.1.11",
+		"netmask": "255.255.255.0",
+		"gateway": "192.168.1.1",
+		"proxyaddress": "none",
+		"proxyport": 0,
+		"UTC": "2015-01-04T10:52:23",
+		"localtime": "2015-01-04T11:52:23",
+		"timezone": "Europe/Vienna",
+		"whitelist": {
+			"1234": {
+				"last use date": "2015-01-04T10:52:22",
+				"create date": "2014-10-10T14:28:12",
+				"name": "test user1"
+			},
+			"12345": {
+				"last use date": "2015-01-04T10:52:21",
+				"create date": "2015-01-02T11:51:07",
+				"name": "test user2"
+			}
+		},
+		"swversion": "01016441",
+		"apiversion": "1.4.0",
+		"swupdate": {
+			"updatestate": 2,
+			"checkforupdate": false,
+			"devicetypes": {
+				"bridge": true,
+				"lights": []
+			},
+			"url": "",
+			"text": "Bridge 1.5.0 release",
+			"notify": false
+		},
+		"linkbutton": false,
+		"portalservices": true,
+		"portalconnection": "connected",
+		"portalstate": {
+			"signedon": true,
+			"incoming": false,
+			"outgoing": true,
+			"communication": "connected"
+		}
+	},
+	"schedules": {},
+	"scenes": {
+		"087f88f52-on-0": {
+			"name": "Sunset on 141285",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"ac637e2f0-on-0": {
+			"name": "Relax on 1412850",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"33300ac17-on-0": {
+			"name": "Feet up on 14128",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"f5d73dbdd-on-0": {
+			"name": "Konzentration on",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"2e1dbbb4a-on-0": {
+			"name": "Pencils on 14128",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"eb493cd38-on-0": {
+			"name": "K�che on 141285",
+			"lights": [
+				"3"
+			],
+			"active": true
+		},
+		"eccbc87e4-off-0": {
+			"name": "Relax Sz off 141",
+			"lights": [
+				"3"
+			],
+			"active": true
+		},
+		"998859503-on-0": {
+			"name": "Relax Sz on 1412",
+			"lights": [
+				"3"
+			],
+			"active": true
+		},
+		"1afa43767-on-0": {
+			"name": "Sz on 1412851151",
+			"lights": [
+				"1",
+				"2"
+			],
+			"active": true
+		},
+		"0f2c67d80-on-0": {
+			"name": "Blue rain on 141",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"c77174f42-on-0": {
+			"name": "Taj on 141287365",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"411c1b0e6-on-0": {
+			"name": "Ski on 141287365",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"726af216a-on-0": {
+			"name": "Deep sea on 1412",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"3b66e9148-on-0": {
+			"name": "Pencils on 14128",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"6b6ca6a0d-on-0": {
+			"name": "Beach on 1412873",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"02b12e930-off-0": {
+			"name": "Relax wz off 141",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"7bcedb1f2-on-0": {
+			"name": "Relax wz on 1412",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"948ce012e-on-0": {
+			"name": "Kathy on 1412888",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"6b344ad49-on-0": {
+			"name": "Neue Szene on 14",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"0b6e699ed-on-0": {
+			"name": "Neue Szene2 on 1",
+			"lights": [
+				"3"
+			],
+			"active": true
+		},
+		"797106fb9-on-0": {
+			"name": "Hammock on 14128",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"e5eb52d5f-on-0": {
+			"name": "Jump! on 1412889",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"8c4c9d2c0-on-0": {
+			"name": "Jump! on 1412889",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"c140d3749-on-0": {
+			"name": "Sunset on 141288",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"0b5bd988a-on-0": {
+			"name": "Neue Szene� on ",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"f7f07dec0-on-0": {
+			"name": "Neue Szene� on ",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"99e1f34a4-on-0": {
+			"name": "Neue Szene4 on 1",
+			"lights": [
+				"3"
+			],
+			"active": true
+		},
+		"a7f5a8bea-on-0": {
+			"name": "Wohnzimmer g on ",
+			"lights": [
+				"3"
+			],
+			"active": true
+		},
+		"6c703ac5a-on-0": {
+			"name": "Wohnzimmer g on ",
+			"lights": [
+				"3"
+			],
+			"active": true
+		},
+		"be5f6aa2e-on-0": {
+			"name": "Wohnzimmer g on ",
+			"lights": [
+				"3"
+			],
+			"active": true
+		},
+		"24794a474-on-0": {
+			"name": "Wz aus on 141289",
+			"lights": [
+				"3"
+			],
+			"active": true
+		},
+		"e915785b2-on-0": {
+			"name": "Lesen on 1413906",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"84fa88aa5-on-0": {
+			"name": "Aktivieren on 14",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"21ca86273-on-0": {
+			"name": "Greece on 141390",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"34f425fb4-on-0": {
+			"name": "Laila on 1413906",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"bba7dcfc2-on-0": {
+			"name": "HIDDEN on 1420199546312",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"4818c0af0-on-0": {
+			"name": "HIDDEN on 1420199548290",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"126c9b1a8-on-0": {
+			"name": "HIDDEN on 1420199549334",
+			"lights": [
+				"1",
+				"2",
+				"3"
+			],
+			"active": true
+		},
+		"ac2aa0533-off-0": {
+			"name": "HIDDEN off 1420200146174",
+			"lights": [
+				"1",
+				"3"
+			],
+			"active": true
+		}
+	},
+	"rules": {
+		"1": {
+			"name": "Tap 2.4 Standardeinstellung",
+			"owner": "1234",
+			"created": "2015-01-02T11:52:26",
+			"lasttriggered": "2015-01-04T09:46:57",
+			"timestriggered": 51,
+			"status": "enabled",
+			"conditions": [
+				{
+					"address": "/sensors/2/state/buttonevent",
+					"operator": "eq",
+					"value": "18"
+				},
+				{
+					"address": "/sensors/2/state/lastupdated",
+					"operator": "dx"
+				}
+			],
+			"actions": [
+				{
+					"address": "/groups/0/action",
+					"method": "PUT",
+					"body": {
+						"scene": "bba7dcfc2-on-0"
+					}
+				}
+			]
+		},
+		"2": {
+			"name": "Tap 2.2 Standardeinstellung",
+			"owner": "12345",
+			"created": "2015-01-02T11:52:27",
+			"lasttriggered": "2015-01-03T15:04:03",
+			"timestriggered": 81,
+			"status": "enabled",
+			"conditions": [
+				{
+					"address": "/sensors/2/state/buttonevent",
+					"operator": "eq",
+					"value": "16"
+				},
+				{
+					"address": "/sensors/2/state/lastupdated",
+					"operator": "dx"
+				}
+			],
+			"actions": [
+				{
+					"address": "/groups/0/action",
+					"method": "PUT",
+					"body": {
+						"scene": "4818c0af0-on-0"
+					}
+				}
+			]
+		},
+		"3": {
+			"name": "Tap 2.1 2 Lampen",
+			"owner": "12345",
+			"created": "2015-01-02T12:02:25",
+			"lasttriggered": "2015-01-03T23:07:57",
+			"timestriggered": 162,
+			"status": "enabled",
+			"conditions": [
+				{
+					"address": "/sensors/2/state/buttonevent",
+					"operator": "eq",
+					"value": "34"
+				},
+				{
+					"address": "/sensors/2/state/lastupdated",
+					"operator": "dx"
+				}
+			],
+			"actions": [
+				{
+					"address": "/groups/0/action",
+					"method": "PUT",
+					"body": {
+						"scene": "ac2aa0533-off-0"
+					}
+				}
+			]
+		},
+		"4": {
+			"name": "Tap 2.3 Standardeinstellung",
+			"owner": "12345",
+			"created": "2015-01-02T11:52:28",
+			"lasttriggered": "2015-01-03T15:04:04",
+			"timestriggered": 35,
+			"status": "enabled",
+			"conditions": [
+				{
+					"address": "/sensors/2/state/buttonevent",
+					"operator": "eq",
+					"value": "17"
+				},
+				{
+					"address": "/sensors/2/state/lastupdated",
+					"operator": "dx"
+				}
+			],
+			"actions": [
+				{
+					"address": "/groups/0/action",
+					"method": "PUT",
+					"body": {
+						"scene": "126c9b1a8-on-0"
+					}
+				}
+			]
+		}
+	},
+	"sensors": {
+		"1": {
+			"state": {
+				"daylight": false,
+				"lastupdated": "none"
+			},
+			"config": {
+				"on": true,
+				"long": "none",
+				"lat": "none",
+				"sunriseoffset": 30,
+				"sunsetoffset": -30
+			},
+			"name": "Daylight",
+			"type": "Daylight",
+			"modelid": "PHDL00",
+			"manufacturername": "Philips",
+			"swversion": "1.0"
+		},
+		"2": {
+			"state": {
+				"buttonevent": 18,
+				"lastupdated": "2015-01-04T09:46:57"
+			},
+			"config": {
+				"on": true
+			},
+			"name": "Tap1",
+			"type": "ZGPSwitch",
+			"modelid": "ZGPSWITCH",
+			"manufacturername": "none",
+			"uniqueid": "00:00:00:00:00:42:9a:25-f2"
+		}
+	}
+}
