@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>45605</Model>
+	<Label lang="en">Smart Outlet</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x25</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x77</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x75</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">LED light</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">LED on when switch is OFF</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">LED on when switch is ON</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">LED is always off</Label>
+			</Item>
+			<Help lang="en">Defines the behavior of the blue LED. Default is LED
+				on when switch is off.</Help>
+		</Parameter>
+	</Configuration>
+</Product>

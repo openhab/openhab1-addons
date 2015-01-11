@@ -3,7 +3,7 @@ Private-Package: org.openhab.binding.weather.internal
 Ignore-Package: org.openhab.binding.weather.internal
 Bundle-Name: openHAB Weather Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.6.0.qualifier
+Bundle-Version: 1.7.0.qualifier
 Bundle-Activator: org.openhab.binding.weather.internal.bus.WeatherActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
@@ -12,6 +12,7 @@ Bundle-Description: This is the Weather binding of the open Home Aut
 Import-Package: javax.servlet,
  javax.servlet.http,
  org.apache.commons.httpclient,
+ org.apache.commons.httpclient.cookie,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.params,
  org.apache.commons.io,
@@ -47,4 +48,5 @@ Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml, OS
 Bundle-ClassPath: .,
  lib/jackson-core-2.4.1.1.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.openhab.binding.weather.internal.utils
 

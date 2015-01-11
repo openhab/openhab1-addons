@@ -5,7 +5,7 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB Lgtv Binding
 Bundle-SymbolicName: org.openhab.binding.lgtv
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.6.0.qualifier
+Bundle-Version: 1.7.0.qualifier
 Bundle-Activator: org.openhab.binding.lgtv.internal.LgtvActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Lgtv binding of the open Home Automation Bus
@@ -35,8 +35,8 @@ Import-Package: javax.xml.bind,
  org.openhab.core.persistence,
  org.openhab.core.transform,
  org.openhab.model.sitemap
-Export-Package: org.openhab.binding.lgtv, org.openhab.binding.lgtv.lginteraction, 
- org.openhab.binding.lgtv.internal;x-internal:=true
+Export-Package: org.openhab.binding.lgtv, org.openhab.binding.lgtv.lgi
+ nteraction, org.openhab.binding.lgtv.internal;x-internal:=true
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml

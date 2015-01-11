@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,10 +10,12 @@ package org.openhab.binding.dscalarm.internal.model;
 
 import org.openhab.binding.dscalarm.DSCAlarmBindingConfig;
 import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties.StateType;
+import org.openhab.binding.dscalarm.internal.model.DSCAlarmDeviceProperties.TriggerType;
 import org.openhab.binding.dscalarm.internal.protocol.APIMessage;
 import org.openhab.binding.dscalarm.internal.DSCAlarmEvent;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.DateTimeType;
@@ -45,9 +47,12 @@ public class Panel extends DSCAlarmDevice{
 	 */
 	@Override
 	public void refreshItem(Item item, DSCAlarmBindingConfig config, EventPublisher publisher) {
+		logger.debug("refreshItem(): Panel Item Name: {}", item.getName());
+
 		int state;
 		String str = "";
-		logger.debug("refreshItem(): Panel Item Name: {}", item.getName());
+		boolean trigger;
+		OnOffType onOffType;
 
 		if(config != null) {
 			if(config.getDSCAlarmItemType() != null) {
@@ -71,6 +76,26 @@ public class Panel extends DSCAlarmDevice{
 					case PANEL_COMMAND:
 						state = panelProperties.getSystemCommand();
 						publisher.postUpdate(item.getName(), new DecimalType(state));
+						break;
+					case PANEL_FIRE_KEY_ALARM:
+						trigger = panelProperties.getTrigger(TriggerType.FIRE_KEY_ALARM);
+						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;
+					case PANEL_PANIC_KEY_ALARM:
+						trigger = panelProperties.getTrigger(TriggerType.PANIC_KEY_ALARM);
+						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;
+					case PANEL_AUX_KEY_ALARM:
+						trigger = panelProperties.getTrigger(TriggerType.AUX_KEY_ALARM);
+						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
+						break;
+					case PANEL_AUX_INPUT_ALARM:
+						trigger = panelProperties.getTrigger(TriggerType.AUX_KEY_ALARM);
+						onOffType = trigger ? OnOffType.ON : OnOffType.OFF;
+						publisher.postUpdate(item.getName(), onOffType);
 						break;
 					default:
 						logger.debug("refreshItem(): Panel item not updated.");
@@ -226,6 +251,9 @@ public class Panel extends DSCAlarmDevice{
 	 */
 	public void updateProperties(Item item, DSCAlarmBindingConfig config, int state, String description) {
 		logger.debug("updateProperties(): Panel Item Name: {}", item.getName());
+		
+		boolean trigger = state != 0 ? true : false;
+
 		if(config != null) {
 			if(config.getDSCAlarmItemType() != null) {
 				switch(config.getDSCAlarmItemType()) {
@@ -237,6 +265,18 @@ public class Panel extends DSCAlarmDevice{
 						break;
 					case PANEL_COMMAND:
 						panelProperties.setSystemCommand(state);
+						break;
+					case PANEL_FIRE_KEY_ALARM:
+						panelProperties.setTrigger(TriggerType.FIRE_KEY_ALARM, trigger);
+						break;
+					case PANEL_PANIC_KEY_ALARM:
+						panelProperties.setTrigger(TriggerType.PANIC_KEY_ALARM, trigger);
+						break;
+					case PANEL_AUX_KEY_ALARM:
+						panelProperties.setTrigger(TriggerType.AUX_KEY_ALARM, trigger);
+						break;
+					case PANEL_AUX_INPUT_ALARM:
+						panelProperties.setTrigger(TriggerType.AUX_INPUT_ALARM, trigger);
 						break;
 					/*case PANEL_TIME_DATE:
 						panelProperties.setState(StateType.TIME_DATE, state, description);

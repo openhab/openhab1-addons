@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.tellstick.internal;
 
+import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +52,8 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	 * Max time without receiving any events.
 	 */
 	private static final int MAX_IDLE_BEFORE_RESTART = 600000;
-
+	private static BigDecimal HUNDRED = new BigDecimal("100");
+	
 	private int restartTimeout;
 
 	private long lastRefresh = 0;
@@ -199,7 +202,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 	private void handleDeviceEvent(TellstickDeviceEvent event) {
 		TellstickDevice device = event.getDevice();
 		controller.setLastSend(System.currentTimeMillis());
-		logger.debug("Got deviceEvent for " + device + " name:" + device + " method" + event.getMethod());
+		logger.debug("Got deviceEvent for " + device + " name:" + device + " method " + event.getMethod());
 		if (device != null) {
 			State cmd = resolveCommand(event.getMethod(), event.getData());
 			TellstickBindingConfig conf = findTellstickBindingConfig(device.getId(), null, null);
@@ -218,8 +221,8 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 		} else if (method == Method.TURNOFF) {
 			cmd = OnOffType.OFF;
 		} else if (method == Method.DIM) {
-			double value = ((Double.valueOf(data)) / 255);
-			cmd = new PercentType((int) (value * 100));
+			double value = ((Double.valueOf(data)*100) / 255);
+			cmd = new PercentType((int) Math.round(value));
 		}
 		return cmd;
 	}
@@ -232,8 +235,9 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 		private Map<DataType, String> prevMessages = new HashMap<DataType, String>();
 
 		private void handleSensorEvent(TellstickSensorEvent event, TellstickBindingConfig device) {
-
-			double dValue = Double.valueOf(event.getData());
+			
+			BigDecimal dValue = new BigDecimal(String.valueOf(event.getData()));
+			dValue.setScale(1, BigDecimal.ROUND_HALF_UP);
 			TellstickValueSelector selector = device.getUsageSelector();
 			if (selector == null) {
 				selector = device.getValueSelector();
@@ -242,7 +246,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 			sendToOpenHab(device.getItemName(), cmd);
 		}
 
-		private State getCommand(TellstickSensorEvent event, double dValue, TellstickValueSelector selector) {
+		private State getCommand(TellstickSensorEvent event, BigDecimal dValue, TellstickValueSelector selector) {
 			State cmd = null;
 			switch (event.getDataType()) {
 				case TEMPERATURE:
@@ -261,14 +265,15 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 						break;
 					case HUMIDITY:
 					default:
-						double val = Math.min(100, dValue);
-						cmd = new PercentType((int) val);
+						cmd = new PercentType(HUNDRED.min(dValue));
 	
 					}
 				break;
 				case WINDAVERAGE:
 				case WINDDIRECTION:
-				case WINDGUST:	
+				case WINDGUST:
+				case RAINRATE:
+				case RAINTOTAL:
 					cmd = new DecimalType(dValue);
 					break;
 				default:
@@ -296,6 +301,12 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 			case WINDGUST:
 				result = TellstickValueSelector.WIND_GUST;
 				break;
+			case RAINRATE:
+				result = TellstickValueSelector.RAIN_RATE;
+				break;
+			case RAINTOTAL:
+				result = TellstickValueSelector.RAIN_TOTAL;
+				break;
 			default:
 				logger.warn("Sensor of type " + dataType + " not supported");
 			}
@@ -305,8 +316,8 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 		@Override
 		public void onRequest(TellstickSensorEvent sensorEvent) {
 			controller.setLastSend(System.currentTimeMillis());
-
-			String thisMsg = sensorEvent.getProtocol() + sensorEvent.getModel() + sensorEvent.getSensorId()
+			Calendar cal = Calendar.getInstance();
+			String thisMsg = cal.get(Calendar.MINUTE) + sensorEvent.getProtocol() + sensorEvent.getModel() + sensorEvent.getSensorId()
 					+ sensorEvent.getData();
 			String prevMessage = prevMessages.get(sensorEvent.getDataType());
 			if (!thisMsg.equals(prevMessage)) {
@@ -366,6 +377,7 @@ public class TellstickBinding extends AbstractActiveBinding<TellstickBindingProv
 			logger.info("Telldus reset");
 			registerListeners();
 			logger.info("Listeners restarted");
+			controller.setLastSend(System.currentTimeMillis());
 		} catch (Exception e) {
 			logger.error("Failed to reset listener", e);
 		}

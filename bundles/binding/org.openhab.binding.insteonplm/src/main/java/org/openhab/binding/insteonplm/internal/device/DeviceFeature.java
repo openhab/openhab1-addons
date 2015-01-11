@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import org.openhab.binding.insteonplm.InsteonPLMBindingConfig;
+import org.openhab.binding.insteonplm.internal.device.DeviceFeatureListener.StateChangeType;
 import org.openhab.binding.insteonplm.internal.message.Msg;
 import org.openhab.binding.insteonplm.internal.utils.Utils.ParsingException;
 import org.openhab.core.types.Command;
@@ -119,6 +120,7 @@ public class DeviceFeature {
 		logger.trace("{} set query status to: {}", m_name, status);
 		m_queryStatus = status;
 	}
+
 	/**
 	 * Add a listener (item) to a device feature
 	 * @param l the listener
@@ -133,12 +135,12 @@ public class DeviceFeature {
 			m_listeners.add(l);
 		}
 	}
+
 	/**
 	 * removes a DeviceFeatureListener from this feature
 	 * @param aItemName name of the item to remove as listener
 	 * @return true if a listener was removed 
 	 */
-	
 	public boolean removeListener(String aItemName) {
 		boolean listenerRemoved = false;
 		synchronized(m_listeners) {
@@ -152,6 +154,16 @@ public class DeviceFeature {
 		}
 		return listenerRemoved;
 	}
+	
+	public boolean isReferencedByItem(String aItemName) {
+		synchronized(m_listeners) {
+			for (DeviceFeatureListener fl : m_listeners) {
+				if (fl.getItemName().equals(aItemName)) return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * Called when message is incoming. Dispatches message according to message dispatcher
 	 * @param msg The message to dispatch
@@ -192,32 +204,14 @@ public class DeviceFeature {
 	/**
 	 * Publish new state to all device feature listeners
 	 * @param newState state to be published
+	 * @param changeType what kind of changes to publish
 	 */
-	public void publishAll(State newState) {
+	public void publish(State newState, StateChangeType changeType) {
 		logger.debug("{}:{} publishing: {}", this.getDevice().getAddress(),
 					getName(), newState);
 		synchronized(m_listeners) {
 			for (DeviceFeatureListener listener : m_listeners) {
-				listener.stateChanged(newState);
-			}
-		}
-	}
-	/**
-	 * Publish new state to all device feature listeners that match
-	 * a given filter for the parameters
-	 * @param newState the state to be published
-	 * @param key the parameter key
-	 * @param val the (integer!) value that the parameter must match
-	 */
-	public void publishFiltered(State newState, String key, int val) {
-		logger.debug("{} publishing filtered: {} param {} == {}",
-				getName(), newState, key, val);
-		synchronized(m_listeners) {
-			for (DeviceFeatureListener listener : m_listeners) {
-				if (listener.hasParameter(key) && listener.getIntParameter(key) == val) {
-					logger.debug("{} publishing to: {}", getName(), listener.getItemName());
-					listener.stateChanged(newState);
-				}
+				listener.stateChanged(newState, changeType);
 			}
 		}
 	}

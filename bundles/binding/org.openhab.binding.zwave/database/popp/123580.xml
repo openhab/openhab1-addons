@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>123580</Model>
+	<Label lang="en">Wall Plug Dimmer</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8e</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Set LED indication mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">On when switch on</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">On when switch off</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Operated by command</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>integer</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Automatic switch off time</Label>			
+			<Help lang="en">If not zero, automatically switch off after a user defined time (in seconds)</Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">RF Off command</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Switch OFF</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Ignore</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch ON</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch on if load is off else switch off</Label>
+			</Item>
+			<Help lang="en">Defines how to interpret RF Off command. Can be used in conjunction with Auto Off function: Ignore - to switch on the light by motion detectors and switch it off after some amount of time: in case of multiple motion detectors each would try to switch the light off that would break logics; Switch on - to switch on the light on both On and Off paddle press on the remote and switch it off after some amount of time. Button off click will still work (if button operations are not disabled).</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label>Ignore start level</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>5</Index>
+			<Type>integer</Type>
+			<Default>30</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Label>Speed for fast dimming</Label>
+			<Help lang="en">Time to dim on button presses and Set command (if it has no duration specified). If not 0, dimming will be done smoothly to preserve bulb life. Set in 10ms steps.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>6</Index>
+			<Type>integer</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
+			<Label>Speed for slow dimming</Label>
+			<Help lang="en">Time to dim on button presses and Set command (if it has no duration specified). If not 0, dimming will be done smoothly to preserve bulb life. Set in 10ms steps.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>7</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label>Behavior when ON received</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Set to last dim level</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">If on already, set to maximum</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Always maximum dim level</Label>
+			</Item>
+			<Help lang="en">Defines the dim level on command 'ON'. On default he dimmer restores last dim level. This parameter allows configuring the maximum level on second On command (if already On) or to always switch on to maximum level.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>8</Index>
+			<Type>integer</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Label>Baby dimming time</Label>
+			<Help lang="en">Time to dim on double click Off button for Baby-Dim function. This function works only if the load is operated by single press and hold button action. If enabled, the device will wait for a click timeout to see if the second click would be pressed. This will introduce a small delay for single click commands. Set in 1 minute steps.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>9</Index>
+			<Type>integer</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Label>Baby target level</Label>
+			<Help lang="en">Target percentage level on which to stop while executing Baby Dimming. Can be 0 to completely switch off the light.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>10</Index>
+			<Type>integer</Type>
+			<Default>50</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>100</Maximum>
+			<Label>Baby target level</Label>
+			<Help lang="en">Typical time used to differentiate click, hold, double and triple clicks. Set in 10ms steps.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>17</Index>
+			<Type>integer</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Minimum>1</Minimum>
+			<Maximum>95</Maximum>
+			<Label>Limit minimum light level</Label>
+			<Help lang="en">Minimum level should be greater than maximum.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>18</Index>
+			<Type>integer</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Label>Limit maximum light level</Label>
+			<Help lang="en">Maximum level should be greater than minimum. Set to 0 to act as a switch.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>19</Index>
+			<Type>integer</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Minimum>0</Minimum>
+			<Maximum>99</Maximum>
+			<Label>Dim Level on 'Switch On'</Label>
+			<Help lang="en">defines how the dimmer hall react on a simple ON Command. Set to 0 to restore last level, otherwise sets dim level.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>51</Index>
+			<Type>integer</Type>
+			<Default>28</Default>
+			<Size>1</Size>
+			<Minimum>5</Minimum>
+			<Maximum>60</Maximum>
+			<Label>Pause before pulse</Label>
+			<Help lang="en">NB: Do not touch these settings if you are not sure what they mean! For dimmable LEDs and CFL with bypass use value 1. For other bulbs use default value.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>52</Index>
+			<Type>integer</Type>
+			<Default>28</Default>
+			<Size>1</Size>
+			<Minimum>5</Minimum>
+			<Maximum>60</Maximum>
+			<Label>Pause after pulse</Label>
+			<Help lang="en">NB: Do not touch these settings if you are not sure what they mean! For dimmable LEDs and CFL with bypass use value 40. For other bulbs use default value.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>53</Index>
+			<Type>integer</Type>
+			<Default>10</Default>
+			<Size>1</Size>
+			<Minimum>3</Minimum>
+			<Maximum>20</Maximum>
+			<Label>Pulse width</Label>
+			<Help lang="en">NB: Do not touch these settings if you are not sure what they mean! For dimmable LEDs and CFL with bypass use value 20. For other bulbs use default value.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>54</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label>Pulse type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Long</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Short</Label>
+			</Item>
+			<Help lang="en">NB: Do not touch these settings if you are not sure what they mean!</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Switch State</Label>
+		</Group>
+	</Associations>
+</Product>
+

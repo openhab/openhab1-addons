@@ -20,7 +20,7 @@
 			<!-- weekly rollover and archiving -->
 			<fileNamePattern>events-%d{yyyy-ww}.log.zip</fileNamePattern>
 
-			<!-- keep 30 days' worth of history -->
+			<!-- maximum number of archive files to keep -->
 			<maxHistory>30</maxHistory>
 		</rollingPolicy>
 		<encoder>

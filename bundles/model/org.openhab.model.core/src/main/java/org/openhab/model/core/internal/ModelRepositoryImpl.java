@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -56,6 +56,7 @@ public class ModelRepositoryImpl implements ModelRepository {
 					return resource.getContents().get(0);
 				} else {
 					logger.warn("Configuration model '{}' is either empty or cannot be parsed correctly!", name);
+					logger.debug("Errors reported for '{}': {}", name, resource.getErrors());
 					resourceSet.getResources().remove(resource);
 					return null;
 				}

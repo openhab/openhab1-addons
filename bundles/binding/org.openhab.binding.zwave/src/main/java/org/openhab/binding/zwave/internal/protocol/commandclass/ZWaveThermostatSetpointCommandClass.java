@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Thermostat Setpoint command class.
@@ -43,6 +44,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 		implements ZWaveBasicCommands, ZWaveCommandClassInitialization,
 		ZWaveCommandClassDynamicState {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveThermostatSetpointCommandClass.class);
 	
 	private static final byte THERMOSTAT_SETPOINT_SET              = 0x1;
@@ -113,6 +115,12 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 						    
 						    // (n)th bit is set. n is the index for the setpoint type enumeration.
 						    SetpointType setpointTypeToAdd = SetpointType.getSetpointType(index);
+
+							if (setpointTypeToAdd == null) {
+								logger.warn("NODE {}: Unknown Setpoint Type = {}, ignoring report.", this.getNode().getNodeId(),index);
+								return;
+							}
+
 							this.setpointTypes.add(setpointTypeToAdd);
 							logger.debug("NODE {}: Added setpoint type {} {}", this.getNode().getNodeId(), setpointTypeToAdd.getLabel(), index);
 					}
@@ -194,7 +202,11 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 	public Collection<SerialMessage> getDynamicValues() {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
 		for (SetpointType setpointType : this.setpointTypes) {
-			result.add(getMessage(setpointType));
+			if(setpointType==null){
+				logger.warn("NODE {}: Ignoring null setpointType in setpointTypes", this.getNode().getNodeId());
+			} else {
+				result.add(getMessage(setpointType));
+			}
 		}
 		return result;
 	}
