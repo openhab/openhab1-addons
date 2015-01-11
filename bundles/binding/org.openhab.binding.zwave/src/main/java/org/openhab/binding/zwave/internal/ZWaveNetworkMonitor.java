@@ -324,7 +324,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				}
 				// Use the last sent time for comparisson.
 				// This avoids the situation where we only poll a dead node if we use the received time!
-				if (oldestNode == null) {
+				if (oldestNode == null || oldestNode.getLastSent() == null) {
 					oldestNode = node;
 				} else if (node.getLastSent() == null || node.getLastSent().getTime() < oldestNode.getLastSent().getTime()) {
 					oldestNode = node;
