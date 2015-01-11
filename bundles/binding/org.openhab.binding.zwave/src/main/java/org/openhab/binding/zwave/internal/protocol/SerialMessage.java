@@ -136,16 +136,16 @@ public class SerialMessage {
 		messageLength = buffer.length - 2; // buffer[1];
 		byte messageCheckSumm = calculateChecksum(buffer);
 		byte messageCheckSummReceived = buffer[messageLength+1];
-		logger.trace(String.format("NODE %d: Message checksum calculated = 0x%02X, received = 0x%02X", nodeId, messageCheckSumm, messageCheckSummReceived));
 		if (messageCheckSumm == messageCheckSummReceived) {
 			logger.trace("NODE {}: Checksum matched", nodeId);
 			isValid = true;
 		} else {
-			logger.trace("NODE {}: Checksum error", nodeId);
+			logger.trace("NODE {}: Checksum error. Calculated = 0x%02X, Received = 0x%02X", nodeId, messageCheckSumm, messageCheckSummReceived);
 			isValid = false;
 			return;
 		}
-		this.messageType = buffer[2] == 0x00 ? SerialMessageType.Request : SerialMessageType.Response;;
+		this.priority = SerialMessagePriority.High;
+		this.messageType = buffer[2] == 0x00 ? SerialMessageType.Request : SerialMessageType.Response;
 		this.messageClass = SerialMessageClass.getMessageClass(buffer[3] & 0xFF);
 		this.messagePayload = ArrayUtils.subarray(buffer, 4, messageLength + 1);
 		this.messageNode = nodeId;

@@ -1298,7 +1298,7 @@ public class ZWaveController {
     			logger.error("Message is not valid, discarding");
     			return;
     		}
-    		
+   
     		recvQueue.add(recvMessage);
 			logger.debug("Receive queue ADD: Length={}", recvQueue.size());
         }
