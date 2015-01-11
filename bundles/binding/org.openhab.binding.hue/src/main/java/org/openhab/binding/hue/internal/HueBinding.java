@@ -16,6 +16,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.hue.HueBindingProvider;
 import org.openhab.binding.hue.internal.HueLightBindingConfig.BindingType;
+import org.openhab.binding.hue.internal.common.HueContext;
 import org.openhab.binding.hue.internal.data.HueSettings;
 import org.openhab.binding.hue.internal.hardware.HueBridge;
 import org.openhab.binding.hue.internal.hardware.HueBulb;
@@ -52,6 +53,8 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 
 	/** refresh interval is only set by configuration */
 	private long refreshInterval;
+	
+	private HueContext context=HueContext.getInstance();
 	
 	private HueBridge activeBridge = null;
 	private String bridgeIP = null;
@@ -98,6 +101,10 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			// Observation : If the power of a hue lamp is removed, the status is not updated in hue hub.
 			// The heartbeat functionality should fix this, but 
 			HueSettings settings = activeBridge.getSettings();
+			if(settings==null){
+				logger.warn("no valid settings found");
+				return;
+			}
 			Map<Integer, HueTapState> pressedTaps = tapStates.findPressedTapDevices(settings);
 
 			if(pressedTaps.size()>0){
@@ -336,6 +343,8 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 			if(this.bridgeIP!=null) {
 				activeBridge = new HueBridge(bridgeIP, bridgeSecret);
 				activeBridge.pairBridgeIfNecessary();
+				
+				context.setBridge(activeBridge);
 			}
 			
 			String refreshIntervalString = (String) config.get("refresh");

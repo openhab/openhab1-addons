@@ -35,6 +35,10 @@ public class HueBridge {
 
 	private Client client;
 
+	public Client getClient() {
+		return client;
+	}
+
 	/**
 	 * Constructor for the HueBridge.
 	 * 
@@ -161,7 +165,7 @@ public class HueBridge {
 	}
 
 	/**
-	 * @return The IP of the Hue bridge.
+	 * @return The Url of the Hue bridge including the secret with a trailing '/'.
 	 */
 	public String getUrl() {
 		return "http://" + ip + "/api/" + secret + "/";

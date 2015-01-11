@@ -29,3 +29,5 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/huebinding.xml
 Bundle-ClassPath: .
+Export-Package: org.openhab.binding.hue.internal.common,
+ org.openhab.binding.hue.internal.hardware

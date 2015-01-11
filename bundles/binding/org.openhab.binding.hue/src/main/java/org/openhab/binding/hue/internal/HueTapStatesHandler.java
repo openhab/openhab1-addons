@@ -30,9 +30,9 @@ public class HueTapStatesHandler {
 	public Map<Integer, HueTapState> findPressedTapDevices(HueSettings settings) {
 		Map<Integer, HueTapState> states;
 		Map<Integer, HueTapState> foundDevices;
+		foundDevices = new HashMap<Integer,HueTapState>();
 		try {
 			states = settings.getTapStates();
-			foundDevices = new HashMap<Integer,HueTapState>();
 			if(lastTapStates!=null){
 				// iterate over all saved states
 				for(Integer deviceId:lastTapStates.keySet()){
@@ -46,11 +46,11 @@ public class HueTapStatesHandler {
 				}
 			}
 			lastTapStates=states;
-			return foundDevices;
 
-		} catch (HueSettingsParseException e) {
+		} catch (Exception e) {
 			logger.warn("error parsing hue bridge settings", e);
-			return new HashMap<Integer,HueTapState>();
 		}
+		return foundDevices;
+
 	}
 }
