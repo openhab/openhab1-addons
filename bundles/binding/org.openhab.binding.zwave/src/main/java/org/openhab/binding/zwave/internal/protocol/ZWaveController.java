@@ -1333,7 +1333,7 @@ public class ZWaveController {
 							break;
 						case NAK:
 							NAKCount++;
-	    					logger.error("Message not acklowledged by controller (NAK), discarding");
+	    					logger.error("Message not acknowledged by controller (NAK), discarding");
 	    					transactionCompleted.release();
 	    					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 							break;
