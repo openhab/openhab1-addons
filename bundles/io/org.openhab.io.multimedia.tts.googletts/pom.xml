@@ -28,42 +28,10 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>com.savage7.maven.plugins</groupId>
-				<artifactId>maven-external-dependency-plugin</artifactId>
-				<configuration>
-					<stagingDirectory>
-						${basedir}/lib
-					</stagingDirectory>
-					<artifactItems>
-
-					</artifactItems>
-				</configuration>
-				<executions>
-					<execution>
-						<id>resolve-install-external-dependencies</id>
-						<phase>process-resources</phase>
-						<goals>
-							<!-- mvn com.savage7.maven.plugins:maven-external-dependency-plugin:resolve-external -->
-							<goal>resolve-external</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.vafer</groupId>
 				<artifactId>jdeb</artifactId>
 			</plugin>
 		</plugins>
-
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>com.savage7.maven.plugins</groupId>
-					<artifactId>maven-external-dependency-plugin</artifactId>
-					<version>0.4</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
 	</build>
+	
 </project>

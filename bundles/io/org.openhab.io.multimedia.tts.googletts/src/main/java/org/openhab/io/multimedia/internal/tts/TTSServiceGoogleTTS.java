@@ -22,6 +22,7 @@ import java.util.Vector;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import org.openhab.io.multimedia.tts.TTSService;
@@ -44,25 +45,24 @@ public class TTSServiceGoogleTTS implements TTSService, ManagedService {
 	/** User agent for HTTP requests as requests without agent are ignored */
 	private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) "
 			+ "Gecko/20100101 Firefox/34.0";
-	private static final String GOOGLE_TRANSLATE_URL = "http://translate.google.com/translate_tts?tl=%s&q=%s";
-
 	/** Maximum sentence length. Google translate only supports 100 characters at a time. */
 	private static final int MAX_SENTENCE_LENGTH = 100;
-	private static final String DEFAULT_LANGUAGE = "en";
 
 	private static final String SENTENCE_DELIMITERS_PROPERTY = "sentenceDelimiters";
 	private static final String LANGUAGE_PROPERTY = "language";
+	private static final String TRANSLATE_URL_PROPERTY = "translateUrl";
 
-	private String ttsLanguage = DEFAULT_LANGUAGE;
+	private String ttsLanguage = "en";
+	private String translateUrl = "http://translate.google.com/translate_tts?tl=%s&q=%s";
 
 	private final GoogleTTSTextProcessor textProcessor = new GoogleTTSTextProcessor(MAX_SENTENCE_LENGTH);
 
 	public void activate() {
-		logger.debug("Activate");
+		logger.debug("GoogleTTS service has been activated");
 	}
 
 	public void deactivate() {
-		logger.debug("Deactivate");
+		logger.debug("GoogleTTS service has been deactivated");
 	}
 
 	/**
@@ -85,13 +85,7 @@ public class TTSServiceGoogleTTS implements TTSService, ManagedService {
 		} catch (JavaLayerException e) {
 			logger.warn("Unable to play InputStream for text " + text, e);
 		} finally {
-			if (stream != null) {
-				try {
-					stream.close();
-				} catch (IOException e) {
-					logger.debug("Error while closing InputStream", e);
-				}
-			}
+			IOUtils.closeQuietly(stream);
 		}
 	}
 
@@ -108,7 +102,7 @@ public class TTSServiceGoogleTTS implements TTSService, ManagedService {
 		Vector<InputStream> inputStreams = new Vector<InputStream>(sentences.size());
 		for (String sentence : sentences) {
 			String encodedSentence = GoogleTTSTextProcessor.urlEncodeSentence(sentence);
-			URL url = new URL(String.format(GOOGLE_TRANSLATE_URL, ttsLanguage, encodedSentence));
+			URL url = new URL(String.format(translateUrl, ttsLanguage, encodedSentence));
 			inputStreams.add(getInputStreamFromUrl(url));
 		}
 		return new SequenceInputStream(inputStreams.elements());
@@ -147,6 +141,12 @@ public class TTSServiceGoogleTTS implements TTSService, ManagedService {
 			if (!StringUtils.isBlank(delimiters)) {
 				logger.debug("Using custom sentence delimiters from config: " + delimiters);
 				textProcessor.setCustomSentenceDelimiters(delimiters);
+			}
+
+			String configTranslateUrl = (String) properties.get(TRANSLATE_URL_PROPERTY);
+			if (!StringUtils.isBlank(configTranslateUrl)) {
+				logger.debug("Using custom translate URL from config: " + configTranslateUrl);
+				translateUrl = configTranslateUrl;
 			}
 		}
 	}
