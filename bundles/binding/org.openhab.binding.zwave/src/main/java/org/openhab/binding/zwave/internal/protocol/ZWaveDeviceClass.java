@@ -357,32 +357,33 @@ public class ZWaveDeviceClass {
 		PORTABLE_REMOTE_CONTROLLER(1, Generic.REMOTE_CONTROLLER, "Portable Remote Controller"),
 		PORTABLE_SCENE_CONTROLLER(2, Generic.REMOTE_CONTROLLER, "Portable Scene Controller"),
 		PORTABLE_INSTALLER_TOOL(3, Generic.REMOTE_CONTROLLER, "Portable Installer Tool"),
-		
+
 		PC_CONTROLLER(1, Generic.STATIC_CONTOLLER, "PC Controller"),
 		SCENE_CONTROLLER(2, Generic.STATIC_CONTOLLER, "Scene Controller"),
 		INSTALLER_TOOL(3, Generic.STATIC_CONTOLLER, "Static Installer Tool"),
-		
+
 		SATELLITE_RECEIVER(4, Generic.AV_CONTROL_POINT, "Satellite Receiver"),
 		SATELLITE_RECEIVER_V2(17, Generic.AV_CONTROL_POINT, "Satellite Receiver V2"),
 		DOORBELL(18, Generic.AV_CONTROL_POINT, "Doorbell"),
-		
+
 		SIMPLE_DISPLAY(1, Generic.DISPLAY, "Simple Display"),
-		
+
 		THERMOSTAT_HEATING(1, Generic.THERMOSTAT, "Heating Thermostat"),
 		THERMOSTAT_GENERAL(2, Generic.THERMOSTAT, "General Thermostat"),
 		SETBACK_SCHEDULE_THERMOSTAT(3, Generic.THERMOSTAT, "Setback Schedule Thermostat"),
 		SETPOINT_THERMOSTAT(4, Generic.THERMOSTAT, "Setpoint Thermostat"),
 		SETBACK_THERMOSTAT(5, Generic.THERMOSTAT, "Setback Thermostat"),
 		THERMOSTAT_GENERAL_V2(6, Generic.THERMOSTAT, "General Thermostat V2"),
-		
+
 		SIMPLE_WINDOW_COVERING(1, Generic.WINDOW_COVERING, "Simple Window Covering Control"),
-		
+
 		BASIC_REPEATER_SLAVE(1, Generic.REPEATER_SLAVE, "Basic Repeater Slave"),
-		
+
 		POWER_SWITCH_BINARY(1, Generic.BINARY_SWITCH, "Binary Power Switch"),
-		
+
 		SCENE_SWITCH_BINARY_DISCONTINUED(2, Generic.BINARY_SWITCH, "Binary Scene Switch (Discontinued)"), 
 		SCENE_SWITCH_BINARY(3, Generic.BINARY_SWITCH, "Binary Scene Switch"),
+		SIREN_SWITCH_BINARY(5, Generic.BINARY_SWITCH, "Siren Switch"),
 		
 		POWER_SWITCH_MULTILEVEL(1, Generic.MULTILEVEL_SWITCH, "Multilevel Power Switch"),
 		SCENE_SWITCH_MULTILEVEL_DISCONTINUED(2, Generic.MULTILEVEL_SWITCH, "Multilevel Scene Switch (Discontinued)"),
@@ -391,37 +392,37 @@ public class ZWaveDeviceClass {
 		MOTOR_CONTROL_CLASS_A(5, Generic.MULTILEVEL_SWITCH, "Motor Control Class A"),
 		MOTOR_CONTROL_CLASS_B(6, Generic.MULTILEVEL_SWITCH, "Motor Control Class B"),
 		MOTOR_CONTROL_CLASS_C(7, Generic.MULTILEVEL_SWITCH, "Motor Control Class C"),
-		
+
 		SWITCH_REMOTE_BINARY(1, Generic.REMOTE_SWITCH, "Binary Remote Switch"),
 		SWITCH_REMOTE_MULTILEVEL(2, Generic.REMOTE_SWITCH, "Multilevel Remote Switch"), 
 		SWITCH_REMOTE_TOGGLE_BINARY(3, Generic.REMOTE_SWITCH, "Binary Toggle Remote Switch"),
 		SWITCH_REMOTE_TOGGLE_MULTILEVEL(4, Generic.REMOTE_SWITCH, "Multilevel Toggle Remote Switch"),
 
 		SWITCH_REMOTE2_MULTILEVEL(1, Generic.REMOTE_SWITCH_2, "Multilevel Remote Switch"), 
-
+		
 		SWITCH_TOGGLE_BINARY(1, Generic.TOGGLE_SWITCH, "Binary Toggle Switch"),
 		SWITCH_TOGGLE_MULTILEVEL(2, Generic.TOGGLE_SWITCH, "Multilevel Toggle Switch"),
-		
+
 		Z_IP_TUNNELING_GATEWAY(1, Generic.Z_IP_GATEWAY, "Z/IP Tunneling Gateway"),
 		Z_IP_ADVANCED_GATEWAY(2, Generic.Z_IP_GATEWAY, "Z/IP Advanced Gateway"),
-		
+
 		Z_IP_TUNNELING_NODE(1, Generic.Z_IP_NODE, "Z/IP Tunneling Node"),
 		Z_IP_ADVANCED_NODE(2, Generic.Z_IP_NODE, "Z/IP Advanced Node"),
-		
+
 		RESIDENTIAL_HEAT_RECOVERY_VENTILATION(1, Generic.VENTILATION, "Residential Heat Recovery Ventilation"),
-		
+
 		ROUTING_SENSOR_BINARY(1, Generic.BINARY_SENSOR, "Routing Binary Sensor"),
 		
 		ROUTING_SENSOR_MULTILEVEL(1, Generic.MULTILEVEL_SENSOR, "Routing Multilevel Sensor"),
-		
+
 		SIMPLE_METER(1, Generic.METER, "Simple Meter"),
-		
+
 		DOOR_LOCK(1, Generic.ENTRY_CONTROL, "Door Lock"),
 		ADVANCED_DOOR_LOCK(2, Generic.ENTRY_CONTROL, "Advanced Door Lock"),
 		SECURE_KEYPAD_DOOR_LOCK(3, Generic.ENTRY_CONTROL, "Secure Keypad Door Lock"),
-		
+
 		ENERGY_PRODUCTION(1, Generic.SEMI_INTEROPERABLE, "Energy Production"),
-		
+
 		ALARM_SENSOR_ROUTING_BASIC(1, Generic.ALARM_SENSOR, "Basic Routing Alarm Sensor"),
 		ALARM_SENSOR_ROUTING(2, Generic.ALARM_SENSOR, "Routing Alarm Sensor"),
 		ALARM_SENSOR_ZENSOR_BASIC(3, Generic.ALARM_SENSOR, "Basic Zensor Alarm Sensor"),
@@ -432,7 +433,7 @@ public class ZWaveDeviceClass {
 		SMOKE_SENSOR_ZENSOR_BASIC(8, Generic.ALARM_SENSOR, "Basic Zensor Smoke Sensor"),
 		SMOKE_SENSOR_ZENSOR(9, Generic.ALARM_SENSOR, "Zensor Smoke Sensor"),
 		SMOKE_SENSOR_ZENSOR_ADVANCED(10, Generic.ALARM_SENSOR, "Advanced Zensor Smoke Sensor");
-		
+
 		/**
 	     * A mapping between the integer code and its corresponding Generic Device class to facilitate lookup by code.
 	     */
