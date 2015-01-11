@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * Implement this class if you are going create an actively polling service like
  * querying a Website/Device.
  * 
- * @author Andre Heuer
+ * @author André Heuer
  * @since 1.7.0
  */
 public class PanasonicTVBinding extends
@@ -158,12 +158,26 @@ public class PanasonicTVBinding extends
 		}
 	}
 
+	/**
+	 * @author André Heuer
+	 *
+	 * This methods sends the command to the TV
+	 * 
+	 * @return HTTP response code from the TV (should be 200)
+	 */
 	int sendCommand(PanasonicTVBindingConfig config) {
 		String command = config.getCommand().toUpperCase();
 
-		String soaprequest = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\"><X_KeyEvent>NRC_"
-				+ command
-				+ "-ONOFF</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
+		String soaprequest = "";
+
+		if (config.getCommand().toUpperCase().startsWith("HDMI"))
+			soaprequest = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\"><X_KeyEvent>NRC_"
+					+ command
+					+ "</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
+		else
+			soaprequest = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:X_SendKey xmlns:u=\"urn:panasonic-com:service:p00NetworkControl:1\"><X_KeyEvent>NRC_"
+					+ command
+					+ "-ONOFF</X_KeyEvent></u:X_SendKey></s:Body></s:Envelope>\r";
 
 		String tvIp = registeredTVs.get(config.getTv());
 

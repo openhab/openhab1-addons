@@ -117,8 +117,6 @@ public class PanasonicTVGenericBindingProvider extends
 
 	/**
 	 * {@inheritDoc}
-	 * 
-	 * Das ist das parsen der .items-Datei
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item,
