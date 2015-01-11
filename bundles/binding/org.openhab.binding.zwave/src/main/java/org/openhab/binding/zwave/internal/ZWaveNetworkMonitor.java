@@ -447,13 +447,18 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 
 		switch (healing.state) {
 		case WAITING:
+			// Log what we're up to...
 			logger.debug("NODE {}: NETWORK HEAL - STARTING", healing.nodeId);
 
 			// Reset the resend count.
 			// This also resets the time so that we cycle through all the nodes
 			healing.node.resetResendCount();
+			healing.state = HealState.PING;
 
 		case PING:
+			// Log what we're up to...
+			logger.debug("NODE {}: NETWORK HEAL - {}", healing.nodeId, healing.state);
+
 			if (healing.nodeId != zController.getOwnNodeId()) {
 				healing.state = HealState.PING;
 				ZWaveNoOperationCommandClass zwaveCommandClass = (ZWaveNoOperationCommandClass) healing.node
@@ -465,7 +470,11 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				}
 			}
 			healing.state = HealState.SETSUCROUTE;
+
 		case SETSUCROUTE:
+			// Log what we're up to...
+			logger.debug("NODE {}: NETWORK HEAL - {}", healing.nodeId, healing.state);
+			
 			// Only set the route if this is not the controller and there is an SUC in the network
 			if (healing.nodeId != zController.getOwnNodeId() && zController.getSucId() != 0) {
 				// Update the route to the controller
@@ -476,13 +485,20 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				break;
 			}
 			healing.state = HealState.UPDATENEIGHBORS;
+
 		case UPDATENEIGHBORS:
-			logger.debug("NODE {}: Heal is updating node neighbors.", healing.nodeId);
+			// Log what we're up to...
+			logger.debug("NODE {}: NETWORK HEAL - {}", healing.nodeId, healing.state);
+
 			healing.event = ZWaveNetworkEvent.Type.NodeNeighborUpdate;
 			healing.stateNext = HealState.GETASSOCIATIONS;
 			zController.requestNodeNeighborUpdate(healing.nodeId);
 			break;
+
 		case GETASSOCIATIONS:
+			// Log what we're up to...
+			logger.debug("NODE {}: NETWORK HEAL - {}", healing.nodeId, healing.state);
+
 			// Check if this node supports associations
 			ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) healing.node
 					.getCommandClass(CommandClass.ASSOCIATION);
@@ -493,7 +509,12 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				associationCommandClass.getAllAssociations();
 				break;
 			}
+			healing.stateNext = HealState.UPDATEROUTES;
+
 		case UPDATEROUTES:
+			// Log what we're up to...
+			logger.debug("NODE {}: NETWORK HEAL - {}", healing.nodeId, healing.state);
+
 			// Get the list of routes for this node
 			healing.routeList = healing.node.getRoutingList();
 			if (healing.routeList != null && healing.routeList.size() != 0) {
@@ -504,7 +525,12 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				zController.requestDeleteAllReturnRoutes(healing.nodeId);
 				break;
 			}
+			healing.stateNext = HealState.UPDATEROUTESNEXT;
+
 		case UPDATEROUTESNEXT:
+			// Log what we're up to...
+			logger.debug("NODE {}: NETWORK HEAL - {}", healing.nodeId, healing.state);
+
 			if (healing.routeList != null && healing.routeList.size() != 0) {
 				// Loop through all the nodes and set the return route
 				logger.debug("NODE {}: Adding return route to {}", healing.nodeId, healing.routeList.get(0));
@@ -513,14 +539,23 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				zController.requestAssignReturnRoute(healing.nodeId, healing.routeList.get(0));
 				break;
 			}
+			healing.stateNext = HealState.GETNEIGHBORS;
+
 		case GETNEIGHBORS:
+			// Log what we're up to...
+			logger.debug("NODE {}: NETWORK HEAL - {}", healing.nodeId, healing.state);
+
 			healing.event = ZWaveNetworkEvent.Type.NodeRoutingInfo;
 			healing.stateNext = HealState.PINGEND;
 
 			logger.debug("NODE {}: Heal is requesting node neighbor info.", healing.nodeId);
 			zController.requestNodeRoutingInfo(healing.nodeId);
 			break;
+
 		case PINGEND:
+			// Log what we're up to...
+			logger.debug("NODE {}: NETWORK HEAL - {}", healing.nodeId, healing.state);
+
 			if (healing.nodeId != zController.getOwnNodeId()) {
 				ZWaveNoOperationCommandClass zwaveCommandClass = (ZWaveNoOperationCommandClass) healing.node
 						.getCommandClass(CommandClass.NO_OPERATION);
@@ -531,8 +566,12 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				healing.stateNext = HealState.SAVE;
 				break;
 			}
+			healing.stateNext = HealState.SAVE;
+
 		case SAVE:
-			logger.debug("NODE {}: Heal is complete - saving XML.", healing.nodeId);
+			// Log what we're up to...
+			logger.debug("NODE {}: NETWORK HEAL - {}", healing.nodeId, healing.state);
+
 			healing.state = HealState.DONE;
 
 			networkHealNextTime = System.currentTimeMillis() + HEAL_DELAY_PERIOD;
@@ -584,8 +623,6 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// Handle network events
 		if (event instanceof ZWaveNetworkEvent) {
 			ZWaveNetworkEvent nwEvent = (ZWaveNetworkEvent) event;
-			logger.debug("NODE {}: Network heal EVENT", nwEvent.getNodeId());
-
 			// Get the heal class for this notification
 			HealNode node = healNodes.get(nwEvent.getNodeId());
 			if (node == null) {
@@ -704,7 +741,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		} else if (event instanceof ZWaveInitializationCompletedEvent) {
 			logger.debug("Network initialised - starting network monitor.");
 
-			// Remember that we've initialsed the binding.
+			// Remember that we've initialised the binding.
 			initialised = true;
 
 			// Calculate the next heal time
