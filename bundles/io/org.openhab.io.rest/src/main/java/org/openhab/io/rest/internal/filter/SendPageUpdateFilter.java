@@ -63,7 +63,7 @@ public class SendPageUpdateFilter implements PerRequestBroadcastFilter {
 				                	
 									
 								} catch (Exception e) {
-									logger.error(e.getMessage());
+									logger.error("Could not broadcast messages",e);
 								} 
 				            }
 				        });
@@ -104,7 +104,7 @@ public class SendPageUpdateFilter implements PerRequestBroadcastFilter {
 		}
 		
 		CacheEntry entry =  ResourceStateChangeListener.getCachedEntries().get(clientId); 
-		if(entry ==null || entry.getData() instanceof PageBean){
+		if(entry != null && entry.getData() instanceof PageBean){
 			Object firedEntity = entry.getData();
 			if( firedEntity == null ||  ((PageBean)firedEntity).icon != ((PageBean)responseEntity).icon ||  ((PageBean)firedEntity).title != ((PageBean)responseEntity).title    ) {
 		    	return true;
