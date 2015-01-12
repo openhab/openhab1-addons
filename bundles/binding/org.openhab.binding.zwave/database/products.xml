@@ -804,6 +804,10 @@
 				<Type>2002</Type>
 				<Id>0204</Id>
 			</Reference>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0205</Id>
+			</Reference>
 			<Model>ZP3102</Model>
 			<Label lang="en">Motion Sensor</Label>
 			<ConfigFile>vision/zp3102.xml</ConfigFile>
