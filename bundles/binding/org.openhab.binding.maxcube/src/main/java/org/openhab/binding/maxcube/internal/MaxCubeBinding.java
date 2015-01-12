@@ -69,6 +69,17 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	 */
 	private static int port = 62910;
 
+	/**
+	 * Duty cycle of the cube
+	 */
+	private int dutyCycle = 0;
+
+	/**
+	 * The available memory slots of the cube
+	 */
+
+	private int freeMemorySlots;
+
 	/** The refresh interval which is used to poll given MAX!Cube */
 	private static long refreshInterval = 10000;
 	
@@ -225,7 +236,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 								c.setValues((C_Message) message);
 							}
 						} else if (message.getType() == MessageType.S) {
-							/** TODO: Implement handling of S: messages for proper command SET confirmation*/
+							sMessageProcessing((S_Message)message);
 							cont=false;
 						} else if (message.getType() == MessageType.L) {
 							((L_Message) message).updateDevices(devices, configurations);
@@ -390,6 +401,12 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 					writer.write(commandString);
 					logger.debug(commandString);
 					writer.flush();
+					String raw = reader.readLine();
+					Message message = processRawMessage(raw);
+					if (message !=null) {
+						if (message.getType() == MessageType.S) {
+							sMessageProcessing((S_Message)message);
+						}}
 					if(!exclusive) {
 						socket.close();
 						socket = null;
@@ -406,6 +423,19 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				logger.debug("Null Command not sent to {}", ip);
 			}
 		}
+	}
+
+	/**
+	 * Processes the S message and updates Duty Cycle & Free Memory Slots
+	 * @param S_Message message
+	 */
+	private void sMessageProcessing(S_Message message) {
+		dutyCycle =  message.getDutyCycle();
+		freeMemorySlots = message.getFreeMemorySlots();
+		if (message.isCommandDiscarded()) {
+			logger.info("Last Send Command discarded. Duty Cycle: {}, Free Memory Slots: {}",dutyCycle,freeMemorySlots);
+		} else
+			logger.debug("S message. Duty Cycle: {}, Free Memory Slots: {}",dutyCycle,freeMemorySlots);
 	}
 	
 	private boolean socketConnect() throws UnknownHostException, IOException {

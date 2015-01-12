@@ -102,7 +102,7 @@ public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
+		logger.debug("internalReceiveUpdate() is called!");
 	}
 		
 	/**
