@@ -122,7 +122,8 @@ public class NetatmoBinding extends
                             case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE: case RAIN:
                             	final String requestKey = createKey(deviceId, moduleId);
                             	final BigDecimal value = deviceMeasureValueMap.get(requestKey).get(measureType.getMeasure());
-                            	if (value != null) {
+                            	// Protect that sometimes Netatmo returns null where numeric value is awaited (issue #1848)
+                            	if (value != null) {				
                             		state = new DecimalType(value);
                             	}
                                 break;
