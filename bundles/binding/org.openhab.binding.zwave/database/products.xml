@@ -1315,7 +1315,16 @@
 			<!--Use the same as 2.51 as I cannot see any difference http://www.pepper1.net/zwavedb/device/489-->
 			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
 		</Product>
-	</Manufacturer>
+		<Product>
+			<Reference>
+				<Type>8007</Type>
+				<Id>0200</Id>
+			</Reference>
+			<Model>HRVCCM</Model>
+			<Label lang="en">Danfoss Air CCM</Label>
+			<ConfigFile>danfoss/hrv_ccm.xml</ConfigFile>
+		</Product>
+    </Manufacturer>
 	<Manufacturer>
 		<Id>013C</Id>
 		<Name>Philio Technology Corporation</Name>
