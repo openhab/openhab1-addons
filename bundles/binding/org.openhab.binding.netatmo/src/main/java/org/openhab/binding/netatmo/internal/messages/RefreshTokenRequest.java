@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.openhab.binding.netatmo.internal.NetatmoException;
 
 /**
  * Gets a renewed refresh token from the Netatmo API to use in future
