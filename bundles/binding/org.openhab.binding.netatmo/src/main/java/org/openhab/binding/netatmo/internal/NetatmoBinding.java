@@ -121,7 +121,10 @@ public class NetatmoBinding extends
                         		break;
                             case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE: case RAIN:
                             	final String requestKey = createKey(deviceId, moduleId);
-                                state = new DecimalType(deviceMeasureValueMap.get(requestKey).get(measureType.getMeasure()));
+                            	final BigDecimal value = deviceMeasureValueMap.get(requestKey).get(measureType.getMeasure());
+                            	if (value != null) {
+                            		state = new DecimalType(value);
+                            	}
                                 break;
                             case BATTERYVP: case RFSTATUS:
                                 for (Module module : oauthCredentials.deviceListResponse.getModules()) {
@@ -173,7 +176,7 @@ public class NetatmoBinding extends
     	
         for (final MeasurementRequest request : createMeasurementRequests()) {
             final MeasurementResponse response = request.execute();
-
+            
             logger.debug("Request: {}", request);
             logger.debug("Response: {}", response);
 
