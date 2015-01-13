@@ -40,16 +40,28 @@ public class ConditionalAction {
 	@ActionDoc(text="A method that sends a command the the actionItem if a item with the same name + _Disabled is OFF", 
 			returns="<code>true</code>, if the command was sent to the actionItem and <code>false</code> otherwise.")
 	public static boolean sendConditionalCommand(
-			@ParamDoc(name="actionItem", text="the item that receives the command") final String actionItemName,
+			@ParamDoc(name="actionItem", text="the item that receives the command") final Item actionItem,
 			@ParamDoc(name="commandString", text="the command to be sent to the item") final String commandString) {
-		return sendConditionalCommand(actionItemName, actionItemName + DISABLED_POSTFIX, commandString);
+
+		final ItemRegistry registry = (ItemRegistry) ConditionalActionActivator.itemRegistryTracker.getService();
+		if(registry != null) {
+			final String disabledItemName = actionItem.getName() + DISABLED_POSTFIX;
+			try {
+				final Item disabledItem = registry.getItem(disabledItemName);
+				return sendConditionalCommand(actionItem, disabledItem, commandString);
+			} catch (ItemNotFoundException e) {
+				logger.error("did not find a item " + disabledItemName);
+			}
+		}
+
+		return false;
 	}
 	
 	@ActionDoc(text="A method that sends a command to the actionItem if the disabledItem is OFF", 
 			returns="<code>true</code>, if the command was sent to the actionItem and <code>false</code> otherwise.")
 	public static boolean sendConditionalCommand(
-			@ParamDoc(name="actionItemName", text="the item that receives the command") final String actionItemName,
-			@ParamDoc(name="disabledItemName", text="the item that must be disabled so the command is sent") final String disabledItemName,
+			@ParamDoc(name="actionItemN", text="the item that receives the command") final Item actionItem,
+			@ParamDoc(name="disabledItem", text="the item that must be disabled so the command is sent") final Item aDisabledItem,
 			@ParamDoc(name="commandString", text="the command to be sent to the item") final String commandString) {
 		
 		if (!ConditionalActionActionService.isProperlyConfigured) {
@@ -60,38 +72,26 @@ public class ConditionalAction {
 		final ItemRegistry registry = (ItemRegistry) ConditionalActionActivator.itemRegistryTracker.getService();
 		final EventPublisher publisher = (EventPublisher) ConditionalActionActivator.eventPublisherTracker.getService();
 		if(publisher!=null && registry!=null) {
-			try {
-				final Item actionItem = registry.getItem(actionItemName);
-				final Command command = TypeParser.parseCommand(actionItem.getAcceptedCommandTypes(), commandString);
-				
-				final Collection<Item> disabledItems;
-				try {
-					final Item disabledItem = registry.getItem(disabledItemName);
-					if(disabledItem instanceof GroupItem) {
-						final GroupItem disabledGroupItem = (GroupItem) disabledItem;
-						disabledItems = disabledGroupItem.getAllMembers();
-					} else {
-						disabledItems = Collections.singleton(disabledItem);
-					}
-				} catch (ItemNotFoundException e) {
-					// the disable item is not required, ignore
-					logger.error("Did not find a item " + disabledItemName);
-					return false;
-				}
-				
-				for (final Item disabledItem : disabledItems) {
-					if(disabledItem.getState() == OnOffType.ON) {
-						logger.debug("not sending command to " + actionItemName + " because " + disabledItem.getName() + " is ON");
-						return false;
-					}				
-				}
-				
-				publisher.sendCommand(actionItemName, command);
-				return true;
-			} catch (ItemNotFoundException e) {
-				logger.error("Item '" + actionItemName + "' does not exist.");
-				return false;
+			final Command command = TypeParser.parseCommand(actionItem.getAcceptedCommandTypes(), commandString);
+
+			final Collection<Item> disabledItems;
+			//					final Item disabledItem = registry.getItem(disabledItemName);
+			if(aDisabledItem instanceof GroupItem) {
+				final GroupItem disabledGroupItem = (GroupItem) aDisabledItem;
+				disabledItems = disabledGroupItem.getAllMembers();
+			} else {
+				disabledItems = Collections.singleton(aDisabledItem);
 			}
+
+			for (final Item disabledItem : disabledItems) {
+				if(disabledItem.getState() == OnOffType.ON) {
+					logger.debug("not sending command to " + actionItem.getName() + " because " + disabledItem.getName() + " is ON");
+					return false;
+				}				
+			}
+
+			publisher.sendCommand(actionItem.getName(), command);
+			return true;
 		}
 		
 		return false;
