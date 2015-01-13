@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,11 +49,12 @@ import org.slf4j.LoggerFactory;
  * configurations.
  * 
  * @author Kaltofen
- * @since 1.5.0
+ * @since 1.7.0
  */
 public class FBCoupler {
-	private static final Logger logger = LoggerFactory
-			.getLogger(FBCoupler.class);
+	
+	private static final Logger logger = LoggerFactory.getLogger(FBCoupler.class);
+	
 	final int DIStart = 0; // Start of the input-coils
 	final int DOStart = 512; // Start of the output-coils
 	final int IRStart = 0; // Start of the input-registers
@@ -140,8 +141,9 @@ public class FBCoupler {
 
 	public boolean connect() {
 		try {
-			if (connection == null)
+			if (connection == null) {
 				connection = new TCPMasterConnection(InetAddress.getByName(ip));
+			}
 		} catch (UnknownHostException e) {
 			logger.warn("unable to connect to wago-coupler.");
 			return false;

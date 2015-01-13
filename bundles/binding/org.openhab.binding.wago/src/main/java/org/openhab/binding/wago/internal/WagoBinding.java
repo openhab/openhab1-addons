@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -38,10 +38,9 @@ import org.slf4j.LoggerFactory;
  * querying a Website/Device.
  * 
  * @author Kaltofen
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class WagoBinding extends AbstractActiveBinding<WagoBindingProvider>
-		implements ManagedService {
+public class WagoBinding extends AbstractActiveBinding<WagoBindingProvider> implements ManagedService {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(WagoBinding.class);
@@ -55,8 +54,8 @@ public class WagoBinding extends AbstractActiveBinding<WagoBindingProvider>
 	 */
 	private long refreshInterval = 60000;
 
-	private static Map<String, FBCoupler> couplers = Collections
-			.synchronizedMap(new HashMap<String, FBCoupler>());
+	private static Map<String, FBCoupler> couplers = 
+		Collections.synchronizedMap(new HashMap<String, FBCoupler>());
 
 	private FBCoupler getCoupler(String couplerName) {
 		return Collections.synchronizedMap(couplers).get(couplerName);
@@ -84,7 +83,7 @@ public class WagoBinding extends AbstractActiveBinding<WagoBindingProvider>
 	 */
 	@Override
 	protected String getName() {
-		return "wago Refresh Service";
+		return "Wago Refresh Service";
 	}
 
 	/**
@@ -115,8 +114,7 @@ public class WagoBinding extends AbstractActiveBinding<WagoBindingProvider>
 		}
 	}
 
-	public void updateItemPWM(String itemName, String couplerName, int module,
-			int values[]) {
+	public void updateItemPWM(String itemName, String couplerName, int module, int values[]) {
 		for (WagoBindingProvider provider : providers) {
 			if (provider.providesBindingFor(itemName)) {
 				WagoBindingConfig conf = provider.getConfig(itemName);
@@ -134,7 +132,7 @@ public class WagoBinding extends AbstractActiveBinding<WagoBindingProvider>
 							newState = OnOffType.ON;
 						}
 					} else {
-						logger.debug("unsupported itemtype");
+						logger.debug("Unsupported Itemtype");
 						return;
 					}
 					if (!newState.equals(currentState)) {
