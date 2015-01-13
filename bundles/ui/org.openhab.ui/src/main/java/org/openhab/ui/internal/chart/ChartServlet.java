@@ -246,9 +246,9 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 					req.getParameter("items"), req.getParameter("groups"));
 			ImageIO.write(chart, provider.getChartType().toString(), res.getOutputStream());
 		} catch (ItemNotFoundException e) {
-			logger.info("Item not found error while generating chart: " + e.getMessage());
+			logger.info("Item not found error while generating chart: {}", e);
 		} catch (IllegalArgumentException e) {
-			logger.info("Illegal argument in chart: " + e.getMessage());
+			logger.info("Illegal argument in chart: {}", e);
 		}
 	}
 
