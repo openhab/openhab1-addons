@@ -270,10 +270,13 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				retryCount++;
 				
 				if(retryCount > MAX_RETRIES) {
-					logger.error("NODE {}: Node advancer: Retries exceeded at {}. Node is DEAD!", 
+					retryCount = 0;
+					logger.error("NODE {}: Node advancer: Retries exceeded at {}", 
 							node.getNodeId(), currentStage.toString());
-					currentStage = NodeStage.DEAD;
-					break;
+					if(currentStage != NodeStage.DYNAMIC_VALUES) {
+						currentStage = NodeStage.DEAD;
+						break;
+					}
 				}
 			}
 
