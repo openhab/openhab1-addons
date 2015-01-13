@@ -9,12 +9,12 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.dsmr.genericbindingprovider">
-   <implementation class="org.openhab.binding.dsmr.internal.DSMRGenericBindingProvider"/>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.wago.genericbindingprovider">
+   <implementation class="org.openhab.binding.wago.internal.WagoGenericBindingProvider"/>
    
    <service>
       <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.binding.dsmr.DSMRBindingProvider"/>
+      <provide interface="org.openhab.binding.wago.WagoBindingProvider"/>
    </service>
    
 </scr:component>
