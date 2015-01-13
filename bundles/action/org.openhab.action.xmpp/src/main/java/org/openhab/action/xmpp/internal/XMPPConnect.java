@@ -147,7 +147,8 @@ public class XMPPConnect implements ManagedService {
 						new XMPPConsole(consoleUsers));
 				connection.addConnectionListener(new XMPPConnectionListener());
 			}
-			logger.info("Connection to XMPP as '{}' has been established.", username);
+			logger.info("Connection to XMPP as '{}' has been established. Is secure/encrypted: {}",
+					connection.getUser(), connection.isSecureConnection());
 			initialized = true;
 		} catch (Exception e) {
 			logger.error("Could not establish connection to XMPP server '" + servername + ":"
