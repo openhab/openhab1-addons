@@ -48,7 +48,7 @@ public class AssignReturnRouteMessageClass extends ZWaveCommandProcessor {
 			logger.error("NODE {}: AssignReturnRoute command failed.", nodeId);
 			zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.AssignReturnRoute, nodeId,
 					ZWaveNetworkEvent.State.Failure));
-			incomingMessage.setTransActionCanceled(true);
+			incomingMessage.setTransactionCanceled(true);
 		}
 		
 		return true;
