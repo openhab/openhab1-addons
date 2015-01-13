@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>WALLC-S</Model>
+	<Label lang="en">Secure Wall Controller</Label>
+	<CommandClasses>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x2d</id></Class>
+		<Class><id>0x8e</id></Class>
+		<Class><id>0x8f</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x5b</id></Class>
+		<Class><id>0x98</id></Class>
+		<Class><id>0x5e</id></Class>
+		<Class><id>0x5a</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x2b</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x62</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x73</id></Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Separately</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">In pair without double clicks</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">In pair with double clicks</Label>
+			</Item>
+			<Label lang="en">Button 1 and 3 pair mode</Label>
+			<Help lang="en">In separate mode button 1 works with group 1, button 3 with groups 3. Click is On, Hold is dimming Up, Double click is Off, Click-Hold is dimming Down. In pair button 1/3 are Up/Down correspondingly. Click is On/Off, Hold is dimming Up/Down. Single clicks works with group 1, double click with group 3.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Separately</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">In pair without double clicks</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">In pair with double clicks</Label>
+			</Item>
+			<Label lang="en">Button 2 and 4 pair mode</Label>
+			<Help lang="en">In separate mode button 1 works with group 2, button 4 with groups 3. Click is On, Hold is dimming Up, Double click is Off, Click-Hold is dimming Down. In pair button 2/4 are Up/Down correspondingly. Click is On/Off, Hold is dimming Up/Down. Single clicks works with group 2, double click with group 4.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch all</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Control Door Lock</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Central Scene to Gateway</Label>
+			</Item>
+			<Label lang="en">Action on group 1</Label>
+			<Help lang="en">In Switch On/Off only mode On command is sent on Dim Up, Off on Dim Down. In Scenes mode the scene ID sent is (10 * group + ActionID), where ActionID is: 1 = On, 2 = Off, 3 = Dim Up Start, 4 = Dim Down Start, 5 = Dim Up Stop, 6 = Dim Down Stop</Help>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch all</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Control Door Lock</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Central Scene to Gateway</Label>
+			</Item>
+			<Label lang="en">Action on group 2</Label>
+			<Help lang="en">In Switch On/Off only mode On command is sent on Dim Up, Off on Dim Down. In Scenes mode the scene ID sent is (10 * group + ActionID), where ActionID is: 1 = On, 2 = Off, 3 = Dim Up Start, 4 = Dim Down Start, 5 = Dim Up Stop, 6 = Dim Down Stop</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch all</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Control Door Lock</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Central Scene to Gateway</Label>
+			</Item>
+			<Label lang="en">Action on group 3</Label>
+			<Help lang="en">In Switch On/Off only mode On command is sent on Dim Up, Off on Dim Down. In Scenes mode the scene ID sent is (10 * group + ActionID), where ActionID is: 1 = On, 2 = Off, 3 = Dim Up Start, 4 = Dim Down Start, 5 = Dim Up Stop, 6 = Dim Down Stop</Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch all</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Item>
+				<Value>7</Value>
+				<Label lang="en">Control Door Lock</Label>
+			</Item>
+			<Item>
+				<Value>8</Value>
+				<Label lang="en">Central Scene to Gateway</Label>
+			</Item>
+			<Label lang="en">Action on group 4</Label>
+			<Help lang="en">In Switch On/Off only mode On command is sent on Dim Up, Off on Dim Down. In Scenes mode the scene ID sent is (10 * group + ActionID), where ActionID is: 1 = On, 2 = Off, 3 = Dim Up Start, 4 = Dim Down Start, 5 = Dim Up Stop, 6 = Dim Down Stop</Help>
+		</Parameter>
+		<Parameter>
+			<Index>21</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Send the following Switch All commands</Label>			
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">NO (Normal Open)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">NC (Normal Close)</Label>
+			</Item>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">Switch all on and off</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>22</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Invert buttons</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Yes</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>30</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Send unsolicited Battery Report on Wake Up</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">To same node as wake up notification</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Broadcast to neighbours</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>25</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Blocks wakeup even when wakeup interval is set</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Wakeup is blocked</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Wakeup is possible </Label>
+			</Item>
+			<Help lang="en">If the device wakes up and there is no controller nearby, several unsuccessful communication attempts will drain battery.</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Lifeline</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Group 1</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Group 2</Label>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Group 3</Label>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>10</Maximum>
+			<Label lang="en">Group 4</Label>
+		</Group>
+	</Associations>
+</Product>

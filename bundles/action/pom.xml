@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.bundles</groupId>
   <artifactId>action</artifactId>
-
+	
   <name>openHAB Actions</name>
 
   <packaging>pom</packaging>
@@ -28,6 +28,7 @@
     <module>org.openhab.action.homematic</module>
     <module>org.openhab.action.openwebif</module>
     <module>org.openhab.action.conditionalaction</module>
+    <module>org.openhab.action.weather</module>
   </modules>
 
 </project>

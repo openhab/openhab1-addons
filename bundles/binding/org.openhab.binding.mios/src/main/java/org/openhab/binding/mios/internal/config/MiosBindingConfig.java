@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.mios.internal.config;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +34,7 @@ import org.openhab.core.transform.TransformationService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.TypeParser;
+import org.openhab.core.types.UnDefType;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -62,7 +64,8 @@ import org.slf4j.LoggerFactory;
  * <p>
  * 
  * Each sub-class has a specific format for the <i>miosThing</i>, and examples
- * are outlined in those sub-classes, in addition to the <code>README.md</code> file shipped with the binding.
+ * are outlined in those sub-classes, in addition to the <code>README.md</code>
+ * file shipped with the binding.
  * 
  * 
  * @author Mark Clark
@@ -330,7 +333,16 @@ public abstract class MiosBindingConfig implements BindingConfig {
 		State result;
 		try {
 			if (itemType.isAssignableFrom(NumberItem.class)) {
-				result = DecimalType.valueOf(value);
+				//
+				// For things like Weather Items when they're bound to
+				// NumberItems.
+				//
+				// eg. Heat Index
+				if ("".equals(value)) {
+					result = UnDefType.NULL;
+				} else {
+					result = DecimalType.valueOf(value);
+				}
 			} else if (itemType.isAssignableFrom(ContactItem.class)) {
 				result = OpenClosedType.valueOf(value);
 			} else if (itemType.isAssignableFrom(SwitchItem.class)) {
@@ -340,7 +352,36 @@ public abstract class MiosBindingConfig implements BindingConfig {
 			} else if (itemType.isAssignableFrom(RollershutterItem.class)) {
 				result = PercentType.valueOf(value);
 			} else if (itemType.isAssignableFrom(DateTimeItem.class)) {
-				result = DateTimeType.valueOf(value);
+				try {
+					//
+					// If we're presented with the empty string, then consider
+					// it to be the Undefined NULL value.
+					//
+					// This has been observed during Full-updates from a MiOS
+					// unit that has Leviton Scene Controllers present
+					// (LastUpdated).
+					//
+					if ("".equals(value)) {
+						result = UnDefType.NULL;
+					} else {
+						//
+						// See if it "looks" like an Epoch-style date. MiOS
+						// Units return these as String/Integer versions of the
+						// date and they need to be converted.
+						//
+						// This logic really belongs inside the OH 1.x core
+						// class DateTimeType, but that's closed to changes...
+						// doing it here also avoids the thread-safety issues
+						// present in the DateTimeType class.
+						//
+						long l = Long.parseLong(value) * 1000;
+						Calendar c = Calendar.getInstance();
+						c.setTimeInMillis(l);
+						result = new DateTimeType(c);
+					}
+				} catch (NumberFormatException nfe) {
+					result = DateTimeType.valueOf(value);
+				}
 			} else {
 				result = StringType.valueOf(value);
 			}

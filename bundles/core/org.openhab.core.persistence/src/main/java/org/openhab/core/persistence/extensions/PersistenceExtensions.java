@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -461,7 +461,7 @@ public class PersistenceExtensions implements ManagedService {
 	 */
 	static public DecimalType deltaSince(Item item, AbstractInstant timestamp, String serviceName) {
 		DecimalType result = null;
-		HistoricItem itemThen = historicState(item, timestamp);
+		HistoricItem itemThen = historicState(item, timestamp, serviceName);
 		if (itemThen != null) {
 			DecimalType valueThen = (DecimalType) itemThen.getState();
 			DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);
@@ -503,7 +503,7 @@ public class PersistenceExtensions implements ManagedService {
 	 */
 	static public DecimalType evolutionRate(Item item, AbstractInstant timestamp, String serviceName) {
 		DecimalType result = null;
-		HistoricItem itemThen = historicState(item, timestamp);
+		HistoricItem itemThen = historicState(item, timestamp, serviceName);
 		if (itemThen != null) {
 			DecimalType valueThen = (DecimalType) itemThen.getState();
 			DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);

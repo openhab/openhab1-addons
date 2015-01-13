@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -260,11 +260,16 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 						script.execute(context);
 						executedRules.add(rule);
 					} catch (ScriptExecutionException e) {
-						if(e.getCause() instanceof ItemNotFoundException || e.getCause().getMessage().contains("cannot be resolved to an item or type")) {
+						String causeMessage = getCauseMessage(e);
+						if (e.getCause() instanceof ItemNotFoundException
+								|| causeMessage.contains("cannot be resolved to an item or type")) {
+							logger.debug("Not all required items in place yet for rule {}, trying again later: {}",
+									new Object[] { rule.getName(), causeMessage });
 							// we do not seem to have all required items in place yet
 							// so we keep the rule in the list and try it again later
 						} else {
-							logger.error("Error during the execution of startup rule '{}': {}", new String[] { rule.getName(), e.getCause().getMessage() });
+							logger.error("Error during the execution of startup rule '{}': {}",
+									new Object[] { rule.getName(), causeMessage });
 							executedRules.add(rule);
 						}
 					}
@@ -273,6 +278,14 @@ public class RuleEngine implements EventHandler, ItemRegistryChangeListener, Sta
 					triggerManager.removeRule(STARTUP, rule);
 				}
 			}
+		}
+		
+		private String getCauseMessage(Throwable t) {
+			String message = "";
+			if (t.getCause() != null && t.getCause().getMessage() != null) {
+				message = t.getCause().getMessage();
+			}
+			return message;
 		}
 
 		protected synchronized void executeRule(Rule rule) {
