@@ -1128,6 +1128,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.zibase</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.dsmr</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.dsmr</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
