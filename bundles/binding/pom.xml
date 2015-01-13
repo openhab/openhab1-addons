@@ -135,6 +135,7 @@
     <module>org.openhab.binding.enigma2</module>
     <module>org.openhab.binding.enigma2.test</module>
     <module>org.openhab.binding.bticino</module>
+    <module>org.openhab.binding.zibase</module>
   </modules>
 
 </project>
