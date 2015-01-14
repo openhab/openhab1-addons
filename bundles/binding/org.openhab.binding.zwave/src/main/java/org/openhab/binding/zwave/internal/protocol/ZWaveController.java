@@ -1098,10 +1098,10 @@ public class ZWaveController {
 					logger.debug("Receive queue TAKE: Length={}", recvQueue.size());
 
 		    		handleIncomingMessage(recvMessage);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (Exception e) {
+					logger.error("Exception during Z-Wave thread: Input.", e);
 				}
+
 			}
 
 			logger.debug("Stopped Z-Wave thread: Input");
@@ -1240,7 +1240,7 @@ public class ZWaveController {
 				}
 			}
 			catch (Exception e) {
-				logger.error("Got an exception during sending. exiting thread.", e);
+				logger.error("Exception during Z-Wave thread: Send.", e);
 			}
 			logger.debug("Stopped Z-Wave thread: Send");
 		}
@@ -1332,24 +1332,23 @@ public class ZWaveController {
 
 				while (!interrupted()) {
 					int nextByte;
-					
+
 					try {
 						nextByte = serialPort.getInputStream().read();
-						
+
 						if (nextByte == -1) {
 							continue;
 						}
-						
 					} catch (IOException e) {
 						logger.error("Got I/O exception {} during receiving. exiting thread.", e.getLocalizedMessage());
 						break;
 					}
-					
+
 					switch (nextByte) {
 						case SOF:
 							SOFCount++;
 							int messageLength;
-							
+
 							try {
 								messageLength = serialPort.getInputStream().read();
 							} catch (IOException e) {
@@ -1371,8 +1370,7 @@ public class ZWaveController {
 									return;
 								}
 							}
-							
-							logger.trace("Reading message finished");
+
 							logger.debug("Receive Message = {}", SerialMessage.bb2hex(buffer));
 							processIncomingMessage(buffer);
 							break;
@@ -1382,13 +1380,13 @@ public class ZWaveController {
 							break;
 						case NAK:
 							NAKCount++;
-	    					logger.error("Message not acknowledged by controller (NAK), discarding");
+	    					logger.error("Protocol error (NAK), discarding");
 	    					transactionCompleted.release();
 	    					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 							break;
 						case CAN:
 							CANCount++;
-	    					logger.error("Message cancelled by controller (CAN), resending");
+	    					logger.error("Protocol error (CAN), resending");
 							try {
 								Thread.sleep(100);
 							} catch (InterruptedException e) {
@@ -1400,16 +1398,16 @@ public class ZWaveController {
 							break;
 						default:
 	    					OOFCount++;
-							logger.warn(String.format("Out of Frame flow. Got 0x%02X. Sending NAK.", nextByte));
+							logger.warn(String.format("Protocol error (OOF). Got 0x%02X. Sending NAK.", nextByte));
 	    					sendResponse(NAK);
 	    					break;
 					}
 				}
 			} catch (Exception e) {
-				logger.error("Got an exception during receiving. exiting thread.", e);
+				logger.error("Exception during Z-Wave thread: Receive.", e);
 			}
 			logger.debug("Stopped Z-Wave thread: Receive");
-			
+
 			serialPort.removeEventListener();
 		}
 	}

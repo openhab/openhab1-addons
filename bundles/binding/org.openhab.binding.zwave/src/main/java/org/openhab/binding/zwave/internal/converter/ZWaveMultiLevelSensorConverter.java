@@ -131,7 +131,7 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 			}
 
 			logger.debug("NODE {}: Sensor is reporting scale {}, requiring conversion to {}. Value is now {}.",
-					event.getNodeId(), sensorEvent.getSensorScale(), scale, val);
+					event.getNodeId(), sensorEvent.getSensorScale(), sensorScale, val);
 		}
 
 		State state = converter.convertFromValueToState(val);
