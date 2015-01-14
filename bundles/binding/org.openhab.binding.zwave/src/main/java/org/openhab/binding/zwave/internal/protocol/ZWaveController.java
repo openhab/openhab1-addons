@@ -1442,7 +1442,9 @@ public class ZWaveController {
 		public void run() {
 			logger.trace("Watchdog: Checking Serial threads");
 			if ((receiveThread != null && !receiveThread.isAlive()) ||
-					(sendThread != null && !sendThread.isAlive()))
+					(sendThread != null && !sendThread.isAlive()) ||
+					(inputThread != null && !inputThread.isAlive())
+					)
 			{
 				logger.warn("Threads not alive, respawning");
 				disconnect();
