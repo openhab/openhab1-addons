@@ -33,7 +33,7 @@ public class ConditionalActionActionService implements ActionService, ManagedSer
 	 * necessary configurations are set. This flag can be checked by the
 	 * action methods before executing code.
 	 */
-	/* default */ static boolean isProperlyConfigured = false;
+	/* default */ static boolean isProperlyConfigured = true;
 	
 	public ConditionalActionActionService() {
 	}

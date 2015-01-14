@@ -66,5 +66,4 @@ public final class ConditionalActionActivator implements BundleActivator {
 	public static BundleContext getContext() {
 		return context;
 	}
-	
 }
