@@ -495,6 +495,11 @@ public class ZWaveController {
 	 * @param serialMessage the serial message to enqueue.
 	 */
 	public void enqueue(SerialMessage serialMessage) {
+		// Sanity check!
+		if(serialMessage == null) {
+			return;
+		}
+
 		// First try and get the node
 		// If we're sending to a node, then this obviously isn't to the controller, and we should
 		// queue anything to a battery node (ie a node supporting the WAKEUP class)!
@@ -1098,10 +1103,13 @@ public class ZWaveController {
 					logger.debug("Receive queue TAKE: Length={}", recvQueue.size());
 
 		    		handleIncomingMessage(recvMessage);
-				} catch (Exception e) {
+				}
+				catch (InterruptedException e) {
+					break;
+				}
+	    		catch (Exception e) {
 					logger.error("Exception during Z-Wave thread: Input.", e);
 				}
-
 			}
 
 			logger.debug("Stopped Z-Wave thread: Input");
