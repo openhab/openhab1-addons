@@ -75,7 +75,7 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	}
 
 	/** The refresh interval which is used to poll values from the Anel server. */
-	private long refreshInterval;
+	private long refreshInterval = AnelConfigReader.DEFAULT_REFRESH_INTERVAL;
 
 	/** Threads to communicate with Anel devices */
 	private final Map<String, AnelConnectorThread> connectorThreads = new HashMap<String, AnelConnectorThread>();
@@ -232,7 +232,7 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 
 		// clear map of previous threads because config changed
 		connectorThreads.clear();
-		refreshInterval = 0;
+		refreshInterval = AnelConfigReader.DEFAULT_REFRESH_INTERVAL;
 
 		// read new config
 		try {
