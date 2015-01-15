@@ -461,7 +461,7 @@ public class PersistenceExtensions implements ManagedService {
 	 */
 	static public DecimalType deltaSince(Item item, AbstractInstant timestamp, String serviceName) {
 		DecimalType result = null;
-		HistoricItem itemThen = historicState(item, timestamp);
+		HistoricItem itemThen = historicState(item, timestamp, serviceName);
 		if (itemThen != null) {
 			DecimalType valueThen = (DecimalType) itemThen.getState();
 			DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);
@@ -503,7 +503,7 @@ public class PersistenceExtensions implements ManagedService {
 	 */
 	static public DecimalType evolutionRate(Item item, AbstractInstant timestamp, String serviceName) {
 		DecimalType result = null;
-		HistoricItem itemThen = historicState(item, timestamp);
+		HistoricItem itemThen = historicState(item, timestamp, serviceName);
 		if (itemThen != null) {
 			DecimalType valueThen = (DecimalType) itemThen.getState();
 			DecimalType valueNow = (DecimalType) item.getStateAs(DecimalType.class);

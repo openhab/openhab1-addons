@@ -13,6 +13,8 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
@@ -22,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TooManyListenersException;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -83,7 +86,8 @@ public class ZWaveController {
 
 	private static final int ZWAVE_RESPONSE_TIMEOUT = 5000;		// 5000 ms ZWAVE_RESPONSE TIMEOUT
 	private static final int ZWAVE_RECEIVE_TIMEOUT = 1000;		// 1000 ms ZWAVE_RECEIVE_TIMEOUT
-	private static final int INITIAL_QUEUE_SIZE = 128; 
+	private static final int INITIAL_TX_QUEUE_SIZE = 128; 
+	private static final int INITIAL_RX_QUEUE_SIZE = 8; 
 	private static final long WATCHDOG_TIMER_PERIOD = 10000;	// 10 seconds watchdog timer
 
 	private static final int TRANSMIT_OPTION_ACK = 0x01;
@@ -92,9 +96,11 @@ public class ZWaveController {
 	
 	private final Map<Integer, ZWaveNode> zwaveNodes = new HashMap<Integer, ZWaveNode>();
 	private final ArrayList<ZWaveEventListener> zwaveEventListeners = new ArrayList<ZWaveEventListener>();
-	private final PriorityBlockingQueue<SerialMessage> sendQueue = new PriorityBlockingQueue<SerialMessage>(INITIAL_QUEUE_SIZE, new SerialMessage.SerialMessageComparator(this));
+	private final PriorityBlockingQueue<SerialMessage> sendQueue = new PriorityBlockingQueue<SerialMessage>(INITIAL_TX_QUEUE_SIZE, new SerialMessage.SerialMessageComparator(this));
+	private final PriorityBlockingQueue<SerialMessage> recvQueue = new PriorityBlockingQueue<SerialMessage>(INITIAL_RX_QUEUE_SIZE, new SerialMessage.SerialMessageComparator(this));
 	private ZWaveSendThread sendThread;
 	private ZWaveReceiveThread receiveThread;
+	private ZWaveInputThread inputThread;
 	
 	private final Semaphore transactionCompleted = new Semaphore(1);
 	private volatile SerialMessage lastSentMessage = null;
@@ -394,6 +400,13 @@ public class ZWaveController {
 			this.receiveThread.start();
 			this.sendThread = new ZWaveSendThread();
 			this.sendThread.start();
+			this.inputThread = new ZWaveInputThread();
+			this.inputThread.start();
+
+			// RXTX serial port library causes high CPU load
+			// Start event listener, which will just sleep and slow down event loop
+			serialPort.addEventListener(this.receiveThread);
+			serialPort.notifyOnDataAvailable(true);
 
 			logger.info("Serial port is initialized");
 		} catch (NoSuchPortException e) {
@@ -405,6 +418,9 @@ public class ZWaveController {
 		} catch (UnsupportedCommOperationException e) {
 			logger.error("Unsupported comm operation on Port {}.", serialPortName);
 			throw new SerialInterfaceException(String.format("Unsupported comm operation on Port %s.", serialPortName), e);
+		} catch (TooManyListenersException e) {
+			logger.error("Too many listeners on Port {}.", serialPortName);
+			e.printStackTrace();
 		}
 	}
 	
@@ -430,6 +446,7 @@ public class ZWaveController {
 		
 		this.zwaveNodes.clear();
 		this.sendQueue.clear();
+		this.recvQueue.clear();
 		
 		logger.info("Stopped Z-Wave controller");
 	}
@@ -455,6 +472,14 @@ public class ZWaveController {
 			}
 			receiveThread = null;
 		}
+		if (inputThread != null) {
+			inputThread.interrupt();
+			try {
+				inputThread.join();
+			} catch (InterruptedException e) {
+			}
+			inputThread = null;
+		}
 		if(transactionCompleted.availablePermits() < 0)
 			transactionCompleted.release(transactionCompleted.availablePermits());
 		
@@ -472,6 +497,11 @@ public class ZWaveController {
 	 * @param serialMessage the serial message to enqueue.
 	 */
 	public void enqueue(SerialMessage serialMessage) {
+		// Sanity check!
+		if(serialMessage == null) {
+			return;
+		}
+
 		// First try and get the node
 		// If we're sending to a node, then this obviously isn't to the controller, and we should
 		// queue anything to a battery node (ie a node supporting the WAKEUP class)!
@@ -1068,15 +1098,34 @@ public class ZWaveController {
 		return timeOutCount.get();
 	}
 	
-	/**
-	 * Returns the number of frames in the transmit queue(s)
-	 * @return
-	 */
-	public int getTxQueueLength() {
-		return this.sendQueue.size();
-	}
-	
 	// Nested classes and enumerations
+	private class ZWaveInputThread extends Thread {
+		/**
+		 * Run method. Runs the actual receiving process.
+		 */
+		@Override
+		public void run() {
+			logger.debug("Starting Z-Wave thread: Input");
+
+			SerialMessage recvMessage;
+			while (!interrupted()) {
+	    		try {
+					recvMessage = recvQueue.take();
+					logger.debug("Receive queue TAKE: Length={}", recvQueue.size());
+
+		    		handleIncomingMessage(recvMessage);
+				}
+				catch (InterruptedException e) {
+					break;
+				}
+	    		catch (Exception e) {
+					logger.error("Exception during Z-Wave thread: Input.", e);
+				}
+			}
+
+			logger.debug("Stopped Z-Wave thread: Input");
+		}
+	}
 	
 	/**
 	 * Z-Wave controller Send Thread. Takes care of sending all messages.
@@ -1093,7 +1142,7 @@ public class ZWaveController {
 		 */
 		@Override
 		public void run() {
-			logger.debug("Starting Z-Wave send thread");
+			logger.debug("Starting Z-Wave thread: Send");
 			try {
 				while (!interrupted()) {
 					// Take the next message from the send queue
@@ -1122,7 +1171,7 @@ public class ZWaveController {
 						}
 					}
 					
-					// A transaction consists of 3 parts -:
+					// A transaction consists of 4 parts -:
 					// 1) We send a REQUEST to the controller.
 					// 2) The controller sends a RESPONSE almost immediately.
 					//    This RESPONSE typically tells us that the message was,
@@ -1133,8 +1182,9 @@ public class ZWaveController {
 					//    messages between steps 2 and 3 so we can get other messages
 					//    received at step 3 that are not related to our original
 					//    request.
+					// 4) We ultimately receive the requested message from the device
 					//
-					//    A transaction is completed at the completion of step 3.
+					//    A transaction is completed at the completion of step 4.
 					//    However, for some messages, there may not be a further REQUEST
 					//    so the transaction is terminated at step 2. This is handled
 					//    by the serial message class processor by setting
@@ -1211,9 +1261,9 @@ public class ZWaveController {
 				}
 			}
 			catch (Exception e) {
-				logger.error("Got an exception during sending. exiting thread.", e);
+				logger.error("Exception during Z-Wave thread: Send.", e);
 			}
-			logger.debug("Stopped Z-Wave send thread");
+			logger.debug("Stopped Z-Wave thread: Send");
 		}
 	}
 
@@ -1223,7 +1273,7 @@ public class ZWaveController {
 	 * @author Jan-Willem Spuij
 	 * @since 1.3.0
 	 */	
-	private class ZWaveReceiveThread extends Thread {
+	private class ZWaveReceiveThread extends Thread implements SerialPortEventListener {
 		
 		private static final int SOF = 0x01;
 		private static final int ACK = 0x06;
@@ -1232,6 +1282,15 @@ public class ZWaveController {
 		
 		private final Logger logger = LoggerFactory.getLogger(ZWaveReceiveThread.class);
 
+		@Override
+		public void serialEvent(SerialPortEvent arg0) {
+			try {
+				logger.trace("RXTX library CPU load workaround, sleep forever");
+				Thread.sleep(Long.MAX_VALUE);
+			} catch (InterruptedException e) {
+			}
+		}
+		
 		/**
     	 * Sends 1 byte frame response.
     	 * @param response the response code to send.
@@ -1252,8 +1311,8 @@ public class ZWaveController {
     	 * @param buffer the buffer to process.
     	 */
     	private void processIncomingMessage(byte[] buffer) {
-    		SerialMessage serialMessage = new SerialMessage(buffer);
-    		if (serialMessage.isValid) {
+    		SerialMessage recvMessage = new SerialMessage(buffer);
+    		if (recvMessage.isValid) {
     			logger.trace("Message is valid, sending ACK");
     			sendResponse(ACK);
     		} else {
@@ -1261,8 +1320,9 @@ public class ZWaveController {
     			sendResponse(NAK);
     			return;
     		}
-    		
-    		handleIncomingMessage(serialMessage);
+   
+    		recvQueue.add(recvMessage);
+			logger.debug("Receive queue ADD: Length={}", recvQueue.size());
         }
 		
 		/**
@@ -1270,9 +1330,8 @@ public class ZWaveController {
 		 */
 		@Override
 		public void run() {
-			logger.debug("Starting Z-Wave receive thread");
+			logger.debug("Starting Z-Wave thread: Receive");
 			try {
-	
 				// Send a NAK to resynchronise communications
 				sendResponse(NAK);
 
@@ -1295,26 +1354,25 @@ public class ZWaveController {
 
 				while (!interrupted()) {
 					int nextByte;
-					
+
 					try {
 						nextByte = serialPort.getInputStream().read();
-						
-						if (nextByte == -1)
+
+						if (nextByte == -1) {
 							continue;
-						
+						}
 					} catch (IOException e) {
 						logger.error("Got I/O exception {} during receiving. exiting thread.", e.getLocalizedMessage());
 						break;
 					}
-					
+
 					switch (nextByte) {
 						case SOF:
 							SOFCount++;
 							int messageLength;
-							
+
 							try {
 								messageLength = serialPort.getInputStream().read();
-								
 							} catch (IOException e) {
 								logger.error("Got I/O exception {} during receiving. exiting thread.", e.getLocalizedMessage());
 								break;
@@ -1334,8 +1392,7 @@ public class ZWaveController {
 									return;
 								}
 							}
-							
-							logger.trace("Reading message finished" );
+
 							logger.debug("Receive Message = {}", SerialMessage.bb2hex(buffer));
 							processIncomingMessage(buffer);
 							break;
@@ -1345,13 +1402,13 @@ public class ZWaveController {
 							break;
 						case NAK:
 							NAKCount++;
-	    					logger.error("Message not acklowledged by controller (NAK), discarding");
+	    					logger.error("Protocol error (NAK), discarding");
 	    					transactionCompleted.release();
 	    					logger.trace("Released. Transaction completed permit count -> {}", transactionCompleted.availablePermits());
 							break;
 						case CAN:
 							CANCount++;
-	    					logger.error("Message cancelled by controller (CAN), resending");
+	    					logger.error("Protocol error (CAN), resending");
 							try {
 								Thread.sleep(100);
 							} catch (InterruptedException e) {
@@ -1363,15 +1420,17 @@ public class ZWaveController {
 							break;
 						default:
 	    					OOFCount++;
-							logger.warn(String.format("Out of Frame flow. Got 0x%02X. Sending NAK.", nextByte));
+							logger.warn(String.format("Protocol error (OOF). Got 0x%02X. Sending NAK.", nextByte));
 	    					sendResponse(NAK);
 	    					break;
 					}
 				}
 			} catch (Exception e) {
-				logger.error("Got an exception during receiving. exiting thread.", e);
+				logger.error("Exception during Z-Wave thread: Receive.", e);
 			}
-			logger.debug("Stopped Z-Wave receive thread");
+			logger.debug("Stopped Z-Wave thread: Receive");
+
+			serialPort.removeEventListener();
 		}
 	}
 
@@ -1403,7 +1462,9 @@ public class ZWaveController {
 		public void run() {
 			logger.trace("Watchdog: Checking Serial threads");
 			if ((receiveThread != null && !receiveThread.isAlive()) ||
-					(sendThread != null && !sendThread.isAlive()))
+					(sendThread != null && !sendThread.isAlive()) ||
+					(inputThread != null && !inputThread.isAlive())
+					)
 			{
 				logger.warn("Threads not alive, respawning");
 				disconnect();

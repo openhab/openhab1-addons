@@ -105,27 +105,33 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 		Object val = event.getValue();
 		// Perform a scale conversion if needed
 		if (sensorScale != null && Integer.parseInt(sensorScale) != sensorEvent.getSensorScale()) {
-			int scale = Integer.parseInt(sensorScale);
-			switch(SensorType.getSensorType(scale)) {
-			case TEMPERATURE:
-				// For temperature, there are only two scales, so we simplify the conversion
-				if(sensorEvent.getSensorScale() == 0) {
-					// Scale is celsius, convert to fahrenheit
-					double c = ((BigDecimal)val).doubleValue();
-					val = new BigDecimal((c * 9.0 / 5.0) + 32.0 );
+			int intType = Integer.parseInt(sensorType);
+			SensorType senType = SensorType.getSensorType(intType);
+			if(senType == null) {
+				logger.error("Node {}: Error parsing sensor type {}", event.getNodeId(), sensorType);
+			}
+			else {
+				switch(senType) {
+				case TEMPERATURE:
+					// For temperature, there are only two scales, so we simplify the conversion
+					if(sensorEvent.getSensorScale() == 0) {
+						// Scale is celsius, convert to fahrenheit
+						double c = ((BigDecimal)val).doubleValue();
+						val = new BigDecimal((c * 9.0 / 5.0) + 32.0 );
+					}
+					else if(sensorEvent.getSensorScale() == 1) {
+						// Scale is fahrenheit, convert to celsius
+						double f = ((BigDecimal)val).doubleValue();
+						val = new BigDecimal((f - 32.0) * 5.0 / 9.0 );					
+					}
+					break;
+				default:
+					break;
 				}
-				else if(sensorEvent.getSensorScale() == 1) {
-					// Scale is fahrenheit, convert to celsius
-					double f = ((BigDecimal)val).doubleValue();
-					val = new BigDecimal((f - 32.0) * 5.0 / 9.0 );					
-				}
-				break;
-			default:
-				break;
 			}
 
 			logger.debug("NODE {}: Sensor is reporting scale {}, requiring conversion to {}. Value is now {}.",
-					event.getNodeId(), sensorEvent.getSensorScale(), scale, val);
+					event.getNodeId(), sensorEvent.getSensorScale(), sensorScale, val);
 		}
 
 		State state = converter.convertFromValueToState(val);

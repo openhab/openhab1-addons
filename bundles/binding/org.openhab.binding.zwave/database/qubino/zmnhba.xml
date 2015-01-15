@@ -112,8 +112,7 @@
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">Flush 2 relays module does not save the state after a power failure, it returns to "off" position.
-</Label>
+				<Label lang="en">Flush 2 relays module does not save the state after a power failure, it returns to "off" position.</Label>
 			</Item>
 			<Help lang="en">Saving the state of the relays Q1 and Q2 after a power failure</Help>
 		</Parameter>

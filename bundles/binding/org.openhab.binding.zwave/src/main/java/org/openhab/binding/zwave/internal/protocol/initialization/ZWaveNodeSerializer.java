@@ -120,7 +120,7 @@ public class ZWaveNodeSerializer {
 			logger.debug("NODE {}: Deserializing from file {}", nodeId, file.getPath());
 
 			if (!file.exists()) {
-				logger.debug("NODE {}: Deserializing from file {} failed, file does not exist.", nodeId, file.getPath());
+				logger.debug("NODE {}: Error deserializing from file, file does not exist.", nodeId);
 				return null;
 			}
 
@@ -128,7 +128,7 @@ public class ZWaveNodeSerializer {
 				reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
 				return (ZWaveNode)stream.fromXML(reader);
 			} catch (IOException e) {
-				logger.error("NODE {}: There was an error reading the node config from a file: {}", nodeId, e.getMessage());
+				logger.error("NODE {}: Error deserializing from file: {}", nodeId, e.getMessage());
 			} finally {
 				if (reader != null)
 					try {

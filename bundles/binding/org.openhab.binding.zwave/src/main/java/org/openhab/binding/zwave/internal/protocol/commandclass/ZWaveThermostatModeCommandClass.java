@@ -252,10 +252,11 @@ ZWaveCommandClassDynamicState {
 
 		//if we do not have any mode types yet, get them
 		if(modeTypes.isEmpty()) {
+			logger.warn("NODE {}: requesting mode types, set request ignored (try again later)", this.getNode().getNodeId());
 			return this.getSupportedMessage();
 		}
 
-		if(modeTypes.contains(ModeType.getModeType(value))){
+		if(!modeTypes.contains(ModeType.getModeType(value))){
 			logger.error("NODE {}: Unsupported mode type {}", this.getNode().getNodeId(), value);
 			return null;
 		}

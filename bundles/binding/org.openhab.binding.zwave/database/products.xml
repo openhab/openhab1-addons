@@ -664,6 +664,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0003</Type>
+				<Id>004B</Id>
+			</Reference>
+			<Model>SES3</Model>
+			<Label lang="en">Smart Energy Switch 3rd Edition</Label>
+			<ConfigFile>aeon/ses3.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0009</Id>
 			</Reference>
@@ -794,6 +803,10 @@
 			<Reference>
 				<Type>2002</Type>
 				<Id>0204</Id>
+			</Reference>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0205</Id>
 			</Reference>
 			<Model>ZP3102</Model>
 			<Label lang="en">Motion Sensor</Label>
@@ -1159,7 +1172,7 @@
 			</Reference>
 			<Model>WALLC-S</Model>
 			<Label lang="en">Wall Controller</Label>
-			<ConfigFile>zwaveme/zme_wallc.xml</ConfigFile>
+			<ConfigFile>zwaveme/zme_wallcs.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1310,7 +1323,16 @@
 			<!--Use the same as 2.51 as I cannot see any difference http://www.pepper1.net/zwavedb/device/489-->
 			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
 		</Product>
-	</Manufacturer>
+		<Product>
+			<Reference>
+				<Type>8007</Type>
+				<Id>0200</Id>
+			</Reference>
+			<Model>HRVCCM</Model>
+			<Label lang="en">Danfoss Air CCM</Label>
+			<ConfigFile>danfoss/hrv_ccm.xml</ConfigFile>
+		</Product>
+    </Manufacturer>
 	<Manufacturer>
 		<Id>013C</Id>
 		<Name>Philio Technology Corporation</Name>

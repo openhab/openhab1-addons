@@ -34,6 +34,7 @@ import org.openhab.binding.netatmo.internal.messages.RefreshTokenRequest;
 import org.openhab.binding.netatmo.internal.messages.RefreshTokenResponse;
 import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -106,7 +107,7 @@ public class NetatmoBinding extends
                     processDeviceList(oauthCredentials);
                 }
 
-                Map<String, Map<String, BigDecimal>> deviceMeasureValueMap = processMeasurements(oauthCredentials);
+                DeviceMeasureValueMap deviceMeasureValueMap = processMeasurements(oauthCredentials);
                 for (final NetatmoBindingProvider provider : this.providers) {
                     for (final String itemName : provider.getItemNames()) {
                         final String deviceId = provider.getDeviceId(itemName);
@@ -115,10 +116,17 @@ public class NetatmoBinding extends
 
                         State state = null;
                         switch (measureType) {
+                        	case TIMESTAMP:
+                        		state = deviceMeasureValueMap.timeStamp;
+                        		break;
                             case TEMPERATURE: case CO2: case HUMIDITY: case NOISE: case PRESSURE: case RAIN:
-                                    final String requestKey = createKey(deviceId, moduleId);
-                                    state = new DecimalType(deviceMeasureValueMap.get(requestKey).get(measureType.getMeasure()));
-                                    break;
+                            	final String requestKey = createKey(deviceId, moduleId);
+                            	final BigDecimal value = deviceMeasureValueMap.get(requestKey).get(measureType.getMeasure());
+                            	// Protect that sometimes Netatmo returns null where numeric value is awaited (issue #1848)
+                            	if (value != null) {				
+                            		state = new DecimalType(value);
+                            	}
+                                break;
                             case BATTERYVP: case RFSTATUS:
                                 for (Module module : oauthCredentials.deviceListResponse.getModules()) {
                                     if (module.getId().equals(moduleId)) {
@@ -153,13 +161,23 @@ public class NetatmoBinding extends
             }
         }
     }
+    
+    static class DeviceMeasureValueMap extends HashMap<String, Map<String,BigDecimal>> {
 
-    private Map<String, Map<String, BigDecimal>> processMeasurements(OAuthCredentials oauthCredentials) {
-        Map<String, Map<String, BigDecimal>> deviceMeasureValueMap = new HashMap<String, Map<String,BigDecimal>>();
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+    	DateTimeType timeStamp = null;
+    }
 
+    private DeviceMeasureValueMap processMeasurements(OAuthCredentials oauthCredentials) {
+        //Map<String, Map<String, BigDecimal>> deviceMeasureValueMap = new HashMap<String, Map<String,BigDecimal>>();
+    	DeviceMeasureValueMap deviceMeasureValueMap = new DeviceMeasureValueMap();
+    	
         for (final MeasurementRequest request : createMeasurementRequests()) {
             final MeasurementResponse response = request.execute();
-
+            
             logger.debug("Request: {}", request);
             logger.debug("Response: {}", response);
 
@@ -330,7 +348,7 @@ public class NetatmoBinding extends
         return requests.values();
     }
 
-    private void processMeasurementResponse(final MeasurementRequest request, final MeasurementResponse response, Map<String, Map<String, BigDecimal>> deviceMeasureValueMap) {
+    private void processMeasurementResponse(final MeasurementRequest request, final MeasurementResponse response, DeviceMeasureValueMap deviceMeasureValueMap) {
         final List<BigDecimal> values = response.getBody().get(0).getValues().get(0);
         final Map<String, BigDecimal> valueMap = new HashMap<String, BigDecimal>();
 
@@ -342,6 +360,7 @@ public class NetatmoBinding extends
         }
 
         deviceMeasureValueMap.put(request.getKey(), valueMap);
+        deviceMeasureValueMap.timeStamp = new DateTimeType(response.getTimeStamp());
     }
 
     /**
