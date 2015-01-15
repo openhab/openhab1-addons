@@ -56,7 +56,7 @@ public class ConditionalAction {
 			returns="<code>true</code>, if the command was sent to the actionItem and <code>false</code> otherwise.")
 	public static boolean sendConditionalCommand(
 			@ParamDoc(name="actionItem", text="the item that receives the command") final Item actionItem,
-			@ParamDoc(name="commandString", text="the command to be sent to the item") final Command command) {
+			@ParamDoc(name="command", text="the command to be sent to the item") final Command command) {
 
 		final ItemRegistry registry = (ItemRegistry) ConditionalActionActivator.itemRegistryTracker.getService();
 		if(registry != null) {
@@ -85,9 +85,9 @@ public class ConditionalAction {
 	@ActionDoc(text="A method that sends a command to the actionItem if the disabledItem is OFF", 
 			returns="<code>true</code>, if the command was sent to the actionItem and <code>false</code> otherwise.")
 	public static boolean sendConditionalCommand(
-			@ParamDoc(name="actionItemN", text="the item that receives the command") final Item actionItem,
+			@ParamDoc(name="actionItem", text="the item that receives the command") final Item actionItem,
 			@ParamDoc(name="disabledItem", text="the item that must be disabled so the command is sent") final Item aDisabledItem,
-			@ParamDoc(name="commandString", text="the command to be sent to the item") final Command command) {
+			@ParamDoc(name="command", text="the command to be sent to the item") final Command command) {
 		
 		if (!ConditionalActionActionService.isProperlyConfigured) {
 			logger.debug("ConditionalAction action is not yet configured - execution aborted!");
@@ -97,8 +97,6 @@ public class ConditionalAction {
 		final ItemRegistry registry = (ItemRegistry) ConditionalActionActivator.itemRegistryTracker.getService();
 		final EventPublisher publisher = (EventPublisher) ConditionalActionActivator.eventPublisherTracker.getService();
 		if(publisher!=null && registry!=null) {
-//			final Command command = TypeParser.parseCommand(actionItem.getAcceptedCommandTypes(), commandString);
-
 			final Collection<Item> disabledItems;
 			//					final Item disabledItem = registry.getItem(disabledItemName);
 			if(aDisabledItem instanceof GroupItem) {
@@ -120,5 +118,20 @@ public class ConditionalAction {
 		}
 		
 		return false;
+	}
+	
+	public static boolean sendConditionalCommand(
+			@ParamDoc(name="actionItem", text="the item that receives the command") final Item actionItem,
+			@ParamDoc(name="commandName", text="the command to be sent to the item") final String commandName) {
+		final Command command = TypeParser.parseCommand(actionItem.getAcceptedCommandTypes(), commandName);
+		return sendConditionalCommand(actionItem, command);
+	}
+	
+	public static boolean sendConditionalCommand(
+			@ParamDoc(name="actionItem", text="the item that receives the command") final Item actionItem,
+			@ParamDoc(name="disabledItem", text="the item that must be disabled so the command is sent") final Item aDisabledItem,
+			@ParamDoc(name="commandName", text="the command to be sent to the item") final String commandName) {
+		final Command command = TypeParser.parseCommand(actionItem.getAcceptedCommandTypes(), commandName);
+		return sendConditionalCommand(actionItem, aDisabledItem, command);
 	}
 }
