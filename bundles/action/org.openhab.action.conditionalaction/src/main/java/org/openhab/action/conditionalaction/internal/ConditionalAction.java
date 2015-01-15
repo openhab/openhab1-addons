@@ -121,17 +121,20 @@ public class ConditionalAction {
 	}
 	
 	public static boolean sendConditionalCommand(
-			@ParamDoc(name="actionItem", text="the item that receives the command") final Item actionItem,
-			@ParamDoc(name="commandName", text="the command to be sent to the item") final String commandName) {
-		final Command command = TypeParser.parseCommand(actionItem.getAcceptedCommandTypes(), commandName);
-		return sendConditionalCommand(actionItem, command);
-	}
-	
-	public static boolean sendConditionalCommand(
-			@ParamDoc(name="actionItem", text="the item that receives the command") final Item actionItem,
-			@ParamDoc(name="disabledItem", text="the item that must be disabled so the command is sent") final Item aDisabledItem,
-			@ParamDoc(name="commandName", text="the command to be sent to the item") final String commandName) {
-		final Command command = TypeParser.parseCommand(actionItem.getAcceptedCommandTypes(), commandName);
-		return sendConditionalCommand(actionItem, aDisabledItem, command);
+			final String actionItemName,
+			final String commandName) {
+
+		final ItemRegistry registry = (ItemRegistry) ConditionalActionActivator.itemRegistryTracker.getService();
+		if(registry != null) {
+			Item actionItem;
+			try {
+				actionItem = registry.getItem(actionItemName);
+				final Command command = TypeParser.parseCommand(actionItem.getAcceptedCommandTypes(), commandName);
+				return sendConditionalCommand(actionItem, command);
+			} catch (ItemNotFoundException e) {
+				logger.error("did not find action item" + e);
+			}
+		}
+		return false;
 	}
 }
