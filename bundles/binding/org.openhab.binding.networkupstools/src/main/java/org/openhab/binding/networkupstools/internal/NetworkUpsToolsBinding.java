@@ -38,8 +38,9 @@ import com.google.common.collect.Multimap;
 	
 
 /**
- * Implement this class if you are going create an actively polling service
- * like querying a Website/Device.
+ * The RefreshService polls all configured ups parameters with a configurable 
+ * interval and post all values to the internal event bus. The interval is 1 
+ * minute by default and can be changed via openhab.cfg.  
  * 
  * @author jaroslawmazgaj
  * @since 1.7.0
@@ -93,6 +94,7 @@ public class NetworkUpsToolsBinding extends AbstractActiveBinding<NetworkUpsTool
 			NutConfig nut = upses.get(name);
 			if (nut == null) {
 				logger.error("No configuration for UPS with name: '{}'", name); 
+				continue;
 			}
 			Client client = null;
 			try {
@@ -186,7 +188,9 @@ public class NetworkUpsToolsBinding extends AbstractActiveBinding<NetworkUpsTool
 		}
 	}
 	
-
+	/**
+	 * This is an internal data structure to store nut server configuration 
+	 */
 	class NutConfig {
 		String device;
 		String host = "localhost";
@@ -195,6 +199,9 @@ public class NetworkUpsToolsBinding extends AbstractActiveBinding<NetworkUpsTool
 		int port = 3493;
 	}
 	
+	/**
+	 * This is an internal data structure to store item definition details for given nut server 
+	 */
 	class ItemDefinition {
 		String itemName;
 		Class<? extends Item> itemType;

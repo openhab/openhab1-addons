@@ -12,6 +12,12 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
 /**
+ * This interface is implemented by classes that can provide mapping information
+ * between openHAB items and NetworkUpsTools items.
+ * 
+ * Implementing classes should register themselves as a service in order to be 
+ * taken into account.
+ * 
  * @author jaroslawmazgaj
  * @since 1.7.0
  */

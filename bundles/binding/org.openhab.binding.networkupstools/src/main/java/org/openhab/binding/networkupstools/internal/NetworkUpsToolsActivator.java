@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Extension of the default OSGi bundle activator
+ * Provides OSGi lifecycle callbacks
  * 
  * @author jaroslawmazgaj
  * @since 1.7.0

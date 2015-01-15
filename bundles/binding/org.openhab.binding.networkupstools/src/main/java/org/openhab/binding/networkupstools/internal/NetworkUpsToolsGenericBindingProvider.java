@@ -19,8 +19,15 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 
 
 /**
- * This class is responsible for parsing the binding configuration.
+ * <p>This class parses information from the generic binding format and 
+ * provides NetworkUpsTools binding information from it. It registers as a 
+ * {@link NetworkUpsToolsBindingProvider} service as well.</p>
  * 
+ * <p>Here is an examples for valid binding configuration string:
+ * <ul>
+ * 	<li><code>{ networkupstools = "nas:output.voltage" }</code> - binds to "output.voltage" property of UPS defined as "nas" in openhab.cfg</li>
+ * </ul>   
+ *  
  * @author jaroslawmazgaj
  * @since 1.7.0
  */
@@ -84,6 +91,13 @@ public class NetworkUpsToolsGenericBindingProvider extends AbstractGenericBindin
 		return config.itemType;
 	};
 	
+	
+	/**
+	 * This is an internal data structure to store information from the binding
+	 * config strings and use it to answer the requests to the NetworkUpsTools
+	 * binding provider.
+	 *
+	 */
 	class NetworkUpsToolsBindingConfig implements BindingConfig {
 		public Class<? extends Item> itemType;
 		public String ups;
