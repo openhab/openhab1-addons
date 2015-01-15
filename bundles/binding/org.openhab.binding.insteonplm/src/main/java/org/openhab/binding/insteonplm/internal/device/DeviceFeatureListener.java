@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,8 @@
 import java.util.HashMap;
 import org.openhab.core.types.State;
 import org.openhab.core.events.EventPublisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 * A DeviceFeatureListener essentially represents an OpenHAB item that
@@ -21,9 +23,15 @@ import org.openhab.core.events.EventPublisher;
 */
 
 public class DeviceFeatureListener {
+	private static final Logger logger = LoggerFactory.getLogger(DeviceFeatureListener.class);
+	public enum StateChangeType {
+		ALWAYS,
+		CHANGED
+	};
 	private String			m_itemName = null;
 	private EventPublisher 	m_eventPublisher = null;
 	private HashMap<String, String>	m_parameters = new HashMap<String, String>();
+	private HashMap<Class<?>, State> m_state = new HashMap<Class<?>, State>(); 
 	/**
 	 * Constructor
 	 * @param item name of the item that is listening 
@@ -79,8 +87,21 @@ public class DeviceFeatureListener {
 	/**
 	 * Publishes a state change on the openhab bus
 	 * @param state the new state to publish on the openhab bus
+	 * @param changeType whether to always publish or not
 	 */
-	public void stateChanged(State state) {
-		m_eventPublisher.postUpdate(m_itemName, state);
+	public void stateChanged(State state, StateChangeType changeType) {
+		State oldState = m_state.get(state.getClass());
+		if (oldState == null) {
+			logger.trace("new state: {}:{}", state.getClass().getSimpleName(), state);
+			// state has changed, must publish
+			m_eventPublisher.postUpdate(m_itemName, state);
+		} else {
+			logger.trace("old state: {}:{}=?{}", state.getClass().getSimpleName(), oldState, state);
+			// only publish if state has changed or it is requested explicitly
+			if (changeType == StateChangeType.ALWAYS || oldState != state) {
+				m_eventPublisher.postUpdate(m_itemName, state);
+			}
+		}
+		m_state.put(state.getClass(), state);
 	}
 }

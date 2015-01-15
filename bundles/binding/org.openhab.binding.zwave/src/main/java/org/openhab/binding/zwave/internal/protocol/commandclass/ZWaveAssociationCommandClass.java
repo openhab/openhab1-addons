@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,6 +39,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("associationCommandClass")
 public class ZWaveAssociationCommandClass extends ZWaveCommandClass {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveAssociationCommandClass.class);
 
 	private static final int ASSOCIATIONCMD_SET = 0x01;

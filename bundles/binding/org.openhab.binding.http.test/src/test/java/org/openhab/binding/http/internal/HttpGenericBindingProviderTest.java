@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -200,8 +200,23 @@ public class HttpGenericBindingProviderTest {
 		Assert.assertEquals("http://localhost:42111/valuepost.html?id=4-SWITCHMULTILEVEL-user-byte-1-0&v=39", config.get(HttpGenericBindingProvider.CHANGED_COMMAND_KEY).url);
 	}
 	
+	@Test
+	public void testParseBindingWilcard() throws BindingConfigParseException {
+		String bindingConfig = ">[*:GET:http://192.168.0.2/RGB/%2$s] >[TWINKLE:PUT:http://192.168.0.2/PROGRAM/TWINKLE]";
+		
+		testItem = new StringTestItem("StringTestItem");
+		
+		provider.processBindingConfiguration("test", testItem, bindingConfig);
 
-	
+		Assert.assertEquals(provider.getUrl("StringTestItem", new StringType("0000FF")), "http://192.168.0.2/RGB/%2$s");
+		Assert.assertEquals(provider.getHttpMethod("StringTestItem", new StringType("0000FF")), "GET");
+		
+		Assert.assertEquals(provider.getUrl("StringTestItem", new StringType("TWINKLE")), "http://192.168.0.2/PROGRAM/TWINKLE");
+		Assert.assertEquals(provider.getHttpMethod("StringTestItem", new StringType("TWINKLE")), "PUT");
+		
+		Assert.assertEquals(provider.getUrl("StringTestItem", StringType.valueOf("CHANGED")), null);
+	}
+		
 	class StringTestItem extends GenericItem {
 		
 		public StringTestItem() {

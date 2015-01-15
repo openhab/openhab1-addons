@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -84,6 +84,7 @@ public class DeviceListResponse extends AbstractResponse {
 	/**
 	 * <code>type</code> constant of the main indoor station.
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_MAIN = "NAMain";
 
 	/**
@@ -94,21 +95,25 @@ public class DeviceListResponse extends AbstractResponse {
 	/**
 	 * <code>type</code> constant of the rain gauge module
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_MODULE_3 = "NAModule3";
 
 	/**
 	 * <code>type</code> constant of the additional indoor module
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_MODULE_4 = "NAModule4";
 
 	/**
 	 * <code>type</code> constant of the thermostat relay/plug
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_PLUG = "NAPlug";
 
 	/**
 	 * <code>type</code> constant of the thermostat module
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_THERM_1 = "NATherm1";
 
 	/**
@@ -124,6 +129,7 @@ public class DeviceListResponse extends AbstractResponse {
 	/**
 	 * <code>wifi_status</code> threshold constant: good signal
 	 */
+	@SuppressWarnings("unused")
 	private static final int WIFI_STATUS_THRESHOLD_2 = 56;
 
 	/**
@@ -144,6 +150,7 @@ public class DeviceListResponse extends AbstractResponse {
 	/**
 	 * <code>rf_status</code> threshold constant: full signal
 	 */
+	@SuppressWarnings("unused")
 	private static final int RF_STATUS_THRESHOLD_3 = 60;
 
 	/**
