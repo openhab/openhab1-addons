@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.bundles</groupId>
   <artifactId>action</artifactId>
-
+	
   <name>openHAB Actions</name>
 
   <packaging>pom</packaging>
@@ -23,12 +23,17 @@
     <module>org.openhab.action.twitter</module>
     <module>org.openhab.action.xbmc</module>
     <module>org.openhab.action.xmpp</module>
-	<module>org.openhab.action.xpl</module>
+    <module>org.openhab.action.xpl</module>
     <module>org.openhab.action.nma</module>
     <module>org.openhab.action.homematic</module>
     <module>org.openhab.action.openwebif</module>
+    <module>org.openhab.action.conditionalaction</module>
     <module>org.openhab.action.weather</module>
+    <module>org.openhab.action.conditionalaction</module>
   </modules>
 
+<<<<<<< HEAD
 </project>
-
+=======
+</project>
+>>>>>>> f5bda731d79b91d7f9602c880dcbc54820ab1e9c
