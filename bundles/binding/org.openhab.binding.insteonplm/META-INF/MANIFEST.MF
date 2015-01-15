@@ -29,3 +29,5 @@ Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/activebinding.xml, OSGI-INF/genericbindingprovider.xml
 Bundle-ClassPath: .
+Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.1.3",
+ org.apache.httpcomponents.httpcore;bundle-version="4.1.4"
