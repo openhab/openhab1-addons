@@ -100,8 +100,6 @@ public class Season {
 	 * Returns the next season.
 	 */
 	public Calendar getNextSeason() {
-		final Calendar nextSpring = (Calendar) spring.clone();
-		nextSpring.add(Calendar.YEAR, 1);
-		return DateTimeUtils.getNext(spring, summer, autumn, winter, nextSpring);
+		return DateTimeUtils.getNext(spring, summer, autumn, winter);
 	}
 }
