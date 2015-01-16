@@ -127,4 +127,15 @@ public class ConditionalAction {
 		final Command command = TypeParser.parseCommand(actionItem.getAcceptedCommandTypes(), commandName);
 		return sendConditionalCommand(actionItem, command);
 	}
+	
+	public static boolean sendConditionalCommand(
+			final Item actionItem,
+			final Item disabledItem,
+			final String commandName) {
+		
+		final Command command = TypeParser.parseCommand(actionItem.getAcceptedCommandTypes(), commandName);
+		return sendConditionalCommand(actionItem, disabledItem, command);
+	}
+	
+
 }
