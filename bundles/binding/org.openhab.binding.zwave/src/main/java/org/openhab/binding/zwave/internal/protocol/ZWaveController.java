@@ -184,7 +184,7 @@ public class ZWaveController {
 				handleIncomingResponseMessage(incomingMessage);
 				break;
 			default:
-				logger.warn("Unsupported incomingMessageType: 0x%02X", incomingMessage.getMessageType());
+				logger.warn("Unsupported incomingMessageType: {}", incomingMessage.getMessageType());
 		}
 	}
 
@@ -1159,7 +1159,7 @@ public class ZWaveController {
 						}
 					}
 					
-					// A transaction consists of 4 parts -:
+					// A transaction consists of (up to) 4 parts -:
 					// 1) We send a REQUEST to the controller.
 					// 2) The controller sends a RESPONSE almost immediately.
 					//    This RESPONSE typically tells us that the message was,
@@ -1172,7 +1172,7 @@ public class ZWaveController {
 					//    request.
 					// 4) We ultimately receive the requested message from the device
 					//
-					//    A transaction is completed at the completion of step 4.
+					//    A transaction is generally completed at the completion of step 4.
 					//    However, for some messages, there may not be a further REQUEST
 					//    so the transaction is terminated at step 2. This is handled
 					//    by the serial message class processor by setting
