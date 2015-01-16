@@ -339,7 +339,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     logger.trace("appending limit {}", limit);
 
     int totalEntriesAffected = ((filter.getPageNumber() + 1) * filter.getPageSize());
-    int startEntryNum = totalEntriesAffected - (totalEntriesAffected - filter.getPageSize());
+    int startEntryNum = totalEntriesAffected - (totalEntriesAffected - (filter.getPageSize() * filter.getPageNumber()));
     logger.trace("startEntryNum {}", startEntryNum);
     
     logger.debug("query string: {}", query.toString());
