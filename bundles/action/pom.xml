@@ -29,7 +29,6 @@
     <module>org.openhab.action.openwebif</module>
     <module>org.openhab.action.conditionalaction</module>
     <module>org.openhab.action.weather</module>
-    <module>org.openhab.action.conditionalaction</module>
   </modules>
 
 </project>

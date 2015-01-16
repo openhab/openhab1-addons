@@ -121,20 +121,10 @@ public class ConditionalAction {
 	}
 	
 	public static boolean sendConditionalCommand(
-			final String actionItemName,
+			final Item actionItem,
 			final String commandName) {
 
-		final ItemRegistry registry = (ItemRegistry) ConditionalActionActivator.itemRegistryTracker.getService();
-		if(registry != null) {
-			Item actionItem;
-			try {
-				actionItem = registry.getItem(actionItemName);
-				final Command command = TypeParser.parseCommand(actionItem.getAcceptedCommandTypes(), commandName);
-				return sendConditionalCommand(actionItem, command);
-			} catch (ItemNotFoundException e) {
-				logger.error("did not find action item" + e);
-			}
-		}
-		return false;
+		final Command command = TypeParser.parseCommand(actionItem.getAcceptedCommandTypes(), commandName);
+		return sendConditionalCommand(actionItem, command);
 	}
 }
