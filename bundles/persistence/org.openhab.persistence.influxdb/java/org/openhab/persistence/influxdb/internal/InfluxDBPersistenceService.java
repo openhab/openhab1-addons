@@ -161,12 +161,12 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     }
 
     if (!isProperlyConfigured) {
-      logger.error("Configuration for influxdb not yet loaded or broken.");
+      logger.warn("Configuration for influxdb not yet loaded or broken.");
       return;
     }
 
     if (!isConnected()) {
-      logger.error("InfluxDB is not yet connected");
+      logger.warn("InfluxDB is not yet connected");
       return;
     }
 
@@ -199,7 +199,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       // e.g. raised by authentication errors
       logger
           .error(
-              "database connection error may be wrong password, username or dbname: {}",
+              "database error: {}",
               e.getMessage());
     }
   }
@@ -252,12 +252,12 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     logger.debug("got a query");
 
     if (!isProperlyConfigured) {
-      logger.error("Configuration for influxdb not yet loaded or broken.");
+      logger.warn("Configuration for influxdb not yet loaded or broken.");
       return Collections.emptyList();
     }
 
     if (!isConnected()) {
-      logger.error("InfluxDB is not yet connected");
+      logger.warn("InfluxDB is not yet connected");
       return Collections.emptyList();
     }
 
