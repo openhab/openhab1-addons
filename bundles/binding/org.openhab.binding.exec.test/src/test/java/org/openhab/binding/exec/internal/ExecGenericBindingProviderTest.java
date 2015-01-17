@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.exec.internal;
 
+import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -46,4 +47,23 @@ public class ExecGenericBindingProviderTest {
 		Assert.assertEquals("and a fallback", config.get(StringType.valueOf("*")).commandLine);
 	}
 
+	@Test
+	public void testParseBindingConfigIn() throws BindingConfigParseException {
+		String     cmdLine = "/usr/bin/uptime";
+		String     itemName = "Switch";
+		SwitchItem item = new SwitchItem(itemName);
+		String     bindingConfig = "<[" + cmdLine + ":60000:]";
+
+		provider.processBindingConfiguration("New", item, bindingConfig);
+
+		Assert.assertTrue(provider.providesBinding());
+		Assert.assertTrue(provider.providesBindingFor(itemName));
+		Assert.assertEquals(cmdLine, provider.getCommandLine(itemName));
+
+		Assert.assertEquals(60000, provider.getRefreshInterval(itemName));
+		Assert.assertEquals("", provider.getTransformation(itemName));
+
+		List<String> itemNames = provider.getInBindingItemNames();
+		Assert.assertEquals(itemName, itemNames.get(0));
+	}
 }
