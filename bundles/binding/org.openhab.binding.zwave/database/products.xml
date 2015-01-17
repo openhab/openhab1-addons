@@ -24,6 +24,15 @@
 			<Label lang="en">Wall Dimmer Switch</Label>
 			<ConfigFile>linear/wdz500-1.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4450</Type>
+				<Id>3030</Id>
+			</Reference>
+			<Model>PD300Z-2</Model>
+			<Label lang="en">Plug-in Wall Dimmer</Label>
+			<ConfigFile>linear/pd300z-2.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
