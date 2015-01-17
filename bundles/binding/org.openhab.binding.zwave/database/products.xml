@@ -706,6 +706,15 @@
 			<Model>DSC25G2</Model>
 			<Label lang="en">Dimmer G2</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0201</Type>
+				<Id>0058</Id>
+			</Reference>
+			<Model>KeyFobG5</Model>
+			<Label lang="en">4 button keyfob - generation 5</Label>
+			<ConfigFile>aeon/keyfobg5.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
