@@ -84,12 +84,17 @@ public class DataParser {
 
 		// parse response and fill map
 		for (RecordDefinition recordDefinition : request.getRecordDefinitions()) {
-			String value = parseRecord(response, recordDefinition);
-			logger.debug("Parsed value {} -> {} with pos: {} , len: {}",
-					recordDefinition.getName(), value,
-					recordDefinition.getPosition(),
-					recordDefinition.getLength());
-			map.put(recordDefinition.getName(), value);
+			try{
+				String value = parseRecord(response, recordDefinition);
+				logger.debug("Parsed value {} -> {} with pos: {} , len: {}",
+						recordDefinition.getName(), value,
+						recordDefinition.getPosition(),
+						recordDefinition.getLength());
+				map.put(recordDefinition.getName(), value);
+			}
+			catch (StiebelHeatPumpException e){
+				continue;
+			}
 		}
 		return map;
 	}
@@ -102,47 +107,54 @@ public class DataParser {
 	 * @param RecordDefinition
 	 *            that shall be used for parsing the heat pump response
 	 * @return string value of the parse response
+	 * @throws StiebelHeatPumpException 
 	 */
-	public String parseRecord(byte[] response, RecordDefinition recordDefinition) {
-
-		if (response.length < 2) {
-			logger.error("response does not have a valid length ogf bytes: {}",
-					DataParser.bytesToHex(response));
-			return "";
+	public String parseRecord(byte[] response, RecordDefinition recordDefinition) throws StiebelHeatPumpException {
+		try {
+			if (response.length < 2) {
+				logger.error("response does not have a valid length of bytes: {}",
+						DataParser.bytesToHex(response));
+				throw new StiebelHeatPumpException();
+			}
+			ByteBuffer buffer = ByteBuffer.wrap(response);
+			short number = 0;
+			byte[] bytes = null;
+	
+			switch (recordDefinition.getLength()) {
+			case 1:
+				bytes = new byte[1];
+				System.arraycopy(response, recordDefinition.getPosition(), bytes,
+						0, 1);
+				number = Byte.valueOf(buffer.get(recordDefinition.getPosition()));
+				break;
+			case 2:
+				bytes = new byte[2];
+				System.arraycopy(response, recordDefinition.getPosition(), bytes,
+						0, 2);
+				number = (short) buffer.getShort(recordDefinition.getPosition());
+				break;
+			}
+	
+			if (recordDefinition.getBitPosition() > 0) {
+	
+				int returnValue = getBit(bytes, recordDefinition.getBitPosition());
+				return String.valueOf(returnValue);
+			}
+	
+			if (recordDefinition.getScale() != 1.0) {
+				double myDoubleNumber = number * recordDefinition.getScale();
+				myDoubleNumber = Math.round(myDoubleNumber * 100.0) / 100.0;
+				String returnString = String.format("%s", myDoubleNumber);
+				return returnString;
+			}
+	
+			return String.valueOf(number);
 		}
-		ByteBuffer buffer = ByteBuffer.wrap(response);
-		short number = 0;
-		byte[] bytes = null;
-
-		switch (recordDefinition.getLength()) {
-		case 1:
-			bytes = new byte[1];
-			System.arraycopy(response, recordDefinition.getPosition(), bytes,
-					0, 1);
-			number = Byte.valueOf(buffer.get(recordDefinition.getPosition()));
-			break;
-		case 2:
-			bytes = new byte[2];
-			System.arraycopy(response, recordDefinition.getPosition(), bytes,
-					0, 2);
-			number = (short) buffer.getShort(recordDefinition.getPosition());
-			break;
+		catch (Exception e) {
+			logger.error("response {} could not be parsed for record definition {} ",
+					DataParser.bytesToHex(response), recordDefinition.getName());
+			throw new StiebelHeatPumpException();
 		}
-
-		if (recordDefinition.getBitPosition() > 0) {
-
-			int returnValue = getBit(bytes, recordDefinition.getBitPosition());
-			return String.valueOf(returnValue);
-		}
-
-		if (recordDefinition.getScale() != 1.0) {
-			double myDoubleNumber = number * recordDefinition.getScale();
-			myDoubleNumber = Math.round(myDoubleNumber * 100.0) / 100.0;
-			String returnString = String.format("%s", myDoubleNumber);
-			return returnString;
-		}
-
-		return String.valueOf(number);
 	}
 
 	/**

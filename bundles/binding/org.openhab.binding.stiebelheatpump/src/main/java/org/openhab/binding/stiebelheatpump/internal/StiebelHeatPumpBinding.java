@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.stiebelheatpump.StiebelHeatPumpBindingProvider;
+import org.openhab.binding.stiebelheatpump.protocol.DataParser;
 import org.openhab.binding.stiebelheatpump.protocol.Request;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
@@ -67,7 +68,12 @@ public class StiebelHeatPumpBinding extends
 
 	/** heat pump request definition */
 	private List<Request> heatPumpConfiguration = new ArrayList<Request>();
+	
+	//** request to get the version of the heat pump
 	Request versionRequest;
+	
+	//** indicates if the communication is currently in use by a call 
+	boolean communicationInUse = false;
 	
 	public StiebelHeatPumpBinding() {
 	}
@@ -98,29 +104,38 @@ public class StiebelHeatPumpBinding extends
 	 * @{inheritDoc
 	 */
 	protected void execute() {
+		
+		if (communicationInUse) return;
+		
 		logger.debug("Refresh heat pump sensor and status values ...");
 		try {
+			communicationInUse = true;
 			CommunicationService communicationService = new CommunicationService(
 					serialPort, baudRate, heatPumpConfiguration);
 			Map<String, String> data = new HashMap<String, String>();
+			Map<String, String> allData = new HashMap<String, String>();
 			
-			communicationService.getStatus().putAll(data);
+			data = communicationService.getStatus();
+			allData.putAll(data);
 			for (Map.Entry<String, String> entry : data.entrySet()) {
-				logger.info("Data {} has value {}", entry.getKey(),
+				logger.debug("Data {} has value {}", entry.getKey(),
 						entry.getValue());
 			}
-			communicationService.getSensors().putAll(data);
+			data = communicationService.getSensors();
+			allData.putAll(data);
 			for (Map.Entry<String, String> entry : data.entrySet()) {
-				logger.info("Data {} has value {}", entry.getKey(),
+				logger.debug("Data {} has value {}", entry.getKey(),
 						entry.getValue());
 			}
 
 			communicationService.finalizer();
 
-			publishValues(data);
+			publishValues(allData);
 		} catch (StiebelHeatPumpException e) {
 			logger.error("Could not read data from heat pump! "
 					+ e.toString());
+		}finally{
+			communicationInUse=false;
 		}
 	}
 
@@ -129,6 +144,20 @@ public class StiebelHeatPumpBinding extends
 	 */
 	protected void internalReceiveCommand(String itemName, Command command) {
 		logger.debug("Received command {} for item {}", command, itemName);
+		
+		int retry = 0;
+		while (communicationInUse & (retry < DEFAULT_SERIAL_TIMEOUT)) {
+			try {
+				Thread.sleep(CommunicationService.WAITING_TIME_BETWEEN_REQUESTS);
+			} catch (InterruptedException e) {
+				logger.debug(
+						"Could not get access to heatpump ! : {}",
+						e.toString());
+			}
+			retry++;			
+		}		
+		if (communicationInUse) return;
+		
 		for (StiebelHeatPumpBindingProvider provider : providers) {
 			for (String name : provider.getItemNames()) {
 				if (!name.equals(itemName)) {
@@ -138,13 +167,23 @@ public class StiebelHeatPumpBinding extends
 				logger.debug(
 						"Found item {} with heat pump parameter {} in providers",
 						itemName, parameter);
-				//try {
-					//setStateOnHeatPump(command, parameter);
-				//} catch (StiebelHeatPumpException e) {
-				//	logger.error("could not set new value!");
-				//}
+				try {
+					Map<String, String> data = new HashMap<String, String>();
+					communicationInUse = true;
+					CommunicationService communicationService = new CommunicationService(
+							serialPort, baudRate, heatPumpConfiguration);
+					data = communicationService.setData(command.toString(), parameter);
+					
+					communicationService.finalizer();
+					
+					publishValues(data);
+				} catch (StiebelHeatPumpException e) {
+					logger.error("Could not set new value!");
+				} finally{
+					communicationInUse=false;
+				}
 			}
-		}
+		}		
 	}
 
 	/**
@@ -154,8 +193,8 @@ public class StiebelHeatPumpBinding extends
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand() is called!");
-		logger.debug("Received command {} for item {}", newState, itemName);
+		// logger.debug("internalReceiveUpdate() is called!");
+		// logger.debug("Received update {} for item {}", newState, itemName);
 
 	}
 
@@ -219,24 +258,24 @@ public class StiebelHeatPumpBinding extends
 			CommunicationService communicationService = new CommunicationService(
 					serialPort, baudRate);
 			Map<String, String> data = new HashMap<String, String>();
+			Map<String, String> allData = new HashMap<String, String>();
 
 			heatPumpConfiguration =  communicationService.getHeatPumpConfiguration(version + ".xml");
 			String version = communicationService.getversion();
 			logger.info("Heat pump has version {}", version);
+			allData.put("Version",version);
+			
+			data = communicationService.getSettings();
+			allData.putAll(data);
 
-			communicationService.getSettings().putAll(data);
-			for (Map.Entry<String, String> entry : data.entrySet()) {
-				logger.info("Data {} has value {}", entry.getKey(),
-						entry.getValue());
-			}
-			communicationService.getStatus().putAll(data);
-			for (Map.Entry<String, String> entry : data.entrySet()) {
-				logger.info("Data {} has value {}", entry.getKey(),
-						entry.getValue());
-			}
-			communicationService.getSensors().putAll(data);
-			for (Map.Entry<String, String> entry : data.entrySet()) {
-				logger.info("Data {} has value {}", entry.getKey(),
+			data=communicationService.getStatus();
+			allData.putAll(data);
+
+			data = communicationService.getSensors();
+			allData.putAll(data);
+			
+			for (Map.Entry<String, String> entry : allData.entrySet()) {
+				logger.debug("Data {} has value {}", entry.getKey(),
 						entry.getValue());
 			}
 			
@@ -244,7 +283,7 @@ public class StiebelHeatPumpBinding extends
 			
 			communicationService.finalizer();
 
-			publishValues(data);
+			publishValues(allData);
 			
 			return true;
 		} catch (StiebelHeatPumpException e) {

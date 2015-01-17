@@ -34,7 +34,7 @@ public class CommunicationService {
 	private final int INPUT_BUFFER_LENGTH = 1024;
 	private byte buffer[] = new byte[INPUT_BUFFER_LENGTH];
 
-	private int WAITING_TIME_BETWEEN_REQUESTS = 2000;
+	public static int WAITING_TIME_BETWEEN_REQUESTS = 2000;
 
 	/** heat pump request definition */
 	private List<Request> heatPumpConfiguration = new ArrayList<Request>();
@@ -42,6 +42,7 @@ public class CommunicationService {
 	private List<Request> heatPumpSettingConfiguration = new ArrayList<Request>();
 	private List<Request> heatPumpStatusConfiguration = new ArrayList<Request>();
 	Request versionRequest;
+	
 	DataParser parser = new DataParser();
 
 	private static final Logger logger = LoggerFactory
@@ -99,7 +100,7 @@ public class CommunicationService {
 		logger.info("Loading Settings");
 		Map<String, String> data = new HashMap<String, String>();
 		for (Request request : heatPumpSettingConfiguration) {
-			logger.info("Loading data for request {} ...", request.getName());
+			logger.debug("Loading data for request {} ...", request.getName());
 			try {
 				Map<String, String> newData = readData(request);
 				data.putAll(newData);
@@ -121,7 +122,7 @@ public class CommunicationService {
 		logger.info("Loading Sensors");
 		Map<String, String> data = new HashMap<String, String>();
 		for (Request request : heatPumpSensorConfiguration) {
-			logger.info("Loading data for request {} ...", request.getName());
+			logger.debug("Loading data for request {} ...", request.getName());
 			try {
 				Map<String, String> newData = readData(request);
 				data.putAll(newData);
@@ -143,7 +144,7 @@ public class CommunicationService {
 		logger.info("Loading Status");
 		Map<String, String> data = new HashMap<String, String>();
 		for (Request request : heatPumpStatusConfiguration) {
-			logger.info("Loading data for request {} ...", request.getName());
+			logger.debug("Loading data for request {} ...", request.getName());
 			try {
 				Map<String, String> newData = readData(request);
 				data.putAll(newData);
@@ -409,10 +410,7 @@ public class CommunicationService {
 					parameter);
 			return data;
 		}
-
-		logger.debug("Setting new value [{}] for parameter [{}]", value,
-				parameter);
-
+		
 		try {
 			// get actual value for the corresponding request
 			// as we do no have individual requests for each settings we need to
@@ -427,21 +425,34 @@ public class CommunicationService {
 			String currentState = data.get(updateRecord.getName());
 			if (currentState.equals(value)) {
 				// current State is already same as new values!
+				logger.debug("Current State for {} is already {}.", parameter, value);
 				return data;
 			}
 
 			// create new set request out from the existing read response
 			byte[] requestUpdateMessage = parser.composeRecord(value, response,
 					updateRecord);
+			logger.debug("Setting new value [{}] for parameter [{}]", value,
+					parameter);
+
+			Thread.sleep(WAITING_TIME_BETWEEN_REQUESTS);
 			response = setData(requestUpdateMessage);
+			
 
 			if (parser.setDataCheck(response)) {
 				logger.debug("Updated parmeter {} sucessfully.", parameter);
+			}
+			else
+			{
+				logger.debug("Update for parmeter {} failed!", parameter);
 			}
 
 		} catch (StiebelHeatPumpException e) {
 			logger.error("Stiebel heat pump communication error during update of value! "
 					+ e.toString());
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 		}
 		return data;
@@ -454,16 +465,29 @@ public class CommunicationService {
 	 *            request bytes to send to heat pump
 	 * @return response bytes from heat pump
 	 * 
-	 *         General overview of handshake between application and serial
-	 *         interface of heat pump 1. Sending request bytes , e.g.: 01 00 FD
-	 *         FC 10 03 for version request 01 -> header start 00 -> get request
-	 *         FD -> checksum of request FC -> request byte 10 03 -> Footer
-	 *         ending the communication 2. Receive a data available 10 -> ok 02
-	 *         -> it does have data,which wants to send now 3. acknowledge
-	 *         sending data 10 -> ok 4. receive data until footer 01 -> header
-	 *         start 00 -> get request CC -> checksum of send data FD -> request
-	 *         byte 00 CE -> data , e.g. short value as 2 bytes -> 206 -> 2.06
-	 *         version 10 03 -> Footer ending the communication
+	 *   General overview of handshake between application and serial
+	 *   interface of heat pump 
+	 *   1. Sending request bytes , e.g.: 01 00 FD FC 10 03 for version request 
+	 *   01 -> header start 
+	 *   00 -> get request
+	 *   FD -> checksum of request 
+	 *   FC -> request byte 
+	 *   10 03 -> Footer ending the communication 
+	 *   
+	 *   2. Receive a data available 
+	 *   10 -> ok 
+	 *   02 -> it does have data,which wants to send now 
+	 *         
+	 *   3. acknowledge sending data 
+	 *   10 -> ok 
+	 *   
+	 *   4. receive data until footer 
+	 *   01 -> header start 
+	 *   00 -> get request 
+	 *   CC -> checksum of send data 
+	 *   FD -> request byte 
+	 *   00 CE -> data , e.g. short value as 2 bytes -> 206 -> 2.06 version 
+	 *   10 03 -> Footer ending the communication
 	 */
 	private byte[] getData(byte request[]) {
 		if (!establishRequest(request)) {
@@ -486,17 +510,29 @@ public class CommunicationService {
 	 *            request bytes to send to heat pump
 	 * @return response bytes from heat pump
 	 * 
-	 *         General overview of handshake between application and serial
-	 *         interface of heat pump 1. Sending request bytes, e.g update time
-	 *         in heat pump 01 -> header start 80 -> set request F1 -> checksum
-	 *         of request FC -> request byte 00 02 0a 22 1b 0e 00 03 1a -> new
-	 *         values according record definition for time 10 03 -> Footer
-	 *         ending the communication 2. Receive response message the
-	 *         confirmation message is ready foe sending 10 -> ok 02 -> it does
-	 *         have data ,which wants to send now 3. acknowledge sending data 10
-	 *         -> ok 4. receive confirmation message until footer 01 -> header
-	 *         start 80 -> set request 7D -> checksum of send data FC -> request
-	 *         byte 10 03 -> Footer ending the communication
+	 *   General overview of handshake between application and serial
+	 *   interface of heat pump 
+	 *         
+	 *   1. Sending request bytes, e.g update time in heat pump 
+	 *   01 -> header start 
+	 *   80 -> set request 
+	 *   F1 -> checksum of request 
+	 *   FC -> request byte 
+	 *   00 02 0a 22 1b 0e 00 03 1a -> new values according record definition for time 
+	 *   10 03 -> Footer ending the communication 
+	 *         
+	 *   2. Receive response message the confirmation message is ready for sending 
+	 *   10 -> ok 
+	 *   02 -> it does have data ,which wants to send now 
+	 *         
+	 *   3. acknowledge sending data 10 -> ok 
+	 *         
+	 *   4. receive confirmation message until footer 
+	 *   01 -> header start 
+	 *   80 -> set request 
+	 *   7D -> checksum of send data 
+	 *   FC -> request byte 
+	 *   10 03 -> Footer ending the communication
 	 */
 	private byte[] setData(byte[] request) throws StiebelHeatPumpException {
 		try {
