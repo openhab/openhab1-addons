@@ -58,7 +58,7 @@ public class LgtvConnection implements LgtvEventListener {
 	}
 
 	public void checkalive() {
-
+		
 		if (checkalive > 0 && connection != null) {
 
 			long millis = System.currentTimeMillis();
@@ -67,16 +67,17 @@ public class LgtvConnection implements LgtvEventListener {
 			if (connection.getconnectionstatus() == LgTvInteractor.lgtvconnectionstatus.CS_PAIRED
 					&& connection.getlastsuccessfulinteraction() < (millis - checkalive * 1000)) {
 				String res = connection.getvolumeinfo(1);
-
 				String currentvol = quickfind(res, "level");
-				int cvol = Integer.parseInt(currentvol);
+				if (currentvol!="#notfound")
+				{
+					int cvol = Integer.parseInt(currentvol);		//strange behavior if a '#' is in the string parseint hangs.
+					if (lastvolume != cvol && reader != null) {
 
-				if (lastvolume != cvol && reader != null) {
-
-					String volume = "VOLUME_CURRENT=" + cvol;
-					LgtvStatusUpdateEvent event = new LgtvStatusUpdateEvent(
+						String volume = "VOLUME_CURRENT=" + cvol;
+						LgtvStatusUpdateEvent event = new LgtvStatusUpdateEvent(
 							this);
-					reader.sendtohandlers(event, ip, volume);
+						reader.sendtohandlers(event, ip, volume);
+					}
 				}
 
 			} else if (connection.getconnectionstatus() == LgTvInteractor.lgtvconnectionstatus.CS_NOTCONNECTED) {
@@ -97,6 +98,7 @@ public class LgtvConnection implements LgtvEventListener {
 			}
 
 		}
+
 	}
 
 	public LgtvConnection(String ip, int port, int localport, String pkey,

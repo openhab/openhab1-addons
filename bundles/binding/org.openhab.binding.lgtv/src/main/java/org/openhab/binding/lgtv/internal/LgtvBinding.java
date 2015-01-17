@@ -84,7 +84,7 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 		};
 
 		executor = Executors.newScheduledThreadPool(1);
-		executor.scheduleAtFixedRate(checkalivetask, 0, 10, TimeUnit.SECONDS);
+		executor.scheduleAtFixedRate(checkalivetask, 0, 10, TimeUnit.SECONDS);		//10sec is basesheduler - configuration value checks multiples of 10
 
 	}
 
@@ -372,10 +372,9 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider> implements
 	}
 
 	private void checkalive() {
-
 		if (deviceConfigCache != null && deviceConfigCache.size() > 0) {
 			for (String device : deviceConfigCache.keySet()) {
-				// logger.debug("checkalive: device="+device);
+				//logger.debug("checkalive: device="+device);
 				LgtvConnection connection = deviceConfigCache.get(device)
 						.getConnection();
 				if (connection != null) {

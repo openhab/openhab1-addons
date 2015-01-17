@@ -551,7 +551,7 @@ public class LgTvInteractor implements LgtvEventListener {
 
 			// Set up the initial connection
 			connection = (HttpURLConnection) serverAddress.openConnection();
-
+			connection.setConnectTimeout(5000);
 			connection.setRequestProperty("content-type",
 					"text/xml; charset=utf-8");
 			connection.setRequestProperty("Host",
@@ -561,7 +561,7 @@ public class LgTvInteractor implements LgtvEventListener {
 			connection.setRequestProperty("User-Agent",
 					"Linux/2.6.18 UDAP/2.0 CentOS/5.8");
 			connection.setUseCaches(false);
-			connection.setReadTimeout(10000);
+			connection.setReadTimeout(5000);				//mf17012015 
 
 			if (typ.equals("POST")) {
 				connection.setDoOutput(true);
@@ -594,30 +594,39 @@ public class LgTvInteractor implements LgtvEventListener {
 			logger.error("MalformedUrlException at Connection to: "
 					+ serverAddressString);
 			returnmessage = "#error/url";
+			setconnectionstatus(lgtvconnectionstatus.CS_NOTCONNECTED);
 		} catch (ProtocolException e) {
 			e.printStackTrace();
 			logger.error("Protocol Exception at Connection to: "
 					+ serverAddressString);
 			returnmessage = "#error/protocol";
+			setconnectionstatus(lgtvconnectionstatus.CS_NOTCONNECTED);
+
 		} catch (IOException e) {
 			logger.error("IO Exception at Connection to: "
 					+ serverAddressString);
-			// logger.debug(e.toString());
+			logger.debug(e.toString());
 			returnmessage = "#error/connect";
 			setconnectionstatus(lgtvconnectionstatus.CS_NOTCONNECTED);
 			// e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("Exception at Connection to: " + serverAddressString);
+			logger.debug(e.toString());
+			returnmessage = "#error/connect";
+			setconnectionstatus(lgtvconnectionstatus.CS_NOTCONNECTED);
 		}
+
 		// close the connection, set all objects to null
 		returnmessage += Integer.toString(responsecode);
 
 		if (connectionstatus != lgtvconnectionstatus.CS_NOTCONNECTED)
 			seensuccessfulinteraction();
-		if (connection != null)
-			connection.disconnect();
-		rd = null;
-		sb = null;
-		wr = null;
-		connection = null;
+//		if (connection != null)
+//			connection.disconnect();
+//		rd = null;
+//		sb = null;
+//		wr = null;
+//		connection = null;
 		return new String(returnmessage);
 	}
 
