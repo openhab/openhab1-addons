@@ -167,7 +167,8 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 	 */
 	@XStreamAlias("alarmType")
 	public enum AlarmType {
-		GENERAL(0, "General");
+		GENERAL(0, "General"),
+		MOTION(7, "Motion");
 
 		/**
 		 * A mapping between the integer code and its corresponding Alarm type

@@ -102,7 +102,6 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 	 */
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage, int offset, int endpoint) {
-		logger.trace("Handle Message Meter Request");
 		logger.debug("NODE {}: Received Meter Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		MeterScale scale;
@@ -115,7 +114,6 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 			logger.warn("Command {} not implemented.", command);
 			return;
 		case METER_REPORT:
-			logger.trace("Process Meter Report");
 			logger.debug("NODE {}: Meter report received", this.getNode().getNodeId());
 
 			if(serialMessage.getMessagePayload().length < offset+3) {
@@ -123,7 +121,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 						serialMessage.getMessagePayload().length, offset+3);
 				return;
 			}
-			
+
 			meterTypeIndex = serialMessage.getMessagePayloadByte(offset + 1) & 0x1F;
 			if (meterTypeIndex >= MeterType.values().length) {
 				logger.warn("NODE {}: Invalid meter type {}", this.getNode().getNodeId(), meterTypeIndex);
@@ -186,23 +184,24 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 			}
 
 			meterType = MeterType.getMeterType(meterTypeIndex);
-			logger.debug("NODE {}: Identified meter type {} ({})", this.getNode().getNodeId(), meterType.getLabel(), meterTypeIndex);
+			logger.debug("NODE {}: Identified meter type {}({})", this.getNode().getNodeId(), meterType.getLabel(), meterTypeIndex);
 			
 			for (int i = 0; i < 8; ++i) {
 				// scale is supported
 				if ((supportedScales & (1 << i)) == (1 << i)) {
 					scale = MeterScale.getMeterScale(meterType, i);
-					
+
 					if (scale == null) {
 						logger.warn("NODE {}: Invalid meter scale {}", this.getNode().getNodeId(), i);
 						continue;
 					}
-					
-					logger.debug("NODE {}: Meter Scale = {} ({})", this.getNode().getNodeId(), scale.getUnit(), scale.getScale());
+
+					logger.debug("NODE {}: Meter Scale = {}({})", this.getNode().getNodeId(), scale.getUnit(), scale.getScale());
 
 					// add scale to the list of supported scales.
-					if (!this.meterScales.contains(scale))
+					if (!this.meterScales.contains(scale)) {
 						this.meterScales.add(scale);
+					}
 				}
 			}
 			
