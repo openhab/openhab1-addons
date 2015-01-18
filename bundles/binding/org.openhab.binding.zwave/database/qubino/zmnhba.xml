@@ -10,7 +10,11 @@
 			<id>0x31</id>
 			<isGetSupported>false</isGetSupported>
 		</Class>
-		<Class><id>0x32</id></Class>
+		<Class>
+			<id>0x32</id>
+			<endPoint>1</endPoint>
+			<meterCanReset>true</meterCanReset>
+		</Class>
 		<Class><id>0x60</id></Class>
 		<Class><id>0x70</id></Class>
 		<Class><id>0x72</id></Class>
