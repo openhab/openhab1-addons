@@ -8,7 +8,7 @@ package org.openhab.action.hue;
 public interface HueBridgeObject {
 	
 	/**
-	 * get the json representation of thi object
+	 * get the json representation of the object
 	 * @return
 	 */
 	public String json();

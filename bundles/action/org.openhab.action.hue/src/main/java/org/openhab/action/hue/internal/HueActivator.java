@@ -30,7 +30,7 @@ public final class HueActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("Homematic action has been started.");
+		logger.debug("Hue action has been started.");
 	}
 
 	/**
@@ -38,7 +38,7 @@ public final class HueActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
-		logger.debug("Homematic action has been stopped.");
+		logger.debug("Hue action has been stopped.");
 	}
 
 	/**

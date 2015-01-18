@@ -8,6 +8,7 @@
  */
 package org.openhab.action.hue.internal;
 
+import org.openhab.action.hue.Rule;
 import org.openhab.binding.hue.internal.common.HueContext;
 import org.openhab.binding.hue.internal.hardware.HueBridge;
 import org.openhab.core.scriptengine.action.ActionDoc;
@@ -23,16 +24,46 @@ import com.sun.jersey.api.client.WebResource;
 
 
 /**
- * This class provides static methods that can be used in automation rules for
- * sending messages to Homematic remote control displays.
+ * Provide static Methods for Actions. 
  * 
- * @author Gerhard Riegler
- * @since 1.5.0
+ * @author Gernot Eger
+ * @since 1.7.0
  */
 public class Hue {
 
 	private static final Logger logger = LoggerFactory.getLogger(Hue.class);
 
+	
+	
+	/**
+	 * set Group to those id's; if a group with this name doesn't exist, create a new own
+	 * TODO: create similar procedure with Items/Groups passed directly!!!
+	 * @param name 
+	 * @param hueIds a list of hue ID's seperated by ';'
+	 * @return id of generated hue group
+	 */
+	public static String hueSetGroup(String name,String hueIds){
+		logger.error("not yet implemented");
+		return "0";
+	}
+	
+	
+	/*
+	 * 
+	 * set settings for this scene on the light(s)
+	 */
+	public static String hueSetSceneSettings(String sceneName,String lightId,String body){
+		logger.error("not yet implemented");
+		return "0";
+	}
+
+	@ActionDoc(text = "Create a new Rule")
+	public static Rule createHueRule(
+			@ParamDoc(name = "name", text = "Nmae of the Rule") String name){
+		return new Rule(name);
+	}
+	
+	
 //	/**
 //	 * Sends a text to a Homematic remote control display.
 //	 */
@@ -43,7 +74,7 @@ public class Hue {
 //
 //		return sendDisplay(remoteControlAddress, text, null);
 //	}
-//
+
 //	/**
 //	 * Sends a text to a Homematic remote control display with options.
 //	 */
