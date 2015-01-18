@@ -93,8 +93,9 @@ public class MeasurementRequest extends AbstractRequest {
 		String json = null;
 
 		try {
+			
 			json = executeQuery(url);
-
+			
 			final MeasurementResponse response = JSON.readValue(json,
 					MeasurementResponse.class);
 
