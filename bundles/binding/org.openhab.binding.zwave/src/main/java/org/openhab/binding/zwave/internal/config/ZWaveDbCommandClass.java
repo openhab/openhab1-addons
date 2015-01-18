@@ -24,4 +24,5 @@ public class ZWaveDbCommandClass {
 	@XStreamConverter(HexToIntegerConverter.class)
 	public Integer Id;
 	public Boolean isGetSupported;
+	public Boolean remove;
 }

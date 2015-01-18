@@ -1164,7 +1164,7 @@ public class ZWaveController {
 	 * @since 1.3.0
 	 */
 	private class ZWaveSendThread extends Thread {
-	
+
 		private final Logger logger = LoggerFactory.getLogger(ZWaveSendThread.class);
 
 		/**
@@ -1182,7 +1182,7 @@ public class ZWaveController {
 					} catch (InterruptedException e1) {
 						break;
 					}
-					
+
 					// Check we got a message
 					if (lastSentMessage == null) {
 						continue;
@@ -1306,7 +1306,7 @@ public class ZWaveController {
 		private static final int ACK = 0x06;
 		private static final int NAK = 0x15;
 		private static final int CAN = 0x18;
-		
+
 		private final Logger logger = LoggerFactory.getLogger(ZWaveReceiveThread.class);
 
 		@Override

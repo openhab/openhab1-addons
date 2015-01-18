@@ -477,8 +477,11 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					List<ZWaveDbCommandClass> classList = database.getProductCommandClasses();
 
 					if (classList != null) {
-						// Loop through the command classes and add to the records...
+						// Loop through the command classes and update the records...
 						for (ZWaveDbCommandClass dbClass : classList) {
+							if(dbClass.remove == true) {
+								node.removeCommandClass(CommandClass.getCommandClass(dbClass.Id));
+							}
 							if(dbClass.isGetSupported != null) {
 								ZWaveCommandClass zwaveClass = node.getCommandClass(CommandClass.getCommandClass(dbClass.Id));
 								if(zwaveClass instanceof ZWaveGetCommands) {
