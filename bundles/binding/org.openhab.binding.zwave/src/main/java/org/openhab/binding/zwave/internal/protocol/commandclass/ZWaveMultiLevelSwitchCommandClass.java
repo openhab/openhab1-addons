@@ -11,6 +11,7 @@ package org.openhab.binding.zwave.internal.protocol.commandclass;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -145,10 +146,14 @@ public class ZWaveMultiLevelSwitchCommandClass extends ZWaveCommandClass impleme
 	}
 
 	@Override
-	public void setGetSupported(Boolean supported) {
-		isGetSupported = supported;
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		if(options.isGetSupported != null) {
+			isGetSupported = options.isGetSupported;
+		}
+		
+		return true;
 	}
-	
+
 	/**
 	 * Gets a SerialMessage with the SWITCH_MULTILEVEL_SET command 
 	 * @param the level to set. 0 is mapped to off, > 0 is mapped to on.

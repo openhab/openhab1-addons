@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -288,7 +289,11 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 	}
 
 	@Override
-	public void setGetSupported(Boolean supported) {
-		isGetSupported = supported;
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		if(options.isGetSupported != null) {
+			isGetSupported = options.isGetSupported;
+		}
+		
+		return true;
 	}
 }

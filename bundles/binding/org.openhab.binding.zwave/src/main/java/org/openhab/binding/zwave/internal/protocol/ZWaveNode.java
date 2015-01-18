@@ -563,8 +563,9 @@ public class ZWaveNode {
 			ZWaveCommandClass commandClass, int endpointId) {
 		ZWaveMultiInstanceCommandClass multiInstanceCommandClass;
 		
-		if (serialMessage == null)
+		if (serialMessage == null) {
 			return null;
+		}
 		
 		// no encapsulation necessary.
 		if (endpointId == 0) {

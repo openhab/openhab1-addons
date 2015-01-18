@@ -479,14 +479,20 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					if (classList != null) {
 						// Loop through the command classes and update the records...
 						for (ZWaveDbCommandClass dbClass : classList) {
+							// If we want to remove the class, then remove it!
 							if(dbClass.remove == true) {
+								// TODO: This will only remove the root nodes and ignores endpoint
+								// TODO: Do we need to search into multi_instance?
 								node.removeCommandClass(CommandClass.getCommandClass(dbClass.Id));
+								continue;
 							}
-							if(dbClass.isGetSupported != null) {
-								ZWaveCommandClass zwaveClass = node.getCommandClass(CommandClass.getCommandClass(dbClass.Id));
-								if(zwaveClass instanceof ZWaveGetCommands) {
-									((ZWaveGetCommands)zwaveClass).setGetSupported(dbClass.isGetSupported);
-								}
+
+							// Get the command class
+							ZWaveCommandClass zwaveClass = node.resolveCommandClass(CommandClass.getCommandClass(dbClass.Id), dbClass.endpoint);
+
+							// If we found the command class, then set its options
+							if(zwaveClass != null) {
+								zwaveClass.setOptions(dbClass);
 							}
 						}
 					}

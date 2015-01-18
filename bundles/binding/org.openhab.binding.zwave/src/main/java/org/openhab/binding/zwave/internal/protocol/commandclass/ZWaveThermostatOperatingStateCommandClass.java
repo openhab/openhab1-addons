@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -162,10 +163,14 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	}
 
 	@Override
-	public void setGetSupported(Boolean supported) {
-		isGetSupported = supported;
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		if(options.isGetSupported != null) {
+			isGetSupported = options.isGetSupported;
+		}
+		
+		return true;
 	}
-	
+
 	/**
 	 * Z-Wave OperatingStateType enumeration. The operating state type indicates the type
 	 * of operating state that is reported from the thermostat.

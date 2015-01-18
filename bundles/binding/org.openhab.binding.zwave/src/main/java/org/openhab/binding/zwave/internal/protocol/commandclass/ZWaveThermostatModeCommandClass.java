@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -221,10 +222,14 @@ ZWaveCommandClassDynamicState {
 	}
 
 	@Override
-	public void setGetSupported(Boolean supported) {
-		isGetSupported = supported;
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		if(options.isGetSupported != null) {
+			isGetSupported = options.isGetSupported;
+		}
+		
+		return true;
 	}
-	
+
 	/**
 	 * Gets a SerialMessage with the THERMOSTAT_MODE_SUPPORTED_GET command 
 	 * @return the serial message, or null if the supported command is not supported.
