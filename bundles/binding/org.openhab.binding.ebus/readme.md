@@ -33,7 +33,7 @@ For your convenience you can see the relevant section as follows:
 	# >> testing -  All unknown or test telegrams
 	# >> custom - Use configuration defined by ebus:parserUrl
 	# default uses common and all vendor specified telegrams
-	#ebus:parser=common,wolf,testing,custom
+	#ebus:parsers=common,wolf,testing,custom
 	
 	# Set the sender id of this binding, default is "FF"
 	#ebus:senderId=FF
