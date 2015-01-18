@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-Private-Package: org.openhab.action.homematic.internal
-Ignore-Package: org.openhab.action.homematic.internal
+Private-Package: org.openhab.action.hue.internal
+Ignore-Package: org.openhab.action.hue.internal
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB Hue Action
 Bundle-SymbolicName: org.openhab.action.hue
@@ -8,7 +8,7 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 1.7.0.qualifier
 Bundle-Activator: org.openhab.action.hue.internal.HueActivator
 Bundle-ManifestVersion: 2
-Bundle-Description: This is the Homematic action of the open Home Aut
+Bundle-Description: This is the hue action of the open Home Aut
  omation Bus (openHAB)
 Import-Package: com.sun.jersey.api.client,
  org.codehaus.jackson;version="1.9.2",

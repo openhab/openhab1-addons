@@ -9,17 +9,17 @@
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.openhab.action.homematic</bundle.symbolicName>
-		<bundle.namespace>org.openhab.action.homematic</bundle.namespace>
-		<deb.name>openhab-addon-action-homematic</deb.name>
-		<deb.description>openhab addon action homematic</deb.description>
+		<bundle.symbolicName>org.openhab.action.hue</bundle.symbolicName>
+		<bundle.namespace>org.openhab.action.hue</bundle.namespace>
+		<deb.name>openhab-addon-action-hue</deb.name>
+		<deb.description>openhab addon action hue</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.action</groupId>
-	<artifactId>org.openhab.action.homematic</artifactId>
+	<artifactId>org.openhab.action.hue</artifactId>
 
-	<name>openHAB Homematic Action</name>
+	<name>openHAB hue Action</name>
 
 	<packaging>eclipse-plugin</packaging>
 
