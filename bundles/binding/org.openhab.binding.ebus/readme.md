@@ -41,7 +41,7 @@ For your convenience you can see the relevant section as follows:
 A sample configuration could look like:
 
 	ebus:serialPort=COM2
-	ebus:parser=common,wolf
+	ebus:parsers=common,wolf
 	
 ## Bind Items to eBus
 
