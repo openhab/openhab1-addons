@@ -17,8 +17,8 @@ import org.osgi.service.cm.ManagedService;
 /**
  * This class registers an OSGi service for the Homematic action.
  * 
- * @author Gerhard Riegler
- * @since 1.5.0
+ * @author Gernot Eger
+ * @since 1.7.0
  */
 public class HueActionService implements ActionService, ManagedService {
 
