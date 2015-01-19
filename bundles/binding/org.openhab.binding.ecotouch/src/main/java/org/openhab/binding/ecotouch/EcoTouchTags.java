@@ -353,6 +353,42 @@ public enum EcoTouchTags {
 		}
 	},
 
+	// German: nviNormAussen
+	TYPE_NVINORMAUSSEN {
+		{
+			command = "nviNormAussen";
+			itemClass = NumberItem.class;
+			tagName = "A91";
+		}
+	},
+
+	// German: nviHeizkreisNorm
+	TYPE_NVIHEIZKREISNORM {
+		{
+			command = "nviHeizkreisNorm";
+			itemClass = NumberItem.class;
+			tagName = "A92";
+		}
+	},
+
+	// German: nviTHeizgrenze
+	TYPE_NVITHEIZGRENZE {
+		{
+			command = "nviTHeizgrenze";
+			itemClass = NumberItem.class;
+			tagName = "A93";
+		}
+	},
+
+	// German: nviTHeizgrenzeSoll
+	TYPE_NVITHEIZGRENZESOLL {
+		{
+			command = "nviTHeizgrenzeSoll";
+			itemClass = NumberItem.class;
+			tagName = "A94";
+		}
+	},
+
 	// German: Betriebsstunden Verdichter 1
 	TYPE_OPERATING_HOURS_COMPRESSOR1 {
 		{
