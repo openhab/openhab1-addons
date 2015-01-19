@@ -105,6 +105,7 @@ public class ZWaveController {
 	private ZWaveReceiveThread receiveThread;
 	private ZWaveInputThread inputThread;
 
+	private final Semaphore sendAllowed = new Semaphore(1);
 	private final Semaphore transactionCompleted = new Semaphore(1);
 	private volatile SerialMessage lastSentMessage = null;
 	private long lastMessageStartTime = 0;
@@ -395,8 +396,9 @@ public class ZWaveController {
 			}
 			inputThread = null;
 		}
-		if(transactionCompleted.availablePermits() < 0)
+		if(transactionCompleted.availablePermits() < 0) {
 			transactionCompleted.release(transactionCompleted.availablePermits());
+		}
 		
 		transactionCompleted.drainPermits();
 		logger.trace("Transaction completed permit count -> {}", transactionCompleted.availablePermits());
@@ -1139,10 +1141,14 @@ public class ZWaveController {
 			SerialMessage recvMessage;
 			while (!interrupted()) {
 	    		try {
+	    			if(recvQueue.size() == 0) {
+	    				sendAllowed.release();
+	    			}
 					recvMessage = recvQueue.take();
 					logger.debug("Receive queue TAKE: Length={}", recvQueue.size());
 
 		    		handleIncomingMessage(recvMessage);
+		    		sendAllowed.tryAcquire();
 				}
 				catch (InterruptedException e) {
 					break;
@@ -1175,6 +1181,14 @@ public class ZWaveController {
 			logger.debug("Starting Z-Wave thread: Send");
 			try {
 				while (!interrupted()) {
+					// To avoid sending lots of frames when we still have input frames to
+					// process, we wait here until we've processed all receive frames
+					if(!sendAllowed.tryAcquire(1, zWaveResponseTimeout, TimeUnit.MILLISECONDS)) {
+						logger.warn("Receive queue TIMEOUT:", recvQueue.size());
+						continue;
+					}
+					sendAllowed.release();
+
 					// Take the next message from the send queue
 					try {
 						lastSentMessage = sendQueue.take();
@@ -1220,7 +1234,7 @@ public class ZWaveController {
 					
 					// Clear the semaphore used to acknowledge the completed transaction.
 					transactionCompleted.drainPermits();
-					
+
 					// Send the REQUEST message TO the controller
 					byte[] buffer = lastSentMessage.getMessageBuffer();
 					logger.debug("NODE {}: Sending REQUEST Message = {}", lastSentMessage.getMessageNode(), SerialMessage.bb2hex(buffer));
@@ -1332,12 +1346,13 @@ public class ZWaveController {
 				logger.error(e.getMessage());
 			}
 		}
-		
+
 		/**
     	 * Processes incoming message and notifies event handlers.
     	 * @param buffer the buffer to process.
+		 * @throws InterruptedException 
     	 */
-    	private void processIncomingMessage(byte[] buffer) {
+    	private void processIncomingMessage(byte[] buffer) throws InterruptedException {
     		SerialMessage recvMessage = new SerialMessage(buffer);
     		if (recvMessage.isValid) {
     			logger.trace("Message is valid, sending ACK");
@@ -1346,7 +1361,9 @@ public class ZWaveController {
     			logger.error("Message is not valid, discarding");
     			return;
     		}
-   
+
+    		// Use the sendAllowed semaphore to signal that the receive queue is not empty!
+			sendAllowed.acquire();
     		recvQueue.add(recvMessage);
 			logger.debug("Receive queue ADD: Length={}", recvQueue.size());
         }
