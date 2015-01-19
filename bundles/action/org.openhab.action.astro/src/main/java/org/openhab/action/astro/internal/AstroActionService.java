@@ -8,11 +8,7 @@
  */
 package org.openhab.action.astro.internal;
 
-import java.util.Dictionary;
-
 import org.openhab.core.scriptengine.action.ActionService;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
 
 /**
  * This class registers an OSGi service for the Astro action.
@@ -20,7 +16,7 @@ import org.osgi.service.cm.ManagedService;
  * @author Gerhard Riegler
  * @since 1.7.0
  */
-public class AstroActionService implements ActionService, ManagedService {
+public class AstroActionService implements ActionService {
 
 	public void activate() {
 	}
@@ -42,13 +38,6 @@ public class AstroActionService implements ActionService, ManagedService {
 	@Override
 	public Class<?> getActionClass() {
 		return Astro.class;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 	}
 
 }
