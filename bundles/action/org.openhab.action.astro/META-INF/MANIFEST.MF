@@ -10,7 +10,8 @@ Bundle-Activator: org.openhab.action.astro.internal.AstroActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Astro action of the open Home Aut
  omation Bus (openHAB)
-Import-Package: org.openhab.core.items,
+Import-Package: org.apache.commons.lang.builder,
+ org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
  org.openhab.core.scriptengine.action,

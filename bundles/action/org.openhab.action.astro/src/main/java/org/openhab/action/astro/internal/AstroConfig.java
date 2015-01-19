@@ -10,6 +10,9 @@ package org.openhab.action.astro.internal;
 
 import java.util.Date;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 /**
  * Holds the rule method parameters.
  * 
@@ -55,12 +58,20 @@ public class AstroConfig {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(date).append(latitude).append(longitude).toHashCode();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null || !(obj instanceof AstroConfig)) {
 			return false;
 		}
 		AstroConfig config = (AstroConfig) obj;
-		return date.getTime() == config.getDate().getTime() && latitude == config.getLatitude()
-				&& longitude == config.getLongitude();
+		return new EqualsBuilder().append(date, config.getDate()).append(latitude, config.getLatitude())
+				.append(longitude, config.getLongitude()).isEquals();
 	}
 }
