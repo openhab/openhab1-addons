@@ -37,7 +37,7 @@ public class HexToIntegerConverter implements Converter {
 	@Override
 	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
 		int number = (Integer) source;
-		writer.setValue("0x" + Integer.toHexString(number));
+		writer.setValue("0x" + Long.toHexString(number));
 	}
 
 	/**
@@ -46,10 +46,11 @@ public class HexToIntegerConverter implements Converter {
 	@Override
 	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		String value = reader.getValue();
-		if(value.startsWith("0x"))
-			return Integer.decode(value);
-		else
-			return Integer.parseInt(value, 16);
+		if(value.startsWith("0x")) {
+			return Long.decode(value);
+		}
+		else {
+			return Long.parseLong(value, 16);
+		}
 	}
-
 }
