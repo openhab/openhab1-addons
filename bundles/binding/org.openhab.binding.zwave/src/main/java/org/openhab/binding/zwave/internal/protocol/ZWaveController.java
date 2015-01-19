@@ -442,7 +442,7 @@ public class ZWaveController {
 				node = nodeSerializer.DeserializeNode(nodeId);
 			}
 			catch (Exception e) {
-				logger.error("NODE {}: Error deserialising XML file. {}", nodeId, e.toString());
+				logger.error("NODE {}: Restore from config: Error deserialising XML file. {}", nodeId, e.toString());
 				node = null;
 			}
 			String name = null;
@@ -458,13 +458,13 @@ public class ZWaveController {
 				if (node.getManufacturer() == Integer.MAX_VALUE ||
 						node.getHomeId() != controller.homeId ||
 						node.getNodeId() != nodeId) {
-					logger.warn("NODE {}: Config file data is invalid, ignoring config.", nodeId);
+					logger.warn("NODE {}: Restore from config: Error. Data invalid, ignoring config.", nodeId);
 					node = null;
 				}
 				else {
 					// The restore was ok, but we have some work to set up the links that aren't
 					// made as the deserialiser doesn't call the constructor
-					logger.debug("NODE {}: Restored from config.", nodeId);
+					logger.debug("NODE {}: Restore from config: Ok.", nodeId);
 					node.setRestoredFromConfigfile(controller);
 
 					// Set the controller and node references for all command classes
@@ -1145,7 +1145,8 @@ public class ZWaveController {
 	    				sendAllowed.release();
 	    			}
 					recvMessage = recvQueue.take();
-					logger.debug("Receive queue TAKE: Length={}", recvQueue.size());
+					logger.trace("Receive queue TAKE: Length={}", recvQueue.size());
+					logger.debug("Process Message = {}", SerialMessage.bb2hex(recvMessage.getMessageBuffer()));
 
 		    		handleIncomingMessage(recvMessage);
 		    		sendAllowed.tryAcquire();
@@ -1243,6 +1244,7 @@ public class ZWaveController {
 						synchronized (serialPort.getOutputStream()) {
 							serialPort.getOutputStream().write(buffer);
 							serialPort.getOutputStream().flush();
+							logger.trace("Message SENT");
 						}
 					}
 					catch (IOException e) {
@@ -1341,6 +1343,7 @@ public class ZWaveController {
 				synchronized (serialPort.getOutputStream()) {
 					serialPort.getOutputStream().write(response);
 					serialPort.getOutputStream().flush();
+					logger.trace("Response SENT");
 				}
 			} catch (IOException e) {
 				logger.error(e.getMessage());
@@ -1365,9 +1368,9 @@ public class ZWaveController {
     		// Use the sendAllowed semaphore to signal that the receive queue is not empty!
 			sendAllowed.acquire();
     		recvQueue.add(recvMessage);
-			logger.debug("Receive queue ADD: Length={}", recvQueue.size());
+			logger.trace("Receive queue ADD: Length={}", recvQueue.size());
         }
-		
+
 		/**
 		 * Run method. Runs the actual receiving process.
 		 */
