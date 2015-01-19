@@ -770,6 +770,15 @@
 			<Label lang="en">Z-Wave Thermostat</Label>
 			<ConfigFile>rtc/ct100.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>6501</Type>
+				<Id>000c</Id>
+			</Reference>
+			<Model>CT101</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct100.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0099</Id>
@@ -1676,6 +1685,15 @@
 	<Manufacturer>
 		<Id>0154</Id>
 		<Name>POPP</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>123665</Model>
+			<Label lang="en">Wall Plug Meter Switch</Label>
+			<ConfigFile>popp/123665.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>1100</Type>
