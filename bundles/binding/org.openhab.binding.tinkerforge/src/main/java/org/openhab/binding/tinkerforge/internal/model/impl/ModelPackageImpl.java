@@ -38,6 +38,7 @@ import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
+import org.openhab.binding.tinkerforge.internal.model.Direction;
 import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.Electrode;
@@ -967,6 +968,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EEnum configOptsMoveEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum directionEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2292,6 +2300,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMoveActor_Direction()
+  {
+    return (EAttribute)moveActorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EOperation getMoveActor__Move__UpDownType_DeviceOptions()
   {
     return moveActorEClass.getEOperations().get(0);
@@ -2305,6 +2323,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMoveActor__Stop()
   {
     return moveActorEClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMoveActor__Moveon__DeviceOptions()
+  {
+    return moveActorEClass.getEOperations().get(2);
   }
 
   /**
@@ -4792,6 +4820,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getDirection()
+  {
+    return directionEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getMIPConnection()
   {
     return mipConnectionEDataType;
@@ -5322,8 +5360,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEOperation(colorActorEClass, COLOR_ACTOR___SET_COLOR__HSBTYPE_DEVICEOPTIONS);
 
     moveActorEClass = createEClass(MOVE_ACTOR);
+    createEAttribute(moveActorEClass, MOVE_ACTOR__DIRECTION);
     createEOperation(moveActorEClass, MOVE_ACTOR___MOVE__UPDOWNTYPE_DEVICEOPTIONS);
     createEOperation(moveActorEClass, MOVE_ACTOR___STOP);
+    createEOperation(moveActorEClass, MOVE_ACTOR___MOVEON__DEVICEOPTIONS);
 
     mBrickletLEDStripEClass = createEClass(MBRICKLET_LED_STRIP);
 
@@ -5620,6 +5660,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     temperatureIRSubIdsEEnum = createEEnum(TEMPERATURE_IR_SUB_IDS);
     voltageCurrentSubIdsEEnum = createEEnum(VOLTAGE_CURRENT_SUB_IDS);
     configOptsMoveEEnum = createEEnum(CONFIG_OPTS_MOVE);
+    directionEEnum = createEEnum(DIRECTION);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -6425,12 +6466,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(moveActorEClass, MoveActor.class, "MoveActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMoveActor_Direction(), this.getDirection(), "direction", null, 0, 1, MoveActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     op = initEOperation(getMoveActor__Move__UpDownType_DeviceOptions(), null, "move", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getUpDownType(), "direction", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEOperation(getMoveActor__Stop(), null, "stop", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    op = initEOperation(getMoveActor__Moveon__DeviceOptions(), null, "moveon", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickletLEDStripEClass, MBrickletLEDStrip.class, "MBrickletLEDStrip", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -6875,6 +6920,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(configOptsMoveEEnum, ConfigOptsMove.ACCELERATION);
     addEEnumLiteral(configOptsMoveEEnum, ConfigOptsMove.DRIVEMODE);
     addEEnumLiteral(configOptsMoveEEnum, ConfigOptsMove.PWM);
+
+    initEEnum(directionEEnum, Direction.class, "Direction");
+    addEEnumLiteral(directionEEnum, Direction.UNDEF);
+    addEEnumLiteral(directionEEnum, Direction.LEFT);
+    addEEnumLiteral(directionEEnum, Direction.RIGHT);
 
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

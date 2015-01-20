@@ -24,6 +24,7 @@ import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
+import org.openhab.binding.tinkerforge.internal.model.Direction;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
@@ -65,6 +66,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getDirection <em>Direction</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getVelocity <em>Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getCurrentVelocity <em>Current Velocity</em>}</li>
@@ -298,6 +300,26 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @ordered
    */
   protected TFBrickDCConfiguration tfConfig;
+
+  /**
+   * The default value of the '{@link #getDirection() <em>Direction</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDirection()
+   * @generated
+   * @ordered
+   */
+  protected static final Direction DIRECTION_EDEFAULT = Direction.UNDEF;
+
+  /**
+   * The cached value of the '{@link #getDirection() <em>Direction</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDirection()
+   * @generated
+   * @ordered
+   */
+  protected Direction direction = DIRECTION_EDEFAULT;
 
   /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -811,6 +833,29 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * <!-- end-user-doc -->
    * @generated
    */
+  public Direction getDirection()
+  {
+    return direction;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDirection(Direction newDirection)
+  {
+    Direction oldDirection = direction;
+    direction = newDirection == null ? DIRECTION_EDEFAULT : newDirection;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__DIRECTION, oldDirection, direction));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getDeviceType()
   {
     return deviceType;
@@ -1009,6 +1054,21 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
           TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
     }
   }
+  
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public void moveon(DeviceOptions opts) {
+    if (direction != null && direction != Direction.UNDEF) {
+      UpDownType directiontmp = this.direction == Direction.LEFT ? UpDownType.UP : UpDownType.DOWN;
+      move(directiontmp, opts);
+    } else {
+      logger.warn("cannot moveon because direction is undefined");
+    }
+  }
+
 
 
   /**
@@ -1047,6 +1107,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       if (opts != null) {
         if (opts.containsKey(ConfigOptsMove.RIGHTSPEED.toString().toLowerCase())) {
           speed = Short.valueOf(opts.getOption(ConfigOptsMove.RIGHTSPEED.toString().toLowerCase()));
+          this.direction = Direction.RIGHT;
         } else {
           logger
               .error("\"rightspeed\" option missing or empty, items configuration has to be fixed!");
@@ -1057,6 +1118,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       if (opts != null) {
         if (opts.containsKey(ConfigOptsMove.LEFTSPEED.toString().toLowerCase())) {
           speed = Short.valueOf(opts.getOption(ConfigOptsMove.LEFTSPEED.toString().toLowerCase()));
+          this.direction = Direction.LEFT;
         } else {
           logger
               .error("\"leftspeed\" option missing or empty, items configuration has to be fixed!");
@@ -1241,6 +1303,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return getBrickd();
       case ModelPackage.MBRICK_DC__TF_CONFIG:
         return getTfConfig();
+      case ModelPackage.MBRICK_DC__DIRECTION:
+        return getDirection();
       case ModelPackage.MBRICK_DC__DEVICE_TYPE:
         return getDeviceType();
       case ModelPackage.MBRICK_DC__VELOCITY:
@@ -1307,6 +1371,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return;
       case ModelPackage.MBRICK_DC__TF_CONFIG:
         setTfConfig((TFBrickDCConfiguration)newValue);
+        return;
+      case ModelPackage.MBRICK_DC__DIRECTION:
+        setDirection((Direction)newValue);
         return;
       case ModelPackage.MBRICK_DC__VELOCITY:
         setVelocity((Short)newValue);
@@ -1379,6 +1446,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC__TF_CONFIG:
         setTfConfig((TFBrickDCConfiguration)null);
         return;
+      case ModelPackage.MBRICK_DC__DIRECTION:
+        setDirection(DIRECTION_EDEFAULT);
+        return;
       case ModelPackage.MBRICK_DC__VELOCITY:
         setVelocity(VELOCITY_EDEFAULT);
         return;
@@ -1437,6 +1507,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return getBrickd() != null;
       case ModelPackage.MBRICK_DC__TF_CONFIG:
         return tfConfig != null;
+      case ModelPackage.MBRICK_DC__DIRECTION:
+        return direction != DIRECTION_EDEFAULT;
       case ModelPackage.MBRICK_DC__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.MBRICK_DC__VELOCITY:
@@ -1500,6 +1572,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     {
       switch (derivedFeatureID)
       {
+        case ModelPackage.MBRICK_DC__DIRECTION: return ModelPackage.MOVE_ACTOR__DIRECTION;
         default: return -1;
       }
     }
@@ -1551,6 +1624,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     {
       switch (baseFeatureID)
       {
+        case ModelPackage.MOVE_ACTOR__DIRECTION: return ModelPackage.MBRICK_DC__DIRECTION;
         default: return -1;
       }
     }
@@ -1595,6 +1669,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       {
         case ModelPackage.MOVE_ACTOR___MOVE__UPDOWNTYPE_DEVICEOPTIONS: return ModelPackage.MBRICK_DC___MOVE__UPDOWNTYPE_DEVICEOPTIONS;
         case ModelPackage.MOVE_ACTOR___STOP: return ModelPackage.MBRICK_DC___STOP;
+        case ModelPackage.MOVE_ACTOR___MOVEON__DEVICEOPTIONS: return ModelPackage.MBRICK_DC___MOVEON__DEVICEOPTIONS;
         default: return -1;
       }
     }
@@ -1619,6 +1694,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return null;
       case ModelPackage.MBRICK_DC___STOP:
         stop();
+        return null;
+      case ModelPackage.MBRICK_DC___MOVEON__DEVICEOPTIONS:
+        moveon((DeviceOptions)arguments.get(0));
         return null;
       case ModelPackage.MBRICK_DC___ENABLE:
         enable();
@@ -1669,6 +1747,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
+    result.append(", direction: ");
+    result.append(direction);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(", velocity: ");

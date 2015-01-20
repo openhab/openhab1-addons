@@ -270,6 +270,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createVoltageCurrentSubIdsFromString(eDataType, initialValue);
       case ModelPackage.CONFIG_OPTS_MOVE:
         return createConfigOptsMoveFromString(eDataType, initialValue);
+      case ModelPackage.DIRECTION:
+        return createDirectionFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -393,6 +395,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertVoltageCurrentSubIdsToString(eDataType, instanceValue);
       case ModelPackage.CONFIG_OPTS_MOVE:
         return convertConfigOptsMoveToString(eDataType, instanceValue);
+      case ModelPackage.DIRECTION:
+        return convertDirectionToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -1644,6 +1648,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertConfigOptsMoveToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Direction createDirectionFromString(EDataType eDataType, String initialValue)
+  {
+    Direction result = Direction.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertDirectionToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

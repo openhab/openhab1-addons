@@ -721,7 +721,11 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
             else if (command instanceof StopMoveType){
               StopMoveType cmd = (StopMoveType) command;
               if (mDevice instanceof MoveActor) {
-                ((MoveActor) mDevice).stop();
+                if ( cmd == StopMoveType.STOP){
+                  ((MoveActor) mDevice).stop();
+                } else {
+                  ((MoveActor) mDevice).moveon(provider.getDeviceOptions(itemName));
+                }
               }
                logger.debug("{} StopMoveType command {}", itemName, cmd);
             }
