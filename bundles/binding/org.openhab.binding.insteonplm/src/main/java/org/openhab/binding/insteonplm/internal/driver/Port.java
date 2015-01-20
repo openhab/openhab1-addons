@@ -331,7 +331,6 @@ public class Port {
 						// Thread.sleep(500);
 						synchronized (m_reader.getRequestReplyLock()) {
 							m_ioStream.out().write(msg.getData());
-							m_ioStream.out().flush();
 							while (m_reader.waitForReply()) {
 								Thread.sleep(WAIT_TIME);
 								logger.trace("retransmitting msg: {}", msg);

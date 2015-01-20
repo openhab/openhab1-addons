@@ -266,13 +266,14 @@ public class HubIOStream extends IOStream implements Runnable {
 		@Override
 		public void write(int b) throws IOException {
 			m_out.write(b);
+			flushBuffer();
 		}
 		@Override
 		public void write(byte[] b, int off, int len) {
 			m_out.write(b, off, len);
+			flushBuffer();
 		}
-		@Override
-		public void flush() {
+		private void flushBuffer() {
 			ByteBuffer buffer = ByteBuffer.wrap(m_out.toByteArray());
 			try {
 				HubIOStream.this.write(buffer);
