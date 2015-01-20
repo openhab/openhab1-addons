@@ -9,17 +9,17 @@
 	</parent>
 
 	<properties>
-		<bundle.symbolicName>org.openhab.action.xmpp</bundle.symbolicName>
-		<bundle.namespace>org.openhab.action.xmpp</bundle.namespace>
-		<deb.name>openhab-addon-action-xmpp</deb.name>
-		<deb.description>openhab addon action xmpp</deb.description>
+		<bundle.symbolicName>org.openhab.action.astro</bundle.symbolicName>
+		<bundle.namespace>org.openhab.action.astro</bundle.namespace>
+		<deb.name>openhab-addon-action-astro</deb.name>
+		<deb.description>openhab addon action astro</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.action</groupId>
-	<artifactId>org.openhab.action.xmpp</artifactId>
+	<artifactId>org.openhab.action.astro</artifactId>
 
-	<name>openHAB XMPP Action</name>
+	<name>openHAB Astro Action</name>
 
 	<packaging>eclipse-plugin</packaging>
 
@@ -28,16 +28,6 @@
 			<plugin>
 				<groupId>org.vafer</groupId>
 				<artifactId>jdeb</artifactId>
-			</plugin>
-			<plugin>
-			  <groupId>${tycho-groupid}</groupId>
-			  <artifactId>tycho-compiler-plugin</artifactId>
-			  <version>${tycho-version}</version>
-			  <configuration>
-				<encoding>UTF-8</encoding>
-				<source>1.7</source>
-				<target>1.7</target>
-			  </configuration>
 			</plugin>
 		</plugins>
 	</build>
