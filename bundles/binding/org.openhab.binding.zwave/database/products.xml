@@ -1683,6 +1683,15 @@
 		<Name>POPP</Name>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>123665</Model>
+			<Label lang="en">Wall Plug Meter Switch</Label>
+			<ConfigFile>popp/123665.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>1100</Type>
 				<Id>0001</Id>
 			</Reference>
