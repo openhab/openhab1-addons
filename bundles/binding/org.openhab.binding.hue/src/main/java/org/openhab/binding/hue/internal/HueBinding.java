@@ -67,11 +67,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 
 	private HueTapStatesHandler tapStates=new HueTapStatesHandler();
 	
-	/**
-	 * Default constructor for the Hue binding.
-	 */
-	public HueBinding() {
-	}
+	
 
 	/**
      * @{inheritDoc}
@@ -321,6 +317,7 @@ public class HueBinding extends AbstractActiveBinding<HueBindingProvider> implem
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void updated(Dictionary config) throws ConfigurationException {
+		logger.debug("updated");
 		if (config != null) {
 			String ip = (String) config.get("ip");
 			if (StringUtils.isNotBlank(ip)) {

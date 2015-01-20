@@ -48,6 +48,10 @@ public class Hue {
 	}
 	
 	
+	public static Rule hueTest(String name){
+		return new Rule(name);
+	}
+	
 	/*
 	 * 
 	 * set settings for this scene on the light(s)
@@ -121,7 +125,6 @@ public class Hue {
 			logger.warn("Failed to connect to Hue bridgeat '"+url+"': HTTP request timed out.");
 			return null;
 		}
-		
 	}
 	/**
 	 * send Message to hue bridge

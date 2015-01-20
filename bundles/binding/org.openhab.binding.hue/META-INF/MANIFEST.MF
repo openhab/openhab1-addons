@@ -24,10 +24,11 @@ Import-Package: com.sun.jersey.api.client,
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Bundle-SymbolicName: org.openhab.binding.hue
+Bundle-SymbolicName: org.openhab.binding.hue;singleton:=true
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/huebinding.xml
 Bundle-ClassPath: .
 Export-Package: org.openhab.binding.hue.internal.common,
  org.openhab.binding.hue.internal.hardware
+Bundle-ActivationPolicy: lazy

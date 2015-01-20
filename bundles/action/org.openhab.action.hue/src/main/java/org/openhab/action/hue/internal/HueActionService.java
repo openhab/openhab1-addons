@@ -13,6 +13,8 @@ import java.util.Dictionary;
 import org.openhab.core.scriptengine.action.ActionService;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class registers an OSGi service for the Homematic action.
@@ -22,10 +24,14 @@ import org.osgi.service.cm.ManagedService;
  */
 public class HueActionService implements ActionService, ManagedService {
 
+	private static final Logger logger = LoggerFactory.getLogger(HueActionService.class);
+	
 	public void activate() {
+		logger.debug("activate");
 	}
 
 	public void deactivate() {
+		logger.debug("deactivate");
 	}
 
 	/**
@@ -49,6 +55,7 @@ public class HueActionService implements ActionService, ManagedService {
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
+		logger.debug("updated");
 	}
 
 }

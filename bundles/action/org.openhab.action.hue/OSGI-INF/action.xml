@@ -17,6 +17,6 @@
 		<provide interface="org.osgi.service.cm.ManagedService" />
 	</service>
 
-	<property name="service.pid" type="String" value="org.openhab.hue" />
+	<property name="service.pid" type="String" value="org.openhab.hue.action" />
 	
 </scr:component>
