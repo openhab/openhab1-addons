@@ -30,6 +30,7 @@ import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfigur
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.ColorActor;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
@@ -99,6 +100,7 @@ import org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.MoveActor;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds;
@@ -141,6 +143,7 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.UpDownType;
 import org.slf4j.Logger;
 
 import com.tinkerforge.BrickDC;
@@ -348,6 +351,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass colorActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass moveActorEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -956,6 +966,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EEnum configOptsMoveEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EDataType mipConnectionEDataType = null;
 
   /**
@@ -1153,6 +1170,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType hsbTypeEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType upDownTypeEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2251,6 +2275,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getColorActor__SetColor__HSBType_DeviceOptions()
   {
     return colorActorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMoveActor()
+  {
+    return moveActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMoveActor__Move__UpDownType_DeviceOptions()
+  {
+    return moveActorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMoveActor__Stop()
+  {
+    return moveActorEClass.getEOperations().get(1);
   }
 
   /**
@@ -4728,6 +4782,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getConfigOptsMove()
+  {
+    return configOptsMoveEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getMIPConnection()
   {
     return mipConnectionEDataType;
@@ -5018,6 +5082,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getUpDownType()
+  {
+    return upDownTypeEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getDeviceOptions()
   {
     return deviceOptionsEDataType;
@@ -5246,6 +5320,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     colorActorEClass = createEClass(COLOR_ACTOR);
     createEOperation(colorActorEClass, COLOR_ACTOR___SET_COLOR__HSBTYPE_DEVICEOPTIONS);
+
+    moveActorEClass = createEClass(MOVE_ACTOR);
+    createEOperation(moveActorEClass, MOVE_ACTOR___MOVE__UPDOWNTYPE_DEVICEOPTIONS);
+    createEOperation(moveActorEClass, MOVE_ACTOR___STOP);
 
     mBrickletLEDStripEClass = createEClass(MBRICKLET_LED_STRIP);
 
@@ -5541,6 +5619,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     multiTouchSubIdsEEnum = createEEnum(MULTI_TOUCH_SUB_IDS);
     temperatureIRSubIdsEEnum = createEEnum(TEMPERATURE_IR_SUB_IDS);
     voltageCurrentSubIdsEEnum = createEEnum(VOLTAGE_CURRENT_SUB_IDS);
+    configOptsMoveEEnum = createEEnum(CONFIG_OPTS_MOVE);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -5579,6 +5658,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletSegmentDisplay4x7EDataType = createEDataType(TINKER_BRICKLET_SEGMENT_DISPLAY4X7);
     tinkerBrickletLEDStripEDataType = createEDataType(TINKER_BRICKLET_LED_STRIP);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
+    upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     deviceOptionsEDataType = createEDataType(DEVICE_OPTIONS);
     enumEDataType = createEDataType(ENUM);
   }
@@ -5685,6 +5765,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1 = createEGenericType(this.getMTFConfigConsumer());
     g2 = createEGenericType(this.getTFBrickDCConfiguration());
     g1.getETypeArguments().add(g2);
+    mBrickDCEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMoveActor());
     mBrickDCEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickletDualRelay());
@@ -6342,6 +6424,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEParameter(op, this.getHSBType(), "color", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(moveActorEClass, MoveActor.class, "MoveActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getMoveActor__Move__UpDownType_DeviceOptions(), null, "move", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getUpDownType(), "direction", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getMoveActor__Stop(), null, "stop", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
     initEClass(mBrickletLEDStripEClass, MBrickletLEDStrip.class, "MBrickletLEDStrip", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(digitalActorIO16EClass, DigitalActorIO16.class, "DigitalActorIO16", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -6779,6 +6869,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(voltageCurrentSubIdsEEnum, VoltageCurrentSubIds.VOLTAGECURRENT_CURRENT);
     addEEnumLiteral(voltageCurrentSubIdsEEnum, VoltageCurrentSubIds.VOLTAGECURRENT_POWER);
 
+    initEEnum(configOptsMoveEEnum, ConfigOptsMove.class, "ConfigOptsMove");
+    addEEnumLiteral(configOptsMoveEEnum, ConfigOptsMove.RIGHTSPEED);
+    addEEnumLiteral(configOptsMoveEEnum, ConfigOptsMove.LEFTSPEED);
+    addEEnumLiteral(configOptsMoveEEnum, ConfigOptsMove.ACCELERATION);
+    addEEnumLiteral(configOptsMoveEEnum, ConfigOptsMove.DRIVEMODE);
+    addEEnumLiteral(configOptsMoveEEnum, ConfigOptsMove.PWM);
+
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(mTinkerDeviceEDataType, Device.class, "MTinkerDevice", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -6816,6 +6913,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletSegmentDisplay4x7EDataType, BrickletSegmentDisplay4x7.class, "TinkerBrickletSegmentDisplay4x7", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletLEDStripEDataType, BrickletLEDStrip.class, "TinkerBrickletLEDStrip", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(deviceOptionsEDataType, DeviceOptions.class, "DeviceOptions", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 

@@ -32,10 +32,10 @@ import com.tinkerforge.BrickDC;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickDC()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MInSwitchActor org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickDC> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MInSwitchActor org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickDC> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration> org.openhab.binding.tinkerforge.internal.model.MoveActor"
  * @generated
  */
-public interface MBrickDC extends MInSwitchActor, MDevice<BrickDC>, MTFConfigConsumer<TFBrickDCConfiguration>
+public interface MBrickDC extends MInSwitchActor, MDevice<BrickDC>, MTFConfigConsumer<TFBrickDCConfiguration>, MoveActor
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.

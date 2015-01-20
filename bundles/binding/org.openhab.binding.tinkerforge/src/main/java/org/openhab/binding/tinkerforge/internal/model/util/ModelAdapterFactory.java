@@ -297,6 +297,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createColorActorAdapter();
       }
       @Override
+      public Adapter caseMoveActor(MoveActor object)
+      {
+        return createMoveActorAdapter();
+      }
+      @Override
       public Adapter caseMBrickletLEDStrip(MBrickletLEDStrip object)
       {
         return createMBrickletLEDStripAdapter();
@@ -989,6 +994,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createColorActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MoveActor <em>Move Actor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MoveActor
+   * @generated
+   */
+  public Adapter createMoveActorAdapter()
   {
     return null;
   }

@@ -38,6 +38,7 @@ import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.MoveActor;
 import org.openhab.binding.tinkerforge.internal.model.NumberActor;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
@@ -56,9 +57,13 @@ import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -701,7 +706,31 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                   ((NumberActor) mDevice).setNumber(((DecimalType) command).toBigDecimal());
                 }
               }
-            } else {
+            } else if (command instanceof PercentType){
+              PercentType cmd = (PercentType) command;
+              logger.debug("{} percent command {}", itemName, cmd);
+            } 
+            else if (command instanceof UpDownType){
+              UpDownType cmd = (UpDownType) command;
+              logger.debug("{} UpDownType command {}", itemName, cmd);
+              if (mDevice instanceof MoveActor) {
+                ((MoveActor) mDevice).move((UpDownType) command,
+                    provider.getDeviceOptions(itemName));
+              }
+            }
+            else if (command instanceof StopMoveType){
+              StopMoveType cmd = (StopMoveType) command;
+              if (mDevice instanceof MoveActor) {
+                ((MoveActor) mDevice).stop();
+              }
+               logger.debug("{} StopMoveType command {}", itemName, cmd);
+            }
+            else if (command instanceof IncreaseDecreaseType){
+              IncreaseDecreaseType cmd = (IncreaseDecreaseType) command;
+              logger.debug("{} IncreaseDecreaseType command {}", itemName, cmd);
+            }
+
+            else {
               logger.error("{} got unknown command type: {}", LoggerConstants.COMMAND,
                   command.toString());
             }

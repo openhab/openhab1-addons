@@ -9,6 +9,7 @@
 @GenModel(literalsInterface="true", loadInitialization="false")
 package org.openhab.binding.tinkerforge.internal.model
 
+
 import com.tinkerforge.Device
 import com.tinkerforge.IPConnection
 import org.slf4j.Logger
@@ -44,6 +45,7 @@ import com.tinkerforge.BrickletHallEffect
 import com.tinkerforge.BrickletSegmentDisplay4x7
 import com.tinkerforge.BrickletLEDStrip
 import org.openhab.core.library.types.HSBType
+import org.openhab.core.library.types.UpDownType
 import java.math.BigDecimal
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions
 
@@ -88,6 +90,7 @@ type TinkerBrickletHallEffect wraps BrickletHallEffect
 type TinkerBrickletSegmentDisplay4x7 wraps BrickletSegmentDisplay4x7
 type TinkerBrickletLEDStrip wraps BrickletLEDStrip
 type HSBType wraps HSBType
+type UpDownType wraps UpDownType
 type DeviceOptions wraps DeviceOptions
 type Enum wraps Enum
 
@@ -226,7 +229,7 @@ enum DCDriveMode {
 }
 
 class MBrickDC extends MInSwitchActor, MDevice<MTinkerBrickDC>, 
-		MTFConfigConsumer<TFBrickDCConfiguration>{
+		MTFConfigConsumer<TFBrickDCConfiguration>, MoveActor{
 	readonly String deviceType = "brick_dc"
 	op void init(){}
 	short velocity
@@ -287,6 +290,11 @@ class MBrickletSegmentDisplay4x7 extends NumberActor, MDevice<TinkerBrickletSegm
 
 interface ColorActor {
     op void setColor(HSBType color, DeviceOptions opts)
+}
+
+interface MoveActor {
+    op void move(UpDownType direction, DeviceOptions opts)
+    op void stop()
 }
 
 class MBrickletLEDStrip extends ColorActor, MDevice<TinkerBrickletLEDStrip>{
@@ -741,4 +749,8 @@ enum TemperatureIRSubIds {
 
 enum VoltageCurrentSubIds {
     VOLTAGECURRENT_VOLTAGE, VOLTAGECURRENT_CURRENT, VOLTAGECURRENT_POWER
+}
+
+enum ConfigOptsMove {
+    RIGHTSPEED, LEFTSPEED, ACCELERATION, DRIVEMODE, PWM
 }

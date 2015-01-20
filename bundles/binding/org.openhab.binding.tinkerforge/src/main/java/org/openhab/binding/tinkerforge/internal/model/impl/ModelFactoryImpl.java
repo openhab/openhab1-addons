@@ -69,6 +69,7 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.UpDownType;
 import org.slf4j.Logger;
 
 import com.tinkerforge.BrickDC;
@@ -267,6 +268,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTemperatureIRSubIdsFromString(eDataType, initialValue);
       case ModelPackage.VOLTAGE_CURRENT_SUB_IDS:
         return createVoltageCurrentSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.CONFIG_OPTS_MOVE:
+        return createConfigOptsMoveFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -339,6 +342,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletLEDStripFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
+      case ModelPackage.UP_DOWN_TYPE:
+        return createUpDownTypeFromString(eDataType, initialValue);
       case ModelPackage.DEVICE_OPTIONS:
         return createDeviceOptionsFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
@@ -386,6 +391,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTemperatureIRSubIdsToString(eDataType, instanceValue);
       case ModelPackage.VOLTAGE_CURRENT_SUB_IDS:
         return convertVoltageCurrentSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.CONFIG_OPTS_MOVE:
+        return convertConfigOptsMoveToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -458,6 +465,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletLEDStripToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
+      case ModelPackage.UP_DOWN_TYPE:
+        return convertUpDownTypeToString(eDataType, instanceValue);
       case ModelPackage.DEVICE_OPTIONS:
         return convertDeviceOptionsToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
@@ -1622,6 +1631,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public ConfigOptsMove createConfigOptsMoveFromString(EDataType eDataType, String initialValue)
+  {
+    ConfigOptsMove result = ConfigOptsMove.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertConfigOptsMoveToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public IPConnection createMIPConnectionFromString(EDataType eDataType, String initialValue)
   {
     return (IPConnection)super.createFromString(eDataType, initialValue);
@@ -2193,6 +2224,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertHSBTypeToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public UpDownType createUpDownTypeFromString(EDataType eDataType, String initialValue)
+  {
+    return (UpDownType)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertUpDownTypeToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

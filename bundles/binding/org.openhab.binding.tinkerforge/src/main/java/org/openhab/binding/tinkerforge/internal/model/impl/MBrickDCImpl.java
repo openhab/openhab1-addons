@@ -19,8 +19,10 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
@@ -28,8 +30,10 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.MoveActor;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.core.library.types.UpDownType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -477,50 +481,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     switchState = newSwitchState;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__SWITCH_STATE, oldSwitchState, switchState));
-  }
-
-  /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
-   * @generated NOT
-   */
-  public void turnSwitch(OnOffValue state) {
-    logger.trace("turnSwitch called");
-    try {
-      if (state == OnOffValue.OFF) {
-        tinkerforgeDevice.setVelocity((short) 0);
-      } else if (state == OnOffValue.ON) {
-        tinkerforgeDevice.setVelocity(switchOnVelocity);
-      } else {
-        logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
-      }
-      switchState = state == null ? OnOffValue.UNDEF : state;
-      setSwitchState(switchState);
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-    }
-  }
-
-  /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
-   * @generated NOT
-   */
-  public void fetchSwitchState() {
-    OnOffValue value = OnOffValue.UNDEF;
-    try {
-      short currentVelocity = tinkerforgeDevice.getVelocity();
-      value = currentVelocity == 0 ? OnOffValue.OFF : OnOffValue.ON;
-      setSwitchState(value);
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-    }
   }
 
   /**
@@ -1007,6 +967,139 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   }
 
   /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void turnSwitch(OnOffValue state) {
+    logger.trace("turnSwitch called");
+    try {
+      if (state == OnOffValue.OFF) {
+        tinkerforgeDevice.setVelocity((short) 0);
+      } else if (state == OnOffValue.ON) {
+        tinkerforgeDevice.setVelocity(switchOnVelocity);
+      } else {
+        logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+      }
+      switchState = state == null ? OnOffValue.UNDEF : state;
+      setSwitchState(switchState);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void fetchSwitchState() {
+    OnOffValue value = OnOffValue.UNDEF;
+    try {
+      short currentVelocity = tinkerforgeDevice.getVelocity();
+      value = currentVelocity == 0 ? OnOffValue.OFF : OnOffValue.ON;
+      setSwitchState(value);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void move(UpDownType direction, DeviceOptions opts) {
+    Integer itemacceleration = acceleration;
+    Short itemdrivemode = null;
+    Integer pwm = pwmFrequency;
+    Short speed = null;
+
+    if (opts != null) {
+      if (opts.containsKey(ConfigOptsMove.ACCELERATION.toString().toLowerCase())) {
+        itemacceleration =
+            Integer.valueOf(opts.getOption(ConfigOptsMove.ACCELERATION.toString().toLowerCase()));
+      }
+      if (opts.containsKey(ConfigOptsMove.DRIVEMODE.toString().toLowerCase())) {
+        String drivemodestr = opts.getOption(ConfigOptsMove.DRIVEMODE.toString().toLowerCase());
+        if (drivemodestr.equals(DCDriveMode.BRAKE.toString().toLowerCase())) {
+          itemdrivemode = BrickDC.DRIVE_MODE_DRIVE_BRAKE;
+        } else if (drivemodestr.equals(DCDriveMode.COAST.toString().toLowerCase())) {
+          itemdrivemode = BrickDC.DRIVE_MODE_DRIVE_COAST;
+        } else {
+          if (driveMode == DCDriveMode.BRAKE) {
+            itemdrivemode = BrickDC.DRIVE_MODE_DRIVE_BRAKE;
+          } else if (driveMode == DCDriveMode.COAST) {
+            itemdrivemode = BrickDC.DRIVE_MODE_DRIVE_COAST;
+          }
+        }
+      }
+    }
+
+    if (direction.equals(UpDownType.DOWN)) {
+      if (opts != null) {
+        if (opts.containsKey(ConfigOptsMove.RIGHTSPEED.toString().toLowerCase())) {
+          speed = Short.valueOf(opts.getOption(ConfigOptsMove.RIGHTSPEED.toString().toLowerCase()));
+        } else {
+          logger
+              .error("\"rightspeed\" option missing or empty, items configuration has to be fixed!");
+          return;
+        }
+      }
+    } else if (direction.equals(UpDownType.UP)) {
+      if (opts != null) {
+        if (opts.containsKey(ConfigOptsMove.LEFTSPEED.toString().toLowerCase())) {
+          speed = Short.valueOf(opts.getOption(ConfigOptsMove.LEFTSPEED.toString().toLowerCase()));
+        } else {
+          logger
+              .error("\"leftspeed\" option missing or empty, items configuration has to be fixed!");
+          return;
+        }
+      }
+    } else {
+      logger.error("\"direction\" option missconfigured, items configuration has to be fixed!");
+      return;
+
+    }
+    try {
+      tinkerforgeDevice.setAcceleration(itemacceleration);
+      tinkerforgeDevice.setPWMFrequency(pwm);
+      tinkerforgeDevice.setDriveMode(itemdrivemode);
+      tinkerforgeDevice.setVelocity(speed);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public void stop() {
+    try {
+      tinkerforgeDevice.setVelocity((short) 0);
+      setSwitchState(OnOffValue.OFF);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated NOT
@@ -1403,6 +1496,13 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         default: return -1;
       }
     }
+    if (baseClass == MoveActor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        default: return -1;
+      }
+    }
     return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
   }
 
@@ -1447,6 +1547,13 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         default: return -1;
       }
     }
+    if (baseClass == MoveActor.class)
+    {
+      switch (baseFeatureID)
+      {
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -1482,6 +1589,15 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         default: return -1;
       }
     }
+    if (baseClass == MoveActor.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.MOVE_ACTOR___MOVE__UPDOWNTYPE_DEVICEOPTIONS: return ModelPackage.MBRICK_DC___MOVE__UPDOWNTYPE_DEVICEOPTIONS;
+        case ModelPackage.MOVE_ACTOR___STOP: return ModelPackage.MBRICK_DC___STOP;
+        default: return -1;
+      }
+    }
     return super.eDerivedOperationID(baseOperationID, baseClass);
   }
 
@@ -1497,6 +1613,12 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     {
       case ModelPackage.MBRICK_DC___INIT:
         init();
+        return null;
+      case ModelPackage.MBRICK_DC___MOVE__UPDOWNTYPE_DEVICEOPTIONS:
+        move((UpDownType)arguments.get(0), (DeviceOptions)arguments.get(1));
+        return null;
+      case ModelPackage.MBRICK_DC___STOP:
+        stop();
         return null;
       case ModelPackage.MBRICK_DC___ENABLE:
         enable();

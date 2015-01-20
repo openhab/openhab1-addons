@@ -301,6 +301,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMInSwitchActor(mBrickDC);
         if (result == null) result = caseMDevice(mBrickDC);
         if (result == null) result = caseMTFConfigConsumer(mBrickDC);
+        if (result == null) result = caseMoveActor(mBrickDC);
         if (result == null) result = caseMSwitchActor(mBrickDC);
         if (result == null) result = caseMBaseDevice(mBrickDC);
         if (result == null) result = defaultCase(theEObject);
@@ -407,6 +408,13 @@ public class ModelSwitch<T> extends Switch<T>
       {
         ColorActor colorActor = (ColorActor)theEObject;
         T result = caseColorActor(colorActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MOVE_ACTOR:
+      {
+        MoveActor moveActor = (MoveActor)theEObject;
+        T result = caseMoveActor(moveActor);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1463,6 +1471,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseColorActor(ColorActor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Move Actor</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Move Actor</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMoveActor(MoveActor object)
   {
     return null;
   }
