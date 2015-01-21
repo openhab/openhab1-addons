@@ -226,7 +226,7 @@ public class ZWaveDeviceClass {
 		STATIC_CONTOLLER(0x02, "Static Controller"), 
 		AV_CONTROL_POINT(0x03, "A/V Control Point"), 
 		DISPLAY(0x06, "Display"),
-		DOOR_SENSOR(0x07, "Door Sensor"),
+		GARAGE_DOOR(0x07, "Garage Door"),
 		THERMOSTAT(0x08, "Thermostat"), 
 		WINDOW_COVERING(0x09, "Window Covering"), 
 		REPEATER_SLAVE(0x0f, "Repeater Slave"), 
@@ -307,7 +307,7 @@ public class ZWaveDeviceClass {
 					return new CommandClass[0];
 				case REMOTE_CONTROLLER:
 				case STATIC_CONTOLLER:
-				case DOOR_SENSOR:
+				case GARAGE_DOOR:
 				case REPEATER_SLAVE:
 				case TOGGLE_SWITCH:
 				case REMOTE_SWITCH:
@@ -417,7 +417,7 @@ public class ZWaveDeviceClass {
 
 		SIMPLE_METER(1, Generic.METER, "Simple Meter"),
 		
-		DOOR_SENSOR(1, Generic.DOOR_SENSOR, "Door Sensor"),
+		SIMPLE_GARAGE_DOOR(1, Generic.GARAGE_DOOR, "Simple Garage Door"),
 
 		DOOR_LOCK(1, Generic.ENTRY_CONTROL, "Door Lock"),
 		ADVANCED_DOOR_LOCK(2, Generic.ENTRY_CONTROL, "Advanced Door Lock"),
