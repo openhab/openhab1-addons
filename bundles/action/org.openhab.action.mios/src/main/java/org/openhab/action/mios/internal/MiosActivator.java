@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.mios.internal;
+package org.openhab.action.mios.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * Extension of the default OSGi bundle activator.
  * 
  * @author Mark Clark
- * @since 1.6.0
+ * @since 1.7.0
  */
 public final class MiosActivator implements BundleActivator {
 
@@ -27,34 +27,24 @@ public final class MiosActivator implements BundleActivator {
 
 	/**
 	 * Called whenever the OSGi framework starts our bundle.
-	 * 
-	 * @param bc
-	 *            the OSGi BundleContext associated with our openHAB Binding.
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("MiOS binding has been started");
+		logger.debug("MiOS Action has been started.");
 	}
 
 	/**
 	 * Called whenever the OSGi framework stops our bundle.
-	 * 
-	 * @param bc
-	 *            the OSGi BundleContext associated with our openHAB Binding.
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
-		logger.debug("MiOS binding has been stopped");
+		logger.debug("MiOS Action has been stopped.");
 	}
 
 	/**
-	 * Returns the OSGi BundleContext of this bundle.
+	 * Returns the bundle context of this bundle.
 	 * 
-	 * The OSGi BundleContext is needed to talk with other services running under OSGi.
-	 * <p>
-	 * eg. openHAB's {@code TransformationService}.
-	 * 
-	 * @return the bundle context
+	 * @return the bundle context.
 	 */
 	public static BundleContext getContext() {
 		return context;
