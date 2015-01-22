@@ -262,6 +262,37 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 			}
 		}
 	}
+	
+	/**
+	 * This calculates the number of items in the group.
+	 * 
+	 * @author Gaël L'hopital
+	 * @since 1.7.0
+	 *
+	 */
+	static class Count implements GroupFunction {
+		
+		public Count() {}
+
+		/**
+		 * @{inheritDoc
+		 */
+		public State calculate(List<Item> items) {
+			return new DecimalType(items.size());
+		}
+
+		/**
+		 * @{inheritDoc
+		 */
+		public State getStateAs(List<Item> items, Class<? extends State> stateClass) {
+			State state = calculate(items);
+			if(stateClass.isInstance(state)) {
+				return state;
+			} else {
+				return null;
+			}
+		}
+	}
 
 	/**
 	 * This calculates the numeric sum over all item states of decimal type.
