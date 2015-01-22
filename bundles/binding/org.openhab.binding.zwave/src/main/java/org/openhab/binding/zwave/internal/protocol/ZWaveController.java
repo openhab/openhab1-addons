@@ -1300,7 +1300,6 @@ public class ZWaveController {
 					catch (InterruptedException e) {
 						break;
 					}
-					
 				}
 			}
 			catch (Exception e) {
