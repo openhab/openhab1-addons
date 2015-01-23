@@ -61,7 +61,7 @@ public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name
 	 * @param bundleContext BundleContext of the Bundle that defines this component
 	 * @param configuration Configuration properties for this component obtained from the ConfigAdmin service
 	 */
-	public void activate(BundleContext bundleContext, Map<Object, Object> configuration) {
+	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
 		this.bundleContext = bundleContext;
 
 		// the configuration is guaranteed not to be null, because the component definition has the
@@ -80,7 +80,29 @@ public class ${binding-name}Binding extends AbstractActiveBinding<${binding-name
 		setProperlyConfigured(true);
 	}
 	
-	public void deactivate() {
+	/**
+	 * Called by the SCR when the configuration of a binding has been changed through the ConfigAdmin service.
+	 * @param configuration Updated configuration properties
+	 */
+	public void modified(final Map<String, Object> configuration) {
+		// update the internal configuration accordingly
+	}
+	
+	/**
+	 * Called by the SCR to deactivate the component when either the configuration is removed or
+	 * mandatory references are no longer satisfied or the component has simply been stopped.
+	 * @param reason Reason code for the deactivation:<br>
+	 * <ul>
+	 * <li> 0 – Unspecified
+     * <li> 1 – The component was disabled
+     * <li> 2 – A reference became unsatisfied
+     * <li> 3 – A configuration was changed
+     * <li> 4 – A configuration was deleted
+     * <li> 5 – The component was disposed
+     * <li> 6 – The bundle was stopped
+     * </ul>
+	 */
+	public void deactivate(final int reason) {
 		this.bundleContext = null;
 		// deallocate resources here that are no longer needed and 
 		// should be reset when activating this binding again
