@@ -293,8 +293,10 @@ interface ColorActor {
 }
 
 interface MoveActor {
+    Direction direction
     op void move(UpDownType direction, DeviceOptions opts)
     op void stop()
+    op void moveon(DeviceOptions opts)
 }
 
 class MBrickletLEDStrip extends ColorActor, MDevice<TinkerBrickletLEDStrip>{
@@ -753,4 +755,8 @@ enum VoltageCurrentSubIds {
 
 enum ConfigOptsMove {
     RIGHTSPEED, LEFTSPEED, ACCELERATION, DRIVEMODE, PWM
+}
+
+enum Direction {
+    UNDEF, LEFT, RIGHT
 }

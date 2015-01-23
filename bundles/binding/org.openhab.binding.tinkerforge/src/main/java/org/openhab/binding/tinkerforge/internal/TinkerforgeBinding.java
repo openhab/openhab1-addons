@@ -606,7 +606,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         } else if (itemType.isAssignableFrom(SwitchItem.class)) {
           value = sensorValue == HighLowValue.HIGH ? OnOffType.ON : OnOffType.OFF;
         } else {
-          logger.error("{} unsupported item type {} for item {}", LoggerConstants.TFMODELUPDATE,
+          logger.trace("{} unsupported item type {} for item {}", LoggerConstants.TFMODELUPDATE,
               provider.getItem(itemName), itemName);
         }
       } else if (sensorValue instanceof OnOffValue) {
@@ -619,7 +619,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         } else if (itemType.isAssignableFrom(SwitchItem.class)) {
           value = sensorValue == OnOffValue.ON ? OnOffType.ON : OnOffType.OFF;
         } else {
-          logger.error("{} unsupported item type {} for item {}", LoggerConstants.TFMODELUPDATE,
+          logger.trace("{} unsupported item type {} for item {}", LoggerConstants.TFMODELUPDATE,
               provider.getItem(itemName), itemName);
         }
       } else if (sensorValue == UnDefValue.UNDEF || sensorValue == null) {
