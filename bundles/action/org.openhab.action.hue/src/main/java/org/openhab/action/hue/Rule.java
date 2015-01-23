@@ -2,18 +2,15 @@ package org.openhab.action.hue;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializerProvider;
-
-import org.codehaus.jackson.annotate.*;
-import org.codehaus.jackson.map.annotate.*;
 
 /**
  * a rule as described in http://www.developers.meethue.com/documentation/rules-api
@@ -36,7 +33,7 @@ public class Rule {
 	
 	//{"address":"/sensors/2/state/buttonevent","operator":"eq","value":"16"}
 	
-	public class Condition {
+	public static class Condition {
 		@JsonProperty
 		public String adress;
 		@JsonProperty
@@ -50,6 +47,12 @@ public class Rule {
 			this.operator = operator;
 			this.value = value;
 		}
+
+		public Condition() {
+			super();
+		}
+		
+		
 	}
 	
 //	"address": "/groups/0/action",
@@ -68,45 +71,26 @@ public class Rule {
 			super();
 			this.adress = adress;
 			this.method = method;
-			this.body = new ActionBody(bodyElement,bodyValue);
+			
+			//this.body = new ActionBody(bodyElement,bodyValue);
+			this.body= new HashMap<String,Object>();
+			body.put(bodyElement, bodyValue);
+			
 		}
 		
+		
+		public Action() {
+			super();
+		}
+
+
 		@JsonProperty
 		public String adress;
 		@JsonProperty
 		public String method;
 		
-		@JsonSerialize(using = ActionBodySerializer.class)
 		@JsonProperty
-		public ActionBody body;
-		
-		
-		/**
-		 * get action body here
-		 * @author Gernot Eger
-		 *
-		 */
-		private class ActionBody{
-			
-			String bodyElement;
-			Object bodyValue;
-			
-			private ActionBody(String bodyElement, Object bodyValue) {
-				super();
-				this.bodyElement = bodyElement;
-				this.bodyValue = bodyValue;
-			}
-		}
-
-		public static class ActionBodySerializer extends JsonSerializer<ActionBody> {
-			public void serialize(ActionBody value, JsonGenerator jgen,
-					SerializerProvider provider) throws IOException,
-					JsonProcessingException {
-				jgen.writeStartObject();
-				jgen.writeObjectField(value.bodyElement, value.bodyValue);
-				jgen.writeEndObject();
-			}
-		}
+		public Map<String,Object> body;
 
 	}
 		
@@ -143,6 +127,13 @@ public class Rule {
 	}
 
 	/**
+	 * empty constructor for parser
+	 */
+	public Rule() {
+		super();
+	}
+
+	/**
 	 * return Json for update
 	 * @return
 	 * @throws IOException 
@@ -150,11 +141,26 @@ public class Rule {
 	 * @throws JsonGenerationException 
 	 */
 	@JsonIgnore
-	public String getUpdateJson() throws JsonGenerationException, JsonMappingException, IOException{
+	public String toJson() throws JsonGenerationException, JsonMappingException, IOException{
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
 		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
 	}
+	
+	/**
+	 * create Rule from json description
+	 * @param json
+	 * @return
+	 * @throws IOException 
+	 */
+	@JsonIgnore
+	public static Rule createRule(String json) throws IOException{
+		ObjectMapper mapper = new ObjectMapper();
+		
+		return mapper.readValue(json,Rule.class);
+		
+	}
 
+	
 }

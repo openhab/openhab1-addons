@@ -1,9 +1,9 @@
 package org.openhab.action.hue;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.codehaus.jackson.map.JsonSerializer;
 
 public class TestJsonGeneration {
 
@@ -26,13 +26,22 @@ public class TestJsonGeneration {
 		r1.addAction("/groups/0/action", "PUT", "hue", 155);
 		
 		
-		String s1=r1.getUpdateJson();
+		String s1=r1.toJson();
 		assertTrue("condition1",s1.contains("buttonevent"));
 		assertTrue("action1",s1.contains("\"scene\""));
 		
+		Rule r2=Rule.createRule(s1);
+		assertEquals(1,r2.conditions.size());
+		assertEquals(2,r2.actions.size());
 		
+		String s2=r2.toJson();
+		assertTrue("action1",s2.contains("\"scene\""));
 		
-		
-	}
+		String scene = (String) r2.actions.get(0).body.get("scene");
+		assertEquals("S3",scene);
+
+		int hue = (int) r2.actions.get(1).body.get("hue");
+		assertEquals(155,hue);
+}
 
 }
