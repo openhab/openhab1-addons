@@ -11,6 +11,8 @@ package org.openhab.core.library.types;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openhab.core.items.GroupFunction;
 import org.openhab.core.items.Item;
@@ -264,7 +266,11 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 	}
 	
 	/**
-	 * This calculates the number of items in the group.
+	 * This calculates the number of items in the group matching the
+	 * regular expression passed in parameter
+	 * Group:String:COUNT(".") will count all items having a string state of one character
+	 * Group:String:COUNT("[5-9]") will count all items having a string state between 5 and 9
+	 * ...
 	 * 
 	 * @author Gaël L'hopital
 	 * @since 1.7.0
@@ -272,13 +278,30 @@ public interface ArithmeticGroupFunction extends GroupFunction {
 	 */
 	static class Count implements GroupFunction {
 		
-		public Count() {}
+		protected final Pattern pattern;
+		
+		public Count(State regExpr) {
+			if(regExpr==null) {
+				throw new IllegalArgumentException("Parameter must not be null!");
+			}
+			this.pattern = Pattern.compile(regExpr.toString());
+		}
 
 		/**
 		 * @{inheritDoc
 		 */
 		public State calculate(List<Item> items) {
-			return new DecimalType(items.size());
+			int count = 0;
+			if(items!=null) {
+				for(Item item : items) {
+					Matcher matcher = pattern.matcher(item.getState().toString());
+					if (matcher.matches()) {
+						count++;
+					}
+				}
+			}
+			
+			return new DecimalType(count);
 		}
 
 		/**
