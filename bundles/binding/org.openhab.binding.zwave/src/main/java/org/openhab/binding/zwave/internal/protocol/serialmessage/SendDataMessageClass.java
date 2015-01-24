@@ -81,7 +81,7 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			// Consider this as a received frame since the controller did receive an ACK from the device.
 			node.incrementReceiveCount();
 
-			// If the node is DEAD, but we've just received a message from it, then it's not dead!
+			// If the node is DEAD, but we've just received an ACK from it, then it's not dead!
 			if(node.isDead()) {
 				node.setAlive();
 				logger.debug("NODE {}: Node has risen from the DEAD. Set stage to {}.", node.getNodeId(), node.getNodeStage());			

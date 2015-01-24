@@ -373,10 +373,10 @@ public class SerialMessage {
 
 	/**
 	 * Sets the transaction for the incoming message to canceled.
-	 * @param transactionCanceled the transActionCanceled to set
 	 */
-	public void setTransactionCanceled(boolean transactionCanceled) {
-		this.transactionCanceled = transactionCanceled;
+	public void setTransactionCanceled() {
+		this.transactionCanceled = true;
+	}
 	}
 
 	/**

@@ -114,7 +114,7 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			}
 
 			// Transaction is not successful
-			incomingMessage.setTransactionCanceled(true);
+			incomingMessage.setTransactionCanceled();
 			result = false;
 			break;
 		default:

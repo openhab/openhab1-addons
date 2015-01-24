@@ -150,7 +150,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
                 	return;
                 }
 
-                targetNodeId = serialMessage.getMessagePayloadByte(offset +4);
+                targetNodeId = serialMessage.getMessagePayloadByte(offset + 4);
                 int receivedInterval = ((serialMessage.getMessagePayloadByte(offset + 1)) << 16) | ((serialMessage.getMessagePayloadByte(offset + 2)) << 8) | (serialMessage.getMessagePayloadByte(offset + 3));
 				logger.debug("NODE {}: Wake up interval report, value = {} seconds, targetNodeId = {}", this.getNode().getNodeId(), receivedInterval, targetNodeId);
 
@@ -176,7 +176,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 				break;
 			case WAKE_UP_NOTIFICATION:
 				logger.debug("NODE {}: Received WAKE_UP_NOTIFICATION", this.getNode().getNodeId());
-				serialMessage.setTransactionCanceled(true);
+				serialMessage.setTransactionCanceled();
 
 				// Set the awake flag. This will also empty the queue
 				this.setAwake(true);
