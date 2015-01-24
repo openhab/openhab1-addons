@@ -1532,6 +1532,15 @@
 			<Label lang="en">Scene Capable Push On/Off</Label>
 			<ConfigFile>leviton/dzmx1-1lz.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+			        <Type>802</Type>
+			        <Id>261</Id>
+			</Reference>
+			<Model>VRCZ4-M0Z</Model>
+			<Label lang="en">4-Zone Controller</Label>
+			<ConfigFile>leviton/vrcz4-m0z.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>007e</Id>
