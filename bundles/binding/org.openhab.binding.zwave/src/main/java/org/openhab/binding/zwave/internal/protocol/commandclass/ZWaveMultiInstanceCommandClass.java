@@ -38,6 +38,10 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * of the same device class on the node. Multi Channel support (version 2)
  * of the command class can also handle multiple instances of different
  * command classes. The instances are called endpoints in this version.
+ * 
+ * Useful references -:
+ * https://groups.google.com/d/msg/openzwave/FeFNBI8GAKk/dyXAO54BiqgJ
+ * 
  * @author Jan-Willem Spuij
  * @author Chris Jackson
  * @since 1.3.0
@@ -63,11 +67,11 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	private static final int MULTI_CHANNEL_ENDPOINT_FIND = 0x0b;
 	private static final int MULTI_CHANNEL_ENDPOINT_FIND_REPORT = 0x0c;
 	private static final int MULTI_CHANNEL_ENCAP = 0x0d;
-	
+
 	private final Map<Integer, ZWaveEndpoint> endpoints = new HashMap<Integer, ZWaveEndpoint>();
-	
+
 	private boolean endpointsAreTheSameDeviceClass;
-	
+
 	// List of classes that DO NOT support multiple instances.
 	// This is used to reduce the number of requests during initialisation.
 	// Only add a class to this list if you are sure it doesn't support multiple instances!
@@ -307,15 +311,16 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 		int endId = this.endpointsAreTheSameDeviceClass ? this.endpoints.size() : receivedEndpointId;
 		
 		boolean supportsBasicCommandClass = this.getNode().supportsCommandClass(CommandClass.BASIC);
-		
+
 		for (int endpointId = startId; endpointId <= endId; endpointId++) {
+			// Create a new endpoint
 			ZWaveEndpoint endpoint = this.endpoints.get(endpointId);
-			
 			if (endpoint == null) {
 				logger.error("NODE {}: Endpoint {} not found. Cannot set command classes.", this.getNode().getNodeId(), endpointId);
 				continue;
 			}
-	
+
+			// Add the device classes
 			Basic basic = this.getNode().getDeviceClass().getBasicDeviceClass();
 			Generic generic = Generic.getGeneric(genericDeviceClass);
 			if (generic == null) {
@@ -329,7 +334,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 						this.getNode().getNodeId(), endpoint, genericDeviceClass, specificDeviceClass));
 				continue;
 			}
-			
+
 			logger.debug("NODE {}: Endpoint Id = {}", this.getNode().getNodeId(), endpointId);
 			logger.debug("NODE {}: Endpoints is dynamic = {}", this.getNode().getNodeId(), dynamic ? "true" : false);
 			logger.debug(String.format("NODE %d: Basic = %s 0x%02x", this.getNode().getNodeId(), basic.getLabel(), basic.getKey()));
@@ -341,30 +346,34 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			deviceClass.setGenericDeviceClass(generic);
 			deviceClass.setSpecificDeviceClass(specific);
 			
-			// add basic command class, if it's also supported by the parent node.
+			// Add basic command class, if it's also supported by the parent node.
 			if (supportsBasicCommandClass) {
 				ZWaveCommandClass commandClass = new ZWaveBasicCommandClass(this.getNode(), this.getController(), endpoint);
 				endpoint.addCommandClass(commandClass);
 			}
-			
+
+			// Add all the command classes supported by this endpoint
 			for (int i = 0; i < serialMessage.getMessagePayload().length - offset - 3; i++) {
+				// Get the command class ID
 				int data = serialMessage.getMessagePayloadByte(offset + 3 + i);
 				if(data == 0xef)  {
 					// TODO: Implement control command classes
 					break;
 				}
+				
+				// Create the command class
 				ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, this.getNode(), this.getController(), endpoint);
 				if (commandClass == null) {
 					continue;
 				}
 
-				logger.debug("NODE {}: Adding command class {} to the list of supported command classes.",
-						this.getNode().getNodeId(), commandClass.getCommandClass().getLabel());
+				logger.debug("NODE {}: Endpoint {}: Adding command class {}.",
+						this.getNode().getNodeId(), endpointId, commandClass.getCommandClass().getLabel());
 				endpoint.addCommandClass(commandClass);
-				
+
 				ZWaveCommandClass parentClass = this.getNode().getCommandClass(commandClass.getCommandClass());
-				
-				// copy version info to endpoint classes.
+
+				// Copy version info to endpoint classes.
 				if (parentClass != null) {
 					commandClass.setVersion(parentClass.getVersion());
 				}

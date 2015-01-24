@@ -416,6 +416,8 @@ public class ZWaveDeviceClass {
 		ROUTING_SENSOR_MULTILEVEL(1, Generic.MULTILEVEL_SENSOR, "Routing Multilevel Sensor"),
 
 		SIMPLE_METER(1, Generic.METER, "Simple Meter"),
+		
+		SIMPLE_GARAGE_DOOR(1, Generic.GARAGE_DOOR, "Simple Garage Door"),
 
 		DOOR_LOCK(1, Generic.ENTRY_CONTROL, "Door Lock"),
 		ADVANCED_DOOR_LOCK(2, Generic.ENTRY_CONTROL, "Advanced Door Lock"),

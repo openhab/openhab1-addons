@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -168,10 +169,14 @@ implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 	}
 
 	@Override
-	public void setGetSupported(Boolean supported) {
-		isGetSupported = supported;
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		if(options.isGetSupported != null) {
+			isGetSupported = options.isGetSupported;
+		}
+		
+		return true;
 	}
-	
+
 	/**
 	 * Z-Wave FanStateType enumeration. The fanState type indicates the type
 	 * of fanState that is reported.

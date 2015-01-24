@@ -506,6 +506,16 @@ public class ZWaveNode {
 	}
 	
 	/**
+	 * Removes a command class from the node.
+	 * This is used to remove classes that a node may report it supports
+	 * but it doesn't respond to.
+	 * @param commandClass The command class key
+	 */
+	public void removeCommandClass(CommandClass commandClass) {
+		supportedCommandClasses.remove(commandClass);
+	}
+
+	/**
 	 * Resolves a command class for this node. First endpoint is checked. 
 	 * If endpoint == 0 or (endpoint != 1 and version of the multi instance 
 	 * command == 1) then return a supported command class on the node itself. 
@@ -574,8 +584,9 @@ public class ZWaveNode {
 			ZWaveCommandClass commandClass, int endpointId) {
 		ZWaveMultiInstanceCommandClass multiInstanceCommandClass;
 		
-		if (serialMessage == null)
+		if (serialMessage == null) {
 			return null;
+		}
 		
 		// no encapsulation necessary.
 		if (endpointId == 0) {

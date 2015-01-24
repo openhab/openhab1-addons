@@ -10,7 +10,20 @@
 			<id>0x31</id>
 			<isGetSupported>false</isGetSupported>
 		</Class>
-		<Class><id>0x32</id></Class>
+		<Class>
+			<id>0x32</id>
+			<endpoint>1</endpoint>
+			<meterCanReset>true</meterCanReset>
+			<meterType>ELECTRIC</meterType>
+			<meterScale>E_W,E_KWh</meterScale>
+		</Class>
+		<Class>
+			<id>0x32</id>
+			<endpoint>2</endpoint>
+			<meterCanReset>true</meterCanReset>
+			<meterType>ELECTRIC</meterType>
+			<meterScale>E_W,E_KWh</meterScale>
+		</Class>
 		<Class><id>0x60</id></Class>
 		<Class><id>0x70</id></Class>
 		<Class><id>0x72</id></Class>
@@ -172,17 +185,21 @@
 		<Group>
 			<Index>1</Index>
 			<Maximum>4</Maximum>
-			<Label lang="en">basic on/off (triggered at change of the output Q1 state and reflecting its state)</Label>
+			<Label lang="en">Basic on/off Q1</Label>
+			<Help lang="en">Triggered at change of the output Q1 state and reflecting its state</Help>
 		</Group>
 		<Group>
 			<Index>2</Index>
 			<Maximum>4</Maximum>
-			<Label lang="en">basic on/off (triggered at change of the output Q2 state and reflecting its state)</Label>
+			<Label lang="en">Basic on/off Q2</Label>
+			<Help lang="en">Triggered at change of the output Q2 state and reflecting its state</Help>
 		</Group>
 		<Group>
 			<Index>3</Index>
 			<Maximum>4</Maximum>
-			<Label lang="en">default reporting group</Label>
+			<SetToController>true</SetToController>
+			<Label lang="en">Default Reporting Group</Label>
+			<Help lang="en">Reporting for controller</Help>
 		</Group>
 	</Associations>
 </Product>

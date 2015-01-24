@@ -183,8 +183,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						}
 
 						if(parameter.Item != null) {
-							for (ZWaveDbConfigurationListItem item : parameter.Item)
+							for (ZWaveDbConfigurationListItem item : parameter.Item) {
 								record.addValue(Integer.toString(item.Value), database.getLabel(item.Label));
+							}
 						}
 
 						// Add the description
@@ -218,8 +219,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						// records...
 						for (ZWaveDbCommandClass iClass : classList) {
 							// Make sure the command class exists!
-							if(ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id) == null)
+							if(ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id) == null) {
 								continue;
+							}
 							record = new OpenHABConfigurationRecord(domain, "class" + iClass.Id,
 									ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id).getLabel(), true);
 							if(ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id).getCommandClassClass() == null) {

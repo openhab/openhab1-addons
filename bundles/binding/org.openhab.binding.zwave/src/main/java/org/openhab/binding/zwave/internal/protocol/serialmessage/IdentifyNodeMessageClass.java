@@ -50,14 +50,14 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 		logger.debug("NODE {}: ProtocolInfo", nodeId);
-		
+
 		ZWaveNode node = zController.getNode(nodeId);
-		
+
 		boolean listening = (incomingMessage.getMessagePayloadByte(0) & 0x80)!=0 ? true : false;
 		boolean routing = (incomingMessage.getMessagePayloadByte(0) & 0x40)!=0 ? true : false;
 		int version = (incomingMessage.getMessagePayloadByte(0) & 0x07) + 1;
 		boolean frequentlyListening = (incomingMessage.getMessagePayloadByte(1) & 0x60)!= 0 ? true : false;
-		
+
 		logger.debug("NODE {}: Listening = {}", nodeId, listening);
 		logger.debug("NODE {}: Routing = {}", nodeId, routing);
 		logger.debug("NODE {}: Version = {}", nodeId, version);

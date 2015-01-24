@@ -52,6 +52,14 @@ public abstract class ZWaveCommandProcessor {
 	 * @param incomingMessage The response from the controller
 	 */
 	protected void checkTransactionComplete(SerialMessage lastSentMessage, SerialMessage incomingMessage) {
+		// First, check if we're waiting for an ACK from the controller
+		// This is used for multi-stage transactions to ensure we get all parts of the 
+		// transaction before completing.
+		if(lastSentMessage.isAckPending()) {
+			logger.trace("Message has Ack Pending");
+			return;
+		}
+
 		logger.debug("Sent message {}", lastSentMessage.toString());
 		logger.debug("Recv message {}", incomingMessage.toString());
 		logger.debug("Checking transaction complete: class={}, expected={}, cancelled={}", incomingMessage.getMessageClass(), lastSentMessage.getExpectedReply(), incomingMessage.isTransactionCanceled());

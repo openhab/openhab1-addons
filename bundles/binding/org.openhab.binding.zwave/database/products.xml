@@ -24,6 +24,15 @@
 			<Label lang="en">Wall Dimmer Switch</Label>
 			<ConfigFile>linear/wdz500-1.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4450</Type>
+				<Id>3030</Id>
+			</Reference>
+			<Model>PD300Z-2</Model>
+			<Label lang="en">Plug-in Wall Dimmer</Label>
+			<ConfigFile>linear/pd300z-2.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
@@ -185,6 +194,15 @@
 	<Manufacturer>
 		<Id>0060</Id>
 		<Name>Everspring</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HSP02</Model>
+			<Label lang="en">Motion Detector</Label>
+			<ConfigFile>everspring/hsp02.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0003</Type>
@@ -706,6 +724,15 @@
 			<Model>DSC25G2</Model>
 			<Label lang="en">Dimmer G2</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0201</Type>
+				<Id>0058</Id>
+			</Reference>
+			<Model>KeyFobG5</Model>
+			<Label lang="en">4 button keyfob - generation 5</Label>
+			<ConfigFile>aeon/keyfobg5.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
@@ -749,6 +776,15 @@
 				<Id>107</Id>
 			</Reference>
 			<Model>CT100</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct100.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>6501</Type>
+				<Id>000c</Id>
+			</Reference>
+			<Model>CT101</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
 			<ConfigFile>rtc/ct100.xml</ConfigFile>
 		</Product>
@@ -1658,6 +1694,15 @@
 	<Manufacturer>
 		<Id>0154</Id>
 		<Name>POPP</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>123665</Model>
+			<Label lang="en">Wall Plug Meter Switch</Label>
+			<ConfigFile>popp/123665.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>1100</Type>

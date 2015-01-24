@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.lang.NumberFormatException;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -139,7 +140,17 @@ public abstract class ZWaveCommandClass {
 	public int getMaxVersion () {
 		return MAX_SUPPORTED_VERSION;
 	}
-	
+
+	/**
+	 * Set options for this command class.
+	 * Options are provided from the device configuration database 
+	 * @param options class
+	 * @return true if options set ok
+	 */
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		return false;
+	}
+
 	/**
 	 * Returns the number of instances of this command class
 	 * in case the node supports the MULTI_INSTANCE command class (Version 1).
@@ -148,7 +159,7 @@ public abstract class ZWaveCommandClass {
 	public int getInstances() {
 		return instances;
 	}
-	
+
 	/**
 	 * Returns the number of instances of this command class
 	 * in case the node supports the MULTI_INSTANCE command class (Version 1).
@@ -157,13 +168,13 @@ public abstract class ZWaveCommandClass {
 	public void setInstances(int instances) {
 		this.instances = instances;
 	}
-	
+
 	/**
 	 * Returns the command class.
 	 * @return command class
 	 */
 	public abstract CommandClass getCommandClass();
-	
+
 	/**
 	 * Handles an incoming application command request.
 	 * @param serialMessage the incoming message to process.
@@ -183,7 +194,7 @@ public abstract class ZWaveCommandClass {
 	public static ZWaveCommandClass getInstance(int i, ZWaveNode node, ZWaveController controller) {
 		return ZWaveCommandClass.getInstance(i, node, controller, null);
 	}
-	
+
 	/**
 	 * Gets an instance of the right command class.
 	 * Returns null if the command class is not found.
@@ -378,6 +389,9 @@ public abstract class ZWaveCommandClass {
 		SCHEDULE_ENTRY_LOCK(0x4E,"SCHEDULE_ENTRY_LOCK",null),
 		BASIC_WINDOW_COVERING(0x50,"BASIC_WINDOW_COVERING",null),
 		MTP_WINDOW_COVERING(0x51,"MTP_WINDOW_COVERING",null),
+		ASSOCIATION_GROUP_INFO(0x59,"ASSOCIATION_GROUP_INFO",null),
+		DEVICE_RESET_LOCALLY(0x5a,"DEVICE_RESET_LOCALLY",null),
+		ZWAVE_PLUS_INFO(0x5e,"ZWAVE_PLUS_INFO",null),
 		MULTI_INSTANCE(0x60,"MULTI_INSTANCE",ZWaveMultiInstanceCommandClass.class),
 		DOOR_LOCK(0x62,"DOOR_LOCK",null),
 		USER_CODE(0x63,"USER_CODE",null),
