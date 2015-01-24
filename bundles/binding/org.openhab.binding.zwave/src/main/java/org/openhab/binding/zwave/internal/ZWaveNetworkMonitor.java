@@ -57,7 +57,6 @@ import org.slf4j.LoggerFactory;
  * # Update the associations so that we know which nodes need to talk to others
  * # Update the routes between devices that have associations set
  * # Retrieve the neighbor list so that the binding knows who's out there
- * # Ping the node to see if it's awake
  * # Save the device files
  * 
  * Observations
@@ -94,7 +93,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 	Map<Integer, HealNode> healNodes = new HashMap<Integer, HealNode>();
 
 	enum HealState {
-		IDLE, WAITING, PING, SETSUCROUTE, UPDATENEIGHBORS, GETASSOCIATIONS, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, PINGEND, SAVE, DONE, FAILED;
+		IDLE, WAITING, PING, SETSUCROUTE, UPDATENEIGHBORS, GETASSOCIATIONS, UPDATEROUTES, UPDATEROUTESNEXT, GETNEIGHBORS, SAVE, DONE, FAILED;
 
 		public boolean isActive() {
 			switch (this) {
@@ -437,11 +436,11 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 				logger.debug("NODE {}: Network heal has exceeded maximum retries!", healing.nodeId);
 				healing.failState = healing.state;
 				healing.state = HealState.FAILED;
-	
+
 				// Save the XML file. This serialises the data we've just updated
 				// (neighbors etc)
 				healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
-				
+
 				ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 				nodeSerializer.SerializeNode(healing.node);
 				return;
@@ -480,7 +479,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		case SETSUCROUTE:
 			// Log what we're up to...
 			logger.debug("NODE {}: NETWORK HEAL - {}", healing.nodeId, healing.state);
-			
+
 			// Only set the route if this is not the controller and there is an SUC in the network
 			if (healing.nodeId != zController.getOwnNodeId() && zController.getSucId() != 0) {
 				// Update the route to the controller
@@ -552,27 +551,11 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			logger.debug("NODE {}: NETWORK HEAL - {}", healing.nodeId, healing.state);
 
 			healing.event = ZWaveNetworkEvent.Type.NodeRoutingInfo;
-			healing.stateNext = HealState.PINGEND;
+			healing.stateNext = HealState.SAVE;
 
 			logger.debug("NODE {}: Heal is requesting node neighbor info.", healing.nodeId);
 			zController.requestNodeRoutingInfo(healing.nodeId);
 			break;
-
-		case PINGEND:
-			// Log what we're up to...
-			logger.debug("NODE {}: NETWORK HEAL - {}", healing.nodeId, healing.state);
-
-			if (healing.nodeId != zController.getOwnNodeId()) {
-				ZWaveNoOperationCommandClass zwaveCommandClass = (ZWaveNoOperationCommandClass) healing.node
-						.getCommandClass(CommandClass.NO_OPERATION);
-				if (zwaveCommandClass == null) {
-					break;
-				}
-				zController.sendData(zwaveCommandClass.getNoOperationMessage());
-				healing.stateNext = HealState.SAVE;
-				break;
-			}
-			healing.stateNext = HealState.SAVE;
 
 		case SAVE:
 			// Log what we're up to...
@@ -584,7 +567,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			// Save the XML file. This serialises the data we've just updated
 			// (neighbors etc)
 			healing.node.setHealState(this.getNodeState(healing.node.getNodeId()));
-			
+
 			ZWaveNodeSerializer nodeSerializer = new ZWaveNodeSerializer();
 			nodeSerializer.SerializeNode(healing.node);
 			break;
@@ -677,7 +660,7 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 			}
 
 			// See if this node is waiting for a PING
-			if ((node.state == HealState.PING || node.state == HealState.PINGEND) && payload.length >= 3
+			if (node.state == HealState.PING && payload.length >= 3
 					&& (payload[2] & 0xFF) == ZWaveCommandClass.CommandClass.NO_OPERATION.getKey()) {
 				node.state = node.stateNext;
 				node.retryCnt = 0;
