@@ -936,7 +936,7 @@ public class ZWaveController {
 	 */
 	public void sendData(SerialMessage serialMessage)
 	{
-		if(serialMessage == null) {
+		if (serialMessage == null) {
     		logger.error("Null message for sendData");
 			return;
 		}
@@ -948,6 +948,10 @@ public class ZWaveController {
     		logger.error("Only request messages can be sent");
     		return;
     	}
+
+    	// We need to wait on the ACK from the controller before completing the transaction.
+    	// This is required in case the Application Message is received from the SendData ACK
+    	serialMessage.setAckRequired();
 
     	serialMessage.setTransmitOptions(TRANSMIT_OPTION_ACK | TRANSMIT_OPTION_AUTO_ROUTE | TRANSMIT_OPTION_EXPLORE);
     	serialMessage.setCallbackId(getCallbackId());
@@ -1226,12 +1230,22 @@ public class ZWaveController {
 					//    received at step 3 that are not related to our original
 					//    request.
 					// 4) We ultimately receive the requested message from the device
+					//    if we're requesting such a message.
 					//
 					//    A transaction is generally completed at the completion of step 4.
 					//    However, for some messages, there may not be a further REQUEST
 					//    so the transaction is terminated at step 2. This is handled
 					//    by the serial message class processor by setting
 					//    transactionCompleted.
+					//
+					//    It seems that some of these steps may occur out of order. For
+					//    example, the requested message at step 4 may be received before
+					//    the REQUEST at step 3. This can (I guess) occur if the message to
+					//    the device is received by the device, but the ACK back to the controller
+					//    is lost. The device then sends the requested data, and then finally
+					//    the ACK is received.
+					//    We cover this by setting an 'AckPending' flag in the sent message.
+					//    This needs to be cleared before the transacion is completed.
 					
 					// Clear the semaphore used to acknowledge the completed transaction.
 					transactionCompleted.drainPermits();

@@ -40,12 +40,12 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			logger.error("NODE {}: Sent Data was not placed on stack due to error {}.", lastSentMessage.getMessageNode(), 
 					incomingMessage.getMessagePayloadByte(0));
 			
-			// TODO: We ought to cancel the transaction
-//			transactionComplete = true;
+			// We ought to cancel the transaction
+			lastSentMessage.setTransactionCanceled();
 
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -56,7 +56,6 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 
 		int callbackId = incomingMessage.getMessagePayloadByte(0);
 		TransmissionState status = TransmissionState.getTransmissionState(incomingMessage.getMessagePayloadByte(1));
-//		SerialMessage originalMessage = lastSentMessage; don't see any need for this duplication?????
 
 		if (status == null) {
 			logger.warn("Transmission state not found, ignoring.");
@@ -76,6 +75,9 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			return false;
 		}
 
+		// This response is our controller ACK
+		lastSentMessage.setAckRecieved();
+		
 		switch (status) {
 		case COMPLETE_OK:
 			// Consider this as a received frame since the controller did receive an ACK from the device.

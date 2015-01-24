@@ -58,6 +58,7 @@ public class SerialMessage {
 	private int callbackId = 0;
 	
 	private boolean transactionCanceled = false;
+	private boolean ackPending = false;
 
 	/**
 	 * Indicates whether the serial message is valid.
@@ -365,6 +366,13 @@ public class SerialMessage {
 
 	/**
 	 * Indicates that the transaction for the incoming message is canceled by a command class
+	 */
+	public void setTransactionCanceled() {
+		transactionCanceled = true;
+	}
+
+	/**
+	 * Indicates that the transaction for the incoming message is canceled by a command class
 	 * @return the transactionCanceled
 	 */
 	public boolean isTransactionCanceled() {
@@ -372,11 +380,39 @@ public class SerialMessage {
 	}
 
 	/**
-	 * Sets the transaction for the incoming message to canceled.
+	 * Sets the ACK as received.
 	 */
-	public void setTransactionCanceled() {
-		this.transactionCanceled = true;
+	public void setAckRecieved() {
+		logger.trace("Ack Pending cleared");
+		this.ackPending = false;
 	}
+
+	/**
+	 * If we require an ACK from the controller, then set true
+	 */
+	public void setAckRequired() {
+		this.ackPending = true;
+	}
+
+	/**
+	 * Returns true is there is an ack pending from the controller
+	 * @return true if still waiting on the ack
+	 */
+	public boolean isAckPending() {
+		return this.ackPending;
+	}
+
+	/**
+	 * Sets the flag to say the ack has been received from the controller.
+	 * This ensures that we don't complete a transaction if we receive the final
+	 * response from the device before the controller acks our request.
+	 * This seems to be possible from some devices, or possibly if the device
+	 * happens to send the data we're about to request at the same time we
+	 * request it (since the data received from a device as part of a
+	 * transaction is NOT linked in any way to the transaction).
+	 */
+	public void setTransactionAcked() {
+		this.ackPending = false;
 	}
 
 	/**
