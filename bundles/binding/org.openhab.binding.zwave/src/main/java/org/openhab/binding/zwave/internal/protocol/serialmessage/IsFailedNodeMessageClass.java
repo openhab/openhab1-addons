@@ -15,7 +15,6 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageCl
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

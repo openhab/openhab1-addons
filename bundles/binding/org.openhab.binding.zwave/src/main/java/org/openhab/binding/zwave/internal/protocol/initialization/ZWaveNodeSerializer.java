@@ -84,10 +84,16 @@ public class ZWaveNodeSerializer {
 	 */
 	public void SerializeNode(ZWaveNode node) {
 		synchronized (stream) {
+			// Don't serialise if the stage is not at least finished static
+			// If we do serialise when we haven't completed the static stages
+			// then when the binding starts it will have incomplete information!
+			if(node.getNodeInitializationStage().isStaticComplete() == false) {
+				logger.debug("NODE {}: Serialise aborted as static stages not complete", node.getNodeId());
+				return;
+			}
+
 			File file = new File(this.folderName, String.format("node%d.xml", node.getNodeId()));
 			BufferedWriter writer = null;
-			
-			// TODO: Add a check in there so that we don't serialise if the stage is not at least finished static
 
 			logger.debug("NODE {}: Serializing to file {}", node.getNodeId(), file.getPath());
 
@@ -98,11 +104,12 @@ public class ZWaveNodeSerializer {
 			} catch (IOException e) {
 				logger.error("NODE {}: Error serializing to file: {}", node.getNodeId(), e.getMessage());
 			} finally {
-				if (writer != null)
+				if (writer != null) {
 					try {
 						writer.close();
 					} catch (IOException e) {
 					}
+				}
 			}
 		}
 	}
