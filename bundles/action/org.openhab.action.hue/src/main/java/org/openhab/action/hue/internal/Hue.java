@@ -57,14 +57,11 @@ public class Hue {
 	}
 	
 	
-	public static Rule hueTest(String name){
-		return new Rule(name);
-	}
-	
 	/*
 	 * 
 	 * set settings for this scene on the light(s)
 	 */
+	@ActionDoc(text = "not yet implemented")
 	public static String hueSetSceneSettings(String sceneName,String lightId,String body){
 		logger.error("not yet implemented");
 		return "0";
@@ -85,30 +82,40 @@ public class Hue {
 	}
 	
 	
-	@ActionDoc(text = "Add and action to a rule")
-	public static String hueAddGroupAction(String ruleJson,String group, String bodyElement, Object bodyValue) throws IOException{
+	@ActionDoc(text = "Add an action for a group to a rule. Returns the Json representation of the rule")
+	public static String hueAddGroupAction(
+			@ParamDoc(name = "ruleJson", text = "Json representation of the rule") String ruleJson,
+			@ParamDoc(name = "group", text = "Id of the Group")	String group, 
+			@ParamDoc(name = "bodyElement", text = "Name of the Body element")	String bodyElement, 
+			@ParamDoc(name = "bodyValue", text = "Value of the element.")	Object bodyValue) throws IOException{
+		
 		Rule r=Rule.create(ruleJson);
 		
 		r.addGroupAction(group, bodyElement, bodyValue);
 		
 		return r.toJson();
 	}
-
 	
-	@ActionDoc(text = "Add and action to a rule")
 	
-	public static String hueAddTapButtonEqualsCondition(String ruleJson, String tapId,int button) throws IOException{
+	@ActionDoc(text = "Add condition for tab key last pressed. Returns the Json representation of the rule")
+	public static String hueAddTapButtonEqualsCondition(
+			@ParamDoc(name = "ruleJson", text = "Json representation of the rule") String ruleJson, 
+			@ParamDoc(name = "sensorId", text = "Id of tap device") String sensorId,
+			@ParamDoc(name = "button", text = "BUtton id 1..4")int button) throws IOException{
 		Rule r=Rule.create(ruleJson);
 		
-		r.addTapButtonEqualsCondition(tapId, button);
+		r.addTapButtonEqualsCondition(sensorId, button);
 		return r.toJson();
 	}
 	
-	@ActionDoc(text = "Add and action to a rule")
-	
-	public static String hueAddTapDeviceChangedCondition(String ruleJson, String tapId) throws IOException{
+	@ActionDoc(text = "Add condition for change of last pressed. Returns the Json representation of the rule")
+	public static String hueAddSensorChangedCondition(
+			@ParamDoc(name = "ruleJson", text = "Json representation of the rule") String ruleJson, 
+			@ParamDoc(name = "sensorId", text = "Id of sensor device") String sensorId
+			) throws IOException{
+		
 		Rule r=Rule.create(ruleJson);
-		r.addTapDeviceChangedCondition(tapId);
+		r.addTapDeviceChangedCondition(sensorId);
 		return r.toJson();
 	}
 	
@@ -119,7 +126,10 @@ public class Hue {
 	 * @param ruleJson
 	 * @return
 	 */
-	public static String hueSetRule(String name, String ruleJson){
+	@ActionDoc(text = "set rule")
+	public static String hueSetRule(
+			@ParamDoc(name = "name", text = "Name of the rule")String name, 
+			@ParamDoc(name = "ruleJson", text = "Json representation of the rule") String ruleJson){
 		
 		HueSettings settings=HueContext.getInstance().getBridge().getSettings();
 		
