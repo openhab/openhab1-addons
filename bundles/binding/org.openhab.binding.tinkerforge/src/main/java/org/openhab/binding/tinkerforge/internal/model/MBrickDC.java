@@ -9,6 +9,8 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import com.tinkerforge.BrickDC;
+import java.math.BigDecimal;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 
 /**
  * <!-- begin-user-doc -->
@@ -21,6 +23,7 @@ import com.tinkerforge.BrickDC;
  * <p>
  * The following features are supported:
  * <ul>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getThreshold <em>Threshold</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getVelocity <em>Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getCurrentVelocity <em>Current Velocity</em>}</li>
@@ -32,11 +35,38 @@ import com.tinkerforge.BrickDC;
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickDC()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MInSwitchActor org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickDC> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration> org.openhab.binding.tinkerforge.internal.model.MoveActor"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MInSwitchActor org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickDC> org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer<org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration> org.openhab.binding.tinkerforge.internal.model.MoveActor org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
-public interface MBrickDC extends MInSwitchActor, MDevice<BrickDC>, MTFConfigConsumer<TFBrickDCConfiguration>, MoveActor
+public interface MBrickDC extends MSensor<DecimalValue>, MInSwitchActor, MDevice<BrickDC>, MTFConfigConsumer<TFBrickDCConfiguration>, MoveActor, CallbackListener
 {
+  /**
+   * Returns the value of the '<em><b>Threshold</b></em>' attribute.
+   * The default value is <code>"10"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Threshold</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Threshold</em>' attribute.
+   * @see #setThreshold(BigDecimal)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickDC_Threshold()
+   * @model default="10" unique="false"
+   * @generated
+   */
+  BigDecimal getThreshold();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getThreshold <em>Threshold</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Threshold</em>' attribute.
+   * @see #getThreshold()
+   * @generated
+   */
+  void setThreshold(BigDecimal value);
+
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
    * The default value is <code>"brick_dc"</code>.

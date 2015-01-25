@@ -38,6 +38,7 @@ import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
+import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
 import org.openhab.binding.tinkerforge.internal.model.Direction;
 import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
@@ -359,6 +360,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass moveActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass dimmableActorEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2020,7 +2028,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickDC_DeviceType()
+  public EAttribute getMBrickDC_Threshold()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(0);
   }
@@ -2030,7 +2038,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickDC_Velocity()
+  public EAttribute getMBrickDC_DeviceType()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(1);
   }
@@ -2040,7 +2048,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickDC_CurrentVelocity()
+  public EAttribute getMBrickDC_Velocity()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(2);
   }
@@ -2050,7 +2058,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickDC_Acceleration()
+  public EAttribute getMBrickDC_CurrentVelocity()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(3);
   }
@@ -2060,7 +2068,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickDC_PwmFrequency()
+  public EAttribute getMBrickDC_Acceleration()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(4);
   }
@@ -2070,7 +2078,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickDC_DriveMode()
+  public EAttribute getMBrickDC_PwmFrequency()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(5);
   }
@@ -2080,9 +2088,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickDC_SwitchOnVelocity()
+  public EAttribute getMBrickDC_DriveMode()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickDC_SwitchOnVelocity()
+  {
+    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(7);
   }
 
   /**
@@ -2333,6 +2351,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMoveActor__Moveon__DeviceOptions()
   {
     return moveActorEClass.getEOperations().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDimmableActor()
+  {
+    return dimmableActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getDimmableActor__Increase()
+  {
+    return dimmableActorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getDimmableActor__Decrease()
+  {
+    return dimmableActorEClass.getEOperations().get(1);
   }
 
   /**
@@ -5302,6 +5350,27 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     mlcdSubDeviceEClass = createEClass(MLCD_SUB_DEVICE);
 
+    digitalActorEClass = createEClass(DIGITAL_ACTOR);
+    createEAttribute(digitalActorEClass, DIGITAL_ACTOR__DIGITAL_STATE);
+    createEOperation(digitalActorEClass, DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE);
+    createEOperation(digitalActorEClass, DIGITAL_ACTOR___FETCH_DIGITAL_VALUE);
+
+    numberActorEClass = createEClass(NUMBER_ACTOR);
+    createEOperation(numberActorEClass, NUMBER_ACTOR___SET_NUMBER__BIGDECIMAL);
+
+    colorActorEClass = createEClass(COLOR_ACTOR);
+    createEOperation(colorActorEClass, COLOR_ACTOR___SET_COLOR__HSBTYPE_DEVICEOPTIONS);
+
+    moveActorEClass = createEClass(MOVE_ACTOR);
+    createEAttribute(moveActorEClass, MOVE_ACTOR__DIRECTION);
+    createEOperation(moveActorEClass, MOVE_ACTOR___MOVE__UPDOWNTYPE_DEVICEOPTIONS);
+    createEOperation(moveActorEClass, MOVE_ACTOR___STOP);
+    createEOperation(moveActorEClass, MOVE_ACTOR___MOVEON__DEVICEOPTIONS);
+
+    dimmableActorEClass = createEClass(DIMMABLE_ACTOR);
+    createEOperation(dimmableActorEClass, DIMMABLE_ACTOR___INCREASE);
+    createEOperation(dimmableActorEClass, DIMMABLE_ACTOR___DECREASE);
+
     mBrickServoEClass = createEClass(MBRICK_SERVO);
     createEAttribute(mBrickServoEClass, MBRICK_SERVO__DEVICE_TYPE);
     createEOperation(mBrickServoEClass, MBRICK_SERVO___INIT);
@@ -5319,6 +5388,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEOperation(mServoEClass, MSERVO___INIT);
 
     mBrickDCEClass = createEClass(MBRICK_DC);
+    createEAttribute(mBrickDCEClass, MBRICK_DC__THRESHOLD);
     createEAttribute(mBrickDCEClass, MBRICK_DC__DEVICE_TYPE);
     createEAttribute(mBrickDCEClass, MBRICK_DC__VELOCITY);
     createEAttribute(mBrickDCEClass, MBRICK_DC__CURRENT_VELOCITY);
@@ -5346,24 +5416,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     digitalActorDigitalOut4EClass = createEClass(DIGITAL_ACTOR_DIGITAL_OUT4);
     createEAttribute(digitalActorDigitalOut4EClass, DIGITAL_ACTOR_DIGITAL_OUT4__PIN);
 
-    digitalActorEClass = createEClass(DIGITAL_ACTOR);
-    createEAttribute(digitalActorEClass, DIGITAL_ACTOR__DIGITAL_STATE);
-    createEOperation(digitalActorEClass, DIGITAL_ACTOR___TURN_DIGITAL__HIGHLOWVALUE);
-    createEOperation(digitalActorEClass, DIGITAL_ACTOR___FETCH_DIGITAL_VALUE);
-
-    numberActorEClass = createEClass(NUMBER_ACTOR);
-    createEOperation(numberActorEClass, NUMBER_ACTOR___SET_NUMBER__BIGDECIMAL);
-
     mBrickletSegmentDisplay4x7EClass = createEClass(MBRICKLET_SEGMENT_DISPLAY4X7);
-
-    colorActorEClass = createEClass(COLOR_ACTOR);
-    createEOperation(colorActorEClass, COLOR_ACTOR___SET_COLOR__HSBTYPE_DEVICEOPTIONS);
-
-    moveActorEClass = createEClass(MOVE_ACTOR);
-    createEAttribute(moveActorEClass, MOVE_ACTOR__DIRECTION);
-    createEOperation(moveActorEClass, MOVE_ACTOR___MOVE__UPDOWNTYPE_DEVICEOPTIONS);
-    createEOperation(moveActorEClass, MOVE_ACTOR___STOP);
-    createEOperation(moveActorEClass, MOVE_ACTOR___MOVEON__DEVICEOPTIONS);
 
     mBrickletLEDStripEClass = createEClass(MBRICKLET_LED_STRIP);
 
@@ -5645,7 +5698,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(brickletMultiTouchConfigurationEClass, BRICKLET_MULTI_TOUCH_CONFIGURATION__SENSITIVITY);
 
     // Create enums
-    dcDriveModeEEnum = createEEnum(DC_DRIVE_MODE);
     noSubIdsEEnum = createEEnum(NO_SUB_IDS);
     industrialDigitalInSubIDsEEnum = createEEnum(INDUSTRIAL_DIGITAL_IN_SUB_IDS);
     industrialQuadRelayIDsEEnum = createEEnum(INDUSTRIAL_QUAD_RELAY_IDS);
@@ -5661,6 +5713,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     voltageCurrentSubIdsEEnum = createEEnum(VOLTAGE_CURRENT_SUB_IDS);
     configOptsMoveEEnum = createEEnum(CONFIG_OPTS_MOVE);
     directionEEnum = createEEnum(DIRECTION);
+    dcDriveModeEEnum = createEEnum(DC_DRIVE_MODE);
 
     // Create data types
     mipConnectionEDataType = createEDataType(MIP_CONNECTION);
@@ -5797,6 +5850,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getTFServoConfiguration());
     g1.getETypeArguments().add(g2);
     mServoEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    mBrickDCEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMInSwitchActor());
     mBrickDCEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
@@ -5808,6 +5865,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g1.getETypeArguments().add(g2);
     mBrickDCEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMoveActor());
+    mBrickDCEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getCallbackListener());
     mBrickDCEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickletDualRelay());
@@ -6259,7 +6318,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfDistanceUSBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfVoltageCurrentConfigurationEClass.getESuperTypes().add(this.getTFConfig());
-    tfBrickDCConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfBrickDCConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfioActorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfInterruptListenerConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfioSensorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
@@ -6397,6 +6456,43 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(mlcdSubDeviceEClass, MLCDSubDevice.class, "MLCDSubDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
+    initEClass(digitalActorEClass, DigitalActor.class, "DigitalActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDigitalActor_DigitalState(), this.getDigitalValue(), "digitalState", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    op = initEOperation(getDigitalActor__TurnDigital__HighLowValue(), null, "turnDigital", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDigitalValue(), "digitalState", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getDigitalActor__FetchDigitalValue(), null, "fetchDigitalValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(numberActorEClass, NumberActor.class, "NumberActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getNumberActor__SetNumber__BigDecimal(), null, "setNumber", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEBigDecimal(), "value", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(colorActorEClass, ColorActor.class, "ColorActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getColorActor__SetColor__HSBType_DeviceOptions(), null, "setColor", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getHSBType(), "color", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(moveActorEClass, MoveActor.class, "MoveActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMoveActor_Direction(), this.getDirection(), "direction", null, 0, 1, MoveActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    op = initEOperation(getMoveActor__Move__UpDownType_DeviceOptions(), null, "move", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getUpDownType(), "direction", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getMoveActor__Stop(), null, "stop", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    op = initEOperation(getMoveActor__Moveon__DeviceOptions(), null, "moveon", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(dimmableActorEClass, DimmableActor.class, "DimmableActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEOperation(getDimmableActor__Increase(), null, "increase", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getDimmableActor__Decrease(), null, "decrease", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
     initEClass(mBrickServoEClass, MBrickServo.class, "MBrickServo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickServo_DeviceType(), theEcorePackage.getEString(), "deviceType", "brick_servo", 0, 1, MBrickServo.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -6416,6 +6512,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEOperation(getMServo__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickDCEClass, MBrickDC.class, "MBrickDC", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMBrickDC_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "10", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_DeviceType(), theEcorePackage.getEString(), "deviceType", "brick_dc", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_Velocity(), theEcorePackage.getEShort(), "velocity", null, 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_CurrentVelocity(), theEcorePackage.getEShort(), "currentVelocity", null, 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -6444,38 +6541,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(digitalActorDigitalOut4EClass, DigitalActorDigitalOut4.class, "DigitalActorDigitalOut4", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDigitalActorDigitalOut4_Pin(), theEcorePackage.getEInt(), "pin", null, 0, 1, DigitalActorDigitalOut4.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(digitalActorEClass, DigitalActor.class, "DigitalActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getDigitalActor_DigitalState(), this.getDigitalValue(), "digitalState", null, 0, 1, DigitalActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    op = initEOperation(getDigitalActor__TurnDigital__HighLowValue(), null, "turnDigital", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getDigitalValue(), "digitalState", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-    initEOperation(getDigitalActor__FetchDigitalValue(), null, "fetchDigitalValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-    initEClass(numberActorEClass, NumberActor.class, "NumberActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    op = initEOperation(getNumberActor__SetNumber__BigDecimal(), null, "setNumber", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, theEcorePackage.getEBigDecimal(), "value", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
     initEClass(mBrickletSegmentDisplay4x7EClass, MBrickletSegmentDisplay4x7.class, "MBrickletSegmentDisplay4x7", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(colorActorEClass, ColorActor.class, "ColorActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    op = initEOperation(getColorActor__SetColor__HSBType_DeviceOptions(), null, "setColor", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getHSBType(), "color", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-    initEClass(moveActorEClass, MoveActor.class, "MoveActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getMoveActor_Direction(), this.getDirection(), "direction", null, 0, 1, MoveActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    op = initEOperation(getMoveActor__Move__UpDownType_DeviceOptions(), null, "move", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getUpDownType(), "direction", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-    initEOperation(getMoveActor__Stop(), null, "stop", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-    op = initEOperation(getMoveActor__Moveon__DeviceOptions(), null, "moveon", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickletLEDStripEClass, MBrickletLEDStrip.class, "MBrickletLEDStrip", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -6803,10 +6869,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getBrickletMultiTouchConfiguration_Sensitivity(), theEcorePackage.getEShortObject(), "sensitivity", null, 0, 1, BrickletMultiTouchConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
-    initEEnum(dcDriveModeEEnum, DCDriveMode.class, "DCDriveMode");
-    addEEnumLiteral(dcDriveModeEEnum, DCDriveMode.BRAKE);
-    addEEnumLiteral(dcDriveModeEEnum, DCDriveMode.COAST);
-
     initEEnum(noSubIdsEEnum, NoSubIds.class, "NoSubIds");
 
     initEEnum(industrialDigitalInSubIDsEEnum, IndustrialDigitalInSubIDs.class, "IndustrialDigitalInSubIDs");
@@ -6925,6 +6987,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(directionEEnum, Direction.UNDEF);
     addEEnumLiteral(directionEEnum, Direction.LEFT);
     addEEnumLiteral(directionEEnum, Direction.RIGHT);
+
+    initEEnum(dcDriveModeEEnum, DCDriveMode.class, "DCDriveMode");
+    addEEnumLiteral(dcDriveModeEEnum, DCDriveMode.BRAKE);
+    addEEnumLiteral(dcDriveModeEEnum, DCDriveMode.COAST);
 
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

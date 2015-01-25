@@ -203,6 +203,32 @@ interface MTextActor{
 interface MLCDSubDevice extends MSubDevice<MBrickletLCD20x4> {
 }
 
+interface DigitalActor {
+    DigitalValue digitalState
+    op void turnDigital(DigitalValue digitalState)
+    op void fetchDigitalValue()
+}
+
+interface NumberActor {
+    op void setNumber(BigDecimal value)
+}
+
+interface ColorActor {
+    op void setColor(HSBType color, DeviceOptions opts)
+}
+
+interface MoveActor {
+    Direction direction
+    op void move(UpDownType direction, DeviceOptions opts)
+    op void stop()
+    op void moveon(DeviceOptions opts)
+}
+
+interface DimmableActor {
+    op void increase()
+    op void decrease()
+}
+
 class MBrickServo extends MDevice<MTinkerBrickServo>, MSubDeviceHolder<MServo> {
 	readonly String deviceType = "brick_servo"
 	op void init(){}
@@ -223,13 +249,10 @@ class MServo extends MInSwitchActor, MSubDevice<MBrickServo>,
 	op void init(){}
 }
 
-enum DCDriveMode {
-	Brake = 0
-	Coast = 1
-}
-
-class MBrickDC extends MInSwitchActor, MDevice<MTinkerBrickDC>, 
-		MTFConfigConsumer<TFBrickDCConfiguration>, MoveActor{
+class MBrickDC extends MSensor<MDecimalValue>, MInSwitchActor, MDevice<MTinkerBrickDC>, 
+		MTFConfigConsumer<TFBrickDCConfiguration>, MoveActor,
+	    CallbackListener{
+	BigDecimal threshold = "10"
 	readonly String deviceType = "brick_dc"
 	op void init(){}
 	short velocity
@@ -274,30 +297,10 @@ class DigitalActorDigitalOut4 extends DigitalActor, MSubDevice<MBrickletIndustri
     int pin
 }
 
-interface DigitalActor {
-    DigitalValue digitalState
-    op void turnDigital(DigitalValue digitalState)
-    op void fetchDigitalValue()
-}
-
-interface NumberActor {
-    op void setNumber(BigDecimal value)
-}
-
 class MBrickletSegmentDisplay4x7 extends NumberActor, MDevice<TinkerBrickletSegmentDisplay4x7>{
     
 }
 
-interface ColorActor {
-    op void setColor(HSBType color, DeviceOptions opts)
-}
-
-interface MoveActor {
-    Direction direction
-    op void move(UpDownType direction, DeviceOptions opts)
-    op void stop()
-    op void moveon(DeviceOptions opts)
-}
 
 class MBrickletLEDStrip extends ColorActor, MDevice<TinkerBrickletLEDStrip>{
     
@@ -629,7 +632,7 @@ class TFVoltageCurrentConfiguration extends TFConfig {
     Short currentConversionTime
 }
 
-class TFBrickDCConfiguration extends TFConfig{
+class TFBrickDCConfiguration extends TFBaseConfiguration{
 	short velocity
 	int acceleration
 	int pwmFrequency
@@ -760,3 +763,9 @@ enum ConfigOptsMove {
 enum Direction {
     UNDEF, LEFT, RIGHT
 }
+
+enum DCDriveMode {
+    Brake = 0
+    Coast = 1
+}
+

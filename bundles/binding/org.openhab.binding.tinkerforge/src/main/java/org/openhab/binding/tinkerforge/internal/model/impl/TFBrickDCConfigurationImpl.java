@@ -35,7 +35,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
  *
  * @generated
  */
-public class TFBrickDCConfigurationImpl extends MinimalEObjectImpl.Container implements TFBrickDCConfiguration
+public class TFBrickDCConfigurationImpl extends TFBaseConfigurationImpl implements TFBrickDCConfiguration
 {
   /**
    * The default value of the '{@link #getVelocity() <em>Velocity</em>}' attribute.

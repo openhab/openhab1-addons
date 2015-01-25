@@ -9,6 +9,7 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -19,9 +20,10 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.Direction;
@@ -29,10 +31,14 @@ import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
+import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.MoveActor;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
+import org.openhab.binding.tinkerforge.internal.tools.Tools;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.core.library.types.UpDownType;
 import org.slf4j.Logger;
@@ -53,6 +59,7 @@ import com.tinkerforge.TimeoutException;
  * <p>
  * The following features are implemented:
  * <ul>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getSensorValue <em>Sensor Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getSwitchState <em>Switch State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getUid <em>Uid</em>}</li>
@@ -67,6 +74,8 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getBrickd <em>Brickd</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getDirection <em>Direction</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getCallbackPeriod <em>Callback Period</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getThreshold <em>Threshold</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getVelocity <em>Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getCurrentVelocity <em>Current Velocity</em>}</li>
@@ -81,6 +90,16 @@ import com.tinkerforge.TimeoutException;
  */
 public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrickDC
 {
+  /**
+   * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSensorValue()
+   * @generated
+   * @ordered
+   */
+  protected DecimalValue sensorValue;
+
   /**
    * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -322,6 +341,46 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   protected Direction direction = DIRECTION_EDEFAULT;
 
   /**
+   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCallbackPeriod()
+   * @generated
+   * @ordered
+   */
+  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
+
+  /**
+   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getCallbackPeriod()
+   * @generated
+   * @ordered
+   */
+  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getThreshold()
+   * @generated
+   * @ordered
+   */
+  protected static final BigDecimal THRESHOLD_EDEFAULT = new BigDecimal("10");
+
+  /**
+   * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getThreshold()
+   * @generated
+   * @ordered
+   */
+  protected BigDecimal threshold = THRESHOLD_EDEFAULT;
+
+  /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -461,6 +520,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    */
   protected short switchOnVelocity = SWITCH_ON_VELOCITY_EDEFAULT;
 
+  private VelocityListener listener;
+
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -480,6 +541,29 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   protected EClass eStaticClass()
   {
     return ModelPackage.Literals.MBRICK_DC;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DecimalValue getSensorValue()
+  {
+    return sensorValue;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSensorValue(DecimalValue newSensorValue)
+  {
+    DecimalValue oldSensorValue = sensorValue;
+    sensorValue = newSensorValue;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__SENSOR_VALUE, oldSensorValue, sensorValue));
   }
 
   /**
@@ -856,6 +940,52 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * <!-- end-user-doc -->
    * @generated
    */
+  public long getCallbackPeriod()
+  {
+    return callbackPeriod;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setCallbackPeriod(long newCallbackPeriod)
+  {
+    long oldCallbackPeriod = callbackPeriod;
+    callbackPeriod = newCallbackPeriod;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BigDecimal getThreshold()
+  {
+    return threshold;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setThreshold(BigDecimal newThreshold)
+  {
+    BigDecimal oldThreshold = threshold;
+    threshold = newThreshold;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__THRESHOLD, oldThreshold, threshold));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getDeviceType()
   {
     return deviceType;
@@ -1026,8 +1156,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       } else {
         logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
       }
-      switchState = state == null ? OnOffValue.UNDEF : state;
-      setSwitchState(switchState);
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -1042,11 +1170,18 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @generated NOT
    */
   public void fetchSwitchState() {
-    OnOffValue value = OnOffValue.UNDEF;
+    fetchSensorValue();
+  }
+  
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  public void fetchSensorValue()
+  {
     try {
-      short currentVelocity = tinkerforgeDevice.getVelocity();
-      value = currentVelocity == 0 ? OnOffValue.OFF : OnOffValue.ON;
-      setSwitchState(value);
+      handleVelocity(tinkerforgeDevice.getVelocity());
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -1054,7 +1189,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
           TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
     }
   }
-  
+
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1128,7 +1263,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     } else {
       logger.error("\"direction\" option missconfigured, items configuration has to be fixed!");
       return;
-
     }
     try {
       tinkerforgeDevice.setAcceleration(itemacceleration);
@@ -1141,7 +1275,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       TinkerforgeErrorHandler.handleError(this,
           TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
     }
-
   }
 
   /**
@@ -1152,7 +1285,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   public void stop() {
     try {
       tinkerforgeDevice.setVelocity((short) 0);
-      setSwitchState(OnOffValue.OFF);
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -1166,53 +1298,93 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * <!-- end-user-doc -->
    * @generated NOT
    */
-	public void enable() {
-		tinkerforgeDevice = new BrickDC(uid, ipConnection);
-		if (tfConfig != null) {
-			logger.debug("found tfConfig");
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"acceleration"))) {
-				setAcceleration(tfConfig.getAcceleration());
-			}
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"pwmFrequency"))) {
-				setPwmFrequency(tfConfig.getPwmFrequency());
-			}
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"switchOnVelocity"))) {
-				setSwitchOnVelocity(tfConfig.getSwitchOnVelocity());
-			}
-			if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature(
-					"driveMode"))) {
-				setDriveMode(DCDriveMode.get(tfConfig.getDriveMode()));
-			}
-		}
-		try {
-			tinkerforgeDevice.setAcceleration(acceleration);
-			tinkerforgeDevice.setPWMFrequency(pwmFrequency);
-			if (driveMode == DCDriveMode.BRAKE)
-				tinkerforgeDevice.setDriveMode(BrickDC.DRIVE_MODE_DRIVE_BRAKE);
-			else if (driveMode == DCDriveMode.COAST)
-				tinkerforgeDevice.setDriveMode(BrickDC.DRIVE_MODE_DRIVE_COAST);
-			tinkerforgeDevice.enable();
-			setVelocity(getCurrentVelocity());
-		} catch (TimeoutException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-		} catch (NotConnectedException e) {
-			TinkerforgeErrorHandler.handleError(this,
-					TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-		}
-	}
+  public void enable() {
+    tinkerforgeDevice = new BrickDC(uid, ipConnection);
+    if (tfConfig != null) {
+      logger.debug("found tfConfig");
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("acceleration"))) {
+        setAcceleration(tfConfig.getAcceleration());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("pwmFrequency"))) {
+        setPwmFrequency(tfConfig.getPwmFrequency());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("switchOnVelocity"))) {
+        setSwitchOnVelocity(tfConfig.getSwitchOnVelocity());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("driveMode"))) {
+        setDriveMode(DCDriveMode.get(tfConfig.getDriveMode()));
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("threshold"))) {
+        setThreshold(tfConfig.getThreshold());
+      }
+      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
+        setCallbackPeriod(tfConfig.getCallbackPeriod());
+      }
+    }
+    try {
+      tinkerforgeDevice.setPWMFrequency(pwmFrequency);
+      if (driveMode == DCDriveMode.BRAKE) {
+        tinkerforgeDevice.setDriveMode(BrickDC.DRIVE_MODE_DRIVE_BRAKE);
+      } else if (driveMode == DCDriveMode.COAST) {
+        tinkerforgeDevice.setDriveMode(BrickDC.DRIVE_MODE_DRIVE_COAST);
+      }
+      tinkerforgeDevice.setCurrentVelocityPeriod((int) callbackPeriod);
+      listener = new VelocityListener();
+      tinkerforgeDevice.addCurrentVelocityListener(listener);
+      tinkerforgeDevice.enable();
+      fetchSensorValue();
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  private class VelocityListener implements BrickDC.CurrentVelocityListener {
+
+    @Override
+    public void currentVelocity(short velocity) {
+      handleVelocity(velocity);
+    }
+
+  }
+
+  /**
+   * 
+   * @generated NOT
+   */
+  private void handleVelocity(short velocity) {
+    DecimalValue newValue = Tools.calculate(velocity);
+    logger.trace("{} got new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+    if (newValue.compareTo(getSensorValue(), getThreshold()) != 0) {
+      logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+      setSensorValue(newValue);
+    } else {
+      logger.trace("{} omitting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+    }
+    OnOffValue newSwitchState = newValue.onOffValue();
+    if (newSwitchState != switchState) {
+      setSwitchState(newSwitchState);
+    }
+  }
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated NOT
    */
-  public void disable()
-  {
-	  tinkerforgeDevice = null;
+  public void disable() {
+    if (listener != null) {
+      tinkerforgeDevice.removeCurrentVelocityListener(listener);
+    }
+
+    tinkerforgeDevice = null;
   }
 
   /**
@@ -1277,6 +1449,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   {
     switch (featureID)
     {
+      case ModelPackage.MBRICK_DC__SENSOR_VALUE:
+        return getSensorValue();
       case ModelPackage.MBRICK_DC__SWITCH_STATE:
         return getSwitchState();
       case ModelPackage.MBRICK_DC__LOGGER:
@@ -1305,6 +1479,10 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return getTfConfig();
       case ModelPackage.MBRICK_DC__DIRECTION:
         return getDirection();
+      case ModelPackage.MBRICK_DC__CALLBACK_PERIOD:
+        return getCallbackPeriod();
+      case ModelPackage.MBRICK_DC__THRESHOLD:
+        return getThreshold();
       case ModelPackage.MBRICK_DC__DEVICE_TYPE:
         return getDeviceType();
       case ModelPackage.MBRICK_DC__VELOCITY:
@@ -1333,6 +1511,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   {
     switch (featureID)
     {
+      case ModelPackage.MBRICK_DC__SENSOR_VALUE:
+        setSensorValue((DecimalValue)newValue);
+        return;
       case ModelPackage.MBRICK_DC__SWITCH_STATE:
         setSwitchState((OnOffValue)newValue);
         return;
@@ -1375,6 +1556,12 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC__DIRECTION:
         setDirection((Direction)newValue);
         return;
+      case ModelPackage.MBRICK_DC__CALLBACK_PERIOD:
+        setCallbackPeriod((Long)newValue);
+        return;
+      case ModelPackage.MBRICK_DC__THRESHOLD:
+        setThreshold((BigDecimal)newValue);
+        return;
       case ModelPackage.MBRICK_DC__VELOCITY:
         setVelocity((Short)newValue);
         return;
@@ -1407,6 +1594,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   {
     switch (featureID)
     {
+      case ModelPackage.MBRICK_DC__SENSOR_VALUE:
+        setSensorValue((DecimalValue)null);
+        return;
       case ModelPackage.MBRICK_DC__SWITCH_STATE:
         setSwitchState(SWITCH_STATE_EDEFAULT);
         return;
@@ -1449,6 +1639,12 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC__DIRECTION:
         setDirection(DIRECTION_EDEFAULT);
         return;
+      case ModelPackage.MBRICK_DC__CALLBACK_PERIOD:
+        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
+        return;
+      case ModelPackage.MBRICK_DC__THRESHOLD:
+        setThreshold(THRESHOLD_EDEFAULT);
+        return;
       case ModelPackage.MBRICK_DC__VELOCITY:
         setVelocity(VELOCITY_EDEFAULT);
         return;
@@ -1481,6 +1677,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   {
     switch (featureID)
     {
+      case ModelPackage.MBRICK_DC__SENSOR_VALUE:
+        return sensorValue != null;
       case ModelPackage.MBRICK_DC__SWITCH_STATE:
         return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
       case ModelPackage.MBRICK_DC__LOGGER:
@@ -1509,6 +1707,10 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return tfConfig != null;
       case ModelPackage.MBRICK_DC__DIRECTION:
         return direction != DIRECTION_EDEFAULT;
+      case ModelPackage.MBRICK_DC__CALLBACK_PERIOD:
+        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
+      case ModelPackage.MBRICK_DC__THRESHOLD:
+        return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
       case ModelPackage.MBRICK_DC__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.MBRICK_DC__VELOCITY:
@@ -1535,6 +1737,21 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
+    if (baseClass == MSwitchActor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICK_DC__SWITCH_STATE: return ModelPackage.MSWITCH_ACTOR__SWITCH_STATE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MInSwitchActor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        default: return -1;
+      }
+    }
     if (baseClass == MBaseDevice.class)
     {
       switch (derivedFeatureID)
@@ -1576,6 +1793,14 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         default: return -1;
       }
     }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MBRICK_DC__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
+        default: return -1;
+      }
+    }
     return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
   }
 
@@ -1587,6 +1812,21 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
+    if (baseClass == MSwitchActor.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MSWITCH_ACTOR__SWITCH_STATE: return ModelPackage.MBRICK_DC__SWITCH_STATE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MInSwitchActor.class)
+    {
+      switch (baseFeatureID)
+      {
+        default: return -1;
+      }
+    }
     if (baseClass == MBaseDevice.class)
     {
       switch (baseFeatureID)
@@ -1628,6 +1868,14 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         default: return -1;
       }
     }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.MBRICK_DC__CALLBACK_PERIOD;
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -1639,6 +1887,22 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
+    if (baseClass == MSwitchActor.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.MSWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE: return ModelPackage.MBRICK_DC___TURN_SWITCH__ONOFFVALUE;
+        case ModelPackage.MSWITCH_ACTOR___FETCH_SWITCH_STATE: return ModelPackage.MBRICK_DC___FETCH_SWITCH_STATE;
+        default: return -1;
+      }
+    }
+    if (baseClass == MInSwitchActor.class)
+    {
+      switch (baseOperationID)
+      {
+        default: return -1;
+      }
+    }
     if (baseClass == MBaseDevice.class)
     {
       switch (baseOperationID)
@@ -1670,6 +1934,13 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         case ModelPackage.MOVE_ACTOR___MOVE__UPDOWNTYPE_DEVICEOPTIONS: return ModelPackage.MBRICK_DC___MOVE__UPDOWNTYPE_DEVICEOPTIONS;
         case ModelPackage.MOVE_ACTOR___STOP: return ModelPackage.MBRICK_DC___STOP;
         case ModelPackage.MOVE_ACTOR___MOVEON__DEVICEOPTIONS: return ModelPackage.MBRICK_DC___MOVEON__DEVICEOPTIONS;
+        default: return -1;
+      }
+    }
+    if (baseClass == CallbackListener.class)
+    {
+      switch (baseOperationID)
+      {
         default: return -1;
       }
     }
@@ -1710,6 +1981,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC___FETCH_SWITCH_STATE:
         fetchSwitchState();
         return null;
+      case ModelPackage.MBRICK_DC___FETCH_SENSOR_VALUE:
+        fetchSensorValue();
+        return null;
     }
     return super.eInvoke(operationID, arguments);
   }
@@ -1725,7 +1999,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (switchState: ");
+    result.append(" (sensorValue: ");
+    result.append(sensorValue);
+    result.append(", switchState: ");
     result.append(switchState);
     result.append(", logger: ");
     result.append(logger);
@@ -1749,6 +2025,10 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     result.append(name);
     result.append(", direction: ");
     result.append(direction);
+    result.append(", callbackPeriod: ");
+    result.append(callbackPeriod);
+    result.append(", threshold: ");
+    result.append(threshold);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(", velocity: ");

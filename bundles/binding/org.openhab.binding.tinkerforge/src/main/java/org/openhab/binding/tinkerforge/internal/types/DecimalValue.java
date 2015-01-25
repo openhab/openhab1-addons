@@ -81,6 +81,10 @@ public class DecimalValue extends Number implements TinkerforgeValue, Comparable
 	  return value;
 	}
 	
+  public OnOffValue onOffValue() {
+    return value == BigDecimal.ZERO ? OnOffValue.OFF : OnOffValue.ON;
+  }
+
 	@Override
     public int compareTo(DecimalValue o) {
       return value.compareTo(o.toBigDecimal());

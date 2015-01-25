@@ -240,8 +240,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     switch (eDataType.getClassifierID())
     {
-      case ModelPackage.DC_DRIVE_MODE:
-        return createDCDriveModeFromString(eDataType, initialValue);
       case ModelPackage.NO_SUB_IDS:
         return createNoSubIdsFromString(eDataType, initialValue);
       case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
@@ -272,6 +270,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createConfigOptsMoveFromString(eDataType, initialValue);
       case ModelPackage.DIRECTION:
         return createDirectionFromString(eDataType, initialValue);
+      case ModelPackage.DC_DRIVE_MODE:
+        return createDCDriveModeFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -365,8 +365,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     switch (eDataType.getClassifierID())
     {
-      case ModelPackage.DC_DRIVE_MODE:
-        return convertDCDriveModeToString(eDataType, instanceValue);
       case ModelPackage.NO_SUB_IDS:
         return convertNoSubIdsToString(eDataType, instanceValue);
       case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
@@ -397,6 +395,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertConfigOptsMoveToString(eDataType, instanceValue);
       case ModelPackage.DIRECTION:
         return convertDirectionToString(eDataType, instanceValue);
+      case ModelPackage.DC_DRIVE_MODE:
+        return convertDCDriveModeToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:

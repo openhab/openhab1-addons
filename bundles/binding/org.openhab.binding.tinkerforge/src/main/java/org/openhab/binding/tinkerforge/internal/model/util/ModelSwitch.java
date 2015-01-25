@@ -272,6 +272,41 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.DIGITAL_ACTOR:
+      {
+        DigitalActor digitalActor = (DigitalActor)theEObject;
+        T result = caseDigitalActor(digitalActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.NUMBER_ACTOR:
+      {
+        NumberActor numberActor = (NumberActor)theEObject;
+        T result = caseNumberActor(numberActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.COLOR_ACTOR:
+      {
+        ColorActor colorActor = (ColorActor)theEObject;
+        T result = caseColorActor(colorActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.MOVE_ACTOR:
+      {
+        MoveActor moveActor = (MoveActor)theEObject;
+        T result = caseMoveActor(moveActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DIMMABLE_ACTOR:
+      {
+        DimmableActor dimmableActor = (DimmableActor)theEObject;
+        T result = caseDimmableActor(dimmableActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICK_SERVO:
       {
         MBrickServo mBrickServo = (MBrickServo)theEObject;
@@ -298,10 +333,12 @@ public class ModelSwitch<T> extends Switch<T>
       {
         MBrickDC mBrickDC = (MBrickDC)theEObject;
         T result = caseMBrickDC(mBrickDC);
+        if (result == null) result = caseMSensor(mBrickDC);
         if (result == null) result = caseMInSwitchActor(mBrickDC);
         if (result == null) result = caseMDevice(mBrickDC);
         if (result == null) result = caseMTFConfigConsumer(mBrickDC);
         if (result == null) result = caseMoveActor(mBrickDC);
+        if (result == null) result = caseCallbackListener(mBrickDC);
         if (result == null) result = caseMSwitchActor(mBrickDC);
         if (result == null) result = caseMBaseDevice(mBrickDC);
         if (result == null) result = defaultCase(theEObject);
@@ -380,20 +417,6 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case ModelPackage.DIGITAL_ACTOR:
-      {
-        DigitalActor digitalActor = (DigitalActor)theEObject;
-        T result = caseDigitalActor(digitalActor);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.NUMBER_ACTOR:
-      {
-        NumberActor numberActor = (NumberActor)theEObject;
-        T result = caseNumberActor(numberActor);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case ModelPackage.MBRICKLET_SEGMENT_DISPLAY4X7:
       {
         MBrickletSegmentDisplay4x7 mBrickletSegmentDisplay4x7 = (MBrickletSegmentDisplay4x7)theEObject;
@@ -401,20 +424,6 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseNumberActor(mBrickletSegmentDisplay4x7);
         if (result == null) result = caseMDevice(mBrickletSegmentDisplay4x7);
         if (result == null) result = caseMBaseDevice(mBrickletSegmentDisplay4x7);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.COLOR_ACTOR:
-      {
-        ColorActor colorActor = (ColorActor)theEObject;
-        T result = caseColorActor(colorActor);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case ModelPackage.MOVE_ACTOR:
-      {
-        MoveActor moveActor = (MoveActor)theEObject;
-        T result = caseMoveActor(moveActor);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1001,6 +1010,7 @@ public class ModelSwitch<T> extends Switch<T>
       {
         TFBrickDCConfiguration tfBrickDCConfiguration = (TFBrickDCConfiguration)theEObject;
         T result = caseTFBrickDCConfiguration(tfBrickDCConfiguration);
+        if (result == null) result = caseTFBaseConfiguration(tfBrickDCConfiguration);
         if (result == null) result = caseTFConfig(tfBrickDCConfiguration);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -1487,6 +1497,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMoveActor(MoveActor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Dimmable Actor</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Dimmable Actor</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDimmableActor(DimmableActor object)
   {
     return null;
   }

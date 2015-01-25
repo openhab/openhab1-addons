@@ -227,6 +227,31 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMLCDSubDeviceAdapter();
       }
       @Override
+      public Adapter caseDigitalActor(DigitalActor object)
+      {
+        return createDigitalActorAdapter();
+      }
+      @Override
+      public Adapter caseNumberActor(NumberActor object)
+      {
+        return createNumberActorAdapter();
+      }
+      @Override
+      public Adapter caseColorActor(ColorActor object)
+      {
+        return createColorActorAdapter();
+      }
+      @Override
+      public Adapter caseMoveActor(MoveActor object)
+      {
+        return createMoveActorAdapter();
+      }
+      @Override
+      public Adapter caseDimmableActor(DimmableActor object)
+      {
+        return createDimmableActorAdapter();
+      }
+      @Override
       public Adapter caseMBrickServo(MBrickServo object)
       {
         return createMBrickServoAdapter();
@@ -277,29 +302,9 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createDigitalActorDigitalOut4Adapter();
       }
       @Override
-      public Adapter caseDigitalActor(DigitalActor object)
-      {
-        return createDigitalActorAdapter();
-      }
-      @Override
-      public Adapter caseNumberActor(NumberActor object)
-      {
-        return createNumberActorAdapter();
-      }
-      @Override
       public Adapter caseMBrickletSegmentDisplay4x7(MBrickletSegmentDisplay4x7 object)
       {
         return createMBrickletSegmentDisplay4x7Adapter();
-      }
-      @Override
-      public Adapter caseColorActor(ColorActor object)
-      {
-        return createColorActorAdapter();
-      }
-      @Override
-      public Adapter caseMoveActor(MoveActor object)
-      {
-        return createMoveActorAdapter();
       }
       @Override
       public Adapter caseMBrickletLEDStrip(MBrickletLEDStrip object)
@@ -1009,6 +1014,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMoveActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor <em>Dimmable Actor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DimmableActor
+   * @generated
+   */
+  public Adapter createDimmableActorAdapter()
   {
     return null;
   }
