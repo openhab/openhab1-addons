@@ -518,6 +518,15 @@
 		<Name>Aeon Labs</Name>
 		<Product>
 			<Reference>
+				<Type>0002</Type>
+				<Id>0059</Id>
+			</Reference>
+			<Model>ZW089</Model>
+			<Label lang="en">Door/Window Sensor</Label>
+			<ConfigFile>aeon/zw089.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0003</Type>
 				<Id>000a</Id>
 			</Reference>
