@@ -24,10 +24,8 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
-import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveGetCommands;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass.LibraryType;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
@@ -287,13 +285,20 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				retryCount = 0;
 			} else {
 				retryCount++;
-				// TODO: This needs to change!
 				if(retryCount > MAX_RETRIES) {
 					retryCount = 0;
 					logger.error("NODE {}: Node advancer: Retries exceeded at {}", 
 							node.getNodeId(), currentStage.toString());
-					if(currentStage != ZWaveNodeInitStage.DYNAMIC_VALUES) {
-//						currentStage = ZWaveNodeInitStage.DEAD;
+					if(currentStage.isStaticComplete()) {
+						// If static stages are complete, then we skip forward to the next
+						// stage.
+						setCurrentStage(currentStage.getNextStage());
+					}
+					else {
+						// For static stages, we MUST complete all steps otherwise we end
+						// up with incomplete information about the device.
+						// During the static stages, we use the back off timer to pace things
+						// and retry until the stage is complete
 						break;
 					}
 				}
@@ -336,7 +341,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					currentStage = ZWaveNodeInitStage.DONE;
 					break;
 				}
-				
+
 				// If the incoming frame is the IdentifyNode, then we continue
 				if (eventClass == SerialMessageClass.IsFailedNodeID) {
 					break;
@@ -399,8 +404,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				break;
 
 			case DETAILS:
-				// If restored from a config file, redo from the dynamic node
-				// stage.
+				// If restored from a config file, redo from the dynamic node stage.
 				if (isRestoredFromConfigfile()) {
 					logger.debug("NODE {}: Node advancer: Restored from file - skipping static initialisation", node.getNodeId());
 					currentStage = ZWaveNodeInitStage.SESSION_START;
@@ -680,14 +684,18 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				addToQueue(wakeupCommandClass.getIntervalMessage());
 				break;
 
+			case STATIC_END:
 			case DONE:
-				logger.debug("NODE {}: Node advancer: Initialisation complete!", node.getNodeId());
-
 				// Save the node information to file
 				nodeSerializer.SerializeNode(node);
+				
+				if(currentStage != ZWaveNodeInitStage.DONE) {
+					break;
+				}
 
-				// We remove the event listener to reduce loading now that we're
-				// done
+				logger.debug("NODE {}: Node advancer: Initialisation complete!", node.getNodeId());
+
+				// We remove the event listener to reduce loading now that we're done
 				controller.removeEventListener(this);
 
 				// Return from here as we're now done and we don't want to
@@ -697,8 +705,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			case SESSION_START:
 				// This is a 'do nothing' state.
 				// It's used as a marker within the NodeStage class to indicate
-				// where
-				// to start initialisation if we restored from XML.
+				// where to start initialisation if we restored from XML.
 				break;
 
 			default:
