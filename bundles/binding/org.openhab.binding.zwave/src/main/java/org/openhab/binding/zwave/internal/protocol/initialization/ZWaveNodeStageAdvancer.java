@@ -128,7 +128,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	private boolean freeToSend = true;
 	private boolean stageAdvanced = true;
 	
-	private static final int MAX_RETRIES = 10;
+	private static final int MAX_RETRIES = 5;
 	private int retryCount = 0;
 
 	private final int BACKOFF_TIMER_START = 5000;
