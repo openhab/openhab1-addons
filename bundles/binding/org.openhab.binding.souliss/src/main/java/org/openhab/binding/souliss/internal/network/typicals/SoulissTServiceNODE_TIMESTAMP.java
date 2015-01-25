@@ -12,19 +12,20 @@ import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.types.State;
 
 /**
- * Typical D99
- * Service Typical
- * TIMESTAMP - LAST NODE UPGRADE
+ * Typical D99 Service Typical TIMESTAMP - LAST NODE UPGRADE
  * 
- * @author Antonino-Fazio
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
 public class SoulissTServiceNODE_TIMESTAMP extends SoulissGenericTypical {
 	// Parameters sSoulissNode, iSlot, Type, State are stored in the class
-	
-	//private static final short SERVICE_SLOT=998;
+
+	// private static final short SERVICE_SLOT=998;
 	private static String timestamp;
-	
-	public SoulissTServiceNODE_TIMESTAMP(String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot, String sOHType) {
+
+	public SoulissTServiceNODE_TIMESTAMP(String sSoulissNodeIPAddress,
+			String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot,
+			String sOHType) {
 		super();
 		this.setSlot(iSlot);
 		this.setSoulissNodeID(iIDNodo);
@@ -34,6 +35,7 @@ public class SoulissTServiceNODE_TIMESTAMP extends SoulissGenericTypical {
 
 	/**
 	 * Log the timestamp
+	 * 
 	 * @return String timestamp
 	 */
 	public String getTIMESTAMP() {
@@ -42,20 +44,21 @@ public class SoulissTServiceNODE_TIMESTAMP extends SoulissGenericTypical {
 
 	/**
 	 * Set timestamp
+	 * 
 	 * @param string
 	 */
 	public void setTIMESTAMP(String string) {
 		timestamp = string;
 		setUpdatedTrue();
 	}
-		
-	@Override
+
 	/**
-	 * Return as openHAB type DateTimeType 
+	 * Return as openHAB type DateTimeType
 	 */
+	@Override
 	public State getOHState() {
-			//return	StringType.valueOf(timestamp);
-			return	DateTimeType.valueOf(timestamp);
+		// return StringType.valueOf(timestamp);
+		return DateTimeType.valueOf(timestamp);
 
 	}
 }

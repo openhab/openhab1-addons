@@ -18,30 +18,42 @@ import org.slf4j.LoggerFactory;
 /**
  * This class provide to read typical state and put it on Openhab bus events
  * 
- * @author Antonino-Fazio
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
 public class MonitorThread extends Thread {
 
 	int REFRESH_TIME;
 	private SoulissTypicals soulissTypicalsRecipients;
 	private static Logger LOGGER = LoggerFactory.getLogger(MonitorThread.class);
-	// SoulissUpdater sUpdater=new SoulissUpdater ();
 	EventPublisher eventPublisher;
 
+	/**
+	 * Constructor
+	 * 
+	 * @author Tonino Fazio
+	 * @since 1.7.0
+	 */
 	public MonitorThread(SoulissTypicals typicals, int iRefreshTime,
 			EventPublisher _eventPublisher) {
-		// TODO Auto-generated constructor stub
 		REFRESH_TIME = iRefreshTime;
 		soulissTypicalsRecipients = typicals;
 		LOGGER.info("Avvio MonitorThread");
 		eventPublisher = _eventPublisher;
 	}
 
+	/**
+	 * Check and sleep for REFRESH_TIME mills
+	 * 
+	 * @author Tonino Fazio
+	 * @since 1.7.0
+	 */
 	@Override
 	public void run() {
 		while (true) {
 			try {
-				// Check all souliss'typicals (items) and get only the ones that has been updated
+				// Check all souliss'typicals (items) and get only the ones that
+				// has been updated
 				check(soulissTypicalsRecipients);
 
 				Thread.sleep(REFRESH_TIME);
@@ -54,23 +66,26 @@ public class MonitorThread extends Thread {
 	}
 
 	/**
-	 * Goes though the hast table and send on the openHAB bus only the
-	 * souliss' typicals that has been updated
+	 * Goes though the hast table and send on the openHAB bus only the souliss'
+	 * typicals that has been updated
 	 * 
-	 * @param typicals
+	 * @author Tonino Fazio
+	 * @since 1.7.0
+	 * @param SoulissTypicals
+	 *            typicals
 	 */
 	private void check(SoulissTypicals typicals) {
-		// TODO Auto-generated method stub
 		Iterator<Entry<String, SoulissGenericTypical>> iteratorTypicals = soulissTypicalsRecipients
 				.getIterator();
 		synchronized (iteratorTypicals) {
 			while (iteratorTypicals.hasNext()) {
 				SoulissGenericTypical typ = iteratorTypicals.next().getValue();
 				if (typ.isUpdated()) {
-					// Here we start the openHAB's methods used to update the item values
-
+					// Here we start the openHAB's methods used to update the
+					// item values
 					if (typ.getType() == Constants.Souliss_TService_NODE_TIMESTAMP) {
-						// All values are float out of TIMESTAMP that is a string
+						// All values are float out of TIMESTAMP that is a
+						// string
 						LOGGER.debug("Put on Bus Events - "
 								+ typ.getName()
 								+ " = "
@@ -104,11 +119,9 @@ public class MonitorThread extends Thread {
 						eventPublisher.postUpdate(typ.getName(),
 								typ.getOHState());
 					}
-
 					typ.resetUpdate();
 				}
 			}
 		}
-
 	}
 }

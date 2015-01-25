@@ -14,32 +14,37 @@ import org.slf4j.LoggerFactory;
 import org.openhab.binding.souliss.internal.network.udp.SoulissCommGate;
 
 /**
- * This class implements the Souliss commmand SUBSCRIPTION.
- * The thread send SUBSCRIPTION every "iRefreshTime" milliseconds
+ * This class implements the Souliss commmand SUBSCRIPTION. The thread send
+ * SUBSCRIPTION every "iRefreshTime" milliseconds
  * 
- * @author Antonino-Fazio
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
 public class RefreshSUBSCRIPTIONThread extends Thread {
 
 	int REFRESH_TIME;
-	DatagramSocket socket=null;
-	String SoulissNodeIPAddress="";
-	String soulissNodeIPAddressOnLAN="";
-	int iNodes=0;
-	private static Logger LOGGER = LoggerFactory.getLogger(RefreshSUBSCRIPTIONThread.class);
+	DatagramSocket socket = null;
+	String SoulissNodeIPAddress = "";
+	String soulissNodeIPAddressOnLAN = "";
+	int iNodes = 0;
+	private static Logger LOGGER = LoggerFactory
+			.getLogger(RefreshSUBSCRIPTIONThread.class);
 
-	public RefreshSUBSCRIPTIONThread(DatagramSocket datagramsocket, String soulissNodeIPAddress, String soulissNodeIPAddressOnLAN, int nodes, int iRefreshTime) {
+	public RefreshSUBSCRIPTIONThread(DatagramSocket datagramsocket,
+			String soulissNodeIPAddress, String soulissNodeIPAddressOnLAN,
+			int nodes, int iRefreshTime) {
 		// TODO Auto-generated constructor stub
-		REFRESH_TIME=iRefreshTime;
-		this.socket=datagramsocket;
-		this.SoulissNodeIPAddress=soulissNodeIPAddress;
-		this.soulissNodeIPAddressOnLAN=soulissNodeIPAddressOnLAN;
-		iNodes=nodes;
+		REFRESH_TIME = iRefreshTime;
+		this.socket = datagramsocket;
+		this.SoulissNodeIPAddress = soulissNodeIPAddress;
+		this.soulissNodeIPAddressOnLAN = soulissNodeIPAddressOnLAN;
+		iNodes = nodes;
 		LOGGER.info("Startup RefreshSUBSCRIPTIONThread");
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Thread#run()
 	 */
 	@Override
@@ -47,10 +52,11 @@ public class RefreshSUBSCRIPTIONThread extends Thread {
 		while (true) {
 			try {
 				LOGGER.debug("sendSUBSCRIPTIONframe");
-				SoulissCommGate.sendSUBSCRIPTIONframe(socket, SoulissNodeIPAddress, soulissNodeIPAddressOnLAN, iNodes);
+				SoulissCommGate
+						.sendSUBSCRIPTIONframe(socket, SoulissNodeIPAddress,
+								soulissNodeIPAddressOnLAN, iNodes);
 				Thread.sleep(REFRESH_TIME);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				LOGGER.error(e.getMessage());
 			}

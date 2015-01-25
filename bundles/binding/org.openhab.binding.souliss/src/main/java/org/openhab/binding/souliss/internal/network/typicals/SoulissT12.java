@@ -11,15 +11,18 @@ package org.openhab.binding.souliss.internal.network.typicals;
 import java.net.DatagramSocket;
 
 /**
- * Typical T12
- * SWITCH WITH AUTO mode (NOT SUPPORTED BY OPENHAB)
+ * Typical T12 SWITCH WITH AUTO mode (NOT SUPPORTED BY OPENHAB)
  * 
- * @author Antonino-Fazio
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
 public class SoulissT12 extends SoulissT11 {
-	
-	public SoulissT12(DatagramSocket _datagramsocket, String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot, String sOHType) {
-		super(_datagramsocket, sSoulissNodeIPAddress, sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+
+	public SoulissT12(DatagramSocket _datagramsocket,
+			String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN,
+			int iIDNodo, int iSlot, String sOHType) {
+		super(_datagramsocket, sSoulissNodeIPAddress,
+				sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
 		this.setType(Constants.Souliss_T12);
 	}
 }

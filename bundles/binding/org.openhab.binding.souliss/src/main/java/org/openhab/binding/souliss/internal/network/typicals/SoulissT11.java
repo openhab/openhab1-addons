@@ -15,16 +15,16 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.State;
 
-
 /**
- * Typical T11
- * SWITCH
+ * Typical T11 SWITCH
  * 
- * @author Antonino-Fazio
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
 public class SoulissT11 extends SoulissGenericTypical {
 	/**
 	 * Typical T11
+	 * 
 	 * @param _datagramsocket
 	 * @param sSoulissNodeIPAddress
 	 * @param sSoulissNodeIPAddressOnLAN
@@ -32,22 +32,29 @@ public class SoulissT11 extends SoulissGenericTypical {
 	 * @param iSlot
 	 * @param sOHType
 	 */
-	 
-	 // Parameters sSoulissNode, iSlot, Type and State are stored in the class
-	public SoulissT11(DatagramSocket _datagramsocket, String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot, String sOHType) {
+
+	// Parameters sSoulissNode, iSlot, Type and State are stored in the class
+	public SoulissT11(DatagramSocket _datagramsocket,
+			String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN,
+			int iIDNodo, int iSlot, String sOHType) {
 		super();
 		this.setSlot(iSlot);
 		this.setSoulissNodeID(iIDNodo);
 		this.setType(Constants.Souliss_T11);
 		this.setNote(sOHType);
- 	}
-		
-/**
- * Send a command as hexadecimal, e.g.: Souliss_T1n_OnCmd = 0x02; short Souliss_T1n_OffCmd = 0x04;
- * @param command
- */
+	}
+
+	/**
+	 * Send a command as hexadecimal, e.g.: Souliss_T1n_OnCmd = 0x02; short
+	 * Souliss_T1n_OffCmd = 0x04;
+	 * 
+	 * @param command
+	 */
 	public void CommandSEND(short command) {
-		SoulissCommGate.sendFORCEFrame(SoulissNetworkParameter.datagramsocket,SoulissNetworkParameter.IPAddress,  SoulissNetworkParameter.IPAddressOnLAN, this.getSoulissNodeID(), this.getSlot(), command );	
+		SoulissCommGate.sendFORCEFrame(SoulissNetworkParameter.datagramsocket,
+				SoulissNetworkParameter.IPAddress,
+				SoulissNetworkParameter.IPAddressOnLAN,
+				this.getSoulissNodeID(), this.getSlot(), command);
 	}
 
 	@Override
@@ -56,11 +63,13 @@ public class SoulissT11 extends SoulissGenericTypical {
 	 * @return org.openhab.core.types.State
 	 */
 	public State getOHState() {
-		String sOHState=StateTraslator.statesSoulissToOH(this.getNote(), this.getType(),(short) this.getState());
-		if(sOHState!=null){
-		if (this.getNote().equals("ContactItem"))
-			return OpenClosedType.valueOf(sOHState);
-		else return OnOffType.valueOf(sOHState);
+		String sOHState = StateTraslator.statesSoulissToOH(this.getNote(),
+				this.getType(), (short) this.getState());
+		if (sOHState != null) {
+			if (this.getNote().equals("ContactItem"))
+				return OpenClosedType.valueOf(sOHState);
+			else
+				return OnOffType.valueOf(sOHState);
 		}
 		return null;
 	}

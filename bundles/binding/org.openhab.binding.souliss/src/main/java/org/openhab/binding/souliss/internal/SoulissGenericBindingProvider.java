@@ -21,60 +21,70 @@ import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * <p>This class can parse information from the generic binding format and 
- * provides souliss binding information from it. It registers as a 
- * {@link soulissBindingProvider} service as well.</p>
+ * <p>
+ * This class can parse information from the generic binding format and provides
+ * souliss binding information from it. It registers as a
+ * {@link soulissBindingProvider} service as well.
+ * </p>
  * 
- * <p>Here are some examples for valid binding configuration strings:
+ * <p>
+ * Here are some examples for valid binding configuration strings:
  * <ul>
- * 	<li><code>{ souliss="Europe/Berlin:de_DE" }</code>
- * 	<li><code>{ souliss="Europe/Berlin" }</code>
- * 	<li><code>{ souliss="" }</code>
+ * <li><code>{ souliss="Europe/Berlin:de_DE" }</code>
+ * <li><code>{ souliss="Europe/Berlin" }</code>
+ * <li><code>{ souliss="" }</code>
  * </ul>
  * 
- * @author Thomas.Eichstaedt-Engelen
- * 
- * @since 0.8.0
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
-public class SoulissGenericBindingProvider extends AbstractGenericBindingProvider implements SoulissBindingProvider {
-	private static Logger LOGGER = LoggerFactory.getLogger(TypicalFactory.class);
-	public static SoulissTypicals SoulissTypicalsRecipients= new SoulissTypicals();
-	
+public class SoulissGenericBindingProvider extends
+		AbstractGenericBindingProvider implements SoulissBindingProvider {
+	private static Logger LOGGER = LoggerFactory
+			.getLogger(TypicalFactory.class);
+	public static SoulissTypicals SoulissTypicalsRecipients = new SoulissTypicals();
+
 	public String getBindingType() {
-		// TODO Auto-generated method stub
 		return "souliss";
 	}
 
 	/**
 	 * This method create typicals and add it to hastable
-	 * @Antonino-Fazio
+	 * 
+	 * @author Tonino Fazio
+	 * @since 1.7.0
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item,
+			String bindingConfig) throws BindingConfigParseException {
 		// CREAZIONE TIPICI
 		super.processBindingConfiguration(context, item, bindingConfig);
-		String[] sNameArray=bindingConfig.split("\\:");
-		String sTypical= sNameArray[0];
-		int iNodeID=Integer.parseInt(sNameArray[1]);
-		int iSlot=Integer.parseInt(sNameArray[2]);
-		byte iBit=0;
-		if(sNameArray.length > 3){
-		iBit=Byte.parseByte(sNameArray[3]);
+		String[] sNameArray = bindingConfig.split("\\:");
+		String sTypical = sNameArray[0];
+		int iNodeID = Integer.parseInt(sNameArray[1]);
+		int iSlot = Integer.parseInt(sNameArray[2]);
+		byte iBit = 0;
+		if (sNameArray.length > 3) {
+			iBit = Byte.parseByte(sNameArray[3]);
 		}
-		
-		String sNote=item.getClass().getSimpleName();
-	
-		SoulissGenericTypical soulitTypicalNew = TypicalFactory.getClass(StateTraslator.stringToSOULISSTypicalCode(sTypical),SoulissNetworkParameter.datagramsocket ,  SoulissNetworkParameter.IPAddress, SoulissNetworkParameter.IPAddressOnLAN,iNodeID, iSlot,sNote, iBit);
-		if(soulitTypicalNew!=null){
-			SoulissTypicalsRecipients.addTypical(item.getName(), soulitTypicalNew );
-		} else {
-			LOGGER.debug("Typical Unknow");	
-		}
-		
-	}
 
+		String sNote = item.getClass().getSimpleName();
+
+		SoulissGenericTypical soulitTypicalNew = TypicalFactory.getClass(
+				StateTraslator.stringToSOULISSTypicalCode(sTypical),
+				SoulissNetworkParameter.datagramsocket,
+				SoulissNetworkParameter.IPAddress,
+				SoulissNetworkParameter.IPAddressOnLAN, iNodeID, iSlot, sNote,
+				iBit);
+		if (soulitTypicalNew != null) {
+			SoulissTypicalsRecipients.addTypical(item.getName(),
+					soulitTypicalNew);
+		} else {
+			LOGGER.debug("Typical Unknow");
+		}
+
+	}
 
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {

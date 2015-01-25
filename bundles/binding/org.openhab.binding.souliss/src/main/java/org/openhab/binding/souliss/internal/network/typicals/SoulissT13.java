@@ -13,28 +13,32 @@ import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.State;
 
 /**
- * Typical T13
- * Digital Input Value
+ * Typical T13 Digital Input Value
  * 
- * @author Antonino-Fazio
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
 public class SoulissT13 extends SoulissGenericTypical {
 
-	public SoulissT13(String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot, String sOHType) {
+	public SoulissT13(String sSoulissNodeIPAddress,
+			String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot,
+			String sOHType) {
 		super();
 		this.setSlot(iSlot);
 		this.setSoulissNodeID(iIDNodo);
 		this.setType(Constants.Souliss_T13);
 		this.setNote(sOHType);
 	}
-		
+
 	@Override
 	public State getOHState() {
-		String sOHState=StateTraslator.statesSoulissToOH(this.getNote(), this.getType(), (short)this.getState());
-		if(sOHState!=null){
-		if (this.getNote().equals("ContactItem"))
-			return OpenClosedType.valueOf(sOHState);
-		else return OnOffType.valueOf(sOHState);
+		String sOHState = StateTraslator.statesSoulissToOH(this.getNote(),
+				this.getType(), (short) this.getState());
+		if (sOHState != null) {
+			if (this.getNote().equals("ContactItem"))
+				return OpenClosedType.valueOf(sOHState);
+			else
+				return OnOffType.valueOf(sOHState);
 		}
 		return null;
 	}

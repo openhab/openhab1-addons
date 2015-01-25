@@ -9,17 +9,19 @@
 package org.openhab.binding.souliss.internal.network.typicals;
 
 /**
- * Typical T53
- * Humidity Sensor
- * Derived from T51
- * Analog input, half-precision floating point
+ * Typical T53 Humidity Sensor Derived from T51 Analog input, half-precision
+ * floating point
  * 
- * @author Antonino-Fazio
+ * @author Tonino Fazio
+ * @since 1.7.0o
  */
 public class SoulissT53 extends SoulissT51 {
-	
-	public SoulissT53(String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot, String sOHType) {
-		super(sSoulissNodeIPAddress,sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+
+	public SoulissT53(String sSoulissNodeIPAddress,
+			String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot,
+			String sOHType) {
+		super(sSoulissNodeIPAddress, sSoulissNodeIPAddressOnLAN, iIDNodo,
+				iSlot, sOHType);
 		this.setType(Constants.Souliss_T53_HumiditySensor);
 	}
 }

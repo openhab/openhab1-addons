@@ -12,29 +12,34 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
 
 /**
- * Typical D98
- * Service Typical
- * HEALTY
+ * Typical D98 Service Typical HEALTY
  * 
- * @author Antonino-Fazio
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
 public class SoulissTServiceNODE_HEALTY extends SoulissGenericTypical {
 
-	public SoulissTServiceNODE_HEALTY(String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot, String sOHType) {
+	public SoulissTServiceNODE_HEALTY(String sSoulissNodeIPAddress,
+			String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot,
+			String sOHType) {
 		super();
 		this.setSlot(iSlot);
 		this.setSoulissNodeID(iIDNodo);
 		this.setType(Constants.Souliss_TService_NODE_HEALTY);
 		this.setNote(sOHType);
 	}
-	@Override
+
 	/**
 	 * Returns the souliss' typical state as numerical value
 	 */
+	@Override
 	public State getOHState() {
-		String sOHState=StateTraslator.statesSoulissToOH(this.getNote(), this.getType(), (short)this.getState());
-		if (sOHState == null) return DecimalType.valueOf(Float.toString(this.getState()));
-		else return DecimalType.valueOf(sOHState);
+		String sOHState = StateTraslator.statesSoulissToOH(this.getNote(),
+				this.getType(), (short) this.getState());
+		if (sOHState == null)
+			return DecimalType.valueOf(Float.toString(this.getState()));
+		else
+			return DecimalType.valueOf(sOHState);
 	}
-		
+
 }

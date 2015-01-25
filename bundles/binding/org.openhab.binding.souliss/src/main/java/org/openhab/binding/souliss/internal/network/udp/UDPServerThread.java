@@ -15,83 +15,79 @@ import org.slf4j.LoggerFactory;
 
 import org.openhab.binding.souliss.internal.network.typicals.SoulissNetworkParameter;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissTypicals;
- 
+
 /**
  * This class provide receive packet from network
- * @author Alessandro-Del-Pex
- * revision
- * @author Antonino-Fazio
  * 
+ * @author Alessandro Del Pex
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
 public class UDPServerThread extends Thread {
- 
-   // protected DatagramSocket socket = null;
-    protected BufferedReader in = null;
-    protected boolean bExit = false;
-    UDPSoulissDecoder decoder=null;
-    private static Logger LOGGER = LoggerFactory.getLogger(UDPServerThread.class);
-    
-    public UDPServerThread(SoulissTypicals typicals ) throws IOException {
-    	super();
-     //   socket = new DatagramSocket(ConstantsUDP.SERVERPORT);
-    	if (SoulissNetworkParameter.serverPort!= null){
-    		SoulissNetworkParameter.datagramsocket = new DatagramSocket(SoulissNetworkParameter.serverPort);
-    	}
-    		else{
-    			SoulissNetworkParameter.datagramsocket = new DatagramSocket();
-    		}
-    			
-    	
-    	decoder=new UDPSoulissDecoder(typicals);
-        LOGGER.info("Avvio UDPServerThread - Server in ascolto sulla porta " + SoulissNetworkParameter.datagramsocket.getLocalPort());
-    }
- 
-    public void run() {
- 
-        while (!bExit) {
-            try {
-                byte[] buf = new byte[256];
- 
-                // receive request
-                DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                SoulissNetworkParameter.datagramsocket.receive(packet);
-                 buf= packet.getData();
-              //  System.out.println(buf.toString());
-                
-                //**************** DECODER ********************
-                LOGGER.debug("Packet received");
-                LOGGER.debug(MaCacoToString(buf));
-                decoder.decodeVNetDatagram(packet);
-                
-                
-                
-            } catch (IOException e) {
-                e.printStackTrace();
-                LOGGER.error(e.getMessage());
-                bExit = true;
-            }
-        }
-        
-        SoulissNetworkParameter.datagramsocket.close();
-    }
- 
-   
-    public DatagramSocket getSocket(){
-    	return SoulissNetworkParameter.datagramsocket;
-    }
+
+	// protected DatagramSocket socket = null;
+	protected BufferedReader in = null;
+	protected boolean bExit = false;
+	UDPSoulissDecoder decoder = null;
+	private static Logger LOGGER = LoggerFactory
+			.getLogger(UDPServerThread.class);
+
+	public UDPServerThread(SoulissTypicals typicals) throws IOException {
+		super();
+		if (SoulissNetworkParameter.serverPort != null) {
+			SoulissNetworkParameter.datagramsocket = new DatagramSocket(
+					SoulissNetworkParameter.serverPort);
+		} else {
+			SoulissNetworkParameter.datagramsocket = new DatagramSocket();
+		}
+
+		decoder = new UDPSoulissDecoder(typicals);
+		LOGGER.info("Avvio UDPServerThread - Server in ascolto sulla porta "
+				+ SoulissNetworkParameter.datagramsocket.getLocalPort());
+	}
+
+	public void run() {
+
+		while (!bExit) {
+			try {
+				byte[] buf = new byte[256];
+
+				// receive request
+				DatagramPacket packet = new DatagramPacket(buf, buf.length);
+				SoulissNetworkParameter.datagramsocket.receive(packet);
+				buf = packet.getData();
+			
+				// **************** DECODER ********************
+				LOGGER.debug("Packet received");
+				LOGGER.debug(MaCacoToString(buf));
+				decoder.decodeVNetDatagram(packet);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+				LOGGER.error(e.getMessage());
+				bExit = true;
+			}
+		}
+
+		SoulissNetworkParameter.datagramsocket.close();
+	}
+
+	public DatagramSocket getSocket() {
+		return SoulissNetworkParameter.datagramsocket;
+	}
 
 	public void closeSocket() {
 		SoulissNetworkParameter.datagramsocket.close();
-		bExit=true;
+		bExit = true;
 	}
 
 	private String MaCacoToString(byte[] frame) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("HEX: [");
-	    for (byte b : frame) {
-	        sb.append(String.format("%02X ", b));
-	    }
-	    sb.append("]");
-	    return sb.toString();
+		for (byte b : frame) {
+			sb.append(String.format("%02X ", b));
+		}
+		sb.append("]");
+		return sb.toString();
 	}
 }

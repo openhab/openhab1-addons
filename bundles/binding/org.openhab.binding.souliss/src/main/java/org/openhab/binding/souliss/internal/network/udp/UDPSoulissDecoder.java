@@ -22,25 +22,25 @@ import org.openhab.binding.souliss.internal.network.typicals.SoulissT1A;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissTServiceUpdater;
 import org.openhab.binding.souliss.internal.network.typicals.SoulissTypicals;
 
-
 /**
  * This class decodes incoming Souliss packets, starting from decodevNet
- * @author Alessandro-Del-Pex
- * revision
- * @author Antonino-Fazio
  * 
+ * @author Alessandro Del Pex
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
 public class UDPSoulissDecoder {
 
 	private SoulissTypicals soulissTypicalsRecipients;
-	private static Logger LOGGER = LoggerFactory.getLogger(UDPSoulissDecoder.class);
-	  
+	private static Logger LOGGER = LoggerFactory
+			.getLogger(UDPSoulissDecoder.class);
+
 	public UDPSoulissDecoder(SoulissTypicals typicals) {
-		soulissTypicalsRecipients=typicals;
+		soulissTypicalsRecipients = typicals;
 	}
 
 	/**
-	 * processa il pacchetto UDP ricevuto e agisce di conseguenza
+	 * Get packet from VNET Frame
 	 * 
 	 * @param packet
 	 *            incoming datagram
@@ -61,38 +61,37 @@ public class UDPSoulissDecoder {
 	 */
 	private void decodeMacaco(ArrayList<Short> macacoPck) {
 		int functionalCode = macacoPck.get(0);
-		LOGGER.info("decodeMacaco: Received functional code: 0x" + Integer.toHexString(functionalCode) );
+		LOGGER.info("decodeMacaco: Received functional code: 0x"
+				+ Integer.toHexString(functionalCode));
 		switch (functionalCode) {
-		
+
 		case (byte) ConstantsUDP.Souliss_UDP_function_ping_resp:
 			LOGGER.info("function_ping_resp");
 			decodePing(macacoPck);
-		break;
-		//		case ConstantsUDP.Souliss_UDP_function_ping_bcast_resp:
-		//			// assertEquals(mac.size(), 8);
-		//			//Log.d(Constants.TAG, "** Ping BROADCAST response bytes " + macacoPck.size());
-		//			decodePing(macacoPck);
-		//			break;
+			break;
 		case (byte) ConstantsUDP.Souliss_UDP_function_subscribe_resp:
 		case (byte) ConstantsUDP.Souliss_UDP_function_poll_resp:
 			LOGGER.info("Souliss_UDP_function_subscribe_resp / Souliss_UDP_function_poll_resp");
 			decodeStateRequest(macacoPck);
-		//	processTriggers();
-		break;
+			break;
 
-		case ConstantsUDP.Souliss_UDP_function_typreq_resp:// Answer for assigned
-		//														// typical logic
-				LOGGER.info("** TypReq answer");
-					decodeTypRequest(macacoPck);
-					break;
-		case (byte) ConstantsUDP.Souliss_UDP_function_health_resp:// Answer nodes healty
+		case ConstantsUDP.Souliss_UDP_function_typreq_resp:// Answer for
+															// assigned
+			// typical logic
+			LOGGER.info("** TypReq answer");
+			decodeTypRequest(macacoPck);
+			break;
+		case (byte) ConstantsUDP.Souliss_UDP_function_health_resp:// Answer
+																	// nodes
+																	// healty
 			LOGGER.info("function_health_resp");
 			decodeHealthRequest(macacoPck);
 			break;
-		case (byte) ConstantsUDP.Souliss_UDP_function_db_struct_resp:// Answer nodes
+		case (byte) ConstantsUDP.Souliss_UDP_function_db_struct_resp:// Answer
+																		// nodes
 			LOGGER.info("function_db_struct_resp");
 			decodeDBStructRequest(macacoPck);
-		break;
+			break;
 		case 0x83:
 			LOGGER.info("Functional code not supported");
 			break;
@@ -108,15 +107,13 @@ public class UDPSoulissDecoder {
 		}
 	}
 
-	//	/**
-	//	 * @param mac
-	//	 */
+	// /**
+	// * @param mac
+	// */
 	private void decodePing(ArrayList<Short> mac) {
-		// int nodes = mac.get(5);
 		int putIn_1 = mac.get(1);
 		int putIn_2 = mac.get(2);
-		LOGGER.info("decodePing: putIn code: " + putIn_1 + ", "+ putIn_2);
-
+		LOGGER.info("decodePing: putIn code: " + putIn_1 + ", " + putIn_2);
 	}
 
 	/**
@@ -126,162 +123,173 @@ public class UDPSoulissDecoder {
 	 * @param mac
 	 */
 	private void decodeDBStructRequest(ArrayList<Short> mac) {
-		// Threee static bytes
-		//assertEquals(4, (short) mac.get(4));
 		try {
 			int nodes = mac.get(5);
 			int maxnodes = mac.get(6);
 			int maxTypicalXnode = mac.get(7);
 			int maxrequests = mac.get(8);
-			int MaCaco_IN_S =mac.get(9);
+			int MaCaco_IN_S = mac.get(9);
 			int MaCaco_TYP_S = mac.get(10);
-			int MaCaco_OUT_S=mac.get(11);
+			int MaCaco_OUT_S = mac.get(11);
 
-		SoulissNetworkParameter.nodes=nodes;
-		SoulissNetworkParameter.maxnodes=maxnodes;
-		SoulissNetworkParameter.maxTypicalXnode=maxTypicalXnode;
-		SoulissNetworkParameter.maxrequests=maxrequests;
-		SoulissNetworkParameter.MaCacoIN_s=MaCaco_IN_S;
-		SoulissNetworkParameter.MaCacoTYP_s=MaCaco_TYP_S;
-		SoulissNetworkParameter.MaCacoOUT_s=MaCaco_OUT_S;
-		
-		
-		LOGGER.debug("decodeDBStructRequest");
-		LOGGER.debug("Nodes: "+ nodes);
-		LOGGER.debug("maxnodes: "+ maxnodes);
-		LOGGER.debug("maxTypicalXnode: "+ maxTypicalXnode);
-		LOGGER.debug("maxrequests: "+ maxrequests);
-		LOGGER.debug("MaCaco_IN_S: "+ MaCaco_IN_S);
-		LOGGER.debug("MaCaco_TYP_S: "+ MaCaco_TYP_S);
-		LOGGER.debug("MaCaco_OUT_S: "+ MaCaco_OUT_S);
-		
-		
+			SoulissNetworkParameter.nodes = nodes;
+			SoulissNetworkParameter.maxnodes = maxnodes;
+			SoulissNetworkParameter.maxTypicalXnode = maxTypicalXnode;
+			SoulissNetworkParameter.maxrequests = maxrequests;
+			SoulissNetworkParameter.MaCacoIN_s = MaCaco_IN_S;
+			SoulissNetworkParameter.MaCacoTYP_s = MaCaco_TYP_S;
+			SoulissNetworkParameter.MaCacoOUT_s = MaCaco_OUT_S;
+
+			LOGGER.debug("decodeDBStructRequest");
+			LOGGER.debug("Nodes: " + nodes);
+			LOGGER.debug("maxnodes: " + maxnodes);
+			LOGGER.debug("maxTypicalXnode: " + maxTypicalXnode);
+			LOGGER.debug("maxrequests: " + maxrequests);
+			LOGGER.debug("MaCaco_IN_S: " + MaCaco_IN_S);
+			LOGGER.debug("MaCaco_TYP_S: " + MaCaco_TYP_S);
+			LOGGER.debug("MaCaco_OUT_S: " + MaCaco_OUT_S);
+
 		} catch (Exception e) {
 			LOGGER.error("decodeDBStructRequest: SoulissNetworkParameter update ERROR");
 		}
 	}
 
-	/**
-	 * Definizione dei tipici
-	 * 
-	 * @param mac
-	 */
-		private void decodeTypRequest(ArrayList<Short> mac) {
-			try {
-				short typ=(short) mac.get(0);
-				short tgtnode = mac.get(3);
-				int numberOf = mac.get(4);
-				int done = 0;
-				// SoulissNode node = database.getSoulissNode(tgtnode);
-				
-				int typXnodo = SoulissNetworkParameter.maxnodes;
-				LOGGER.info("--DECODE MACACO OFFSET:" + tgtnode + " NUMOF:" + numberOf + " TYPICALSXNODE: " + typXnodo);
-				// creates Souliss nodes
-				for (int j = 0; j < numberOf; j++) {
-					if (mac.get(5 + j) != 0) {// create only not-empty typicals
-						if(!(mac.get(5 + j)==Constants.Souliss_T_related)){
-							String hTyp=Integer.toHexString(mac.get(5 + j));
-							short slot=(short) (j % typXnodo);
-							short node=(short) (j / typXnodo + tgtnode);
-							
-							System.out.println("{souliss=\"T"+hTyp+":"+node+":"+slot+"}");
-							
-							
-//						System.out.println("Typ: " + "0x"+hTyp);
-//						System.out.println("Node: "+ node);
-//						System.out.println("Slot: " +slot);// magia
-//						
-						}
+	private void decodeTypRequest(ArrayList<Short> mac) {
+		try {
+			short typ = (short) mac.get(0);
+			short tgtnode = mac.get(3);
+			int numberOf = mac.get(4);
+			int done = 0;
+			
+			int typXnodo = SoulissNetworkParameter.maxnodes;
+			LOGGER.info("--DECODE MACACO OFFSET:" + tgtnode + " NUMOF:"
+					+ numberOf + " TYPICALSXNODE: " + typXnodo);
+			// creates Souliss nodes
+			for (int j = 0; j < numberOf; j++) {
+				if (mac.get(5 + j) != 0) {// create only not-empty typicals
+					if (!(mac.get(5 + j) == Constants.Souliss_T_related)) {
+						String hTyp = Integer.toHexString(mac.get(5 + j));
+						short slot = (short) (j % typXnodo);
+						short node = (short) (j / typXnodo + tgtnode);
+
+						System.out.println("{souliss=\"T" + hTyp + ":" + node
+								+ ":" + slot + "}");
 					}
 				}
-			} catch (Exception uy) {
-				LOGGER.error("decodeTypRequest ERROR"); 
 			}
+		} catch (Exception uy) {
+			LOGGER.error("decodeTypRequest ERROR");
 		}
+	}
 
-	/**
-	 * puo giungere in seguito a state request oppure come subscription data
-	 * della publish. Semantica = a typical request. Aggiorna il DB solo se il
-	 * tipico esiste
-	 * 
-	 * @param mac
-	 */
 	private void decodeStateRequest(ArrayList<Short> mac) {
-		boolean bDecoded_forLOG=false;
+		boolean bDecoded_forLOG = false;
 		int tgtnode = mac.get(3);
-//		QUI. AGGIORNAMENTO DEL TIMESTAMP PER OGNI NODO. DA FARE USANDO NODI FITTIZI
-		SoulissTServiceUpdater.updateTIMESTAMP(soulissTypicalsRecipients, tgtnode);
-
-		//int numberOf = mac.get(4);
-		//int typXnodo = SoulissNetworkParameter.maxTypicalXnode;
-
-		//sfoglio hashtable e scelgo tipici nodo indicato nel frame
+		// QUI. AGGIORNAMENTO DEL TIMESTAMP PER OGNI NODO. DA FARE USANDO NODI
+		// FITTIZI
+		SoulissTServiceUpdater.updateTIMESTAMP(soulissTypicalsRecipients,
+				tgtnode);
+		
+		// sfoglio hashtable e scelgo tipici nodo indicato nel frame
 		// leggo valore tipico in base allo slot
 		synchronized (this) {
-			Iterator<Entry<String, SoulissGenericTypical>> iteratorTypicals= soulissTypicalsRecipients.getIterator();
-			while (iteratorTypicals.hasNext()){
-				SoulissGenericTypical typ=iteratorTypicals.next().getValue();
-				//se il tipico estratto appartiene al nodo che il frame deve aggiornare...
-				bDecoded_forLOG=false;
-				if(typ.getSoulissNodeID()==tgtnode){
+			Iterator<Entry<String, SoulissGenericTypical>> iteratorTypicals = soulissTypicalsRecipients
+					.getIterator();
+			while (iteratorTypicals.hasNext()) {
+				SoulissGenericTypical typ = iteratorTypicals.next().getValue();
+				// se il tipico estratto appartiene al nodo che il frame deve
+				// aggiornare...
+				bDecoded_forLOG = false;
+				if (typ.getSoulissNodeID() == tgtnode) {
 
-					//...allora controllo lo slot
-					int slot=typ.getSlot();
-					//...ed aggiorno lo stato in base al tipo
-					int iNumBytes=0;
+					// ...allora controllo lo slot
+					int slot = typ.getSlot();
+					// ...ed aggiorno lo stato in base al tipo
+					int iNumBytes = 0;
 
-				try {
-						String sHex=Integer.toHexString(typ.getType());
-						String sRes=SoulissNetworkParameter.getPropTypicalBytes(sHex.toUpperCase());
-						if (sRes!=null) iNumBytes=Integer.parseInt(sRes);
+					try {
+						String sHex = Integer.toHexString(typ.getType());
+						String sRes = SoulissNetworkParameter
+								.getPropTypicalBytes(sHex.toUpperCase());
+						if (sRes != null)
+							iNumBytes = Integer.parseInt(sRes);
 					} catch (NumberFormatException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
-						iNumBytes=0;
+						iNumBytes = 0;
 					}
-				float val = 0;
-				if(typ.getType()==0x1A){
-					//short sVal=getShortAtSlot(mac, slot);
-					short sVal=getByteAtSlot(mac, slot);
-					((SoulissT1A) typ).setState(sVal);
-					bDecoded_forLOG=true;
-				}else if(typ.getType()==0x19){
-					//set value of T19 at number of second slot
-					short sVal=getByteAtSlot(mac, slot+1);
-					typ.setState(sVal);
-					bDecoded_forLOG=true;
-				}else if(iNumBytes==1){
-						//caso valori digitali
-						val=getByteAtSlot( mac, slot);
+					float val = 0;
+					if (typ.getType() == 0x1A) {
+						short sVal = getByteAtSlot(mac, slot);
+						((SoulissT1A) typ).setState(sVal);
+						bDecoded_forLOG = true;
+					} else if (typ.getType() == 0x19) {
+						// set value of T19 at number of second slot
+						short sVal = getByteAtSlot(mac, slot + 1);
+						typ.setState(sVal);
+						bDecoded_forLOG = true;
+					} else if (iNumBytes == 1) {
+						// caso valori digitali
+						val = getByteAtSlot(mac, slot);
 						typ.setState(val);
-						bDecoded_forLOG=true;
-						//System.out.println("Nodo " + tgtnode + ", Slot: " + slot + ", Byte val: " + getByteAtSlot( mac, slot) );
-					}else if(iNumBytes==2){
-						//caso valori float
-						val=getFloatAtSlot(mac, slot);
+						bDecoded_forLOG = true;
+					} else if (iNumBytes == 2) {
+						// caso valori float
+						val = getFloatAtSlot(mac, slot);
 						typ.setState(val);
-						bDecoded_forLOG=true;
-						//System.out.println("Nodo " + tgtnode + ", Slot: " + slot + ", Float val: " + getFloatAtSlot( mac, slot) );
-					} else if(iNumBytes==4){
-						//T16 RGB
-						val=getByteAtSlot(mac, slot);
+						bDecoded_forLOG = true;
+					} else if (iNumBytes == 4) {
+						// T16 RGB
+						val = getByteAtSlot(mac, slot);
 						typ.setState(val);
-						((SoulissT16) typ).setStateRED(getByteAtSlot( mac, slot+1));
-						((SoulissT16) typ).setStateGREEN(getByteAtSlot( mac, slot+2));
-						((SoulissT16) typ).setStateBLU(getByteAtSlot( mac, slot+3));
-						bDecoded_forLOG=true;
+						((SoulissT16) typ).setStateRED(getByteAtSlot(mac,
+								slot + 1));
+						((SoulissT16) typ).setStateGREEN(getByteAtSlot(mac,
+								slot + 2));
+						((SoulissT16) typ).setStateBLU(getByteAtSlot(mac,
+								slot + 3));
+						bDecoded_forLOG = true;
 					}
-				
-					if(typ.getType()!=152 && typ.getType()!=153) //non esegue per healt e timestamp, perchè il LOG viene inserito in un altro punto del codice
-					if(iNumBytes==4)
-						//RGB Log
-						LOGGER.debug("decodeStateRequest:  " + typ.getName() + " ( " + Short.valueOf(typ.getType()) + ") = " + ((SoulissT16) typ).getState()+ ". RGB= "+((SoulissT16) typ).getStateRED()+ ", "+((SoulissT16) typ).getStateGREEN()+ ", "+((SoulissT16) typ).getStateBLU());
-					else
-						if(bDecoded_forLOG){
-							if(typ.getType()==0x1A){
-							LOGGER.debug("decodeStateRequest: " + typ.getName() + " (0x" + Integer.toHexString(typ.getType()) + ") = "+ Integer.toBinaryString(((SoulissT1A) typ).getRawState()));
-							}else
-							LOGGER.debug("decodeStateRequest: " + typ.getName() + " (0x" + Integer.toHexString(typ.getType()) + ") = " + Float.valueOf(val));
+
+					if (typ.getType() != 152 && typ.getType() != 153) // non
+																		// esegue
+																		// per
+																		// healt
+																		// e
+																		// timestamp,
+																		// perchè
+																		// il
+																		// LOG
+																		// viene
+																		// inserito
+																		// in un
+																		// altro
+																		// punto
+																		// del
+																		// codice
+						if (iNumBytes == 4)
+							// RGB Log
+							LOGGER.debug("decodeStateRequest:  "
+									+ typ.getName() + " ( "
+									+ Short.valueOf(typ.getType()) + ") = "
+									+ ((SoulissT16) typ).getState() + ". RGB= "
+									+ ((SoulissT16) typ).getStateRED() + ", "
+									+ ((SoulissT16) typ).getStateGREEN() + ", "
+									+ ((SoulissT16) typ).getStateBLU());
+						else if (bDecoded_forLOG) {
+							if (typ.getType() == 0x1A) {
+								LOGGER.debug("decodeStateRequest: "
+										+ typ.getName()
+										+ " (0x"
+										+ Integer.toHexString(typ.getType())
+										+ ") = "
+										+ Integer
+												.toBinaryString(((SoulissT1A) typ)
+														.getRawState()));
+							} else
+								LOGGER.debug("decodeStateRequest: "
+										+ typ.getName() + " (0x"
+										+ Integer.toHexString(typ.getType())
+										+ ") = " + Float.valueOf(val));
 						}
 				}
 			}
@@ -290,16 +298,16 @@ public class UDPSoulissDecoder {
 
 	private Short getByteAtSlot(ArrayList<Short> mac, int slot) {
 		return mac.get(5 + slot);
-		
+
 	}
-	
+
 	private float getFloatAtSlot(ArrayList<Short> mac, int slot) {
-				int iOutput=mac.get(5 + slot);
-				int iOutput2=mac.get(5 + slot+1);
-				//ora ho i due bytes, li converto
-				int shifted = iOutput2 << 8;
-				float ret = HalfFloatUtils.toFloat(shifted + iOutput);
-				return ret;
+		int iOutput = mac.get(5 + slot);
+		int iOutput2 = mac.get(5 + slot + 1);
+		// ora ho i due bytes, li converto
+		int shifted = iOutput2 << 8;
+		float ret = HalfFloatUtils.toFloat(shifted + iOutput);
+		return ret;
 	}
 
 	/**
@@ -309,16 +317,12 @@ public class UDPSoulissDecoder {
 	 *            packet
 	 */
 	private void decodeHealthRequest(ArrayList<Short> mac) {
-		// Threee static bytes
-	//	int tgtnode = mac.get(3);
 		int numberOf = mac.get(4);
-
-	//	ArrayList<Short> healths = new ArrayList<Short>();
 		// build an array containing healths
 		for (int i = 5; i < 5 + numberOf; i++) {
-			//healths.add(Short.valueOf(mac.get(i)));
-			SoulissTServiceUpdater.updateHEALTY(soulissTypicalsRecipients, i-5,Short.valueOf(mac.get(i)) );
-			//LOGGER.debug("decodeHealthRequest: node " + (i-5) + " = "+ Short.valueOf(mac.get(i)));
+			// healths.add(Short.valueOf(mac.get(i)));
+			SoulissTServiceUpdater.updateHEALTY(soulissTypicalsRecipients,
+					i - 5, Short.valueOf(mac.get(i)));
 		}
 	}
 }

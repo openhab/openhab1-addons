@@ -17,17 +17,17 @@ import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 
 /**
- * Typical T16
- * RGB LED Strip
+ * Typical T16 RGB LED Strip
  * 
- * @author Antonino-Fazio
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
 public class SoulissT16 extends SoulissGenericTypical {
 
 	int stateRED;
 	int stateGREEN;
 	int stateBLU;
-	
+
 	public int getStateRED() {
 		return stateRED;
 	}
@@ -51,50 +51,63 @@ public class SoulissT16 extends SoulissGenericTypical {
 	public void setStateBLU(int stateBLU) {
 		this.stateBLU = stateBLU;
 	}
-	
-	public SoulissT16(DatagramSocket _datagramsocket, String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot, String sOHType) {
+
+	public SoulissT16(DatagramSocket _datagramsocket,
+			String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN,
+			int iIDNodo, int iSlot, String sOHType) {
 		super();
 		this.setSlot(iSlot);
 		this.setSoulissNodeID(iIDNodo);
 		this.setType(Constants.Souliss_T16);
 		this.setNote(sOHType);
- 	}
-/**
- * Send a command to the souliss' typical
- * @param command
- */
-	public void CommandSEND(short command) {
-		SoulissCommGate.sendFORCEFrame(SoulissNetworkParameter.datagramsocket,SoulissNetworkParameter.IPAddress,  SoulissNetworkParameter.IPAddressOnLAN, this.getSoulissNodeID(), this.getSlot(), command );	
 	}
-	
+
+	/**
+	 * Send a command to the souliss' typical
+	 * 
+	 * @param command
+	 */
+	public void CommandSEND(short command) {
+		SoulissCommGate.sendFORCEFrame(SoulissNetworkParameter.datagramsocket,
+				SoulissNetworkParameter.IPAddress,
+				SoulissNetworkParameter.IPAddressOnLAN,
+				this.getSoulissNodeID(), this.getSlot(), command);
+	}
+
 	/**
 	 * Send a command with RGB color values to the souliss' typical
+	 * 
 	 * @param command
-	 */	
+	 */
 	public void CommandSEND(short command, short R, short G, short B) {
-		SoulissCommGate.sendFORCEFrame(SoulissNetworkParameter.datagramsocket,SoulissNetworkParameter.IPAddress,  SoulissNetworkParameter.IPAddressOnLAN, this.getSoulissNodeID(), this.getSlot(), command, R, G, B );	
+		SoulissCommGate.sendFORCEFrame(SoulissNetworkParameter.datagramsocket,
+				SoulissNetworkParameter.IPAddress,
+				SoulissNetworkParameter.IPAddressOnLAN,
+				this.getSoulissNodeID(), this.getSlot(), command, R, G, B);
 	}
-	
+
 	@Override
 	/**
 	 * Return the actual value in percent
 	 */
 	public State getOHState() {
-		String sOHState=StateTraslator.statesSoulissToOH(this.getNote(), this.getType(),(short)this.getState());
-		if (sOHState!=null)
+		String sOHState = StateTraslator.statesSoulissToOH(this.getNote(),
+				this.getType(), (short) this.getState());
+		if (sOHState != null)
 			return PercentType.valueOf(sOHState);
-		else 
+		else
 			return null;
-			
+
 	}
 
 	/**
 	 * Returns the values in HSB, use RGB as input
+	 * 
 	 * @return org.openhab.core.types.State
 	 */
 	public org.openhab.core.types.State getOHStateRGB() {
 		Color colr = new Color(this.stateRED, this.stateGREEN, this.stateBLU);
-		HSBType hsb =new HSBType(colr);
+		HSBType hsb = new HSBType(colr);
 		return hsb;
 	}
 

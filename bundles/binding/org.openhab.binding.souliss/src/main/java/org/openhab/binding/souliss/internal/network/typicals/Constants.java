@@ -9,11 +9,12 @@
 package org.openhab.binding.souliss.internal.network.typicals;
 
 /**
- * This class contains Souliss constants.
- * Original version is taken from SoulissApp. For scope of this binding not all constants are used.
+ * This class contains Souliss constants. Original version is taken from
+ * SoulissApp. For scope of this binding not all constants are used.
  * 
- * @author Alessandro-Del-Pex
- * @author Antonino-Fazio
+ * @author Alessandro Del Pex
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
 public class Constants {
 	public static final String TAG = "SoulissApp:Typicals";
@@ -73,14 +74,6 @@ public class Constants {
 	public static final short Souliss_T56_CurrentSensor = 0x56;
 	public static final short Souliss_T57_PowerSensor = 0x57;
 
-	// #define Souliss_T3n_AirCon_OnCmd 0xF0
-	// #define Souliss_T3n_AirCon_OffCmd 0xFC
-	// #define Souliss_T3n_AirCon_RstCmd 0x00
-
-	// #define Souliss_T3n_AirCon_Normal 0x71
-	// #define Souliss_T3n_AirCon_Eco 0x01
-	// #define Souliss_T3n_AirCon_Turbo 0x11
-
 	// customized (remote) AirCon commands
 	public static final int Souliss_T_IrCom_AirCon_Pow_On = 0x8FFE;
 	public static final int Souliss_T_IrCom_AirCon_Pow_Auto_20 = 0x8FFD;
@@ -117,9 +110,6 @@ public class Constants {
 	public static final short Souliss_T_IrCom_AirCon_Fun_Fan = 0x3;
 	public static final short Souliss_T_IrCom_AirCon_Fun_Heat = 0xD;
 	public static final short Souliss_T_IrCom_AirCon_Fun_Cool = 0x7;
-
-	// #define Souliss_T3n_AirCon_Opt1 0x2D
-	// #define Souliss_T3n_AirCon_Opt2 0x77
 
 	public static final short Souliss_T_IrCom_AirCon_Fan_Auto = 0x7;
 	public static final short Souliss_T_IrCom_AirCon_Fan_High = 0x2;

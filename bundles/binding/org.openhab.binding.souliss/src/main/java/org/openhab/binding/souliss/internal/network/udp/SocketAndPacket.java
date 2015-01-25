@@ -13,13 +13,16 @@ import java.net.DatagramSocket;
 
 /**
  * Data Structure for class SendDispatcherThread
- * @author Antonino-Fazio
+ * 
+ * @author Tonino Fazio
+ * @since 1.7.0
  */
 public class SocketAndPacket {
 	public SocketAndPacket(DatagramSocket socketPar, DatagramPacket packetPar) {
-		socket=socketPar;
-		packet=packetPar;
+		socket = socketPar;
+		packet = packetPar;
 	}
+
 	public DatagramSocket socket;
 	public DatagramPacket packet;
 }
