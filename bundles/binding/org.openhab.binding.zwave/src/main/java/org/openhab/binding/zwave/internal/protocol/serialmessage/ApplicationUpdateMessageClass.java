@@ -18,6 +18,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClas
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeInitStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,8 @@ public class ApplicationUpdateMessageClass  extends ZWaveCommandProcessor {
 			// Remember that we've received this so we can continue initialisation
 			node.setApplicationUpdateReceived(true);
 
-			if(node.getNodeState() == ZWaveNodeState.ALIVE) {
+			// If we're finished initialisation, then we can treat this a little like a HAIL
+			if(node.getNodeInitializationStage() == ZWaveNodeInitStage.DONE) {
 				// If this node supports associations, then assume this should be handled through that mechanism
 				if(node.getCommandClass(CommandClass.ASSOCIATION) == null) {
 					// If we receive an Application Update Request and the node is already

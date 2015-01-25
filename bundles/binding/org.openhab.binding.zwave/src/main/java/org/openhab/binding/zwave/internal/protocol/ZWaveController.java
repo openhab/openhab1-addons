@@ -132,9 +132,9 @@ public class ZWaveController {
 	private int ACKCount = 0;
 	private int OOFCount = 0;
 	private AtomicInteger timeOutCount = new AtomicInteger(0);
-	
-	private boolean initializationComplete = false;
-	
+
+//	private boolean initializationComplete = false;
+
 	private boolean isConnected;
 
 	// Constructors
@@ -1168,7 +1168,7 @@ public class ZWaveController {
 	 * @return isConnected;
 	 */
 	public boolean isConnected() {
-		return isConnected && initializationComplete;
+		return isConnected; // && initializationComplete;
 	}
 	
 	/**

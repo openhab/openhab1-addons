@@ -1054,6 +1054,8 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				return;
 			}
 
+			// TODO: Should we check that the node is finished initialising
+
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
 			if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
 				logger.error("NODE {}: Error in doSet - no database found", nodeId);
