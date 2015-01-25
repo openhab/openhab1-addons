@@ -8,8 +8,15 @@
  */
 package org.openhab.action.hue.internal;
 
+import java.io.IOException;
+import java.util.Map;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.action.hue.Rule;
 import org.openhab.binding.hue.internal.common.HueContext;
+import org.openhab.binding.hue.internal.data.HueSettings;
 import org.openhab.binding.hue.internal.hardware.HueBridge;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
@@ -25,6 +32,8 @@ import com.sun.jersey.api.client.WebResource;
 
 /**
  * Provide static Methods for Actions. 
+ * 
+ * Hue Resources will be handled as STrings in Json representation, 
  * 
  * @author Gernot Eger
  * @since 1.7.0
@@ -62,34 +71,73 @@ public class Hue {
 	}
 
 	@ActionDoc(text = "Create a new Rule")
-	public static Rule createHueRule(
-			@ParamDoc(name = "name", text = "Nmae of the Rule") String name){
-		return new Rule(name);
+	public static String hueCreateRule(
+			@ParamDoc(name = "name", text = "Name of the Rule") String name){
+		
+		Rule r=new Rule(name);
+			
+		try {
+			return r.toJson();
+		} catch (Exception e) {
+			logger.warn("failed to serialize to json",e);
+			return null;
+		}
 	}
 	
 	
-//	/**
-//	 * Sends a text to a Homematic remote control display.
-//	 */
-//	@ActionDoc(text = "Sends a text to a Homematic remote control display")
-//	public static boolean sendHomematicDisplay(
-//			@ParamDoc(name = "remoteControlAddress", text = "The address of the remote control") String remoteControlAddress,
-//			@ParamDoc(name = "text", text = "The text to send to the display") String text) {
-//
-//		return sendDisplay(remoteControlAddress, text, null);
-//	}
+	@ActionDoc(text = "Add and action to a rule")
+	public static String hueAddGroupAction(String ruleJson,String group, String bodyElement, Object bodyValue) throws IOException{
+		Rule r=Rule.create(ruleJson);
+		
+		r.addGroupAction(group, bodyElement, bodyValue);
+		
+		return r.toJson();
+	}
 
-//	/**
-//	 * Sends a text to a Homematic remote control display with options.
-//	 */
-//	@ActionDoc(text = "Sends a text to a Homematic remote control display with options")
-//	public static boolean sendHomematicDisplay(
-//			@ParamDoc(name = "remoteControlAddress", text = "The address of the remote control") String remoteControlAddress,
-//			@ParamDoc(name = "text", text = "The text to send to the display") String text,
-//			@ParamDoc(name = "options", text = "The beep, backlight, unit and symbol options to send to the display") String options) {
-//		return sendMessage(remoteControlAddress, text, options);
-//	}
+	
+	@ActionDoc(text = "Add and action to a rule")
+	
+	public static String hueAddTapButtonEqualsCondition(String ruleJson, String tapId,int button) throws IOException{
+		Rule r=Rule.create(ruleJson);
+		
+		r.addTapButtonEqualsCondition(tapId, button);
+		return r.toJson();
+	}
+	
+	@ActionDoc(text = "Add and action to a rule")
+	
+	public static String hueAddTapDeviceChangedCondition(String ruleJson, String tapId) throws IOException{
+		Rule r=Rule.create(ruleJson);
+		r.addTapDeviceChangedCondition(tapId);
+		return r.toJson();
+	}
+	
 
+	/**
+	 * set rule by name
+	 * @param name
+	 * @param ruleJson
+	 * @return
+	 */
+	public static String hueSetRule(String name, String ruleJson){
+		
+		HueSettings settings=HueContext.getInstance().getBridge().getSettings();
+		
+		String id=settings.getRule(name);
+		
+		//logger.debug("found rule id for name '"+name+"': '"+id+"'");
+		logger.debug("found rule id for name '{}': '{}'", name,id);
+		String result;
+		if(id==null){ // create new
+			result=postResource("rules",ruleJson);	
+		}else{
+			result=putResource("rules/"+id,ruleJson);			
+		}
+		
+		return result;
+	}
+	
+	
 	@ActionDoc(text = "Tests Connection to hue bridge")
 	public static boolean pingHue() {
 		String settings=getResource("/");
@@ -99,12 +147,34 @@ public class Hue {
 		return true;
 	}
 
+	
+	enum HttpMethod {
+		GET,
+		PUT,
+		POST
+	} ;
+	
 	/**
 	 * get resource 
 	 * @param path
 	 * @return
 	 */
 	private static String getResource(String path){
+		return resourceRequest(HttpMethod.GET,path,null);
+	}
+	
+	private static String putResource(String path, String body){
+		return resourceRequest(HttpMethod.PUT,path,body);
+	}
+	
+	private static String postResource(String path, String body){
+		return resourceRequest(HttpMethod.POST,path,body);
+	}
+		
+	private static String resourceRequest(HttpMethod method,String path, String body) {
+		
+		logger.debug("resourceRequest {} start...",method);
+		
 		HueBridge bridge=HueContext.getInstance().getBridge();
 		Client client=bridge.getClient();
 		
@@ -112,30 +182,58 @@ public class Hue {
 		WebResource webResource = client.resource(url);
 
 		try {
-			ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
-			String resourceString = response.getEntity(String.class);
+			ClientResponse response=null;
+			switch(method){
+				case GET:
+					response = webResource.accept("application/json").get(ClientResponse.class);
+					break;
+				case PUT:
+					response = webResource.accept("application/json").put(ClientResponse.class, body);
+					break;
+				case POST:
+					response = webResource.accept("application/json").post(ClientResponse.class, body);
+					break;
+			}
+			
+			String responseString = response.getEntity(String.class);
 
 			if (response.getStatus() != 200) {
 				logger.warn("Failed to connect to Hue bridge at '"+url+"': HTTP error code: "
 						+ response.getStatus());
 				return null;
 			}
-			return resourceString;
+			
+			// check if ok
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				Map <String,Object> responseMap=mapper.readValue(responseString,Map.class);
+				
+				if(responseMap.containsKey("error")){
+					logger.warn("failed send command, body={}",body);
+					logger.warn("failed send command, response={}",responseString);
+				}
+			}catch (IOException e) {
+				logger.warn("failed to parse response '{}'",responseString);
+			}
+			
+			return responseString;
 		} catch(ClientHandlerException e) {
 			logger.warn("Failed to connect to Hue bridgeat '"+url+"': HTTP request timed out.");
 			return null;
+		}finally{
+			logger.debug("resourceRequest done.");
 		}
+	
 	}
-	/**
-	 * send Message to hue bridge
-	 * @param remoteControlAddress
-	 * @param text
-	 * @param options
-	 * @return 
-	 */
-	private static boolean sendMessage(String url, String body, String options) {
-		HueContext context=HueContext.getInstance();
-		return false;
+//	/**
+//	 * send Message to hue bridge
+//	 * @param remoteControlAddress
+//	 * @param text
+//	 * @param options
+//	 * @return 
+//	 */
+//	private static boolean sendMessage(String url, String body, String options) {
+//		HueContext context=HueContext.getInstance();
 //		
 //		if (!context.getHomematicClient().isStarted()) {
 //			logger.warn("The Homematic client is not started, ignoring action sendHomematicDisplay!");
@@ -149,6 +247,6 @@ public class Hue {
 //				return false;
 //			}
 //		}
-	}
+//	}
 
 }

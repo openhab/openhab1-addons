@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.annotate.JsonWriteNullProperties;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import org.openhab.binding.hue.internal.common.SwitchId;
 
 /**
  * a rule as described in http://www.developers.meethue.com/documentation/rules-api
@@ -18,7 +20,8 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @author Gernot Eger
  *
  */
-public class Rule {
+
+public class Rule extends AbstractHueResource {
 
 		
 	@JsonProperty
@@ -33,17 +36,19 @@ public class Rule {
 	
 	//{"address":"/sensors/2/state/buttonevent","operator":"eq","value":"16"}
 	
+	
+	@JsonSerialize(include=Inclusion.NON_NULL)
 	public static class Condition {
 		@JsonProperty
-		public String adress;
+		public String address;
 		@JsonProperty
 		public String operator;
 		@JsonProperty
 		public String value;
 
-		public Condition(String adress, String operator, String value) {
+		public Condition(String address, String operator, String value) {
 			super();
-			this.adress = adress;
+			this.address = address;
 			this.operator = operator;
 			this.value = value;
 		}
@@ -67,9 +72,9 @@ public class Rule {
 	 */
 	public static class Action {
 				
-		private Action(String adress, String method, String bodyElement, Object bodyValue) {
+		private Action(String address, String method, String bodyElement, Object bodyValue) {
 			super();
-			this.adress = adress;
+			this.address = address;
 			this.method = method;
 			
 			//this.body = new ActionBody(bodyElement,bodyValue);
@@ -85,7 +90,7 @@ public class Rule {
 
 
 		@JsonProperty
-		public String adress;
+		public String address;
 		@JsonProperty
 		public String method;
 		
@@ -105,6 +110,26 @@ public class Rule {
 		conditions.add(condition);
 	}
 	
+	
+	/**
+	 * add tap button equals event
+	 * @param tapId
+	 * @param button Tap Button 1..4
+	 */
+	public void addTapButtonEqualsCondition(String tapId,int button){
+		SwitchId buttonId=SwitchId.switchIdForConfigId(button);
+		addCondition("/sensors/"+tapId+"/state/buttonevent", "eq",Integer.toString(buttonId.getButtonEvent()));
+	}
+	
+	/**
+	 * add condition for tap device with this id changed
+	 * @param tapId
+	 */
+	public void addTapDeviceChangedCondition(String tapId){
+		addCondition("/sensors/"+tapId+"/state/lastupdated", "dx",null);
+	}
+	
+	
 	/**
 	 * raw action adder
 	 * @param adress
@@ -115,6 +140,16 @@ public class Rule {
 	public void addAction(String adress, String method, String bodyElement, Object bodyValue){
 		Action action=new Action( adress,  method,  bodyElement,  bodyValue);
 		actions.add(action);
+	}
+	
+	/**
+	 * modify add action to set this groups item(s
+	 * @param group
+	 * @param bodyElement
+	 * @param bodyValue
+	 */
+	public void addGroupAction(String group, String bodyElement, Object bodyValue){
+		addAction("/groups/"+group+"/action","PUT",bodyElement,bodyValue);
 	}
 	
 	/**
@@ -133,20 +168,7 @@ public class Rule {
 		super();
 	}
 
-	/**
-	 * return Json for update
-	 * @return
-	 * @throws IOException 
-	 * @throws JsonMappingException 
-	 * @throws JsonGenerationException 
-	 */
-	@JsonIgnore
-	public String toJson() throws JsonGenerationException, JsonMappingException, IOException{
-		
-		ObjectMapper mapper = new ObjectMapper();
-		
-		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
-	}
+	
 	
 	/**
 	 * create Rule from json description
@@ -155,11 +177,8 @@ public class Rule {
 	 * @throws IOException 
 	 */
 	@JsonIgnore
-	public static Rule createRule(String json) throws IOException{
-		ObjectMapper mapper = new ObjectMapper();
-		
-		return mapper.readValue(json,Rule.class);
-		
+	public static Rule create(String json) throws IOException{		
+		return (Rule) create(json,Rule.class);		
 	}
 
 	

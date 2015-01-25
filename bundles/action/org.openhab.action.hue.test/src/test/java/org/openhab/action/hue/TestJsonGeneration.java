@@ -30,7 +30,7 @@ public class TestJsonGeneration {
 		assertTrue("condition1",s1.contains("buttonevent"));
 		assertTrue("action1",s1.contains("\"scene\""));
 		
-		Rule r2=Rule.createRule(s1);
+		Rule r2=Rule.create(s1);
 		assertEquals(1,r2.conditions.size());
 		assertEquals(2,r2.actions.size());
 		

@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.hue.internal;
 
+import org.openhab.binding.hue.internal.common.SwitchId;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;

@@ -109,6 +109,41 @@ public class HueSettings {
 	}
 
 	/**
+	 * Get the rules in thsi settings file
+	 * 
+	 * @return number of sensors connected to Hue hub
+	 */
+	public SettingsTree getRules() {
+		if (settingsData == null) {
+			logger.error("No settings data.");
+			return null;
+		}
+		
+		return settingsData.node("rules");
+	}
+	
+	/**
+	 * find the rule id for a rule name
+	 * @param name
+	 * @return
+	 */
+	public String getRule(String name) {
+		if (settingsData == null) {
+			logger.error("No settings data.");
+			return null;
+		}
+		
+		SettingsTree rules=getRules();
+		for(String id:rules.nodes()){
+			SettingsTree rule=rules.node(id);
+			if(rule.value("name").equals(name)){
+				return  id;
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Determine number of sensors connected to Hue hub. This is not necessarily the number of tap devices!
 	 * 
 	 * @return number of sensors connected to Hue hub
