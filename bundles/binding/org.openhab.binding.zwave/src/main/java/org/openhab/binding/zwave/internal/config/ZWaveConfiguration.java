@@ -296,7 +296,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					else if(node.getDeadCount() > 0 && timeSinceLastDead < 86400000) {
 						record.state = OpenHABConfigurationRecord.STATE.WARNING;
 					}
-					else if(node.getSendCount() > 0 && (node.getRetryCount() * 100 / node.getSendCount()) > 5) {
+					else if(node.getSendCount() > 20 && (node.getRetryCount() * 100 / node.getSendCount()) > 5) {
 						record.state = OpenHABConfigurationRecord.STATE.WARNING;
 					}
 					else {

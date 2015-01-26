@@ -36,6 +36,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNoOperation
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveTransactionCompletedEvent;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.GetRoutingInfoMessageClass;
@@ -688,7 +689,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			case DONE:
 				// Save the node information to file
 				nodeSerializer.SerializeNode(node);
-				
+
 				if(currentStage != ZWaveNodeInitStage.DONE) {
 					break;
 				}
@@ -697,6 +698,10 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
 				// We remove the event listener to reduce loading now that we're done
 				controller.removeEventListener(this);
+
+				// Notify everyone!
+				ZWaveEvent zEvent = new ZWaveInitializationCompletedEvent(node.getNodeId());
+				controller.notifyEventListeners(zEvent);
 
 				// Return from here as we're now done and we don't want to
 				// increment the stage!

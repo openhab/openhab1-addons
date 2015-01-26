@@ -21,8 +21,11 @@ import org.openhab.binding.zwave.internal.converter.ZWaveConverterHandler;
 import org.openhab.binding.zwave.internal.protocol.SerialInterfaceException;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
+import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeInitStage;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
@@ -174,11 +177,23 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 
 		// Loop all binding providers for the Z-wave binding.
 		for (ZWaveBindingProvider eachProvider : providers) {
-			// loop all bound items for this provider
+			// Loop all bound items for this provider
 			for (String name : eachProvider.getItemNames()) {
+				// Find the node and check if it's completed initialisation.
+				ZWaveBindingConfig cfg = eachProvider.getZwaveBindingConfig(name);
+				ZWaveNode node = this.zController.getNode(cfg.getNodeId());
+				if(node == null) {
+					logger.debug("NODE {}: Polling list: can't get node for item {}", cfg.getNodeId(), name);
+					continue;
+				}
+				if(node.getNodeInitializationStage() != ZWaveNodeInitStage.DONE) {
+					logger.debug("NODE {}: Polling list: item {} is not completed initialisation", cfg.getNodeId(), name);
+					continue;
+				}
+
 				logger.trace("Polling list: Checking {} == {}", name, converterHandler.getRefreshInterval(eachProvider, name));
 
-				// This binding is configured to poll - add it to the list
+				// If this binding is configured to poll - add it to the list
 				if (converterHandler.getRefreshInterval(eachProvider, name) > 0) {
 					ZWavePollItem item = new ZWavePollItem();
 					item.item = name;
@@ -398,24 +413,20 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	@Override
 	public void ZWaveIncomingEvent(ZWaveEvent event) {
 		
-		// if we are not yet initialized, don't waste time and return
-		if (!this.isProperlyConfigured())
+		// If we are not yet initialized, don't waste time and return
+		if (!this.isProperlyConfigured()) {
 			return;
-		
-/*
- 		// TODO: This needs to listen to an event for each node completing initialisation
- 		if (!isZwaveNetworkReady) {
-			if (event instanceof ZWaveInitializationCompletedEvent) {
-				logger.debug("ZWaveIncomingEvent Called, Network Event, Init Done. Setting ZWave Network Ready.");
-				isZwaveNetworkReady = true;
-				
-				// Initialise the polling table
-				rebuildPollingTable();
-
-				return;
-			}		
 		}
-*/		
+
+		if (event instanceof ZWaveInitializationCompletedEvent) {
+			logger.debug("NODE {}: ZWaveIncomingEvent Called, Network Event, Init Done. Setting device ready.", event.getNodeId());
+			
+			// Initialise the polling table
+			rebuildPollingTable();
+
+			return;
+		}		
+
 		logger.debug("ZwaveIncomingEvent");
 
 		// handle command class value events.
