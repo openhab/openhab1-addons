@@ -216,8 +216,7 @@ public class Eiscp {
 	private StringBuilder getEiscpMessage(String eiscpCmd) {
 
 		StringBuilder sb = new StringBuilder();
-		int eiscpDataSize = eiscpCmd.length() + 2; // this is the eISCP data size
-		int eiscpMsgSize = eiscpDataSize + 1 + 16; // this is the eISCP data size
+		int eiscpDataSize = 2 + eiscpCmd.length() + 1; // this is the eISCP data size
 
 		/*
 		 * This is where I construct the entire message character by character.
@@ -233,10 +232,10 @@ public class Eiscp {
 		sb.append((char) 0x10);
 
 		// 4 char Big Endian data size
-		sb.append( (char) ((eiscpMsgSize >> 24) & 0xFF) );
-		sb.append( (char) ((eiscpMsgSize >> 16) & 0xFF) );
-		sb.append( (char) ((eiscpMsgSize >> 8) & 0xFF) );
-		sb.append( (char) (eiscpMsgSize & 0xFF) );
+		sb.append( (char) ((eiscpDataSize >> 24) & 0xFF) );
+		sb.append( (char) ((eiscpDataSize >> 16) & 0xFF) );
+		sb.append( (char) ((eiscpDataSize >> 8) & 0xFF) );
+		sb.append( (char) (eiscpDataSize & 0xFF) );
 		
 		// eiscp_version = "01";
 		sb.append((char) 0x01);
@@ -247,6 +246,7 @@ public class Eiscp {
 		sb.append((char) 0x00);
 
 		// eISCP data
+		
 		// Start Character
 		sb.append("!");
 
