@@ -108,7 +108,7 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 			int intType = Integer.parseInt(sensorType);
 			SensorType senType = SensorType.getSensorType(intType);
 			if(senType == null) {
-				logger.error("Node {}: Error parsing sensor type {}", event.getNodeId(), sensorType);
+				logger.error("NODE {}: Error parsing sensor type {}", event.getNodeId(), sensorType);
 			}
 			else {
 				switch(senType) {
