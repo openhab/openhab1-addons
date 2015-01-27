@@ -421,6 +421,19 @@ public final class ZWaveNetworkMonitor implements ZWaveEventListener {
 		// Set the timeout
 		networkHealNextTime = System.currentTimeMillis() + HEAL_TIMEOUT_PERIOD;
 
+		// Only do something if the node is awake!
+		ZWaveNode node = zController.getNode(healing.nodeId);
+		if(node != null) {
+			ZWaveWakeUpCommandClass wakeupCommandClass = (ZWaveWakeUpCommandClass) node
+					.getCommandClass(CommandClass.WAKE_UP);
+
+			if(wakeupCommandClass != null && wakeupCommandClass.isAwake() == false) {
+				// Device is asleep - don't do anything now!
+				logger.debug("NODE {}: Node is asleep. Defer heal until it's awake", healing.nodeId);
+				return;
+			}
+		}
+
 		// Handle retries
 		healing.retryCnt++;
 		if (healing.retryCnt >= HEAL_MAX_RETRIES) {
