@@ -69,6 +69,7 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.UpDownType;
 import org.slf4j.Logger;
 
@@ -225,6 +226,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.REMOTE_SWITCH_CCONFIGURATION: return createRemoteSwitchCConfiguration();
       case ModelPackage.MULTI_TOUCH_DEVICE_CONFIGURATION: return createMultiTouchDeviceConfiguration();
       case ModelPackage.BRICKLET_MULTI_TOUCH_CONFIGURATION: return createBrickletMultiTouchConfiguration();
+      case ModelPackage.DIMMABLE_CONFIGURATION: return createDimmableConfiguration();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -348,6 +350,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createUpDownTypeFromString(eDataType, initialValue);
       case ModelPackage.DEVICE_OPTIONS:
         return createDeviceOptionsFromString(eDataType, initialValue);
+      case ModelPackage.PERCENT_TYPE:
+        return createPercentTypeFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -473,6 +477,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertUpDownTypeToString(eDataType, instanceValue);
       case ModelPackage.DEVICE_OPTIONS:
         return convertDeviceOptionsToString(eDataType, instanceValue);
+      case ModelPackage.PERCENT_TYPE:
+        return convertPercentTypeToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -974,6 +980,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     BrickletMultiTouchConfigurationImpl brickletMultiTouchConfiguration = new BrickletMultiTouchConfigurationImpl();
     return brickletMultiTouchConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DimmableConfiguration createDimmableConfiguration()
+  {
+    DimmableConfigurationImpl dimmableConfiguration = new DimmableConfigurationImpl();
+    return dimmableConfiguration;
   }
 
   /**
@@ -2290,6 +2307,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertDeviceOptionsToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public PercentType createPercentTypeFromString(EDataType eDataType, String initialValue)
+  {
+    return (PercentType)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertPercentTypeToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

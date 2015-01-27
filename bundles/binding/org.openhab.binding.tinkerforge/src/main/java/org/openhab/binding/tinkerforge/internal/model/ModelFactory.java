@@ -440,6 +440,15 @@ public interface ModelFactory extends EFactory
   BrickletMultiTouchConfiguration createBrickletMultiTouchConfiguration();
 
   /**
+   * Returns a new object of class '<em>Dimmable Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dimmable Configuration</em>'.
+   * @generated
+   */
+  DimmableConfiguration createDimmableConfiguration();
+
+  /**
    * Returns a new object of class '<em>MServo</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

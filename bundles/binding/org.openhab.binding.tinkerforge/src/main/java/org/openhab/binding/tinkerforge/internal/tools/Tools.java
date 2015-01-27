@@ -10,6 +10,7 @@ package org.openhab.binding.tinkerforge.internal.tools;
 
 import java.math.BigDecimal;
 
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 
 public class Tools {
@@ -43,5 +44,56 @@ public class Tools {
   public static DecimalValue calculate(int value, BigDecimal devider){
     BigDecimal bvalue = new BigDecimal(String.valueOf(value)).divide(devider);
     return new DecimalValue(bvalue);
+  }
+  
+  public static Short getShortOpt(String key, DeviceOptions opts) throws NumberFormatException {
+    return getShortOpt(key, opts, null);
+  }
+
+  public static Short getShortOpt(String key, DeviceOptions opts, Short shortdefault)
+      throws NumberFormatException {
+    if (opts.containsKey(key.toLowerCase())) {
+      short value = Short.parseShort(opts.getOption(key.toLowerCase()));
+      return value;
+    }
+    return shortdefault;
+  }
+
+  public static Long getLongOpt(String key, DeviceOptions opts) throws NumberFormatException {
+    return getLongOpt(key, opts, null);
+  }
+
+  public static Long getLongOpt(String key, DeviceOptions opts, Long shortdefault)
+      throws NumberFormatException {
+    if (opts.containsKey(key.toLowerCase())) {
+      long value = Long.parseLong(opts.getOption(key.toLowerCase()));
+      return value;
+    }
+    return shortdefault;
+  }
+
+
+  public static Integer getIntOpt(String key, DeviceOptions opts) throws NumberFormatException {
+    return getIntOpt(key, opts, null);
+  }
+
+  public static Integer getIntOpt(String key, DeviceOptions opts, Integer intdefault)
+      throws NumberFormatException {
+    if (opts.containsKey(key.toLowerCase())) {
+      int value = Integer.valueOf(opts.getOption(key.toLowerCase()));
+      return value;
+    }
+    return intdefault;
+  }
+
+  public static String getStringOpt(String key, DeviceOptions opts) {
+    return getStringOpt(key, opts, null);
+  }
+
+  public static String getStringOpt(String key, DeviceOptions opts, String stringdefault) {
+    if (opts.containsKey(key.toLowerCase())) {
+      return opts.getOption(key.toLowerCase());
+    }
+    return stringdefault;
   }
 }

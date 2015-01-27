@@ -32,7 +32,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  * @model
  * @generated
  */
-public interface TFBrickDCConfiguration extends TFBaseConfiguration
+public interface TFBrickDCConfiguration extends DimmableConfiguration, TFBaseConfiguration
 {
   /**
    * Returns the value of the '<em><b>Velocity</b></em>' attribute.

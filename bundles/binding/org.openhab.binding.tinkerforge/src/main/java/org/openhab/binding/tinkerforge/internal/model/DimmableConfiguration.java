@@ -3,26 +3,25 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import java.math.BigDecimal;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Dimmable Actor</b></em>'.
+ * A representation of the model object '<em><b>Dimmable Configuration</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#getMinValue <em>Min Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#getMaxValue <em>Max Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration#getMinValue <em>Min Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration#getMaxValue <em>Max Value</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDimmableActor()
- * @model interface="true" abstract="true"
+ * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDimmableConfiguration()
+ * @model
  * @generated
  */
-public interface DimmableActor<TC extends DimmableConfiguration> extends MTFConfigConsumer<TC>
+public interface DimmableConfiguration extends TFConfig
 {
   /**
    * Returns the value of the '<em><b>Min Value</b></em>' attribute.
@@ -34,14 +33,14 @@ public interface DimmableActor<TC extends DimmableConfiguration> extends MTFConf
    * <!-- end-user-doc -->
    * @return the value of the '<em>Min Value</em>' attribute.
    * @see #setMinValue(BigDecimal)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDimmableActor_MinValue()
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDimmableConfiguration_MinValue()
    * @model unique="false"
    * @generated
    */
   BigDecimal getMinValue();
 
   /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#getMinValue <em>Min Value</em>}' attribute.
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration#getMinValue <em>Min Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Min Value</em>' attribute.
@@ -60,14 +59,14 @@ public interface DimmableActor<TC extends DimmableConfiguration> extends MTFConf
    * <!-- end-user-doc -->
    * @return the value of the '<em>Max Value</em>' attribute.
    * @see #setMaxValue(BigDecimal)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDimmableActor_MaxValue()
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDimmableConfiguration_MaxValue()
    * @model unique="false"
    * @generated
    */
   BigDecimal getMaxValue();
 
   /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#getMaxValue <em>Max Value</em>}' attribute.
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration#getMaxValue <em>Max Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Max Value</em>' attribute.
@@ -76,20 +75,4 @@ public interface DimmableActor<TC extends DimmableConfiguration> extends MTFConf
    */
   void setMaxValue(BigDecimal value);
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @model stepUnique="false"
-   * @generated
-   */
-  void increase(BigDecimal step);
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @model stepUnique="false"
-   * @generated
-   */
-  void decrease(BigDecimal step);
-
-} // DimmableActor
+} // DimmableConfiguration

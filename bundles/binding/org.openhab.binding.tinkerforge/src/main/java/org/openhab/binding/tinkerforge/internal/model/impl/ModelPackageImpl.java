@@ -39,6 +39,7 @@ import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
 import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
+import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.Direction;
 import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
@@ -121,6 +122,7 @@ import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
 import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
@@ -138,6 +140,7 @@ import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
 import org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent;
 import org.openhab.binding.tinkerforge.internal.model.VCDevicePower;
 import org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage;
+import org.openhab.binding.tinkerforge.internal.model.ValueActor;
 import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice;
 import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
@@ -145,6 +148,7 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.UpDownType;
 import org.slf4j.Logger;
 
@@ -367,6 +371,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass dimmableActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass setPointActorEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -640,6 +651,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass brickletMultiTouchConfigurationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass dimmableConfigurationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1200,6 +1218,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType deviceOptionsEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType percentTypeEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2030,7 +2055,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EAttribute getMBrickDC_Threshold()
   {
-    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2040,7 +2065,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EAttribute getMBrickDC_DeviceType()
   {
-    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -2368,7 +2393,27 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EOperation getDimmableActor__Increase()
+  public EAttribute getDimmableActor_MinValue()
+  {
+    return (EAttribute)dimmableActorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDimmableActor_MaxValue()
+  {
+    return (EAttribute)dimmableActorEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getDimmableActor__Increase__BigDecimal()
   {
     return dimmableActorEClass.getEOperations().get(0);
   }
@@ -2378,9 +2423,39 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EOperation getDimmableActor__Decrease()
+  public EOperation getDimmableActor__Decrease__BigDecimal()
   {
     return dimmableActorEClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getSetPointActor()
+  {
+    return setPointActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getSetPointActor__SetValue__BigDecimal()
+  {
+    return setPointActorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getSetPointActor__SetValue__PercentType()
+  {
+    return setPointActorEClass.getEOperations().get(1);
   }
 
   /**
@@ -3591,6 +3666,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getBrickletMultiTouchConfiguration_Sensitivity()
   {
     return (EAttribute)brickletMultiTouchConfigurationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDimmableConfiguration()
+  {
+    return dimmableConfigurationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDimmableConfiguration_MinValue()
+  {
+    return (EAttribute)dimmableConfigurationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDimmableConfiguration_MaxValue()
+  {
+    return (EAttribute)dimmableConfigurationEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -5188,6 +5293,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getPercentType()
+  {
+    return percentTypeEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getEnum()
   {
     return enumEDataType;
@@ -5368,8 +5483,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEOperation(moveActorEClass, MOVE_ACTOR___MOVEON__DEVICEOPTIONS);
 
     dimmableActorEClass = createEClass(DIMMABLE_ACTOR);
-    createEOperation(dimmableActorEClass, DIMMABLE_ACTOR___INCREASE);
-    createEOperation(dimmableActorEClass, DIMMABLE_ACTOR___DECREASE);
+    createEAttribute(dimmableActorEClass, DIMMABLE_ACTOR__MIN_VALUE);
+    createEAttribute(dimmableActorEClass, DIMMABLE_ACTOR__MAX_VALUE);
+    createEOperation(dimmableActorEClass, DIMMABLE_ACTOR___INCREASE__BIGDECIMAL);
+    createEOperation(dimmableActorEClass, DIMMABLE_ACTOR___DECREASE__BIGDECIMAL);
+
+    setPointActorEClass = createEClass(SET_POINT_ACTOR);
+    createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL);
+    createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE);
 
     mBrickServoEClass = createEClass(MBRICK_SERVO);
     createEAttribute(mBrickServoEClass, MBRICK_SERVO__DEVICE_TYPE);
@@ -5388,8 +5509,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEOperation(mServoEClass, MSERVO___INIT);
 
     mBrickDCEClass = createEClass(MBRICK_DC);
-    createEAttribute(mBrickDCEClass, MBRICK_DC__THRESHOLD);
     createEAttribute(mBrickDCEClass, MBRICK_DC__DEVICE_TYPE);
+    createEAttribute(mBrickDCEClass, MBRICK_DC__THRESHOLD);
     createEAttribute(mBrickDCEClass, MBRICK_DC__VELOCITY);
     createEAttribute(mBrickDCEClass, MBRICK_DC__CURRENT_VELOCITY);
     createEAttribute(mBrickDCEClass, MBRICK_DC__ACCELERATION);
@@ -5697,6 +5818,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(brickletMultiTouchConfigurationEClass, BRICKLET_MULTI_TOUCH_CONFIGURATION__RECALIBRATE);
     createEAttribute(brickletMultiTouchConfigurationEClass, BRICKLET_MULTI_TOUCH_CONFIGURATION__SENSITIVITY);
 
+    dimmableConfigurationEClass = createEClass(DIMMABLE_CONFIGURATION);
+    createEAttribute(dimmableConfigurationEClass, DIMMABLE_CONFIGURATION__MIN_VALUE);
+    createEAttribute(dimmableConfigurationEClass, DIMMABLE_CONFIGURATION__MAX_VALUE);
+
     // Create enums
     noSubIdsEEnum = createEEnum(NO_SUB_IDS);
     industrialDigitalInSubIDsEEnum = createEEnum(INDUSTRIAL_DIGITAL_IN_SUB_IDS);
@@ -5754,6 +5879,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     deviceOptionsEDataType = createEDataType(DEVICE_OPTIONS);
+    percentTypeEDataType = createEDataType(PERCENT_TYPE);
     enumEDataType = createEDataType(ENUM);
   }
 
@@ -5790,6 +5916,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     ETypeParameter mSubDeviceHolderEClass_S = addETypeParameter(mSubDeviceHolderEClass, "S");
     ETypeParameter mSubDeviceEClass_B = addETypeParameter(mSubDeviceEClass, "B");
     ETypeParameter mSensorEClass_DeviceValue = addETypeParameter(mSensorEClass, "DeviceValue");
+    ETypeParameter dimmableActorEClass_TC = addETypeParameter(dimmableActorEClass, "TC");
+    ETypeParameter setPointActorEClass_C = addETypeParameter(setPointActorEClass, "C");
     ETypeParameter ohtfDeviceEClass_TFC = addETypeParameter(ohtfDeviceEClass, "TFC");
     ETypeParameter ohtfDeviceEClass_IDS = addETypeParameter(ohtfDeviceEClass, "IDS");
     ETypeParameter ohtfSubDeviceAdminDeviceEClass_TFC = addETypeParameter(ohtfSubDeviceAdminDeviceEClass, "TFC");
@@ -5808,6 +5936,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mSubDeviceEClass_B.getEBounds().add(g1);
     g1 = createEGenericType(this.getMTinkerforgeValue());
     mSensorEClass_DeviceValue.getEBounds().add(g1);
+    g1 = createEGenericType(this.getDimmableConfiguration());
+    dimmableActorEClass_TC.getEBounds().add(g1);
+    g1 = createEGenericType(this.getDimmableConfiguration());
+    setPointActorEClass_C.getEBounds().add(g1);
     g1 = createEGenericType(this.getTFConfig());
     ohtfDeviceEClass_TFC.getEBounds().add(g1);
     g1 = createEGenericType(this.getEnum());
@@ -5832,6 +5964,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMBrickletLCD20x4());
     g1.getETypeArguments().add(g2);
     mlcdSubDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g2 = createEGenericType(dimmableActorEClass_TC);
+    g1.getETypeArguments().add(g2);
+    dimmableActorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getDimmableActor());
+    g2 = createEGenericType(setPointActorEClass_C);
+    g1.getETypeArguments().add(g2);
+    setPointActorEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickServo());
     g1.getETypeArguments().add(g2);
@@ -5860,11 +6000,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMTinkerBrickDC());
     g1.getETypeArguments().add(g2);
     mBrickDCEClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMTFConfigConsumer());
+    g1 = createEGenericType(this.getMoveActor());
+    mBrickDCEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getSetPointActor());
     g2 = createEGenericType(this.getTFBrickDCConfiguration());
     g1.getETypeArguments().add(g2);
-    mBrickDCEClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMoveActor());
     mBrickDCEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getCallbackListener());
     mBrickDCEClass.getEGenericSuperTypes().add(g1);
@@ -6318,6 +6458,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tfMoistureBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfDistanceUSBrickletConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfVoltageCurrentConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    tfBrickDCConfigurationEClass.getESuperTypes().add(this.getDimmableConfiguration());
     tfBrickDCConfigurationEClass.getESuperTypes().add(this.getTFBaseConfiguration());
     tfioActorConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     tfInterruptListenerConfigurationEClass.getESuperTypes().add(this.getTFConfig());
@@ -6329,6 +6470,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     remoteSwitchCConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     multiTouchDeviceConfigurationEClass.getESuperTypes().add(this.getTFConfig());
     brickletMultiTouchConfigurationEClass.getESuperTypes().add(this.getTFConfig());
+    dimmableConfigurationEClass.getESuperTypes().add(this.getTFConfig());
 
     // Initialize classes, features, and operations; add parameters
     initEClass(ecosystemEClass, Ecosystem.class, "Ecosystem", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -6488,10 +6630,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(dimmableActorEClass, DimmableActor.class, "DimmableActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDimmableActor_MinValue(), theEcorePackage.getEBigDecimal(), "minValue", null, 0, 1, DimmableActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDimmableActor_MaxValue(), theEcorePackage.getEBigDecimal(), "maxValue", null, 0, 1, DimmableActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEOperation(getDimmableActor__Increase(), null, "increase", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    op = initEOperation(getDimmableActor__Increase__BigDecimal(), null, "increase", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEBigDecimal(), "step", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
-    initEOperation(getDimmableActor__Decrease(), null, "decrease", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    op = initEOperation(getDimmableActor__Decrease__BigDecimal(), null, "decrease", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEBigDecimal(), "step", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEClass(setPointActorEClass, SetPointActor.class, "SetPointActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    op = initEOperation(getSetPointActor__SetValue__BigDecimal(), null, "setValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEBigDecimal(), "newValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    op = initEOperation(getSetPointActor__SetValue__PercentType(), null, "setValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getPercentType(), "newValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickServoEClass, MBrickServo.class, "MBrickServo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickServo_DeviceType(), theEcorePackage.getEString(), "deviceType", "brick_servo", 0, 1, MBrickServo.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -6512,8 +6666,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEOperation(getMServo__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickDCEClass, MBrickDC.class, "MBrickDC", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getMBrickDC_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "10", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_DeviceType(), theEcorePackage.getEString(), "deviceType", "brick_dc", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickDC_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "10", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_Velocity(), theEcorePackage.getEShort(), "velocity", null, 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_CurrentVelocity(), theEcorePackage.getEShort(), "currentVelocity", null, 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_Acceleration(), theEcorePackage.getEInt(), "acceleration", "10000", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -6868,6 +7022,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getBrickletMultiTouchConfiguration_Recalibrate(), theEcorePackage.getEBooleanObject(), "recalibrate", null, 0, 1, BrickletMultiTouchConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getBrickletMultiTouchConfiguration_Sensitivity(), theEcorePackage.getEShortObject(), "sensitivity", null, 0, 1, BrickletMultiTouchConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(dimmableConfigurationEClass, DimmableConfiguration.class, "DimmableConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDimmableConfiguration_MinValue(), theEcorePackage.getEBigDecimal(), "minValue", null, 0, 1, DimmableConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getDimmableConfiguration_MaxValue(), theEcorePackage.getEBigDecimal(), "maxValue", null, 0, 1, DimmableConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     // Initialize enums and add enum literals
     initEEnum(noSubIdsEEnum, NoSubIds.class, "NoSubIds");
 
@@ -7031,6 +7189,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(deviceOptionsEDataType, DeviceOptions.class, "DeviceOptions", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(percentTypeEDataType, PercentType.class, "PercentType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource

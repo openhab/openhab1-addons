@@ -302,8 +302,18 @@ public class ModelSwitch<T> extends Switch<T>
       }
       case ModelPackage.DIMMABLE_ACTOR:
       {
-        DimmableActor dimmableActor = (DimmableActor)theEObject;
+        DimmableActor<?> dimmableActor = (DimmableActor<?>)theEObject;
         T result = caseDimmableActor(dimmableActor);
+        if (result == null) result = caseMTFConfigConsumer(dimmableActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.SET_POINT_ACTOR:
+      {
+        SetPointActor<?> setPointActor = (SetPointActor<?>)theEObject;
+        T result = caseSetPointActor(setPointActor);
+        if (result == null) result = caseDimmableActor(setPointActor);
+        if (result == null) result = caseMTFConfigConsumer(setPointActor);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -336,11 +346,13 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSensor(mBrickDC);
         if (result == null) result = caseMInSwitchActor(mBrickDC);
         if (result == null) result = caseMDevice(mBrickDC);
-        if (result == null) result = caseMTFConfigConsumer(mBrickDC);
         if (result == null) result = caseMoveActor(mBrickDC);
+        if (result == null) result = caseSetPointActor(mBrickDC);
         if (result == null) result = caseCallbackListener(mBrickDC);
         if (result == null) result = caseMSwitchActor(mBrickDC);
         if (result == null) result = caseMBaseDevice(mBrickDC);
+        if (result == null) result = caseDimmableActor(mBrickDC);
+        if (result == null) result = caseMTFConfigConsumer(mBrickDC);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1010,6 +1022,7 @@ public class ModelSwitch<T> extends Switch<T>
       {
         TFBrickDCConfiguration tfBrickDCConfiguration = (TFBrickDCConfiguration)theEObject;
         T result = caseTFBrickDCConfiguration(tfBrickDCConfiguration);
+        if (result == null) result = caseDimmableConfiguration(tfBrickDCConfiguration);
         if (result == null) result = caseTFBaseConfiguration(tfBrickDCConfiguration);
         if (result == null) result = caseTFConfig(tfBrickDCConfiguration);
         if (result == null) result = defaultCase(theEObject);
@@ -1092,6 +1105,14 @@ public class ModelSwitch<T> extends Switch<T>
         BrickletMultiTouchConfiguration brickletMultiTouchConfiguration = (BrickletMultiTouchConfiguration)theEObject;
         T result = caseBrickletMultiTouchConfiguration(brickletMultiTouchConfiguration);
         if (result == null) result = caseTFConfig(brickletMultiTouchConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DIMMABLE_CONFIGURATION:
+      {
+        DimmableConfiguration dimmableConfiguration = (DimmableConfiguration)theEObject;
+        T result = caseDimmableConfiguration(dimmableConfiguration);
+        if (result == null) result = caseTFConfig(dimmableConfiguration);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1512,7 +1533,23 @@ public class ModelSwitch<T> extends Switch<T>
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseDimmableActor(DimmableActor object)
+  public <TC extends DimmableConfiguration> T caseDimmableActor(DimmableActor<TC> object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Set Point Actor</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Set Point Actor</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public <C extends DimmableConfiguration> T caseSetPointActor(SetPointActor<C> object)
   {
     return null;
   }
@@ -2137,6 +2174,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseBrickletMultiTouchConfiguration(BrickletMultiTouchConfiguration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Dimmable Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Dimmable Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDimmableConfiguration(DimmableConfiguration object)
   {
     return null;
   }

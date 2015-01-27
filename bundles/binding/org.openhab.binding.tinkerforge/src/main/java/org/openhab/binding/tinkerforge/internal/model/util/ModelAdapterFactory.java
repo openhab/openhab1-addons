@@ -247,9 +247,14 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMoveActorAdapter();
       }
       @Override
-      public Adapter caseDimmableActor(DimmableActor object)
+      public <TC extends DimmableConfiguration> Adapter caseDimmableActor(DimmableActor<TC> object)
       {
         return createDimmableActorAdapter();
+      }
+      @Override
+      public <C extends DimmableConfiguration> Adapter caseSetPointActor(SetPointActor<C> object)
+      {
+        return createSetPointActorAdapter();
       }
       @Override
       public Adapter caseMBrickServo(MBrickServo object)
@@ -620,6 +625,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
       public Adapter caseBrickletMultiTouchConfiguration(BrickletMultiTouchConfiguration object)
       {
         return createBrickletMultiTouchConfigurationAdapter();
+      }
+      @Override
+      public Adapter caseDimmableConfiguration(DimmableConfiguration object)
+      {
+        return createDimmableConfigurationAdapter();
       }
       @Override
       public Adapter defaultCase(EObject object)
@@ -1029,6 +1039,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createDimmableActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.SetPointActor <em>Set Point Actor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.SetPointActor
+   * @generated
+   */
+  public Adapter createSetPointActorAdapter()
   {
     return null;
   }
@@ -1614,6 +1639,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createBrickletMultiTouchConfigurationAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration <em>Dimmable Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration
+   * @generated
+   */
+  public Adapter createDimmableConfigurationAdapter()
   {
     return null;
   }

@@ -46,6 +46,7 @@ import com.tinkerforge.BrickletSegmentDisplay4x7
 import com.tinkerforge.BrickletLEDStrip
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
+import org.openhab.core.library.types.PercentType
 import java.math.BigDecimal
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions
 
@@ -92,6 +93,7 @@ type TinkerBrickletLEDStrip wraps BrickletLEDStrip
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type DeviceOptions wraps DeviceOptions
+type PercentType wraps PercentType
 type Enum wraps Enum
 
 class Ecosystem {
@@ -224,9 +226,17 @@ interface MoveActor {
     op void moveon(DeviceOptions opts)
 }
 
-interface DimmableActor {
-    op void increase()
-    op void decrease()
+interface DimmableActor<TC extends DimmableConfiguration>   extends MTFConfigConsumer<TC> {
+    BigDecimal minValue
+    BigDecimal maxValue
+    op void increase(BigDecimal step)
+    op void decrease(BigDecimal step)
+
+}
+
+interface SetPointActor<C extends DimmableConfiguration> extends DimmableActor<C> {
+    op void setValue(BigDecimal newValue)
+    op void setValue(PercentType newValue)
 }
 
 class MBrickServo extends MDevice<MTinkerBrickServo>, MSubDeviceHolder<MServo> {
@@ -250,17 +260,18 @@ class MServo extends MInSwitchActor, MSubDevice<MBrickServo>,
 }
 
 class MBrickDC extends MSensor<MDecimalValue>, MInSwitchActor, MDevice<MTinkerBrickDC>, 
-		MTFConfigConsumer<TFBrickDCConfiguration>, MoveActor,
+		MoveActor, SetPointActor<TFBrickDCConfiguration>,
 	    CallbackListener{
-	BigDecimal threshold = "10"
 	readonly String deviceType = "brick_dc"
 	op void init(){}
+    BigDecimal threshold = "10"
 	short velocity
 	short currentVelocity
 	int acceleration = "10000"
 	int pwmFrequency = "15000"
 	DCDriveMode driveMode = "Break"
 	short switchOnVelocity = "10000"
+	
 }
 
 class MDualRelayBricklet extends MDevice<MTinkerBrickletDualRelay>,
@@ -632,7 +643,7 @@ class TFVoltageCurrentConfiguration extends TFConfig {
     Short currentConversionTime
 }
 
-class TFBrickDCConfiguration extends TFBaseConfiguration{
+class TFBrickDCConfiguration extends DimmableConfiguration, TFBaseConfiguration{
 	short velocity
 	int acceleration
 	int pwmFrequency
@@ -697,6 +708,11 @@ class MultiTouchDeviceConfiguration extends TFConfig {
 class BrickletMultiTouchConfiguration extends TFConfig {
     Boolean recalibrate
     Short sensitivity
+}
+
+class DimmableConfiguration extends TFConfig {
+    BigDecimal minValue
+    BigDecimal maxValue
 }
 
 enum NoSubIds {
