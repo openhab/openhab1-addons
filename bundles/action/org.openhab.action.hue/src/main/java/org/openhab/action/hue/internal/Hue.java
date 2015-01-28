@@ -9,6 +9,7 @@
 package org.openhab.action.hue.internal;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonParseException;
@@ -119,7 +120,25 @@ public class Hue {
 		return r.toJson();
 	}
 	
+	@ActionDoc(text = "Set scene for this tap button")
+	public static void hueSetSceneForButton(
+			@ParamDoc(name = "rule name", text = "rule name") String ruleName,
+			@ParamDoc(name = "sensorId", text = "Id of tap device") String sensorId,
+			@ParamDoc(name = "button", text = "Button id 1..4")int button,
+			@ParamDoc(name = "scene", text = "scene id") String scene) throws IOException{
+		
+		
+		Rule r=new Rule(ruleName);
+		r.addTapButtonEqualsCondition(sensorId, button);
+		r.addTapDeviceChangedCondition(sensorId);
+		r.addGroupAction("0", "scene", scene);
+		
+		r.addTapButtonEqualsCondition(sensorId, button);
+		
+		hueSetRule(ruleName,r.toJson());
+	}
 
+	
 	/**
 	 * set rule by name
 	 * @param name
@@ -131,9 +150,7 @@ public class Hue {
 			@ParamDoc(name = "name", text = "Name of the rule")String name, 
 			@ParamDoc(name = "ruleJson", text = "Json representation of the rule") String ruleJson){
 		
-		HueSettings settings=HueContext.getInstance().getBridge().getSettings();
-		
-		String id=settings.getRule(name);
+		String id = getRuleId(name);
 		
 		//logger.debug("found rule id for name '"+name+"': '"+id+"'");
 		logger.debug("found rule id for name '{}': '{}'", name,id);
@@ -145,6 +162,14 @@ public class Hue {
 		}
 		
 		return result;
+	}
+
+
+	private static String getRuleId(String name) {
+		HueSettings settings=HueContext.getInstance().getBridge().getSettings();
+		
+		String id=settings.getRule(name);
+		return id;
 	}
 	
 	
@@ -216,11 +241,12 @@ public class Hue {
 			// check if ok
 			ObjectMapper mapper = new ObjectMapper();
 			try {
-				Map <String,Object> responseMap=mapper.readValue(responseString,Map.class);
-				
-				if(responseMap.containsKey("error")){
-					logger.warn("failed send command, body={}",body);
-					logger.warn("failed send command, response={}",responseString);
+				List<Map <String,Object>> responses=mapper.readValue(responseString,List.class);
+				for(Map <String,Object> item:responses){
+					if(item.containsKey("error")){
+						logger.warn("failed send command, body={}",body);
+						logger.warn("failed send command, response={}",responseString);
+					}
 				}
 			}catch (IOException e) {
 				logger.warn("failed to parse response '{}'",responseString);
