@@ -30,7 +30,9 @@ import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfigur
 import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.ColorActor;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
@@ -148,6 +150,7 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.UpDownType;
 import org.slf4j.Logger;
@@ -1000,6 +1003,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EEnum configOptsDimmableEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum configOptsSetPointEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EEnum directionEEnum = null;
 
   /**
@@ -1225,6 +1242,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType percentTypeEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType increaseDecreaseTypeEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2083,7 +2107,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickDC_CurrentVelocity()
+  public EAttribute getMBrickDC_Targetvelocity()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(3);
   }
@@ -2093,7 +2117,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickDC_Acceleration()
+  public EAttribute getMBrickDC_CurrentVelocity()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(4);
   }
@@ -2103,7 +2127,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickDC_PwmFrequency()
+  public EAttribute getMBrickDC_Acceleration()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(5);
   }
@@ -2113,7 +2137,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickDC_DriveMode()
+  public EAttribute getMBrickDC_PwmFrequency()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(6);
   }
@@ -2123,9 +2147,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMBrickDC_SwitchOnVelocity()
+  public EAttribute getMBrickDC_DriveMode()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickDC_SwitchOnVelocity()
+  {
+    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(8);
   }
 
   /**
@@ -2413,19 +2447,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EOperation getDimmableActor__Increase__BigDecimal()
+  public EOperation getDimmableActor__Dimm__IncreaseDecreaseType_DeviceOptions()
   {
     return dimmableActorEClass.getEOperations().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EOperation getDimmableActor__Decrease__BigDecimal()
-  {
-    return dimmableActorEClass.getEOperations().get(1);
   }
 
   /**
@@ -2443,7 +2467,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EOperation getSetPointActor__SetValue__BigDecimal()
+  public EOperation getSetPointActor__SetValue__BigDecimal_DeviceOptions()
   {
     return setPointActorEClass.getEOperations().get(0);
   }
@@ -2453,7 +2477,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EOperation getSetPointActor__SetValue__PercentType()
+  public EOperation getSetPointActor__SetValue__PercentType_DeviceOptions()
   {
     return setPointActorEClass.getEOperations().get(1);
   }
@@ -4973,6 +4997,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getConfigOptsDimmable()
+  {
+    return configOptsDimmableEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getConfigOptsSetPoint()
+  {
+    return configOptsSetPointEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getDirection()
   {
     return directionEEnum;
@@ -5303,6 +5347,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getIncreaseDecreaseType()
+  {
+    return increaseDecreaseTypeEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getEnum()
   {
     return enumEDataType;
@@ -5485,12 +5539,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     dimmableActorEClass = createEClass(DIMMABLE_ACTOR);
     createEAttribute(dimmableActorEClass, DIMMABLE_ACTOR__MIN_VALUE);
     createEAttribute(dimmableActorEClass, DIMMABLE_ACTOR__MAX_VALUE);
-    createEOperation(dimmableActorEClass, DIMMABLE_ACTOR___INCREASE__BIGDECIMAL);
-    createEOperation(dimmableActorEClass, DIMMABLE_ACTOR___DECREASE__BIGDECIMAL);
+    createEOperation(dimmableActorEClass, DIMMABLE_ACTOR___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS);
 
     setPointActorEClass = createEClass(SET_POINT_ACTOR);
-    createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL);
-    createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE);
+    createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS);
+    createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS);
 
     mBrickServoEClass = createEClass(MBRICK_SERVO);
     createEAttribute(mBrickServoEClass, MBRICK_SERVO__DEVICE_TYPE);
@@ -5512,6 +5565,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickDCEClass, MBRICK_DC__DEVICE_TYPE);
     createEAttribute(mBrickDCEClass, MBRICK_DC__THRESHOLD);
     createEAttribute(mBrickDCEClass, MBRICK_DC__VELOCITY);
+    createEAttribute(mBrickDCEClass, MBRICK_DC__TARGETVELOCITY);
     createEAttribute(mBrickDCEClass, MBRICK_DC__CURRENT_VELOCITY);
     createEAttribute(mBrickDCEClass, MBRICK_DC__ACCELERATION);
     createEAttribute(mBrickDCEClass, MBRICK_DC__PWM_FREQUENCY);
@@ -5837,6 +5891,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     temperatureIRSubIdsEEnum = createEEnum(TEMPERATURE_IR_SUB_IDS);
     voltageCurrentSubIdsEEnum = createEEnum(VOLTAGE_CURRENT_SUB_IDS);
     configOptsMoveEEnum = createEEnum(CONFIG_OPTS_MOVE);
+    configOptsDimmableEEnum = createEEnum(CONFIG_OPTS_DIMMABLE);
+    configOptsSetPointEEnum = createEEnum(CONFIG_OPTS_SET_POINT);
     directionEEnum = createEEnum(DIRECTION);
     dcDriveModeEEnum = createEEnum(DC_DRIVE_MODE);
 
@@ -5880,6 +5936,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     deviceOptionsEDataType = createEDataType(DEVICE_OPTIONS);
     percentTypeEDataType = createEDataType(PERCENT_TYPE);
+    increaseDecreaseTypeEDataType = createEDataType(INCREASE_DECREASE_TYPE);
     enumEDataType = createEDataType(ENUM);
   }
 
@@ -6633,19 +6690,19 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getDimmableActor_MinValue(), theEcorePackage.getEBigDecimal(), "minValue", null, 0, 1, DimmableActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getDimmableActor_MaxValue(), theEcorePackage.getEBigDecimal(), "maxValue", null, 0, 1, DimmableActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    op = initEOperation(getDimmableActor__Increase__BigDecimal(), null, "increase", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, theEcorePackage.getEBigDecimal(), "step", 0, 1, !IS_UNIQUE, IS_ORDERED);
-
-    op = initEOperation(getDimmableActor__Decrease__BigDecimal(), null, "decrease", 0, 1, !IS_UNIQUE, IS_ORDERED);
-    addEParameter(op, theEcorePackage.getEBigDecimal(), "step", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    op = initEOperation(getDimmableActor__Dimm__IncreaseDecreaseType_DeviceOptions(), null, "dimm", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getIncreaseDecreaseType(), "increaseDecrease", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(setPointActorEClass, SetPointActor.class, "SetPointActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-    op = initEOperation(getSetPointActor__SetValue__BigDecimal(), null, "setValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    op = initEOperation(getSetPointActor__SetValue__BigDecimal_DeviceOptions(), null, "setValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, theEcorePackage.getEBigDecimal(), "newValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
-    op = initEOperation(getSetPointActor__SetValue__PercentType(), null, "setValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    op = initEOperation(getSetPointActor__SetValue__PercentType_DeviceOptions(), null, "setValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getPercentType(), "newValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickServoEClass, MBrickServo.class, "MBrickServo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickServo_DeviceType(), theEcorePackage.getEString(), "deviceType", "brick_servo", 0, 1, MBrickServo.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -6669,10 +6726,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickDC_DeviceType(), theEcorePackage.getEString(), "deviceType", "brick_dc", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "10", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_Velocity(), theEcorePackage.getEShort(), "velocity", null, 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickDC_Targetvelocity(), theEcorePackage.getEShort(), "targetvelocity", "0", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_CurrentVelocity(), theEcorePackage.getEShort(), "currentVelocity", null, 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_Acceleration(), theEcorePackage.getEInt(), "acceleration", "10000", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_PwmFrequency(), theEcorePackage.getEInt(), "pwmFrequency", "15000", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickDC_DriveMode(), this.getDCDriveMode(), "driveMode", "Break", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickDC_DriveMode(), this.getDCDriveMode(), "driveMode", "BRAKE", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_SwitchOnVelocity(), theEcorePackage.getEShort(), "switchOnVelocity", "10000", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickDC__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
@@ -6973,7 +7031,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getTFBrickDCConfiguration_Velocity(), theEcorePackage.getEShort(), "velocity", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFBrickDCConfiguration_Acceleration(), theEcorePackage.getEInt(), "acceleration", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFBrickDCConfiguration_PwmFrequency(), theEcorePackage.getEInt(), "pwmFrequency", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFBrickDCConfiguration_DriveMode(), theEcorePackage.getEInt(), "driveMode", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTFBrickDCConfiguration_DriveMode(), theEcorePackage.getEString(), "driveMode", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFBrickDCConfiguration_SwitchOnVelocity(), theEcorePackage.getEShort(), "switchOnVelocity", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfioActorConfigurationEClass, TFIOActorConfiguration.class, "TFIOActorConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -7141,6 +7199,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(configOptsMoveEEnum, ConfigOptsMove.DRIVEMODE);
     addEEnumLiteral(configOptsMoveEEnum, ConfigOptsMove.PWM);
 
+    initEEnum(configOptsDimmableEEnum, ConfigOptsDimmable.class, "ConfigOptsDimmable");
+    addEEnumLiteral(configOptsDimmableEEnum, ConfigOptsDimmable.MAX);
+    addEEnumLiteral(configOptsDimmableEEnum, ConfigOptsDimmable.MIN);
+    addEEnumLiteral(configOptsDimmableEEnum, ConfigOptsDimmable.STEP);
+
+    initEEnum(configOptsSetPointEEnum, ConfigOptsSetPoint.class, "ConfigOptsSetPoint");
+    addEEnumLiteral(configOptsSetPointEEnum, ConfigOptsSetPoint.MAX);
+    addEEnumLiteral(configOptsSetPointEEnum, ConfigOptsSetPoint.MIN);
+
     initEEnum(directionEEnum, Direction.class, "Direction");
     addEEnumLiteral(directionEEnum, Direction.UNDEF);
     addEEnumLiteral(directionEEnum, Direction.LEFT);
@@ -7190,6 +7257,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(deviceOptionsEDataType, DeviceOptions.class, "DeviceOptions", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentTypeEDataType, PercentType.class, "PercentType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(increaseDecreaseTypeEDataType, IncreaseDecreaseType.class, "IncreaseDecreaseType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource

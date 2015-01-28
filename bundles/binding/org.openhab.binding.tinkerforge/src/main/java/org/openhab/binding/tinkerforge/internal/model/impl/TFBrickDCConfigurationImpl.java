@@ -149,7 +149,7 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
    * @generated
    * @ordered
    */
-  protected static final int DRIVE_MODE_EDEFAULT = 0;
+  protected static final String DRIVE_MODE_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getDriveMode() <em>Drive Mode</em>}' attribute.
@@ -159,7 +159,7 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
    * @generated
    * @ordered
    */
-  protected int driveMode = DRIVE_MODE_EDEFAULT;
+  protected String driveMode = DRIVE_MODE_EDEFAULT;
 
   /**
    * The default value of the '{@link #getSwitchOnVelocity() <em>Switch On Velocity</em>}' attribute.
@@ -322,7 +322,7 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
    * <!-- end-user-doc -->
    * @generated
    */
-  public int getDriveMode()
+  public String getDriveMode()
   {
     return driveMode;
   }
@@ -332,9 +332,9 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setDriveMode(int newDriveMode)
+  public void setDriveMode(String newDriveMode)
   {
-    int oldDriveMode = driveMode;
+    String oldDriveMode = driveMode;
     driveMode = newDriveMode;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_BRICK_DC_CONFIGURATION__DRIVE_MODE, oldDriveMode, driveMode));
@@ -417,7 +417,7 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
         setPwmFrequency((Integer)newValue);
         return;
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__DRIVE_MODE:
-        setDriveMode((Integer)newValue);
+        setDriveMode((String)newValue);
         return;
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY:
         setSwitchOnVelocity((Short)newValue);
@@ -482,7 +482,7 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__PWM_FREQUENCY:
         return pwmFrequency != PWM_FREQUENCY_EDEFAULT;
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__DRIVE_MODE:
-        return driveMode != DRIVE_MODE_EDEFAULT;
+        return DRIVE_MODE_EDEFAULT == null ? driveMode != null : !DRIVE_MODE_EDEFAULT.equals(driveMode);
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY:
         return switchOnVelocity != SWITCH_ON_VELOCITY_EDEFAULT;
     }

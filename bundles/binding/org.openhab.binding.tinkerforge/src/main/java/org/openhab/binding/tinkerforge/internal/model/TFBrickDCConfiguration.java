@@ -121,12 +121,12 @@ public interface TFBrickDCConfiguration extends DimmableConfiguration, TFBaseCon
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Drive Mode</em>' attribute.
-   * @see #setDriveMode(int)
+   * @see #setDriveMode(String)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFBrickDCConfiguration_DriveMode()
    * @model unique="false"
    * @generated
    */
-  int getDriveMode();
+  String getDriveMode();
 
   /**
    * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration#getDriveMode <em>Drive Mode</em>}' attribute.
@@ -136,7 +136,7 @@ public interface TFBrickDCConfiguration extends DimmableConfiguration, TFBaseCon
    * @see #getDriveMode()
    * @generated
    */
-  void setDriveMode(int value);
+  void setDriveMode(String value);
 
   /**
    * Returns the value of the '<em><b>Switch On Velocity</b></em>' attribute.

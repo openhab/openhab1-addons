@@ -47,6 +47,7 @@ import com.tinkerforge.BrickletLEDStrip
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
+import org.openhab.core.library.types.IncreaseDecreaseType
 import java.math.BigDecimal
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions
 
@@ -94,6 +95,7 @@ type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type DeviceOptions wraps DeviceOptions
 type PercentType wraps PercentType
+type IncreaseDecreaseType wraps IncreaseDecreaseType
 type Enum wraps Enum
 
 class Ecosystem {
@@ -229,14 +231,12 @@ interface MoveActor {
 interface DimmableActor<TC extends DimmableConfiguration>   extends MTFConfigConsumer<TC> {
     BigDecimal minValue
     BigDecimal maxValue
-    op void increase(BigDecimal step)
-    op void decrease(BigDecimal step)
-
+    op void dimm(IncreaseDecreaseType increaseDecrease, DeviceOptions opts)
 }
 
 interface SetPointActor<C extends DimmableConfiguration> extends DimmableActor<C> {
-    op void setValue(BigDecimal newValue)
-    op void setValue(PercentType newValue)
+    op void setValue(BigDecimal newValue, DeviceOptions opts)
+    op void setValue(PercentType newValue, DeviceOptions opts)
 }
 
 class MBrickServo extends MDevice<MTinkerBrickServo>, MSubDeviceHolder<MServo> {
@@ -266,10 +266,11 @@ class MBrickDC extends MSensor<MDecimalValue>, MInSwitchActor, MDevice<MTinkerBr
 	op void init(){}
     BigDecimal threshold = "10"
 	short velocity
+	short targetvelocity = "0"
 	short currentVelocity
 	int acceleration = "10000"
 	int pwmFrequency = "15000"
-	DCDriveMode driveMode = "Break"
+	DCDriveMode driveMode = "BRAKE"
 	short switchOnVelocity = "10000"
 	
 }
@@ -647,7 +648,7 @@ class TFBrickDCConfiguration extends DimmableConfiguration, TFBaseConfiguration{
 	short velocity
 	int acceleration
 	int pwmFrequency
-	int driveMode
+	String driveMode
 	short switchOnVelocity
 }
 
@@ -776,12 +777,19 @@ enum ConfigOptsMove {
     RIGHTSPEED, LEFTSPEED, ACCELERATION, DRIVEMODE, PWM
 }
 
+enum ConfigOptsDimmable {
+    MAX, MIN, STEP
+}
+
+enum ConfigOptsSetPoint {
+    MAX, MIN
+}
+
 enum Direction {
     UNDEF, LEFT, RIGHT
 }
 
 enum DCDriveMode {
-    Brake = 0
-    Coast = 1
+    BRAKE, COAST
 }
 

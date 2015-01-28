@@ -80,8 +80,9 @@ public class DecimalValue extends Number implements TinkerforgeValue, Comparable
     return value;
   }
 
-  public OnOffValue onOffValue() {
-    return value == BigDecimal.ZERO ? OnOffValue.OFF : OnOffValue.ON;
+  public OnOffValue onOffValue(int scale) {
+    BigDecimal scaledvalue = value.setScale(0, BigDecimal.ROUND_UP);
+    return scaledvalue.compareTo(BigDecimal.ZERO) == 0 ? OnOffValue.OFF : OnOffValue.ON;
   }
 
   @Override
@@ -96,7 +97,6 @@ public class DecimalValue extends Number implements TinkerforgeValue, Comparable
    * the values are compared using the compareTo function of BigDecimal.
    */
   public int compareTo(DecimalValue o, BigDecimal threshold) {
-    System.out.println(" value " + value + " newValue " + o + " threshold " + threshold);
     if (o == null) {
       return 1;
     } else if (threshold == null) {

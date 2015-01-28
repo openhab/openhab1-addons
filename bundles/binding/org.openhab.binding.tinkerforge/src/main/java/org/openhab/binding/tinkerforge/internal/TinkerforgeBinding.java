@@ -23,6 +23,7 @@ import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
 import org.openhab.binding.tinkerforge.internal.config.ConfigurationHandler;
 import org.openhab.binding.tinkerforge.internal.model.ColorActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
@@ -731,6 +732,10 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
             }
             else if (command instanceof IncreaseDecreaseType){
               IncreaseDecreaseType cmd = (IncreaseDecreaseType) command;
+              if (mDevice instanceof DimmableActor) {
+                ((DimmableActor<?>) mDevice).dimm((IncreaseDecreaseType) command,
+                    provider.getDeviceOptions(itemName));
+              }
               logger.debug("{} IncreaseDecreaseType command {}", itemName, cmd);
             }
 

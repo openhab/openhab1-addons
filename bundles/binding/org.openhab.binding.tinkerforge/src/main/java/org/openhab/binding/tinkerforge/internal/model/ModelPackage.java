@@ -1964,22 +1964,13 @@ public interface ModelPackage extends EPackage
   int DIMMABLE_ACTOR_FEATURE_COUNT = MTF_CONFIG_CONSUMER_FEATURE_COUNT + 2;
 
   /**
-   * The operation id for the '<em>Increase</em>' operation.
+   * The operation id for the '<em>Dimm</em>' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int DIMMABLE_ACTOR___INCREASE__BIGDECIMAL = MTF_CONFIG_CONSUMER_OPERATION_COUNT + 0;
-
-  /**
-   * The operation id for the '<em>Decrease</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int DIMMABLE_ACTOR___DECREASE__BIGDECIMAL = MTF_CONFIG_CONSUMER_OPERATION_COUNT + 1;
+  int DIMMABLE_ACTOR___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS = MTF_CONFIG_CONSUMER_OPERATION_COUNT + 0;
 
   /**
    * The number of operations of the '<em>Dimmable Actor</em>' class.
@@ -1988,7 +1979,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int DIMMABLE_ACTOR_OPERATION_COUNT = MTF_CONFIG_CONSUMER_OPERATION_COUNT + 2;
+  int DIMMABLE_ACTOR_OPERATION_COUNT = MTF_CONFIG_CONSUMER_OPERATION_COUNT + 1;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.SetPointActor <em>Set Point Actor</em>}' class.
@@ -2037,22 +2028,13 @@ public interface ModelPackage extends EPackage
   int SET_POINT_ACTOR_FEATURE_COUNT = DIMMABLE_ACTOR_FEATURE_COUNT + 0;
 
   /**
-   * The operation id for the '<em>Increase</em>' operation.
+   * The operation id for the '<em>Dimm</em>' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int SET_POINT_ACTOR___INCREASE__BIGDECIMAL = DIMMABLE_ACTOR___INCREASE__BIGDECIMAL;
-
-  /**
-   * The operation id for the '<em>Decrease</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int SET_POINT_ACTOR___DECREASE__BIGDECIMAL = DIMMABLE_ACTOR___DECREASE__BIGDECIMAL;
+  int SET_POINT_ACTOR___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS = DIMMABLE_ACTOR___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS;
 
   /**
    * The operation id for the '<em>Set Value</em>' operation.
@@ -2061,7 +2043,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL = DIMMABLE_ACTOR_OPERATION_COUNT + 0;
+  int SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS = DIMMABLE_ACTOR_OPERATION_COUNT + 0;
 
   /**
    * The operation id for the '<em>Set Value</em>' operation.
@@ -2070,7 +2052,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE = DIMMABLE_ACTOR_OPERATION_COUNT + 1;
+  int SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS = DIMMABLE_ACTOR_OPERATION_COUNT + 1;
 
   /**
    * The number of operations of the '<em>Set Point Actor</em>' class.
@@ -2658,13 +2640,22 @@ public interface ModelPackage extends EPackage
   int MBRICK_DC__VELOCITY = MSENSOR_FEATURE_COUNT + 19;
 
   /**
+   * The feature id for the '<em><b>Targetvelocity</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICK_DC__TARGETVELOCITY = MSENSOR_FEATURE_COUNT + 20;
+
+  /**
    * The feature id for the '<em><b>Current Velocity</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICK_DC__CURRENT_VELOCITY = MSENSOR_FEATURE_COUNT + 20;
+  int MBRICK_DC__CURRENT_VELOCITY = MSENSOR_FEATURE_COUNT + 21;
 
   /**
    * The feature id for the '<em><b>Acceleration</b></em>' attribute.
@@ -2673,7 +2664,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__ACCELERATION = MSENSOR_FEATURE_COUNT + 21;
+  int MBRICK_DC__ACCELERATION = MSENSOR_FEATURE_COUNT + 22;
 
   /**
    * The feature id for the '<em><b>Pwm Frequency</b></em>' attribute.
@@ -2682,7 +2673,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__PWM_FREQUENCY = MSENSOR_FEATURE_COUNT + 22;
+  int MBRICK_DC__PWM_FREQUENCY = MSENSOR_FEATURE_COUNT + 23;
 
   /**
    * The feature id for the '<em><b>Drive Mode</b></em>' attribute.
@@ -2691,7 +2682,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__DRIVE_MODE = MSENSOR_FEATURE_COUNT + 23;
+  int MBRICK_DC__DRIVE_MODE = MSENSOR_FEATURE_COUNT + 24;
 
   /**
    * The feature id for the '<em><b>Switch On Velocity</b></em>' attribute.
@@ -2700,7 +2691,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__SWITCH_ON_VELOCITY = MSENSOR_FEATURE_COUNT + 24;
+  int MBRICK_DC__SWITCH_ON_VELOCITY = MSENSOR_FEATURE_COUNT + 25;
 
   /**
    * The number of structural features of the '<em>MBrick DC</em>' class.
@@ -2709,7 +2700,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 25;
+  int MBRICK_DC_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 26;
 
   /**
    * The operation id for the '<em>Fetch Sensor Value</em>' operation.
@@ -2784,22 +2775,13 @@ public interface ModelPackage extends EPackage
   int MBRICK_DC___MOVEON__DEVICEOPTIONS = MSENSOR_OPERATION_COUNT + 7;
 
   /**
-   * The operation id for the '<em>Increase</em>' operation.
+   * The operation id for the '<em>Dimm</em>' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICK_DC___INCREASE__BIGDECIMAL = MSENSOR_OPERATION_COUNT + 8;
-
-  /**
-   * The operation id for the '<em>Decrease</em>' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MBRICK_DC___DECREASE__BIGDECIMAL = MSENSOR_OPERATION_COUNT + 9;
+  int MBRICK_DC___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS = MSENSOR_OPERATION_COUNT + 8;
 
   /**
    * The operation id for the '<em>Set Value</em>' operation.
@@ -2808,7 +2790,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC___SET_VALUE__BIGDECIMAL = MSENSOR_OPERATION_COUNT + 10;
+  int MBRICK_DC___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS = MSENSOR_OPERATION_COUNT + 9;
 
   /**
    * The operation id for the '<em>Set Value</em>' operation.
@@ -2817,7 +2799,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC___SET_VALUE__PERCENTTYPE = MSENSOR_OPERATION_COUNT + 11;
+  int MBRICK_DC___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS = MSENSOR_OPERATION_COUNT + 10;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -2826,7 +2808,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC___INIT = MSENSOR_OPERATION_COUNT + 12;
+  int MBRICK_DC___INIT = MSENSOR_OPERATION_COUNT + 11;
 
   /**
    * The number of operations of the '<em>MBrick DC</em>' class.
@@ -2835,7 +2817,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC_OPERATION_COUNT = MSENSOR_OPERATION_COUNT + 13;
+  int MBRICK_DC_OPERATION_COUNT = MSENSOR_OPERATION_COUNT + 12;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -12689,7 +12671,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getSwitchState()
    * @generated
    */
-  int SWITCH_STATE = 126;
+  int SWITCH_STATE = 128;
 
   /**
    * The meta object id for the '<em>Digital Value</em>' data type.
@@ -12699,7 +12681,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalValue()
    * @generated
    */
-  int DIGITAL_VALUE = 127;
+  int DIGITAL_VALUE = 129;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet IO16</em>' data type.
@@ -12709,7 +12691,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIO16()
    * @generated
    */
-  int TINKER_BRICKLET_IO16 = 128;
+  int TINKER_BRICKLET_IO16 = 130;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode <em>DC Drive Mode</em>}' enum.
@@ -12719,7 +12701,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDCDriveMode()
    * @generated
    */
-  int DC_DRIVE_MODE = 115;
+  int DC_DRIVE_MODE = 117;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}' enum.
@@ -12862,6 +12844,26 @@ public interface ModelPackage extends EPackage
   int CONFIG_OPTS_MOVE = 113;
 
   /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable <em>Config Opts Dimmable</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsDimmable()
+   * @generated
+   */
+  int CONFIG_OPTS_DIMMABLE = 114;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint <em>Config Opts Set Point</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsSetPoint()
+   * @generated
+   */
+  int CONFIG_OPTS_SET_POINT = 115;
+
+  /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.Direction <em>Direction</em>}' enum.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -12869,7 +12871,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDirection()
    * @generated
    */
-  int DIRECTION = 114;
+  int DIRECTION = 116;
 
   /**
    * The meta object id for the '<em>MIP Connection</em>' data type.
@@ -12879,7 +12881,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIPConnection()
    * @generated
    */
-  int MIP_CONNECTION = 116;
+  int MIP_CONNECTION = 118;
 
   /**
    * The meta object id for the '<em>MTinker Device</em>' data type.
@@ -12889,7 +12891,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerDevice()
    * @generated
    */
-  int MTINKER_DEVICE = 117;
+  int MTINKER_DEVICE = 119;
 
   /**
    * The meta object id for the '<em>MLogger</em>' data type.
@@ -12899,7 +12901,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLogger()
    * @generated
    */
-  int MLOGGER = 118;
+  int MLOGGER = 120;
 
 
   /**
@@ -12910,7 +12912,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMAtomicBoolean()
    * @generated
    */
-  int MATOMIC_BOOLEAN = 119;
+  int MATOMIC_BOOLEAN = 121;
 
   /**
    * The meta object id for the '<em>MTinkerforge Device</em>' data type.
@@ -12920,7 +12922,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeDevice()
    * @generated
    */
-  int MTINKERFORGE_DEVICE = 120;
+  int MTINKERFORGE_DEVICE = 122;
 
   /**
    * The meta object id for the '<em>MTinker Brick DC</em>' data type.
@@ -12930,7 +12932,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickDC()
    * @generated
    */
-  int MTINKER_BRICK_DC = 121;
+  int MTINKER_BRICK_DC = 123;
 
   /**
    * The meta object id for the '<em>MTinker Brick Servo</em>' data type.
@@ -12940,7 +12942,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickServo()
    * @generated
    */
-  int MTINKER_BRICK_SERVO = 129;
+  int MTINKER_BRICK_SERVO = 131;
 
 
   /**
@@ -12951,7 +12953,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeValue()
    * @generated
    */
-  int MTINKERFORGE_VALUE = 130;
+  int MTINKERFORGE_VALUE = 132;
 
   /**
    * The meta object id for the '<em>MDecimal Value</em>' data type.
@@ -12961,7 +12963,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDecimalValue()
    * @generated
    */
-  int MDECIMAL_VALUE = 131;
+  int MDECIMAL_VALUE = 133;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Humidity</em>' data type.
@@ -12971,7 +12973,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletHumidity()
    * @generated
    */
-  int MTINKER_BRICKLET_HUMIDITY = 132;
+  int MTINKER_BRICKLET_HUMIDITY = 134;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Distance IR</em>' data type.
@@ -12981,7 +12983,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDistanceIR()
    * @generated
    */
-  int MTINKER_BRICKLET_DISTANCE_IR = 133;
+  int MTINKER_BRICKLET_DISTANCE_IR = 135;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Temperature</em>' data type.
@@ -12991,7 +12993,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletTemperature()
    * @generated
    */
-  int MTINKER_BRICKLET_TEMPERATURE = 134;
+  int MTINKER_BRICKLET_TEMPERATURE = 136;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Barometer</em>' data type.
@@ -13001,7 +13003,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletBarometer()
    * @generated
    */
-  int MTINKER_BRICKLET_BAROMETER = 135;
+  int MTINKER_BRICKLET_BAROMETER = 137;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Ambient Light</em>' data type.
@@ -13011,7 +13013,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletAmbientLight()
    * @generated
    */
-  int MTINKER_BRICKLET_AMBIENT_LIGHT = 136;
+  int MTINKER_BRICKLET_AMBIENT_LIGHT = 138;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet LCD2 0x4</em>' data type.
@@ -13021,7 +13023,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletLCD20x4()
    * @generated
    */
-  int MTINKER_BRICKLET_LCD2_0X4 = 137;
+  int MTINKER_BRICKLET_LCD2_0X4 = 139;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Remote Switch</em>' data type.
@@ -13031,7 +13033,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletRemoteSwitch()
    * @generated
    */
-  int TINKER_BRICKLET_REMOTE_SWITCH = 138;
+  int TINKER_BRICKLET_REMOTE_SWITCH = 140;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Motion Detector</em>' data type.
@@ -13041,7 +13043,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMotionDetector()
    * @generated
    */
-  int TINKER_BRICKLET_MOTION_DETECTOR = 139;
+  int TINKER_BRICKLET_MOTION_DETECTOR = 141;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Multi Touch</em>' data type.
@@ -13051,7 +13053,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMultiTouch()
    * @generated
    */
-  int TINKER_BRICKLET_MULTI_TOUCH = 140;
+  int TINKER_BRICKLET_MULTI_TOUCH = 142;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Temperature IR</em>' data type.
@@ -13061,7 +13063,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletTemperatureIR()
    * @generated
    */
-  int TINKER_BRICKLET_TEMPERATURE_IR = 141;
+  int TINKER_BRICKLET_TEMPERATURE_IR = 143;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Sound Intensity</em>' data type.
@@ -13071,7 +13073,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletSoundIntensity()
    * @generated
    */
-  int TINKER_BRICKLET_SOUND_INTENSITY = 142;
+  int TINKER_BRICKLET_SOUND_INTENSITY = 144;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Moisture</em>' data type.
@@ -13081,7 +13083,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMoisture()
    * @generated
    */
-  int TINKER_BRICKLET_MOISTURE = 143;
+  int TINKER_BRICKLET_MOISTURE = 145;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Distance US</em>' data type.
@@ -13091,7 +13093,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletDistanceUS()
    * @generated
    */
-  int TINKER_BRICKLET_DISTANCE_US = 144;
+  int TINKER_BRICKLET_DISTANCE_US = 146;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Voltage Current</em>' data type.
@@ -13101,7 +13103,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletVoltageCurrent()
    * @generated
    */
-  int TINKER_BRICKLET_VOLTAGE_CURRENT = 145;
+  int TINKER_BRICKLET_VOLTAGE_CURRENT = 147;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Tilt</em>' data type.
@@ -13111,7 +13113,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletTilt()
    * @generated
    */
-  int TINKER_BRICKLET_TILT = 146;
+  int TINKER_BRICKLET_TILT = 148;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet IO4</em>' data type.
@@ -13121,7 +13123,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIO4()
    * @generated
    */
-  int TINKER_BRICKLET_IO4 = 147;
+  int TINKER_BRICKLET_IO4 = 149;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Hall Effect</em>' data type.
@@ -13131,7 +13133,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletHallEffect()
    * @generated
    */
-  int TINKER_BRICKLET_HALL_EFFECT = 148;
+  int TINKER_BRICKLET_HALL_EFFECT = 150;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Segment Display4x7</em>' data type.
@@ -13141,7 +13143,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletSegmentDisplay4x7()
    * @generated
    */
-  int TINKER_BRICKLET_SEGMENT_DISPLAY4X7 = 149;
+  int TINKER_BRICKLET_SEGMENT_DISPLAY4X7 = 151;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet LED Strip</em>' data type.
@@ -13151,7 +13153,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletLEDStrip()
    * @generated
    */
-  int TINKER_BRICKLET_LED_STRIP = 150;
+  int TINKER_BRICKLET_LED_STRIP = 152;
 
   /**
    * The meta object id for the '<em>HSB Type</em>' data type.
@@ -13161,7 +13163,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getHSBType()
    * @generated
    */
-  int HSB_TYPE = 151;
+  int HSB_TYPE = 153;
 
   /**
    * The meta object id for the '<em>Up Down Type</em>' data type.
@@ -13171,7 +13173,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getUpDownType()
    * @generated
    */
-  int UP_DOWN_TYPE = 152;
+  int UP_DOWN_TYPE = 154;
 
   /**
    * The meta object id for the '<em>Device Options</em>' data type.
@@ -13181,7 +13183,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDeviceOptions()
    * @generated
    */
-  int DEVICE_OPTIONS = 153;
+  int DEVICE_OPTIONS = 155;
 
   /**
    * The meta object id for the '<em>Percent Type</em>' data type.
@@ -13191,7 +13193,17 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPercentType()
    * @generated
    */
-  int PERCENT_TYPE = 154;
+  int PERCENT_TYPE = 156;
+
+  /**
+   * The meta object id for the '<em>Increase Decrease Type</em>' data type.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.core.library.types.IncreaseDecreaseType
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIncreaseDecreaseType()
+   * @generated
+   */
+  int INCREASE_DECREASE_TYPE = 157;
 
   /**
    * The meta object id for the '<em>Enum</em>' data type.
@@ -13201,7 +13213,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getEnum()
    * @generated
    */
-  int ENUM = 155;
+  int ENUM = 158;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.TFConfig <em>TF Config</em>}'.
@@ -13368,7 +13380,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDualRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_DUAL_RELAY = 122;
+  int MTINKER_BRICKLET_DUAL_RELAY = 124;
 
 
   /**
@@ -13379,7 +13391,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialQuadRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 123;
+  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 125;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Industrial Digital In4</em>' data type.
@@ -13389,7 +13401,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalIn4()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 124;
+  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 126;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Industrial Digital Out4</em>' data type.
@@ -13399,7 +13411,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalOut4()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4 = 125;
+  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4 = 127;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.Ecosystem <em>Ecosystem</em>}'.
@@ -14016,6 +14028,17 @@ public interface ModelPackage extends EPackage
   EAttribute getMBrickDC_Velocity();
 
   /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getTargetvelocity <em>Targetvelocity</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Targetvelocity</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickDC#getTargetvelocity()
+   * @see #getMBrickDC()
+   * @generated
+   */
+  EAttribute getMBrickDC_Targetvelocity();
+
+  /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getCurrentVelocity <em>Current Velocity</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -14359,24 +14382,14 @@ public interface ModelPackage extends EPackage
   EAttribute getDimmableActor_MaxValue();
 
   /**
-   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#increase(java.math.BigDecimal) <em>Increase</em>}' operation.
+   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#dimm(org.openhab.core.library.types.IncreaseDecreaseType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions) <em>Dimm</em>}' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the '<em>Increase</em>' operation.
-   * @see org.openhab.binding.tinkerforge.internal.model.DimmableActor#increase(java.math.BigDecimal)
+   * @return the meta object for the '<em>Dimm</em>' operation.
+   * @see org.openhab.binding.tinkerforge.internal.model.DimmableActor#dimm(org.openhab.core.library.types.IncreaseDecreaseType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
    * @generated
    */
-  EOperation getDimmableActor__Increase__BigDecimal();
-
-  /**
-   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#decrease(java.math.BigDecimal) <em>Decrease</em>}' operation.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the '<em>Decrease</em>' operation.
-   * @see org.openhab.binding.tinkerforge.internal.model.DimmableActor#decrease(java.math.BigDecimal)
-   * @generated
-   */
-  EOperation getDimmableActor__Decrease__BigDecimal();
+  EOperation getDimmableActor__Dimm__IncreaseDecreaseType_DeviceOptions();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.SetPointActor <em>Set Point Actor</em>}'.
@@ -14389,24 +14402,24 @@ public interface ModelPackage extends EPackage
   EClass getSetPointActor();
 
   /**
-   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.SetPointActor#setValue(java.math.BigDecimal) <em>Set Value</em>}' operation.
+   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.SetPointActor#setValue(java.math.BigDecimal, org.openhab.binding.tinkerforge.internal.config.DeviceOptions) <em>Set Value</em>}' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the '<em>Set Value</em>' operation.
-   * @see org.openhab.binding.tinkerforge.internal.model.SetPointActor#setValue(java.math.BigDecimal)
+   * @see org.openhab.binding.tinkerforge.internal.model.SetPointActor#setValue(java.math.BigDecimal, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
    * @generated
    */
-  EOperation getSetPointActor__SetValue__BigDecimal();
+  EOperation getSetPointActor__SetValue__BigDecimal_DeviceOptions();
 
   /**
-   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.SetPointActor#setValue(org.openhab.core.library.types.PercentType) <em>Set Value</em>}' operation.
+   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.SetPointActor#setValue(org.openhab.core.library.types.PercentType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions) <em>Set Value</em>}' operation.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the '<em>Set Value</em>' operation.
-   * @see org.openhab.binding.tinkerforge.internal.model.SetPointActor#setValue(org.openhab.core.library.types.PercentType)
+   * @see org.openhab.binding.tinkerforge.internal.model.SetPointActor#setValue(org.openhab.core.library.types.PercentType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
    * @generated
    */
-  EOperation getSetPointActor__SetValue__PercentType();
+  EOperation getSetPointActor__SetValue__PercentType_DeviceOptions();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip <em>MBricklet LED Strip</em>}'.
@@ -17062,6 +17075,26 @@ public interface ModelPackage extends EPackage
   EEnum getConfigOptsMove();
 
   /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable <em>Config Opts Dimmable</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Config Opts Dimmable</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable
+   * @generated
+   */
+  EEnum getConfigOptsDimmable();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint <em>Config Opts Set Point</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Config Opts Set Point</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint
+   * @generated
+   */
+  EEnum getConfigOptsSetPoint();
+
+  /**
    * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.Direction <em>Direction</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -17422,6 +17455,17 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EDataType getPercentType();
+
+  /**
+   * Returns the meta object for data type '{@link org.openhab.core.library.types.IncreaseDecreaseType <em>Increase Decrease Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for data type '<em>Increase Decrease Type</em>'.
+   * @see org.openhab.core.library.types.IncreaseDecreaseType
+   * @model instanceClass="org.openhab.core.library.types.IncreaseDecreaseType"
+   * @generated
+   */
+  EDataType getIncreaseDecreaseType();
 
   /**
    * Returns the meta object for data type '{@link java.lang.Enum <em>Enum</em>}'.
@@ -18115,6 +18159,14 @@ public interface ModelPackage extends EPackage
     EAttribute MBRICK_DC__VELOCITY = eINSTANCE.getMBrickDC_Velocity();
 
     /**
+     * The meta object literal for the '<em><b>Targetvelocity</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICK_DC__TARGETVELOCITY = eINSTANCE.getMBrickDC_Targetvelocity();
+
+    /**
      * The meta object literal for the '<em><b>Current Velocity</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -18403,20 +18455,12 @@ public interface ModelPackage extends EPackage
     EAttribute DIMMABLE_ACTOR__MAX_VALUE = eINSTANCE.getDimmableActor_MaxValue();
 
     /**
-     * The meta object literal for the '<em><b>Increase</b></em>' operation.
+     * The meta object literal for the '<em><b>Dimm</b></em>' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EOperation DIMMABLE_ACTOR___INCREASE__BIGDECIMAL = eINSTANCE.getDimmableActor__Increase__BigDecimal();
-
-    /**
-     * The meta object literal for the '<em><b>Decrease</b></em>' operation.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EOperation DIMMABLE_ACTOR___DECREASE__BIGDECIMAL = eINSTANCE.getDimmableActor__Decrease__BigDecimal();
+    EOperation DIMMABLE_ACTOR___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS = eINSTANCE.getDimmableActor__Dimm__IncreaseDecreaseType_DeviceOptions();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.SetPointActor <em>Set Point Actor</em>}' class.
@@ -18434,7 +18478,7 @@ public interface ModelPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EOperation SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL = eINSTANCE.getSetPointActor__SetValue__BigDecimal();
+    EOperation SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS = eINSTANCE.getSetPointActor__SetValue__BigDecimal_DeviceOptions();
 
     /**
      * The meta object literal for the '<em><b>Set Value</b></em>' operation.
@@ -18442,7 +18486,7 @@ public interface ModelPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EOperation SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE = eINSTANCE.getSetPointActor__SetValue__PercentType();
+    EOperation SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS = eINSTANCE.getSetPointActor__SetValue__PercentType_DeviceOptions();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLEDStripImpl <em>MBricklet LED Strip</em>}' class.
@@ -20635,6 +20679,26 @@ public interface ModelPackage extends EPackage
     EEnum CONFIG_OPTS_MOVE = eINSTANCE.getConfigOptsMove();
 
     /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable <em>Config Opts Dimmable</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsDimmable()
+     * @generated
+     */
+    EEnum CONFIG_OPTS_DIMMABLE = eINSTANCE.getConfigOptsDimmable();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint <em>Config Opts Set Point</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsSetPoint()
+     * @generated
+     */
+    EEnum CONFIG_OPTS_SET_POINT = eINSTANCE.getConfigOptsSetPoint();
+
+    /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.Direction <em>Direction</em>}' enum.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -20963,6 +21027,16 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EDataType PERCENT_TYPE = eINSTANCE.getPercentType();
+
+    /**
+     * The meta object literal for the '<em>Increase Decrease Type</em>' data type.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.core.library.types.IncreaseDecreaseType
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIncreaseDecreaseType()
+     * @generated
+     */
+    EDataType INCREASE_DECREASE_TYPE = eINSTANCE.getIncreaseDecreaseType();
 
     /**
      * The meta object literal for the '<em>Enum</em>' data type.

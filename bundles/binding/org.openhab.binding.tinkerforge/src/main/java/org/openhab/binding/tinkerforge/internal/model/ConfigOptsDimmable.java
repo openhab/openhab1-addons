@@ -10,95 +10,123 @@ import org.eclipse.emf.common.util.Enumerator;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the literals of the enumeration '<em><b>DC Drive Mode</b></em>',
+ * A representation of the literals of the enumeration '<em><b>Config Opts Dimmable</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
- * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDCDriveMode()
+ * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getConfigOptsDimmable()
  * @model
  * @generated
  */
-public enum DCDriveMode implements Enumerator
+public enum ConfigOptsDimmable implements Enumerator
 {
   /**
-   * The '<em><b>BRAKE</b></em>' literal object.
+   * The '<em><b>MAX</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #BRAKE_VALUE
+   * @see #MAX_VALUE
    * @generated
    * @ordered
    */
-  BRAKE(0, "BRAKE", "BRAKE"), /**
-   * The '<em><b>COAST</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #COAST_VALUE
-   * @generated
-   * @ordered
-   */
-  COAST(0, "COAST", "COAST");
+  MAX(0, "MAX", "MAX"),
 
   /**
-   * The '<em><b>BRAKE</b></em>' literal value.
+   * The '<em><b>MIN</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #MIN_VALUE
+   * @generated
+   * @ordered
+   */
+  MIN(0, "MIN", "MIN"),
+
+  /**
+   * The '<em><b>STEP</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #STEP_VALUE
+   * @generated
+   * @ordered
+   */
+  STEP(0, "STEP", "STEP");
+
+  /**
+   * The '<em><b>MAX</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>BRAKE</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>MAX</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #BRAKE
+   * @see #MAX
    * @model
    * @generated
    * @ordered
    */
-  public static final int BRAKE_VALUE = 0;
+  public static final int MAX_VALUE = 0;
 
   /**
-   * The '<em><b>COAST</b></em>' literal value.
+   * The '<em><b>MIN</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>COAST</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>MIN</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #COAST
+   * @see #MIN
    * @model
    * @generated
    * @ordered
    */
-  public static final int COAST_VALUE = 0;
+  public static final int MIN_VALUE = 0;
 
   /**
-   * An array of all the '<em><b>DC Drive Mode</b></em>' enumerators.
+   * The '<em><b>STEP</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of '<em><b>STEP</b></em>' literal object isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @see #STEP
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int STEP_VALUE = 0;
+
+  /**
+   * An array of all the '<em><b>Config Opts Dimmable</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private static final DCDriveMode[] VALUES_ARRAY =
-    new DCDriveMode[]
+  private static final ConfigOptsDimmable[] VALUES_ARRAY =
+    new ConfigOptsDimmable[]
     {
-      BRAKE,
-      COAST,
+      MAX,
+      MIN,
+      STEP,
     };
 
   /**
-   * A public read-only list of all the '<em><b>DC Drive Mode</b></em>' enumerators.
+   * A public read-only list of all the '<em><b>Config Opts Dimmable</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  public static final List<DCDriveMode> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
+  public static final List<ConfigOptsDimmable> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
   /**
-   * Returns the '<em><b>DC Drive Mode</b></em>' literal with the specified literal value.
+   * Returns the '<em><b>Config Opts Dimmable</b></em>' literal with the specified literal value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  public static DCDriveMode get(String literal)
+  public static ConfigOptsDimmable get(String literal)
   {
     for (int i = 0; i < VALUES_ARRAY.length; ++i)
     {
-      DCDriveMode result = VALUES_ARRAY[i];
+      ConfigOptsDimmable result = VALUES_ARRAY[i];
       if (result.toString().equals(literal))
       {
         return result;
@@ -108,16 +136,16 @@ public enum DCDriveMode implements Enumerator
   }
 
   /**
-   * Returns the '<em><b>DC Drive Mode</b></em>' literal with the specified name.
+   * Returns the '<em><b>Config Opts Dimmable</b></em>' literal with the specified name.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  public static DCDriveMode getByName(String name)
+  public static ConfigOptsDimmable getByName(String name)
   {
     for (int i = 0; i < VALUES_ARRAY.length; ++i)
     {
-      DCDriveMode result = VALUES_ARRAY[i];
+      ConfigOptsDimmable result = VALUES_ARRAY[i];
       if (result.getName().equals(name))
       {
         return result;
@@ -127,16 +155,16 @@ public enum DCDriveMode implements Enumerator
   }
 
   /**
-   * Returns the '<em><b>DC Drive Mode</b></em>' literal with the specified integer value.
+   * Returns the '<em><b>Config Opts Dimmable</b></em>' literal with the specified integer value.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  public static DCDriveMode get(int value)
+  public static ConfigOptsDimmable get(int value)
   {
     switch (value)
     {
-      case BRAKE_VALUE: return BRAKE;
+      case MAX_VALUE: return MAX;
     }
     return null;
   }
@@ -168,7 +196,7 @@ public enum DCDriveMode implements Enumerator
    * <!-- end-user-doc -->
    * @generated
    */
-  private DCDriveMode(int value, String name, String literal)
+  private ConfigOptsDimmable(int value, String name, String literal)
   {
     this.value = value;
     this.name = name;
@@ -217,4 +245,4 @@ public enum DCDriveMode implements Enumerator
     return literal;
   }
   
-} //DCDriveMode
+} //ConfigOptsDimmable

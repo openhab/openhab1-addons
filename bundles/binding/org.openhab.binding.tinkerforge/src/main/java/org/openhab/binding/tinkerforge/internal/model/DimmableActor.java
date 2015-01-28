@@ -3,6 +3,8 @@
 package org.openhab.binding.tinkerforge.internal.model;
 
 import java.math.BigDecimal;
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -79,17 +81,9 @@ public interface DimmableActor<TC extends DimmableConfiguration> extends MTFConf
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @model stepUnique="false"
+   * @model increaseDecreaseDataType="org.openhab.binding.tinkerforge.internal.model.IncreaseDecreaseType" increaseDecreaseUnique="false" optsDataType="org.openhab.binding.tinkerforge.internal.model.DeviceOptions" optsUnique="false"
    * @generated
    */
-  void increase(BigDecimal step);
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @model stepUnique="false"
-   * @generated
-   */
-  void decrease(BigDecimal step);
+  void dimm(IncreaseDecreaseType increaseDecrease, DeviceOptions opts);
 
 } // DimmableActor

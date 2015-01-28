@@ -4,6 +4,7 @@ package org.openhab.binding.tinkerforge.internal.model;
 
 import java.math.BigDecimal;
 
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.core.library.types.PercentType;
 
 /**
@@ -21,17 +22,17 @@ public interface SetPointActor<C extends DimmableConfiguration> extends Dimmable
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @model newValueUnique="false"
+   * @model newValueUnique="false" optsDataType="org.openhab.binding.tinkerforge.internal.model.DeviceOptions" optsUnique="false"
    * @generated
    */
-  void setValue(BigDecimal newValue);
+  void setValue(BigDecimal newValue, DeviceOptions opts);
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @model newValueDataType="org.openhab.binding.tinkerforge.internal.model.PercentType" newValueUnique="false"
+   * @model newValueDataType="org.openhab.binding.tinkerforge.internal.model.PercentType" newValueUnique="false" optsDataType="org.openhab.binding.tinkerforge.internal.model.DeviceOptions" optsUnique="false"
    * @generated
    */
-  void setValue(PercentType newValue);
+  void setValue(PercentType newValue, DeviceOptions opts);
 
 } // SetPointActor

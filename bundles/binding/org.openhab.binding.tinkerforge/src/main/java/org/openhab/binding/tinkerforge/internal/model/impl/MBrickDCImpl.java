@@ -24,6 +24,7 @@ import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
@@ -42,6 +43,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.UpDownType;
 import org.slf4j.Logger;
@@ -83,6 +85,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getThreshold <em>Threshold</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getVelocity <em>Velocity</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getTargetvelocity <em>Targetvelocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getCurrentVelocity <em>Current Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getAcceleration <em>Acceleration</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getPwmFrequency <em>Pwm Frequency</em>}</li>
@@ -464,6 +467,26 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @ordered
    */
   protected short velocity = VELOCITY_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getTargetvelocity() <em>Targetvelocity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTargetvelocity()
+   * @generated
+   * @ordered
+   */
+  protected static final short TARGETVELOCITY_EDEFAULT = 0;
+
+  /**
+   * The cached value of the '{@link #getTargetvelocity() <em>Targetvelocity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTargetvelocity()
+   * @generated
+   * @ordered
+   */
+  protected short targetvelocity = TARGETVELOCITY_EDEFAULT;
 
   /**
    * The default value of the '{@link #getCurrentVelocity() <em>Current Velocity</em>}' attribute.
@@ -1110,6 +1133,29 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * <!-- end-user-doc -->
    * @generated
    */
+  public short getTargetvelocity()
+  {
+    return targetvelocity;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTargetvelocity(short newTargetvelocity)
+  {
+    short oldTargetvelocity = targetvelocity;
+    targetvelocity = newTargetvelocity;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__TARGETVELOCITY, oldTargetvelocity, targetvelocity));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public short getCurrentVelocity()
   {
     return currentVelocity;
@@ -1237,7 +1283,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * 
    * @generated NOT
    */
-  public void setValue(BigDecimal newValue)
+  public void setValue(BigDecimal newValue, DeviceOptions opts)
   {
     // TODO: implement this method
     // Ensure that you remove @generated or mark it @generated NOT
@@ -1249,7 +1295,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * 
    * @generated NOT
    */
-  public void setValue(PercentType newValue)
+  public void setValue(PercentType newValue, DeviceOptions opts)
   {
     // TODO: implement this method
     // Ensure that you remove @generated or mark it @generated NOT
@@ -1261,23 +1307,58 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * 
    * @generated NOT
    */
-  public void increase(BigDecimal step)
-  {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
-  }
-
-  /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
-   * @generated NOT
-   */
-  public void decrease(BigDecimal step)
-  {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+  public void dimm(IncreaseDecreaseType increaseDecrease, DeviceOptions opts) {
+    logger.trace("====== dimmer increase increaseDecrease {} opts {}", increaseDecrease, opts);
+    if (opts == null) {
+      logger.error("Brick DC options are missing");
+      return;
+    }
+    if (increaseDecrease == null) {
+      logger.error("Brick DC increaseDecrease may not be null!");
+      return;
+    }
+    Integer itemacceleration = Tools.getIntOpt(ConfigOptsMove.ACCELERATION.toString(), opts);
+    String drivemodestr = Tools.getStringOpt(ConfigOptsMove.DRIVEMODE.toString(), opts);
+    Short step = Tools.getShortOpt(ConfigOptsDimmable.STEP.toString(), opts);
+    if (step == null) {
+      logger.error("BrickDC dimmer option step is missing, items configuration has to be fixed!");
+    }
+    Short speed = null;
+    if (increaseDecrease.equals(IncreaseDecreaseType.INCREASE)) {
+      Short max = Tools.getShortOpt(ConfigOptsDimmable.MAX.toString(), opts);
+      if (max == null) {
+        logger.error("BrickDC dimmer option max is missing, items configuration has to be fixed!");
+        return;
+      } else {
+        logger.debug("Brick DC max {}", max);
+        Short newVelocity = (short) (this.targetvelocity + step);
+        logger.debug("Brick DC newVelocity {}", newVelocity);
+        if (newVelocity < max) {
+          speed = newVelocity;
+        } else if (this.velocity < max) {
+          speed = max;
+        } else {
+          logger.debug("max velocity already reached {}", max);
+        }
+      }
+    } else if (increaseDecrease.equals(IncreaseDecreaseType.DECREASE)) {
+      Short min = Tools.getShortOpt(ConfigOptsDimmable.MIN.toString(), opts);
+      logger.debug("Brick DC min {}", min);
+      if (min == null) {
+        logger.error("BrickDC dimmer option min is missing, items configuration has to be fixed!");
+        return;
+      } else {
+        Short newVelocity = (short) (this.targetvelocity - step);
+        if (newVelocity > min) {
+          speed = newVelocity;
+        } else if (this.velocity > min) {
+          speed = min;
+        } else {
+          logger.debug("min velocity already reached {}", min);
+        }
+      }
+    }
+    setSpeed(speed, itemacceleration, drivemodestr, this.pwmFrequency);
   }
 
   /**
@@ -1289,8 +1370,10 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     logger.trace("turnSwitch called");
     try {
       if (state == OnOffValue.OFF) {
+        setTargetvelocity((short) 0);
         tinkerforgeDevice.setVelocity((short) 0);
       } else if (state == OnOffValue.ON) {
+        setTargetvelocity(switchOnVelocity);
         tinkerforgeDevice.setVelocity(switchOnVelocity);
       } else {
         logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
@@ -1320,7 +1403,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   public void fetchSensorValue()
   {
     try {
-      handleVelocity(tinkerforgeDevice.getVelocity());
+      handleVelocity(tinkerforgeDevice.getVelocity(), false);
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -1388,7 +1471,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * 
    * @generated NOT
    */
-  private short driveModeFromString(String drivemodestr) {
+  private Short driveModeFromString(String drivemodestr) {
+    logger.debug("drivemodestr short is: {}", drivemodestr);
     Short drivemode = null;
     if (drivemodestr != null) {
       if (drivemodestr.equals(DCDriveMode.BRAKE.toString().toLowerCase())) {
@@ -1407,6 +1491,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       }
 
     }
+    logger.debug("drivemode short is: {}", drivemode);
     return drivemode;
   }
 
@@ -1436,6 +1521,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       if (xpwm != null) {
         tinkerforgeDevice.setPWMFrequency(xpwm);
       }
+      setTargetvelocity(xspeed);
       tinkerforgeDevice.setVelocity(xspeed);
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -1500,8 +1586,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       listener = new VelocityListener();
       tinkerforgeDevice.addCurrentVelocityListener(listener);
       tinkerforgeDevice.enable();
-      setSensorValue(Tools.calculate(tinkerforgeDevice.getVelocity()));
-      fetchSensorValue();
+      handleVelocity(tinkerforgeDevice.getVelocity(), false);
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -1528,19 +1613,33 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * 
    * @generated NOT
    */
-  private void handleVelocity(short velocity) {
+  private void handleVelocity(short velocity, boolean usethreshold) {
     DecimalValue newValue = Tools.calculate(velocity);
     logger.trace("{} got new value {}", LoggerConstants.TFMODELUPDATE, newValue);
-    if (newValue.compareTo(getSensorValue(), getThreshold()) != 0) {
+    if (usethreshold) {
+      if (newValue.compareTo(getSensorValue(), getThreshold()) != 0) {
+        logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+        setSensorValue(newValue);
+      } else {
+        logger.trace("{} omitting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
+      }
+    } else {
       logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
       setSensorValue(newValue);
-    } else {
-      logger.trace("{} omitting new value {}", LoggerConstants.TFMODELUPDATE, newValue);
     }
-    OnOffValue newSwitchState = newValue.onOffValue();
+    OnOffValue newSwitchState = newValue.onOffValue(0);
+    logger.trace("new switchstate {} new value {}", newSwitchState, newValue);
     if (newSwitchState != switchState) {
       setSwitchState(newSwitchState);
     }
+  }
+
+  /**
+   * 
+   * @generated NOT
+   */
+  private void handleVelocity(short velocity) {
+    handleVelocity(velocity, true);
   }
 
   /**
@@ -1660,6 +1759,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return getThreshold();
       case ModelPackage.MBRICK_DC__VELOCITY:
         return getVelocity();
+      case ModelPackage.MBRICK_DC__TARGETVELOCITY:
+        return getTargetvelocity();
       case ModelPackage.MBRICK_DC__CURRENT_VELOCITY:
         return getCurrentVelocity();
       case ModelPackage.MBRICK_DC__ACCELERATION:
@@ -1743,6 +1844,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return;
       case ModelPackage.MBRICK_DC__VELOCITY:
         setVelocity((Short)newValue);
+        return;
+      case ModelPackage.MBRICK_DC__TARGETVELOCITY:
+        setTargetvelocity((Short)newValue);
         return;
       case ModelPackage.MBRICK_DC__CURRENT_VELOCITY:
         setCurrentVelocity((Short)newValue);
@@ -1833,6 +1937,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC__VELOCITY:
         setVelocity(VELOCITY_EDEFAULT);
         return;
+      case ModelPackage.MBRICK_DC__TARGETVELOCITY:
+        setTargetvelocity(TARGETVELOCITY_EDEFAULT);
+        return;
       case ModelPackage.MBRICK_DC__CURRENT_VELOCITY:
         setCurrentVelocity(CURRENT_VELOCITY_EDEFAULT);
         return;
@@ -1904,6 +2011,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
       case ModelPackage.MBRICK_DC__VELOCITY:
         return velocity != VELOCITY_EDEFAULT;
+      case ModelPackage.MBRICK_DC__TARGETVELOCITY:
+        return targetvelocity != TARGETVELOCITY_EDEFAULT;
       case ModelPackage.MBRICK_DC__CURRENT_VELOCITY:
         return currentVelocity != CURRENT_VELOCITY_EDEFAULT;
       case ModelPackage.MBRICK_DC__ACCELERATION:
@@ -2162,8 +2271,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     {
       switch (baseOperationID)
       {
-        case ModelPackage.DIMMABLE_ACTOR___INCREASE__BIGDECIMAL: return ModelPackage.MBRICK_DC___INCREASE__BIGDECIMAL;
-        case ModelPackage.DIMMABLE_ACTOR___DECREASE__BIGDECIMAL: return ModelPackage.MBRICK_DC___DECREASE__BIGDECIMAL;
+        case ModelPackage.DIMMABLE_ACTOR___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS: return ModelPackage.MBRICK_DC___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS;
         default: return -1;
       }
     }
@@ -2171,8 +2279,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     {
       switch (baseOperationID)
       {
-        case ModelPackage.SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL: return ModelPackage.MBRICK_DC___SET_VALUE__BIGDECIMAL;
-        case ModelPackage.SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE: return ModelPackage.MBRICK_DC___SET_VALUE__PERCENTTYPE;
+        case ModelPackage.SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS: return ModelPackage.MBRICK_DC___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS;
+        case ModelPackage.SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS: return ModelPackage.MBRICK_DC___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS;
         default: return -1;
       }
     }
@@ -2199,17 +2307,14 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC___INIT:
         init();
         return null;
-      case ModelPackage.MBRICK_DC___SET_VALUE__BIGDECIMAL:
-        setValue((BigDecimal)arguments.get(0));
+      case ModelPackage.MBRICK_DC___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS:
+        setValue((BigDecimal)arguments.get(0), (DeviceOptions)arguments.get(1));
         return null;
-      case ModelPackage.MBRICK_DC___SET_VALUE__PERCENTTYPE:
-        setValue((PercentType)arguments.get(0));
+      case ModelPackage.MBRICK_DC___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS:
+        setValue((PercentType)arguments.get(0), (DeviceOptions)arguments.get(1));
         return null;
-      case ModelPackage.MBRICK_DC___INCREASE__BIGDECIMAL:
-        increase((BigDecimal)arguments.get(0));
-        return null;
-      case ModelPackage.MBRICK_DC___DECREASE__BIGDECIMAL:
-        decrease((BigDecimal)arguments.get(0));
+      case ModelPackage.MBRICK_DC___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS:
+        dimm((IncreaseDecreaseType)arguments.get(0), (DeviceOptions)arguments.get(1));
         return null;
       case ModelPackage.MBRICK_DC___MOVE__UPDOWNTYPE_DEVICEOPTIONS:
         move((UpDownType)arguments.get(0), (DeviceOptions)arguments.get(1));
@@ -2288,6 +2393,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     result.append(threshold);
     result.append(", velocity: ");
     result.append(velocity);
+    result.append(", targetvelocity: ");
+    result.append(targetvelocity);
     result.append(", currentVelocity: ");
     result.append(currentVelocity);
     result.append(", acceleration: ");

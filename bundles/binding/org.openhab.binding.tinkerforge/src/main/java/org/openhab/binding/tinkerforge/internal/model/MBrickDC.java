@@ -26,6 +26,7 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getThreshold <em>Threshold</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getVelocity <em>Velocity</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getTargetvelocity <em>Targetvelocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getCurrentVelocity <em>Current Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getAcceleration <em>Acceleration</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getPwmFrequency <em>Pwm Frequency</em>}</li>
@@ -110,6 +111,33 @@ public interface MBrickDC extends MSensor<DecimalValue>, MInSwitchActor, MDevice
   void setVelocity(short value);
 
   /**
+   * Returns the value of the '<em><b>Targetvelocity</b></em>' attribute.
+   * The default value is <code>"0"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Targetvelocity</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Targetvelocity</em>' attribute.
+   * @see #setTargetvelocity(short)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickDC_Targetvelocity()
+   * @model default="0" unique="false"
+   * @generated
+   */
+  short getTargetvelocity();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getTargetvelocity <em>Targetvelocity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Targetvelocity</em>' attribute.
+   * @see #getTargetvelocity()
+   * @generated
+   */
+  void setTargetvelocity(short value);
+
+  /**
    * Returns the value of the '<em><b>Current Velocity</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
@@ -191,7 +219,7 @@ public interface MBrickDC extends MSensor<DecimalValue>, MInSwitchActor, MDevice
 
   /**
    * Returns the value of the '<em><b>Drive Mode</b></em>' attribute.
-   * The default value is <code>"Break"</code>.
+   * The default value is <code>"BRAKE"</code>.
    * The literals are from the enumeration {@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode}.
    * <!-- begin-user-doc -->
    * <p>
@@ -203,7 +231,7 @@ public interface MBrickDC extends MSensor<DecimalValue>, MInSwitchActor, MDevice
    * @see org.openhab.binding.tinkerforge.internal.model.DCDriveMode
    * @see #setDriveMode(DCDriveMode)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickDC_DriveMode()
-   * @model default="Break" unique="false"
+   * @model default="BRAKE" unique="false"
    * @generated
    */
   DCDriveMode getDriveMode();
