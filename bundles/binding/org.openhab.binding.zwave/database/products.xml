@@ -1294,6 +1294,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>TZ06</Model>
+			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW</Label>
+			<ConfigFile>tkb/tz06.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0102</Type>
 				<Id>1020</Id>
 			</Reference>
