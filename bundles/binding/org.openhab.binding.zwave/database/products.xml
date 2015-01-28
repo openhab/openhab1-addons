@@ -1057,6 +1057,10 @@
 		<Product>
 			<Reference>
 				<Type>0501</Type>
+				<Id>0102</Id>
+			</Reference>
+			<Reference>
+				<Type>0501</Type>
 				<Id>1002</Id>
 			</Reference>
 			<Reference>
