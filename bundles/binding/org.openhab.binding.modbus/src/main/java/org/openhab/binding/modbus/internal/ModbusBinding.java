@@ -260,13 +260,14 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 				if (modbusSlave == null) {
 					if (matcher.group(1).equals(TCP_PREFIX)) {
 						modbusSlave = new ModbusTcpSlave(slave);
-                                        } else if (matcher.group(1).equals(UDP_PREFIX)) {
+					} else if (matcher.group(1).equals(UDP_PREFIX)) {
 						modbusSlave = new ModbusUdpSlave(slave);
 					} else if (matcher.group(1).equals(SERIAL_PREFIX)) {
 						modbusSlave = new ModbusSerialSlave(slave);
 					} else {
 						throw new ConfigurationException(slave, "the given slave type '" + slave + "' is unknown");
 					}
+					logger.debug("modbusSlave '" + slave + "' instanciated");
 					modbusSlaves.put(slave,modbusSlave);
 				}
 
@@ -276,11 +277,15 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 				if ("connection".equals(configKey)) {
 					String[] chunks = value.split(":");
 					if (modbusSlave instanceof ModbusIPSlave) {
+						// expecting: 
+						//		<devicePort>:<port>
 						((ModbusIPSlave) modbusSlave).setHost(chunks[0]);
 						if (chunks.length == 2) {
 							((ModbusIPSlave) modbusSlave).setPort(Integer.valueOf(chunks[1]));
 						}
 					} else if (modbusSlave instanceof ModbusSerialSlave) {
+						// expecting: 
+						//		<devicePort>[:<baudRate>:<dataBits>:<parity>:<stopBits>:<encoding>]
 						((ModbusSerialSlave) modbusSlave).setPort(chunks[0]);
 						if (chunks.length >= 2) {
 							((ModbusSerialSlave) modbusSlave).setBaud(Integer.valueOf(chunks[1]));
@@ -291,8 +296,11 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 						if (chunks.length >= 4) {
 							((ModbusSerialSlave) modbusSlave).setParity(chunks[3]);
 						}
-						if (chunks.length == 5) {
+						if (chunks.length >= 5) {
 							((ModbusSerialSlave) modbusSlave).setStopbits(Integer.valueOf(chunks[4]));
+						}
+						if (chunks.length == 6) {
+							((ModbusSerialSlave) modbusSlave).setEncoding(chunks[5]);
 						}
 					}
 				} else if ("start".equals(configKey)) {
