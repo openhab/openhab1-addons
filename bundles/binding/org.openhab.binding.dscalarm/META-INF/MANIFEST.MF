@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-Name: openHAB DSC Alarm Binding
 Bundle-SymbolicName: org.openhab.binding.dscalarm
-Bundle-Version: 1.6.2
+Bundle-Version: 1.6.3.qualifier
 Bundle-Activator: org.openhab.binding.dscalarm.internal.DSCAlarmActivator
 Bundle-Vendor: openHAB.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
