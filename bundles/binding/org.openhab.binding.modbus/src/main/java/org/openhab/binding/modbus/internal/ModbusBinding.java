@@ -319,6 +319,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 				}
 			}
 
+			logger.debug("config looked good, proceeding with slave-connections");
 			// connect instances to modbus slaves
 			for (ModbusSlave slave : modbusSlaves.values()) {
 				slave.connect();
