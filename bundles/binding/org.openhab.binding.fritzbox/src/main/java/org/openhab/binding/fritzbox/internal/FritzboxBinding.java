@@ -78,11 +78,15 @@ public class FritzboxBinding extends
 				"ctlmgr_ctl w dect settings/enabled");
 		commandMap.put(FritzboxBindingProvider.TYPE_WLAN,
 				"ctlmgr_ctl w wlan settings/ap_enabled");
+		commandMap.put(FritzboxBindingProvider.TYPE_GUEST_WLAN,
+				"ctlmgr_ctl w wlan settings/guest_ap_enabled");
 
 		queryMap.put(FritzboxBindingProvider.TYPE_DECT,
 				"ctlmgr_ctl r dect settings/enabled");
 		queryMap.put(FritzboxBindingProvider.TYPE_WLAN,
 				"ctlmgr_ctl r wlan settings/ap_enabled");
+		queryMap.put(FritzboxBindingProvider.TYPE_GUEST_WLAN,
+				"ctlmgr_ctl r wlan settings/guest_ap_enabled");
 	}
 
 	@Override
@@ -248,6 +252,8 @@ public class FritzboxBinding extends
 					"ctlmgr_ctl w dect settings/enabled");
 			commandMap.put(FritzboxBindingProvider.TYPE_WLAN,
 					"ctlmgr_ctl w wlan settings/ap_enabled");
+			commandMap.put(FritzboxBindingProvider.TYPE_GUEST_WLAN,
+					"ctlmgr_ctl w wlan settings/guest_ap_enabled");
 		}
 
 		public TelnetCommandThread(String type, Command command) {
