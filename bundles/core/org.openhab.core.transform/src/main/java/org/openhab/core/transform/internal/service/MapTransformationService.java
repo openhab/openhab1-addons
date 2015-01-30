@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,19 +8,13 @@
  */
 package org.openhab.core.transform.internal.service;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Properties;
-import java.util.Locale;
-
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.openhab.config.core.ConfigDispatcher;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationService;
-import org.openhab.core.transform.internal.TransformationActivator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +24,10 @@ import org.slf4j.LoggerFactory;
  * </p>
  * 
  * @author Kai Kreuzer
+ * @author Gaël L'hopital
  * @since 0.8.0
  */
-public class MapTransformationService implements TransformationService {
+public class MapTransformationService extends LocalizableTransformationService implements TransformationService {
 
 	static final Logger logger = LoggerFactory.getLogger(MapTransformationService.class);
 
@@ -58,22 +53,7 @@ public class MapTransformationService implements TransformationService {
 			throw new TransformationException("the given parameters 'filename' and 'source' must not be null");
 		}
 		
-		String basename = FilenameUtils.getBaseName(filename);
-		String extension = FilenameUtils.getExtension(filename);
-		String locale = Locale.getDefault().getLanguage();
-		String basePath = ConfigDispatcher.getConfigFolder() + File.separator + TransformationActivator.TRANSFORM_FOLDER_NAME + File.separator;
-		
-		String path = basePath + filename;
-		// eg : /home/sysadmin/projects/openhab/distribution/openhabhome/configurations/transform/test.map
-		String alternatePath = basePath + basename + "_" + locale + "." + extension;
-		// eg : /home/sysadmin/projects/openhab/distribution/openhabhome/configurations/transform/test-en.map
-		
-		File f = new File(alternatePath);
-		if (f.exists()) {
-			path = alternatePath;						
-		} 
-		logger.debug("Transformation file found '{}'",path);
-					
+		String path = getLocalizedProposedFilename(filename);					
 		Reader reader = null;
 		try {						
 			Properties properties = new Properties();

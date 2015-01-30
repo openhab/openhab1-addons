@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,6 +35,7 @@ import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
+import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -69,7 +70,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.0
  *
  */
-public class PersistenceManager extends AbstractEventSubscriber implements ModelRepositoryChangeListener, ItemRegistryChangeListener, StateChangeListener {
+public class PersistenceManager extends AbstractEventSubscriber implements ModelRepositoryChangeListener, ItemRegistryChangeListener, StateChangeListener, PersistentStateRestorer {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PersistenceManager.class);
 
@@ -180,13 +181,7 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 		if(model!=null) {
 			persistenceConfigurations.put(modelName, model.getConfigs());
 			defaultStrategies.put(modelName, model.getDefaults());
-			for(PersistenceConfiguration config : model.getConfigs()) {
-				if(hasStrategy(modelName, config, GlobalStrategies.RESTORE)) {
-					for(Item item : getAllItems(config)) {
-						initialize(item);
-					}
-				}
-			}
+			initializeItems(model, modelName);
 			createTimers(modelName);
 		}
 	}
@@ -200,6 +195,24 @@ public class PersistenceManager extends AbstractEventSubscriber implements Model
 		persistenceConfigurations.remove(modelName);
 		defaultStrategies.remove(modelName);
 		removeTimers(modelName);
+	}
+
+	@Override
+	public void initializeItems(String modelName) {
+		PersistenceModel model = (PersistenceModel) modelRepository.getModel(modelName + ".persist");
+		if(model!=null) {
+			initializeItems(model, modelName);
+		}		
+	}
+	
+	private void initializeItems(PersistenceModel model, String modelName) {
+		for(PersistenceConfiguration config : model.getConfigs()) {
+			if(hasStrategy(modelName, config, GlobalStrategies.RESTORE)) {
+				for(Item item : getAllItems(config)) {
+					initialize(item);
+				}
+			}
+		}
 	}
 
 	public void stateChanged(Item item, State oldState, State newState) {

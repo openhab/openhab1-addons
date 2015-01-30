@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -123,49 +123,58 @@ public class ExecBinding extends AbstractActiveBinding<ExecBindingProvider> impl
 
 					String response = executeCommandAndWaitResponse(commandLine);
 					
-
 					if(response==null) {
 						logger.error("No response received from command '{}'", commandLine);
-					} else {
-						String transformedResponse;
-						
-						try {
-							String[] parts = splitTransformationConfig(transformation);
-							String transformationType = parts[0];
-							String transformationFunction = parts[1];
-							
-							TransformationService transformationService = 
-								TransformationHelper.getTransformationService(ExecActivator.getContext(), transformationType);
-							if (transformationService != null) {
-								transformedResponse = transformationService.transform(transformationFunction, response);
-							} else {
-								transformedResponse = response;
-								logger.warn("couldn't transform response because transformationService of type '{}' is unavailable", transformationType);
-							}
-						}
-						catch (TransformationException te) {
-							logger.error("transformation throws exception [transformation="
-									+ transformation + ", response=" + response + "]", te);
-							
-							// in case of an error we return the response without any
-							// transformation
-							transformedResponse = response;
-						}
-						
-						logger.debug("transformed response is '{}'", transformedResponse);
-						
-						Class<? extends Item> itemType = provider.getItemType(itemName);
-						State state = createState(itemType, transformedResponse);
-						
-						if (state != null) {
-							eventPublisher.postUpdate(itemName, state);
-						}
+						lastUpdateMap.put(itemName, System.currentTimeMillis());
+						continue;
 					}
-					
+
+					String transformedResponse = response;
+					// If transformation is needed
+					if (transformation.length() > 0)
+						transformedResponse = transformResponse(response, transformation);
+
+					Class<? extends Item> itemType = provider.getItemType(itemName);
+					State state = createState(itemType, transformedResponse);
+
+					if (state != null) {
+						eventPublisher.postUpdate(itemName, state);
+					}
+
 					lastUpdateMap.put(itemName, System.currentTimeMillis());
 				}					
 			}
 		}
+	}
+
+	protected String transformResponse(String response, String transformation) {
+		String transformedResponse;
+
+		try {
+			String[] parts = splitTransformationConfig(transformation);
+			String transformationType = parts[0];
+			String transformationFunction = parts[1];
+
+			TransformationService transformationService =
+				TransformationHelper.getTransformationService(ExecActivator.getContext(), transformationType);
+			if (transformationService != null) {
+				transformedResponse = transformationService.transform(transformationFunction, response);
+			} else {
+				transformedResponse = response;
+				logger.warn("couldn't transform response because transformationService of type '{}' is unavailable", transformationType);
+			}
+		}
+		catch (TransformationException te) {
+			logger.error("transformation throws exception [transformation="
+					+ transformation + ", response=" + response + "]", te);
+
+			// in case of an error we return the response without any
+			// transformation
+			transformedResponse = response;
+		}
+
+		logger.debug("transformed response is '{}'", transformedResponse);
+		return transformedResponse;
 	}
 	
 	/**

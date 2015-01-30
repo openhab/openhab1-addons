@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -107,10 +107,21 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
 	 * {@inheritDoc}
 	 */
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		String port = bindingConfig;
-		SerialDevice serialDevice = serialDevices.get(port);
+		String portConfig[] = bindingConfig.split("@");
+        
+        String port = portConfig[0];
+        int baudRate = 0;
+        
+        if(portConfig.length > 1)
+                baudRate = Integer.parseInt(portConfig[1]);
+        
+        SerialDevice serialDevice = serialDevices.get(port);
 		if (serialDevice == null) {
-			serialDevice = new SerialDevice(port);
+			if(baudRate > 0)
+                serialDevice = new SerialDevice(port, baudRate);
+			else
+                serialDevice = new SerialDevice(port);
+       
 			serialDevice.setEventPublisher(eventPublisher);
 			try {
 				serialDevice.initialize();
