@@ -55,8 +55,9 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 	private static final String TCP_PREFIX = "tcp";
 	private static final String SERIAL_PREFIX = "serial";
 
+	private static final String VALID_COFIG_KEYS = "connection|id|start|length|type|valuetype";
 	private static final Pattern EXTRACT_MODBUS_CONFIG_PATTERN =
-		Pattern.compile("^("+TCP_PREFIX+"|"+UDP_PREFIX+"|"+SERIAL_PREFIX+"|)\\.(.*?)\\.(connection|id|pollInterval|start|length|type|valuetype)$");
+		Pattern.compile("^("+TCP_PREFIX+"|"+UDP_PREFIX+"|"+SERIAL_PREFIX+"|)\\.(.*?)\\.(" + VALID_COFIG_KEYS + ")$");
 
 	/** Stores instances of all the slaves defined in cfg file */
 	private static Map<String, ModbusSlave> modbusSlaves = new ConcurrentHashMap<String, ModbusSlave>();
@@ -246,7 +247,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 						ModbusSlave.setWriteMultipleRegisters(Boolean.valueOf(config.get(key).toString()));
 					} else {
 						logger.debug("given modbus-slave-config-key '" + key
-							+ "' does not follow the expected pattern 'pollInterval' or '<slaveId>.<connection|id|start|length|type>'");
+							+ "' does not follow the expected pattern or 'serial.<slaveId>.<" + VALID_COFIG_KEYS + ">'");
 					}
 					continue;
 				}
