@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,7 +19,6 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
 /**
  * Base class for all Ecobee API requests.
  * 
- * @author Andreas Brenk
  * @author John Cocula
  * @since 1.7.0
  */
@@ -29,6 +28,8 @@ public abstract class AbstractRequest extends AbstractMessage implements
 	protected static final String HTTP_GET = "GET";
 
 	protected static final String HTTP_POST = "POST";
+
+	protected static final String API_BASE_URL = "https://api.ecobee.com/";
 
 	protected static final Properties HTTP_HEADERS;
 
