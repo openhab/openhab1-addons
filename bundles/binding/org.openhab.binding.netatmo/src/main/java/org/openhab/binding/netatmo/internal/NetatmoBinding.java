@@ -172,7 +172,6 @@ public class NetatmoBinding extends
     }
 
     private DeviceMeasureValueMap processMeasurements(OAuthCredentials oauthCredentials) {
-        //Map<String, Map<String, BigDecimal>> deviceMeasureValueMap = new HashMap<String, Map<String,BigDecimal>>();
     	DeviceMeasureValueMap deviceMeasureValueMap = new DeviceMeasureValueMap();
     	
         for (final MeasurementRequest request : createMeasurementRequests()) {
