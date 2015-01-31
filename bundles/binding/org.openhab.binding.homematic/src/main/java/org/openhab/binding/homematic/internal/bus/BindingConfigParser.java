@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,6 +9,7 @@
 package org.openhab.binding.homematic.internal.bus;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.openhab.binding.homematic.internal.config.BindingAction;
 import org.openhab.binding.homematic.internal.config.binding.ActionConfig;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
@@ -87,9 +88,9 @@ public class BindingConfigParser {
 
 		if (helper.isValidDatapoint()) {
 			return new DatapointConfig(helper.address, helper.channel, helper.parameter, converter, bindingAction,
-					helper.isForceUpdate());
+					helper.isForceUpdate(), NumberUtils.toDouble(helper.delay));
 		} else if (helper.isValidVariable()) {
-			return new VariableConfig(helper.variable, converter, bindingAction, helper.isForceUpdate());
+			return new VariableConfig(helper.variable, converter, bindingAction, helper.isForceUpdate(), NumberUtils.toDouble(helper.delay));
 		} else if (helper.isValidProgram()) {
 			if (!acceptsOnOffType(item)) {
 				throw new BindingConfigParseException(
@@ -166,6 +167,7 @@ public class BindingConfigParser {
 		public String program;
 		public String action;
 		public String forceUpdate;
+		public String delay;
 
 		protected boolean isValidDatapoint() {
 			return StringUtils.isNotBlank(address) && StringUtils.isNotBlank(channel)

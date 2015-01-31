@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@ package org.openhab.binding.netatmo.internal;
 import org.openhab.binding.netatmo.NetatmoBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -30,6 +31,11 @@ import org.slf4j.LoggerFactory;
  * <li><code>{ netatmo="00:00:00:00:00:00#Co2" }</code></li>
  * <li><code>{ netatmo="00:00:00:00:00:00#Pressure" }</code></li>
  * <li><code>{ netatmo="00:00:00:00:00:00#Noise" }</code></li>
+ * <li><code>{ netatmo="00:00:00:00:00:00#WifiStatus" }</code></li>
+ * <li><code>{ netatmo="00:00:00:00:00:00#Altitude" }</code></li>
+ * <li><code>{ netatmo="00:00:00:00:00:00#Latitude" }</code></li>
+ * <li><code>{ netatmo="00:00:00:00:00:00#Longitude" }</code></li>
+ * <li><code>{ netatmo="00:00:00:00:00:00#TimeStamp" }</code></li>
  * </ul>
  * </li> </ul>
  * <p>
@@ -43,11 +49,15 @@ import org.slf4j.LoggerFactory;
  * <li><code>{ netatmo="00:00:00:00:00:00#00:00:00:00:00:00#Humidity" }</code></li>
  * <li><code>{ netatmo="00:00:00:00:00:00#00:00:00:00:00:00#Co2" }</code></li>
  * <li><code>{ netatmo="00:00:00:00:00:00#00:00:00:00:00:00#Rain" }</code></li>
+ * <li><code>{ netatmo="00:00:00:00:00:00#00:00:00:00:00:00#RfStatus" }</code></li>
+ * <li><code>{ netatmo="00:00:00:00:00:00#00:00:00:00:00:00#BatteryVp" }</code></li>
+ * <li><code>{ netatmo="00:00:00:00:00:00#00:00:00:00:00:00#TimeStamp" }</code></li>
  * </ul>
  * </li> </ul>
  * 
  * @author Andreas Brenk
  * @author Thomas.Eichstaedt-Engelen
+ * @author Gaël L'hopital
  * @since 1.4.0
  */
 public class NetatmoGenericBindingProvider extends
@@ -69,10 +79,10 @@ public class NetatmoGenericBindingProvider extends
 	 */
 	@Override
 	public void validateItemType(final Item item, final String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof NumberItem)) {
+		if (!(item instanceof NumberItem || item instanceof DateTimeItem)) {
 			throw new BindingConfigParseException(
 				"item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + 
-				"', only NumberItems are allowed - please check your *.items configuration");
+				"', only NumberItems and DateTimeItems are allowed - please check your *.items configuration");
 		}
 	}
 	

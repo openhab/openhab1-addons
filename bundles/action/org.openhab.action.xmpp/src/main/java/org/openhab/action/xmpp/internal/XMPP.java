@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -133,7 +133,7 @@ public class XMPP {
 					is = url.openStream();
 					OutgoingFileTransfer.setResponseTimeout(10000);
 					transfer.sendStream(is, url.getFile(), is.available(), message);
-					logger.debug("Sent message '{}' with attachment '{}' to '{}'.", new String[] { message, attachmentUrl, to });
+					logger.debug("Sent message '{}' with attachment '{}' to '{}'.", (Object[]) new String[] { message, attachmentUrl, to });
 					success = true;
 				} catch (IOException e) {
 					logger.error("Could not open url '{}' for sending it via XMPP", attachmentUrl, e);

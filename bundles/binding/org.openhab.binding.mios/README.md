@@ -147,6 +147,17 @@ The _serviceAliases_ are built into the MiOS Binding and may be expanded over ti
 |`urn:micasaverde-com:serviceId:DoorLock1`|`DoorLock1`,`DoorLock`|
 |`urn:micasaverde-com:serviceId:AlarmPartition2`|`AlarmPartition2`,`Alarm`|
 |`urn:micasaverde-com:serviceId:Camera1`|`Camera1`,`Camera`|
+|`urn:micasaverde-com:serviceId:LightSensor1`|`LightSensor1`,`LightSensor`|
+|`urn:micasaverde-com:serviceId:HomeAutomationGateway1`|`HomeAutomationGateway1`,`HAGateway`|
+|`urn:micasaverde-com:serviceId:InsteonNetwork1`|`InsteonNetwork1`,`InsteonNetwork`|
+|`urn:micasaverde-com:serviceId:InsteonDevice1`|`InsteonDevice1`,`InsteonDevice`|
+|`urn:micasaverde-com:serviceId:USBUIRT1`|`USBUIRT1`,`USBUIRT`|
+|`urn:micasaverde-com:serviceId:PanTiltZoom1`|`PanTiltZoom1`,`PTZ`|
+|`urn:micasaverde-com:serviceId:WindowCovering1`|`WindowCovering1`,`WindowCovering`|
+|`urn:micasaverde-com:serviceId:IrTransmitter1`|`IrTransmitter1`,`IrTransmitter`|
+|`urn:micasaverde-com:serviceId:IrDevice1`|`IrDevice1`,`IrDevice`|
+|`urn:micasaverde-com:serviceId:GenericIO`|`GenericIO`|
+
 
 
 

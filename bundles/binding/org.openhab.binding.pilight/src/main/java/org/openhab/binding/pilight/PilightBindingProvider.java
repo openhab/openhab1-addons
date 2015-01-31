@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,6 +7,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.pilight;
+
+import java.util.List;
 
 import org.openhab.binding.pilight.internal.PilightBindingConfig;
 import org.openhab.core.binding.BindingProvider;
@@ -29,12 +31,13 @@ public interface PilightBindingProvider extends BindingProvider {
 	public PilightBindingConfig getBindingConfig(String itemName);
 	
 	/**
-	 * Get binding configuration based on pilight references 
+	 * Get binding configurations based on pilight references. One device in pilight 
+	 * can be bound to multiple items in openHAB. 
 	 * 
 	 * @param instance Name of the pilight instance 
 	 * @param location Location of the device in pilight
 	 * @param device Name of the device in pilight
-	 * @return The binding config for the pilight references or null if not found
+	 * @return The binding configs for the pilight references or empty list if not found
 	 */
-	public PilightBindingConfig getBindingConfig(String instance, String location, String device);
+	public List<PilightBindingConfig> getBindingConfigs(String instance, String location, String device);
 }

@@ -33,7 +33,13 @@ class UrtsiDevice {
 	static val int parity = SerialPort::PARITY_NONE
 
 	// Serial communication fields
+	@Property
 	String port
+	
+	@Property
+	int interval = 100
+	
+	long lastCommandTime = 0
 
 	CommPortIdentifier portId
 	SerialPort serialPort
@@ -42,8 +48,7 @@ class UrtsiDevice {
 
 	DedicatedThreadExecutor threadExecutor = new DedicatedThreadExecutor
 
-	public new(String port) {
-		this.port = port
+	public new() {
 	}
 	
 	/**
@@ -116,9 +121,13 @@ class UrtsiDevice {
 	 * @return Returns true, if the message has been transmitted successfully, otherwise false.
 	 */
 	def boolean writeString(String msg) {
-		logger.debug("Writing '{}' to serial port {}", newArrayList( msg, port ))
+		logger.debug("Writing '{}' to serial port {}", msg, port )
 		val future = 
 			threadExecutor.execute( [
+				val earliestNextExecution = lastCommandTime + interval
+				while ( earliestNextExecution > System::currentTimeMillis) {
+					Thread::sleep(100)
+				}
 				try {
 					val List<Boolean> listenerResult = newArrayList
 					serialPort.addEventListener[event | 
@@ -156,7 +165,8 @@ class UrtsiDevice {
 					serialPort.notifyOnDataAvailable(true)
 					outputStream.write(msg.bytes)
 					outputStream.flush()
-					val timeout = System::currentTimeMillis + 1000
+					lastCommandTime = System::currentTimeMillis
+					val timeout = lastCommandTime + 1000
 					while (listenerResult.empty && System::currentTimeMillis < timeout) {
 						// Waiting for response
 						Thread::sleep(100)
