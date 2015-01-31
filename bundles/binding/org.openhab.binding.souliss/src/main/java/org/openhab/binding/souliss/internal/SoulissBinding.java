@@ -103,10 +103,6 @@ public class SoulissBinding<E> extends
 				LOGGER.info("PARAMETER: " + sName + " = "
 						+ (String) config.get(sName));
 				switch (sName) {
-				case "IP_WAN":
-					SoulissNetworkParameter.IPAddress = (String) config
-							.get(sName);
-					break;
 				case "IP_LAN":
 					SoulissNetworkParameter.IPAddressOnLAN = (String) config
 							.get(sName);
@@ -141,10 +137,6 @@ public class SoulissBinding<E> extends
 					break;
 				case "NODE_INDEX":
 					SoulissNetworkParameter.NodeIndex = Integer
-							.parseInt((String) config.get(sName));
-					break;
-				case "NODE_NUMBERS":
-					SoulissNetworkParameter.nodes = Integer
 							.parseInt((String) config.get(sName));
 					break;
 				case "SERVERPORT":
@@ -308,15 +300,11 @@ public class SoulissBinding<E> extends
 						eventPublisher).start();
 				// Start the thread that subscribe data from the Souliss network
 				new RefreshSUBSCRIPTIONThread(Q.getSocket(),
-						SoulissNetworkParameter.IPAddress,
 						SoulissNetworkParameter.IPAddressOnLAN,
-						SoulissNetworkParameter.nodes,
 						SoulissNetworkParameter.REFRESH_SUBSCRIPTION_TIME)
 						.start();
 				new RefreshHEALTYThread(Q.getSocket(),
-						SoulissNetworkParameter.IPAddress,
 						SoulissNetworkParameter.IPAddressOnLAN,
-						SoulissNetworkParameter.nodes,
 						SoulissNetworkParameter.REFRESH_HEALTY_TIME).start();
 
 			} catch (IOException e) {

@@ -51,7 +51,7 @@ public class RefreshDBSTRUCTThread extends Thread {
 		while (true) {
 			try {
 				LOGGER.info("sendDBStructFrame");
-				SoulissCommGate.sendDBStructFrame(socket, SoulissNodeIPAddress,
+				SoulissCommGate.sendDBStructFrame(socket,
 						soulissNodeIPAddressOnLAN);
 				Thread.sleep(REFRESH_TIME);
 			} catch (InterruptedException e) {

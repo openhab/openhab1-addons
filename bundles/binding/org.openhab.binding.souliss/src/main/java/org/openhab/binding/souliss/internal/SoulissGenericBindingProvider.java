@@ -74,12 +74,12 @@ public class SoulissGenericBindingProvider extends
 		SoulissGenericTypical soulitTypicalNew = TypicalFactory.getClass(
 				StateTraslator.stringToSOULISSTypicalCode(sTypical),
 				SoulissNetworkParameter.datagramsocket,
-				SoulissNetworkParameter.IPAddress,
 				SoulissNetworkParameter.IPAddressOnLAN, iNodeID, iSlot, sNote,
 				iBit);
 		if (soulitTypicalNew != null) {
 			SoulissTypicalsRecipients.addTypical(item.getName(),
 					soulitTypicalNew);
+			SoulissNetworkParameter.nodes= SoulissTypicalsRecipients.getNodeNumbers();
 		} else {
 			LOGGER.debug("Typical Unknow");
 		}
@@ -89,5 +89,5 @@ public class SoulissGenericBindingProvider extends
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
 	}
-
+	
 }

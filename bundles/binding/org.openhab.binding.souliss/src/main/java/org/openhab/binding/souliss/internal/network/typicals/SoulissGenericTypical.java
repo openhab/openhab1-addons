@@ -157,7 +157,6 @@ public class SoulissGenericTypical {
 		LOGGER.debug("Typ: " + getType() + ", Name: " + getName()
 				+ " - CommandMulticast: " + command);
 		SoulissCommGate.sendMULTICASTFORCEFrame(datagramSocket,
-				SoulissNetworkParameter.IPAddress,
 				SoulissNetworkParameter.IPAddressOnLAN, getType(), command);
 	}
 
@@ -170,7 +169,6 @@ public class SoulissGenericTypical {
 		LOGGER.debug("Typ: " + getType() + ", Name: " + getName()
 				+ " - sendDBStructFrame ");
 		SoulissCommGate.sendDBStructFrame(datagramSocket,
-				SoulissNetworkParameter.IPAddress,
 				SoulissNetworkParameter.IPAddressOnLAN);
 	}
 
@@ -184,7 +182,6 @@ public class SoulissGenericTypical {
 	public void ping(DatagramSocket datagramSocket, short putIn_1, short punIn_2) {
 		LOGGER.debug("Typ: " + getType() + ", Name: " + getName() + " - ping");
 		SoulissCommGate.sendPing(datagramSocket,
-				SoulissNetworkParameter.IPAddress,
 				SoulissNetworkParameter.IPAddressOnLAN, putIn_1, punIn_2);
 	}
 

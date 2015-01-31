@@ -24,49 +24,48 @@ public class TypicalFactory {
 			.getLogger(TypicalFactory.class);
 
 	public static SoulissGenericTypical getClass(short soulissType,
-			DatagramSocket _datagramsocket, String sSoulissNodeIPAddress,
-			String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot,
-			String sOHType, byte iBit) {
+			DatagramSocket _datagramsocket, String sSoulissNodeIPAddressOnLAN,
+			int iIDNodo, int iSlot, String sOHType, byte iBit) {
 
 		SoulissGenericTypical T = null;
 
 		switch (soulissType) {
 		case Constants.Souliss_T11:
-			T = new SoulissT11(_datagramsocket, sSoulissNodeIPAddress,
-					sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+			T = new SoulissT11(_datagramsocket, sSoulissNodeIPAddressOnLAN,
+					iIDNodo, iSlot, sOHType);
 			break;
 		case Constants.Souliss_T12:
-			T = new SoulissT12(_datagramsocket, sSoulissNodeIPAddress,
-					sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+			T = new SoulissT12(_datagramsocket, sSoulissNodeIPAddressOnLAN,
+					iIDNodo, iSlot, sOHType);
 			break;
 		case Constants.Souliss_T13:
-			T = new SoulissT13(sSoulissNodeIPAddress,
-					sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+			T = new SoulissT13(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot,
+					sOHType);
 			break;
 		case Constants.Souliss_T14:
 			break;
 		case Constants.Souliss_T1n_RGB:
 			break;
 		case Constants.Souliss_T16:
-			T = new SoulissT16(_datagramsocket, sSoulissNodeIPAddress,
-					sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+			T = new SoulissT16(_datagramsocket, sSoulissNodeIPAddressOnLAN,
+					iIDNodo, iSlot, sOHType);
 			break;
 		case Constants.Souliss_T18:
 			break;
 		case Constants.Souliss_T19:
-			T = new SoulissT19(_datagramsocket, sSoulissNodeIPAddress,
-					sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+			T = new SoulissT19(_datagramsocket, sSoulissNodeIPAddressOnLAN,
+					iIDNodo, iSlot, sOHType);
 			break;
 		case Constants.Souliss_T1A:
-			T = new SoulissT1A(sSoulissNodeIPAddress,
-					sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType, iBit);
+			T = new SoulissT1A(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot,
+					sOHType, iBit);
 			break;
 
 		case Constants.Souliss_T21:
 			break;
 		case Constants.Souliss_T22:
-			T = new SoulissT22(_datagramsocket, sSoulissNodeIPAddress,
-					sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+			T = new SoulissT22(_datagramsocket, sSoulissNodeIPAddressOnLAN,
+					iIDNodo, iSlot, sOHType);
 			break;
 		case Constants.Souliss_T_TemperatureSensor:
 			break;
@@ -84,12 +83,12 @@ public class TypicalFactory {
 			break;
 
 		case Constants.Souliss_T52_TemperatureSensor:
-			T = new SoulissT52(sSoulissNodeIPAddress,
-					sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+			T = new SoulissT52(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot,
+					sOHType);
 			break;
 		case Constants.Souliss_T53_HumiditySensor:
-			T = new SoulissT53(sSoulissNodeIPAddress,
-					sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+			T = new SoulissT53(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot,
+					sOHType);
 			break;
 		case Constants.Souliss_T54_LuxSensor:
 			break;
@@ -98,16 +97,16 @@ public class TypicalFactory {
 		case Constants.Souliss_T56_CurrentSensor:
 			break;
 		case Constants.Souliss_T57_PowerSensor:
-			T = new SoulissT57(sSoulissNodeIPAddress,
-					sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+			T = new SoulissT57(sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot,
+					sOHType);
 			break;
 		case Constants.Souliss_TService_NODE_HEALTY:
-			T = new SoulissTServiceNODE_HEALTY(sSoulissNodeIPAddress,
-					sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+			T = new SoulissTServiceNODE_HEALTY(sSoulissNodeIPAddressOnLAN,
+					iIDNodo, iSlot, sOHType);
 			break;
 		case Constants.Souliss_TService_NODE_TIMESTAMP:
-			T = new SoulissTServiceNODE_TIMESTAMP(sSoulissNodeIPAddress,
-					sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+			T = new SoulissTServiceNODE_TIMESTAMP(sSoulissNodeIPAddressOnLAN,
+					iIDNodo, iSlot, sOHType);
 			break;
 		default:
 			LOGGER.debug("Typical Unknown");

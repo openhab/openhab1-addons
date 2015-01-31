@@ -19,10 +19,10 @@ import java.net.DatagramSocket;
 public class SoulissT12 extends SoulissT11 {
 
 	public SoulissT12(DatagramSocket _datagramsocket,
-			String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN,
-			int iIDNodo, int iSlot, String sOHType) {
-		super(_datagramsocket, sSoulissNodeIPAddress,
-				sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot, sOHType);
+			String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot,
+			String sOHType) {
+		super(_datagramsocket, sSoulissNodeIPAddressOnLAN, iIDNodo, iSlot,
+				sOHType);
 		this.setType(Constants.Souliss_T12);
 	}
 }

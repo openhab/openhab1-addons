@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
  * @since 1.7.0
  */
 public class SoulissNetworkParameter {
-	public static String IPAddress = "";
 	public static String IPAddressOnLAN = "";
 	public static int nodes;
 	public static int maxnodes;

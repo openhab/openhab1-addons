@@ -35,8 +35,8 @@ public class SoulissT11 extends SoulissGenericTypical {
 
 	// Parameters sSoulissNode, iSlot, Type and State are stored in the class
 	public SoulissT11(DatagramSocket _datagramsocket,
-			String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN,
-			int iIDNodo, int iSlot, String sOHType) {
+			String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot,
+			String sOHType) {
 		super();
 		this.setSlot(iSlot);
 		this.setSoulissNodeID(iIDNodo);
@@ -52,7 +52,6 @@ public class SoulissT11 extends SoulissGenericTypical {
 	 */
 	public void CommandSEND(short command) {
 		SoulissCommGate.sendFORCEFrame(SoulissNetworkParameter.datagramsocket,
-				SoulissNetworkParameter.IPAddress,
 				SoulissNetworkParameter.IPAddressOnLAN,
 				this.getSoulissNodeID(), this.getSlot(), command);
 	}

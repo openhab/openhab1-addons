@@ -19,9 +19,8 @@ import org.openhab.core.types.State;
  */
 public class SoulissT51 extends SoulissGenericTypical {
 
-	public SoulissT51(String sSoulissNodeIPAddress,
-			String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot,
-			String sOHType) {
+	public SoulissT51(String sSoulissNodeIPAddressOnLAN, int iIDNodo,
+			int iSlot, String sOHType) {
 		super();
 		this.setSlot(iSlot);
 		this.setSoulissNodeID(iIDNodo);

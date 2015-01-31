@@ -33,8 +33,8 @@ public class SoulissT19 extends SoulissGenericTypical {
 	}
 
 	public SoulissT19(DatagramSocket _datagramsocket,
-			String sSoulissNodeIPAddress, String sSoulissNodeIPAddressOnLAN,
-			int iIDNodo, int iSlot, String sOHType) {
+			String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot,
+			String sOHType) {
 		super();
 		this.setSlot(iSlot);
 		this.setSoulissNodeID(iIDNodo);
@@ -49,7 +49,6 @@ public class SoulissT19 extends SoulissGenericTypical {
 	 */
 	public void CommandSEND(short command) {
 		SoulissCommGate.sendFORCEFrame(SoulissNetworkParameter.datagramsocket,
-				SoulissNetworkParameter.IPAddress,
 				SoulissNetworkParameter.IPAddressOnLAN,
 				this.getSoulissNodeID(), this.getSlot(), command);
 	}
@@ -61,7 +60,6 @@ public class SoulissT19 extends SoulissGenericTypical {
 	 */
 	public void CommandSEND(short command, short LDimmer) {
 		SoulissCommGate.sendFORCEFrame(SoulissNetworkParameter.datagramsocket,
-				SoulissNetworkParameter.IPAddress,
 				SoulissNetworkParameter.IPAddressOnLAN,
 				this.getSoulissNodeID(), this.getSlot(), command, LDimmer);
 	}

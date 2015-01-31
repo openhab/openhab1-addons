@@ -36,9 +36,8 @@ public class SoulissT1A extends SoulissGenericTypical {
 		iBit = _iBit;
 	}
 
-	public SoulissT1A(String sSoulissNodeIPAddress,
-			String sSoulissNodeIPAddressOnLAN, int iIDNodo, int iSlot,
-			String sOHType, byte iBit) {
+	public SoulissT1A(String sSoulissNodeIPAddressOnLAN, int iIDNodo,
+			int iSlot, String sOHType, byte iBit) {
 		super();
 		this.setSlot(iSlot);
 		this.setSoulissNodeID(iIDNodo);

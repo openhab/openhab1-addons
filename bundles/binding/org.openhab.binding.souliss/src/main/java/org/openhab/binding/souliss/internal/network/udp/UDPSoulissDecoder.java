@@ -156,10 +156,8 @@ public class UDPSoulissDecoder {
 
 	private void decodeTypRequest(ArrayList<Short> mac) {
 		try {
-			short typ = (short) mac.get(0);
 			short tgtnode = mac.get(3);
 			int numberOf = mac.get(4);
-			int done = 0;
 			
 			int typXnodo = SoulissNetworkParameter.maxnodes;
 			LOGGER.info("--DECODE MACACO OFFSET:" + tgtnode + " NUMOF:"
