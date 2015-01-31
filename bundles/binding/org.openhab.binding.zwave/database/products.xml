@@ -1204,6 +1204,15 @@
 		<Product>
 			<Reference>
 				<Type>1000</Type>
+				<Id>0200</Id>
+			</Reference>
+			<Model>ZME_064374</Model>
+			<Label lang="en">Wall Plug Switch</Label>
+			<ConfigFile>zwaveme/zme_064374.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1000</Type>
 				<Id>0001</Id>
 			</Reference>
 			<Model>ZME_054313Z</Model>
