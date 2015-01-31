@@ -132,9 +132,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 	/**
 	 * The most recently received list of revisions, or an empty Map if none
 	 * have been retrieved yet.
-	 * 
-	 * @see <a href="http://dev.netatmo.com/doc/authentication/usercred">Client
-	 *      Credentials</a>
 	 */
 	private Map<String, Revision> lastRevisionMap = new HashMap<String, Revision>();
 
