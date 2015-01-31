@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.EObject;
 
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 
+import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
 import org.openhab.core.library.types.UpDownType;
 
 /**
@@ -28,7 +29,6 @@ public interface MoveActor extends EObject
 {
   /**
    * Returns the value of the '<em><b>Direction</b></em>' attribute.
-   * The literals are from the enumeration {@link org.openhab.binding.tinkerforge.internal.model.Direction}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Direction</em>' attribute isn't clear,
@@ -36,24 +36,22 @@ public interface MoveActor extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Direction</em>' attribute.
-   * @see org.openhab.binding.tinkerforge.internal.model.Direction
-   * @see #setDirection(Direction)
+   * @see #setDirection(DirectionValue)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMoveActor_Direction()
-   * @model unique="false"
+   * @model unique="false" dataType="org.openhab.binding.tinkerforge.internal.model.DirectionValue"
    * @generated
    */
-  Direction getDirection();
+  DirectionValue getDirection();
 
   /**
    * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MoveActor#getDirection <em>Direction</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Direction</em>' attribute.
-   * @see org.openhab.binding.tinkerforge.internal.model.Direction
    * @see #getDirection()
    * @generated
    */
-  void setDirection(Direction value);
+  void setDirection(DirectionValue value);
 
   /**
    * <!-- begin-user-doc -->

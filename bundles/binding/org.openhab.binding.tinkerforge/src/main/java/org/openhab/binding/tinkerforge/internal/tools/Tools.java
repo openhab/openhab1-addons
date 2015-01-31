@@ -46,6 +46,19 @@ public class Tools {
     return new DecimalValue(bvalue);
   }
   
+  public static BigDecimal getBigDecimalOpt(String key, DeviceOptions opts){
+    return getBigDecimalOpt(key, opts, null);
+  }
+  
+  public static BigDecimal getBigDecimalOpt(String key, DeviceOptions opts,
+      BigDecimal bigdecimaldefault) {
+    if (opts.containsKey(key.toLowerCase())) {
+      BigDecimal value = new BigDecimal(opts.getOption(key.toLowerCase()));
+      return value;
+    }
+    return bigdecimaldefault;
+  }
+  
   public static Short getShortOpt(String key, DeviceOptions opts) throws NumberFormatException {
     return getShortOpt(key, opts, null);
   }

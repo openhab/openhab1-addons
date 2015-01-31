@@ -29,6 +29,8 @@ import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue
+import org.openhab.binding.tinkerforge.internal.types.PercentValue
+import org.openhab.binding.tinkerforge.internal.types.DirectionValue
 import com.tinkerforge.BrickletIO16
 import com.tinkerforge.BrickletRemoteSwitch
 import com.tinkerforge.BrickletMotionDetector
@@ -93,9 +95,11 @@ type TinkerBrickletSegmentDisplay4x7 wraps BrickletSegmentDisplay4x7
 type TinkerBrickletLEDStrip wraps BrickletLEDStrip
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
+type PercentValue wraps PercentValue
 type DeviceOptions wraps DeviceOptions
 type PercentType wraps PercentType
 type IncreaseDecreaseType wraps IncreaseDecreaseType
+type DirectionValue wraps DirectionValue
 type Enum wraps Enum
 
 class Ecosystem {
@@ -163,11 +167,18 @@ interface MSubDeviceHolder<S extends MSubDevice<?>> {
 
 interface MActor{
 }
+interface SwitchSensor {
+    op void fetchSwitchState()
+}
 
-interface MSwitchActor {
+interface MSwitchActor extends SwitchSensor{
 	SwitchState switchState
 	op void turnSwitch(SwitchState state)
-	op void fetchSwitchState()
+}
+
+interface ProgrammableSwitchActor extends SwitchSensor{
+    SwitchState switchState
+    op void turnSwitch(SwitchState state, DeviceOptions opts)
 }
 
 interface MOutSwitchActor extends MSwitchActor{
@@ -222,7 +233,7 @@ interface ColorActor {
 }
 
 interface MoveActor {
-    Direction direction
+    DirectionValue direction
     op void move(UpDownType direction, DeviceOptions opts)
     op void stop()
     op void moveon(DeviceOptions opts)
@@ -235,6 +246,7 @@ interface DimmableActor<TC extends DimmableConfiguration>   extends MTFConfigCon
 }
 
 interface SetPointActor<C extends DimmableConfiguration> extends DimmableActor<C> {
+    PercentValue percentValue
     op void setValue(BigDecimal newValue, DeviceOptions opts)
     op void setValue(PercentType newValue, DeviceOptions opts)
 }
@@ -259,7 +271,7 @@ class MServo extends MInSwitchActor, MSubDevice<MBrickServo>,
 	op void init(){}
 }
 
-class MBrickDC extends MSensor<MDecimalValue>, MInSwitchActor, MDevice<MTinkerBrickDC>, 
+class MBrickDC extends MSensor<MDecimalValue>, ProgrammableSwitchActor, MDevice<MTinkerBrickDC>, 
 		MoveActor, SetPointActor<TFBrickDCConfiguration>,
 	    CallbackListener{
 	readonly String deviceType = "brick_dc"
@@ -271,7 +283,6 @@ class MBrickDC extends MSensor<MDecimalValue>, MInSwitchActor, MDevice<MTinkerBr
 	int acceleration = "10000"
 	int pwmFrequency = "15000"
 	DCDriveMode driveMode = "BRAKE"
-	short switchOnVelocity = "10000"
 	
 }
 
@@ -649,7 +660,6 @@ class TFBrickDCConfiguration extends DimmableConfiguration, TFBaseConfiguration{
 	int acceleration
 	int pwmFrequency
 	String driveMode
-	short switchOnVelocity
 }
 
 class TFIOActorConfiguration extends TFConfig{
@@ -674,7 +684,7 @@ class TFServoConfiguration extends TFConfig {
 	int period
 	//TODO must be equal for all servos, it is a property of the BrickServo
 	// but for now no config could be set for SubdeviceHolders
-	int outputVoltage 	
+	int outputVoltage
 }
 
 class BrickletRemoteSwitchConfiguration extends TFConfig {
@@ -785,8 +795,8 @@ enum ConfigOptsSetPoint {
     MAX, MIN
 }
 
-enum Direction {
-    UNDEF, LEFT, RIGHT
+enum ConfigOptsSwitchSpeed {
+    SPEED
 }
 
 enum DCDriveMode {

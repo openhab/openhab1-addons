@@ -187,10 +187,26 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.SWITCH_SENSOR:
+      {
+        SwitchSensor switchSensor = (SwitchSensor)theEObject;
+        T result = caseSwitchSensor(switchSensor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MSWITCH_ACTOR:
       {
         MSwitchActor mSwitchActor = (MSwitchActor)theEObject;
         T result = caseMSwitchActor(mSwitchActor);
+        if (result == null) result = caseSwitchSensor(mSwitchActor);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.PROGRAMMABLE_SWITCH_ACTOR:
+      {
+        ProgrammableSwitchActor programmableSwitchActor = (ProgrammableSwitchActor)theEObject;
+        T result = caseProgrammableSwitchActor(programmableSwitchActor);
+        if (result == null) result = caseSwitchSensor(programmableSwitchActor);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -199,6 +215,7 @@ public class ModelSwitch<T> extends Switch<T>
         MOutSwitchActor mOutSwitchActor = (MOutSwitchActor)theEObject;
         T result = caseMOutSwitchActor(mOutSwitchActor);
         if (result == null) result = caseMSwitchActor(mOutSwitchActor);
+        if (result == null) result = caseSwitchSensor(mOutSwitchActor);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -207,6 +224,7 @@ public class ModelSwitch<T> extends Switch<T>
         MInSwitchActor mInSwitchActor = (MInSwitchActor)theEObject;
         T result = caseMInSwitchActor(mInSwitchActor);
         if (result == null) result = caseMSwitchActor(mInSwitchActor);
+        if (result == null) result = caseSwitchSensor(mInSwitchActor);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -336,6 +354,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMTFConfigConsumer(mServo);
         if (result == null) result = caseMSwitchActor(mServo);
         if (result == null) result = caseMBaseDevice(mServo);
+        if (result == null) result = caseSwitchSensor(mServo);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -344,12 +363,12 @@ public class ModelSwitch<T> extends Switch<T>
         MBrickDC mBrickDC = (MBrickDC)theEObject;
         T result = caseMBrickDC(mBrickDC);
         if (result == null) result = caseMSensor(mBrickDC);
-        if (result == null) result = caseMInSwitchActor(mBrickDC);
+        if (result == null) result = caseProgrammableSwitchActor(mBrickDC);
         if (result == null) result = caseMDevice(mBrickDC);
         if (result == null) result = caseMoveActor(mBrickDC);
         if (result == null) result = caseSetPointActor(mBrickDC);
         if (result == null) result = caseCallbackListener(mBrickDC);
-        if (result == null) result = caseMSwitchActor(mBrickDC);
+        if (result == null) result = caseSwitchSensor(mBrickDC);
         if (result == null) result = caseMBaseDevice(mBrickDC);
         if (result == null) result = caseDimmableActor(mBrickDC);
         if (result == null) result = caseMTFConfigConsumer(mBrickDC);
@@ -384,6 +403,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSubDevice(mIndustrialQuadRelay);
         if (result == null) result = caseMSwitchActor(mIndustrialQuadRelay);
         if (result == null) result = caseMBaseDevice(mIndustrialQuadRelay);
+        if (result == null) result = caseSwitchSensor(mIndustrialQuadRelay);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -611,6 +631,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSubDevice(mDualRelay);
         if (result == null) result = caseMSwitchActor(mDualRelay);
         if (result == null) result = caseMBaseDevice(mDualRelay);
+        if (result == null) result = caseSwitchSensor(mDualRelay);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -634,6 +655,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSubDevice(remoteSwitch);
         if (result == null) result = caseMSwitchActor(remoteSwitch);
         if (result == null) result = caseMBaseDevice(remoteSwitch);
+        if (result == null) result = caseSwitchSensor(remoteSwitch);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -647,6 +669,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSubDevice(remoteSwitchA);
         if (result == null) result = caseMSwitchActor(remoteSwitchA);
         if (result == null) result = caseMBaseDevice(remoteSwitchA);
+        if (result == null) result = caseSwitchSensor(remoteSwitchA);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -660,6 +683,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSubDevice(remoteSwitchB);
         if (result == null) result = caseMSwitchActor(remoteSwitchB);
         if (result == null) result = caseMBaseDevice(remoteSwitchB);
+        if (result == null) result = caseSwitchSensor(remoteSwitchB);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -673,6 +697,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMSubDevice(remoteSwitchC);
         if (result == null) result = caseMSwitchActor(remoteSwitchC);
         if (result == null) result = caseMBaseDevice(remoteSwitchC);
+        if (result == null) result = caseSwitchSensor(remoteSwitchC);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -921,6 +946,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseMLCDSubDevice(mlcd20x4Backlight);
         if (result == null) result = caseMSwitchActor(mlcd20x4Backlight);
         if (result == null) result = caseMSubDevice(mlcd20x4Backlight);
+        if (result == null) result = caseSwitchSensor(mlcd20x4Backlight);
         if (result == null) result = caseMBaseDevice(mlcd20x4Backlight);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -934,6 +960,7 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = caseCallbackListener(mlcd20x4Button);
         if (result == null) result = caseMSwitchActor(mlcd20x4Button);
         if (result == null) result = caseMSubDevice(mlcd20x4Button);
+        if (result == null) result = caseSwitchSensor(mlcd20x4Button);
         if (result == null) result = caseMBaseDevice(mlcd20x4Button);
         if (result == null) result = defaultCase(theEObject);
         return result;
@@ -1619,6 +1646,22 @@ public class ModelSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Switch Sensor</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Switch Sensor</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseSwitchSensor(SwitchSensor object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>MSwitch Actor</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1630,6 +1673,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseMSwitchActor(MSwitchActor object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Programmable Switch Actor</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Programmable Switch Actor</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseProgrammableSwitchActor(ProgrammableSwitchActor object)
   {
     return null;
   }

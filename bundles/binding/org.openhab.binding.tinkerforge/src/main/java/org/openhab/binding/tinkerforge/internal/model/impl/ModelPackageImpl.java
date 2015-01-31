@@ -33,6 +33,7 @@ import org.openhab.binding.tinkerforge.internal.model.ColorActor;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSwitchSpeed;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
@@ -115,6 +116,8 @@ import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
 import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
 import org.openhab.binding.tinkerforge.internal.model.ObjectTemperature;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitch;
 import org.openhab.binding.tinkerforge.internal.model.Proximity;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
 import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
@@ -126,6 +129,7 @@ import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration
 import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
 import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
 import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
+import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
 import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
@@ -146,8 +150,10 @@ import org.openhab.binding.tinkerforge.internal.model.ValueActor;
 import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice;
 import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.PercentValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -415,7 +421,21 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass switchSensorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass mSwitchActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass programmableSwitchActorEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1017,7 +1037,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EEnum directionEEnum = null;
+  private EEnum configOptsSwitchSpeedEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1234,6 +1254,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EDataType percentValueEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EDataType deviceOptionsEDataType = null;
 
   /**
@@ -1249,6 +1276,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType increaseDecreaseTypeEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType directionValueEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2057,16 +2091,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTFBrickDCConfiguration_SwitchOnVelocity()
-  {
-    return (EAttribute)tfBrickDCConfigurationEClass.getEStructuralFeatures().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EClass getMBrickDC()
   {
     return mBrickDCEClass;
@@ -2150,16 +2174,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EAttribute getMBrickDC_DriveMode()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(7);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getMBrickDC_SwitchOnVelocity()
-  {
-    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(8);
   }
 
   /**
@@ -2467,6 +2481,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getSetPointActor_PercentValue()
+  {
+    return (EAttribute)setPointActorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EOperation getSetPointActor__SetValue__BigDecimal_DeviceOptions()
   {
     return setPointActorEClass.getEOperations().get(0);
@@ -2597,6 +2621,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getSwitchSensor()
+  {
+    return switchSensorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getSwitchSensor__FetchSwitchState()
+  {
+    return switchSensorEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMSwitchActor()
   {
     return mSwitchActorEClass;
@@ -2627,9 +2671,29 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EOperation getMSwitchActor__FetchSwitchState()
+  public EClass getProgrammableSwitchActor()
   {
-    return mSwitchActorEClass.getEOperations().get(1);
+    return programmableSwitchActorEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getProgrammableSwitchActor_SwitchState()
+  {
+    return (EAttribute)programmableSwitchActorEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getProgrammableSwitchActor__TurnSwitch__OnOffValue_DeviceOptions()
+  {
+    return programmableSwitchActorEClass.getEOperations().get(0);
   }
 
   /**
@@ -5017,9 +5081,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EEnum getDirection()
+  public EEnum getConfigOptsSwitchSpeed()
   {
-    return directionEEnum;
+    return configOptsSwitchSpeedEEnum;
   }
 
   /**
@@ -5327,6 +5391,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getPercentValue()
+  {
+    return percentValueEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getDeviceOptions()
   {
     return deviceOptionsEDataType;
@@ -5350,6 +5424,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EDataType getIncreaseDecreaseType()
   {
     return increaseDecreaseTypeEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getDirectionValue()
+  {
+    return directionValueEDataType;
   }
 
   /**
@@ -5486,10 +5570,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     mActorEClass = createEClass(MACTOR);
 
+    switchSensorEClass = createEClass(SWITCH_SENSOR);
+    createEOperation(switchSensorEClass, SWITCH_SENSOR___FETCH_SWITCH_STATE);
+
     mSwitchActorEClass = createEClass(MSWITCH_ACTOR);
     createEAttribute(mSwitchActorEClass, MSWITCH_ACTOR__SWITCH_STATE);
     createEOperation(mSwitchActorEClass, MSWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE);
-    createEOperation(mSwitchActorEClass, MSWITCH_ACTOR___FETCH_SWITCH_STATE);
+
+    programmableSwitchActorEClass = createEClass(PROGRAMMABLE_SWITCH_ACTOR);
+    createEAttribute(programmableSwitchActorEClass, PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE);
+    createEOperation(programmableSwitchActorEClass, PROGRAMMABLE_SWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS);
 
     mOutSwitchActorEClass = createEClass(MOUT_SWITCH_ACTOR);
 
@@ -5542,6 +5632,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEOperation(dimmableActorEClass, DIMMABLE_ACTOR___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS);
 
     setPointActorEClass = createEClass(SET_POINT_ACTOR);
+    createEAttribute(setPointActorEClass, SET_POINT_ACTOR__PERCENT_VALUE);
     createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS);
     createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS);
 
@@ -5570,7 +5661,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickDCEClass, MBRICK_DC__ACCELERATION);
     createEAttribute(mBrickDCEClass, MBRICK_DC__PWM_FREQUENCY);
     createEAttribute(mBrickDCEClass, MBRICK_DC__DRIVE_MODE);
-    createEAttribute(mBrickDCEClass, MBRICK_DC__SWITCH_ON_VELOCITY);
     createEOperation(mBrickDCEClass, MBRICK_DC___INIT);
 
     mDualRelayBrickletEClass = createEClass(MDUAL_RELAY_BRICKLET);
@@ -5824,7 +5914,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__ACCELERATION);
     createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__PWM_FREQUENCY);
     createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__DRIVE_MODE);
-    createEAttribute(tfBrickDCConfigurationEClass, TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY);
 
     tfioActorConfigurationEClass = createEClass(TFIO_ACTOR_CONFIGURATION);
     createEAttribute(tfioActorConfigurationEClass, TFIO_ACTOR_CONFIGURATION__DEFAULT_STATE);
@@ -5893,7 +5982,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     configOptsMoveEEnum = createEEnum(CONFIG_OPTS_MOVE);
     configOptsDimmableEEnum = createEEnum(CONFIG_OPTS_DIMMABLE);
     configOptsSetPointEEnum = createEEnum(CONFIG_OPTS_SET_POINT);
-    directionEEnum = createEEnum(DIRECTION);
+    configOptsSwitchSpeedEEnum = createEEnum(CONFIG_OPTS_SWITCH_SPEED);
     dcDriveModeEEnum = createEEnum(DC_DRIVE_MODE);
 
     // Create data types
@@ -5934,9 +6023,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletLEDStripEDataType = createEDataType(TINKER_BRICKLET_LED_STRIP);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
+    percentValueEDataType = createEDataType(PERCENT_VALUE);
     deviceOptionsEDataType = createEDataType(DEVICE_OPTIONS);
     percentTypeEDataType = createEDataType(PERCENT_TYPE);
     increaseDecreaseTypeEDataType = createEDataType(INCREASE_DECREASE_TYPE);
+    directionValueEDataType = createEDataType(DIRECTION_VALUE);
     enumEDataType = createEDataType(ENUM);
   }
 
@@ -6008,6 +6099,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     // Add supertypes to classes
     mDeviceEClass.getESuperTypes().add(this.getMBaseDevice());
+    mSwitchActorEClass.getESuperTypes().add(this.getSwitchSensor());
+    programmableSwitchActorEClass.getESuperTypes().add(this.getSwitchSensor());
     mOutSwitchActorEClass.getESuperTypes().add(this.getMSwitchActor());
     mInSwitchActorEClass.getESuperTypes().add(this.getMSwitchActor());
     g1 = createEGenericType(this.getMSubDevice());
@@ -6051,7 +6144,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMDecimalValue());
     g1.getETypeArguments().add(g2);
     mBrickDCEClass.getEGenericSuperTypes().add(g1);
-    g1 = createEGenericType(this.getMInSwitchActor());
+    g1 = createEGenericType(this.getProgrammableSwitchActor());
     mBrickDCEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getMTinkerBrickDC());
@@ -6616,13 +6709,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
 
     initEClass(mActorEClass, MActor.class, "MActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
+    initEClass(switchSensorEClass, SwitchSensor.class, "SwitchSensor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEOperation(getSwitchSensor__FetchSwitchState(), null, "fetchSwitchState", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
     initEClass(mSwitchActorEClass, MSwitchActor.class, "MSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMSwitchActor_SwitchState(), this.getSwitchState(), "switchState", null, 0, 1, MSwitchActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     op = initEOperation(getMSwitchActor__TurnSwitch__OnOffValue(), null, "turnSwitch", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getSwitchState(), "state", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
-    initEOperation(getMSwitchActor__FetchSwitchState(), null, "fetchSwitchState", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    initEClass(programmableSwitchActorEClass, ProgrammableSwitchActor.class, "ProgrammableSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getProgrammableSwitchActor_SwitchState(), this.getSwitchState(), "switchState", null, 0, 1, ProgrammableSwitchActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    op = initEOperation(getProgrammableSwitchActor__TurnSwitch__OnOffValue_DeviceOptions(), null, "turnSwitch", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getSwitchState(), "state", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mOutSwitchActorEClass, MOutSwitchActor.class, "MOutSwitchActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -6675,7 +6777,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(moveActorEClass, MoveActor.class, "MoveActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getMoveActor_Direction(), this.getDirection(), "direction", null, 0, 1, MoveActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMoveActor_Direction(), this.getDirectionValue(), "direction", null, 0, 1, MoveActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     op = initEOperation(getMoveActor__Move__UpDownType_DeviceOptions(), null, "move", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getUpDownType(), "direction", 0, 1, !IS_UNIQUE, IS_ORDERED);
@@ -6695,6 +6797,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(setPointActorEClass, SetPointActor.class, "SetPointActor", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getSetPointActor_PercentValue(), this.getPercentValue(), "percentValue", null, 0, 1, SetPointActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     op = initEOperation(getSetPointActor__SetValue__BigDecimal_DeviceOptions(), null, "setValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, theEcorePackage.getEBigDecimal(), "newValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
@@ -6731,7 +6834,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickDC_Acceleration(), theEcorePackage.getEInt(), "acceleration", "10000", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_PwmFrequency(), theEcorePackage.getEInt(), "pwmFrequency", "15000", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_DriveMode(), this.getDCDriveMode(), "driveMode", "BRAKE", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMBrickDC_SwitchOnVelocity(), theEcorePackage.getEShort(), "switchOnVelocity", "10000", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickDC__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
@@ -7032,7 +7134,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getTFBrickDCConfiguration_Acceleration(), theEcorePackage.getEInt(), "acceleration", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFBrickDCConfiguration_PwmFrequency(), theEcorePackage.getEInt(), "pwmFrequency", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTFBrickDCConfiguration_DriveMode(), theEcorePackage.getEString(), "driveMode", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getTFBrickDCConfiguration_SwitchOnVelocity(), theEcorePackage.getEShort(), "switchOnVelocity", null, 0, 1, TFBrickDCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tfioActorConfigurationEClass, TFIOActorConfiguration.class, "TFIOActorConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTFIOActorConfiguration_DefaultState(), theEcorePackage.getEString(), "defaultState", null, 0, 1, TFIOActorConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -7208,10 +7309,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(configOptsSetPointEEnum, ConfigOptsSetPoint.MAX);
     addEEnumLiteral(configOptsSetPointEEnum, ConfigOptsSetPoint.MIN);
 
-    initEEnum(directionEEnum, Direction.class, "Direction");
-    addEEnumLiteral(directionEEnum, Direction.UNDEF);
-    addEEnumLiteral(directionEEnum, Direction.LEFT);
-    addEEnumLiteral(directionEEnum, Direction.RIGHT);
+    initEEnum(configOptsSwitchSpeedEEnum, ConfigOptsSwitchSpeed.class, "ConfigOptsSwitchSpeed");
+    addEEnumLiteral(configOptsSwitchSpeedEEnum, ConfigOptsSwitchSpeed.SPEED);
 
     initEEnum(dcDriveModeEEnum, DCDriveMode.class, "DCDriveMode");
     addEEnumLiteral(dcDriveModeEEnum, DCDriveMode.BRAKE);
@@ -7255,9 +7354,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletLEDStripEDataType, BrickletLEDStrip.class, "TinkerBrickletLEDStrip", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(percentValueEDataType, PercentValue.class, "PercentValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(deviceOptionsEDataType, DeviceOptions.class, "DeviceOptions", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentTypeEDataType, PercentType.class, "PercentType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(increaseDecreaseTypeEDataType, IncreaseDecreaseType.class, "IncreaseDecreaseType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(directionValueEDataType, DirectionValue.class, "DirectionValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource

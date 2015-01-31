@@ -172,9 +172,19 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createMActorAdapter();
       }
       @Override
+      public Adapter caseSwitchSensor(SwitchSensor object)
+      {
+        return createSwitchSensorAdapter();
+      }
+      @Override
       public Adapter caseMSwitchActor(MSwitchActor object)
       {
         return createMSwitchActorAdapter();
+      }
+      @Override
+      public Adapter caseProgrammableSwitchActor(ProgrammableSwitchActor object)
+      {
+        return createProgrammableSwitchActorAdapter();
       }
       @Override
       public Adapter caseMOutSwitchActor(MOutSwitchActor object)
@@ -1119,6 +1129,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.SwitchSensor <em>Switch Sensor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.SwitchSensor
+   * @generated
+   */
+  public Adapter createSwitchSensorAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MSwitchActor <em>MSwitch Actor</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -1129,6 +1154,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createMSwitchActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor <em>Programmable Switch Actor</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor
+   * @generated
+   */
+  public Adapter createProgrammableSwitchActorAdapter()
   {
     return null;
   }

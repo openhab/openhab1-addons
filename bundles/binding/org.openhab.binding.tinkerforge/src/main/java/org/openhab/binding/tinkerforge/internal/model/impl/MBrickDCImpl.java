@@ -26,23 +26,25 @@ import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
 import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSwitchSpeed;
 import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
 import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
-import org.openhab.binding.tinkerforge.internal.model.Direction;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MDevice;
-import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
-import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.MoveActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
+import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
 import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
 import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.PercentValue;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.UpDownType;
@@ -55,12 +57,10 @@ import com.tinkerforge.NotConnectedException;
 import com.tinkerforge.TimeoutException;
 
 /**
- * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>MBrick DC</b></em>'.
+ * <!-- begin-user-doc --> An implementation of the model object '<em><b>MBrick DC</b></em>'.
  * 
  * @author Theo Weiss
- * @since 1.3.0
- * <!-- end-user-doc -->
+ * @since 1.3.0 <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
@@ -81,6 +81,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getMinValue <em>Min Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getMaxValue <em>Max Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getPercentValue <em>Percent Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getThreshold <em>Threshold</em>}</li>
@@ -90,7 +91,6 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getAcceleration <em>Acceleration</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getPwmFrequency <em>Pwm Frequency</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getDriveMode <em>Drive Mode</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getSwitchOnVelocity <em>Switch On Velocity</em>}</li>
  * </ul>
  * </p>
  *
@@ -326,7 +326,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @generated
    * @ordered
    */
-  protected static final Direction DIRECTION_EDEFAULT = Direction.UNDEF;
+  protected static final DirectionValue DIRECTION_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getDirection() <em>Direction</em>}' attribute.
@@ -336,7 +336,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @generated
    * @ordered
    */
-  protected Direction direction = DIRECTION_EDEFAULT;
+  protected DirectionValue direction = DIRECTION_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
@@ -387,6 +387,26 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @ordered
    */
   protected BigDecimal maxValue = MAX_VALUE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getPercentValue() <em>Percent Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPercentValue()
+   * @generated
+   * @ordered
+   */
+  protected static final PercentValue PERCENT_VALUE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getPercentValue() <em>Percent Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPercentValue()
+   * @generated
+   * @ordered
+   */
+  protected PercentValue percentValue = PERCENT_VALUE_EDEFAULT;
 
   /**
    * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
@@ -567,26 +587,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @ordered
    */
   protected DCDriveMode driveMode = DRIVE_MODE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getSwitchOnVelocity() <em>Switch On Velocity</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSwitchOnVelocity()
-   * @generated
-   * @ordered
-   */
-  protected static final short SWITCH_ON_VELOCITY_EDEFAULT = 10000;
-
-  /**
-   * The cached value of the '{@link #getSwitchOnVelocity() <em>Switch On Velocity</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSwitchOnVelocity()
-   * @generated
-   * @ordered
-   */
-  protected short switchOnVelocity = SWITCH_ON_VELOCITY_EDEFAULT;
 
   private VelocityListener listener;
 
@@ -1031,7 +1031,30 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * <!-- end-user-doc -->
    * @generated
    */
-  public Direction getDirection()
+  public PercentValue getPercentValue()
+  {
+    return percentValue;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPercentValue(PercentValue newPercentValue)
+  {
+    PercentValue oldPercentValue = percentValue;
+    percentValue = newPercentValue;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__PERCENT_VALUE, oldPercentValue, percentValue));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DirectionValue getDirection()
   {
     return direction;
   }
@@ -1041,10 +1064,10 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setDirection(Direction newDirection)
+  public void setDirection(DirectionValue newDirection)
   {
-    Direction oldDirection = direction;
-    direction = newDirection == null ? DIRECTION_EDEFAULT : newDirection;
+    DirectionValue oldDirection = direction;
+    direction = newDirection;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__DIRECTION, oldDirection, direction));
   }
@@ -1244,31 +1267,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public short getSwitchOnVelocity()
-  {
-    return switchOnVelocity;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setSwitchOnVelocity(short newSwitchOnVelocity)
-  {
-    short oldSwitchOnVelocity = switchOnVelocity;
-    switchOnVelocity = newSwitchOnVelocity;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__SWITCH_ON_VELOCITY, oldSwitchOnVelocity, switchOnVelocity));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
   public void init()
@@ -1285,9 +1285,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    */
   public void setValue(BigDecimal newValue, DeviceOptions opts)
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    setPoint(newValue.shortValue(), opts);
   }
 
   /**
@@ -1295,11 +1293,27 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * 
    * @generated NOT
    */
-  public void setValue(PercentType newValue, DeviceOptions opts)
+  public void setValue(PercentType percentValue, DeviceOptions opts)
   {
-    // TODO: implement this method
-    // Ensure that you remove @generated or mark it @generated NOT
-    throw new UnsupportedOperationException();
+    BigDecimal max = Tools.getBigDecimalOpt(ConfigOptsDimmable.MAX.toString(), opts);
+    if (max == null) {
+      logger.error("BrickDC dimmer option max is missing, items configuration has to be fixed!");
+      return;
+    } else {
+      logger.debug("Brick DC max {}", max);
+    }
+    BigDecimal min = Tools.getBigDecimalOpt(ConfigOptsDimmable.MIN.toString(), opts);
+    logger.debug("Brick DC min {}", min);
+    if (min == null) {
+      logger.error("BrickDC dimmer option min is missing, items configuration has to be fixed!");
+      return;
+    }
+    setPercentValue(new PercentValue(percentValue.toBigDecimal()));
+    BigDecimal abs = max.add(min.abs());
+    Short newVelocity =
+        abs.divide(new BigDecimal(100)).multiply(percentValue.toBigDecimal()).subtract(min.abs())
+            .shortValue();
+    setPoint(newVelocity, opts);
   }
 
   /**
@@ -1308,7 +1322,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @generated NOT
    */
   public void dimm(IncreaseDecreaseType increaseDecrease, DeviceOptions opts) {
-    logger.trace("====== dimmer increase increaseDecrease {} opts {}", increaseDecrease, opts);
+    logger.trace("dimmer increase increaseDecrease {} opts {}", increaseDecrease, opts);
     if (opts == null) {
       logger.error("Brick DC options are missing");
       return;
@@ -1317,48 +1331,19 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       logger.error("Brick DC increaseDecrease may not be null!");
       return;
     }
-    Integer itemacceleration = Tools.getIntOpt(ConfigOptsMove.ACCELERATION.toString(), opts);
-    String drivemodestr = Tools.getStringOpt(ConfigOptsMove.DRIVEMODE.toString(), opts);
     Short step = Tools.getShortOpt(ConfigOptsDimmable.STEP.toString(), opts);
     if (step == null) {
       logger.error("BrickDC dimmer option step is missing, items configuration has to be fixed!");
+      return;
     }
-    Short speed = null;
+    Short newVelocity = null;
     if (increaseDecrease.equals(IncreaseDecreaseType.INCREASE)) {
-      Short max = Tools.getShortOpt(ConfigOptsDimmable.MAX.toString(), opts);
-      if (max == null) {
-        logger.error("BrickDC dimmer option max is missing, items configuration has to be fixed!");
-        return;
-      } else {
-        logger.debug("Brick DC max {}", max);
-        Short newVelocity = (short) (this.targetvelocity + step);
-        logger.debug("Brick DC newVelocity {}", newVelocity);
-        if (newVelocity < max) {
-          speed = newVelocity;
-        } else if (this.velocity < max) {
-          speed = max;
-        } else {
-          logger.debug("max velocity already reached {}", max);
-        }
-      }
+      newVelocity = (short) (this.targetvelocity + step);
     } else if (increaseDecrease.equals(IncreaseDecreaseType.DECREASE)) {
-      Short min = Tools.getShortOpt(ConfigOptsDimmable.MIN.toString(), opts);
-      logger.debug("Brick DC min {}", min);
-      if (min == null) {
-        logger.error("BrickDC dimmer option min is missing, items configuration has to be fixed!");
-        return;
-      } else {
-        Short newVelocity = (short) (this.targetvelocity - step);
-        if (newVelocity > min) {
-          speed = newVelocity;
-        } else if (this.velocity > min) {
-          speed = min;
-        } else {
-          logger.debug("min velocity already reached {}", min);
-        }
-      }
+      newVelocity = (short) (this.targetvelocity - step);
     }
-    setSpeed(speed, itemacceleration, drivemodestr, this.pwmFrequency);
+    logger.debug("Brick DC newVelocity {}", newVelocity);
+    setPoint(newVelocity, opts);
   }
 
   /**
@@ -1366,23 +1351,69 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * 
    * @generated NOT
    */
-  public void turnSwitch(OnOffValue state) {
-    logger.trace("turnSwitch called");
-    try {
-      if (state == OnOffValue.OFF) {
-        setTargetvelocity((short) 0);
-        tinkerforgeDevice.setVelocity((short) 0);
-      } else if (state == OnOffValue.ON) {
-        setTargetvelocity(switchOnVelocity);
-        tinkerforgeDevice.setVelocity(switchOnVelocity);
+  private void setPoint(Short targetspeed, DeviceOptions opts) {
+    Integer xacceleration = Tools.getIntOpt(ConfigOptsMove.ACCELERATION.toString(), opts);
+    String drivemodestr = Tools.getStringOpt(ConfigOptsMove.DRIVEMODE.toString(), opts);
+    Short speed = null;
+    logger.trace("setPiont speed {} opts {}", targetspeed, opts);
+    if (opts == null) {
+      logger.error("Brick DC options are missing");
+      return;
+    }
+    if (targetspeed == null) {
+      logger.error("Brick DC setPoint targetspeed may not be null!");
+      return;
+    }
+    Short max = Tools.getShortOpt(ConfigOptsDimmable.MAX.toString(), opts);
+    if (max == null) {
+      logger.error("BrickDC dimmer option max is missing, items configuration has to be fixed!");
+      return;
+    } else {
+      logger.debug("Brick DC max {}", max);
+    }
+    Short min = Tools.getShortOpt(ConfigOptsDimmable.MIN.toString(), opts);
+    logger.debug("Brick DC min {}", min);
+    if (min == null) {
+      logger.error("BrickDC dimmer option min is missing, items configuration has to be fixed!");
+      return;
+    }
+    if (targetspeed > max) {
+      if (this.velocity < targetspeed) {
+        logger.debug("setting velocity to max speed {}, which is lower then target speed {}", max,
+            targetspeed);
+        speed = max;
       } else {
-        logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+        logger.debug("max velocity already reached {}", max);
+        return;
       }
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    } else if (targetspeed < min) {
+      if (this.velocity > targetspeed) {
+        logger.debug("setting velocity to min speed {}, which is higher then target speed {}", min,
+            targetspeed);
+        speed = min;
+      } else {
+        logger.debug("min velocity already reached {}", min);
+        return;
+      }
+    } else {
+      speed = targetspeed;
+    }
+    setSpeed(speed, xacceleration, drivemodestr, this.pwmFrequency);
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void turnSwitch(OnOffValue state, DeviceOptions opts) {
+    logger.trace("turnSwitch called");
+    if (state == OnOffValue.OFF) {
+      setSpeed((short) 0, null, null, null);
+    } else if (state == OnOffValue.ON) {
+      setSpeed(Tools.getShortOpt(ConfigOptsSwitchSpeed.SPEED.toString(), opts), null, null, null);
+    } else {
+      logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
     }
   }
 
@@ -1418,8 +1449,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @generated NOT
    */
   public void moveon(DeviceOptions opts) {
-    if (direction != null && direction != Direction.UNDEF) {
-      UpDownType directiontmp = this.direction == Direction.LEFT ? UpDownType.UP : UpDownType.DOWN;
+    if (direction != null && direction != DirectionValue.UNDEF) {
+      UpDownType directiontmp =
+          this.direction == DirectionValue.LEFT ? UpDownType.UP : UpDownType.DOWN;
       move(directiontmp, opts);
     } else {
       logger.warn("cannot moveon because direction is undefined");
@@ -1453,7 +1485,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
             .error("\"rightspeed\" option missing or empty, items configuration has to be fixed!");
         return;
       } else {
-        this.direction = Direction.RIGHT;
+        setDirection(DirectionValue.RIGHT);
       }
     } else if (direction.equals(UpDownType.UP)) {
       speed = Tools.getShortOpt(ConfigOptsMove.LEFTSPEED.toString(), opts);
@@ -1461,7 +1493,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         logger.error("\"leftspeed\" option missing or empty, items configuration has to be fixed!");
         return;
       } else {
-        this.direction = Direction.LEFT;
+        setDirection(DirectionValue.LEFT);
       }
     }
     setSpeed(speed, itemacceleration, drivemodestr, this.pwmFrequency);
@@ -1561,9 +1593,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       }
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("pwmFrequency"))) {
         setPwmFrequency(tfConfig.getPwmFrequency());
-      }
-      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("switchOnVelocity"))) {
-        setSwitchOnVelocity(tfConfig.getSwitchOnVelocity());
       }
       if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("driveMode"))) {
         setDriveMode(DCDriveMode.get(tfConfig.getDriveMode()));
@@ -1751,6 +1780,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return getMinValue();
       case ModelPackage.MBRICK_DC__MAX_VALUE:
         return getMaxValue();
+      case ModelPackage.MBRICK_DC__PERCENT_VALUE:
+        return getPercentValue();
       case ModelPackage.MBRICK_DC__CALLBACK_PERIOD:
         return getCallbackPeriod();
       case ModelPackage.MBRICK_DC__DEVICE_TYPE:
@@ -1769,8 +1800,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return getPwmFrequency();
       case ModelPackage.MBRICK_DC__DRIVE_MODE:
         return getDriveMode();
-      case ModelPackage.MBRICK_DC__SWITCH_ON_VELOCITY:
-        return getSwitchOnVelocity();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -1825,7 +1854,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         setBrickd((MBrickd)newValue);
         return;
       case ModelPackage.MBRICK_DC__DIRECTION:
-        setDirection((Direction)newValue);
+        setDirection((DirectionValue)newValue);
         return;
       case ModelPackage.MBRICK_DC__TF_CONFIG:
         setTfConfig((TFBrickDCConfiguration)newValue);
@@ -1835,6 +1864,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return;
       case ModelPackage.MBRICK_DC__MAX_VALUE:
         setMaxValue((BigDecimal)newValue);
+        return;
+      case ModelPackage.MBRICK_DC__PERCENT_VALUE:
+        setPercentValue((PercentValue)newValue);
         return;
       case ModelPackage.MBRICK_DC__CALLBACK_PERIOD:
         setCallbackPeriod((Long)newValue);
@@ -1859,9 +1891,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return;
       case ModelPackage.MBRICK_DC__DRIVE_MODE:
         setDriveMode((DCDriveMode)newValue);
-        return;
-      case ModelPackage.MBRICK_DC__SWITCH_ON_VELOCITY:
-        setSwitchOnVelocity((Short)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -1928,6 +1957,9 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC__MAX_VALUE:
         setMaxValue(MAX_VALUE_EDEFAULT);
         return;
+      case ModelPackage.MBRICK_DC__PERCENT_VALUE:
+        setPercentValue(PERCENT_VALUE_EDEFAULT);
+        return;
       case ModelPackage.MBRICK_DC__CALLBACK_PERIOD:
         setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
         return;
@@ -1951,9 +1983,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return;
       case ModelPackage.MBRICK_DC__DRIVE_MODE:
         setDriveMode(DRIVE_MODE_EDEFAULT);
-        return;
-      case ModelPackage.MBRICK_DC__SWITCH_ON_VELOCITY:
-        setSwitchOnVelocity(SWITCH_ON_VELOCITY_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -1996,13 +2025,15 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC__BRICKD:
         return getBrickd() != null;
       case ModelPackage.MBRICK_DC__DIRECTION:
-        return direction != DIRECTION_EDEFAULT;
+        return DIRECTION_EDEFAULT == null ? direction != null : !DIRECTION_EDEFAULT.equals(direction);
       case ModelPackage.MBRICK_DC__TF_CONFIG:
         return tfConfig != null;
       case ModelPackage.MBRICK_DC__MIN_VALUE:
         return MIN_VALUE_EDEFAULT == null ? minValue != null : !MIN_VALUE_EDEFAULT.equals(minValue);
       case ModelPackage.MBRICK_DC__MAX_VALUE:
         return MAX_VALUE_EDEFAULT == null ? maxValue != null : !MAX_VALUE_EDEFAULT.equals(maxValue);
+      case ModelPackage.MBRICK_DC__PERCENT_VALUE:
+        return PERCENT_VALUE_EDEFAULT == null ? percentValue != null : !PERCENT_VALUE_EDEFAULT.equals(percentValue);
       case ModelPackage.MBRICK_DC__CALLBACK_PERIOD:
         return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
       case ModelPackage.MBRICK_DC__DEVICE_TYPE:
@@ -2021,8 +2052,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return pwmFrequency != PWM_FREQUENCY_EDEFAULT;
       case ModelPackage.MBRICK_DC__DRIVE_MODE:
         return driveMode != DRIVE_MODE_EDEFAULT;
-      case ModelPackage.MBRICK_DC__SWITCH_ON_VELOCITY:
-        return switchOnVelocity != SWITCH_ON_VELOCITY_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -2035,18 +2064,18 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSwitchActor.class)
+    if (baseClass == SwitchSensor.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MBRICK_DC__SWITCH_STATE: return ModelPackage.MSWITCH_ACTOR__SWITCH_STATE;
         default: return -1;
       }
     }
-    if (baseClass == MInSwitchActor.class)
+    if (baseClass == ProgrammableSwitchActor.class)
     {
       switch (derivedFeatureID)
       {
+        case ModelPackage.MBRICK_DC__SWITCH_STATE: return ModelPackage.PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE;
         default: return -1;
       }
     }
@@ -2104,6 +2133,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     {
       switch (derivedFeatureID)
       {
+        case ModelPackage.MBRICK_DC__PERCENT_VALUE: return ModelPackage.SET_POINT_ACTOR__PERCENT_VALUE;
         default: return -1;
       }
     }
@@ -2126,18 +2156,18 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == MSwitchActor.class)
+    if (baseClass == SwitchSensor.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSWITCH_ACTOR__SWITCH_STATE: return ModelPackage.MBRICK_DC__SWITCH_STATE;
         default: return -1;
       }
     }
-    if (baseClass == MInSwitchActor.class)
+    if (baseClass == ProgrammableSwitchActor.class)
     {
       switch (baseFeatureID)
       {
+        case ModelPackage.PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE: return ModelPackage.MBRICK_DC__SWITCH_STATE;
         default: return -1;
       }
     }
@@ -2195,6 +2225,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     {
       switch (baseFeatureID)
       {
+        case ModelPackage.SET_POINT_ACTOR__PERCENT_VALUE: return ModelPackage.MBRICK_DC__PERCENT_VALUE;
         default: return -1;
       }
     }
@@ -2217,19 +2248,19 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
   @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
-    if (baseClass == MSwitchActor.class)
+    if (baseClass == SwitchSensor.class)
     {
       switch (baseOperationID)
       {
-        case ModelPackage.MSWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE: return ModelPackage.MBRICK_DC___TURN_SWITCH__ONOFFVALUE;
-        case ModelPackage.MSWITCH_ACTOR___FETCH_SWITCH_STATE: return ModelPackage.MBRICK_DC___FETCH_SWITCH_STATE;
+        case ModelPackage.SWITCH_SENSOR___FETCH_SWITCH_STATE: return ModelPackage.MBRICK_DC___FETCH_SWITCH_STATE;
         default: return -1;
       }
     }
-    if (baseClass == MInSwitchActor.class)
+    if (baseClass == ProgrammableSwitchActor.class)
     {
       switch (baseOperationID)
       {
+        case ModelPackage.PROGRAMMABLE_SWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS: return ModelPackage.MBRICK_DC___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS;
         default: return -1;
       }
     }
@@ -2331,8 +2362,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC___DISABLE:
         disable();
         return null;
-      case ModelPackage.MBRICK_DC___TURN_SWITCH__ONOFFVALUE:
-        turnSwitch((OnOffValue)arguments.get(0));
+      case ModelPackage.MBRICK_DC___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS:
+        turnSwitch((OnOffValue)arguments.get(0), (DeviceOptions)arguments.get(1));
         return null;
       case ModelPackage.MBRICK_DC___FETCH_SWITCH_STATE:
         fetchSwitchState();
@@ -2385,6 +2416,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     result.append(minValue);
     result.append(", maxValue: ");
     result.append(maxValue);
+    result.append(", percentValue: ");
+    result.append(percentValue);
     result.append(", callbackPeriod: ");
     result.append(callbackPeriod);
     result.append(", deviceType: ");
@@ -2403,8 +2436,6 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     result.append(pwmFrequency);
     result.append(", driveMode: ");
     result.append(driveMode);
-    result.append(", switchOnVelocity: ");
-    result.append(switchOnVelocity);
     result.append(')');
     return result.toString();
   }

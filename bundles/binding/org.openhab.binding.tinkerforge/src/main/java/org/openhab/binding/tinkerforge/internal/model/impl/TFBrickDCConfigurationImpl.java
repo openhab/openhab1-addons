@@ -33,7 +33,6 @@ import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl#getAcceleration <em>Acceleration</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl#getPwmFrequency <em>Pwm Frequency</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl#getDriveMode <em>Drive Mode</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFBrickDCConfigurationImpl#getSwitchOnVelocity <em>Switch On Velocity</em>}</li>
  * </ul>
  * </p>
  *
@@ -160,26 +159,6 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
    * @ordered
    */
   protected String driveMode = DRIVE_MODE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getSwitchOnVelocity() <em>Switch On Velocity</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSwitchOnVelocity()
-   * @generated
-   * @ordered
-   */
-  protected static final short SWITCH_ON_VELOCITY_EDEFAULT = 0;
-
-  /**
-   * The cached value of the '{@link #getSwitchOnVelocity() <em>Switch On Velocity</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSwitchOnVelocity()
-   * @generated
-   * @ordered
-   */
-  protected short switchOnVelocity = SWITCH_ON_VELOCITY_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -345,29 +324,6 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
    * <!-- end-user-doc -->
    * @generated
    */
-  public short getSwitchOnVelocity()
-  {
-    return switchOnVelocity;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setSwitchOnVelocity(short newSwitchOnVelocity)
-  {
-    short oldSwitchOnVelocity = switchOnVelocity;
-    switchOnVelocity = newSwitchOnVelocity;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY, oldSwitchOnVelocity, switchOnVelocity));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -385,8 +341,6 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
         return getPwmFrequency();
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__DRIVE_MODE:
         return getDriveMode();
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY:
-        return getSwitchOnVelocity();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -418,9 +372,6 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
         return;
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__DRIVE_MODE:
         setDriveMode((String)newValue);
-        return;
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY:
-        setSwitchOnVelocity((Short)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -454,9 +405,6 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__DRIVE_MODE:
         setDriveMode(DRIVE_MODE_EDEFAULT);
         return;
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY:
-        setSwitchOnVelocity(SWITCH_ON_VELOCITY_EDEFAULT);
-        return;
     }
     super.eUnset(featureID);
   }
@@ -483,8 +431,6 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
         return pwmFrequency != PWM_FREQUENCY_EDEFAULT;
       case ModelPackage.TF_BRICK_DC_CONFIGURATION__DRIVE_MODE:
         return DRIVE_MODE_EDEFAULT == null ? driveMode != null : !DRIVE_MODE_EDEFAULT.equals(driveMode);
-      case ModelPackage.TF_BRICK_DC_CONFIGURATION__SWITCH_ON_VELOCITY:
-        return switchOnVelocity != SWITCH_ON_VELOCITY_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -552,8 +498,6 @@ public class TFBrickDCConfigurationImpl extends DimmableConfigurationImpl implem
     result.append(pwmFrequency);
     result.append(", driveMode: ");
     result.append(driveMode);
-    result.append(", switchOnVelocity: ");
-    result.append(switchOnVelocity);
     result.append(')');
     return result.toString();
   }

@@ -31,15 +31,14 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getAcceleration <em>Acceleration</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getPwmFrequency <em>Pwm Frequency</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getDriveMode <em>Drive Mode</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getSwitchOnVelocity <em>Switch On Velocity</em>}</li>
  * </ul>
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickDC()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.MInSwitchActor org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickDC> org.openhab.binding.tinkerforge.internal.model.MoveActor org.openhab.binding.tinkerforge.internal.model.SetPointActor<org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor org.openhab.binding.tinkerforge.internal.model.MDevice<org.openhab.binding.tinkerforge.internal.model.MTinkerBrickDC> org.openhab.binding.tinkerforge.internal.model.MoveActor org.openhab.binding.tinkerforge.internal.model.SetPointActor<org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration> org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
-public interface MBrickDC extends MSensor<DecimalValue>, MInSwitchActor, MDevice<BrickDC>, MoveActor, SetPointActor<TFBrickDCConfiguration>, CallbackListener
+public interface MBrickDC extends MSensor<DecimalValue>, ProgrammableSwitchActor, MDevice<BrickDC>, MoveActor, SetPointActor<TFBrickDCConfiguration>, CallbackListener
 {
   /**
    * Returns the value of the '<em><b>Threshold</b></em>' attribute.
@@ -246,33 +245,6 @@ public interface MBrickDC extends MSensor<DecimalValue>, MInSwitchActor, MDevice
    * @generated
    */
   void setDriveMode(DCDriveMode value);
-
-  /**
-   * Returns the value of the '<em><b>Switch On Velocity</b></em>' attribute.
-   * The default value is <code>"10000"</code>.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Switch On Velocity</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Switch On Velocity</em>' attribute.
-   * @see #setSwitchOnVelocity(short)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickDC_SwitchOnVelocity()
-   * @model default="10000" unique="false"
-   * @generated
-   */
-  short getSwitchOnVelocity();
-
-  /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getSwitchOnVelocity <em>Switch On Velocity</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Switch On Velocity</em>' attribute.
-   * @see #getSwitchOnVelocity()
-   * @generated
-   */
-  void setSwitchOnVelocity(short value);
 
   /**
    * <!-- begin-user-doc -->

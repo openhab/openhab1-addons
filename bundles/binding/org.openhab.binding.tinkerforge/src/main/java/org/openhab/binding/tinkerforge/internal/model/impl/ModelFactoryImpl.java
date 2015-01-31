@@ -65,8 +65,10 @@ import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfigu
 import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.PercentValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -275,8 +277,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createConfigOptsDimmableFromString(eDataType, initialValue);
       case ModelPackage.CONFIG_OPTS_SET_POINT:
         return createConfigOptsSetPointFromString(eDataType, initialValue);
-      case ModelPackage.DIRECTION:
-        return createDirectionFromString(eDataType, initialValue);
+      case ModelPackage.CONFIG_OPTS_SWITCH_SPEED:
+        return createConfigOptsSwitchSpeedFromString(eDataType, initialValue);
       case ModelPackage.DC_DRIVE_MODE:
         return createDCDriveModeFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
@@ -353,12 +355,16 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
         return createUpDownTypeFromString(eDataType, initialValue);
+      case ModelPackage.PERCENT_VALUE:
+        return createPercentValueFromString(eDataType, initialValue);
       case ModelPackage.DEVICE_OPTIONS:
         return createDeviceOptionsFromString(eDataType, initialValue);
       case ModelPackage.PERCENT_TYPE:
         return createPercentTypeFromString(eDataType, initialValue);
       case ModelPackage.INCREASE_DECREASE_TYPE:
         return createIncreaseDecreaseTypeFromString(eDataType, initialValue);
+      case ModelPackage.DIRECTION_VALUE:
+        return createDirectionValueFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -408,8 +414,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertConfigOptsDimmableToString(eDataType, instanceValue);
       case ModelPackage.CONFIG_OPTS_SET_POINT:
         return convertConfigOptsSetPointToString(eDataType, instanceValue);
-      case ModelPackage.DIRECTION:
-        return convertDirectionToString(eDataType, instanceValue);
+      case ModelPackage.CONFIG_OPTS_SWITCH_SPEED:
+        return convertConfigOptsSwitchSpeedToString(eDataType, instanceValue);
       case ModelPackage.DC_DRIVE_MODE:
         return convertDCDriveModeToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
@@ -486,12 +492,16 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
         return convertUpDownTypeToString(eDataType, instanceValue);
+      case ModelPackage.PERCENT_VALUE:
+        return convertPercentValueToString(eDataType, instanceValue);
       case ModelPackage.DEVICE_OPTIONS:
         return convertDeviceOptionsToString(eDataType, instanceValue);
       case ModelPackage.PERCENT_TYPE:
         return convertPercentTypeToString(eDataType, instanceValue);
       case ModelPackage.INCREASE_DECREASE_TYPE:
         return convertIncreaseDecreaseTypeToString(eDataType, instanceValue);
+      case ModelPackage.DIRECTION_VALUE:
+        return convertDirectionValueToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -1731,9 +1741,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Direction createDirectionFromString(EDataType eDataType, String initialValue)
+  public ConfigOptsSwitchSpeed createConfigOptsSwitchSpeedFromString(EDataType eDataType, String initialValue)
   {
-    Direction result = Direction.get(initialValue);
+    ConfigOptsSwitchSpeed result = ConfigOptsSwitchSpeed.get(initialValue);
     if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
     return result;
   }
@@ -1743,7 +1753,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public String convertDirectionToString(EDataType eDataType, Object instanceValue)
+  public String convertConfigOptsSwitchSpeedToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }
@@ -2353,6 +2363,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public PercentValue createPercentValueFromString(EDataType eDataType, String initialValue)
+  {
+    return (PercentValue)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertPercentValueToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public DeviceOptions createDeviceOptionsFromString(EDataType eDataType, String initialValue)
   {
     return (DeviceOptions)super.createFromString(eDataType, initialValue);
@@ -2404,6 +2434,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertIncreaseDecreaseTypeToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DirectionValue createDirectionValueFromString(EDataType eDataType, String initialValue)
+  {
+    return (DirectionValue)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertDirectionValueToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }
