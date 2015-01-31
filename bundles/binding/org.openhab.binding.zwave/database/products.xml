@@ -1629,6 +1629,15 @@
 			<Label lang="en">Flush dimmer</Label>
 			<ConfigFile>qubino/zmnhda.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>5</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHIA</Model>
+			<Label lang="en">Flush on/off thermostat</Label>
+			<ConfigFile>qubino/zmnhia.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>97</Id>
