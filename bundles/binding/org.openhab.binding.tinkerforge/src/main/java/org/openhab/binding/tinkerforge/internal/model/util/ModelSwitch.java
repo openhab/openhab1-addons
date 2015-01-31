@@ -677,10 +677,12 @@ public class ModelSwitch<T> extends Switch<T>
       {
         RemoteSwitchB remoteSwitchB = (RemoteSwitchB)theEObject;
         T result = caseRemoteSwitchB(remoteSwitchB);
+        if (result == null) result = caseMSensor(remoteSwitchB);
         if (result == null) result = caseRemoteSwitch(remoteSwitchB);
-        if (result == null) result = caseMTFConfigConsumer(remoteSwitchB);
+        if (result == null) result = caseDimmableActor(remoteSwitchB);
         if (result == null) result = caseMInSwitchActor(remoteSwitchB);
         if (result == null) result = caseMSubDevice(remoteSwitchB);
+        if (result == null) result = caseMTFConfigConsumer(remoteSwitchB);
         if (result == null) result = caseMSwitchActor(remoteSwitchB);
         if (result == null) result = caseMBaseDevice(remoteSwitchB);
         if (result == null) result = caseSwitchSensor(remoteSwitchB);
@@ -1107,6 +1109,7 @@ public class ModelSwitch<T> extends Switch<T>
       {
         RemoteSwitchBConfiguration remoteSwitchBConfiguration = (RemoteSwitchBConfiguration)theEObject;
         T result = caseRemoteSwitchBConfiguration(remoteSwitchBConfiguration);
+        if (result == null) result = caseDimmableConfiguration(remoteSwitchBConfiguration);
         if (result == null) result = caseTFConfig(remoteSwitchBConfiguration);
         if (result == null) result = defaultCase(theEObject);
         return result;

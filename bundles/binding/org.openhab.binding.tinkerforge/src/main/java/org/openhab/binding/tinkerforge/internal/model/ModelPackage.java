@@ -7292,13 +7292,22 @@ public interface ModelPackage extends EPackage
   int REMOTE_SWITCH_B = 56;
 
   /**
+   * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__SENSOR_VALUE = MSENSOR__SENSOR_VALUE;
+
+  /**
    * The feature id for the '<em><b>Switch State</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B__SWITCH_STATE = REMOTE_SWITCH__SWITCH_STATE;
+  int REMOTE_SWITCH_B__SWITCH_STATE = MSENSOR_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -7307,7 +7316,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B__LOGGER = REMOTE_SWITCH__LOGGER;
+  int REMOTE_SWITCH_B__LOGGER = MSENSOR_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Uid</b></em>' attribute.
@@ -7316,7 +7325,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B__UID = REMOTE_SWITCH__UID;
+  int REMOTE_SWITCH_B__UID = MSENSOR_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Poll</b></em>' attribute.
@@ -7325,7 +7334,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B__POLL = REMOTE_SWITCH__POLL;
+  int REMOTE_SWITCH_B__POLL = MSENSOR_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -7334,7 +7343,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B__ENABLED_A = REMOTE_SWITCH__ENABLED_A;
+  int REMOTE_SWITCH_B__ENABLED_A = MSENSOR_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Sub Id</b></em>' attribute.
@@ -7343,7 +7352,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B__SUB_ID = REMOTE_SWITCH__SUB_ID;
+  int REMOTE_SWITCH_B__SUB_ID = MSENSOR_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Mbrick</b></em>' container reference.
@@ -7352,7 +7361,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B__MBRICK = REMOTE_SWITCH__MBRICK;
+  int REMOTE_SWITCH_B__MBRICK = MSENSOR_FEATURE_COUNT + 6;
 
   /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
@@ -7361,7 +7370,25 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B__TF_CONFIG = REMOTE_SWITCH_FEATURE_COUNT + 0;
+  int REMOTE_SWITCH_B__TF_CONFIG = MSENSOR_FEATURE_COUNT + 7;
+
+  /**
+   * The feature id for the '<em><b>Min Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__MIN_VALUE = MSENSOR_FEATURE_COUNT + 8;
+
+  /**
+   * The feature id for the '<em><b>Max Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__MAX_VALUE = MSENSOR_FEATURE_COUNT + 9;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -7370,7 +7397,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B__DEVICE_TYPE = REMOTE_SWITCH_FEATURE_COUNT + 1;
+  int REMOTE_SWITCH_B__DEVICE_TYPE = MSENSOR_FEATURE_COUNT + 10;
 
   /**
    * The feature id for the '<em><b>Address</b></em>' attribute.
@@ -7379,7 +7406,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B__ADDRESS = REMOTE_SWITCH_FEATURE_COUNT + 2;
+  int REMOTE_SWITCH_B__ADDRESS = MSENSOR_FEATURE_COUNT + 11;
 
   /**
    * The feature id for the '<em><b>Unit</b></em>' attribute.
@@ -7388,7 +7415,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B__UNIT = REMOTE_SWITCH_FEATURE_COUNT + 3;
+  int REMOTE_SWITCH_B__UNIT = MSENSOR_FEATURE_COUNT + 12;
 
   /**
    * The feature id for the '<em><b>Repeats</b></em>' attribute.
@@ -7397,7 +7424,16 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B__REPEATS = REMOTE_SWITCH_FEATURE_COUNT + 4;
+  int REMOTE_SWITCH_B__REPEATS = MSENSOR_FEATURE_COUNT + 13;
+
+  /**
+   * The feature id for the '<em><b>Target Dimmvalue</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B__TARGET_DIMMVALUE = MSENSOR_FEATURE_COUNT + 14;
 
   /**
    * The number of structural features of the '<em>Remote Switch B</em>' class.
@@ -7406,7 +7442,16 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B_FEATURE_COUNT = REMOTE_SWITCH_FEATURE_COUNT + 5;
+  int REMOTE_SWITCH_B_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 15;
+
+  /**
+   * The operation id for the '<em>Fetch Sensor Value</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B___FETCH_SENSOR_VALUE = MSENSOR___FETCH_SENSOR_VALUE;
 
   /**
    * The operation id for the '<em>Fetch Switch State</em>' operation.
@@ -7415,7 +7460,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B___FETCH_SWITCH_STATE = REMOTE_SWITCH___FETCH_SWITCH_STATE;
+  int REMOTE_SWITCH_B___FETCH_SWITCH_STATE = MSENSOR_OPERATION_COUNT + 0;
 
   /**
    * The operation id for the '<em>Turn Switch</em>' operation.
@@ -7424,7 +7469,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B___TURN_SWITCH__ONOFFVALUE = REMOTE_SWITCH___TURN_SWITCH__ONOFFVALUE;
+  int REMOTE_SWITCH_B___TURN_SWITCH__ONOFFVALUE = MSENSOR_OPERATION_COUNT + 1;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -7433,7 +7478,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B___INIT = REMOTE_SWITCH___INIT;
+  int REMOTE_SWITCH_B___INIT = MSENSOR_OPERATION_COUNT + 2;
 
   /**
    * The operation id for the '<em>Enable</em>' operation.
@@ -7442,7 +7487,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B___ENABLE = REMOTE_SWITCH___ENABLE;
+  int REMOTE_SWITCH_B___ENABLE = MSENSOR_OPERATION_COUNT + 3;
 
   /**
    * The operation id for the '<em>Disable</em>' operation.
@@ -7451,7 +7496,16 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B___DISABLE = REMOTE_SWITCH___DISABLE;
+  int REMOTE_SWITCH_B___DISABLE = MSENSOR_OPERATION_COUNT + 4;
+
+  /**
+   * The operation id for the '<em>Dimm</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_B___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS = MSENSOR_OPERATION_COUNT + 5;
 
   /**
    * The number of operations of the '<em>Remote Switch B</em>' class.
@@ -7460,7 +7514,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_B_OPERATION_COUNT = REMOTE_SWITCH_OPERATION_COUNT + 0;
+  int REMOTE_SWITCH_B_OPERATION_COUNT = MSENSOR_OPERATION_COUNT + 6;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCImpl <em>Remote Switch C</em>}' class.
@@ -12603,13 +12657,31 @@ public interface ModelPackage extends EPackage
   int REMOTE_SWITCH_ACONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Min Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_BCONFIGURATION__MIN_VALUE = DIMMABLE_CONFIGURATION__MIN_VALUE;
+
+  /**
+   * The feature id for the '<em><b>Max Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOTE_SWITCH_BCONFIGURATION__MAX_VALUE = DIMMABLE_CONFIGURATION__MAX_VALUE;
+
+  /**
    * The feature id for the '<em><b>Address</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_BCONFIGURATION__ADDRESS = TF_CONFIG_FEATURE_COUNT + 0;
+  int REMOTE_SWITCH_BCONFIGURATION__ADDRESS = DIMMABLE_CONFIGURATION_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Unit</b></em>' attribute.
@@ -12618,7 +12690,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_BCONFIGURATION__UNIT = TF_CONFIG_FEATURE_COUNT + 1;
+  int REMOTE_SWITCH_BCONFIGURATION__UNIT = DIMMABLE_CONFIGURATION_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Repeats</b></em>' attribute.
@@ -12627,7 +12699,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_BCONFIGURATION__REPEATS = TF_CONFIG_FEATURE_COUNT + 2;
+  int REMOTE_SWITCH_BCONFIGURATION__REPEATS = DIMMABLE_CONFIGURATION_FEATURE_COUNT + 2;
 
   /**
    * The number of structural features of the '<em>Remote Switch BConfiguration</em>' class.
@@ -12636,7 +12708,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_BCONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 3;
+  int REMOTE_SWITCH_BCONFIGURATION_FEATURE_COUNT = DIMMABLE_CONFIGURATION_FEATURE_COUNT + 3;
 
   /**
    * The number of operations of the '<em>Remote Switch BConfiguration</em>' class.
@@ -12645,7 +12717,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REMOTE_SWITCH_BCONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
+  int REMOTE_SWITCH_BCONFIGURATION_OPERATION_COUNT = DIMMABLE_CONFIGURATION_OPERATION_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>System Code</b></em>' attribute.
@@ -15470,6 +15542,17 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EAttribute getRemoteSwitchB_Repeats();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getTargetDimmvalue <em>Target Dimmvalue</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Target Dimmvalue</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB#getTargetDimmvalue()
+   * @see #getRemoteSwitchB()
+   * @generated
+   */
+  EAttribute getRemoteSwitchB_TargetDimmvalue();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC <em>Remote Switch C</em>}'.
@@ -19427,6 +19510,14 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute REMOTE_SWITCH_B__REPEATS = eINSTANCE.getRemoteSwitchB_Repeats();
+
+    /**
+     * The meta object literal for the '<em><b>Target Dimmvalue</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REMOTE_SWITCH_B__TARGET_DIMMVALUE = eINSTANCE.getRemoteSwitchB_TargetDimmvalue();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.RemoteSwitchCImpl <em>Remote Switch C</em>}' class.
