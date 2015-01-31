@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,6 +35,9 @@ public interface FritzboxBindingProvider extends BindingProvider {
 	/** binds wlan state to an item */
 	static final public String TYPE_WLAN = "wlan";
 
+	/** binds guest wlan state to an item */
+	static final public String TYPE_GUEST_WLAN = "guestwlan";
+	
 	/** binds dect state to an item */
 	static final public String TYPE_DECT = "dect";
 
@@ -48,7 +51,7 @@ public interface FritzboxBindingProvider extends BindingProvider {
 	static final public String TYPE_COMMAND = "cmd";
 
 	static final public String[] TYPES = { TYPE_INBOUND, TYPE_OUTBOUND,
-			TYPE_ACTIVE, TYPE_WLAN, TYPE_DECT, TYPE_TAM, TYPE_QUERY,
+			TYPE_ACTIVE, TYPE_WLAN, TYPE_GUEST_WLAN, TYPE_DECT, TYPE_TAM, TYPE_QUERY,
 			TYPE_COMMAND };
 
 	/**

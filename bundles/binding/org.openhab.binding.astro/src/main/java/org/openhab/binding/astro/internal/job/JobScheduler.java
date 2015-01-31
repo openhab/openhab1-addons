@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,6 +27,7 @@ import org.openhab.binding.astro.internal.common.AstroContext;
 import org.openhab.binding.astro.internal.config.AstroBindingConfig;
 import org.openhab.binding.astro.internal.model.PlanetName;
 import org.openhab.binding.astro.internal.model.Season;
+import org.openhab.binding.astro.internal.util.DateTimeUtils;
 import org.openhab.binding.astro.internal.util.DelayedExecutor;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -172,7 +173,11 @@ public class JobScheduler {
 	 * Schedules next Season job.
 	 */
 	public void scheduleSeasonJob(Season season) {
-		schedule(season.getNextSeason(), "Season", new JobDataMap());
+		Calendar nextSeason = season.getNextSeason();
+		if (nextSeason == null) {
+			nextSeason = DateTimeUtils.getFirstDayOfNextYear();
+		}
+		schedule(nextSeason, "Season", new JobDataMap());
 	}
 
 	/**

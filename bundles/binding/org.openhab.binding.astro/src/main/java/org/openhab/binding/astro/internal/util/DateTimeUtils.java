@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,13 +35,15 @@ public class DateTimeUtils {
 	 * Creates a Range object within the specified months and days. The start
 	 * time is midnight, the end time is end of the day.
 	 */
-	public static Range getRange(int startMonth, int startDay, int endMonth, int endDay) {
+	public static Range getRange(int startYear, int startMonth, int startDay, int endYear,int endMonth, int endDay) {
 		Calendar start = Calendar.getInstance();
+		start.set(Calendar.YEAR, startYear);
 		start.set(Calendar.MONTH, startMonth);
 		start.set(Calendar.DAY_OF_MONTH, startDay);
 		start = truncateToMidnight(start);
 
 		Calendar end = Calendar.getInstance();
+		end.set(Calendar.YEAR, endYear);
 		end.set(Calendar.MONTH, endMonth);
 		end.set(Calendar.DAY_OF_MONTH, endDay);
 		end.set(Calendar.HOUR_OF_DAY, 23);
@@ -144,5 +146,15 @@ public class DateTimeUtils {
 			}
 		}
 		return next;
+	}
+	
+	/**
+	 * Returns the midnight Calendar for the first day next year.
+	 */
+	public static Calendar getFirstDayOfNextYear() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_YEAR, 1);
+		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR) + 1);
+		return truncateToMidnight(cal);
 	}
 }

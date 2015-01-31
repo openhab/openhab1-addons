@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,32 +18,32 @@ import org.openhab.binding.insteonplm.internal.utils.Utils;
  */
 
 public class InsteonAddress {
-	private byte highByte, middleByte,lowByte;
+	private byte highByte;
+	private byte middleByte;
+	private byte lowByte;
+	private boolean x10;
 	
 	public InsteonAddress() {
-		highByte = 0x00; middleByte = 0x00; lowByte = 0x00;
+		highByte = 0x00;
+		middleByte = 0x00;
+		lowByte = 0x00;
+		x10 = false;
 	}
 	
 	public InsteonAddress(InsteonAddress a) {
-		highByte = a.highByte; middleByte = a.middleByte; lowByte = a.lowByte;
+		highByte = a.highByte;
+		middleByte = a.middleByte;
+		lowByte = a.lowByte;
+		x10 = a.x10;
 	}
 	
 	public InsteonAddress(byte high, byte middle, byte low) {
-		highByte = high; middleByte = middle; lowByte = low;
+		highByte = high;
+		middleByte = middle;
+		lowByte = low;
+		x10 = false;
 	}
-	
-	public InsteonAddress(int high, int middle, int low) {
-		this((byte) high, (byte) middle, (byte) low);
-	}
-	
-	public InsteonAddress(byte[] address) {
-		if (address.length != 3) {
-			throw new IllegalArgumentException("address must be 3 bytes!");
-		}
-		highByte	= address[0];
-		middleByte	= address[1];
-		lowByte		= address[2];
-	}
+
 	/**
 	 * Constructor
 	 * @param address string must have format of e.g. '2a.3c.40' or (for X10) 'H.UU'
@@ -53,6 +53,7 @@ public class InsteonAddress {
 			highByte = 0;
 			middleByte = 0;
 			lowByte = X10.s_addressToByte(address);
+			x10 = true;
 		} else {
 			String[] parts = address.split("\\.");
 			if (parts.length != 3) 
@@ -60,6 +61,7 @@ public class InsteonAddress {
 			highByte	= (byte) Utils.fromHexString(parts[0]);
 			middleByte	= (byte) Utils.fromHexString(parts[1]);
 			lowByte		= (byte) Utils.fromHexString(parts[2]);
+			x10 = false;
 		}
 	}
 	/**
@@ -71,6 +73,7 @@ public class InsteonAddress {
 		highByte	= 0;
 		middleByte	= 0;
 		lowByte		= aX10HouseUnit;
+		x10			= true;
 	}
 	
 	public void setHighByte(byte h)		{highByte	= h;}
@@ -83,7 +86,7 @@ public class InsteonAddress {
 
 	public byte getX10HouseCode() { return (byte) ((lowByte & 0xf0) >> 4); }
 	public byte getX10UnitCode() { return (byte) ((lowByte & 0x0f)); }
-	public boolean isX10() { return highByte == 0 && middleByte == 0 && lowByte != 0; }
+	public boolean isX10() { return x10; }
 	
 	public void storeBytes(byte[] bytes, int offset) {
 		bytes[offset] 		= getHighByte();
@@ -111,19 +114,36 @@ public class InsteonAddress {
 		}
 		return s;
 	}
+
 	@Override
-	public boolean equals(Object a) {
-		if (!(a instanceof InsteonAddress)) return false;
-		InsteonAddress address = (InsteonAddress) a;
-		boolean low = address.getLowByte() == getLowByte();
-		boolean middle = address.getMiddleByte() == getMiddleByte();
-		boolean high = address.getHighByte() == getHighByte();
-		return low && middle && high;
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		InsteonAddress other = (InsteonAddress) obj;
+		if (highByte != other.highByte)
+			return false;
+		if (lowByte != other.lowByte)
+			return false;
+		if (middleByte != other.middleByte)
+			return false;
+		if (x10 != other.x10)
+			return false;
+		return true;
 	}
+
 	@Override
 	public int hashCode() {
-		int hashCode = lowByte + 256 * middleByte + 65536 * highByte;
-		return hashCode;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + highByte;
+		result = prime * result + lowByte;
+		result = prime * result + middleByte;
+		result = prime * result + (x10 ? 1231 : 1237);
+		return result;
 	}
 
 	/**
