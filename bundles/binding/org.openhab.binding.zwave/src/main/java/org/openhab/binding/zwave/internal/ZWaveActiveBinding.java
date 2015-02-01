@@ -96,7 +96,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	@Override
 	protected void execute() {
 		// Call the network monitor
-		networkMonitor.execute();
+		if(networkMonitor != null) {
+			networkMonitor.execute();
+		}
 
 		// If we're not currently in a poll cycle, restart the polling table
 		if(pollingIterator == null) {
