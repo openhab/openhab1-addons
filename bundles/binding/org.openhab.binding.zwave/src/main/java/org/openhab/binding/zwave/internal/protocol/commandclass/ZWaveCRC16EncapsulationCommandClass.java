@@ -91,7 +91,7 @@ public class ZWaveCRC16EncapsulationCommandClass extends ZWaveCommandClass {
 		ByteBuffer byteBuffer = ByteBuffer.allocate(2);
 		byteBuffer.putShort(calculatedCrc);
 		if (!Arrays.equals(messageCrc, byteBuffer.array())) {
-			logger.error("NODE %d: CRC check failed message contains %s but should be %s",
+			logger.error("NODE {}: CRC check failed message contains {} but should be {}",
 					this.getNode().getNodeId(), SerialMessage.bb2hex(messageCrc), SerialMessage.bb2hex(byteBuffer.array()));
 			return;
 		}
