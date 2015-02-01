@@ -364,7 +364,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 	/**
 	 * Creates an openHAB {@link State} in accordance to the class of the given
 	 * {@code propertyValue}. Currently {@link Date}, {@link BigDecimal},
-	 * {@code Temperature} and
+	 * {@link Temperature} and
 	 * {@link Boolean} are handled explicitly. All other {@code dataTypes} are
 	 * mapped to {@link StringType}.
 	 * <p>
@@ -389,6 +389,8 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime((Date) propertyValue);
 			return new DateTimeType(calendar);
+		} else if (Integer.class.isAssignableFrom(dataType)) {
+			return new DecimalType((Integer) propertyValue);
 		} else if (BigDecimal.class.isAssignableFrom(dataType)) {
 			return new DecimalType((BigDecimal) propertyValue);
 		} else if (Boolean.class.isAssignableFrom(dataType)) {

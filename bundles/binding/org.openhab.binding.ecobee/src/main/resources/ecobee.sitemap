@@ -1,0 +1,31 @@
+sitemap demo label="Ecobee Thermostat Test"
+{
+	Frame label="Thermostat" {
+	    Text item=identifier
+		Text item=name
+		Text item=thermostatRev
+		Switch item=isRegistered
+		Text item=modelNumber
+		Text item=lastModified
+		Text item=thermostatTime
+		Text item=utcTime
+		Text item=equipmentStatus
+		Text item=version_thermostatFirmwareVersion
+		Text item=program_currentClimateRef
+	}
+	Frame {
+		Group item=gSettings label="Settings" icon="temperature"
+	}
+	Frame {
+		Group item=gRuntime label="Runtime" icon="temperature"
+	}
+	Frame {
+		Group item=gLocation label="Location" icon="house"
+	}
+	Frame {
+		Group item=gWeather label="Weather" icon="contact-open"
+	}
+	Frame {
+		Group item=gHouseDetails label="House Details" icon="house"
+	}
+}

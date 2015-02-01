@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -65,8 +66,7 @@ public class Thermostat extends AbstractMessagePart {
 	private String identifier;
 	private String name;
 	private String thermostatRev;
-	@JsonProperty("isRegistered")
-	private Boolean _isRegistered;
+	private Boolean isRegistered;
 	private String modelNumber;
 	private Date lastModified;
 	private Date thermostatTime;
@@ -113,7 +113,7 @@ public class Thermostat extends AbstractMessagePart {
 	public Object getProperty(String name) throws IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException {
 
-		return BeanUtils.getProperty(this, name);
+		return PropertyUtils.getProperty(this, name);
 	}
 
 	/**
@@ -187,8 +187,8 @@ public class Thermostat extends AbstractMessagePart {
 	 * @return whether the user registered the thermostat
 	 */
 	@JsonProperty("isRegistered")
-	public Boolean isRegistered() {
-		return this._isRegistered;
+	public Boolean getIsRegistered() {
+		return this.isRegistered;
 	}
 
 	/**
@@ -471,7 +471,7 @@ public class Thermostat extends AbstractMessagePart {
 		builder.append("identifier", this.identifier);
 		builder.append("name", this.name);
 		builder.append("thermostatRev", this.thermostatRev);
-		builder.append("isRegistered", this._isRegistered);
+		builder.append("isRegistered", this.isRegistered);
 		builder.append("modelNumber", this.modelNumber);
 		builder.append("lastModified", this.lastModified);
 		builder.append("thermostatTime", this.thermostatTime);
@@ -716,18 +716,12 @@ public class Thermostat extends AbstractMessagePart {
 		private Temperature maxSetForward;
 		private Temperature quickSaveSetBack;
 		private Temperature quickSaveSetForward;
-		@JsonProperty("hasHeatPump")
-		private Boolean _hasHeatPump;
-		@JsonProperty("hasForcedAir")
-		private Boolean _hasForcedAir;
-		@JsonProperty("hasBoiler")
-		private Boolean _hasBoiler;
-		@JsonProperty("hasHumidifier")
-		private Boolean _hasHumidifier;
-		@JsonProperty("hasErv")
-		private Boolean _hasErv;
-		@JsonProperty("hasHrv")
-		private Boolean _hasHrv;
+		private Boolean hasHeatPump;
+		private Boolean hasForcedAir;
+		private Boolean hasBoiler;
+		private Boolean hasHumidifier;
+		private Boolean hasErv;
+		private Boolean hasHrv;
 		private Boolean condensationAvoid;
 		private Boolean useCelsius;
 		private Boolean useTimeFormat12;
@@ -752,10 +746,8 @@ public class Thermostat extends AbstractMessagePart {
 		private Temperature tempCorrection;
 		private String holdAction;
 		private Boolean heatPumpGroundWater;
-		@JsonProperty("hasElectric")
-		private Boolean _hasElectric;
-		@JsonProperty("hasDehumidifier")
-		private Boolean _hasDehumidifier;
+		private Boolean hasElectric;
+		private Boolean hasDehumidifier;
 		private String dehumidifierMode;
 		private Integer dehumidifierLevel;
 		private Boolean dehumidifyWithAC;
@@ -783,7 +775,7 @@ public class Thermostat extends AbstractMessagePart {
 		private Boolean disablePreCooling;
 		private Boolean installerCodeRequired;
 		private String drAccept;
-		private Boolean _isRentalProperty;
+		private Boolean isRentalProperty;
 		private Boolean useZoneController;
 		private Integer randomStartDelayCool;
 		private Integer randomStartDelayHeat;
@@ -808,11 +800,9 @@ public class Thermostat extends AbstractMessagePart {
 		private Boolean smartCirculation;
 		private Boolean followMeComfort;
 		private String ventilatorType;
-		@JsonProperty("isVentilatorTimerOn")
-		private Boolean _isVentilatorTimerOn;
+		private Boolean isVentilatorTimerOn;
 		private Date ventilatorOffDateTime;
-		@JsonProperty("hasUVFilter")
-		private Boolean _hasUVFilter;
+		private Boolean hasUVFilter;
 		private Boolean coolingLockout;
 		private Boolean ventilatorFreeCooling;
 		private Boolean dehumidifyWhenHeating;
@@ -1152,32 +1142,32 @@ public class Thermostat extends AbstractMessagePart {
 		 * @return whether the thermostat is controlling a heat pump
 		 */
 		@JsonProperty("hasHeatPump")
-		public Boolean hasHeatPump() {
-			return this._hasHeatPump;
+		public Boolean getHasHeatPump() {
+			return this.hasHeatPump;
 		}
 
 		/**
 		 * @return whether the thermostat is controlling a forced air furnace
 		 */
 		@JsonProperty("hasForcedAir")
-		public Boolean hasForcedAir() {
-			return this._hasForcedAir;
+		public Boolean getHasForcedAir() {
+			return this.hasForcedAir;
 		}
 
 		/**
 		 * @return whether the thermostat is controlling a boiler
 		 */
 		@JsonProperty("hasBoiler")
-		public Boolean hasBoiler() {
-			return this._hasBoiler;
+		public Boolean getHasBoiler() {
+			return this.hasBoiler;
 		}
 
 		/**
 		 * @return whether the thermostat is controlling a humidifier
 		 */
 		@JsonProperty("hasHumidifier")
-		public Boolean hasHumidifier() {
-			return this._hasHumidifier;
+		public Boolean getHasHumidifier() {
+			return this.hasHumidifier;
 		}
 
 		/**
@@ -1185,8 +1175,8 @@ public class Thermostat extends AbstractMessagePart {
 		 *         ventilator
 		 */
 		@JsonProperty("hasErv")
-		public Boolean hasErv() {
-			return this._hasErv;
+		public Boolean getHasErv() {
+			return this.hasErv;
 		}
 
 		/**
@@ -1194,8 +1184,8 @@ public class Thermostat extends AbstractMessagePart {
 		 *         ventilator
 		 */
 		@JsonProperty("hasHrv")
-		public Boolean hasHrv() {
-			return this._hasHrv;
+		public Boolean getHasHrv() {
+			return this.hasHrv;
 		}
 
 		/**
@@ -1634,16 +1624,16 @@ public class Thermostat extends AbstractMessagePart {
 		 *         system
 		 */
 		@JsonProperty("hasElectric")
-		public Boolean hasElectric() {
-			return this._hasElectric;
+		public Boolean getHasElectric() {
+			return this.hasElectric;
 		}
 
 		/**
 		 * @return whether the thermostat is connected to a dehumidifier
 		 */
 		@JsonProperty("hasDehumidifier")
-		public Boolean hasDehumidifier() {
-			return this._hasDehumidifier;
+		public Boolean getHasDehumidifier() {
+			return this.hasDehumidifier;
 		}
 
 		/**
@@ -2107,8 +2097,8 @@ public class Thermostat extends AbstractMessagePart {
 		 * @return whether the property is a rental or not
 		 */
 		@JsonProperty("isRentalProperty")
-		public Boolean isRentalProperty() {
-			return this._isRentalProperty;
+		public Boolean getIsRentalProperty() {
+			return this.isRentalProperty;
 		}
 
 		/**
@@ -2117,7 +2107,7 @@ public class Thermostat extends AbstractMessagePart {
 		 */
 		@JsonProperty("isRentalProperty")
 		public void setIsRentalProperty(Boolean isRentalProperty) {
-			this._isRentalProperty = isRentalProperty;
+			this.isRentalProperty = isRentalProperty;
 		}
 
 		/**
@@ -2546,8 +2536,8 @@ public class Thermostat extends AbstractMessagePart {
 		 *         is set to its default value.
 		 */
 		@JsonProperty("isVentilatorTimerOn")
-		public Boolean isVentilatorTimerOn() {
-			return this._isVentilatorTimerOn;
+		public Boolean getIsVentilatorTimerOn() {
+			return this.isVentilatorTimerOn;
 		}
 
 		/**
@@ -2559,7 +2549,7 @@ public class Thermostat extends AbstractMessagePart {
 		 */
 		@JsonProperty("isVentilatorTimerOn")
 		public void setIsVentilatorTimerOn(Boolean isVentilatorTimerOn) {
-			this._isVentilatorTimerOn = isVentilatorTimerOn;
+			this.isVentilatorTimerOn = isVentilatorTimerOn;
 		}
 
 		/**
@@ -2576,8 +2566,8 @@ public class Thermostat extends AbstractMessagePart {
 		 *         true.
 		 */
 		@JsonProperty("hasUVFilter")
-		public Boolean hasUVFilter() {
-			return this._hasUVFilter;
+		public Boolean getHasUVFilter() {
+			return this.hasUVFilter;
 		}
 
 		/**
@@ -2587,7 +2577,7 @@ public class Thermostat extends AbstractMessagePart {
 		 */
 		@JsonProperty("hasUVFilter")
 		public void setHasUVFilter(Boolean hasUVFilter) {
-			this._hasUVFilter = hasUVFilter;
+			this.hasUVFilter = hasUVFilter;
 		}
 
 		/**
@@ -2734,12 +2724,12 @@ public class Thermostat extends AbstractMessagePart {
 			builder.append("maxSetForward", this.maxSetForward);
 			builder.append("quickSaveSetBack", this.quickSaveSetBack);
 			builder.append("quickSaveSetForward", this.quickSaveSetForward);
-			builder.append("hasHeatPump", this._hasHeatPump);
-			builder.append("hasForcedAir", this._hasForcedAir);
-			builder.append("hasBoiler", this._hasBoiler);
-			builder.append("hasHumidifier", this._hasHumidifier);
-			builder.append("hasErv", this._hasErv);
-			builder.append("hasHrv", this._hasHrv);
+			builder.append("hasHeatPump", this.hasHeatPump);
+			builder.append("hasForcedAir", this.hasForcedAir);
+			builder.append("hasBoiler", this.hasBoiler);
+			builder.append("hasHumidifier", this.hasHumidifier);
+			builder.append("hasErv", this.hasErv);
+			builder.append("hasHrv", this.hasHrv);
 			builder.append("condensationAvoid", this.condensationAvoid);
 			builder.append("useCelsius", this.useCelsius);
 			builder.append("useTimeFormat12", this.useTimeFormat12);
@@ -2772,8 +2762,8 @@ public class Thermostat extends AbstractMessagePart {
 			builder.append("tempCorrection", this.tempCorrection);
 			builder.append("holdAction", this.holdAction);
 			builder.append("heatPumpGroundWater", this.heatPumpGroundWater);
-			builder.append("hasElectric", this._hasElectric);
-			builder.append("hasDehumidifier", this._hasDehumidifier);
+			builder.append("hasElectric", this.hasElectric);
+			builder.append("hasDehumidifier", this.hasDehumidifier);
 			builder.append("humidifierMode", this.humidifierMode);
 			builder.append("dehumidifierLevel", this.dehumidifierLevel);
 			builder.append("dehumidifyWithAC", this.dehumidifyWithAC);
@@ -2806,7 +2796,7 @@ public class Thermostat extends AbstractMessagePart {
 			builder.append("disablePreCooling", this.disablePreCooling);
 			builder.append("installerCodeRequired", this.installerCodeRequired);
 			builder.append("drAccept", this.drAccept);
-			builder.append("isRentalProperty", this._isRentalProperty);
+			builder.append("isRentalProperty", this.isRentalProperty);
 			builder.append("useZoneController", this.useZoneController);
 			builder.append("randomStartDelayCool", this.randomStartDelayCool);
 			builder.append("randomStartDelayHeat", this.randomStartDelayHeat);
@@ -2842,9 +2832,9 @@ public class Thermostat extends AbstractMessagePart {
 			builder.append("smartCirculation", this.smartCirculation);
 			builder.append("followMeComfort", this.followMeComfort);
 			builder.append("ventilatorType", this.ventilatorType);
-			builder.append("isVentilatorTimerOn", this._isVentilatorTimerOn);
+			builder.append("isVentilatorTimerOn", this.isVentilatorTimerOn);
 			builder.append("ventilatorOffDateTime", this.ventilatorOffDateTime);
-			builder.append("_hasUVFilter", this._hasUVFilter);
+			builder.append("hasUVFilter", this.hasUVFilter);
 			builder.append("coolingLockout", this.coolingLockout);
 			builder.append("ventilatorFreeCooling", this.ventilatorFreeCooling);
 			builder.append("dehumidifyWhenHeating", this.dehumidifyWhenHeating);
@@ -2988,7 +2978,7 @@ public class Thermostat extends AbstractMessagePart {
 		 * @return whether the thermostat is currently connected to the server
 		 */
 		@JsonProperty("connected")
-		public Boolean isConnected() {
+		public Boolean getConnected() {
 			return this.connected;
 		}
 
@@ -4174,8 +4164,7 @@ public class Thermostat extends AbstractMessagePart {
 	public static class Location extends AbstractMessagePart {
 		private Integer timeZoneOffsetMinutes;
 		private String timeZone;
-		@JsonProperty("isDaylightSaving")
-		private Boolean _isDaylightSaving;
+		private Boolean isDaylightSaving;
 		private String streetAddress;
 		private String city;
 		private String provinceState;
@@ -4216,8 +4205,8 @@ public class Thermostat extends AbstractMessagePart {
 		 *         displaying the date and time
 		 */
 		@JsonProperty("isDaylightSaving")
-		public Boolean isDaylightSaving() {
-			return this._isDaylightSaving;
+		public Boolean getIsDaylightSaving() {
+			return this.isDaylightSaving;
 		}
 
 		/**
@@ -4227,7 +4216,7 @@ public class Thermostat extends AbstractMessagePart {
 		 */
 		@JsonProperty("isDaylightSaving")
 		public void setIsDaylightSaving(Boolean isDaylightSaving) {
-			this._isDaylightSaving = isDaylightSaving;
+			this.isDaylightSaving = isDaylightSaving;
 		}
 
 		/**
@@ -4357,7 +4346,7 @@ public class Thermostat extends AbstractMessagePart {
 			builder.appendSuper(super.toString());
 			builder.append("timeZoneOffsetMinutes", this.timeZoneOffsetMinutes);
 			builder.append("timeZone", this.timeZone);
-			builder.append("isDaylightSaving", this._isDaylightSaving);
+			builder.append("isDaylightSaving", this.isDaylightSaving);
 			builder.append("streetAddress", this.streetAddress);
 			builder.append("city", this.city);
 			builder.append("provinceState", this.provinceState);
