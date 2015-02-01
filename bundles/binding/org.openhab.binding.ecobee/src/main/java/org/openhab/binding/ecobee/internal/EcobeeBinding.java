@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.ecobee.internal;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -99,6 +100,15 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 				}
 			}
 		}, Temperature.class);
+		
+		ConvertUtils.register(new Converter() {
+
+			@SuppressWarnings("rawtypes")
+			@Override
+			public Object convert(Class type, Object value) {
+				return value.toString();
+			}
+		}, String.class);
 	}
 
 	private ConfigurationAdmin configAdmin;
@@ -343,25 +353,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 					thermostatIdentifier, itemName);
 		} else {
 			try {
-				Object o = thermostat.getProperty(property);
-
-				if (o instanceof String) {
-					return StringType.valueOf((String) o);
-				} else if (o instanceof Integer) {
-					return new DecimalType((Integer) o);
-				} else if (o instanceof Boolean) {
-					return o.equals(Boolean.TRUE) ? OnOffType.ON
-							: OnOffType.OFF;
-				} else if (o instanceof Date) {
-					Calendar c = Calendar.getInstance();
-					c.setTime((Date) o);
-					return new DateTimeType(c);
-				} else if (o instanceof Temperature) {
-					return new DecimalType(
-							((Temperature) o).toLocalTemperature());
-				} else if (o != null) {
-					return StringType.valueOf(o.toString());
-				}
+				return createState( thermostat.getProperty(property) );
 			} catch (Exception e) {
 				logger.error("Unable to get state from thermostat", e);
 			}
@@ -369,6 +361,51 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 		return UnDefType.NULL;
 	}
 
+	/**
+	 * Creates an openHAB {@link State} in accordance to the class of the given
+	 * {@code propertyValue}. Currently {@link Date}, {@link BigDecimal},
+	 * {@code Temperature} and
+	 * {@link Boolean} are handled explicitly. All other {@code dataTypes} are
+	 * mapped to {@link StringType}.
+	 * <p>
+	 * If {@code propertyValue} is {@code null}, {@link UnDefType#NULL} will be
+	 * returned.
+	 * 
+	 * Copied/adapted from the Koubachi binding.
+	 * 
+	 * @param propertyValue
+	 * 
+	 * @return the new {@link State} in accordance with {@code dataType}. Will
+	 *         never be {@code null}.
+	 */
+	private State createState(Object propertyValue) {
+		if (propertyValue == null) {
+			return UnDefType.NULL;
+		}
+
+		Class<?> dataType = propertyValue.getClass();
+
+		if (Date.class.isAssignableFrom(dataType)) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime((Date) propertyValue);
+			return new DateTimeType(calendar);
+		} else if (BigDecimal.class.isAssignableFrom(dataType)) {
+			return new DecimalType((BigDecimal) propertyValue);
+		} else if (Boolean.class.isAssignableFrom(dataType)) {
+			if((Boolean) propertyValue) {
+				return OnOffType.ON;
+			} else {
+				return OnOffType.OFF;
+			}
+		} else if (Temperature.class.isAssignableFrom(dataType)) {
+			return new DecimalType(
+					((Temperature) propertyValue).toLocalTemperature());
+		}
+		else {
+			return new StringType(propertyValue.toString());
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -588,10 +625,10 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 	 * {@inheritDoc}
 	 */
 	public void bindingChanged(BindingProvider provider, String itemName) {
-		if (provider instanceof EcobeeBindingProvider) {
 
-			// Forget prior revisions because we may be concerned with
-			// different thermostats or properties than before.
+		// Forget prior revisions because we may be concerned with
+		// different thermostats or properties than before.
+		if (provider instanceof EcobeeBindingProvider) {
 			this.lastRevisionMap.clear();
 		}
 	}

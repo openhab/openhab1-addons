@@ -295,6 +295,9 @@ public class EcobeeGenericBindingProvider extends
 
 		logger.debug("validateItemType called with property={}", property);
 
+		/*
+		 * FIXME: find alternative to check types
+		 * 
 		if (!EcobeeItemMapping.isValidItemType(item, property)) {
 			throw new BindingConfigParseException(
 					"item '"
@@ -306,5 +309,6 @@ public class EcobeeGenericBindingProvider extends
 									.getSimpleName()
 							+ "' state are allowed - please check your *.items configuration.");
 		}
+		*/
 	}
 }
