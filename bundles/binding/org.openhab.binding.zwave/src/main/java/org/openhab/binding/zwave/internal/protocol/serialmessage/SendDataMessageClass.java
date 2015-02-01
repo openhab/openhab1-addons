@@ -16,6 +16,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.slf4j.Logger;
@@ -96,7 +97,20 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			checkTransactionComplete(lastSentMessage, incomingMessage);
 			return true;
 		case COMPLETE_NO_ACK:
-			// timeOutCount.incrementAndGet();
+			// Handle WAKE_UP_NO_MORE_INFORMATION differently
+			// Since the system can time out if the node goes to sleep before
+			// we get the response, then don't treat this like a timeout
+			byte[] payload = lastSentMessage.getMessagePayload();
+			if (payload.length >= 4 && 
+				(payload[2] & 0xFF) == ZWaveCommandClass.CommandClass.WAKE_UP.getKey() &&
+				(payload[3] & 0xFF) == ZWaveWakeUpCommandClass.WAKE_UP_NO_MORE_INFORMATION) {
+				checkTransactionComplete(lastSentMessage, incomingMessage);
+
+				logger.debug("NODE {}: WAKE_UP_NO_MORE_INFORMATION. Treated as ACK.", node.getNodeId());
+
+				return true;
+			}
+
 		case COMPLETE_FAIL:
 		case COMPLETE_NOT_IDLE:
 		case COMPLETE_NOROUTE:
