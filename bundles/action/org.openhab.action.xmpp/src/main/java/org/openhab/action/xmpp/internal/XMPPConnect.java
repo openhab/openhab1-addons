@@ -24,6 +24,8 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.util.DNSUtil;
+import org.jivesoftware.smack.util.dns.javax.JavaxResolver;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -40,6 +42,12 @@ import eu.geekplace.javapinning.JavaPinning;
  * @since 0.4.0
  */
 public class XMPPConnect implements ManagedService {
+
+	static {
+		// Workaround for SMACK-635. This can be removed once Smack 4.1 (or higher) is used
+		// See https://igniterealtime.org/issues/browse/SMACK-635
+		DNSUtil.setDNSResolver(JavaxResolver.getInstance());
+	}
 
 	static private final Logger logger = 
 		LoggerFactory.getLogger(XMPPConnect.class);

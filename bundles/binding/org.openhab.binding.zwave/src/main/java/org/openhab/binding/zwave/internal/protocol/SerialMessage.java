@@ -158,11 +158,11 @@ public class SerialMessage {
      * @return string the string representation
      */
     static public String bb2hex(byte[] bb) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		for (int i=0; i<bb.length; i++) {
-			result = result + String.format("%02X ", bb[i]);
+			result.append(String.format("%02X ", bb[i]));
 		}
-		return result;
+		return result.toString();
 	}
 	
 	/**

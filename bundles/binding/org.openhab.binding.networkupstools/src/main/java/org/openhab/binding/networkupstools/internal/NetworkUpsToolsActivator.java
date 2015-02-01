@@ -6,10 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
-package ${artifactId}.internal;
+package org.openhab.binding.networkupstools.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -19,13 +16,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Extension of the default OSGi bundle activator
+ * Provides OSGi lifecycle callbacks
  * 
- * @author ${author}
- * @since ${version}
+ * @author jaroslawmazgaj
+ * @since 1.7.0
  */
-public final class ${binding-name}Activator implements BundleActivator {
+public final class NetworkUpsToolsActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(${binding-name}Activator.class); 
+	private static Logger logger = LoggerFactory.getLogger(NetworkUpsToolsActivator.class); 
 	
 	private static BundleContext context;
 	
@@ -34,7 +32,7 @@ public final class ${binding-name}Activator implements BundleActivator {
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("${binding-name} binding has been started.");
+		logger.debug("NetworkUpsTools binding has been started.");
 	}
 
 	/**
@@ -42,7 +40,7 @@ public final class ${binding-name}Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
-		logger.debug("${binding-name} binding has been stopped.");
+		logger.debug("NetworkUpsTools binding has been stopped.");
 	}
 	
 	/**

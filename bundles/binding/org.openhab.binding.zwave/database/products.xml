@@ -196,6 +196,15 @@
 		<Name>Everspring</Name>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HSP02</Model>
+			<Label lang="en">Motion Detector</Label>
+			<ConfigFile>everspring/hsp02.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0003</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -507,6 +516,15 @@
 	<Manufacturer>
 		<Id>0086</Id>
 		<Name>Aeon Labs</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0059</Id>
+			</Reference>
+			<Model>ZW089</Model>
+			<Label lang="en">Door/Window Sensor</Label>
+			<ConfigFile>aeon/zw089.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0003</Type>
@@ -1039,6 +1057,10 @@
 		<Product>
 			<Reference>
 				<Type>0501</Type>
+				<Id>0102</Id>
+			</Reference>
+			<Reference>
+				<Type>0501</Type>
 				<Id>1002</Id>
 			</Reference>
 			<Reference>
@@ -1269,6 +1291,15 @@
 			<Model>TZ65D</Model>
 			<Label lang="en">Dual Paddle Wall Dimmer</Label>
 			<ConfigFile>tkb/tz65d.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>TZ06</Model>
+			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW</Label>
+			<ConfigFile>tkb/tz06.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1522,6 +1553,15 @@
 			<Model>DZMX1-1LZ</Model>
 			<Label lang="en">Scene Capable Push On/Off</Label>
 			<ConfigFile>leviton/dzmx1-1lz.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+			        <Type>802</Type>
+			        <Id>261</Id>
+			</Reference>
+			<Model>VRCZ4-M0Z</Model>
+			<Label lang="en">4-Zone Controller</Label>
+			<ConfigFile>leviton/vrcz4-m0z.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>

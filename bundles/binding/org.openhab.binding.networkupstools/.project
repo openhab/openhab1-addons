@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.openhab.library.tel</name>
-	<comment>This is the runtime component of the open Home Automation Bus (openHAB)</comment>
+	<name>org.openhab.binding.networkupstools</name>
+	<comment>This is the NetworkUpsTools binding of the open Home Automation Bus (openHAB)</comment>
 	<projects>
 	</projects>
 	<buildSpec>
