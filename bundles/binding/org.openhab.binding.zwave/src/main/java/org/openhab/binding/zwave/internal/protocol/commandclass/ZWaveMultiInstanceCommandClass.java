@@ -403,6 +403,12 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	private void handleMultiChannelEncapResponse(
 			SerialMessage serialMessage, int offset) {
 		logger.trace("Process Multi-channel Encapsulation");
+
+		if(serialMessage.getMessagePayload().length < offset + 2) {
+			logger.error("NODE {}: Invalid data length", this.getNode().getNodeId());
+			return;
+		}
+
 		CommandClass commandClass;
 		ZWaveCommandClass zwaveCommandClass;
 		int endpointId = serialMessage.getMessagePayloadByte(offset);
