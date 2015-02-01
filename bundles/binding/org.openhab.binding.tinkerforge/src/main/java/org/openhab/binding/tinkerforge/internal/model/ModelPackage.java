@@ -2336,13 +2336,22 @@ public interface ModelPackage extends EPackage
   int MBRICK_SERVO_OPERATION_COUNT = MDEVICE_OPERATION_COUNT + 2;
 
   /**
+   * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO__SENSOR_VALUE = MSENSOR__SENSOR_VALUE;
+
+  /**
    * The feature id for the '<em><b>Switch State</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MSERVO__SWITCH_STATE = PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE;
+  int MSERVO__SWITCH_STATE = MSENSOR_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -2351,7 +2360,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__LOGGER = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 0;
+  int MSERVO__LOGGER = MSENSOR_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Uid</b></em>' attribute.
@@ -2360,7 +2369,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__UID = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 1;
+  int MSERVO__UID = MSENSOR_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Poll</b></em>' attribute.
@@ -2369,7 +2378,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__POLL = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 2;
+  int MSERVO__POLL = MSENSOR_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -2378,7 +2387,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__ENABLED_A = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 3;
+  int MSERVO__ENABLED_A = MSENSOR_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Sub Id</b></em>' attribute.
@@ -2387,7 +2396,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__SUB_ID = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 4;
+  int MSERVO__SUB_ID = MSENSOR_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Mbrick</b></em>' container reference.
@@ -2396,7 +2405,16 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__MBRICK = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 5;
+  int MSERVO__MBRICK = MSENSOR_FEATURE_COUNT + 6;
+
+  /**
+   * The feature id for the '<em><b>Direction</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO__DIRECTION = MSENSOR_FEATURE_COUNT + 7;
 
   /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
@@ -2405,7 +2423,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__TF_CONFIG = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 6;
+  int MSERVO__TF_CONFIG = MSENSOR_FEATURE_COUNT + 8;
 
   /**
    * The feature id for the '<em><b>Min Value</b></em>' attribute.
@@ -2414,7 +2432,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__MIN_VALUE = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 7;
+  int MSERVO__MIN_VALUE = MSENSOR_FEATURE_COUNT + 9;
 
   /**
    * The feature id for the '<em><b>Max Value</b></em>' attribute.
@@ -2423,7 +2441,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__MAX_VALUE = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 8;
+  int MSERVO__MAX_VALUE = MSENSOR_FEATURE_COUNT + 10;
 
   /**
    * The feature id for the '<em><b>Percent Value</b></em>' attribute.
@@ -2432,7 +2450,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__PERCENT_VALUE = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 9;
+  int MSERVO__PERCENT_VALUE = MSENSOR_FEATURE_COUNT + 11;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -2441,7 +2459,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__DEVICE_TYPE = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 10;
+  int MSERVO__DEVICE_TYPE = MSENSOR_FEATURE_COUNT + 12;
 
   /**
    * The feature id for the '<em><b>Velocity</b></em>' attribute.
@@ -2450,7 +2468,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__VELOCITY = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 11;
+  int MSERVO__VELOCITY = MSENSOR_FEATURE_COUNT + 13;
 
   /**
    * The feature id for the '<em><b>Acceleration</b></em>' attribute.
@@ -2459,7 +2477,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__ACCELERATION = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 12;
+  int MSERVO__ACCELERATION = MSENSOR_FEATURE_COUNT + 14;
 
   /**
    * The feature id for the '<em><b>Pulse Width Min</b></em>' attribute.
@@ -2468,7 +2486,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__PULSE_WIDTH_MIN = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 13;
+  int MSERVO__PULSE_WIDTH_MIN = MSENSOR_FEATURE_COUNT + 15;
 
   /**
    * The feature id for the '<em><b>Pulse Width Max</b></em>' attribute.
@@ -2477,7 +2495,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__PULSE_WIDTH_MAX = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 14;
+  int MSERVO__PULSE_WIDTH_MAX = MSENSOR_FEATURE_COUNT + 16;
 
   /**
    * The feature id for the '<em><b>Period</b></em>' attribute.
@@ -2486,7 +2504,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__PERIOD = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 15;
+  int MSERVO__PERIOD = MSENSOR_FEATURE_COUNT + 17;
 
   /**
    * The feature id for the '<em><b>Output Voltage</b></em>' attribute.
@@ -2495,16 +2513,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__OUTPUT_VOLTAGE = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 16;
-
-  /**
-   * The feature id for the '<em><b>Current Position</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int MSERVO__CURRENT_POSITION = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 17;
+  int MSERVO__OUTPUT_VOLTAGE = MSENSOR_FEATURE_COUNT + 18;
 
   /**
    * The feature id for the '<em><b>Target Position</b></em>' attribute.
@@ -2513,7 +2522,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__TARGET_POSITION = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 18;
+  int MSERVO__TARGET_POSITION = MSENSOR_FEATURE_COUNT + 19;
 
   /**
    * The number of structural features of the '<em>MServo</em>' class.
@@ -2522,7 +2531,16 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO_FEATURE_COUNT = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 19;
+  int MSERVO_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 20;
+
+  /**
+   * The operation id for the '<em>Fetch Sensor Value</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO___FETCH_SENSOR_VALUE = MSENSOR___FETCH_SENSOR_VALUE;
 
   /**
    * The operation id for the '<em>Fetch Switch State</em>' operation.
@@ -2531,7 +2549,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___FETCH_SWITCH_STATE = PROGRAMMABLE_SWITCH_ACTOR___FETCH_SWITCH_STATE;
+  int MSERVO___FETCH_SWITCH_STATE = MSENSOR_OPERATION_COUNT + 0;
 
   /**
    * The operation id for the '<em>Turn Switch</em>' operation.
@@ -2540,7 +2558,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS = PROGRAMMABLE_SWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS;
+  int MSERVO___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS = MSENSOR_OPERATION_COUNT + 1;
 
   /**
    * The operation id for the '<em>Enable</em>' operation.
@@ -2549,7 +2567,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___ENABLE = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 1;
+  int MSERVO___ENABLE = MSENSOR_OPERATION_COUNT + 3;
 
   /**
    * The operation id for the '<em>Disable</em>' operation.
@@ -2558,7 +2576,34 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___DISABLE = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 2;
+  int MSERVO___DISABLE = MSENSOR_OPERATION_COUNT + 4;
+
+  /**
+   * The operation id for the '<em>Move</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO___MOVE__UPDOWNTYPE_DEVICEOPTIONS = MSENSOR_OPERATION_COUNT + 5;
+
+  /**
+   * The operation id for the '<em>Stop</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO___STOP = MSENSOR_OPERATION_COUNT + 6;
+
+  /**
+   * The operation id for the '<em>Moveon</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO___MOVEON__DEVICEOPTIONS = MSENSOR_OPERATION_COUNT + 7;
 
   /**
    * The operation id for the '<em>Dimm</em>' operation.
@@ -2567,7 +2612,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 3;
+  int MSERVO___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS = MSENSOR_OPERATION_COUNT + 8;
 
   /**
    * The operation id for the '<em>Set Value</em>' operation.
@@ -2576,7 +2621,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 4;
+  int MSERVO___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS = MSENSOR_OPERATION_COUNT + 9;
 
   /**
    * The operation id for the '<em>Set Value</em>' operation.
@@ -2585,7 +2630,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 5;
+  int MSERVO___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS = MSENSOR_OPERATION_COUNT + 10;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -2594,7 +2639,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___INIT = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 6;
+  int MSERVO___INIT = MSENSOR_OPERATION_COUNT + 11;
 
   /**
    * The number of operations of the '<em>MServo</em>' class.
@@ -2603,7 +2648,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO_OPERATION_COUNT = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 7;
+  int MSERVO_OPERATION_COUNT = MSENSOR_OPERATION_COUNT + 12;
 
   /**
    * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -16132,17 +16177,6 @@ public interface ModelPackage extends EPackage
   EAttribute getMServo_OutputVoltage();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getCurrentPosition <em>Current Position</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Current Position</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.MServo#getCurrentPosition()
-   * @see #getMServo()
-   * @generated
-   */
-  EAttribute getMServo_CurrentPosition();
-
-  /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getTargetPosition <em>Target Position</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -20000,14 +20034,6 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EAttribute MSERVO__OUTPUT_VOLTAGE = eINSTANCE.getMServo_OutputVoltage();
-
-    /**
-     * The meta object literal for the '<em><b>Current Position</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute MSERVO__CURRENT_POSITION = eINSTANCE.getMServo_CurrentPosition();
 
     /**
      * The meta object literal for the '<em><b>Target Position</b></em>' attribute feature.

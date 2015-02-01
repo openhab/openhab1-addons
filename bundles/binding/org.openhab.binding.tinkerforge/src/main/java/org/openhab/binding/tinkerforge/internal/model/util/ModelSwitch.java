@@ -349,8 +349,10 @@ public class ModelSwitch<T> extends Switch<T>
       {
         MServo mServo = (MServo)theEObject;
         T result = caseMServo(mServo);
+        if (result == null) result = caseMSensor(mServo);
         if (result == null) result = caseProgrammableSwitchActor(mServo);
         if (result == null) result = caseMSubDevice(mServo);
+        if (result == null) result = caseMoveActor(mServo);
         if (result == null) result = caseSetPointActor(mServo);
         if (result == null) result = caseSwitchSensor(mServo);
         if (result == null) result = caseMBaseDevice(mServo);

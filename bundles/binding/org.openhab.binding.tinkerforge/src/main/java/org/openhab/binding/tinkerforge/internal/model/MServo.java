@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.tinkerforge.internal.model;
 
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+
 
 
 /**
@@ -28,16 +30,15 @@ package org.openhab.binding.tinkerforge.internal.model;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMax <em>Pulse Width Max</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPeriod <em>Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getOutputVoltage <em>Output Voltage</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getCurrentPosition <em>Current Position</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getTargetPosition <em>Target Position</em>}</li>
  * </ul>
  * </p>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo()
- * @model
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor<org.openhab.binding.tinkerforge.internal.model.MDecimalValue> org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor org.openhab.binding.tinkerforge.internal.model.MSubDevice<org.openhab.binding.tinkerforge.internal.model.MBrickServo> org.openhab.binding.tinkerforge.internal.model.MoveActor org.openhab.binding.tinkerforge.internal.model.SetPointActor<org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration>"
  * @generated
  */
-public interface MServo extends ProgrammableSwitchActor, MSubDevice<MBrickServo>, SetPointActor<TFServoConfiguration>
+public interface MServo extends MSensor<DecimalValue>, ProgrammableSwitchActor, MSubDevice<MBrickServo>, MoveActor, SetPointActor<TFServoConfiguration>
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
@@ -216,32 +217,6 @@ public interface MServo extends ProgrammableSwitchActor, MSubDevice<MBrickServo>
    * @generated
    */
   void setOutputVoltage(int value);
-
-  /**
-   * Returns the value of the '<em><b>Current Position</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Current Position</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Current Position</em>' attribute.
-   * @see #setCurrentPosition(short)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo_CurrentPosition()
-   * @model unique="false"
-   * @generated
-   */
-  short getCurrentPosition();
-
-  /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getCurrentPosition <em>Current Position</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Current Position</em>' attribute.
-   * @see #getCurrentPosition()
-   * @generated
-   */
-  void setCurrentPosition(short value);
 
   /**
    * Returns the value of the '<em><b>Target Position</b></em>' attribute.

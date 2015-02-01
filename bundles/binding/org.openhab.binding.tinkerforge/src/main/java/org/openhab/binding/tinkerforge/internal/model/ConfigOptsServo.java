@@ -75,7 +75,23 @@ public enum ConfigOptsServo implements Enumerator
    * @generated
    * @ordered
    */
-  POSITION(0, "POSITION", "POSITION");
+  POSITION(0, "POSITION", "POSITION"), /**
+   * The '<em><b>LEFTPOSITION</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #LEFTPOSITION_VALUE
+   * @generated
+   * @ordered
+   */
+  LEFTPOSITION(0, "LEFTPOSITION", "LEFTPOSITION"), /**
+   * The '<em><b>RIGHTPOSITION</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #RIGHTPOSITION_VALUE
+   * @generated
+   * @ordered
+   */
+  RIGHTPOSITION(0, "RIGHTPOSITION", "RIGHTPOSITION");
 
   /**
    * The '<em><b>VELOCITY</b></em>' literal value.
@@ -168,6 +184,36 @@ public enum ConfigOptsServo implements Enumerator
   public static final int POSITION_VALUE = 0;
 
   /**
+   * The '<em><b>LEFTPOSITION</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of '<em><b>LEFTPOSITION</b></em>' literal object isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @see #LEFTPOSITION
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int LEFTPOSITION_VALUE = 0;
+
+  /**
+   * The '<em><b>RIGHTPOSITION</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of '<em><b>RIGHTPOSITION</b></em>' literal object isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @see #RIGHTPOSITION
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int RIGHTPOSITION_VALUE = 0;
+
+  /**
    * An array of all the '<em><b>Config Opts Servo</b></em>' enumerators.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -182,6 +228,8 @@ public enum ConfigOptsServo implements Enumerator
       PULSEWIDTHMAX,
       PERIOD,
       POSITION,
+      LEFTPOSITION,
+      RIGHTPOSITION,
     };
 
   /**

@@ -3889,19 +3889,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMServo_CurrentPosition()
-  {
-    return (EAttribute)mServoEClass.getEStructuralFeatures().get(7);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getMServo_TargetPosition()
   {
-    return (EAttribute)mServoEClass.getEStructuralFeatures().get(8);
+    return (EAttribute)mServoEClass.getEStructuralFeatures().get(7);
   }
 
   /**
@@ -5676,7 +5666,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mServoEClass, MSERVO__PULSE_WIDTH_MAX);
     createEAttribute(mServoEClass, MSERVO__PERIOD);
     createEAttribute(mServoEClass, MSERVO__OUTPUT_VOLTAGE);
-    createEAttribute(mServoEClass, MSERVO__CURRENT_POSITION);
     createEAttribute(mServoEClass, MSERVO__TARGET_POSITION);
     createEOperation(mServoEClass, MSERVO___INIT);
 
@@ -6160,11 +6149,17 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(this.getMServo());
     g1.getETypeArguments().add(g2);
     mBrickServoEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getMDecimalValue());
+    g1.getETypeArguments().add(g2);
+    mServoEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getProgrammableSwitchActor());
     mServoEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getMSubDevice());
     g2 = createEGenericType(this.getMBrickServo());
     g1.getETypeArguments().add(g2);
+    mServoEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMoveActor());
     mServoEClass.getEGenericSuperTypes().add(g1);
     g1 = createEGenericType(this.getSetPointActor());
     g2 = createEGenericType(this.getTFServoConfiguration());
@@ -6854,7 +6849,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMServo_PulseWidthMax(), theEcorePackage.getEInt(), "pulseWidthMax", "2000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMServo_Period(), theEcorePackage.getEInt(), "period", "19500", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMServo_OutputVoltage(), theEcorePackage.getEInt(), "outputVoltage", "5000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getMServo_CurrentPosition(), theEcorePackage.getEShort(), "currentPosition", null, 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMServo_TargetPosition(), theEcorePackage.getEShort(), "targetPosition", null, 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMServo__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
@@ -7358,6 +7352,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEEnumLiteral(configOptsServoEEnum, ConfigOptsServo.PULSEWIDTHMAX);
     addEEnumLiteral(configOptsServoEEnum, ConfigOptsServo.PERIOD);
     addEEnumLiteral(configOptsServoEEnum, ConfigOptsServo.POSITION);
+    addEEnumLiteral(configOptsServoEEnum, ConfigOptsServo.LEFTPOSITION);
+    addEEnumLiteral(configOptsServoEEnum, ConfigOptsServo.RIGHTPOSITION);
 
     // Initialize data types
     initEDataType(mipConnectionEDataType, IPConnection.class, "MIPConnection", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

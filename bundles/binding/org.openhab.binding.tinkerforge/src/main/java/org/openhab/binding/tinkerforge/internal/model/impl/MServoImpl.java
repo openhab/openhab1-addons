@@ -33,13 +33,19 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.MoveActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
+import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.tools.Tools;
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.PercentValue;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.UpDownType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +63,7 @@ import com.tinkerforge.TimeoutException;
  * <p>
  * The following features are implemented:
  * <ul>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getSensorValue <em>Sensor Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getSwitchState <em>Switch State</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getLogger <em>Logger</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getUid <em>Uid</em>}</li>
@@ -64,6 +71,7 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getEnabledA <em>Enabled A</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getDirection <em>Direction</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getTfConfig <em>Tf Config</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMinValue <em>Min Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMaxValue <em>Max Value</em>}</li>
@@ -75,7 +83,6 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPulseWidthMax <em>Pulse Width Max</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPeriod <em>Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getOutputVoltage <em>Output Voltage</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getCurrentPosition <em>Current Position</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getTargetPosition <em>Target Position</em>}</li>
  * </ul>
  * </p>
@@ -84,6 +91,16 @@ import com.tinkerforge.TimeoutException;
  */
 public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
 {
+
+  /**
+   * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSensorValue()
+   * @generated
+   * @ordered
+   */
+  protected DecimalValue sensorValue;
 
   /**
    * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute. <!--
@@ -202,6 +219,26 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * @ordered
    */
   protected String subId = SUB_ID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getDirection() <em>Direction</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDirection()
+   * @generated
+   * @ordered
+   */
+  protected static final DirectionValue DIRECTION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDirection() <em>Direction</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDirection()
+   * @generated
+   * @ordered
+   */
+  protected DirectionValue direction = DIRECTION_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
@@ -408,24 +445,6 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   protected int outputVoltage = OUTPUT_VOLTAGE_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getCurrentPosition() <em>Current Position</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCurrentPosition()
-   * @generated
-   * @ordered
-   */
-  protected static final short CURRENT_POSITION_EDEFAULT = 0;
-  /**
-   * The cached value of the '{@link #getCurrentPosition() <em>Current Position</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCurrentPosition()
-   * @generated
-   * @ordered
-   */
-  protected short currentPosition = CURRENT_POSITION_EDEFAULT;
-  /**
    * The default value of the '{@link #getTargetPosition() <em>Target Position</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -465,6 +484,29 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   protected EClass eStaticClass()
   {
     return ModelPackage.Literals.MSERVO;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DecimalValue getSensorValue()
+  {
+    return sensorValue;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSensorValue(DecimalValue newSensorValue)
+  {
+    DecimalValue oldSensorValue = sensorValue;
+    sensorValue = newSensorValue;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__SENSOR_VALUE, oldSensorValue, sensorValue));
   }
 
   /**
@@ -725,29 +767,6 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * <!-- end-user-doc -->
    * @generated
    */
-  public short getCurrentPosition()
-  {
-    return currentPosition;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setCurrentPosition(short newCurrentPosition)
-  {
-    short oldCurrentPosition = currentPosition;
-    currentPosition = newCurrentPosition;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__CURRENT_POSITION, oldCurrentPosition, currentPosition));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public short getTargetPosition()
   {
     return targetPosition;
@@ -792,7 +811,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * 
    * @generated NOT
    */
-  public void setValue(PercentType newValue, DeviceOptions opts)
+  public void setValue(PercentType newPercentValue, DeviceOptions opts)
   {
     BigDecimal max = Tools.getBigDecimalOpt(ConfigOptsDimmable.MAX.toString(), opts);
     if (max == null) {
@@ -807,10 +826,11 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       logger.error("dimmer option min is missing, items configuration has to be fixed!");
       return;
     }
-    setPercentValue(new PercentValue(percentValue.toBigDecimal()));
+    setPercentValue(new PercentValue(newPercentValue.toBigDecimal()));
     BigDecimal abs = max.add(min.abs());
     Short newVelocity =
-        abs.divide(new BigDecimal(100)).multiply(percentValue.toBigDecimal()).subtract(min.abs())
+        abs.divide(new BigDecimal(100)).multiply(newPercentValue.toBigDecimal())
+            .subtract(min.abs())
             .shortValue();
     setPoint(newVelocity, opts);
   }
@@ -844,6 +864,80 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     }
     logger.debug("new position {}", newPosition);
     setPoint(newPosition, opts);
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void move(UpDownType direction, DeviceOptions opts)
+  {
+    if (opts == null) {
+      logger.error("options are missing");
+      return;
+    }
+    if (direction == null) {
+      logger.error("direction may not be null, items configuration has to be fixed!");
+      return;
+    }
+    Short xposition = null;
+
+    if (direction.equals(UpDownType.DOWN)) {
+      xposition = Tools.getShortOpt(ConfigOptsServo.RIGHTPOSITION.toString(), opts);
+      if (xposition == null) {
+        logger
+.error("\"{}\" option missing or empty, items configuration has to be fixed!",
+            ConfigOptsServo.RIGHTPOSITION.toString());
+        return;
+      } else {
+        setDirection(DirectionValue.RIGHT);
+      }
+    } else if (direction.equals(UpDownType.UP)) {
+      xposition = Tools.getShortOpt(ConfigOptsServo.LEFTPOSITION.toString(), opts);
+      if (xposition == null) {
+        logger.error("\"{}\" option missing or empty, items configuration has to be fixed!",
+            ConfigOptsServo.LEFTPOSITION.toString());
+        return;
+      } else {
+        setDirection(DirectionValue.LEFT);
+      }
+    }
+    setPoint(xposition, opts);
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void stop()
+  {
+    try {
+      // stop by setting current position value with setPosition on the tf servo device
+      getMbrick().getTinkerforgeDevice().setPosition(servoNum, getSensorValue().shortValue());
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void moveon(DeviceOptions opts)
+  {
+    if (direction != null && direction != DirectionValue.UNDEF) {
+      UpDownType directiontmp =
+          this.direction == DirectionValue.LEFT ? UpDownType.UP : UpDownType.DOWN;
+      move(directiontmp, opts);
+    } else {
+      logger.warn("cannot moveon because direction is undefined");
+    }
   }
 
   /**
@@ -901,8 +995,6 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       logger.error("BrickDC dimmer option min is missing, items configuration has to be fixed!");
       return;
     }
-    // TODO targetposition or currentposition?
-    // set sensorvalues
     if (newPosition > max) {
       if (this.targetPosition < newPosition) {
         logger.debug("setting value to max speed {}, which is lower then target speed {}", max,
@@ -976,6 +1068,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
                                                                    // current position value
         listener = new PositionReachedListener();
         tinkerBrickServo.addPositionReachedListener(listener);
+        tinkerBrickServo.enablePositionReachedCallback();
         tinkerBrickServo.enable(servoNum);
         fetchSwitchState();
       } catch (NumberFormatException e) {
@@ -1007,22 +1100,31 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * @generated NOT
    */
   public void fetchSwitchState() {
-    // TODO
-    // OnOffValue value = OnOffValue.UNDEF;
-    // try {
-    // short position = getMbrick().getTinkerforgeDevice().getPosition(servoNum);
-    // if (position == OFF_POSITION) {
-    // value = OnOffValue.OFF;
-    // } else if (position == ON_POSITION) {
-    // value = OnOffValue.ON;
-    // }
-    // setSwitchState(value);
-    // } catch (TimeoutException e) {
-    // TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    // } catch (NotConnectedException e) {
-    // TinkerforgeErrorHandler.handleError(this,
-    // TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-    // }
+    fetchSensorValue();
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void fetchSensorValue()
+  {
+    try {
+      short position = getMbrick().getTinkerforgeDevice().getPosition(servoNum);
+      DecimalValue newValue = Tools.calculate(position);
+      setSensorValue(newValue);
+
+      OnOffValue newSwitchState = newValue.onOffValue(0);
+      logger.trace("new switchstate {} new value {}", newSwitchState, newValue);
+      setSwitchState(newSwitchState);
+
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
   }
 
   /**
@@ -1033,8 +1135,15 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   private class PositionReachedListener implements BrickServo.PositionReachedListener {
 
     @Override
-    public void positionReached(short servoNumPar, short position) {
-      if (servoNumPar == servoNum) setCurrentPosition(position);
+    public void positionReached(short servoNumPar, short newposition) {
+      DecimalValue newValue = Tools.calculate(newposition);
+      logger.trace("positionreachedlistener called servonum {} servonumpar {}, newpostion {}",
+          servoNum, servoNumPar,
+          newposition);
+      if (servoNumPar == servoNum) {
+        logger.trace("setting new value {}", newValue);
+        setSensorValue(newValue);
+      }
     }
   }
 
@@ -1127,6 +1236,29 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     }
     else if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__MBRICK, newMbrick, newMbrick));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DirectionValue getDirection()
+  {
+    return direction;
+  }
+
+/**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDirection(DirectionValue newDirection)
+  {
+    DirectionValue oldDirection = direction;
+    direction = newDirection;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__DIRECTION, oldDirection, direction));
   }
 
   /**
@@ -1318,6 +1450,8 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   {
     switch (featureID)
     {
+      case ModelPackage.MSERVO__SENSOR_VALUE:
+        return getSensorValue();
       case ModelPackage.MSERVO__SWITCH_STATE:
         return getSwitchState();
       case ModelPackage.MSERVO__LOGGER:
@@ -1332,6 +1466,8 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return getSubId();
       case ModelPackage.MSERVO__MBRICK:
         return getMbrick();
+      case ModelPackage.MSERVO__DIRECTION:
+        return getDirection();
       case ModelPackage.MSERVO__TF_CONFIG:
         return getTfConfig();
       case ModelPackage.MSERVO__MIN_VALUE:
@@ -1354,8 +1490,6 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return getPeriod();
       case ModelPackage.MSERVO__OUTPUT_VOLTAGE:
         return getOutputVoltage();
-      case ModelPackage.MSERVO__CURRENT_POSITION:
-        return getCurrentPosition();
       case ModelPackage.MSERVO__TARGET_POSITION:
         return getTargetPosition();
     }
@@ -1372,6 +1506,9 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   {
     switch (featureID)
     {
+      case ModelPackage.MSERVO__SENSOR_VALUE:
+        setSensorValue((DecimalValue)newValue);
+        return;
       case ModelPackage.MSERVO__SWITCH_STATE:
         setSwitchState((OnOffValue)newValue);
         return;
@@ -1392,6 +1529,9 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return;
       case ModelPackage.MSERVO__MBRICK:
         setMbrick((MBrickServo)newValue);
+        return;
+      case ModelPackage.MSERVO__DIRECTION:
+        setDirection((DirectionValue)newValue);
         return;
       case ModelPackage.MSERVO__TF_CONFIG:
         setTfConfig((TFServoConfiguration)newValue);
@@ -1423,9 +1563,6 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       case ModelPackage.MSERVO__OUTPUT_VOLTAGE:
         setOutputVoltage((Integer)newValue);
         return;
-      case ModelPackage.MSERVO__CURRENT_POSITION:
-        setCurrentPosition((Short)newValue);
-        return;
       case ModelPackage.MSERVO__TARGET_POSITION:
         setTargetPosition((Short)newValue);
         return;
@@ -1443,6 +1580,9 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   {
     switch (featureID)
     {
+      case ModelPackage.MSERVO__SENSOR_VALUE:
+        setSensorValue((DecimalValue)null);
+        return;
       case ModelPackage.MSERVO__SWITCH_STATE:
         setSwitchState(SWITCH_STATE_EDEFAULT);
         return;
@@ -1463,6 +1603,9 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return;
       case ModelPackage.MSERVO__MBRICK:
         setMbrick((MBrickServo)null);
+        return;
+      case ModelPackage.MSERVO__DIRECTION:
+        setDirection(DIRECTION_EDEFAULT);
         return;
       case ModelPackage.MSERVO__TF_CONFIG:
         setTfConfig((TFServoConfiguration)null);
@@ -1494,9 +1637,6 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       case ModelPackage.MSERVO__OUTPUT_VOLTAGE:
         setOutputVoltage(OUTPUT_VOLTAGE_EDEFAULT);
         return;
-      case ModelPackage.MSERVO__CURRENT_POSITION:
-        setCurrentPosition(CURRENT_POSITION_EDEFAULT);
-        return;
       case ModelPackage.MSERVO__TARGET_POSITION:
         setTargetPosition(TARGET_POSITION_EDEFAULT);
         return;
@@ -1514,6 +1654,8 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   {
     switch (featureID)
     {
+      case ModelPackage.MSERVO__SENSOR_VALUE:
+        return sensorValue != null;
       case ModelPackage.MSERVO__SWITCH_STATE:
         return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
       case ModelPackage.MSERVO__LOGGER:
@@ -1528,6 +1670,8 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
       case ModelPackage.MSERVO__MBRICK:
         return getMbrick() != null;
+      case ModelPackage.MSERVO__DIRECTION:
+        return DIRECTION_EDEFAULT == null ? direction != null : !DIRECTION_EDEFAULT.equals(direction);
       case ModelPackage.MSERVO__TF_CONFIG:
         return tfConfig != null;
       case ModelPackage.MSERVO__MIN_VALUE:
@@ -1550,8 +1694,6 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return period != PERIOD_EDEFAULT;
       case ModelPackage.MSERVO__OUTPUT_VOLTAGE:
         return outputVoltage != OUTPUT_VOLTAGE_EDEFAULT;
-      case ModelPackage.MSERVO__CURRENT_POSITION:
-        return currentPosition != CURRENT_POSITION_EDEFAULT;
       case ModelPackage.MSERVO__TARGET_POSITION:
         return targetPosition != TARGET_POSITION_EDEFAULT;
     }
@@ -1566,6 +1708,21 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
+    if (baseClass == SwitchSensor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == ProgrammableSwitchActor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MSERVO__SWITCH_STATE: return ModelPackage.PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE;
+        default: return -1;
+      }
+    }
     if (baseClass == MBaseDevice.class)
     {
       switch (derivedFeatureID)
@@ -1583,6 +1740,14 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       {
         case ModelPackage.MSERVO__SUB_ID: return ModelPackage.MSUB_DEVICE__SUB_ID;
         case ModelPackage.MSERVO__MBRICK: return ModelPackage.MSUB_DEVICE__MBRICK;
+        default: return -1;
+      }
+    }
+    if (baseClass == MoveActor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MSERVO__DIRECTION: return ModelPackage.MOVE_ACTOR__DIRECTION;
         default: return -1;
       }
     }
@@ -1622,6 +1787,21 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
+    if (baseClass == SwitchSensor.class)
+    {
+      switch (baseFeatureID)
+      {
+        default: return -1;
+      }
+    }
+    if (baseClass == ProgrammableSwitchActor.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE: return ModelPackage.MSERVO__SWITCH_STATE;
+        default: return -1;
+      }
+    }
     if (baseClass == MBaseDevice.class)
     {
       switch (baseFeatureID)
@@ -1639,6 +1819,14 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       {
         case ModelPackage.MSUB_DEVICE__SUB_ID: return ModelPackage.MSERVO__SUB_ID;
         case ModelPackage.MSUB_DEVICE__MBRICK: return ModelPackage.MSERVO__MBRICK;
+        default: return -1;
+      }
+    }
+    if (baseClass == MoveActor.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.MOVE_ACTOR__DIRECTION: return ModelPackage.MSERVO__DIRECTION;
         default: return -1;
       }
     }
@@ -1678,6 +1866,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
+    if (baseClass == SwitchSensor.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.SWITCH_SENSOR___FETCH_SWITCH_STATE: return ModelPackage.MSERVO___FETCH_SWITCH_STATE;
+        default: return -1;
+      }
+    }
+    if (baseClass == ProgrammableSwitchActor.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.PROGRAMMABLE_SWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS: return ModelPackage.MSERVO___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS;
+        default: return -1;
+      }
+    }
     if (baseClass == MBaseDevice.class)
     {
       switch (baseOperationID)
@@ -1692,6 +1896,16 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     {
       switch (baseOperationID)
       {
+        default: return -1;
+      }
+    }
+    if (baseClass == MoveActor.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.MOVE_ACTOR___MOVE__UPDOWNTYPE_DEVICEOPTIONS: return ModelPackage.MSERVO___MOVE__UPDOWNTYPE_DEVICEOPTIONS;
+        case ModelPackage.MOVE_ACTOR___STOP: return ModelPackage.MSERVO___STOP;
+        case ModelPackage.MOVE_ACTOR___MOVEON__DEVICEOPTIONS: return ModelPackage.MSERVO___MOVEON__DEVICEOPTIONS;
         default: return -1;
       }
     }
@@ -1744,6 +1958,15 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       case ModelPackage.MSERVO___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS:
         dimm((IncreaseDecreaseType)arguments.get(0), (DeviceOptions)arguments.get(1));
         return null;
+      case ModelPackage.MSERVO___MOVE__UPDOWNTYPE_DEVICEOPTIONS:
+        move((UpDownType)arguments.get(0), (DeviceOptions)arguments.get(1));
+        return null;
+      case ModelPackage.MSERVO___STOP:
+        stop();
+        return null;
+      case ModelPackage.MSERVO___MOVEON__DEVICEOPTIONS:
+        moveon((DeviceOptions)arguments.get(0));
+        return null;
       case ModelPackage.MSERVO___ENABLE:
         enable();
         return null;
@@ -1755,6 +1978,9 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return null;
       case ModelPackage.MSERVO___FETCH_SWITCH_STATE:
         fetchSwitchState();
+        return null;
+      case ModelPackage.MSERVO___FETCH_SENSOR_VALUE:
+        fetchSensorValue();
         return null;
     }
     return super.eInvoke(operationID, arguments);
@@ -1771,7 +1997,9 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (switchState: ");
+    result.append(" (sensorValue: ");
+    result.append(sensorValue);
+    result.append(", switchState: ");
     result.append(switchState);
     result.append(", logger: ");
     result.append(logger);
@@ -1783,6 +2011,8 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     result.append(enabledA);
     result.append(", subId: ");
     result.append(subId);
+    result.append(", direction: ");
+    result.append(direction);
     result.append(", minValue: ");
     result.append(minValue);
     result.append(", maxValue: ");
@@ -1803,8 +2033,6 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     result.append(period);
     result.append(", outputVoltage: ");
     result.append(outputVoltage);
-    result.append(", currentPosition: ");
-    result.append(currentPosition);
     result.append(", targetPosition: ");
     result.append(targetPosition);
     result.append(')');
