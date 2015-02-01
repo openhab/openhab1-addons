@@ -257,17 +257,17 @@ class MBrickServo extends MDevice<MTinkerBrickServo>, MSubDeviceHolder<MServo> {
 	//int outputVoltage = "5000"
 }
 
-class MServo extends MInSwitchActor, MSubDevice<MBrickServo>, 
-					MTFConfigConsumer<TFServoConfiguration>{
+class MServo extends ProgrammableSwitchActor, MSubDevice<MBrickServo>, 
+					SetPointActor<TFServoConfiguration>{
 	readonly String deviceType = "servo"
-	int velocity = "30000"
-	int acceleration = "30000"
+	int velocity = "65535" //max speed, set position immediately
+	int acceleration = "65535" // max acceleration, set position immediately
 	int pulseWidthMin = "1000"
 	int pulseWidthMax = "2000"
 	int period = "19500"
 	int outputVoltage =  "5000"
-	short servoCurrentPosition
-	short servoDestinationPosition
+	short currentPosition
+	short targetPosition
 	op void init(){}
 }
 
@@ -676,7 +676,7 @@ class TFIOSensorConfiguration extends TFConfig{
 	boolean pullUpResistorEnabled
 }
 
-class TFServoConfiguration extends TFConfig {
+class TFServoConfiguration extends DimmableConfiguration {
 	int velocity
 	int acceleration
 	int servoVoltage
@@ -804,3 +804,7 @@ enum DCDriveMode {
     BRAKE, COAST
 }
 
+enum ConfigOptsServo {
+    VELOCITY, ACCELERATION, PULSEWIDTHMIN, PULSEWIDTHMAX,
+    PERIOD, POSITION
+}

@@ -1406,6 +1406,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * 
    * @generated NOT
    */
+  @Override
   public void turnSwitch(OnOffValue state, DeviceOptions opts) {
     logger.trace("turnSwitch called");
     if (state == OnOffValue.OFF) {

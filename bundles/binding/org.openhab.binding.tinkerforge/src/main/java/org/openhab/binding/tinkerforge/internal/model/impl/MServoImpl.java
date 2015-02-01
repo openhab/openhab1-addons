@@ -9,6 +9,7 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -21,6 +22,10 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo;
+import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
 import org.openhab.binding.tinkerforge.internal.model.MServo;
@@ -28,8 +33,13 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.tools.Tools;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.PercentValue;
+import org.openhab.core.library.types.IncreaseDecreaseType;
+import org.openhab.core.library.types.PercentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +65,9 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getSubId <em>Sub Id</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMbrick <em>Mbrick</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getTfConfig <em>Tf Config</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMinValue <em>Min Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMaxValue <em>Max Value</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPercentValue <em>Percent Value</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getVelocity <em>Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getAcceleration <em>Acceleration</em>}</li>
@@ -62,8 +75,8 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPulseWidthMax <em>Pulse Width Max</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPeriod <em>Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getOutputVoltage <em>Output Voltage</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getServoCurrentPosition <em>Servo Current Position</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getServoDestinationPosition <em>Servo Destination Position</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getCurrentPosition <em>Current Position</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getTargetPosition <em>Target Position</em>}</li>
  * </ul>
  * </p>
  *
@@ -71,13 +84,11 @@ import com.tinkerforge.TimeoutException;
  */
 public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
 {
-	private static final short OFF_POSITION = -9000;
-	private static final short ON_POSITION = 9000;
 
-/**
-   * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+  /**
+   * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute. <!--
+   * begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @see #getSwitchState()
    * @generated
    * @ordered
@@ -203,6 +214,60 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   protected TFServoConfiguration tfConfig;
 
   /**
+   * The default value of the '{@link #getMinValue() <em>Min Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMinValue()
+   * @generated
+   * @ordered
+   */
+  protected static final BigDecimal MIN_VALUE_EDEFAULT = null;
+  /**
+   * The cached value of the '{@link #getMinValue() <em>Min Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMinValue()
+   * @generated
+   * @ordered
+   */
+  protected BigDecimal minValue = MIN_VALUE_EDEFAULT;
+  /**
+   * The default value of the '{@link #getMaxValue() <em>Max Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMaxValue()
+   * @generated
+   * @ordered
+   */
+  protected static final BigDecimal MAX_VALUE_EDEFAULT = null;
+  /**
+   * The cached value of the '{@link #getMaxValue() <em>Max Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMaxValue()
+   * @generated
+   * @ordered
+   */
+  protected BigDecimal maxValue = MAX_VALUE_EDEFAULT;
+  /**
+   * The default value of the '{@link #getPercentValue() <em>Percent Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPercentValue()
+   * @generated
+   * @ordered
+   */
+  protected static final PercentValue PERCENT_VALUE_EDEFAULT = null;
+  /**
+   * The cached value of the '{@link #getPercentValue() <em>Percent Value</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPercentValue()
+   * @generated
+   * @ordered
+   */
+  protected PercentValue percentValue = PERCENT_VALUE_EDEFAULT;
+  /**
    * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -230,7 +295,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * @generated
    * @ordered
    */
-  protected static final int VELOCITY_EDEFAULT = 30000;
+  protected static final int VELOCITY_EDEFAULT = 65535;
 
   /**
    * The cached value of the '{@link #getVelocity() <em>Velocity</em>}' attribute.
@@ -250,7 +315,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * @generated
    * @ordered
    */
-  protected static final int ACCELERATION_EDEFAULT = 30000;
+  protected static final int ACCELERATION_EDEFAULT = 65535;
 
   /**
    * The cached value of the '{@link #getAcceleration() <em>Acceleration</em>}' attribute.
@@ -343,46 +408,43 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
   protected int outputVoltage = OUTPUT_VOLTAGE_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getServoCurrentPosition() <em>Servo Current Position</em>}' attribute.
+   * The default value of the '{@link #getCurrentPosition() <em>Current Position</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getServoCurrentPosition()
+   * @see #getCurrentPosition()
    * @generated
    * @ordered
    */
-  protected static final short SERVO_CURRENT_POSITION_EDEFAULT = 0;
-
+  protected static final short CURRENT_POSITION_EDEFAULT = 0;
   /**
-   * The cached value of the '{@link #getServoCurrentPosition() <em>Servo Current Position</em>}' attribute.
+   * The cached value of the '{@link #getCurrentPosition() <em>Current Position</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getServoCurrentPosition()
+   * @see #getCurrentPosition()
    * @generated
    * @ordered
    */
-  protected short servoCurrentPosition = SERVO_CURRENT_POSITION_EDEFAULT;
-
+  protected short currentPosition = CURRENT_POSITION_EDEFAULT;
   /**
-   * The default value of the '{@link #getServoDestinationPosition() <em>Servo Destination Position</em>}' attribute.
+   * The default value of the '{@link #getTargetPosition() <em>Target Position</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getServoDestinationPosition()
+   * @see #getTargetPosition()
    * @generated
    * @ordered
    */
-  protected static final short SERVO_DESTINATION_POSITION_EDEFAULT = 0;
-
+  protected static final short TARGET_POSITION_EDEFAULT = 0;
   /**
-   * The cached value of the '{@link #getServoDestinationPosition() <em>Servo Destination Position</em>}' attribute.
+   * The cached value of the '{@link #getTargetPosition() <em>Target Position</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getServoDestinationPosition()
+   * @see #getTargetPosition()
    * @generated
    * @ordered
    */
-  protected short servoDestinationPosition = SERVO_DESTINATION_POSITION_EDEFAULT;
-
+  protected short targetPosition = TARGET_POSITION_EDEFAULT;
   private Short servoNum;
+  private PositionReachedListener listener;
 
   /**
    * <!-- begin-user-doc -->
@@ -663,9 +725,9 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * <!-- end-user-doc -->
    * @generated
    */
-  public short getServoCurrentPosition()
+  public short getCurrentPosition()
   {
-    return servoCurrentPosition;
+    return currentPosition;
   }
 
   /**
@@ -673,12 +735,12 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setServoCurrentPosition(short newServoCurrentPosition)
+  public void setCurrentPosition(short newCurrentPosition)
   {
-    short oldServoCurrentPosition = servoCurrentPosition;
-    servoCurrentPosition = newServoCurrentPosition;
+    short oldCurrentPosition = currentPosition;
+    currentPosition = newCurrentPosition;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__SERVO_CURRENT_POSITION, oldServoCurrentPosition, servoCurrentPosition));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__CURRENT_POSITION, oldCurrentPosition, currentPosition));
   }
 
   /**
@@ -686,9 +748,9 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * <!-- end-user-doc -->
    * @generated
    */
-  public short getServoDestinationPosition()
+  public short getTargetPosition()
   {
-    return servoDestinationPosition;
+    return targetPosition;
   }
 
   /**
@@ -696,12 +758,12 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setServoDestinationPosition(short newServoDestinationPosition)
+  public void setTargetPosition(short newTargetPosition)
   {
-    short oldServoDestinationPosition = servoDestinationPosition;
-    servoDestinationPosition = newServoDestinationPosition;
+    short oldTargetPosition = targetPosition;
+    targetPosition = newTargetPosition;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__SERVO_DESTINATION_POSITION, oldServoDestinationPosition, servoDestinationPosition));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__TARGET_POSITION, oldTargetPosition, targetPosition));
   }
 
   /**
@@ -713,6 +775,169 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     setEnabledA(new AtomicBoolean());
     logger = LoggerFactory.getLogger(MServoImpl.class);
     logger.debug("init called on MServo: " + uid);
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void setValue(BigDecimal newValue, DeviceOptions opts)
+  {
+    setPoint(newValue.shortValue(), opts);
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void setValue(PercentType newValue, DeviceOptions opts)
+  {
+    BigDecimal max = Tools.getBigDecimalOpt(ConfigOptsDimmable.MAX.toString(), opts);
+    if (max == null) {
+      logger.error("dimmer option max is missing, items configuration has to be fixed!");
+      return;
+    } else {
+      logger.debug("max {}", max);
+    }
+    BigDecimal min = Tools.getBigDecimalOpt(ConfigOptsDimmable.MIN.toString(), opts);
+    logger.debug("min {}", min);
+    if (min == null) {
+      logger.error("dimmer option min is missing, items configuration has to be fixed!");
+      return;
+    }
+    setPercentValue(new PercentValue(percentValue.toBigDecimal()));
+    BigDecimal abs = max.add(min.abs());
+    Short newVelocity =
+        abs.divide(new BigDecimal(100)).multiply(percentValue.toBigDecimal()).subtract(min.abs())
+            .shortValue();
+    setPoint(newVelocity, opts);
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public void dimm(IncreaseDecreaseType increaseDecrease, DeviceOptions opts)
+  {
+    logger.trace("dimmer increase increaseDecrease {} opts {}", increaseDecrease, opts);
+    if (opts == null) {
+      logger.error("options are missing");
+      return;
+    }
+    if (increaseDecrease == null) {
+      logger.error("increaseDecrease may not be null!");
+      return;
+    }
+    Short step = Tools.getShortOpt(ConfigOptsDimmable.STEP.toString(), opts);
+    if (step == null) {
+      logger.error("dimmer option step is missing, items configuration has to be fixed!");
+      return;
+    }
+    Short newPosition = null;
+    if (increaseDecrease.equals(IncreaseDecreaseType.INCREASE)) {
+      newPosition = (short) (this.targetPosition + step);
+    } else if (increaseDecrease.equals(IncreaseDecreaseType.DECREASE)) {
+      newPosition = (short) (this.targetPosition - step);
+    }
+    logger.debug("new position {}", newPosition);
+    setPoint(newPosition, opts);
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  private void setPoint(Short newPosition, DeviceOptions opts) {
+    Integer xacceleration =
+        Tools.getIntOpt(ConfigOptsServo.ACCELERATION.toString(), opts, this.acceleration);
+    if (xacceleration == null) {
+      logger.error("acceleration may not be null");
+      return;
+    }
+    Integer xvelocity = Tools.getIntOpt(ConfigOptsServo.VELOCITY.toString(), opts, this.velocity);
+    if (xvelocity == null) {
+      logger.error("xvelocity may not be null");
+      return;
+    }
+    // I think these values should not be setable per item, only at initialization
+    // Integer period = Tools.getIntOpt(ConfigOptsServo.PERIOD.toString(), opts,
+    // tfConfig.getPeriod());
+    // if (period == null) {
+    // logger.error("period may not be null");
+    // return;
+    // }
+    // Integer pulsewidthmin =
+    // Tools
+    // .getIntOpt(ConfigOptsServo.PULSEWIDTHMIN.toString(), opts, tfConfig.getPulseWidthMin());
+    // if (pulsewidthmin == null) {
+    // logger.error("pulsewidthmin may not be null");
+    // return;
+    // }
+    // Integer pulsewidthmax =
+    // Tools
+    // .getIntOpt(ConfigOptsServo.PULSEWIDTHMAX.toString(), opts, tfConfig.getPulseWidthMax());
+    // if (pulsewidthmax == null) {
+    // logger.error("pulsewidthmax may not be null");
+    // return;
+    // }
+    if (newPosition == null) {
+      logger.error("position may not be null");
+      return;
+    }
+    Short max = Tools.getShortOpt(ConfigOptsDimmable.MAX.toString(), opts);
+    if (max == null) {
+      logger.error("option max is missing, items configuration has to be fixed!");
+      return;
+    } else {
+      logger.debug("max {}", max);
+    }
+    Short min = Tools.getShortOpt(ConfigOptsDimmable.MIN.toString(), opts);
+    logger.debug("min {}", min);
+    if (min == null) {
+      logger.error("BrickDC dimmer option min is missing, items configuration has to be fixed!");
+      return;
+    }
+    // TODO targetposition or currentposition?
+    // set sensorvalues
+    if (newPosition > max) {
+      if (this.targetPosition < newPosition) {
+        logger.debug("setting value to max speed {}, which is lower then target speed {}", max,
+            newPosition);
+        newPosition = max;
+      } else {
+        logger.debug("max value already reached {}", max);
+        return;
+      }
+    } else if (newPosition < min) {
+      if (this.targetPosition > newPosition) {
+        logger.debug("setting velocity to min speed {}, which is higher then target speed {}", min,
+            newPosition);
+        newPosition = min;
+      } else {
+        logger.debug("min value already reached {}", min);
+        return;
+      }
+    }
+    try {
+      BrickServo tinkerBrickServo = getMbrick().getTinkerforgeDevice();
+      // I think these values should not be setable per item, only at initialization
+      // tinkerBrickServo.setPulseWidth(servoNum, pulseWidthMin, pulseWidthMax);
+      // tinkerBrickServo.setPeriod(servoNum, period);
+      tinkerBrickServo.setVelocity(servoNum, xvelocity);
+      tinkerBrickServo.setAcceleration(servoNum, xacceleration);
+      tinkerBrickServo.setPosition(servoNum, newPosition);
+      setTargetPosition(newPosition);
+    } catch (TimeoutException e) {
+      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    } catch (NotConnectedException e) {
+      TinkerforgeErrorHandler.handleError(this,
+          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    }
+
   }
 
   /**
@@ -742,12 +967,15 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       BrickServo tinkerBrickServo = brick.getTinkerforgeDevice();
       try {
         servoNum = Short.parseShort(String.valueOf(subId.charAt(subId.length() - 1)));
-        tinkerBrickServo.setVelocity(servoNum, velocity);
-        tinkerBrickServo.setAcceleration(servoNum, acceleration);
+        // tinkerBrickServo.setVelocity(servoNum, velocity);
+        // tinkerBrickServo.setAcceleration(servoNum, acceleration);
         tinkerBrickServo.setPulseWidth(servoNum, pulseWidthMin, pulseWidthMax);
         tinkerBrickServo.setPeriod(servoNum, period);
         tinkerBrickServo.setOutputVoltage(outputVoltage);
-        tinkerBrickServo.addPositionReachedListener(new PositionReachedListener());
+        setTargetPosition(tinkerBrickServo.getPosition(servoNum)); // initialize target postion with
+                                                                   // current position value
+        listener = new PositionReachedListener();
+        tinkerBrickServo.addPositionReachedListener(listener);
         tinkerBrickServo.enable(servoNum);
         fetchSwitchState();
       } catch (NumberFormatException e) {
@@ -767,7 +995,11 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * @generated NOT
    */
   @Override
-  public void disable() {}
+  public void disable() {
+    if (listener != null) {
+      getMbrick().getTinkerforgeDevice().removePositionReachedListener(listener);
+    }
+  }
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -775,21 +1007,22 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * @generated NOT
    */
   public void fetchSwitchState() {
-    OnOffValue value = OnOffValue.UNDEF;
-    try {
-      short position = getMbrick().getTinkerforgeDevice().getPosition(servoNum);
-      if (position == OFF_POSITION) {
-        value = OnOffValue.OFF;
-      } else if (position == ON_POSITION) {
-        value = OnOffValue.ON;
-      }
-      setSwitchState(value);
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-    }
+    // TODO
+    // OnOffValue value = OnOffValue.UNDEF;
+    // try {
+    // short position = getMbrick().getTinkerforgeDevice().getPosition(servoNum);
+    // if (position == OFF_POSITION) {
+    // value = OnOffValue.OFF;
+    // } else if (position == ON_POSITION) {
+    // value = OnOffValue.ON;
+    // }
+    // setSwitchState(value);
+    // } catch (TimeoutException e) {
+    // TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+    // } catch (NotConnectedException e) {
+    // TinkerforgeErrorHandler.handleError(this,
+    // TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    // }
   }
 
   /**
@@ -801,7 +1034,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
 
     @Override
     public void positionReached(short servoNumPar, short position) {
-      if (servoNumPar == servoNum) setServoCurrentPosition(position);
+      if (servoNumPar == servoNum) setCurrentPosition(position);
     }
   }
 
@@ -811,31 +1044,21 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * @generated NOT
    */
   @Override
-  public void turnSwitch(OnOffValue state) {
+  public void turnSwitch(OnOffValue state, DeviceOptions opts) {
     logger.debug("setSwitchState called");
-    try {
-
-      if (state == OnOffValue.OFF) {
-        logger.debug("setSwitchState off");
-        setServoDestinationPosition(OFF_POSITION);
-        getMbrick().getTinkerforgeDevice().setPosition(servoNum, OFF_POSITION);
-      } else if (state == OnOffValue.ON) {
-        logger.debug("setSwitchState off");
-
-        setServoDestinationPosition(ON_POSITION);
-        MBrickServo mbrick = getMbrick();
-        mbrick.getTinkerforgeDevice().setPosition(servoNum, ON_POSITION);
-      } else {
-        logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
+    Short position = null;
+    if (state == OnOffValue.OFF) {
+      position = 0;
+    } else if (state == OnOffValue.ON) {
+      position = Tools.getShortOpt(ConfigOptsServo.POSITION.toString(), opts);
+      if (position == null) {
+        logger.error("{} option is missing", ConfigOptsServo.POSITION.toString().toLowerCase());
+        return;
       }
-      switchState = state == null ? OnOffValue.UNDEF : state;
-      setSwitchState(switchState);
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+    } else {
+      logger.error("{} unkown switchstate {}", LoggerConstants.TFMODELUPDATE, state);
     }
+    setPoint(position, opts);
   }
 
 /**
@@ -933,7 +1156,7 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     return msgs;
   }
 
-/**
+  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -954,7 +1177,76 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__TF_CONFIG, newTfConfig, newTfConfig));
   }
 
+/**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BigDecimal getMinValue()
+  {
+    return minValue;
+  }
+
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMinValue(BigDecimal newMinValue)
+  {
+    BigDecimal oldMinValue = minValue;
+    minValue = newMinValue;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__MIN_VALUE, oldMinValue, minValue));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BigDecimal getMaxValue()
+  {
+    return maxValue;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMaxValue(BigDecimal newMaxValue)
+  {
+    BigDecimal oldMaxValue = maxValue;
+    maxValue = newMaxValue;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__MAX_VALUE, oldMaxValue, maxValue));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public PercentValue getPercentValue()
+  {
+    return percentValue;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPercentValue(PercentValue newPercentValue)
+  {
+    PercentValue oldPercentValue = percentValue;
+    percentValue = newPercentValue;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__PERCENT_VALUE, oldPercentValue, percentValue));
+  }
+
+/**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -1042,6 +1334,12 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return getMbrick();
       case ModelPackage.MSERVO__TF_CONFIG:
         return getTfConfig();
+      case ModelPackage.MSERVO__MIN_VALUE:
+        return getMinValue();
+      case ModelPackage.MSERVO__MAX_VALUE:
+        return getMaxValue();
+      case ModelPackage.MSERVO__PERCENT_VALUE:
+        return getPercentValue();
       case ModelPackage.MSERVO__DEVICE_TYPE:
         return getDeviceType();
       case ModelPackage.MSERVO__VELOCITY:
@@ -1056,10 +1354,10 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return getPeriod();
       case ModelPackage.MSERVO__OUTPUT_VOLTAGE:
         return getOutputVoltage();
-      case ModelPackage.MSERVO__SERVO_CURRENT_POSITION:
-        return getServoCurrentPosition();
-      case ModelPackage.MSERVO__SERVO_DESTINATION_POSITION:
-        return getServoDestinationPosition();
+      case ModelPackage.MSERVO__CURRENT_POSITION:
+        return getCurrentPosition();
+      case ModelPackage.MSERVO__TARGET_POSITION:
+        return getTargetPosition();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -1098,6 +1396,15 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       case ModelPackage.MSERVO__TF_CONFIG:
         setTfConfig((TFServoConfiguration)newValue);
         return;
+      case ModelPackage.MSERVO__MIN_VALUE:
+        setMinValue((BigDecimal)newValue);
+        return;
+      case ModelPackage.MSERVO__MAX_VALUE:
+        setMaxValue((BigDecimal)newValue);
+        return;
+      case ModelPackage.MSERVO__PERCENT_VALUE:
+        setPercentValue((PercentValue)newValue);
+        return;
       case ModelPackage.MSERVO__VELOCITY:
         setVelocity((Integer)newValue);
         return;
@@ -1116,11 +1423,11 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       case ModelPackage.MSERVO__OUTPUT_VOLTAGE:
         setOutputVoltage((Integer)newValue);
         return;
-      case ModelPackage.MSERVO__SERVO_CURRENT_POSITION:
-        setServoCurrentPosition((Short)newValue);
+      case ModelPackage.MSERVO__CURRENT_POSITION:
+        setCurrentPosition((Short)newValue);
         return;
-      case ModelPackage.MSERVO__SERVO_DESTINATION_POSITION:
-        setServoDestinationPosition((Short)newValue);
+      case ModelPackage.MSERVO__TARGET_POSITION:
+        setTargetPosition((Short)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -1160,6 +1467,15 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       case ModelPackage.MSERVO__TF_CONFIG:
         setTfConfig((TFServoConfiguration)null);
         return;
+      case ModelPackage.MSERVO__MIN_VALUE:
+        setMinValue(MIN_VALUE_EDEFAULT);
+        return;
+      case ModelPackage.MSERVO__MAX_VALUE:
+        setMaxValue(MAX_VALUE_EDEFAULT);
+        return;
+      case ModelPackage.MSERVO__PERCENT_VALUE:
+        setPercentValue(PERCENT_VALUE_EDEFAULT);
+        return;
       case ModelPackage.MSERVO__VELOCITY:
         setVelocity(VELOCITY_EDEFAULT);
         return;
@@ -1178,11 +1494,11 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       case ModelPackage.MSERVO__OUTPUT_VOLTAGE:
         setOutputVoltage(OUTPUT_VOLTAGE_EDEFAULT);
         return;
-      case ModelPackage.MSERVO__SERVO_CURRENT_POSITION:
-        setServoCurrentPosition(SERVO_CURRENT_POSITION_EDEFAULT);
+      case ModelPackage.MSERVO__CURRENT_POSITION:
+        setCurrentPosition(CURRENT_POSITION_EDEFAULT);
         return;
-      case ModelPackage.MSERVO__SERVO_DESTINATION_POSITION:
-        setServoDestinationPosition(SERVO_DESTINATION_POSITION_EDEFAULT);
+      case ModelPackage.MSERVO__TARGET_POSITION:
+        setTargetPosition(TARGET_POSITION_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -1214,6 +1530,12 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return getMbrick() != null;
       case ModelPackage.MSERVO__TF_CONFIG:
         return tfConfig != null;
+      case ModelPackage.MSERVO__MIN_VALUE:
+        return MIN_VALUE_EDEFAULT == null ? minValue != null : !MIN_VALUE_EDEFAULT.equals(minValue);
+      case ModelPackage.MSERVO__MAX_VALUE:
+        return MAX_VALUE_EDEFAULT == null ? maxValue != null : !MAX_VALUE_EDEFAULT.equals(maxValue);
+      case ModelPackage.MSERVO__PERCENT_VALUE:
+        return PERCENT_VALUE_EDEFAULT == null ? percentValue != null : !PERCENT_VALUE_EDEFAULT.equals(percentValue);
       case ModelPackage.MSERVO__DEVICE_TYPE:
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.MSERVO__VELOCITY:
@@ -1228,10 +1550,10 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return period != PERIOD_EDEFAULT;
       case ModelPackage.MSERVO__OUTPUT_VOLTAGE:
         return outputVoltage != OUTPUT_VOLTAGE_EDEFAULT;
-      case ModelPackage.MSERVO__SERVO_CURRENT_POSITION:
-        return servoCurrentPosition != SERVO_CURRENT_POSITION_EDEFAULT;
-      case ModelPackage.MSERVO__SERVO_DESTINATION_POSITION:
-        return servoDestinationPosition != SERVO_DESTINATION_POSITION_EDEFAULT;
+      case ModelPackage.MSERVO__CURRENT_POSITION:
+        return currentPosition != CURRENT_POSITION_EDEFAULT;
+      case ModelPackage.MSERVO__TARGET_POSITION:
+        return targetPosition != TARGET_POSITION_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -1269,6 +1591,23 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       switch (derivedFeatureID)
       {
         case ModelPackage.MSERVO__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
+        default: return -1;
+      }
+    }
+    if (baseClass == DimmableActor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MSERVO__MIN_VALUE: return ModelPackage.DIMMABLE_ACTOR__MIN_VALUE;
+        case ModelPackage.MSERVO__MAX_VALUE: return ModelPackage.DIMMABLE_ACTOR__MAX_VALUE;
+        default: return -1;
+      }
+    }
+    if (baseClass == SetPointActor.class)
+    {
+      switch (derivedFeatureID)
+      {
+        case ModelPackage.MSERVO__PERCENT_VALUE: return ModelPackage.SET_POINT_ACTOR__PERCENT_VALUE;
         default: return -1;
       }
     }
@@ -1311,6 +1650,23 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         default: return -1;
       }
     }
+    if (baseClass == DimmableActor.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.DIMMABLE_ACTOR__MIN_VALUE: return ModelPackage.MSERVO__MIN_VALUE;
+        case ModelPackage.DIMMABLE_ACTOR__MAX_VALUE: return ModelPackage.MSERVO__MAX_VALUE;
+        default: return -1;
+      }
+    }
+    if (baseClass == SetPointActor.class)
+    {
+      switch (baseFeatureID)
+      {
+        case ModelPackage.SET_POINT_ACTOR__PERCENT_VALUE: return ModelPackage.MSERVO__PERCENT_VALUE;
+        default: return -1;
+      }
+    }
     return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
   }
 
@@ -1346,6 +1702,23 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         default: return -1;
       }
     }
+    if (baseClass == DimmableActor.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.DIMMABLE_ACTOR___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS: return ModelPackage.MSERVO___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS;
+        default: return -1;
+      }
+    }
+    if (baseClass == SetPointActor.class)
+    {
+      switch (baseOperationID)
+      {
+        case ModelPackage.SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS: return ModelPackage.MSERVO___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS;
+        case ModelPackage.SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS: return ModelPackage.MSERVO___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS;
+        default: return -1;
+      }
+    }
     return super.eDerivedOperationID(baseOperationID, baseClass);
   }
 
@@ -1362,14 +1735,23 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       case ModelPackage.MSERVO___INIT:
         init();
         return null;
+      case ModelPackage.MSERVO___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS:
+        setValue((BigDecimal)arguments.get(0), (DeviceOptions)arguments.get(1));
+        return null;
+      case ModelPackage.MSERVO___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS:
+        setValue((PercentType)arguments.get(0), (DeviceOptions)arguments.get(1));
+        return null;
+      case ModelPackage.MSERVO___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS:
+        dimm((IncreaseDecreaseType)arguments.get(0), (DeviceOptions)arguments.get(1));
+        return null;
       case ModelPackage.MSERVO___ENABLE:
         enable();
         return null;
       case ModelPackage.MSERVO___DISABLE:
         disable();
         return null;
-      case ModelPackage.MSERVO___TURN_SWITCH__ONOFFVALUE:
-        turnSwitch((OnOffValue)arguments.get(0));
+      case ModelPackage.MSERVO___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS:
+        turnSwitch((OnOffValue)arguments.get(0), (DeviceOptions)arguments.get(1));
         return null;
       case ModelPackage.MSERVO___FETCH_SWITCH_STATE:
         fetchSwitchState();
@@ -1401,6 +1783,12 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     result.append(enabledA);
     result.append(", subId: ");
     result.append(subId);
+    result.append(", minValue: ");
+    result.append(minValue);
+    result.append(", maxValue: ");
+    result.append(maxValue);
+    result.append(", percentValue: ");
+    result.append(percentValue);
     result.append(", deviceType: ");
     result.append(deviceType);
     result.append(", velocity: ");
@@ -1415,10 +1803,10 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     result.append(period);
     result.append(", outputVoltage: ");
     result.append(outputVoltage);
-    result.append(", servoCurrentPosition: ");
-    result.append(servoCurrentPosition);
-    result.append(", servoDestinationPosition: ");
-    result.append(servoDestinationPosition);
+    result.append(", currentPosition: ");
+    result.append(currentPosition);
+    result.append(", targetPosition: ");
+    result.append(targetPosition);
     result.append(')');
     return result.toString();
   }

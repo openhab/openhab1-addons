@@ -586,7 +586,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         if (mDevice instanceof MSensor) {
           ((MSensor<?>) mDevice).fetchSensorValue();
         } else if (mDevice instanceof SwitchSensor && item instanceof SwitchItem) {
-          ((MInSwitchActor) mDevice).fetchSwitchState();
+          ((SwitchSensor) mDevice).fetchSwitchState();
         } else if (mDevice instanceof DigitalActor) {
           ((DigitalActor) mDevice).fetchDigitalValue();
         }

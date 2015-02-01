@@ -28,8 +28,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMax <em>Pulse Width Max</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPeriod <em>Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getOutputVoltage <em>Output Voltage</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getServoCurrentPosition <em>Servo Current Position</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getServoDestinationPosition <em>Servo Destination Position</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getCurrentPosition <em>Current Position</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getTargetPosition <em>Target Position</em>}</li>
  * </ul>
  * </p>
  *
@@ -37,7 +37,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  * @model
  * @generated
  */
-public interface MServo extends MInSwitchActor, MSubDevice<MBrickServo>, MTFConfigConsumer<TFServoConfiguration>
+public interface MServo extends ProgrammableSwitchActor, MSubDevice<MBrickServo>, SetPointActor<TFServoConfiguration>
 {
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
@@ -57,7 +57,7 @@ public interface MServo extends MInSwitchActor, MSubDevice<MBrickServo>, MTFConf
 
   /**
    * Returns the value of the '<em><b>Velocity</b></em>' attribute.
-   * The default value is <code>"30000"</code>.
+   * The default value is <code>"65535"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Velocity</em>' attribute isn't clear,
@@ -67,7 +67,7 @@ public interface MServo extends MInSwitchActor, MSubDevice<MBrickServo>, MTFConf
    * @return the value of the '<em>Velocity</em>' attribute.
    * @see #setVelocity(int)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo_Velocity()
-   * @model default="30000" unique="false"
+   * @model default="65535" unique="false"
    * @generated
    */
   int getVelocity();
@@ -84,7 +84,7 @@ public interface MServo extends MInSwitchActor, MSubDevice<MBrickServo>, MTFConf
 
   /**
    * Returns the value of the '<em><b>Acceleration</b></em>' attribute.
-   * The default value is <code>"30000"</code>.
+   * The default value is <code>"65535"</code>.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Acceleration</em>' attribute isn't clear,
@@ -94,7 +94,7 @@ public interface MServo extends MInSwitchActor, MSubDevice<MBrickServo>, MTFConf
    * @return the value of the '<em>Acceleration</em>' attribute.
    * @see #setAcceleration(int)
    * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo_Acceleration()
-   * @model default="30000" unique="false"
+   * @model default="65535" unique="false"
    * @generated
    */
   int getAcceleration();
@@ -218,56 +218,56 @@ public interface MServo extends MInSwitchActor, MSubDevice<MBrickServo>, MTFConf
   void setOutputVoltage(int value);
 
   /**
-   * Returns the value of the '<em><b>Servo Current Position</b></em>' attribute.
+   * Returns the value of the '<em><b>Current Position</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Servo Current Position</em>' attribute isn't clear,
+   * If the meaning of the '<em>Current Position</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Servo Current Position</em>' attribute.
-   * @see #setServoCurrentPosition(short)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo_ServoCurrentPosition()
+   * @return the value of the '<em>Current Position</em>' attribute.
+   * @see #setCurrentPosition(short)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo_CurrentPosition()
    * @model unique="false"
    * @generated
    */
-  short getServoCurrentPosition();
+  short getCurrentPosition();
 
   /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getServoCurrentPosition <em>Servo Current Position</em>}' attribute.
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getCurrentPosition <em>Current Position</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Servo Current Position</em>' attribute.
-   * @see #getServoCurrentPosition()
+   * @param value the new value of the '<em>Current Position</em>' attribute.
+   * @see #getCurrentPosition()
    * @generated
    */
-  void setServoCurrentPosition(short value);
+  void setCurrentPosition(short value);
 
   /**
-   * Returns the value of the '<em><b>Servo Destination Position</b></em>' attribute.
+   * Returns the value of the '<em><b>Target Position</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Servo Destination Position</em>' attribute isn't clear,
+   * If the meaning of the '<em>Target Position</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Servo Destination Position</em>' attribute.
-   * @see #setServoDestinationPosition(short)
-   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo_ServoDestinationPosition()
+   * @return the value of the '<em>Target Position</em>' attribute.
+   * @see #setTargetPosition(short)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo_TargetPosition()
    * @model unique="false"
    * @generated
    */
-  short getServoDestinationPosition();
+  short getTargetPosition();
 
   /**
-   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getServoDestinationPosition <em>Servo Destination Position</em>}' attribute.
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getTargetPosition <em>Target Position</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Servo Destination Position</em>' attribute.
-   * @see #getServoDestinationPosition()
+   * @param value the new value of the '<em>Target Position</em>' attribute.
+   * @see #getTargetPosition()
    * @generated
    */
-  void setServoDestinationPosition(short value);
+  void setTargetPosition(short value);
 
   /**
    * <!-- begin-user-doc -->

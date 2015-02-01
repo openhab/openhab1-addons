@@ -2342,7 +2342,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__SWITCH_STATE = MIN_SWITCH_ACTOR__SWITCH_STATE;
+  int MSERVO__SWITCH_STATE = PROGRAMMABLE_SWITCH_ACTOR__SWITCH_STATE;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -2351,7 +2351,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__LOGGER = MIN_SWITCH_ACTOR_FEATURE_COUNT + 0;
+  int MSERVO__LOGGER = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Uid</b></em>' attribute.
@@ -2360,7 +2360,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__UID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 1;
+  int MSERVO__UID = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Poll</b></em>' attribute.
@@ -2369,7 +2369,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__POLL = MIN_SWITCH_ACTOR_FEATURE_COUNT + 2;
+  int MSERVO__POLL = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -2378,7 +2378,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__ENABLED_A = MIN_SWITCH_ACTOR_FEATURE_COUNT + 3;
+  int MSERVO__ENABLED_A = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Sub Id</b></em>' attribute.
@@ -2387,7 +2387,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__SUB_ID = MIN_SWITCH_ACTOR_FEATURE_COUNT + 4;
+  int MSERVO__SUB_ID = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Mbrick</b></em>' container reference.
@@ -2396,7 +2396,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__MBRICK = MIN_SWITCH_ACTOR_FEATURE_COUNT + 5;
+  int MSERVO__MBRICK = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Tf Config</b></em>' containment reference.
@@ -2405,7 +2405,34 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__TF_CONFIG = MIN_SWITCH_ACTOR_FEATURE_COUNT + 6;
+  int MSERVO__TF_CONFIG = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 6;
+
+  /**
+   * The feature id for the '<em><b>Min Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO__MIN_VALUE = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 7;
+
+  /**
+   * The feature id for the '<em><b>Max Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO__MAX_VALUE = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 8;
+
+  /**
+   * The feature id for the '<em><b>Percent Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO__PERCENT_VALUE = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 9;
 
   /**
    * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -2414,7 +2441,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__DEVICE_TYPE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 7;
+  int MSERVO__DEVICE_TYPE = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 10;
 
   /**
    * The feature id for the '<em><b>Velocity</b></em>' attribute.
@@ -2423,7 +2450,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__VELOCITY = MIN_SWITCH_ACTOR_FEATURE_COUNT + 8;
+  int MSERVO__VELOCITY = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 11;
 
   /**
    * The feature id for the '<em><b>Acceleration</b></em>' attribute.
@@ -2432,7 +2459,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__ACCELERATION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 9;
+  int MSERVO__ACCELERATION = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 12;
 
   /**
    * The feature id for the '<em><b>Pulse Width Min</b></em>' attribute.
@@ -2441,7 +2468,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__PULSE_WIDTH_MIN = MIN_SWITCH_ACTOR_FEATURE_COUNT + 10;
+  int MSERVO__PULSE_WIDTH_MIN = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 13;
 
   /**
    * The feature id for the '<em><b>Pulse Width Max</b></em>' attribute.
@@ -2450,7 +2477,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__PULSE_WIDTH_MAX = MIN_SWITCH_ACTOR_FEATURE_COUNT + 11;
+  int MSERVO__PULSE_WIDTH_MAX = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 14;
 
   /**
    * The feature id for the '<em><b>Period</b></em>' attribute.
@@ -2459,7 +2486,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__PERIOD = MIN_SWITCH_ACTOR_FEATURE_COUNT + 12;
+  int MSERVO__PERIOD = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 15;
 
   /**
    * The feature id for the '<em><b>Output Voltage</b></em>' attribute.
@@ -2468,25 +2495,25 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__OUTPUT_VOLTAGE = MIN_SWITCH_ACTOR_FEATURE_COUNT + 13;
+  int MSERVO__OUTPUT_VOLTAGE = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 16;
 
   /**
-   * The feature id for the '<em><b>Servo Current Position</b></em>' attribute.
+   * The feature id for the '<em><b>Current Position</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MSERVO__SERVO_CURRENT_POSITION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 14;
+  int MSERVO__CURRENT_POSITION = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 17;
 
   /**
-   * The feature id for the '<em><b>Servo Destination Position</b></em>' attribute.
+   * The feature id for the '<em><b>Target Position</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MSERVO__SERVO_DESTINATION_POSITION = MIN_SWITCH_ACTOR_FEATURE_COUNT + 15;
+  int MSERVO__TARGET_POSITION = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 18;
 
   /**
    * The number of structural features of the '<em>MServo</em>' class.
@@ -2495,7 +2522,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO_FEATURE_COUNT = MIN_SWITCH_ACTOR_FEATURE_COUNT + 16;
+  int MSERVO_FEATURE_COUNT = PROGRAMMABLE_SWITCH_ACTOR_FEATURE_COUNT + 19;
 
   /**
    * The operation id for the '<em>Fetch Switch State</em>' operation.
@@ -2504,7 +2531,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___FETCH_SWITCH_STATE = MIN_SWITCH_ACTOR___FETCH_SWITCH_STATE;
+  int MSERVO___FETCH_SWITCH_STATE = PROGRAMMABLE_SWITCH_ACTOR___FETCH_SWITCH_STATE;
 
   /**
    * The operation id for the '<em>Turn Switch</em>' operation.
@@ -2513,7 +2540,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___TURN_SWITCH__ONOFFVALUE = MIN_SWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE;
+  int MSERVO___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS = PROGRAMMABLE_SWITCH_ACTOR___TURN_SWITCH__ONOFFVALUE_DEVICEOPTIONS;
 
   /**
    * The operation id for the '<em>Enable</em>' operation.
@@ -2522,7 +2549,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___ENABLE = MIN_SWITCH_ACTOR_OPERATION_COUNT + 1;
+  int MSERVO___ENABLE = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 1;
 
   /**
    * The operation id for the '<em>Disable</em>' operation.
@@ -2531,7 +2558,34 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___DISABLE = MIN_SWITCH_ACTOR_OPERATION_COUNT + 2;
+  int MSERVO___DISABLE = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 2;
+
+  /**
+   * The operation id for the '<em>Dimm</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO___DIMM__INCREASEDECREASETYPE_DEVICEOPTIONS = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 3;
+
+  /**
+   * The operation id for the '<em>Set Value</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 4;
+
+  /**
+   * The operation id for the '<em>Set Value</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 5;
 
   /**
    * The operation id for the '<em>Init</em>' operation.
@@ -2540,7 +2594,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO___INIT = MIN_SWITCH_ACTOR_OPERATION_COUNT + 3;
+  int MSERVO___INIT = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 6;
 
   /**
    * The number of operations of the '<em>MServo</em>' class.
@@ -2549,7 +2603,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO_OPERATION_COUNT = MIN_SWITCH_ACTOR_OPERATION_COUNT + 4;
+  int MSERVO_OPERATION_COUNT = PROGRAMMABLE_SWITCH_ACTOR_OPERATION_COUNT + 7;
 
   /**
    * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -12486,13 +12540,31 @@ public interface ModelPackage extends EPackage
   int TFIO_SENSOR_CONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Min Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TF_SERVO_CONFIGURATION__MIN_VALUE = DIMMABLE_CONFIGURATION__MIN_VALUE;
+
+  /**
+   * The feature id for the '<em><b>Max Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TF_SERVO_CONFIGURATION__MAX_VALUE = DIMMABLE_CONFIGURATION__MAX_VALUE;
+
+  /**
    * The feature id for the '<em><b>Velocity</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TF_SERVO_CONFIGURATION__VELOCITY = TF_CONFIG_FEATURE_COUNT + 0;
+  int TF_SERVO_CONFIGURATION__VELOCITY = DIMMABLE_CONFIGURATION_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Acceleration</b></em>' attribute.
@@ -12501,7 +12573,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TF_SERVO_CONFIGURATION__ACCELERATION = TF_CONFIG_FEATURE_COUNT + 1;
+  int TF_SERVO_CONFIGURATION__ACCELERATION = DIMMABLE_CONFIGURATION_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Servo Voltage</b></em>' attribute.
@@ -12510,7 +12582,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TF_SERVO_CONFIGURATION__SERVO_VOLTAGE = TF_CONFIG_FEATURE_COUNT + 2;
+  int TF_SERVO_CONFIGURATION__SERVO_VOLTAGE = DIMMABLE_CONFIGURATION_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Pulse Width Min</b></em>' attribute.
@@ -12519,7 +12591,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TF_SERVO_CONFIGURATION__PULSE_WIDTH_MIN = TF_CONFIG_FEATURE_COUNT + 3;
+  int TF_SERVO_CONFIGURATION__PULSE_WIDTH_MIN = DIMMABLE_CONFIGURATION_FEATURE_COUNT + 3;
 
   /**
    * The feature id for the '<em><b>Pulse Width Max</b></em>' attribute.
@@ -12528,7 +12600,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TF_SERVO_CONFIGURATION__PULSE_WIDTH_MAX = TF_CONFIG_FEATURE_COUNT + 4;
+  int TF_SERVO_CONFIGURATION__PULSE_WIDTH_MAX = DIMMABLE_CONFIGURATION_FEATURE_COUNT + 4;
 
   /**
    * The feature id for the '<em><b>Period</b></em>' attribute.
@@ -12537,7 +12609,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TF_SERVO_CONFIGURATION__PERIOD = TF_CONFIG_FEATURE_COUNT + 5;
+  int TF_SERVO_CONFIGURATION__PERIOD = DIMMABLE_CONFIGURATION_FEATURE_COUNT + 5;
 
   /**
    * The feature id for the '<em><b>Output Voltage</b></em>' attribute.
@@ -12546,7 +12618,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TF_SERVO_CONFIGURATION__OUTPUT_VOLTAGE = TF_CONFIG_FEATURE_COUNT + 6;
+  int TF_SERVO_CONFIGURATION__OUTPUT_VOLTAGE = DIMMABLE_CONFIGURATION_FEATURE_COUNT + 6;
 
   /**
    * The number of structural features of the '<em>TF Servo Configuration</em>' class.
@@ -12555,7 +12627,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TF_SERVO_CONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 7;
+  int TF_SERVO_CONFIGURATION_FEATURE_COUNT = DIMMABLE_CONFIGURATION_FEATURE_COUNT + 7;
 
   /**
    * The number of operations of the '<em>TF Servo Configuration</em>' class.
@@ -12564,7 +12636,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TF_SERVO_CONFIGURATION_OPERATION_COUNT = TF_CONFIG_OPERATION_COUNT + 0;
+  int TF_SERVO_CONFIGURATION_OPERATION_COUNT = DIMMABLE_CONFIGURATION_OPERATION_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Type ADevices</b></em>' attribute.
@@ -12835,7 +12907,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getSwitchState()
    * @generated
    */
-  int SWITCH_STATE = 130;
+  int SWITCH_STATE = 131;
 
   /**
    * The meta object id for the '<em>Digital Value</em>' data type.
@@ -12845,7 +12917,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDigitalValue()
    * @generated
    */
-  int DIGITAL_VALUE = 131;
+  int DIGITAL_VALUE = 132;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet IO16</em>' data type.
@@ -12855,7 +12927,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIO16()
    * @generated
    */
-  int TINKER_BRICKLET_IO16 = 132;
+  int TINKER_BRICKLET_IO16 = 133;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.DCDriveMode <em>DC Drive Mode</em>}' enum.
@@ -12866,6 +12938,16 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   int DC_DRIVE_MODE = 119;
+
+  /**
+   * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo <em>Config Opts Servo</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo
+   * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsServo()
+   * @generated
+   */
+  int CONFIG_OPTS_SERVO = 120;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}' enum.
@@ -13045,7 +13127,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIPConnection()
    * @generated
    */
-  int MIP_CONNECTION = 120;
+  int MIP_CONNECTION = 121;
 
   /**
    * The meta object id for the '<em>MTinker Device</em>' data type.
@@ -13055,7 +13137,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerDevice()
    * @generated
    */
-  int MTINKER_DEVICE = 121;
+  int MTINKER_DEVICE = 122;
 
   /**
    * The meta object id for the '<em>MLogger</em>' data type.
@@ -13065,7 +13147,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMLogger()
    * @generated
    */
-  int MLOGGER = 122;
+  int MLOGGER = 123;
 
 
   /**
@@ -13076,7 +13158,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMAtomicBoolean()
    * @generated
    */
-  int MATOMIC_BOOLEAN = 123;
+  int MATOMIC_BOOLEAN = 124;
 
   /**
    * The meta object id for the '<em>MTinkerforge Device</em>' data type.
@@ -13086,7 +13168,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeDevice()
    * @generated
    */
-  int MTINKERFORGE_DEVICE = 124;
+  int MTINKERFORGE_DEVICE = 125;
 
   /**
    * The meta object id for the '<em>MTinker Brick DC</em>' data type.
@@ -13096,7 +13178,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickDC()
    * @generated
    */
-  int MTINKER_BRICK_DC = 125;
+  int MTINKER_BRICK_DC = 126;
 
   /**
    * The meta object id for the '<em>MTinker Brick Servo</em>' data type.
@@ -13106,7 +13188,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickServo()
    * @generated
    */
-  int MTINKER_BRICK_SERVO = 133;
+  int MTINKER_BRICK_SERVO = 134;
 
 
   /**
@@ -13117,7 +13199,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerforgeValue()
    * @generated
    */
-  int MTINKERFORGE_VALUE = 134;
+  int MTINKERFORGE_VALUE = 135;
 
   /**
    * The meta object id for the '<em>MDecimal Value</em>' data type.
@@ -13127,7 +13209,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMDecimalValue()
    * @generated
    */
-  int MDECIMAL_VALUE = 135;
+  int MDECIMAL_VALUE = 136;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Humidity</em>' data type.
@@ -13137,7 +13219,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletHumidity()
    * @generated
    */
-  int MTINKER_BRICKLET_HUMIDITY = 136;
+  int MTINKER_BRICKLET_HUMIDITY = 137;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Distance IR</em>' data type.
@@ -13147,7 +13229,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDistanceIR()
    * @generated
    */
-  int MTINKER_BRICKLET_DISTANCE_IR = 137;
+  int MTINKER_BRICKLET_DISTANCE_IR = 138;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Temperature</em>' data type.
@@ -13157,7 +13239,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletTemperature()
    * @generated
    */
-  int MTINKER_BRICKLET_TEMPERATURE = 138;
+  int MTINKER_BRICKLET_TEMPERATURE = 139;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Barometer</em>' data type.
@@ -13167,7 +13249,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletBarometer()
    * @generated
    */
-  int MTINKER_BRICKLET_BAROMETER = 139;
+  int MTINKER_BRICKLET_BAROMETER = 140;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Ambient Light</em>' data type.
@@ -13177,7 +13259,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletAmbientLight()
    * @generated
    */
-  int MTINKER_BRICKLET_AMBIENT_LIGHT = 140;
+  int MTINKER_BRICKLET_AMBIENT_LIGHT = 141;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet LCD2 0x4</em>' data type.
@@ -13187,7 +13269,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletLCD20x4()
    * @generated
    */
-  int MTINKER_BRICKLET_LCD2_0X4 = 141;
+  int MTINKER_BRICKLET_LCD2_0X4 = 142;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Remote Switch</em>' data type.
@@ -13197,7 +13279,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletRemoteSwitch()
    * @generated
    */
-  int TINKER_BRICKLET_REMOTE_SWITCH = 142;
+  int TINKER_BRICKLET_REMOTE_SWITCH = 143;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Motion Detector</em>' data type.
@@ -13207,7 +13289,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMotionDetector()
    * @generated
    */
-  int TINKER_BRICKLET_MOTION_DETECTOR = 143;
+  int TINKER_BRICKLET_MOTION_DETECTOR = 144;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Multi Touch</em>' data type.
@@ -13217,7 +13299,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMultiTouch()
    * @generated
    */
-  int TINKER_BRICKLET_MULTI_TOUCH = 144;
+  int TINKER_BRICKLET_MULTI_TOUCH = 145;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Temperature IR</em>' data type.
@@ -13227,7 +13309,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletTemperatureIR()
    * @generated
    */
-  int TINKER_BRICKLET_TEMPERATURE_IR = 145;
+  int TINKER_BRICKLET_TEMPERATURE_IR = 146;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Sound Intensity</em>' data type.
@@ -13237,7 +13319,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletSoundIntensity()
    * @generated
    */
-  int TINKER_BRICKLET_SOUND_INTENSITY = 146;
+  int TINKER_BRICKLET_SOUND_INTENSITY = 147;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Moisture</em>' data type.
@@ -13247,7 +13329,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletMoisture()
    * @generated
    */
-  int TINKER_BRICKLET_MOISTURE = 147;
+  int TINKER_BRICKLET_MOISTURE = 148;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Distance US</em>' data type.
@@ -13257,7 +13339,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletDistanceUS()
    * @generated
    */
-  int TINKER_BRICKLET_DISTANCE_US = 148;
+  int TINKER_BRICKLET_DISTANCE_US = 149;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Voltage Current</em>' data type.
@@ -13267,7 +13349,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletVoltageCurrent()
    * @generated
    */
-  int TINKER_BRICKLET_VOLTAGE_CURRENT = 149;
+  int TINKER_BRICKLET_VOLTAGE_CURRENT = 150;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Tilt</em>' data type.
@@ -13277,7 +13359,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletTilt()
    * @generated
    */
-  int TINKER_BRICKLET_TILT = 150;
+  int TINKER_BRICKLET_TILT = 151;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet IO4</em>' data type.
@@ -13287,7 +13369,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletIO4()
    * @generated
    */
-  int TINKER_BRICKLET_IO4 = 151;
+  int TINKER_BRICKLET_IO4 = 152;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Hall Effect</em>' data type.
@@ -13297,7 +13379,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletHallEffect()
    * @generated
    */
-  int TINKER_BRICKLET_HALL_EFFECT = 152;
+  int TINKER_BRICKLET_HALL_EFFECT = 153;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet Segment Display4x7</em>' data type.
@@ -13307,7 +13389,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletSegmentDisplay4x7()
    * @generated
    */
-  int TINKER_BRICKLET_SEGMENT_DISPLAY4X7 = 153;
+  int TINKER_BRICKLET_SEGMENT_DISPLAY4X7 = 154;
 
   /**
    * The meta object id for the '<em>Tinker Bricklet LED Strip</em>' data type.
@@ -13317,7 +13399,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getTinkerBrickletLEDStrip()
    * @generated
    */
-  int TINKER_BRICKLET_LED_STRIP = 154;
+  int TINKER_BRICKLET_LED_STRIP = 155;
 
   /**
    * The meta object id for the '<em>HSB Type</em>' data type.
@@ -13327,7 +13409,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getHSBType()
    * @generated
    */
-  int HSB_TYPE = 155;
+  int HSB_TYPE = 156;
 
   /**
    * The meta object id for the '<em>Up Down Type</em>' data type.
@@ -13337,7 +13419,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getUpDownType()
    * @generated
    */
-  int UP_DOWN_TYPE = 156;
+  int UP_DOWN_TYPE = 157;
 
   /**
    * The meta object id for the '<em>Percent Value</em>' data type.
@@ -13347,7 +13429,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPercentValue()
    * @generated
    */
-  int PERCENT_VALUE = 157;
+  int PERCENT_VALUE = 158;
 
   /**
    * The meta object id for the '<em>Device Options</em>' data type.
@@ -13357,7 +13439,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDeviceOptions()
    * @generated
    */
-  int DEVICE_OPTIONS = 158;
+  int DEVICE_OPTIONS = 159;
 
   /**
    * The meta object id for the '<em>Percent Type</em>' data type.
@@ -13367,7 +13449,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getPercentType()
    * @generated
    */
-  int PERCENT_TYPE = 159;
+  int PERCENT_TYPE = 160;
 
   /**
    * The meta object id for the '<em>Increase Decrease Type</em>' data type.
@@ -13377,7 +13459,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getIncreaseDecreaseType()
    * @generated
    */
-  int INCREASE_DECREASE_TYPE = 160;
+  int INCREASE_DECREASE_TYPE = 161;
 
   /**
    * The meta object id for the '<em>Direction Value</em>' data type.
@@ -13387,7 +13469,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getDirectionValue()
    * @generated
    */
-  int DIRECTION_VALUE = 161;
+  int DIRECTION_VALUE = 162;
 
   /**
    * The meta object id for the '<em>Enum</em>' data type.
@@ -13397,7 +13479,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getEnum()
    * @generated
    */
-  int ENUM = 162;
+  int ENUM = 163;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.TFConfig <em>TF Config</em>}'.
@@ -13564,7 +13646,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletDualRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_DUAL_RELAY = 126;
+  int MTINKER_BRICKLET_DUAL_RELAY = 127;
 
 
   /**
@@ -13575,7 +13657,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialQuadRelay()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 127;
+  int MTINKER_BRICKLET_INDUSTRIAL_QUAD_RELAY = 128;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Industrial Digital In4</em>' data type.
@@ -13585,7 +13667,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalIn4()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 128;
+  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_IN4 = 129;
 
   /**
    * The meta object id for the '<em>MTinker Bricklet Industrial Digital Out4</em>' data type.
@@ -13595,7 +13677,7 @@ public interface ModelPackage extends EPackage
    * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMTinkerBrickletIndustrialDigitalOut4()
    * @generated
    */
-  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4 = 129;
+  int MTINKER_BRICKLET_INDUSTRIAL_DIGITAL_OUT4 = 130;
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.Ecosystem <em>Ecosystem</em>}'.
@@ -16050,26 +16132,26 @@ public interface ModelPackage extends EPackage
   EAttribute getMServo_OutputVoltage();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getServoCurrentPosition <em>Servo Current Position</em>}'.
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getCurrentPosition <em>Current Position</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Servo Current Position</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.MServo#getServoCurrentPosition()
+   * @return the meta object for the attribute '<em>Current Position</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MServo#getCurrentPosition()
    * @see #getMServo()
    * @generated
    */
-  EAttribute getMServo_ServoCurrentPosition();
+  EAttribute getMServo_CurrentPosition();
 
   /**
-   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getServoDestinationPosition <em>Servo Destination Position</em>}'.
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getTargetPosition <em>Target Position</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Servo Destination Position</em>'.
-   * @see org.openhab.binding.tinkerforge.internal.model.MServo#getServoDestinationPosition()
+   * @return the meta object for the attribute '<em>Target Position</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MServo#getTargetPosition()
    * @see #getMServo()
    * @generated
    */
-  EAttribute getMServo_ServoDestinationPosition();
+  EAttribute getMServo_TargetPosition();
 
   /**
    * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#init() <em>Init</em>}' operation.
@@ -17158,6 +17240,16 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EEnum getDCDriveMode();
+
+  /**
+   * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo <em>Config Opts Servo</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Config Opts Servo</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo
+   * @generated
+   */
+  EEnum getConfigOptsServo();
 
   /**
    * Returns the meta object for enum '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}'.
@@ -19910,20 +20002,20 @@ public interface ModelPackage extends EPackage
     EAttribute MSERVO__OUTPUT_VOLTAGE = eINSTANCE.getMServo_OutputVoltage();
 
     /**
-     * The meta object literal for the '<em><b>Servo Current Position</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Current Position</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute MSERVO__SERVO_CURRENT_POSITION = eINSTANCE.getMServo_ServoCurrentPosition();
+    EAttribute MSERVO__CURRENT_POSITION = eINSTANCE.getMServo_CurrentPosition();
 
     /**
-     * The meta object literal for the '<em><b>Servo Destination Position</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Target Position</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute MSERVO__SERVO_DESTINATION_POSITION = eINSTANCE.getMServo_ServoDestinationPosition();
+    EAttribute MSERVO__TARGET_POSITION = eINSTANCE.getMServo_TargetPosition();
 
     /**
      * The meta object literal for the '<em><b>Init</b></em>' operation.
@@ -20820,6 +20912,16 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EEnum DC_DRIVE_MODE = eINSTANCE.getDCDriveMode();
+
+    /**
+     * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo <em>Config Opts Servo</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo
+     * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getConfigOptsServo()
+     * @generated
+     */
+    EEnum CONFIG_OPTS_SERVO = eINSTANCE.getConfigOptsServo();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.NoSubIds <em>No Sub Ids</em>}' enum.

@@ -281,6 +281,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createConfigOptsSwitchSpeedFromString(eDataType, initialValue);
       case ModelPackage.DC_DRIVE_MODE:
         return createDCDriveModeFromString(eDataType, initialValue);
+      case ModelPackage.CONFIG_OPTS_SERVO:
+        return createConfigOptsServoFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -418,6 +420,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertConfigOptsSwitchSpeedToString(eDataType, instanceValue);
       case ModelPackage.DC_DRIVE_MODE:
         return convertDCDriveModeToString(eDataType, instanceValue);
+      case ModelPackage.CONFIG_OPTS_SERVO:
+        return convertConfigOptsServoToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -1380,6 +1384,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertDCDriveModeToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ConfigOptsServo createConfigOptsServoFromString(EDataType eDataType, String initialValue)
+  {
+    ConfigOptsServo result = ConfigOptsServo.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertConfigOptsServoToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

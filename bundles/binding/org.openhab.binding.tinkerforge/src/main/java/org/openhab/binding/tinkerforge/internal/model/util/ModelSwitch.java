@@ -349,12 +349,13 @@ public class ModelSwitch<T> extends Switch<T>
       {
         MServo mServo = (MServo)theEObject;
         T result = caseMServo(mServo);
-        if (result == null) result = caseMInSwitchActor(mServo);
+        if (result == null) result = caseProgrammableSwitchActor(mServo);
         if (result == null) result = caseMSubDevice(mServo);
-        if (result == null) result = caseMTFConfigConsumer(mServo);
-        if (result == null) result = caseMSwitchActor(mServo);
-        if (result == null) result = caseMBaseDevice(mServo);
+        if (result == null) result = caseSetPointActor(mServo);
         if (result == null) result = caseSwitchSensor(mServo);
+        if (result == null) result = caseMBaseDevice(mServo);
+        if (result == null) result = caseDimmableActor(mServo);
+        if (result == null) result = caseMTFConfigConsumer(mServo);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1085,6 +1086,7 @@ public class ModelSwitch<T> extends Switch<T>
       {
         TFServoConfiguration tfServoConfiguration = (TFServoConfiguration)theEObject;
         T result = caseTFServoConfiguration(tfServoConfiguration);
+        if (result == null) result = caseDimmableConfiguration(tfServoConfiguration);
         if (result == null) result = caseTFConfig(tfServoConfiguration);
         if (result == null) result = defaultCase(theEObject);
         return result;
