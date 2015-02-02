@@ -1204,6 +1204,15 @@
 		<Product>
 			<Reference>
 				<Type>1000</Type>
+				<Id>0200</Id>
+			</Reference>
+			<Model>ZME_064374</Model>
+			<Label lang="en">Wall Plug Switch</Label>
+			<ConfigFile>zwaveme/zme_064374.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1000</Type>
 				<Id>0001</Id>
 			</Reference>
 			<Model>ZME_054313Z</Model>
@@ -1619,6 +1628,15 @@
 			<Model>ZMNHDA</Model>
 			<Label lang="en">Flush dimmer</Label>
 			<ConfigFile>qubino/zmnhda.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>5</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHIA</Model>
+			<Label lang="en">Flush on/off thermostat</Label>
+			<ConfigFile>qubino/zmnhia.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
