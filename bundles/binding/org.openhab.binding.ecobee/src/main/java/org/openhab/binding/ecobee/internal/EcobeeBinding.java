@@ -9,7 +9,6 @@
 package org.openhab.binding.ecobee.internal;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Dictionary;
@@ -94,8 +93,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 			public Object convert(Class type, Object value) {
 				if (value instanceof DecimalType) {
 					return Temperature
-							.fromLocalTemperature(((DecimalType) value)
-									.doubleValue());
+							.fromLocalTemperature(((DecimalType) value).toBigDecimal());
 				} else {
 					return null;
 				}
@@ -150,7 +148,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 	 * used to store events that we have sent ourselves; we need to remember
 	 * them for not reacting to them
 	 */
-	private List<String> ignoreEventList = new ArrayList<String>();
+	private Set<String> ignoreEventSet = new HashSet<String>();
 
 	/**
 	 * The most recently received list of revisions, or an empty Map if none
@@ -341,7 +339,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 							// this event to
 							// Ecobee again, when receiving it on the
 							// openHAB bus
-							ignoreEventList.add(itemName + state.toString());
+							ignoreEventSet.add(itemName + state.toString());
 							logger.trace(
 									"Added event (item='{}', type='{}') to the ignore event list",
 									itemName, state.toString());
@@ -480,7 +478,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 	 *            the command to execute
 	 * @param the
 	 *            target(s) against which to execute this command
-	 */
+	 * /
 	private void functionEcobee(final String itemName, final Command command) {
 
 		// Find the first binding provider for this itemName.
@@ -555,11 +553,12 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 		// sendMessage
 		// setHold
 	}
+	*/
 
 	private boolean isEcho(String itemName, State state) {
-		String ignoreEventListKey = itemName + state.toString();
-		if (ignoreEventList.contains(ignoreEventListKey)) {
-			ignoreEventList.remove(ignoreEventListKey);
+		String ignoreEventSetKey = itemName + state.toString();
+		if (ignoreEventSet.contains(ignoreEventSetKey)) {
+			ignoreEventSet.remove(ignoreEventSetKey);
 			logger.trace(
 					"We received this event (item='{}', state='{}') from Ecobee, so we don't send it back again -> ignore!",
 					itemName, state.toString());

@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.ecobee.internal.messages;
 
+import java.math.BigDecimal;
+
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
 
@@ -23,7 +25,7 @@ import org.codehaus.jackson.annotate.JsonValue;
  * 
  * <p>
  * Methods are included to construct Temperature objects from Celsius,
- * Fahrenheit, or whatever the local temperature scale is.
+ * Fahrenheit, or whichever the local temperature scale is.
  * 
  * @see <a
  *      href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml#representation">Values
@@ -70,11 +72,11 @@ public class Temperature {
 		Temperature.localScale = localScale;
 	}
 
-	private int temp;
+	private BigDecimal temp;
 
 	@JsonValue
 	public int value() {
-		return temp;
+		return temp.intValue();
 	}
 
 	/**
@@ -86,6 +88,17 @@ public class Temperature {
 	 */
 	@JsonCreator
 	public Temperature(int temp) {
+		this.temp = new BigDecimal(temp);
+	}
+
+	/**
+	 * Construct a Temperature from the Ecobee-style temperature value
+	 * (Fahrenheit times 10).
+	 * 
+	 * @param temp
+	 *            Ecobee-style temperature value (Fahrenheit times 10)
+	 */
+	public Temperature(BigDecimal temp) {
 		this.temp = temp;
 	}
 
@@ -97,7 +110,7 @@ public class Temperature {
 	 *            the temperature in the local temperature scale.
 	 * @return a new Temperature object
 	 */
-	public static Temperature fromLocalTemperature(double localTemp) {
+	public static Temperature fromLocalTemperature(BigDecimal localTemp) {
 		if (localScale.equals(Scale.CELSIUS)) {
 			return fromCelsius(localTemp);
 		} else {
@@ -111,9 +124,13 @@ public class Temperature {
 	 * @param fahrenheit
 	 *            the Fahrenheit temperature
 	 */
-	public static Temperature fromFahrenheit(double fahrenheit) {
-		return new Temperature((int) Math.round(fahrenheit * 10));
+	public static Temperature fromFahrenheit(BigDecimal fahrenheit) {
+		return new Temperature(fahrenheit.movePointRight(1));
 	}
+
+	private static BigDecimal NINE = new BigDecimal("9");
+	private static BigDecimal FIVE = new BigDecimal("5");
+	private static BigDecimal THIRTY_TWO = new BigDecimal("32");
 
 	/**
 	 * Factory method to construct a Temperature from Celsius.
@@ -121,16 +138,16 @@ public class Temperature {
 	 * @param celsius
 	 *            the Celsius temperature
 	 */
-	public static Temperature fromCelsius(double celsius) {
-		return new Temperature((int) Math.round(((celsius * 1.8) + 32) * 10));
+	public static Temperature fromCelsius(BigDecimal celsius) {
+		return new Temperature(celsius.multiply(NINE).divide(FIVE).add(THIRTY_TWO).movePointRight(1));
 	}
 
 	/**
-	 * Convert this temperature to a temperaure in the local temperature scale.
+	 * Convert this temperature to a temperature in the local temperature scale.
 	 * 
 	 * @return temperarure in the local temperature scale
 	 */
-	public final double toLocalTemperature() {
+	public final BigDecimal toLocalTemperature() {
 		return localScale == Scale.CELSIUS ? toCelsius() : toFahrenheit();
 	}
 
@@ -139,8 +156,8 @@ public class Temperature {
 	 * 
 	 * @return temperature in Fahrenheit
 	 */
-	public final double toFahrenheit() {
-		return temp / 10.0;
+	public final BigDecimal toFahrenheit() {
+		return temp.movePointLeft(1);
 	}
 
 	/**
@@ -148,12 +165,12 @@ public class Temperature {
 	 * 
 	 * @return temperature in Celsius
 	 */
-	public final double toCelsius() {
-		return ((temp / 10.0) - 32.0) / 1.8;
+	public final BigDecimal toCelsius() {
+		return temp.movePointLeft(1).subtract(THIRTY_TWO).divide(NINE.divide(FIVE));
 	}
 
 	@Override
 	public String toString() {
-		return Integer.toString(temp);
+		return temp.toString();
 	}
 }
