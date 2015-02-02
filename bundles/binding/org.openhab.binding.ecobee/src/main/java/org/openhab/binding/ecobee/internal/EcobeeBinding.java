@@ -34,6 +34,7 @@ import org.openhab.binding.ecobee.internal.messages.Selection.SelectionType;
 import org.openhab.binding.ecobee.internal.messages.Status;
 import org.openhab.binding.ecobee.internal.messages.Temperature;
 import org.openhab.binding.ecobee.internal.messages.Thermostat;
+import org.openhab.binding.ecobee.internal.messages.Thermostat.HvacMode;
 import org.openhab.binding.ecobee.internal.messages.ThermostatRequest;
 import org.openhab.binding.ecobee.internal.messages.ThermostatResponse;
 import org.openhab.binding.ecobee.internal.messages.ThermostatSummaryRequest;
@@ -100,7 +101,18 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 				}
 			}
 		}, Temperature.class);
-		
+		ConvertUtils.register(new Converter() {
+
+			@SuppressWarnings("rawtypes")
+			@Override
+			public Object convert(Class type, Object value) {
+				if (value instanceof StringType) {
+					return HvacMode.forValue(value.toString());
+				} else {
+					return null;
+				}
+			}
+		}, HvacMode.class);
 		ConvertUtils.register(new Converter() {
 
 			@SuppressWarnings("rawtypes")
@@ -109,6 +121,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 				return value.toString();
 			}
 		}, String.class);
+		// FIXME: complete type conversions from states to bean property types
 	}
 
 	private ConfigurationAdmin configAdmin;
@@ -258,15 +271,30 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 			Revision lastRevision = this.lastRevisionMap.get(newRevision
 					.getThermostatIdentifier());
 
-			// TODO: choose more carefully which criteria to examine
-			// than just hasRuntimeChanged. If an in binding exists
-			// for settings, for example, we should OR in another test
-			// for hasThermostatChanged. This needs careful research.
-
-			// If this thermostat's runtime values have changed,
+			// If this thermostat's values have changed,
 			// add it to the list for full retrieval
 
-			if (newRevision.hasRuntimeChanged(lastRevision)) {
+			/*
+			 * NOTE: The following tests may be more eager than they should be,
+			 * because we may have a settings binding for one thermostat and not
+			 * another, and a runtime binding for another thermostat but not
+			 * this one, but we will now retrieve both thermostats. A small sin.
+			 * If the Ecobee binding is only working with a single thermostat,
+			 * these tests will be perfectly accurate.
+			 */
+
+			boolean changed = false;
+
+			changed = changed
+					|| (newRevision.hasRuntimeChanged(lastRevision) && (selection
+							.getIncludeRuntime() || selection
+							.getIncludeExtendedRuntime()));
+			changed = changed
+					|| (newRevision.hasThermostatChanged(lastRevision) && (selection
+							.getIncludeSettings() || selection
+							.getIncludeProgram()));
+
+			if (changed) {
 				thermostatIdentifiers
 						.add(newRevision.getThermostatIdentifier());
 			}
@@ -353,7 +381,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 					thermostatIdentifier, itemName);
 		} else {
 			try {
-				return createState( thermostat.getProperty(property) );
+				return createState(thermostat.getProperty(property));
 			} catch (Exception e) {
 				logger.error("Unable to get state from thermostat", e);
 			}
@@ -364,9 +392,8 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 	/**
 	 * Creates an openHAB {@link State} in accordance to the class of the given
 	 * {@code propertyValue}. Currently {@link Date}, {@link BigDecimal},
-	 * {@link Temperature} and
-	 * {@link Boolean} are handled explicitly. All other {@code dataTypes} are
-	 * mapped to {@link StringType}.
+	 * {@link Temperature} and {@link Boolean} are handled explicitly. All other
+	 * {@code dataTypes} are mapped to {@link StringType}.
 	 * <p>
 	 * If {@code propertyValue} is {@code null}, {@link UnDefType#NULL} will be
 	 * returned.
@@ -394,7 +421,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 		} else if (BigDecimal.class.isAssignableFrom(dataType)) {
 			return new DecimalType((BigDecimal) propertyValue);
 		} else if (Boolean.class.isAssignableFrom(dataType)) {
-			if((Boolean) propertyValue) {
+			if ((Boolean) propertyValue) {
 				return OnOffType.ON;
 			} else {
 				return OnOffType.OFF;
@@ -402,12 +429,11 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 		} else if (Temperature.class.isAssignableFrom(dataType)) {
 			return new DecimalType(
 					((Temperature) propertyValue).toLocalTemperature());
-		}
-		else {
+		} else {
 			return new StringType(propertyValue.toString());
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -431,16 +457,19 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 		}
 	}
 
-	private interface EcobeeCommand {
-
-	}
-
-	static final Map<String, EcobeeCommand> ECOBEE_COMMANDS = new HashMap<String, EcobeeCommand>();
-
-	static {
-		ECOBEE_COMMANDS.put("sendMessage", new EcobeeCommand() {
-
-		});
+	/**
+	 * Perform the given {@code command} against all targets referenced in
+	 * {@code itemName}.
+	 * 
+	 * @param command
+	 *            the command to execute
+	 * @param the
+	 *            target(s) against which to execute this command
+	 */
+	private void commandEcobee(final String itemName, final Command command) {
+		if (command instanceof State) {
+			updateEcobee(itemName, (State) command);
+		}
 	}
 
 	/**
@@ -452,7 +481,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 	 * @param the
 	 *            target(s) against which to execute this command
 	 */
-	private void commandEcobee(final String itemName, final Command command) {
+	private void functionEcobee(final String itemName, final Command command) {
 
 		// Find the first binding provider for this itemName.
 		EcobeeBindingProvider provider = null;
@@ -478,8 +507,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 			try {
 				final Thermostat thermostat = null;
 
-				// FIXME: figure out type conversions
-				EcobeeCommand cmd = ECOBEE_COMMANDS.get(property);
+				// EcobeeCommand cmd = ECOBEE_COMMANDS.get(property);
 
 				OAuthCredentials oauthCredentials = getOAuthCredentials(provider
 						.getUserid(itemName));
@@ -506,7 +534,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 					final Status status = response.getStatus();
 					if (status.isAccessTokenExpired()) {
 						if (oauthCredentials.refreshTokens()) {
-							commandEcobee(itemName, command);
+							functionEcobee(itemName, command);
 						}
 					} else {
 						logger.error(
@@ -525,12 +553,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 		// deleteVacation
 		// resumeProgram
 		// sendMessage
-		// setHold @FIXME how?
-		// incHeatSetpoint
-		// decHeatSetpoint
-		// incCoolSetpoint
-		// decCoolSetpoint
-
+		// setHold
 	}
 
 	private boolean isEcho(String itemName, State state) {
@@ -580,7 +603,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider>
 			try {
 				final Thermostat thermostat = new Thermostat(null);
 
-				// FIXME: figure out type conversions
 				thermostat.setProperty(property, newState);
 
 				logger.debug("Thermostat for update: {}", thermostat);

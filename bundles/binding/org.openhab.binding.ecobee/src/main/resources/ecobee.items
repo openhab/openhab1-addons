@@ -15,7 +15,7 @@ String program_currentClimateRef "currentClimateRef [%s]"                      {
 Group All
 Group gSettings (All)
 
-String settings_hvacMode "hvacMode [%s]"                                       (gSettings) { ecobee="<[276075659054#settings.hvacMode]" }
+String settings_hvacMode "hvacMode [%s]"                                       (gSettings) { ecobee="=[276075659054#settings.hvacMode]" }
 String settings_lastServiceDate "lastServiceDate [%s]"                         (gSettings) { ecobee="<[276075659054#settings.lastServiceDate]" }
 Switch settings_serviceRemindMe "serviceRemindMe [%s]"                         (gSettings) { ecobee="<[276075659054#settings.serviceRemindMe]" }
 Number settings_monthsBetweenService "monthsBetweenService [%d]"               (gSettings) { ecobee="<[276075659054#settings.monthsBetweenService]" }
