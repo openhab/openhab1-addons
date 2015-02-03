@@ -11,19 +11,17 @@ package org.openhab.binding.ecobee.internal.messages;
 import java.util.Date;
 
 /**
- * The set hold function sets the thermostat into a hold with the specified temperature. 
- * Creates a hold for the specified duration. Note that an event is created regardless 
- * of whether the program is in the same state as the requested state.
+ * The set hold function sets the thermostat into a hold with the specified temperature. Creates a hold for the
+ * specified duration. Note that an event is created regardless of whether the program is in the same state as the
+ * requested state.
  * 
  * <p>
- * There is also support for creating a hold by passing a <code>holdClimateRef</code> request 
- * parameter/value pair to this function (See {@link Thermostat.Event}). When an existing 
- * and valid {@link Thermostat.Climate#climateRef} value is passed to this function, 
- * the <code>coolHoldTemp</code>, <code>heatHoldTemp</code> and <code>fan</code> mode from 
- * that {@link Thermostat.Climate} are used in the creation 
- * of the hold event. The values from that Climate will take precedence over any 
- * <code>coolHoldTemp</code>, <code>heatHoldTemp</code> and <code>fan</code> mode parameters 
- * passed into this function separately.
+ * There is also support for creating a hold by passing a <code>holdClimateRef</code> request parameter/value pair to
+ * this function (See {@link Thermostat.Event}). When an existing and valid {@link Thermostat.Climate#climateRef} value
+ * is passed to this function, the <code>coolHoldTemp</code>, <code>heatHoldTemp</code> and <code>fan</code> mode from
+ * that {@link Thermostat.Climate} are used in the creation of the hold event. The values from that Climate will take
+ * precedence over any <code>coolHoldTemp</code>, <code>heatHoldTemp</code> and <code>fan</code> mode parameters passed
+ * into this function separately.
  * 
  * <p>
  * To resume from a hold and return to the program, use the {@link ResumeProgramFunction}.
@@ -37,28 +35,29 @@ public final class SetHoldFunction extends AbstractFunction {
 	/**
 	 * Construct a SetHoldFunction.
 	 * 
-	 * @param coolHoldTemp the temperature to set the cool hold at
-	 * @param heatHoldTemp the temperature to set the heat hold at
-	 * @param holdClimateRef the Climate to use as reference for setting the coolHoldTemp, 
-	 * heatHoldTemp and fan settings for this hold. If this value is passed, the 
-	 * coolHoldTemp and heatHoldTemp are not required.
-	 * @param startDateTime the start date and time in thermostat time
-	 * @param endDateTime the end date and time in thermostat time
-	 * @param holdType the hold duration type
-	 * @param holdHours the number of hours to hold for, used and required if holdType='holdHours'
+	 * @param coolHoldTemp
+	 *            the temperature to set the cool hold at
+	 * @param heatHoldTemp
+	 *            the temperature to set the heat hold at
+	 * @param holdClimateRef
+	 *            the Climate to use as reference for setting the coolHoldTemp, heatHoldTemp and fan settings for this
+	 *            hold. If this value is passed, the coolHoldTemp and heatHoldTemp are not required.
+	 * @param startDateTime
+	 *            the start date and time in thermostat time
+	 * @param endDateTime
+	 *            the end date and time in thermostat time
+	 * @param holdType
+	 *            the hold duration type
+	 * @param holdHours
+	 *            the number of hours to hold for, used and required if holdType='holdHours'
 	 */
-	public SetHoldFunction(
-			Temperature coolHoldTemp,
-			Temperature heatHoldTemp,
-			String holdClimateRef,
-			Date startDateTime,
-			Date endDateTime,
-			HoldType holdType,
-			Integer holdHours ) {
+	public SetHoldFunction(Temperature coolHoldTemp, Temperature heatHoldTemp, String holdClimateRef,
+			Date startDateTime, Date endDateTime, HoldType holdType, Integer holdHours) {
 		super("setHold");
 
 		if (holdClimateRef == null && (coolHoldTemp == null || heatHoldTemp == null)) {
-			throw new IllegalArgumentException("coolHoldTemp and heatHoldTemp are required when holdClimateRef is not supplied.");
+			throw new IllegalArgumentException(
+					"coolHoldTemp and heatHoldTemp are required when holdClimateRef is not supplied.");
 		}
 		if (holdType == HoldType.HOLD_HOURS && holdHours == null) {
 			throw new IllegalArgumentException("holdHours must be specified when holdType='holdHours'");
@@ -85,10 +84,10 @@ public final class SetHoldFunction extends AbstractFunction {
 			makeParams().put("endTime", hms.format(endDateTime));
 		}
 		if (holdType != null) {
-			makeParams().put("holdType", holdType );
+			makeParams().put("holdType", holdType);
 		}
 		if (holdHours != null) {
-			makeParams().put("holdHours", holdHours );
+			makeParams().put("holdHours", holdHours);
 		}
 	}
 }

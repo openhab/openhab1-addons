@@ -9,12 +9,11 @@
 package org.openhab.binding.ecobee.internal.messages;
 
 /**
- * The delete vacation function deletes a vacation event from a thermostat. 
- * This is the only way to cancel a vacation event. 
- * This method is able to remove vacation events not yet started and 
- * scheduled in the future.
+ * The delete vacation function deletes a vacation event from a thermostat. This is the only way to cancel a vacation
+ * event. This method is able to remove vacation events not yet started and scheduled in the future.
  * 
- * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/functions/DeleteVacation.shtml">DeleteVacation</a>
+ * @see <a
+ *      href="https://www.ecobee.com/home/developer/api/documentation/v1/functions/DeleteVacation.shtml">DeleteVacation</a>
  * @author John Cocula
  * @author Ecobee
  * @since 1.7.0
@@ -22,7 +21,8 @@ package org.openhab.binding.ecobee.internal.messages;
 public class DeleteVacationFunction extends AbstractFunction {
 
 	/**
-	 * @param name the vacation event name to delete
+	 * @param name
+	 *            the vacation event name to delete
 	 */
 	public DeleteVacationFunction(String name) {
 		super("deleteVacation");

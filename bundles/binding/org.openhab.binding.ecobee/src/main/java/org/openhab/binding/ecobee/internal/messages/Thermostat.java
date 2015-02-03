@@ -21,12 +21,10 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
 
 /**
- * The Thermostat Java Bean is the central piece of the ecobee API. All objects
- * relate in one way or another to a real thermostat. The Thermostat class and
- * its component classes define the real thermostat device.
+ * The Thermostat Java Bean is the central piece of the ecobee API. All objects relate in one way or another to a real
+ * thermostat. The Thermostat class and its component classes define the real thermostat device.
  * 
- * @see <a
- *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Thermostat.shtml">Thermostat</a>
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Thermostat.shtml">Thermostat</a>
  * @author John Cocula
  * @since 1.7.0
  */
@@ -34,34 +32,26 @@ import org.codehaus.jackson.annotate.JsonValue;
 public class Thermostat extends AbstractMessagePart {
 
 	/**
-	 * Numeric values whose value is not known are expressed as -5002. This is
-	 * the numeric equivalent to a null value. The value of -5002 had been
-	 * chosen as an unknown value because the representation of -500.2F is below
-	 * absolute zero when representing temperatures.
+	 * Numeric values whose value is not known are expressed as -5002. This is the numeric equivalent to a null value.
+	 * The value of -5002 had been chosen as an unknown value because the representation of -500.2F is below absolute
+	 * zero when representing temperatures.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml">Core
-	 *      Concepts</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml">Core Concepts</a>
 	 */
 	public static final int UNKNOWN_VALUE = -5002;
 
 	/**
-	 * There is a concept of dates "before time began" which is equivalent to a
-	 * NULL time and "end of time" which represents infinite durations (i.e.
-	 * events). The API represents these as:
+	 * There is a concept of dates "before time began" which is equivalent to a NULL time and "end of time" which
+	 * represents infinite durations (i.e. events). The API represents these as:
 	 * 
 	 * Before Time Began Date: 2008-01-02
 	 * 
 	 * End of Time Date: 2035-01-01
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml">Core
-	 *      Concepts</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml">Core Concepts</a>
 	 */
-	public static final Date BEFORE_TIME_BEGAN = new GregorianCalendar(2008, 1,
-			2).getTime();
-	public static final Date END_OF_TIME = new GregorianCalendar(2035, 1, 1)
-			.getTime();
+	public static final Date BEFORE_TIME_BEGAN = new GregorianCalendar(2008, 1, 2).getTime();
+	public static final Date END_OF_TIME = new GregorianCalendar(2035, 1, 1).getTime();
 
 	private String identifier;
 	private String name;
@@ -103,36 +93,32 @@ public class Thermostat extends AbstractMessagePart {
 	 * @return the named property's value
 	 * @see BeanUtils#getProperty()
 	 * @throws IllegalAccessException
-	 *             if the caller does not have access to the property accessor
-	 *             method
+	 *             if the caller does not have access to the property accessor method
 	 * @throws InvocationTargetException
 	 *             if the property accessor method throws an exception
 	 * @throws NoSuchMethodException
 	 *             if the accessor method for this property cannot be found
 	 */
-	public Object getProperty(String name) throws IllegalAccessException,
-			InvocationTargetException, NoSuchMethodException {
+	public Object getProperty(String name) throws IllegalAccessException, InvocationTargetException,
+			NoSuchMethodException {
 
 		return PropertyUtils.getProperty(this, name);
 	}
 
 	/**
-	 * Set the specified property value, performing type conversions as required
-	 * to conform to the type of the destination property. Nest beans are
-	 * created if they are currently <code>null</code>.
+	 * Set the specified property value, performing type conversions as required to conform to the type of the
+	 * destination property. Nest beans are created if they are currently <code>null</code>.
 	 * 
 	 * @param name
 	 *            property name (can be nested/indexed/mapped/combo)
 	 * @param value
 	 *            value to be set
 	 * @throws IllegalAccessException
-	 *             if the caller does not have access to the property accessor
-	 *             method
+	 *             if the caller does not have access to the property accessor method
 	 * @throws InvocationTargetException
 	 *             if the property accessor method throws an exception
 	 */
-	public void setProperty(String name, Object value)
-			throws IllegalAccessException, InvocationTargetException {
+	public void setProperty(String name, Object value) throws IllegalAccessException, InvocationTargetException {
 
 		if (name.startsWith("settings") && this.settings == null) {
 			this.settings = new Settings();
@@ -142,8 +128,7 @@ public class Thermostat extends AbstractMessagePart {
 			this.program = new Program();
 		} else if (name.startsWith("houseDetails") && this.houseDetails == null) {
 			this.houseDetails = new HouseDetails();
-		} else if (name.startsWith("notificationSettings")
-				&& this.notificationSettings == null) {
+		} else if (name.startsWith("notificationSettings") && this.notificationSettings == null) {
 			this.notificationSettings = new NotificationSettings();
 		}
 
@@ -192,8 +177,7 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the thermostat model number. Values: idtSmart, idtEms, siSmart,
-	 *         siEms
+	 * @return the thermostat model number. Values: idtSmart, idtEms, siSmart, siEms
 	 */
 	@JsonProperty("modelNumber")
 	public String getModelNumber() {
@@ -209,8 +193,8 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the current time in the thermostat's time zone TODO time zone
-	 *         adjust: http://wiki.fasterxml.com/JacksonFAQDateHandling
+	 * @return the current time in the thermostat's time zone TODO time zone adjust:
+	 *         http://wiki.fasterxml.com/JacksonFAQDateHandling
 	 */
 	@JsonProperty("thermostatTime")
 	public Date getThermostatTime() {
@@ -300,8 +284,7 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the Technician object associated with the thermostat containing
-	 *         the technician contact information
+	 * @return the Technician object associated with the thermostat containing the technician contact information
 	 */
 	@JsonProperty("technician")
 	public Technician getTechnician() {
@@ -309,8 +292,7 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the Utility object associated with the thermostat containing the
-	 *         utility company information
+	 * @return the Utility object associated with the thermostat containing the utility company information
 	 */
 	@JsonProperty("utility")
 	public Utility getUtility() {
@@ -318,8 +300,7 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the Management object associated with the thermostat containing
-	 *         the management company information
+	 * @return the Management object associated with the thermostat containing the management company information
 	 */
 	@JsonProperty("management")
 	public Management getManagement() {
@@ -327,8 +308,7 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the Weather object linked to the thermostat representing the
-	 *         current weather on the thermostat
+	 * @return the Weather object linked to the thermostat representing the current weather on the thermostat
 	 */
 	@JsonProperty("weather")
 	public Weather getWeather() {
@@ -336,8 +316,7 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the list of Event objects linked to the thermostat representing
-	 *         any events that are active or scheduled.
+	 * @return the list of Event objects linked to the thermostat representing any events that are active or scheduled.
 	 */
 	@JsonProperty("events")
 	public List<Event> getEvents() {
@@ -362,8 +341,7 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the HouseDetails object that contains the information about the
-	 *         house the thermostat is installed in
+	 * @return the HouseDetails object that contains the information about the house the thermostat is installed in
 	 */
 	@JsonProperty("houseDetails")
 	public HouseDetails getHouseDetails() {
@@ -372,8 +350,7 @@ public class Thermostat extends AbstractMessagePart {
 
 	/**
 	 * @param houseDetails
-	 *            the HouseDetails object that contains the information about
-	 *            the house the thermostat is installed in
+	 *            the HouseDetails object that contains the information about the house the thermostat is installed in
 	 */
 	@JsonProperty("houseDetails")
 	public void setHouseDetails(HouseDetails houseDetails) {
@@ -381,8 +358,7 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the ThermostatOemCfg object that contains information about the
-	 *         OEM specific thermostat
+	 * @return the ThermostatOemCfg object that contains information about the OEM specific thermostat
 	 */
 	@JsonProperty("oemCfg")
 	public ThermostatOemCfg getOemCfg() {
@@ -391,8 +367,7 @@ public class Thermostat extends AbstractMessagePart {
 
 	/**
 	 * @param oemCfg
-	 *            the ThermostatOemCfg object that contains information about
-	 *            the OEM specific thermostat
+	 *            the ThermostatOemCfg object that contains information about the OEM specific thermostat
 	 */
 	@JsonProperty("oemCfg")
 	public void setOemCfg(ThermostatOemCfg oemCfg) {
@@ -400,13 +375,11 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The status of all equipment controlled by this Thermostat. Only running
-	 * equipment is listed in the CSV String. If no equipment is currently
-	 * running an empty string is returned.
+	 * The status of all equipment controlled by this Thermostat. Only running equipment is listed in the CSV String. If
+	 * no equipment is currently running an empty string is returned.
 	 * 
-	 * Values: heatPump, heatPump2, heatPump3, compCool1, compCool2, auxHeat1,
-	 * auxHeat2, auxHeat3, fan, humidifier, dehumidifier, ventilator,
-	 * economizer, compHotWater, auxHotWater.
+	 * Values: heatPump, heatPump2, heatPump3, compCool1, compCool2, auxHeat1, auxHeat2, auxHeat3, fan, humidifier,
+	 * dehumidifier, ventilator, economizer, compHotWater, auxHotWater.
 	 * 
 	 * @return the equipmentStatus
 	 */
@@ -416,8 +389,7 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the NotificationSettings object containing the configuration for
-	 *         Alert and Reminders for the Thermostat
+	 * @return the NotificationSettings object containing the configuration for Alert and Reminders for the Thermostat
 	 */
 	@JsonProperty("notificationSettings")
 	public NotificationSettings getNotificationSettings() {
@@ -426,19 +398,17 @@ public class Thermostat extends AbstractMessagePart {
 
 	/**
 	 * @param notificationSettings
-	 *            the NotificationSettings object containing the configuration
-	 *            for Alert and Reminders for the Thermostat
+	 *            the NotificationSettings object containing the configuration for Alert and Reminders for the
+	 *            Thermostat
 	 */
 	@JsonProperty("notificationSettings")
-	public void setNotificationSettings(
-			NotificationSettings notificationSettings) {
+	public void setNotificationSettings(NotificationSettings notificationSettings) {
 		this.notificationSettings = notificationSettings;
 	}
 
 	/**
-	 * @return the Privacy object containing the privacy settings for the
-	 *         Thermostat. Note: access to this object is restricted to callers
-	 *         with implicit authentication.
+	 * @return the Privacy object containing the privacy settings for the Thermostat. Note: access to this object is
+	 *         restricted to callers with implicit authentication.
 	 */
 	@JsonProperty("privacy")
 	public ThermostatPrivacy getPrivacy() {
@@ -447,9 +417,8 @@ public class Thermostat extends AbstractMessagePart {
 
 	/**
 	 * @param privacy
-	 *            the Privacy object containing the privacy settings for the
-	 *            Thermostat. Note: access to this object is restricted to
-	 *            callers with implicit authentication.
+	 *            the Privacy object containing the privacy settings for the Thermostat. Note: access to this object is
+	 *            restricted to callers with implicit authentication.
 	 */
 	@JsonProperty("privacy")
 	public void setPrivacy(ThermostatPrivacy privacy) {
@@ -500,13 +469,11 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The Alert object represents an alert generated either by a thermostat or
-	 * user which requires user attention. It may be an error, or a reminder for
-	 * a filter change. Alerts may not be modified directly but rather they must
-	 * be acknowledged using the Acknowledge Function.
+	 * The Alert object represents an alert generated either by a thermostat or user which requires user attention. It
+	 * may be an error, or a reminder for a filter change. Alerts may not be modified directly but rather they must be
+	 * acknowledged using the Acknowledge Function.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Alert.shtml">Alert</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Alert.shtml">Alert</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -688,11 +655,9 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The Settings Java Bean contains all the configuration properties of the
-	 * thermostat in which it is contained.
+	 * The Settings Java Bean contains all the configuration properties of the thermostat in which it is contained.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Settings.shtml">Settings</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Settings.shtml">Settings</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -811,8 +776,7 @@ public class Thermostat extends AbstractMessagePart {
 		private Integer groupSetting;
 
 		/**
-		 * @return the current HVAC mode the thermostat is in. Values: auto,
-		 *         auxHeatOnly, cool, heat, off.
+		 * @return the current HVAC mode the thermostat is in. Values: auto, auxHeatOnly, cool, heat, off.
 		 */
 		@JsonProperty("hvacMode")
 		public HvacMode getHvacMode() {
@@ -821,8 +785,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param hvacMode
-		 *            the current HVAC mode the thermostat is in. Values: auto,
-		 *            auxHeatOnly, cool, heat, off.
+		 *            the current HVAC mode the thermostat is in. Values: auto, auxHeatOnly, cool, heat, off.
 		 */
 		@JsonProperty("hvacMode")
 		public void setHvacMode(HvacMode hvacMode) {
@@ -864,8 +827,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the user configured monthly interval between HVAC service
-		 *         reminders
+		 * @return the user configured monthly interval between HVAC service reminders
 		 */
 		@JsonProperty("monthsBetweenService")
 		public Integer getMonthsBetweenService() {
@@ -874,8 +836,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param monthsBetweenService
-		 *            the user configured monthly interval between HVAC service
-		 *            reminders
+		 *            the user configured monthly interval between HVAC service reminders
 		 */
 		@JsonProperty("monthsBetweenService")
 		public void setMonthsBetweenService(Integer monthsBetweenService) {
@@ -917,9 +878,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the minimum time in minutes the ventilator is configured to
-		 *         run. The thermostat will always guarantee that the ventilator
-		 *         runs for this minimum duration whenever engaged.
+		 * @return the minimum time in minutes the ventilator is configured to run. The thermostat will always guarantee
+		 *         that the ventilator runs for this minimum duration whenever engaged.
 		 */
 		@JsonProperty("ventilatorMinOnTime")
 		public Integer getVentilatorMinOnTime() {
@@ -928,10 +888,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param ventilatorMinOnTime
-		 *            the minimum time in minutes the ventilator is configured
-		 *            to run. The thermostat will always guarantee that the
-		 *            ventilator runs for this minimum duration whenever
-		 *            engaged.
+		 *            the minimum time in minutes the ventilator is configured to run. The thermostat will always
+		 *            guarantee that the ventilator runs for this minimum duration whenever engaged.
 		 */
 		@JsonProperty("ventilatorMinOnTime")
 		public void setVentilatorMinOnTime(Integer ventilatorMinOnTime) {
@@ -939,8 +897,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether the technician associated with this thermostat should
-		 *         receive the HVAC service reminders as well
+		 * @return whether the technician associated with this thermostat should receive the HVAC service reminders as
+		 *         well
 		 */
 		@JsonProperty("serviceRemindTechnician")
 		public Boolean getServiceRemindTechnician() {
@@ -949,8 +907,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param serviceRemindTechnician
-		 *            whether the technician associated with this thermostat
-		 *            should receive the HVAC service reminders as well
+		 *            whether the technician associated with this thermostat should receive the HVAC service reminders
+		 *            as well
 		 */
 		@JsonProperty("serviceRemindTechnician")
 		public void setServiceRemindTechnician(Boolean serviceRemindTechnician) {
@@ -958,8 +916,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return a note about the physical location where the SMART or EMS
-		 *         Equipment Interface module is located
+		 * @return a note about the physical location where the SMART or EMS Equipment Interface module is located
 		 */
 		@JsonProperty("eiLocation")
 		public String getEiLocation() {
@@ -968,8 +925,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param eiLocation
-		 *            a note about the physical location where the SMART or EMS
-		 *            Equipment Interface module is located
+		 *            a note about the physical location where the SMART or EMS Equipment Interface module is located
 		 */
 		@JsonProperty("eiLocation")
 		public void setEiLocation(String eiLocation) {
@@ -1045,8 +1001,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the number of cool stages the connected HVAC equipment
-		 *         supports
+		 * @return the number of cool stages the connected HVAC equipment supports
 		 */
 		@JsonProperty("coolStages")
 		public Integer getCoolStages() {
@@ -1054,8 +1009,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the number of heat stages the connected HVAC equipment
-		 *         supports
+		 * @return the number of heat stages the connected HVAC equipment supports
 		 */
 		@JsonProperty("heatStages")
 		public Integer getHeatStages() {
@@ -1063,8 +1017,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the maximum automated set point set back offset allowed in
-		 *         degrees
+		 * @return the maximum automated set point set back offset allowed in degrees
 		 */
 		@JsonProperty("maxSetBack")
 		public Temperature getMaxSetBack() {
@@ -1073,8 +1026,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param maxSetBack
-		 *            the maximum automated set point set back offset allowed in
-		 *            degrees
+		 *            the maximum automated set point set back offset allowed in degrees
 		 */
 		@JsonProperty("maxSetBack")
 		public void setMaxSetBack(Temperature maxSetBack) {
@@ -1082,8 +1034,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the maximum automated set point set forward offset allowed in
-		 *         degrees
+		 * @return the maximum automated set point set forward offset allowed in degrees
 		 */
 		@JsonProperty("maxSetForward")
 		public Temperature getMaxSetForward() {
@@ -1092,8 +1043,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param maxSetForward
-		 *            the maximum automated set point set forward offset allowed
-		 *            in degrees
+		 *            the maximum automated set point set forward offset allowed in degrees
 		 */
 		@JsonProperty("maxSetForward")
 		public void setMaxSetForward(Temperature maxSetForward) {
@@ -1101,8 +1051,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the set point set back offset, in degrees, configured for a
-		 *         quick save event
+		 * @return the set point set back offset, in degrees, configured for a quick save event
 		 */
 		@JsonProperty("quickSaveSetBack")
 		public Temperature getQuickSaveSetBack() {
@@ -1111,8 +1060,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param quickSaveSetBack
-		 *            the set point set back offset, in degrees, configured for
-		 *            a quick save event
+		 *            the set point set back offset, in degrees, configured for a quick save event
 		 */
 		@JsonProperty("quickSaveSetBack")
 		public void setQuickSaveSetBack(Temperature quickSaveSetBack) {
@@ -1120,8 +1068,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the set point set forward offset, in degrees, configured for
-		 *         a quick save event
+		 * @return the set point set forward offset, in degrees, configured for a quick save event
 		 */
 		@JsonProperty("quickSaveSetForward")
 		public Temperature getQuickSaveSetForward() {
@@ -1130,8 +1077,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param quickSaveSetForward
-		 *            the set point set forward offset, in degrees, configured
-		 *            for a quick save event
+		 *            the set point set forward offset, in degrees, configured for a quick save event
 		 */
 		@JsonProperty("quickSaveSetForward")
 		public void setQuickSaveSetForward(Temperature quickSaveSetForward) {
@@ -1171,8 +1117,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether the thermostat is controlling an energy recovery
-		 *         ventilator
+		 * @return whether the thermostat is controlling an energy recovery ventilator
 		 */
 		@JsonProperty("hasErv")
 		public Boolean getHasErv() {
@@ -1180,8 +1125,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether the thermostat is controlling a heat recovery
-		 *         ventilator
+		 * @return whether the thermostat is controlling a heat recovery ventilator
 		 */
 		@JsonProperty("hasHrv")
 		public Boolean getHasHrv() {
@@ -1206,8 +1150,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether the thermostat is configured to report in degrees
-		 *         Celsius
+		 * @return whether the thermostat is configured to report in degrees Celsius
 		 */
 		@JsonProperty("useCelsius")
 		public Boolean getUseCelsius() {
@@ -1216,8 +1159,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param useCelsius
-		 *            whether the thermostat is configured to report in degrees
-		 *            Celsius
+		 *            whether the thermostat is configured to report in degrees Celsius
 		 */
 		@JsonProperty("useCelsius")
 		public void setUseCelsius(Boolean useCelsius) {
@@ -1259,8 +1201,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the minimum humidity level (in percent) set point for the
-		 *         humidifier
+		 * @return the minimum humidity level (in percent) set point for the humidifier
 		 */
 		@JsonProperty("humidity")
 		public String getHumidity() {
@@ -1269,8 +1210,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param humidity
-		 *            the minimum humidity level (in percent) set point for the
-		 *            humidifier
+		 *            the minimum humidity level (in percent) set point for the humidifier
 		 */
 		@JsonProperty("humidity")
 		public void setHumidity(String humidity) {
@@ -1295,8 +1235,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the thermostat backlight intensity when on. A value between 1
-		 *         and 10.
+		 * @return the thermostat backlight intensity when on. A value between 1 and 10.
 		 */
 		@JsonProperty("backlightOnIntensity")
 		public Integer getBacklightOnIntensity() {
@@ -1305,8 +1244,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param backlightOnIntensity
-		 *            the thermostat backlight intensity when on. A value
-		 *            between 1 and 10.
+		 *            the thermostat backlight intensity when on. A value between 1 and 10.
 		 */
 		@JsonProperty("backlightOnIntensity")
 		public void setBacklightOnIntensity(Integer backlightOnIntensity) {
@@ -1314,8 +1252,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the thermostat backlight intensity when asleep. A value
-		 *         between 1 and 10.
+		 * @return the thermostat backlight intensity when asleep. A value between 1 and 10.
 		 */
 		@JsonProperty("backlightSleepIntensity")
 		public Integer getBacklightSleepIntensity() {
@@ -1324,8 +1261,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param backlightSleepIntensity
-		 *            the thermostat backlight intensity when asleep. A value
-		 *            between 1 and 10.
+		 *            the thermostat backlight intensity when asleep. A value between 1 and 10.
 		 */
 		@JsonProperty("backlightSleepIntensity")
 		public void setBacklightSleepIntensity(Integer backlightSleepIntensity) {
@@ -1333,8 +1269,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the time in seconds before the thermostat screen goes into
-		 *         sleep mode
+		 * @return the time in seconds before the thermostat screen goes into sleep mode
 		 */
 		@JsonProperty("backlightOffTime")
 		public Integer getBacklightOffTime() {
@@ -1343,8 +1278,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param backlightOffTime
-		 *            the time in seconds before the thermostat screen goes into
-		 *            sleep mode
+		 *            the time in seconds before the thermostat screen goes into sleep mode
 		 */
 		@JsonProperty("backlightOffTime")
 		public void setBacklightOffTime(Integer backlightOffTime) {
@@ -1352,8 +1286,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the volume level for key presses on the thermostat. A value
-		 *         between 1 and 10.
+		 * @return the volume level for key presses on the thermostat. A value between 1 and 10.
 		 */
 		@JsonProperty("soundTickVolume")
 		public Integer getSoundTickVolume() {
@@ -1362,8 +1295,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param soundTickVolume
-		 *            the volume level for key presses on the thermostat. A
-		 *            value between 1 and 10.
+		 *            the volume level for key presses on the thermostat. A value between 1 and 10.
 		 */
 		@JsonProperty("soundTickVolume")
 		public void setSoundTickVolume(Integer soundTickVolume) {
@@ -1371,8 +1303,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the volume level for alerts on the thermostat. A value
-		 *         between 1 and 10.
+		 * @return the volume level for alerts on the thermostat. A value between 1 and 10.
 		 */
 		@JsonProperty("soundAlertVolume")
 		public Integer getSoundAlertVolume() {
@@ -1381,8 +1312,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param soundAlertVolume
-		 *            the volume level for alerts on the thermostat. A value
-		 *            between 1 and 10.
+		 *            the volume level for alerts on the thermostat. A value between 1 and 10.
 		 */
 		@JsonProperty("soundAlertVolume")
 		public void setSoundAlertVolume(Integer soundAlertVolume) {
@@ -1402,8 +1332,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the compressorProtectionMinTime to set
 		 */
 		@JsonProperty("compressorProtectionMinTime")
-		public void setCompressorProtectionMinTime(
-				Integer compressorProtectionMinTime) {
+		public void setCompressorProtectionMinTime(Integer compressorProtectionMinTime) {
 			this.compressorProtectionMinTime = compressorProtectionMinTime;
 		}
 
@@ -1420,8 +1349,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the compressorProtectionMinTemp to set
 		 */
 		@JsonProperty("compressorProtectionMinTemp")
-		public void setCompressorProtectionMinTemp(
-				Temperature compressorProtectionMinTemp) {
+		public void setCompressorProtectionMinTemp(Temperature compressorProtectionMinTemp) {
 			this.compressorProtectionMinTemp = compressorProtectionMinTemp;
 		}
 
@@ -1438,8 +1366,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the stage1HeatingDifferentialTemp to set
 		 */
 		@JsonProperty("stage1HeatingDifferentialTemp")
-		public void setStage1HeatingDifferentialTemp(
-				Temperature stage1HeatingDifferentialTemp) {
+		public void setStage1HeatingDifferentialTemp(Temperature stage1HeatingDifferentialTemp) {
 			this.stage1HeatingDifferentialTemp = stage1HeatingDifferentialTemp;
 		}
 
@@ -1456,8 +1383,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the stage1CoolingDifferentialTemp to set
 		 */
 		@JsonProperty("stage1CoolingDifferentialTemp")
-		public void setStage1CoolingDifferentialTemp(
-				Temperature stage1CoolingDifferentialTemp) {
+		public void setStage1CoolingDifferentialTemp(Temperature stage1CoolingDifferentialTemp) {
 			this.stage1CoolingDifferentialTemp = stage1CoolingDifferentialTemp;
 		}
 
@@ -1474,8 +1400,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the stage1HeatingDissipationTime to set
 		 */
 		@JsonProperty("stage1HeatingDissipationTime")
-		public void setStage1HeatingDissipationTime(
-				Integer stage1HeatingDissipationTime) {
+		public void setStage1HeatingDissipationTime(Integer stage1HeatingDissipationTime) {
 			this.stage1HeatingDissipationTime = stage1HeatingDissipationTime;
 		}
 
@@ -1492,8 +1417,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the stage1CoolingDissipationTime to set
 		 */
 		@JsonProperty("stage1CoolingDissipationTime")
-		public void setStage1CoolingDissipationTime(
-				Integer stage1CoolingDissipationTime) {
+		public void setStage1CoolingDissipationTime(Integer stage1CoolingDissipationTime) {
 			this.stage1CoolingDissipationTime = stage1CoolingDissipationTime;
 		}
 
@@ -1532,8 +1456,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the minimum time, in minutes, to run the fan each hour. Value
-		 *         from 1 to 60.
+		 * @return the minimum time, in minutes, to run the fan each hour. Value from 1 to 60.
 		 */
 		@JsonProperty("fanMinOnTime")
 		public Integer getFanMinOnTime() {
@@ -1542,8 +1465,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param fanMinOnTime
-		 *            the minimum time, in minutes, to run the fan each hour.
-		 *            Value from 1 to 60.
+		 *            the minimum time, in minutes, to run the fan each hour. Value from 1 to 60.
 		 */
 		@JsonProperty("fanMinOnTime")
 		public void setFanMinOnTime(Integer fanMinOnTime) {
@@ -1551,10 +1473,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the minimum temperature difference between the heat and cool
-		 *         values. Used to ensure that when thermostat is in auto mode,
-		 *         the heat and cool values are separated by at least this
-		 *         value.
+		 * @return the minimum temperature difference between the heat and cool values. Used to ensure that when
+		 *         thermostat is in auto mode, the heat and cool values are separated by at least this value.
 		 */
 		@JsonProperty("heatCoolMinDelta")
 		public Temperature getHeatCoolMinDelta() {
@@ -1563,10 +1483,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param heatCoolMinDelta
-		 *            the minimum temperature difference between the heat and
-		 *            cool values. Used to ensure that when thermostat is in
-		 *            auto mode, the heat and cool values are separated by at
-		 *            least this value.
+		 *            the minimum temperature difference between the heat and cool values. Used to ensure that when
+		 *            thermostat is in auto mode, the heat and cool values are separated by at least this value.
 		 */
 		@JsonProperty("heatCoolMinDelta")
 		public void setHeatCoolMinDelta(Temperature heatCoolMinDelta) {
@@ -1591,9 +1509,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the default end time setting the thermostat applies to user
-		 *         temperature holds. Values useEndTime4hour, useEndTime2hour
-		 *         (EMS Only), nextPeriod, indefinite, askMe
+		 * @return the default end time setting the thermostat applies to user temperature holds. Values
+		 *         useEndTime4hour, useEndTime2hour (EMS Only), nextPeriod, indefinite, askMe
 		 */
 		@JsonProperty("holdAction")
 		public String getHoldAction() {
@@ -1602,9 +1519,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param holdAction
-		 *            the default end time setting the thermostat applies to
-		 *            user temperature holds. Values useEndTime4hour,
-		 *            useEndTime2hour (EMS Only), nextPeriod, indefinite, askMe
+		 *            the default end time setting the thermostat applies to user temperature holds. Values
+		 *            useEndTime4hour, useEndTime2hour (EMS Only), nextPeriod, indefinite, askMe
 		 */
 		@JsonProperty("holdAction")
 		public void setHoldAction(String holdAction) {
@@ -1620,8 +1536,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether the thermostat is connected to an electric HVAC
-		 *         system
+		 * @return whether the thermostat is connected to an electric HVAC system
 		 */
 		@JsonProperty("hasElectric")
 		public Boolean getHasElectric() {
@@ -1680,11 +1595,9 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param dehumidifyWithAC
-		 *            whether the thermostat should use AC overcool to
-		 *            dehumidify. When set to true a positive integer value must
-		 *            be supplied for dehumidifyOvercoolOffset otherwise an API
-		 *            validation exception will be thrown. TODO implement
-		 *            constraint here.
+		 *            whether the thermostat should use AC overcool to dehumidify. When set to true a positive integer
+		 *            value must be supplied for dehumidifyOvercoolOffset otherwise an API validation exception will be
+		 *            thrown. TODO implement constraint here.
 		 */
 		@JsonProperty("dehumidifyWithAC")
 		public void setDehumidifyWithAC(Boolean dehumidifyWithAC) {
@@ -1692,11 +1605,9 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether the thermostat should use AC overcool to dehumidify
-		 *         and what that temperature offset should be. A value of 0
-		 *         means this feature is disabled and dehumidifyWithAC will be
-		 *         set to false. Value represents the value in F to subtract
-		 *         from the current set point.
+		 * @return whether the thermostat should use AC overcool to dehumidify and what that temperature offset should
+		 *         be. A value of 0 means this feature is disabled and dehumidifyWithAC will be set to false. Value
+		 *         represents the value in F to subtract from the current set point.
 		 */
 		@JsonProperty("dehumidifyOvercoolOffset")
 		public Integer getDehumidifyOvercoolOffset() {
@@ -1705,13 +1616,10 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param dehumidifyOvercoolOffset
-		 *            whether the thermostat should use AC overcool to
-		 *            dehumidify and what that temperature offset should be. A
-		 *            value of 0 means this feature is disabled and
-		 *            dehumidifyWithAC will be set to false. Value represents
-		 *            the value in F to subtract from the current set point.
-		 *            Values should be in the range 0 - 50 and be divisible by
-		 *            5.
+		 *            whether the thermostat should use AC overcool to dehumidify and what that temperature offset
+		 *            should be. A value of 0 means this feature is disabled and dehumidifyWithAC will be set to false.
+		 *            Value represents the value in F to subtract from the current set point. Values should be in the
+		 *            range 0 - 50 and be divisible by 5.
 		 */
 		@JsonProperty("dehumidifyOvercoolOffset")
 		public void setDehumidifyOvercoolOffset(Integer dehumidifyOvercoolOffset) {
@@ -1731,8 +1639,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the autoHeatCoolFeatureEnabled to set
 		 */
 		@JsonProperty("autoHeatCoolFeatureEnabled")
-		public void setAutoHeatCoolFeatureEnabled(
-				Boolean autoHeatCoolFeatureEnabled) {
+		public void setAutoHeatCoolFeatureEnabled(Boolean autoHeatCoolFeatureEnabled) {
 			this.autoHeatCoolFeatureEnabled = autoHeatCoolFeatureEnabled;
 		}
 
@@ -1786,8 +1693,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the maximum heat set point configured by the user's
-		 *         preferences
+		 * @return the maximum heat set point configured by the user's preferences
 		 */
 		@JsonProperty("heatRangeHigh")
 		public Temperature getHeatRangeHigh() {
@@ -1796,8 +1702,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param heatRangeHigh
-		 *            the maximum heat set point configured by the user's
-		 *            preferences
+		 *            the maximum heat set point configured by the user's preferences
 		 */
 		@JsonProperty("heatRangeHigh")
 		public void setHeatRangeHigh(Temperature heatRangeHigh) {
@@ -1805,8 +1710,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the minimum heat set point configured by the user's
-		 *         preferences
+		 * @return the minimum heat set point configured by the user's preferences
 		 */
 		@JsonProperty("heatRangeLow")
 		public Temperature getHeatRangeLow() {
@@ -1815,8 +1719,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param heatRangeLow
-		 *            the minimum heat set point configured by the user's
-		 *            preferences
+		 *            the minimum heat set point configured by the user's preferences
 		 */
 		@JsonProperty("heatRangeLow")
 		public void setHeatRangeLow(Temperature heatRangeLow) {
@@ -1824,8 +1727,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the maximum cool set point configured by the user's
-		 *         preferences
+		 * @return the maximum cool set point configured by the user's preferences
 		 */
 		@JsonProperty("coolRangeHigh")
 		public Temperature getCoolRangeHigh() {
@@ -1834,8 +1736,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param coolRangeHigh
-		 *            the maximum cool set point configured by the user's
-		 *            preferences
+		 *            the maximum cool set point configured by the user's preferences
 		 */
 		@JsonProperty("coolRangeHigh")
 		public void setCoolRangeHigh(Temperature coolRangeHigh) {
@@ -1843,8 +1744,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the minimum heat set point configured by the user's
-		 *         preferences
+		 * @return the minimum heat set point configured by the user's preferences
 		 */
 		@JsonProperty("coolRangeLow")
 		public Temperature getCoolRangeLow() {
@@ -1853,8 +1753,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param coolRangeLow
-		 *            the minimum heat set point configured by the user's
-		 *            preferences
+		 *            the minimum heat set point configured by the user's preferences
 		 */
 		@JsonProperty("coolRangeLow")
 		public void setCoolRangeLow(Temperature coolRangeLow) {
@@ -1976,8 +1875,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the auxOutdoorTempAlertNotify to set
 		 */
 		@JsonProperty("auxOutdoorTempAlertNotify")
-		public void setAuxOutdoorTempAlertNotify(
-				Boolean auxOutdoorTempAlertNotify) {
+		public void setAuxOutdoorTempAlertNotify(Boolean auxOutdoorTempAlertNotify) {
 			this.auxOutdoorTempAlertNotify = auxOutdoorTempAlertNotify;
 		}
 
@@ -1994,8 +1892,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the auxRuntimeAlertNotifyTechnician to set
 		 */
 		@JsonProperty("auxRuntimeAlertNotifyTechnician")
-		public void setAuxRuntimeAlertNotifyTechnician(
-				Boolean auxRuntimeAlertNotifyTechnician) {
+		public void setAuxRuntimeAlertNotifyTechnician(Boolean auxRuntimeAlertNotifyTechnician) {
 			this.auxRuntimeAlertNotifyTechnician = auxRuntimeAlertNotifyTechnician;
 		}
 
@@ -2012,14 +1909,12 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the auxOutdoorTempAlertNotifyTechnician to set
 		 */
 		@JsonProperty("auxOutdoorTempAlertNotifyTechnician")
-		public void setAuxOutdoorTempAlertNotifyTechnician(
-				Boolean auxOutdoorTempAlertNotifyTechnician) {
+		public void setAuxOutdoorTempAlertNotifyTechnician(Boolean auxOutdoorTempAlertNotifyTechnician) {
 			this.auxOutdoorTempAlertNotifyTechnician = auxOutdoorTempAlertNotifyTechnician;
 		}
 
 		/**
-		 * @return whether the thermostat should use pre heating to reach the
-		 *         set point on time
+		 * @return whether the thermostat should use pre heating to reach the set point on time
 		 */
 		@JsonProperty("disablePreHeating")
 		public Boolean getDisablePreHeating() {
@@ -2028,8 +1923,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param disablePreHeating
-		 *            whether the thermostat should use pre heating to reach the
-		 *            set point on time
+		 *            whether the thermostat should use pre heating to reach the set point on time
 		 */
 		@JsonProperty("disablePreHeating")
 		public void setDisablePreHeating(Boolean disablePreHeating) {
@@ -2037,8 +1931,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether the thermostat should use pre cooling to reach the
-		 *         set point on time
+		 * @return whether the thermostat should use pre cooling to reach the set point on time
 		 */
 		@JsonProperty("disablePreCooling")
 		public Boolean getDisablePreCooling() {
@@ -2047,8 +1940,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param disablePreCooling
-		 *            whether the thermostat should use pre cooling to reach the
-		 *            set point on time
+		 *            whether the thermostat should use pre cooling to reach the set point on time
 		 */
 		@JsonProperty("disablePreCooling")
 		public void setDisablePreCooling(Boolean disablePreCooling) {
@@ -2073,8 +1965,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether Demand Response requests are accepted by this
-		 *         thermostat. Possible values are: always, askMe,
+		 * @return whether Demand Response requests are accepted by this thermostat. Possible values are: always, askMe,
 		 *         customerSelect, defaultAccept, defaultDecline, never.
 		 */
 		@JsonProperty("drAccept")
@@ -2084,9 +1975,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param drAccept
-		 *            whether Demand Response requests are accepted by this
-		 *            thermostat. Possible values are: always, askMe,
-		 *            customerSelect, defaultAccept, defaultDecline, never.
+		 *            whether Demand Response requests are accepted by this thermostat. Possible values are: always,
+		 *            askMe, customerSelect, defaultAccept, defaultDecline, never.
 		 */
 		@JsonProperty("drAccept")
 		public void setDrAccept(String drAccept) {
@@ -2230,8 +2120,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether humidification alerts are enabled to the thermostat
-		 *         owner
+		 * @return whether humidification alerts are enabled to the thermostat owner
 		 */
 		@JsonProperty("humidityAlertNotify")
 		public Boolean getHumidityAlertNotify() {
@@ -2240,8 +2129,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param humidityAlertNotify
-		 *            whether humidification alerts are enabled to the
-		 *            thermostat owner
+		 *            whether humidification alerts are enabled to the thermostat owner
 		 */
 		@JsonProperty("humidityAlertNotify")
 		public void setHumidityAlertNotify(Boolean humidityAlertNotify) {
@@ -2249,8 +2137,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether humidification alerts are enabled to the technician
-		 *         associated with the thermostat
+		 * @return whether humidification alerts are enabled to the technician associated with the thermostat
 		 */
 		@JsonProperty("humidityAlertNotifyTechnician")
 		public Boolean getHumidityAlertNotifyTechnician() {
@@ -2259,18 +2146,15 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param humidityAlertNotifyTechnician
-		 *            whether humidification alerts are enabled to the
-		 *            technician associated with the thermostat
+		 *            whether humidification alerts are enabled to the technician associated with the thermostat
 		 */
 		@JsonProperty("humidityAlertNotifyTechnician")
-		public void setHumidityAlertNotifyTechnician(
-				Boolean humidityAlertNotifyTechnician) {
+		public void setHumidityAlertNotifyTechnician(Boolean humidityAlertNotifyTechnician) {
 			this.humidityAlertNotifyTechnician = humidityAlertNotifyTechnician;
 		}
 
 		/**
-		 * @return whether temperature alerts are enabled to the thermostat
-		 *         owner
+		 * @return whether temperature alerts are enabled to the thermostat owner
 		 */
 		@JsonProperty("tempAlertNotify")
 		public Boolean getTempAlertNotify() {
@@ -2279,8 +2163,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param tempAlertNotify
-		 *            whether temperature alerts are enabled to the thermostat
-		 *            owner
+		 *            whether temperature alerts are enabled to the thermostat owner
 		 */
 		@JsonProperty("tempAlertNotify")
 		public void setTempAlertNotify(Boolean tempAlertNotify) {
@@ -2288,8 +2171,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return hether temperature alerts are enabled to the technician
-		 *         associated with the thermostat
+		 * @return hether temperature alerts are enabled to the technician associated with the thermostat
 		 */
 		@JsonProperty("tempAlertNotifyTechnician")
 		public Boolean getTempAlertNotifyTechnician() {
@@ -2298,18 +2180,15 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param tempAlertNotifyTechnician
-		 *            hether temperature alerts are enabled to the technician
-		 *            associated with the thermostat
+		 *            hether temperature alerts are enabled to the technician associated with the thermostat
 		 */
 		@JsonProperty("tempAlertNotifyTechnician")
-		public void setTempAlertNotifyTechnician(
-				Boolean tempAlertNotifyTechnician) {
+		public void setTempAlertNotifyTechnician(Boolean tempAlertNotifyTechnician) {
 			this.tempAlertNotifyTechnician = tempAlertNotifyTechnician;
 		}
 
 		/**
-		 * @return the dollar amount the owner specifies for their desired
-		 *         maximum electricity bill
+		 * @return the dollar amount the owner specifies for their desired maximum electricity bill
 		 */
 		@JsonProperty("monthlyElectricityBillLimit")
 		public Integer getMonthlyElectricityBillLimit() {
@@ -2318,12 +2197,10 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param monthlyElectricityBillLimit
-		 *            the dollar amount the owner specifies for their desired
-		 *            maximum electricity bill
+		 *            the dollar amount the owner specifies for their desired maximum electricity bill
 		 */
 		@JsonProperty("monthlyElectricityBillLimit")
-		public void setMonthlyElectricityBillLimit(
-				Integer monthlyElectricityBillLimit) {
+		public void setMonthlyElectricityBillLimit(Integer monthlyElectricityBillLimit) {
 			this.monthlyElectricityBillLimit = monthlyElectricityBillLimit;
 		}
 
@@ -2340,8 +2217,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            whether electricity bill alerts are enabled
 		 */
 		@JsonProperty("enableElectricityBillAlert")
-		public void setEnableElectricityBillAlert(
-				Boolean enableElectricityBillAlert) {
+		public void setEnableElectricityBillAlert(Boolean enableElectricityBillAlert) {
 			this.enableElectricityBillAlert = enableElectricityBillAlert;
 		}
 
@@ -2358,8 +2234,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            whether electricity bill projection alerts are enabled
 		 */
 		@JsonProperty("enableProjectedElectricityBillAlert")
-		public void setEnableProjectedElectricityBillAlert(
-				Boolean enableProjectedElectricityBillAlert) {
+		public void setEnableProjectedElectricityBillAlert(Boolean enableProjectedElectricityBillAlert) {
 			this.enableProjectedElectricityBillAlert = enableProjectedElectricityBillAlert;
 		}
 
@@ -2376,8 +2251,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the electricityBillingDayOfMonth to set
 		 */
 		@JsonProperty("electricityBillingDayOfMonth")
-		public void setElectricityBillingDayOfMonth(
-				Integer electricityBillingDayOfMonth) {
+		public void setElectricityBillingDayOfMonth(Integer electricityBillingDayOfMonth) {
 			this.electricityBillingDayOfMonth = electricityBillingDayOfMonth;
 		}
 
@@ -2394,8 +2268,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the owner's billing cycle duration in months
 		 */
 		@JsonProperty("electricityBillCycleMonths")
-		public void setElectricityBillCycleMonths(
-				Integer electricityBillCycleMonths) {
+		public void setElectricityBillCycleMonths(Integer electricityBillCycleMonths) {
 			this.electricityBillCycleMonths = electricityBillCycleMonths;
 		}
 
@@ -2412,8 +2285,7 @@ public class Thermostat extends AbstractMessagePart {
 		 *            the annual start month of the owner's billing cycle
 		 */
 		@JsonProperty("electricityBillStartMonth")
-		public void setElectricityBillStartMonth(
-				Integer electricityBillStartMonth) {
+		public void setElectricityBillStartMonth(Integer electricityBillStartMonth) {
 			this.electricityBillStartMonth = electricityBillStartMonth;
 		}
 
@@ -2469,9 +2341,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return when set to true if no occupancy motion detected thermostat
-		 *         will go into indefinite away hold, until either the user
-		 *         presses resume schedule or motion is detected.
+		 * @return when set to true if no occupancy motion detected thermostat will go into indefinite away hold, until
+		 *         either the user presses resume schedule or motion is detected.
 		 */
 		@JsonProperty("autoAway")
 		public Boolean getAutoAway() {
@@ -2479,8 +2350,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return when set to true if a larger than normal delta is found
-		 *         between sensors the fan will be engaged for 15min/hour.
+		 * @return when set to true if a larger than normal delta is found between sensors the fan will be engaged for
+		 *         15min/hour.
 		 */
 		@JsonProperty("smartCirculation")
 		public Boolean getSmartCirculation() {
@@ -2489,8 +2360,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param smartCirculation
-		 *            when set to true if a larger than normal delta is found
-		 *            between sensors the fan will be engaged for 15min/hour.
+		 *            when set to true if a larger than normal delta is found between sensors the fan will be engaged
+		 *            for 15min/hour.
 		 */
 		@JsonProperty("smartCirculation")
 		public void setSmartCirculation(Boolean smartCirculation) {
@@ -2498,10 +2369,9 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return true if a sensor has detected presence for more than 10
-		 *         minutes then include that sensor in temp average. If no
-		 *         activity has been seen on a sensor for more than 1 hour then
-		 *         remove this sensor from temperature average.
+		 * @return true if a sensor has detected presence for more than 10 minutes then include that sensor in temp
+		 *         average. If no activity has been seen on a sensor for more than 1 hour then remove this sensor from
+		 *         temperature average.
 		 */
 		@JsonProperty("followMeComfort")
 		public Boolean getFollowMeComfort() {
@@ -2510,10 +2380,9 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param followMeComfort
-		 *            set to true if a sensor has detected presence for more
-		 *            than 10 minutes then include that sensor in temp average.
-		 *            If no activity has been seen on a sensor for more than 1
-		 *            hour then remove this sensor from temperature average.
+		 *            set to true if a sensor has detected presence for more than 10 minutes then include that sensor in
+		 *            temp average. If no activity has been seen on a sensor for more than 1 hour then remove this
+		 *            sensor from temperature average.
 		 */
 		@JsonProperty("followMeComfort")
 		public void setFollowMeComfort(Boolean followMeComfort) {
@@ -2521,8 +2390,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the type of ventilator present for the Thermostat. The
-		 *         possible values are none, ventilator, hrv, and erv.
+		 * @return the type of ventilator present for the Thermostat. The possible values are none, ventilator, hrv, and
+		 *         erv.
 		 */
 		@JsonProperty("ventilatorType")
 		public String getVentilatorType() {
@@ -2530,10 +2399,9 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether the ventilator timer is on or off. The default value
-		 *         is false. If set to true the ventilatorOffDateTime is set to
-		 *         now() + 20 minutes. If set to false the ventilatorOffDateTime
-		 *         is set to its default value.
+		 * @return whether the ventilator timer is on or off. The default value is false. If set to true the
+		 *         ventilatorOffDateTime is set to now() + 20 minutes. If set to false the ventilatorOffDateTime is set
+		 *         to its default value.
 		 */
 		@JsonProperty("isVentilatorTimerOn")
 		public Boolean getIsVentilatorTimerOn() {
@@ -2542,10 +2410,9 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param isVentilatorTimerOn
-		 *            whether the ventilator timer is on or off. The default
-		 *            value is false. If set to true the ventilatorOffDateTime
-		 *            is set to now() + 20 minutes. If set to false the
-		 *            ventilatorOffDateTime is set to its default value.
+		 *            whether the ventilator timer is on or off. The default value is false. If set to true the
+		 *            ventilatorOffDateTime is set to now() + 20 minutes. If set to false the ventilatorOffDateTime is
+		 *            set to its default value.
 		 */
 		@JsonProperty("isVentilatorTimerOn")
 		public void setIsVentilatorTimerOn(Boolean isVentilatorTimerOn) {
@@ -2553,8 +2420,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the date and time the ventilator will run until. The default
-		 *         value is 2014-01-01 00:00:00.
+		 * @return the date and time the ventilator will run until. The default value is 2014-01-01 00:00:00.
 		 */
 		@JsonProperty("ventilatorOffDateTime")
 		public Date getVentilatorOffDateTime() {
@@ -2562,8 +2428,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether the HVAC system has a UV filter. The default value is
-		 *         true.
+		 * @return whether the HVAC system has a UV filter. The default value is true.
 		 */
 		@JsonProperty("hasUVFilter")
 		public Boolean getHasUVFilter() {
@@ -2572,8 +2437,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param hasUVFilter
-		 *            whether the HVAC system has a UV filter. The default value
-		 *            is true.
+		 *            whether the HVAC system has a UV filter. The default value is true.
 		 */
 		@JsonProperty("hasUVFilter")
 		public void setHasUVFilter(Boolean hasUVFilter) {
@@ -2581,9 +2445,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether to permit the cooling to operate when the outdoor
-		 *         temperature is under a specific threshold, currently 55F. The
-		 *         default value is false.
+		 * @return whether to permit the cooling to operate when the outdoor temperature is under a specific threshold,
+		 *         currently 55F. The default value is false.
 		 */
 		@JsonProperty("coolingLockout")
 		public Boolean getCoolingLockout() {
@@ -2592,9 +2455,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param coolingLockout
-		 *            whether to permit the cooling to operate when the outdoor
-		 *            temperature is under a specific threshold, currently 55F.
-		 *            The default value is false.
+		 *            whether to permit the cooling to operate when the outdoor temperature is under a specific
+		 *            threshold, currently 55F. The default value is false.
 		 */
 		@JsonProperty("coolingLockout")
 		public void setCoolingLockout(Boolean coolingLockout) {
@@ -2619,8 +2481,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether to permit dehumidifier to operate when the heating is
-		 *         running. The default value is false.
+		 * @return whether to permit dehumidifier to operate when the heating is running. The default value is false.
 		 */
 		@JsonProperty("dehumidifyWhenHeating")
 		public Boolean getDehumidifyWhenHeating() {
@@ -2629,8 +2490,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param dehumidifyWhenHeating
-		 *            whether to permit dehumidifier to operate when the heating
-		 *            is running. The default value is false.
+		 *            whether to permit dehumidifier to operate when the heating is running. The default value is false.
 		 */
 		@JsonProperty("dehumidifyWhenHeating")
 		public void setDehumidifyWhenHeating(Boolean dehumidifyWhenHeating) {
@@ -2638,9 +2498,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the unique reference to the group this thermostat belongs to,
-		 *         if any. See GET Group request and POST Group request for more
-		 *         information.
+		 * @return the unique reference to the group this thermostat belongs to, if any. See GET Group request and POST
+		 *         Group request for more information.
 		 */
 		@JsonProperty("groupRef")
 		public String getGroupRef() {
@@ -2649,9 +2508,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param groupRef
-		 *            the unique reference to the group this thermostat belongs
-		 *            to, if any. See GET Group request and POST Group request
-		 *            for more information.
+		 *            the unique reference to the group this thermostat belongs to, if any. See GET Group request and
+		 *            POST Group request for more information.
 		 */
 		@JsonProperty("groupRef")
 		public void setGroupRef(String groupRef) {
@@ -2659,9 +2517,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the name of the the group this thermostat belongs to, if any.
-		 *         See GET Group request and POST Group request for more
-		 *         information.
+		 * @return the name of the the group this thermostat belongs to, if any. See GET Group request and POST Group
+		 *         request for more information.
 		 */
 		@JsonProperty("groupName")
 		public String getGroupName() {
@@ -2670,9 +2527,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param groupName
-		 *            the name of the the group this thermostat belongs to, if
-		 *            any. See GET Group request and POST Group request for more
-		 *            information.
+		 *            the name of the the group this thermostat belongs to, if any. See GET Group request and POST Group
+		 *            request for more information.
 		 */
 		@JsonProperty("groupName")
 		public void setGroupName(String groupName) {
@@ -2680,9 +2536,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the setting value for the group this thermostat belongs to,
-		 *         if any. See GET Group request and POST Group request for more
-		 *         information.
+		 * @return the setting value for the group this thermostat belongs to, if any. See GET Group request and POST
+		 *         Group request for more information.
 		 */
 		@JsonProperty("groupSetting")
 		public Integer getGroupSetting() {
@@ -2691,9 +2546,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param groupSetting
-		 *            the setting value for the group this thermostat belongs
-		 *            to, if any. See GET Group request and POST Group request
-		 *            for more information.
+		 *            the setting value for the group this thermostat belongs to, if any. See GET Group request and POST
+		 *            Group request for more information.
 		 */
 		@JsonProperty("groupSetting")
 		public void setGroupSetting(Integer groupSetting) {
@@ -2711,8 +2565,7 @@ public class Thermostat extends AbstractMessagePart {
 			builder.append("remindMeDate", this.remindMeDate);
 			builder.append("vent", this.vent);
 			builder.append("ventilatorMinOnTime", this.ventilatorMinOnTime);
-			builder.append("serviceRemindTechnician",
-					this.serviceRemindTechnician);
+			builder.append("serviceRemindTechnician", this.serviceRemindTechnician);
 			builder.append("eiLocation", this.eiLocation);
 			builder.append("coldTempAlert", this.coldTempAlert);
 			builder.append("coldTempAlertEnabled", this.coldTempAlertEnabled);
@@ -2737,25 +2590,17 @@ public class Thermostat extends AbstractMessagePart {
 			builder.append("humidity", this.humidity);
 			builder.append("humidifierMode", this.humidifierMode);
 			builder.append("backlightOnIntensity", this.backlightOnIntensity);
-			builder.append("backlightSleepIntensity",
-					this.backlightSleepIntensity);
+			builder.append("backlightSleepIntensity", this.backlightSleepIntensity);
 			builder.append("backlightOffTime", this.backlightOffTime);
 			builder.append("soundTickVolume", this.soundTickVolume);
 			builder.append("soundAlertVolume", this.soundAlertVolume);
-			builder.append("compressorProtectionMinTime",
-					this.compressorProtectionMinTime);
-			builder.append("compressorProtectionMinTemp",
-					this.compressorProtectionMinTemp);
-			builder.append("stage1HeatingDifferentialTemp",
-					this.stage1HeatingDifferentialTemp);
-			builder.append("stage1CoolingDifferentialTemp",
-					this.stage1CoolingDifferentialTemp);
-			builder.append("stage1HeatingDissipationTime",
-					this.stage1HeatingDissipationTime);
-			builder.append("stage1CoolingDissipationTime",
-					this.stage1CoolingDissipationTime);
-			builder.append("heatPumpReversalOnCool",
-					this.heatPumpReversalOnCool);
+			builder.append("compressorProtectionMinTime", this.compressorProtectionMinTime);
+			builder.append("compressorProtectionMinTemp", this.compressorProtectionMinTemp);
+			builder.append("stage1HeatingDifferentialTemp", this.stage1HeatingDifferentialTemp);
+			builder.append("stage1CoolingDifferentialTemp", this.stage1CoolingDifferentialTemp);
+			builder.append("stage1HeatingDissipationTime", this.stage1HeatingDissipationTime);
+			builder.append("stage1CoolingDissipationTime", this.stage1CoolingDissipationTime);
+			builder.append("heatPumpReversalOnCool", this.heatPumpReversalOnCool);
 			builder.append("fanControlRequired", this.fanControlRequired);
 			builder.append("fanMinOnTime", this.fanMinOnTime);
 			builder.append("heatCoolMinDelta", this.heatCoolMinDelta);
@@ -2767,10 +2612,8 @@ public class Thermostat extends AbstractMessagePart {
 			builder.append("humidifierMode", this.humidifierMode);
 			builder.append("dehumidifierLevel", this.dehumidifierLevel);
 			builder.append("dehumidifyWithAC", this.dehumidifyWithAC);
-			builder.append("dehumidifyOvercoolOffset",
-					this.dehumidifyOvercoolOffset);
-			builder.append("autoHeatCoolFeatureEnabled",
-					this.autoHeatCoolFeatureEnabled);
+			builder.append("dehumidifyOvercoolOffset", this.dehumidifyOvercoolOffset);
+			builder.append("autoHeatCoolFeatureEnabled", this.autoHeatCoolFeatureEnabled);
 			builder.append("wifiOfflineAlert", this.wifiOfflineAlert);
 			builder.append("heatMinTemp", this.heatMinTemp);
 			builder.append("heatMaxTemp", this.heatMaxTemp);
@@ -2786,12 +2629,9 @@ public class Thermostat extends AbstractMessagePart {
 			builder.append("auxOutdoorTempAlert", this.auxOutdoorTempAlert);
 			builder.append("auxMaxOutdoorTemp", this.auxMaxOutdoorTemp);
 			builder.append("auxRuntimeAlertNotify", this.auxRuntimeAlertNotify);
-			builder.append("auxOutdoorTempAlertNotify",
-					this.auxOutdoorTempAlertNotify);
-			builder.append("auxRuntimeAlertNotifyTechnician",
-					this.auxRuntimeAlertNotifyTechnician);
-			builder.append("auxOutdoorTempAlertNotifyTechnician",
-					this.auxOutdoorTempAlertNotifyTechnician);
+			builder.append("auxOutdoorTempAlertNotify", this.auxOutdoorTempAlertNotify);
+			builder.append("auxRuntimeAlertNotifyTechnician", this.auxRuntimeAlertNotifyTechnician);
+			builder.append("auxOutdoorTempAlertNotifyTechnician", this.auxOutdoorTempAlertNotifyTechnician);
 			builder.append("disablePreHeating", this.disablePreHeating);
 			builder.append("disablePreCooling", this.disablePreCooling);
 			builder.append("installerCodeRequired", this.installerCodeRequired);
@@ -2805,29 +2645,18 @@ public class Thermostat extends AbstractMessagePart {
 			builder.append("disableHeatPumpAlerts", this.disableHeatPumpAlerts);
 			builder.append("disableAlertsOnIdt", this.disableAlertsOnIdt);
 			builder.append("humidityAlertNotify", this.humidityAlertNotify);
-			builder.append("humidityAlertNotifyTechnician",
-					this.humidityAlertNotifyTechnician);
+			builder.append("humidityAlertNotifyTechnician", this.humidityAlertNotifyTechnician);
 			builder.append("tempAlertNotify", this.tempAlertNotify);
-			builder.append("tempAlertNotifyTechnician",
-					this.tempAlertNotifyTechnician);
-			builder.append("monthlyElectricityBillLimit",
-					this.monthlyElectricityBillLimit);
-			builder.append("enableElectricityBillAlert",
-					this.enableElectricityBillAlert);
-			builder.append("enableProjectedElectricityBillAlert",
-					this.enableProjectedElectricityBillAlert);
-			builder.append("electricityBillingDayOfMonth",
-					this.electricityBillingDayOfMonth);
-			builder.append("electricityBillCycleMonths",
-					this.electricityBillCycleMonths);
-			builder.append("electricityBillStartMonth",
-					this.electricityBillStartMonth);
-			builder.append("ventilatorMinOnTimeHome",
-					this.ventilatorMinOnTimeHome);
-			builder.append("ventilatorMinOnTimeAway",
-					this.ventilatorMinOnTimeAway);
-			builder.append("backlightOffDuringSleep",
-					this.backlightOffDuringSleep);
+			builder.append("tempAlertNotifyTechnician", this.tempAlertNotifyTechnician);
+			builder.append("monthlyElectricityBillLimit", this.monthlyElectricityBillLimit);
+			builder.append("enableElectricityBillAlert", this.enableElectricityBillAlert);
+			builder.append("enableProjectedElectricityBillAlert", this.enableProjectedElectricityBillAlert);
+			builder.append("electricityBillingDayOfMonth", this.electricityBillingDayOfMonth);
+			builder.append("electricityBillCycleMonths", this.electricityBillCycleMonths);
+			builder.append("electricityBillStartMonth", this.electricityBillStartMonth);
+			builder.append("ventilatorMinOnTimeHome", this.ventilatorMinOnTimeHome);
+			builder.append("ventilatorMinOnTimeAway", this.ventilatorMinOnTimeAway);
+			builder.append("backlightOffDuringSleep", this.backlightOffDuringSleep);
 			builder.append("autoAway", this.autoAway);
 			builder.append("smartCirculation", this.smartCirculation);
 			builder.append("followMeComfort", this.followMeComfort);
@@ -2850,8 +2679,7 @@ public class Thermostat extends AbstractMessagePart {
 	 * Possible values for hvacMode
 	 */
 	public static enum HvacMode {
-		AUTO("auto"), AUX_HEAT_ONLY("auxHeatOnly"), COOL("cool"), HEAT("heat"), OFF(
-				"off");
+		AUTO("auto"), AUX_HEAT_ONLY("auxHeatOnly"), COOL("cool"), HEAT("heat"), OFF("off");
 
 		private final String mode;
 
@@ -2914,33 +2742,27 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The Runtime Java Bean represents the last known thermostat running state.
-	 * This state is composed from the last interval status message received
-	 * from a thermostat. It is also updated each time the thermostat posts
+	 * The Runtime Java Bean represents the last known thermostat running state. This state is composed from the last
+	 * interval status message received from a thermostat. It is also updated each time the thermostat posts
 	 * configuration changes to the server.
 	 * 
 	 * <p>
-	 * The runtime object contains the last 5 minute interval value sent by the
-	 * thermostat for the past 15 minutes of runtime. The thermostat updates the
-	 * server every 15 minutes with the last three 5 minute readings.
+	 * The runtime object contains the last 5 minute interval value sent by the thermostat for the past 15 minutes of
+	 * runtime. The thermostat updates the server every 15 minutes with the last three 5 minute readings.
 	 * 
 	 * <p>
-	 * The actual temperature and humidity will also be updated when the
-	 * equipment state changes by the thermostat, this may occur at a frequency
-	 * of 3 minutes, however it is only transmitted when there is an equipment
-	 * state change on the thermostat.
+	 * The actual temperature and humidity will also be updated when the equipment state changes by the thermostat, this
+	 * may occur at a frequency of 3 minutes, however it is only transmitted when there is an equipment state change on
+	 * the thermostat.
 	 * 
 	 * <p>
-	 * See Thermostat Interval Report Data for additional information about the
-	 * interval readings.
+	 * See Thermostat Interval Report Data for additional information about the interval readings.
 	 * 
 	 * <p>
 	 * The Runtime class is read-only.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Runtime.shtml">Runtime</a>
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml#data">Thermostat
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Runtime.shtml">Runtime</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml#data">Thermostat
 	 *      Interval Report Data</a>
 	 * @author John Cocula
 	 */
@@ -2966,8 +2788,8 @@ public class Thermostat extends AbstractMessagePart {
 		private String desiredFanMode;
 
 		/**
-		 * @return the current runtime revision. Equivalent in meaning to the
-		 *         runtime revision number in the thermostat summary call.
+		 * @return the current runtime revision. Equivalent in meaning to the runtime revision number in the thermostat
+		 *         summary call.
 		 */
 		@JsonProperty("runtimeRev")
 		public String getRuntimeRev() {
@@ -2983,8 +2805,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the UTC date/time stamp of when the thermostat first
-		 *         connected to the ecobee server
+		 * @return the UTC date/time stamp of when the thermostat first connected to the ecobee server
 		 */
 		@JsonProperty("firstConnected")
 		public Date getFirstConnected() {
@@ -3008,8 +2829,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the UTC date/time stamp of when the thermostat was updated.
-		 *         Format: YYYY-MM-DD HH:MM:SS
+		 * @return the UTC date/time stamp of when the thermostat was updated. Format: YYYY-MM-DD HH:MM:SS
 		 */
 		@JsonProperty("lastModified")
 		public Date getLastModified() {
@@ -3017,8 +2837,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the UTC date/time stamp of when the thermostat last posted
-		 *         its runtime information. Format: YYYY-MM-DD HH:MM:SS
+		 * @return the UTC date/time stamp of when the thermostat last posted its runtime information. Format:
+		 *         YYYY-MM-DD HH:MM:SS
 		 */
 		@JsonProperty("lastStatusModified")
 		public Date getLastStatusModified() {
@@ -3034,11 +2854,9 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last 5 minute interval which was updated by the
-		 *         thermostat telemetry update. Subtract 2 from this interval to
-		 *         obtain the beginning interval for the last 3 readings.
-		 *         Multiply by 5 mins to obtain the minutes of the day. Range:
-		 *         0-287
+		 * @return the last 5 minute interval which was updated by the thermostat telemetry update. Subtract 2 from this
+		 *         interval to obtain the beginning interval for the last 3 readings. Multiply by 5 mins to obtain the
+		 *         minutes of the day. Range: 0-287
 		 */
 		@JsonProperty("runtimeInterval")
 		public Integer getRuntimeInterval() {
@@ -3062,8 +2880,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the desired heat temperature as per the current running
-		 *         program or active event
+		 * @return the desired heat temperature as per the current running program or active event
 		 */
 		@JsonProperty("desiredHeat")
 		public Temperature getDesiredHeat() {
@@ -3071,8 +2888,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the desired cool temperature as per the current running
-		 *         program or active event.
+		 * @return the desired cool temperature as per the current running program or active event.
 		 */
 		@JsonProperty("desiredCool")
 		public Temperature getDesiredCool() {
@@ -3096,8 +2912,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the desired fan mode. Values: auto, on or null if the HVAC
-		 *         system is off. TODO handle null as valid value.
+		 * @return the desired fan mode. Values: auto, on or null if the HVAC system is off. TODO handle null as valid
+		 *         value.
 		 */
 		@JsonProperty("desiredFanMode")
 		public String getDesiredFanMode() {
@@ -3130,31 +2946,27 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The ExtendedRuntime Java Bean contains the last three 5 minute interval
-	 * values sent by the thermostat for the past 15 minutes of runtime. The
-	 * interval values are valuable when you are interested in analyzing the
-	 * runtime data in a more granular fashion, at 5 minute increments rather
-	 * than the more general 15 minute value from the Runtime Object.
+	 * The ExtendedRuntime Java Bean contains the last three 5 minute interval values sent by the thermostat for the
+	 * past 15 minutes of runtime. The interval values are valuable when you are interested in analyzing the runtime
+	 * data in a more granular fashion, at 5 minute increments rather than the more general 15 minute value from the
+	 * Runtime Object.
 	 * 
 	 * <p>
-	 * For the runtime values (i.e. heatPump, auxHeat, cool, etc.) refer to the
-	 * {@link Thermostat#settings} values ({@link Settings#hasHeatPump},
-	 * {@link Settings#heatStages}, {@link Settings#coolStages}) to determine
-	 * whether a heat pump exists and how many stages the thermostat supports.
+	 * For the runtime values (i.e. heatPump, auxHeat, cool, etc.) refer to the {@link Thermostat#settings} values (
+	 * {@link Settings#hasHeatPump}, {@link Settings#heatStages}, {@link Settings#coolStages}) to determine whether a
+	 * heat pump exists and how many stages the thermostat supports.
 	 * 
 	 * <p>
-	 * The actual temperature and humidity will also be updated when the
-	 * equipment state changes by the thermostat, this may occur at a frequency
-	 * of 3 minutes, however it is only transmitted when there is an equipment
-	 * state change on the thermostat.
+	 * The actual temperature and humidity will also be updated when the equipment state changes by the thermostat, this
+	 * may occur at a frequency of 3 minutes, however it is only transmitted when there is an equipment state change on
+	 * the thermostat.
 	 * 
 	 * <p>
 	 * The extended runtime object is read-only.
 	 * 
 	 * @see <a
 	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/ExtendedRuntime.shtml">ExtendedRuntime</a>
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml#data">Thermostat
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml#data">Thermostat
 	 *      Interval Report Data</a>
 	 * @author John Cocula
 	 */
@@ -3188,11 +3000,9 @@ public class Thermostat extends AbstractMessagePart {
 		private Integer projectedElectricityBill;
 
 		/**
-		 * @return the UTC timestamp of the last value read. This timestamp is
-		 *         updated at a 15 min interval by the thermostat. For the 1st
-		 *         value, it is timestamp - 10 mins, for the 2nd value it is
-		 *         timestamp - 5 mins. Consider day boundaries being straddled
-		 *         when using these values.
+		 * @return the UTC timestamp of the last value read. This timestamp is updated at a 15 min interval by the
+		 *         thermostat. For the 1st value, it is timestamp - 10 mins, for the 2nd value it is timestamp - 5 mins.
+		 *         Consider day boundaries being straddled when using these values.
 		 */
 		@JsonProperty("lastReadingTimestamp")
 		public Date getLastReadingTimestamp() {
@@ -3208,11 +3018,9 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last 5 minute interval which was updated by the
-		 *         thermostat telemetry update. Subtract 2 from this interval to
-		 *         obtain the beginning interval for the last 3 readings.
-		 *         Multiply by 5 mins to obtain the minutes of the day. Range:
-		 *         0-287
+		 * @return the last 5 minute interval which was updated by the thermostat telemetry update. Subtract 2 from this
+		 *         interval to obtain the beginning interval for the last 3 readings. Multiply by 5 mins to obtain the
+		 *         minutes of the day. Range: 0-287
 		 */
 		@JsonProperty("runtimeInterval")
 		public Integer getRuntimeInterval() {
@@ -3268,13 +3076,10 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute desired Demand Management temperature
-		 *         offsets. This value is Demand Management adjustment value
-		 *         which was applied by the thermostat. If the thermostat
-		 *         decided not to honor the adjustment, it will send 0 for the
-		 *         interval. Compare these values with the values sent in the DM
-		 *         message to determine whether the thermostat applied the
-		 *         adjustment.
+		 * @return the last three 5 minute desired Demand Management temperature offsets. This value is Demand
+		 *         Management adjustment value which was applied by the thermostat. If the thermostat decided not to
+		 *         honor the adjustment, it will send 0 for the interval. Compare these values with the values sent in
+		 *         the DM message to determine whether the thermostat applied the adjustment.
 		 */
 		@JsonProperty("dmOffset")
 		public List<Temperature> getDmOffset() {
@@ -3282,12 +3087,10 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute HVAC Mode reading. These values
-		 *         indicate which stage was energized in the 5 minute interval.
-		 *         Values: heatStage1On, heatStage2On, heatStage3On, heatOff,
-		 *         compressorCoolStage1On, compressorCoolStage2On,
-		 *         compressorCoolOff, compressorHeatStage1On,
-		 *         compressorHeatStage2On, compressorHeatOff, economyCycle.
+		 * @return the last three 5 minute HVAC Mode reading. These values indicate which stage was energized in the 5
+		 *         minute interval. Values: heatStage1On, heatStage2On, heatStage3On, heatOff, compressorCoolStage1On,
+		 *         compressorCoolStage2On, compressorCoolOff, compressorHeatStage1On, compressorHeatStage2On,
+		 *         compressorHeatOff, economyCycle.
 		 */
 		@JsonProperty("hvacMode")
 		public List<String> getHvacMode() {
@@ -3295,9 +3098,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300
-		 *         seconds) per interval. This value corresponds to the heat
-		 *         pump stage 1 runtime.
+		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300 seconds) per interval. This value
+		 *         corresponds to the heat pump stage 1 runtime.
 		 */
 		@JsonProperty("heatPump1")
 		public List<Integer> getHeatPump1() {
@@ -3305,9 +3107,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300
-		 *         seconds) per interval. This value corresponds to the heat
-		 *         pump stage 2 runtime.
+		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300 seconds) per interval. This value
+		 *         corresponds to the heat pump stage 2 runtime.
 		 */
 		@JsonProperty("heatPump2")
 		public List<Integer> getHeatPump2() {
@@ -3315,10 +3116,9 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300
-		 *         seconds) per interval. This value corresponds to the
-		 *         auxiliary heat stage 1. If the thermostat does not have a
-		 *         heat pump, this is heat stage 1.
+		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300 seconds) per interval. This value
+		 *         corresponds to the auxiliary heat stage 1. If the thermostat does not have a heat pump, this is heat
+		 *         stage 1.
 		 */
 		@JsonProperty("auxHeat1")
 		public List<Integer> getAuxHeat1() {
@@ -3326,10 +3126,9 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300
-		 *         seconds) per interval. This value corresponds to the
-		 *         auxiliary heat stage 2. If the thermostat does not have a
-		 *         heat pump, this is heat stage 2.
+		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300 seconds) per interval. This value
+		 *         corresponds to the auxiliary heat stage 2. If the thermostat does not have a heat pump, this is heat
+		 *         stage 2.
 		 */
 		@JsonProperty("auxHeat2")
 		public List<Integer> getAuxHeat2() {
@@ -3337,10 +3136,9 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300
-		 *         seconds) per interval. This value corresponds to the heat
-		 *         stage 3 if the thermostat does not have a heat pump.
-		 *         Auxiliary stage 3 is not supported.
+		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300 seconds) per interval. This value
+		 *         corresponds to the heat stage 3 if the thermostat does not have a heat pump. Auxiliary stage 3 is not
+		 *         supported.
 		 */
 		@JsonProperty("auxHeat3")
 		public List<Integer> getAuxHeat3() {
@@ -3348,9 +3146,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300
-		 *         seconds) per interval. This value corresponds to the cooling
-		 *         stage 1.
+		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300 seconds) per interval. This value
+		 *         corresponds to the cooling stage 1.
 		 */
 		@JsonProperty("cool1")
 		public List<Integer> getCool1() {
@@ -3358,9 +3155,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300
-		 *         seconds) per interval. This value corresponds to the cooling
-		 *         stage 2.
+		 * @return the last three 5 minute HVAC Runtime values in seconds (0-300 seconds) per interval. This value
+		 *         corresponds to the cooling stage 2.
 		 */
 		@JsonProperty("cool2")
 		public List<Integer> getCool2() {
@@ -3368,8 +3164,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute fan Runtime values in seconds (0-300
-		 *         seconds) per interval.
+		 * @return the last three 5 minute fan Runtime values in seconds (0-300 seconds) per interval.
 		 */
 		@JsonProperty("fan")
 		public List<Integer> getFan() {
@@ -3377,8 +3172,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute humidifier Runtime values in seconds
-		 *         (0-300 seconds) per interval.
+		 * @return the last three 5 minute humidifier Runtime values in seconds (0-300 seconds) per interval.
 		 */
 		@JsonProperty("humidifier")
 		public List<Integer> getHumidifier() {
@@ -3386,8 +3180,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute dehumidifier Runtime values in
-		 *         seconds (0-300 seconds) per interval.
+		 * @return the last three 5 minute dehumidifier Runtime values in seconds (0-300 seconds) per interval.
 		 */
 		@JsonProperty("dehumidifier")
 		public List<Integer> getDehumidifier() {
@@ -3395,8 +3188,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute economizer Runtime values in seconds
-		 *         (0-300 seconds) per interval.
+		 * @return the last three 5 minute economizer Runtime values in seconds (0-300 seconds) per interval.
 		 */
 		@JsonProperty("economizer")
 		public List<Integer> getEconomizer() {
@@ -3404,8 +3196,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three 5 minute ventilator Runtime values in seconds
-		 *         (0-300 seconds) per interval.
+		 * @return the last three 5 minute ventilator Runtime values in seconds (0-300 seconds) per interval.
 		 */
 		@JsonProperty("ventilator")
 		public List<Integer> getVentilator() {
@@ -3413,9 +3204,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the latest value of the current electricity bill as
-		 *         interpolated from the thermostat's readings from a paired
-		 *         electricity meter.
+		 * @return the latest value of the current electricity bill as interpolated from the thermostat's readings from
+		 *         a paired electricity meter.
 		 */
 		@JsonProperty("currentElectricityBill")
 		public Integer getCurrentElectricityBill() {
@@ -3423,9 +3213,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the latest estimate of the projected electricity bill as
-		 *         interpolated from the thermostat's readings from a paired
-		 *         electricity meter.
+		 * @return the latest estimate of the projected electricity bill as interpolated from the thermostat's readings
+		 *         from a paired electricity meter.
 		 */
 		@JsonProperty("projectedElectricityBill")
 		public Integer getProjectedElectricityBill() {
@@ -3459,20 +3248,16 @@ public class Thermostat extends AbstractMessagePart {
 			builder.append("dehumidifier", this.dehumidifier);
 			builder.append("economizer", this.economizer);
 			builder.append("ventilator", this.ventilator);
-			builder.append("currentElectricityBill",
-					this.currentElectricityBill);
-			builder.append("projectedElectricityBill",
-					this.projectedElectricityBill);
+			builder.append("currentElectricityBill", this.currentElectricityBill);
+			builder.append("projectedElectricityBill", this.projectedElectricityBill);
 
 			return builder.toString();
 		}
 	}
 
 	/**
-	 * The Electricity class contains the last collected electricity usage
-	 * measurements for the thermostat. An electricity object is composed of
-	 * ElectricityDevices, each of which contains readings from an
-	 * ElectricityTier.
+	 * The Electricity class contains the last collected electricity usage measurements for the thermostat. An
+	 * electricity object is composed of ElectricityDevices, each of which contains readings from an ElectricityTier.
 	 * 
 	 * @see <a
 	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Electricity.shtml">Electricity</a>
@@ -3487,9 +3272,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the list of ElectricityDevice objects associated with the
-		 *         thermostat, each representing a device such as an electric
-		 *         meter or remote load control.
+		 * @return the list of ElectricityDevice objects associated with the thermostat, each representing a device such
+		 *         as an electric meter or remote load control.
 		 */
 		@JsonProperty("devices")
 		public List<ElectricityDevice> getDevices() {
@@ -3507,8 +3291,7 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * An ElectricityDevice represents an energy recording device. At this time,
-	 * only meters are supported by the API.
+	 * An ElectricityDevice represents an energy recording device. At this time, only meters are supported by the API.
 	 * 
 	 * @see <a
 	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/ElectricityDevice.shtml">ElectricityDevice</a>
@@ -3522,9 +3305,8 @@ public class Thermostat extends AbstractMessagePart {
 		private List<String> consumption;
 
 		/**
-		 * @return the list of ElectricityTiers containing the break down of
-		 *         daily electricity consumption of the device for the day,
-		 *         broken down per pricing tier
+		 * @return the list of ElectricityTiers containing the break down of daily electricity consumption of the device
+		 *         for the day, broken down per pricing tier
 		 */
 		@JsonProperty("tiers")
 		public List<ElectricityTier> getTiers() {
@@ -3540,8 +3322,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three daily electricity cost reads from the device
-		 *         in cents with a three decimal place precision.
+		 * @return the last three daily electricity cost reads from the device in cents with a three decimal place
+		 *         precision.
 		 */
 		@JsonProperty("cost")
 		public List<String> getCost() {
@@ -3549,8 +3331,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last three daily electricity consumption reads from the
-		 *         device in KWh with a three decimal place precision.
+		 * @return the last three daily electricity consumption reads from the device in KWh with a three decimal place
+		 *         precision.
 		 */
 		@JsonProperty("consumption")
 		public List<String> getConsumption() {
@@ -3571,11 +3353,9 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * An ElectricityTier object represents the last reading from a given
-	 * pricing tier if the utility provides such information. If there are no
-	 * pricing tiers defined, than an unnamed tier will represent the total
-	 * reading. The values represented here are a daily cumulative total in kWh.
-	 * The cost is likewise a cumulative total in cents.
+	 * An ElectricityTier object represents the last reading from a given pricing tier if the utility provides such
+	 * information. If there are no pricing tiers defined, than an unnamed tier will represent the total reading. The
+	 * values represented here are a daily cumulative total in kWh. The cost is likewise a cumulative total in cents.
 	 * 
 	 * @see <a
 	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/ElectricityTier.shtml">ElectricityTier</a>
@@ -3588,9 +3368,8 @@ public class Thermostat extends AbstractMessagePart {
 		private String cost;
 
 		/**
-		 * @return the tier name as defined by the {@link Utility}. May be an
-		 *         empty string if the tier is undefined or the usage falls
-		 *         outside the defined tiers.
+		 * @return the tier name as defined by the {@link Utility}. May be an empty string if the tier is undefined or
+		 *         the usage falls outside the defined tiers.
 		 */
 		@JsonProperty("name")
 		public String getName() {
@@ -3598,8 +3377,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the last daily consumption reading collected. The reading
-		 *         format and precision is to three decimal places in kWh.
+		 * @return the last daily consumption reading collected. The reading format and precision is to three decimal
+		 *         places in kWh.
 		 */
 		@JsonProperty("consumption")
 		public String getConsumption() {
@@ -3607,8 +3386,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the daily cumulative tier cost in dollars if defined by the
-		 *         Utility. May be an empty string if undefined.
+		 * @return the daily cumulative tier cost in dollars if defined by the Utility. May be an empty string if
+		 *         undefined.
 		 */
 		@JsonProperty("cost")
 		public String getCost() {
@@ -3628,11 +3407,10 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * Represents a device attached to the thermostat. Devices may not be
-	 * modified remotely; all changes must occur on the thermostat.
+	 * Represents a device attached to the thermostat. Devices may not be modified remotely; all changes must occur on
+	 * the thermostat.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Device.shtml">Device</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Device.shtml">Device</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -3688,12 +3466,10 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The Sensor class represents a sensor connected to the thermostat. Sensors
-	 * may not be modified using the API, however some configuration may occur
-	 * through the web portal.
+	 * The Sensor class represents a sensor connected to the thermostat. Sensors may not be modified using the API,
+	 * however some configuration may occur through the web portal.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Sensor.shtml">Sensor</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Sensor.shtml">Sensor</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -3755,8 +3531,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the type of sensor. Values: adc, co2, dryCOntact, humidity,
-		 *         temperature, unknown
+		 * @return the type of sensor. Values: adc, co2, dryCOntact, humidity, temperature, unknown
 		 */
 		@JsonProperty("type")
 		public String getType() {
@@ -3764,8 +3539,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the sensor usage type. Values: dischargeAir, indoor, monitor,
-		 *         outdoor
+		 * @return the sensor usage type. Values: dischargeAir, indoor, monitor, outdoor
 		 */
 		@JsonProperty("usage")
 		public String getUsage() {
@@ -3861,11 +3635,9 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * A sensor state is a configurable trigger for a number of
-	 * {@link StateAction}s.
+	 * A sensor state is a configurable trigger for a number of {@link StateAction}s.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/State.shtml">State</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/State.shtml">State</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -3892,8 +3664,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the type Values: coolHigh, coolLow, heatHigh, heatLow, high,
-		 *         low, transitionCount, normal
+		 * @return the type Values: coolHigh, coolLow, heatHigh, heatLow, high, low, transitionCount, normal
 		 */
 		@JsonProperty("type")
 		public String getType() {
@@ -3901,8 +3672,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the list of {@link StateAction} objects associated with the
-		 *         sensor
+		 * @return the list of {@link StateAction} objects associated with the sensor
 		 */
 		@JsonProperty("actions")
 		public List<StateAction> getActions() {
@@ -3923,11 +3693,9 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * A StateAction defines an action to take when a {@link SensorState} is
-	 * triggered.
+	 * A StateAction defines an action to take when a {@link SensorState} is triggered.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Action.shtml">Action</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Action.shtml">Action</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -3944,11 +3712,9 @@ public class Thermostat extends AbstractMessagePart {
 		private Boolean activateRelayOpen;
 
 		/**
-		 * @return the type Values: activateRelay, adjustTemp, doNothing,
-		 *         shutdownAC, shutdownAuxHeat, shutdownSystem,
-		 *         shutdownCompression, switchToOccupied, switchToUnoccupied,
-		 *         turnOffDehumidifer, turnOffHumidifier, turnOnCool,
-		 *         turnOnDehumidifier, turnOnFan, turnOnHeat, turnOnHumidifier.
+		 * @return the type Values: activateRelay, adjustTemp, doNothing, shutdownAC, shutdownAuxHeat, shutdownSystem,
+		 *         shutdownCompression, switchToOccupied, switchToUnoccupied, turnOffDehumidifer, turnOffHumidifier,
+		 *         turnOnCool, turnOnDehumidifier, turnOnFan, turnOnHeat, turnOnHumidifier.
 		 */
 		@JsonProperty("type")
 		public String getType() {
@@ -3956,8 +3722,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return flag to enable an alert to be generated when the state is
-		 *         triggered
+		 * @return flag to enable an alert to be generated when the state is triggered
 		 */
 		@JsonProperty("sendAlert")
 		public Boolean getSendAlert() {
@@ -3973,8 +3738,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return delay in seconds before the action is triggered by the state
-		 *         change
+		 * @return delay in seconds before the action is triggered by the state change
 		 */
 		@JsonProperty("activationDelay")
 		public Integer getActivationDelay() {
@@ -4051,8 +3815,7 @@ public class Thermostat extends AbstractMessagePart {
 	/**
 	 * An output is a relay connected to the thermostat.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Output.shtml">Output</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Output.shtml">Output</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -4091,10 +3854,9 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the type of output. Values: compressor1, compressor2,
-		 *         dehumidifier, economizer, fan, heat1, heat2, heat3,
-		 *         heatPumpReversal, humidifer, none, occupancy, userDefined,
-		 *         ventilator, zoneCool, zoneFan, zoneHeat
+		 * @return the type of output. Values: compressor1, compressor2, dehumidifier, economizer, fan, heat1, heat2,
+		 *         heat3, heatPumpReversal, humidifer, none, occupancy, userDefined, ventilator, zoneCool, zoneFan,
+		 *         zoneHeat
 		 */
 		@JsonProperty("type")
 		public String getType() {
@@ -4151,13 +3913,11 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The Location describes the physical location and coordinates of the
-	 * thermostat as entered by the thermostat owner. The address information is
-	 * used in a geocode look up to obtain the thermostat coordinates. The
-	 * coordinates are used to obtain accurate weather information.
+	 * The Location describes the physical location and coordinates of the thermostat as entered by the thermostat
+	 * owner. The address information is used in a geocode look up to obtain the thermostat coordinates. The coordinates
+	 * are used to obtain accurate weather information.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Location.shtml">Location</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Location.shtml">Location</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -4182,8 +3942,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the Olson timezone the thermostat resides in (e.g
-		 *         America/Toronto)
+		 * @return the Olson timezone the thermostat resides in (e.g America/Toronto)
 		 */
 		@JsonProperty("timeZone")
 		public String getTimeZone() {
@@ -4192,8 +3951,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param timeZone
-		 *            the Olson timezone the thermostat resides in (e.g
-		 *            America/Toronto)
+		 *            the Olson timezone the thermostat resides in (e.g America/Toronto)
 		 */
 		@JsonProperty("timeZone")
 		public void setTimeZone(String timeZone) {
@@ -4201,8 +3959,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether the thermostat should factor in daylight savings when
-		 *         displaying the date and time
+		 * @return whether the thermostat should factor in daylight savings when displaying the date and time
 		 */
 		@JsonProperty("isDaylightSaving")
 		public Boolean getIsDaylightSaving() {
@@ -4211,8 +3968,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param isDaylightSaving
-		 *            whether the thermostat should factor in daylight savings
-		 *            when displaying the date and time
+		 *            whether the thermostat should factor in daylight savings when displaying the date and time
 		 */
 		@JsonProperty("isDaylightSaving")
 		public void setIsDaylightSaving(Boolean isDaylightSaving) {
@@ -4322,8 +4078,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the lat/long geographic coordinates of the thermostat
-		 *         location
+		 * @return the lat/long geographic coordinates of the thermostat location
 		 */
 		@JsonProperty("mapCoordinates")
 		public String getMapCoordinates() {
@@ -4332,8 +4087,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param mapCoordinates
-		 *            the lat/long geographic coordinates of the thermostat
-		 *            location
+		 *            the lat/long geographic coordinates of the thermostat location
 		 */
 		@JsonProperty("mapCoordinates")
 		public void setMapCoordinates(String mapCoordinates) {
@@ -4360,12 +4114,10 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The Technician object contains information pertaining to the technician
-	 * associated with a thermostat. The technician may not be modified through
-	 * the API.
+	 * The Technician object contains information pertaining to the technician associated with a thermostat. The
+	 * technician may not be modified through the API.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Technician.shtml">Technician</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Technician.shtml">Technician</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -4481,11 +4233,9 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The Utility information the {@link Thermostat} belongs to. The utility
-	 * may not be modified through the API.
+	 * The Utility information the {@link Thermostat} belongs to. The utility may not be modified through the API.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Utility.shtml">Utility</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Utility.shtml">Utility</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -4541,12 +4291,10 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The Management object contains information about the management company
-	 * the thermostat belongs to. The Management object is read-only, it may be
-	 * modified in the web portal.
+	 * The Management object contains information about the management company the thermostat belongs to. The Management
+	 * object is read-only, it may be modified in the web portal.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Management.shtml">Management</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Management.shtml">Management</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -4642,11 +4390,9 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The Weather object contains the weather and forecast information for the
-	 * thermostat's location.
+	 * The Weather object contains the weather and forecast information for the thermostat's location.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Weather.shtml">Weather</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Weather.shtml">Weather</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -4692,9 +4438,8 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The Weather Forecast contains the weather forecast information for the
-	 * thermostat. The first forecast is the most accurate, later forecasts
-	 * become less accurate in distance and time.
+	 * The Weather Forecast contains the weather forecast information for the thermostat. The first forecast is the most
+	 * accurate, later forecasts become less accurate in distance and time.
 	 * 
 	 * @see <a
 	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/WeatherForecast.shtml">WeatherForecast</a>
@@ -4873,24 +4618,19 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The event object represents a scheduled thermostat program change. All
-	 * events have a start and end time during which the thermostat runtime
-	 * settings will be modified. Events may not be directly modified, various
-	 * Functions provide the capability to modify the calendar events and to
-	 * modify the program. The event list is sorted with events ordered by
-	 * whether they are currently running and the internal priority of each
-	 * event. It is safe to take the first event which is running and show it as
-	 * the currently running event. When the resume function is used, events are
-	 * removed in the order they are listed here.
+	 * The event object represents a scheduled thermostat program change. All events have a start and end time during
+	 * which the thermostat runtime settings will be modified. Events may not be directly modified, various Functions
+	 * provide the capability to modify the calendar events and to modify the program. The event list is sorted with
+	 * events ordered by whether they are currently running and the internal priority of each event. It is safe to take
+	 * the first event which is running and show it as the currently running event. When the resume function is used,
+	 * events are removed in the order they are listed here.
 	 * 
-	 * Note that the start/end date/time for the event must be in thermostat
-	 * time and are not specified in UTC.
+	 * Note that the start/end date/time for the event must be in thermostat time and are not specified in UTC.
 	 * 
 	 * Event Priorities
 	 * 
-	 * The events are listed from top priority first to lowest priority. They
-	 * will appear in the events list in the same order as listed here provided
-	 * they are active currently.
+	 * The events are listed from top priority first to lowest priority. They will appear in the events list in the same
+	 * order as listed here provided they are active currently.
 	 * 
 	 * <table>
 	 * <tr>
@@ -4911,8 +4651,8 @@ public class Thermostat extends AbstractMessagePart {
 	 * </tr>
 	 * <tr>
 	 * <td>switchOccupancy</td>
-	 * <td>EMS only event to flip unoccupied to occupied, and vice versa. Look
-	 * at name to determine whether "occupied" or "unoccupied".</td>
+	 * <td>EMS only event to flip unoccupied to occupied, and vice versa. Look at name to determine whether "occupied"
+	 * or "unoccupied".</td>
 	 * </tr>
 	 * <tr>
 	 * <td>vacation</td>
@@ -4928,15 +4668,12 @@ public class Thermostat extends AbstractMessagePart {
 	 * </tr>
 	 * <tr>
 	 * <td>template</td>
-	 * <td>A vacation event that reflects the thermostat owner's default
-	 * preferences for any created vacation. Template events are never active
-	 * and are only used to store the last used vacation settings of the
-	 * thermostat owner.</td>
+	 * <td>A vacation event that reflects the thermostat owner's default preferences for any created vacation. Template
+	 * events are never active and are only used to store the last used vacation settings of the thermostat owner.</td>
 	 * </tr>
 	 * </table>
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Event.shtml">Event</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Event.shtml">Event</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -4978,8 +4715,7 @@ public class Thermostat extends AbstractMessagePart {
 		private String holdClimateRef;
 
 		/**
-		 * @return the type of event. Values: hold, demandResponse, sensor,
-		 *         switchOccupancy, vacation, quickSave, today
+		 * @return the type of event. Values: hold, demandResponse, sensor, switchOccupancy, vacation, quickSave, today
 		 */
 		@JsonProperty("type")
 		public String getType() {
@@ -5035,8 +4771,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether there are persons occupying the property during the
-		 *         event
+		 * @return whether there are persons occupying the property during the event
 		 */
 		@JsonProperty("isOccupied")
 		public Boolean isOccupied() {
@@ -5076,8 +4811,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the fan mode during the event. Values: auto, on Default:
-		 *         based on current climate and hvac mode
+		 * @return the fan mode during the event. Values: auto, on Default: based on current climate and hvac mode
 		 */
 		@JsonProperty("fan")
 		public FanMode getFan() {
@@ -5085,8 +4819,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the ventilator mode during the event. Values: auto,
-		 *         minontime, on, off
+		 * @return the ventilator mode during the event. Values: auto, minontime, on, off
 		 */
 		@JsonProperty("vent")
 		public VentilatorMode getVent() {
@@ -5094,8 +4827,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the minimum amount of time the ventilator equipment must stay
-		 *         on on each duty cycle
+		 * @return the minimum amount of time the ventilator equipment must stay on on each duty cycle
 		 */
 		@JsonProperty("ventilatorMinOnTime")
 		public Integer getVentilatorMinOnTime() {
@@ -5111,8 +4843,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether the event is using a relative temperature setting to
-		 *         the currently active program climate
+		 * @return whether the event is using a relative temperature setting to the currently active program climate
 		 */
 		@JsonProperty("isTemperatureRelative")
 		public Boolean isTemperatureRelative() {
@@ -5136,8 +4867,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return whether the event uses absolute temperatures to set the
-		 *         values. Default: true for DRs
+		 * @return whether the event uses absolute temperatures to set the values. Default: true for DRs
 		 */
 		@JsonProperty("isTemperatureAbsolute")
 		public Boolean isTemperatureAbsolute() {
@@ -5153,8 +4883,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the minimum number of minutes to run the fan each hour.
-		 *         Range: 0-60, Default: 0
+		 * @return the minimum number of minutes to run the fan each hour. Range: 0-60, Default: 0
 		 */
 		@JsonProperty("fanMinOnTime")
 		public Integer getFanMinOnTime() {
@@ -5194,8 +4923,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return unique identifier set by the server to link one or more
-		 *         events and alerts together
+		 * @return unique identifier set by the server to link one or more events and alerts together
 		 */
 		@JsonProperty("linkRef")
 		public String getLinkRef() {
@@ -5203,8 +4931,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return used for display purposes to indicate what climate (if any)
-		 *         is being used for the hold
+		 * @return used for display purposes to indicate what climate (if any) is being used for the hold
 		 */
 		@JsonProperty("holdClimateRef")
 		public String getHoldClimateRef() {
@@ -5238,8 +4965,7 @@ public class Thermostat extends AbstractMessagePart {
 			builder.append("dutyCyclePercentage", this.dutyCyclePercentage);
 			builder.append("fanMinOnTime", this.fanMinOnTime);
 			builder.append("occupiedSensorActive", this.occupiedSensorActive);
-			builder.append("unoccupiedSensorActive",
-					this.unoccupiedSensorActive);
+			builder.append("unoccupiedSensorActive", this.unoccupiedSensorActive);
 			builder.append("drRampUpTemp", this.drRampUpTemp);
 			builder.append("drRampUpTime", this.drRampUpTime);
 			builder.append("linkRef", this.linkRef);
@@ -5250,18 +4976,13 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The thermostat Program is a container for the {@link #schedule} and its
-	 * {@link #climates}.
+	 * The thermostat Program is a container for the {@link #schedule} and its {@link #climates}.
 	 * 
-	 * See Core Concepts for details on how the program is structured. The
-	 * {@link #schedule} property is a two dimensional array containing the
-	 * climate names.
+	 * See Core Concepts for details on how the program is structured. The {@link #schedule} property is a two
+	 * dimensional array containing the climate names.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Program.shtml">Program</a>
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml">Core
-	 *      Concepts</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Program.shtml">Program</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml">Core Concepts</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -5288,8 +5009,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the list of {@link Climate} objects defining all the climates
-		 *         in the program schedule
+		 * @return the list of {@link Climate} objects defining all the climates in the program schedule
 		 */
 		@JsonProperty("climates")
 		public List<Climate> getClimates() {
@@ -5298,8 +5018,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param climates
-		 *            the list of {@link Climate} objects defining all the
-		 *            climates in the program schedule
+		 *            the list of {@link Climate} objects defining all the climates in the program schedule
 		 */
 		@JsonProperty("climates")
 		public void setClimates(List<Climate> climates) {
@@ -5327,39 +5046,31 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * A climate defines a thermostat settings template which is then applied to
-	 * individual period cells of the schedule. The result is that if you modify
-	 * the Climate, all schedule cells which reference that Climate will
+	 * A climate defines a thermostat settings template which is then applied to individual period cells of the
+	 * schedule. The result is that if you modify the Climate, all schedule cells which reference that Climate will
 	 * automatically be changed.
 	 * 
 	 * <p>
-	 * When adding a Climate it is optional whether you reference the new
-	 * Climate in the schedule cells in the same request or not. However, when
-	 * deleting a Climate (by omitting that entire Climate object from the POST
-	 * request) it can not be be deleted if it is still referenced in the
-	 * schedule cells.
+	 * When adding a Climate it is optional whether you reference the new Climate in the schedule cells in the same
+	 * request or not. However, when deleting a Climate (by omitting that entire Climate object from the POST request)
+	 * it can not be be deleted if it is still referenced in the schedule cells.
 	 * 
 	 * <p>
-	 * There are three default Climates for each {@link Thermostat}, with
-	 * possible <code>climateRef</code> values of "away", "home", and "sleep".
-	 * There are two default Climates for the EMS thermostat, with possible
-	 * <code>climateRef</code> values of "occupied" and "unoccupied". None of
-	 * these defaults can be deleted and trying to do so will return an
-	 * exception. The remaining fields can be modified.
+	 * There are three default Climates for each {@link Thermostat}, with possible <code>climateRef</code> values of
+	 * "away", "home", and "sleep". There are two default Climates for the EMS thermostat, with possible
+	 * <code>climateRef</code> values of "occupied" and "unoccupied". None of these defaults can be deleted and trying
+	 * to do so will return an exception. The remaining fields can be modified.
 	 * 
 	 * <p>
-	 * Climates may be modified (you can add, update or remove climates).
-	 * However, it is important to note that the <code>climateRef</code> is
-	 * required and read-only for an existing climate and cannot be changed. The
+	 * Climates may be modified (you can add, update or remove climates). However, it is important to note that the
+	 * <code>climateRef</code> is required and read-only for an existing climate and cannot be changed. The
 	 * {@link Climate#name} can be edited so long as it is unique.
 	 * 
 	 * <p>
-	 * If the <code>climateRef</code> for an existing climate is not included in
-	 * an API call it is assumed this is a net new climate. The climateRef must
-	 * always be supplied for the default climates.
+	 * If the <code>climateRef</code> for an existing climate is not included in an API call it is assumed this is a net
+	 * new climate. The climateRef must always be supplied for the default climates.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Climate.shtml">Climate</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Climate.shtml">Climate</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -5383,9 +5094,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the unique climate name. The name may be changed without
-		 *         affecting the program integrity so long as uniqueness is
-		 *         maintained.
+		 * @return the unique climate name. The name may be changed without affecting the program integrity so long as
+		 *         uniqueness is maintained.
 		 */
 		@JsonProperty("name")
 		public String getName() {
@@ -5394,9 +5104,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param name
-		 *            the unique climate name. The name may be changed without
-		 *            affecting the program integrity so long as uniqueness is
-		 *            maintained.
+		 *            the unique climate name. The name may be changed without affecting the program integrity so long
+		 *            as uniqueness is maintained.
 		 */
 		@JsonProperty("name")
 		public void setName(String name) {
@@ -5404,11 +5113,9 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the unique climate identifier. Changing the identifier is not
-		 *         possible and it is generated on the server for each climate.
-		 *         If this value is not supplied a new climate will be created.
-		 *         For the default climates and existing user created climates
-		 *         the climateRef should be supplied - see note above.
+		 * @return the unique climate identifier. Changing the identifier is not possible and it is generated on the
+		 *         server for each climate. If this value is not supplied a new climate will be created. For the default
+		 *         climates and existing user created climates the climateRef should be supplied - see note above.
 		 */
 		@JsonProperty("climateRef")
 		public String getClimateRef() {
@@ -5416,8 +5123,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return a flag indicating whether the property is occupied by persons
-		 *         during this climate
+		 * @return a flag indicating whether the property is occupied by persons during this climate
 		 */
 		@JsonProperty("isOccupied")
 		public Boolean isOccupied() {
@@ -5426,8 +5132,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param isOccupied
-		 *            a flag indicating whether the property is occupied by
-		 *            persons during this climate
+		 *            a flag indicating whether the property is occupied by persons during this climate
 		 */
 		@JsonProperty("isOccupied")
 		public void setIsOccupied(Boolean isOccupied) {
@@ -5435,8 +5140,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return a flag indicating whether ecobee optimized climate settings
-		 *         are used by this climate
+		 * @return a flag indicating whether ecobee optimized climate settings are used by this climate
 		 */
 		@JsonProperty("isOptimized")
 		public Boolean isOptimized() {
@@ -5445,8 +5149,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param isOptimized
-		 *            a flag indicating whether ecobee optimized climate
-		 *            settings are used by this climate
+		 *            a flag indicating whether ecobee optimized climate settings are used by this climate
 		 */
 		@JsonProperty("isOptimized")
 		public void setIsOptimized(Boolean isOptimized) {
@@ -5488,8 +5191,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the ventilator mode. Default: off Values: auto, minontime,
-		 *         on, off
+		 * @return the ventilator mode. Default: off Values: auto, minontime, on, off
 		 */
 		@JsonProperty("vent")
 		public VentilatorMode getVent() {
@@ -5498,8 +5200,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param vent
-		 *            the ventilator mode. Default: off Values: auto, minontime,
-		 *            on, off
+		 *            the ventilator mode. Default: off Values: auto, minontime, on, off
 		 */
 		@JsonProperty("vent")
 		public void setVent(VentilatorMode vent) {
@@ -5516,8 +5217,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param ventilatorMinOnTime
-		 *            the minimum time, in minutes, to run the ventilator each
-		 *            hour
+		 *            the minimum time, in minutes, to run the ventilator each hour
 		 */
 		@JsonProperty("ventilatorMinOnTime")
 		public void setVentilatorMinOnTime(Integer ventilatorMinOnTime) {
@@ -5525,9 +5225,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the climate owner. Default: system Values: adHoc,
-		 *         demandResponse, quickSave, sensorAction, switchOccupancy,
-		 *         system, template, user
+		 * @return the climate owner. Default: system Values: adHoc, demandResponse, quickSave, sensorAction,
+		 *         switchOccupancy, system, template, user
 		 */
 		@JsonProperty("owner")
 		public String getOwner() {
@@ -5536,9 +5235,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param owner
-		 *            the climate owner. Default: system Values: adHoc,
-		 *            demandResponse, quickSave, sensorAction, switchOccupancy,
-		 *            system, template, user
+		 *            the climate owner. Default: system Values: adHoc, demandResponse, quickSave, sensorAction,
+		 *            switchOccupancy, system, template, user
 		 */
 		@JsonProperty("owner")
 		public void setOwner(String owner) {
@@ -5546,8 +5244,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the type of climate. Default: program Values: calendarEvent,
-		 *         program
+		 * @return the type of climate. Default: program Values: calendarEvent, program
 		 */
 		@JsonProperty("type")
 		public String getType() {
@@ -5556,8 +5253,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param type
-		 *            the type of climate. Default: program Values:
-		 *            calendarEvent, program
+		 *            the type of climate. Default: program Values: calendarEvent, program
 		 */
 		@JsonProperty("type")
 		public void setType(String type) {
@@ -5565,8 +5261,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the integer conversion of the HEX color value used to display
-		 *         this climate on the thermostat and on the web portal
+		 * @return the integer conversion of the HEX color value used to display this climate on the thermostat and on
+		 *         the web portal
 		 */
 		@JsonProperty("colour")
 		public Integer getColour() {
@@ -5575,9 +5271,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param colour
-		 *            the integer conversion of the HEX color value used to
-		 *            display this climate on the thermostat and on the web
-		 *            portal
+		 *            the integer conversion of the HEX color value used to display this climate on the thermostat and
+		 *            on the web portal
 		 */
 		@JsonProperty("colour")
 		public void setColour(Integer colour) {
@@ -5641,8 +5336,7 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The HouseDetails object contains the information about the house the
-	 * thermostat is installed in.
+	 * The HouseDetails object contains the information about the house the thermostat is installed in.
 	 * 
 	 * @see <a
 	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/HouseDetails.shtml">HouseDetails</a>
@@ -5658,9 +5352,8 @@ public class Thermostat extends AbstractMessagePart {
 		private Integer age;
 
 		/**
-		 * @return the style of house. Values: other, apartment, condominium,
-		 *         detached, loft, multiPlex, rowHouse, semiDetached, townhouse,
-		 *         and 0 for unknown
+		 * @return the style of house. Values: other, apartment, condominium, detached, loft, multiPlex, rowHouse,
+		 *         semiDetached, townhouse, and 0 for unknown
 		 */
 		@JsonProperty("style")
 		public String getStyle() {
@@ -5669,9 +5362,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param style
-		 *            the style of house. Values: other, apartment, condominium,
-		 *            detached, loft, multiPlex, rowHouse, semiDetached,
-		 *            townhouse, and 0 for unknown
+		 *            the style of house. Values: other, apartment, condominium, detached, loft, multiPlex, rowHouse,
+		 *            semiDetached, townhouse, and 0 for unknown
 		 */
 		@JsonProperty("style")
 		public void setStyle(String style) {
@@ -5796,26 +5488,21 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The Thermostat NotificationSettings object is a container for the
-	 * configuration of the possible alerts and reminders which can be generated
-	 * by the Thermostat.
+	 * The Thermostat NotificationSettings object is a container for the configuration of the possible alerts and
+	 * reminders which can be generated by the Thermostat.
 	 * 
 	 * <p>
-	 * The NotificationsSettings supports retrieval through a Thermostat GET
-	 * call, setting the <code>includeNotificationSettings</code> to
-	 * <code>true</code> in the {@link Selection}.
+	 * The NotificationsSettings supports retrieval through a Thermostat GET call, setting the
+	 * <code>includeNotificationSettings</code> to <code>true</code> in the {@link Selection}.
 	 * 
 	 * <p>
-	 * The NotificationsSettings object can also be updated using the Thermostat
-	 * POST method. When POSTing updates to this object please take a note of
-	 * the required fields, allowed values, and notes about the email address
-	 * below.
+	 * The NotificationsSettings object can also be updated using the Thermostat POST method. When POSTing updates to
+	 * this object please take a note of the required fields, allowed values, and notes about the email address below.
 	 * 
 	 * <p>
-	 * The type corresponds to the {@link Alert#notificationType} returned when
-	 * alerts are included in the selection. See {@link Alert} for more
-	 * information. When the type is anything other than alert its configuration
-	 * will be listed here as part of the NotificationSettings.
+	 * The type corresponds to the {@link Alert#notificationType} returned when alerts are included in the selection.
+	 * See {@link Alert} for more information. When the type is anything other than alert its configuration will be
+	 * listed here as part of the NotificationSettings.
 	 * 
 	 * @see <a
 	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/NotificationSettings.shtml">NotificationSettings</a>
@@ -5830,8 +5517,7 @@ public class Thermostat extends AbstractMessagePart {
 		private List<LimitSetting> limit;
 
 		/**
-		 * @return the list of email addresses alerts and reminders will be sent
-		 *         to.
+		 * @return the list of email addresses alerts and reminders will be sent to.
 		 */
 		@JsonProperty("emailAddresses")
 		public List<String> getEmailAddresses() {
@@ -5840,11 +5526,9 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param emailAddresses
-		 *            the list of email addresses alerts and reminders will be
-		 *            sent to. The full list of email addresses must be sent in
-		 *            any update request. If any are missing from that list they
-		 *            will be deleted. If an empty list is sent, any email
-		 *            addresses will be deleted.
+		 *            the list of email addresses alerts and reminders will be sent to. The full list of email addresses
+		 *            must be sent in any update request. If any are missing from that list they will be deleted. If an
+		 *            empty list is sent, any email addresses will be deleted.
 		 */
 		@JsonProperty("emailAddresses")
 		public void setEmailAddresses(List<String> emailAddresses) {
@@ -5852,9 +5536,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return boolean value representing whether or not alerts and
-		 *         reminders will be sent to the email addresses listed above
-		 *         when triggered
+		 * @return boolean value representing whether or not alerts and reminders will be sent to the email addresses
+		 *         listed above when triggered
 		 */
 		@JsonProperty("emailNotificationsEnabled")
 		public Boolean getEmailNotificationsEnabled() {
@@ -5863,13 +5546,11 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param emailNotificationsEnabled
-		 *            boolean value representing whether or not alerts and
-		 *            reminders will be sent to the email addresses listed above
-		 *            when triggered
+		 *            boolean value representing whether or not alerts and reminders will be sent to the email addresses
+		 *            listed above when triggered
 		 */
 		@JsonProperty("emailNotificationsEnabled")
-		public void setEmailNotificationsEnabled(
-				Boolean emailNotificationsEnabled) {
+		public void setEmailNotificationsEnabled(Boolean emailNotificationsEnabled) {
 			this.emailNotificationsEnabled = emailNotificationsEnabled;
 		}
 
@@ -5929,8 +5610,7 @@ public class Thermostat extends AbstractMessagePart {
 			final ToStringBuilder builder = createToStringBuilder();
 			builder.appendSuper(super.toString());
 			builder.append("emailAddresses", this.emailAddresses);
-			builder.append("emailNotificationsEnabled",
-					this.emailNotificationsEnabled);
+			builder.append("emailNotificationsEnabled", this.emailNotificationsEnabled);
 			builder.append("equipment", this.equipment);
 			builder.append("general", this.general);
 			builder.append("limit", this.limit);
@@ -5940,20 +5620,17 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The EquipmentSetting object represents the alert/reminder type which is
-	 * associated with and dependent upon specific equipment controlled by the
-	 * Thermostat. It is used when getting/setting the Thermostat
+	 * The EquipmentSetting object represents the alert/reminder type which is associated with and dependent upon
+	 * specific equipment controlled by the Thermostat. It is used when getting/setting the Thermostat
 	 * NotificationSettings object.
 	 * 
 	 * <p>
-	 * Note: Only the notification settings for the equipment/devices currently
-	 * controlled by the Thermostat are returned during GET request, and only
-	 * those same settings can be updated using the POST request.
+	 * Note: Only the notification settings for the equipment/devices currently controlled by the Thermostat are
+	 * returned during GET request, and only those same settings can be updated using the POST request.
 	 * 
 	 * <p>
-	 * The type corresponds to the {@link Alert#notificationType} returned when
-	 * alerts are also included in the selection. See {@link Alert} for more
-	 * information.
+	 * The type corresponds to the {@link Alert#notificationType} returned when alerts are also included in the
+	 * selection. See {@link Alert} for more information.
 	 * 
 	 * @see <a
 	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/EquipmentSetting.shtml">EquipmentSetting</a>
@@ -5974,8 +5651,7 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the date the filter was last changed for this equipment.
-		 *         String format: YYYY-MM-DD
+		 * @return the date the filter was last changed for this equipment. String format: YYYY-MM-DD
 		 */
 		@JsonProperty("filterLastChanged")
 		public String getFilterLastChanged() {
@@ -5984,8 +5660,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param filterLastChanged
-		 *            the date the filter was last changed for this equipment.
-		 *            String format: YYYY-MM-DD
+		 *            the date the filter was last changed for this equipment. String format: YYYY-MM-DD
 		 */
 		@JsonProperty("filterLastChanged")
 		public void setFilterLastChanged(String filterLastChanged) {
@@ -5993,9 +5668,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the value representing the life of the filter. This value is
-		 *         expressed in month or hour, which is specified in the the
-		 *         {@link #filterLifeUnits} property.
+		 * @return the value representing the life of the filter. This value is expressed in month or hour, which is
+		 *         specified in the the {@link #filterLifeUnits} property.
 		 */
 		@JsonProperty("filterLife")
 		public Integer getFilterLife() {
@@ -6004,9 +5678,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param filterLife
-		 *            the value representing the life of the filter. This value
-		 *            is expressed in month or hour, which is specified in the
-		 *            the {@link #filterLifeUnits} property.
+		 *            the value representing the life of the filter. This value is expressed in month or hour, which is
+		 *            specified in the the {@link #filterLifeUnits} property.
 		 */
 		@JsonProperty("filterLife")
 		public void setFilterLife(Integer filterLife) {
@@ -6014,9 +5687,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the units the {@link #filterLife} field is measured in.
-		 *         Possible values are: month, hour. month has a range of 1 -
-		 *         12. hour has a range of 100 - 1000.
+		 * @return the units the {@link #filterLife} field is measured in. Possible values are: month, hour. month has a
+		 *         range of 1 - 12. hour has a range of 100 - 1000.
 		 */
 		@JsonProperty("filterLifeUnits")
 		public String getFilterLifeUnits() {
@@ -6025,9 +5697,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param filterLifeUnits
-		 *            the units the {@link #filterLife} field is measured in.
-		 *            Possible values are: month, hour. month has a range of 1 -
-		 *            12. hour has a range of 100 - 1000.
+		 *            the units the {@link #filterLife} field is measured in. Possible values are: month, hour. month
+		 *            has a range of 1 - 12. hour has a range of 100 - 1000.
 		 */
 		@JsonProperty("filterLifeUnits")
 		public void setFilterLifeUnits(String filterLifeUnits) {
@@ -6035,9 +5706,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the date the reminder will be triggered. This is a read-only
-		 *         field and cannot be modified through the API. The value is
-		 *         calculated and set by the thermostat.
+		 * @return the date the reminder will be triggered. This is a read-only field and cannot be modified through the
+		 *         API. The value is calculated and set by the thermostat.
 		 */
 		@JsonProperty("remindMeDate")
 		public String getRemindMeDate() {
@@ -6045,8 +5715,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return boolean value representing whether or not alerts/reminders
-		 *         are enabled for this notification type or not
+		 * @return boolean value representing whether or not alerts/reminders are enabled for this notification type or
+		 *         not
 		 */
 		@JsonProperty("enabled")
 		public Boolean isEnabled() {
@@ -6055,8 +5725,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param enabled
-		 *            boolean value representing whether or not alerts/reminders
-		 *            are enabled for this notification type or not
+		 *            boolean value representing whether or not alerts/reminders are enabled for this notification type
+		 *            or not
 		 */
 		@JsonProperty("enabled")
 		public void setEnabled(Boolean enabled) {
@@ -6064,9 +5734,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return boolean value representing whether or not alerts/reminders
-		 *         should be sent to the technician/contractor associated with
-		 *         the thermostat
+		 * @return boolean value representing whether or not alerts/reminders should be sent to the
+		 *         technician/contractor associated with the thermostat
 		 */
 		@JsonProperty("remindTechnician")
 		public Boolean getRemindTechnician() {
@@ -6075,9 +5744,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param remindTechnician
-		 *            boolean value representing whether or not alerts/reminders
-		 *            should be sent to the technician/contractor associated
-		 *            with the thermostat.
+		 *            boolean value representing whether or not alerts/reminders should be sent to the
+		 *            technician/contractor associated with the thermostat.
 		 */
 		@JsonProperty("remindTechnician")
 		public void setRemindTechnician(Boolean remindTechnician) {
@@ -6085,9 +5753,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the type of notification. Possible values are: hvac,
-		 *         furnaceFilter, humidifierFilter, dehumidifierFilter,
-		 *         ventilator, ac, airFilter, airCleaner, uvLamp
+		 * @return the type of notification. Possible values are: hvac, furnaceFilter, humidifierFilter,
+		 *         dehumidifierFilter, ventilator, ac, airFilter, airCleaner, uvLamp
 		 */
 		@JsonProperty("type")
 		public String getType() {
@@ -6111,14 +5778,12 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The GeneralSetting object represent the General alert/reminder type. It
-	 * is used when getting/setting the Thermostat {@link NotificationSettings}
-	 * object.
+	 * The GeneralSetting object represent the General alert/reminder type. It is used when getting/setting the
+	 * Thermostat {@link NotificationSettings} object.
 	 * 
 	 * <p>
-	 * The <code>type</code> corresponds to the {@link Alert#notificationType}
-	 * returned when alerts are included in the selection. See {@link Alert} for
-	 * more information.
+	 * The <code>type</code> corresponds to the {@link Alert#notificationType} returned when alerts are included in the
+	 * selection. See {@link Alert} for more information.
 	 * 
 	 * @see <a
 	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/GeneralSetting.shtml">GeneralSetting</a>
@@ -6139,8 +5804,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return boolean value representing whether or not alerts/reminders
-		 *         are enabled for this notification type or not
+		 * @return boolean value representing whether or not alerts/reminders are enabled for this notification type or
+		 *         not
 		 */
 		@JsonProperty("enabled")
 		public Boolean isEnabled() {
@@ -6149,8 +5814,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param enabled
-		 *            boolean value representing whether or not alerts/reminders
-		 *            are enabled for this notification type or not
+		 *            boolean value representing whether or not alerts/reminders are enabled for this notification type
+		 *            or not
 		 */
 		@JsonProperty("enabled")
 		public void setEnabled(Boolean enabled) {
@@ -6158,9 +5823,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return boolean value representing whether or not alerts/reminders
-		 *         should be sent to the technician/contractor associated with
-		 *         the thermostat
+		 * @return boolean value representing whether or not alerts/reminders should be sent to the
+		 *         technician/contractor associated with the thermostat
 		 */
 		@JsonProperty("remindTechnician")
 		public Boolean getRemindTechnician() {
@@ -6169,9 +5833,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param remindTechnician
-		 *            boolean value representing whether or not alerts/reminders
-		 *            should be sent to the technician/contractor associated
-		 *            with the thermostat
+		 *            boolean value representing whether or not alerts/reminders should be sent to the
+		 *            technician/contractor associated with the thermostat
 		 */
 		@JsonProperty("remindTechnician")
 		public void setRemindTechnician(Boolean remindTechnician) {
@@ -6199,13 +5862,11 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The LimitSetting object represents the alert/reminder type which is
-	 * associated specific values, such as highHeat or lowHumidity. It is used
-	 * when getting/setting the Thermostat NotificationSettings object.
+	 * The LimitSetting object represents the alert/reminder type which is associated specific values, such as highHeat
+	 * or lowHumidity. It is used when getting/setting the Thermostat NotificationSettings object.
 	 * 
-	 * The type corresponds to the {@link Alert#notificationType} returned when
-	 * alerts are also included in the selection. See {@link Alert} for more
-	 * information.
+	 * The type corresponds to the {@link Alert#notificationType} returned when alerts are also included in the
+	 * selection. See {@link Alert} for more information.
 	 * 
 	 * @see <a
 	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/LimitSetting.shtml">LimitSetting</a>
@@ -6220,18 +5881,17 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param type
-		 *            the type of notification. Possible values are: lowTemp,
-		 *            highTemp, lowHumidity, highHumidity, auxHeat, auxOutdoor
+		 *            the type of notification. Possible values are: lowTemp, highTemp, lowHumidity, highHumidity,
+		 *            auxHeat, auxOutdoor
 		 */
 		public LimitSetting(@JsonProperty("type") String type) {
 			this.type = type;
 		}
 
 		/**
-		 * @return the value of the limit to set. For temperatures the value is
-		 *         expressed as degrees Fahrenheit, multipled by 10. For
-		 *         humidity values are expressed as a percentage from 5 to 95.
-		 *         See here for more information.
+		 * @return the value of the limit to set. For temperatures the value is expressed as degrees Fahrenheit,
+		 *         multipled by 10. For humidity values are expressed as a percentage from 5 to 95. See here for more
+		 *         information.
 		 */
 		@JsonProperty("limit")
 		public Integer getLimit() {
@@ -6240,10 +5900,9 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param limit
-		 *            the value of the limit to set. For temperatures the value
-		 *            is expressed as degrees Fahrenheit, multipled by 10. For
-		 *            humidity values are expressed as a percentage from 5 to
-		 *            95. See here for more information.
+		 *            the value of the limit to set. For temperatures the value is expressed as degrees Fahrenheit,
+		 *            multipled by 10. For humidity values are expressed as a percentage from 5 to 95. See here for more
+		 *            information.
 		 */
 		@JsonProperty("limit")
 		public void setLimit(Integer limit) {
@@ -6251,8 +5910,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return boolean value representing whether or not alerts/reminders
-		 *         are enabled for this notification type or not
+		 * @return boolean value representing whether or not alerts/reminders are enabled for this notification type or
+		 *         not
 		 */
 		@JsonProperty("enabled")
 		public Boolean isEnabled() {
@@ -6261,8 +5920,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param enabled
-		 *            boolean value representing whether or not alerts/reminders
-		 *            are enabled for this notification type or not
+		 *            boolean value representing whether or not alerts/reminders are enabled for this notification type
+		 *            or not
 		 */
 		@JsonProperty("enabled")
 		public void setEnabled(Boolean enabled) {
@@ -6270,9 +5929,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return boolean value representing whether or not alerts/reminders
-		 *         should be sent to the technician/contractor associated with
-		 *         the thermostat
+		 * @return boolean value representing whether or not alerts/reminders should be sent to the
+		 *         technician/contractor associated with the thermostat
 		 */
 		@JsonProperty("remindTechnician")
 		public Boolean getRemindTechnician() {
@@ -6281,9 +5939,8 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @param remindTechnician
-		 *            boolean value representing whether or not alerts/reminders
-		 *            should be sent to the technician/contractor associated
-		 *            with the thermostat
+		 *            boolean value representing whether or not alerts/reminders should be sent to the
+		 *            technician/contractor associated with the thermostat
 		 */
 		@JsonProperty("remindTechnician")
 		public void setRemindTechnician(Boolean remindTechnician) {
@@ -6291,8 +5948,8 @@ public class Thermostat extends AbstractMessagePart {
 		}
 
 		/**
-		 * @return the type of notification. Possible values are: lowTemp,
-		 *         highTemp, lowHumidity, highHumidity, auxHeat, auxOutdoor
+		 * @return the type of notification. Possible values are: lowTemp, highTemp, lowHumidity, highHumidity, auxHeat,
+		 *         auxOutdoor
 		 */
 		@JsonProperty("type")
 		public String getType() {
@@ -6313,9 +5970,8 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * The ThermostatPrivacy object containing the privacy settings for the
-	 * Thermostat. Note: access to this object is restricted to callers with
-	 * implicit authentication.
+	 * The ThermostatPrivacy object containing the privacy settings for the Thermostat. Note: access to this object is
+	 * restricted to callers with implicit authentication.
 	 * 
 	 * @author John Cocula
 	 */
@@ -6334,8 +5990,7 @@ public class Thermostat extends AbstractMessagePart {
 	/**
 	 * The Version object contains version information about the thermostat.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Version.shtml">Version</a>
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Version.shtml">Version</a>
 	 * @author John Cocula
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -6354,8 +6009,7 @@ public class Thermostat extends AbstractMessagePart {
 		public String toString() {
 			final ToStringBuilder builder = createToStringBuilder();
 			builder.appendSuper(super.toString());
-			builder.append("thermostatFirmwareVersion",
-					this.thermostatFirmwareVersion);
+			builder.append("thermostatFirmwareVersion", this.thermostatFirmwareVersion);
 
 			return builder.toString();
 		}

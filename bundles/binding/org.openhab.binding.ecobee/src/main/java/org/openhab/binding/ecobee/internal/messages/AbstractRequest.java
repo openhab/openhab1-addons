@@ -22,8 +22,7 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
  * @author John Cocula
  * @since 1.7.0
  */
-public abstract class AbstractRequest extends AbstractMessage implements
-		Request {
+public abstract class AbstractRequest extends AbstractMessage implements Request {
 
 	protected static final String HTTP_GET = "GET";
 
@@ -41,20 +40,18 @@ public abstract class AbstractRequest extends AbstractMessage implements
 		HTTP_HEADERS = new Properties();
 		HTTP_HEADERS.put("Content-Type", "application/json;charset=UTF-8");
 		HTTP_HEADERS.put("User-Agent", "ecobee-openhab-api/1.0");
-		
+
 		// do not serialize null values
 		JSON.setSerializationInclusion(Inclusion.NON_NULL);
-		
+
 		// *most* dates in the JSON are in this format
 		JSON.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 	}
 
-	protected final RuntimeException newException(
-			final String message, final Exception cause,
-			final String url, final String json) {
+	protected final RuntimeException newException(final String message, final Exception cause, final String url,
+			final String json) {
 		if (cause instanceof JsonMappingException) {
-			return new EcobeeException("Could not parse JSON from URL '"
-					+ url + "': " + json, cause);
+			return new EcobeeException("Could not parse JSON from URL '" + url + "': " + json, cause);
 		}
 
 		return new EcobeeException(message, cause);

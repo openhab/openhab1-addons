@@ -19,27 +19,31 @@ import org.codehaus.jackson.annotate.JsonValue;
  * @since 1.7.0
  */
 public enum FanMode {
-	AUTO("auto"),
-	ON("on");
-	
+	AUTO("auto"), ON("on");
+
 	private final String mode;
-	
-	private FanMode(final String mode) { this.mode = mode; }
-	@JsonValue public String value() { return mode; }
-	
+
+	private FanMode(final String mode) {
+		this.mode = mode;
+	}
+
+	@JsonValue
+	public String value() {
+		return mode;
+	}
+
 	@JsonCreator
 	public static FanMode forValue(String v) {
-	    for (FanMode fm : FanMode.values()) {
-	        if (fm.mode.equals(v)) {
-	            return fm;
-	        }
-	    }
-	    throw new IllegalArgumentException("Invalid fan mode: " + v);
+		for (FanMode fm : FanMode.values()) {
+			if (fm.mode.equals(v)) {
+				return fm;
+			}
+		}
+		throw new IllegalArgumentException("Invalid fan mode: " + v);
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.mode;
 	}
 }
-

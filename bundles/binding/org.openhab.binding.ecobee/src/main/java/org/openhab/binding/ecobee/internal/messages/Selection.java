@@ -18,14 +18,12 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonValue;
 
 /**
- * The selection object defines the resources and information to return as part
- * of a response. The selection is required in all requests however meaning of
- * some selection fields is only meaningful to certain types of requests.
+ * The selection object defines the resources and information to return as part of a response. The selection is required
+ * in all requests however meaning of some selection fields is only meaningful to certain types of requests.
  * 
  * <p>
- * The <code>selectionType</code> parameter defines the type of selection to
- * perform. The <code>selectionMatch</code> specifies the matching criteria for
- * the type specified.
+ * The <code>selectionType</code> parameter defines the type of selection to perform. The <code>selectionMatch</code>
+ * specifies the matching criteria for the type specified.
  * 
  * <table>
  * <tr>
@@ -38,30 +36,27 @@ import org.codehaus.jackson.annotate.JsonValue;
  * <td>registered</td>
  * <td>Smart only.</td>
  * <td>match is not used.</td>
- * <td>When this is set the thermostats registered to the current user will be
- * returned. This is only usable with Smart thermostats registered to a user. It
- * does not work on EMS thermostats and may not be used by a Utility who is not
- * the owner of thermostats.</td>
+ * <td>When this is set the thermostats registered to the current user will be returned. This is only usable with Smart
+ * thermostats registered to a user. It does not work on EMS thermostats and may not be used by a Utility who is not the
+ * owner of thermostats.</td>
  * </tr>
  * <tr>
  * <td>thermostats</td>
  * <td>All accounts</td>
  * <td>identifier1,identifier2,etc...</td>
- * <td>Select only those thermostats listed in the CSV match criteria. No spaces
- * in the CSV string. There is a limit of 25 identifiers per request.</td>
+ * <td>Select only those thermostats listed in the CSV match criteria. No spaces in the CSV string. There is a limit of
+ * 25 identifiers per request.</td>
  * </tr>
  * <tr>
  * <td>managementSet</td>
  * <td>EMS/Utility only.</td>
  * <td>/Toronto/Campus/BuildingA</td>
- * <td>Selects all thermostats for a given management set defined by the
- * Management/Utility account. This is only available to Management/Utility
- * accounts. "/" is the root, represented by the "My Sets" set.</td>
+ * <td>Selects all thermostats for a given management set defined by the Management/Utility account. This is only
+ * available to Management/Utility accounts. "/" is the root, represented by the "My Sets" set.</td>
  * </tr>
  * </table>
  * 
- * @see <a
- *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Selection.shtml">Selection</a>
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Selection.shtml">Selection</a>
  * @author John Cocula
  * @author Ecobee
  * @since 1.7.0
@@ -96,8 +91,7 @@ public class Selection extends AbstractMessagePart {
 	/**
 	 * The <code>SelectionType</code> defines the type of selection to perform.
 	 * 
-	 * @see <a
-	 *      href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Selection.shtml">Selection
+	 * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Selection.shtml">Selection
 	 *      Object</a>
 	 * @author John Cocula
 	 * @author Ecobee
@@ -113,9 +107,8 @@ public class Selection extends AbstractMessagePart {
 		 * All accounts.
 		 * 
 		 * <p>
-		 * Select only those thermostats listed in the CSV match criteria. No
-		 * spaces in the CSV string. There is a limit of 25 identifiers per
-		 * request.
+		 * Select only those thermostats listed in the CSV match criteria. No spaces in the CSV string. There is a limit
+		 * of 25 identifiers per request.
 		 */
 		THERMOSTATS("thermostats"),
 
@@ -123,10 +116,9 @@ public class Selection extends AbstractMessagePart {
 		 * Smart only.
 		 * 
 		 * <p>
-		 * When this is set the thermostats registered to the current user will
-		 * be returned. This is only usable with Smart thermostats registered to
-		 * a user. It does not work on EMS thermostats and may not be used by a
-		 * Utility who is not the owner of thermostats.
+		 * When this is set the thermostats registered to the current user will be returned. This is only usable with
+		 * Smart thermostats registered to a user. It does not work on EMS thermostats and may not be used by a Utility
+		 * who is not the owner of thermostats.
 		 */
 		REGISTERED("registered"),
 
@@ -139,10 +131,8 @@ public class Selection extends AbstractMessagePart {
 		 * EMS/Utility only.
 		 * 
 		 * <p>
-		 * Selects all thermostats for a given management set defined by the
-		 * Management/Utility account. This is only available to
-		 * Management/Utility accounts. "/" is the root, represented by the
-		 * "My Sets" set.
+		 * Selects all thermostats for a given management set defined by the Management/Utility account. This is only
+		 * available to Management/Utility accounts. "/" is the root, represented by the "My Sets" set.
 		 */
 		MANAGEMENT_SET("managementSet");
 
@@ -170,8 +160,7 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * Give a selectionMatch string, infer what kind of selectionType should be
-	 * used.
+	 * Give a selectionMatch string, infer what kind of selectionType should be used.
 	 * 
 	 * @param selectionMatch
 	 *            the match string to inspect
@@ -191,21 +180,19 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * Return <code>true</code> if the given string matches the known format for
-	 * thermostat identifiers.
+	 * Return <code>true</code> if the given string matches the known format for thermostat identifiers.
 	 * 
-	 * @param thermostatIdentifier the string to test
-	 * @return <code>true</code> if the given string matches the known format
-	 *         for thermostat identifiers.
+	 * @param thermostatIdentifier
+	 *            the string to test
+	 * @return <code>true</code> if the given string matches the known format for thermostat identifiers.
 	 */
 	public static boolean isThermostatIdentifier(String thermostatIdentifier) {
 		return thermostatIdentifier.matches("[0-9]+");
 	}
 
 	/**
-	 * Construct a Selection object using a single <code>selectionMatch</code>,
-	 * and inferring the <code>selectionType</code> from the
-	 * <code>selectionMatch</code>.
+	 * Construct a Selection object using a single <code>selectionMatch</code>, and inferring the
+	 * <code>selectionType</code> from the <code>selectionMatch</code>.
 	 * 
 	 * @param selectionMatch
 	 *            based on the syntax, infer the selectionType
@@ -222,8 +209,7 @@ public class Selection extends AbstractMessagePart {
 	 *            the type of match data supplied.
 	 * @param selectionMatch
 	 */
-	public Selection(
-			@JsonProperty("selectionType") final SelectionType selectionType,
+	public Selection(@JsonProperty("selectionType") final SelectionType selectionType,
 			@JsonProperty("selectionMatch") final String selectionMatch) {
 		this.selectionType = selectionType;
 		this.selectionMatch = selectionMatch;
@@ -247,8 +233,8 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the match data based on selectionType (e.g. a list of thermostat
-	 *         identifiers in the case of a selectionType of thermostats)
+	 * @return the match data based on selectionType (e.g. a list of thermostat identifiers in the case of a
+	 *         selectionType of thermostats)
 	 */
 	@JsonProperty("selectionMatch")
 	public String getSelectionMatch() {
@@ -257,8 +243,7 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param selectionMatch
-	 *            the match data based on selectionType (e.g. a list of
-	 *            thermostat identifiers in the case of a
+	 *            the match data based on selectionType (e.g. a list of thermostat identifiers in the case of a
 	 *            <code>selectionType</code> of <code>"thermostats"</code>)
 	 */
 	@JsonProperty("selectionMatch")
@@ -268,10 +253,8 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param thermostatIdentifiers
-	 *            set a list of thermostat identifiers as the
-	 *            <code>selectionMatch</code> and set the
-	 *            <code>selectionType</code> to
-	 *            {@code SelectionType.THERMOSTATS}.
+	 *            set a list of thermostat identifiers as the <code>selectionMatch</code> and set the
+	 *            <code>selectionType</code> to {@code SelectionType.THERMOSTATS}.
 	 */
 	public void setSelectionMatch(final Set<String> thermostatIdentifiers) {
 		this.selectionType = SelectionType.THERMOSTATS;
@@ -279,8 +262,7 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the {@link Thermostat.Runtime} object. If not specified,
-	 *         defaults to <code>false</code>.
+	 * @return include the {@link Thermostat.Runtime} object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeRuntime")
 	public Boolean getIncludeRuntime() {
@@ -289,8 +271,8 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeRuntime
-	 *            include the thermostat {@link Thermostat.Runtime} object. If
-	 *            not specified, defaults to <code>false</code>.
+	 *            include the thermostat {@link Thermostat.Runtime} object. If not specified, defaults to
+	 *            <code>false</code>.
 	 */
 	@JsonProperty("includeRuntime")
 	public void setIncludeRuntime(final Boolean includeRuntime) {
@@ -298,8 +280,7 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the extended thermostat runtime object. If not specified,
-	 *         defaults to <code>false</code>.
+	 * @return include the extended thermostat runtime object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeExtendedRuntime")
 	public Boolean getIncludeExtendedRuntime() {
@@ -308,8 +289,8 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeExtendedRuntime
-	 *            include the @{link Thermostat.ExtendedRuntime} object. If not
-	 *            specified, defaults to <code>false</code>.
+	 *            include the @{link Thermostat.ExtendedRuntime} object. If not specified, defaults to
+	 *            <code>false</code>.
 	 */
 	@JsonProperty("includeExtendedRuntime")
 	public void setIncludeExtendedRuntime(final Boolean includeExtendedRuntime) {
@@ -317,8 +298,8 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the {@link Thermostat.Electricity} readings object. If
-	 *         not specified, defaults to <code>false</code>.
+	 * @return include the {@link Thermostat.Electricity} readings object. If not specified, defaults to
+	 *         <code>false</code>.
 	 */
 	@JsonProperty("includeElectricity")
 	public Boolean getIncludeElectricity() {
@@ -327,8 +308,8 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeElectricity
-	 *            include the {@link Thermostat.Electricity} readings object. If
-	 *            not specified, defaults to <code>false</code>.
+	 *            include the {@link Thermostat.Electricity} readings object. If not specified, defaults to
+	 *            <code>false</code>.
 	 */
 	@JsonProperty("includeElectricity")
 	public void setIncludeElectricity(final Boolean includeElectricity) {
@@ -336,8 +317,7 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the {@link Thermostat.Settings} object. If not specified,
-	 *         defaults to <code>false</code>.
+	 * @return include the {@link Thermostat.Settings} object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeSettings")
 	public Boolean getIncludeSettings() {
@@ -346,8 +326,7 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeSettings
-	 *            include the {@link Thermostat.Settings} object. If not
-	 *            specified, defaults to <code>false</code>.
+	 *            include the {@link Thermostat.Settings} object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeSettings")
 	public void setIncludeSettings(final Boolean includeSettings) {
@@ -355,8 +334,7 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the {@link Thermostat.Location} object. If not specified,
-	 *         defaults to <code>false</code>.
+	 * @return include the {@link Thermostat.Location} object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeLocation")
 	public Boolean getIncludeLocation() {
@@ -365,8 +343,7 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeLocation
-	 *            include the {@link Thermostat.Location} object. If not
-	 *            specified, defaults to <code>false</code>.
+	 *            include the {@link Thermostat.Location} object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeLocation")
 	public void setIncludeLocation(final Boolean includeLocation) {
@@ -374,8 +351,7 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the {@link Thermostat.Program} object. If not specified,
-	 *         defaults to <code>false</code>.
+	 * @return include the {@link Thermostat.Program} object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeProgram")
 	public Boolean getIncludeProgram() {
@@ -384,8 +360,7 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeProgram
-	 *            include the {@link Thermostat.Program} object. If not
-	 *            specified, defaults to <code>false</code>.
+	 *            include the {@link Thermostat.Program} object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeProgram")
 	public void setIncludeProgram(final Boolean includeProgram) {
@@ -393,8 +368,7 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the {@link Thermostat.Event}s calendar objects. If not
-	 *         specified, defaults to <code>false</code>.
+	 * @return include the {@link Thermostat.Event}s calendar objects. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeEvents")
 	public Boolean getIncludeEvents() {
@@ -403,8 +377,8 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeEvents
-	 *            include the {@link Thermostat.Event}s calendar objects. If not
-	 *            specified, defaults to <code>false</code>.
+	 *            include the {@link Thermostat.Event}s calendar objects. If not specified, defaults to
+	 *            <code>false</code>.
 	 */
 	@JsonProperty("includeEvents")
 	public void setIncludeEvents(final Boolean includeEvents) {
@@ -412,8 +386,8 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the {@link Thermostat.Device} configuration objects. If
-	 *         not specified, defaults to <code>false</code>.
+	 * @return include the {@link Thermostat.Device} configuration objects. If not specified, defaults to
+	 *         <code>false</code>.
 	 */
 	@JsonProperty("includeDevice")
 	public Boolean getIncludeDevice() {
@@ -422,8 +396,7 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeDevice
-	 *            include the {@link Thermostat.Device} configuration objects.
-	 *            If not specified, defaults to false.
+	 *            include the {@link Thermostat.Device} configuration objects. If not specified, defaults to false.
 	 */
 	@JsonProperty("includeDevice")
 	public void setIncludeDevice(final Boolean includeDevice) {
@@ -431,8 +404,7 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the {@link Thermostat.Technician} object. If not
-	 *         specified, defaults to <code>false</code>.
+	 * @return include the {@link Thermostat.Technician} object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeTechnician")
 	public Boolean getIncludeTechnician() {
@@ -441,8 +413,7 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeTechnician
-	 *            include the {@link Thermostat.Technician} object. If not
-	 *            specified, defaults to <code>false</code>.
+	 *            include the {@link Thermostat.Technician} object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeTechnician")
 	public void setIncludeTechnician(final Boolean includeTechnician) {
@@ -450,8 +421,7 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the {@link Thermostat.Utility} company object. If not
-	 *         specified, defaults to <code>false</code>.
+	 * @return include the {@link Thermostat.Utility} company object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeUtility")
 	public Boolean getIncludeUtility() {
@@ -460,8 +430,8 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeUtility
-	 *            include the {@link Thermostat.Utility} company object. If not
-	 *            specified, defaults to <code>false</code>.
+	 *            include the {@link Thermostat.Utility} company object. If not specified, defaults to
+	 *            <code>false</code>.
 	 */
 	@JsonProperty("includeUtility")
 	public void setIncludeUtility(final Boolean includeUtility) {
@@ -469,8 +439,8 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the {@link Thermostat.Management} company object. If not
-	 *         specified, defaults to <code>false</code>.
+	 * @return include the {@link Thermostat.Management} company object. If not specified, defaults to
+	 *         <code>false</code>.
 	 */
 	@JsonProperty("includeManagement")
 	public Boolean getIncludeManagement() {
@@ -479,8 +449,8 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeManagement
-	 *            include the {@link Thermostat.Management} company object. If
-	 *            not specified, defaults to <code>false</code>.
+	 *            include the {@link Thermostat.Management} company object. If not specified, defaults to
+	 *            <code>false</code>.
 	 */
 	@JsonProperty("includeManagement")
 	public void setIncludeManagement(final Boolean includeManagement) {
@@ -488,8 +458,8 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the unacknowledged {@link Thermostat.Alert} objects. If
-	 *         not specified, defaults to <code>false</code>.
+	 * @return include the unacknowledged {@link Thermostat.Alert} objects. If not specified, defaults to
+	 *         <code>false</code>.
 	 */
 	@JsonProperty("includeAlerts")
 	public Boolean getIncludeAlerts() {
@@ -498,8 +468,8 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeAlerts
-	 *            include the unacknowledged {@link Thermostat.Alert} objects.
-	 *            If not specified, defaults to <code>false</code>.
+	 *            include the unacknowledged {@link Thermostat.Alert} objects. If not specified, defaults to
+	 *            <code>false</code>.
 	 */
 	@JsonProperty("includeAlerts")
 	public void setIncludeAlerts(final Boolean includeAlerts) {
@@ -507,8 +477,8 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the current {@link Thermostat.Weather} forecast object.
-	 *         If not specified, defaults to <code>false</code>.
+	 * @return include the current {@link Thermostat.Weather} forecast object. If not specified, defaults to
+	 *         <code>false</code>.
 	 */
 	@JsonProperty("includeWeather")
 	public Boolean getIncludeWeather() {
@@ -517,8 +487,8 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeWeather
-	 *            include the current {@link Thermostat.Weather} forecast
-	 *            object. If not specified, defaults to <code>false</code>.
+	 *            include the current {@link Thermostat.Weather} forecast object. If not specified, defaults to
+	 *            <code>false</code>.
 	 */
 	@JsonProperty("includeWeather")
 	public void setIncludeWeather(final Boolean includeWeather) {
@@ -526,8 +496,8 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the current {@link Thermostat.HouseDetails} object. If
-	 *         not specified, defaults to <code>false</code>.
+	 * @return include the current {@link Thermostat.HouseDetails} object. If not specified, defaults to
+	 *         <code>false</code>.
 	 */
 	@JsonProperty("includeHouseDetails")
 	public Boolean getIncludeHouseDetails() {
@@ -536,8 +506,8 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeHouseDetails
-	 *            include the current {@link Thermostat.HouseDetails} object. If
-	 *            not specified, defaults to <code>false</code>.
+	 *            include the current {@link Thermostat.HouseDetails} object. If not specified, defaults to
+	 *            <code>false</code>.
 	 */
 	@JsonProperty("includeHouseDetails")
 	public void setIncludeHouseDetails(final Boolean includeHouseDetails) {
@@ -545,8 +515,7 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the current thermostat OemCfg object. If not specified,
-	 *         defaults to <code>false</code>.
+	 * @return include the current thermostat OemCfg object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeOemCfg")
 	public Boolean getIncludeOemCfg() {
@@ -555,8 +524,7 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeOemCfg
-	 *            include the current thermostat OemCfg object. If not
-	 *            specified, defaults to <code>false</code>.
+	 *            include the current thermostat OemCfg object. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeOemCfg")
 	public void setIncludeOemCfg(final Boolean includeOemCfg) {
@@ -564,8 +532,8 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the current thermostat equipment status information. If
-	 *         not specified, defaults to <code>false</code>.
+	 * @return include the current thermostat equipment status information. If not specified, defaults to
+	 *         <code>false</code>.
 	 */
 	@JsonProperty("includeEquipmentStatus")
 	public Boolean getIncludeEquipmentStatus() {
@@ -574,8 +542,8 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeEquipmentStatus
-	 *            include the current thermostat equipment status information.
-	 *            If not specified, defaults to <code>false</code>.
+	 *            include the current thermostat equipment status information. If not specified, defaults to
+	 *            <code>false</code>.
 	 */
 	@JsonProperty("includeEquipmentStatus")
 	public void setIncludeEquipmentStatus(final Boolean includeEquipmentStatus) {
@@ -583,8 +551,7 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the current alert and reminders
-	 *         {@link Thermostat.NotificationSettings}. If not specified,
+	 * @return include the current alert and reminders {@link Thermostat.NotificationSettings}. If not specified,
 	 *         defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeNotificationSettings")
@@ -594,21 +561,18 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeNotificationSettings
-	 *            include the current alert and reminders
-	 *            {@link Thermostat.NotificationSettings}. If not specified,
+	 *            include the current alert and reminders {@link Thermostat.NotificationSettings}. If not specified,
 	 *            defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeNotificationSettings")
-	public void setIncludeNotificationSettings(
-			final Boolean includeNotificationSettings) {
+	public void setIncludeNotificationSettings(final Boolean includeNotificationSettings) {
 		this.includeNotificationSettings = includeNotificationSettings;
 	}
 
 	/**
-	 * @return include the current thermostat privacy settings. Note: access to
-	 *         this object is restricted to callers with implicit
-	 *         authentication, setting this value to true without proper
-	 *         credentials will result in an authentication exception.
+	 * @return include the current thermostat privacy settings. Note: access to this object is restricted to callers
+	 *         with implicit authentication, setting this value to true without proper credentials will result in an
+	 *         authentication exception.
 	 */
 	@JsonProperty("includePrivacy")
 	public Boolean getIncludePrivacy() {
@@ -617,10 +581,9 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includePrivacy
-	 *            include the current thermostat privacy settings. Note: access
-	 *            to this object is restricted to callers with implicit
-	 *            authentication, setting this value to true without proper
-	 *            credentials will result in an authentication exception.
+	 *            include the current thermostat privacy settings. Note: access to this object is restricted to callers
+	 *            with implicit authentication, setting this value to true without proper credentials will result in an
+	 *            authentication exception.
 	 */
 	@JsonProperty("includePrivacy")
 	public void setIncludePrivacy(final Boolean includePrivacy) {
@@ -628,8 +591,7 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return include the {@link Thermostat.Version}. If not specified,
-	 *         defaults to <code>false</code>.
+	 * @return include the {@link Thermostat.Version}. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeVersion")
 	public Boolean getIncludeVersion() {
@@ -638,8 +600,7 @@ public class Selection extends AbstractMessagePart {
 
 	/**
 	 * @param includeVersion
-	 *            include the {@link Thermostat.Version}. If not specified,
-	 *            defaults to <code>false</code>.
+	 *            include the {@link Thermostat.Version}. If not specified, defaults to <code>false</code>.
 	 */
 	@JsonProperty("includeVersion")
 	public void setIncludeVersion(final Boolean includeVersion) {
@@ -668,8 +629,7 @@ public class Selection extends AbstractMessagePart {
 		builder.append("includeHouseDetails", this.includeHouseDetails);
 		builder.append("includeOemCfg", this.includeOemCfg);
 		builder.append("includeEquipmentStatus", this.includeEquipmentStatus);
-		builder.append("includeNotificationSettings",
-				this.includeNotificationSettings);
+		builder.append("includeNotificationSettings", this.includeNotificationSettings);
 		builder.append("includePrivacy", this.includePrivacy);
 		builder.append("includeVersion", this.includeVersion);
 

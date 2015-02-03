@@ -19,21 +19,19 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.openhab.binding.ecobee.internal.EcobeeException;
 
 /**
- * This request retrieves a list of thermostat configuration and state revisions. 
- * This request is a light-weight polling method which will only return the revision 
- * numbers for the significant portions of the thermostat data. It is the 
- * responsibility of the caller to store these revisions for future determination 
- * whether changes occurred at the next poll interval.
+ * This request retrieves a list of thermostat configuration and state revisions. This request is a light-weight polling
+ * method which will only return the revision numbers for the significant portions of the thermostat data. It is the
+ * responsibility of the caller to store these revisions for future determination whether changes occurred at the next
+ * poll interval.
  * 
  * <p>
- * The intent is to permit the caller to determine whether a thermostat has changed 
- * since the last poll. Retrieval of a whole thermostat including runtime data is 
- * expensive and impractical for large amounts of thermostat such as a management set 
- * hierarchy, especially if nothing has changed. By storing the retrieved revisions, 
- * the caller may determine whether to get a thermostat and which sections of the 
- * thermostat should be retrieved.
+ * The intent is to permit the caller to determine whether a thermostat has changed since the last poll. Retrieval of a
+ * whole thermostat including runtime data is expensive and impractical for large amounts of thermostat such as a
+ * management set hierarchy, especially if nothing has changed. By storing the retrieved revisions, the caller may
+ * determine whether to get a thermostat and which sections of the thermostat should be retrieved.
  * 
- * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostat-summary.shtml">GET Thermostat Summary (Polling)</a>
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostat-summary.shtml">GET
+ *      Thermostat Summary (Polling)</a>
  * @author John Cocula
  * @since 1.7.0
  */
@@ -50,9 +48,10 @@ public class ThermostatSummaryRequest extends AbstractRequest {
 	/**
 	 * Creates a request for a summary of thermostats as specified in the <code>selection</code>.
 	 * 
-	 * @param accessToken the access token that permits this query
-	 * @param selection a {@link Selection} object that specifies 
-	 * which thermostats to return in the response.
+	 * @param accessToken
+	 *            the access token that permits this query
+	 * @param selection
+	 *            a {@link Selection} object that specifies which thermostats to return in the response.
 	 */
 	public ThermostatSummaryRequest(final String accessToken, final Selection selection) {
 		assert accessToken != null : "accessToken must not be null!";
@@ -70,8 +69,7 @@ public class ThermostatSummaryRequest extends AbstractRequest {
 		try {
 			json = executeQuery(url);
 
-			final ThermostatSummaryResponse response = JSON.readValue(json,
-					ThermostatSummaryResponse.class);
+			final ThermostatSummaryResponse response = JSON.readValue(json, ThermostatSummaryResponse.class);
 
 			return response;
 		} catch (final Exception e) {
@@ -93,8 +91,7 @@ public class ThermostatSummaryRequest extends AbstractRequest {
 		Properties headers = new Properties();
 		headers.putAll(HTTP_HEADERS);
 		headers.put("Authorization", "Bearer " + this.accessToken);
-		return executeUrl(HTTP_GET, url, headers, null, null,
-				HTTP_REQUEST_TIMEOUT);
+		return executeUrl(HTTP_GET, url, headers, null, null, HTTP_REQUEST_TIMEOUT);
 	}
 
 	private String buildQueryString() {

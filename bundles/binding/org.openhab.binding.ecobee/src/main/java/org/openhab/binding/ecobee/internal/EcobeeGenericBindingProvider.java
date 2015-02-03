@@ -24,43 +24,35 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  * 
  * <p>
- * Ecobee bindings start with a &lt;, &gt; or =, to indicate if the item
- * receives values from the API (in binding), sends values to the API (out
- * binding), or both (bidirectional binding), respectively.
+ * Ecobee bindings start with a &lt;, &gt; or =, to indicate if the item receives values from the API (in binding),
+ * sends values to the API (out binding), or both (bidirectional binding), respectively.
  * 
  * <p>
- * The first character is then followed by a section between square brackets ([
- * and ] characters):
+ * The first character is then followed by a section between square brackets ([ and ] characters):
  * 
  * <p>
  * <code>[&lt;thermostat&gt;#&lt;property&gt;]</code>
  * 
  * <p>
- * Where <code>thermostat</code> is a decimal thermostat identifier for in, out
- * and bidirectional bindings.
+ * Where <code>thermostat</code> is a decimal thermostat identifier for in, out and bidirectional bindings.
  * 
  * <p>
- * For out bindings only, <code>thermostat</code> can instead be selection
- * criteria that specify which thermostats to change. You can use either a
- * comma-separated list of thermostat identifiers, or, for non-EMS thermostats
- * only, a wildcard (the <code>*</code> character).
+ * For out bindings only, <code>thermostat</code> can instead be selection criteria that specify which thermostats to
+ * change. You can use either a comma-separated list of thermostat identifiers, or, for non-EMS thermostats only, a
+ * wildcard (the <code>*</code> character).
  * 
  * <p>
- * In the case of out bindings for EMS or Utility accounts, the
- * <code>thermostat</code> criteria can be a path to a management set (for
- * example, <code>/Toronto/Campus/BuildingA</code>).
+ * In the case of out bindings for EMS or Utility accounts, the <code>thermostat</code> criteria can be a path to a
+ * management set (for example, <code>/Toronto/Campus/BuildingA</code>).
  * 
  * <p>
- * The <code>thermostat</code> specification can be optionally prepended with a
- * specific app instance name as specified in <code>openhab.cfg</code>, as in
- * <code>condo.123456789</code> when you have specified
- * <code>ecobee:condo.scope</code> and <code>ecobee:condo.appkey</code>
- * properties in <code>openhab.cfg</code>.
+ * The <code>thermostat</code> specification can be optionally prepended with a specific app instance name as specified
+ * in <code>openhab.cfg</code>, as in <code>condo.123456789</code> when you have specified
+ * <code>ecobee:condo.scope</code> and <code>ecobee:condo.appkey</code> properties in <code>openhab.cfg</code>.
  * 
  * <p>
- * <code>property</code> is one of a long list of thermostat properties than you
- * can read and optionally change. See the list below, and peruse this binding's
- * JavaDoc for all specifics as to their meanings.
+ * <code>property</code> is one of a long list of thermostat properties than you can read and optionally change. See the
+ * list below, and peruse this binding's JavaDoc for all specifics as to their meanings.
  * 
  * <table>
  * <thead>
@@ -98,34 +90,29 @@ import org.slf4j.LoggerFactory;
  * <ul>
  * <li><code>{ ecobee="&lt;[123456789#name]" }</code>
  * <p>
- * Return the name of the thermostat whose ID is 123456789 using the default
- * Ecobee app instance (configured in openhab.cfg).</li>
+ * Return the name of the thermostat whose ID is 123456789 using the default Ecobee app instance (configured in
+ * openhab.cfg).</li>
  * <li><code>{ ecobee="&lt;[condo.987654321#runtime.actualTemperature]" }</code>
  * <p>
- * Return the current temperature read by the thermostat using the condo account
- * at ecobee.com.</li>
+ * Return the current temperature read by the thermostat using the condo account at ecobee.com.</li>
  * <li><code>{ ecobee="&gt;[543212345#settings.fanMinOnTime]" }</code>
  * <p>
- * Set the minimum number of minutes per hour the fan will run on thermostat ID
- * 543212345.</li>
+ * Set the minimum number of minutes per hour the fan will run on thermostat ID 543212345.</li>
  * <li><code>{ ecobee="&gt;[*#settings.hvacMode]" }</code>
  * <p>
- * Change the HVAC mode to one of <code>"auto"</code>,
- * <code>"auxHeatOnly"</code>, <code>"cool"</code>, <code>"heat"</code>, or
- * <code>"off"</code> on all thermostats registered in the default app instance.
- * </li>
+ * Change the HVAC mode to one of <code>"auto"</code>, <code>"auxHeatOnly"</code>, <code>"cool"</code>,
+ * <code>"heat"</code>, or <code>"off"</code> on all thermostats registered in the default app instance.</li>
  * <li>
  * <code>{ ecobee="&gt;[lakehouse.*#settings.backlightSleepIntensity]" }</code>
  * <p>
- * Changes the backlight sleep intensity on all thermostats at the lake house
- * (meaning, all thermostats registered to the lakehouse Ecobee account).</li>
+ * Changes the backlight sleep intensity on all thermostats at the lake house (meaning, all thermostats registered to
+ * the lakehouse Ecobee account).</li>
  * </ul>
  * 
  * @author John Cocula
  * @since 1.7.0
  */
-public class EcobeeGenericBindingProvider extends
-		AbstractGenericBindingProvider implements EcobeeBindingProvider {
+public class EcobeeGenericBindingProvider extends AbstractGenericBindingProvider implements EcobeeBindingProvider {
 
 	private static class EcobeeBindingConfig implements BindingConfig {
 		String userid;
@@ -134,8 +121,7 @@ public class EcobeeGenericBindingProvider extends
 		boolean inBound = false;
 		boolean outBound = false;
 
-		public EcobeeBindingConfig(final String userid,
-				final String thermostatIdentifier, final String property,
+		public EcobeeBindingConfig(final String userid, final String thermostatIdentifier, final String property,
 				final boolean inBound, final boolean outBound) {
 			this.userid = userid;
 			this.thermostatIdentifier = thermostatIdentifier;
@@ -146,18 +132,14 @@ public class EcobeeGenericBindingProvider extends
 
 		@Override
 		public String toString() {
-			return "EcobeeBindingConfig [userid=" + this.userid
-					+ "thermostatIdentifier=" + this.thermostatIdentifier
-					+ ", property=" + this.property + ", inBound="
-					+ this.inBound + ", outBound=" + this.outBound + "]";
+			return "EcobeeBindingConfig [userid=" + this.userid + "thermostatIdentifier=" + this.thermostatIdentifier
+					+ ", property=" + this.property + ", inBound=" + this.inBound + ", outBound=" + this.outBound + "]";
 		}
 	}
 
-	private static Logger logger = LoggerFactory
-			.getLogger(EcobeeGenericBindingProvider.class);
+	private static Logger logger = LoggerFactory.getLogger(EcobeeGenericBindingProvider.class);
 
-	private static final Pattern CONFIG_PATTERN = Pattern
-			.compile(".\\[(.*)#(.*)\\]");
+	private static final Pattern CONFIG_PATTERN = Pattern.compile(".\\[(.*)#(.*)\\]");
 
 	// the first character in the above pattern
 	private static final String IN_BOUND = "<";
@@ -176,8 +158,7 @@ public class EcobeeGenericBindingProvider extends
 	 */
 	@Override
 	public String getUserid(final String itemName) {
-		final EcobeeBindingConfig config = (EcobeeBindingConfig) this.bindingConfigs
-				.get(itemName);
+		final EcobeeBindingConfig config = (EcobeeBindingConfig) this.bindingConfigs.get(itemName);
 		return config != null ? config.userid : null;
 	}
 
@@ -186,8 +167,7 @@ public class EcobeeGenericBindingProvider extends
 	 */
 	@Override
 	public String getThermostatIdentifier(final String itemName) {
-		EcobeeBindingConfig config = (EcobeeBindingConfig) this.bindingConfigs
-				.get(itemName);
+		EcobeeBindingConfig config = (EcobeeBindingConfig) this.bindingConfigs.get(itemName);
 		return config != null ? config.thermostatIdentifier : null;
 	}
 
@@ -196,8 +176,7 @@ public class EcobeeGenericBindingProvider extends
 	 */
 	@Override
 	public String getProperty(final String itemName) {
-		EcobeeBindingConfig config = (EcobeeBindingConfig) this.bindingConfigs
-				.get(itemName);
+		EcobeeBindingConfig config = (EcobeeBindingConfig) this.bindingConfigs.get(itemName);
 		return config != null ? config.property : null;
 	}
 
@@ -206,8 +185,7 @@ public class EcobeeGenericBindingProvider extends
 	 */
 	@Override
 	public boolean isInBound(final String itemName) {
-		EcobeeBindingConfig config = (EcobeeBindingConfig) this.bindingConfigs
-				.get(itemName);
+		EcobeeBindingConfig config = (EcobeeBindingConfig) this.bindingConfigs.get(itemName);
 		return config != null ? config.inBound : false;
 	}
 
@@ -216,8 +194,7 @@ public class EcobeeGenericBindingProvider extends
 	 */
 	@Override
 	public boolean isOutBound(final String itemName) {
-		EcobeeBindingConfig config = (EcobeeBindingConfig) this.bindingConfigs
-				.get(itemName);
+		EcobeeBindingConfig config = (EcobeeBindingConfig) this.bindingConfigs.get(itemName);
 		return config != null ? config.outBound : false;
 	}
 
@@ -225,8 +202,7 @@ public class EcobeeGenericBindingProvider extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(final String context,
-			final Item item, final String bindingConfig)
+	public void processBindingConfiguration(final String context, final Item item, final String bindingConfig)
 			throws BindingConfigParseException {
 		logger.debug("Processing binding configuration: '{}'", bindingConfig);
 
@@ -243,16 +219,14 @@ public class EcobeeGenericBindingProvider extends
 			inBound = true;
 			outBound = true;
 		} else {
-			throw new BindingConfigParseException("Item \"" + item.getName()
-					+ "\" does not start with " + IN_BOUND + ", " + OUT_BOUND
-					+ " or " + BIDIRECTIONAL + ".");
+			throw new BindingConfigParseException("Item \"" + item.getName() + "\" does not start with " + IN_BOUND
+					+ ", " + OUT_BOUND + " or " + BIDIRECTIONAL + ".");
 		}
 
 		Matcher matcher = CONFIG_PATTERN.matcher(bindingConfig);
 
 		if (!matcher.matches() || matcher.groupCount() != 2)
-			throw new BindingConfigParseException("Config for item '"
-					+ item.getName() + "' could not be parsed.");
+			throw new BindingConfigParseException("Config for item '" + item.getName() + "' could not be parsed.");
 
 		String userid = null;
 		String thermostatIdentifier = matcher.group(1);
@@ -269,8 +243,7 @@ public class EcobeeGenericBindingProvider extends
 
 		String property = matcher.group(2);
 
-		EcobeeBindingConfig config = new EcobeeBindingConfig(userid,
-				thermostatIdentifier, property, inBound, outBound);
+		EcobeeBindingConfig config = new EcobeeBindingConfig(userid, thermostatIdentifier, property, inBound, outBound);
 
 		addBindingConfig(item, config);
 	}
@@ -279,17 +252,14 @@ public class EcobeeGenericBindingProvider extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void validateItemType(Item item, String bindingConfig)
-			throws BindingConfigParseException {
+	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 
-		logger.debug("validateItemType called with bindingConfig={}",
-				bindingConfig);
+		logger.debug("validateItemType called with bindingConfig={}", bindingConfig);
 
 		Matcher matcher = CONFIG_PATTERN.matcher(bindingConfig);
 
 		if (!matcher.matches() || matcher.groupCount() != 2)
-			throw new BindingConfigParseException("Config for item '"
-					+ item.getName() + "' could not be parsed.");
+			throw new BindingConfigParseException("Config for item '" + item.getName() + "' could not be parsed.");
 
 		String property = matcher.group(2);
 
@@ -298,17 +268,10 @@ public class EcobeeGenericBindingProvider extends
 		/*
 		 * FIXME: find alternative to check types
 		 * 
-		if (!EcobeeItemMapping.isValidItemType(item, property)) {
-			throw new BindingConfigParseException(
-					"item '"
-							+ item.getName()
-							+ "' is of type '"
-							+ item.getClass().getSimpleName()
-							+ "'; only items that accept the '"
-							+ EcobeeItemMapping.getStateClass(property)
-									.getSimpleName()
-							+ "' state are allowed - please check your *.items configuration.");
-		}
-		*/
+		 * if (!EcobeeItemMapping.isValidItemType(item, property)) { throw new BindingConfigParseException( "item '" +
+		 * item.getName() + "' is of type '" + item.getClass().getSimpleName() + "'; only items that accept the '" +
+		 * EcobeeItemMapping.getStateClass(property) .getSimpleName() +
+		 * "' state are allowed - please check your *.items configuration."); }
+		 */
 	}
 }

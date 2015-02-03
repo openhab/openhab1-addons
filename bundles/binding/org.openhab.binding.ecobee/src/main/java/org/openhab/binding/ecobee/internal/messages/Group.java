@@ -15,41 +15,34 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * A Group object defines the group (and the related Group settings) which a 
- * thermostat may belong to. There could be a number of Groups and also a number 
- * of thermostats in each Group. The Group object allows the caller to define the 
- * Group name, which user preferences are shared across all thermostats in that Group, 
- * and indeed which Thermostats are part of that Group.
+ * A Group object defines the group (and the related Group settings) which a thermostat may belong to. There could be a
+ * number of Groups and also a number of thermostats in each Group. The Group object allows the caller to define the
+ * Group name, which user preferences are shared across all thermostats in that Group, and indeed which Thermostats are
+ * part of that Group.
  * 
  * <p>
- * The result is that if you modify the Group settings, for example set the 
- * <code>synchronizeAlerts</code> flag to true, any {@link Thermostat.Alert} changes made to 
- * any thermostat in that group will be shared with the remaining thermostats 
- * in the same group.
+ * The result is that if you modify the Group settings, for example set the <code>synchronizeAlerts</code> flag to true,
+ * any {@link Thermostat.Alert} changes made to any thermostat in that group will be shared with the remaining
+ * thermostats in the same group.
  * 
  * <p>
- * The Grouping algorithm uses a "first group wins" strategy when a {@link Thermostat} is 
- * referenced in multiple groups. What this means in practice is that when the API 
- * request is processed and a Thermostat is referenced in more than one group, that 
- * Thermostat will only be added to the first Group (at head of array) and not to 
- * the others.
+ * The Grouping algorithm uses a "first group wins" strategy when a {@link Thermostat} is referenced in multiple groups.
+ * What this means in practice is that when the API request is processed and a Thermostat is referenced in more than one
+ * group, that Thermostat will only be added to the first Group (at head of array) and not to the others.
  * 
  * <p>
- * If any of the <code>synchronizeXXX</code> fields are not supplied they will default to false. 
- * So to set all to false where previously some were set to true the caller can either 
- * pass all the <code>synchronizeXXX</code> fields explicitly, or pass none and the default will 
- * be set for each.
+ * If any of the <code>synchronizeXXX</code> fields are not supplied they will default to false. So to set all to false
+ * where previously some were set to true the caller can either pass all the <code>synchronizeXXX</code> fields
+ * explicitly, or pass none and the default will be set for each.
  * 
  * <p>
- * The Group object may be modified. However, it is important to note that if the 
- * groupRef is not sent by the caller it is assumed that this is a new group, even 
- * if the groupName has not changed, and a new groupRef will be generated and returned. 
- * Therefore when updating a Group the groupRef must always be sent.
+ * The Group object may be modified. However, it is important to note that if the groupRef is not sent by the caller it
+ * is assumed that this is a new group, even if the groupName has not changed, and a new groupRef will be generated and
+ * returned. Therefore when updating a Group the groupRef must always be sent.
  * 
  * <p>
- * Also note that if the thermostats list is not sent, or an empty list is sent, the 
- * Group will effectively be deleted as it will no longer contain any thermostats and 
- * any group information will be lost.
+ * Also note that if the thermostats list is not sent, or an empty list is sent, the Group will effectively be deleted
+ * as it will no longer contain any thermostats and any group information will be lost.
  * 
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Group.shtml">Group</a>
  * @author John Cocula
@@ -75,14 +68,15 @@ public class Group extends AbstractMessagePart {
 	/**
 	 * Construct a Group.
 	 * 
-	 * @param groupName the name for the Group
+	 * @param groupName
+	 *            the name for the Group
 	 */
-	public Group( @JsonProperty("groupName") final String groupName ) {
+	public Group(@JsonProperty("groupName") final String groupName) {
 		this.groupName = groupName;
 	}
 
 	/**
-	 * @return the unique reference Id for the Group. 
+	 * @return the unique reference Id for the Group.
 	 */
 	@JsonProperty("groupRef")
 	public String getGroupRef() {
@@ -90,14 +84,15 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param groupRef the unique reference Id for the Group. 
-	 * If not supplied in the POST call, and new groupRef will be generated.
+	 * @param groupRef
+	 *            the unique reference Id for the Group. If not supplied in the POST call, and new groupRef will be
+	 *            generated.
 	 */
 	@JsonProperty("groupRef")
 	public void setGroupRef(final String groupRef) {
 		this.groupRef = groupRef;
 	}
-	
+
 	/**
 	 * @return the name for the Group
 	 */
@@ -107,8 +102,8 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return flag for whether to synchronize {@link Thermostat.Alert}s with all other 
-	 * {@link Thermostat}s in the Group. Default is false.
+	 * @return flag for whether to synchronize {@link Thermostat.Alert}s with all other {@link Thermostat}s in the
+	 *         Group. Default is false.
 	 */
 	@JsonProperty("synchronizeAlerts")
 	public Boolean getSynchronizeAlerts() {
@@ -116,8 +111,9 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param synchronizeAlerts flag for whether to synchronize {@link Thermostat.Alert}s 
-	 * with all other {@link Thermostat}s in the Group. Default is false.
+	 * @param synchronizeAlerts
+	 *            flag for whether to synchronize {@link Thermostat.Alert}s with all other {@link Thermostat}s in the
+	 *            Group. Default is false.
 	 */
 	@JsonProperty("synchronizeAlerts")
 	public void setSynchronizeAlerts(final Boolean synchronizeAlerts) {
@@ -125,8 +121,8 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return flag for whether to synchronize the Thermostat mode with all other Thermostats 
-	 * in the Group. Default is false.
+	 * @return flag for whether to synchronize the Thermostat mode with all other Thermostats in the Group. Default is
+	 *         false.
 	 */
 	@JsonProperty("synchronizeSystemMode")
 	public Boolean getSynchronizeSystemMode() {
@@ -134,8 +130,9 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param synchronizeSystemMode flag for whether to synchronize the Thermostat mode with 
-	 * all other Thermostats in the Group. Default is false.
+	 * @param synchronizeSystemMode
+	 *            flag for whether to synchronize the Thermostat mode with all other Thermostats in the Group. Default
+	 *            is false.
 	 */
 	@JsonProperty("synchronizeSystemMode")
 	public void setSynchronizeSystemMode(final Boolean synchronizeSystemMode) {
@@ -143,8 +140,8 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return flag for whether to synchronize the Thermostat schedule/Program details with 
-	 * all other Thermostats in the Group. Default is false.
+	 * @return flag for whether to synchronize the Thermostat schedule/Program details with all other Thermostats in the
+	 *         Group. Default is false.
 	 */
 	@JsonProperty("synchronizeSchedule")
 	public Boolean getSynchronizeSchedule() {
@@ -152,8 +149,9 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param synchronizeSchedule flag for whether to synchronize the Thermostat schedule/Program 
-	 * details with all other Thermostats in the Group. Default is false.
+	 * @param synchronizeSchedule
+	 *            flag for whether to synchronize the Thermostat schedule/Program details with all other Thermostats in
+	 *            the Group. Default is false.
 	 */
 	@JsonProperty("synchronizeSchedule")
 	public void setSynchronizeSchedule(final Boolean synchronizeSchedule) {
@@ -161,8 +159,8 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return flag for whether to synchronize the Thermostat quick save settings with all other 
-	 * Thermostats in the Group. Default is false.
+	 * @return flag for whether to synchronize the Thermostat quick save settings with all other Thermostats in the
+	 *         Group. Default is false.
 	 */
 	@JsonProperty("synchronizeQuickSave")
 	public Boolean getSynchronizeQuickSave() {
@@ -170,8 +168,9 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param synchronizeQuickSave flag for whether to synchronize the Thermostat quick save settings 
-	 * with all other Thermostats in the Group. Default is false.
+	 * @param synchronizeQuickSave
+	 *            flag for whether to synchronize the Thermostat quick save settings with all other Thermostats in the
+	 *            Group. Default is false.
 	 */
 	@JsonProperty("synchronizeQuickSave")
 	public void setSynchronizeQuickSave(final Boolean synchronizeQuickSave) {
@@ -179,8 +178,8 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return flag for whether to synchronize the Thermostat reminders with all other Thermostats 
-	 * in the Group. Default is false.
+	 * @return flag for whether to synchronize the Thermostat reminders with all other Thermostats in the Group. Default
+	 *         is false.
 	 */
 	@JsonProperty("synchronizeReminders")
 	public Boolean getSynchronizeReminders() {
@@ -188,8 +187,9 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param synchronizeReminders flag for whether to synchronize the Thermostat reminders 
-	 * with all other Thermostats in the Group. Default is false.
+	 * @param synchronizeReminders
+	 *            flag for whether to synchronize the Thermostat reminders with all other Thermostats in the Group.
+	 *            Default is false.
 	 */
 	@JsonProperty("synchronizeReminders")
 	public void setSynchronizeReminders(final Boolean synchronizeReminders) {
@@ -197,8 +197,8 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return flag for whether to synchronize the Thermostat Technician/Contractor 
-	 * Information with all other Thermostats in the Group. Default is false.
+	 * @return flag for whether to synchronize the Thermostat Technician/Contractor Information with all other
+	 *         Thermostats in the Group. Default is false.
 	 */
 	@JsonProperty("synchronizeContractorInfo")
 	public Boolean getSynchronizeContractorInfo() {
@@ -206,8 +206,9 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param synchronizeContractorInfo flag for whether to synchronize the Thermostat 
-	 * Technician/Contractor Information with all other Thermostats in the Group. Default is false.
+	 * @param synchronizeContractorInfo
+	 *            flag for whether to synchronize the Thermostat Technician/Contractor Information with all other
+	 *            Thermostats in the Group. Default is false.
 	 */
 	@JsonProperty("synchronizeContractorInfo")
 	public void setSynchronizeContractorInfo(final Boolean synchronizeContractorInfo) {
@@ -215,8 +216,8 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return flag for whether to synchronize the Thermostat user preferences with all other 
-	 * Thermostats in the Group. Default is false.
+	 * @return flag for whether to synchronize the Thermostat user preferences with all other Thermostats in the Group.
+	 *         Default is false.
 	 */
 	@JsonProperty("synchronizeUserPreferences")
 	public Boolean getSynchronizeUserPreferences() {
@@ -224,8 +225,9 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param synchronizeUserPreferences tflag for whether to synchronize the Thermostat user 
-	 * preferences with all other Thermostats in the Group. Default is false.
+	 * @param synchronizeUserPreferences
+	 *            tflag for whether to synchronize the Thermostat user preferences with all other Thermostats in the
+	 *            Group. Default is false.
 	 */
 	@JsonProperty("synchronizeUserPreferences")
 	public void setSynchronizeUserPreferences(final Boolean synchronizeUserPreferences) {
@@ -233,8 +235,8 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return flag for whether to synchronize the Thermostat utility information with all 
-	 * other Thermostats in the Group. Default is false.
+	 * @return flag for whether to synchronize the Thermostat utility information with all other Thermostats in the
+	 *         Group. Default is false.
 	 */
 	@JsonProperty("synchronizeUtilityInfo")
 	public Boolean getSynchronizeUtilityInfo() {
@@ -242,8 +244,9 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param synchronizeUtilityInfo flag for whether to synchronize the Thermostat utility 
-	 * information with all other Thermostats in the Group. Default is false.
+	 * @param synchronizeUtilityInfo
+	 *            flag for whether to synchronize the Thermostat utility information with all other Thermostats in the
+	 *            Group. Default is false.
 	 */
 	@JsonProperty("synchronizeUtilityInfo")
 	public void setSynchronizeUtilityInfo(final Boolean synchronizeUtilityInfo) {
@@ -251,8 +254,8 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return flag for whether to synchronize the Thermostat Location with all other 
-	 * Thermostats in the Group. Default is false.
+	 * @return flag for whether to synchronize the Thermostat Location with all other Thermostats in the Group. Default
+	 *         is false.
 	 */
 	@JsonProperty("synchronizeLocation")
 	public Boolean getSynchronizeLocation() {
@@ -260,8 +263,9 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param synchronizeLocation flag for whether to synchronize the Thermostat Location 
-	 * with all other Thermostats in the Group. Default is false.
+	 * @param synchronizeLocation
+	 *            flag for whether to synchronize the Thermostat Location with all other Thermostats in the Group.
+	 *            Default is false.
 	 */
 	@JsonProperty("synchronizeLocation")
 	public void setSynchronizeLocation(final Boolean synchronizeLocation) {
@@ -269,8 +273,8 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return flag for whether to synchronize the Thermostat reset with all other 
-	 * Thermostats in the Group. Default is false.
+	 * @return flag for whether to synchronize the Thermostat reset with all other Thermostats in the Group. Default is
+	 *         false.
 	 */
 	@JsonProperty("synchronizeReset")
 	public Boolean getSynchronizeReset() {
@@ -278,8 +282,9 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param synchronizeReset flag for whether to synchronize the Thermostat reset 
-	 * with all other Thermostats in the Group. Default is false.
+	 * @param synchronizeReset
+	 *            flag for whether to synchronize the Thermostat reset with all other Thermostats in the Group. Default
+	 *            is false.
 	 */
 	@JsonProperty("synchronizeReset")
 	public void setSynchronizeReset(final Boolean synchronizeReset) {
@@ -287,8 +292,8 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return flag for whether to synchronize the Thermostat vacation Program with 
-	 * all other Thermostats in the Group. Default is false.
+	 * @return flag for whether to synchronize the Thermostat vacation Program with all other Thermostats in the Group.
+	 *         Default is false.
 	 */
 	@JsonProperty("synchronizeVacation")
 	public Boolean getSynchronizeVacation() {
@@ -296,8 +301,9 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param synchronizeVacation flag for whether to synchronize the Thermostat 
-	 * vacation Program with all other Thermostats in the Group. Default is false.
+	 * @param synchronizeVacation
+	 *            flag for whether to synchronize the Thermostat vacation Program with all other Thermostats in the
+	 *            Group. Default is false.
 	 */
 	@JsonProperty("synchronizeVacation")
 	public void setSynchronizeVacation(final Boolean synchronizeVacation) {
@@ -305,8 +311,8 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the list of Thermostat identifiers which belong to the group. 
-	 * If an empty list is sent the Group will be deleted.
+	 * @return the list of Thermostat identifiers which belong to the group. If an empty list is sent the Group will be
+	 *         deleted.
 	 */
 	@JsonProperty("thermostats")
 	public List<String> getThermostats() {
@@ -314,14 +320,15 @@ public class Group extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param thermostats the list of Thermostat identifiers which belong to the group. 
-	 * If an empty list is sent the Group will be deleted.
+	 * @param thermostats
+	 *            the list of Thermostat identifiers which belong to the group. If an empty list is sent the Group will
+	 *            be deleted.
 	 */
 	@JsonProperty("thermostats")
 	public void setThermostats(final List<String> thermostats) {
 		this.thermostats = thermostats;
 	}
-	
+
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = createToStringBuilder();

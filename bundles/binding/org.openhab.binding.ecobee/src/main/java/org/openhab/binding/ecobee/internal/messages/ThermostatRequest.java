@@ -23,7 +23,8 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
  * 
  * @author John Cocula
  * @since 1.7.0
- * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostats.shtml">GET Thermostats</a>
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostats.shtml">GET
+ *      Thermostats</a>
  */
 public class ThermostatRequest extends AbstractRequest {
 
@@ -41,17 +42,15 @@ public class ThermostatRequest extends AbstractRequest {
 	/**
 	 * Creates a request for the measurements of a device or module.
 	 * 
-	 * If you don't specify a moduleId you will retrieve the device's
-	 * measurements. If you do specify a moduleId you will retrieve the module's
-	 * measurements.
+	 * If you don't specify a moduleId you will retrieve the device's measurements. If you do specify a moduleId you
+	 * will retrieve the module's measurements.
 	 * 
 	 * @param accessToken
 	 * @param selection
 	 * @param page
 	 *            optional, may be <code>null</code>
 	 */
-	public ThermostatRequest(final String accessToken, final Selection selection,
-			final Page page) {
+	public ThermostatRequest(final String accessToken, final Selection selection, final Page page) {
 		assert accessToken != null : "accessToken must not be null!";
 		assert selection != null : "selection must not be null!";
 
@@ -68,8 +67,7 @@ public class ThermostatRequest extends AbstractRequest {
 		try {
 			json = executeQuery(url);
 
-			final ThermostatResponse response = JSON.readValue(json,
-					ThermostatResponse.class);
+			final ThermostatResponse response = JSON.readValue(json, ThermostatResponse.class);
 
 			return response;
 		} catch (final Exception e) {
@@ -94,8 +92,7 @@ public class ThermostatRequest extends AbstractRequest {
 		Properties headers = new Properties();
 		headers.putAll(HTTP_HEADERS);
 		headers.put("Authorization", "Bearer " + this.accessToken);
-		return executeUrl(HTTP_GET, url, headers, null, null,
-				HTTP_REQUEST_TIMEOUT);
+		return executeUrl(HTTP_GET, url, headers, null, null, HTTP_REQUEST_TIMEOUT);
 	}
 
 	private String buildQueryString() {

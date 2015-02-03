@@ -15,11 +15,12 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.ecobee.internal.EcobeeException;
 
 /**
- * The application will need to request access and refresh tokens once the user has 
- * authorized the application within the ecobee Web Portal.
+ * The application will need to request access and refresh tokens once the user has authorized the application within
+ * the ecobee Web Portal.
  * 
  * @see TokenResponse
- * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/pin-api-authorization.shtml">Requesting Tokens (Access & Refresh)</a>
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/pin-api-authorization.shtml">Requesting
+ *      Tokens (Access & Refresh)</a>
  * @author John Cocula
  * @since 1.7.0
  */
@@ -29,17 +30,16 @@ public class TokenRequest extends AbstractRequest {
 
 	private String authToken;
 	private String appKey;
-	
+
 	/**
 	 * Construct a token request.
 	 * 
 	 * @param authToken
-	 * 			the authorization token you were issued
+	 *            the authorization token you were issued
 	 * @param appKey
-	 * 			the application key for your application (this binding)
+	 *            the application key for your application (this binding)
 	 */
-	public TokenRequest(final String authToken,
-						final String appKey ) {
+	public TokenRequest(final String authToken, final String appKey) {
 		assert authToken != null : "authToken must not be null!";
 		assert appKey != null : "appKey must not be null!";
 
@@ -55,8 +55,7 @@ public class TokenRequest extends AbstractRequest {
 		try {
 			json = executeQuery(url);
 
-			final TokenResponse response = JSON.readValue(json,
-					TokenResponse.class);
+			final TokenResponse response = JSON.readValue(json, TokenResponse.class);
 
 			return response;
 		} catch (final Exception e) {
@@ -74,8 +73,7 @@ public class TokenRequest extends AbstractRequest {
 	}
 
 	protected String executeQuery(final String url) {
-		return executeUrl(HTTP_POST, url, HTTP_HEADERS, null, null,
-				HTTP_REQUEST_TIMEOUT);
+		return executeUrl(HTTP_POST, url, HTTP_HEADERS, null, null, HTTP_REQUEST_TIMEOUT);
 	}
 
 	private String buildQueryString() {

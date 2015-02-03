@@ -17,17 +17,16 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * The function object is defined by its functionType and one or more additional properties. 
- * The property list is variable depending on the type of function. 
+ * The function object is defined by its functionType and one or more additional properties. The property list is
+ * variable depending on the type of function.
  * 
  * <p>
- * Functions are used to perform more complex operations on a thermostat or user which are 
- * too complex with simple property modifications. Functions are used to modify read-only 
- * objects where appropriate.
+ * Functions are used to perform more complex operations on a thermostat or user which are too complex with simple
+ * property modifications. Functions are used to modify read-only objects where appropriate.
  * 
  * <p>
  * Each function takes different parameters.
- *
+ * 
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Function.shtml">Function</a>
  * @author John Cocula
  * @since 1.7.0
@@ -37,16 +36,17 @@ public abstract class AbstractFunction extends AbstractMessagePart {
 	// TODO needs to be in specific thermostat's local timezone
 	protected final static DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 	protected final static DateFormat hms = new SimpleDateFormat("HH:mm:ss");
-	
+
 	private String type;
 	private Map<String, Object> params;
 
 	/**
 	 * Construct a function of given type with zero params.
 	 * 
-	 * @param type the function type name
+	 * @param type
+	 *            the function type name
 	 */
-	protected AbstractFunction( String type ) {
+	protected AbstractFunction(String type) {
 		this.type = type;
 	}
 
@@ -57,8 +57,7 @@ public abstract class AbstractFunction extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the function type name
-	 * See the type name in the function documentation
+	 * @return the function type name See the type name in the function documentation
 	 */
 	@JsonProperty("type")
 	public String getType() {
@@ -66,8 +65,8 @@ public abstract class AbstractFunction extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return a map of <code>key=value</code> pairs as the parameters to the function. 
-	 * See individual function documentation for the properties.
+	 * @return a map of <code>key=value</code> pairs as the parameters to the function. See individual function
+	 *         documentation for the properties.
 	 */
 	@JsonProperty("params")
 	public Map<String, Object> getParams() {

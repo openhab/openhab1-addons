@@ -13,10 +13,9 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * The response status object contains the processing status of the request. 
- * It will contain any relevant error information should an error occur. 
- * The status object is returned with every response regardless of success or failure status. 
- * It is suitable for logging request failures.
+ * The response status object contains the processing status of the request. It will contain any relevant error
+ * information should an error occur. The status object is returned with every response regardless of success or failure
+ * status. It is suitable for logging request failures.
  * 
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/Status.shtml">Status</a>
  * @author John Cocula
@@ -44,8 +43,7 @@ public class Status extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return <code>true</code> if we know this error indicates that
-	 * the access token has expired.
+	 * @return <code>true</code> if we know this error indicates that the access token has expired.
 	 */
 	public boolean isAccessTokenExpired() {
 		return this.code != null && this.code == 14;

@@ -29,15 +29,15 @@ public class Page extends AbstractMessagePart {
 	/**
 	 * Construct a Page.
 	 * 
-	 * @param page the specific page requested
+	 * @param page
+	 *            the specific page requested
 	 */
-	public Page( @JsonProperty("page") final Integer page ) {
+	public Page(@JsonProperty("page") final Integer page) {
 		this.page = page;
 	}
 
 	/**
-	 * @return the page retrieved or, in the case of a request parameter, 
-	 * the specific page requested
+	 * @return the page retrieved or, in the case of a request parameter, the specific page requested
 	 */
 	@JsonProperty("page")
 	public Integer getPage() {

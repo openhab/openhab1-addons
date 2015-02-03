@@ -14,16 +14,16 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * Retrieves a selection of thermostat data for one or more thermostats. 
- * The type of data retrieved is determined by the {@link Selection} object in the request. 
- * The <code>include*</code> properties of the selection retrieve specific portions 
- * of the thermostat. 
+ * Retrieves a selection of thermostat data for one or more thermostats. The type of data retrieved is determined by the
+ * {@link Selection} object in the request. The <code>include*</code> properties of the selection retrieve specific
+ * portions of the thermostat.
  * 
  * <p>
- * When retrieving thermostats, request only the parts of the thermostat you require as 
- * the whole thermostat with everything can be quite large and generally unnecessary.
+ * When retrieving thermostats, request only the parts of the thermostat you require as the whole thermostat with
+ * everything can be quite large and generally unnecessary.
  * 
- * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostats.shtml">GET Thermostats</a>
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostats.shtml">GET
+ *      Thermostats</a>
  * @author John Cocula
  * @since 1.7.0
  */
@@ -31,7 +31,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class ThermostatResponse extends ApiResponse {
 	private Page page;
 	private List<Thermostat> thermostatList;
-	
+
 	/**
 	 * @return the page information for the response
 	 */
@@ -47,7 +47,7 @@ public class ThermostatResponse extends ApiResponse {
 	public List<Thermostat> getThermostatList() {
 		return this.thermostatList;
 	}
-	
+
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = createToStringBuilder();

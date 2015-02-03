@@ -9,19 +9,17 @@
 package org.openhab.binding.ecobee.internal.messages;
 
 /**
- * The resume program function removes the currently running event 
- * providing the event is not a mandatory demand response event. 
- * The top active event is removed from the stack and the thermostat 
- * resumes its program, or enters the next event in the stack if one 
- * exists. This function may need to be called multiple times in order 
- * to resume all events. Sending 3 resume functions in a row will 
- * resume the thermostat to its program in all instances.
+ * The resume program function removes the currently running event providing the event is not a mandatory demand
+ * response event. The top active event is removed from the stack and the thermostat resumes its program, or enters the
+ * next event in the stack if one exists. This function may need to be called multiple times in order to resume all
+ * events. Sending 3 resume functions in a row will resume the thermostat to its program in all instances.
  * 
  * <p>
- * Note that vacation events cannot be resumed, you must delete the 
- * vacation event using the {@link DeleteVacationFunction}.
+ * Note that vacation events cannot be resumed, you must delete the vacation event using the
+ * {@link DeleteVacationFunction}.
  * 
- * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/functions/ResumeProgram.shtml">ResumeProgram</a>
+ * @see <a
+ *      href="https://www.ecobee.com/home/developer/api/documentation/v1/functions/ResumeProgram.shtml">ResumeProgram</a>
  * @author John Cocula
  * @since 1.7.0
  */

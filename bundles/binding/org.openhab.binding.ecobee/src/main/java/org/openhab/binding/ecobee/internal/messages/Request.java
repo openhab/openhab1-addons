@@ -9,7 +9,7 @@
 package org.openhab.binding.ecobee.internal.messages;
 
 /**
- * Base interface for all Ecobee API responses.
+ * Base interface for all Ecobee API requests.
  * 
  * @author John Cocula
  * @since 1.7.0
@@ -17,8 +17,7 @@ package org.openhab.binding.ecobee.internal.messages;
 public interface Request {
 
 	/**
-	 * Send this request to the Ecobee API. Implementations specify a more
-	 * concrete {@link Response} class.
+	 * Send this request to the Ecobee API. Implementations specify a more concrete {@link Request} class.
 	 * 
 	 * @return a {@link Response} containing the requested data or an error
 	 */

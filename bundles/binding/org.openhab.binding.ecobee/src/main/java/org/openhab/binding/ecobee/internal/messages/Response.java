@@ -28,8 +28,7 @@ public interface Response {
 	/**
 	 * Checks if this response contained an error.
 	 * 
-	 * @return <code>true</code> if the response contained an error instead of
-	 *         actual data.
+	 * @return <code>true</code> if the response contained an error instead of actual data.
 	 */
 	boolean isError();
 }

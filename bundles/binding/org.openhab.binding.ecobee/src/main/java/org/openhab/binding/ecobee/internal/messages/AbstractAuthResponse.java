@@ -13,20 +13,23 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * Base class for all Ecobee authorization responses.  The members of this abstract
- * class will de-serialize to <code>null</code>s if there was no error, but the 
- * concrete subclasses will instead be filled in.
+ * Base class for all Ecobee authorization responses. The members of this abstract class will de-serialize to
+ * <code>null</code>s if there was no error, but the concrete subclasses will instead be filled in.
  * 
- * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/auth-req-resp.shtml">Authorization Requests and Errors</a>
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/auth-req-resp.shtml">Authorization
+ *      Requests and Errors</a>
  * @author John Cocula
  * @since 1.7.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractAuthResponse extends AbstractMessage implements Response {
 
-	@JsonProperty("error")				private String error;
-	@JsonProperty("error_description")	private String errorDescription;
-	@JsonProperty("error_uri")			private String errorURI;
+	@JsonProperty("error")
+	private String error;
+	@JsonProperty("error_description")
+	private String errorDescription;
+	@JsonProperty("error_uri")
+	private String errorURI;
 
 	/**
 	 * @return the error type

@@ -15,16 +15,15 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.ecobee.internal.EcobeeException;
 
 /**
- * The ecobee PIN authorization method is designed to support any 3rd party device, 
- * be it a mobile phone, tablet, desktop widget or remote server. This authorization 
- * method allows a 3rd party application to obtain an authorization code and a 4 byte 
- * alphabetic string which can be displayed to the user. The user then logs into the 
- * ecobee Portal and registers the application using the PIN provided. Once this step 
- * is completed, the 3rd party application is able to request the access and 
- * refresh tokens.
+ * The ecobee PIN authorization method is designed to support any 3rd party device, be it a mobile phone, tablet,
+ * desktop widget or remote server. This authorization method allows a 3rd party application to obtain an authorization
+ * code and a 4 byte alphabetic string which can be displayed to the user. The user then logs into the ecobee Portal and
+ * registers the application using the PIN provided. Once this step is completed, the 3rd party application is able to
+ * request the access and refresh tokens.
  * 
  * @see AuthorizeResponse
- * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/pin-api-authorization.shtml">PIN Authorization Strategy</a>
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/pin-api-authorization.shtml">PIN
+ *      Authorization Strategy</a>
  * @author John Cocula
  * @since 1.7.0
  */
@@ -34,17 +33,16 @@ public class AuthorizeRequest extends AbstractRequest {
 
 	private String appKey;
 	private String scope;
-	
+
 	/**
 	 * Construct an authorization request.
 	 * 
 	 * @param appKey
-	 * 			the application key for your application (this binding)
+	 *            the application key for your application (this binding)
 	 * @param scope
-	 * 			the scope the application requests from the user
+	 *            the scope the application requests from the user
 	 */
-	public AuthorizeRequest( final String appKey,
-							 final String scope ) {
+	public AuthorizeRequest(final String appKey, final String scope) {
 		assert appKey != null : "appKey must not be null!";
 		assert scope != null : "scope must not be null!";
 
@@ -60,8 +58,7 @@ public class AuthorizeRequest extends AbstractRequest {
 		try {
 			json = executeQuery(url);
 
-			final AuthorizeResponse response = JSON.readValue(json,
-					AuthorizeResponse.class);
+			final AuthorizeResponse response = JSON.readValue(json, AuthorizeResponse.class);
 
 			return response;
 		} catch (final Exception e) {
@@ -79,8 +76,7 @@ public class AuthorizeRequest extends AbstractRequest {
 	}
 
 	protected String executeQuery(final String url) {
-		return executeUrl(HTTP_GET, url, HTTP_HEADERS, null, null,
-				HTTP_REQUEST_TIMEOUT);
+		return executeUrl(HTTP_GET, url, HTTP_HEADERS, null, null, HTTP_REQUEST_TIMEOUT);
 	}
 
 	private String buildQueryString() {

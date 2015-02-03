@@ -15,14 +15,13 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.ecobee.internal.EcobeeException;
 
 /**
- * All access tokens must be refreshed periodically. 
- * Token refresh reduces the potential and benefit of token theft. 
- * Since all tokens expire, stolen tokens may only be used for a limited time. 
- * A token refresh immediately expires the previously issued access and 
- * refresh tokens and issues brand new tokens.
+ * All access tokens must be refreshed periodically. Token refresh reduces the potential and benefit of token theft.
+ * Since all tokens expire, stolen tokens may only be used for a limited time. A token refresh immediately expires the
+ * previously issued access and refresh tokens and issues brand new tokens.
  * 
  * @see TokenResponse
- * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/token-refresh.shtml">Refreshing Your Tokens</a>
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/token-refresh.shtml">Refreshing Your
+ *      Tokens</a>
  * @author John Cocula
  * @author Ecobee
  * @since 1.7.0
@@ -33,17 +32,16 @@ public class RefreshTokenRequest extends AbstractRequest {
 
 	private String refreshToken;
 	private String appKey;
-	
+
 	/**
 	 * Construct a refresh token request.
 	 * 
 	 * @param refreshToken
-	 * 			the refresh token you were issued
+	 *            the refresh token you were issued
 	 * @param appKey
-	 * 			the application key for your application (this binding)
+	 *            the application key for your application (this binding)
 	 */
-	public RefreshTokenRequest( final String refreshToken,
-								final String appKey ) {
+	public RefreshTokenRequest(final String refreshToken, final String appKey) {
 		assert refreshToken != null : "refreshToken must not be null!";
 		assert appKey != null : "appKey must not be null!";
 
@@ -59,8 +57,7 @@ public class RefreshTokenRequest extends AbstractRequest {
 		try {
 			json = executeQuery(url);
 
-			final TokenResponse response = JSON.readValue(json,
-					TokenResponse.class);
+			final TokenResponse response = JSON.readValue(json, TokenResponse.class);
 
 			return response;
 		} catch (final Exception e) {
@@ -78,8 +75,7 @@ public class RefreshTokenRequest extends AbstractRequest {
 	}
 
 	protected String executeQuery(final String url) {
-		return executeUrl(HTTP_POST, url, HTTP_HEADERS, null, null,
-				HTTP_REQUEST_TIMEOUT);
+		return executeUrl(HTTP_POST, url, HTTP_HEADERS, null, null, HTTP_REQUEST_TIMEOUT);
 	}
 
 	private String buildQueryString() {

@@ -14,21 +14,19 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
 
 /**
- * Temperature values are expressed as degrees Fahrenheit, multiplied by 10. For
- * example, a temperature of 72F would be expressed as the value 720. If the
- * user preferences indicate the use of Celsius values, it is the responsibility
- * of the caller to convert values to and from Celsius.
+ * Temperature values are expressed as degrees Fahrenheit, multiplied by 10. For example, a temperature of 72F would be
+ * expressed as the value 720. If the user preferences indicate the use of Celsius values, it is the responsibility of
+ * the caller to convert values to and from Celsius.
  * 
  * <p>
- * Where specified explicitly Degrees F indicates that the temperature will be
- * returned in degrees Fahrenheit accurate to one decimal place (i.e. 18.5F).
+ * Where specified explicitly Degrees F indicates that the temperature will be returned in degrees Fahrenheit accurate
+ * to one decimal place (i.e. 18.5F).
  * 
  * <p>
- * Methods are included to construct Temperature objects from Celsius,
- * Fahrenheit, or whichever the local temperature scale is.
+ * Methods are included to construct Temperature objects from Celsius, Fahrenheit, or whichever the local temperature
+ * scale is.
  * 
- * @see <a
- *      href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml#representation">Values
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/technical-notes.shtml#representation">Values
  *      and Representation</a>
  * @author John Cocula
  * @since 1.7.0
@@ -57,14 +55,12 @@ public class Temperature {
 					return s;
 				}
 			}
-			throw new IllegalArgumentException("Invalid temperature scale: "
-					+ v);
+			throw new IllegalArgumentException("Invalid temperature scale: " + v);
 		}
 	}
 
 	/**
-	 * The local temperature scale used throughout this JVM. Defaults to
-	 * Fahrenheit.
+	 * The local temperature scale used throughout this JVM. Defaults to Fahrenheit.
 	 */
 	private static Scale localScale = Scale.FAHRENHEIT;
 
@@ -80,8 +76,7 @@ public class Temperature {
 	}
 
 	/**
-	 * Construct a Temperature from the Ecobee-style temperature value
-	 * (Fahrenheit times 10).
+	 * Construct a Temperature from the Ecobee-style temperature value (Fahrenheit times 10).
 	 * 
 	 * @param temp
 	 *            Ecobee-style temperature value (Fahrenheit times 10)
@@ -92,8 +87,7 @@ public class Temperature {
 	}
 
 	/**
-	 * Construct a Temperature from the Ecobee-style temperature value
-	 * (Fahrenheit times 10).
+	 * Construct a Temperature from the Ecobee-style temperature value (Fahrenheit times 10).
 	 * 
 	 * @param temp
 	 *            Ecobee-style temperature value (Fahrenheit times 10)
@@ -103,8 +97,7 @@ public class Temperature {
 	}
 
 	/**
-	 * Factory method to construct a Temperature from the local temperature
-	 * scale.
+	 * Factory method to construct a Temperature from the local temperature scale.
 	 * 
 	 * @param localTemp
 	 *            the temperature in the local temperature scale.

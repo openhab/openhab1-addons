@@ -13,30 +13,34 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * This class represents the response to the <code>/authorize</code> endpoint.  Upon
- * success, the PIN, authorization token, scope, the PIN expiration and minimum polling
- * interval for PINs is returned.
+ * This class represents the response to the <code>/authorize</code> endpoint. Upon success, the PIN, authorization
+ * token, scope, the PIN expiration and minimum polling interval for PINs is returned.
  * 
  * <p>
- * At this point, the application should display the PIN to the user and request that 
- * they log into their web portal and register the application using the PIN in their 
- * My Apps widget.
+ * At this point, the application should display the PIN to the user and request that they log into their web portal and
+ * register the application using the PIN in their My Apps widget.
  * 
  * @see AuthorizeRequest
- * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/pin-api-authorization.shtml">PIN Authorization Strategy</a>
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/pin-api-authorization.shtml">PIN
+ *      Authorization Strategy</a>
  * @author John Cocula
  * @since 1.7.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthorizeResponse extends AbstractAuthResponse {
 
-	@JsonProperty("ecobeePin")		private String ecobeePin;
-    @JsonProperty("code")			private String authToken;
-    @JsonProperty("scope")			private String scope;
-    @JsonProperty("expires_in")		private Integer expiresIn;
-    @JsonProperty("interval")		private Integer interval;
+	@JsonProperty("ecobeePin")
+	private String ecobeePin;
+	@JsonProperty("code")
+	private String authToken;
+	@JsonProperty("scope")
+	private String scope;
+	@JsonProperty("expires_in")
+	private Integer expiresIn;
+	@JsonProperty("interval")
+	private Integer interval;
 
-    /**
+	/**
 	 * @return the PIN a user enters in the web portal
 	 */
 	@JsonProperty("ecobeePin")
@@ -53,8 +57,7 @@ public class AuthorizeResponse extends AbstractAuthResponse {
 	}
 
 	/**
-	 * @return the requested Scope from the original request. 
-	 * This must match the original request.
+	 * @return the requested Scope from the original request. This must match the original request.
 	 */
 	@JsonProperty("scope")
 	public String getScope() {
@@ -62,8 +65,7 @@ public class AuthorizeResponse extends AbstractAuthResponse {
 	}
 
 	/**
-	 * @return the number of minutes until the PIN expires. 
-	 * Ensure you inform the user how much time they have.
+	 * @return the number of minutes until the PIN expires. Ensure you inform the user how much time they have.
 	 */
 	@JsonProperty("expires_in")
 	public Integer getExpiresIn() {
@@ -71,8 +73,7 @@ public class AuthorizeResponse extends AbstractAuthResponse {
 	}
 
 	/**
-	 * @return the minimum amount of seconds which must pass 
-	 * between polling attempts for a token.
+	 * @return the minimum amount of seconds which must pass between polling attempts for a token.
 	 */
 	@JsonProperty("interval")
 	public Integer getInterval() {

@@ -13,9 +13,8 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * The User object. The User object contains information pertaining to the 
- * User associated with a thermostat.
- *
+ * The User object. The User object contains information pertaining to the User associated with a thermostat.
+ * 
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/objects/User.shtml">Object</a>
  * @author John Cocula
  * @since 1.7.0
@@ -52,7 +51,8 @@ public class User extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param displayName the User display name
+	 * @param displayName
+	 *            the User display name
 	 */
 	@JsonProperty("displayName")
 	public void setDisplayName(String displayName) {
@@ -68,7 +68,8 @@ public class User extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param firstName the User first name
+	 * @param firstName
+	 *            the User first name
 	 */
 	@JsonProperty("firstName")
 	public void setFirstName(String firstName) {
@@ -84,7 +85,8 @@ public class User extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param lastName the User last name
+	 * @param lastName
+	 *            the User last name
 	 */
 	@JsonProperty("lastName")
 	public void setLastName(String lastName) {
@@ -106,6 +108,7 @@ public class User extends AbstractMessagePart {
 	public String getRegisterDate() {
 		return this.registerDate;
 	}
+
 	/**
 	 * @return the User time of registration
 	 */
@@ -155,13 +158,14 @@ public class User extends AbstractMessagePart {
 	}
 
 	/**
-	 * @param phoneNumber the User phone number
+	 * @param phoneNumber
+	 *            the User phone number
 	 */
 	@JsonProperty("phoneNumber")
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	
+
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = createToStringBuilder();

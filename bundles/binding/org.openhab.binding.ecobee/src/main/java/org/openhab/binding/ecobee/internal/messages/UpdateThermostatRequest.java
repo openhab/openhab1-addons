@@ -28,8 +28,7 @@ import org.openhab.binding.ecobee.internal.EcobeeException;
  * 
  * @author John Cocula
  * @since 1.7.0
- * @see <a
- *      href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostats.shtml">GET
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/operations/get-thermostats.shtml">GET
  *      Thermostats</a>
  */
 public class UpdateThermostatRequest extends AbstractRequest {
@@ -51,9 +50,8 @@ public class UpdateThermostatRequest extends AbstractRequest {
 	/**
 	 * Creates a request for the measurements of a device or module.
 	 * 
-	 * If you don't specify a moduleId you will retrieve the device's
-	 * measurements. If you do specify a moduleId you will retrieve the module's
-	 * measurements.
+	 * If you don't specify a moduleId you will retrieve the device's measurements. If you do specify a moduleId you
+	 * will retrieve the module's measurements.
 	 * 
 	 * @param accessToken
 	 *            the access token that permits this API call
@@ -64,9 +62,8 @@ public class UpdateThermostatRequest extends AbstractRequest {
 	 * @param thermostat
 	 *            optional, a thermostat that has writeable properties specified
 	 */
-	public UpdateThermostatRequest(final String accessToken,
-			final Selection selection, final List<AbstractFunction> functions,
-			final Thermostat thermostat) {
+	public UpdateThermostatRequest(final String accessToken, final Selection selection,
+			final List<AbstractFunction> functions, final Thermostat thermostat) {
 		assert accessToken != null : "accessToken must not be null!";
 		assert selection != null : "selection must not be null!";
 
@@ -84,8 +81,7 @@ public class UpdateThermostatRequest extends AbstractRequest {
 		try {
 			json = executeQuery(url);
 
-			final ApiResponse response = JSON
-					.readValue(json, ApiResponse.class);
+			final ApiResponse response = JSON.readValue(json, ApiResponse.class);
 
 			return response;
 		} catch (final Exception e) {
@@ -109,14 +105,12 @@ public class UpdateThermostatRequest extends AbstractRequest {
 		return builder.toString();
 	}
 
-	protected String executeQuery(final String url)
-			throws JsonGenerationException, JsonMappingException, IOException {
+	protected String executeQuery(final String url) throws JsonGenerationException, JsonMappingException, IOException {
 		Properties headers = new Properties();
 		headers.putAll(HTTP_HEADERS);
 		headers.put("Authorization", "Bearer " + this.accessToken);
-		return executeUrl(HTTP_POST, url, headers, new ByteArrayInputStream(
-				JSON.writeValueAsBytes(this)), "application/json",
-				HTTP_REQUEST_TIMEOUT);
+		return executeUrl(HTTP_POST, url, headers, new ByteArrayInputStream(JSON.writeValueAsBytes(this)),
+				"application/json", HTTP_REQUEST_TIMEOUT);
 	}
 
 	private String buildQueryString() {

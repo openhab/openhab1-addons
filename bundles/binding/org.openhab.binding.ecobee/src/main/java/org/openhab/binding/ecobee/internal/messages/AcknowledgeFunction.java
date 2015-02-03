@@ -20,29 +20,27 @@ import org.codehaus.jackson.annotate.JsonValue;
 public final class AcknowledgeFunction extends AbstractFunction {
 
 	/**
-	 * The type of acknowledgement. 
+	 * The type of acknowledgment.
 	 */
 	public static enum AckType {
-		ACCEPT("accept"),
-		DECLINE("decline"),
-		DEFER("defer"),
-		UNACKNOWLEDGED("unacknowledged");
-		
+		ACCEPT("accept"), DECLINE("decline"), DEFER("defer"), UNACKNOWLEDGED("unacknowledged");
+
 		private final String type;
-		
-		private AckType(String type) { this.type = type; }
-		
+
+		private AckType(String type) {
+			this.type = type;
+		}
+
 		@Override
 		@JsonValue
-		public String toString() { return this.type; }
+		public String toString() {
+			return this.type;
+		}
 	}
 
-	public AcknowledgeFunction( String thermostatIdentifier,
-								String ackRef,
-								AckType ackType,
-								Boolean remindMeLater ) {
-		super( "acknowledge" );
-		
+	public AcknowledgeFunction(String thermostatIdentifier, String ackRef, AckType ackType, Boolean remindMeLater) {
+		super("acknowledge");
+
 		if (thermostatIdentifier == null || ackRef == null || ackType == null) {
 			throw new IllegalArgumentException("thermostatIdentifier, ackRef and ackType are required.");
 		}

@@ -15,21 +15,28 @@ import org.codehaus.jackson.annotate.JsonProperty;
 /**
  * @see TokenRequest
  * @see RefreshTokenRequest
- * @see <a hred="https://www.ecobee.com/home/developer/api/documentation/v1/auth/pin-api-authorization.shtml">PIN Authorization Strategy</a>
- * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/token-refresh.shtml">Refreshing Your Tokens</a>
+ * @see <a hred="https://www.ecobee.com/home/developer/api/documentation/v1/auth/pin-api-authorization.shtml">PIN
+ *      Authorization Strategy</a>
+ * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/auth/token-refresh.shtml">Refreshing Your
+ *      Tokens</a>
  * @author John Cocula
  * @since 1.7.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TokenResponse extends AbstractAuthResponse {
 
-	@JsonProperty("access_token")	private String accessToken;
-    @JsonProperty("token_type")		private String tokenType;
-    @JsonProperty("expires_in")		private Integer expiresIn;
-    @JsonProperty("refresh_token")	private String refreshToken;
-    @JsonProperty("scope")			private String scope;
+	@JsonProperty("access_token")
+	private String accessToken;
+	@JsonProperty("token_type")
+	private String tokenType;
+	@JsonProperty("expires_in")
+	private Integer expiresIn;
+	@JsonProperty("refresh_token")
+	private String refreshToken;
+	@JsonProperty("scope")
+	private String scope;
 
-    /**
+	/**
 	 * @return the accessToken
 	 */
 	@JsonProperty("access_token")
@@ -68,7 +75,7 @@ public class TokenResponse extends AbstractAuthResponse {
 	public String getScope() {
 		return this.scope;
 	}
-	
+
 	@Override
 	public String toString() {
 		final ToStringBuilder builder = createToStringBuilder();
