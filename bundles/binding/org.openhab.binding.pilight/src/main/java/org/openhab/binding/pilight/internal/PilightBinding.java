@@ -107,8 +107,9 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 				String value = status.getValues().get(property);
 				State state = getState(value, config);
 				
-				if (state != null)
+				if (state != null) {
 					eventPublisher.postUpdate(config.getItemName(), state);
+				}
 			}
 		}
 	}
@@ -120,7 +121,8 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 			state = new StringType(value);
 		} else if (config.getItemType().equals(NumberItem.class)) {
 			if (!StringUtils.isBlank(value)) {
-				value = value.replace(".", "").replace(",","");
+				// Number values are always received as an integer with an optional parameter describing 
+				// the number of decimals (scale, default = 0). 
 				BigDecimal numberValue = new BigDecimal(value);
 				numberValue = numberValue.divide(new BigDecimal(Math.pow(10,config.getScale())), config.getScale(), RoundingMode.HALF_UP);
 				state = new DecimalType(numberValue);

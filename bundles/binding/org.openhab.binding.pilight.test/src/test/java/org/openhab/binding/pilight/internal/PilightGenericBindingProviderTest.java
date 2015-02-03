@@ -51,23 +51,15 @@ public class PilightGenericBindingProviderTest {
 		Assert.assertEquals(number0.toBigDecimal().compareTo(new BigDecimal("23")), 0);
 
 		config.setScale(1);
-		DecimalType number1 = (DecimalType) binding.getState("23.3", config);
+		DecimalType number1 = (DecimalType) binding.getState("233", config);
 		Assert.assertEquals(number1.toBigDecimal().compareTo(new BigDecimal("23.3")), 0);
 
-		config.setScale(0);
-		DecimalType number2 = (DecimalType) binding.getState("2.3", config);
-		Assert.assertEquals(number2.toBigDecimal().compareTo(new BigDecimal("23")), 0);
-		
 		config.setScale(2);
-		DecimalType number3 = (DecimalType) binding.getState("233", config);
-		Assert.assertEquals(number3.toBigDecimal().compareTo(new BigDecimal("2.33")), 0);
+		DecimalType number2 = (DecimalType) binding.getState("2233", config);
+		Assert.assertEquals(number2.toBigDecimal().compareTo(new BigDecimal("22.33")), 0);
 		
 		config.setScale(-1);
-		DecimalType number4 = (DecimalType) binding.getState("233", config);
-		Assert.assertEquals(number4.toBigDecimal().compareTo(new BigDecimal("2330")), 0);
-		
-		config.setScale(1);
-		DecimalType number5 = (DecimalType) binding.getState("233", config);
-		Assert.assertEquals(number5.toBigDecimal().compareTo(new BigDecimal("23.3")), 0);
+		DecimalType number3 = (DecimalType) binding.getState("233", config);
+		Assert.assertEquals(number3.toBigDecimal().compareTo(new BigDecimal("2330")), 0);
 	}
 }
