@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.binding.hue.internal.HueSettingsParseException;
 import org.openhab.binding.hue.internal.hardware.HueTapState;
@@ -262,7 +263,7 @@ public class HueSettings {
 	 * The SettingsTree represents the settings Json as a tree with some
 	 * convenience methods to get subtrees and the values of interest easily.
 	 */
-	class SettingsTree {
+	public class SettingsTree {
 
 		private Map<String, Object> dataMap;
 
@@ -283,14 +284,14 @@ public class HueSettings {
 		 * @return The child node named like nodeName. This will be a sub tree.
 		 */
 		@SuppressWarnings("unchecked")
-		protected SettingsTree node(String nodeName) {
+		public SettingsTree node(String nodeName) {
 			return new SettingsTree((Map<String, Object>) dataMap.get(nodeName));
 		}
 
 		/**
 		 * @return the amount of lights connected to Hue hub
 		 */
-		protected int count() {
+		public int count() {
 			return dataMap.size();
 		}
 
@@ -299,11 +300,11 @@ public class HueSettings {
 		 *            The name of the child node.
 		 * @return The child node named like nodeName. This will be an object.
 		 */
-		protected Object value(String valueName) {
+		public Object value(String valueName) {
 			return dataMap.get(valueName);
 		}
 
-		protected Set<String> nodes(){
+		public Set<String> nodes(){
 			return dataMap.keySet();
 		}
 	}

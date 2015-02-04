@@ -11,7 +11,6 @@ package org.openhab.binding.hue;
 import java.util.List;
 
 import org.openhab.binding.hue.internal.AbstractHueBindingConfig;
-import org.openhab.binding.hue.internal.HueLightBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 
 /**

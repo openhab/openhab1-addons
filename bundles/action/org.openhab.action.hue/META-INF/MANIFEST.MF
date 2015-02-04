@@ -2,14 +2,12 @@ Manifest-Version: 1.0
 Private-Package: org.openhab.action.hue.internal
 Ignore-Package: org.openhab.action.hue.internal
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-Name: openHAB Hue Action
-Bundle-SymbolicName: org.openhab.action.hue
+Bundle-Name: openHAB hue Action
+Bundle-SymbolicName: org.openhab.action.hue;singleton:=true
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.7.0.qualifier
-Bundle-Activator: org.openhab.action.hue.internal.HueActivator
+Bundle-Version: 1.7.0.SNAPSHOT
 Bundle-ManifestVersion: 2
-Bundle-Description: This is the hue action of the open Home Aut
- omation Bus (openHAB)
+Bundle-Description: This is the hue action of the open Home Automation Bus (openHAB)
 Import-Package: com.sun.jersey.api.client,
  org.codehaus.jackson;version="1.9.2",
  org.codehaus.jackson.annotate;version="1.9.2",
@@ -27,7 +25,11 @@ Import-Package: com.sun.jersey.api.client,
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/action.xml
-Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.openhab.binding.hue;bundle-version="1.7.0"
-Export-Package: org.openhab.action.hue
+Bundle-ClassPath: .
+Export-Package: org.openhab.action.hue,
+ org.openhab.action.hue.internal
+Service-Component: OSGI-INF/action.xml
+
+

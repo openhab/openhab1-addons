@@ -1,4 +1,4 @@
-package org.openhab.action.hue;
+package org.openhab.action.hue.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,12 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-import org.openhab.binding.hue.internal.common.SwitchId;
+import org.openhab.action.hue.AbstractHueResource;
+import org.openhab.binding.hue.internal.hardware.SwitchId;
 
 /**
  * a rule as described in http://www.developers.meethue.com/documentation/rules-api
