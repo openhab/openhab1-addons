@@ -270,6 +270,13 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
+	 * @return <code>true</code> if we would like runtime values returned from this Selection.
+	 */
+	public boolean includeRuntime() {
+		return (this.includeRuntime == null) ? false : this.includeRuntime;
+	}
+
+	/**
 	 * @param includeRuntime
 	 *            include the thermostat {@link Thermostat.Runtime} object. If not specified, defaults to
 	 *            <code>false</code>.
@@ -285,6 +292,13 @@ public class Selection extends AbstractMessagePart {
 	@JsonProperty("includeExtendedRuntime")
 	public Boolean getIncludeExtendedRuntime() {
 		return this.includeExtendedRuntime;
+	}
+
+	/**
+	 * @return <code>true</code> if we would like extended runtime values returned from this Selection.
+	 */
+	public boolean includeExtendedRuntime() {
+		return (this.includeExtendedRuntime == null) ? false : this.includeExtendedRuntime;
 	}
 
 	/**
@@ -307,6 +321,13 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
+	 * @return <code>true</code> if we would like electricity values returned from this Selection.
+	 */
+	public boolean includeElectricity() {
+		return (this.includeElectricity == null) ? false : this.includeElectricity;
+	}
+
+	/**
 	 * @param includeElectricity
 	 *            include the {@link Thermostat.Electricity} readings object. If not specified, defaults to
 	 *            <code>false</code>.
@@ -322,6 +343,13 @@ public class Selection extends AbstractMessagePart {
 	@JsonProperty("includeSettings")
 	public Boolean getIncludeSettings() {
 		return this.includeSettings;
+	}
+
+	/**
+	 * @return <code>true</code> if we would like settings values returned from this Selection.
+	 */
+	public boolean includeSettings() {
+		return (this.includeSettings == null) ? false : this.includeSettings;
 	}
 
 	/**
@@ -342,6 +370,13 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
+	 * @return <code>true</code> if we would like location values returned from this Selection.
+	 */
+	public boolean includeLocation() {
+		return (this.includeLocation == null) ? false : this.includeLocation;
+	}
+
+	/**
 	 * @param includeLocation
 	 *            include the {@link Thermostat.Location} object. If not specified, defaults to <code>false</code>.
 	 */
@@ -359,6 +394,13 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
+	 * @return <code>true</code> if we would like program values returned from this Selection.
+	 */
+	public boolean includeProgram() {
+		return (this.includeProgram == null) ? false : this.includeProgram;
+	}
+
+	/**
 	 * @param includeProgram
 	 *            include the {@link Thermostat.Program} object. If not specified, defaults to <code>false</code>.
 	 */
@@ -373,6 +415,13 @@ public class Selection extends AbstractMessagePart {
 	@JsonProperty("includeEvents")
 	public Boolean getIncludeEvents() {
 		return this.includeEvents;
+	}
+
+	/**
+	 * @return <code>true</code> if we would like events returned from this Selection.
+	 */
+	public boolean includeEvents() {
+		return (this.includeEvents == null) ? false : this.includeEvents;
 	}
 
 	/**
@@ -395,6 +444,13 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
+	 * @return <code>true</code> if we would like device values returned from this Selection.
+	 */
+	public boolean includeDevice() {
+		return (this.includeDevice == null) ? false : this.includeDevice;
+	}
+
+	/**
 	 * @param includeDevice
 	 *            include the {@link Thermostat.Device} configuration objects. If not specified, defaults to false.
 	 */
@@ -412,6 +468,13 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
+	 * @return <code>true</code> if we would like technician values returned from this Selection.
+	 */
+	public boolean includeTechnician() {
+		return (this.includeTechnician == null) ? false : this.includeTechnician;
+	}
+
+	/**
 	 * @param includeTechnician
 	 *            include the {@link Thermostat.Technician} object. If not specified, defaults to <code>false</code>.
 	 */
@@ -426,6 +489,13 @@ public class Selection extends AbstractMessagePart {
 	@JsonProperty("includeUtility")
 	public Boolean getIncludeUtility() {
 		return this.includeUtility;
+	}
+
+	/**
+	 * @return <code>true</code> if we would like utility values returned from this Selection.
+	 */
+	public boolean includeUtility() {
+		return (this.includeUtility == null) ? false : this.includeUtility;
 	}
 
 	/**
@@ -448,6 +518,13 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
+	 * @return <code>true</code> if we would like management values returned from this Selection.
+	 */
+	public boolean includeManagement() {
+		return (this.includeManagement == null) ? false : this.includeManagement;
+	}
+
+	/**
 	 * @param includeManagement
 	 *            include the {@link Thermostat.Management} company object. If not specified, defaults to
 	 *            <code>false</code>.
@@ -464,6 +541,13 @@ public class Selection extends AbstractMessagePart {
 	@JsonProperty("includeAlerts")
 	public Boolean getIncludeAlerts() {
 		return this.includeAlerts;
+	}
+
+	/**
+	 * @return <code>true</code> if we would like alerts returned from this Selection.
+	 */
+	public boolean includeAlerts() {
+		return (this.includeAlerts == null) ? false : this.includeAlerts;
 	}
 
 	/**
@@ -486,6 +570,13 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
+	 * @return <code>true</code> if we would like weather returned from this Selection.
+	 */
+	public boolean includeWeather() {
+		return (this.includeWeather == null) ? false : this.includeWeather;
+	}
+
+	/**
 	 * @param includeWeather
 	 *            include the current {@link Thermostat.Weather} forecast object. If not specified, defaults to
 	 *            <code>false</code>.
@@ -502,6 +593,13 @@ public class Selection extends AbstractMessagePart {
 	@JsonProperty("includeHouseDetails")
 	public Boolean getIncludeHouseDetails() {
 		return this.includeHouseDetails;
+	}
+
+	/**
+	 * @return <code>true</code> if we would like house details returned from this Selection.
+	 */
+	public boolean includeHouseDetails() {
+		return (this.includeHouseDetails == null) ? false : this.includeHouseDetails;
 	}
 
 	/**
@@ -523,6 +621,13 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
+	 * @return <code>true</code> if we would like OemCfg values returned from this Selection.
+	 */
+	public boolean includeOemCfg() {
+		return (this.includeOemCfg == null) ? false : this.includeOemCfg;
+	}
+
+	/**
 	 * @param includeOemCfg
 	 *            include the current thermostat OemCfg object. If not specified, defaults to <code>false</code>.
 	 */
@@ -538,6 +643,13 @@ public class Selection extends AbstractMessagePart {
 	@JsonProperty("includeEquipmentStatus")
 	public Boolean getIncludeEquipmentStatus() {
 		return this.includeEquipmentStatus;
+	}
+
+	/**
+	 * @return <code>true</code> if we would like equipment status returned from this Selection.
+	 */
+	public boolean includeEquipmentStatus() {
+		return (this.includeEquipmentStatus == null) ? false : this.includeEquipmentStatus;
 	}
 
 	/**
@@ -557,6 +669,13 @@ public class Selection extends AbstractMessagePart {
 	@JsonProperty("includeNotificationSettings")
 	public Boolean getIncludeNotificationSettings() {
 		return this.includeNotificationSettings;
+	}
+
+	/**
+	 * @return <code>true</code> if we would like notification settings returned from this Selection.
+	 */
+	public boolean includeNotificationSettings() {
+		return (this.includeNotificationSettings == null) ? false : this.includeNotificationSettings;
 	}
 
 	/**
@@ -580,6 +699,13 @@ public class Selection extends AbstractMessagePart {
 	}
 
 	/**
+	 * @return <code>true</code> if we would like privacy settings returned from this Selection.
+	 */
+	public boolean includePrivacy() {
+		return (this.includePrivacy == null) ? false : this.includePrivacy;
+	}
+
+	/**
 	 * @param includePrivacy
 	 *            include the current thermostat privacy settings. Note: access to this object is restricted to callers
 	 *            with implicit authentication, setting this value to true without proper credentials will result in an
@@ -596,6 +722,13 @@ public class Selection extends AbstractMessagePart {
 	@JsonProperty("includeVersion")
 	public Boolean getIncludeVersion() {
 		return this.includeVersion;
+	}
+
+	/**
+	 * @return <code>true</code> if we would like version information returned from this Selection.
+	 */
+	public boolean includeVersion() {
+		return (this.includeVersion == null) ? false : this.includeVersion;
 	}
 
 	/**

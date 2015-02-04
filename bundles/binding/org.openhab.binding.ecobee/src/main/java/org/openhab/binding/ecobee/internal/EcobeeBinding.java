@@ -271,11 +271,11 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			boolean changed = false;
 
 			changed = changed
-					|| (newRevision.hasRuntimeChanged(lastRevision) && (selection.getIncludeRuntime() || selection
-							.getIncludeExtendedRuntime()));
+					|| (newRevision.hasRuntimeChanged(lastRevision) && (selection.includeRuntime() || selection
+							.includeExtendedRuntime()));
 			changed = changed
-					|| (newRevision.hasThermostatChanged(lastRevision) && (selection.getIncludeSettings() || selection
-							.getIncludeProgram()));
+					|| (newRevision.hasThermostatChanged(lastRevision) && (selection.includeSettings() || selection
+							.includeProgram()));
 
 			if (changed) {
 				thermostatIdentifiers.add(newRevision.getThermostatIdentifier());
