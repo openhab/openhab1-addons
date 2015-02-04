@@ -136,6 +136,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider> 
 		String tm         = deviceConfig.getTransmitMethod();
 		String commandStr = "none";
 		Command previousCommand = lastIssuedCommand.get( address );
+		int nrLinesToRead = 2;
 
 		if ( command instanceof OnOffType ) {
 			commandStr = OnOffType.ON.equals( command ) ? "on" : "off";
@@ -169,6 +170,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider> 
 				long level = Math.round(invert_level * 25.0/100);
 				commandStr = "extended_code_1 0 1 " + level;
 			}
+			nrLinesToRead = 1;
 		}
 		else if ( command instanceof IncreaseDecreaseType ) {
 			// Increase decrease not yet supported
@@ -187,8 +189,9 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider> 
 				logger.debug(tm + " " + address + " " + commandStr);
 				out.flush();
 
-				logger.debug( br.readLine() );
-				logger.debug( br.readLine() );
+				for (int i = 0; i < nrLinesToRead; i++) {
+					logger.debug( br.readLine() );
+				}
 				
 				out.close();
 				client.close();
