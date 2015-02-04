@@ -87,6 +87,11 @@ public class ZWaveBatteryCommandClass extends ZWaveCommandClass implements ZWave
 			case BATTERY_REPORT:
 				logger.trace("Process Battery Report");
 				
+				if(serialMessage.getMessagePayload().length < offset + 1) {
+					logger.error("NODE {}: Battery report length too short");
+					return;
+				}
+				
 				batteryLevel = serialMessage.getMessagePayloadByte(offset + 1);
 				logger.debug("NODE {}: Battery report value = {}", this.getNode().getNodeId(), batteryLevel);
 
