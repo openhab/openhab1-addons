@@ -9,13 +9,15 @@
 package org.openhab.action.hue.internal;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openhab.action.hue.Rule;
+import org.openhab.action.hue.AbstractHueResource;
 import org.openhab.binding.hue.internal.common.HueContext;
 import org.openhab.binding.hue.internal.data.HueSettings;
+import org.openhab.binding.hue.internal.data.HueSettings.SettingsTree;
 import org.openhab.binding.hue.internal.hardware.HueBridge;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
@@ -37,9 +39,9 @@ import com.sun.jersey.api.client.WebResource;
  * @author Gernot Eger
  * @since 1.7.0
  */
-public class Hue {
+public class HueActions {
 
-	private static final Logger logger = LoggerFactory.getLogger(Hue.class);
+	private static final Logger logger = LoggerFactory.getLogger(HueActions.class);
 
 	
 	
@@ -61,11 +63,34 @@ public class Hue {
 	 * set settings for this scene on the light(s)
 	 */
 	@ActionDoc(text = "not yet implemented")
-	public static String hueSetSceneSettings(String sceneName,String lightId,String body){
-		logger.error("not yet implemented");
-		return "0";
+	public static String hueSetSceneSettings(
+			@ParamDoc(name = "sceneId", text = "Id of the Scene")String sceneId,
+			@ParamDoc(name = "lightIds", text = "List of Lights seperated by ','")String lightIds,
+			@ParamDoc(name = "body", text = "Settings for those lights in scene") String body){
+		
+		String result="";
+		for(String light:splitIdString(lightIds)){	
+			result=resourceRequest(HttpMethod.PUT,"scenes/"+sceneId+"/lights/"+light+"/state",body);
+		}
+		return result;
 	}
 
+	
+	/**
+	 * create scene with this name
+	 * @param sceneName
+	 * @return message from bridge or null if failed
+	 */
+	@ActionDoc(text = "Create a new Scene on Bridge")
+	public static String hueSetScene(
+				String sceneId,String sceneName, String lights){
+		Scene s=new Scene(sceneName,splitIdString(lights));
+		String result=resourceRequest(HttpMethod.PUT,"scenes/"+sceneId,s);
+		
+		return result;
+				
+	}
+	
 	@ActionDoc(text = "Create a new Rule")
 	public static String hueCreateRule(
 			@ParamDoc(name = "name", text = "Name of the Rule") String name){
@@ -133,10 +158,19 @@ public class Hue {
 		
 		r.addTapButtonEqualsCondition(sensorId, button);
 		
-		hueSetRule(ruleName,r.toJson());
+		hueSetRule(r.toJson());
 	}
 
-	
+	public static String hueDeleteAllRules(){
+		HueSettings settings=getHueSettings();
+		SettingsTree rules=settings.getRules();
+		
+		
+		for(String ruleId:rules.nodes()){
+			resourceRequest(HttpMethod.DELETE, "rules/"+ruleId, (String)null);			
+		}
+		return "";
+	}
 	/**
 	 * set rule by name
 	 * @param name
@@ -145,29 +179,47 @@ public class Hue {
 	 */
 	@ActionDoc(text = "set rule")
 	public static String hueSetRule(
-			@ParamDoc(name = "name", text = "Name of the rule")String name, 
 			@ParamDoc(name = "ruleJson", text = "Json representation of the rule") String ruleJson){
 		
-		String id = getRuleId(name);
+		Rule r;
+		try {
+			r = Rule.create(ruleJson);
+			String name=r.name;
+			String id = getRuleId(name);
+			
+			//logger.debug("found rule id for name '"+name+"': '"+id+"'");
+			logger.debug("found rule id for name '{}': '{}'", name,id);
+			String result;
+			if(id==null){ // create new
+				result=postResource("rules",ruleJson);	
+			}else{
+				result=putResource("rules/"+id,ruleJson);			
+			}
+			return result;
 		
-		//logger.debug("found rule id for name '"+name+"': '"+id+"'");
-		logger.debug("found rule id for name '{}': '{}'", name,id);
-		String result;
-		if(id==null){ // create new
-			result=postResource("rules",ruleJson);	
-		}else{
-			result=putResource("rules/"+id,ruleJson);			
+		} catch (IOException e) {
+			logger.warn("Failed to create rule from body '"+ruleJson+"'", e);
+			return "";
 		}
-		
-		return result;
+
 	}
 
 
+	/**
+	 * get ruled id for name
+	 * @param name
+	 * @return
+	 */
 	private static String getRuleId(String name) {
-		HueSettings settings=HueContext.getInstance().getBridge().getSettings();
+		HueSettings settings=getHueSettings();
 		
 		String id=settings.getRule(name);
 		return id;
+	}
+
+	
+	private static HueSettings getHueSettings() {
+		return HueContext.getInstance().getBridge().getSettings();
 	}
 	
 	
@@ -181,10 +233,29 @@ public class Hue {
 	}
 
 	
+	/**
+	 * create a List<String> from id's seperated by , and blanks; ignore empty ones
+	 * @param ids
+	 * @return
+	 */
+	protected static List<String> splitIdString(String ids){
+		
+		
+		String[] ii=ids.split("[,\\s]+");
+		ArrayList<String> il=new ArrayList<String>();
+		for(String s:ii){
+			if(s.length()!=0){
+				il.add(s);
+			}
+		}
+		return  il;
+	}
+	
 	enum HttpMethod {
 		GET,
 		PUT,
-		POST
+		POST,
+		DELETE
 	} ;
 	
 	/**
@@ -193,17 +264,55 @@ public class Hue {
 	 * @return
 	 */
 	private static String getResource(String path){
-		return resourceRequest(HttpMethod.GET,path,null);
+		return resourceRequest(HttpMethod.GET,path,(String)null);
 	}
 	
+	/**
+	 * 
+	 * @param path
+	 * @param body
+	 * @return
+	 */
 	private static String putResource(String path, String body){
 		return resourceRequest(HttpMethod.PUT,path,body);
 	}
 	
+	/**
+	 * 
+	 * @param path
+	 * @param body
+	 * @return
+	 */
 	private static String postResource(String path, String body){
 		return resourceRequest(HttpMethod.POST,path,body);
 	}
-		
+	
+	/**
+	 * 
+	 * @param method
+	 * @param  inside bridge w/o api+secret part, e.g. /lights/1
+	 * @param resource
+	 * @return
+	 */
+	private static String resourceRequest(HttpMethod method,String path, AbstractHueResource resource) {
+		String body=null;
+		if(resource!=null){
+			try {
+				body=resource.toJson();
+			} catch (Exception e) {
+				logger.warn("failed to serialize to json for path '"+path+"'",e);
+				
+			}		
+		}
+		return resourceRequest(method,path,body);
+	}
+	/**
+	 * request resource
+	 * @param method
+	 * @param path inside bridge w/o api+secret part, e.g. /lights/1
+	 * @param body
+	 * @return
+	 */
 	private static String resourceRequest(HttpMethod method,String path, String body) {
 		
 		logger.debug("resourceRequest {} start...",method);
@@ -226,6 +335,10 @@ public class Hue {
 				case POST:
 					response = webResource.accept("application/json").post(ClientResponse.class, body);
 					break;
+				case DELETE:
+					response = webResource.accept("application/json").delete(ClientResponse.class);
+					break;
+
 			}
 			
 			String responseString = response.getEntity(String.class);
@@ -243,6 +356,7 @@ public class Hue {
 				List<Map <String,Object>> responses=mapper.readValue(responseString,List.class);
 				for(Map <String,Object> item:responses){
 					if(item.containsKey("error")){
+						logger.warn("failed send command, url={}",url);
 						logger.warn("failed send command, body={}",body);
 						logger.warn("failed send command, response={}",responseString);
 					}

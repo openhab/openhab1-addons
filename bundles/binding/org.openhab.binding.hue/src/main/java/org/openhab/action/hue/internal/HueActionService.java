@@ -39,7 +39,7 @@ public class HueActionService implements ActionService, ManagedService {
 	 */
 	@Override
 	public String getActionClassName() {
-		return Hue.class.getCanonicalName();
+		return HueActions.class.getCanonicalName();
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class HueActionService implements ActionService, ManagedService {
 	 */
 	@Override
 	public Class<?> getActionClass() {
-		return Hue.class;
+		return HueActions.class;
 	}
 
 	/**

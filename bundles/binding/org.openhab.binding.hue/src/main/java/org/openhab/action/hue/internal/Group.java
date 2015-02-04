@@ -1,4 +1,4 @@
-package org.openhab.action.hue;
+package org.openhab.action.hue.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.openhab.action.hue.AbstractHueResource;
 
 public class Group extends AbstractHueResource {
 
