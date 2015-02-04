@@ -742,6 +742,15 @@
 			<Label lang="en">4 button keyfob - generation 5</Label>
 			<ConfigFile>aeon/keyfobg5.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0026</Id>
+			</Reference>
+			<Model>dsa38</Model>
+			<Label lang="en">1 button keyfob</Label>
+			<ConfigFile>aeon/dsa38.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
