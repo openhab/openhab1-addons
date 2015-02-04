@@ -1,4 +1,4 @@
-# Tools
+# MiOS Binding Tools and Utilities
 
 ## MiOS openHAB Item file Generator
 
@@ -12,22 +12,22 @@ These scripts are intended to be run on a Linux, Unix or MacOS X system.
 
 The MiOS openHAB Item file Generator scripts consist of:
 
-* miosLoad.sh - A loader script that calls a MiOS Unit, over HTTP, and extracts it's metadata in the form of a `user_data.xml` file.
-* miosTransform.sh - A wrapper script to transform a MiOS Unit "user_data.xml" file into the associated Items file.
-* miosTransform.xslt - An XSLT file containing the rules for conversion from a MiOS Unit `user_data.xml` file into an Items file.
+* `miosLoad.sh` - A loader script that calls a MiOS Unit, over HTTP, and extracts it's metadata in the form of a `user_data.xml` file.
+* `miosTransform.sh` - A wrapper script to transform a MiOS Unit `user_data.xml` file into the associated Items file.
+* `miosTransform.xslt` - An XSLT file containing the rules for conversion from a MiOS Unit `user_data.xml` file into an Items file.
 
-The following components are assumed to be installed on the system:
+The following components are assumed installed on the system:
 
-* bash
-* xsltproc - http://xmlsoft.org/XSLT/xsltproc.html
-* curl - http://curl.haxx.se/
+* `bash`
+* `xsltproc` - http://xmlsoft.org/XSLT/xsltproc.html
+* `curl` - http://curl.haxx.se/
 
 ### How to use
 
 To run the conversion process, the following steps should be executed:
 
-* Load (`miosLoad.sh`) - retrieves an XML version of the MiOS Device MetaData from your Vera Unit.
-In some cases, Vera spits out _invalid_ XML, so this content may have to be hand-edited prior to feeding it into the next step.  This script takes a single parameter, which is the IP Address, or DNS name, of the MiOS Unit to call.  The output of this phase is a file called `user_data.xml`
+* Load (`miosLoad.sh`) - retrieves an XML version of the MiOS Device MetaData from your MiOS Unit.
+In some cases, MiOS emits _invalid_ XML, so this content may have to be hand-edited prior to feeding it into the next step.  This script takes a single parameter, which is the IP Address, or DNS name, of the MiOS Unit to call.  The output of this phase is a file called `user_data.xml`
 
 * Transform (`miosTransform.sh`) - converts the XML into a Textual openHAB Items file.
 This script takes a single parameter, which is used for both the name of the generated Items file, as well as the MiOS Unit name used in openhab.cfg (eg. "house").  
@@ -35,7 +35,7 @@ If this completes successfully, it will have generated an output file like `hous
 
 This is an example of what it's like to run these command line scripts in sequence:
 
-```
+```ShellSession
 Code: [Select]
 me$ ./miosLoad.sh 192.168.1.100
 Loading MiOS Unit Metadata from 192.168.1.100...
@@ -69,7 +69,7 @@ Duplicate Item names requiring manual fixes:
 
 At this point, you'll have a _fairly_ complete `house.items` file for use in openHAB.  The conversion process takes a number of steps to aid in generating unique Item names in the generated content, but any output in the _Duplicate Item names_ section should be addressed prior to use as an openHAB Items file.
 
-The tool includes almost all of the _by-hand_ conversion rules used in other MiOS user's openHAB Configurations. Things like _SwitchPower1/Status_ become an openHAB `Switch` Item for example.   
+The tool includes almost all of the _by-hand_ conversion rules used in other MiOS user's openHAB Configurations. MiOS UPnP State variables like `SwitchPower1/Status` become an openHAB `Switch` Item for example.   
 
 The generator tools will get you close to a working openHAB Items file, especially for commonly used MiOS Device types.  For exotic MiOS Device Types, not handled by the MiOS internal defaults, the Items file will need to be augmented with the appropriate MAP Transformations.  This involves editing the file, and adding the appropriate `in:`, `out:`, and `command:` parameters per the documentation for the MiOS Binding.
 
