@@ -117,12 +117,29 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		// FIXME: complete type conversions from states to bean property types
 	}
 
+	/**
+	 * Maintain a reference to the OSGi container's ConfigurationAdmin so that we can load and save persistent settings
+	 * across invocations of this binding. We need to store authentication tokens persistently.
+	 */
 	private ConfigurationAdmin configAdmin;
 
+	/**
+	 * Called by the OSGi container.
+	 * 
+	 * @param configAdmin
+	 *            a reference to the ConfigurationAdmin that we need in order to load and save authentication tokens
+	 *            persistently.
+	 */
 	public void addConfigurationAdmin(ConfigurationAdmin configAdmin) {
 		this.configAdmin = configAdmin;
 	}
 
+	/**
+	 * Called by the OSGi container.
+	 * 
+	 * @param configAdmin
+	 *            ignored; we only use this method to forget our reference to the ConfigurationAdmin.
+	 */
 	public void removeConfigurationAdmin(ConfigurationAdmin configAdmin) {
 		this.configAdmin = null;
 	}
@@ -236,8 +253,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			} else {
 				logger.error(status.getMessage());
 			}
-
-			logger.error("Aborting this poll due to previous errors.");
 
 			return; // abort processing
 		}
@@ -884,11 +899,16 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		private void load() {
 			Dictionary props = config.getProperties();
 			if (props == null) {
-				props = new Hashtable();
+				logger.warn("No tokens loaded from previous invocation.");
+				this.authToken = null;
+				this.refreshToken = null;
+				this.accessToken = null;
 			}
-			this.authToken = (String) props.get(AUTH_TOKEN);
-			this.refreshToken = (String) props.get(REFRESH_TOKEN);
-			this.accessToken = (String) props.get(ACCESS_TOKEN);
+			else {
+				this.authToken = (String) props.get(AUTH_TOKEN);
+				this.refreshToken = (String) props.get(REFRESH_TOKEN);
+				this.accessToken = (String) props.get(ACCESS_TOKEN);
+			}
 		}
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
