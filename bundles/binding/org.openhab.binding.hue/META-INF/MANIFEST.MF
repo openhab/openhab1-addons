@@ -19,6 +19,7 @@ Import-Package: com.sun.jersey.api.client,
  org.openhab.core.items,
  org.openhab.core.library.items,
  org.openhab.core.library.types,
+ org.openhab.core.scriptengine.action,
  org.openhab.core.types,
  org.openhab.model.item.binding,
  org.osgi.framework,
@@ -27,9 +28,11 @@ Import-Package: com.sun.jersey.api.client,
 Bundle-SymbolicName: org.openhab.binding.hue;singleton:=true
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/huebinding.xml
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/huebinding.xml, OSGI-INF/action.xml
 Bundle-ClassPath: .
-Export-Package: org.openhab.binding.hue.internal.common,
+Export-Package: org.openhab.action.hue,
+ org.openhab.action.hue.internal,
+ org.openhab.binding.hue.internal.common,
  org.openhab.binding.hue.internal.data,
  org.openhab.binding.hue.internal.hardware
 Bundle-ActivationPolicy: lazy

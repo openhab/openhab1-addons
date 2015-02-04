@@ -8,8 +8,7 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 1.7.0.qualifier
 Bundle-Activator: org.openhab.action.hue.internal.HueActivator
 Bundle-ManifestVersion: 2
-Bundle-Description: This is the hue action of the open Home Aut
- omation Bus (openHAB)
+Bundle-Description: This is the hue action of the open Home Automation Bus (openHAB)
 Import-Package: com.sun.jersey.api.client,
  org.codehaus.jackson;version="1.9.2",
  org.codehaus.jackson.annotate;version="1.9.2",
@@ -30,4 +29,3 @@ Service-Component: OSGI-INF/action.xml
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.openhab.binding.hue;bundle-version="1.7.0"
-Export-Package: org.openhab.action.hue
