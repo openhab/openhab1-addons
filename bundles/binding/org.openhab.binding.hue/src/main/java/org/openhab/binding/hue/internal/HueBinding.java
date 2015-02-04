@@ -13,6 +13,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.hue.HueBindingProvider;
 import org.openhab.binding.hue.internal.HueLightBindingConfig.BindingType;

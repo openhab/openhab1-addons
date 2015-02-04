@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.action.hue.Rule;
 import org.openhab.binding.hue.internal.common.HueContext;
@@ -241,6 +239,7 @@ public class Hue {
 			// check if ok
 			ObjectMapper mapper = new ObjectMapper();
 			try {
+				@SuppressWarnings("unchecked")
 				List<Map <String,Object>> responses=mapper.readValue(responseString,List.class);
 				for(Map <String,Object> item:responses){
 					if(item.containsKey("error")){

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.binding.hue.internal.HueSettingsParseException;
 import org.openhab.binding.hue.internal.hardware.HueTapState;
