@@ -237,8 +237,12 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 				logger.error(status.getMessage());
 			}
 
+			logger.error("Aborting this poll due to previous errors.");
+
 			return; // abort processing
 		}
+
+		logger.debug("Retrieved summaries for {} thermostat(s).", response.getRevisionList().size());
 
 		// Identify which thermostats have changed since the last fetch
 
@@ -513,6 +517,8 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 
 			try {
 				final Thermostat thermostat = new Thermostat(null);
+
+				logger.debug("About to set property '{}' to '{}'", property, newState);
 
 				thermostat.setProperty(property, newState);
 
