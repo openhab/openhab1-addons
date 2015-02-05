@@ -49,6 +49,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
@@ -113,7 +114,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			@Override
 			public Object convert(Class type, Object value) {
 				if (value instanceof DecimalType) {
-					return ((DecimalType)value).intValue();
+					return ((DecimalType) value).intValue();
 				} else {
 					return null;
 				}
@@ -137,7 +138,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			@Override
 			public Object convert(Class type, Object value) {
 				if (value instanceof OnOffType) {
-					return ((OnOffType)value) == OnOffType.ON;
+					return ((OnOffType) value) == OnOffType.ON;
 				} else {
 					return null;
 				}
@@ -245,23 +246,28 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	protected void execute() {
 		logger.debug("Querying Ecobee API");
 
-		for (String userid : credentialsCache.keySet()) {
-			OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
+		try {
+			for (String userid : credentialsCache.keySet()) {
+				OAuthCredentials oauthCredentials = getOAuthCredentials(userid);
 
-			Selection selection = createSelection(oauthCredentials);
-			if (selection == null) {
-				logger.debug("Nothing to retrieve for '{}'; skipping thermostat retrieval.", oauthCredentials.userid);
-				continue;
-			}
-
-			if (oauthCredentials.noAccessToken()) {
-				if (!oauthCredentials.refreshTokens()) {
-					logger.warn("Periodic poll skipped for '{}'.", oauthCredentials.userid);
+				Selection selection = createSelection(oauthCredentials);
+				if (selection == null) {
+					logger.debug("Nothing to retrieve for '{}'; skipping thermostat retrieval.",
+							oauthCredentials.userid);
 					continue;
 				}
-			}
 
-			readEcobee(oauthCredentials, selection);
+				if (oauthCredentials.noAccessToken()) {
+					if (!oauthCredentials.refreshTokens()) {
+						logger.warn("Periodic poll skipped for '{}'.", oauthCredentials.userid);
+						continue;
+					}
+				}
+
+				readEcobee(oauthCredentials, selection);
+			}
+		} catch (Exception e) {
+			logger.error("Error reading from Ecobee:", e);
 		}
 	}
 
@@ -274,7 +280,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	 * @param selection
 	 *            the selection of data to retrieve
 	 */
-	private void readEcobee(OAuthCredentials oauthCredentials, Selection selection) {
+	private void readEcobee(OAuthCredentials oauthCredentials, Selection selection) throws Exception {
 
 		logger.debug("Requesting summaries for {}", selection);
 
@@ -366,16 +372,27 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 				for (final EcobeeBindingProvider provider : this.providers) {
 					for (final String itemName : provider.getItemNames()) {
 						if (provider.isInBound(itemName)) {
-							final State state = getState(provider, thermostats, itemName);
-							// we need to make sure that we won't send out
-							// this event to
-							// Ecobee again, when receiving it on the
-							// openHAB bus
-							ignoreEventSet.add(itemName + state.toString());
-							logger.trace("Added event (item='{}', type='{}') to the ignore event list", itemName,
-									state.toString());
-							if (state != null) {
-								this.eventPublisher.postUpdate(itemName, state);
+							final State newState = getState(provider, thermostats, itemName);
+							ItemRegistry reg = provider.getItemRegistry();
+							State oldState = reg.getItem(itemName).getState();
+
+							if ((oldState == null && newState != null)
+									|| (UnDefType.UNDEF.equals(oldState) && !UnDefType.UNDEF.equals(newState))
+									|| !oldState.equals(newState)) {
+								logger.debug("readEcobee: Updating itemName '{}' with newState '{}', oldState '{}'",
+										itemName, newState, oldState);
+
+								/*
+								 * we need to make sure that we won't send out this event to Ecobee again, when
+								 * receiving it on the openHAB bus
+								 */
+								ignoreEventSet.add(itemName + newState.toString());
+								logger.trace("Added event (item='{}', newState='{}') to the ignore event list",
+										itemName, newState);
+								this.eventPublisher.postUpdate(itemName, newState);
+							} else {
+								logger.trace("readEcobee: Ignoring item='{}' with newState='{}', oldState='{}'",
+										itemName, newState, oldState);
 							}
 						}
 					}
@@ -940,8 +957,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 				this.authToken = null;
 				this.refreshToken = null;
 				this.accessToken = null;
-			}
-			else {
+			} else {
 				this.authToken = (String) props.get(AUTH_TOKEN);
 				this.refreshToken = (String) props.get(REFRESH_TOKEN);
 				this.accessToken = (String) props.get(ACCESS_TOKEN);
