@@ -742,6 +742,15 @@
 			<Label lang="en">4 button keyfob - generation 5</Label>
 			<ConfigFile>aeon/keyfobg5.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0026</Id>
+			</Reference>
+			<Model>dsa38</Model>
+			<Label lang="en">1 button keyfob</Label>
+			<ConfigFile>aeon/dsa38.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
@@ -1105,11 +1114,15 @@
 		<Product>
 			<Reference>
 				<Type>0900</Type>
-				<Id>4000</Id>
+				<Id>1000</Id>
 			</Reference>
 			<Reference>
 				<Type>0900</Type>
-				<Id>1000</Id>
+				<Id>2000</Id>
+			</Reference>
+			<Reference>
+				<Type>0900</Type>
+				<Id>4000</Id>
 			</Reference>
 			<Model>FGRGBW</Model>
 			<Label lang="en">Fibaro RGBW Controller</Label>
@@ -1179,6 +1192,15 @@
 			<Model>DWZWAVE2</Model>
 			<Label lang="en">Z-Wave Door/Window Sensor</Label>
 			<ConfigFile>eco/dwzwave2.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>TILTZWAVE1</Model>
+			<Label lang="en">Z-Wave Garage Door Sensor</Label>
+			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
