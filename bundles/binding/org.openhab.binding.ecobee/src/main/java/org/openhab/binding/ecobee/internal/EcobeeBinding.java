@@ -34,6 +34,7 @@ import org.openhab.binding.ecobee.internal.messages.Status;
 import org.openhab.binding.ecobee.internal.messages.Temperature;
 import org.openhab.binding.ecobee.internal.messages.Thermostat;
 import org.openhab.binding.ecobee.internal.messages.Thermostat.HvacMode;
+import org.openhab.binding.ecobee.internal.messages.Thermostat.VentilatorMode;
 import org.openhab.binding.ecobee.internal.messages.ThermostatRequest;
 import org.openhab.binding.ecobee.internal.messages.ThermostatResponse;
 import org.openhab.binding.ecobee.internal.messages.ThermostatSummaryRequest;
@@ -106,6 +107,42 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 				}
 			}
 		}, HvacMode.class);
+		ConvertUtils.register(new Converter() {
+
+			@SuppressWarnings("rawtypes")
+			@Override
+			public Object convert(Class type, Object value) {
+				if (value instanceof DecimalType) {
+					return ((DecimalType)value).intValue();
+				} else {
+					return null;
+				}
+			}
+		}, Integer.class);
+		ConvertUtils.register(new Converter() {
+
+			@SuppressWarnings("rawtypes")
+			@Override
+			public Object convert(Class type, Object value) {
+				if (value instanceof StringType) {
+					return VentilatorMode.forValue(value.toString());
+				} else {
+					return null;
+				}
+			}
+		}, VentilatorMode.class);
+		ConvertUtils.register(new Converter() {
+
+			@SuppressWarnings("rawtypes")
+			@Override
+			public Object convert(Class type, Object value) {
+				if (value instanceof OnOffType) {
+					return ((OnOffType)value) == OnOffType.ON;
+				} else {
+					return null;
+				}
+			}
+		}, Boolean.class);
 		ConvertUtils.register(new Converter() {
 
 			@SuppressWarnings("rawtypes")
