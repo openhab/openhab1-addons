@@ -26,6 +26,8 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getVelocity <em>Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getAcceleration <em>Acceleration</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getMaxPosition <em>Max Position</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getMinPosition <em>Min Position</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMin <em>Pulse Width Min</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMax <em>Pulse Width Max</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPeriod <em>Period</em>}</li>
@@ -109,6 +111,60 @@ public interface MServo extends MSensor<DecimalValue>, ProgrammableSwitchActor, 
    * @generated
    */
   void setAcceleration(int value);
+
+  /**
+   * Returns the value of the '<em><b>Max Position</b></em>' attribute.
+   * The default value is <code>"9000"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Max Position</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Max Position</em>' attribute.
+   * @see #setMaxPosition(Short)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo_MaxPosition()
+   * @model default="9000" unique="false"
+   * @generated
+   */
+  Short getMaxPosition();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getMaxPosition <em>Max Position</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Max Position</em>' attribute.
+   * @see #getMaxPosition()
+   * @generated
+   */
+  void setMaxPosition(Short value);
+
+  /**
+   * Returns the value of the '<em><b>Min Position</b></em>' attribute.
+   * The default value is <code>"-9000"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Min Position</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Min Position</em>' attribute.
+   * @see #setMinPosition(Short)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo_MinPosition()
+   * @model default="-9000" unique="false"
+   * @generated
+   */
+  Short getMinPosition();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getMinPosition <em>Min Position</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Min Position</em>' attribute.
+   * @see #getMinPosition()
+   * @generated
+   */
+  void setMinPosition(Short value);
 
   /**
    * Returns the value of the '<em><b>Pulse Width Min</b></em>' attribute.
@@ -251,5 +307,13 @@ public interface MServo extends MSensor<DecimalValue>, ProgrammableSwitchActor, 
    * @generated
    */
   void init();
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model unique="false" positionUnique="false" velocityUnique="false" accelerationUnique="false"
+   * @generated
+   */
+  boolean setPoint(Short position, int velocity, int acceleration);
 
 } // MServo

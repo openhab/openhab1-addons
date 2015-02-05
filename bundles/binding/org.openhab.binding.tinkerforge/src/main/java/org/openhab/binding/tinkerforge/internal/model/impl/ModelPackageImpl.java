@@ -3849,7 +3849,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMServo_PulseWidthMin()
+  public EAttribute getMServo_MaxPosition()
   {
     return (EAttribute)mServoEClass.getEStructuralFeatures().get(3);
   }
@@ -3859,7 +3859,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMServo_PulseWidthMax()
+  public EAttribute getMServo_MinPosition()
   {
     return (EAttribute)mServoEClass.getEStructuralFeatures().get(4);
   }
@@ -3869,7 +3869,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMServo_Period()
+  public EAttribute getMServo_PulseWidthMin()
   {
     return (EAttribute)mServoEClass.getEStructuralFeatures().get(5);
   }
@@ -3879,7 +3879,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMServo_OutputVoltage()
+  public EAttribute getMServo_PulseWidthMax()
   {
     return (EAttribute)mServoEClass.getEStructuralFeatures().get(6);
   }
@@ -3889,9 +3889,29 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getMServo_TargetPosition()
+  public EAttribute getMServo_Period()
   {
     return (EAttribute)mServoEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMServo_OutputVoltage()
+  {
+    return (EAttribute)mServoEClass.getEStructuralFeatures().get(8);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMServo_TargetPosition()
+  {
+    return (EAttribute)mServoEClass.getEStructuralFeatures().get(9);
   }
 
   /**
@@ -3902,6 +3922,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMServo__Init()
   {
     return mServoEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMServo__SetPoint__Short_int_int()
+  {
+    return mServoEClass.getEOperations().get(1);
   }
 
   /**
@@ -4809,6 +4839,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EOperation getMBrickletLCD20x4__Clear()
+  {
+    return mBrickletLCD20x4EClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getMTextActor()
   {
     return mTextActorEClass;
@@ -5662,12 +5702,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mServoEClass, MSERVO__DEVICE_TYPE);
     createEAttribute(mServoEClass, MSERVO__VELOCITY);
     createEAttribute(mServoEClass, MSERVO__ACCELERATION);
+    createEAttribute(mServoEClass, MSERVO__MAX_POSITION);
+    createEAttribute(mServoEClass, MSERVO__MIN_POSITION);
     createEAttribute(mServoEClass, MSERVO__PULSE_WIDTH_MIN);
     createEAttribute(mServoEClass, MSERVO__PULSE_WIDTH_MAX);
     createEAttribute(mServoEClass, MSERVO__PERIOD);
     createEAttribute(mServoEClass, MSERVO__OUTPUT_VOLTAGE);
     createEAttribute(mServoEClass, MSERVO__TARGET_POSITION);
     createEOperation(mServoEClass, MSERVO___INIT);
+    createEOperation(mServoEClass, MSERVO___SET_POINT__SHORT_INT_INT);
 
     mBrickDCEClass = createEClass(MBRICK_DC);
     createEAttribute(mBrickDCEClass, MBRICK_DC__DEVICE_TYPE);
@@ -5880,6 +5923,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickletLCD20x4EClass, MBRICKLET_LCD2_0X4__DISPLAY_ERRORS);
     createEAttribute(mBrickletLCD20x4EClass, MBRICKLET_LCD2_0X4__ERROR_PREFIX);
     createEOperation(mBrickletLCD20x4EClass, MBRICKLET_LCD2_0X4___INIT);
+    createEOperation(mBrickletLCD20x4EClass, MBRICKLET_LCD2_0X4___CLEAR);
 
     mlcd20x4BacklightEClass = createEClass(MLCD2_0X4_BACKLIGHT);
     createEAttribute(mlcd20x4BacklightEClass, MLCD2_0X4_BACKLIGHT__DEVICE_TYPE);
@@ -6845,6 +6889,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMServo_DeviceType(), theEcorePackage.getEString(), "deviceType", "servo", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMServo_Velocity(), theEcorePackage.getEInt(), "velocity", "65535", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMServo_Acceleration(), theEcorePackage.getEInt(), "acceleration", "65535", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMServo_MaxPosition(), theEcorePackage.getEShortObject(), "maxPosition", "9000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMServo_MinPosition(), theEcorePackage.getEShortObject(), "minPosition", "-9000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMServo_PulseWidthMin(), theEcorePackage.getEInt(), "pulseWidthMin", "1000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMServo_PulseWidthMax(), theEcorePackage.getEInt(), "pulseWidthMax", "2000", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMServo_Period(), theEcorePackage.getEInt(), "period", "19500", 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -6852,6 +6898,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMServo_TargetPosition(), theEcorePackage.getEShort(), "targetPosition", null, 0, 1, MServo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMServo__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    op = initEOperation(getMServo__SetPoint__Short_int_int(), theEcorePackage.getEBoolean(), "setPoint", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEShortObject(), "position", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEInt(), "velocity", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEInt(), "acceleration", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mBrickDCEClass, MBrickDC.class, "MBrickDC", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickDC_DeviceType(), theEcorePackage.getEString(), "deviceType", "brick_dc", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -7083,6 +7134,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickletLCD20x4_ErrorPrefix(), theEcorePackage.getEString(), "errorPrefix", "openhab Error:", 0, 1, MBrickletLCD20x4.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickletLCD20x4__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    initEOperation(getMBrickletLCD20x4__Clear(), theEcorePackage.getEBoolean(), "clear", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mlcd20x4BacklightEClass, MLCD20x4Backlight.class, "MLCD20x4Backlight", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMLCD20x4Backlight_DeviceType(), theEcorePackage.getEString(), "deviceType", "backlight", 0, 1, MLCD20x4Backlight.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

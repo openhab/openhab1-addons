@@ -79,6 +79,8 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getVelocity <em>Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getAcceleration <em>Acceleration</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMaxPosition <em>Max Position</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getMinPosition <em>Min Position</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPulseWidthMin <em>Pulse Width Min</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPulseWidthMax <em>Pulse Width Max</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MServoImpl#getPeriod <em>Period</em>}</li>
@@ -363,6 +365,46 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * @ordered
    */
   protected int acceleration = ACCELERATION_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getMaxPosition() <em>Max Position</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMaxPosition()
+   * @generated
+   * @ordered
+   */
+  protected static final Short MAX_POSITION_EDEFAULT = new Short((short)9000);
+
+  /**
+   * The cached value of the '{@link #getMaxPosition() <em>Max Position</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMaxPosition()
+   * @generated
+   * @ordered
+   */
+  protected Short maxPosition = MAX_POSITION_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getMinPosition() <em>Min Position</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMinPosition()
+   * @generated
+   * @ordered
+   */
+  protected static final Short MIN_POSITION_EDEFAULT = new Short((short)-9000);
+
+  /**
+   * The cached value of the '{@link #getMinPosition() <em>Min Position</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMinPosition()
+   * @generated
+   * @ordered
+   */
+  protected Short minPosition = MIN_POSITION_EDEFAULT;
 
   /**
    * The default value of the '{@link #getPulseWidthMin() <em>Pulse Width Min</em>}' attribute.
@@ -675,6 +717,52 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
    * <!-- end-user-doc -->
    * @generated
    */
+  public Short getMaxPosition()
+  {
+    return maxPosition;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMaxPosition(Short newMaxPosition)
+  {
+    Short oldMaxPosition = maxPosition;
+    maxPosition = newMaxPosition;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__MAX_POSITION, oldMaxPosition, maxPosition));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Short getMinPosition()
+  {
+    return minPosition;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMinPosition(Short newMinPosition)
+  {
+    Short oldMinPosition = minPosition;
+    minPosition = newMinPosition;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MSERVO__MIN_POSITION, oldMinPosition, minPosition));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public int getPulseWidthMin()
   {
     return pulseWidthMin;
@@ -957,42 +1045,21 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       logger.error("xvelocity may not be null");
       return;
     }
-    // I think these values should not be setable per item, only at initialization
-    // Integer period = Tools.getIntOpt(ConfigOptsServo.PERIOD.toString(), opts,
-    // tfConfig.getPeriod());
-    // if (period == null) {
-    // logger.error("period may not be null");
-    // return;
-    // }
-    // Integer pulsewidthmin =
-    // Tools
-    // .getIntOpt(ConfigOptsServo.PULSEWIDTHMIN.toString(), opts, tfConfig.getPulseWidthMin());
-    // if (pulsewidthmin == null) {
-    // logger.error("pulsewidthmin may not be null");
-    // return;
-    // }
-    // Integer pulsewidthmax =
-    // Tools
-    // .getIntOpt(ConfigOptsServo.PULSEWIDTHMAX.toString(), opts, tfConfig.getPulseWidthMax());
-    // if (pulsewidthmax == null) {
-    // logger.error("pulsewidthmax may not be null");
-    // return;
-    // }
     if (newPosition == null) {
       logger.error("position may not be null");
       return;
     }
-    Short max = Tools.getShortOpt(ConfigOptsDimmable.MAX.toString(), opts);
+    Short max = Tools.getShortOpt(ConfigOptsDimmable.MAX.toString(), opts, getMaxPosition());
     if (max == null) {
       logger.error("option max is missing, items configuration has to be fixed!");
       return;
     } else {
       logger.debug("max {}", max);
     }
-    Short min = Tools.getShortOpt(ConfigOptsDimmable.MIN.toString(), opts);
+    Short min = Tools.getShortOpt(ConfigOptsDimmable.MIN.toString(), opts, getMinPosition());
     logger.debug("min {}", min);
     if (min == null) {
-      logger.error("BrickDC dimmer option min is missing, items configuration has to be fixed!");
+      logger.error("dimmer option min is missing, items configuration has to be fixed!");
       return;
     }
     if (newPosition > max) {
@@ -1014,23 +1081,52 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return;
       }
     }
+    setPoint(newPosition, xvelocity, xacceleration);
+  }
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public boolean setPoint(Short newPosition, int newVelocity, int newAccelleration) {
+    Short max = getMaxPosition();
+    Short min = getMinPosition();
+    if (newPosition > max) {
+      if (this.targetPosition < newPosition) {
+        logger.debug("setting value to max speed {}, which is lower then target speed {}", max,
+            newPosition);
+        newPosition = max;
+      } else {
+        logger.debug("max value already reached {}", max);
+        return true;
+      }
+    } else if (newPosition < min) {
+      if (this.targetPosition > newPosition) {
+        logger.debug("setting velocity to min speed {}, which is higher then target speed {}", min,
+            newPosition);
+        newPosition = min;
+      } else {
+        logger.debug("min value already reached {}", min);
+        return true;
+      }
+    }
     try {
       BrickServo tinkerBrickServo = getMbrick().getTinkerforgeDevice();
-      // I think these values should not be setable per item, only at initialization
-      // tinkerBrickServo.setPulseWidth(servoNum, pulseWidthMin, pulseWidthMax);
-      // tinkerBrickServo.setPeriod(servoNum, period);
-      tinkerBrickServo.setVelocity(servoNum, xvelocity);
-      tinkerBrickServo.setAcceleration(servoNum, xacceleration);
+      tinkerBrickServo.setVelocity(servoNum, newVelocity);
+      tinkerBrickServo.setAcceleration(servoNum, newAccelleration);
       tinkerBrickServo.setPosition(servoNum, newPosition);
       setTargetPosition(newPosition);
+      return true;
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
       TinkerforgeErrorHandler.handleError(this,
           TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
     }
-
+    return false;
   }
+
 
   /**
    * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1482,6 +1578,10 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return getVelocity();
       case ModelPackage.MSERVO__ACCELERATION:
         return getAcceleration();
+      case ModelPackage.MSERVO__MAX_POSITION:
+        return getMaxPosition();
+      case ModelPackage.MSERVO__MIN_POSITION:
+        return getMinPosition();
       case ModelPackage.MSERVO__PULSE_WIDTH_MIN:
         return getPulseWidthMin();
       case ModelPackage.MSERVO__PULSE_WIDTH_MAX:
@@ -1550,6 +1650,12 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return;
       case ModelPackage.MSERVO__ACCELERATION:
         setAcceleration((Integer)newValue);
+        return;
+      case ModelPackage.MSERVO__MAX_POSITION:
+        setMaxPosition((Short)newValue);
+        return;
+      case ModelPackage.MSERVO__MIN_POSITION:
+        setMinPosition((Short)newValue);
         return;
       case ModelPackage.MSERVO__PULSE_WIDTH_MIN:
         setPulseWidthMin((Integer)newValue);
@@ -1625,6 +1731,12 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       case ModelPackage.MSERVO__ACCELERATION:
         setAcceleration(ACCELERATION_EDEFAULT);
         return;
+      case ModelPackage.MSERVO__MAX_POSITION:
+        setMaxPosition(MAX_POSITION_EDEFAULT);
+        return;
+      case ModelPackage.MSERVO__MIN_POSITION:
+        setMinPosition(MIN_POSITION_EDEFAULT);
+        return;
       case ModelPackage.MSERVO__PULSE_WIDTH_MIN:
         setPulseWidthMin(PULSE_WIDTH_MIN_EDEFAULT);
         return;
@@ -1686,6 +1798,10 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
         return velocity != VELOCITY_EDEFAULT;
       case ModelPackage.MSERVO__ACCELERATION:
         return acceleration != ACCELERATION_EDEFAULT;
+      case ModelPackage.MSERVO__MAX_POSITION:
+        return MAX_POSITION_EDEFAULT == null ? maxPosition != null : !MAX_POSITION_EDEFAULT.equals(maxPosition);
+      case ModelPackage.MSERVO__MIN_POSITION:
+        return MIN_POSITION_EDEFAULT == null ? minPosition != null : !MIN_POSITION_EDEFAULT.equals(minPosition);
       case ModelPackage.MSERVO__PULSE_WIDTH_MIN:
         return pulseWidthMin != PULSE_WIDTH_MIN_EDEFAULT;
       case ModelPackage.MSERVO__PULSE_WIDTH_MAX:
@@ -1949,6 +2065,8 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
       case ModelPackage.MSERVO___INIT:
         init();
         return null;
+      case ModelPackage.MSERVO___SET_POINT__SHORT_INT_INT:
+        return setPoint((Short)arguments.get(0), (Integer)arguments.get(1), (Integer)arguments.get(2));
       case ModelPackage.MSERVO___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS:
         setValue((BigDecimal)arguments.get(0), (DeviceOptions)arguments.get(1));
         return null;
@@ -2025,6 +2143,10 @@ public class MServoImpl extends MinimalEObjectImpl.Container implements MServo
     result.append(velocity);
     result.append(", acceleration: ");
     result.append(acceleration);
+    result.append(", maxPosition: ");
+    result.append(maxPosition);
+    result.append(", minPosition: ");
+    result.append(minPosition);
     result.append(", pulseWidthMin: ");
     result.append(pulseWidthMin);
     result.append(", pulseWidthMax: ");

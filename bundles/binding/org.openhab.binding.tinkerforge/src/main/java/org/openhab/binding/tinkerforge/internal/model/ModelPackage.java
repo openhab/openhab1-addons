@@ -2480,13 +2480,31 @@ public interface ModelPackage extends EPackage
   int MSERVO__ACCELERATION = MSENSOR_FEATURE_COUNT + 14;
 
   /**
+   * The feature id for the '<em><b>Max Position</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO__MAX_POSITION = MSENSOR_FEATURE_COUNT + 15;
+
+  /**
+   * The feature id for the '<em><b>Min Position</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO__MIN_POSITION = MSENSOR_FEATURE_COUNT + 16;
+
+  /**
    * The feature id for the '<em><b>Pulse Width Min</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MSERVO__PULSE_WIDTH_MIN = MSENSOR_FEATURE_COUNT + 15;
+  int MSERVO__PULSE_WIDTH_MIN = MSENSOR_FEATURE_COUNT + 17;
 
   /**
    * The feature id for the '<em><b>Pulse Width Max</b></em>' attribute.
@@ -2495,7 +2513,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__PULSE_WIDTH_MAX = MSENSOR_FEATURE_COUNT + 16;
+  int MSERVO__PULSE_WIDTH_MAX = MSENSOR_FEATURE_COUNT + 18;
 
   /**
    * The feature id for the '<em><b>Period</b></em>' attribute.
@@ -2504,7 +2522,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__PERIOD = MSENSOR_FEATURE_COUNT + 17;
+  int MSERVO__PERIOD = MSENSOR_FEATURE_COUNT + 19;
 
   /**
    * The feature id for the '<em><b>Output Voltage</b></em>' attribute.
@@ -2513,7 +2531,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__OUTPUT_VOLTAGE = MSENSOR_FEATURE_COUNT + 18;
+  int MSERVO__OUTPUT_VOLTAGE = MSENSOR_FEATURE_COUNT + 20;
 
   /**
    * The feature id for the '<em><b>Target Position</b></em>' attribute.
@@ -2522,7 +2540,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO__TARGET_POSITION = MSENSOR_FEATURE_COUNT + 19;
+  int MSERVO__TARGET_POSITION = MSENSOR_FEATURE_COUNT + 21;
 
   /**
    * The number of structural features of the '<em>MServo</em>' class.
@@ -2531,7 +2549,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MSERVO_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 20;
+  int MSERVO_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 22;
 
   /**
    * The operation id for the '<em>Fetch Sensor Value</em>' operation.
@@ -2642,13 +2660,22 @@ public interface ModelPackage extends EPackage
   int MSERVO___INIT = MSENSOR_OPERATION_COUNT + 11;
 
   /**
+   * The operation id for the '<em>Set Point</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MSERVO___SET_POINT__SHORT_INT_INT = MSENSOR_OPERATION_COUNT + 12;
+
+  /**
    * The number of operations of the '<em>MServo</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MSERVO_OPERATION_COUNT = MSENSOR_OPERATION_COUNT + 12;
+  int MSERVO_OPERATION_COUNT = MSENSOR_OPERATION_COUNT + 13;
 
   /**
    * The feature id for the '<em><b>Sensor Value</b></em>' attribute.
@@ -11473,13 +11500,22 @@ public interface ModelPackage extends EPackage
   int MBRICKLET_LCD2_0X4___INIT = MDEVICE_OPERATION_COUNT + 1;
 
   /**
+   * The operation id for the '<em>Clear</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICKLET_LCD2_0X4___CLEAR = MDEVICE_OPERATION_COUNT + 2;
+
+  /**
    * The number of operations of the '<em>MBricklet LCD2 0x4</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICKLET_LCD2_0X4_OPERATION_COUNT = MDEVICE_OPERATION_COUNT + 2;
+  int MBRICKLET_LCD2_0X4_OPERATION_COUNT = MDEVICE_OPERATION_COUNT + 3;
 
   /**
    * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl <em>MLCD2 0x4 Backlight</em>}' class.
@@ -16133,6 +16169,28 @@ public interface ModelPackage extends EPackage
   EAttribute getMServo_Acceleration();
 
   /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getMaxPosition <em>Max Position</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Max Position</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MServo#getMaxPosition()
+   * @see #getMServo()
+   * @generated
+   */
+  EAttribute getMServo_MaxPosition();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getMinPosition <em>Min Position</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Min Position</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MServo#getMinPosition()
+   * @see #getMServo()
+   * @generated
+   */
+  EAttribute getMServo_MinPosition();
+
+  /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MServo#getPulseWidthMin <em>Pulse Width Min</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -16196,6 +16254,16 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EOperation getMServo__Init();
+
+  /**
+   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.MServo#setPoint(java.lang.Short, int, int) <em>Set Point</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Set Point</em>' operation.
+   * @see org.openhab.binding.tinkerforge.internal.model.MServo#setPoint(java.lang.Short, int, int)
+   * @generated
+   */
+  EOperation getMServo__SetPoint__Short_int_int();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.CallbackListener <em>Callback Listener</em>}'.
@@ -17147,6 +17215,16 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EOperation getMBrickletLCD20x4__Init();
+
+  /**
+   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#clear() <em>Clear</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Clear</em>' operation.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4#clear()
+   * @generated
+   */
+  EOperation getMBrickletLCD20x4__Clear();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MTextActor <em>MText Actor</em>}'.
@@ -20004,6 +20082,22 @@ public interface ModelPackage extends EPackage
     EAttribute MSERVO__ACCELERATION = eINSTANCE.getMServo_Acceleration();
 
     /**
+     * The meta object literal for the '<em><b>Max Position</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MSERVO__MAX_POSITION = eINSTANCE.getMServo_MaxPosition();
+
+    /**
+     * The meta object literal for the '<em><b>Min Position</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MSERVO__MIN_POSITION = eINSTANCE.getMServo_MinPosition();
+
+    /**
      * The meta object literal for the '<em><b>Pulse Width Min</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -20050,6 +20144,14 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EOperation MSERVO___INIT = eINSTANCE.getMServo__Init();
+
+    /**
+     * The meta object literal for the '<em><b>Set Point</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation MSERVO___SET_POINT__SHORT_INT_INT = eINSTANCE.getMServo__SetPoint__Short_int_int();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.CallbackListener <em>Callback Listener</em>}' class.
@@ -20826,6 +20928,14 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EOperation MBRICKLET_LCD2_0X4___INIT = eINSTANCE.getMBrickletLCD20x4__Init();
+
+    /**
+     * The meta object literal for the '<em><b>Clear</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation MBRICKLET_LCD2_0X4___CLEAR = eINSTANCE.getMBrickletLCD20x4__Clear();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.MTextActor <em>MText Actor</em>}' class.

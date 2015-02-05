@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
+import org.openhab.binding.tinkerforge.ecosystem.TinkerforgeContext;
 import org.openhab.binding.tinkerforge.internal.config.ConfigurationHandler;
 import org.openhab.binding.tinkerforge.internal.model.ColorActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
@@ -149,6 +150,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
   private ModelFactory modelFactory;
   private OHConfig ohConfig;
   private boolean isConnected;
+  private TinkerforgeContext context = TinkerforgeContext.getInstance();
 
   public TinkerforgeBinding() {
     modelFactory = ModelFactory.eINSTANCE;
@@ -170,6 +172,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
       logger.debug("disconnect called");
       tinkerforgeEcosystem.disconnect();
       tinkerforgeEcosystem = null;
+      context.setEcosystem(null);
       isConnected = false;
     }
   }
@@ -179,6 +182,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
    */
   private void connectModel() {
     tinkerforgeEcosystem = modelFactory.createEcosystem();
+    context.setEcosystem(tinkerforgeEcosystem);
     listen2Model(tinkerforgeEcosystem);
     logger.debug("{} connectModel called", LoggerConstants.TFINIT);
     isConnected = true;
@@ -567,6 +571,10 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
    */
   protected void updateItemValues(TinkerforgeBindingProvider provider, String itemName,
       boolean only_poll_enabled) {
+    if ( tinkerforgeEcosystem == null){
+      logger.warn("tinkerforge ecosystem not yet ready");
+      return;
+    }
     String deviceUid = provider.getUid(itemName);
     Item item = provider.getItem(itemName);
     String deviceSubId = provider.getSubId(itemName);

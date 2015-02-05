@@ -262,12 +262,15 @@ class MServo extends MSensor<MDecimalValue>, ProgrammableSwitchActor, MSubDevice
 	readonly String deviceType = "servo"
 	int velocity = "65535" //max speed, set position immediately
 	int acceleration = "65535" // max acceleration, set position immediately
+	Short maxPosition = "9000"
+	Short minPosition = "-9000"
 	int pulseWidthMin = "1000"
 	int pulseWidthMax = "2000"
 	int period = "19500"
 	int outputVoltage =  "5000"
 	short targetPosition
 	op void init(){}
+	op boolean setPoint(Short position, int velocity, int acceleration)
 }
 
 class MBrickDC extends MSensor<MDecimalValue>, ProgrammableSwitchActor, MDevice<MTinkerBrickDC>, 
@@ -585,6 +588,7 @@ class MBrickletLCD20x4 extends MDevice<MTinkerBrickletLCD20x4>, MTextActor,
 	String positonSuffix = ">"
 	boolean displayErrors = "true"
 	readonly String errorPrefix = "openhab Error:"
+	op boolean clear()
 }
 
 class MLCD20x4Backlight extends MInSwitchActor, MLCDSubDevice{
