@@ -139,6 +139,8 @@
     <module>org.openhab.binding.zibase</module>
     <module>org.openhab.binding.wago</module>
     <module>org.openhab.binding.networkupstools</module>
+    <module>org.openhab.binding.caldav</module>
+	<module>org.openhab.binding.caldav-presence</module>
   </modules>
 
 </project>
