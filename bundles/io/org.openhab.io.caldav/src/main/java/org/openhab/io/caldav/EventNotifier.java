@@ -12,7 +12,7 @@ package org.openhab.io.caldav;
  * Public event notifier interface. Other bundles can register via this listener.
  * 
  * @author Robert Delbrück
- * @since 1.6.1
+ * @since 1.7.0
  */
 public interface EventNotifier {
 	void eventLoaded(CalDavEvent event);

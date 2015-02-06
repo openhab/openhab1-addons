@@ -51,7 +51,7 @@ import com.github.sardine.SardineFactory;
  * Default implementation of the CalDAV loader.
  * 
  * @author Robert Delbrück
- * @since 1.6.1
+ * @since 1.7.0
  * 
  */
 public class CalDavLoaderImpl extends AbstractActiveService implements

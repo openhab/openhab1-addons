@@ -15,7 +15,7 @@ import org.openhab.core.binding.BindingProvider;
 
 /**
  * @author Robert Delbrück
- * @since 1.6.1
+ * @since 1.7.0
  */
 public interface CalDavBindingProvider extends BindingProvider {
 	CalDavNextEventConfig getConfig(String item);

@@ -12,7 +12,7 @@ package org.openhab.binding.caldav.internal;
  * Item type
  * 
  * @author Robert
- * @since 1.6.1
+ * @since 1.7.0
  */
 public enum CalDavType {
 	VALUE,

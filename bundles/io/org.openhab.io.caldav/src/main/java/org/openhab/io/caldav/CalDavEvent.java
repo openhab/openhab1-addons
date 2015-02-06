@@ -15,7 +15,7 @@ import java.util.Date;
  * A calendar event
  * 
  * @author Robert Delbrück
- * @since 1.6.1
+ * @since 1.7.0
  */
 public class CalDavEvent {
 	private static final SimpleDateFormat SDF = new SimpleDateFormat("dd.MM.yyyy/HH:mm");

@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * END:ItemName:16
  * 
  * @author Robert Delbrück
- * @since 1.6.1
+ * @since 1.7.0
  */
 public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implements ManagedService, EventNotifier {
 
