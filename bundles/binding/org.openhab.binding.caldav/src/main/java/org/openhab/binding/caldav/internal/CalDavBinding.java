@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,7 +28,6 @@ import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.core.types.Type;
 import org.openhab.core.types.TypeParser;
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.CalDavLoader;
@@ -40,6 +39,9 @@ import org.slf4j.LoggerFactory;
 	
 
 /**
+ * This is the default implementation of the caldav binding
+ * 
+ * 
  * BEGIN:ItemName:ON
  * BEGIN:ItemName:23
  * 
@@ -47,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * END:ItemName:16
  * 
  * @author Robert Delbrück
- * @since 1.6.0
+ * @since 1.6.1
  */
 public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implements ManagedService, EventNotifier {
 
