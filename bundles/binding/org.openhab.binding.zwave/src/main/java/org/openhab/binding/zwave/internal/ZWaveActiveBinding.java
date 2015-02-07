@@ -284,7 +284,6 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			this.deactivate();
 			this.zController = new ZWaveController(masterController, isSUC, port, timeout, softReset);
 			this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
-			zController.initialize();
 			zController.addEventListener(this);
 
 			// The network monitor service needs to know the controller...

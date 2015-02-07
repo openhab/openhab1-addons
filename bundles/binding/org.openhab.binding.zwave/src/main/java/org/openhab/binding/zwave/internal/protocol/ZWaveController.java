@@ -158,7 +158,24 @@ public class ZWaveController {
 			this.watchdog.schedule(
 					new WatchDogTimerTask(serialPortName), 
 					WATCHDOG_TIMER_PERIOD, WATCHDOG_TIMER_PERIOD);
+			
+			Timer initTimer = new Timer();
+			initTimer.schedule(new InitializeDelayTask(), 2000);
 	}
+
+	private class InitializeDelayTask extends TimerTask {
+		private final Logger logger = LoggerFactory.getLogger(WatchDogTimerTask.class);
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void run() {
+			logger.debug("Initialising network");
+			initialize();
+		}
+	}
+
 
 	// Incoming message handlers
 	
