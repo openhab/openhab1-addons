@@ -1802,5 +1802,18 @@
 			<ConfigFile>yale/yrd210.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+                <Id>0166</Id>
+                <Name>Swiid</Name>
+                <Product>
+                        <Reference>
+                                <Type>0100</Type>
+                                <Id>0100</Id>
+                        </Reference>
+                        <Model>SW-ZCS-1</Model>
+                        <Label lang="en">Cord Switch</Label>
+                        <ConfigFile>swiid/swiidinter.xml</ConfigFile>
+                </Product>
+        </Manufacturer>
 	
 </Manufacturers>
