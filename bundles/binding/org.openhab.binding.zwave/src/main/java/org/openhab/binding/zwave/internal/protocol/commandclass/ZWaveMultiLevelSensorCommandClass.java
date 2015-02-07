@@ -410,13 +410,13 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 			return label;
 		}
 	}
-	
+
 	/**
 	 * Class to hold alarm state
 	 * @author Chris Jackson
 	 */
 	@XStreamAlias("multilevelSensor")
-	private class Sensor {
+	private static class Sensor {
 		SensorType sensorType;
 		boolean initialised = false;
 		
