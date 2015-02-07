@@ -966,8 +966,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
 
 					// Request all parameters for this node
-					for (ZWaveDbConfigurationParameter parameter : configList)
+					for (ZWaveDbConfigurationParameter parameter : configList) {
 						this.zController.sendData(configurationCommandClass.getConfigMessage(parameter.Index));
+					}
 				}
 			}
 

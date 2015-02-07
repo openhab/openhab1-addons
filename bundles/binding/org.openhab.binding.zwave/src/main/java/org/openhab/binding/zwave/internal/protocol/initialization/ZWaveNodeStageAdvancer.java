@@ -16,6 +16,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.openhab.binding.zwave.internal.config.ZWaveDbAssociationGroup;
 import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
+import org.openhab.binding.zwave.internal.config.ZWaveDbConfigurationParameter;
 import org.openhab.binding.zwave.internal.config.ZWaveProductDatabase;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -30,6 +31,7 @@ import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionComm
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassInitialization;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveManufacturerSpecificCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveNoOperationCommandClass;
@@ -725,6 +727,35 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 							logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - Adding ASSOCIATION to group {}", node.getNodeId(), group.Index);
 							addToQueue(associationCls.setAssociationMessage(group.Index, controller.getOwnNodeId()));
 						}
+					}
+				}
+				break;
+				
+			case GET_CONFIGURATION:
+				database = new ZWaveProductDatabase();
+				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+					// No database entry for this device!
+					logger.warn("NODE {}: Node advancer: GET_CONFIGURATION - Unknown device: {}:{}:{}", node.getNodeId(),
+							Integer.toHexString(node.getManufacturer()), Integer.toHexString(node.getDeviceType()), Integer.toHexString(node.getDeviceId()));
+					break;
+				}
+
+				ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
+						.getCommandClass(CommandClass.CONFIGURATION);
+
+				if (configurationCommandClass == null) {
+					logger.error("NODE {}: Node advancer: GET_CONFIGURATION - CONFIGURATION class not supported", node.getNodeId());
+					break;
+				}
+
+				// Request all parameters for this node
+				List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
+				for (ZWaveDbConfigurationParameter parameter : configList) {
+					// If this is the first time around the loop
+					// or we don't have a value for this parameter
+					// then request it!
+					if(stageAdvanced == false || configurationCommandClass.getParameter(parameter.Index) == null) {
+						addToQueue(configurationCommandClass.getConfigMessage(parameter.Index));
 					}
 				}
 				break;
