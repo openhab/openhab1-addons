@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.action.hue.AbstractHueResource;
-import org.openhab.binding.hue.internal.common.HueContext;
+import org.openhab.binding.hue.internal.HueContext;
 import org.openhab.binding.hue.internal.data.HueSettings;
 import org.openhab.binding.hue.internal.data.HueSettings.SettingsTree;
 import org.openhab.binding.hue.internal.hardware.HueBridge;

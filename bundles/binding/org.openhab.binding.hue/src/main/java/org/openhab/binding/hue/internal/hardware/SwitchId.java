@@ -1,4 +1,4 @@
-package org.openhab.binding.hue.internal.common;
+package org.openhab.binding.hue.internal.hardware;
 
 import java.util.HashMap;
 
