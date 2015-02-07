@@ -373,7 +373,7 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
 	 * @author Chris Jackson
 	 */
 	@XStreamAlias("alarmSensor")
-	private class Alarm {
+	private static class Alarm {
 		AlarmType alarmType;
 		@XStreamOmitField
 		boolean initialised = false;
