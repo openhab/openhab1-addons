@@ -45,28 +45,28 @@ public class HueActions {
 
 	
 	
-	/**
-	 * set Group to those id's; if a group with this name doesn't exist, create a new own
-	 * TODO: create similar procedure with Items/Groups passed directly!!!
-	 * @param name 
-	 * @param hueIds a list of hue ID's seperated by ';'
-	 * @return id of generated hue group
-	 */
-	public static String hueSetGroup(String name,String hueIds){
-		logger.error("not yet implemented");
-		return "0";
-	}
+//	/**
+//	 * set Group to those id's; if a group with this name doesn't exist, create a new own
+//	 * TODO: create similar procedure with Items/Groups passed directly!!!
+//	 * @param name 
+//	 * @param hueIds a list of hue ID's seperated by ';'
+//	 * @return id of generated hue group
+//	 */
+//	public static String hueSetGroup(String name,String hueIds){
+//		logger.error("not yet implemented");
+//		return "0";
+//	}
 	
 	
 	/*
 	 * 
 	 * set settings for this scene on the light(s)
 	 */
-	@ActionDoc(text = "not yet implemented")
+	@ActionDoc(text = "Set settings for a scene")
 	public static String hueSetSceneSettings(
 			@ParamDoc(name = "sceneId", text = "Id of the Scene")String sceneId,
 			@ParamDoc(name = "lightIds", text = "List of Lights seperated by ','")String lightIds,
-			@ParamDoc(name = "body", text = "Settings for those lights in scene") String body){
+			@ParamDoc(name = "body", text = "Settings for those lights in scene as json body") String body){
 		
 		String result="";
 		for(String light:splitIdString(lightIds)){	
@@ -81,9 +81,11 @@ public class HueActions {
 	 * @param sceneName
 	 * @return message from bridge or null if failed
 	 */
-	@ActionDoc(text = "Create a new Scene on Bridge")
+	@ActionDoc(text = "Create a new Scene on the bridge, and store all lights' settings for this scene")
 	public static String hueSetScene(
-				String sceneId,String sceneName, String lights){
+			@ParamDoc(name = "sceneId", text = "Id of the Scene")					String sceneId,
+			@ParamDoc(name = "sceneName", text = "Name of the Scene")				String sceneName, 
+			@ParamDoc(name = "lightIds", text = "List of Lights seperated by ','") 	String lights){
 		Scene s=new Scene(sceneName,splitIdString(lights));
 		String result=resourceRequest(HttpMethod.PUT,"scenes/"+sceneId,s);
 		
@@ -161,6 +163,7 @@ public class HueActions {
 		hueSetRule(r.toJson());
 	}
 
+	@ActionDoc(text = "Delete all rules on Bridge. This have can serious sideeffects on Settings stored with the hue app!")
 	public static String hueDeleteAllRules(){
 		HueSettings settings=getHueSettings();
 		SettingsTree rules=settings.getRules();
