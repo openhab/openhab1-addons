@@ -14,21 +14,25 @@
     	<Parameter>
     		<Index>1</Index>
     		<Type>list</Type>
-    		<Default>00</Default>
+    		<Default>255</Default>
     		<Size>1</Size>
-			<Label lang="en">Selects the switch mode. The value 255 is normal mode (switch on and off) and default operation.</Label>    			<Item>
+			<Label lang="en">Switch All</Label>
+			<Item>
     			<Value>0</Value>
     			<Label lang="en">Disabled</Label>
     		</Item>
     		<Item>
 				<Value>1</Value>
-    			<Label lang="en">Switch off only</Label>
+    			<Label lang="en">Switch on only</Label>
     		</Item>
 			<Item>
     			<Value>2</Value>
     			<Label lang="en">Switch off only</Label>
     		</Item>
-    		<Help lang="en"></Help>
+    		<Item>
+    			<Value>255</Value>
+    			<Label lang="en">Fully enabled (Default)</Label>
+    		</Item>
     	</Parameter>
     </Configuration>
     <Associations>
@@ -41,6 +45,7 @@
     		<Index>2</Index>
     		<Maximum>5</Maximum>
     		<Label lang="en">Group 2</Label>
+    		<SetToController>true</SetToController>
     	</Group>
     </Associations>
 </Product>
