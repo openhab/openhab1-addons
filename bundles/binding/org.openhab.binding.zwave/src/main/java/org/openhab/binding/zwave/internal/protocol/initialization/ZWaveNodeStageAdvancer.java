@@ -277,6 +277,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		// This continues until there are no requests required.
 		stageAdvanced = false;
 
+		ZWaveProductDatabase database;
+
 		// We run through all stages until one queues a message.
 		// Then we will wait for the response before continuing
 		do {
@@ -509,7 +511,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				logger.debug("NODE {}: Node advancer: UPDATE_DATABASE", node.getNodeId());
 
 				// We now should know all the command classes, so run through the database and set any options
-				ZWaveProductDatabase database = new ZWaveProductDatabase();
+				database = new ZWaveProductDatabase();
 				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == true) {
 					List<ZWaveDbCommandClass> classList = database.getProductCommandClasses();
 
@@ -658,7 +660,9 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				}
 				break;
 
-			case WAKEUP:
+			case SET_WAKEUP:
+				// This stage sets the wakeup class if we're the master controller
+				// It sets the node to point to us, and the time is left along
 				if(controller.isMasterController() == false) {
 					break;
 				}
@@ -666,25 +670,63 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				ZWaveWakeUpCommandClass wakeupCommandClass = (ZWaveWakeUpCommandClass) node.getCommandClass(CommandClass.WAKE_UP);
 
 				if (wakeupCommandClass == null) {
-					logger.debug("NODE {}: Node advancer: WAKEUP - Wakeup command class not supported", node.getNodeId());
+					logger.debug("NODE {}: Node advancer: SET_WAKEUP - Wakeup command class not supported", node.getNodeId());
 					break;
 				}
 
 				if (wakeupCommandClass.getTargetNodeId() == controller.getOwnNodeId()) {
-					logger.debug("NODE {}: Node advancer: WAKEUP - TargetNode is set to controller", node.getNodeId());
+					logger.debug("NODE {}: Node advancer: SET_WAKEUP - TargetNode is set to controller", node.getNodeId());
 					break;
 				}
 
 				if (wakeupCommandClass.getInterval() == 0) {
-					logger.debug("NODE {}: Node advancer: WAKEUP - Interval is currently 0. Skipping stage", node.getNodeId(), controller.getOwnNodeId());
+					logger.debug("NODE {}: Node advancer: SET_WAKEUP - Interval is currently 0. Skipping stage", node.getNodeId(), controller.getOwnNodeId());
 					break;
 				}
 
-				logger.debug("NODE {}: Node advancer: WAKEUP - Set wakeup node to controller ({})", node.getNodeId(), controller.getOwnNodeId());
+				logger.debug("NODE {}: Node advancer: SET_WAKEUP - Set wakeup node to controller ({})", node.getNodeId(), controller.getOwnNodeId());
 
 				// Set the wake-up interval, and request an update
 				addToQueue(wakeupCommandClass.setInterval(wakeupCommandClass.getInterval()));
 				addToQueue(wakeupCommandClass.getIntervalMessage());
+				break;
+				
+			case SET_ASSOCIATION:
+				database = new ZWaveProductDatabase();
+				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+					// No database entry for this device!
+					logger.warn("NODE {}: Node advancer: SET_ASSOCIATION - Unknown device: {}:{}:{}", node.getNodeId(),
+							Integer.toHexString(node.getManufacturer()), Integer.toHexString(node.getDeviceType()), Integer.toHexString(node.getDeviceId()));
+					break;
+				}
+
+				List<ZWaveDbAssociationGroup> groups = database.getProductAssociationGroups();
+				if(groups == null || groups.size() == 0) {
+					logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - No association groups", node.getNodeId());
+					break;
+				}
+
+				// Get the group members
+				ZWaveAssociationCommandClass associationCls = (ZWaveAssociationCommandClass) node
+						.getCommandClass(CommandClass.ASSOCIATION);
+				if(associationCls == null) {
+					logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - ASSOCIATION class not supported", node.getNodeId());
+					break;
+				}
+
+				// Loop through all the groups in the database
+				for (ZWaveDbAssociationGroup group : groups) {
+					if(group.SetToController == true) {
+						// Check if we're already a member
+						if(associationCls.getGroupMembers(group.Index).contains(controller.getOwnNodeId())) {
+							logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - ASSOCIATION already set for group {}", node.getNodeId(), group.Index);
+						}
+						else {
+							logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - Adding ASSOCIATION to group {}", node.getNodeId(), group.Index);
+							addToQueue(associationCls.setAssociationMessage(group.Index, controller.getOwnNodeId()));
+						}
+					}
+				}
 				break;
 
 			case STATIC_END:
