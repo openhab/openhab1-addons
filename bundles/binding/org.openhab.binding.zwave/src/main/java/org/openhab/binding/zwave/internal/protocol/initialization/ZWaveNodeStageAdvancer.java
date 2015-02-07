@@ -161,12 +161,12 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 	 * Starts the initialisation from the beginning.
 	 */
 	public void startInitialisation() {
-		// Set an event callback so we get notification of events
-		controller.addEventListener(this);
-
 		// Reset the state variables
 		currentStage = ZWaveNodeInitStage.EMPTYNODE;
 		queryStageTimeStamp = Calendar.getInstance().getTime();
+
+		// Set an event callback so we get notification of events
+		controller.addEventListener(this);
 
 		// Get things moving...
 		advanceNodeStage(null);
@@ -582,46 +582,6 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				logger.debug("NODE {}: Node advancer: STATIC_VALUES - queued {} frames", node.getNodeId(), msgQueue.size());
 				break;
 
-			case DYNAMIC_VALUES:
-				for (ZWaveCommandClass zwaveDynamicClass : node.getCommandClasses()) {
-					logger.debug("NODE {}: Node advancer: DYNAMIC_VALUES - checking {}", node.getNodeId(), zwaveDynamicClass
-							.getCommandClass().getLabel());
-					if (zwaveDynamicClass instanceof ZWaveCommandClassDynamicState) {
-						logger.debug("NODE {}: Node advancer: DYNAMIC_VALUES - found    {}", node.getNodeId(), zwaveDynamicClass
-								.getCommandClass().getLabel());
-						ZWaveCommandClassDynamicState zdds = (ZWaveCommandClassDynamicState) zwaveDynamicClass;
-						int instances = zwaveDynamicClass.getInstances();
-						logger.debug("NODE {}: Found {} instances of {}", node.getNodeId(), instances, zwaveDynamicClass.getCommandClass());
-						if (instances == 1) {
-							addToQueue(zdds.getDynamicValues(stageAdvanced));
-						}
-						else {
-							for (int i = 1; i <= instances; i++) {
-								addToQueue(zdds.getDynamicValues(stageAdvanced), zwaveDynamicClass, i);
-							}
-						}
-					}
-					else if (zwaveDynamicClass instanceof ZWaveMultiInstanceCommandClass) {
-						ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) zwaveDynamicClass;
-						for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
-							for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
-								logger.debug("NODE {}: Node advancer: DYNAMIC_VALUES - checking {} for endpoint {}",
-										node.getNodeId(), endpointCommandClass.getCommandClass().getLabel(),
-										endpoint.getEndpointId());
-								if (endpointCommandClass instanceof ZWaveCommandClassDynamicState) {
-									logger.debug("NODE {}: Node advancer: DYNAMIC_VALUES - found    {}", node.getNodeId(),
-											endpointCommandClass.getCommandClass().getLabel());
-									ZWaveCommandClassDynamicState zdds2 = (ZWaveCommandClassDynamicState) endpointCommandClass;
-									addToQueue(zdds2.getDynamicValues(stageAdvanced), endpointCommandClass,
-											endpoint.getEndpointId());
-								}
-							}
-						}
-					}
-				}
-				logger.debug("NODE {}: Node advancer: DYNAMIC_VALUES - queued {} frames", node.getNodeId(), msgQueue.size());
-				break;
-
 			case ASSOCIATIONS:
 				// Do we support associations
 				ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node.getCommandClass(CommandClass.ASSOCIATION);
@@ -692,8 +652,12 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				addToQueue(wakeupCommandClass.setInterval(wakeupCommandClass.getInterval()));
 				addToQueue(wakeupCommandClass.getIntervalMessage());
 				break;
-				
+
 			case SET_ASSOCIATION:
+				if(controller.isMasterController() == false) {
+					break;
+				}
+
 				database = new ZWaveProductDatabase();
 				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
 					// No database entry for this device!
@@ -730,7 +694,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					}
 				}
 				break;
-				
+
 			case GET_CONFIGURATION:
 				database = new ZWaveProductDatabase();
 				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
@@ -754,10 +718,50 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					// If this is the first time around the loop
 					// or we don't have a value for this parameter
 					// then request it!
-					if(stageAdvanced == false || configurationCommandClass.getParameter(parameter.Index) == null) {
+					if(configurationCommandClass.getParameter(parameter.Index) == null) {
 						addToQueue(configurationCommandClass.getConfigMessage(parameter.Index));
 					}
 				}
+				break;
+				
+			case DYNAMIC_VALUES:
+				for (ZWaveCommandClass zwaveDynamicClass : node.getCommandClasses()) {
+					logger.debug("NODE {}: Node advancer: DYNAMIC_VALUES - checking {}", node.getNodeId(), zwaveDynamicClass
+							.getCommandClass().getLabel());
+					if (zwaveDynamicClass instanceof ZWaveCommandClassDynamicState) {
+						logger.debug("NODE {}: Node advancer: DYNAMIC_VALUES - found    {}", node.getNodeId(), zwaveDynamicClass
+								.getCommandClass().getLabel());
+						ZWaveCommandClassDynamicState zdds = (ZWaveCommandClassDynamicState) zwaveDynamicClass;
+						int instances = zwaveDynamicClass.getInstances();
+						logger.debug("NODE {}: Found {} instances of {}", node.getNodeId(), instances, zwaveDynamicClass.getCommandClass());
+						if (instances == 1) {
+							addToQueue(zdds.getDynamicValues(stageAdvanced));
+						}
+						else {
+							for (int i = 1; i <= instances; i++) {
+								addToQueue(zdds.getDynamicValues(stageAdvanced), zwaveDynamicClass, i);
+							}
+						}
+					}
+					else if (zwaveDynamicClass instanceof ZWaveMultiInstanceCommandClass) {
+						ZWaveMultiInstanceCommandClass multiInstanceCommandClass = (ZWaveMultiInstanceCommandClass) zwaveDynamicClass;
+						for (ZWaveEndpoint endpoint : multiInstanceCommandClass.getEndpoints()) {
+							for (ZWaveCommandClass endpointCommandClass : endpoint.getCommandClasses()) {
+								logger.debug("NODE {}: Node advancer: DYNAMIC_VALUES - checking {} for endpoint {}",
+										node.getNodeId(), endpointCommandClass.getCommandClass().getLabel(),
+										endpoint.getEndpointId());
+								if (endpointCommandClass instanceof ZWaveCommandClassDynamicState) {
+									logger.debug("NODE {}: Node advancer: DYNAMIC_VALUES - found    {}", node.getNodeId(),
+											endpointCommandClass.getCommandClass().getLabel());
+									ZWaveCommandClassDynamicState zdds2 = (ZWaveCommandClassDynamicState) endpointCommandClass;
+									addToQueue(zdds2.getDynamicValues(stageAdvanced), endpointCommandClass,
+											endpoint.getEndpointId());
+								}
+							}
+						}
+					}
+				}
+				logger.debug("NODE {}: Node advancer: DYNAMIC_VALUES - queued {} frames", node.getNodeId(), msgQueue.size());
 				break;
 
 			case STATIC_END:
