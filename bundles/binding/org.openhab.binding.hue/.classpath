@@ -1,33 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src/main/java/"/>
-	<classpathentry kind="src" path="src/main/resources/"/>
-	<classpathentry exported="true" kind="lib" path="ant-antlr.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-apache-bcel.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-apache-bsf.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-apache-log4j.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-apache-oro.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-apache-regexp.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-apache-resolver.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-apache-xalan2.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-commons-logging.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-commons-net.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-jai.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-javamail.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-jdepend.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-jmf.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-jsch.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-junit.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-junit4.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-launcher.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-netrexx.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-swing.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant-testutil.jar"/>
-	<classpathentry exported="true" kind="lib" path="ant.jar"/>
-	<classpathentry exported="true" kind="lib" path="jdi.jar"/>
-	<classpathentry exported="true" kind="lib" path="jdimodel.jar"/>
-	<classpathentry exported="true" kind="lib" path="quartz-all-2.1.7.jar"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
