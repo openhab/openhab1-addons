@@ -32,13 +32,13 @@ public class Read {
 
 	private static void printUsage() {
 		System.out
-				.println("SYNOPSIS\n\torg.stiebelheatpump.Read [-b <baud_rate>] -c <config_file> <serial_port>");
+				.println("SYNOPSIS\n\torg.stiebelheatpump.Read [-b <baud_rate>] -c <config_file> -d <serial_port>");
 		System.out
 				.println("DESCRIPTION\n\tReads the heat pump version connected to the given serial port and prints the received data to stdout. "
 						+ "Errors are printed to stderr.");
 		System.out.println("OPTIONS");
 		System.out
-				.println("\t<serial_port>\n\t    The serial port used for communication. Examples are /dev/ttyS0 (Linux) or COM1 (Windows)\n");
+				.println("\t-d <serial_port>\n\t    The serial port used for communication. Examples are /dev/ttyS0 (Linux) or COM1 (Windows)\n");
 		System.out
 				.println("\t-b <baud_rate>\n\t    Baud rate. Default is 9600.\n");
 		System.out
@@ -50,7 +50,7 @@ public class Read {
 			printUsage();
 			System.exit(1);
 		}
-		for (int i = 0; i < args.length; i++)
+		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-b")) {
 				if (++i == args.length) {
 					printUsage();
@@ -68,38 +68,43 @@ public class Read {
 					System.exit(1);
 				}
 				configFile = args[i];
-			} else {
+			} else if (args[i].equals("-d")) {
+				if (++i == args.length) {
+					printUsage();
+					System.exit(1);
+				}
 				serialPortName = args[i];
 			}
+		}
 
 		try {
 
-				CommunicationService communicationService = new CommunicationService(
-						serialPortName, baudRate);
-				Map<String, String> data = new HashMap<String, String>();
-				communicationService.getHeatPumpConfiguration(configFile);
+			CommunicationService communicationService = new CommunicationService(
+					serialPortName, baudRate);
+			Map<String, String> data = new HashMap<String, String>();
+			communicationService.getHeatPumpConfiguration(configFile);
 
-				String version = communicationService.getversion();
-				logger.info("Heat pump has version {}", version);
+			String version = communicationService.getversion();
+			logger.info("Heat pump has version {}", version);
 
-				data = communicationService.getSettings();
-				for (Map.Entry<String, String> entry : data.entrySet()) {
-					logger.info("Data {} has value {}", entry.getKey(),
-							entry.getValue());
-				}
+			data = communicationService.getSettings();
+			for (Map.Entry<String, String> entry : data.entrySet()) {
+				logger.info("Data {} has value {}", entry.getKey(),
+						entry.getValue());
+			}
 
-				data = communicationService.getStatus();
-				for (Map.Entry<String, String> entry : data.entrySet()) {
-					logger.info("Data {} has value {}", entry.getKey(),
-							entry.getValue());
-				}
+			data = communicationService.getStatus();
+			for (Map.Entry<String, String> entry : data.entrySet()) {
+				logger.info("Data {} has value {}", entry.getKey(),
+						entry.getValue());
+			}
 
-				data = communicationService.getSensors();
-				for (Map.Entry<String, String> entry : data.entrySet()) {
-					logger.info("Data {} has value {}", entry.getKey(),
-							entry.getValue());
-				}
-				communicationService.finalizer();
+			data = communicationService.getSensors();
+			for (Map.Entry<String, String> entry : data.entrySet()) {
+				logger.info("Data {} has value {}", entry.getKey(),
+						entry.getValue());
+			}
+			communicationService.finalizer();
 		} catch (StiebelHeatPumpException e) {
 			logger.error("Error : {}", e.toString());
 		}

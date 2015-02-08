@@ -24,9 +24,12 @@ import org.slf4j.LoggerFactory;
  * @author Peter Kreutzer
  * @since 1.5.0
  */
-public class StiebelHeatPumpGenericBindingProvider extends AbstractGenericBindingProvider implements StiebelHeatPumpBindingProvider {
+public class StiebelHeatPumpGenericBindingProvider extends
+		AbstractGenericBindingProvider implements
+		StiebelHeatPumpBindingProvider {
 
-	private static final Logger logger = LoggerFactory.getLogger(StiebelHeatPumpGenericBindingProvider.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(StiebelHeatPumpGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
@@ -36,48 +39,54 @@ public class StiebelHeatPumpGenericBindingProvider extends AbstractGenericBindin
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * @{inheritDoc
 	 */
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
+	public void validateItemType(Item item, String bindingConfig)
+			throws BindingConfigParseException {
 		if (!(item instanceof NumberItem || item instanceof StringItem)) {
-			throw new BindingConfigParseException("item '" + item.getName()
-					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', only Number- and StringItems are allowed - please check your *.items configuration");
+			throw new BindingConfigParseException(
+					"item '"
+							+ item.getName()
+							+ "' is of type '"
+							+ item.getClass().getSimpleName()
+							+ "', only Number- and StringItems are allowed - please check your *.items configuration");
 		}
 		logger.debug(bindingConfig);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item,
+			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		StiebelHeatPumpBindingConfig config = new StiebelHeatPumpBindingConfig();	
-		config.parameter=bindingConfig.trim();
+		StiebelHeatPumpBindingConfig config = new StiebelHeatPumpBindingConfig();
+		config.parameter = bindingConfig.trim();
 		config.itemType = item.getClass();
-		addBindingConfig(item, config);		
+		addBindingConfig(item, config);
 	}
-		
 
 	/**
 	 * @{inheritDoc
 	 */
 	public String getParameter(String itemName) {
-		StiebelHeatPumpBindingConfig config = (StiebelHeatPumpBindingConfig) bindingConfigs.get(itemName);
+		StiebelHeatPumpBindingConfig config = (StiebelHeatPumpBindingConfig) bindingConfigs
+				.get(itemName);
 		return config != null ? config.parameter : null;
 	}
-	
+
 	/**
 	 * @{inheritDoc
 	 */
 	public Class<? extends Item> getItemType(String itemName) {
-		StiebelHeatPumpBindingConfig config = (StiebelHeatPumpBindingConfig) bindingConfigs.get(itemName);
+		StiebelHeatPumpBindingConfig config = (StiebelHeatPumpBindingConfig) bindingConfigs
+				.get(itemName);
 		return config != null ? config.itemType : null;
 	}
-		
+
 	class StiebelHeatPumpBindingConfig implements BindingConfig {
 		public String parameter;
 		public Class<? extends Item> itemType;
-	}	
-	
+	}
+
 }

@@ -21,10 +21,11 @@ import org.slf4j.LoggerFactory;
  */
 public final class StiebelHeatPumpActivator implements BundleActivator {
 
-	private static Logger logger = LoggerFactory.getLogger(StiebelHeatPumpActivator.class); 
-	
+	private static Logger logger = LoggerFactory
+			.getLogger(StiebelHeatPumpActivator.class);
+
 	private static BundleContext context;
-	
+
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
@@ -40,13 +41,14 @@ public final class StiebelHeatPumpActivator implements BundleActivator {
 		context = null;
 		logger.debug("stiebelheatpump binding has been stopped.");
 	}
-	
+
 	/**
 	 * Returns the bundle context of this bundle
+	 * 
 	 * @return the bundle context
 	 */
 	public static BundleContext getContext() {
 		return context;
 	}
-	
+
 }

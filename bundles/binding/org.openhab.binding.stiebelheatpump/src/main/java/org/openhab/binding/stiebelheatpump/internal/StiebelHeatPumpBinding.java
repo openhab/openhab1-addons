@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.stiebelheatpump.StiebelHeatPumpBindingProvider;
-import org.openhab.binding.stiebelheatpump.protocol.DataParser;
 import org.openhab.binding.stiebelheatpump.protocol.Request;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.items.Item;
@@ -68,13 +67,13 @@ public class StiebelHeatPumpBinding extends
 
 	/** heat pump request definition */
 	private List<Request> heatPumpConfiguration = new ArrayList<Request>();
-	
-	//** request to get the version of the heat pump
+
+	// ** request to get the version of the heat pump
 	Request versionRequest;
-	
-	//** indicates if the communication is currently in use by a call 
+
+	// ** indicates if the communication is currently in use by a call
 	boolean communicationInUse = false;
-	
+
 	public StiebelHeatPumpBinding() {
 	}
 
@@ -83,7 +82,7 @@ public class StiebelHeatPumpBinding extends
 	}
 
 	public void deactivate() {
-	
+
 	}
 
 	/**
@@ -104,17 +103,20 @@ public class StiebelHeatPumpBinding extends
 	 * @{inheritDoc
 	 */
 	protected void execute() {
-		
-		if (communicationInUse) return;
-		
+
+		if (communicationInUse)
+			return;
+
 		logger.debug("Refresh heat pump sensor and status values ...");
+		communicationInUse = true;
+		CommunicationService communicationService = null;
+
 		try {
-			communicationInUse = true;
-			CommunicationService communicationService = new CommunicationService(
-					serialPort, baudRate, heatPumpConfiguration);
+			communicationService = new CommunicationService(serialPort,
+					baudRate, heatPumpConfiguration);
 			Map<String, String> data = new HashMap<String, String>();
 			Map<String, String> allData = new HashMap<String, String>();
-			
+
 			data = communicationService.getStatus();
 			allData.putAll(data);
 			for (Map.Entry<String, String> entry : data.entrySet()) {
@@ -132,10 +134,10 @@ public class StiebelHeatPumpBinding extends
 
 			publishValues(allData);
 		} catch (StiebelHeatPumpException e) {
-			logger.error("Could not read data from heat pump! "
-					+ e.toString());
-		}finally{
-			communicationInUse=false;
+			logger.error("Could not read data from heat pump! " + e.toString());
+		} finally {
+			communicationService.finalizer();
+			communicationInUse = false;
 		}
 	}
 
@@ -144,20 +146,20 @@ public class StiebelHeatPumpBinding extends
 	 */
 	protected void internalReceiveCommand(String itemName, Command command) {
 		logger.debug("Received command {} for item {}", command, itemName);
-		
+
 		int retry = 0;
 		while (communicationInUse & (retry < DEFAULT_SERIAL_TIMEOUT)) {
 			try {
 				Thread.sleep(CommunicationService.WAITING_TIME_BETWEEN_REQUESTS);
 			} catch (InterruptedException e) {
-				logger.debug(
-						"Could not get access to heatpump ! : {}",
+				logger.debug("Could not get access to heatpump ! : {}",
 						e.toString());
 			}
-			retry++;			
-		}		
-		if (communicationInUse) return;
-		
+			retry++;
+		}
+		if (communicationInUse)
+			return;
+
 		for (StiebelHeatPumpBindingProvider provider : providers) {
 			for (String name : provider.getItemNames()) {
 				if (!name.equals(itemName)) {
@@ -172,18 +174,19 @@ public class StiebelHeatPumpBinding extends
 					communicationInUse = true;
 					CommunicationService communicationService = new CommunicationService(
 							serialPort, baudRate, heatPumpConfiguration);
-					data = communicationService.setData(command.toString(), parameter);
-					
+					data = communicationService.setData(command.toString(),
+							parameter);
+
 					communicationService.finalizer();
-					
+
 					publishValues(data);
 				} catch (StiebelHeatPumpException e) {
 					logger.error("Could not set new value!");
-				} finally{
-					communicationInUse=false;
+				} finally {
+					communicationInUse = false;
 				}
 			}
-		}		
+		}
 	}
 
 	/**
@@ -244,12 +247,15 @@ public class StiebelHeatPumpBinding extends
 					serialPort, baudRate, version);
 
 			setProperlyConfigured(isInitialized);
-			
 		}
 	}
 
 	/**
-	 * This method reads initially all information from the heat pump
+	 * This method reads initially all information from the heat pump It read
+	 * the configuration file and loads all defined record definitions of sensor
+	 * data, status information , actual time settings and setting parameter
+	 * values. I case of the time the time is initially verified and set to
+	 * actual time.
 	 * 
 	 * @return true if heat pump information could be successfully read
 	 */
@@ -260,31 +266,32 @@ public class StiebelHeatPumpBinding extends
 			Map<String, String> data = new HashMap<String, String>();
 			Map<String, String> allData = new HashMap<String, String>();
 
-			heatPumpConfiguration =  communicationService.getHeatPumpConfiguration(version + ".xml");
+			heatPumpConfiguration = communicationService
+					.getHeatPumpConfiguration(version + ".xml");
 			String version = communicationService.getversion();
 			logger.info("Heat pump has version {}", version);
-			allData.put("Version",version);
-			
+			allData.put("Version", version);
+
 			data = communicationService.getSettings();
 			allData.putAll(data);
 
-			data=communicationService.getStatus();
+			data = communicationService.getStatus();
 			allData.putAll(data);
 
 			data = communicationService.getSensors();
 			allData.putAll(data);
-			
+
 			for (Map.Entry<String, String> entry : allData.entrySet()) {
 				logger.debug("Data {} has value {}", entry.getKey(),
 						entry.getValue());
 			}
-			
+
 			communicationService.setTime();
-			
+
 			communicationService.finalizer();
 
 			publishValues(allData);
-			
+
 			return true;
 		} catch (StiebelHeatPumpException e) {
 			logger.error("Stiebel heatpump version could not be read from heat pump! "

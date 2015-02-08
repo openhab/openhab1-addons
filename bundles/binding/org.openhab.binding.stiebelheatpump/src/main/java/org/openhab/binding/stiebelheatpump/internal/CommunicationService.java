@@ -42,7 +42,7 @@ public class CommunicationService {
 	private List<Request> heatPumpSettingConfiguration = new ArrayList<Request>();
 	private List<Request> heatPumpStatusConfiguration = new ArrayList<Request>();
 	Request versionRequest;
-	
+
 	DataParser parser = new DataParser();
 
 	private static final Logger logger = LoggerFactory
@@ -97,7 +97,7 @@ public class CommunicationService {
 	 * @return map of heat pump setting values
 	 */
 	public Map<String, String> getSettings() throws StiebelHeatPumpException {
-		logger.info("Loading Settings");
+		logger.debug("Loading Settings");
 		Map<String, String> data = new HashMap<String, String>();
 		for (Request request : heatPumpSettingConfiguration) {
 			logger.debug("Loading data for request {} ...", request.getName());
@@ -119,7 +119,7 @@ public class CommunicationService {
 	 * @return map of heat pump sensor values
 	 */
 	public Map<String, String> getSensors() throws StiebelHeatPumpException {
-		logger.info("Loading Sensors");
+		logger.debug("Loading Sensors");
 		Map<String, String> data = new HashMap<String, String>();
 		for (Request request : heatPumpSensorConfiguration) {
 			logger.debug("Loading data for request {} ...", request.getName());
@@ -141,7 +141,7 @@ public class CommunicationService {
 	 * @return map of heat pump status values
 	 */
 	public Map<String, String> getStatus() throws StiebelHeatPumpException {
-		logger.info("Loading Status");
+		logger.debug("Loading Status");
 		Map<String, String> data = new HashMap<String, String>();
 		for (Request request : heatPumpStatusConfiguration) {
 			logger.debug("Loading data for request {} ...", request.getName());
@@ -166,101 +166,127 @@ public class CommunicationService {
 		startCommunication();
 		Map<String, String> data = new HashMap<String, String>();
 
+		Request timeRequest = null;
+
 		for (Request request : heatPumpSettingConfiguration) {
-			if (request.getName().equalsIgnoreCase("Time")) {
-				logger.debug("Loading current time data ...");
-				try {
-					DateTime dt = DateTime.now();
-					logger.debug("Current time is : {}", dt.toString());
-					String weekday = Integer.toString(dt.getDayOfWeek() - 1);
-					String day = Integer.toString(dt.getDayOfMonth());
-					String month = Integer.toString(dt.getMonthOfYear());
-					String year = Integer.toString(dt.getYearOfCentury());
-					String seconds = Integer.toString(dt.getSecondOfMinute());
-					String hours = Integer.toString(dt.getHourOfDay());
-					String minutes = Integer.toString(dt.getMinuteOfHour());
-
-					byte[] requestMessage = createRequestMessage(request);
-					byte[] response = getData(requestMessage);
-					data = parser.parseRecords(response, request);
-					Thread.sleep(WAITING_TIME_BETWEEN_REQUESTS);
-
-					boolean updateRequired = false;
-					for (Map.Entry<String, String> entry : data.entrySet()) {
-						String entryName = entry.getKey();
-						String entryValue = entry.getValue();
-						RecordDefinition currentRecord = null;
-
-						for (RecordDefinition record : request
-								.getRecordDefinitions()) {
-							if (record.getName().equalsIgnoreCase(entryName)) {
-								currentRecord = record;
-								break;
-							}
-						}
-						if (entryName.equals("WeekDay")
-								&& !entryValue.equalsIgnoreCase(weekday)) {
-							updateRequired = true;
-							response = parser.composeRecord(weekday, response,
-									currentRecord);
-							continue;
-						}
-						if (entryName.equals("Hours")
-								&& !entryValue.equalsIgnoreCase(hours)) {
-							updateRequired = true;
-							response = parser.composeRecord(hours, response,
-									currentRecord);
-							continue;
-						}
-						if (entryName.equals("Minutes")
-								&& !entryValue.equalsIgnoreCase(minutes)) {
-							updateRequired = true;
-							response = parser.composeRecord(minutes, response,
-									currentRecord);
-							continue;
-						}
-						if (entryName.equals("Seconds")
-								&& !entryValue.equalsIgnoreCase(seconds)) {
-							updateRequired = true;
-							response = parser.composeRecord(seconds, response,
-									currentRecord);
-							continue;
-						}
-						if (entryName.equals("Year")
-								&& !entryValue.equalsIgnoreCase(year)) {
-							updateRequired = true;
-							response = parser.composeRecord(year, response,
-									currentRecord);
-							continue;
-						}
-						if (entryName.equals("Month")
-								&& !entryValue.equalsIgnoreCase(month)) {
-							updateRequired = true;
-							response = parser.composeRecord(month, response,
-									currentRecord);
-							continue;
-						}
-						if (entryName.equals("Day")
-								&& !entryValue.equalsIgnoreCase(day)) {
-							updateRequired = true;
-							response = parser.composeRecord(day, response,
-									currentRecord);
-							continue;
-						}
-					}
-
-					if (updateRequired) {
-						logger.info("Time need update");
-						setData(response);
-					}
-					return data;
-
-				} catch (InterruptedException e) {
-					throw new StiebelHeatPumpException(e.toString());
-				}
+			if (request.getName().equals("Time")) {
+				timeRequest = request;
+				break;
 			}
 		}
-		return data;
+
+		if (timeRequest == null) {
+			logger.warn("Could not find request definition for time settings! Skip setting time.");
+			return data;
+		}
+
+		logger.debug("Loading current time data ...");
+		try {
+			// get time from heat pump
+			byte[] requestMessage = createRequestMessage(timeRequest);
+			byte[] response = getData(requestMessage);
+
+			// get current time from local machine
+			DateTime dt = DateTime.now();
+			logger.debug("Current time is : {}", dt.toString());
+			String weekday = Integer.toString(dt.getDayOfWeek() - 1);
+			String day = Integer.toString(dt.getDayOfMonth());
+			String month = Integer.toString(dt.getMonthOfYear());
+			String year = Integer.toString(dt.getYearOfCentury());
+			String seconds = Integer.toString(dt.getSecondOfMinute());
+			String hours = Integer.toString(dt.getHourOfDay());
+			String minutes = Integer.toString(dt.getMinuteOfHour());
+
+			data = parser.parseRecords(response, timeRequest);
+
+			boolean updateRequired = false;
+			for (Map.Entry<String, String> entry : data.entrySet()) {
+				String entryName = entry.getKey();
+				String entryValue = entry.getValue();
+				RecordDefinition currentRecord = null;
+
+				for (RecordDefinition record : timeRequest
+						.getRecordDefinitions()) {
+					if (record.getName().equals(entryName)) {
+						currentRecord = record;
+						break;
+					}
+				}
+				if (entryName.equals("WeekDay") && !entryValue.equals(weekday)) {
+					updateRequired = true;
+					response = parser.composeRecord(weekday, response,
+							currentRecord);
+					logger.debug("WeekDay needs update from {} to {}",
+							entryValue, weekday);
+					continue;
+				}
+				if (entryName.equals("Hours") && !entryValue.equals(hours)) {
+					updateRequired = true;
+					response = parser.composeRecord(hours, response,
+							currentRecord);
+					logger.debug("Hours needs update from {} to {}",
+							entryValue, hours);
+					continue;
+				}
+				if (entryName.equals("Minutes") && !entryValue.equals(minutes)) {
+					updateRequired = true;
+					response = parser.composeRecord(minutes, response,
+							currentRecord);
+					logger.debug("Minutes needs update from {} to {}",
+							entryValue, minutes);
+					continue;
+				}
+				if (entryName.equals("Seconds") && !entryValue.equals(seconds)) {
+					updateRequired = true;
+					response = parser.composeRecord(seconds, response,
+							currentRecord);
+					logger.debug("Seconds needs update from {} to {}",
+							entryValue, seconds);
+					continue;
+				}
+				if (entryName.equals("Year") && !entryValue.equals(year)) {
+					updateRequired = true;
+					response = parser.composeRecord(year, response,
+							currentRecord);
+					logger.debug("Year needs update from {} to {}", entryValue,
+							year);
+					continue;
+				}
+				if (entryName.equals("Month") && !entryValue.equals(month)) {
+					updateRequired = true;
+					response = parser.composeRecord(month, response,
+							currentRecord);
+					logger.debug("Month needs update from {} to {}",
+							entryValue, month);
+					continue;
+				}
+				if (entryName.equals("Day") && !entryValue.equals(day)) {
+					updateRequired = true;
+					response = parser.composeRecord(day, response,
+							currentRecord);
+					logger.debug("Day needs update from {} to {}", entryValue,
+							day);
+					continue;
+				}
+			}
+
+			if (updateRequired) {
+				Thread.sleep(WAITING_TIME_BETWEEN_REQUESTS);
+				logger.info("Time need update. Set time to " + dt.toString());
+				setData(response);
+
+				Thread.sleep(WAITING_TIME_BETWEEN_REQUESTS);
+				response = getData(requestMessage);
+				data = parser.parseRecords(response, timeRequest);
+				dt = DateTime.now();
+				logger.debug("Current time is : {}", dt.toString());
+
+			}
+			return data;
+
+		} catch (InterruptedException e) {
+			throw new StiebelHeatPumpException(e.toString());
+		}
 	}
 
 	/**
@@ -289,8 +315,8 @@ public class CommunicationService {
 	}
 
 	/**
-	 * This method categorize the heat pump configuration into 
-	 * setting, sensor and status
+	 * This method categorize the heat pump configuration into setting, sensor
+	 * and status
 	 * 
 	 * @return true if heat pump configuration for version could be found and
 	 *         loaded
@@ -410,7 +436,7 @@ public class CommunicationService {
 					parameter);
 			return data;
 		}
-		
+
 		try {
 			// get actual value for the corresponding request
 			// as we do no have individual requests for each settings we need to
@@ -425,7 +451,8 @@ public class CommunicationService {
 			String currentState = data.get(updateRecord.getName());
 			if (currentState.equals(value)) {
 				// current State is already same as new values!
-				logger.debug("Current State for {} is already {}.", parameter, value);
+				logger.debug("Current State for {} is already {}.", parameter,
+						value);
 				return data;
 			}
 
@@ -436,15 +463,13 @@ public class CommunicationService {
 					parameter);
 
 			Thread.sleep(WAITING_TIME_BETWEEN_REQUESTS);
+
 			response = setData(requestUpdateMessage);
-			
 
 			if (parser.setDataCheck(response)) {
-				logger.debug("Updated parmeter {} sucessfully.", parameter);
-			}
-			else
-			{
-				logger.debug("Update for parmeter {} failed!", parameter);
+				logger.debug("Updated parameter {} successfully.", parameter);
+			} else {
+				logger.debug("Update for parameter {} failed!", parameter);
 			}
 
 		} catch (StiebelHeatPumpException e) {
@@ -459,35 +484,57 @@ public class CommunicationService {
 	}
 
 	/**
+	 * dumps response of connected heat pump by request byte
+	 * 
+	 * @param requestByte
+	 *            request byte to send to heat pump
+	 */
+	public void dumpResponse(byte requestByte) {
+		Request request = new Request();
+		request.setRequestByte(requestByte);
+		
+		byte requestMessage[] = createRequestMessage(request);
+
+		if (!establishRequest(requestMessage)) {
+			logger.info("Could not get response for request byte {} ...");
+			return;
+		}
+		try {
+			connector.write(DataParser.ESCAPE);
+			byte[] response = receiveData();
+			
+			logger.info("Received response from heatpump: {}",
+					DataParser.bytesToHex(response));
+			return;
+		} catch (Exception e) {
+			logger.error("Could not get data from heat pump! {}", e.toString());
+		}
+		return;
+	}
+
+	
+	/**
 	 * Gets data from connected heat pump
 	 * 
 	 * @param request
 	 *            request bytes to send to heat pump
 	 * @return response bytes from heat pump
 	 * 
-	 *   General overview of handshake between application and serial
-	 *   interface of heat pump 
-	 *   1. Sending request bytes , e.g.: 01 00 FD FC 10 03 for version request 
-	 *   01 -> header start 
-	 *   00 -> get request
-	 *   FD -> checksum of request 
-	 *   FC -> request byte 
-	 *   10 03 -> Footer ending the communication 
-	 *   
-	 *   2. Receive a data available 
-	 *   10 -> ok 
-	 *   02 -> it does have data,which wants to send now 
-	 *         
-	 *   3. acknowledge sending data 
-	 *   10 -> ok 
-	 *   
-	 *   4. receive data until footer 
-	 *   01 -> header start 
-	 *   00 -> get request 
-	 *   CC -> checksum of send data 
-	 *   FD -> request byte 
-	 *   00 CE -> data , e.g. short value as 2 bytes -> 206 -> 2.06 version 
-	 *   10 03 -> Footer ending the communication
+	 *         General overview of handshake between application and serial
+	 *         interface of heat pump 1. Sending request bytes , e.g.: 01 00 FD
+	 *         FC 10 03 for version request 01 -> header start 00 -> get request
+	 *         FD -> checksum of request FC -> request byte 10 03 -> Footer
+	 *         ending the communication
+	 * 
+	 *         2. Receive a data available 10 -> ok 02 -> it does have
+	 *         data,which wants to send now
+	 * 
+	 *         3. acknowledge sending data 10 -> ok
+	 * 
+	 *         4. receive data until footer 01 -> header start 00 -> get request
+	 *         CC -> checksum of send data FD -> request byte 00 CE -> data ,
+	 *         e.g. short value as 2 bytes -> 206 -> 2.06 version 10 03 ->
+	 *         Footer ending the communication
 	 */
 	private byte[] getData(byte request[]) {
 		if (!establishRequest(request)) {
@@ -510,29 +557,23 @@ public class CommunicationService {
 	 *            request bytes to send to heat pump
 	 * @return response bytes from heat pump
 	 * 
-	 *   General overview of handshake between application and serial
-	 *   interface of heat pump 
-	 *         
-	 *   1. Sending request bytes, e.g update time in heat pump 
-	 *   01 -> header start 
-	 *   80 -> set request 
-	 *   F1 -> checksum of request 
-	 *   FC -> request byte 
-	 *   00 02 0a 22 1b 0e 00 03 1a -> new values according record definition for time 
-	 *   10 03 -> Footer ending the communication 
-	 *         
-	 *   2. Receive response message the confirmation message is ready for sending 
-	 *   10 -> ok 
-	 *   02 -> it does have data ,which wants to send now 
-	 *         
-	 *   3. acknowledge sending data 10 -> ok 
-	 *         
-	 *   4. receive confirmation message until footer 
-	 *   01 -> header start 
-	 *   80 -> set request 
-	 *   7D -> checksum of send data 
-	 *   FC -> request byte 
-	 *   10 03 -> Footer ending the communication
+	 *         General overview of handshake between application and serial
+	 *         interface of heat pump
+	 * 
+	 *         1. Sending request bytes, e.g update time in heat pump 01 ->
+	 *         header start 80 -> set request F1 -> checksum of request FC ->
+	 *         request byte 00 02 0a 22 1b 0e 00 03 1a -> new values according
+	 *         record definition for time 10 03 -> Footer ending the
+	 *         communication
+	 * 
+	 *         2. Receive response message the confirmation message is ready for
+	 *         sending 10 -> ok 02 -> it does have data ,which wants to send now
+	 * 
+	 *         3. acknowledge sending data 10 -> ok
+	 * 
+	 *         4. receive confirmation message until footer 01 -> header start
+	 *         80 -> set request 7D -> checksum of send data FC -> request byte
+	 *         10 03 -> Footer ending the communication
 	 */
 	private byte[] setData(byte[] request) throws StiebelHeatPumpException {
 		try {

@@ -621,8 +621,8 @@ public class ConfigParserTest {
 		SettingsDomesticHotWater.getRecordDefinitions().add(
 				new RecordDefinition(
 						"P34OutsideTemperatureLimitForImmElectricalReheating",
-						6, 2, 0.1, RecordDefinition.Type.Settings, -10, 10, 1.0,
-						"°C"));
+						6, 2, 0.1, RecordDefinition.Type.Settings, -10, 10,
+						1.0, "°C"));
 		SettingsDomesticHotWater.getRecordDefinitions().add(
 				new RecordDefinition("P35PasteurisationInterval", 8, 1, 1.0,
 						RecordDefinition.Type.Settings, 1, 30, 1.0, "K/day"));
@@ -631,18 +631,15 @@ public class ConfigParserTest {
 						RecordDefinition.Type.Settings, 6, 12, 1.0, "h"));
 		SettingsDomesticHotWater.getRecordDefinitions()
 				.add(new RecordDefinition("PasteurisationHeatupTemperature",
-						10, 2, 0.1, RecordDefinition.Type.Settings, 10, 65, 0.1,
-						"°C"));
-		SettingsDomesticHotWater
-				.getRecordDefinitions()
-				.add(new RecordDefinition(
+						10, 2, 0.1, RecordDefinition.Type.Settings, 10, 65,
+						0.1, "°C"));
+		SettingsDomesticHotWater.getRecordDefinitions().add(
+				new RecordDefinition(
 						"NoOfEnabledElectricalReheatStagesDHWLoading", 12, 1,
 						1, RecordDefinition.Type.Settings, 0, 3, 1.0, ""));
 		SettingsDomesticHotWater.getRecordDefinitions().add(
-				new RecordDefinition(
-						"MaxFlowTemperatureDHWMode",
-						13, 2, 0.1, RecordDefinition.Type.Settings, 10, 75, 0.1,
-						"°C"));
+				new RecordDefinition("MaxFlowTemperatureDHWMode", 13, 2, 0.1,
+						RecordDefinition.Type.Settings, 10, 75, 0.1, "°C"));
 		SettingsDomesticHotWater.getRecordDefinitions().add(
 				new RecordDefinition("CompressorShutdownDHWLoading", 15, 1, 1,
 						RecordDefinition.Type.Settings, 0, 1, 1.0, ""));

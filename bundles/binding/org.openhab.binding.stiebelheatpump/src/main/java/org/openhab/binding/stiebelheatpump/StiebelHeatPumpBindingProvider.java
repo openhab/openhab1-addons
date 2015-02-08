@@ -18,20 +18,24 @@ import org.openhab.core.items.Item;
  * @since 1.5.0
  */
 public interface StiebelHeatPumpBindingProvider extends BindingProvider {
-	
+
 	/**
 	 * Returns the configured parameter for the given <code>itemName</code>. If
-	 * no parameter has been configured or the itemName is unknown, <code>null<code> is returned
+	 * no parameter has been configured or the itemName is unknown,
+	 * <code>null<code> is returned
 	 * 
-	 * @param itemName the item to find the parameter for
-	 * @return the configured parameter or <code>null<code> if nothing is configured or the itemName is unknown
+	 * @param itemName
+	 *            the item to find the parameter for
+	 * @return the configured parameter or <code>null<code> if nothing is
+	 *         configured or the itemName is unknown
 	 */
 	public String getParameter(String itemName);
-	
+
 	/**
 	 * Returns the Type of the Item identified by {@code itemName}
 	 * 
-	 * @param itemName the name of the item to find the type for
+	 * @param itemName
+	 *            the name of the item to find the type for
 	 * @return the type of the Item identified by {@code itemName}
 	 */
 	Class<? extends Item> getItemType(String itemName);

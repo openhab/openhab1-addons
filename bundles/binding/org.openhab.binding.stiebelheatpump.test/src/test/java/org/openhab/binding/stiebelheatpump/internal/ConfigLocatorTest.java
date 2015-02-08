@@ -13,7 +13,6 @@ import org.openhab.binding.stiebelheatpump.protocol.Request;
 
 public class ConfigLocatorTest {
 
-
 	public ConfigLocatorTest() {
 	}
 
@@ -26,7 +25,6 @@ public class ConfigLocatorTest {
 		String GROUPPREFIX = "gEnergieWaermepumpe_";
 		String PARENTGROUP = "gEnergieWaermepumpe";
 
-		
 		ConfigLocator configLocator = new ConfigLocator("2.06.xml");
 		List<Request> configuration = configLocator.getConfig();
 
@@ -35,7 +33,7 @@ public class ConfigLocatorTest {
 		Assert.assertEquals((byte) 0xfd, firstRequest.getRequestByte());
 
 		Assert.assertEquals((byte) 0x05, configuration.get(7).getRequestByte());
-		
+
 		FileWriter dumpFile;
 		try {
 			dumpFile = new FileWriter(FILEDUMP);
@@ -46,14 +44,15 @@ public class ConfigLocatorTest {
 			for (Request request : configuration) {
 				// create group item
 				String groupItem = String.format("Group %s%s \"%s\" (%s) ",
-						GROUPPREFIX, request.getName(),request.getName(), PARENTGROUP);
+						GROUPPREFIX, request.getName(), request.getName(),
+						PARENTGROUP);
 				dumpFile.write(groupItem + newLine);
 
 				// add item definition per record
 				for (RecordDefinition record : request.getRecordDefinitions()) {
 					String itemType;
 					String itemFormat;
-					
+
 					if (record.getDataType() == Type.Status) {
 						if (record.getUnit() == "") {
 							itemType = "String";
@@ -73,18 +72,14 @@ public class ConfigLocatorTest {
 							itemFormat = "[%d " + record.getUnit() + "]";
 						}
 					}
-					
-					
-					//{ stiebelheatpump="OutputElectricalHeatingStage1" }
-					String itemDefinition = String.format(
-							"%s %s \"%s %s\" (%s,%s) { stiebelheatpump=\"%s\" }",
-							itemType,
-							record.getName(),
-							record.getName(),
-							itemFormat,
-							GROUPPREFIX + request.getName(),
-							PARENTGROUP,
-							record.getName());
+
+					// { stiebelheatpump="OutputElectricalHeatingStage1" }
+					String itemDefinition = String
+							.format("%s %s \"%s %s\" (%s,%s) { stiebelheatpump=\"%s\" }",
+									itemType, record.getName(),
+									record.getName(), itemFormat, GROUPPREFIX
+											+ request.getName(), PARENTGROUP,
+									record.getName());
 					dumpFile.write(itemDefinition + newLine);
 				}
 
@@ -92,24 +87,23 @@ public class ConfigLocatorTest {
 				for (RecordDefinition record : request.getRecordDefinitions()) {
 					String itemType = "";
 					String itemFormat = "";
-					
+
 					Type dataType = record.getDataType();
 					switch (dataType) {
 					case Settings:
 						itemType = "Setpoint item=";
-						itemFormat = String.format("%s minValue=%s maxValue=%s step=%s", 
-								record.getName(),
-								record.getMin(),
-								record.getMax(),
-								record.getStep());
+						itemFormat = String.format(
+								"%s minValue=%s maxValue=%s step=%s",
+								record.getName(), record.getMin(),
+								record.getMax(), record.getStep());
 						break;
 					case Status:
 					case Sensor:
 						itemType = "Text item=";
 						itemFormat = record.getName();
 						break;
-				}
-					
+					}
+
 					dumpFile.write(itemType + itemFormat + newLine);
 				}
 
@@ -118,14 +112,14 @@ public class ConfigLocatorTest {
 
 			for (Request request : configuration) {
 				for (RecordDefinition record : request.getRecordDefinitions()) {
-					if(record.getDataType()==Type.Settings){
-						dumpFile.write(record.getName()+ ",");
+					if (record.getDataType() == Type.Settings) {
+						dumpFile.write(record.getName() + ",");
 					}
 				}
 			}
-			
+
 			dumpFile.close();
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -75,6 +75,36 @@ public class StiebelHeatPumpDataParserTest {
 	}
 
 	@Test
+	// request FC
+	public void testParseTime2() throws StiebelHeatPumpException {
+		List<Request> result = Requests.searchIn(configuration,
+				new Matcher<Request>() {
+					public boolean matches(Request r) {
+						return r.getName() == "Time";
+					}
+				});
+
+		byte[] response = new byte[] { (byte) 0x01, (byte) 0x00, (byte) 0x6a,
+				(byte) 0xfc, (byte) 0x00, (byte) 0x06, (byte) 0x15,
+				(byte) 0x27, (byte) 0x0a, (byte) 0x0f, (byte) 0x00,
+				(byte) 0x02, (byte) 0x10, (byte) 0x10, (byte) 0x10, (byte) 0x03 };
+
+		response = parser.fixDuplicatedBytes(response);
+		Assert.assertEquals(response[3], result.get(0).getRequestByte());
+		Assert.assertEquals(response[2], parser.calculateChecksum(response));
+
+		Map<String, String> data = parser.parseRecords(response, result.get(0));
+
+		Assert.assertEquals("2", data.get("WeekDay"));
+		Assert.assertEquals("21", data.get("Hours"));
+		Assert.assertEquals("33", data.get("Minutes"));
+		Assert.assertEquals("36", data.get("Seconds"));
+		Assert.assertEquals("14", data.get("Year"));
+		Assert.assertEquals("2", data.get("Month"));
+		Assert.assertEquals("8", data.get("Day"));
+	}
+	
+	@Test
 	// request O9
 	public void testParseOperationCounters() throws StiebelHeatPumpException {
 		List<Request> result = Requests.searchIn(configuration,
@@ -336,8 +366,8 @@ public class StiebelHeatPumpDataParserTest {
 		byte[] response = new byte[] { (byte) 0x01, (byte) 0x00, (byte) 0x8e,
 				(byte) 0x07, (byte) 0x14, (byte) 0x5a, (byte) 0xff,
 				(byte) 0x9c, (byte) 0x1e, (byte) 0x07, (byte) 0x00,
-				(byte) 0x64, (byte) 0x03, (byte) 0x02, (byte) 0xee, (byte) 0x01, 
-				(byte) 0x10, (byte) 0x03 };
+				(byte) 0x64, (byte) 0x03, (byte) 0x02, (byte) 0xee,
+				(byte) 0x01, (byte) 0x10, (byte) 0x03 };
 
 		response = parser.fixDuplicatedBytes(response);
 		Assert.assertEquals(response[3], result.get(0).getRequestByte());
@@ -345,17 +375,20 @@ public class StiebelHeatPumpDataParserTest {
 
 		Map<String, String> data = parser.parseRecords(response, result.get(0));
 
-		Assert.assertEquals("2.0", data.get("P32StartupHysteresisDHWTemperature"));
+		Assert.assertEquals("2.0",
+				data.get("P32StartupHysteresisDHWTemperature"));
 		Assert.assertEquals("90", data.get("P33TimeDelayElectricalReheating"));
-		Assert.assertEquals("-10.0", data.get("P34OutsideTemperatureLimitForImmElectricalReheating"));
+		Assert.assertEquals("-10.0",
+				data.get("P34OutsideTemperatureLimitForImmElectricalReheating"));
 		Assert.assertEquals("30", data.get("P35PasteurisationInterval"));
 		Assert.assertEquals("7", data.get("P36MaxDurationDHWLoading"));
 		Assert.assertEquals("10.0", data.get("PasteurisationHeatupTemperature"));
-		Assert.assertEquals("3", data.get("NoOfEnabledElectricalReheatStagesDHWLoading"));
+		Assert.assertEquals("3",
+				data.get("NoOfEnabledElectricalReheatStagesDHWLoading"));
 		Assert.assertEquals("75.0", data.get("MaxFlowTemperatureDHWMode"));
 		Assert.assertEquals("1", data.get("CompressorShutdownDHWLoading"));
 	}
-	
+
 	@Test
 	// request O3
 	public void testParseSettingsEvaporator1() throws StiebelHeatPumpException {
@@ -432,7 +465,7 @@ public class StiebelHeatPumpDataParserTest {
 				(byte) 0x02, (byte) 0x00, (byte) 0x0a, (byte) 0x10, (byte) 0x03 };
 
 		response = parser.fixDuplicatedBytes(response);
-		
+
 		Assert.assertEquals(response[3], result.get(0).getRequestByte());
 		Assert.assertEquals(response[2], parser.calculateChecksum(response));
 
@@ -447,43 +480,42 @@ public class StiebelHeatPumpDataParserTest {
 
 	@Test
 	// request 10
-	public void testAddDuplicatesInRequest1()
-			throws StiebelHeatPumpException {
+	public void testAddDuplicatesInRequest1() throws StiebelHeatPumpException {
 
 		byte[] response = new byte[] { (byte) 0x01, (byte) 0x00, (byte) 0x10,
-				(byte) 0x0f,  (byte) 0x10, (byte) 0x03 };
+				(byte) 0x0f, (byte) 0x10, (byte) 0x03 };
 		byte[] newResponse = parser.addDuplicatedBytes(response);
 
-		byte[] resultingBytes = new byte[] { (byte) 0x01, (byte) 0x00, (byte) 0x10,(byte) 0x10,
-				(byte) 0x0f,  (byte) 0x10, (byte) 0x03 };
-		
+		byte[] resultingBytes = new byte[] { (byte) 0x01, (byte) 0x00,
+				(byte) 0x10, (byte) 0x10, (byte) 0x0f, (byte) 0x10, (byte) 0x03 };
+
 		Assert.assertEquals(response[2], parser.calculateChecksum(response));
-		
+
 		for (int i = 0; i < newResponse.length; i++) {
 			Assert.assertEquals(resultingBytes[i], newResponse[i]);
-		}		
+		}
 	}
 
 	@Test
 	// request 10
-	public void testAddDuplicatesInRequest2()
-			throws StiebelHeatPumpException {
+	public void testAddDuplicatesInRequest2() throws StiebelHeatPumpException {
 
 		byte[] response = new byte[] { (byte) 0x01, (byte) 0x00, (byte) 0x11,
-				(byte) 0x10,  (byte) 0x10, (byte) 0x03 };
-		
+				(byte) 0x10, (byte) 0x10, (byte) 0x03 };
+
 		byte[] newResponse = parser.addDuplicatedBytes(response);
 
-		byte[] resultingBytes =  new byte[] { (byte) 0x01, (byte) 0x00, (byte) 0x11,
-				(byte) 0x10,  (byte) 0x10,  (byte) 0x10, (byte) 0x03 };
-		
+		byte[] resultingBytes = new byte[] { (byte) 0x01, (byte) 0x00,
+				(byte) 0x11, (byte) 0x10, (byte) 0x10, (byte) 0x10, (byte) 0x03 };
+
 		Assert.assertEquals(response[2], parser.calculateChecksum(response));
-		
+
 		for (int i = 0; i < newResponse.length; i++) {
 			Assert.assertEquals(resultingBytes[i], newResponse[i]);
 		}
-		
+
 	}
+
 	@Test
 	// request OA
 	public void testParseSettingsCirculationPump()
@@ -693,7 +725,6 @@ public class StiebelHeatPumpDataParserTest {
 		Assert.assertEquals("30", data.get("MixerTimeInterval"));
 	}
 
-
 	@Test
 	// write new value for short byte value use case
 	public void testWriteTime() throws StiebelHeatPumpException {
@@ -773,7 +804,8 @@ public class StiebelHeatPumpDataParserTest {
 		List<Request> result = Requests.searchIn(configuration,
 				new Matcher<Request>() {
 					public boolean matches(Request r) {
-						return r.getName() == "SettingsDomesticHotWaterProgram";
+						return r.getName().equals(
+								"SettingsDomesticHotWaterProgram");
 					}
 				});
 
@@ -797,11 +829,11 @@ public class StiebelHeatPumpDataParserTest {
 		Assert.assertEquals("1", data.get("BP1Saturday"));
 		Assert.assertEquals("1", data.get("BP1Sunday"));
 		Assert.assertEquals("0", data.get("BP1Enabled"));
-		
+
 		Request request = result.get(0);
 		RecordDefinition recordDefinition = null;
 		for (RecordDefinition record : request.getRecordDefinitions()) {
-			if (record.getName() == "BP1Wednesday") {
+			if (record.getName().equals("BP1Wednesday")) {
 				recordDefinition = record;
 				break;
 			}
@@ -813,7 +845,7 @@ public class StiebelHeatPumpDataParserTest {
 		newResponse[2] = parser.calculateChecksum(newResponse);
 
 		data = parser.parseRecords(newResponse, request);
-		Assert.assertEquals("1", data.get("BP1Wednesday"));	
+		Assert.assertEquals("1", data.get("BP1Wednesday"));
 		Assert.assertEquals("2200", data.get("BP1StartTime"));
 		Assert.assertEquals("500", data.get("BP1StopTime"));
 		Assert.assertEquals("1", data.get("BP1Monday"));
@@ -824,7 +856,52 @@ public class StiebelHeatPumpDataParserTest {
 		Assert.assertEquals("1", data.get("BP1Sunday"));
 		Assert.assertEquals("0", data.get("BP1Enabled"));
 	}
-	
+
+	@Test
+	// write new value for P04DHWTemperatureStandardMode use case
+	public void testwriteP04DHWTemperatureStandardMode()
+			throws StiebelHeatPumpException {
+		List<Request> result = Requests.searchIn(configuration,
+				new Matcher<Request>() {
+					public boolean matches(Request r) {
+						return r.getName().equals("SettingsNominalValues");
+					}
+				});
+
+		byte[] response = new byte[] { (byte) 0x01, (byte) 0x00, (byte) 0xf0,
+				(byte) 0x17, (byte) 0x00, (byte) 0xa2, (byte) 0x00,
+				(byte) 0xa5, (byte) 0x00, (byte) 0x64, (byte) 0x01,
+				(byte) 0xc2, (byte) 0x01, (byte) 0xe0, (byte) 0x00,
+				(byte) 0x64, (byte) 0x01, (byte) 0x01, (byte) 0x00,
+				(byte) 0x01, (byte) 0x5e, (byte) 0x01, (byte) 0xc2,
+				(byte) 0x01, (byte) 0x10, (byte) 0x03 };
+
+		response = parser.fixDuplicatedBytes(response);
+		Assert.assertEquals(response[3], result.get(0).getRequestByte());
+		Assert.assertEquals(response[2], parser.calculateChecksum(response));
+
+		Map<String, String> data = parser.parseRecords(response, result.get(0));
+
+		Assert.assertEquals("45.0", data.get("P04DHWTemperatureStandardMode"));
+
+		Request request = result.get(0);
+		RecordDefinition recordDefinition = null;
+		for (RecordDefinition record : request.getRecordDefinitions()) {
+			if (record.getName().equals("P04DHWTemperatureStandardMode")) {
+				recordDefinition = record;
+				break;
+			}
+		}
+		byte[] newResponse = parser.composeRecord("45.5", response,
+				recordDefinition);
+
+		// update the checksum
+		newResponse[2] = parser.calculateChecksum(newResponse);
+
+		data = parser.parseRecords(newResponse, request);
+		Assert.assertEquals("45.5", data.get("P04DHWTemperatureStandardMode"));
+	}
+
 	// utility protocol tests
 	@Test
 	public void testParseFindAndReplace() throws StiebelHeatPumpException {
