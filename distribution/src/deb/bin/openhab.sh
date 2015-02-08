@@ -36,8 +36,6 @@ if [ -z $TELNET_PORT ]; then
 	TELNET_PORT=5555
 fi
 
-DESC="openHAB server"
-NAME=openhab
 JAVA="/usr/bin/java"
 SETOWNER="no"
 
@@ -51,6 +49,11 @@ fi
 
 if [ x"${OPENHAB_JAVA}" != x ]; then
     JAVA="${OPENHAB_JAVA}"
+fi
+
+if [ ! -x "${JAVA}" ]; then
+	echo "Error: no java executable found at ${JAVA}" >&2
+	exit 2
 fi
 
 if [ x"${USER_AND_GROUP}" != x ]; then

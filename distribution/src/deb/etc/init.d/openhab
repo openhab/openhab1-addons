@@ -13,14 +13,18 @@
 #
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
+OPENHAB_INST_DIR="/usr/share/openhab"
 
+include="${OPENHAB_INST_DIR}/bin/openhab.in.sh"
+if [ -r "$include" ]; then
+	. "$include"
+else
+	echo "Error $include not found or not readable" >&2
+	exit 1
+fi
 
 DESC="openHAB server"
 NAME=openhab
-OPENHAB_CONF_DIR="/etc/openhab"
-OPENHAB_DIR="/usr/share/openhab"
-OPENHAB_LOG_DIR="/var/log/openhab"
-OPENHAB_WORKSPACE_DIR="/var/lib/openhab/workspace"
 JAVA="/usr/bin/java"
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
@@ -47,6 +51,11 @@ if [ x"${OPENHAB_JAVA}" != x ]; then
 	JAVA="${OPENHAB_JAVA}"
 fi
 
+if [ ! -x "${JAVA}" ]; then
+	log_failure_msg "no java executable found at ${JAVA}"
+	exit 2
+fi
+
 if [ x"${USER_AND_GROUP}" != x ]; then
 
 	USER=`echo ${USER_AND_GROUP} | cut -d ":" -f 1`
@@ -62,21 +71,6 @@ if [ x"${USER_AND_GROUP}" != x ]; then
 	if ! getent group "${GROUP}" > /dev/null 2>&1; then
 		log_failure_msg "runtime group doesn't exists"
 		exit 2
-	fi
-
-	# Check whether the specified user is member of "openhab" group
-	USER_ID=`id --user ${USER}`
-	if [ "${USER_ID}" != "0" ]; then
-		MEMBER_OF=`id --groups --name "${USER}" | tr " " "\n"`
-		for MEMBER_OF_GROUP in ${MEMBER_OF}; do
-			if [ "${MEMBER_OF_GROUP}" = "openhab" ]; then
-				IS_MEMBER="true"
-			fi
-		done
-		if [ "${IS_MEMBER}" != "true" ]; then
-			log_failure_msg "runtime user isn't member of 'openhab' group"
-			exit 2
-		fi
 	fi
 
 	EXTRA_ARGS="-c "${USER_AND_GROUP}" --umask 002 --background --make-pidfile --chdir ${OPENHAB_DIR}"
@@ -127,7 +121,7 @@ if [ x"${OPENHAB_ARGS}" != x ]; then
 	JAVA_ARGS_DEFAULT="${JAVA_ARGS_DEFAULT} ${OPENHAB_ARGS}"
 fi
 
-if (echo ${DEBUG} | grep -qi "^yes$"); then
+if echo ${DEBUG} | grep -qi "^yes$"; then
 	JAVA_ARGS_DEFAULT="${DEBUG_ARGS} ${JAVA_ARGS_DEFAULT}"
 else
 	JAVA_ARGS_DEFAULT="-Dlogback.configurationFile=${OPENHAB_CONF_DIR}/logback.xml ${JAVA_ARGS_DEFAULT}"
@@ -136,16 +130,7 @@ fi
 case "$1" in
   start)
         log_daemon_msg "Starting $DESC" "$NAME"
-		if ( x"${SETOWNER}" == xyes ); then
-			for ohdir in "${OPENHAB_WORKSPACE_DIR}" "${OPENHAB_LOG_DIR}" "${OPENHAB_DIR}/webapps/static"; do
-				if ( x"${ohdir}" != x && x"${ohdir}" != x/ ); then
-					chown -Rh ${USER_AND_GROUP} "${ohdir}"
-					chmod 755 "${ohdir}"
-					find "${ohdir}" -type f -exec chmod 644 {} ';'
-					find "${ohdir}" -type d -exec chmod 755 {} ';'
-				fi
-			done
-		fi
+		${OPENHAB_INST_DIR}/bin/setpermissions.sh > /dev/null
 		if start-stop-daemon --start --quiet --pidfile $PIDFILE $EXTRA_ARGS \
 			--oknodo --exec $JAVA -- $JAVA_ARGS_DEFAULT
 		then

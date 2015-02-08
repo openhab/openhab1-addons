@@ -27,7 +27,3 @@ OPENHAB_ARGS=
 # To enable debugging set to "yes" (case insensitive).
 # Default value if isn't specified - debugging is disabled. 
 DEBUG=no
-
-# To disable changing ownership of runtime files use SETOWNER=no
-# Default: SETOWNER=yes
-SETOWNER=yes
