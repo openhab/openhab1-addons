@@ -34,7 +34,6 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * The event is reported as occurs (0xFF) or does not occur (0x00).
  * The commands include the possibility to get a given
  * value and report a value.
- * TODO: Add support for more than one sensor type. 
  * @author Jan-Willem Spuij
  * @author Chris Jackson
  * @since 1.3.0
@@ -96,15 +95,17 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
 				int sourceNode = serialMessage.getMessagePayloadByte(offset + 1);
 				int alarmTypeCode = serialMessage.getMessagePayloadByte(offset + 2);
 				int value = serialMessage.getMessagePayloadByte(offset + 3);
-				
-				logger.debug("NODE {}: Sensor Alarm report, source {}, value {}", this.getNode().getNodeId(), sourceNode, value);
 
 				// Alarm type seems to be supported, add it to the list if it's not already there.
 				Alarm alarm = getAlarm(alarmTypeCode);
 				if(alarm != null) {
 					alarm.setInitialised();
 	
-					logger.debug("NODE {}: Alarm Report, Type = {}({}), Value = {}", this.getNode().getNodeId(), alarm.getAlarmType().getLabel(), alarmTypeCode, value);
+					logger.debug("NODE {}: Alarm Report: Source={}, Type={}({}), Value={}",
+							this.getNode().getNodeId(),
+							sourceNode,
+							alarm.getAlarmType().getLabel(), alarmTypeCode,
+							value);
 	
 					ZWaveAlarmSensorValueEvent zEvent = new ZWaveAlarmSensorValueEvent(this.getNode().getNodeId(), endpoint, alarm.getAlarmType(), value);
 					this.getController().notifyEventListeners(zEvent);
@@ -121,7 +122,7 @@ public class ZWaveAlarmSensorCommandClass extends ZWaveCommandClass
 				// TODO: This bodge should be configured through the database!!!
 				// Fibaro alarm sensors do not provide a bitmap of alarm types, but list them byte by byte.
 				if (manufacturerId == 0x010F && deviceType == 0x0700) {
-					logger.warn("Detected Fibaro FGK - 101 Door / Window sensor, activating workaround for incorrect encoding of supported alarm bitmap.");
+					logger.debug("Detected Fibaro FGK - 101 Door / Window sensor, activating workaround for incorrect encoding of supported alarm bitmap.");
 				
 					for(int i=0; i < numBytes; ++i ) {
 						int index = serialMessage.getMessagePayloadByte(offset + i + 2);

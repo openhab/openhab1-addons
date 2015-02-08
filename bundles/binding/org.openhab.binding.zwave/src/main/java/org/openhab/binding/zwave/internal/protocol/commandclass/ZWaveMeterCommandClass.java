@@ -119,10 +119,10 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 			logger.warn("Command {} not implemented.", command);
 			return;
 		case METER_REPORT:
-			logger.debug("NODE {}: Meter report received", this.getNode().getNodeId());
+			logger.trace("NODE {}: Meter report received", this.getNode().getNodeId());
 
 			if(serialMessage.getMessagePayload().length < offset+3) {
-				logger.error("NODE {}: Buffer too short: length={}, required={}", this.getNode().getNodeId(), 
+				logger.error("NODE {}: Meter Report: Buffer too short: length={}, required={}", this.getNode().getNodeId(), 
 						serialMessage.getMessagePayload().length, offset+3);
 				return;
 			}
@@ -134,7 +134,6 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 			}
 
 			meterType = MeterType.getMeterType(meterTypeIndex);
-			logger.debug("NODE {}: Meter Type = {} ({})", this.getNode().getNodeId(), meterType.getLabel(), meterTypeIndex);
 			
 			int scaleIndex = (serialMessage.getMessagePayloadByte(offset + 2) & 0x18) >> 0x03;
 			
@@ -148,8 +147,6 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 				logger.warn("NODE {}: Invalid meter scale {}", this.getNode().getNodeId(), scaleIndex);
 				return;
 			}
-			
-			logger.debug("NODE {}: Meter Scale = {} ({})", this.getNode().getNodeId(), scale.getUnit(), scale.getScale());
 
 			// add scale to the list of supported scales.
 			if (!this.meterScales.contains(scale)) {
@@ -158,13 +155,18 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 
 			try {
 				BigDecimal value = extractValue(serialMessage.getMessagePayload(), offset + 2);
-				logger.debug("NODE {}: Meter Value = {}", this.getNode().getNodeId(), value);
+				logger.debug("NODE {}: Meter: Type={}({}), Scale={}({}), Value={}",
+						this.getNode().getNodeId(),
+						meterType.getLabel(), meterTypeIndex,
+						scale.getUnit(), scale.getScale(),
+						value);
 	
 				ZWaveMeterValueEvent zEvent = new ZWaveMeterValueEvent(this.getNode().getNodeId(), endpoint, 
 						meterType, scale, value);
 				this.getController().notifyEventListeners(zEvent);
 			}
 			catch (NumberFormatException e) {
+				logger.error("NODE {}: Meter Value Error {}", this.getNode().getNodeId(), e);
 				return;
 			}
 
