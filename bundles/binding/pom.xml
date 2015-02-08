@@ -74,6 +74,7 @@
     <module>org.openhab.binding.systeminfo</module>
     <module>org.openhab.binding.piface</module>
     <module>org.openhab.binding.pilight</module>
+    <module>org.openhab.binding.pilight.test</module>
     <module>org.openhab.binding.fritzaha</module>
     <module>org.openhab.binding.tinkerforge</module>
     <module>org.openhab.binding.nibeheatpump</module>
