@@ -25,6 +25,7 @@ case "$1" in
 		rm -rf /var/log/openhab
 		rm -rf /var/lib/openhab
 		rm -rf /usr/share/openhab/webapps/static
+		rm -rf /etc/openhab
 		;;
 	abort-install|abort-upgrade|disappear|failed-upgrade|upgrade)
 		;;
