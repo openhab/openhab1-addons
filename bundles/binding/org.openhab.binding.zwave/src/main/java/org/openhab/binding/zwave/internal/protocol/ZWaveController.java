@@ -158,9 +158,12 @@ public class ZWaveController {
 			this.watchdog.schedule(
 					new WatchDogTimerTask(serialPortName), 
 					WATCHDOG_TIMER_PERIOD, WATCHDOG_TIMER_PERIOD);
-			
+
+			// We have a delay in running the initialisation sequence to allow any
+			// frames queued in the controller to be received before sending the init
+			// sequence. This avoids protocol errors (CAN errors).
 			Timer initTimer = new Timer();
-			initTimer.schedule(new InitializeDelayTask(), 2000);
+			initTimer.schedule(new InitializeDelayTask(), 3000);
 	}
 
 	private class InitializeDelayTask extends TimerTask {
