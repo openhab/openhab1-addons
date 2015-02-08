@@ -190,6 +190,15 @@
 			<Model>ASR-ZW</Model>
 			<Label lang="en">Thermostat Receiver</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SCSC17</Model>
+			<Label lang="en">7 Day Room Thermostat</Label>
+			<ConfigFile>horstmann/scsc17.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0060</Id>
@@ -1803,17 +1812,16 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
-                <Id>0166</Id>
-                <Name>Swiid</Name>
-                <Product>
-                        <Reference>
-                                <Type>0100</Type>
-                                <Id>0100</Id>
-                        </Reference>
-                        <Model>SW-ZCS-1</Model>
-                        <Label lang="en">Cord Switch</Label>
-                        <ConfigFile>swiid/SW-ZCS-1.xml</ConfigFile>
-                </Product>
-        </Manufacturer>
-	
+		<Id>0166</Id>
+		<Name>Swiid</Name>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>SW-ZCS-1</Model>
+			<Label lang="en">Cord Switch</Label>
+			<ConfigFile>swiid/SW-ZCS-1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
