@@ -1408,11 +1408,15 @@ public class ZWaveController {
     		} else {
     			logger.error("Message is not valid, discarding");
     			sendResponse(NAK);
+    			
+    			// The semaphore is acquired when we start the receive.
+    			// We need to release it now...
+    			if(recvQueue.size() == 0) {
+    				sendAllowed.release();
+    			}
     			return;
     		}
 
-    		// Use the sendAllowed semaphore to signal that the receive queue is not empty!
-			sendAllowed.acquire();
     		recvQueue.add(recvMessage);
 			logger.trace("Receive queue ADD: Length={}", recvQueue.size());
         }
@@ -1460,6 +1464,9 @@ public class ZWaveController {
 
 					switch (nextByte) {
 						case SOF:
+				    		// Use the sendAllowed semaphore to signal that the receive queue is not empty!
+							sendAllowed.acquire();
+
 							SOFCount++;
 							int messageLength;
 
@@ -1467,6 +1474,8 @@ public class ZWaveController {
 								messageLength = serialPort.getInputStream().read();
 							} catch (IOException e) {
 								logger.error("Got I/O exception {} during receiving. exiting thread.", e.getLocalizedMessage());
+
+								sendAllowed.release();
 								break;
 							}
 							
