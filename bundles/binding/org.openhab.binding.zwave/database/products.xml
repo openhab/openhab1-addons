@@ -1828,4 +1828,17 @@
 			<ConfigFile>swiid/SW-ZCS-1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0131</Id>
+		<Name>Zipato</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0011</Id>
+			</Reference>
+			<Model>RGBWE27ZW</Model>
+			<Label lang="en">RGBW bulb</Label>
+			<ConfigFile>zipato/rgbwe27.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
