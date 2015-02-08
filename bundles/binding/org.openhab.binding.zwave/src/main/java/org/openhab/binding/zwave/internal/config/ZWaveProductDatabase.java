@@ -91,7 +91,6 @@ public class ZWaveProductDatabase {
 			if (database == null)
 				return;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

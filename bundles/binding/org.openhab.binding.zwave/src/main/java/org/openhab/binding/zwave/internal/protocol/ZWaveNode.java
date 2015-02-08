@@ -97,8 +97,6 @@ public class ZWaveNode {
 	@XStreamOmitField
 	private int retryCount = 0;
 
-	// TODO: Implement ZWaveNodeValue for Nodes that store multiple values.
-	
 	/**
 	 * Constructor. Creates a new instance of the ZWaveNode class.
 	 * @param homeId the home ID to use.
