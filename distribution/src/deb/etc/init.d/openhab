@@ -12,9 +12,18 @@
 # Author: openHAB <openhab@openhab.org>
 #
 
+
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 OPENHAB_INST_DIR="/usr/share/openhab"
 
+DESC="openHAB server"
+NAME=openhab
+JAVA="/usr/bin/java"
+PIDFILE=/var/run/$NAME.pid
+SCRIPTNAME=/etc/init.d/$NAME
+SETOWNER=yes
+
+# read defaults
 include="${OPENHAB_INST_DIR}/bin/openhab.in.sh"
 if [ -r "$include" ]; then
 	. "$include"
@@ -22,12 +31,6 @@ else
 	echo "Error $include not found or not readable" >&2
 	exit 1
 fi
-
-DESC="openHAB server"
-NAME=openhab
-JAVA="/usr/bin/java"
-PIDFILE=/var/run/$NAME.pid
-SCRIPTNAME=/etc/init.d/$NAME
 
 # Define LSB log_* functions.
 # Depend on lsb-base (>= 3.2-14) to ensure that this file is present
@@ -41,11 +44,6 @@ if [ ! -r "$LAUNCHER" ]; then
 	log_failure_msg "launcher jar is missing"
 	exit 5
 fi
-
-SETOWNER=yes
-
-# Read configuration variable file if it is present
-[ -r /etc/default/$NAME ] && . /etc/default/$NAME
 
 if [ x"${OPENHAB_JAVA}" != x ]; then
 	JAVA="${OPENHAB_JAVA}"

@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Read configuration variable file if it is present
+[ -r /etc/default/openhab ] && . /etc/default/openhab
+
 OPENHAB_CONF_DIR="/etc/openhab"
 OPENHAB_CONFIGURATIONS_DIR="${OPENHAB_CONF_DIR}/configurations"
 OPENHAB_DIR="/usr/share/openhab"
