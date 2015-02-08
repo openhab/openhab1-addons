@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.openhab.binding.zwave.internal.config.ZWaveDbAssociationGroup;
@@ -136,7 +138,11 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
 	private final int BACKOFF_TIMER_START = 5000;
 	private final int BACKOFF_TIMER_MAX = 1800000;			// 30 minutes max backoff
-	private int retryTimer = BACKOFF_TIMER_START;
+	private int retryTimer;
+	private TimerTask timerTask = null;
+	private Timer timer = null;
+	
+	private int wakeupCount;
 
 	private Date queryStageTimeStamp;
 	private ZWaveNodeInitStage currentStage;
@@ -164,6 +170,12 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		// Reset the state variables
 		currentStage = ZWaveNodeInitStage.EMPTYNODE;
 		queryStageTimeStamp = Calendar.getInstance().getTime();
+		retryTimer = BACKOFF_TIMER_START;
+
+		// Create the timer and timer task
+		timer = new Timer();
+
+		wakeupCount = 0;
 
 		// Set an event callback so we get notification of events
 		controller.addEventListener(this);
@@ -186,12 +198,13 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			return;
 		}
 
-		logger.debug("NODE {}: Node advancer - checking initialisation queue.", node.getNodeId());
+		logger.debug("NODE {}: Node advancer - checking initialisation queue. Queue size {}.",
+				node.getNodeId(), msgQueue.size());
 
 		// If this message is in the queue, then remove it
 		if (msgQueue.contains(incomingMessage)) {
 			msgQueue.remove(incomingMessage);
-			logger.debug("NODE {}: Node advancer - message removed from queue. Queue size now {}.",
+			logger.debug("NODE {}: Node advancer - message removed from queue. Queue size {}.",
 					node.getNodeId(), msgQueue.size());
 
 			freeToSend = true;
@@ -254,10 +267,16 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 		logger.debug("NODE {}: Node advancer - {}: queue length({}), free to send({})", node.getNodeId(),
 				currentStage.toString(), msgQueue.size(), freeToSend);
 
+		// If this is a battery node, and we exceed the wakeup count without advancing
+		// the stage, then reset.
+		if(wakeupCount >= 3) {
+			msgQueue.clear();
+			wakeupCount = 0;
+		}
+
 		// Start the retry timer
-//		if(retryTimer
-		
-		
+		startIdleTimer();
+
 		// If event class is null, then this call isn't the result of an
 		// incoming frame.
 		// It could be a wakeup, or the node is now alive. Get things moving
@@ -772,8 +791,10 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				if(currentStage != ZWaveNodeInitStage.DONE) {
 					break;
 				}
-
 				logger.debug("NODE {}: Node advancer: Initialisation complete!", node.getNodeId());
+				
+				// Stop the retry timer
+				resetIdleTimer();
 
 				// We remove the event listener to reduce loading now that we're done
 				controller.removeEventListener(this);
@@ -807,6 +828,10 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				// Move on to the next stage
 				setCurrentStage(currentStage.getNextStage());
 				stageAdvanced = true;
+
+				// Reset the backoff timer
+				retryTimer = BACKOFF_TIMER_START;
+
 				logger.debug("NODE {}: Node advancer - advancing to {}", node.getNodeId(),
 						currentStage.toString());
 			}
@@ -977,6 +1002,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
 			logger.debug("NODE {}: Wakeup during initialisation.", node.getNodeId());
 
+			wakeupCount++;
 			advanceNodeStage(null);
 		} else if (event instanceof ZWaveNodeStatusEvent) {
 			ZWaveNodeStatusEvent statusEvent = (ZWaveNodeStatusEvent) event;
@@ -998,5 +1024,52 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 			}
 			logger.trace("NODE {}: Node Status event during initialisation processed", statusEvent.getNodeId());
 		}
+	}
+	
+	// The following timer implements a re-triggerable timer. The timer is used to restart
+	// initialisation if it stalls using a log backoff
+	private class IdleTimerTask extends TimerTask {
+		@Override
+		public void run() {
+			// Increase the backoff
+			retryTimer *= 2;
+			if(retryTimer > BACKOFF_TIMER_MAX) {
+				retryTimer = BACKOFF_TIMER_MAX;
+			}
+
+			// Timer has triggered, so log it!
+			logger.debug("NODE {}: Stage {}. Initialisation retry timer triggered. Increased to {}",
+					node.getNodeId(), currentStage.toString(), retryTimer);
+
+			// Kickstart comms - clear the queue and run the advancer
+			msgQueue.clear();
+			advanceNodeStage(null);
+		}
+	}
+
+	private synchronized void resetIdleTimer() {
+		// Stop any existing timer
+		if(timerTask != null) {
+			timerTask.cancel();
+		}
+		timerTask = null;
+	}
+
+	private synchronized void startIdleTimer() {
+		// For nodes that aren't listening, don't start the timer
+		// We handle battery nodes differently - by counting the number of wakeups.
+		if(!node.isListening() && !node.isFrequentlyListening()) {
+			return;
+		}
+
+		// Stop any existing timer
+		resetIdleTimer();
+
+		// Create the timer task
+		timerTask = new IdleTimerTask();
+
+		// Start the timer
+		timer.schedule(timerTask, retryTimer);
+		logger.debug("NODE {}: Initialisation retry timer started {}", node.getNodeId(), retryTimer);
 	}
 }
