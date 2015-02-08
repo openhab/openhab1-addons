@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.homematic.internal.converter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +48,7 @@ public class ConverterFactory {
 			return ((ValueBindingConfig) bindingConfig).getConverter();
 		}
 
-		List<Class<? extends State>> acceptedTypes = item.getAcceptedDataTypes();
+		List<Class<? extends State>> acceptedTypes = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
 		Collections.sort(acceptedTypes, typeComparator);
 
 		for (Class<? extends State> clazz : acceptedTypes) {
