@@ -26,37 +26,11 @@ Import-Package: org.apache.commons.io;version="2.0.1",
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
+Export-Package: org.openhab.action.hue,
+ org.openhab.action.hue.internal
 Bundle-SymbolicName: org.openhab.binding.hue;singleton:=true
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/huebinding.xml, OSGI-INF/action.xml
-Export-Package: org.openhab.action.hue,
- org.openhab.action.hue.internal
-Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .,
- ant-antlr.jar,
- ant-apache-bcel.jar,
- ant-apache-bsf.jar,
- ant-apache-log4j.jar,
- ant-apache-oro.jar,
- ant-apache-regexp.jar,
- ant-apache-resolver.jar,
- ant-apache-xalan2.jar,
- ant-commons-logging.jar,
- ant-commons-net.jar,
- ant-jai.jar,
- ant-javamail.jar,
- ant-jdepend.jar,
- ant-jmf.jar,
- ant-jsch.jar,
- ant-junit.jar,
- ant-junit4.jar,
- ant-launcher.jar,
- ant-netrexx.jar,
- ant-swing.jar,
- ant-testutil.jar,
- ant.jar,
- jdi.jar,
- jdimodel.jar,
- quartz-all-2.1.7.jar
+Bundle-ClassPath: .
 Require-Bundle: org.openhab.io.rest.lib
