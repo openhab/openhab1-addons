@@ -26,11 +26,12 @@ Import-Package: org.apache.commons.io;version="2.0.1",
  org.osgi.framework,
  org.osgi.service.cm,
  org.slf4j
-Export-Package: org.openhab.action.hue,
- org.openhab.action.hue.internal
-Bundle-SymbolicName: org.openhab.binding.hue;singleton:=true
+Bundle-SymbolicName: org.openhab.binding.hue
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/huebinding.xml, OSGI-INF/action.xml
+Export-Package: org.openhab.action.hue,
+ org.openhab.action.hue.internal
 Bundle-ClassPath: .
 Require-Bundle: org.openhab.io.rest.lib
+Bundle-ActivationPolicy: lazy
