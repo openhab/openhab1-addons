@@ -102,6 +102,7 @@
 											<path>etc/openhab/jetty/contexts</path>
 											<path>etc/openhab/jetty/etc</path>
 											<path>usr/share/openhab</path>
+											<path>usr/share/openhab/bin</path>
 											<path>var/lib/openhab</path>
 											<path>var/lib/openhab/persistence</path>
 											<path>var/lib/openhab/webapps</path>
@@ -164,6 +165,50 @@
 										<mapper>
 											<type>perm</type>
 											<prefix>/etc/init.d</prefix>
+											<filemode>755</filemode>
+											<user>root</user>
+											<group>root</group>
+										</mapper>
+									</data>
+									<data>
+										<src>${basedir}/src/deb/bin/openhab.sh</src>
+										<type>file</type>
+										<mapper>
+											<type>perm</type>
+											<prefix>/usr/share/openhab/bin</prefix>
+											<filemode>755</filemode>
+											<user>root</user>
+											<group>root</group>
+										</mapper>
+									</data>
+									<data>
+										<src>${basedir}/src/deb/bin/openhab.in.sh</src>
+										<type>file</type>
+										<mapper>
+											<type>perm</type>
+											<prefix>/usr/share/openhab/bin</prefix>
+											<filemode>755</filemode>
+											<user>root</user>
+											<group>root</group>
+										</mapper>
+									</data>
+									<data>
+										<src>${basedir}/src/deb/bin/setpermissions.sh</src>
+										<type>file</type>
+										<mapper>
+											<type>perm</type>
+											<prefix>/usr/share/openhab/bin</prefix>
+											<filemode>755</filemode>
+											<user>root</user>
+											<group>root</group>
+										</mapper>
+									</data>
+									<data>
+										<src>${basedir}/src/deb/systemd/openhab.service</src>
+										<type>file</type>
+										<mapper>
+											<type>perm</type>
+											<prefix>/usr/lib/systemd/system</prefix>
 											<filemode>755</filemode>
 											<user>root</user>
 											<group>root</group>

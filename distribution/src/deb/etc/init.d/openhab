@@ -9,7 +9,7 @@
 # Description:       Start / Stop openHAB server
 ### END INIT INFO
 
-# Author: Theo Weiss <theo.weiss@gmail.com>
+# Author: openHAB <openhab@openhab.org>
 #
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
@@ -37,6 +37,8 @@ if [ ! -r "$LAUNCHER" ]; then
 	log_failure_msg "launcher jar is missing"
 	exit 5
 fi
+
+SETOWNER=yes
 
 # Read configuration variable file if it is present
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
@@ -134,6 +136,16 @@ fi
 case "$1" in
   start)
         log_daemon_msg "Starting $DESC" "$NAME"
+		if ( x"${SETOWNER}" == xyes ); then
+			for ohdir in "${OPENHAB_WORKSPACE_DIR}" "${OPENHAB_LOG_DIR}" "${OPENHAB_DIR}/webapps/static"; do
+				if ( x"${ohdir}" != x && x"${ohdir}" != x/ ); then
+					chown -Rh ${USER_AND_GROUP} "${ohdir}"
+					chmod 755 "${ohdir}"
+					find "${ohdir}" -type f -exec chmod 644 {} ';'
+					find "${ohdir}" -type d -exec chmod 755 {} ';'
+				fi
+			done
+		fi
 		if start-stop-daemon --start --quiet --pidfile $PIDFILE $EXTRA_ARGS \
 			--oknodo --exec $JAVA -- $JAVA_ARGS_DEFAULT
 		then

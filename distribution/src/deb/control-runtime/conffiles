@@ -8,3 +8,4 @@
 /etc/openhab/logback_debug.xml
 /etc/openhab/login.conf
 /etc/openhab/quartz.properties
+/usr/lib/systemd/system/openhab.service
