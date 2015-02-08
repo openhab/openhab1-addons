@@ -56,7 +56,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private String port;
 	private boolean isSUC = false;
 	private boolean softReset = false;
-	private boolean masterController = false;
+	private boolean masterController = true;
 	private Integer healtime = null;
 	private Integer aliveCheckPeriod = null;
 	private Integer timeout = null;
@@ -390,7 +390,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				masterController = Boolean.parseBoolean((String) config.get("masterController"));
 				logger.info("Update config, masterController = {}", masterController);
 			} catch (NumberFormatException e) {
-				masterController = false;
+				masterController = true;
 				logger.error("Error parsing 'masterController'. This must be boolean.");
 			}
 		}
