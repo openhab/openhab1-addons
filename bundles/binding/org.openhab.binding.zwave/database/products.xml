@@ -1812,7 +1812,7 @@
                         </Reference>
                         <Model>SW-ZCS-1</Model>
                         <Label lang="en">Cord Switch</Label>
-                        <ConfigFile>swiid/swiidinter.xml</ConfigFile>
+                        <ConfigFile>swiid/SW-ZCS-1.xml</ConfigFile>
                 </Product>
         </Manufacturer>
 	
