@@ -316,7 +316,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					if(currentStage.isStaticComplete()) {
 						// If static stages are complete, then we skip forward to the next
 						// stage.
-						logger.debug("NODE {}: Retry timout: Advancing");
+						logger.debug("NODE {}: Retry timout: Advancing", node.getNodeId());
 						setCurrentStage(currentStage.getNextStage());
 					}
 					else {
@@ -324,7 +324,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 						// up with incomplete information about the device.
 						// During the static stages, we use the back off timer to pace things
 						// and retry until the stage is complete
-						logger.debug("NODE {}: Retry timout: Can't advance");
+						logger.debug("NODE {}: Retry timout: Can't advance", node.getNodeId());
 						break;
 					}
 				}
