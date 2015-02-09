@@ -108,6 +108,7 @@ public class KNXBusReaderScheduler {
 				}
 			} catch (InterruptedException e) {
 				sLogger.debug("Schedule executor restart failed: interrupted while waiting for termination.");
+				Thread.currentThread().interrupt();
 			}
 			mScheduledExecutorService = Executors.newScheduledThreadPool(KNXConnection.getNumberOfThreads());
 			sLogger.debug("Schedule executor restart: started.");
