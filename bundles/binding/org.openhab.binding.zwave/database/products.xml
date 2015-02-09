@@ -1718,6 +1718,10 @@
 				<Type>0313</Type>
 				<Id>0108</Id>
 			</Reference>
+			<Reference>
+				<Type>0313</Type>
+				<Id>010B</Id>
+			</Reference>
 			<Model>SSA1/SSA2</Model>
 			<Label lang="en">Siren and Strobe Alarm</Label>
 			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
