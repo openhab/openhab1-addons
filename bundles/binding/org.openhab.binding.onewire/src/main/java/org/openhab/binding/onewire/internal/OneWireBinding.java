@@ -8,289 +8,237 @@
  */
 package org.openhab.binding.onewire.internal;
 
-import java.io.IOException;
 import java.util.Dictionary;
-import java.util.HashMap;
-import org.apache.commons.lang.StringUtils;
+import java.util.Map;
+
 import org.openhab.binding.onewire.OneWireBindingProvider;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.binding.onewire.internal.connection.OneWireConnection;
+import org.openhab.binding.onewire.internal.deviceproperties.AbstractOneWireDevicePropertyBindingConfig;
+import org.openhab.binding.onewire.internal.deviceproperties.AbstractOneWireDevicePropertyWritableBindingConfig;
+import org.openhab.binding.onewire.internal.listener.InterfaceOneWireDevicePropertyWantsUpdateListener;
+import org.openhab.binding.onewire.internal.listener.OneWireDevicePropertyWantsUpdateEvent;
+import org.openhab.binding.onewire.internal.scheduler.OneWireUpdateScheduler;
+import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.binding.BindingConfig;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.SwitchItem;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
-import org.owfs.jowfsclient.Enums.OwBusReturn;
-import org.owfs.jowfsclient.Enums.OwDeviceDisplayFormat;
-import org.owfs.jowfsclient.Enums.OwPersistence;
-import org.owfs.jowfsclient.Enums.OwTemperatureScale;
-import org.owfs.jowfsclient.OwfsClientFactory;
-import org.owfs.jowfsclient.OwfsException;
-import org.owfs.jowfsclient.internal.OwfsClientImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The RefreshService polls all configured OneWireSensors with a configurable
- * interval and post all values on the internal event bus. The interval is 1
- * minute by default and can be changed via openhab.cfg.
+ * The 1-wire items / device properties are scheduled and refreshed via OneWireUpdateScheduler for this binding
  * 
- * @author Thomas.Eichstaedt-Engelen
- * @since 0.6.0
+ * @author Dennis Riegelbauer
+ * @since 1.7.0
  */
-public class OneWireBinding extends AbstractActiveBinding<OneWireBindingProvider> implements ManagedService {
+public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> implements ManagedService, InterfaceOneWireDevicePropertyWantsUpdateListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(OneWireBinding.class);
-
-	private OwfsClientImpl owc;
-
-	/** the ip address to use for connecting to the OneWire server */
-	private String ip = null;
-
-	/** the port to use for connecting to the OneWire server (optional, defaults to 4304) */
-	private int port = 4304;
+	private static final Logger LOGGER = LoggerFactory.getLogger(OneWireBinding.class);
 
 	/**
-	 * the refresh interval which is used to poll values from the OneWire server
-	 * (optional, defaults to 60000ms)
+	 * Scheduler for items
 	 */
-	private long refreshInterval = 60000;
+	private OneWireUpdateScheduler ivOneWireReaderScheduler;
 
-	/** the retry count in case no valid value was returned upon read (optional, defaults to 3) */
-	private int retry = 3;
-
-	/** defines which temperature scale owserver should return temperatures in (optional, defaults to CELSIUS) */
-	private OwTemperatureScale tempScale = OwTemperatureScale.OWNET_TS_CELSIUS;
-	
-	/** maintains state of filters for eliminating outliers */
-	private HashMap<String, Filter> filters = new HashMap<String, Filter>();
-
-
-	@Override
-	protected String getName() {
-		return "OneWire Refresh Service";
+	public OneWireBinding() {
+		super();
+		ivOneWireReaderScheduler = new OneWireUpdateScheduler(this);
 	}
 
 	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
+	public void activate() {
+		super.activate();
+		LOGGER.debug("activate onewire-binding");
+		ivOneWireReaderScheduler.start();
 	}
 
-	/**
-	 * Create a new {@link OwClient} with the given <code>ip</code> and
-	 * <code>port</code>
+	@Override
+	public void deactivate() {
+		super.deactivate();
+		LOGGER.debug("deactivate onewire-binding");
+		ivOneWireReaderScheduler.stop();
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param ip
-	 * @param port
+	 * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
 	 */
-	private void connect(String ip, int port) {
-		if (ip != null && port > 0) {
-			owc = (OwfsClientImpl) OwfsClientFactory.newOwfsClient(ip, port, false);
+	public void updated(Dictionary<String, ?> pvConfig) throws ConfigurationException {
 
-			/* Configure client */
-			owc.setDeviceDisplayFormat(OwDeviceDisplayFormat.OWNET_DDF_F_DOT_I);
-			owc.setBusReturn(OwBusReturn.OWNET_BUSRETURN_ON);
-			owc.setPersistence(OwPersistence.OWNET_PERSISTENCE_ON);
-			owc.setTemperatureScale(tempScale);
-			owc.setTimeout(5000);
+		LOGGER.debug("updated onewire-binding");
 
-			try {
-				boolean isConnected = owc.connect();
-				if (isConnected) {
-					logger.info("Established connection to OwServer on IP '{}' Port '{}'.",	ip, port);
-				} else {
-					logger.warn("Establishing connection to OwServer [IP '{}' Port '{}'] timed out.", ip, port);
-				}
-			} catch (IOException ioe) {
-				logger.error("Couldn't connect to OwServer [IP '" + ip + "' Port '" + port + "']: ", ioe.getLocalizedMessage());
-			}
-		} else {
-			logger.warn("Couldn't connect to OwServer because of missing connection parameters [IP '{}' Port '{}'].", ip, port);
+		if (pvConfig != null) {
+			OneWireConnection.updated(pvConfig);
 		}
+
+		for (OneWireBindingProvider lvProvider : providers) {
+			scheduleAllBindings(lvProvider);
+		}
+
+	}
+
+	@Override
+	protected void internalReceiveCommand(String pvItemName, Command pvCommand) {
+
+		AbstractOneWireDevicePropertyBindingConfig lvBindigConfig = getBindingConfig(pvItemName);
+
+		if (lvBindigConfig instanceof AbstractOneWireDevicePropertyWritableBindingConfig) {
+			LOGGER.debug("received command " + pvCommand.toString() + " for item " + pvItemName);
+
+			AbstractOneWireDevicePropertyWritableBindingConfig lvWritableBindingConfig = (AbstractOneWireDevicePropertyWritableBindingConfig) lvBindigConfig;
+
+			String lvStringValue = lvWritableBindingConfig.convertTypeToString(pvCommand);
+
+			OneWireConnection.writeToOneWire(lvWritableBindingConfig.getDevicePropertyPath(), lvStringValue);
+		} else {
+			LOGGER.debug("received command " + pvCommand.toString() + " for item " + pvItemName + " which is not writable");
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.openhab.core.binding.AbstractBinding#allBindingsChanged(org.openhab.core.binding.BindingProvider)
+	 */
+	public void allBindingsChanged(BindingProvider pvProvider) {
+		scheduleAllBindings(pvProvider);
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * schedule All Bindings to get updated
+	 * 
+	 * @param pvProvider
 	 */
-	@Override
-	public void execute() {
-		if (owc != null) {
-			for (OneWireBindingProvider provider : providers) {
-				for (String itemName : provider.getItemNames()) {
+	private void scheduleAllBindings(BindingProvider pvProvider) {
+		if (OneWireConnection.isConnectionEstablished()) {
+			LOGGER.debug("scheduleAllBindings");
 
-					String sensorId = provider.getSensorId(itemName);
-					String unitId = provider.getUnitId(itemName);
-					Filter filter = getFilter(provider, itemName);
-					if (sensorId == null || unitId == null) {
-						logger.warn("sensorId or unitId isn't configured properly "
-								+ "for the given itemName [itemName={}, sensorId={}, unitId={}] => querying bus for values aborted!",
-								new Object[] { itemName, sensorId, unitId });
-						continue;
-					}
+			if (pvProvider instanceof OneWireBindingProvider) {
+				OneWireBindingProvider lvBindingProvider = (OneWireBindingProvider) pvProvider;
+				ivOneWireReaderScheduler.clear();
 
-					State value = UnDefType.UNDEF;
+				Map<String, BindingConfig> lvBindigConfigs = lvBindingProvider.getBindingConfigs();
+				for (String lvItemName : lvBindigConfigs.keySet()) {
+					LOGGER.debug("Initializing read of item {}.", lvItemName);
+					AbstractOneWireDevicePropertyBindingConfig lvBindingConfig = (AbstractOneWireDevicePropertyBindingConfig) lvBindigConfigs.get(lvItemName);
+					ivOneWireReaderScheduler.updateOnce(lvItemName);
 
-					try {
-						if (owc.exists("/" + sensorId)) {
-							int attempt = 1;
-							Item item = provider.getItem(itemName);
-							while (value == UnDefType.UNDEF && attempt <= retry) {
-								String valueString = owc.read(sensorId + "/" + unitId);
-								logger.debug("{}: Read value '{}' from {}/{}, attempt={}",
-										new Object[] { itemName, valueString, sensorId, unitId, attempt });
-								if (valueString != null) {
-									if (item instanceof ContactItem) {
-										value = valueString.trim().equals("1") ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
-									} else if (item instanceof SwitchItem) {
-										value = valueString.trim().equals("1") ? OnOffType.ON : OnOffType.OFF;
-									} else if (item instanceof NumberItem) {
-										value = new DecimalType(Double.valueOf(valueString));
-										if (filter != null) {
-											value = filter.filter((DecimalType)value);
-										}
-									} else {
-										throw new IllegalStateException(
-											"The item with name " + itemName + " is not a valid type.");
-									}
-								}
-								attempt++;
-							}
-						} else {
-							logger.info("there is no sensor for path {}",
-									sensorId);
-						}
-
-						logger.debug("Found sensor {} with value {}", sensorId, value);
-					} catch (OwfsException oe) {
-						logger.warn("couldn't read from path {}", sensorId);
-						if (logger.isDebugEnabled()) {
-							logger.debug("reading from path " + sensorId + " throws exception", oe);
-						}
-					} catch (IOException ioe) {
-						logger.error(
-								"couldn't establish network connection while reading '"	+ sensorId + "'", ioe);
-					} finally {
-						Item item = provider.getItem(itemName);
-						if (item != null) {
-							synchronized (item) {
-								if (!item.getState().equals(value)) {
-									eventPublisher.postUpdate(itemName, value);
-								}
-							}
+					int lvAutoRefreshTimeInSecs = lvBindingConfig.getAutoRefreshInSecs();
+					if (lvAutoRefreshTimeInSecs > 0) {
+						if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvAutoRefreshTimeInSecs)) {
+							LOGGER.warn("Clouldn't add to OneWireUpdate scheduler", lvBindingConfig);
 						}
 					}
 				}
 			}
-		} else {
-			logger.warn("OneWireClient is null => refresh cycle aborted!");
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	public void updated(Dictionary config) throws ConfigurationException {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.openhab.core.binding.AbstractBinding#bindingChanged(org.openhab.core.binding.BindingProvider,
+	 * java.lang.String)
+	 */
+	public void bindingChanged(BindingProvider lvProvider, String lvItemName) {
+		LOGGER.debug("bindingChanged() for item {} msg received.", lvItemName);
 
-		if (config != null) {
-			ip = (String) config.get("ip");
+		if (lvProvider instanceof OneWireBindingProvider) {
+			OneWireBindingProvider lvBindingProvider = (OneWireBindingProvider) lvProvider;
 
-			String portString = (String) config.get("port");
-			if (StringUtils.isNotBlank(portString)) {
-				port = Integer.parseInt(portString);
-			}
+			AbstractOneWireDevicePropertyBindingConfig lvBindingConfig = lvBindingProvider.getBindingConfig(lvItemName);
 
-			String refreshIntervalString = (String) config.get("refresh");
-			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				refreshInterval = Long.parseLong(refreshIntervalString);
-			}
+			if (lvBindingConfig != null) {
+				LOGGER.debug("Initializing read of item {}.", lvItemName);
+				ivOneWireReaderScheduler.updateOnce(lvItemName);
 
-			String retryString = (String) config.get("retry");
-			if (StringUtils.isNotBlank(retryString)) {
-				retry = Integer.parseInt(retryString);
-			}
-
-			String tempScaleString = (String) config.get("tempscale");
-			if (StringUtils.isNotBlank(tempScaleString)) {
-				try {
-					tempScale = OwTemperatureScale.valueOf("OWNET_TS_" + tempScaleString);
-				} catch (IllegalArgumentException iae) {
-					throw new ConfigurationException(
-							"onewire:tempscale","Unknown temperature scale '"
-									+ tempScaleString + "'. Valid values are CELSIUS, FAHRENHEIT, KELVIN or RANKIN.");
+				if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvBindingConfig.getAutoRefreshInSecs())) {
+					LOGGER.warn("Clouldn't add to OneWireUpdate scheduler", lvBindingConfig);
 				}
 			}
-
-			// there is a valid onewire-configuration, so connect to the onewire
-			// server ...
-			connect(ip, port);
-
-			setProperlyConfigured(true);
 		}
-
 	}
-	@Override
-	protected void internalReceiveCommand(String itemName, Command command) {
-		if (owc != null) {
-			for (OneWireBindingProvider provider : providers) {
-				String sensorId = provider.getSensorId(itemName);
-				String unitId = provider.getUnitId(itemName);
 
-				if (sensorId == null || unitId == null) {
-					continue;
-				}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.openhab.binding.onewire.internal.listener.InterfaceOneWireDevicePropertyWantsUpdateListener#
+	 * devicePropertyWantsUpdate(org.openhab.binding.onewire.internal.listener.OneWireDevicePropertyWantsUpdateEvent)
+	 */
+	public void devicePropertyWantsUpdate(OneWireDevicePropertyWantsUpdateEvent pvWantsUpdateEvent) {
+		String lvItemName = pvWantsUpdateEvent.getItemName();
 
-				String value = null;
-				if (command instanceof OnOffType && command.equals(OnOffType.ON)) {
-					value = "1";
-				} else if (command instanceof OnOffType && command.equals(OnOffType.OFF)) {
-					value = "0";
+		LOGGER.debug("Item " + lvItemName + " wants update!");
+
+		updateItemFromOneWire(lvItemName);
+	}
+
+	/**
+	 * 
+	 * @param pvItemName
+	 * @return the corresponding AbstractOneWireDevicePropertyBindingConfig to the given <code>pvItemName</code>
+	 */
+	private AbstractOneWireDevicePropertyBindingConfig getBindingConfig(String pvItemName) {
+		for (OneWireBindingProvider lvProvider : providers) {
+			return lvProvider.getBindingConfig(pvItemName);
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param pvItemName
+	 * @return the corresponding Item to the given <code>pvItemName</code>
+	 */
+	private Item getItem(String pvItemName) {
+		for (OneWireBindingProvider lvProvider : providers) {
+			return lvProvider.getItem(pvItemName);
+		}
+		return null;
+	}
+
+	/**
+	 * Update an item with value from 1-wire device property
+	 * 
+	 * @param pvItemName
+	 */
+	public void updateItemFromOneWire(String pvItemName) {
+		if (OneWireConnection.getConnection() != null) {
+
+			AbstractOneWireDevicePropertyBindingConfig pvBindingConfig = getBindingConfig(pvItemName);
+
+			if (pvBindingConfig == null) {
+				LOGGER.error("no bindingConfig found for itemName=" + pvItemName + " cannot update! It will be removed from scheduler");	
+				ivOneWireReaderScheduler.removeItem(pvItemName); 
+				return;
+			}
+
+			String lvReadValue = OneWireConnection.readFromOneWire(pvBindingConfig.getDevicePropertyPath());
+
+			Item lvItem = getItem(pvItemName);
+			if (lvReadValue != null) {
+				Type lvType = pvBindingConfig.convertReadValueToType(lvReadValue);
+				if (lvItem != null) {
+					synchronized (lvItem) {
+						if (!lvItem.getState().equals(lvReadValue)) {
+							State lvState = (State) lvType;
+							eventPublisher.postUpdate(lvItem.getName(), lvState);
+						}
+					}
 				} else {
-					value = command.toString();
+					LOGGER.error("There is no Item for ItemName="+pvItemName);
 				}
-
-				try {
-					if (owc.exists("/" + sensorId) && (value != null)) {
-						logger.debug("{}: writing value '{}' to {}/{}",
-								new Object[] { itemName, value, sensorId, unitId });
-						owc.write(sensorId + "/" + unitId, value);
-					} else {
-						logger.info("there is no sensor for path {}",
-								sensorId);
-					}
-				} catch (OwfsException oe) {
-					logger.warn("couldn't write to path {}", sensorId);
-					if (logger.isDebugEnabled()) {
-						logger.debug("writing to path " + sensorId + " throws exception", oe);
-					}
-				} catch (IOException ioe) {
-					logger.error(
-							"couldn't establish network connection while writing to '"	+ sensorId + "'", ioe);
-				}
+			} else {
+				LOGGER.error("Set Item for itemName="+pvItemName+" to Undefined, because the readvalue is null");
+				eventPublisher.postUpdate(lvItem.getName(), UnDefType.UNDEF);
 			}
-		} else {
-			logger.warn("OneWireClient is null => writing aborted!");
 		}
 	}
-
-	private Filter getFilter(OneWireBindingProvider provider, String itemName) {
-		String filterType = provider.getFilter(itemName);
-		if (filterType == null) {
-			return null;
-		}
-		if (!filterType.equals("tukey")) {
-			logger.warn("invalid filter type specified: " + filterType);
-			return null;
-		}
-		Filter f = filters.get(itemName);
-		if (f == null) {
-			filters.put(itemName, new Filter());
-			f = filters.get(itemName);
-		}
-		return f;
-	}
-	
 }
