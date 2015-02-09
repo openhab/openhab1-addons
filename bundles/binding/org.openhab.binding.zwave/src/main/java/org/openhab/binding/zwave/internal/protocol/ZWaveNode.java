@@ -612,7 +612,7 @@ public class ZWaveNode {
 			}
 		}
 
-		logger.warn("NODE {}:Encapsulating message, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
+		logger.warn("NODE {}: Encapsulating message, instance / endpoint {} failed, will discard message.", this.getNodeId(), endpointId);
 		return null;
 	}
 
