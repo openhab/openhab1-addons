@@ -15,10 +15,10 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.prefs.Preferences;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
@@ -57,8 +57,6 @@ import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -153,33 +151,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			}
 		}, String.class);
 		// FIXME: complete type conversions from states to bean property types
-	}
-
-	/**
-	 * Maintain a reference to the OSGi container's ConfigurationAdmin so that we can load and save persistent settings
-	 * across invocations of this binding. We need to store authentication tokens persistently.
-	 */
-	private ConfigurationAdmin configAdmin;
-
-	/**
-	 * Called by the OSGi container.
-	 * 
-	 * @param configAdmin
-	 *            a reference to the ConfigurationAdmin that we need in order to load and save authentication tokens
-	 *            persistently.
-	 */
-	public void addConfigurationAdmin(ConfigurationAdmin configAdmin) {
-		this.configAdmin = configAdmin;
-	}
-
-	/**
-	 * Called by the OSGi container.
-	 * 
-	 * @param configAdmin
-	 *            ignored; we only use this method to forget our reference to the ConfigurationAdmin.
-	 */
-	public void removeConfigurationAdmin(ConfigurationAdmin configAdmin) {
-		this.configAdmin = null;
 	}
 
 	/**
@@ -718,7 +689,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 
 				OAuthCredentials credentials = credentialsCache.get(userid);
 				if (credentials == null) {
-					credentials = new OAuthCredentials(configAdmin, userid);
+					credentials = new OAuthCredentials(userid);
 					credentialsCache.put(userid, credentials);
 				}
 
@@ -896,7 +867,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		private static final String ACCESS_TOKEN = "accessToken";
 
 		private String userid;
-		private Configuration config;
 
 		/**
 		 * The private app key needed in order to interact with the Ecobee API. This must be provided in the
@@ -938,48 +908,45 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 		 */
 		private String accessToken;
 
-		public OAuthCredentials(ConfigurationAdmin configAdmin, String userid) {
+		public OAuthCredentials(String userid) {
 
 			try {
 				this.userid = userid;
-				this.config = configAdmin.getConfiguration("org.openhab.ecobee." + userid);
 				load();
 			} catch (Exception e) {
 				throw new EcobeeException("Cannot create OAuthCredentials.", e);
 			}
 		}
 
-		@SuppressWarnings("rawtypes")
-		private void load() {
-			Dictionary props = config.getProperties();
-			if (props == null) {
-				logger.warn("No tokens loaded from previous invocation.");
-				this.authToken = null;
-				this.refreshToken = null;
-				this.accessToken = null;
-			} else {
-				this.authToken = (String) props.get(AUTH_TOKEN);
-				this.refreshToken = (String) props.get(REFRESH_TOKEN);
-				this.accessToken = (String) props.get(ACCESS_TOKEN);
-			}
+		private Preferences getPrefsNode() {
+			return Preferences.userRoot().node("org.openhab.ecobee." + userid);
 		}
 
-		@SuppressWarnings({ "rawtypes", "unchecked" })
+		private void load() {
+			Preferences prefs = getPrefsNode();
+			this.authToken = prefs.get(AUTH_TOKEN, null);
+			this.refreshToken = prefs.get(REFRESH_TOKEN, null);
+			this.accessToken = prefs.get(ACCESS_TOKEN, null);
+		}
+
 		private void save() {
-			try {
-				Dictionary props = new Hashtable();
-				if (this.authToken != null) {
-					props.put(AUTH_TOKEN, this.authToken);
-				}
-				if (this.refreshToken != null) {
-					props.put(REFRESH_TOKEN, this.refreshToken);
-				}
-				if (this.accessToken != null) {
-					props.put(ACCESS_TOKEN, this.accessToken);
-				}
-				config.update(props);
-			} catch (Exception e) {
-				throw new EcobeeException("Cannot save tokens.", e);
+			Preferences prefs = getPrefsNode();
+			if (this.authToken != null) {
+				prefs.put(AUTH_TOKEN, this.authToken);
+			} else {
+				prefs.remove(AUTH_TOKEN);
+			}
+
+			if (this.refreshToken != null) {
+				prefs.put(REFRESH_TOKEN, this.refreshToken);
+			} else {
+				prefs.remove(REFRESH_TOKEN);
+			}
+			
+			if (this.accessToken != null) {
+				prefs.put(ACCESS_TOKEN, this.accessToken);
+			} else {
+				prefs.remove(ACCESS_TOKEN);
 			}
 		}
 
