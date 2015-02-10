@@ -1305,7 +1305,9 @@ public class ZWaveController {
 						if (!transactionCompleted.tryAcquire(1, zWaveResponseTimeout, TimeUnit.MILLISECONDS)) {
 							timeOutCount.incrementAndGet();
 							// If this is a SendData message, then we need to abort
-							if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData) {
+							// This should only be sent if we didn't get the initial ACK!!!
+							// So we need to check the ACK flag and only abort if it's not set
+							if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData && lastSentMessage.isAckPending()) {
 								buffer = new SerialMessage(SerialMessageClass.SendDataAbort, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.High).getMessageBuffer();
 								logger.debug("NODE {}: Sending ABORT Message = {}", lastSentMessage.getMessageNode(), SerialMessage.bb2hex(buffer));
 								try {
