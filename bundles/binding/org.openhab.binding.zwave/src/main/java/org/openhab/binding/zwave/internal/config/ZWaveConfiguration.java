@@ -105,7 +105,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 		List<OpenHABConfigurationRecord> records = new ArrayList<OpenHABConfigurationRecord>();
 		OpenHABConfigurationRecord record;
-//		ZWaveNode node;
 
 		if (domain.equals("status/")) {
 			// Return the z-wave status information
@@ -144,7 +143,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				break;
 			case 4:
 				// Get product
-				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3])) == false) {
+				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), Double.MAX_VALUE) == false) {
 					break;
 				}
 
@@ -163,8 +162,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				break;
 			case 5:
 				// Get product
-				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3])) == false)
+				if (database.FindProduct(Integer.parseInt(splitDomain[1]), Integer.parseInt(splitDomain[2]), Integer.parseInt(splitDomain[3]), Double.MAX_VALUE) == false) {
 					break;
+				}
 
 				if (splitDomain[4].equals("parameters")) {
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
@@ -564,7 +564,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				}
 				records.add(record);
 			} else if (arg.equals("parameters/")) {
-				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) != false) {
+				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) != false) {
 					List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
 					if(configList == null) {
 						return records;
@@ -979,7 +979,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					logger.debug("NODE {}: Refresh parameters", nodeId);
 
 					ZWaveProductDatabase database = new ZWaveProductDatabase();
-					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) == false) {
 						logger.error("NODE {}: Error getting parameters - no database found", nodeId);
 						return;
 					}
@@ -1079,7 +1079,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			// TODO: Should we check that the node is finished initialising
 
 			ZWaveProductDatabase database = new ZWaveProductDatabase();
-			if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+			if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) == false) {
 				logger.error("NODE {}: Error in doSet - no database found", nodeId);
 				return;
 			}
