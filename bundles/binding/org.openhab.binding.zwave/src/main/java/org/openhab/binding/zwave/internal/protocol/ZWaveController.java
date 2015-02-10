@@ -1178,7 +1178,7 @@ public class ZWaveController {
 	    				sendAllowed.release();
 	    			}
 					recvMessage = recvQueue.take();
-					logger.trace("Receive queue TAKE: Length={}", recvQueue.size());
+					logger.debug("Receive queue TAKE: Length={}", recvQueue.size());
 					logger.debug("Process Message = {}", SerialMessage.bb2hex(recvMessage.getMessageBuffer()));
 
 		    		handleIncomingMessage(recvMessage);
@@ -1420,7 +1420,7 @@ public class ZWaveController {
     		}
 
     		recvQueue.add(recvMessage);
-			logger.trace("Receive queue ADD: Length={}", recvQueue.size());
+			logger.debug("Receive queue ADD: Length={}", recvQueue.size());
         }
 
 		/**

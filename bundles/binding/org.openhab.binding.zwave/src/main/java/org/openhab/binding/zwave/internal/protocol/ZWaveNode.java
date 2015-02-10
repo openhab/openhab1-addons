@@ -407,13 +407,13 @@ public class ZWaveNode {
 	public double getApplicationVersion() {
 		ZWaveVersionCommandClass versionCmdClass = (ZWaveVersionCommandClass) this.getCommandClass(CommandClass.VERSION);
 		if(versionCmdClass == null) {
-			logger.debug("NODE {}: App version requested but Version class not supported", this.getNodeId());
+			logger.trace("NODE {}: App version requested but Version class not supported", this.getNodeId());
 			return 0.0;
 		}
 
 		Double appVersion = versionCmdClass.getApplicationVersion();
 		if(appVersion == null) {
-			logger.debug("NODE {}: App version requested but version is unknown", this.getNodeId());
+			logger.trace("NODE {}: App version requested but version is unknown", this.getNodeId());
 			return 0.0;			
 		}
 		
