@@ -1837,8 +1837,8 @@
 		<Name>Zipato</Name>
 		<Product>
 			<Reference>
-				<Type>0001</Type>
-				<Id>0011</Id>
+				<Type>0002</Type>
+				<Id>0002</Id>
 			</Reference>
 			<Model>RGBWE27ZW</Model>
 			<Label lang="en">RGBW bulb</Label>
