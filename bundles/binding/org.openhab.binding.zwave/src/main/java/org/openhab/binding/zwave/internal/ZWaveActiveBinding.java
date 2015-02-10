@@ -176,22 +176,25 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		// Rebuild the polling table
 		pollingList.clear();
 
-		// Loop all binding providers for the Z-wave binding.
-		for (ZWaveBindingProvider eachProvider : providers) {
-			// loop all bound items for this provider
-			for (String name : eachProvider.getItemNames()) {
-				logger.trace("Polling list: Checking {} == {}", name, converterHandler.getRefreshInterval(eachProvider, name));
+		if (converterHandler != null) {
+			// Loop all binding providers for the Z-wave binding.
+			for (ZWaveBindingProvider eachProvider : providers) {
+				// loop all bound items for this provider
+				for (String name : eachProvider.getItemNames()) {
+					logger.trace("Polling list: Checking {} == {}", name, converterHandler.getRefreshInterval(eachProvider, name));
 
-				// This binding is configured to poll - add it to the list
-				if (converterHandler.getRefreshInterval(eachProvider, name) > 0) {
-					ZWavePollItem item = new ZWavePollItem();
-					item.item = name;
-					item.provider = eachProvider;
-					pollingList.add(item);
-					logger.trace("Polling list added {}", name);
+					// This binding is configured to poll - add it to the list
+					if (converterHandler.getRefreshInterval(eachProvider, name) > 0) {
+						ZWavePollItem item = new ZWavePollItem();
+						item.item = name;
+						item.provider = eachProvider;
+						pollingList.add(item);
+						logger.trace("Polling list added {}", name);
+					}
 				}
 			}
 		}
+
 		pollingIterator = null;
 	}
 	
