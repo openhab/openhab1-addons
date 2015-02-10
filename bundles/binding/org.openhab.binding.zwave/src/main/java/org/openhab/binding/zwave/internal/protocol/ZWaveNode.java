@@ -22,6 +22,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
@@ -396,6 +397,27 @@ public class ZWaveNode {
 	 */
 	public void setVersion(int version) {
 		this.version = version;
+	}
+
+
+	/**
+	 * Gets the node application firmware version
+	 * @return the version
+	 */
+	public double getApplicationVersion() {
+		ZWaveVersionCommandClass versionCmdClass = (ZWaveVersionCommandClass) this.getCommandClass(CommandClass.VERSION);
+		if(versionCmdClass == null) {
+			logger.debug("NODE {}: App version requested but Version class not supported", this.getNodeId());
+			return 0.0;
+		}
+
+		Double appVersion = versionCmdClass.getApplicationVersion();
+		if(appVersion == null) {
+			logger.debug("NODE {}: App version requested but version is unknown", this.getNodeId());
+			return 0.0;			
+		}
+		
+		return appVersion;
 	}
 
 	/**

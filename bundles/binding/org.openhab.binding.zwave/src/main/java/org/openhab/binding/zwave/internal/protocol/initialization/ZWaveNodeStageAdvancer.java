@@ -533,7 +533,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
 				// We now should know all the command classes, so run through the database and set any options
 				database = new ZWaveProductDatabase();
-				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == true) {
+				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) == true) {
 					List<ZWaveDbCommandClass> classList = database.getProductCommandClasses();
 
 					if (classList != null) {
@@ -616,7 +616,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
 				// Open the product database
 				ZWaveProductDatabase associations = new ZWaveProductDatabase();
-				if(associations.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == true) {
+				if(associations.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) == true) {
 					// We have this device in the database
 					// Assume the database is correct since some devices report invalid number of groups!
 					List<ZWaveDbAssociationGroup> groupList = associations.getProductAssociationGroups();
@@ -678,7 +678,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				}
 
 				database = new ZWaveProductDatabase();
-				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) == false) {
 					// No database entry for this device!
 					logger.warn("NODE {}: Node advancer: SET_ASSOCIATION - Unknown device: {}:{}:{}", node.getNodeId(),
 							Integer.toHexString(node.getManufacturer()), Integer.toHexString(node.getDeviceType()), Integer.toHexString(node.getDeviceId()));
@@ -716,7 +716,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 
 			case GET_CONFIGURATION:
 				database = new ZWaveProductDatabase();
-				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId()) == false) {
+				if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) == false) {
 					// No database entry for this device!
 					logger.warn("NODE {}: Node advancer: GET_CONFIGURATION - Unknown device: {}:{}:{}", node.getNodeId(),
 							Integer.toHexString(node.getManufacturer()), Integer.toHexString(node.getDeviceType()), Integer.toHexString(node.getDeviceId()));

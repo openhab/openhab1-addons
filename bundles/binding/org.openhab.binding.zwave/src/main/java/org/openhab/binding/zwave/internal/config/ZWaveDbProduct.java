@@ -10,7 +10,9 @@ package org.openhab.binding.zwave.internal.config;
 
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 /**
  * Implements the product class for the XML product database
@@ -27,5 +29,49 @@ public class ZWaveDbProduct {
 	@XStreamImplicit
 	public List<ZWaveDbLabel> Label;
 
-	public String ConfigFile;
+	@XStreamImplicit
+	private List<ZWaveDbConfigFile> ConfigFile;
+
+	@XStreamConverter(value=ToAttributedValueConverter.class, strings={"Filename"})
+	private class ZWaveDbConfigFile {
+		Double VersionMin;
+		Double VersionMax;
+		
+		String Filename;
+	}
+
+	public String getConfigFile(Double version) {
+		if(ConfigFile == null) {
+			return null;
+		}
+
+		String filename = null;
+		// Check for a version'ed file
+		// There are multiple permutations of the file that we need to account for -:
+		// * No version information
+		// * Only a min version
+		// * Only a max version
+		// * Both min and max versions
+		for(ZWaveDbConfigFile cfg : ConfigFile) {
+			// Find a default - ie one with no version information
+			if(cfg.VersionMin == null && cfg.VersionMax == null) {
+				filename = cfg.Filename;
+				continue;
+			}
+
+			if(cfg.VersionMin != null && version < cfg.VersionMin) {
+				continue;
+			}
+
+			if(cfg.VersionMax != null && version > cfg.VersionMax) {
+				continue;
+			}
+			
+			// This version matches the criterea
+			return cfg.Filename;
+		}
+
+		// Otherwise return the default if there was one!
+		return filename;
+	}
 }
