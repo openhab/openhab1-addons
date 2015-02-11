@@ -18,6 +18,7 @@
 			<Index>1</Index>
 			<Maximum>5</Maximum>
 			<Label lang="en">Control/Report Group</Label>
+			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
 </Product>
