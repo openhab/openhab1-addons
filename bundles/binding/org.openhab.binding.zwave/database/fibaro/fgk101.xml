@@ -171,7 +171,9 @@
 				are always sent.]]>
 			</Help>
 		</Parameter>
-
+<!-- 
+The following 2 parameters don't exist in most versions. If we find they exist in some version
+that I can't currently find, then we need to add them as a different version
 		<Parameter>
 			<Index>10</Index>
 			<Type>byte</Type>
@@ -212,7 +214,7 @@
 				]]>
 			</Help>
 		</Parameter>
-
+ -->
 		<Parameter>
 			<Index>12</Index>
 			<Type>byte</Type>
