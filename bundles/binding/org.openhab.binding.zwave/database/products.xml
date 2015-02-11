@@ -308,6 +308,7 @@
 			</Reference>
 			<Model>SE812</Model>
 			<Label lang="en">Siren</Label>
+			<ConfigFile>everspring/se812.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
