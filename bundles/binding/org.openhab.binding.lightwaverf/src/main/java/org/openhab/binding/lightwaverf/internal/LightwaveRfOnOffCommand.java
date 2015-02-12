@@ -3,6 +3,9 @@ package org.openhab.binding.lightwaverf.internal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.types.State;
+
 public class LightwaveRfOnOffCommand implements LightwaveRFCommand {
 
 	/**
@@ -41,10 +44,21 @@ public class LightwaveRfOnOffCommand implements LightwaveRFCommand {
     	}
 	}
 
-	@Override
     public String getLightwaveRfCommandString() {
         char funtion = on ? '1' : '0';
         return "!R" + roomId + "D" + deviceId + "F" + funtion + "\n"; 
     }
+
+	public String getRoomId() {
+		return roomId;
+	}
+
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	public State getState() {
+		return on ? OnOffType.ON : OnOffType.OFF;
+	}
 
 }

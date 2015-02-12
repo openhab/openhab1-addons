@@ -7,12 +7,13 @@ import java.net.UnknownHostException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LightwaveRFSender implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(LightwaveRFSender.class);
-    private static final String STOP_MESSAGE = "StopMessage";
+    private static final LightwaveRFCommand STOP_MESSAGE = LightwaveRFCommand.STOP_MESSAGE;
     // Poll time so we don't flood the LightwaveRF hub
     private static final int POLL_TIME = 250;
     // LightwaveRF WIFI hub port.
@@ -24,7 +25,7 @@ public class LightwaveRFSender implements Runnable {
     // Latch used to ensure we shutdown.
     private CountDownLatch latch = new CountDownLatch(0);
     // Simple queue of UDP transmission
-    private BlockingQueue<String> queue = new LinkedBlockingQueue<String>();
+    private BlockingQueue<LightwaveRFCommand> queue = new LinkedBlockingQueue<LightwaveRFCommand>();
     // Boolean to indicate if we are running
     private boolean running = false;
     // LightwaveRF messageId
@@ -79,12 +80,11 @@ public class LightwaveRFSender implements Runnable {
     /**
      * Run thread, pulling off any items from the UDP commands buffer, then send across network
      */
-    @Override
     public void run() {
         logger.info("LightwaveRFSender Started");
         while(running) {
             try {
-                String commandToSend = queue.take();
+                LightwaveRFCommand commandToSend = queue.take();
                 if(!commandToSend.equals(STOP_MESSAGE)) {
                     netsendUDP(commandToSend);
                 } else {
@@ -102,7 +102,7 @@ public class LightwaveRFSender implements Runnable {
     /**
     * Add UDP commands to queue.
     */
-    public void sendUDP(String command) {
+    public void sendUDP(LightwaveRFCommand command) {
         try {
             if(running) {
                 queue.put(command);
@@ -128,13 +128,11 @@ public class LightwaveRFSender implements Runnable {
     /**
     * Send the UDP commands
      */
-    private void netsendUDP(String command) {
-        command = messageId + command;
-        incrementMessageId();
+    private void netsendUDP(LightwaveRFCommand command) {
         try {
             logger.info("Sending command[" + command + "]");
             byte[] sendData = new byte[1024];
-            sendData = command.getBytes();
+            sendData = getData(command);
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, LIGHTWAVE_PORT_IN);
             transmitSocket.send(sendPacket);
         } 		catch (IOException e) {
@@ -142,12 +140,21 @@ public class LightwaveRFSender implements Runnable {
         }
     }
 
+    
+    private byte[] getData(LightwaveRFCommand command){
+    	return (getAndIncrementMessageId() + "," + command.getLightwaveRfCommandString()).getBytes();    	
+    }
+    
     /**
      * Increment message counter, so different messages have different IDs
      * Important for getting corresponding OK acknowledgements from port 9761 tagged with the same counter value
      */
-    private void incrementMessageId() {
-        if (messageId <=998) messageId++;
-        else messageId = 000;
+    private int getAndIncrementMessageId() {
+		int myMessageId = messageId;
+		if(myMessageId >= 999){
+			messageId = 0;
+		}
+		return myMessageId;
     }
+    
 }

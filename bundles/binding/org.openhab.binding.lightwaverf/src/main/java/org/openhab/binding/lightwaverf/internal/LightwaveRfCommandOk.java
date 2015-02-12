@@ -3,6 +3,8 @@ package org.openhab.binding.lightwaverf.internal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openhab.core.types.State;
+
 public class LightwaveRfCommandOk implements LightwaveRFCommand {
 
 	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),OK");
@@ -14,8 +16,19 @@ public class LightwaveRfCommandOk implements LightwaveRFCommand {
 		this.messageId = new LightwaveRfMessageId(Integer.valueOf(m.group(0)));
 	}
 
-	@Override
 	public String getLightwaveRfCommandString() {
 		return messageId + ",OK\n";
+	}
+
+	public String getRoomId() {
+		return null;
+	}
+
+	public String getDeviceId() {
+		return null;
+	}
+
+	public State getState() {
+		return null;
 	}
 }

@@ -58,7 +58,9 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand(" + itemName + ", " + command +") is called!");
-		String lightwaverfMessageString = getMessageString(itemName, command);
+        String roomId = getRoomId(itemName);
+        String deviceId = getDeviceId(itemName);
+        LightwaveRFCommand lightwaverfMessageString = LightwaverfConvertor.convertToLightwaveRfMessage(roomId, deviceId, command);
 		sender.sendUDP(lightwaverfMessageString);
 	}
 
@@ -68,18 +70,12 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveUpdate(" + itemName + ", " + newState + ") is called!");
-                String lightwaverfMessageString = getMessageString(itemName, newState);
+                String roomId = getRoomId(itemName);
+                String deviceId = getDeviceId(itemName);
+                LightwaveRFCommand lightwaverfMessageString = LightwaverfConvertor.convertToLightwaveRfMessage(roomId, deviceId, newState);
                 sender.sendUDP(lightwaverfMessageString);
 	}
 
-	@Override
-	public void messageRecevied(String message){
-		logger.debug("Message Received :" + message);
-		String itemName = getItemName(message);
-		State state = getState(message);
-
-		eventPublisher.postUpdate(itemName, state);
-	}
 
 	private String getItemName(String message){
 		return "itemName";
@@ -89,11 +85,22 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 		return OnOffType.ON;
 	}
 
-	private String getMessageString(String itemName, Command commnad){
-		return "command";
+	private String getRoomId(String itemName){
+		return "1";
 	}
 
-	private String getMessageString(String itemName, State state){
-		return "newState";
+	private String getDeviceId(String itemName){
+		return "1";
+	}
+	
+	private String getItemName(String roomId, String deviceId){
+		return "TestItemName";
+	}
+
+	public void messageRecevied(LightwaveRFCommand command) {
+		String itemName = getItemName(command.getRoomId(), command.getDeviceId());
+		State state = command.getState();
+
+		eventPublisher.postUpdate(itemName, state);
 	}
 }

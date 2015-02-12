@@ -3,26 +3,32 @@ package org.openhab.binding.lightwaverf.internal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openhab.core.library.types.IncreaseDecreaseType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.types.Type;
+
 
 public class LightwaverfConvertor {
 
 	private static final Pattern REG_EXP = Pattern.compile(".*F(.).*");
 
-    public static String convertToLightwaveRfMessage(String roomId, String deviceId, String command){
-        if(command == "OnOffType"){
-            boolean on = true;
-            return new LightwaveRfOnOffCommand(roomId, deviceId, on).getLightwaveRfCommandString();
+
+    public static LightwaveRFCommand convertToLightwaveRfMessage(String roomId, String deviceId, Type command){
+        if(command instanceof OnOffType){
+            boolean on = (command == OnOffType.ON);
+            return new LightwaveRfOnOffCommand(roomId, deviceId, on);
         }
-        else if(command == "PercentType"){
-            int dimmingLevel = 0;
-            return new LightwaveRfDimCommand(roomId, deviceId, dimmingLevel).getLightwaveRfCommandString();
+        else if(command instanceof PercentType){
+            int dimmingLevel = ((PercentType) command).intValue();
+            return new LightwaveRfDimCommand(roomId, deviceId, dimmingLevel);
         }
-        else if(command == "IncreaseDecrease"){
-            boolean up = true;
-            return new LightwaveRfDimUpDownCommand(roomId, deviceId, up).getLightwaveRfCommandString();
+        else if(command instanceof IncreaseDecreaseType){
+            boolean up = (command == IncreaseDecreaseType.INCREASE);
+            return new LightwaveRfDimUpDownCommand(roomId, deviceId, up);
             
         }
-        throw new RuntimeException("Unsupported Command");
+        throw new RuntimeException("Unsupported Command: " + command);
     }
     
     public static LightwaveRFCommand convertFromLightwaveRfMessage(String message){
@@ -47,6 +53,8 @@ public class LightwaverfConvertor {
     	return modeCode.charAt(0);
     	
     }
+    
+
     
     
 }

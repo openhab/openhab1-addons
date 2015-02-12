@@ -1,5 +1,7 @@
 package org.openhab.binding.lightwaverf.internal;
 
+import org.openhab.core.types.State;
+
 public class LightwaveRfDimUpDownCommand implements LightwaveRFCommand {
 
 	/**
@@ -16,9 +18,20 @@ public class LightwaveRfDimUpDownCommand implements LightwaveRFCommand {
     	throw new IllegalArgumentException("Not implemented");
     }
 
-    @Override
     public String getLightwaveRfCommandString() {
     	throw new IllegalArgumentException("Not implemented");
     }
+
+	public String getRoomId() {
+    	throw new IllegalArgumentException("Not implemented");
+	}
+
+	public String getDeviceId() {
+    	throw new IllegalArgumentException("Not implemented");
+	}
+
+	public State getState() {
+    	throw new IllegalArgumentException("Not implemented");
+	}
 
 }

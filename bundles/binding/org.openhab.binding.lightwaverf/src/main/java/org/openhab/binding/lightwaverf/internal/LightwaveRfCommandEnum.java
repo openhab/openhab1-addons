@@ -1,4 +1,4 @@
-package com.Lightwave;
+package org.openhab.binding.lightwaverf.internal;
 
 public enum LightwaveRfCommandEnum {
 

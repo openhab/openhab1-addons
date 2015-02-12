@@ -28,7 +28,7 @@ public class LightwaveRFReceiver implements Runnable {
     }
     /**
     * Stop the LightwaveRFSender
-    * Will closae the sockect wait for the thread to exit and null the socket
+    * Will close the socket wait for the thread to exit and null the socket
     */
     public synchronized void stop() {
         logger.info("Stopping LightwaveRFReceiver");
@@ -56,14 +56,14 @@ public class LightwaveRFReceiver implements Runnable {
     * Run method, this will listen to the socket and receive messages.
     * The blocking is stopped when the socket is closed.
     */
-    @Override
     public void run() {
         logger.info("LightwaveRFReceiver Started");
         while(running) {
             try {
                 String message = receiveUDP();
                 logger.debug("Message received: " + message);
-                notifyListners(message);
+                LightwaveRFCommand command = LightwaverfConvertor.convertFromLightwaveRfMessage(message);
+                notifyListners(command);
             } 			catch (IOException e) {
                 if(!(running == false && receiveSocket.isClosed())) {
                     // If running isn't false and the socket isn't closed log the error
@@ -104,7 +104,7 @@ public class LightwaveRFReceiver implements Runnable {
     * Notify all listeners of a message
     * @param message
     */
-    private void notifyListners(String message) {
+    private void notifyListners(LightwaveRFCommand message) {
         for(LightwaveRFMessageListener listener : listerns) {
             listener.messageRecevied(message);
         }
