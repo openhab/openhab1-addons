@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -40,6 +40,7 @@ import org.openhab.core.persistence.FilterCriteria.Operator;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
+import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -82,6 +83,16 @@ public class MongoDBPersistenceService implements QueryablePersistenceService,
 
 	private MongoClient cl;
 	private DBCollection mongoCollection;
+
+	private PersistentStateRestorer persistentStateRestorer;
+	
+	public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
+		this.persistentStateRestorer = persistentStateRestorer;
+	}
+		
+	public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
+		this.persistentStateRestorer = null;
+	}
 
 	public void activate() {
 		//
@@ -244,6 +255,7 @@ public class MongoDBPersistenceService implements QueryablePersistenceService,
 
 			// connection has been established ... initialization completed!
 			initialized = true;
+			persistentStateRestorer.initializeItems(getName());
 		}
 
 	}

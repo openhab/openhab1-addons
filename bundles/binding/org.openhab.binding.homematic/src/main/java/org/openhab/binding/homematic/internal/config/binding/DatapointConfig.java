@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,7 +35,7 @@ public class DatapointConfig extends ValueBindingConfig {
 	public DatapointConfig(HmInterface hmInterface, String addressWithChannel, String parameter) {
 		this.hmInterface = hmInterface;
 		String[] configParts = StringUtils.trimToEmpty(addressWithChannel).split(":");
-		this.address = configParts[0];
+		setAddress(configParts[0]);
 		this.channel = configParts[1];
 		this.parameter = parameter;
 	}
@@ -44,20 +44,21 @@ public class DatapointConfig extends ValueBindingConfig {
 	 * Creates a datapoint config.
 	 */
 	public DatapointConfig(String address, String channel, String parameter) {
-		this(address, channel, parameter, null, null, false);
+		this(address, channel, parameter, null, null, false, 0.0);
 	}
 
 	/**
 	 * Creates a datapoint config from the binding parser.
 	 */
 	public DatapointConfig(String address, String channel, String parameter, Converter<?> converter,
-			BindingAction action, boolean forceUpdate) {
-		this.address = address;
+			BindingAction action, boolean forceUpdate, double delay) {
+		setAddress(address);
 		this.channel = channel;
 		this.parameter = parameter;
 		this.converter = converter;
 		this.action = action;
 		this.forceUpdate = forceUpdate;
+		this.delay = delay;
 	}
 
 	/**
@@ -65,6 +66,13 @@ public class DatapointConfig extends ValueBindingConfig {
 	 */
 	public String getAddress() {
 		return address;
+	}
+	
+	/**
+	 * Sets the address, strips a leading CCU team marker.
+	 */
+	private void setAddress(String address) {
+		this.address = StringUtils.stripStart(address, "*");
 	}
 
 	/**
@@ -124,6 +132,9 @@ public class DatapointConfig extends ValueBindingConfig {
 		}
 		if (forceUpdate) {
 			tsb.append("forceUpdate", forceUpdate);
+		}
+		if (delay > 0.0) {
+			tsb.append("delay", delay);
 		}
 		return tsb.toString();
 	}

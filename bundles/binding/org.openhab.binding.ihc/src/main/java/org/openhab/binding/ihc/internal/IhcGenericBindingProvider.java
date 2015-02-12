@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -99,23 +99,30 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 
 			if (configParts.length == 1) {
 				config.outBindingOnly = true;
-				config.resourceId = Integer.parseInt(configParts[0].replace(
-						">", ""));
+				String resourceId = configParts[0].replace(">", "");
+
+				if (resourceId.startsWith("0x")) {
+					config.resourceId = Integer.parseInt(
+							resourceId.replace("0x", ""), 16);
+				} else {
+					config.resourceId = Integer.parseInt(resourceId);
+				}
+				
 			} else {
 				throw new BindingConfigParseException(
 						"When configuration start with '>', refresh interval is not supported ");
-
 			}
 
 		} else {
 
 			String resourceId = configParts[0];
 
-			if (resourceId.startsWith("0x"))
+			if (resourceId.startsWith("0x")) {
 				config.resourceId = Integer.parseInt(
 						resourceId.replace("0x", ""), 16);
-			else
+			} else {
 				config.resourceId = Integer.parseInt(resourceId);
+			}
 
 			if (configParts.length == 2)
 				config.refreshInterval = Integer.parseInt(configParts[1]);

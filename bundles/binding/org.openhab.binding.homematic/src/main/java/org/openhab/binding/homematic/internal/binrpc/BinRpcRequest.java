@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -84,7 +84,7 @@ public class BinRpcRequest {
 	private void addInt(int n) {
 		byte d[] = BigInteger.valueOf(n).toByteArray();
 		for (int c = 0; c < 4 - d.length; c++) {
-			addByte((byte) 0);
+			addByte(n < 0 ? (byte) 0xFF : (byte) 0);
 		}
 		for (byte s : d) {
 			addByte(s);
@@ -92,14 +92,23 @@ public class BinRpcRequest {
 	}
 
 	private void addDouble(double v) {
-		v = Math.abs(((Double) v).doubleValue());
-		double tmp = v;
+		double tmp = Math.abs(v);
 		int exp = 0;
-		while (tmp >= 2) {
-			tmp = Math.abs(v / Math.pow(2, exp++));
+		if (tmp != 0 && tmp < 0.5) {
+			while (tmp < 0.5) {
+				tmp *= 2;
+				exp--;
+			}
+		} else {
+			while (tmp >= 1) {
+				tmp /= 2;
+				exp++;
+			}
 		}
-		int mantissa = (int) (Math.abs(v / Math.pow(2, exp)) * 0x40000000);
-		// Note that this limits the range of the inbound double
+		if (v < 0) {
+			tmp *= -1;
+		}
+		int mantissa = (int) Math.round(tmp * 0x40000000);
 		addInt(mantissa);
 		addInt(exp);
 	}

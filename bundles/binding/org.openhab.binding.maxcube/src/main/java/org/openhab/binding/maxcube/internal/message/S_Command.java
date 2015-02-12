@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import org.slf4j.Logger;
  * Command to be send via the MAX!Cube protocol.
  * 
  * @author Andreas Heil (info@aheil.de)
+ * @author Marcel Verpaalen 
  * @since 1.4.0
  */
 public class S_Command {
@@ -36,7 +37,7 @@ public class S_Command {
 	 * @param setpointTemperature
 	 *            the desired setpoint temperature for the device.
 	 */
-	public S_Command(String rfAddress, int roomId, double setpointTemperature) {
+	public S_Command(String rfAddress, int roomId, ThermostatModeType mode, double setpointTemperature) {
 		this.rfAddress = rfAddress;
 		this.roomId = roomId;
 
@@ -52,9 +53,18 @@ public class S_Command {
 		// AB => bit mapping
 		// 01 = Permanent
 		// 10 = Temporarily
-
-		bits[7] = false;  // A (MSB)
-		bits[6] = true;   // B
+		
+		if (mode.equals(ThermostatModeType.MANUAL)){
+			bits[7] = false;  // A (MSB)
+			bits[6] = true;   // B
+		} else if (mode.equals(ThermostatModeType.BOOST)){
+			bits[7] = true;   // A (MSB)
+			bits[6] = true;   // B
+		} else
+		{
+			bits[7] = false ;  // A (MSB)
+			bits[6] = false;   // B
+		}
 	}
 
 	/**

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>iTemp</Model>
+	<Label lang="en">Dual Sensor Temperature Binary</Label>
+	<CommandClasses>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x30</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Reset to factory default</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No (default)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Execute reset</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Delete configuration but keeps inclusion]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Command sent on external dry contact</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Alarm Resport Type 2 (default)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Basic On or Basic Off</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Configure what te external contact sends when trigger]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Operating Mode</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Normal Wakeup (default)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Always awake</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Defines if the sensor is in normal wakeup mode or always on (drains battery fast)]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>6</Index>
+			<Type>short</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Minimum>1</Minimum>
+			<Maximum>15300</Maximum>
+			<Label lang="en">Temperature Offset</Label>
+			<Help lang="en"><![CDATA[Can be used to calibrate the temperature sensors function. Calibrated as factory default.]]></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Binary input Group</Label>
+			<Help lang="en"><![CDATA[Dry binary input close/open]]></Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Alarm Group</Label>
+			<Help lang="en"><![CDATA[Alarm Condition - tempering switch trips]]></Help>
+		</Group>
+	</Associations>
+</Product>
+

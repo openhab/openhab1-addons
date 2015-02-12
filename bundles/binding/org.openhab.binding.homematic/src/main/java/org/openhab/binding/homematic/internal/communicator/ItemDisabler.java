@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import java.util.TimerTask;
 
 import org.openhab.binding.homematic.internal.common.HomematicContext;
 import org.openhab.binding.homematic.internal.communicator.ProviderItemIterator.ProviderItemIteratorCallback;
+import org.openhab.binding.homematic.internal.config.binding.ActionConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.ProgramConfig;
 import org.openhab.binding.homematic.internal.converter.state.Converter;
@@ -86,7 +87,8 @@ public class ItemDisabler extends TimerTask {
 					@Override
 					public void next(HomematicBindingConfig providerBindingConfig, Item item, Converter<?> converter) {
 						HmValueItem hmValueItem = context.getStateHolder().getState(providerBindingConfig);
-						if (providerBindingConfig instanceof ProgramConfig) {
+						if (providerBindingConfig instanceof ProgramConfig
+								|| providerBindingConfig instanceof ActionConfig) {
 							context.getEventPublisher().postUpdate(item.getName(), OnOffType.OFF);
 						} else {
 							hmValueItem.setValue(converter.convertToBinding(OnOffType.OFF, hmValueItem));

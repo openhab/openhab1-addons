@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -67,6 +67,9 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			ZWaveNode node = zController.getNode(originalMessage.getMessageNode());
 			if(node == null)
 				break;
+			
+			// Consider this as a received frame since the controller did receive an ACK from the device.
+			node.incrementReceiveCount();
 
 			// If the node is DEAD, but we've just received a message from it, then it's not dead!
 			if(node.isDead()) {
@@ -103,9 +106,10 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 
 		ZWaveNode node = zController.getNode(originalMessage.getMessageNode());
 
-		// No retries if the node is DEAD
-		if (node.getNodeStage() == NodeStage.DEAD)
+		// No retries if the node is DEAD or FAILED
+		if (node.isDead()) {
 			return false;
+		}
 
 		// High priority messages get requeued, low priority get dropped
 		if (!node.isListening() && !node.isFrequentlyListening()

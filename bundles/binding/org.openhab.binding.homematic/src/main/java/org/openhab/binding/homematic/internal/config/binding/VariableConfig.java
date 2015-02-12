@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,11 +31,12 @@ public class VariableConfig extends ValueBindingConfig {
 	/**
 	 * Creates a variable config from the binding parser.
 	 */
-	public VariableConfig(String name, Converter<?> converter, BindingAction action, boolean forceUpdate) {
+	public VariableConfig(String name, Converter<?> converter, BindingAction action, boolean forceUpdate, double delay) {
 		this.name = name;
 		this.converter = converter;
 		this.action = action;
 		this.forceUpdate = forceUpdate;
+		this.delay = delay;
 	}
 
 	/**
@@ -81,6 +82,9 @@ public class VariableConfig extends ValueBindingConfig {
 		}
 		if (forceUpdate) {
 			tsb.append("forceUpdate", forceUpdate);
+		}
+		if (delay > 0.0) {
+			tsb.append("delay", delay);
 		}
 		return tsb.toString();
 	}

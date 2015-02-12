@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,7 @@ import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
 import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener;
+import org.openhab.io.rest.internal.listeners.ResourceStateChangeListener.CacheEntry;
 import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
 import org.slf4j.Logger;
@@ -62,7 +63,7 @@ public class SendPageUpdateFilter implements PerRequestBroadcastFilter {
 				                	
 									
 								} catch (Exception e) {
-									logger.error(e.getMessage());
+									logger.error("Could not broadcast messages",e);
 								} 
 				            }
 				        });
@@ -102,8 +103,9 @@ public class SendPageUpdateFilter implements PerRequestBroadcastFilter {
 			return false;
 		}
 		
-		Object firedEntity =  ResourceStateChangeListener.getMap().get(clientId); 
-		if(firedEntity==null || firedEntity instanceof PageBean){
+		CacheEntry entry =  ResourceStateChangeListener.getCachedEntries().get(clientId); 
+		if(entry != null && entry.getData() instanceof PageBean){
+			Object firedEntity = entry.getData();
 			if( firedEntity == null ||  ((PageBean)firedEntity).icon != ((PageBean)responseEntity).icon ||  ((PageBean)firedEntity).title != ((PageBean)responseEntity).title    ) {
 		    	return true;
 		    }

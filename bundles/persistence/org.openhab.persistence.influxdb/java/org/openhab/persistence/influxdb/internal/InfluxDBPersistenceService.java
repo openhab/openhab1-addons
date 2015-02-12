@@ -1,8 +1,9 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
- * 
- * All rights reserved. This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * Copyright (c) 2010-2015, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.persistence.influxdb.internal;
@@ -36,6 +37,7 @@ import org.openhab.core.persistence.FilterCriteria;
 import org.openhab.core.persistence.FilterCriteria.Ordering;
 import org.openhab.core.persistence.HistoricItem;
 import org.openhab.core.persistence.PersistenceService;
+import org.openhab.core.persistence.PersistentStateRestorer;
 import org.openhab.core.persistence.QueryablePersistenceService;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -79,6 +81,16 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   private String password;
   private boolean isProperlyConfigured;
   private boolean connected;
+  
+  private PersistentStateRestorer persistentStateRestorer;
+
+  public void setPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
+	this.persistentStateRestorer = persistentStateRestorer;
+  }
+	
+  public void unsetPersistentStateRestorer(PersistentStateRestorer persistentStateRestorer) {
+	this.persistentStateRestorer = null;
+  }
 
   public void setItemRegistry(ItemRegistry itemRegistry) {
     this.itemRegistry = itemRegistry;
@@ -160,12 +172,12 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     }
 
     if (!isProperlyConfigured) {
-      logger.error("Configuration for influxdb not yet loaded or broken.");
+      logger.warn("Configuration for influxdb not yet loaded or broken.");
       return;
     }
 
     if (!isConnected()) {
-      logger.error("InfluxDB is not yet connected");
+      logger.warn("InfluxDB is not yet connected");
       return;
     }
 
@@ -198,8 +210,8 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       // e.g. raised by authentication errors
       logger
           .error(
-              "database connection error may be wrong password, username or dbname: {}",
-              e);
+              "database error: {}",
+              e.getMessage());
     }
   }
 
@@ -244,21 +256,20 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     if ( ! checkConnection()){
       logger.error("database connection does not work for now, will retry to use the database.");
     }
+	persistentStateRestorer.initializeItems(getName());
   }
 
   @Override
   public Iterable<HistoricItem> query(FilterCriteria filter) {
-    Integer pageSize = null;
-    Integer pageNumber = null;
     logger.debug("got a query");
 
     if (!isProperlyConfigured) {
-      logger.error("Configuration for influxdb not yet loaded or broken.");
+      logger.warn("Configuration for influxdb not yet loaded or broken.");
       return Collections.emptyList();
     }
 
     if (!isConnected()) {
-      logger.error("InfluxDB is not yet connected");
+      logger.warn("InfluxDB is not yet connected");
       return Collections.emptyList();
     }
 
@@ -278,8 +289,17 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       query.append("/.*/");
     }
 
-    if (filter.getState() != null || filter.getOperator() != null || filter.getBeginDate() != null
-        || filter.getEndDate() != null) {
+    logger.trace("filter itemname: {}", filter.getItemName());
+    logger.trace("filter ordering: {}", filter.getOrdering().toString());
+    logger.trace("filter state: {}", filter.getState());
+    logger.trace("filter operator: {}", filter.getOperator());
+    logger.trace("filter getBeginDate: {}", filter.getBeginDate());
+    logger.trace("filter getEndDate: {}", filter.getEndDate());
+    logger.trace("filter getPageSize: {}", filter.getPageSize());
+    logger.trace("filter getPageNumber: {}", filter.getPageNumber());
+
+    if ((filter.getState() != null && filter.getOperator() != null)
+        || filter.getBeginDate() != null || filter.getEndDate() != null) {
       query.append(" where ");
       boolean foundState = false;
       boolean foundBeginDate = false;
@@ -318,22 +338,22 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
         query.append(" ");
       }
 
-      // InfluxDB returns results in DESCENDING order by default
-      // http://influxdb.com/docs/v0.7/api/query_language.html#select-and-time-ranges
-      if (filter.getOrdering() == Ordering.ASCENDING) {
-        query.append(" order asc");
-      }
-
-      if (filter.getPageSize() != 0) {
-        logger.debug("got page size {}", filter.getPageSize());
-        pageSize = filter.getPageSize();
-      }
-
-      if (filter.getPageNumber() != 0) {
-        logger.debug("got page number {}", filter.getPageNumber());
-        pageNumber = filter.getPageNumber();
-      }
     }
+
+    // InfluxDB returns results in DESCENDING order by default
+    // http://influxdb.com/docs/v0.7/api/query_language.html#select-and-time-ranges
+    if (filter.getOrdering() == Ordering.ASCENDING) {
+      query.append(" order asc");
+    }
+
+    int limit = (filter.getPageNumber() + 1) * filter.getPageSize();
+    query.append(" limit " + limit);
+    logger.trace("appending limit {}", limit);
+
+    int totalEntriesAffected = ((filter.getPageNumber() + 1) * filter.getPageSize());
+    int startEntryNum = totalEntriesAffected - (totalEntriesAffected - (filter.getPageSize() * filter.getPageNumber()));
+    logger.trace("startEntryNum {}", startEntryNum);
+    
     logger.debug("query string: {}", query.toString());
     List<Serie> results = Collections.emptyList();
     try {
@@ -344,27 +364,21 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     }
     for (Serie result : results) {
       String historicItemName = result.getName();
-      logger.trace("item name ", historicItemName);
-
-      int pageCount = 0;
+      logger.trace("item name {}", historicItemName);
+      int entryCount = 0;
       for (Map<String, Object> row : result.getRows()) {
-    	pageCount++;
-        if (pageSize != null && pageNumber == null && pageSize < pageCount) {
-          logger.debug("returning no more points pageSize {} pageCount {}", 
-        		  pageSize, pageCount);
-          break;
+        entryCount++;
+        if (entryCount >= startEntryNum) {
+          Double rawTime = (Double) row.get(TIME_COLUMN_NAME);
+          Object rawValue = row.get(VALUE_COLUMN_NAME);
+          logger.trace("adding historic item {}: time {} value {}", historicItemName, rawTime,
+              rawValue);
+          Date time = new Date(rawTime.longValue());
+          State value = objectToState(rawValue, historicItemName);
+          historicItems.add(new InfluxdbItem(historicItemName, value, time));
+        } else {
+          logger.trace("omitting item value for {}", historicItemName);
         }
-        
-        Double rawTime = (Double) row.get(TIME_COLUMN_NAME);
-        Object rawValue = row.get(VALUE_COLUMN_NAME);
-                
-        logger.trace("adding historic item {}: time {} value {}", 
-        		historicItemName, rawTime, rawValue);
-        
-        Date time = new Date(rawTime.longValue());
-        State value = objectToState(rawValue, historicItemName);
-        
-        historicItems.add(new InfluxdbItem(historicItemName, value, time));
       }
     }
 
@@ -372,13 +386,13 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
   }
 
   private String getTimeFilter(Date time) {
-	  // for some reason we need to query using 'seconds' only
-	  // passing milli seconds causes no results to be returned
-	  long milliSeconds = time.getTime();
-	  long seconds = milliSeconds / 1000;
-	  return seconds + "s";
+    // for some reason we need to query using 'seconds' only
+    // passing milli seconds causes no results to be returned
+    long milliSeconds = time.getTime();
+    long seconds = milliSeconds / 1000;
+    return seconds + "s";
   }
-  
+
   /**
    * This method returns an integer if possible if not a double is returned. This is an optimization
    * for influxdb because integers have less overhead.
@@ -454,7 +468,7 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
    * @return
    */
   private State objectToState(Object value, String itemName) {
-	String valueStr = String.valueOf(value);
+    String valueStr = String.valueOf(value);
     if (itemRegistry != null) {
       try {
         Item item = itemRegistry.getItem(itemName);

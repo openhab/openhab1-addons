@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -200,7 +200,9 @@ public class GPIOLinux implements GPIO, ManagedService {
 
 					/* Exports the pin to user space. */
 					Files.write(Paths.get(SYSFS_CLASS_GPIO + "export"), pinNumber.toString().getBytes());
-					
+
+					/* Wait for the export to proceed */
+					Thread.sleep(500);
 					/* Create backend object */
 					pin = new GPIOPinLinux(pinNumber, SYSFS_CLASS_GPIO + "gpio" + pinNumber, defaultDebounceInterval);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,6 +31,11 @@ public enum CommandType {
 	FILE("file"),
 	HTTP("http"),
 	SYNC("sync"),
+	SHUFFLE("shuffle"),
+	REPEAT("repeat"),
+	NUMTRACKS("numbertracks"),
+	PLAYTIME("time"),
+	CURRTRACK("currentrack"),
 			
 	TITLE("title"),	
 	ARTIST("artist"),
@@ -40,7 +45,9 @@ public enum CommandType {
 	REMOTETITLE("remotetitle"),
 	GENRE("genre"),
 	
-	IRCODE("ircode");
+	IRCODE("ircode"),
+	
+	COMMAND("command");
 	
 	/** Represents the player command as it will be used in *.items configuration */
 	String command;

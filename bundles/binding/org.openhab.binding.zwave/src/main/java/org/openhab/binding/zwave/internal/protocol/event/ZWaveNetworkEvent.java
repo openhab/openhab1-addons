@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,7 +25,7 @@ public class ZWaveNetworkEvent extends ZWaveEvent {
 	 * @param nodeId the nodeId of the event.
 	 */
 	public ZWaveNetworkEvent(Type type, int nodeId, State state) {
-		super(nodeId, 1);
+		super(nodeId);
 		
 		this.type = type;
 		this.state = state;
@@ -40,7 +40,7 @@ public class ZWaveNetworkEvent extends ZWaveEvent {
 	}
 
 	public enum Type {
-		AssignSucReturnRoute, AssignReturnRoute, DeleteReturnRoute, NodeNeighborUpdate, NodeRoutingInfo, AssociationUpdate,
+		AssignSucReturnRoute, AssignReturnRoute, DeleteReturnRoute, NodeNeighborUpdate, NodeRoutingInfo, AssociationUpdate, DeleteNode, FailedNode
 		
 		
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,8 +10,6 @@ package org.openhab.io.cv.internal.listeners;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,7 +23,6 @@ import org.openhab.core.items.StateChangeListener;
 import org.openhab.core.types.State;
 import org.openhab.io.cv.internal.broadcaster.CometVisuBroadcaster;
 import org.openhab.io.cv.internal.cache.CVBroadcasterCache;
-import org.openhab.io.cv.internal.filter.DuplicateBroadcastProtectionFilter;
 import org.openhab.io.cv.internal.filter.ResponseObjectFilter;
 import org.openhab.io.cv.internal.resources.ReadResource;
 import org.openhab.io.cv.internal.resources.beans.ItemStateListBean;
@@ -44,7 +41,6 @@ import org.slf4j.LoggerFactory;
 abstract public class ResourceStateChangeListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceStateChangeListener.class);
-	final static ConcurrentMap<String, Object> map = new ConcurrentHashMap<String, Object>();
 
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
@@ -65,12 +61,11 @@ abstract public class ResourceStateChangeListener {
 		this.broadcaster = broadcaster;
 	}
 	
-	public static ConcurrentMap<String, Object> getMap() {
-		return map;
-	}
-	
 	public void registerItems(){
 		broadcaster.getBroadcasterConfig().setBroadcasterCache(new CVBroadcasterCache());
+		broadcaster.getBroadcasterConfig().getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
+        broadcaster.getBroadcasterConfig().getBroadcasterCache().start();
+        
 		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override
@@ -97,7 +92,6 @@ abstract public class ResourceStateChangeListener {
 			}
 		});
 		
-		broadcaster.getBroadcasterConfig().addFilter(new DuplicateBroadcastProtectionFilter());
 		broadcaster.getBroadcasterConfig().addFilter(new ResponseObjectFilter());
 		
 		

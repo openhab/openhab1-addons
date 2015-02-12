@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,7 +36,8 @@ public enum NodeStage {
 	CONFIG(14, "Parameter Information"),
 	DONE(15, "Node Complete"),
 	INIT(16, "Node Not Started"),
-	DEAD(17, "Node Dead");
+	DEAD(17, "Node Dead"),
+	FAILED(18,"Node Failed");
 	
 	private int stage;
 	private String label;

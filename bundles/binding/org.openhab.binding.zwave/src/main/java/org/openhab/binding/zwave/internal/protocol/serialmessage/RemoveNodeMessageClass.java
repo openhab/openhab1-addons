@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -62,11 +62,11 @@ public class RemoveNodeMessageClass extends ZWaveCommandProcessor {
 	public boolean handleRequest(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		switch(incomingMessage.getMessagePayloadByte(1)) {
 		case REMOVE_NODE_STATUS_LEARN_READY:
-			logger.debug("Learn ready.");
+			logger.debug("Remove Node: Learn ready.");
 			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.ExcludeStart));
 			break;
 		case REMOVE_NODE_STATUS_NODE_FOUND:
-			logger.debug("Node found for removal.");
+			logger.debug("Remove Node: Node found for removal.");
 			break;
 		case REMOVE_NODE_STATUS_REMOVING_SLAVE:
 			logger.debug("NODE {}: Removing slave.", incomingMessage.getMessagePayloadByte(2));
@@ -78,16 +78,14 @@ public class RemoveNodeMessageClass extends ZWaveCommandProcessor {
 			break;
 		case REMOVE_NODE_STATUS_DONE:
 			logger.debug("NODE {}: Removed from network.", incomingMessage.getMessagePayloadByte(2));
-			zController.sendData(doRequestStop());
 			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.ExcludeDone, incomingMessage.getMessagePayloadByte(2)));
 			break;
 		case REMOVE_NODE_STATUS_FAILED:
-			logger.debug("Failed.");
-			zController.sendData(doRequestStop());
+			logger.debug("Remove Node: Failed.");
 			zController.notifyEventListeners(new ZWaveInclusionEvent(ZWaveInclusionEvent.Type.ExcludeFail));
 			break;
 		default:
-			logger.debug("Unknown request ({}).", incomingMessage.getMessagePayloadByte(1));
+			logger.debug("Remove Node: Unknown request ({}).", incomingMessage.getMessagePayloadByte(1));
 			break;
 		}
 		checkTransactionComplete(lastSentMessage, incomingMessage);

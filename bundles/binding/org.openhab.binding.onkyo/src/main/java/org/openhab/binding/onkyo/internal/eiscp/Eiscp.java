@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -62,14 +62,14 @@ public class Eiscp {
 	/** Instantiated class Port for the receiver to communicate with. **/
 	private int receiverPort = DEFAULT_EISCP_PORT;	
 	
-	private static Socket eiscpSocket = null;
+	private Socket eiscpSocket = null;
 	private DataListener dataListener = null;
-	private static ObjectOutputStream outStream = null;
-	private static DataInputStream inStream = null;
-	private static boolean connected = false;
-	private static List<OnkyoEventListener> _listeners = new ArrayList<OnkyoEventListener>();
-	private static int retryCount = 1;
-	private static ConnectionSupervisor connectionSupervisor = null;
+	private ObjectOutputStream outStream = null;
+	private DataInputStream inStream = null;
+	private boolean connected = false;
+	private List<OnkyoEventListener> _listeners = new ArrayList<OnkyoEventListener>();
+	private int retryCount = 1;
+	private ConnectionSupervisor connectionSupervisor = null;
 	
 	/**
 	 * Constructor that takes your receivers IP and port.
@@ -100,15 +100,15 @@ public class Eiscp {
 	/**
 	 * Get retry count value.
 	 **/
-	public static int getRetryCount() {
+	public int getRetryCount() {
 		return retryCount;
 	}
 
 	/**
 	 * Set retry count value. How many times command is retried when error occurs.
 	 **/
-	public static void setRetryCount(int retryCount) {
-		Eiscp.retryCount = retryCount;
+	public void setRetryCount(int retryCount) {
+		this.retryCount = retryCount;
 	}
 
 	/**
@@ -216,8 +216,7 @@ public class Eiscp {
 	private StringBuilder getEiscpMessage(String eiscpCmd) {
 
 		StringBuilder sb = new StringBuilder();
-		int eiscpDataSize = eiscpCmd.length() + 2; // this is the eISCP data size
-		int eiscpMsgSize = eiscpDataSize + 1 + 16; // this is the eISCP data size
+		int eiscpDataSize = 2 + eiscpCmd.length() + 1; // this is the eISCP data size
 
 		/*
 		 * This is where I construct the entire message character by character.
@@ -233,10 +232,10 @@ public class Eiscp {
 		sb.append((char) 0x10);
 
 		// 4 char Big Endian data size
-		sb.append( (char) ((eiscpMsgSize >> 24) & 0xFF) );
-		sb.append( (char) ((eiscpMsgSize >> 16) & 0xFF) );
-		sb.append( (char) ((eiscpMsgSize >> 8) & 0xFF) );
-		sb.append( (char) (eiscpMsgSize & 0xFF) );
+		sb.append( (char) ((eiscpDataSize >> 24) & 0xFF) );
+		sb.append( (char) ((eiscpDataSize >> 16) & 0xFF) );
+		sb.append( (char) ((eiscpDataSize >> 8) & 0xFF) );
+		sb.append( (char) (eiscpDataSize & 0xFF) );
 		
 		// eiscp_version = "01";
 		sb.append((char) 0x01);
@@ -247,6 +246,7 @@ public class Eiscp {
 		sb.append((char) 0x00);
 
 		// eISCP data
+		
 		// Start Character
 		sb.append("!");
 
@@ -268,7 +268,7 @@ public class Eiscp {
 	 * @param eiscpCmd the eISCP command to send.
 	 **/
 	public void sendCommand(String eiscpCmd) {
-		logger.debug("Send command: {}", eiscpCmd);
+		logger.debug("Send command: {} to {}:{} ({})", eiscpCmd, receiverIP, receiverPort, eiscpSocket);
 		StringBuilder sb = getEiscpMessage(eiscpCmd);
 		sendCommand(sb, false, retryCount);
 	}

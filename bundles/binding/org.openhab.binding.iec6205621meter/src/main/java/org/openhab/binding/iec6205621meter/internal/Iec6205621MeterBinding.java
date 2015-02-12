@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -105,28 +105,37 @@ public class Iec6205621MeterBinding extends
 	@Override
 	protected void execute() {
 		// the frequently executed code (polling) goes here ...
+		Map<String, Map<String, DataSet>> cache = new HashMap<String, Map<String,DataSet>>();
+		for (Iec6205621MeterBindingProvider provider : providers) {
 
-		for (Entry<String, Meter> entry : meterDeviceConfigurtions.entrySet()) {
-			Meter reader = entry.getValue();
-
-			Map<String, DataSet> dataSets = reader.read();
-
-			for (Iec6205621MeterBindingProvider provider : providers) {
-
-				for (String itemName : provider.getItemNames()) {
-					String obis = provider.getObis(itemName);
-					if (obis != null && dataSets.containsKey(obis)) {
-						DataSet dataSet = dataSets.get(obis);
-						Class<? extends Item> itemType = provider
-								.getItemType(itemName);
-						if (itemType.isAssignableFrom(NumberItem.class)) {
-							eventPublisher.postUpdate(itemName,
-									new DecimalType(dataSet.getValue()));
+			for (String itemName : provider.getItemNames()) {
+				for (Entry<String, Meter> entry : meterDeviceConfigurtions.entrySet()) {
+					Meter reader = entry.getValue();
+					String meterName = provider.getMeterName(itemName);
+					if(meterName != null && meterName.equals(entry.getKey())) {
+						Map<String, DataSet> dataSets;
+						if((dataSets = cache.get(meterName)) == null) {
+							if(logger.isDebugEnabled())
+								logger.debug("Read meter: " + meterName + "; " + reader.getConfig().getSerialPort());
+							dataSets = reader.read();
+							cache.put(meterName, dataSets);
 						}
-						if (itemType.isAssignableFrom(StringItem.class)) {
-							String value = dataSet.getValue();
-							eventPublisher.postUpdate(itemName, new StringType(
-									value));
+						String obis = provider.getObis(itemName);
+						if (obis != null && dataSets.containsKey(obis)) {
+							DataSet dataSet = dataSets.get(obis);
+							if(logger.isDebugEnabled())
+								logger.debug("Updateing item " + itemName + " with OBIS code " + obis + " and value " + dataSet.getValue());
+							Class<? extends Item> itemType = provider
+									.getItemType(itemName);
+							if (itemType.isAssignableFrom(NumberItem.class)) {
+								eventPublisher.postUpdate(itemName,
+										new DecimalType(dataSet.getValue()));
+							}
+							if (itemType.isAssignableFrom(StringItem.class)) {
+								String value = dataSet.getValue();
+								eventPublisher.postUpdate(itemName, new StringType(
+										value));
+							}
 						}
 					}
 				}

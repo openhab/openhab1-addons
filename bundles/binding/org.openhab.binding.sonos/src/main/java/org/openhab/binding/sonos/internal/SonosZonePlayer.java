@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -1157,9 +1157,9 @@ class SonosZonePlayer {
 							logger.error("Could not parse RadioTime from String {}",response);
 						}
 
-						if(fields != null) {
+						resultString = new String();
 
-							resultString = new String();
+						if(fields != null && fields.size()>1) {
 
 							artist = fields.get(0);
 							title = fields.get(1);

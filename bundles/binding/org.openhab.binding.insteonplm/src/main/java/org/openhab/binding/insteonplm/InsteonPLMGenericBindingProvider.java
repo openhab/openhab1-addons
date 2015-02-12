@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,31 +30,32 @@ public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProv
 	private final Map<String, Item> items = new HashMap<String, Item>();
 
 	/**
+	 * Inherited from AbstractGenericBindingProvider.
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String getBindingType() {
 		return "insteonplm";
 	}
 
 	/**
+	 * Inherited from AbstractGenericBindingProvider.
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		// All types are valid
-		// logger.trace("validateItemType({}, {})", item.getName(), bindingConfig);
 		String[] parts = parseConfigString(bindingConfig);
 		if (parts.length != 3) throw new
 			BindingConfigParseException("item config must have addr:prodKey#feature format");
 	}
 
 	/**
+	 * Inherited from AbstractGenericBindingProvider.
 	 * Processes InsteonPLM binding configuration string.
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		//logger.trace("processBindingConfiguration({}, {})", item.getName(), bindingConfig);
 		super.processBindingConfiguration(context, item, bindingConfig);
 		String[] parts = parseConfigString(bindingConfig);
 		if (parts.length != 3) throw new
@@ -71,15 +72,42 @@ public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProv
 				logger.error("parameter {} does not have format a=b", params[i]);
 			}
 		}
-
-		InsteonPLMBindingConfig config = new InsteonPLMBindingConfig(addr, feature, parts[1], args);
+		InsteonPLMBindingConfig config = new InsteonPLMBindingConfig(item.getName(), addr, feature, parts[1], args);
 		addBindingConfig(item, config);
-		
+
 		logger.trace("processing item \"{}\" read from .items file with cfg string {}",
 					item.getName(), bindingConfig);
 		items.put(item.getName(), item);
 	}
-	
+	/**
+	 * Inherited from AbstractGenericBindingProvider.
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean autoUpdate(String itemName) {
+		// By default, all features are auto-updating, i.e. we do not rely
+		// on the openhab environment to tell us the status of a device,
+		// but rather resort to polling and listening to update messages
+		// on the insteon network.
+		return true;
+	}
+	/**
+	 * Inherited from InsteonPLMBindingProvider.
+	 * {@inheritDoc}
+	 */
+	@Override
+	public InsteonPLMBindingConfig getInsteonPLMBindingConfig(String itemName) {
+		return (InsteonPLMBindingConfig) this.bindingConfigs.get(itemName);
+	}
+	/**
+	 * Parses binding configuration string. The config string has the format:
+	 * 
+	 * xx.xxx.xxx:productKey#feature,param1=yyy,param2=zzz
+	 * 
+	 * @param bindingConfig string with binding parameters
+	 * @return String array with split arguments: [address,prodKey,features+params]
+	 * @throws BindingConfigParseException if parameters are invalid
+	 */
 	private String[] parseConfigString(String bindingConfig) throws BindingConfigParseException {
 		// the config string has the format
 		//
@@ -98,64 +126,11 @@ public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProv
 		String addr = dev[0];
 		String [] retval = {addr, dev[1], segments[1]};
 		if (!InsteonAddress.s_isValid(addr)) {
-			throw new BindingConfigParseException("invalid insteon device address: "
-					+ addr + " in items file. Must have format AB.CD.EF");
+			String errstr = "invalid insteon or X10 device address: " + addr +
+						" in items file. Must have format AB.CD.EF or (for X10): H.U";
+			logger.error(errstr);
+			throw new BindingConfigParseException(errstr);
 		}
 		return retval;
-	}
-	
-	
-	/**
-	 * Returns the binding configuration for a string.
-	 * @return the binding configuration.
-	 */
-	public InsteonPLMBindingConfig getInsteonPLMBindingConfig(String itemName) {
-		return (InsteonPLMBindingConfig) this.bindingConfigs.get(itemName);
-	}
-	
-	private InsteonPLMBindingConfig getConfig(String itemName) {
-		Item i = items.get(itemName);
-		if (i == null) return null;
-		InsteonPLMBindingConfig bc = getInsteonPLMBindingConfig(itemName);
-		if (bc == null) return null;
-		return bc;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Boolean autoUpdate(String itemName) {
-		// By default, all features are auto-updating, i.e. we do not rely
-		// on the openhab environment to tell us the status of a device,
-		// but rather resort to polling and listening to update messages
-		// on the insteon network.
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Item getItem(String itemName) {
-		return items.get(itemName);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public InsteonAddress getAddress(String itemName) {
-		InsteonPLMBindingConfig bc = getConfig(itemName);
-		return (bc == null) ? null : bc.getAddress();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getFeature(String itemName) {
-		InsteonPLMBindingConfig bc = getConfig(itemName);
-		return (bc == null) ? null : bc.getFeature();
 	}
 }
