@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,15 +24,21 @@ import org.openhab.core.types.State;
  */
 public class HeatingThermostat extends Device {
 	private ThermostatModeType mode;
-
+	private boolean modeUpdated;
+	
 	/** Valve position in % */
 	private int valvePosition;
+	private boolean valvePositionUpdated;
 
 	/** Temperature setpoint in degrees celcius */
 	private double temperatureSetpoint;
+	
+	private boolean temperatureSetpointUpdated;
 
 	/** Actual Temperature in degrees celcius */
 	private double temperatureActual;
+	
+	private boolean temperatureActualUpdated;
 
 	/** Date setpoint until the termperature setpoint is valid */
 	private Date dateSetpoint;
@@ -85,6 +91,11 @@ public class HeatingThermostat extends Device {
 	}
 
 	void setMode(ThermostatModeType mode) {
+		if(this.mode != mode) {
+			this.modeUpdated = true;
+		} else {
+			this.modeUpdated = false;
+		}
 		this.mode = mode;
 	}
 
@@ -93,6 +104,11 @@ public class HeatingThermostat extends Device {
 	 * @param valvePosition the valve position as provided by the L message
 	 */
 	public void setValvePosition(int valvePosition) {
+		if(this.valvePosition != valvePosition) {
+			this.valvePositionUpdated = true;
+		} else {
+			this.valvePositionUpdated = false;
+		}
 		this.valvePosition = valvePosition;
 	}
 
@@ -115,12 +131,17 @@ public class HeatingThermostat extends Device {
 	 * @param value the actual temperature raw value as provided by the L message
 	 */
 	public void setTemperatureActual(double value) {
+		if(this.temperatureActual != value) {
+			this.temperatureActualUpdated = true;
+		} else {
+			this.temperatureActualUpdated = false;
+		}
 		this.temperatureActual = value ;
 	}
 
 	/**
 	 * Returns the measured temperature  of this thermostat. 
-	 * 0°C is displayed if no actual is measured. Temperature is only updated after valve position changes
+	 * 0ï¿½C is displayed if no actual is measured. Temperature is only updated after valve position changes
 	 *
 	 * @return 
 	 * 			the actual temperature as <code>DecimalType</code>
@@ -133,8 +154,14 @@ public class HeatingThermostat extends Device {
 	 * Sets the setpoint temperature for this thermostat. 
 	 * @param value the setpoint temperature raw value as provided by the L message
 	 */
-	public void setTemperatureSetpoint(int value) {
-		this.temperatureSetpoint = value / 2.0;
+	public void setTemperatureSetpoint(double value) {
+		value/=2.0;
+		if(this.temperatureSetpoint != value) {
+			this.temperatureSetpointUpdated = true;
+		} else {
+			this.temperatureSetpointUpdated = false;
+		}
+		this.temperatureSetpoint = value;
 	}
 
 	/**
@@ -147,4 +174,21 @@ public class HeatingThermostat extends Device {
 	public State getTemperatureSetpoint() {
 		return new DecimalType(this.temperatureSetpoint);
 	}
+
+	public boolean isModeUpdated() {
+		return modeUpdated;
+	}
+
+	public boolean isValvePositionUpdated() {
+		return valvePositionUpdated;
+	}
+
+	public boolean isTemperatureSetpointUpdated() {
+		return temperatureSetpointUpdated;
+	}
+
+	public boolean isTemperatureActualUpdated() {
+		return temperatureActualUpdated;
+	}
+	
 }

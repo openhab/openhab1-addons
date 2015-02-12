@@ -1,12 +1,11 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.openhab.binding.iec6205621meter.internal;
 
 import java.io.IOException;
@@ -69,27 +68,28 @@ public class Meter {
 
 		Connection connection = new Connection(config.getSerialPort(),
 				config.getEchoHandling(), config.getBaudRateChangeDelay());
-
 		try {
-			connection.open();
-		} catch (IOException e) {
-			logger.error("Failed to open serial port {}: {}",
-					config.getSerialPort(), e.getMessage());
-			return dataSetMap;
-		}
-
-		List<DataSet> dataSets = null;
-		try {
-			dataSets = connection.read();
-			for (DataSet dataSet : dataSets) {
-				logger.debug("DataSet: {};{};{}", dataSet.getId(),
-						dataSet.getValue(), dataSet.getUnit());
-				dataSetMap.put(dataSet.getId(), dataSet);
+			try {
+				connection.open();
+			} catch (IOException e) {
+				logger.error("Failed to open serial port {}: {}",
+						config.getSerialPort(), e.getMessage());
+				return dataSetMap;
 			}
-		} catch (IOException e) {
-			logger.error("IOException while trying to read: {}", e.getMessage());
-		} catch (TimeoutException e) {
-			logger.error("Read attempt timed out");
+			
+			List<DataSet> dataSets = null;
+			try {
+				dataSets = connection.read();
+				for (DataSet dataSet : dataSets) {
+					logger.debug("DataSet: {};{};{}", dataSet.getId(),
+							dataSet.getValue(), dataSet.getUnit());
+					dataSetMap.put(dataSet.getId(), dataSet);
+				}
+			} catch (IOException e) {
+				logger.error("IOException while trying to read: {}", e.getMessage());
+			} catch (TimeoutException e) {
+				logger.error("Read attempt timed out");
+			}
 		} finally {
 			connection.close();
 		}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,22 +21,33 @@ import org.openhab.core.library.types.OpenClosedType;
 public class ShutterContact extends Device {
 
 	private OpenClosedType shutterState = null;
+	private boolean shutterStateUpdated = false;
 	private boolean linkError;
 	private boolean panelLocked;
 	private boolean gatewayOk;
 	private boolean error;
 	private boolean valid;
-
+	
 	public ShutterContact(Configuration c) {
 		super(c);
 	}
 
 	public void setShutterState(OpenClosedType shutterState) {
+		if(this.shutterState != shutterState) {
+			logger.debug("updated shutterstate from "+this.shutterState+" to "+shutterState);
+			this.shutterStateUpdated = true;
+		}else{
+			this.shutterStateUpdated = false;
+		}
 		this.shutterState = shutterState;
 	}
 
 	public OpenClosedType getShutterState() {
 		return shutterState;
+	}
+	
+	public boolean isShutterStateUpdated() {
+		return this.shutterStateUpdated;
 	}
 
 	@Override

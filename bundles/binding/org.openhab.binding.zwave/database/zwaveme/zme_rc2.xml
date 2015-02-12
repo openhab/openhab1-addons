@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZME_RC2</Model>
+	<Label lang="en">Z-Wave Remote Control+</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x26</id></Class>
+		<Class><id>0x27</id></Class>
+		<Class><id>0x2b</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8e</id></Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Command to Control Group No1 (association group 2)</Label>
+			<Help lang="en">This parameter defines the command to be sent to devices of control group No1 when the related button is pressed (association group 2)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>11</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Command to Control Group No2 (association group 3)</Label>
+			<Help lang="en">This parameter defines the command to be sent to devices of control group No2 when the related button is pressed (association group 3)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>12</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Command to Control Group No3 (association group 4)</Label>
+			<Help lang="en">This parameter defines the command to be sent to devices of control group No3 when the related button is pressed (association group 4)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Command to Control Group No4 (association group 5)</Label>
+			<Help lang="en">This parameter defines the command to be sent to devices of control group No4 when the related button is pressed (association group 5)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Command to Control Group No5 (association group 6)</Label>
+			<Help lang="en">This parameter defines the command to be sent to devices of control group No5 when the related button is pressed (association group 6)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Command to Control Group No6 (association group 7)</Label>
+			<Help lang="en">This parameter defines the command to be sent to devices of control group No6 when the related button is pressed (association group 7)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>16</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Command to Control Group No7 (association group 8)</Label>
+			<Help lang="en">This parameter defines the command to be sent to devices of control group No7 when the related button is pressed (association group 8)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>17</Index>
+			<Type>list</Type>
+			<Default>4</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Command to Control Scene No1 (association group 9)</Label>
+			<Help lang="en">This parameter defines the command to be sent to devices of control scene group No1 when the related button is pressed (association group 9)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>18</Index>
+			<Type>list</Type>
+			<Default>4</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Command to Control Scene No2 (association group 10)</Label>
+			<Help lang="en">This parameter defines the command to be sent to devices of control scene group No2 when the related button is pressed (association group 10)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>19</Index>
+			<Type>list</Type>
+			<Default>4</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Command to Control Scene No3 (association group 11)</Label>
+			<Help lang="en">This parameter defines the command to be sent to devices of control scene group No3 when the related button is pressed (association group 11)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>20</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On/Off only (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Command to Control group All On/Off (association group 12)</Label>
+			<Help lang="en">This parameter defines the command to be sent to devices of control group All On/Off when the related button is pressed (association group 12)</Help>
+		</Parameter>
+		<Parameter>
+			<Index>21</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch off only</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on only</Label>
+			</Item>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">Switch all on and off</Label>
+			</Item>
+			<Label lang="en">Send the following Switch All commands</Label>
+			<Help lang="en">Send the following Switch All commands</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Lifeline. Send to controller battery level and WakeUp Notification</Label>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">The buttons of group No1</Label>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">The buttons of group No2</Label>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">The buttons of group No3</Label>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">The buttons of group No4</Label>
+		</Group>
+		<Group>
+			<Index>6</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">The buttons of group No5</Label>
+		</Group>
+		<Group>
+			<Index>7</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">The buttons of group No6</Label>
+		</Group>
+		<Group>
+			<Index>8</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">The buttons of group No7</Label>
+		</Group>
+		<Group>
+			<Index>9</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">The buttons of scene No1</Label>
+		</Group>
+		<Group>
+			<Index>10</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">The buttons of scene No2</Label>
+		</Group>
+		<Group>
+			<Index>11</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">The buttons of scene No3</Label>
+		</Group>
+		<Group>
+			<Index>12</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">The buttons of All On/Off</Label>
+		</Group>
+	</Associations>
+</Product>

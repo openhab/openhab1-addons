@@ -911,7 +911,7 @@ function addsWidget(id, data, container, nav_parent) {
             }
             buildUIArray(data.linkedPage, navigation_parent);
         } else {
-            widget = createImageWidget(data.url);
+            widget = createImageWidget(id, data.url, data.refresh || 0);
         }
 
     } else if (data.type == "Frame") {
@@ -1833,13 +1833,30 @@ Ext.define('Oph.field.Image', {
         if (config.url.substr(0, 4) != "http" && config.url.substr(0, 1) != "/") {
             config.url = "/" + config.url;
         }
-        this.setHtml('<div style="width:100%;padding:0.4em;"><img src="' + config.url + '" style="width:100%;"></div>');
+        this.setHtml('<div style="width:100%;padding:0.4em;"><img id="img'+config.oph_id+'" src="' + config.url + '" style="width:100%;"></div>');
     },
 
     initialize: function () {
         this.callParent();
+        this.on({
+            painted: function (component) {
+                if(component.config.oph_refresh > 0){
+                      component.config.refreshInterval = window.setInterval(function(){component.updateImage(component);}, component.config.oph_refresh);
+                }
+            },
+            erased: function (component) {
+                if(component.config.oph_refresh > 0){
+                    window.clearInterval(component.config.refreshInterval);
+                }
+            }
+        });
 
-    }, setValueData: function (newValue) {}
+    }, setValueData: function (newValue) {},
+    updateImage: function (container)
+       {
+            Ext.fly('img'+container.config.oph_id).dom.src = container.config.url+'&random=' + new Date().getTime();
+       }
+
 });
 
 
@@ -2084,13 +2101,23 @@ function createUnsupportedWidget() {
 }
 
 
-function createImageWidget(url) {
-    return {
-        xtype: 'oph_imagefield',
-        url: url,
-        cls: 'x-image-field',
-    };
-
+function createImageWidget(id, url, oph_refresh) {
+    if (oph_refresh > 0) {
+        return {
+            xtype: 'oph_imagefield',
+            url: url,
+            oph_id: id,
+            oph_refresh: oph_refresh,
+            cls: 'x-image-field',
+	    };
+    } else {
+        return {
+            xtype: 'oph_imagefield',
+            oph_id: id,
+            url: url,
+            cls: 'x-image-field',
+	    };
+    }
 }
 
 

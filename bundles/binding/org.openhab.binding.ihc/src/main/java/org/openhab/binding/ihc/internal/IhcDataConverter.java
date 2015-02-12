@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -303,23 +303,25 @@ public class IhcDataConverter {
 
 			((WSBooleanValue) value).setValue(type == OpenClosedType.OPEN ? true : false);
 
-		} else if (type instanceof DateTimeItem) {
+		} else if (type instanceof DateTimeType) {
 
 			if (value instanceof WSDateValue) {
-
-				short year = Short.parseShort(type.format("yyyy"));
-				byte month = Byte.parseByte(type.format("MM"));
-				byte day = Byte.parseByte(type.format("dd"));
+				Calendar c = ((DateTimeType) type).getCalendar(); 
+				
+				short year = (short) c.get(Calendar.YEAR);
+				byte month = (byte) c.get(Calendar.MONTH);
+				byte day = (byte) c.get(Calendar.DAY_OF_MONTH);
 
 				((WSDateValue) value).setYear(year);
 				((WSDateValue) value).setMonth(month);
 				((WSDateValue) value).setDay(day);
 
 			} else if (value instanceof WSTimeValue) {
-
-				int hours = Integer.parseInt(type.format("hh"));
-				int minutes = Integer.parseInt(type.format("mm"));
-				int seconds = Integer.parseInt(type.format("ss"));
+				Calendar c = ((DateTimeType) type).getCalendar();
+				
+				int hours = c.get(Calendar.HOUR_OF_DAY);
+				int minutes = c.get(Calendar.MINUTE);
+				int seconds = c.get(Calendar.SECOND);
 
 				((WSTimeValue) value).setHours(hours);
 				((WSTimeValue) value).setMinutes(minutes);

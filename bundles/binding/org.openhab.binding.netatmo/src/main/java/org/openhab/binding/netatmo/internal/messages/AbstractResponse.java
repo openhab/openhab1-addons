@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,8 +17,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author Andreas Brenk
  * @since 1.4.0
  */
-public abstract class AbstractResponse extends AbstractMessage implements
-		Response {
+public abstract class AbstractResponse extends AbstractMessage implements Response {
 
 	private NetatmoError error;
 
@@ -43,4 +42,5 @@ public abstract class AbstractResponse extends AbstractMessage implements
 
 		return builder.toString();
 	}
+	
 }

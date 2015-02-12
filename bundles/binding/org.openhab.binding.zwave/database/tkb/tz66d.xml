@@ -62,7 +62,7 @@
                                 <Value>1</Value>
                                 <Label lang="en">Night light</Label>
                         </Item>
-                        <Help lang="en"><![CDATA[Defines the behavior of the blue LED. Default is Night Light mode where LED is one when switch is off]]></Help>
+                        <Help lang="en"><![CDATA[Defines the behavior of the blue LED. Default is Night Light mode where LED is on when switch is off]]></Help>
                 </Parameter>
 
                 <Parameter>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,8 +9,7 @@
 package org.openhab.binding.homematic.internal.communicator;
 
 /**
- * The server interface with the common methods for XML-RPC and BIN-RPC
- * communication.
+ * The server interface with the methods for BIN-RPC communication.
  * 
  * @author Gerhard Riegler
  * @since 1.5.0

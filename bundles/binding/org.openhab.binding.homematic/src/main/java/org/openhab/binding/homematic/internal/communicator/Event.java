@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.homematic.internal.communicator;
 
+import org.openhab.binding.homematic.internal.config.binding.ActionConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.ProgramConfig;
 import org.openhab.binding.homematic.internal.config.binding.ValueBindingConfig;
@@ -116,10 +117,28 @@ public class Event {
 	}
 
 	/**
+	 * Returns true if the bindingConfig is a action.
+	 */
+	public boolean isAction() {
+		return bindingConfig instanceof ActionConfig;
+	}
+
+	/**
 	 * Returns true if the bindingConfig is a variable.
 	 */
 	public boolean isVariable() {
 		return bindingConfig instanceof VariableConfig;
+	}
+
+	/**
+	 * Returns the delay of the event in seconds.
+	 */
+	public double getDelay() {
+		if (bindingConfig instanceof ValueBindingConfig) {
+			ValueBindingConfig vbConfig = (ValueBindingConfig)bindingConfig;
+			return vbConfig.getDelay();
+		}
+		return 0;
 	}
 
 	/**

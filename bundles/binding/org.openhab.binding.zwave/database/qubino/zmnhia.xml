@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>ZMNHIA</Model>
+	<Label lang="en">Flush on/off thermostat</Label>
+	<CommandClasses>
+		<Class><id>0x00</id></Class>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x25</id></Class>
+		<Class><id>0x31</id></Class>
+		<Class><id>0x32</id></Class>
+		<Class><id>0x60</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 1 switch type</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">bi-stable switch type</Label>
+			</Item>
+			<Help lang="en">Input 1 switch type</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 2 switch type</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">bi-stable switch type</Label>
+			</Item>
+			<Help lang="en">Input 2 switch type</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>3</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 3 switch type</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">mono-stable switch type (push button)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">bi-stable switch type</Label>
+			</Item>
+			<Help lang="en">Input 3 switch type</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>4</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 2 contact type</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">NO (normally open) input type</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">NC (normally close) input type</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Input 3 contact type</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">NO (normally open) input type</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">NC (normally close) input type</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>10</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">Activate / deactivate functions ALL ON/ALL OFF</Label>			
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">ALL ON active, ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">ALL ON is not active ALL OFF is not active</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">ALL ON is not active ALL OFF active</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">ALL ON active ALL OFF is not active</Label>
+			</Item>
+			<Help lang="en">Module responds to commands ALL ON / ALL OFF 
+				that may be sent by the main controller or by other controller belonging to the system.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>11</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Set point set by I2</Label>
+			<Help lang="en"><![CDATA[65535 – input I2 does not influence on the set point<BR/>
+			From 0 to 990 set point from 0.0 °C to 99.0 °C<BR/>
+			From 1001 to 1150 – set point from -0.1 °C to -15.0 °C]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>12</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Set point set by I3</Label>
+			<Help lang="en"><![CDATA[65535 – input I3 does not influence on the set point<BR/>
+			From 0 to 990 set point from 0.0 °C to 99.0 °C<BR/>
+			From 1001 to 1150 – set point from -0.1 °C to -15.0 °C]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>30</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Saving the state of the relay after a power failure</Label>			
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Module saves its state before power failure (it returns to the last position saved before a power failure)</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Module does not save the state after a power failure, it returns to "off" position.</Label>
+			</Item>
+			<Help lang="en">Saving the state of the relay after a power failure</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>40</Index>
+			<Type>byte</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Power reporting in Watts on power change for Q1</Label>			
+			<Help lang="en"><![CDATA[Power report is sent (pushed) only when actual power in Watts in real time changed for more than 
+				set percentage comparing to previous actual power in Watts, step is 1%.<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–100 = 1% - 100% Reporting enabled</li></ul>
+				NOTE: if power changed is less than 1W, the report is not sent (pushed), regardless of percentage set.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>42</Index>
+			<Type>byte</Type>
+			<Default>300</Default>
+			<Size>2</Size>
+			<Label lang="en">Power reporting in Watts by time interval for Q1</Label>
+			<Help lang="en"><![CDATA[default value is 300 (power report in Watts is sent each 300s)<br/>
+				<ul><li>0 = Reporting Disabled</li>
+				<li>1–65535 = 1 second – 65535 seconds. Reporting enabled. 
+				Power report is sent with time interval set by entered value.</li></ul>]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>43</Index>
+			<Type>byte</Type>
+			<Default>132</Default>
+			<Size>1</Size>
+			<Label lang="en">Hysteresis On</Label>
+			<Help lang="en"><![CDATA[This parameter defines temperature min difference between real measured temperature and set-point temperature to turn device on. Parameter can be set from 0 to 255 where 0 to 127 means from 0.0 °C to 12.7 °C and from 128 to 255 means from - 0.1 °C to -12.7 °C.]]></Help>
+		</Parameter>
+				
+		<Parameter>
+			<Index>44</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Size>1</Size>
+			<Label lang="en">Hysteresis Off</Label>
+			<Help lang="en"><![CDATA[This parameter defines temperature min difference between real measured temperature and set-point temperature to turn device on. Parameter can be set from 0 to 255 where 0 to 127 means from 0.0 °C to 12.7 °C and from 128 to 255 means from - 0.1 °C to -12.7 °C.]]></Help>
+		</Parameter>
+				
+		<Parameter>
+			<Index>45</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Size>1</Size>
+			<Label lang="en">Antifreeze</Label>
+			<Help lang="en"><![CDATA[Set value means at which temperature the device will be turned on even if the thermostat was manually set to off. Parameter can be set from 0 to 255 where 0 to 127 means from 0.0 °C to 12.7 °C and from 128 to 254 means from - 0.1 °C to -12.6 °C. 255 is disabled.]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>60</Index>
+			<Type>byte</Type>
+			<Default>50</Default>
+			<Size>2</Size>
+			<Label lang="en">Too low temperature limit</Label>
+			<Help lang="en"><![CDATA[1 - 1000 = 0.1°C – 100.0°C, step is 0.1°C. Too low temperature limit is set by entered value. In case is set value out of this range, module is changing set value automatically to default value.]]></Help>
+		</Parameter>
+		
+		<Parameter>
+			<Index>61</Index>
+			<Type>byte</Type>
+			<Default>700</Default>
+			<Size>2</Size>
+			<Label lang="en">Too high temperature limit</Label>
+			<Help lang="en"><![CDATA[1 - 1000 = 0.1°C – 100.0°C, step is 0.1°C. Too low temperature limit is set by entered value. In case is set value out of this range, module is changing set value automatically to default value.]]></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>63</Index>
+			<Type>byte</Type>
+			<Default>0</Default>
+			<Size>2</Size>
+			<Label lang="en">Switch selection</Label>
+			<Help lang="en"><![CDATA[Set value means the type of the device that is connected to the relay output. The device type can be normally open (NO) or normally close (NC).
+Available configuration parameters (data type is 1 Byte DEC):
+• default value 0
+• 0 - When system is turned off the output is 0 V.
+• 1 - When system is turned off the output is 230 V.]]></Help>
+		</Parameter>
+		
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Basic on/off Q1</Label>
+			<Help lang="en">Triggered at change of the output Q1 state and reflecting its state</Help>
+		</Group>
+		<Group>
+			<Index>2</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Basic on/off I2</Label>
+			<Help lang="en">Triggered at change of the output I2 state and reflecting its state</Help>
+		</Group>
+		<Group>
+			<Index>3</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">Basic on/off I3</Label>
+			<Help lang="en">Triggered at change of the output I3 state and reflecting its state</Help>
+		</Group>
+		<Group>
+			<Index>4</Index>
+			<Maximum>16</Maximum>
+			<Label lang="en">High Temperature</Label>
+			<Help lang="en"></Help>
+		</Group>
+		<Group>
+			<Index>5</Index>
+			<Maximum>16</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Low Temperature</Label>
+			<Help lang="en"></Help>
+		</Group>
+		<Group>
+			<Index>6</Index>
+			<Maximum>1</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Default Reporting Group</Label>
+			<Help lang="en">Reporting for controller</Help>
+		</Group>
+	</Associations>
+</Product>
