@@ -734,6 +734,11 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				// Request all parameters for this node
 				List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
 				for (ZWaveDbConfigurationParameter parameter : configList) {
+					// Some parameters don't return anything, so don't request them!
+					if(parameter.WriteOnly == true) {
+						continue;
+					}
+
 					// If this is the first time around the loop
 					// or we don't have a value for this parameter
 					// then request it!
