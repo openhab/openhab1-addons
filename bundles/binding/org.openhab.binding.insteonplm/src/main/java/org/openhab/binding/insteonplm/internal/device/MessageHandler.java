@@ -479,6 +479,34 @@ public abstract class MessageHandler {
 			}
 		}
 	}
+	
+	public static class HiddenDoorBatteryReplyHandler extends MessageHandler {
+		HiddenDoorBatteryReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			if (!msg.isExtended()) {
+				logger.warn("device {} expected extended msg as info reply, got {}", dev.getAddress(), msg);
+				return;
+			}
+			try {
+				int cmd2 = (int) (msg.getByte("command2") & 0xff);
+				switch (cmd2) {
+				case 0x00: // this is a product data response message
+					int batteryLevel = msg.getByte("userData04") & 0xff;
+					logger.debug("{} got battery level {}", dev.getAddress(), batteryLevel);
+					m_feature.publish(new DecimalType(batteryLevel), StateChangeType.CHANGED);
+					break;
+				default:
+					logger.warn("unknown cmd2 = {} in info reply message {}", cmd2, msg);
+					break;
+				}
+			} catch (FieldException e) {
+				logger.error("error parsing {}: ", msg, e);
+			}
+		}
+	}
 
 	public static class LastTimeHandler extends MessageHandler {
 		LastTimeHandler(DeviceFeature p) { super(p); }
