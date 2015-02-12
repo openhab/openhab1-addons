@@ -44,7 +44,7 @@ public class LightwaveRfOnOffCommand implements LightwaveRFCommand {
 	@Override
     public String getLightwaveRfCommandString() {
         char funtion = on ? '1' : '0';
-        return "!R" + roomId + "D" + deviceId + "F" + funtion; 
+        return "!R" + roomId + "D" + deviceId + "F" + funtion + "\n"; 
     }
 
 }
