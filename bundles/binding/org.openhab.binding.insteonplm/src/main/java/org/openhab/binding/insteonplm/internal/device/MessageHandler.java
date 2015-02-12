@@ -470,6 +470,37 @@ public abstract class MessageHandler {
 			}
 		}
 	}
+	
+	public static class HiddenDoorSensorDataReplyHandler extends MessageHandler {
+		HiddenDoorSensorDataReplyHandler(DeviceFeature p) { super(p); }
+		@Override
+		public void handleMessage(int group, byte cmd1, Msg msg,
+				DeviceFeature f, String fromPort) {
+			InsteonDevice dev = f.getDevice();
+			if (!msg.isExtended()) {
+				logger.trace("{} device {} ignoring non-extended msg {}", nm(), dev.getAddress(), msg);
+				return;
+			}
+			try {
+				int cmd2 = (int) (msg.getByte("command2") & 0xff);
+				switch (cmd2) {
+				case 0x00: // this is a product data response message
+					int batteryLevel = msg.getByte("userData4") & 0xff;
+					int batteryWatermark = msg.getByte("userData7") & 0xff;
+					logger.debug("{}: {} got light level: {}, battery level: {}",
+								nm(), dev.getAddress(), batteryWatermark, batteryLevel);
+					m_feature.publish(new DecimalType(batteryWatermark), StateChangeType.CHANGED, "field", "battery_watermark_level");
+					m_feature.publish(new DecimalType(batteryLevel), StateChangeType.CHANGED, "field", "battery_level");
+					break;
+				default:
+					logger.warn("unknown cmd2 = {} in info reply message {}", cmd2, msg);
+					break;
+				}
+			} catch (FieldException e) {
+				logger.error("error parsing {}: ", msg, e);
+			}
+		}
+	}
 
 	public static class PowerMeterUpdateHandler extends MessageHandler {
 		PowerMeterUpdateHandler(DeviceFeature p) { super(p); }
