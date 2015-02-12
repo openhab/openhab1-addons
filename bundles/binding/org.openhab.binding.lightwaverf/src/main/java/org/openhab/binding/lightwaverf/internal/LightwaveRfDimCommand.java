@@ -35,7 +35,7 @@ public class LightwaveRfDimCommand implements LightwaveRFCommand {
     
 	@Override
     public String getLightwaveRfCommandString() {
-        return "!R" + roomId + "D" + deviceId + "FdP" + dimLevel;
+        return "!R" + roomId + "D" + deviceId + "FdP" + dimLevel + "\n";
     }
 	
 	/**
