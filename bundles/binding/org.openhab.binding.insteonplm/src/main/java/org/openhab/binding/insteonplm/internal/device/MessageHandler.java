@@ -489,7 +489,7 @@ public abstract class MessageHandler {
 					int batteryWatermark = msg.getByte("userData7") & 0xff;
 					logger.debug("{}: {} got light level: {}, battery level: {}",
 								nm(), dev.getAddress(), batteryWatermark, batteryLevel);
-					m_feature.publish(new DecimalType(batteryWatermark), StateChangeType.CHANGED, "field", "batteryWatermark_level");
+					m_feature.publish(new DecimalType(batteryWatermark), StateChangeType.CHANGED, "field", "battery_watermark_level");
 					m_feature.publish(new DecimalType(batteryLevel), StateChangeType.CHANGED, "field", "battery_level");
 					break;
 				default:
