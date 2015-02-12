@@ -133,7 +133,8 @@ Example entry:
  <device productKey="F00.00.03">
      <model>2845-222</model>
      <description>Hidden Door Sensor</description>
-     <feature name="contact">GenericContact</feature>
+     <feature name="contact">WirelessMotionSensorContact</feature>
+     <feature name="data">HiddenDoorSensorData</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
