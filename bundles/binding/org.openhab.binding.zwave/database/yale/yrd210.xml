@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>YRD210</Model>
+	<Label lang="en">Push Button Deadbolt</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x4c</id></Class>
+		<Class><id>0x4e</id></Class>
+		<Class><id>0x62</id></Class>
+		<Class><id>0x63</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x71</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x75</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x8a</id></Class>
+		<Class><id>0x8b</id></Class>
+		<Class><id>0x98</id></Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>3</Default>
+			<Size>1</Size>
+			<Label lang="en">Audio Mode</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Silent</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Low</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">High</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>2</Index>
+			<Type>list</Type>
+			<Default>255</Default>
+			<Size>1</Size>
+			<Label lang="en">Auto relock</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Off</Label>
+			</Item>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">On</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>3</Index>
+			<Type>byte</Type>
+			<Default>30</Default>
+			<Size>1</Size>
+			<Minimum>5</Minimum>
+			<Maximum>255</Maximum>
+			<Label lang="en">Relock time</Label>			
+			<Help lang="en"><![CDATA[Seconds; after successful code entry and unit unlocks, it will automatically re-lock after specified time]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>4</Index>
+			<Type>byte</Type>
+			<Default>5</Default>
+			<Size>1</Size>
+			<Minimum>1</Minimum>
+			<Maximum>7</Maximum>
+			<Label lang="en">Wrong Code Entry Limit</Label>			
+			<Help lang="en"><![CDATA[The number of invalid code entries lock will accept before sending TAMPER Alarm.
+			When number of wrong code entries is exceeded, lock will disable keypad for the time specified by Shutdown Time parameter.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label lang="en">Language</Label>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">English</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Spanish</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">French</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+		<Parameter>
+			<Index>7</Index>
+			<Type>byte</Type>
+			<Default>30</Default>
+			<Size>1</Size>
+			<Minimum>1</Minimum>
+			<Maximum>255</Maximum>
+			<Label lang="en">Shutdown Time</Label>			
+			<Help lang="en"><![CDATA[Number of seconds unit will be inoperable after number of wrong code entries is exceeded.]]></Help>
+		</Parameter>
+		<Parameter>
+			<Index>8</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Operating Mode</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Normal</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Vacation</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Privacy</Label>
+			</Item>
+			<Help lang="en"><![CDATA[Normal Mode</br>
+Vacation Mode - all user codes disabled</br>
+Privacy Mode - all user codes disabled and RF Lock/Unlock disabled]]></Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>4</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Alarm Reports</Label>
+			<Help lang="en">Alarm reports are sent out unsolicited to devices included in the association group.</Help>
+		</Group>
+	</Associations>
+</Product>

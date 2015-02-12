@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Version command class. The Version Command Class is 
@@ -36,6 +37,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("versionCommandClass")
 public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 
+	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveVersionCommandClass.class);
 
 	public static final int VERSION_GET = 0x11;
@@ -89,7 +91,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 				applicationVersion = serialMessage.getMessagePayloadByte(offset + 4) +
 						((double)serialMessage.getMessagePayloadByte(offset + 5) / 10);
 				
-				logger.debug(String.format("NODE %d: Library Type = 0x%02x", this.getNode().getNodeId(), libraryType));
+				logger.debug(String.format("NODE %d: Library Type = 0x%02x", this.getNode().getNodeId(), libraryType.key));
 				logger.debug(String.format("NODE %d: Protocol Version = %.1f", this.getNode().getNodeId(), protocolVersion));
 				logger.debug(String.format("NODE %d: Application Version = %.1f", this.getNode().getNodeId(), applicationVersion));
 				break;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,6 +35,11 @@ public class ModbusSerialSlave extends ModbusSlave {
 
 	private static String port = null;
 	private static int baud = 9600;
+	private static int dataBits = 8;
+	private static String parity = "None"; // "none", "even" or "odd"
+	private static int stopBits = 1;
+	private static String serialEncoding = Modbus.DEFAULT_SERIAL_ENCODING;
+	
 	public void setPort(String port) {
 		ModbusSerialSlave.port = port;
 	}
@@ -43,7 +48,36 @@ public class ModbusSerialSlave extends ModbusSlave {
 		ModbusSerialSlave.baud = baud;
 	}
 
-	//	String port = null;
+	public void setDatabits(int dataBits) {
+		ModbusSerialSlave.dataBits = dataBits;
+	}
+	
+	// Parity string should be "none", "even" or "odd"
+	public void setParity(String parity) {
+		ModbusSerialSlave.parity = parity;
+	}
+	
+	public void setStopbits(int stopBits) {
+		ModbusSerialSlave.stopBits = stopBits;
+	}
+
+	private boolean isEncodingValid(String serialEncoding) {
+		for (String str : Modbus.validSerialEncodings) {
+			if (str.trim().contains(serialEncoding))
+				return true;
+		}
+		return false;
+	}
+
+	public void setEncoding(String serialEncoding) {
+		serialEncoding = serialEncoding.toLowerCase();
+
+		if ( isEncodingValid(serialEncoding) ) {
+			ModbusSerialSlave.serialEncoding = serialEncoding;
+		} else {
+			logger.info("Encoding '" + serialEncoding + "' is unknown");
+		}
+	}
 
 	private static SerialConnection connection = null;
 
@@ -74,23 +108,23 @@ public class ModbusSerialSlave extends ModbusSlave {
 			//			}
 
 			if (connection == null) {
+				logger.debug("connection was null, going to create a new one");
 				SerialParameters params = new SerialParameters();
 				params.setPortName(port);
 				params.setBaudRate(baud);
-				params.setDatabits(8);
-				params.setParity("None");
-				params.setStopbits(1);
-				params.setEncoding(Modbus.SERIAL_ENCODING_RTU);
+				params.setDatabits(dataBits);
+				params.setParity(parity);
+				params.setStopbits(stopBits);
+				params.setEncoding(serialEncoding);
 				params.setEcho(false);
 				connection = new SerialConnection(params);
-				connection.open();
 			}
 			if (!connection.isOpen()) {
 				connection.open();
 			}
 			((ModbusSerialTransaction)transaction).setSerialConnection(connection);
 		} catch (Exception e) {
-			logger.debug("ModbusSlave: Error connecting to master: " + e.getMessage());				
+			logger.error("ModbusSlave: Error connecting to master: " + e.getMessage());				
 			return false;
 		}
 		return true;

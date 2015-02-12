@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,13 +16,11 @@ import org.openhab.binding.homematic.internal.communicator.client.BinRpcClient;
 import org.openhab.binding.homematic.internal.communicator.client.CcuClient;
 import org.openhab.binding.homematic.internal.communicator.client.HomegearClient;
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
-import org.openhab.binding.homematic.internal.communicator.client.ServerId;
-import org.openhab.binding.homematic.internal.communicator.client.XmlRpcClient;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.HomematicClient;
 import org.openhab.binding.homematic.internal.communicator.client.interfaces.RpcClient;
 import org.openhab.binding.homematic.internal.communicator.server.BinRpcCallbackServer;
-import org.openhab.binding.homematic.internal.communicator.server.XmlRpcCallbackServer;
 import org.openhab.binding.homematic.internal.config.BindingAction;
+import org.openhab.binding.homematic.internal.config.binding.ActionConfig;
 import org.openhab.binding.homematic.internal.config.binding.DatapointConfig;
 import org.openhab.binding.homematic.internal.config.binding.HomematicBindingConfig;
 import org.openhab.binding.homematic.internal.config.binding.ProgramConfig;
@@ -59,7 +57,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 	private ItemDisabler itemDisabler;
 
 	private long lastEventTime = System.currentTimeMillis();
-
+	private HomematicPublisher publisher = new HomematicPublisher();
 	/**
 	 * Starts the communicator and initializes everything.
 	 */
@@ -67,18 +65,18 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 		if (homematicCallbackServer == null) {
 			logger.info("Starting Homematic communicator");
 			try {
-				boolean isBinRpc = context.getConfig().isBinRpc();
-				homematicCallbackServer = isBinRpc ? new BinRpcCallbackServer(this) : new XmlRpcCallbackServer(this);
+				homematicCallbackServer = new BinRpcCallbackServer(this);
 
 				itemDisabler = new ItemDisabler();
 				itemDisabler.start();
 				newDevicesCounter = 0;
 
-				RpcClient rpcClient = isBinRpc ? new BinRpcClient() : new XmlRpcClient();
+				RpcClient rpcClient = new BinRpcClient();
+				context.setServerId(rpcClient.getServerId(HmInterface.RF));
+				logger.info("Homematic {}", context.getServerId());
 
-				ServerId serverId = rpcClient.getServerId(HmInterface.RF);
-				logger.info("Homematic {}", serverId);
-				homematicClient = serverId.isHomegear() ? new HomegearClient(rpcClient) : new CcuClient(rpcClient);
+				homematicClient = context.getServerId().isHomegear() ? new HomegearClient(rpcClient) : new CcuClient(
+						rpcClient);
 
 				context.setHomematicClient(homematicClient);
 				homematicClient.start();
@@ -208,7 +206,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 				State state = converter.convertFromBinding(hmValueItem);
 				context.getEventPublisher().postUpdate(item.getName(), state);
 			}
-		} else if (bindingConfig instanceof ProgramConfig) {
+		} else if (bindingConfig instanceof ProgramConfig || bindingConfig instanceof ActionConfig) {
 			context.getEventPublisher().postUpdate(item.getName(), OnOffType.OFF);
 		} else {
 			logger.warn("Can't find {}, value is not published to openHAB!", bindingConfig);
@@ -241,6 +239,11 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 		if (event.isProgram()) {
 			if (event.isOnType()) {
 				executeProgram(event);
+			}
+		} else if (event.isAction()) {
+			if (event.isOnType()) {
+				executeBindingAction(event.getBindingConfig());
+				itemDisabler.add(event.getBindingConfig());
 			}
 		} else {
 			event.setHmValueItem(context.getStateHolder().getState(event.getBindingConfig()));
@@ -297,13 +300,7 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 		}
 
 		else {
-			if (event.isVariable()) {
-				homematicClient.setVariable(event.getHmValueItem(), event.getNewValue());
-			} else {
-				homematicClient.setDatapointValue((HmDatapoint) event.getHmValueItem(), event.getHmValueItem()
-						.getName(), event.getNewValue());
-			}
-			event.getHmValueItem().setValue(event.getNewValue());
+			publisher.execute(event);
 		}
 	}
 
@@ -349,6 +346,8 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 				context.getStateHolder().reloadVariables();
 			} else if (bindingConfig.getAction() == BindingAction.RELOAD_DATAPOINTS) {
 				context.getStateHolder().reloadDatapoints();
+			} else if (bindingConfig.getAction() == BindingAction.RELOAD_RSSI) {
+				context.getStateHolder().reloadRssi();
 			} else {
 				logger.warn("Unknown action {}", bindingConfig.getAction());
 			}

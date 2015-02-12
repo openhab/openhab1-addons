@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -89,7 +89,6 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 	public void activate() {
 		logger.debug("SNMP binding activated");
 		super.activate();
-		setProperlyConfigured(true);
 	}
 
 	public void deactivate() {
@@ -431,6 +430,7 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 		if (mapping) {
 			listen();
 		}
+		setProperlyConfigured(true);
 	}
 
 	private void sendPDU(CommunityTarget target, PDU pdu) {

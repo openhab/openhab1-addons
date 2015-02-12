@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,6 +33,7 @@ public abstract class RFXComBaseMessage implements RFXComMessageInterface {
 		FAN(23),
 		CURTAIN1(24),
 		BLINDS1(25),
+		RFY(26),
 		SECURITY1(32),
 		CAMERA1(40),
 		REMOTE_CONTROL(48),

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -213,6 +213,10 @@ public class YamahaReceiverBinding extends
 				proxy.setInput(zone, parseString(command.toString()));
 			} else if (type == BindingType.surroundProgram) {
 				proxy.setSurroundProgram(zone, parseString(command.toString()));
+			} else if (type == BindingType.netRadio) {
+				if (command instanceof DecimalType) {
+					proxy.setNetRadio(((DecimalType)command).intValue());
+				}
 			}
 		} catch (IOException e) {
 			logger.warn("Cannot communicate with " + proxy.getHost()

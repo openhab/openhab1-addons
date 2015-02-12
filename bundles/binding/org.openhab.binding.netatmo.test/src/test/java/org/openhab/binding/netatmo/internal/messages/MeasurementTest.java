@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,7 @@ import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestSt
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestStub.DEVICE_ID;
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestStub.MODULE_ID;
 import static org.openhab.binding.netatmo.internal.messages.MeasurementRequestStub.createRequest;
+import static org.openhab.binding.netatmo.internal.NetatmoMeasureType.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -48,15 +49,15 @@ public class MeasurementTest {
 	@Test
 	public void testSuccess() throws Exception {
 		final MeasurementRequestStub request = createRequest("/getmeasure.json");
-		request.addMeasure("Temperature");
-		request.addMeasure("Humidity");
+		request.addMeasure(TEMPERATURE);
+		request.addMeasure(HUMIDITY);
 
 		final MeasurementResponse response = request.execute();
 
 		assertFalse(response.isError());
 		assertNull(response.getError());
 
-		assertEquals("http://api.netatmo.net/api/getmeasure?access_token="
+		assertEquals("https://api.netatmo.net/api/getmeasure?access_token="
 				+ encodeQuery(ACCESS_TOKEN)
 				+ "&scale=max&date_end=last&device_id=" + DEVICE_ID
 				+ "&module_id=" + MODULE_ID + "&type=Humidity,Temperature",

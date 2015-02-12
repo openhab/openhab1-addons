@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -151,7 +151,7 @@ public class ZWaveInfoConverter extends ZWaveConverterBase {
 			case REPORT_TIME_OUT:
 				return this.getController().getTimeOutCount();
 			case REPORT_LASTUPDATE:
-				return node.getLastUpdated();
+				return node.getLastReceived();
 		}
         
         return null;

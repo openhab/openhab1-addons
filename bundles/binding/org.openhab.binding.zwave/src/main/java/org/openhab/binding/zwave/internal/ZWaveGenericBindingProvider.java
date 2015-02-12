@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -66,7 +66,7 @@ public class ZWaveGenericBindingProvider extends AbstractGenericBindingProvider 
 			throw new BindingConfigParseException(segments[1] + " is not a valid node id.");
 		}
 		
-		int endpoint = 1;
+		int endpoint = 0;
 		Integer refreshInterval = null;
 		Map<String, String> arguments = new HashMap<String, String>();
 		

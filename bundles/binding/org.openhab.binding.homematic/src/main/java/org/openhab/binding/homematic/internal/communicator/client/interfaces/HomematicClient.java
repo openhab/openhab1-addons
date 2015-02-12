@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,10 +8,13 @@
  */
 package org.openhab.binding.homematic.internal.communicator.client.interfaces;
 
+import java.util.Map;
+
 import org.openhab.binding.homematic.internal.communicator.client.BaseHomematicClient.HmValueItemIteratorCallback;
 import org.openhab.binding.homematic.internal.communicator.client.HomematicClientException;
 import org.openhab.binding.homematic.internal.model.HmDatapoint;
 import org.openhab.binding.homematic.internal.model.HmInterface;
+import org.openhab.binding.homematic.internal.model.HmRssiInfo;
 import org.openhab.binding.homematic.internal.model.HmValueItem;
 
 /**
@@ -78,6 +81,11 @@ public interface HomematicClient {
 	 */
 	public void setRemoteControlDisplay(String remoteControlAddress, String text, String options)
 			throws HomematicClientException;
+
+	/**
+	 * Returns all RF devices and their rssi values.
+	 */
+	public Map<String, HmRssiInfo> getRssiInfo() throws HomematicClientException;
 
 	/**
 	 * Returns true, if the client supports variables.

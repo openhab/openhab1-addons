@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2014, openHAB.org and others.
+    Copyright (c) 2010-2015, openHAB.org and others.
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -10,11 +10,12 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.config.core">
-   <implementation class="org.openhab.config.core.ConfigDispatcher"/>
-   
-   <service>
-      <provide interface="org.osgi.service.cm.ManagedService"/>
-   </service>
-   <property name="service.pid" type="String" value="org.openhab.mainconfig"/>
-   
+	<implementation class="org.openhab.config.core.ConfigDispatcher"/>
+	
+	<service>
+		<provide interface="org.osgi.service.cm.ManagedService" />
+	</service>
+	
+	<property name="service.pid" type="String" value="org.openhab.mainconfig"/>
+		
 </scr:component>

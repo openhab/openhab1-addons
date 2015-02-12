@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -84,6 +84,7 @@ public class DeviceListResponse extends AbstractResponse {
 	/**
 	 * <code>type</code> constant of the main indoor station.
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_MAIN = "NAMain";
 
 	/**
@@ -94,21 +95,25 @@ public class DeviceListResponse extends AbstractResponse {
 	/**
 	 * <code>type</code> constant of the rain gauge module
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_MODULE_3 = "NAModule3";
 
 	/**
 	 * <code>type</code> constant of the additional indoor module
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_MODULE_4 = "NAModule4";
 
 	/**
 	 * <code>type</code> constant of the thermostat relay/plug
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_PLUG = "NAPlug";
 
 	/**
 	 * <code>type</code> constant of the thermostat module
 	 */
+	@SuppressWarnings("unused")
 	private static final String TYPE_THERM_1 = "NATherm1";
 
 	/**
@@ -124,6 +129,7 @@ public class DeviceListResponse extends AbstractResponse {
 	/**
 	 * <code>wifi_status</code> threshold constant: good signal
 	 */
+	@SuppressWarnings("unused")
 	private static final int WIFI_STATUS_THRESHOLD_2 = 56;
 
 	/**
@@ -144,6 +150,7 @@ public class DeviceListResponse extends AbstractResponse {
 	/**
 	 * <code>rf_status</code> threshold constant: full signal
 	 */
+	@SuppressWarnings("unused")
 	private static final int RF_STATUS_THRESHOLD_3 = 60;
 
 	/**
@@ -228,6 +235,7 @@ public class DeviceListResponse extends AbstractResponse {
 		private String type;
 		private List<String> owner;
 		private List<String> measurements;
+		private Integer wifiStatus;
 
 		/**
 		 * "firmware": 1
@@ -382,7 +390,31 @@ public class DeviceListResponse extends AbstractResponse {
 
 			return builder.toString();
 		}
-
+		
+		/**
+		 * "wifi_status"
+		 */
+		 @JsonProperty("wifi_status")
+		 public Integer getWifiStatus() {
+			 switch (this.wifiStatus) {
+			 	case WIFI_STATUS_THRESHOLD_0 : return 0;
+			 	case WIFI_STATUS_THRESHOLD_1 : return 1;
+			 	default : return 2;
+			 }
+		 }
+		
+		 public Integer getAltitude() {
+			 return this.place.altitude;
+		 }
+		
+		 public Double getLatitude() {
+			 return this.place.location.get(0);
+		 }
+		
+		 public Double getLongitude() {
+			 return this.place.location.get(1);
+		 }
+		
 	}
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
@@ -394,6 +426,7 @@ public class DeviceListResponse extends AbstractResponse {
 		private String moduleName;
 		private Boolean publicData;
 		private Integer rfStatus;
+		private Integer batteryVp;
 		private String type;
 		private List<String> measurements;
 
@@ -442,7 +475,33 @@ public class DeviceListResponse extends AbstractResponse {
 		 */
 		@JsonProperty("rf_status")
 		public Integer getRfStatus() {
-			return this.rfStatus;
+			switch (this.rfStatus) {
+				case RF_STATUS_THRESHOLD_0 : return 0;
+				case RF_STATUS_THRESHOLD_1 : return 1;
+				case RF_STATUS_THRESHOLD_2 : return 2;
+				default : return 3;
+			}
+		}
+		
+		/**
+		 * "battery_vp"
+		 */
+		@JsonProperty("battery_vp")
+		public Double getBatteryVp() {
+			int value;
+			int minima;
+			int spread;
+			if (this.type.equalsIgnoreCase(TYPE_MODULE_1)) {
+				value = Math.min(this.batteryVp, BATTERY_MODULE_1_THRESHOLD_0);
+				minima = BATTERY_MODULE_1_THRESHOLD_3 + BATTERY_MODULE_1_THRESHOLD_2 - BATTERY_MODULE_1_THRESHOLD_1;
+				spread = BATTERY_MODULE_1_THRESHOLD_0 - minima;		
+			} else {
+				value = Math.min(this.batteryVp, BATTERY_MODULE_4_THRESHOLD_0);
+				minima = BATTERY_MODULE_4_THRESHOLD_3 + BATTERY_MODULE_4_THRESHOLD_2 - BATTERY_MODULE_4_THRESHOLD_1;
+				spread = BATTERY_MODULE_4_THRESHOLD_0 - minima;
+			}
+			double percent = 100 * (value - minima) / spread;
+			return new Double( percent );		
 		}
 
 		/**
@@ -482,7 +541,7 @@ public class DeviceListResponse extends AbstractResponse {
 
 		private Integer altitude;
 		private String country;
-		private List<Integer> location;
+		private List<Double> location;
 		private String timezone;
 		private Boolean trustedLocation;
 
@@ -511,7 +570,7 @@ public class DeviceListResponse extends AbstractResponse {
 		 * </pre>
 		 */
 		@JsonProperty("location")
-		public List<Integer> getlocation() {
+		public List<Double> getlocation() {
 			return this.location;
 		}
 

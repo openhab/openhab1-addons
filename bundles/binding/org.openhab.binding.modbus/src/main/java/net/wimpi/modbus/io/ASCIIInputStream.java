@@ -57,7 +57,7 @@ public class ASCIIInputStream
    */
   public int read() throws IOException {
     StringBuffer sbuf = new StringBuffer(2);
-    int ch = in.read();
+    int ch = in.read(); //!@todo that thing blocks until something was received
     if(ch == -1) {
       return -1;
     }

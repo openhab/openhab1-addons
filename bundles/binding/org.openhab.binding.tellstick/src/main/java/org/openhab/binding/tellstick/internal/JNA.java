@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -60,7 +60,9 @@ public class JNA {
 	}
 
 	public enum DataType {
-		HUMIDITY(CLibrary.TELLSTICK_HUMIDITY), TEMPERATURE(CLibrary.TELLSTICK_TEMPERATURE);
+		HUMIDITY(CLibrary.TELLSTICK_HUMIDITY), TEMPERATURE(CLibrary.TELLSTICK_TEMPERATURE),
+		WINDAVERAGE(CLibrary.TELLSTICK_WINDAVERAGE), WINDDIRECTION(CLibrary.TELLSTICK_WINDDIRECTION),
+		WINDGUST(CLibrary.TELLSTICK_WINDGUST), RAINRATE(CLibrary.TELLSTICK_RAINRATE), RAINTOTAL(CLibrary.TELLSTICK_RAINTOTAL);
 
 		private int nativeInt;
 
@@ -312,7 +314,7 @@ public class JNA {
 	}
 
 	static {
-		if (Platform.isWindows()) {
+		if (Platform.isWindows() || Platform.isMac()) {
 			JNA.library = "TelldusCore";
 		} else {
 			JNA.library = "telldus-core";
