@@ -494,7 +494,7 @@ public abstract class MessageHandler {
 				int cmd2 = (int) (msg.getByte("command2") & 0xff);
 				switch (cmd2) {
 				case 0x00: // this is a product data response message
-					int batteryLevel = msg.getByte("userData04") & 0xff;
+					int batteryLevel = msg.getByte("userData4") & 0xff;
 					logger.debug("{} got battery level {}", dev.getAddress(), batteryLevel);
 					m_feature.publish(new DecimalType(batteryLevel), StateChangeType.CHANGED);
 					break;
