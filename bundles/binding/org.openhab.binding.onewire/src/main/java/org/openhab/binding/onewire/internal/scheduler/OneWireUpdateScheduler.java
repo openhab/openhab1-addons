@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.onewire.internal.scheduler;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -141,14 +142,16 @@ public class OneWireUpdateScheduler {
 			LOGGER.debug("Schedule executor restart: started.");
 		}
 
-		for (int autoRefreshTimeInSecs : cvScheduleMap.keySet()) {
+		for (Iterator<Integer> lvIterator = cvScheduleMap.keySet().iterator(); lvIterator.hasNext();) {
+			int autoRefreshTimeInSecs = lvIterator.next();
+
 			List<String> lvItemListe = cvScheduleMap.get(autoRefreshTimeInSecs);
 			synchronized (lvItemListe) {
 				LOGGER.debug("Clearing list {}", autoRefreshTimeInSecs);
 				lvItemListe.clear();
 			}
 			LOGGER.debug("Removing list {} from scheduler", autoRefreshTimeInSecs);
-			cvScheduleMap.remove(autoRefreshTimeInSecs);
+			lvIterator.remove();
 		}
 	}
 
@@ -211,9 +214,10 @@ public class OneWireUpdateScheduler {
 				 * for example when a configuration file is reread.
 				 */
 
-				for (String lvItemNameOldList : lvOldList) {
+				for (Iterator<String> lvIterator = lvOldList.iterator(); lvIterator.hasNext();) {
+					String lvItemNameOldList = lvIterator.next();
 					if (lvItemNameOldList.toString().equals(pvItemName)) {
-						lvOldList.remove(pvItemName);
+						lvIterator.remove();
 					}
 				}
 

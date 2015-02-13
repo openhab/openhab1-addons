@@ -2,9 +2,6 @@ package org.openhab.binding.onewire.internal.deviceproperties;
 
 import java.math.BigDecimal;
 
-import org.openhab.binding.onewire.internal.deviceproperties.modifier.OneWireDecimalTypeAddModifier;
-import org.openhab.binding.onewire.internal.deviceproperties.modifier.OneWireDecimalTypeMultiplyModifier;
-import org.openhab.binding.onewire.internal.deviceproperties.modifier.OneWireDecimalTypeTukeyFilterModifier;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
@@ -24,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * For this Binding, maxWarning or minWarning must be set. If readvalue is greater than maxWarningValue or readvalue is
  * less than minWarningValue, the Switch turns on
  * 
- * Required: <code>maxWarning=<i>deviceId</i>"</code> or <code>minWarning=<i>deviceId</i>"</code>
+ * Required: <code>maxWarning=<i>value</i>"</code> or <code>minWarning=<i>value</i>"</code>
  * 
  * Optional modifiers:
  * <ul>
@@ -48,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.7.0
  * 
  */
-public class OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig extends AbstractOneWireDevicePropertyBindingConfig {
+public class OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig extends OneWireDevicePropertyNumberBindingConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig.class);
 
@@ -66,43 +63,11 @@ public class OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig extends
 		for (String lvConfigPart : lvConfigParts) {
 			parseMaxWarning(lvConfigPart);
 			parseMinWarning(lvConfigPart);
-			parseAddModifier(lvConfigPart);
-			parseMultiplyModifier(lvConfigPart);
-			parseTukeyFilterModifier(lvConfigPart);
 		}
 
 		if (!(ivMaxWarningValue != null || ivMinWarningValue != null)) {
 			LOGGER.error("maxWarning or minWarning must be set in config!");
 			throw new BindingConfigParseException("Onewire sensor configuration must contain maxWarning or minWarning Value!");
-		}
-	}
-
-	private void parseAddModifier(String pvConfigPart) {
-		String lvConfigProperty = null;
-
-		lvConfigProperty = "add=";
-		if (pvConfigPart.startsWith(lvConfigProperty)) {
-			String lvConfigValue = pvConfigPart.substring(lvConfigProperty.length());
-			this.getTypeModifieryList().add(new OneWireDecimalTypeAddModifier(new BigDecimal(Double.parseDouble(lvConfigValue))));
-		}
-	}
-
-	private void parseMultiplyModifier(String pvConfigPart) {
-		String lvConfigProperty = null;
-
-		lvConfigProperty = "multiply=";
-		if (pvConfigPart.startsWith(lvConfigProperty)) {
-			String lvConfigValue = pvConfigPart.substring(lvConfigProperty.length());
-			this.getTypeModifieryList().add(new OneWireDecimalTypeMultiplyModifier(new BigDecimal(Double.parseDouble(lvConfigValue))));
-		}
-	}
-
-	private void parseTukeyFilterModifier(String pvConfigPart) {
-		String lvConfigProperty = null;
-
-		lvConfigProperty = "tukeyfilter";
-		if (pvConfigPart.startsWith(lvConfigProperty)) {
-			this.getTypeModifieryList().add(new OneWireDecimalTypeTukeyFilterModifier());
 		}
 	}
 

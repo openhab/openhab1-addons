@@ -203,7 +203,7 @@ public class OneWireConnection {
 	public static void writeToOneWire(String pvDevicePropertyPath, String pvValue) {
 		try {
 			if (checkIfDeviceExists(pvDevicePropertyPath) && (pvValue != null)) {
-				LOGGER.debug("writing value '{}' to {}/{}", new Object[] { pvValue, pvDevicePropertyPath });
+				LOGGER.debug("writing value '{}' to {}", new Object[] { pvValue, pvDevicePropertyPath });
 				OneWireConnection.getConnection().write(pvDevicePropertyPath, pvValue);
 			} else {
 				LOGGER.info("there is no sensor for path {}", pvDevicePropertyPath);
