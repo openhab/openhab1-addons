@@ -8,6 +8,11 @@
  */
 package org.openhab.binding.lightwaverf.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.openhab.binding.heatmiser.internal.HeatmiserGenericBindingProvider.HeatmiserBindingConfig;
 import org.openhab.binding.lightwaverf.LightwaveRFBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
@@ -26,6 +31,11 @@ import org.slf4j.LoggerFactory;
 public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingProvider implements LightwaveRFBindingProvider {
 
 	private static Logger logger = LoggerFactory.getLogger(LightwaveRFGenericBindingProvider.class);
+	
+	private static Pattern ROOM_REG_EXP = Pattern.compile(".*room=([0-9]*).*");
+	private static Pattern DEVICE_REG_EXP = Pattern.compile(".*device=([0-9]*).*");
+	private static Pattern POLL_REG_EXP = Pattern.compile(".*poll_interval=([0-9]*).*");
+	private static Pattern TYPE_REG_EXP = Pattern.compile(".*type=([^,]*).*");
 
 	/**
 	 * {@inheritDoc}
@@ -45,6 +55,19 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		//}
 	}
 
+	
+	public List<String> getBindingItemsForRoomDevice(String roomId, String deviceId) {
+		List<String> bindings = new ArrayList<String>();
+		for (String itemName : bindingConfigs.keySet()) {
+			LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
+			if (itemConfig.getRoomId().equals(roomId) && itemConfig.getDeviceId().equals(deviceId)) {
+				bindings.add(itemName);
+			}
+		}
+		return bindings;
+	}
+
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -65,8 +88,16 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 	}
 
 	class LightwaveRFBindingConfig implements BindingConfig {
-		public String code;
-		public String type;
 		// put member fields here which holds the parsed values
+		public String roomId;
+		public String deviceId;
+		public LightwaveRfType type;
+		
+		public String getDeviceId() {
+			return deviceId;
+		}
+		public String getRoomId() {
+			return roomId;
+		}
 	}
 }
