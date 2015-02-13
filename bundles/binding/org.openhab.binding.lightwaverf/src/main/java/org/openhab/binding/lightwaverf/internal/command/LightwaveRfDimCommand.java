@@ -38,6 +38,7 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
     public LightwaveRfDimCommand(String message) throws LightwaveRfMessageException {
     	try{
 	    	Matcher matcher = REG_EXP.matcher(message);
+	    	matcher.matches();
 			this.messageId = new LightwaveRfMessageId(Integer.valueOf(matcher.group(1)));
 	    	this.roomId = matcher.group(2);
 	    	this.deviceId = matcher.group(3);

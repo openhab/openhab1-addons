@@ -18,6 +18,7 @@ public class LightwaveRfDeviceRegistrationCommand extends AbstractLightwaveRfCom
 	public LightwaveRfDeviceRegistrationCommand(String message) throws LightwaveRfMessageException {
 		try{
 			Matcher m = REG_EXP.matcher(message);
+			m.matches();
 			messageId = new LightwaveRfMessageId(Integer.valueOf(m.group(1)));
 		}
 		catch(Exception e){

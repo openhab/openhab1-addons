@@ -8,7 +8,7 @@ import org.openhab.core.library.types.PercentType;
 public class LightwaveRfDimCommandTest {
 
 	@Test
-	public void testDimCommandAsMessageLow() {
+	public void testDimCommandAsMessageLow() throws Exception {
 		String message = "10,!R2D3FdP1";
 		LightwaveRFCommand command = new LightwaveRfDimCommand(message);
 		assertEquals("010,!R2D3FdP1\n", command.getLightwaveRfCommandString());
@@ -19,7 +19,7 @@ public class LightwaveRfDimCommandTest {
 	}
 
 	@Test
-	public void testDimCommandAsMessageHigh() {
+	public void testDimCommandAsMessageHigh() throws Exception {
 		String message = "10,!R2D3FdP32";
 		LightwaveRFCommand command = new LightwaveRfDimCommand(message);
 		assertEquals("010,!R2D3FdP32\n", command.getLightwaveRfCommandString());
@@ -30,7 +30,7 @@ public class LightwaveRfDimCommandTest {
 	}
 
 	@Test
-	public void testDimCommandAsParametersLow() {
+	public void testDimCommandAsParametersLow() throws Exception {
 		LightwaveRFCommand command = new LightwaveRfDimCommand(10, "2", "3", 1);
 		assertEquals("010,!R2D3FdP1\n", command.getLightwaveRfCommandString());
 		assertEquals("2", command.getRoomId());
@@ -40,7 +40,7 @@ public class LightwaveRfDimCommandTest {
 	}
 	
 	@Test
-	public void testDimCommandAsParametersHigh() {
+	public void testDimCommandAsParametersHigh() throws Exception {
 		LightwaveRFCommand command = new LightwaveRfDimCommand(10, "2", "3", 100);
 		assertEquals("010,!R2D3FdP32\n", command.getLightwaveRfCommandString());
 		assertEquals("2", command.getRoomId());
