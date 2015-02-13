@@ -70,13 +70,14 @@
                         <Type>list</Type>
                         <Default>0</Default>
                         <Size>1</Size>
+						<WriteOnly>true</WriteOnly>
                         <Label lang="en">Enable/Disable CRC16 encapsulation</Label>
                         <Label lang="de">Enable/Disable CRC16 encapsulation</Label>
                         <Help lang="en">Parameter to Enable/Disable CRC16 encapsulation</Help>
                         <Help lang="de">Parameter to Enable/Disable CRC16 encapsulation</Help>
                         <Item>
                                 <Value>0</Value>
-                                <Label lang="en">Deavtivate</Label>
+                                <Label lang="en">Deactivate</Label>
                                 <Label lang="de">Deaktiviert</Label>
                         </Item>
                         <Item>
