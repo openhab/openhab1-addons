@@ -31,7 +31,11 @@ public class RequestQueueManager {
 		m_queueThread = new Thread(new RequestQueueReader());
 		m_queueThread.start();
 	}
-	
+	/**
+	 * Add device to global request queue  
+	 * @param dev
+	 * @param time
+	 */
 	public void addQueue(InsteonDevice dev, long time) {
 		synchronized (m_requestQueues) {
 			if (!m_requestQueueHash.containsKey(dev)) {
