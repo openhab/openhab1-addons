@@ -9,7 +9,7 @@ import org.openhab.core.types.State;
 
 public class LightwaveRfDeviceRegistrationCommand extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
 
-	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),F*p");
+	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!F*p");
 	private final LightwaveRfMessageId messageId;
 	private static final String FUNCTION = "*";
 	private static final String PARAMETER = "";

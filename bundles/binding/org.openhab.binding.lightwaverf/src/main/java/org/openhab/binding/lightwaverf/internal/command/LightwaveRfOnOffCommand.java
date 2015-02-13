@@ -16,7 +16,7 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implemen
 	 *     101,!R2D3F1 (On)
 	 */
 	
-	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!R([0-9])D([0-9])F([0,1])");
+	private static final Pattern REG_EXP = Pattern.compile("(\\d{1,3}),!R(\\d)D(\\d)F([0,1])");
 	private static final String ON_FUNCTION = "1";
 	private static final String OFF_FUNCTION = "0";
 	
