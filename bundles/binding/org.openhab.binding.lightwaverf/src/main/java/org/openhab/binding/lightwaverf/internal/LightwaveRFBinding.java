@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 import org.openhab.binding.lightwaverf.LightwaveRFBindingProvider;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;

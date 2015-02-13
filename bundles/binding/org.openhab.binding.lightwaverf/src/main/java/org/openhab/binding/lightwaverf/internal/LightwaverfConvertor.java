@@ -5,6 +5,13 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDeviceRegistrationCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimUpDownCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfOnOffCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessage;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;

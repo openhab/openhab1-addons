@@ -1,5 +1,7 @@
 package org.openhab.binding.lightwaverf.internal;
 
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
+
 
 public abstract class AbstractLightwaveRfCommand implements LightwaveRFCommand {
 

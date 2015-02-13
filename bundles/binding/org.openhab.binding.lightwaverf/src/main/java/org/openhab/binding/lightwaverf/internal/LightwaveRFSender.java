@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

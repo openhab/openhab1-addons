@@ -4,6 +4,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
+
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

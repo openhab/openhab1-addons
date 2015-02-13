@@ -1,8 +1,10 @@
-package org.openhab.binding.lightwaverf.internal;
+package org.openhab.binding.lightwaverf.internal.command;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openhab.binding.lightwaverf.internal.AbstractLightwaveRfCommand;
+import org.openhab.binding.lightwaverf.internal.LightwaveRfMessageId;
 import org.openhab.core.types.State;
 
 public class LightwaveRfCommandOk extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
