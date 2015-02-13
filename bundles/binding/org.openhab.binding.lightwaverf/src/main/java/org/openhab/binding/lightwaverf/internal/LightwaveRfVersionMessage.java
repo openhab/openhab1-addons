@@ -6,21 +6,22 @@ import java.util.regex.Pattern;
 import org.openhab.core.types.State;
 
 
-public class LightwaveRfVersionMessage implements LightwaveRFCommand {
+public class LightwaveRfVersionMessage extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
 
 	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),.*V=(.*)");
 	
-	private final String messageId;
+	private final LightwaveRfMessageId messageId;
 	private final String version;
 	
 	public LightwaveRfVersionMessage(String message) {
+
 		Matcher m = REG_EXP.matcher(message);
-		this.messageId = m.group(0);
+		this.messageId = new LightwaveRfMessageId(Integer.valueOf(m.group(0)));
 		this.version = m.group(1);
 	}
 	
 	public String getLightwaveRfCommandString() {
-		return messageId + "?V=\"" + version + "\"";
+		return getVersionString(messageId, version); 
 	}
 
 	public String getRoomId() {
@@ -33,6 +34,15 @@ public class LightwaveRfVersionMessage implements LightwaveRFCommand {
 
 	public State getState() {
 		return null;
+	}
+
+	public LightwaveRfMessageId getMessageId() {
+		return messageId;
+	}
+
+	public static boolean matches(String message) {
+		Matcher m = REG_EXP.matcher(message);
+		return m.matches();
 	}
 
 }

@@ -9,12 +9,21 @@ import org.slf4j.LoggerFactory;
 
 public class LightwaveRFReceiver implements Runnable {
     private static Logger logger = LoggerFactory.getLogger(LightwaveRFReceiver.class);
-    private static final int PORT = 9760;
+    
+    private final int port;
     private final CopyOnWriteArrayList<LightwaveRFMessageListener> listerns = new CopyOnWriteArrayList<LightwaveRFMessageListener>();
+    private final LightwaverfConvertor messageConvertor;
+    
     private CountDownLatch latch = new CountDownLatch(0);
     private boolean running = true;
     private DatagramSocket receiveSocket;
-    public LightwaveRFReceiver() {}
+    
+    
+    public LightwaveRFReceiver(LightwaverfConvertor messageConvertor, int port) {
+    	this.port = port;
+    	this.messageConvertor = messageConvertor;
+    }
+    	
     /**
      * Start the LightwaveRFReceiver
      * Will set running true, initialise the socket and start the thread.
@@ -47,7 +56,7 @@ public class LightwaveRFReceiver implements Runnable {
     */
     private void initialiseSockets() {
         try {
-            receiveSocket = new DatagramSocket(PORT);
+            receiveSocket = new DatagramSocket(port);
         } catch (IOException e) {
             logger.error("Error initalising socket", e);
         }
@@ -62,7 +71,7 @@ public class LightwaveRFReceiver implements Runnable {
             try {
                 String message = receiveUDP();
                 logger.debug("Message received: " + message);
-                LightwaveRFCommand command = LightwaverfConvertor.convertFromLightwaveRfMessage(message);
+                LightwaveRFCommand command = messageConvertor.convertFromLightwaveRfMessage(message);
                 notifyListners(command);
             } 			catch (IOException e) {
                 if(!(running == false && receiveSocket.isClosed())) {

@@ -7,12 +7,13 @@ public interface LightwaveRFCommand {
     LightwaveRFCommand STOP_MESSAGE = new LightwaveRFStopPublisherCommand();
 
 	public String getLightwaveRfCommandString();
-
+	
 	public String getRoomId();
-
+	
 	public String getDeviceId();
 
 	public State getState();
 	
-
+	public LightwaveRfMessageId getMessageId();
+	
 }

@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import org.openhab.core.types.State;
 
-public class LightwaveRfCommandOk implements LightwaveRFCommand {
+public class LightwaveRfCommandOk extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
 
 	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),OK");
 	
@@ -17,7 +17,7 @@ public class LightwaveRfCommandOk implements LightwaveRFCommand {
 	}
 
 	public String getLightwaveRfCommandString() {
-		return messageId + ",OK\n";
+		return getOkString(messageId);
 	}
 
 	public String getRoomId() {
@@ -30,5 +30,14 @@ public class LightwaveRfCommandOk implements LightwaveRFCommand {
 
 	public State getState() {
 		return null;
+	}
+	
+	public LightwaveRfMessageId getMessageId() {
+		return messageId;
+	}
+
+	public static boolean matches(String message) {
+		Matcher m = REG_EXP.matcher(message);
+		return m.matches();
 	}
 }

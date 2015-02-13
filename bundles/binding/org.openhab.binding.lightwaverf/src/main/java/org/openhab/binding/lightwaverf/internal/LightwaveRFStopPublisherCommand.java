@@ -19,5 +19,9 @@ public class LightwaveRFStopPublisherCommand implements LightwaveRFCommand {
 	public State getState() {
 		return null;
 	}
+	
+	public LightwaveRfMessageId getMessageId() {
+		return null;
+	}
 
 }

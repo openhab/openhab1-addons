@@ -14,7 +14,7 @@ public class LightwaveRfDimUpDownCommand implements LightwaveRFCommand {
     	throw new IllegalArgumentException("Not implemented");
     }
     
-    public LightwaveRfDimUpDownCommand(String roomId, String deviceId, boolean up) {
+    public LightwaveRfDimUpDownCommand(int messageId, String roomId, String deviceId, boolean up) {
     	throw new IllegalArgumentException("Not implemented");
     }
 
@@ -33,5 +33,8 @@ public class LightwaveRfDimUpDownCommand implements LightwaveRFCommand {
 	public State getState() {
     	throw new IllegalArgumentException("Not implemented");
 	}
-
+	
+	public LightwaveRfMessageId getMessageId() {
+    	throw new IllegalArgumentException("Not implemented");
+	}
 }

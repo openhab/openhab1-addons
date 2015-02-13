@@ -15,12 +15,12 @@ public class LightwaveRFSender implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(LightwaveRFSender.class);
     private static final LightwaveRFCommand STOP_MESSAGE = LightwaveRFCommand.STOP_MESSAGE;
     // Poll time so we don't flood the LightwaveRF hub
-    private static final int POLL_TIME = 250;
+    private final int pollTime;
     // LightwaveRF WIFI hub port.
-    private static final int LIGHTWAVE_PORT_IN = 9760;
+    private final int lightwaveWifiLinkPortIn;
     // LightwaveRF WIFI hub IP Address or broadcast address
-    private static final String LIGHTWAVE_IP_ADDRESS = "255.255.255.255";
     // Used to send messages
+    
     private final InetAddress ipAddress;
     // Latch used to ensure we shutdown.
     private CountDownLatch latch = new CountDownLatch(0);
@@ -28,12 +28,12 @@ public class LightwaveRFSender implements Runnable {
     private BlockingQueue<LightwaveRFCommand> queue = new LinkedBlockingQueue<LightwaveRFCommand>();
     // Boolean to indicate if we are running
     private boolean running = false;
-    // LightwaveRF messageId
-    private int messageId = 0;
     private DatagramSocket transmitSocket = null;
 
-    public LightwaveRFSender() throws UnknownHostException {
-        ipAddress =  InetAddress.getByName(LIGHTWAVE_IP_ADDRESS);
+    public LightwaveRFSender(String lightwaveWifiLinkIp, int lightwaveWifiLinkPortIn, int pollTime) throws UnknownHostException {
+    	this.lightwaveWifiLinkPortIn = lightwaveWifiLinkPortIn;
+    	this.pollTime = pollTime;
+        ipAddress =  InetAddress.getByName(lightwaveWifiLinkIp);
     }
     /**
      * Start the LightwaveRFSender
@@ -91,7 +91,7 @@ public class LightwaveRFSender implements Runnable {
                     logger.info("Stop message received");
                     break;
                 }
-                Thread.sleep(POLL_TIME);
+                Thread.sleep(pollTime);
             } catch(InterruptedException e) {
                 logger.error("Error waiting on queue", e);
             }
@@ -133,7 +133,7 @@ public class LightwaveRFSender implements Runnable {
             logger.info("Sending command[" + command + "]");
             byte[] sendData = new byte[1024];
             sendData = getData(command);
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, LIGHTWAVE_PORT_IN);
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, lightwaveWifiLinkPortIn);
             transmitSocket.send(sendPacket);
         } 		catch (IOException e) {
             logger.error("Error sending command[" + command + "]", e);
@@ -142,19 +142,7 @@ public class LightwaveRFSender implements Runnable {
 
     
     private byte[] getData(LightwaveRFCommand command){
-    	return (getAndIncrementMessageId() + "," + command.getLightwaveRfCommandString()).getBytes();    	
-    }
-    
-    /**
-     * Increment message counter, so different messages have different IDs
-     * Important for getting corresponding OK acknowledgements from port 9761 tagged with the same counter value
-     */
-    private int getAndIncrementMessageId() {
-		int myMessageId = messageId;
-		if(myMessageId >= 999){
-			messageId = 0;
-		}
-		return myMessageId;
+    	return command.getLightwaveRfCommandString().getBytes();    	
     }
     
 }

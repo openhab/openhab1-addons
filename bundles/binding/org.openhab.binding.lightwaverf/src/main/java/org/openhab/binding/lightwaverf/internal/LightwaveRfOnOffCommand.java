@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.State;
 
-public class LightwaveRfOnOffCommand implements LightwaveRFCommand {
+public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
 
 	/**
 	 * Commands are like: 
@@ -18,20 +18,23 @@ public class LightwaveRfOnOffCommand implements LightwaveRFCommand {
 	private static final String ON_FUNCTION = "1";
 	private static final String OFF_FUNCTION = "0";
 	
+	private final LightwaveRfMessageId messageId;
     private final String roomId;
     private final String deviceId;
     private final boolean on;
     
-    public LightwaveRfOnOffCommand(String roomId, String deviceId, boolean on) {
-        this.roomId = roomId;
+    public LightwaveRfOnOffCommand(int messageId, String roomId, String deviceId, boolean on) {
+        this.messageId = new LightwaveRfMessageId(messageId);
+    	this.roomId = roomId;
         this.deviceId = deviceId;
         this.on = on;
     }
     
     public LightwaveRfOnOffCommand(String message) {
     	Matcher matcher = REG_EXP.matcher(message);
-    	roomId = matcher.group(1);
-    	deviceId = matcher.group(2);
+		this.messageId = new LightwaveRfMessageId(Integer.valueOf(matcher.group(0)));
+    	this.roomId = matcher.group(1);
+    	this.deviceId = matcher.group(2);
     	String function = matcher.group(3);
     	if(ON_FUNCTION.equals(function)){
     		on = true;
@@ -45,8 +48,8 @@ public class LightwaveRfOnOffCommand implements LightwaveRFCommand {
 	}
 
     public String getLightwaveRfCommandString() {
-        char funtion = on ? '1' : '0';
-        return "!R" + roomId + "D" + deviceId + "F" + funtion + "\n"; 
+        String function = on ? "1" : "0";
+        return getMessageString(messageId, roomId, deviceId, function);
     }
 
 	public String getRoomId() {
@@ -59,6 +62,10 @@ public class LightwaveRfOnOffCommand implements LightwaveRFCommand {
 
 	public State getState() {
 		return on ? OnOffType.ON : OnOffType.OFF;
+	}
+	
+	public LightwaveRfMessageId getMessageId() {
+		return messageId;
 	}
 
 }

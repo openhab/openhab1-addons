@@ -8,18 +8,15 @@
  */
 package org.openhab.binding.lightwaverf.internal;
 
+import java.net.UnknownHostException;
+import java.util.List;
+
 import org.openhab.binding.lightwaverf.LightwaveRFBindingProvider;
-import org.openhab.binding.lightwaverf.internal.LightwaveRFReceiver;
-import org.openhab.binding.lightwaverf.internal.LightwaveRFSender;
-import org.openhab.binding.lightwaverf.internal.LightwaveRFMessageListener;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.openhab.core.library.types.OnOffType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.net.UnknownHostException;
-import java.util.List;
 
 /**
  * @author Neil Renaud
@@ -27,18 +24,32 @@ import java.util.List;
  */
 public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvider> implements LightwaveRFMessageListener {
 
+    private static final int POLL_TIME = 250;
+    // LightwaveRF WIFI hub port.
+    private static final int LIGHTWAVE_PORT_TO_SEND_TO = 9760;
+    private static final int LIGHTWAVE_PORT_TO_RECEIVE_ON = 9761;
+    // LightwaveRF WIFI hub IP Address or broadcast address
+    private static final String LIGHTWAVE_IP = "255.255.255.255";
+    private static final boolean SEND_REGISTER_ON_STARTUP = true;
+
+	
 	private final Logger logger = LoggerFactory.getLogger(LightwaveRFBinding.class);
+	private LightwaverfConvertor messageConvertor; 
 	private LightwaveRFReceiver receiver = null;
 	private LightwaveRFSender sender = null;
 
 	@Override
 	public void activate() {
 		try{
-			receiver = new LightwaveRFReceiver();
+			messageConvertor = new LightwaverfConvertor();
+			receiver = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_RECEIVE_ON);
 			receiver.start();
 			receiver.addListener(this);
-			sender = new LightwaveRFSender();
+			sender = new LightwaveRFSender(LIGHTWAVE_IP, LIGHTWAVE_PORT_TO_SEND_TO, POLL_TIME);
 			sender.start();
+			if(SEND_REGISTER_ON_STARTUP){
+				sender.sendUDP(messageConvertor.getRegistrationCommand());
+			}
 		}
 		catch(UnknownHostException e){
 			logger.error("Error creating LightwaveRFSender", e);
@@ -61,7 +72,7 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 		logger.debug("internalReceiveCommand(" + itemName + ", " + command +") is called!");
         String roomId = getRoomId(itemName);
         String deviceId = getDeviceId(itemName);
-        LightwaveRFCommand lightwaverfMessageString = LightwaverfConvertor.convertToLightwaveRfMessage(roomId, deviceId, command);
+        LightwaveRFCommand lightwaverfMessageString = messageConvertor.convertToLightwaveRfMessage(roomId, deviceId, command);
 		sender.sendUDP(lightwaverfMessageString);
 	}
 
@@ -73,7 +84,7 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 		logger.debug("internalReceiveUpdate(" + itemName + ", " + newState + ") is called!");
                 String roomId = getRoomId(itemName);
                 String deviceId = getDeviceId(itemName);
-                LightwaveRFCommand lightwaverfMessageString = LightwaverfConvertor.convertToLightwaveRfMessage(roomId, deviceId, newState);
+                LightwaveRFCommand lightwaverfMessageString = messageConvertor.convertToLightwaveRfMessage(roomId, deviceId, newState);
                 sender.sendUDP(lightwaverfMessageString);
 	}
 

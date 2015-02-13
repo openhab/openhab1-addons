@@ -1,5 +1,7 @@
 package org.openhab.binding.lightwaverf.internal;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,36 +15,71 @@ public class LightwaverfConvertor {
 
 	private static final Pattern REG_EXP = Pattern.compile(".*F(.).*");
 
+	// LightwaveRF messageId
+    private int nextMessageId = 0;
+    private final Lock lock = new ReentrantLock();
 
-    public static LightwaveRFCommand convertToLightwaveRfMessage(String roomId, String deviceId, Type command){
+    
+    
+
+    public LightwaveRFCommand convertToLightwaveRfMessage(String roomId, String deviceId, Type command){
     	if(deviceId == null){
-    		return LightwaverfConvertor.convertToLightwaveRfMessage(roomId, command);
+    		return convertToLightwaveRfMessage(roomId, command);
     	}
-    	else if(command instanceof OnOffType){
+    	
+    	int messageId = getAndIncrementMessageId();
+    	
+    	if(command instanceof OnOffType){
             boolean on = (command == OnOffType.ON);
-            return new LightwaveRfOnOffCommand(roomId, deviceId, on);
+            return new LightwaveRfOnOffCommand(messageId, roomId, deviceId, on);
         }
         else if(command instanceof PercentType){
             int dimmingLevel = ((PercentType) command).intValue();
-            return new LightwaveRfDimCommand(roomId, deviceId, dimmingLevel);
+            return new LightwaveRfDimCommand(messageId, roomId, deviceId, dimmingLevel);
         }
         else if(command instanceof IncreaseDecreaseType){
             boolean up = (command == IncreaseDecreaseType.INCREASE);
-            return new LightwaveRfDimUpDownCommand(roomId, deviceId, up);
+            return new LightwaveRfDimUpDownCommand(messageId, roomId, deviceId, up);
             
         }
         throw new RuntimeException("Unsupported Command: " + command);
     }
 
-    public static LightwaveRFCommand convertToLightwaveRfMessage(String roomId, Type command){
+    /**
+     * Increment message counter, so different messages have different IDs
+     * Important for getting corresponding OK acknowledgements from port 9761 tagged with the same counter value
+     */
+    private int getAndIncrementMessageId() {
+    	try{
+    		lock.lock();
+			int myMessageId = nextMessageId;
+			if(myMessageId >= 999){
+				nextMessageId = 0;
+			}
+			return myMessageId;
+    	}
+    	finally{
+    		lock.unlock();
+    	}
+    }
+	public LightwaveRFCommand convertToLightwaveRfMessage(String roomId, Type command){
     	if(roomId == null){
     		throw new IllegalArgumentException("Item not found");
     	}
     	throw new IllegalArgumentException("Not implemented yet");
     }
     
-    public static LightwaveRFCommand convertFromLightwaveRfMessage(String message){
-    	switch (LightwaverfConvertor.getModeCode(message)) {
+    public LightwaveRFCommand convertFromLightwaveRfMessage(String message){
+    	if(LightwaveRfCommandOk.matches(message)){
+    		return new LightwaveRfCommandOk(message);
+    	}
+    	else if(LightwaveRfVersionMessage.matches(message)){
+    		return new LightwaveRfVersionMessage(message);
+    	}
+    	else if(LightwaveRfDeviceRegistrationCommand.matches(message)){
+    		return new LightwaveRfDeviceRegistrationCommand(message);
+    	}
+    	switch (getModeCode(message)) {
 		case '0':
 		case '1':
 			return new LightwaveRfOnOffCommand(message);
@@ -57,14 +94,14 @@ public class LightwaverfConvertor {
     	
     }
     
-    private static char getModeCode(String message){
+    private char getModeCode(String message){
     	Matcher m = REG_EXP.matcher(message);
     	String modeCode = m.group(0);
     	return modeCode.charAt(0);
     	
     }
-    
 
-    
-    
+	public LightwaveRFCommand getRegistrationCommand() {
+		return new LightwaveRfDeviceRegistrationCommand(getAndIncrementMessageId());
+	}
 }
