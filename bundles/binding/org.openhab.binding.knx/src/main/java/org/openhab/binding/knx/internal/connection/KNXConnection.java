@@ -52,43 +52,73 @@ public class KNXConnection implements ManagedService {
 	private static final Logger sLogger = LoggerFactory.getLogger(KNXConnection.class);
 
 	private static ProcessCommunicator sPC = null;
+<<<<<<< HEAD
 
 	private static ProcessListener sProcessCommunicationListener = null;
 
 	private static KNXNetworkLink sLink;
 
+=======
+	
+	private static ProcessListener sProcessCommunicationListener = null;
+
+	private static KNXNetworkLink sLink;
+	
+>>>>>>> FETCH_HEAD
 	/** signals that the connection is shut down on purpose */
 	public static boolean sShutdown = false;
 
 	/** the ip address to use for connecting to the KNX bus */
 	private static String sIp;
+<<<<<<< HEAD
 
 	/** the ip connection type for connecting to the KNX bus. Could be either TUNNEL or ROUTING */
 	private static int sIpConnectionType;
 
+=======
+	
+	/** the ip connection type for connecting to the KNX bus. Could be either TUNNEL or ROUTING */
+	private static int sIpConnectionType;
+	
+>>>>>>> FETCH_HEAD
 	/** the default multicast ip address (see <a href="http://www.iana.org/assignments/multicast-addresses/multicast-addresses.xml">iana</a> EIBnet/IP)*/
 	private static final String DEFAULT_MULTICAST_IP = "224.0.23.12";
 
 	/** KNXnet/IP port number */
 	private static int sPort;
+<<<<<<< HEAD
 
 	/** local endpoint to specify the multicast interface. no port is used */
 	private static String sLocalIp;
 
+=======
+	
+	/** local endpoint to specify the multicast interface. no port is used */
+	private static String sLocalIp;
+	
+>>>>>>> FETCH_HEAD
 	/** the serial port to use for connecting to the KNX bus */
 	private static String sSerialPort;
 
 	/** time in milliseconds of how long should be paused between two read requests to the bus during initialization. Default value is <code>50</Code> */
 	private static long sReadingPause = 50;
+<<<<<<< HEAD
 
 	/** timeout in milliseconds to wait for a response from the KNX bus. Default value is <code>10000</code> */
 	private static long sResponseTimeout = 10000;
 
+=======
+	
+	/** timeout in milliseconds to wait for a response from the KNX bus. Default value is <code>10000</code> */
+	private static long sResponseTimeout = 10000;
+	
+>>>>>>> FETCH_HEAD
 	/** limits the read retries while initialization from the KNX bus. Default value is <code>3</code> */
 	private static int sReadRetriesLimit = 3;
 
 	/** seconds between connect retries when KNX link has been lost, 0 means never retry. Default value is <code>0</code> */
 	private static int sAutoReconnectPeriod = 0;
+<<<<<<< HEAD
 
 	/** Number of threads executing in parallel for auto refresh feature. Default value is <code>5</code> */
 	private static int sNumberOfThreads = 5;
@@ -102,6 +132,12 @@ public class KNXConnection implements ManagedService {
 	/** listeners for connection/re-connection events */
 	private static Set<KNXConnectionListener> sConnectionListeners = new HashSet<KNXConnectionListener>();
 
+=======
+	
+	/** listeners for connection/re-connection events */
+	private static Set<KNXConnectionListener> sConnectionListeners = new HashSet<KNXConnectionListener>();
+	
+>>>>>>> FETCH_HEAD
 	/**
 	 * Returns the KNXNetworkLink for talking to the KNX bus.
 	 * The link can be null, if it has not (yet) been established successfully.
@@ -118,7 +154,10 @@ public class KNXConnection implements ManagedService {
 	public void setProcessListener(ProcessListener listener) {
 		if (sPC != null) {
 			sPC.removeProcessListener(KNXConnection.sProcessCommunicationListener);
+<<<<<<< HEAD
 			sLogger.debug("Adding Process Listener: {}", listener);
+=======
+>>>>>>> FETCH_HEAD
 			sPC.addProcessListener(listener);
 		}
 		KNXConnection.sProcessCommunicationListener = listener;
@@ -130,12 +169,21 @@ public class KNXConnection implements ManagedService {
 		}
 		KNXConnection.sProcessCommunicationListener = null;
 	}
+<<<<<<< HEAD
 
 	public static void addConnectionListener(KNXConnectionListener listener) {
 		KNXConnection.sConnectionListeners.add(listener);
 	}
 
 	public static void removeConnectionListener(KNXConnectionListener listener) {
+=======
+	
+	public static void addConnectionEstablishedListener(KNXConnectionListener listener) {
+		KNXConnection.sConnectionListeners.add(listener);
+	}
+
+	public static void removeConnectionEstablishedListener(KNXConnectionListener listener) {
+>>>>>>> FETCH_HEAD
 		KNXConnection.sConnectionListeners.remove(listener);
 	}
 
@@ -145,7 +193,11 @@ public class KNXConnection implements ManagedService {
 	 */
 	public static synchronized boolean connect() {
 		boolean successRetVal=false;
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> FETCH_HEAD
 		sShutdown = false;
 		try {
 			if (StringUtils.isNotBlank(sIp)) { 
@@ -159,6 +211,7 @@ public class KNXConnection implements ManagedService {
 
 			NetworkLinkListener linkListener = new NetworkLinkListener() {
 				public void linkClosed(CloseEvent e) {
+<<<<<<< HEAD
 					if(!(CloseEvent.USER_REQUEST == e.getInitiator()) && !sShutdown) {
 						sLogger.warn("KNX link has been lost (reason: {} on object {})", e.getReason(), e.getSource().toString());
 						for(KNXConnectionListener listener : KNXConnection.sConnectionListeners) {
@@ -174,6 +227,33 @@ public class KNXConnection implements ManagedService {
 							sLogger.info("KNX link will be retried in " + sAutoReconnectPeriod + " seconds");
 							final Timer timer = new Timer();
 							TimerTask timerTask = new ConnectTimerTask(timer);
+=======
+					// if the link is lost, we want to reconnect immediately
+					if(!(CloseEvent.USER_REQUEST == e.getInitiator()) && !sShutdown) {
+						sLogger.warn("KNX link has been lost (reason: {} on object {}) - reconnecting...", e.getReason(), e.getSource().toString());
+						connect();
+					}
+					if(!sLink.isOpen() && !sShutdown) {
+						sLogger.error("KNX link has been lost!");
+						if(sAutoReconnectPeriod>0) {
+							sLogger.info("KNX link will be retried in " + sAutoReconnectPeriod + " seconds");
+							final Timer timer = new Timer();
+							TimerTask timerTask = new TimerTask() {
+								@Override
+								public void run() {
+									if(sShutdown) {
+										timer.cancel();
+									}
+									else {
+										sLogger.info("Trying to reconnect to KNX...");
+										connect();
+										if(sLink.isOpen()) {
+											timer.cancel();
+										}
+									}
+								}
+							};
+>>>>>>> FETCH_HEAD
 							timer.schedule(timerTask, sAutoReconnectPeriod * 1000, sAutoReconnectPeriod * 1000);
 						}
 					}
@@ -183,6 +263,7 @@ public class KNXConnection implements ManagedService {
 
 				public void confirmation(FrameEvent e) {}
 			};
+<<<<<<< HEAD
 
 			sLink.addLinkListener(linkListener);
 
@@ -202,6 +283,33 @@ public class KNXConnection implements ManagedService {
 				if (sLink instanceof KNXNetworkLinkIP) {
 					String ipConnectionTypeString = 
 							KNXConnection.sIpConnectionType == KNXNetworkLinkIP.ROUTING ? "ROUTER" : "TUNNEL";
+=======
+			
+			sLink.addLinkListener(linkListener);
+			
+			if(sPC!=null) {
+				sPC.removeProcessListener(sProcessCommunicationListener);
+				sPC.detach();
+			}
+			
+			sPC = new ProcessCommunicatorImpl(sLink);
+			sPC.setResponseTimeout((int) sResponseTimeout/1000);
+			
+			if(sProcessCommunicationListener!=null) {
+				sPC.addProcessListener(sProcessCommunicationListener);
+			}
+
+			for(KNXConnectionListener listener : KNXConnection.sConnectionListeners) {
+				listener.connectionEstablished();
+			}
+
+			successRetVal=true;
+
+			if (sLogger.isInfoEnabled()) {
+				if (sLink instanceof KNXNetworkLinkIP) {
+					String ipConnectionTypeString = 
+						KNXConnection.sIpConnectionType == KNXNetworkLinkIP.ROUTING ? "ROUTER" : "TUNNEL";
+>>>>>>> FETCH_HEAD
 					sLogger.info("Established connection to KNX bus on {} in mode {}.", sIp + ":" + sPort, ipConnectionTypeString);
 				} else {
 					sLogger.info("Established connection to KNX bus through FT1.2 on serial port {}.", sSerialPort);
@@ -279,7 +387,11 @@ public class KNXConnection implements ManagedService {
 			throw knxe;
 		}
 	}
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> FETCH_HEAD
 	/* (non-Javadoc)
 	 * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
 	 */
@@ -347,6 +459,7 @@ public class KNXConnection implements ManagedService {
 				}
 			}
 
+<<<<<<< HEAD
 
 			String maxRefreshQueueEntriesString = (String) config.get("maxRefreshQueueEntries");
 			if (StringUtils.isNotBlank(maxRefreshQueueEntriesString)) {
@@ -389,11 +502,16 @@ public class KNXConnection implements ManagedService {
 
 			if(sPC==null) {
 				sLogger.debug("Not connected yet. Trying to connect.");
+=======
+			
+			if(sPC==null) {
+>>>>>>> FETCH_HEAD
 				if (!connect()) {
 					sLogger.warn("Inital connection to KNX bus failed!");
 					if(sAutoReconnectPeriod>0) {
 						sLogger.info("KNX link will be retried in {} seconds", sAutoReconnectPeriod);
 						final Timer timer = new Timer();
+<<<<<<< HEAD
 						TimerTask timerTask = new ConnectTimerTask(timer);
 						timer.schedule(timerTask, sAutoReconnectPeriod * 1000, sAutoReconnectPeriod * 1000);
 					}
@@ -401,6 +519,30 @@ public class KNXConnection implements ManagedService {
 				else {
 					sLogger.debug("Success: connected.");
 				}
+=======
+						TimerTask timerTask = new TimerTask() {
+							@Override
+							public void run() {
+								if(sShutdown) {
+									timer.cancel();
+								}
+								else {
+									sLogger.info("Trying to reconnect to KNX...");
+									connect();
+									if( sLink!=null && sLink.isOpen()) {
+										sLogger.info("Connected to KNX");
+										timer.cancel();
+									}
+									else {
+										sLogger.info("KNX link will be retried in {} seconds", sAutoReconnectPeriod);
+									}
+								}
+							}
+						};
+						timer.schedule(timerTask, sAutoReconnectPeriod * 1000, sAutoReconnectPeriod * 1000);
+					}
+				}
+>>>>>>> FETCH_HEAD
 			}
 		}
 		else {
@@ -418,6 +560,7 @@ public class KNXConnection implements ManagedService {
 
 	public static int getAutoReconnectPeriod() {
 		return sAutoReconnectPeriod;
+<<<<<<< HEAD
 	}
 
 	/**
@@ -463,5 +606,7 @@ public class KNXConnection implements ManagedService {
 				}
 			}
 		}
+=======
+>>>>>>> FETCH_HEAD
 	}
 }
