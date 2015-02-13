@@ -38,10 +38,10 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
     public LightwaveRfDimCommand(String message) throws LightwaveRfMessageException {
     	try{
 	    	Matcher matcher = REG_EXP.matcher(message);
-			this.messageId = new LightwaveRfMessageId(Integer.valueOf(matcher.group(0)));
-	    	this.roomId = matcher.group(1);
-	    	this.deviceId = matcher.group(2);
-	    	this.lightWaveDimLevel = Integer.valueOf(matcher.group(3));
+			this.messageId = new LightwaveRfMessageId(Integer.valueOf(matcher.group(1)));
+	    	this.roomId = matcher.group(2);
+	    	this.deviceId = matcher.group(3);
+	    	this.lightWaveDimLevel = Integer.valueOf(matcher.group(4));
 	    	this.openhabDimLevel = convertLightwaveDimToOpenhabDim(lightWaveDimLevel);
 		}
 		catch(Exception e){
@@ -63,7 +63,7 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
 	 */
 	public static int convertOpenhabDimToLightwaveDim(int openhabDim) {
 		return BigDecimal.valueOf(openhabDim)
-				.multiply(BigDecimal.valueOf(31))
+				.multiply(BigDecimal.valueOf(32))
 				.divide(HUNDRED, 0,
 						BigDecimal.ROUND_UP).intValue();
 	}
@@ -76,12 +76,12 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
 	 * @return converted value 0-31
 	 */
 	public static int convertLightwaveDimToOpenhabDim(int lightwavedim) {
-		lightwavedim = Math.min(lightwavedim, 31);
+		lightwavedim = Math.min(lightwavedim, 32);
 		
 		return BigDecimal
 				.valueOf(lightwavedim)
 				.multiply(BigDecimal.valueOf(100))
-				.divide(BigDecimal.valueOf(31), 0,
+				.divide(BigDecimal.valueOf(32), 0,
 						BigDecimal.ROUND_UP).intValue();
 	}
 

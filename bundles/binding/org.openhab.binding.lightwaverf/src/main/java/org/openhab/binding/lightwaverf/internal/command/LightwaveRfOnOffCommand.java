@@ -17,7 +17,7 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implemen
 	 *     101,!R2D3F1 (On)
 	 */
 	
-	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!R([0-9])D([0-9])F([0,1])");
+	private static final Pattern REG_EXP = Pattern.compile("(\\d{1,3}),!R(\\d)D(\\d)F([0,1])");
 	private static final String ON_FUNCTION = "1";
 	private static final String OFF_FUNCTION = "0";
 	
@@ -36,10 +36,10 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implemen
     public LightwaveRfOnOffCommand(String message) throws LightwaveRfMessageException {
     	try{
 	    	Matcher matcher = REG_EXP.matcher(message);
-			this.messageId = new LightwaveRfMessageId(Integer.valueOf(matcher.group(0)));
-	    	this.roomId = matcher.group(1);
-	    	this.deviceId = matcher.group(2);
-	    	String function = matcher.group(3);
+			this.messageId = new LightwaveRfMessageId(Integer.valueOf(matcher.group(1)));
+	    	this.roomId = matcher.group(2);
+	    	this.deviceId = matcher.group(3);
+	    	String function = matcher.group(4);
 	    	if(ON_FUNCTION.equals(function)){
 	    		on = true;
 	    	}

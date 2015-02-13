@@ -10,16 +10,15 @@ import org.openhab.core.types.State;
 
 public class LightwaveRfDeviceRegistrationCommand extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
 
-	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),F*p");
+	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!F\\*p");
 	private final LightwaveRfMessageId messageId;
 	private static final String FUNCTION = "*";
 	private static final String PARAMETER = "";
 	
-
 	public LightwaveRfDeviceRegistrationCommand(String message) throws LightwaveRfMessageException {
 		try{
 			Matcher m = REG_EXP.matcher(message);
-			messageId = new LightwaveRfMessageId(Integer.valueOf(m.group(0)));
+			messageId = new LightwaveRfMessageId(Integer.valueOf(m.group(1)));
 		}
 		catch(Exception e){
 			throw new LightwaveRfMessageException("Error converting message: " + message, e);
