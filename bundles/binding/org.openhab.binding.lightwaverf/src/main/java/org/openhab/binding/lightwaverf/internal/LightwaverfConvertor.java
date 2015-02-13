@@ -86,6 +86,9 @@ public class LightwaverfConvertor {
     	else if(LightwaveRfDeviceRegistrationCommand.matches(message)){
     		return new LightwaveRfDeviceRegistrationCommand(message);
     	}
+    	else if(LightwaveRfHeatingInfoCommand.matches(message)){
+    		return new LightwaveRfHeatingInfoCommand(message);
+    	}
     	switch (getModeCode(message)) {
 		case '0':
 		case '1':
