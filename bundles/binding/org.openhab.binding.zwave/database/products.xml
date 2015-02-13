@@ -757,7 +757,7 @@
 				<Type>0001</Type>
 				<Id>0026</Id>
 			</Reference>
-			<Model>dsa38</Model>
+			<Model>DSA38</Model>
 			<Label lang="en">1 button keyfob</Label>
 			<ConfigFile>aeon/dsa38.xml</ConfigFile>
 		</Product>
