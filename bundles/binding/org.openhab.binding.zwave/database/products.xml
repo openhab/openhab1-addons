@@ -1712,6 +1712,10 @@
 		<Product>
 			<Reference>
 				<Type>453</Type>
+				<Id>10E</Id>
+			</Reference>
+			<Reference>
+				<Type>453</Type>
 				<Id>110</Id>
 			</Reference>
 			<Model>MIMOlite</Model>
