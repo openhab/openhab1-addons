@@ -6,6 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
+import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,16 +71,21 @@ public class LightwaveRFReceiver implements Runnable {
     public void run() {
         logger.info("LightwaveRFReceiver Started");
         while(running) {
+        	String message = null;
             try {
-                String message = receiveUDP();
+            	message = receiveUDP();
                 logger.debug("Message received: " + message);
                 LightwaveRFCommand command = messageConvertor.convertFromLightwaveRfMessage(message);
                 notifyListners(command);
-            } 			catch (IOException e) {
+            } 			
+            catch (IOException e) {
                 if(!(running == false && receiveSocket.isClosed())) {
                     // If running isn't false and the socket isn't closed log the error
                     logger.error("Error receiving message", e);
                 }
+            }
+            catch (LightwaveRfMessageException e){
+            	logger.error("Error converting message: " + message);
             }
         }
         latch.countDown();

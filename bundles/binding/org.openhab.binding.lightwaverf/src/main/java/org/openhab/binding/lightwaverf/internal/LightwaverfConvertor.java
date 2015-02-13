@@ -12,6 +12,7 @@ import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimUpDownCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfOnOffCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessage;
+import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
@@ -76,7 +77,7 @@ public class LightwaverfConvertor {
     	throw new IllegalArgumentException("Not implemented yet");
     }
     
-    public LightwaveRFCommand convertFromLightwaveRfMessage(String message){
+    public LightwaveRFCommand convertFromLightwaveRfMessage(String message) throws LightwaveRfMessageException {
     	if(LightwaveRfCommandOk.matches(message)){
     		return new LightwaveRfCommandOk(message);
     	}
@@ -98,17 +99,20 @@ public class LightwaverfConvertor {
 		case '>':
 		case '<':
 			return new LightwaveRfDimUpDownCommand(message);
+		case ' ':
 		default:
-			throw new IllegalArgumentException("Message not recorgnised: " + message);
+			throw new LightwaveRfMessageException("Message not recorgnised: " + message);
 		}
     	
     }
     
     private char getModeCode(String message){
     	Matcher m = REG_EXP.matcher(message);
-    	String modeCode = m.group(0);
-    	return modeCode.charAt(0);
-    	
+    	if(m.matches()){
+    		String modeCode = m.group(0);
+			return modeCode.charAt(0);
+    	}
+    	return ' ';
     }
 
 	public LightwaveRFCommand getRegistrationCommand() {
