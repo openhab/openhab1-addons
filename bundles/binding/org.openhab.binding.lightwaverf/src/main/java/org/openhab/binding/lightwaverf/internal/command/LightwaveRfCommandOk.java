@@ -15,7 +15,8 @@ public class LightwaveRfCommandOk extends AbstractLightwaveRfCommand implements 
 	
 	public LightwaveRfCommandOk(String message) {
 		Matcher m = REG_EXP.matcher(message);
-		this.messageId = new LightwaveRfMessageId(Integer.valueOf(m.group(0)));
+		m.matches();
+		this.messageId = new LightwaveRfMessageId(Integer.valueOf(m.group(1)));
 	}
 
 	public String getLightwaveRfCommandString() {

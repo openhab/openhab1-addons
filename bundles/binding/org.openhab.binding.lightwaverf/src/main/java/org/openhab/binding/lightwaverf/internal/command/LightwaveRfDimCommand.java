@@ -36,10 +36,11 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
 
     public LightwaveRfDimCommand(String message){
     	Matcher matcher = REG_EXP.matcher(message);
-		this.messageId = new LightwaveRfMessageId(Integer.valueOf(matcher.group(0)));
-    	this.roomId = matcher.group(1);
-    	this.deviceId = matcher.group(2);
-    	this.lightWaveDimLevel = Integer.valueOf(matcher.group(3));
+    	matcher.matches();
+		this.messageId = new LightwaveRfMessageId(Integer.valueOf(matcher.group(1)));
+    	this.roomId = matcher.group(2);
+    	this.deviceId = matcher.group(3);
+    	this.lightWaveDimLevel = Integer.valueOf(matcher.group(4));
     	this.openhabDimLevel = convertLightwaveDimToOpenhabDim(lightWaveDimLevel);
     }
     

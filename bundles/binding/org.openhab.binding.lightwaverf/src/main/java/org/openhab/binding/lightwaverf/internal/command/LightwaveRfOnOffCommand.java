@@ -34,10 +34,11 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implemen
     
     public LightwaveRfOnOffCommand(String message) {
     	Matcher matcher = REG_EXP.matcher(message);
-		this.messageId = new LightwaveRfMessageId(Integer.valueOf(matcher.group(0)));
-    	this.roomId = matcher.group(1);
-    	this.deviceId = matcher.group(2);
-    	String function = matcher.group(3);
+    	matcher.matches();
+		this.messageId = new LightwaveRfMessageId(Integer.valueOf(matcher.group(1)));
+    	this.roomId = matcher.group(2);
+    	this.deviceId = matcher.group(3);
+    	String function = matcher.group(4);
     	if(ON_FUNCTION.equals(function)){
     		on = true;
     	}

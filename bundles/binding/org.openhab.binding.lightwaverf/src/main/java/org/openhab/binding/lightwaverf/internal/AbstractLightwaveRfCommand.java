@@ -18,11 +18,11 @@ public abstract class AbstractLightwaveRfCommand implements LightwaveRFCommand {
 	}
 	
 	public String getVersionString(LightwaveRfMessageId messageId, String version){
-		return messageId.getMessageIdString() + "?V=\"" + version + "\"";
+		return messageId.getMessageIdString() + "?V=\"" + version + "\"\n";
 	}
 
 	public String getOkString(LightwaveRfMessageId messageId){
-		return messageId.getMessageIdString() + ",OK";
+		return messageId.getMessageIdString() + ",OK\n";
 	}
 	
 
