@@ -5,21 +5,29 @@ import java.util.regex.Pattern;
 
 import org.openhab.binding.lightwaverf.internal.AbstractLightwaveRfCommand;
 import org.openhab.binding.lightwaverf.internal.LightwaveRfMessageId;
+import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.core.types.State;
 
 
 public class LightwaveRfVersionMessage extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
 
-	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),.*V=(.*)");
+//	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),.*V=(.*)");
+	private static final Pattern REG_EXP = Pattern.compile("(\\d{1,3}).*V=(.*)");
+	
 	
 	private final LightwaveRfMessageId messageId;
 	private final String version;
 	
-	public LightwaveRfVersionMessage(String message) {
-
-		Matcher m = REG_EXP.matcher(message);
-		this.messageId = new LightwaveRfMessageId(Integer.valueOf(m.group(0)));
-		this.version = m.group(1);
+	public LightwaveRfVersionMessage(String message) throws LightwaveRfMessageException {
+		try{
+			Matcher m = REG_EXP.matcher(message);
+			m.matches();
+			this.messageId = new LightwaveRfMessageId(Integer.valueOf(m.group(1)));
+			this.version = m.group(2);
+		}
+		catch(Exception e){
+			throw new LightwaveRfMessageException("Error decoding message: " + message, e);
+		}
 	}
 	
 	public String getLightwaveRfCommandString() {
@@ -43,8 +51,7 @@ public class LightwaveRfVersionMessage extends AbstractLightwaveRfCommand implem
 	}
 
 	public static boolean matches(String message) {
-		Matcher m = REG_EXP.matcher(message);
-		return m.matches();
+		return message.contains("?V=");
 	}
 
 }

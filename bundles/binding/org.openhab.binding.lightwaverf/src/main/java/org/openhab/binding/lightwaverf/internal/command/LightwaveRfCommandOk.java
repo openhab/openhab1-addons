@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.openhab.binding.lightwaverf.internal.AbstractLightwaveRfCommand;
 import org.openhab.binding.lightwaverf.internal.LightwaveRfMessageId;
+import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.core.types.State;
 
 public class LightwaveRfCommandOk extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
@@ -13,10 +14,14 @@ public class LightwaveRfCommandOk extends AbstractLightwaveRfCommand implements 
 	
 	private final LightwaveRfMessageId messageId;
 	
-	public LightwaveRfCommandOk(String message) {
-		Matcher m = REG_EXP.matcher(message);
-		m.matches();
-		this.messageId = new LightwaveRfMessageId(Integer.valueOf(m.group(1)));
+	public LightwaveRfCommandOk(String message) throws LightwaveRfMessageException {
+		try{
+			Matcher m = REG_EXP.matcher(message);
+			this.messageId = new LightwaveRfMessageId(Integer.valueOf(m.group(1)));
+		}
+		catch(Exception e){
+			throw new LightwaveRfMessageException("Error converting message: " + message, e);
+		}
 	}
 
 	public String getLightwaveRfCommandString() {
