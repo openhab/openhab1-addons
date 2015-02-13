@@ -313,8 +313,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					retryCount = 0;
 					logger.error("NODE {}: Node advancer: Retries exceeded at {}", 
 							node.getNodeId(), currentStage.toString());
-					if(currentStage.isStaticComplete()) {
-						// If static stages are complete, then we skip forward to the next
+					if(currentStage.isStageMandatory() == false) {
+						// If the current stage is not mandatory, then we skip forward to the next
 						// stage.
 						logger.debug("NODE {}: Retry timout: Advancing", node.getNodeId());
 						setCurrentStage(currentStage.getNextStage());
@@ -735,7 +735,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
 				for (ZWaveDbConfigurationParameter parameter : configList) {
 					// Some parameters don't return anything, so don't request them!
-					if(parameter.WriteOnly == true) {
+					if(parameter.WriteOnly != null && parameter.WriteOnly == true) {
 						continue;
 					}
 
