@@ -64,6 +64,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 
 	private KNXBusReaderScheduler mKNXBusReaderScheduler = new KNXBusReaderScheduler();
 
+<<<<<<< HEAD
 	private boolean mKNXConnectionEstablished;
 
 	public void activate(ComponentContext componentContext) {
@@ -72,11 +73,26 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 		KNXConnection.addConnectionListener(this);
 		mKNXBusReaderScheduler.start();
 
+=======
+	/** the datapoint initializer, which runs in a separate thread */
+	private DatapointInitializer initializer;
+	
+
+	public void activate(ComponentContext componentContext) {
+		logger.trace("KNXBinding: activating");
+		KNXConnection.addConnectionEstablishedListener(this);
+		initializer = new DatapointInitializer();
+		initializer.start();
+>>>>>>> FETCH_HEAD
 	}
 
 	public void deactivate(ComponentContext componentContext) {
 		logger.trace("KNXBinding: deactivating");
+<<<<<<< HEAD
 		KNXConnection.removeConnectionListener(this);
+=======
+		KNXConnection.removeConnectionEstablishedListener(this);
+>>>>>>> FETCH_HEAD
 		for (KNXBindingProvider provider : providers) {
 			provider.removeBindingChangeListener(this);
 		}
@@ -154,7 +170,11 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 		}
 	}
 
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> FETCH_HEAD
 	/* (non-Javadoc)
 	 * @see tuwien.auto.calimero.process.ProcessListener#groupWrite(tuwien.auto.calimero.process.ProcessEvent)
 	 */
@@ -163,7 +183,11 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 		logger.debug("Received groupWrite Event.");
 		readFromKNX(e);
 	}
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> FETCH_HEAD
 	/* (non-Javadoc)
 	 * @see tuwien.auto.calimero.process.ProcessListener#detached(tuwien.auto.calimero.DetachEvent)
 	 */
@@ -206,6 +230,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 							} else {
 								throw new IllegalClassException("Cannot process datapoint of type " + type.toString());
 							}								
+<<<<<<< HEAD
 
 							logger.trace("Processed event (item='{}', type='{}', destination='{}')", itemName, type.toString(), destination.toString());
 							return;
@@ -221,6 +246,10 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 
 							logger.debug("Ignoring KNX bus data: couldn't transform to an openHAB type (not supported). Destination='{}', datapoint='{}', data='{}'",
 									new Object[] {destination.toString(), datapoint.toString(), sb.toString() });
+=======
+								
+							logger.trace("Processed event (item='{}', type='{}', destination='{}')", new Object[] {itemName, type.toString(), destination.toString()});
+>>>>>>> FETCH_HEAD
 							return;
 						}
 					}
@@ -232,13 +261,17 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 		}
 	}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> FETCH_HEAD
 	/* (non-Javadoc)
 	 * @see org.openhab.core.binding.AbstractBinding#bindingChanged(org.openhab.core.binding.BindingProvider, java.lang.String)
 	 */
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		logger.trace("bindingChanged() for item {} msg received.", itemName);
+<<<<<<< HEAD
 		if  (mKNXConnectionEstablished) {
 			if (provider instanceof KNXBindingProvider) {
 				KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
@@ -249,6 +282,14 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 							logger.warn("Clouldn't add to KNX bus reader scheduler",datapoint);
 						}
 					}
+=======
+		if (provider instanceof KNXBindingProvider) {
+			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
+			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
+				if(datapoint.getName().equals(itemName)) {
+					logger.debug("Adding item {} to initialization list.", itemName);
+					datapointsToInitialize.put(datapoint, 0);
+>>>>>>> FETCH_HEAD
 				}
 			}
 		}
@@ -259,6 +300,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 	 */
 	@Override
 	public void allBindingsChanged(BindingProvider provider) {
+<<<<<<< HEAD
 		logger.trace("allBindingsChanged() msg received.");
 		if  (mKNXConnectionEstablished) {
 			logger.debug("Initializing readable DPs.");
@@ -275,18 +317,31 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 						}
 					}
 				}
+=======
+		logger.trace("allBindingsChanged() msg received. Initializing readable DPs.");
+		if (provider instanceof KNXBindingProvider) {
+			KNXBindingProvider knxProvider = (KNXBindingProvider) provider;
+			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
+				datapointsToInitialize.put(datapoint, 0);
+>>>>>>> FETCH_HEAD
 			}
 		}
 	}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> FETCH_HEAD
 	/* (non-Javadoc)
 	 * @see org.openhab.binding.knx.internal.connection.KNXConnectionListener#connectionEstablished()
 	 */
 	@Override
 	public void connectionEstablished() {
 		logger.trace("connectionEstablished() msg received. Initializing readable DPs.");
+<<<<<<< HEAD
 		mKNXConnectionEstablished=true;
+=======
+>>>>>>> FETCH_HEAD
 		for (KNXBindingProvider knxProvider : providers) {
 			for (Datapoint datapoint : knxProvider.getReadableDatapoints()) {
 				mKNXBusReaderScheduler.readOnce(datapoint);
@@ -421,4 +476,109 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 		}
 		return null;
 	}
+<<<<<<< HEAD
+=======
+
+	/**
+	 * The DatapointInitializer runs as a separate thread. Whenever new KNX bindings are added, it takes care that read
+	 * requests are sent to all new datapoints, which support this request. By this, the initial status can be
+	 * determined and one does not have to stay in an "undefined" state until the first telegram is sent on the NX bus
+	 * for this datapoint. As there might be hundreds of datapoints added at the same time and we do not want to flood
+	 * the KNX bus with read requests, we wait a configurable period of milliseconds between two requests. As a result,
+	 * this might be quite long running and thus is executed in its own thread.
+	 * 
+	 * @author Kai Kreuzer
+	 * @since 0.3.0
+	 * 
+	 */
+	private class DatapointInitializer extends Thread {
+		
+		private boolean interrupted = false;
+		
+		public DatapointInitializer() {
+			super("KNX datapoint initializer");
+		}
+
+		public void setInterrupted(boolean interrupted) {
+			this.interrupted = interrupted;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Thread#run()
+		 */
+		@Override
+		public void run() {
+			// as long as no interrupt is requested, continue running
+			while (!interrupted && !KNXConnection.sShutdown) {
+				if (datapointsToInitialize.size() > 0) {
+					// we first clone the map, so that it stays unmodified
+					HashMap<Datapoint,Integer> clonedMap =
+						new HashMap<Datapoint, Integer>(datapointsToInitialize);
+					initializeDatapoints(clonedMap);
+				}
+				// just wait before looping again
+				try {
+					sleep(1000L);
+				} catch (InterruptedException e) {
+					interrupted = true;
+				}
+			}
+		}
+
+		private void initializeDatapoints(HashMap<Datapoint,Integer> clonedMap) {
+			for (Datapoint datapoint : clonedMap.keySet()) {
+				try {
+					ProcessCommunicator pc = KNXConnection.getCommunicator();
+					if (pc != null) {
+						logger.debug("Sending read request to KNX for item {}", datapoint.getName());
+						pc.read(datapoint);
+						logger.debug("Removing item {} from initialization queue", datapoint.getName());
+						datapointsToInitialize.remove(datapoint);
+					}
+				} catch (KNXException e) {
+					logger.warn("Cannot read value for item '{}' from KNX bus: {}", new Object[] { datapoint.getName(), e.getMessage() });
+					increaseReadLimitCounter(datapoint);
+				} catch (KNXIllegalArgumentException e) {
+					logger.warn("Error sending KNX read request for '{}': {}", new Object[] { datapoint.getName(), e.getMessage() });
+					increaseReadLimitCounter(datapoint);
+				} catch (InterruptedException e) {
+					logger.warn("Cannot read value for item '{}' from KNX bus: {}", new Object[] { datapoint.getName(), e.getMessage() });
+					increaseReadLimitCounter(datapoint);
+				}
+
+				int retriesLimit = KNXConnection.getReadRetriesLimit();
+				// it is possible that a key contained in the clonedMap disappeared
+				// from the original datapointMap!
+				int retriesCounter = datapointsToInitialize.get(datapoint) != null ? 
+									 datapointsToInitialize.get(datapoint) : Integer.MIN_VALUE;
+				if (retriesLimit < retriesCounter) {
+					datapointsToInitialize.remove(datapoint);
+					logger.debug("Giving up initialization of item {} - retries ({}) exeeded.", datapoint.getName(), retriesLimit);
+				}
+
+				long readingPause = KNXConnection.getReadingPause();
+				if (readingPause > 0) {
+					try {
+						sleep(readingPause);
+					} catch (InterruptedException e) {
+						logger.debug("KNX reading pause has been interrupted: {}", e.getMessage());
+					}
+				}
+				if(KNXConnection.sShutdown) {
+					return;
+				}
+			}
+		}
+
+		private synchronized void increaseReadLimitCounter(Datapoint datapoint) {
+			if (datapointsToInitialize.containsKey(datapoint)) {
+				Integer counter = datapointsToInitialize.get(datapoint);
+				datapointsToInitialize.put(datapoint, counter + 1);
+			}
+		}		
+		
+	}
+	
+
+>>>>>>> FETCH_HEAD
 }
