@@ -15,14 +15,14 @@ public class LightwaveRfDimCommandTest {
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
 		assertEquals("010", command.getMessageId().getMessageIdString());
-		assertEquals(PercentType.valueOf("1"), command.getState());
+		assertEquals(PercentType.valueOf("4"), command.getState());
 	}
 
 	@Test
 	public void testDimCommandAsMessageHigh() {
 		String message = "10,!R2D3FdP32";
 		LightwaveRFCommand command = new LightwaveRfDimCommand(message);
-		assertEquals("010,!R2D3FdP1\n", command.getLightwaveRfCommandString());
+		assertEquals("010,!R2D3FdP32\n", command.getLightwaveRfCommandString());
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
 		assertEquals("010", command.getMessageId().getMessageIdString());

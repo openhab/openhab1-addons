@@ -58,7 +58,7 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
 	 */
 	public static int convertOpenhabDimToLightwaveDim(int openhabDim) {
 		return BigDecimal.valueOf(openhabDim)
-				.multiply(BigDecimal.valueOf(31))
+				.multiply(BigDecimal.valueOf(32))
 				.divide(HUNDRED, 0,
 						BigDecimal.ROUND_UP).intValue();
 	}
@@ -71,12 +71,12 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
 	 * @return converted value 0-31
 	 */
 	public static int convertLightwaveDimToOpenhabDim(int lightwavedim) {
-		lightwavedim = Math.min(lightwavedim, 31);
+		lightwavedim = Math.min(lightwavedim, 32);
 		
 		return BigDecimal
 				.valueOf(lightwavedim)
 				.multiply(BigDecimal.valueOf(100))
-				.divide(BigDecimal.valueOf(31), 0,
+				.divide(BigDecimal.valueOf(32), 0,
 						BigDecimal.ROUND_UP).intValue();
 	}
 
