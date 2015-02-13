@@ -10,9 +10,9 @@ package org.openhab.binding.lightwaverf.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openhab.binding.heatmiser.internal.HeatmiserGenericBindingProvider.HeatmiserBindingConfig;
 import org.openhab.binding.lightwaverf.LightwaveRFBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
@@ -55,18 +55,31 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		//}
 	}
 
-	
+
 	public List<String> getBindingItemsForRoomDevice(String roomId, String deviceId) {
 		List<String> bindings = new ArrayList<String>();
 		for (String itemName : bindingConfigs.keySet()) {
 			LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
-			if (itemConfig.getRoomId().equals(roomId) && itemConfig.getDeviceId().equals(deviceId)) {
-				bindings.add(itemName);
+			if(roomId != null && roomId.equals(itemConfig.getRoomId())){
+				if(deviceId == null || deviceId.equals(itemConfig.getDeviceId())){
+					bindings.add(itemName);
+				}
 			}
 		}
 		return bindings;
 	}
+	
+	public String getRoomId(String itemString){
+		LightwaveRFBindingConfig config = (LightwaveRFBindingConfig) bindingConfigs.get(itemString);
+		return config.getRoomId();
+		
+	}
 
+	public String getDeviceId(String itemString){
+		LightwaveRFBindingConfig config = (LightwaveRFBindingConfig) bindingConfigs.get(itemString);
+		return config.getDeviceId();
+		
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -74,30 +87,53 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		LightwaveRFBindingConfig config = new LightwaveRFBindingConfig();
 
-		//parse binding config here ...
-		String[] splitConfig = bindingConfig.split(":");
-		if(splitConfig.length != 2){
-			throw new BindingConfigParseException("Error parsing LightwaveRF Binding Config: " + bindingConfig);
+		Matcher roomMatcher = ROOM_REG_EXP.matcher(bindingConfig);
+		String roomId = roomMatcher.group(0);
+		Matcher deviceMatcher = DEVICE_REG_EXP.matcher(bindingConfig);
+		String deviceId = deviceMatcher.group(0);
+		
+		Matcher typeMatcher = TYPE_REG_EXP.matcher(bindingConfig);
+		LightwaveRfType type = LightwaveRfType.valueOf(typeMatcher.group(0));
+		Matcher pollMatcher = POLL_REG_EXP.matcher(bindingConfig);
+		int poll = -1;
+		if(pollMatcher.groupCount() > 0){
+			poll = Integer.valueOf(pollMatcher.group(0));
 		}
-		config.code = splitConfig[0];
-		config.type = splitConfig[1];
-		logger.info(bindingConfig + "Code["+ config.code + "] Type[" + config.type + "]");
+		
+		LightwaveRFBindingConfig config = new LightwaveRFBindingConfig(roomId, deviceId, type, poll);
+		
+		logger.info(bindingConfig + "Room["+ config.getRoomId() + "] Device[" + config.getDeviceId() + "] Type[" + config.getType()+ "]");
 		addBindingConfig(item, config);
 	}
 
 	class LightwaveRFBindingConfig implements BindingConfig {
 		// put member fields here which holds the parsed values
-		public String roomId;
-		public String deviceId;
-		public LightwaveRfType type;
+		private final String roomId;
+		private final String deviceId;
+		private final LightwaveRfType type;
+		private final int pollTime;
+		
+		public LightwaveRFBindingConfig(String roomId, String deviceId, LightwaveRfType type, int pollTime) {
+			this.roomId = roomId;
+			this.deviceId = deviceId;
+			this.type = type;
+			this.pollTime = pollTime;
+		}
 		
 		public String getDeviceId() {
 			return deviceId;
 		}
 		public String getRoomId() {
 			return roomId;
+		}
+		
+		public LightwaveRfType getType() {
+			return type;
+		}
+		
+		public int getPollTime() {
+			return pollTime;
 		}
 	}
 }

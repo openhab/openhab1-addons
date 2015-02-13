@@ -19,6 +19,7 @@ import org.openhab.core.library.types.OnOffType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.net.UnknownHostException;
+import java.util.List;
 
 /**
  * @author Neil Renaud
@@ -76,31 +77,44 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
                 sender.sendUDP(lightwaverfMessageString);
 	}
 
-
-	private String getItemName(String message){
-		return "itemName";
-	}
-
-	private State getState(String message){
-		return OnOffType.ON;
-	}
-
+//	LightwaveRFGenericBindingProvider bindingProvider;
+	
 	private String getRoomId(String itemName){
-		return "1";
+		for(LightwaveRFBindingProvider provider : providers){
+			String roomId = provider.getRoomId(itemName);
+			if(roomId != null){
+				return roomId;
+			}
+		}
+		return null;
 	}
 
 	private String getDeviceId(String itemName){
-		return "1";
+		for(LightwaveRFBindingProvider provider : providers){
+			String deviceId = provider.getDeviceId(itemName);
+			if(deviceId != null){
+				return deviceId;
+			}
+		}
+		return null;
 	}
 	
-	private String getItemName(String roomId, String deviceId){
-		return "TestItemName";
+	private List<String> getItemName(String roomId, String deviceId){
+		for(LightwaveRFBindingProvider provider : providers){
+			List<String> itemNames = provider.getBindingItemsForRoomDevice(roomId, deviceId);
+			if(itemNames != null && !itemNames.isEmpty()){
+				return itemNames; 
+			}
+			
+		}
+		return null;
 	}
 
 	public void messageRecevied(LightwaveRFCommand command) {
-		String itemName = getItemName(command.getRoomId(), command.getDeviceId());
+		List<String> itemNames = getItemName(command.getRoomId(), command.getDeviceId());
 		State state = command.getState();
-
-		eventPublisher.postUpdate(itemName, state);
+		for(String itemName : itemNames){
+			eventPublisher.postUpdate(itemName, state);
+		}
 	}
 }

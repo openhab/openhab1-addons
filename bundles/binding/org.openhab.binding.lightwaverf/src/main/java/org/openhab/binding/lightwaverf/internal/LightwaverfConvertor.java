@@ -15,7 +15,10 @@ public class LightwaverfConvertor {
 
 
     public static LightwaveRFCommand convertToLightwaveRfMessage(String roomId, String deviceId, Type command){
-        if(command instanceof OnOffType){
+    	if(deviceId == null){
+    		return LightwaverfConvertor.convertToLightwaveRfMessage(roomId, command);
+    	}
+    	else if(command instanceof OnOffType){
             boolean on = (command == OnOffType.ON);
             return new LightwaveRfOnOffCommand(roomId, deviceId, on);
         }
@@ -29,6 +32,13 @@ public class LightwaverfConvertor {
             
         }
         throw new RuntimeException("Unsupported Command: " + command);
+    }
+
+    public static LightwaveRFCommand convertToLightwaveRfMessage(String roomId, Type command){
+    	if(roomId == null){
+    		throw new IllegalArgumentException("Item not found");
+    	}
+    	throw new IllegalArgumentException("Not implemented yet");
     }
     
     public static LightwaveRFCommand convertFromLightwaveRfMessage(String message){
