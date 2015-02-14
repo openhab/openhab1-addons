@@ -189,6 +189,8 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter<Z
 			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
 			return;
 		}
+		
+		this.getController().sendData(serialMessage);
 
 		// update the bus in case of normal dimming. schedule refresh in case of restore to last value dimming.
 		if (!"true".equalsIgnoreCase(restoreLastValue) && command instanceof OnOffType && (OnOffType)command == OnOffType.ON) {

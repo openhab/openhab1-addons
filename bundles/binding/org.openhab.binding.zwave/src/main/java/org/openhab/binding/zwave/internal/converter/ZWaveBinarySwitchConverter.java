@@ -67,7 +67,7 @@ public class ZWaveBinarySwitchConverter extends ZWaveCommandClassConverter<ZWave
 	@Override
 	public SerialMessage executeRefresh(ZWaveNode node, 
 			ZWaveBinarySwitchCommandClass commandClass, int endpointId, Map<String,String> arguments) {
-		logger.debug("NODE {}: Generating poll message for {} for node {} endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
+		logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
 		return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
 	}
 
