@@ -365,6 +365,14 @@ public class SerialMessage {
 	}
 
 	/**
+	 * Sets the priority of this Serial message.
+	 * @param p the new priority
+	 */
+	public void setPriority(SerialMessagePriority p) {
+		priority = p;
+	}
+
+	/**
 	 * Indicates that the transaction for the incoming message is canceled by a command class
 	 */
 	public void setTransactionCanceled() {
@@ -430,10 +438,12 @@ public class SerialMessage {
 	/**
 	 * Serial message priority enumeration. Indicates the message priority.
 	 * @author Jan-Willem Spuij
+	 * @author Chris Jackson
 	 * @since 1.3.0
 	 */
 	public enum SerialMessagePriority
 	{
+		Immediate,																			// Highest
 		High,																				// 0x01
 		Set,																				// 0x02
 		Get,																				// 0x03

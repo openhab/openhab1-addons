@@ -196,7 +196,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	 */
 	public SerialMessage getNoMoreInformationMessage() {
 		logger.debug("NODE {}: Creating new message for application command WAKE_UP_NO_MORE_INFORMATION", this.getNode().getNodeId());
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Low);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Immediate);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
 								(byte) getCommandClass().getKey(), 
@@ -372,7 +372,10 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 		
 		// Send the next message in the wake-up queue
 		if (!this.wakeUpQueue.isEmpty()) {
+			// Get the next message from the queue.
+			// Bump it's priority to highest to try and send it while the node is awake
 			serialMessage = this.wakeUpQueue.poll();
+			serialMessage.setPriority(SerialMessagePriority.Immediate);
 			this.getController().sendData(serialMessage);
 		}
 		else if(isAwake() == true){
@@ -399,7 +402,7 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 	 */
 	public void setAwake(boolean isAwake) {
 		this.isAwake = isAwake;
-		
+
 		if(isAwake) {
 			logger.debug("NODE {}: Is awake with {} messages in the wake-up queue.", this.getNode().getNodeId(), this.wakeUpQueue.size());
 
@@ -409,7 +412,10 @@ public class ZWaveWakeUpCommandClass extends ZWaveCommandClass implements ZWaveC
 			// Handle the wake-up queue for this node.
 			// We send the first message, and when that's ACKed, we sent the next
 			if (!this.wakeUpQueue.isEmpty()) {
+				// Get the next message from the queue.
+				// Bump it's priority to highest to try and send it while the node is awake
 				SerialMessage serialMessage = this.wakeUpQueue.poll();
+				serialMessage.setPriority(SerialMessagePriority.Immediate);
 				this.getController().sendData(serialMessage);
 			}
 			else {
