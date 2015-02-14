@@ -60,25 +60,17 @@ public class ZWaveThermostatSetpointConverter extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	void executeRefresh(ZWaveNode node,
+	SerialMessage executeRefresh(ZWaveNode node,
 			ZWaveThermostatSetpointCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
 		logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-		SerialMessage serialMessage;
 		String setpointType = arguments.get("setpoint_type");
-		
+
 		if (setpointType != null) {
-			serialMessage = node.encapsulate(commandClass.getMessage(SetpointType.getSetpointType(Integer.parseInt(setpointType))), commandClass, endpointId);
+			return node.encapsulate(commandClass.getMessage(SetpointType.getSetpointType(Integer.parseInt(setpointType))), commandClass, endpointId);
 		} else {
-			serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
+			return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
 		}
-		
-		if (serialMessage == null) {
-			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}",  node.getNodeId(), commandClass.getCommandClass().getLabel(),endpointId);
-			return;
-		}
-		
-		this.getController().sendData(serialMessage);
 	}
 
 	/**
