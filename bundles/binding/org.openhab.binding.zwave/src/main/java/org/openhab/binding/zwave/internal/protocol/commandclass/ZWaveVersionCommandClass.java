@@ -149,7 +149,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	 */
 	public SerialMessage getVersionMessage() {
 		logger.debug("NODE {}: Creating new message for command VERSION_GET", this.getNode().getNodeId());
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Config);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
 								(byte) getCommandClass().getKey(), 
@@ -167,7 +167,7 @@ public class ZWaveVersionCommandClass extends ZWaveCommandClass {
 	 */
 	public SerialMessage getCommandClassVersionMessage(CommandClass commandClass) {
 	logger.debug("NODE {}: Creating new message for application command VERSION_COMMAND_CLASS_GET command class {}", this.getNode().getNodeId(), commandClass.getLabel());
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Config);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							3, 
 								(byte) getCommandClass().getKey(), 

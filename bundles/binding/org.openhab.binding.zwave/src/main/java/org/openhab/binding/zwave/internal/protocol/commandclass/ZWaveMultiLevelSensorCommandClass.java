@@ -227,7 +227,7 @@ public class ZWaveMultiLevelSensorCommandClass extends ZWaveCommandClass impleme
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(),
 				SerialMessageClass.SendData, SerialMessageType.Request,
 				SerialMessageClass.ApplicationCommandHandler,
-				SerialMessagePriority.High);
+				SerialMessagePriority.Config);
 		byte[] newPayload = { (byte) this.getNode().getNodeId(), 
 				2,
 				(byte) getCommandClass().getKey(),

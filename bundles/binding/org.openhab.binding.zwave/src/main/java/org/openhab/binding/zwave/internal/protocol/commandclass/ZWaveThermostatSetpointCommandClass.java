@@ -283,7 +283,7 @@ public class ZWaveThermostatSetpointCommandClass extends ZWaveCommandClass
 	public SerialMessage getSupportedMessage() {
 		logger.debug("NODE {}: Creating new message for command THERMOSTAT_SETPOINT_SUPPORTED_GET", this.getNode().getNodeId());
 		
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.High);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Config);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
 								(byte) getCommandClass().getKey(), 

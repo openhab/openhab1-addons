@@ -99,7 +99,7 @@ public class ZWaveManufacturerSpecificCommandClass extends ZWaveCommandClass {
 	 */
 	public SerialMessage getManufacturerSpecificMessage() {
 		logger.debug("NODE {}: Creating new message for command MANUFACTURER_SPECIFIC_GET", this.getNode().getNodeId());
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Config);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
 								(byte) getCommandClass().getKey(), 

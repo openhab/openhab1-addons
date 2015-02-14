@@ -301,7 +301,7 @@ public class ZWaveMeterCommandClass extends ZWaveCommandClass implements ZWaveGe
 		logger.debug("NODE {}: Creating new message for application command METER_SUPPORTED_GET", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
-				SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+				SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Config);
 		byte[] newPayload = { (byte) this.getNode().getNodeId(), 2, (byte) getCommandClass().getKey(),
 				(byte) METER_SUPPORTED_GET };
 		result.setMessagePayload(newPayload);

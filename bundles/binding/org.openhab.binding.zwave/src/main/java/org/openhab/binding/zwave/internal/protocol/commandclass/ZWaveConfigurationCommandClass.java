@@ -137,7 +137,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 		logger.debug("NODE {}: Creating new message for application command CONFIGURATIONCMD_GET", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
-				SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+				SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Config);
 		byte[] newPayload = { (byte) this.getNode().getNodeId(), 3, (byte) getCommandClass().getKey(),
 				(byte) CONFIGURATIONCMD_GET, (byte) (parameter & 0xff) };
 		result.setMessagePayload(newPayload);
@@ -154,7 +154,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 		logger.debug("NODE {}: Creating new message for application command CONFIGURATIONCMD_SET", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
-				SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
+				SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Config);
 		byte[] newPayload = new byte[parameter.getSize() + 6];
 		newPayload[0] = (byte) this.getNode().getNodeId();
 		newPayload[1] = (byte) (4 + parameter.getSize());

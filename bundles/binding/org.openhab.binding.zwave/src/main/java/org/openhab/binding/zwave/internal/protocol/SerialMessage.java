@@ -246,22 +246,27 @@ public class SerialMessage {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		
-		if (!obj.getClass().equals(this.getClass()))
-			return false;
-		
-		SerialMessage other = (SerialMessage)obj;
-		
-		if (other.messageClass != this.messageClass)
-			return false;
-		
-		if (other.messageType != this.messageType)
-			return false;
+		}
 
-		if (other.expectedReply != this.expectedReply)
+		if (!obj.getClass().equals(this.getClass())) {
 			return false;
+		}
+
+		SerialMessage other = (SerialMessage)obj;
+
+		if (other.messageClass != this.messageClass) {
+			return false;
+		}
+
+		if (other.messageType != this.messageType) {
+			return false;
+		}
+
+		if (other.expectedReply != this.expectedReply) {
+			return false;
+		}
 
 		return Arrays.equals(other.messagePayload, this.messagePayload);
 	}
@@ -437,17 +442,37 @@ public class SerialMessage {
 	
 	/**
 	 * Serial message priority enumeration. Indicates the message priority.
+	 * Queue priority concept -:
+	 * Immediate: Messages that must be sent at highest priority.
+	 *            Generally this is reserved for battery devices so we send
+	 *            messages while they are awake. The high priority allows their
+	 *            messages to jump the queue.
+	 * High:      Other high priority messages
+	 * Set:       Messages relating to SET commands.
+	 *            This should only be used for SET type commands that need to
+	 *            be responsive - eg light switches, or things that are expected
+	 *            to occur quickly.
+	 * Get:       Messages relating to GET commands.
+	 *            Most messages relating to reading data use this priority.
+	 * Config:    Messages relating to system configuration.
+	 *            This can be GET or SET type commands, but these are things that
+	 *            don't need to be responsive.
+	 * Poll:      Messages relating to polling.
+	 *            Normally these are GET commands, but the system overrides the
+	 *            priority to the lowest so they don't cause any impact on the
+	 *            system.
 	 * @author Jan-Willem Spuij
 	 * @author Chris Jackson
 	 * @since 1.3.0
 	 */
 	public enum SerialMessagePriority
 	{
-		Immediate,																			// Highest
-		High,																				// 0x01
-		Set,																				// 0x02
-		Get,																				// 0x03
-		Poll 																				// 0x04
+		Immediate,
+		High,
+		Set,
+		Get,
+		Config,
+		Poll
 	}
 	
 	/**
@@ -615,46 +640,52 @@ public class SerialMessage {
 				if (node != null && !node.isListening() && !node.isFrequentlyListening()) {
 					arg0Listening = false;
 					ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
-					
-					if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake())
+
+					if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake()) {
 						arg0Awake = true;
+					}
 				}
 			}
-			
+
 			if ((arg1.getMessageClass() == SerialMessageClass.RequestNodeInfo ||
 					arg1.getMessageClass() == SerialMessageClass.SendData)) {
 				ZWaveNode node = this.controller.getNode(arg1.getMessageNode());
-				
+
 				if (node != null && !node.isListening() && !node.isFrequentlyListening()) {
 					arg1Listening = false;
 					ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
-					
-					if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake())
+
+					if (wakeUpCommandClass != null && wakeUpCommandClass.isAwake()) {
 						arg1Awake = true;
+					}
 				}
 			}
 			
 			// messages for awake nodes get priority over 
 			// messages for sleeping (or listening) nodes.
-			if (arg0Awake && !arg1Awake)
+			if (arg0Awake && !arg1Awake) {
 				return -1;
-			else if (arg1Awake && !arg0Awake)
+			}
+			else if (arg1Awake && !arg0Awake) {
 				return 1;
+			}
 			
 			// messages for listening nodes get priority over
 			// non listening nodes.
-			if (arg0Listening && !arg1Listening)
+			if (arg0Listening && !arg1Listening) {
 				return -1;
-			else if (arg1Listening && !arg0Listening)
+			}
+			else if (arg1Listening && !arg0Listening) {
 				return 1;
-			
+			}
+
 			int res = arg0.priority.compareTo(arg1.priority);
-			
-			if (res == 0 && arg0 != arg1)
+
+			if (res == 0 && arg0 != arg1) {
 			   res = (arg0.sequenceNumber < arg1.sequenceNumber ? -1 : 1);
-			
+			}
+
 			return res;
 		}
-
 	}
 }

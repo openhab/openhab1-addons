@@ -493,7 +493,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	 */
 	public SerialMessage getMultiChannelEndpointGetMessage() {
 		logger.debug("NODE {}: Creating new message for command MULTI_CHANNEL_ENDPOINT_GET", this.getNode().getNodeId());
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Config);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							2, 
 								(byte) getCommandClass().getKey(), 
@@ -510,7 +510,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 	 */
 	public SerialMessage getMultiChannelCapabilityGetMessage(ZWaveEndpoint endpoint) {
 		logger.debug("NODE {}: Creating new message for command MULTI_CHANNEL_CAPABILITY_GET endpoint {}", this.getNode().getNodeId(), endpoint.getEndpointId());
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Config);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							3, 
 								(byte) getCommandClass().getKey(), 

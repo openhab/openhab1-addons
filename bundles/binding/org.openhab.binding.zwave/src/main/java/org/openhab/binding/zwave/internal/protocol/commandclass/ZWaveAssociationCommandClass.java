@@ -251,7 +251,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 		logger.debug("NODE {}: Creating new message for application command ASSOCIATIONCMD_SET", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
-				SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
+				SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Config);
 
 		byte[] newPayload = { (byte) this.getNode().getNodeId(), 4, (byte) getCommandClass().getKey(),
 				(byte) ASSOCIATIONCMD_SET, (byte) (group & 0xff), (byte) (node & 0xff) };
@@ -273,7 +273,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 		logger.debug("NODE {}: Creating new message for application command ASSOCIATIONCMD_REMOVE", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
-				SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
+				SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Config);
 
 		byte[] newPayload = { (byte) this.getNode().getNodeId(), 4, (byte) getCommandClass().getKey(),
 				(byte) ASSOCIATIONCMD_REMOVE, (byte) (group & 0xff), (byte) (node & 0xff) };
@@ -293,7 +293,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 		logger.debug("NODE {}: Creating new message for application command ASSOCIATIONCMD_GET group {}", this.getNode()
 				.getNodeId(), group);
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
-				SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+				SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Config);
 		byte[] newPayload = { (byte) this.getNode().getNodeId(), 3, (byte) getCommandClass().getKey(),
 				(byte) ASSOCIATIONCMD_GET, (byte) (group & 0xff) };
 		result.setMessagePayload(newPayload);
@@ -309,7 +309,7 @@ public class ZWaveAssociationCommandClass extends ZWaveCommandClass
 		logger.debug("NODE {}: Creating new message for application command ASSOCIATIONCMD_GROUPINGSGET", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
-				SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
+				SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Config);
 		byte[] newPayload = { (byte) this.getNode().getNodeId(), 2, (byte) getCommandClass().getKey(),
 				(byte) ASSOCIATIONCMD_GROUPINGSGET };
 		result.setMessagePayload(newPayload);
