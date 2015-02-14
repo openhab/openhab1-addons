@@ -10,6 +10,7 @@ import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDeviceRegistrationCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimUpDownCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatingInfoCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfOnOffCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessage;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;

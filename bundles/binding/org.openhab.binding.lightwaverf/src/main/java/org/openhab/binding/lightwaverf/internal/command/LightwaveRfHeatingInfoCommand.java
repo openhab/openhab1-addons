@@ -1,6 +1,6 @@
-package org.openhab.binding.lightwaverf.internal;
+package org.openhab.binding.lightwaverf.internal.command;
 
-import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
+import org.openhab.binding.lightwaverf.internal.LightwaveRfMessageId;
 import org.openhab.core.types.State;
 
 public class LightwaveRfHeatingInfoCommand implements LightwaveRFCommand {
