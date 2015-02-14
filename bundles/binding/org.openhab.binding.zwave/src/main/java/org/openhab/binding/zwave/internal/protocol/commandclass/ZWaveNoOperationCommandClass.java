@@ -70,7 +70,7 @@ public class ZWaveNoOperationCommandClass extends ZWaveCommandClass {
 	 */
 	public SerialMessage getNoOperationMessage() {
 		logger.debug("NODE {}: Creating new message for command No Operation", this.getNode().getNodeId());
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Low);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Poll);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							1, 
 								(byte) getCommandClass().getKey() }; 

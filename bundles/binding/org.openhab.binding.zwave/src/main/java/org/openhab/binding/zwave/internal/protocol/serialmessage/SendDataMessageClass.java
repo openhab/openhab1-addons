@@ -143,9 +143,8 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 			return false;
 		}
 
-		// High priority messages get requeued, low priority get dropped
-		if (!node.isListening() && !node.isFrequentlyListening()
-				&& originalMessage.getPriority() != SerialMessagePriority.Low) {
+		// If this device isn't listening, queue the message in the wakeup class
+		if (!node.isListening() && !node.isFrequentlyListening()) {
 			ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass) node
 					.getCommandClass(CommandClass.WAKE_UP);
 
@@ -155,9 +154,6 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 				wakeUpCommandClass.processOutgoingWakeupMessage(originalMessage);
 				return false;
 			}
-		} else if (!node.isListening() && !node.isFrequentlyListening()
-				&& originalMessage.getPriority() == SerialMessagePriority.Low) {
-			return false;
 		}
 
 		logger.error("NODE {}: Got an error while sending data. Resending message.", node.getNodeId());

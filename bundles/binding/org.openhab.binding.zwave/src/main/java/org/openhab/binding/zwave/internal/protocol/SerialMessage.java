@@ -447,7 +447,7 @@ public class SerialMessage {
 		High,																				// 0x01
 		Set,																				// 0x02
 		Get,																				// 0x03
-		Low 																				// 0x04
+		Poll 																				// 0x04
 	}
 	
 	/**

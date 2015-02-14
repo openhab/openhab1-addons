@@ -248,8 +248,8 @@ public class ZWaveConverterHandler {
 			return;
 		}
 
-		// This is a poll - don't treat it as a high priority!
-		serialMessage.setPriority(SerialMessagePriority.Low);
+		// This is a poll - treat it as a low priority!
+		serialMessage.setPriority(SerialMessagePriority.Poll);
 
 		// Queue the message
 		this.controller.sendData(serialMessage);
