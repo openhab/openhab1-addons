@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.binding.lightwaverf.internal.AbstractLightwaveRfCommand;
+import org.openhab.binding.lightwaverf.internal.LightwaveRfGeneralMessageId;
 import org.openhab.binding.lightwaverf.internal.LightwaveRfMessageId;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.core.library.types.PercentType;
@@ -32,14 +33,14 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
         this.deviceId = deviceId;
         this.openhabDimLevel = dimmingLevel;
         this.lightWaveDimLevel = convertOpenhabDimToLightwaveDim(dimmingLevel);
-        this.messageId = new LightwaveRfMessageId(messageId);
+        this.messageId = new LightwaveRfGeneralMessageId(messageId);
     }
 
     public LightwaveRfDimCommand(String message) throws LightwaveRfMessageException {
     	try{
 	    	Matcher matcher = REG_EXP.matcher(message);
 	    	matcher.matches();
-			this.messageId = new LightwaveRfMessageId(Integer.valueOf(matcher.group(1)));
+			this.messageId = new LightwaveRfGeneralMessageId(Integer.valueOf(matcher.group(1)));
 	    	this.roomId = matcher.group(2);
 	    	this.deviceId = matcher.group(3);
 	    	this.lightWaveDimLevel = Integer.valueOf(matcher.group(4));
