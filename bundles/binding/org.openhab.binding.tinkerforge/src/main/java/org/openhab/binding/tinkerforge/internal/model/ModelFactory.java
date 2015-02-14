@@ -80,6 +80,15 @@ public interface ModelFactory extends EFactory
   MBrickd createMBrickd();
 
   /**
+   * Returns a new object of class '<em>MBricklet Linear Poti</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Linear Poti</em>'.
+   * @generated
+   */
+  MBrickletLinearPoti createMBrickletLinearPoti();
+
+  /**
    * Returns a new object of class '<em>MBricklet Joystick</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

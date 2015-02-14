@@ -93,6 +93,7 @@ import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
+import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
@@ -161,6 +162,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
     {
       case ModelPackage.ECOSYSTEM: return createEcosystem();
       case ModelPackage.MBRICKD: return createMBrickd();
+      case ModelPackage.MBRICKLET_LINEAR_POTI: return createMBrickletLinearPoti();
       case ModelPackage.MBRICKLET_JOYSTICK: return createMBrickletJoystick();
       case ModelPackage.JOYSTICK_XPOSITION: return createJoystickXPosition();
       case ModelPackage.JOYSTICK_YPOSITION: return createJoystickYPosition();
@@ -360,6 +362,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletLEDStripFromString(eDataType, initialValue);
       case ModelPackage.BRICKLET_JOYSTICK:
         return createBrickletJoystickFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_LINEAR_POTI:
+        return createTinkerBrickletLinearPotiFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -501,6 +505,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletLEDStripToString(eDataType, instanceValue);
       case ModelPackage.BRICKLET_JOYSTICK:
         return convertBrickletJoystickToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_LINEAR_POTI:
+        return convertTinkerBrickletLinearPotiToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -576,6 +582,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickdImpl mBrickd = new MBrickdImpl();
     return mBrickd;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletLinearPoti createMBrickletLinearPoti()
+  {
+    MBrickletLinearPotiImpl mBrickletLinearPoti = new MBrickletLinearPotiImpl();
+    return mBrickletLinearPoti;
   }
 
   /**
@@ -2413,6 +2430,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertBrickletJoystickToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletLinearPoti createTinkerBrickletLinearPotiFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletLinearPoti)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletLinearPotiToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

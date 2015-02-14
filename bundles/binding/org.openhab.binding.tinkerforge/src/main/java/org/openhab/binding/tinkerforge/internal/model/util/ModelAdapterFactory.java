@@ -267,6 +267,11 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createSetPointActorAdapter();
       }
       @Override
+      public Adapter caseMBrickletLinearPoti(MBrickletLinearPoti object)
+      {
+        return createMBrickletLinearPotiAdapter();
+      }
+      @Override
       public Adapter caseMBrickletJoystick(MBrickletJoystick object)
       {
         return createMBrickletJoystickAdapter();
@@ -1089,6 +1094,21 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createSetPointActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti <em>MBricklet Linear Poti</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti
+   * @generated
+   */
+  public Adapter createMBrickletLinearPotiAdapter()
   {
     return null;
   }

@@ -335,6 +335,18 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_LINEAR_POTI:
+      {
+        MBrickletLinearPoti mBrickletLinearPoti = (MBrickletLinearPoti)theEObject;
+        T result = caseMBrickletLinearPoti(mBrickletLinearPoti);
+        if (result == null) result = caseMDevice(mBrickletLinearPoti);
+        if (result == null) result = caseCallbackListener(mBrickletLinearPoti);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletLinearPoti);
+        if (result == null) result = caseMSensor(mBrickletLinearPoti);
+        if (result == null) result = caseMBaseDevice(mBrickletLinearPoti);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_JOYSTICK:
       {
         MBrickletJoystick mBrickletJoystick = (MBrickletJoystick)theEObject;
@@ -1638,6 +1650,22 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public <C extends DimmableConfiguration> T caseSetPointActor(SetPointActor<C> object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Linear Poti</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Linear Poti</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletLinearPoti(MBrickletLinearPoti object)
   {
     return null;
   }

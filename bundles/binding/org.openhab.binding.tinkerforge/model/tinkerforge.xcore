@@ -47,6 +47,7 @@ import com.tinkerforge.BrickletHallEffect
 import com.tinkerforge.BrickletSegmentDisplay4x7
 import com.tinkerforge.BrickletLEDStrip
 import com.tinkerforge.BrickletJoystick
+import com.tinkerforge.BrickletLinearPoti
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -95,6 +96,7 @@ type TinkerBrickletHallEffect wraps BrickletHallEffect
 type TinkerBrickletSegmentDisplay4x7 wraps BrickletSegmentDisplay4x7
 type TinkerBrickletLEDStrip wraps BrickletLEDStrip
 type BrickletJoystick wraps BrickletJoystick
+type TinkerBrickletLinearPoti wraps BrickletLinearPoti
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -251,6 +253,11 @@ interface SetPointActor<C extends DimmableConfiguration> extends DimmableActor<C
     PercentValue percentValue
     op void setValue(BigDecimal newValue, DeviceOptions opts)
     op void setValue(PercentType newValue, DeviceOptions opts)
+}
+
+class MBrickletLinearPoti extends MDevice<TinkerBrickletLinearPoti>, CallbackListener,
+	MTFConfigConsumer<TFBaseConfiguration>, MSensor<MDecimalValue> {
+		readonly String deviceType = "bricklet_linear_poti"
 }
 
 class MBrickletJoystick extends MDevice<BrickletJoystick>, MSubDeviceHolder<JoystickDevice>,
