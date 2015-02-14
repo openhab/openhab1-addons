@@ -1,4 +1,4 @@
-package org.openhab.binding.lightwaverf.internal;
+package org.openhab.binding.lightwaverf.internal.message;
 
 import java.text.DecimalFormat;
 

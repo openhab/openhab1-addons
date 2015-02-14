@@ -7,6 +7,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
+import org.openhab.binding.lightwaverf.internal.message.LightwaveRFMessageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

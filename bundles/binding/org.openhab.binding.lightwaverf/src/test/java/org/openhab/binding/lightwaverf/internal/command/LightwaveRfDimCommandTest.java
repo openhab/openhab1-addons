@@ -3,6 +3,7 @@ package org.openhab.binding.lightwaverf.internal.command;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.core.library.types.PercentType;
 
 public class LightwaveRfDimCommandTest {
@@ -15,7 +16,7 @@ public class LightwaveRfDimCommandTest {
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
 		assertEquals("010", command.getMessageId().getMessageIdString());
-		assertEquals(PercentType.valueOf("4"), command.getState());
+		assertEquals(PercentType.valueOf("4"), command.getState(LightwaveRfType.DIMMER));
 	}
 
 	@Test
@@ -26,7 +27,7 @@ public class LightwaveRfDimCommandTest {
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
 		assertEquals("010", command.getMessageId().getMessageIdString());
-		assertEquals(PercentType.valueOf("100"), command.getState());
+		assertEquals(PercentType.valueOf("100"), command.getState(LightwaveRfType.DIMMER));
 	}
 
 	@Test
@@ -36,7 +37,7 @@ public class LightwaveRfDimCommandTest {
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
 		assertEquals("010", command.getMessageId().getMessageIdString());
-		assertEquals(PercentType.valueOf("1"), command.getState());
+		assertEquals(PercentType.valueOf("1"), command.getState(LightwaveRfType.DIMMER));
 	}
 	
 	@Test
@@ -46,7 +47,7 @@ public class LightwaveRfDimCommandTest {
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
 		assertEquals("010", command.getMessageId().getMessageIdString());
-		assertEquals(PercentType.valueOf("100"), command.getState());
+		assertEquals(PercentType.valueOf("100"), command.getState(LightwaveRfType.DIMMER));
 	}
 
 		

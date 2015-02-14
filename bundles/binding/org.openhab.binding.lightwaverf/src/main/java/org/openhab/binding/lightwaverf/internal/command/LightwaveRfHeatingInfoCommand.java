@@ -4,8 +4,10 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openhab.binding.lightwaverf.internal.LightwaveRfHeatingMessageId;
-import org.openhab.binding.lightwaverf.internal.LightwaveRfMessageId;
+import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
+import org.openhab.binding.lightwaverf.internal.message.LightwaveRfHeatingMessageId;
+import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
 
 public class LightwaveRfHeatingInfoCommand implements LightwaveRFCommand {
@@ -32,51 +34,63 @@ public class LightwaveRfHeatingInfoCommand implements LightwaveRFCommand {
 	 * }
 	 */  
 
-	private static final Pattern TIME_ID_REG_EXP = Pattern.compile(".*\"time\":([^,]*).*");
-	private static final Pattern SERIAL_ID_REG_EXP = Pattern.compile(".*\"serial\":\"([^\"]*)\".*");
-	private static final Pattern MESSAGE_ID_REG_EXP = Pattern.compile(".*\"trans\":([^,]*).*");
-	private static final Pattern BATTERY_REG_EXP = Pattern.compile(".*\"batt\":([^,]*).*");
-	private static final Pattern SIGNAL_REG_EXP = Pattern.compile(".*\"signal\":([^,]*).*");
-	private static final Pattern CURRENT_TEMP_REG_EXP = Pattern.compile(".*\"cTemp\":([^,]*).*");
-	private static final Pattern TARGET_TEMP_REG_EXP = Pattern.compile(".*\"cTarg\":([^,]*).*");
+	private static final Pattern MESSAGE_ID_REG_EXP = Pattern.compile(".*\"trans\":([^,}]*).*");
+	private static final Pattern MAC_ID_REG_EXP = Pattern.compile(".*\"mac\":\"([^\"}]*)\".*");
+	private static final Pattern TIME_ID_REG_EXP = Pattern.compile(".*\"time\":([^,}]*).*");
+	private static final Pattern PROD_REG_EXP = Pattern.compile(".*\"prod\":\"([^\"}]*)\".*");
+	private static final Pattern SERIAL_ID_REG_EXP = Pattern.compile(".*\"serial\":\"([^\"}]*)\".*");
+	private static final Pattern SIGNAL_REG_EXP = Pattern.compile(".*\"signal\":([^,}]*).*");
+	private static final Pattern TYPE_REG_EXP = Pattern.compile(".*\"type\":\"([^\"}]*)\".*");
+	private static final Pattern BATTERY_REG_EXP = Pattern.compile(".*\"batt\":([^,}]*).*");
+	private static final Pattern VERSION_REG_EXP = Pattern.compile(".*\"ver\":([^,}]*).*");
+	private static final Pattern STATE_REG_EXP = Pattern.compile(".*\"state\":\"([^\"}]*)\".*");
+	private static final Pattern CURRENT_TEMP_REG_EXP = Pattern.compile(".*\"cTemp\":([^,}]*).*");
+	private static final Pattern TARGET_TEMP_REG_EXP = Pattern.compile(".*\"cTarg\":([^,}]*).*");
+	private static final Pattern OUTPUT_TEMP_REG_EXP = Pattern.compile(".*\"output\":([^,}]*).*");
+	private static final Pattern NEXT_TARGET_TEMP_REG_EXP = Pattern.compile(".*\"nTarg\":([^,}]*).*");
+	private static final Pattern NEXT_SLOT_REG_EXP = Pattern.compile(".*\"nSlot\":\"([^\"}]*)\".*");
+	private static final Pattern PROF_REG_EXP = Pattern.compile(".*\"prof\":([^,}]*).*");
 	
 	private final LightwaveRfMessageId messageId;
-	private final String serial;
+	private final String mac;
 	private final Date time;
+	private final String prod;
+	private final String serial;
 	private final double signal;
+	private final String type;
+	private final double batteryLevel;
+	private final String version;
+	private final String state;
 	private final double currentTemperature;
 	private final double currentTargetTemperature;
-	private final double batteryLevel;
-	
+	private final double output;
+	private final double nextTargetTeperature;
+	private final String nextSlot;
+	private final double prof;
 	
 	public LightwaveRfHeatingInfoCommand(String message) {
-		Matcher timeMatcher = TIME_ID_REG_EXP.matcher(message);
-		timeMatcher.matches();
-		time = new Date(Long.valueOf(timeMatcher.group(1)));
-
-		Matcher serialMatcher = SERIAL_ID_REG_EXP.matcher(message);
-		serialMatcher.matches();
-		serial = serialMatcher.group(1);
-
-		Matcher messageIdMatcher = MESSAGE_ID_REG_EXP.matcher(message);
-		messageIdMatcher.matches();
-		messageId = new LightwaveRfHeatingMessageId(Integer.valueOf(messageIdMatcher.group(1)));
-		
-		Matcher batteryMatcher = BATTERY_REG_EXP.matcher(message);
-		batteryMatcher.matches();
-		batteryLevel = Double.valueOf(batteryMatcher.group(1));
-
-		Matcher signalMatcher = SIGNAL_REG_EXP.matcher(message);
-		signalMatcher.matches();
-		signal = Double.valueOf(signalMatcher.group(1));
-
-		Matcher currentTempMatcher = CURRENT_TEMP_REG_EXP.matcher(message);
-		currentTempMatcher.matches();
-		currentTemperature = Double.valueOf(currentTempMatcher.group(1));
-
-		Matcher targetTempMatcher = TARGET_TEMP_REG_EXP.matcher(message);
-		targetTempMatcher.matches();
-		currentTargetTemperature = Double.valueOf(targetTempMatcher.group(1));
+		messageId = new LightwaveRfHeatingMessageId(Integer.valueOf(getStringFromText(MESSAGE_ID_REG_EXP, message)));
+		mac = getStringFromText(MAC_ID_REG_EXP, message);
+		time = new Date(Long.valueOf(getStringFromText(TIME_ID_REG_EXP, message)));
+		prod = getStringFromText(PROD_REG_EXP, message);
+		serial = getStringFromText(SERIAL_ID_REG_EXP, message);
+		signal = Double.valueOf(getStringFromText(SIGNAL_REG_EXP, message));
+		type = getStringFromText(TYPE_REG_EXP, message);
+		batteryLevel = Double.valueOf(getStringFromText(BATTERY_REG_EXP, message));
+		version = getStringFromText(VERSION_REG_EXP, message);
+		state = getStringFromText(STATE_REG_EXP, message);
+		currentTemperature = Double.valueOf(getStringFromText(CURRENT_TEMP_REG_EXP, message));
+		currentTargetTemperature = Double.valueOf(getStringFromText(TARGET_TEMP_REG_EXP, message));
+		output = Double.valueOf(getStringFromText(OUTPUT_TEMP_REG_EXP, message));
+		nextTargetTeperature = Double.valueOf(getStringFromText(NEXT_TARGET_TEMP_REG_EXP, message));
+		nextSlot = getStringFromText(NEXT_SLOT_REG_EXP, message);
+		prof = Double.valueOf(getStringFromText(PROF_REG_EXP, message));
+	}
+	
+	private String getStringFromText(Pattern regExp, String message){
+		Matcher matcher = regExp.matcher(message);
+		matcher.matches();
+		return matcher.group(1);
 	}
 
 	public String getLightwaveRfCommandString() {
@@ -94,9 +108,24 @@ public class LightwaveRfHeatingInfoCommand implements LightwaveRFCommand {
 		return null;
 	}
 
-	public State getState() {
-		// TODO Auto-generated method stub
-		return null;
+	@Override
+	public State getState(LightwaveRfType type) {
+		switch (type) {
+		case HEATING_BATTERY:
+			return new DecimalType(getBatteryLevel());
+		case HEATING_SIGNAL:
+			return new DecimalType(getSignal());
+		case HEATING_CURRENT_TEMP:
+			return new DecimalType(getCurrentTargetTemperature());
+		case HEATING_TARGET_TEMP:
+			return new DecimalType(getCurrentTargetTemperature());
+		default:
+			return null;
+		}
+	}
+	
+	public String getState() {
+		return state;
 	}
 
 	public LightwaveRfMessageId getMessageId() {
@@ -132,5 +161,37 @@ public class LightwaveRfHeatingInfoCommand implements LightwaveRFCommand {
 
 	public String getSerial() {
 		return serial;
+	}
+	
+	public String getMac() {
+		return mac;
+	}
+	
+	public String getNextSlot() {
+		return nextSlot;
+	}
+	
+	public double getNextTargetTeperature() {
+		return nextTargetTeperature;
+	}
+	
+	public double getOutput() {
+		return output;
+	}
+	
+	public String getProd() {
+		return prod;
+	}
+	
+	public double getProf() {
+		return prof;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	
+	public String getVersion() {
+		return version;
 	}
 }

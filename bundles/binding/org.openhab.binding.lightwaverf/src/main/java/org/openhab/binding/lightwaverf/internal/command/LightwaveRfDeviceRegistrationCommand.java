@@ -4,9 +4,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.binding.lightwaverf.internal.AbstractLightwaveRfCommand;
-import org.openhab.binding.lightwaverf.internal.LightwaveRfGeneralMessageId;
-import org.openhab.binding.lightwaverf.internal.LightwaveRfMessageId;
+import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
+import org.openhab.binding.lightwaverf.internal.message.LightwaveRfGeneralMessageId;
+import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
 import org.openhab.core.types.State;
 
 public class LightwaveRfDeviceRegistrationCommand extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
@@ -50,10 +51,11 @@ public class LightwaveRfDeviceRegistrationCommand extends AbstractLightwaveRfCom
 		return null;
 	}
 
-	public State getState() {
+	@Override
+	public State getState(LightwaveRfType type) {
 		return null;
 	}
-
+	
 	public static boolean matches(String message) {
 		Matcher m = REG_EXP.matcher(message);
 		return m.matches();

@@ -4,10 +4,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.binding.lightwaverf.internal.AbstractLightwaveRfCommand;
-import org.openhab.binding.lightwaverf.internal.LightwaveRfGeneralMessageId;
-import org.openhab.binding.lightwaverf.internal.LightwaveRfMessageId;
+import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
+import org.openhab.binding.lightwaverf.internal.message.LightwaveRfGeneralMessageId;
+import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 
 public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
@@ -70,8 +72,16 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implemen
 		return deviceId;
 	}
 
-	public State getState() {
-		return on ? OnOffType.ON : OnOffType.OFF;
+	@Override
+	public State getState(LightwaveRfType type) {
+		switch (type) {
+		case DIMMER:
+			return on ? PercentType.HUNDRED : OnOffType.OFF;
+		case SWITCH:
+			return on ? OnOffType.ON : OnOffType.OFF;
+		default:
+			return null;
+		}
 	}
 	
 	public LightwaveRfMessageId getMessageId() {

@@ -10,6 +10,7 @@ package org.openhab.binding.lightwaverf;
 
 import java.util.List;
 
+import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.core.binding.BindingProvider;
 
 /**
@@ -40,5 +41,12 @@ public interface LightwaveRFBindingProvider extends BindingProvider {
 	 * @return
 	 */
 	List<String> getBindingItemsForRoomDevice(String roomId, String deviceId);
+
+	/**
+	 * Returns the type for an item by itemName
+	 * @param itemName
+	 * @return
+	 */
+	LightwaveRfType getTypeForItemName(String itemName);
 
 }

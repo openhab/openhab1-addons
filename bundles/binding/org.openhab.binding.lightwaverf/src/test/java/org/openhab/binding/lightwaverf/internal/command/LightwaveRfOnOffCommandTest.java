@@ -3,7 +3,9 @@ package org.openhab.binding.lightwaverf.internal.command;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 
 public class LightwaveRfOnOffCommandTest {
 
@@ -15,7 +17,8 @@ public class LightwaveRfOnOffCommandTest {
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
 		assertEquals("010", command.getMessageId().getMessageIdString());
-		assertEquals(OnOffType.ON, command.getState());
+		assertEquals(OnOffType.ON, command.getState(LightwaveRfType.SWITCH));
+		assertEquals(PercentType.HUNDRED, command.getState(LightwaveRfType.DIMMER));
 	}
 
 	@Test
@@ -26,7 +29,8 @@ public class LightwaveRfOnOffCommandTest {
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
 		assertEquals("010", command.getMessageId().getMessageIdString());
-		assertEquals(OnOffType.OFF, command.getState());
+		assertEquals(OnOffType.OFF, command.getState(LightwaveRfType.SWITCH));
+		assertEquals(OnOffType.OFF, command.getState(LightwaveRfType.DIMMER));
 	}
 
 	@Test
@@ -36,7 +40,9 @@ public class LightwaveRfOnOffCommandTest {
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
 		assertEquals("010", command.getMessageId().getMessageIdString());
-		assertEquals(OnOffType.ON, command.getState());
+		assertEquals(OnOffType.ON, command.getState(LightwaveRfType.SWITCH));	
+		assertEquals(PercentType.HUNDRED, command.getState(LightwaveRfType.DIMMER));
+
 	}
 	
 	@Test
@@ -46,7 +52,8 @@ public class LightwaveRfOnOffCommandTest {
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
 		assertEquals("010", command.getMessageId().getMessageIdString());
-		assertEquals(OnOffType.OFF, command.getState());
+		assertEquals(OnOffType.OFF, command.getState(LightwaveRfType.SWITCH));
+		assertEquals(OnOffType.OFF, command.getState(LightwaveRfType.DIMMER));
 	}
 
 }

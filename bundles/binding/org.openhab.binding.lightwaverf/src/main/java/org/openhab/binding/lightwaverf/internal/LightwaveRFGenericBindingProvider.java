@@ -69,6 +69,12 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		return bindings;
 	}
 	
+	@Override
+	public LightwaveRfType getTypeForItemName(String itemName){
+		LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
+		return itemConfig.getType();
+	}
+	
 	public String getRoomId(String itemString){
 		LightwaveRFBindingConfig config = (LightwaveRFBindingConfig) bindingConfigs.get(itemString);
 		return config.getRoomId();
@@ -86,25 +92,33 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
-		super.processBindingConfiguration(context, item, bindingConfig);
-
-		Matcher roomMatcher = ROOM_REG_EXP.matcher(bindingConfig);
-		String roomId = roomMatcher.group(0);
-		Matcher deviceMatcher = DEVICE_REG_EXP.matcher(bindingConfig);
-		String deviceId = deviceMatcher.group(0);
-		
-		Matcher typeMatcher = TYPE_REG_EXP.matcher(bindingConfig);
-		LightwaveRfType type = LightwaveRfType.valueOf(typeMatcher.group(0));
-		Matcher pollMatcher = POLL_REG_EXP.matcher(bindingConfig);
-		int poll = -1;
-		if(pollMatcher.groupCount() > 0){
-			poll = Integer.valueOf(pollMatcher.group(0));
+		try{
+			super.processBindingConfiguration(context, item, bindingConfig);
+	
+			Matcher roomMatcher = ROOM_REG_EXP.matcher(bindingConfig);
+			roomMatcher.matches();
+			String roomId = roomMatcher.group(1);
+			Matcher deviceMatcher = DEVICE_REG_EXP.matcher(bindingConfig);
+			deviceMatcher.matches();
+			String deviceId = deviceMatcher.group(1);
+			
+			Matcher typeMatcher = TYPE_REG_EXP.matcher(bindingConfig);
+			typeMatcher.matches();
+			LightwaveRfType type = LightwaveRfType.valueOf(typeMatcher.group(1));
+			Matcher pollMatcher = POLL_REG_EXP.matcher(bindingConfig);
+			int poll = -1;
+			if(pollMatcher.matches()){
+				poll = Integer.valueOf(pollMatcher.group(1));
+			}
+			
+			LightwaveRFBindingConfig config = new LightwaveRFBindingConfig(roomId, deviceId, type, poll);
+			
+			logger.info(bindingConfig + "Room["+ config.getRoomId() + "] Device[" + config.getDeviceId() + "] Type[" + config.getType()+ "]");
+			addBindingConfig(item, config);
 		}
-		
-		LightwaveRFBindingConfig config = new LightwaveRFBindingConfig(roomId, deviceId, type, poll);
-		
-		logger.info(bindingConfig + "Room["+ config.getRoomId() + "] Device[" + config.getDeviceId() + "] Type[" + config.getType()+ "]");
-		addBindingConfig(item, config);
+		catch(Exception e){
+			throw new BindingConfigParseException("Error parsing binding for Context["+ context + "] Item[" + item + "] BindingConfig[" + bindingConfig + "] ErrorMessage: " + e.getMessage());
+		}
 	}
 
 	class LightwaveRFBindingConfig implements BindingConfig {

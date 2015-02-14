@@ -1,4 +1,4 @@
-package org.openhab.binding.lightwaverf.internal;
+package org.openhab.binding.lightwaverf.internal.message;
 
 
 public class LightwaveRfHeatingMessageId implements LightwaveRfMessageId {

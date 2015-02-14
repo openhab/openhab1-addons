@@ -1,6 +1,7 @@
 package org.openhab.binding.lightwaverf.internal.command;
 
-import org.openhab.binding.lightwaverf.internal.LightwaveRfMessageId;
+import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
+import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
 import org.openhab.core.types.State;
 
 public class LightwaveRFStopPublisherCommand implements LightwaveRFCommand {
@@ -17,7 +18,8 @@ public class LightwaveRFStopPublisherCommand implements LightwaveRFCommand {
 		return null;
 	}
 
-	public State getState() {
+	@Override
+	public State getState(LightwaveRfType type) {
 		return null;
 	}
 	

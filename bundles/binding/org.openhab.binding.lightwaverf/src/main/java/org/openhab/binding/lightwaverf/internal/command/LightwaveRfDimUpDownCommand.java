@@ -1,7 +1,8 @@
 package org.openhab.binding.lightwaverf.internal.command;
 
-import org.openhab.binding.lightwaverf.internal.LightwaveRfMessageId;
+import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
+import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
 import org.openhab.core.types.State;
 
 public class LightwaveRfDimUpDownCommand implements LightwaveRFCommand {
@@ -32,7 +33,8 @@ public class LightwaveRfDimUpDownCommand implements LightwaveRFCommand {
     	throw new IllegalArgumentException("Not implemented");
 	}
 
-	public State getState() {
+	@Override
+	public State getState(LightwaveRfType type) {
     	throw new IllegalArgumentException("Not implemented");
 	}
 	

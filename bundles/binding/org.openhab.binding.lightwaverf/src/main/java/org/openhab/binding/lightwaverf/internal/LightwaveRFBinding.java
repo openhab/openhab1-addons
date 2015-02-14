@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.openhab.binding.lightwaverf.LightwaveRFBindingProvider;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
+import org.openhab.binding.lightwaverf.internal.message.LightwaveRFMessageListener;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -89,8 +90,6 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
                 sender.sendUDP(lightwaverfMessageString);
 	}
 
-//	LightwaveRFGenericBindingProvider bindingProvider;
-	
 	private String getRoomId(String itemName){
 		for(LightwaveRFBindingProvider provider : providers){
 			String roomId = provider.getRoomId(itemName);
@@ -111,22 +110,15 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 		return null;
 	}
 	
-	private List<String> getItemName(String roomId, String deviceId){
-		for(LightwaveRFBindingProvider provider : providers){
-			List<String> itemNames = provider.getBindingItemsForRoomDevice(roomId, deviceId);
-			if(itemNames != null && !itemNames.isEmpty()){
-				return itemNames; 
-			}
-			
-		}
-		return null;
-	}
-
 	public void messageRecevied(LightwaveRFCommand command) {
-		List<String> itemNames = getItemName(command.getRoomId(), command.getDeviceId());
-		State state = command.getState();
-		for(String itemName : itemNames){
-			eventPublisher.postUpdate(itemName, state);
+		for(LightwaveRFBindingProvider provider : providers){
+			List<String> itemNames = provider.getBindingItemsForRoomDevice(command.getRoomId(), command.getDeviceId());
+			if(itemNames != null){
+				for(String itemName : itemNames){
+					State state = command.getState(provider.getTypeForItemName(itemName));
+					eventPublisher.postUpdate(itemName, state);
+				}
+			}
 		}
 	}
 }
