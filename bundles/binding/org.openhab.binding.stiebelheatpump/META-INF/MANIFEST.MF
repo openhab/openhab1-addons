@@ -23,7 +23,8 @@ Import-Package: org.apache.commons.lang,
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
-Export-Package: org.openhab.binding.stiebelheatpump;uses:="org.openhab.core.binding"
+Export-Package: org.openhab.binding.stiebelheatpump;uses:="org.openhab.core.binding",
+ org.openhab.binding.stiebelheatpump.internal
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml

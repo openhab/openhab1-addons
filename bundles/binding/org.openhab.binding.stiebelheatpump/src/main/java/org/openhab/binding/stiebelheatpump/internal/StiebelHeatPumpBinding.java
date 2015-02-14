@@ -240,8 +240,9 @@ public class StiebelHeatPumpBinding extends
 				version = (String) config.get("version");
 			}
 
-			boolean isInitialized = getInitialHeatPumpData();
-
+			boolean isInitialized = getInitialHeatPumpSettings();
+			setTime();
+			
 			logger.info(
 					"Created heatpump configuration with  serialport:{}, baudrate:{}, version:{} ",
 					serialPort, baudRate, version);
@@ -254,13 +255,29 @@ public class StiebelHeatPumpBinding extends
 	 * This method reads initially all information from the heat pump It read
 	 * the configuration file and loads all defined record definitions of sensor
 	 * data, status information , actual time settings and setting parameter
-	 * values. I case of the time the time is initially verified and set to
-	 * actual time.
+	 * values.
 	 * 
 	 * @return true if heat pump information could be successfully read
 	 */
-	private boolean getInitialHeatPumpData() {
+	public boolean getInitialHeatPumpSettings() {
 		try {
+			
+			int retry = 0;
+			while (communicationInUse) {
+				try {
+					Thread.sleep(CommunicationService.WAITING_TIME_BETWEEN_REQUESTS);
+					retry++;
+					if (retry>DEFAULT_SERIAL_TIMEOUT)
+					{	
+						return false;
+					}
+				} catch (InterruptedException e) {
+					logger.error("could not access Heat pump for has version {}", version);
+				}
+			}
+			
+			communicationInUse = true;			
+			
 			CommunicationService communicationService = new CommunicationService(
 					serialPort, baudRate);
 			Map<String, String> data = new HashMap<String, String>();
@@ -286,8 +303,6 @@ public class StiebelHeatPumpBinding extends
 						entry.getValue());
 			}
 
-			communicationService.setTime();
-
 			communicationService.finalizer();
 
 			publishValues(allData);
@@ -296,6 +311,48 @@ public class StiebelHeatPumpBinding extends
 		} catch (StiebelHeatPumpException e) {
 			logger.error("Stiebel heatpump version could not be read from heat pump! "
 					+ e.toString());
+		} finally{
+			communicationInUse = false;
+		}
+
+		return false;
+	}
+
+	/**
+	 * This method sets the time in the heat pump.
+	 * I case of the time the time is initially verified and set to
+	 * actual time.
+	 * 
+	 * @return true if heat pump time could be successfully set
+	 */
+	public boolean setTime() {
+		try {
+
+			int retry = 0;
+			while (communicationInUse) {
+				try {
+					Thread.sleep(CommunicationService.WAITING_TIME_BETWEEN_REQUESTS);
+					retry++;
+					if (retry>DEFAULT_SERIAL_TIMEOUT)
+					{	
+						return false;
+					}
+				} catch (InterruptedException e) {
+					logger.error("could not access Heat pump for has version {}", version);
+				}
+			}
+			communicationInUse = true;			
+
+			CommunicationService communicationService = new CommunicationService(
+					serialPort, baudRate, heatPumpConfiguration);
+			communicationService.setTime();
+			communicationService.finalizer();
+			return true;
+		} catch (StiebelHeatPumpException e) {
+			logger.error("Stiebel heatpump time could not be set on heat pump! "
+					+ e.toString());
+		} finally{
+			communicationInUse = false;			
 		}
 
 		return false;
