@@ -643,7 +643,8 @@ public class ZWaveController {
 	    	// Keep track of the number of packets sent to this device
 	    	node.incrementSendCount();
 
-	    	if (!node.isListening() && !node.isFrequentlyListening() && serialMessage.getPriority() != SerialMessagePriority.Low) {
+	    	// If the device isn't listening, queue the message if it supports the wakeup class
+	    	if (!node.isListening() && !node.isFrequentlyListening()) {
 				ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
 	
 				// If it's a battery operated device, check if it's awake or place in wake-up queue.
@@ -1240,7 +1241,7 @@ public class ZWaveController {
 					ZWaveNode node = getNode(lastSentMessage.getMessageNode());
 
 					// If it's a battery device, it needs to be awake, or we queue the frame until it is.
-					if (node != null && !node.isListening() && !node.isFrequentlyListening() && lastSentMessage.getPriority() != SerialMessagePriority.Low) {
+					if (node != null && !node.isListening() && !node.isFrequentlyListening()) {
 						ZWaveWakeUpCommandClass wakeUpCommandClass = (ZWaveWakeUpCommandClass)node.getCommandClass(CommandClass.WAKE_UP);
 
 						// If it's a battery operated device, check if it's awake or place in wake-up queue.
@@ -1308,7 +1309,7 @@ public class ZWaveController {
 							// This should only be sent if we didn't get the initial ACK!!!
 							// So we need to check the ACK flag and only abort if it's not set
 							if (lastSentMessage.getMessageClass() == SerialMessageClass.SendData && lastSentMessage.isAckPending()) {
-								buffer = new SerialMessage(SerialMessageClass.SendDataAbort, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.High).getMessageBuffer();
+								buffer = new SerialMessage(SerialMessageClass.SendDataAbort, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Immediate).getMessageBuffer();
 								logger.debug("NODE {}: Sending ABORT Message = {}", lastSentMessage.getMessageNode(), SerialMessage.bb2hex(buffer));
 								try {
 									synchronized (serialPort.getOutputStream()) {
