@@ -588,10 +588,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						ConfigurationParameter configurationParameter = configurationCommandClass
 								.getParameter(parameter.Index);
 
-						// Only provide a value if it's stored in the node
+						// Only provide a value if it's stored in the node and is not WriteOnly
 						// This is the only way we can be sure of its real value
-						if (configurationParameter != null)
+						if (configurationParameter != null && configurationParameter.getWriteOnly() == false) {
 							record.value = Integer.toString(configurationParameter.getValue());
+						}
 
 						// If the value is in our PENDING list, then use that instead
 						Integer pendingValue = PendingCfg.Get(ZWaveCommandClass.CommandClass.CONFIGURATION.getKey(), nodeId, parameter.Index);

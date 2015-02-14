@@ -559,7 +559,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					}
 				}
 				break;
-				
+
 			case STATIC_VALUES:
 				// Loop through all classes looking for static initialisation
 				for (ZWaveCommandClass zwaveStaticClass : node.getCommandClasses()) {
@@ -736,6 +736,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 				for (ZWaveDbConfigurationParameter parameter : configList) {
 					// Some parameters don't return anything, so don't request them!
 					if(parameter.WriteOnly != null && parameter.WriteOnly == true) {
+						configurationCommandClass.setParameterWriteOnly(parameter.Index, true);
 						continue;
 					}
 
