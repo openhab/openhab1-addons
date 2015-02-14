@@ -571,12 +571,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						return records;
 					}
 
-					// Get the configuration command class for this node
+					// Get the configuration command class for this node if it's supported
 					ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
 							.getCommandClass(CommandClass.CONFIGURATION);
-
 					if (configurationCommandClass == null) {
-						logger.error("NODE {}: Error getting configurationCommandClass", nodeId);
 						return null;
 					}
 
@@ -954,9 +952,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					logger.debug("NODE {}: Get node version", nodeId);
 					ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
 							.getCommandClass(CommandClass.VERSION);
-
 					if (versionCommandClass == null) {
-						logger.error("NODE {}: Error getting versionCommandClass in doAction", nodeId);
 						return;
 					}
 
@@ -972,9 +968,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			if (splitDomain[2].equals("parameters")) {
 				ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
 						.getCommandClass(CommandClass.CONFIGURATION);
-
 				if (configurationCommandClass == null) {
-					logger.error("NODE {}: Error getting configurationCommandClass in doAction", nodeId);
 					return;
 				}
 				if (action.equals("Refresh")) {
@@ -982,7 +976,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 					ZWaveProductDatabase database = new ZWaveProductDatabase();
 					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) == false) {
-						logger.error("NODE {}: Error getting parameters - no database found", nodeId);
 						return;
 					}
 
@@ -997,15 +990,14 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			if (splitDomain[2].equals("wakeup")) {
 				if (action.equals("Refresh")) {
-					logger.debug("NODE {}: Refresh wakeup capabilities", nodeId);
-
+					// Only update if we support the wakeup class
 					ZWaveWakeUpCommandClass wakeupCommandClass = (ZWaveWakeUpCommandClass) node
 							.getCommandClass(CommandClass.WAKE_UP);
-
 					if (wakeupCommandClass == null) {
-						logger.error("NODE {}: Error getting wakeupCommandClass in doAction", nodeId);
 						return;
 					}
+
+					logger.debug("NODE {}: Refresh wakeup capabilities", nodeId);
 
 					// Request the wakeup interval for this node
 					this.zController.sendData(wakeupCommandClass.getIntervalMessage());
@@ -1024,18 +1016,18 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 
 			if (splitDomain[2].equals("associations")) {
 				if (action.equals("Refresh")) {
+					// Make sure the association class is supported
+					ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
+							.getCommandClass(CommandClass.ASSOCIATION);
+					if (associationCommandClass == null) {
+						return;
+					}
+
 					logger.debug("NODE {}: Refresh associations", nodeId);
 
 					ZWaveProductDatabase database = new ZWaveProductDatabase();
 					if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) == false) {
 						logger.error("NODE {}: Error in doAction - no database found", nodeId);
-						return;
-					}
-
-					ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
-							.getCommandClass(CommandClass.ASSOCIATION);
-					if (associationCommandClass == null) {
-						logger.error("NODE {}: Error getting associationCommandClass in doAction", nodeId);
 						return;
 					}
 
