@@ -335,6 +335,60 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_JOYSTICK:
+      {
+        MBrickletJoystick mBrickletJoystick = (MBrickletJoystick)theEObject;
+        T result = caseMBrickletJoystick(mBrickletJoystick);
+        if (result == null) result = caseMDevice(mBrickletJoystick);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletJoystick);
+        if (result == null) result = caseCallbackListener(mBrickletJoystick);
+        if (result == null) result = caseMTFConfigConsumer(mBrickletJoystick);
+        if (result == null) result = caseMBaseDevice(mBrickletJoystick);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.JOYSTICK_DEVICE:
+      {
+        JoystickDevice joystickDevice = (JoystickDevice)theEObject;
+        T result = caseJoystickDevice(joystickDevice);
+        if (result == null) result = caseMSubDevice(joystickDevice);
+        if (result == null) result = caseMBaseDevice(joystickDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.JOYSTICK_XPOSITION:
+      {
+        JoystickXPosition joystickXPosition = (JoystickXPosition)theEObject;
+        T result = caseJoystickXPosition(joystickXPosition);
+        if (result == null) result = caseJoystickDevice(joystickXPosition);
+        if (result == null) result = caseMSensor(joystickXPosition);
+        if (result == null) result = caseMSubDevice(joystickXPosition);
+        if (result == null) result = caseMBaseDevice(joystickXPosition);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.JOYSTICK_YPOSITION:
+      {
+        JoystickYPosition joystickYPosition = (JoystickYPosition)theEObject;
+        T result = caseJoystickYPosition(joystickYPosition);
+        if (result == null) result = caseJoystickDevice(joystickYPosition);
+        if (result == null) result = caseMSensor(joystickYPosition);
+        if (result == null) result = caseMSubDevice(joystickYPosition);
+        if (result == null) result = caseMBaseDevice(joystickYPosition);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.JOYSTICK_BUTTON:
+      {
+        JoystickButton joystickButton = (JoystickButton)theEObject;
+        T result = caseJoystickButton(joystickButton);
+        if (result == null) result = caseJoystickDevice(joystickButton);
+        if (result == null) result = caseMSensor(joystickButton);
+        if (result == null) result = caseMSubDevice(joystickButton);
+        if (result == null) result = caseMBaseDevice(joystickButton);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICK_SERVO:
       {
         MBrickServo mBrickServo = (MBrickServo)theEObject;
@@ -1584,6 +1638,86 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public <C extends DimmableConfiguration> T caseSetPointActor(SetPointActor<C> object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Joystick</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Joystick</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletJoystick(MBrickletJoystick object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Joystick Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Joystick Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJoystickDevice(JoystickDevice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Joystick XPosition</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Joystick XPosition</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJoystickXPosition(JoystickXPosition object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Joystick YPosition</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Joystick YPosition</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJoystickYPosition(JoystickYPosition object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Joystick Button</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Joystick Button</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseJoystickButton(JoystickButton object)
   {
     return null;
   }

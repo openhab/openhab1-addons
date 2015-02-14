@@ -57,6 +57,7 @@ import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
+import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
 import com.tinkerforge.BrickletMoisture;
@@ -885,6 +886,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletLEDStrip");
               mDevice = factory.createMBrickletLEDStrip();
               mDevice.setDeviceIdentifier(BrickletLEDStrip.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletJoystick.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletJoystick");
+              mDevice = factory.createMBrickletJoystick();
+              mDevice.setDeviceIdentifier(BrickletJoystick.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

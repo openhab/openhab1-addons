@@ -267,6 +267,31 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
         return createSetPointActorAdapter();
       }
       @Override
+      public Adapter caseMBrickletJoystick(MBrickletJoystick object)
+      {
+        return createMBrickletJoystickAdapter();
+      }
+      @Override
+      public Adapter caseJoystickDevice(JoystickDevice object)
+      {
+        return createJoystickDeviceAdapter();
+      }
+      @Override
+      public Adapter caseJoystickXPosition(JoystickXPosition object)
+      {
+        return createJoystickXPositionAdapter();
+      }
+      @Override
+      public Adapter caseJoystickYPosition(JoystickYPosition object)
+      {
+        return createJoystickYPositionAdapter();
+      }
+      @Override
+      public Adapter caseJoystickButton(JoystickButton object)
+      {
+        return createJoystickButtonAdapter();
+      }
+      @Override
       public Adapter caseMBrickServo(MBrickServo object)
       {
         return createMBrickServoAdapter();
@@ -1064,6 +1089,81 @@ public class ModelAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createSetPointActorAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick <em>MBricklet Joystick</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick
+   * @generated
+   */
+  public Adapter createMBrickletJoystickAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.JoystickDevice <em>Joystick Device</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.JoystickDevice
+   * @generated
+   */
+  public Adapter createJoystickDeviceAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.JoystickXPosition <em>Joystick XPosition</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.JoystickXPosition
+   * @generated
+   */
+  public Adapter createJoystickXPositionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.JoystickYPosition <em>Joystick YPosition</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.JoystickYPosition
+   * @generated
+   */
+  public Adapter createJoystickYPositionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.openhab.binding.tinkerforge.internal.model.JoystickButton <em>Joystick Button</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.openhab.binding.tinkerforge.internal.model.JoystickButton
+   * @generated
+   */
+  public Adapter createJoystickButtonAdapter()
   {
     return null;
   }

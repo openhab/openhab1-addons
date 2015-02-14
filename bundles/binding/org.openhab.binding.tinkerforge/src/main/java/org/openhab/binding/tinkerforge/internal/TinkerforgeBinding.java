@@ -297,10 +297,10 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         } else {
           TFConfig deviceTfConfig = EcoreUtil.copy(deviceConfig.getTfConfig());
           logger.debug("{} setting tfConfig for {}", LoggerConstants.TFINIT, logId);
-          ((MTFConfigConsumer<EObject>) device).setTfConfig(deviceTfConfig);
-          device.enable();
           logger.debug("{} adding/enabling device {} with config: {}", LoggerConstants.TFINIT,
               logId, deviceTfConfig);
+          ((MTFConfigConsumer<EObject>) device).setTfConfig(deviceTfConfig);
+          device.enable();
         }
       } else if (device instanceof IODevice) {
         logger.debug("{} ignoring unconfigured  IODevice: {}", LoggerConstants.TFINIT, logId);
@@ -326,7 +326,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
    *        .
    */
   private void initializeTFDevices(Notification notification) {
-    logger.debug("{} notifier {}", LoggerConstants.TFINIT, notification.getNotifier());
+    logger.trace("{} notifier {}", LoggerConstants.TFINIT, notification.getNotifier());
     if (notification.getNotifier() instanceof MBrickd) {
       logger.debug("{} notifier is Brickd", LoggerConstants.TFINIT);
       int featureID = notification.getFeatureID(MBrickd.class);
@@ -610,6 +610,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
 
   private void postUpdate(String uid, String subId, TinkerforgeValue sensorValue) {
     // TODO undef handling
+    logger.trace("postUpdate for uid {} subid {}", uid, subId);
     Map<String, TinkerforgeBindingProvider> providerMap = getBindingProviders(uid, subId);
     if (providerMap.size() == 0) {
       logger.debug("{} found no item for uid {}, subid {}", LoggerConstants.TFMODELUPDATE, uid,

@@ -20,6 +20,12 @@ public class Tools {
     return new DecimalValue(bvalue);
     
   }
+
+  public static DecimalValue calculate(short value) {
+    BigDecimal bvalue = new BigDecimal(String.valueOf(value));
+    return new DecimalValue(bvalue);
+
+  }
   public static DecimalValue calculate10(short value){
     return calculate(value, BigDecimal.TEN);
   }

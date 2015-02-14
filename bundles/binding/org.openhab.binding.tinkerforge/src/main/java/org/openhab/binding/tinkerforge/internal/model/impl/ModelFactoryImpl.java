@@ -90,6 +90,7 @@ import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
+import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
 import com.tinkerforge.BrickletMoisture;
@@ -160,6 +161,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
     {
       case ModelPackage.ECOSYSTEM: return createEcosystem();
       case ModelPackage.MBRICKD: return createMBrickd();
+      case ModelPackage.MBRICKLET_JOYSTICK: return createMBrickletJoystick();
+      case ModelPackage.JOYSTICK_XPOSITION: return createJoystickXPosition();
+      case ModelPackage.JOYSTICK_YPOSITION: return createJoystickYPosition();
+      case ModelPackage.JOYSTICK_BUTTON: return createJoystickButton();
       case ModelPackage.MBRICK_SERVO: return createMBrickServo();
       case ModelPackage.MSERVO: return createMServo();
       case ModelPackage.MBRICK_DC: return createMBrickDC();
@@ -353,6 +358,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletSegmentDisplay4x7FromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_LED_STRIP:
         return createTinkerBrickletLEDStripFromString(eDataType, initialValue);
+      case ModelPackage.BRICKLET_JOYSTICK:
+        return createBrickletJoystickFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -492,6 +499,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletSegmentDisplay4x7ToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_LED_STRIP:
         return convertTinkerBrickletLEDStripToString(eDataType, instanceValue);
+      case ModelPackage.BRICKLET_JOYSTICK:
+        return convertBrickletJoystickToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -567,6 +576,50 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickdImpl mBrickd = new MBrickdImpl();
     return mBrickd;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletJoystick createMBrickletJoystick()
+  {
+    MBrickletJoystickImpl mBrickletJoystick = new MBrickletJoystickImpl();
+    return mBrickletJoystick;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public JoystickXPosition createJoystickXPosition()
+  {
+    JoystickXPositionImpl joystickXPosition = new JoystickXPositionImpl();
+    return joystickXPosition;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public JoystickYPosition createJoystickYPosition()
+  {
+    JoystickYPositionImpl joystickYPosition = new JoystickYPositionImpl();
+    return joystickYPosition;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public JoystickButton createJoystickButton()
+  {
+    JoystickButtonImpl joystickButton = new JoystickButtonImpl();
+    return joystickButton;
   }
 
   /**
@@ -2340,6 +2393,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletLEDStripToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletJoystick createBrickletJoystickFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletJoystick)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertBrickletJoystickToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

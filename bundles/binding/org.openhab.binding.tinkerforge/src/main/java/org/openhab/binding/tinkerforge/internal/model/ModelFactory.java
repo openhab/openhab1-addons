@@ -80,6 +80,42 @@ public interface ModelFactory extends EFactory
   MBrickd createMBrickd();
 
   /**
+   * Returns a new object of class '<em>MBricklet Joystick</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Joystick</em>'.
+   * @generated
+   */
+  MBrickletJoystick createMBrickletJoystick();
+
+  /**
+   * Returns a new object of class '<em>Joystick XPosition</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Joystick XPosition</em>'.
+   * @generated
+   */
+  JoystickXPosition createJoystickXPosition();
+
+  /**
+   * Returns a new object of class '<em>Joystick YPosition</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Joystick YPosition</em>'.
+   * @generated
+   */
+  JoystickYPosition createJoystickYPosition();
+
+  /**
+   * Returns a new object of class '<em>Joystick Button</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Joystick Button</em>'.
+   * @generated
+   */
+  JoystickButton createJoystickButton();
+
+  /**
    * Returns a new object of class '<em>MBrick Servo</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
