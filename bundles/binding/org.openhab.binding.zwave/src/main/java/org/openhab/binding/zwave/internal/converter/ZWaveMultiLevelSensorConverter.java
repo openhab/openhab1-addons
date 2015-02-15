@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
  * {@link ZWaveMultiLevelSensorCommandClass}. Implements polling of the sensor
  * status and receiving of sensor events.
  * @author Jan-Willem Spuij
+ * @author Chris Jackson
  * @since 1.4.0
  */
 public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<ZWaveMultiLevelSensorCommandClass> {
@@ -92,34 +93,45 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter<Z
 		ZWaveMultiLevelSensorValueEvent sensorEvent = (ZWaveMultiLevelSensorValueEvent)event;
 
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
+			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring event.", event.getNodeId(), item.getName(), event.getEndpoint());
 			return;
 		}
 		
 		// Don't trigger event if this item is bound to another sensor type
-		if (sensorType != null && SensorType.getSensorType(Integer.parseInt(sensorType)) != sensorEvent.getSensorType())
+		if (sensorType != null && SensorType.getSensorType(Integer.parseInt(sensorType)) != sensorEvent.getSensorType()) {
 			return;
+		}
 
 		Object val = event.getValue();
 		// Perform a scale conversion if needed
 		if (sensorScale != null && Integer.parseInt(sensorScale) != sensorEvent.getSensorScale()) {
-			switch(SensorType.getSensorType(Integer.parseInt(sensorType))) {
-			case TEMPERATURE:
-				// For temperature, there are only two scales, so we simplify the conversion
-				if(sensorEvent.getSensorScale() == 0) {
-					// Scale is celsius, convert to fahrenheit
-					double c = ((BigDecimal)val).doubleValue();
-					val = new BigDecimal((c * 9.0 / 5.0) + 32.0 );
-				}
-				else if(sensorEvent.getSensorScale() == 1) {
-					// Scale is fahrenheit, convert to celsius
-					double f = ((BigDecimal)val).doubleValue();
-					val = new BigDecimal((f - 32.0) * 5.0 / 9.0 );					
-				}
-				break;
-			default:
-				break;
+			int intType = Integer.parseInt(sensorType);
+			SensorType senType = SensorType.getSensorType(intType);
+			if(senType == null) {
+				logger.error("NODE {}: Error parsing sensor type {}", event.getNodeId(), sensorType);
 			}
+			else {
+				switch(senType) {
+				case TEMPERATURE:
+					// For temperature, there are only two scales, so we simplify the conversion
+					if(sensorEvent.getSensorScale() == 0) {
+						// Scale is celsius, convert to fahrenheit
+						double c = ((BigDecimal)val).doubleValue();
+						val = new BigDecimal((c * 9.0 / 5.0) + 32.0 );
+					}
+					else if(sensorEvent.getSensorScale() == 1) {
+						// Scale is fahrenheit, convert to celsius
+						double f = ((BigDecimal)val).doubleValue();
+						val = new BigDecimal((f - 32.0) * 5.0 / 9.0 );					
+					}
+					break;
+				default:
+					break;
+				}
+			}
+
+			logger.debug("NODE {}: Sensor is reporting scale {}, requiring conversion to {}. Value is now {}.",
+					event.getNodeId(), sensorEvent.getSensorScale(), sensorScale, val);
 		}
 
 		State state = converter.convertFromValueToState(val);

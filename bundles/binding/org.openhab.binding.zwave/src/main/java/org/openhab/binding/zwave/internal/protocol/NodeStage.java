@@ -20,24 +20,26 @@ import java.util.Map;
 public enum NodeStage {
 	EMPTYNODE(0, "Empty New Node"),
 	PROTOINFO(1, "Protocol Information"),
-	PING(2, "Ping Node"),
-	WAKEUP(3, "Wake Up"),
-	DETAILS(4, "Node Information"),
-	MANSPEC01(5, "Manufacture Name and Product Identification"),
-	MANSPEC02(6, "Manufacture Name and Product Identification"),
-	VERSION(7, "Node Version"),
-	INSTANCES_ENDPOINTS(8, "Command Class Instances"),
-	STATIC_VALUES(9, "Static Information"),
+	NEIGHBORS(2, "Node Neighbor Information"),
+	WAIT(3, "Waiting"),
+	PING(4, "Ping Node"),
+	DETAILS(5, "Node Information"),
+	MANUFACTURER(6, "Manufacture Name and Product Identification"),
+	VERSION(7, "Command Class Versions"),
+	APP_VERSION(8, "Application Version"),
+	ENDPOINTS(9, "Command Class Endpoints"),
+	UPDATE_DATABASE(10, "Updating database"),
+	STATIC_VALUES(11, "Static Information"),
 	// States below are not restored from the configuration files
-	ASSOCIATIONS(10, "Association Information"),
-	NEIGHBORS(11, "Node Neighbor Information"),
-	SESSION(12, "Infrequently Changed Information"),
-	DYNAMIC(13, "Frequently Changed Information"),
-	CONFIG(14, "Parameter Information"),
-	DONE(15, "Node Complete"),
-	INIT(16, "Node Not Started"),
-	DEAD(17, "Node Dead"),
-	FAILED(18,"Node Failed");
+	SESSION_START(12, "Restore Marker"),
+	SESSION(13, "Infrequently Changed Information"),
+	DYNAMIC_VALUES(14, "Frequently Changed Information"),
+	CONFIG(15, "Parameter Information"),
+	ASSOCIATIONS(16, "Associations"),
+	WAKEUP(17, "Wakeup Target"),
+	DONE(18, "Node Complete"),
+	DEAD(19, "Node Dead"),
+	FAILED(20,"Node Failed");
 	
 	private int stage;
 	private String label;
@@ -88,6 +90,20 @@ public enum NodeStage {
 		}
 		
 		return codeToNodeStageMapping.get(i);
+	}
+	
+	/**
+	 * Return the next stage after the current stage
+	 * @return the next stage
+	 */
+	public NodeStage getNextStage() {
+		for (NodeStage s : values()) {
+			if(s.stage == this.stage + 1) {
+				return s;
+			}
+		}
+		
+		return null;
 	}
 }
 

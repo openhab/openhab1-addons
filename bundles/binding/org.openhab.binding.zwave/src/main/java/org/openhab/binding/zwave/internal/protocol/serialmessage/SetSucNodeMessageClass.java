@@ -66,7 +66,7 @@ public class SetSucNodeMessageClass extends ZWaveCommandProcessor {
 			checkTransactionComplete(lastSentMessage, incomingMessage);
 		}
 		
-		return false;
+		return true;
 	}
 
 	@Override
@@ -75,14 +75,16 @@ public class SetSucNodeMessageClass extends ZWaveCommandProcessor {
 
 		logger.debug("NODE {}: SetSucNodeID node request.", nodeId);
 
+		checkTransactionComplete(lastSentMessage, incomingMessage);
 		if (incomingMessage.getMessagePayloadByte(1) != 0x00) {
 			logger.error("NODE {}: SetSucNodeID failed with error 0x{}.", nodeId,
 					Integer.toHexString(incomingMessage.getMessagePayloadByte(1)));
+			
+			return false;
 		} else {
+			
+			return true;
 		}
-
-		checkTransactionComplete(lastSentMessage, incomingMessage);
-		return false;
 	}
 	
 	public enum SUCType {

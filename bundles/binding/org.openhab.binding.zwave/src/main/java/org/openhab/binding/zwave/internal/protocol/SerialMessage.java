@@ -57,7 +57,8 @@ public class SerialMessage {
 	private int transmitOptions = 0;
 	private int callbackId = 0;
 	
-	private boolean transActionCanceled = false;
+	private boolean transactionCanceled = false;
+	private boolean ackPending = false;
 
 	/**
 	 * Indicates whether the serial message is valid.
@@ -136,16 +137,16 @@ public class SerialMessage {
 		messageLength = buffer.length - 2; // buffer[1];
 		byte messageCheckSumm = calculateChecksum(buffer);
 		byte messageCheckSummReceived = buffer[messageLength+1];
-		logger.trace(String.format("NODE %d: Message checksum calculated = 0x%02X, received = 0x%02X", nodeId, messageCheckSumm, messageCheckSummReceived));
 		if (messageCheckSumm == messageCheckSummReceived) {
 			logger.trace("NODE {}: Checksum matched", nodeId);
 			isValid = true;
 		} else {
-			logger.trace("NODE {}: Checksum error", nodeId);
+			logger.trace("NODE {}: Checksum error. Calculated = 0x%02X, Received = 0x%02X", nodeId, messageCheckSumm, messageCheckSummReceived);
 			isValid = false;
 			return;
 		}
-		this.messageType = buffer[2] == 0x00 ? SerialMessageType.Request : SerialMessageType.Response;;
+		this.priority = SerialMessagePriority.High;
+		this.messageType = buffer[2] == 0x00 ? SerialMessageType.Request : SerialMessageType.Response;
 		this.messageClass = SerialMessageClass.getMessageClass(buffer[3] & 0xFF);
 		this.messagePayload = ArrayUtils.subarray(buffer, 4, messageLength + 1);
 		this.messageNode = nodeId;
@@ -210,19 +211,25 @@ public class SerialMessage {
 		try {
 			resultByteBuffer.write(messagePayload);
 		} catch (IOException e) {
-			
+			logger.error("Error getting message buffer: ", e);
 		}
 
-		// callback ID and transmit options for a Send Data message.
+		// Callback ID and transmit options for a Send Data message.
 		if (this.messageClass == SerialMessageClass.SendData && this.messageType == SerialMessageType.Request) {
 			resultByteBuffer.write(transmitOptions);
 			resultByteBuffer.write(callbackId);
 		}
 		
+		// Make space in the array for the checksum
 		resultByteBuffer.write((byte) 0x00);
+		
+		// Convert to a byte array
 		result = resultByteBuffer.toByteArray();
+		
+		// Calculate the checksum
 		result[result.length - 1] = 0x01;
 		result[result.length - 1] = calculateChecksum(result);
+		
 		logger.debug("Assembled message buffer = " + SerialMessage.bb2hex(result));
 		return result;
 	}
@@ -359,18 +366,53 @@ public class SerialMessage {
 
 	/**
 	 * Indicates that the transaction for the incoming message is canceled by a command class
-	 * @return the transActionCanceled
 	 */
-	public boolean isTransActionCanceled() {
-		return transActionCanceled;
+	public void setTransactionCanceled() {
+		transactionCanceled = true;
 	}
 
 	/**
-	 * Sets the transaction for the incoming message to canceled.
-	 * @param transActionCanceled the transActionCanceled to set
+	 * Indicates that the transaction for the incoming message is canceled by a command class
+	 * @return the transactionCanceled
 	 */
-	public void setTransActionCanceled(boolean transActionCanceled) {
-		this.transActionCanceled = transActionCanceled;
+	public boolean isTransactionCanceled() {
+		return transactionCanceled;
+	}
+
+	/**
+	 * Sets the ACK as received.
+	 */
+	public void setAckRecieved() {
+		logger.trace("Ack Pending cleared");
+		this.ackPending = false;
+	}
+
+	/**
+	 * If we require an ACK from the controller, then set true
+	 */
+	public void setAckRequired() {
+		this.ackPending = true;
+	}
+
+	/**
+	 * Returns true is there is an ack pending from the controller
+	 * @return true if still waiting on the ack
+	 */
+	public boolean isAckPending() {
+		return this.ackPending;
+	}
+
+	/**
+	 * Sets the flag to say the ack has been received from the controller.
+	 * This ensures that we don't complete a transaction if we receive the final
+	 * response from the device before the controller acks our request.
+	 * This seems to be possible from some devices, or possibly if the device
+	 * happens to send the data we're about to request at the same time we
+	 * request it (since the data received from a device as part of a
+	 * transaction is NOT linked in any way to the transaction).
+	 */
+	public void setTransactionAcked() {
+		this.ackPending = false;
 	}
 
 	/**

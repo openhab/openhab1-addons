@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -41,7 +42,9 @@ public class ZWaveBasicCommandClass extends ZWaveCommandClass implements ZWaveBa
 	private static final int BASIC_SET = 0x01;
 	private static final int BASIC_GET = 0x02;
 	private static final int BASIC_REPORT = 0x03;
-	
+
+	private boolean isGetSupported = true;
+
 	/**
 	 * Creates a new instance of the ZWaveBasicCommandClass class.
 	 * @param node the node this command class belongs to
@@ -113,6 +116,11 @@ public class ZWaveBasicCommandClass extends ZWaveCommandClass implements ZWaveBa
 	 * @return the serial message
 	 */
 	public SerialMessage getValueMessage() {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+
 		logger.debug("Creating new message for application command BASIC_GET for node {}", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
@@ -121,6 +129,15 @@ public class ZWaveBasicCommandClass extends ZWaveCommandClass implements ZWaveBa
 								(byte) BASIC_GET };
     	result.setMessagePayload(newPayload);
     	return result;		
+	}
+
+	@Override
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		if(options.isGetSupported != null) {
+			isGetSupported = options.isGetSupported;
+		}
+		
+		return true;
 	}
 	
 	/**

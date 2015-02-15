@@ -34,12 +34,12 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 			logger.warn("NODE {}: Not initialized yet, ignoring message.", nodeId);
 			return false;
 		}
-		logger.debug("NODE {}: Application Command Request (Stage {})", nodeId, node.getNodeStage().getLabel());
+		logger.debug("NODE {}: Application Command Request (Stage: {})", nodeId, node.getNodeStage().toString());
 		
 		// If the node is DEAD, but we've just received a message from it, then it's not dead!
 		if(node.isDead()) {
 			node.setAlive();
-			logger.debug("NODE {}: Node has risen from the DEAD. Set stage to {}.", nodeId, node.getNodeStage());			
+			logger.debug("NODE {}: Node has risen from the DEAD. Stage set to {}.", nodeId, node.getNodeStage().toString());			
 		}
 		
 		node.resetResendCount();
@@ -69,18 +69,22 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 				node.addCommandClass(zwaveCommandClass);
 			}
 		}
-		
+
 		// We got an unsupported command class, return.
 		if (zwaveCommandClass == null) {
 			logger.error(String.format("NODE %d: Unsupported command class %s (0x%02x)", nodeId, commandClass.getLabel(), commandClassCode));
 			return false;
 		}
-		
+
 		logger.trace("NODE {}: Found Command Class {}, passing to handleApplicationCommandRequest", nodeId, zwaveCommandClass.getCommandClass().getLabel());
 		zwaveCommandClass.handleApplicationCommandRequest(incomingMessage, 4, 0);
 
-		checkTransactionComplete(lastSentMessage, incomingMessage);
-		
-		return false;
+		if(node.getNodeId() == lastSentMessage.getMessageNode()) {
+			checkTransactionComplete(lastSentMessage, incomingMessage);
+		} else {
+			logger.debug("Transaction not completed: node address inconsistent.");
+		}
+
+		return true;
 	}
 }

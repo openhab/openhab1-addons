@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.lang.NumberFormatException;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -139,7 +140,17 @@ public abstract class ZWaveCommandClass {
 	public int getMaxVersion () {
 		return MAX_SUPPORTED_VERSION;
 	}
-	
+
+	/**
+	 * Set options for this command class.
+	 * Options are provided from the device configuration database 
+	 * @param options class
+	 * @return true if options set ok
+	 */
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		return false;
+	}
+
 	/**
 	 * Returns the number of instances of this command class
 	 * in case the node supports the MULTI_INSTANCE command class (Version 1).
@@ -148,7 +159,7 @@ public abstract class ZWaveCommandClass {
 	public int getInstances() {
 		return instances;
 	}
-	
+
 	/**
 	 * Returns the number of instances of this command class
 	 * in case the node supports the MULTI_INSTANCE command class (Version 1).
@@ -157,13 +168,13 @@ public abstract class ZWaveCommandClass {
 	public void setInstances(int instances) {
 		this.instances = instances;
 	}
-	
+
 	/**
 	 * Returns the command class.
 	 * @return command class
 	 */
 	public abstract CommandClass getCommandClass();
-	
+
 	/**
 	 * Handles an incoming application command request.
 	 * @param serialMessage the incoming message to process.
@@ -183,31 +194,31 @@ public abstract class ZWaveCommandClass {
 	public static ZWaveCommandClass getInstance(int i, ZWaveNode node, ZWaveController controller) {
 		return ZWaveCommandClass.getInstance(i, node, controller, null);
 	}
-	
+
 	/**
 	 * Gets an instance of the right command class.
 	 * Returns null if the command class is not found.
-	 * @param i the code to instantiate
+	 * @param classId the code to instantiate
 	 * @param node the node this instance commands.
 	 * @param controller the controller to send messages to.
 	 * @param endpoint the endpoint this Command class belongs to
 	 * @return the ZWaveCommandClass instance that was instantiated, null otherwise 
 	 */
-	public static ZWaveCommandClass getInstance(int i, ZWaveNode node, ZWaveController controller, ZWaveEndpoint endpoint) {
-		logger.debug(String.format("Creating new instance of command class 0x%02X", i));
+	public static ZWaveCommandClass getInstance(int classId, ZWaveNode node, ZWaveController controller, ZWaveEndpoint endpoint) {
 		try {
-			CommandClass commandClass = CommandClass.getCommandClass(i);
+			CommandClass commandClass = CommandClass.getCommandClass(classId);
 			if (commandClass == null) {
-				logger.warn(String.format("Unsupported command class 0x%02x", i));
+				logger.warn(String.format("NODE %d: Unknown command class 0x%02x", node.getNodeId(), classId));
 				return null;
 			}
 			Class<? extends ZWaveCommandClass> commandClassClass = commandClass.getCommandClassClass();
 			
 			if (commandClassClass == null) {
-				logger.warn(String.format("Unsupported command class %s (0x%02x)", commandClass.getLabel(), i, endpoint));
+				logger.warn("NODE {}: Unsupported command class {}", node.getNodeId(), commandClass.getLabel(), classId);
 				return null;
 			}
-				
+			logger.debug("NODE {}: Creating new instance of command class {}", node.getNodeId(), commandClass.getLabel());
+
 			Constructor<? extends ZWaveCommandClass> constructor = commandClassClass.getConstructor(ZWaveNode.class, ZWaveController.class, ZWaveEndpoint.class);
 			return constructor.newInstance(new Object[] {node, controller, endpoint});
 		} catch (InstantiationException e) {
@@ -217,7 +228,7 @@ public abstract class ZWaveCommandClass {
 		} catch (NoSuchMethodException e) {
 		} catch (SecurityException e) {
 		}
-		logger.error(String.format("Error instantiating command class 0x%02x", i));
+		logger.error(String.format("NODE %d: Error instantiating command class 0x%02x", node.getNodeId(), classId));
 		return null;
 	}
 	
@@ -379,6 +390,9 @@ public abstract class ZWaveCommandClass {
 		BASIC_WINDOW_COVERING(0x50,"BASIC_WINDOW_COVERING",null),
 		MTP_WINDOW_COVERING(0x51,"MTP_WINDOW_COVERING",null),
 		CRC_16_ENCAP(0x56,"CRC_16_ENCAP",ZWaveCRC16EncapsulationCommandClass.class),
+		ASSOCIATION_GROUP_INFO(0x59,"ASSOCIATION_GROUP_INFO",null),
+		DEVICE_RESET_LOCALLY(0x5a,"DEVICE_RESET_LOCALLY",null),
+		ZWAVE_PLUS_INFO(0x5e,"ZWAVE_PLUS_INFO",null),
 		MULTI_INSTANCE(0x60,"MULTI_INSTANCE",ZWaveMultiInstanceCommandClass.class),
 		DOOR_LOCK(0x62,"DOOR_LOCK",null),
 		USER_CODE(0x63,"USER_CODE",null),

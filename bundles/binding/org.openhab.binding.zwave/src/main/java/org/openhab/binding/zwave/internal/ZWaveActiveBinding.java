@@ -55,7 +55,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private String port;
 	private boolean isSUC = false;
 	private boolean softReset = false;
+	private boolean masterController = false;
 	private Integer healtime = null;
+	private Integer aliveCheckPeriod = null;
 	private Integer timeout = null;
 	private volatile ZWaveController zController;
 	private volatile ZWaveConverterHandler converterHandler;
@@ -97,8 +99,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		
 		if(!isZwaveNetworkReady){
 			logger.debug("Zwave Network isn't ready yet!");
-			if (this.zController != null)
+			if (this.zController != null) {
 				this.zController.checkForDeadOrSleepingNodes();
+			}
 			return;
 		}
 		
@@ -175,6 +178,12 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	private void rebuildPollingTable() {
 		// Rebuild the polling table
 		pollingList.clear();
+		
+		if(converterHandler == null) {
+			logger.debug("ConverterHandler not initialised. Polling disabled.");
+			
+			return;
+		}
 
 		// Loop all binding providers for the Z-wave binding.
 		for (ZWaveBindingProvider eachProvider : providers) {
@@ -213,15 +222,17 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		logger.trace("internalReceiveCommand(itemname = {}, Command = {})", itemName, command.toString());
 		for (ZWaveBindingProvider provider : providers) {
 
-			if (!provider.providesBindingFor(itemName))
+			if (!provider.providesBindingFor(itemName)) {
 				continue;
+			}
 			
 			converterHandler.receiveCommand(provider, itemName, command);
 			handled = true;
 		}
 
-		if (!handled)
+		if (!handled) {
 			logger.warn("No converter found for item = {}, command = {}, ignoring.", itemName, command.toString());
+		}
 	}
 	
 	/**
@@ -265,9 +276,10 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	 */
 	private void initialise() throws ConfigurationException {
 		try {
+			logger.debug("Initialising zwave binding");
 			this.setProperlyConfigured(true);
 			this.deactivate();
-			this.zController = new ZWaveController(isSUC, port, timeout);
+			this.zController = new ZWaveController(masterController, isSUC, port, timeout, softReset);
 			this.converterHandler = new ZWaveConverterHandler(this.zController, this.eventPublisher);
 			zController.initialize();
 			zController.addEventListener(this);
@@ -276,6 +288,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			this.networkMonitor = new ZWaveNetworkMonitor(this.zController);
 			if(healtime != null) {
 				this.networkMonitor.setHealTime(healtime);
+			}
+			if(aliveCheckPeriod != null) {
+				this.networkMonitor.setPollPeriod(aliveCheckPeriod);
 			}
 			if(softReset != false) {
 				this.networkMonitor.resetOnError(softReset);
@@ -332,6 +347,15 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				logger.error("Error parsing 'pollingQueue'. This must be a single number time in milliseconds.");
 			}
 		}
+		if (StringUtils.isNotBlank((String) config.get("aliveCheckPeriod"))) {
+			try {
+				aliveCheckPeriod = Integer.parseInt((String) config.get("aliveCheckPeriod"));
+				logger.info("Update config, aliveCheckPeriod = {}", aliveCheckPeriod);
+			} catch (NumberFormatException e) {
+				aliveCheckPeriod = null;
+				logger.error("Error parsing 'aliveCheckPeriod'. This must be an Integer.");
+			}
+		}
 		if (StringUtils.isNotBlank((String) config.get("timeout"))) {
 			try {
 				timeout = Integer.parseInt((String) config.get("timeout"));
@@ -359,7 +383,16 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 				logger.error("Error parsing 'softReset'. This must be boolean.");
 			}
 		}
-
+		if (StringUtils.isNotBlank((String) config.get("masterController"))) {
+			try {
+				masterController = Boolean.parseBoolean((String) config.get("masterController"));
+				logger.info("Update config, masterController = {}", masterController);
+			} catch (NumberFormatException e) {
+				masterController = false;
+				logger.error("Error parsing 'masterController'. This must be boolean.");
+			}
+		}
+		
 		// Now that we've read ALL the configuration, initialise the binding.
 		initialise();
 	}
@@ -398,8 +431,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		logger.debug("ZwaveIncomingEvent");
 		
 		// ignore transaction completed events.
-		if (event instanceof ZWaveTransactionCompletedEvent)
+		if (event instanceof ZWaveTransactionCompletedEvent) {
 			return;
+		}
 		
 		// handle command class value events.
 		if (event instanceof ZWaveCommandClassValueEvent) {
@@ -416,7 +450,7 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 		ZWaveCommandClassValueEvent event) {
 		boolean handled = false;
 
-		logger.debug("Got a value event from Z-Wave network for nodeId = {}, endpoint = {}, command class = {}, value = {}", 
+		logger.debug("NODE {}: Got a value event from Z-Wave network, endpoint = {}, command class = {}, value = {}", 
 				new Object[] { event.getNodeId(), event.getEndpoint(), event.getCommandClass().getLabel(), event.getValue() } );
 
 		for (ZWaveBindingProvider provider : providers) {
@@ -431,9 +465,10 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			}
 		}
 		
-		if (!handled)
-			logger.warn("No item bound for event from nodeId = {}, endpoint = {}, command class = {}, value = {}, ignoring.", 
+		if (!handled) {
+			logger.warn("NODE {}: No item bound for event, endpoint = {}, command class = {}, value = {}, ignoring.", 
 					new Object[] { event.getNodeId(), event.getEndpoint(), event.getCommandClass().getLabel(), event.getValue() } );
+		}
 	}
 	
 	class ZWavePollItem {

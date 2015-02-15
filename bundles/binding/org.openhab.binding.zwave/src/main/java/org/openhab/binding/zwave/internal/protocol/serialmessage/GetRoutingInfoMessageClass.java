@@ -75,13 +75,13 @@ public class GetRoutingInfoMessageClass extends ZWaveCommandProcessor {
 			for (Integer neighborNode : node.getNeighbors()) {
 				neighbors += " " + neighborNode;
 			}
-			logger.debug("Node {}: {}", nodeId, neighbors);
+			logger.debug("NODE {}: {}", nodeId, neighbors);
 		}
 
 		zController.notifyEventListeners(new ZWaveNetworkEvent(ZWaveNetworkEvent.Type.NodeRoutingInfo, nodeId,
 				ZWaveNetworkEvent.State.Success));
 
 		transactionComplete = true;
-		return false;
+		return true;
 	}
 }

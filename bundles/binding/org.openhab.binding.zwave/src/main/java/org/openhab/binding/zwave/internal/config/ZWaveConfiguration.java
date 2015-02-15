@@ -11,6 +11,7 @@ package org.openhab.binding.zwave.internal.config;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -19,6 +20,7 @@ import java.util.TimerTask;
 
 import org.openhab.binding.zwave.internal.ZWaveNetworkMonitor;
 import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
+import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceType;
@@ -181,8 +183,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						}
 
 						if(parameter.Item != null) {
-							for (ZWaveDbConfigurationListItem item : parameter.Item)
+							for (ZWaveDbConfigurationListItem item : parameter.Item) {
 								record.addValue(Integer.toString(item.Value), database.getLabel(item.Label));
+							}
 						}
 
 						// Add the description
@@ -216,8 +219,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						// records...
 						for (ZWaveDbCommandClass iClass : classList) {
 							// Make sure the command class exists!
-							if(ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id) == null)
+							if(ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id) == null) {
 								continue;
+							}
 							record = new OpenHABConfigurationRecord(domain, "class" + iClass.Id,
 									ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id).getLabel(), true);
 							if(ZWaveCommandClass.CommandClass.getCommandClass(iClass.Id).getCommandClassClass() == null) {
@@ -379,6 +383,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				record = new OpenHABConfigurationRecord(domain + "info/", "Information");
 				records.add(record);
 			} else if (arg.equals("info/")) {
+				record = new OpenHABConfigurationRecord(domain, "NodeID", "Node ID", true);
+				record.value = Integer.toString(node.getNodeId());
+				records.add(record);
+
 				if (node.getManufacturer() != Integer.MAX_VALUE) {
 					if (database.FindManufacturer(node.getManufacturer()) == true) {
 						record = new OpenHABConfigurationRecord(domain, "Manufacturer", "Manufacturer", true);
@@ -442,7 +450,17 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					else {
 						record.value = "BATTERY " + batteryCommandClass.getBatteryLevel() + "%";
 					}
-				} else {
+
+					// If the node is reporting low battery, mark it up...
+					if(batteryCommandClass.getBatteryLow() == true) {
+						record.value += " LOW";
+					}
+				}
+				else if(node.getNodeStage().getStage() <= NodeStage.DETAILS.getStage()) {
+					// If we haven't passed the DETAILS stage, then we don't know the source
+					record.value = "UNKNOWN";
+				}
+				else {
 					record.value = "MAINS";
 				}
 				records.add(record);
@@ -593,7 +611,6 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						// Loop through the associations and add all groups to the
 						// records...
 						for (ZWaveDbAssociationGroup group : groupList) {
-							// TODO: Controller reporting associations are set to read only
 							record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/",
 									database.getLabel(group.Label), true);
 
@@ -605,8 +622,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 									.getCommandClass(CommandClass.ASSOCIATION);
 							int memberCnt = 0;
 							List<Integer> members = associationCommandClass.getGroupMembers(group.Index);
-							if(members != null)
+							if(members != null) {
 								memberCnt = members.size();
+							}
 							record.value = memberCnt + " of " + group.Maximum + " group members";
 
 							// Add the action for refresh
@@ -631,8 +649,9 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					// Get the requested group so we have access to the
 					// attributes
 					List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
-					if (groupList == null)
+					if (groupList == null) {
 						return null;
+					}
 					ZWaveDbAssociationGroup group = null;
 					for (int cnt = 0; cnt < groupList.size(); cnt++) {
 						if (groupList.get(cnt).Index == groupId) {
@@ -642,42 +661,61 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					}
 
 					// Return if the group wasn't found
-					if (group == null)
+					if (group == null) {
 						return null;
+					}
 
 					// Get the group members
 					ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
 							.getCommandClass(CommandClass.ASSOCIATION);
 
-					List<Integer> members = associationCommandClass.getGroupMembers(groupId);
+					// First we build a list of all nodes, starting with the group members
+					// This ensures that old nodes included in a group, but not now part
+					// of the network will still be listed, and can be removed.
+					List<Integer> nodes = new ArrayList<Integer>();
+					nodes.addAll(associationCommandClass.getGroupMembers(groupId));
 					for(ZWaveNode nodeList : zController.getNodes()) {
 						// Don't allow an association with itself
-						if(nodeList.getNodeId() == node.getNodeId())
+						if(nodeList.getNodeId() == node.getNodeId()) {
 							continue;
-						
+						}
+						if(!nodes.contains(nodeList.getNodeId())) {
+							nodes.add(nodeList.getNodeId());
+						}
+					}
+					// Let's sort them!
+					Collections.sort(nodes);
+
+					// Now we loop through the node list and create an entry for each node.
+					List<Integer> members = associationCommandClass.getGroupMembers(groupId);
+					for(int i = 0; i < nodes.size(); i++) {
+						int nodeNum = nodes.get(i);
+						ZWaveNode nodeList = zController.getNode(nodeNum);
 						// Add the member
-						if (nodeList.getName() == null || nodeList.getName().isEmpty())
-							record = new OpenHABConfigurationRecord(domain, "node" + nodeList.getNodeId(), "Node " + nodeList.getNodeId(), false);
-						else
-							record = new OpenHABConfigurationRecord(domain, "node" + nodeList.getNodeId(), nodeList.getName(), false);
+						if (nodeList == null || nodeList.getName() == null || nodeList.getName().isEmpty()) {
+							record = new OpenHABConfigurationRecord(domain, "node" + nodeNum, "Node " + nodeNum, false);
+						} else {
+							record = new OpenHABConfigurationRecord(domain, "node" + nodeNum, nodeList.getName(), false);
+						}
 
 						record.type = OpenHABConfigurationRecord.TYPE.LIST;
 						record.addValue("true", "Member");
 						record.addValue("false", "Non-Member");
 
-						if (members != null && members.contains(nodeList.getNodeId())) {
+						if (members != null && members.contains(nodeNum)) {
 							record.value = "true";
 						} else {
 							record.value = "false";
 						}
 
 						// If the value is in our PENDING list, then use that instead
-						Integer pendingValue = PendingCfg.Get(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), nodeId, groupId, nodeList.getNodeId());
+						Integer pendingValue = PendingCfg.Get(ZWaveCommandClass.CommandClass.ASSOCIATION.getKey(), nodeId, groupId, nodeNum);
 						if(pendingValue != null) {
-							if(pendingValue == 1)
+							if(pendingValue == 1) {
 								record.value = "true";
-							else
+							} else {
 								record.value = "false";
+							}
 							record.state = OpenHABConfigurationRecord.STATE.PENDING;
 						}
 
@@ -689,7 +727,7 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 						.getCommandClass(CommandClass.WAKE_UP);
 
 				if(wakeupCommandClass == null) {
-					logger.error("NODE {}: Error getting wakeupCommandClass", nodeId);
+					logger.debug("NODE {}: wakeupCommandClass not supported", nodeId);
 					return null;
 				}
 
@@ -705,6 +743,10 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 					record.value = Integer.toString(pendingValue);
 					record.state = OpenHABConfigurationRecord.STATE.PENDING;
 				}
+				records.add(record);
+
+				record = new OpenHABConfigurationRecord(domain, "Target", "Target Node", true);
+				record.value = Integer.toString(wakeupCommandClass.getTargetNodeId());
 				records.add(record);
 
 				record = new OpenHABConfigurationRecord(domain, "Minimum", "Minimum Interval", true);
