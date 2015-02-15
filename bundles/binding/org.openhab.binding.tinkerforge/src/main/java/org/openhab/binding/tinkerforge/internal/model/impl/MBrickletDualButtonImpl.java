@@ -3,6 +3,7 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -12,54 +13,52 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.util.InternalEList;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
-import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
-import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLeftButton;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLeftLed;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonRightButton;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonRightLed;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti;
-import org.openhab.binding.tinkerforge.internal.model.MSensor;
-import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
-import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
-import org.openhab.binding.tinkerforge.internal.tools.Tools;
-import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tinkerforge.BrickletLinearPoti;
+import com.tinkerforge.BrickletDualButton;
 import com.tinkerforge.IPConnection;
-import com.tinkerforge.NotConnectedException;
-import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>MBricklet Linear Poti</b></em>'.
+ * An implementation of the model object '<em><b>MBricklet Dual Button</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getLogger <em>Logger</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getUid <em>Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#isPoll <em>Poll</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getEnabledA <em>Enabled A</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getIpConnection <em>Ip Connection</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getConnectedUid <em>Connected Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getPosition <em>Position</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getDeviceIdentifier <em>Device Identifier</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getBrickd <em>Brickd</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getCallbackPeriod <em>Callback Period</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getTfConfig <em>Tf Config</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getSensorValue <em>Sensor Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getLogger <em>Logger</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#isPoll <em>Poll</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getEnabledA <em>Enabled A</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getTinkerforgeDevice <em>Tinkerforge Device</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getIpConnection <em>Ip Connection</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getConnectedUid <em>Connected Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getPosition <em>Position</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getDeviceIdentifier <em>Device Identifier</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getBrickd <em>Brickd</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getMsubdevices <em>Msubdevices</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implements MBrickletLinearPoti
+public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implements MBrickletDualButton
 {
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -149,7 +148,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
    * @generated
    * @ordered
    */
-  protected BrickletLinearPoti tinkerforgeDevice;
+  protected BrickletDualButton tinkerforgeDevice;
 
   /**
    * The default value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
@@ -252,73 +251,21 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
+   * The cached value of the '{@link #getMsubdevices() <em>Msubdevices</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
+   * @see #getMsubdevices()
    * @generated
    * @ordered
    */
-  protected static final long CALLBACK_PERIOD_EDEFAULT = 1000L;
-
-  /**
-   * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCallbackPeriod()
-   * @generated
-   * @ordered
-   */
-  protected long callbackPeriod = CALLBACK_PERIOD_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTfConfig()
-   * @generated
-   * @ordered
-   */
-  protected TFBaseConfiguration tfConfig;
-
-  /**
-   * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSensorValue()
-   * @generated
-   * @ordered
-   */
-  protected DecimalValue sensorValue;
-
-  /**
-   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDeviceType()
-   * @generated
-   * @ordered
-   */
-  protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_linear_poti";
-
-  /**
-   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDeviceType()
-   * @generated
-   * @ordered
-   */
-  protected String deviceType = DEVICE_TYPE_EDEFAULT;
-
-  private PositionListener listener;
+  protected EList<DualButtonDevice> msubdevices;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected MBrickletLinearPotiImpl()
+  protected MBrickletDualButtonImpl()
   {
     super();
   }
@@ -331,7 +278,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
   @Override
   protected EClass eStaticClass()
   {
-    return ModelPackage.Literals.MBRICKLET_LINEAR_POTI;
+    return ModelPackage.Literals.MBRICKLET_DUAL_BUTTON;
   }
 
   /**
@@ -354,7 +301,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
     Logger oldLogger = logger;
     logger = newLogger;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__LOGGER, oldLogger, logger));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__LOGGER, oldLogger, logger));
   }
 
   /**
@@ -377,7 +324,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
     String oldUid = uid;
     uid = newUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__UID, oldUid, uid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__UID, oldUid, uid));
   }
 
   /**
@@ -400,7 +347,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
     boolean oldPoll = poll;
     poll = newPoll;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__POLL, oldPoll, poll));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__POLL, oldPoll, poll));
   }
 
   /**
@@ -423,7 +370,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
     AtomicBoolean oldEnabledA = enabledA;
     enabledA = newEnabledA;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__ENABLED_A, oldEnabledA, enabledA));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__ENABLED_A, oldEnabledA, enabledA));
   }
 
   /**
@@ -431,7 +378,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated
    */
-  public BrickletLinearPoti getTinkerforgeDevice()
+  public BrickletDualButton getTinkerforgeDevice()
   {
     return tinkerforgeDevice;
   }
@@ -441,12 +388,12 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setTinkerforgeDevice(BrickletLinearPoti newTinkerforgeDevice)
+  public void setTinkerforgeDevice(BrickletDualButton newTinkerforgeDevice)
   {
-    BrickletLinearPoti oldTinkerforgeDevice = tinkerforgeDevice;
+    BrickletDualButton oldTinkerforgeDevice = tinkerforgeDevice;
     tinkerforgeDevice = newTinkerforgeDevice;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
   }
 
   /**
@@ -469,7 +416,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
     IPConnection oldIpConnection = ipConnection;
     ipConnection = newIpConnection;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__IP_CONNECTION, oldIpConnection, ipConnection));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__IP_CONNECTION, oldIpConnection, ipConnection));
   }
 
   /**
@@ -492,7 +439,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
     String oldConnectedUid = connectedUid;
     connectedUid = newConnectedUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__CONNECTED_UID, oldConnectedUid, connectedUid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__CONNECTED_UID, oldConnectedUid, connectedUid));
   }
 
   /**
@@ -515,7 +462,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
     char oldPosition = position;
     position = newPosition;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__POSITION, oldPosition, position));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__POSITION, oldPosition, position));
   }
 
   /**
@@ -538,7 +485,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
     int oldDeviceIdentifier = deviceIdentifier;
     deviceIdentifier = newDeviceIdentifier;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
   }
 
   /**
@@ -561,7 +508,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__NAME, oldName, name));
   }
 
   /**
@@ -571,7 +518,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
    */
   public MBrickd getBrickd()
   {
-    if (eContainerFeatureID() != ModelPackage.MBRICKLET_LINEAR_POTI__BRICKD) return null;
+    if (eContainerFeatureID() != ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD) return null;
     return (MBrickd)eContainer();
   }
 
@@ -582,7 +529,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
    */
   public NotificationChain basicSetBrickd(MBrickd newBrickd, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newBrickd, ModelPackage.MBRICKLET_LINEAR_POTI__BRICKD, msgs);
+    msgs = eBasicSetContainer((InternalEObject)newBrickd, ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD, msgs);
     return msgs;
   }
 
@@ -593,7 +540,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
    */
   public void setBrickd(MBrickd newBrickd)
   {
-    if (newBrickd != eInternalContainer() || (eContainerFeatureID() != ModelPackage.MBRICKLET_LINEAR_POTI__BRICKD && newBrickd != null))
+    if (newBrickd != eInternalContainer() || (eContainerFeatureID() != ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD && newBrickd != null))
     {
       if (EcoreUtil.isAncestor(this, newBrickd))
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -606,7 +553,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__BRICKD, newBrickd, newBrickd));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD, newBrickd, newBrickd));
   }
 
   /**
@@ -614,103 +561,13 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated
    */
-  public long getCallbackPeriod()
+  public EList<DualButtonDevice> getMsubdevices()
   {
-    return callbackPeriod;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setCallbackPeriod(long newCallbackPeriod)
-  {
-    long oldCallbackPeriod = callbackPeriod;
-    callbackPeriod = newCallbackPeriod;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public TFBaseConfiguration getTfConfig()
-  {
-    return tfConfig;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetTfConfig(TFBaseConfiguration newTfConfig, NotificationChain msgs)
-  {
-    TFBaseConfiguration oldTfConfig = tfConfig;
-    tfConfig = newTfConfig;
-    if (eNotificationRequired())
+    if (msubdevices == null)
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__TF_CONFIG, oldTfConfig, newTfConfig);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
+      msubdevices = new EObjectContainmentWithInverseEList<DualButtonDevice>(MSubDevice.class, this, ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK);
     }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setTfConfig(TFBaseConfiguration newTfConfig)
-  {
-    if (newTfConfig != tfConfig)
-    {
-      NotificationChain msgs = null;
-      if (tfConfig != null)
-        msgs = ((InternalEObject)tfConfig).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_LINEAR_POTI__TF_CONFIG, null, msgs);
-      if (newTfConfig != null)
-        msgs = ((InternalEObject)newTfConfig).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_LINEAR_POTI__TF_CONFIG, null, msgs);
-      msgs = basicSetTfConfig(newTfConfig, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__TF_CONFIG, newTfConfig, newTfConfig));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public DecimalValue getSensorValue()
-  {
-    return sensorValue;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setSensorValue(DecimalValue newSensorValue)
-  {
-    DecimalValue oldSensorValue = sensorValue;
-    sensorValue = newSensorValue;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_LINEAR_POTI__SENSOR_VALUE, oldSensorValue, sensorValue));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String getDeviceType()
-  {
-    return deviceType;
+    return msubdevices;
   }
 
   /**
@@ -718,18 +575,39 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
    * 
    * @generated NOT
    */
-  public void fetchSensorValue()
+  public void initSubDevices()
   {
-    try {
-      int position = tinkerforgeDevice.getPosition();
-      DecimalValue value = Tools.calculate(position);
-      setSensorValue(value);
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-    }
+    DualButtonLeftButton leftButton = ModelFactory.eINSTANCE.createDualButtonLeftButton();
+    leftButton.setUid(getUid());
+    String subIdLeftButton = "dualbutton_leftbutton";
+    leftButton.setSubId(subIdLeftButton);
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdLeftButton);
+    leftButton.init();
+    leftButton.setMbrick(this);
+
+    DualButtonRightButton rightButton = ModelFactory.eINSTANCE.createDualButtonRightButton();
+    rightButton.setUid(getUid());
+    String subIdRightButton = "dualbutton_rightbutton";
+    rightButton.setSubId(subIdRightButton);
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdRightButton);
+    rightButton.init();
+    rightButton.setMbrick(this);
+
+    DualButtonLeftLed leftLed = ModelFactory.eINSTANCE.createDualButtonLeftLed();
+    leftLed.setUid(getUid());
+    String subidLeftLed = "dualbutton_leftled";
+    leftLed.setSubId(subidLeftLed);
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subidLeftLed);
+    leftLed.init();
+    leftLed.setMbrick(this);
+
+    DualButtonRightLed rightLed = ModelFactory.eINSTANCE.createDualButtonRightLed();
+    rightLed.setUid(getUid());
+    String subIdRightLed = "dualbutton_rightled";
+    rightLed.setSubId(subIdRightLed);
+    logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, subIdRightLed);
+    rightLed.init();
+    rightLed.setMbrick(this);
   }
 
   /**
@@ -740,7 +618,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
   public void init()
   {
     setEnabledA(new AtomicBoolean());
-    logger = LoggerFactory.getLogger(MBrickletLinearPotiImpl.class);
+    logger = LoggerFactory.getLogger(MBrickletDualButtonImpl.class);
   }
 
   /**
@@ -750,43 +628,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
    */
   public void enable()
   {
-    setCallbackPeriod(10);
-    if (tfConfig != null) {
-      logger.trace("got configuration");
-      if (tfConfig.eIsSet(tfConfig.eClass().getEStructuralFeature("callbackPeriod"))) {
-        logger.trace("found callbackPeriod");
-        setCallbackPeriod(tfConfig.getCallbackPeriod());
-      }
-    }
-    logger.trace("callbackPeriod is {}", getCallbackPeriod());
-    tinkerforgeDevice = new BrickletLinearPoti(getUid(), getIpConnection());
-    listener = new PositionListener();
-    tinkerforgeDevice.addPositionListener(listener);
-    fetchSensorValue();
-    try {
-      tinkerforgeDevice.setPositionCallbackPeriod(getCallbackPeriod());
-    } catch (TimeoutException e) {
-      TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
-    } catch (NotConnectedException e) {
-      TinkerforgeErrorHandler.handleError(this,
-          TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
-    }
-  }
-
-  /**
-   * <!-- begin-user-doc --> <!-- end-user-doc -->
-   * 
-   * @generated NOT
-   */
-  private class PositionListener implements BrickletLinearPoti.PositionListener {
-
-    @Override
-    public void position(int position) {
-      DecimalValue value = Tools.calculate(position);
-      logger.trace("{} got new value {}", LoggerConstants.TFMODELUPDATE, value);
-      logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, value);
-      setSensorValue(value);
-    }
+    tinkerforgeDevice = new BrickletDualButton(getUid(), getIpConnection());
   }
 
   /**
@@ -796,9 +638,6 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
    */
   public void disable()
   {
-    if (listener != null) {
-      tinkerforgeDevice.removePositionListener(listener);
-    }
     tinkerforgeDevice = null;
   }
 
@@ -807,15 +646,18 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_LINEAR_POTI__BRICKD:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
         return basicSetBrickd((MBrickd)otherEnd, msgs);
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+        return ((InternalEList<InternalEObject>)(InternalEList<?>)getMsubdevices()).basicAdd(otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
   }
@@ -830,10 +672,10 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_LINEAR_POTI__BRICKD:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
         return basicSetBrickd(null, msgs);
-      case ModelPackage.MBRICKLET_LINEAR_POTI__TF_CONFIG:
-        return basicSetTfConfig(null, msgs);
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+        return ((InternalEList<?>)getMsubdevices()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -848,7 +690,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
   {
     switch (eContainerFeatureID())
     {
-      case ModelPackage.MBRICKLET_LINEAR_POTI__BRICKD:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
         return eInternalContainer().eInverseRemove(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class, msgs);
     }
     return super.eBasicRemoveFromContainerFeature(msgs);
@@ -864,36 +706,30 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_LINEAR_POTI__LOGGER:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__LOGGER:
         return getLogger();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__UID:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__UID:
         return getUid();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__POLL:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__POLL:
         return isPoll();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__ENABLED_A:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__ENABLED_A:
         return getEnabledA();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__TINKERFORGE_DEVICE:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__TINKERFORGE_DEVICE:
         return getTinkerforgeDevice();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__IP_CONNECTION:
         return getIpConnection();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__CONNECTED_UID:
         return getConnectedUid();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__POSITION:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__POSITION:
         return getPosition();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_IDENTIFIER:
         return getDeviceIdentifier();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__NAME:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__NAME:
         return getName();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__BRICKD:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
         return getBrickd();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__CALLBACK_PERIOD:
-        return getCallbackPeriod();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__TF_CONFIG:
-        return getTfConfig();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__SENSOR_VALUE:
-        return getSensorValue();
-      case ModelPackage.MBRICKLET_LINEAR_POTI__DEVICE_TYPE:
-        return getDeviceType();
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+        return getMsubdevices();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -903,52 +739,48 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_LINEAR_POTI__LOGGER:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__LOGGER:
         setLogger((Logger)newValue);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__UID:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__UID:
         setUid((String)newValue);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__POLL:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__POLL:
         setPoll((Boolean)newValue);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__ENABLED_A:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__TINKERFORGE_DEVICE:
-        setTinkerforgeDevice((BrickletLinearPoti)newValue);
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__TINKERFORGE_DEVICE:
+        setTinkerforgeDevice((BrickletDualButton)newValue);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__IP_CONNECTION:
         setIpConnection((IPConnection)newValue);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__CONNECTED_UID:
         setConnectedUid((String)newValue);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__POSITION:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__POSITION:
         setPosition((Character)newValue);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_IDENTIFIER:
         setDeviceIdentifier((Integer)newValue);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__NAME:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__NAME:
         setName((String)newValue);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__BRICKD:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
         setBrickd((MBrickd)newValue);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__CALLBACK_PERIOD:
-        setCallbackPeriod((Long)newValue);
-        return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__TF_CONFIG:
-        setTfConfig((TFBaseConfiguration)newValue);
-        return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__SENSOR_VALUE:
-        setSensorValue((DecimalValue)newValue);
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+        getMsubdevices().clear();
+        getMsubdevices().addAll((Collection<? extends DualButtonDevice>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -964,47 +796,41 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_LINEAR_POTI__LOGGER:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__UID:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__UID:
         setUid(UID_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__POLL:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__POLL:
         setPoll(POLL_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__ENABLED_A:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__TINKERFORGE_DEVICE:
-        setTinkerforgeDevice((BrickletLinearPoti)null);
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__TINKERFORGE_DEVICE:
+        setTinkerforgeDevice((BrickletDualButton)null);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__IP_CONNECTION:
         setIpConnection(IP_CONNECTION_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__CONNECTED_UID:
         setConnectedUid(CONNECTED_UID_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__POSITION:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__POSITION:
         setPosition(POSITION_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_IDENTIFIER:
         setDeviceIdentifier(DEVICE_IDENTIFIER_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__NAME:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__BRICKD:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
         setBrickd((MBrickd)null);
         return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__CALLBACK_PERIOD:
-        setCallbackPeriod(CALLBACK_PERIOD_EDEFAULT);
-        return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__TF_CONFIG:
-        setTfConfig((TFBaseConfiguration)null);
-        return;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__SENSOR_VALUE:
-        setSensorValue((DecimalValue)null);
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+        getMsubdevices().clear();
         return;
     }
     super.eUnset(featureID);
@@ -1020,36 +846,30 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
   {
     switch (featureID)
     {
-      case ModelPackage.MBRICKLET_LINEAR_POTI__LOGGER:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-      case ModelPackage.MBRICKLET_LINEAR_POTI__UID:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-      case ModelPackage.MBRICKLET_LINEAR_POTI__POLL:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__POLL:
         return poll != POLL_EDEFAULT;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__ENABLED_A:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-      case ModelPackage.MBRICKLET_LINEAR_POTI__TINKERFORGE_DEVICE:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__TINKERFORGE_DEVICE:
         return tinkerforgeDevice != null;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__IP_CONNECTION:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__IP_CONNECTION:
         return IP_CONNECTION_EDEFAULT == null ? ipConnection != null : !IP_CONNECTION_EDEFAULT.equals(ipConnection);
-      case ModelPackage.MBRICKLET_LINEAR_POTI__CONNECTED_UID:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__CONNECTED_UID:
         return CONNECTED_UID_EDEFAULT == null ? connectedUid != null : !CONNECTED_UID_EDEFAULT.equals(connectedUid);
-      case ModelPackage.MBRICKLET_LINEAR_POTI__POSITION:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__POSITION:
         return position != POSITION_EDEFAULT;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__DEVICE_IDENTIFIER:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_IDENTIFIER:
         return deviceIdentifier != DEVICE_IDENTIFIER_EDEFAULT;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__NAME:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case ModelPackage.MBRICKLET_LINEAR_POTI__BRICKD:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
         return getBrickd() != null;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__CALLBACK_PERIOD:
-        return callbackPeriod != CALLBACK_PERIOD_EDEFAULT;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__TF_CONFIG:
-        return tfConfig != null;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__SENSOR_VALUE:
-        return sensorValue != null;
-      case ModelPackage.MBRICKLET_LINEAR_POTI__DEVICE_TYPE:
-        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
+      case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+        return msubdevices != null && !msubdevices.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -1062,27 +882,11 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == CallbackListener.class)
+    if (baseClass == MSubDeviceHolder.class)
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.MBRICKLET_LINEAR_POTI__CALLBACK_PERIOD: return ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.MBRICKLET_LINEAR_POTI__TF_CONFIG: return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
-        default: return -1;
-      }
-    }
-    if (baseClass == MSensor.class)
-    {
-      switch (derivedFeatureID)
-      {
-        case ModelPackage.MBRICKLET_LINEAR_POTI__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
+        case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES: return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
         default: return -1;
       }
     }
@@ -1097,27 +901,11 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == CallbackListener.class)
+    if (baseClass == MSubDeviceHolder.class)
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.CALLBACK_LISTENER__CALLBACK_PERIOD: return ModelPackage.MBRICKLET_LINEAR_POTI__CALLBACK_PERIOD;
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG: return ModelPackage.MBRICKLET_LINEAR_POTI__TF_CONFIG;
-        default: return -1;
-      }
-    }
-    if (baseClass == MSensor.class)
-    {
-      switch (baseFeatureID)
-      {
-        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.MBRICKLET_LINEAR_POTI__SENSOR_VALUE;
+        case ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES: return ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES;
         default: return -1;
       }
     }
@@ -1132,25 +920,11 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
   @Override
   public int eDerivedOperationID(int baseOperationID, Class<?> baseClass)
   {
-    if (baseClass == CallbackListener.class)
+    if (baseClass == MSubDeviceHolder.class)
     {
       switch (baseOperationID)
       {
-        default: return -1;
-      }
-    }
-    if (baseClass == MTFConfigConsumer.class)
-    {
-      switch (baseOperationID)
-      {
-        default: return -1;
-      }
-    }
-    if (baseClass == MSensor.class)
-    {
-      switch (baseOperationID)
-      {
-        case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.MBRICKLET_LINEAR_POTI___FETCH_SENSOR_VALUE;
+        case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES: return ModelPackage.MBRICKLET_DUAL_BUTTON___INIT_SUB_DEVICES;
         default: return -1;
       }
     }
@@ -1167,16 +941,16 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
   {
     switch (operationID)
     {
-      case ModelPackage.MBRICKLET_LINEAR_POTI___FETCH_SENSOR_VALUE:
-        fetchSensorValue();
+      case ModelPackage.MBRICKLET_DUAL_BUTTON___INIT_SUB_DEVICES:
+        initSubDevices();
         return null;
-      case ModelPackage.MBRICKLET_LINEAR_POTI___INIT:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON___INIT:
         init();
         return null;
-      case ModelPackage.MBRICKLET_LINEAR_POTI___ENABLE:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON___ENABLE:
         enable();
         return null;
-      case ModelPackage.MBRICKLET_LINEAR_POTI___DISABLE:
+      case ModelPackage.MBRICKLET_DUAL_BUTTON___DISABLE:
         disable();
         return null;
     }
@@ -1214,14 +988,8 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
     result.append(deviceIdentifier);
     result.append(", name: ");
     result.append(name);
-    result.append(", callbackPeriod: ");
-    result.append(callbackPeriod);
-    result.append(", sensorValue: ");
-    result.append(sensorValue);
-    result.append(", deviceType: ");
-    result.append(deviceType);
     result.append(')');
     return result.toString();
   }
 
-} //MBrickletLinearPotiImpl
+} //MBrickletDualButtonImpl

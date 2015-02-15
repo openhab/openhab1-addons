@@ -44,6 +44,11 @@ import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
 import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
 import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLeftButton;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLeftLed;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonRightButton;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonRightLed;
 import org.openhab.binding.tinkerforge.internal.model.Direction;
 import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
@@ -72,6 +77,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletHallEffect;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
@@ -174,6 +180,7 @@ import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
+import com.tinkerforge.BrickletDualButton;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
@@ -396,6 +403,48 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EClass setPointActorEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass mBrickletDualButtonEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass dualButtonDeviceEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass dualButtonLeftButtonEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass dualButtonRightButtonEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass dualButtonLeftLedEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass dualButtonRightLedEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1306,6 +1355,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * @generated
    */
   private EDataType tinkerBrickletLinearPotiEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType tinkerBrickletDualButtonEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2576,6 +2632,66 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getSetPointActor__SetValue__PercentType_DeviceOptions()
   {
     return setPointActorEClass.getEOperations().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getMBrickletDualButton()
+  {
+    return mBrickletDualButtonEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDualButtonDevice()
+  {
+    return dualButtonDeviceEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDualButtonLeftButton()
+  {
+    return dualButtonLeftButtonEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDualButtonRightButton()
+  {
+    return dualButtonRightButtonEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDualButtonLeftLed()
+  {
+    return dualButtonLeftLedEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDualButtonRightLed()
+  {
+    return dualButtonRightLedEClass;
   }
 
   /**
@@ -5623,6 +5739,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getTinkerBrickletDualButton()
+  {
+    return tinkerBrickletDualButtonEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EDataType getHSBType()
   {
     return hsbTypeEDataType;
@@ -5887,6 +6013,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(setPointActorEClass, SET_POINT_ACTOR__PERCENT_VALUE);
     createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS);
     createEOperation(setPointActorEClass, SET_POINT_ACTOR___SET_VALUE__PERCENTTYPE_DEVICEOPTIONS);
+
+    mBrickletDualButtonEClass = createEClass(MBRICKLET_DUAL_BUTTON);
+
+    dualButtonDeviceEClass = createEClass(DUAL_BUTTON_DEVICE);
+
+    dualButtonLeftButtonEClass = createEClass(DUAL_BUTTON_LEFT_BUTTON);
+
+    dualButtonRightButtonEClass = createEClass(DUAL_BUTTON_RIGHT_BUTTON);
+
+    dualButtonLeftLedEClass = createEClass(DUAL_BUTTON_LEFT_LED);
+
+    dualButtonRightLedEClass = createEClass(DUAL_BUTTON_RIGHT_LED);
 
     mBrickletLinearPotiEClass = createEClass(MBRICKLET_LINEAR_POTI);
     createEAttribute(mBrickletLinearPotiEClass, MBRICKLET_LINEAR_POTI__DEVICE_TYPE);
@@ -6297,6 +6435,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     tinkerBrickletLEDStripEDataType = createEDataType(TINKER_BRICKLET_LED_STRIP);
     brickletJoystickEDataType = createEDataType(BRICKLET_JOYSTICK);
     tinkerBrickletLinearPotiEDataType = createEDataType(TINKER_BRICKLET_LINEAR_POTI);
+    tinkerBrickletDualButtonEDataType = createEDataType(TINKER_BRICKLET_DUAL_BUTTON);
     hsbTypeEDataType = createEDataType(HSB_TYPE);
     upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
     percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -6398,6 +6537,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     g2 = createEGenericType(setPointActorEClass_C);
     g1.getETypeArguments().add(g2);
     setPointActorEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMDevice());
+    g2 = createEGenericType(this.getTinkerBrickletDualButton());
+    g1.getETypeArguments().add(g2);
+    mBrickletDualButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDeviceHolder());
+    g2 = createEGenericType(this.getDualButtonDevice());
+    g1.getETypeArguments().add(g2);
+    mBrickletDualButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSubDevice());
+    g2 = createEGenericType(this.getMBrickletDualButton());
+    g1.getETypeArguments().add(g2);
+    dualButtonDeviceEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getDualButtonDevice());
+    dualButtonLeftButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getDigitalValue());
+    g1.getETypeArguments().add(g2);
+    dualButtonLeftButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getDualButtonDevice());
+    dualButtonRightButtonEClass.getEGenericSuperTypes().add(g1);
+    g1 = createEGenericType(this.getMSensor());
+    g2 = createEGenericType(this.getDigitalValue());
+    g1.getETypeArguments().add(g2);
+    dualButtonRightButtonEClass.getEGenericSuperTypes().add(g1);
+    dualButtonLeftLedEClass.getESuperTypes().add(this.getDualButtonDevice());
+    dualButtonLeftLedEClass.getESuperTypes().add(this.getDigitalActor());
+    dualButtonRightLedEClass.getESuperTypes().add(this.getDualButtonDevice());
+    dualButtonRightLedEClass.getESuperTypes().add(this.getDigitalActor());
     g1 = createEGenericType(this.getMDevice());
     g2 = createEGenericType(this.getTinkerBrickletLinearPoti());
     g1.getETypeArguments().add(g2);
@@ -7143,6 +7310,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     addEParameter(op, this.getPercentType(), "newValue", 0, 1, !IS_UNIQUE, IS_ORDERED);
     addEParameter(op, this.getDeviceOptions(), "opts", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+    initEClass(mBrickletDualButtonEClass, MBrickletDualButton.class, "MBrickletDualButton", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(dualButtonDeviceEClass, DualButtonDevice.class, "DualButtonDevice", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(dualButtonLeftButtonEClass, DualButtonLeftButton.class, "DualButtonLeftButton", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(dualButtonRightButtonEClass, DualButtonRightButton.class, "DualButtonRightButton", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(dualButtonLeftLedEClass, DualButtonLeftLed.class, "DualButtonLeftLed", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(dualButtonRightLedEClass, DualButtonRightLed.class, "DualButtonRightLed", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
     initEClass(mBrickletLinearPotiEClass, MBrickletLinearPoti.class, "MBrickletLinearPoti", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickletLinearPoti_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_linear_poti", 0, 1, MBrickletLinearPoti.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -7726,6 +7905,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEDataType(tinkerBrickletLEDStripEDataType, BrickletLEDStrip.class, "TinkerBrickletLEDStrip", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(brickletJoystickEDataType, BrickletJoystick.class, "BrickletJoystick", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(tinkerBrickletLinearPotiEDataType, BrickletLinearPoti.class, "TinkerBrickletLinearPoti", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(tinkerBrickletDualButtonEDataType, BrickletDualButton.class, "TinkerBrickletDualButton", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(percentValueEDataType, PercentValue.class, "PercentValue", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

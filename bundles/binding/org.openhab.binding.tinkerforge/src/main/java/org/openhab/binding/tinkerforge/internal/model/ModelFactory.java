@@ -80,6 +80,51 @@ public interface ModelFactory extends EFactory
   MBrickd createMBrickd();
 
   /**
+   * Returns a new object of class '<em>MBricklet Dual Button</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Dual Button</em>'.
+   * @generated
+   */
+  MBrickletDualButton createMBrickletDualButton();
+
+  /**
+   * Returns a new object of class '<em>Dual Button Left Button</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dual Button Left Button</em>'.
+   * @generated
+   */
+  DualButtonLeftButton createDualButtonLeftButton();
+
+  /**
+   * Returns a new object of class '<em>Dual Button Right Button</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dual Button Right Button</em>'.
+   * @generated
+   */
+  DualButtonRightButton createDualButtonRightButton();
+
+  /**
+   * Returns a new object of class '<em>Dual Button Left Led</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dual Button Left Led</em>'.
+   * @generated
+   */
+  DualButtonLeftLed createDualButtonLeftLed();
+
+  /**
+   * Returns a new object of class '<em>Dual Button Right Led</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dual Button Right Led</em>'.
+   * @generated
+   */
+  DualButtonRightLed createDualButtonRightLed();
+
+  /**
    * Returns a new object of class '<em>MBricklet Linear Poti</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

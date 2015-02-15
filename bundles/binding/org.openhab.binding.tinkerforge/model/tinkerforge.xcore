@@ -48,6 +48,7 @@ import com.tinkerforge.BrickletSegmentDisplay4x7
 import com.tinkerforge.BrickletLEDStrip
 import com.tinkerforge.BrickletJoystick
 import com.tinkerforge.BrickletLinearPoti
+import com.tinkerforge.BrickletDualButton
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -97,6 +98,7 @@ type TinkerBrickletSegmentDisplay4x7 wraps BrickletSegmentDisplay4x7
 type TinkerBrickletLEDStrip wraps BrickletLEDStrip
 type BrickletJoystick wraps BrickletJoystick
 type TinkerBrickletLinearPoti wraps BrickletLinearPoti
+type TinkerBrickletDualButton wraps BrickletDualButton
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -253,6 +255,31 @@ interface SetPointActor<C extends DimmableConfiguration> extends DimmableActor<C
     PercentValue percentValue
     op void setValue(BigDecimal newValue, DeviceOptions opts)
     op void setValue(PercentType newValue, DeviceOptions opts)
+}
+
+class MBrickletDualButton extends MDevice<TinkerBrickletDualButton>,
+	MSubDeviceHolder<DualButtonDevice>{
+
+}
+
+interface DualButtonDevice extends MSubDevice<MBrickletDualButton>{
+
+}
+
+class DualButtonLeftButton extends DualButtonDevice, MSensor<DigitalValue> {
+	
+}
+
+class DualButtonRightButton extends DualButtonDevice, MSensor<DigitalValue> {
+	
+}
+
+class DualButtonLeftLed extends DualButtonDevice, DigitalActor {
+	
+}
+
+class DualButtonRightLed extends DualButtonDevice, DigitalActor {
+	
 }
 
 class MBrickletLinearPoti extends MDevice<TinkerBrickletLinearPoti>, CallbackListener,

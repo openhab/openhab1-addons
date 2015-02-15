@@ -13,10 +13,9 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
-import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLeftButton;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
@@ -24,31 +23,31 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tinkerforge.BrickletJoystick;
+import com.tinkerforge.BrickletDualButton;
+import com.tinkerforge.BrickletDualButton.ButtonState;
 import com.tinkerforge.NotConnectedException;
 import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Joystick Button</b></em>'.
+ * An implementation of the model object '<em><b>Dual Button Left Button</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getLogger <em>Logger</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getUid <em>Uid</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#isPoll <em>Poll</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getEnabledA <em>Enabled A</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getSubId <em>Sub Id</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getMbrick <em>Mbrick</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getSensorValue <em>Sensor Value</em>}</li>
- *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getDeviceType <em>Device Type</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftButtonImpl#getLogger <em>Logger</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftButtonImpl#getUid <em>Uid</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftButtonImpl#isPoll <em>Poll</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftButtonImpl#getEnabledA <em>Enabled A</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftButtonImpl#getSubId <em>Sub Id</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftButtonImpl#getMbrick <em>Mbrick</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLeftButtonImpl#getSensorValue <em>Sensor Value</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements JoystickButton
+public class DualButtonLeftButtonImpl extends MinimalEObjectImpl.Container implements DualButtonLeftButton
 {
   /**
    * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
@@ -59,7 +58,6 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected static final Logger LOGGER_EDEFAULT = null;
-
   /**
    * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -69,7 +67,6 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected Logger logger = LOGGER_EDEFAULT;
-
   /**
    * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -79,7 +76,6 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected static final String UID_EDEFAULT = null;
-
   /**
    * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -89,7 +85,6 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected String uid = UID_EDEFAULT;
-
   /**
    * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -99,7 +94,6 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected static final boolean POLL_EDEFAULT = true;
-
   /**
    * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -109,7 +103,6 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected boolean poll = POLL_EDEFAULT;
-
   /**
    * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -119,7 +112,6 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected static final AtomicBoolean ENABLED_A_EDEFAULT = null;
-
   /**
    * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -129,7 +121,6 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected AtomicBoolean enabledA = ENABLED_A_EDEFAULT;
-
   /**
    * The default value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -139,7 +130,6 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected static final String SUB_ID_EDEFAULT = null;
-
   /**
    * The cached value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -149,7 +139,6 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected String subId = SUB_ID_EDEFAULT;
-
   /**
    * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -159,37 +148,15 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * @ordered
    */
   protected HighLowValue sensorValue;
-
-  /**
-   * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDeviceType()
-   * @generated
-   * @ordered
-   */
-  protected static final String DEVICE_TYPE_EDEFAULT = "joystick_button";
-
-  /**
-   * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDeviceType()
-   * @generated
-   * @ordered
-   */
-  protected String deviceType = DEVICE_TYPE_EDEFAULT;
-
-  private BrickletJoystick tinkerforgeDevice;
-
-  private ButtonListener listener;
+  private StateListener listener;
+  private BrickletDualButton tinkerforgeDevice;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected JoystickButtonImpl()
+  protected DualButtonLeftButtonImpl()
   {
     super();
   }
@@ -202,7 +169,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   @Override
   protected EClass eStaticClass()
   {
-    return ModelPackage.Literals.JOYSTICK_BUTTON;
+    return ModelPackage.Literals.DUAL_BUTTON_LEFT_BUTTON;
   }
 
   /**
@@ -225,7 +192,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
     Logger oldLogger = logger;
     logger = newLogger;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.JOYSTICK_BUTTON__LOGGER, oldLogger, logger));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_BUTTON__LOGGER, oldLogger, logger));
   }
 
   /**
@@ -248,7 +215,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
     String oldUid = uid;
     uid = newUid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.JOYSTICK_BUTTON__UID, oldUid, uid));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_BUTTON__UID, oldUid, uid));
   }
 
   /**
@@ -271,7 +238,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
     boolean oldPoll = poll;
     poll = newPoll;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.JOYSTICK_BUTTON__POLL, oldPoll, poll));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_BUTTON__POLL, oldPoll, poll));
   }
 
   /**
@@ -294,7 +261,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
     AtomicBoolean oldEnabledA = enabledA;
     enabledA = newEnabledA;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.JOYSTICK_BUTTON__ENABLED_A, oldEnabledA, enabledA));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_BUTTON__ENABLED_A, oldEnabledA, enabledA));
   }
 
   /**
@@ -317,7 +284,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
     String oldSubId = subId;
     subId = newSubId;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.JOYSTICK_BUTTON__SUB_ID, oldSubId, subId));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_BUTTON__SUB_ID, oldSubId, subId));
   }
 
   /**
@@ -325,10 +292,10 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * <!-- end-user-doc -->
    * @generated
    */
-  public MBrickletJoystick getMbrick()
+  public MBrickletDualButton getMbrick()
   {
-    if (eContainerFeatureID() != ModelPackage.JOYSTICK_BUTTON__MBRICK) return null;
-    return (MBrickletJoystick)eContainer();
+    if (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_LEFT_BUTTON__MBRICK) return null;
+    return (MBrickletDualButton)eContainer();
   }
 
   /**
@@ -336,9 +303,9 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetMbrick(MBrickletJoystick newMbrick, NotificationChain msgs)
+  public NotificationChain basicSetMbrick(MBrickletDualButton newMbrick, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.JOYSTICK_BUTTON__MBRICK, msgs);
+    msgs = eBasicSetContainer((InternalEObject)newMbrick, ModelPackage.DUAL_BUTTON_LEFT_BUTTON__MBRICK, msgs);
     return msgs;
   }
 
@@ -347,9 +314,9 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setMbrick(MBrickletJoystick newMbrick)
+  public void setMbrick(MBrickletDualButton newMbrick)
   {
-    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.JOYSTICK_BUTTON__MBRICK && newMbrick != null))
+    if (newMbrick != eInternalContainer() || (eContainerFeatureID() != ModelPackage.DUAL_BUTTON_LEFT_BUTTON__MBRICK && newMbrick != null))
     {
       if (EcoreUtil.isAncestor(this, newMbrick))
         throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -362,7 +329,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.JOYSTICK_BUTTON__MBRICK, newMbrick, newMbrick));
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_BUTTON__MBRICK, newMbrick, newMbrick));
   }
 
   /**
@@ -385,17 +352,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
     HighLowValue oldSensorValue = sensorValue;
     sensorValue = newSensorValue;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.JOYSTICK_BUTTON__SENSOR_VALUE, oldSensorValue, sensorValue));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String getDeviceType()
-  {
-    return deviceType;
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.DUAL_BUTTON_LEFT_BUTTON__SENSOR_VALUE, oldSensorValue, sensorValue));
   }
 
   /**
@@ -406,8 +363,8 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   public void fetchSensorValue()
   {
     try {
-      HighLowValue value = tinkerforgeDevice.isPressed() ? HighLowValue.LOW : HighLowValue.HIGH;
-      setSensorValue(value);
+      ButtonState buttonState = tinkerforgeDevice.getButtonState();
+      setSensorValue(getValue4State(buttonState.buttonL));
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
@@ -424,7 +381,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   public void init()
   {
     setEnabledA(new AtomicBoolean());
-    logger = LoggerFactory.getLogger(JoystickButtonImpl.class);
+    logger = LoggerFactory.getLogger(DualButtonLeftButtonImpl.class);
   }
 
   /**
@@ -435,9 +392,8 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   public void enable()
   {
     tinkerforgeDevice = getMbrick().getTinkerforgeDevice();
-    listener = new ButtonListener();
-    tinkerforgeDevice.addPressedListener(listener);
-    tinkerforgeDevice.addReleasedListener(listener);
+    listener = new StateListener();
+    tinkerforgeDevice.addStateChangedListener(listener);
     fetchSensorValue();
   }
 
@@ -446,23 +402,18 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
    * 
    * @generated NOT
    */
-  private class ButtonListener
-      implements
-        BrickletJoystick.PressedListener,
-        BrickletJoystick.ReleasedListener {
+  private class StateListener implements BrickletDualButton.StateChangedListener {
 
     @Override
-    public void released() {
-      logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, HighLowValue.LOW);
-      setSensorValue(HighLowValue.HIGH);
+    public void stateChanged(short buttonL, short buttonR, short ledL, short ledR) {
+      HighLowValue value = getValue4State(buttonL);
+      setSensorValue(value);
     }
 
-    @Override
-    public void pressed() {
-      logger.trace("{} setting new value {}", LoggerConstants.TFMODELUPDATE, HighLowValue.HIGH);
-      setSensorValue(HighLowValue.LOW);
-    }
+  }
 
+  private HighLowValue getValue4State(short state) {
+    return state == BrickletDualButton.BUTTON_STATE_PRESSED ? HighLowValue.LOW : HighLowValue.HIGH;
   }
 
   /**
@@ -473,8 +424,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   public void disable()
   {
     if (listener != null) {
-      tinkerforgeDevice.removePressedListener(listener);
-      tinkerforgeDevice.removeReleasedListener(listener);
+      tinkerforgeDevice.removeStateChangedListener(listener);
     }
     tinkerforgeDevice = null;
   }
@@ -489,10 +439,10 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case ModelPackage.JOYSTICK_BUTTON__MBRICK:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__MBRICK:
         if (eInternalContainer() != null)
           msgs = eBasicRemoveFromContainer(msgs);
-        return basicSetMbrick((MBrickletJoystick)otherEnd, msgs);
+        return basicSetMbrick((MBrickletDualButton)otherEnd, msgs);
     }
     return super.eInverseAdd(otherEnd, featureID, msgs);
   }
@@ -507,7 +457,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case ModelPackage.JOYSTICK_BUTTON__MBRICK:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__MBRICK:
         return basicSetMbrick(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -523,7 +473,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (eContainerFeatureID())
     {
-      case ModelPackage.JOYSTICK_BUTTON__MBRICK:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__MBRICK:
         return eInternalContainer().eInverseRemove(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES, MSubDeviceHolder.class, msgs);
     }
     return super.eBasicRemoveFromContainerFeature(msgs);
@@ -539,22 +489,20 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case ModelPackage.JOYSTICK_BUTTON__LOGGER:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__LOGGER:
         return getLogger();
-      case ModelPackage.JOYSTICK_BUTTON__UID:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__UID:
         return getUid();
-      case ModelPackage.JOYSTICK_BUTTON__POLL:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__POLL:
         return isPoll();
-      case ModelPackage.JOYSTICK_BUTTON__ENABLED_A:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__ENABLED_A:
         return getEnabledA();
-      case ModelPackage.JOYSTICK_BUTTON__SUB_ID:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__SUB_ID:
         return getSubId();
-      case ModelPackage.JOYSTICK_BUTTON__MBRICK:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__MBRICK:
         return getMbrick();
-      case ModelPackage.JOYSTICK_BUTTON__SENSOR_VALUE:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__SENSOR_VALUE:
         return getSensorValue();
-      case ModelPackage.JOYSTICK_BUTTON__DEVICE_TYPE:
-        return getDeviceType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -569,25 +517,25 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case ModelPackage.JOYSTICK_BUTTON__LOGGER:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__LOGGER:
         setLogger((Logger)newValue);
         return;
-      case ModelPackage.JOYSTICK_BUTTON__UID:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__UID:
         setUid((String)newValue);
         return;
-      case ModelPackage.JOYSTICK_BUTTON__POLL:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__POLL:
         setPoll((Boolean)newValue);
         return;
-      case ModelPackage.JOYSTICK_BUTTON__ENABLED_A:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__ENABLED_A:
         setEnabledA((AtomicBoolean)newValue);
         return;
-      case ModelPackage.JOYSTICK_BUTTON__SUB_ID:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__SUB_ID:
         setSubId((String)newValue);
         return;
-      case ModelPackage.JOYSTICK_BUTTON__MBRICK:
-        setMbrick((MBrickletJoystick)newValue);
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__MBRICK:
+        setMbrick((MBrickletDualButton)newValue);
         return;
-      case ModelPackage.JOYSTICK_BUTTON__SENSOR_VALUE:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__SENSOR_VALUE:
         setSensorValue((HighLowValue)newValue);
         return;
     }
@@ -604,25 +552,25 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case ModelPackage.JOYSTICK_BUTTON__LOGGER:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__LOGGER:
         setLogger(LOGGER_EDEFAULT);
         return;
-      case ModelPackage.JOYSTICK_BUTTON__UID:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__UID:
         setUid(UID_EDEFAULT);
         return;
-      case ModelPackage.JOYSTICK_BUTTON__POLL:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__POLL:
         setPoll(POLL_EDEFAULT);
         return;
-      case ModelPackage.JOYSTICK_BUTTON__ENABLED_A:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__ENABLED_A:
         setEnabledA(ENABLED_A_EDEFAULT);
         return;
-      case ModelPackage.JOYSTICK_BUTTON__SUB_ID:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__SUB_ID:
         setSubId(SUB_ID_EDEFAULT);
         return;
-      case ModelPackage.JOYSTICK_BUTTON__MBRICK:
-        setMbrick((MBrickletJoystick)null);
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__MBRICK:
+        setMbrick((MBrickletDualButton)null);
         return;
-      case ModelPackage.JOYSTICK_BUTTON__SENSOR_VALUE:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__SENSOR_VALUE:
         setSensorValue((HighLowValue)null);
         return;
     }
@@ -639,22 +587,20 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case ModelPackage.JOYSTICK_BUTTON__LOGGER:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__LOGGER:
         return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-      case ModelPackage.JOYSTICK_BUTTON__UID:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__UID:
         return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-      case ModelPackage.JOYSTICK_BUTTON__POLL:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__POLL:
         return poll != POLL_EDEFAULT;
-      case ModelPackage.JOYSTICK_BUTTON__ENABLED_A:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__ENABLED_A:
         return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-      case ModelPackage.JOYSTICK_BUTTON__SUB_ID:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__SUB_ID:
         return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
-      case ModelPackage.JOYSTICK_BUTTON__MBRICK:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__MBRICK:
         return getMbrick() != null;
-      case ModelPackage.JOYSTICK_BUTTON__SENSOR_VALUE:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__SENSOR_VALUE:
         return sensorValue != null;
-      case ModelPackage.JOYSTICK_BUTTON__DEVICE_TYPE:
-        return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
     }
     return super.eIsSet(featureID);
   }
@@ -671,7 +617,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
     {
       switch (derivedFeatureID)
       {
-        case ModelPackage.JOYSTICK_BUTTON__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
+        case ModelPackage.DUAL_BUTTON_LEFT_BUTTON__SENSOR_VALUE: return ModelPackage.MSENSOR__SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -690,7 +636,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
     {
       switch (baseFeatureID)
       {
-        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.JOYSTICK_BUTTON__SENSOR_VALUE;
+        case ModelPackage.MSENSOR__SENSOR_VALUE: return ModelPackage.DUAL_BUTTON_LEFT_BUTTON__SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -709,7 +655,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
     {
       switch (baseOperationID)
       {
-        case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.JOYSTICK_BUTTON___FETCH_SENSOR_VALUE;
+        case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE: return ModelPackage.DUAL_BUTTON_LEFT_BUTTON___FETCH_SENSOR_VALUE;
         default: return -1;
       }
     }
@@ -726,16 +672,16 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (operationID)
     {
-      case ModelPackage.JOYSTICK_BUTTON___FETCH_SENSOR_VALUE:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON___FETCH_SENSOR_VALUE:
         fetchSensorValue();
         return null;
-      case ModelPackage.JOYSTICK_BUTTON___INIT:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON___INIT:
         init();
         return null;
-      case ModelPackage.JOYSTICK_BUTTON___ENABLE:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON___ENABLE:
         enable();
         return null;
-      case ModelPackage.JOYSTICK_BUTTON___DISABLE:
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON___DISABLE:
         disable();
         return null;
     }
@@ -765,10 +711,8 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
     result.append(subId);
     result.append(", sensorValue: ");
     result.append(sensorValue);
-    result.append(", deviceType: ");
-    result.append(deviceType);
     result.append(')');
     return result.toString();
   }
 
-} //JoystickButtonImpl
+} //DualButtonLeftButtonImpl

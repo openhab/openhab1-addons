@@ -49,6 +49,7 @@ import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
+import com.tinkerforge.BrickletDualButton;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
@@ -895,6 +896,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
               logger.debug("addDevice BrickletLinearPoti");
               mDevice = factory.createMBrickletLinearPoti();
               mDevice.setDeviceIdentifier(BrickletLinearPoti.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletDualButton.DEVICE_IDENTIFIER){
+              logger.debug("addDevice BrickletDualButton");
+              mDevice = factory.createMBrickletDualButton();
+              mDevice.setDeviceIdentifier(BrickletDualButton.DEVICE_IDENTIFIER);
             }
 			if (mDevice != null) {
 				mDevice.setIpConnection(getIpConnection());

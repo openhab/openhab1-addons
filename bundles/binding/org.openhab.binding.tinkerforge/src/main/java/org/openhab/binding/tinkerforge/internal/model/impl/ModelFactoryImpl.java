@@ -82,6 +82,7 @@ import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
+import com.tinkerforge.BrickletDualButton;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
@@ -162,6 +163,11 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
     {
       case ModelPackage.ECOSYSTEM: return createEcosystem();
       case ModelPackage.MBRICKD: return createMBrickd();
+      case ModelPackage.MBRICKLET_DUAL_BUTTON: return createMBrickletDualButton();
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON: return createDualButtonLeftButton();
+      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON: return createDualButtonRightButton();
+      case ModelPackage.DUAL_BUTTON_LEFT_LED: return createDualButtonLeftLed();
+      case ModelPackage.DUAL_BUTTON_RIGHT_LED: return createDualButtonRightLed();
       case ModelPackage.MBRICKLET_LINEAR_POTI: return createMBrickletLinearPoti();
       case ModelPackage.MBRICKLET_JOYSTICK: return createMBrickletJoystick();
       case ModelPackage.JOYSTICK_XPOSITION: return createJoystickXPosition();
@@ -364,6 +370,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createBrickletJoystickFromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_LINEAR_POTI:
         return createTinkerBrickletLinearPotiFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_DUAL_BUTTON:
+        return createTinkerBrickletDualButtonFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -507,6 +515,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertBrickletJoystickToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_LINEAR_POTI:
         return convertTinkerBrickletLinearPotiToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_DUAL_BUTTON:
+        return convertTinkerBrickletDualButtonToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
       case ModelPackage.UP_DOWN_TYPE:
@@ -582,6 +592,61 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickdImpl mBrickd = new MBrickdImpl();
     return mBrickd;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletDualButton createMBrickletDualButton()
+  {
+    MBrickletDualButtonImpl mBrickletDualButton = new MBrickletDualButtonImpl();
+    return mBrickletDualButton;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonLeftButton createDualButtonLeftButton()
+  {
+    DualButtonLeftButtonImpl dualButtonLeftButton = new DualButtonLeftButtonImpl();
+    return dualButtonLeftButton;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonRightButton createDualButtonRightButton()
+  {
+    DualButtonRightButtonImpl dualButtonRightButton = new DualButtonRightButtonImpl();
+    return dualButtonRightButton;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonLeftLed createDualButtonLeftLed()
+  {
+    DualButtonLeftLedImpl dualButtonLeftLed = new DualButtonLeftLedImpl();
+    return dualButtonLeftLed;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonRightLed createDualButtonRightLed()
+  {
+    DualButtonRightLedImpl dualButtonRightLed = new DualButtonRightLedImpl();
+    return dualButtonRightLed;
   }
 
   /**
@@ -2450,6 +2515,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertTinkerBrickletLinearPotiToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletDualButton createTinkerBrickletDualButtonFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletDualButton)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletDualButtonToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

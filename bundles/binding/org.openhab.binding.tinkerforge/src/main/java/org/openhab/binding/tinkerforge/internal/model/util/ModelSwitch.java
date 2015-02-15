@@ -335,6 +335,69 @@ public class ModelSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ModelPackage.MBRICKLET_DUAL_BUTTON:
+      {
+        MBrickletDualButton mBrickletDualButton = (MBrickletDualButton)theEObject;
+        T result = caseMBrickletDualButton(mBrickletDualButton);
+        if (result == null) result = caseMDevice(mBrickletDualButton);
+        if (result == null) result = caseMSubDeviceHolder(mBrickletDualButton);
+        if (result == null) result = caseMBaseDevice(mBrickletDualButton);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DUAL_BUTTON_DEVICE:
+      {
+        DualButtonDevice dualButtonDevice = (DualButtonDevice)theEObject;
+        T result = caseDualButtonDevice(dualButtonDevice);
+        if (result == null) result = caseMSubDevice(dualButtonDevice);
+        if (result == null) result = caseMBaseDevice(dualButtonDevice);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON:
+      {
+        DualButtonLeftButton dualButtonLeftButton = (DualButtonLeftButton)theEObject;
+        T result = caseDualButtonLeftButton(dualButtonLeftButton);
+        if (result == null) result = caseDualButtonDevice(dualButtonLeftButton);
+        if (result == null) result = caseMSensor(dualButtonLeftButton);
+        if (result == null) result = caseMSubDevice(dualButtonLeftButton);
+        if (result == null) result = caseMBaseDevice(dualButtonLeftButton);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON:
+      {
+        DualButtonRightButton dualButtonRightButton = (DualButtonRightButton)theEObject;
+        T result = caseDualButtonRightButton(dualButtonRightButton);
+        if (result == null) result = caseDualButtonDevice(dualButtonRightButton);
+        if (result == null) result = caseMSensor(dualButtonRightButton);
+        if (result == null) result = caseMSubDevice(dualButtonRightButton);
+        if (result == null) result = caseMBaseDevice(dualButtonRightButton);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DUAL_BUTTON_LEFT_LED:
+      {
+        DualButtonLeftLed dualButtonLeftLed = (DualButtonLeftLed)theEObject;
+        T result = caseDualButtonLeftLed(dualButtonLeftLed);
+        if (result == null) result = caseDualButtonDevice(dualButtonLeftLed);
+        if (result == null) result = caseDigitalActor(dualButtonLeftLed);
+        if (result == null) result = caseMSubDevice(dualButtonLeftLed);
+        if (result == null) result = caseMBaseDevice(dualButtonLeftLed);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ModelPackage.DUAL_BUTTON_RIGHT_LED:
+      {
+        DualButtonRightLed dualButtonRightLed = (DualButtonRightLed)theEObject;
+        T result = caseDualButtonRightLed(dualButtonRightLed);
+        if (result == null) result = caseDualButtonDevice(dualButtonRightLed);
+        if (result == null) result = caseDigitalActor(dualButtonRightLed);
+        if (result == null) result = caseMSubDevice(dualButtonRightLed);
+        if (result == null) result = caseMBaseDevice(dualButtonRightLed);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ModelPackage.MBRICKLET_LINEAR_POTI:
       {
         MBrickletLinearPoti mBrickletLinearPoti = (MBrickletLinearPoti)theEObject;
@@ -1650,6 +1713,102 @@ public class ModelSwitch<T> extends Switch<T>
    * @generated
    */
   public <C extends DimmableConfiguration> T caseSetPointActor(SetPointActor<C> object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>MBricklet Dual Button</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>MBricklet Dual Button</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMBrickletDualButton(MBrickletDualButton object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Dual Button Device</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Dual Button Device</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDualButtonDevice(DualButtonDevice object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Dual Button Left Button</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Dual Button Left Button</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDualButtonLeftButton(DualButtonLeftButton object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Dual Button Right Button</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Dual Button Right Button</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDualButtonRightButton(DualButtonRightButton object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Dual Button Left Led</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Dual Button Left Led</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDualButtonLeftLed(DualButtonLeftLed object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Dual Button Right Led</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Dual Button Right Led</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDualButtonRightLed(DualButtonRightLed object)
   {
     return null;
   }
