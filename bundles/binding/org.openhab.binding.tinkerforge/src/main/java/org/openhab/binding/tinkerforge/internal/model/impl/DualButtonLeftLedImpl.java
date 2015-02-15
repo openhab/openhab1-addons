@@ -365,9 +365,9 @@ public class DualButtonLeftLedImpl extends MinimalEObjectImpl.Container implemen
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
    */
   public void turnDigital(HighLowValue digitalState)
   {
