@@ -1,5 +1,7 @@
 package org.openhab.binding.mpower.internal;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Ubiquiti mPower strip binding
  * 
@@ -12,7 +14,6 @@ public class MpowerConfig {
 	private String user;
 	private String host;
 	private String password;
-	private boolean secure;
 	private long refreshInterval;
 
 	public String getId() {
@@ -39,14 +40,6 @@ public class MpowerConfig {
 		this.password = password;
 	}
 
-	public boolean isSecure() {
-		return secure;
-	}
-
-	public void setSecure(boolean secure) {
-		this.secure = secure;
-	}
-
 	public String getHost() {
 		return host;
 	}
@@ -61,5 +54,15 @@ public class MpowerConfig {
 
 	public void setRefreshInterval(long refreshInterval) {
 		this.refreshInterval = refreshInterval;
+	}
+
+	public boolean isValid() {
+		if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(host)
+				&& StringUtils.isNotBlank(user)
+				&& StringUtils.isNotBlank(password) && refreshInterval > 2000) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

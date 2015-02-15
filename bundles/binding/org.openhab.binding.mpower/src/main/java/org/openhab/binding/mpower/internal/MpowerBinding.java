@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.mpower.internal;
 
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -18,20 +17,10 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.mpower.MpowerBindingProvider;
 import org.openhab.binding.mpower.internal.connector.MpowerSSHConnector;
 import org.openhab.core.binding.AbstractBinding;
-import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.persistence.FilterCriteria;
-import org.openhab.core.persistence.HistoricItem;
-import org.openhab.core.persistence.QueryablePersistenceService;
-import org.openhab.core.persistence.FilterCriteria.Ordering;
-import org.openhab.core.persistence.extensions.PersistenceExtensions;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -44,8 +33,6 @@ import org.slf4j.LoggerFactory;
  */
 public class MpowerBinding extends AbstractBinding<MpowerBindingProvider>
 		implements ManagedService {
-	private QueryablePersistenceService persistenceService;
-	private ServiceReference persistenceServiceReference;
 	private static final Logger logger = LoggerFactory
 			.getLogger(MpowerBinding.class);
 
@@ -59,43 +46,10 @@ public class MpowerBinding extends AbstractBinding<MpowerBindingProvider>
 	}
 
 	public void activate() {
-		
-		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-		try {
-			ServiceReference<?>[] all2 = context.getServiceReferences("org.openhab.core.persistence.QueryablePersistenceService", null);
-			persistenceServiceReference = all2[0];
-			persistenceService = (QueryablePersistenceService) context.getService(persistenceServiceReference);
-			
-
-			FilterCriteria filter = new FilterCriteria();
-			filter.setEndDate(timestamp.toDate());
-			filter.setItemName(item.getName());
-			filter.setPageSize(1);
-			filter.setOrdering(Ordering.DESCENDING);
-			Iterable<HistoricItem> result = qService.query(filter);
-			if(result.iterator().hasNext()) {
-				return result.iterator().next();
-			} else {
-				return null;
-			}
-			
-			int i = all.length;
-			i = all2.length;
-		} catch (InvalidSyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ServiceReference<?> serviceReference  = context.getServiceReference("org.openhab.core.persistence.extensions");
-		ServiceReference<?> serviceReference2 = context.getServiceReference(ItemRegistry.class.getName());
-		PersistenceExtensions service = (PersistenceExtensions) context.getService(serviceReference);
-		this.service = service;
-
 	}
 
 	public void deactivate() {
 		shutDown();
-		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-		context.ungetService(persistenceServiceReference);
 	}
 
 	protected Map<String, MpowerSSHConnector> getConnectors() {

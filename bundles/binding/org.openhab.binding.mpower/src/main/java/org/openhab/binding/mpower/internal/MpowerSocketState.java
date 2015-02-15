@@ -1,22 +1,18 @@
 package org.openhab.binding.mpower.internal;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * 
- * Ubiquiti mPower strip binding This transforms the JSON data into a nice
- * object
+ * Ubiquiti mPower strip binding. This transforms the raw mPower data into a
+ * nice object
  * 
  * @author magcode
  */
 
 public class MpowerSocketState {
-	private double voltage;
+	private int voltage;
 	private long energy;
 	private long energyPerDay;
 	private double power;
@@ -26,48 +22,32 @@ public class MpowerSocketState {
 	private static final Logger logger = LoggerFactory
 			.getLogger(MpowerSocketState.class);
 
-	public MpowerSocketState(String json, String address) throws ParseException {
-		setAddress(address);
-		JSONParser parser = new JSONParser();
-
-		JSONObject root = (JSONObject) parser.parse(json);
-		JSONArray sensors = (JSONArray) root.get("sensors");
-		JSONObject oneSensor = (JSONObject) sensors.get(0);
-		Object ob = oneSensor.get("voltage");
-		if (ob instanceof Double) {
-			Double val = (Double) ob;
-			setVoltage(val.intValue());
-		}
-		ob = oneSensor.get("power");
-		if (ob instanceof Double) {
-			Double val = (double) Math.round((Double) ob * 10) / 10;
-
-			setPower(val);
-		}
-		ob = oneSensor.get("port");
-		if (ob instanceof Long) {
-			Long sock = (Long) ob;
-			setSocket(sock.intValue());
-		}
-		ob = oneSensor.get("energy");
-		if (ob instanceof Double) {
-			Double val = (Double) ob;
-			setEnergy(val.longValue());
+	public MpowerSocketState(String voltage, String power, String energy,
+			String relayState, int socket, String address) {
+		try {
+			Double voltageAsDouble = Double.parseDouble(voltage);
+			this.voltage = voltageAsDouble.intValue();
+			Double powerRounded = Double.parseDouble(power);
+			powerRounded = powerRounded * 10;
+			powerRounded = (double) Math.round(powerRounded);
+			powerRounded = powerRounded / 10;
+			this.power = powerRounded;
+			Double eneryAsDouble = Double.parseDouble(energy);
+			this.energy = eneryAsDouble.longValue();
+			this.on = "1".equals(relayState) ? true : false;
+		} catch (NumberFormatException nfe) {
+			logger.error("Could not parse mPower response", nfe);
 		}
 
-		ob = oneSensor.get("output");
-		if (ob instanceof Long) {
-			Boolean on = (Long) ob == 1;
-			setOn(on);
-		}
-
+		this.socket = socket;
+		this.address = address;
 	}
 
-	public double getVoltage() {
+	public int getVoltage() {
 		return voltage;
 	}
 
-	public void setVoltage(double voltage) {
+	public void setVoltage(int voltage) {
 		this.voltage = voltage;
 	}
 
@@ -107,7 +87,13 @@ public class MpowerSocketState {
 	public boolean equals(Object object) {
 		if (object instanceof MpowerSocketState) {
 			MpowerSocketState givenState = (MpowerSocketState) object;
-			boolean sameVolt = givenState.getVoltage() == getVoltage();
+			// make volt a bit fuzzy. we don't care about changes by 5%
+			int lower = givenState.getVoltage() - givenState.getVoltage() / 20;
+			int higher = givenState.getVoltage() + givenState.getVoltage() / 20;
+			boolean sameVolt = true;
+			if (getVoltage() < lower || getVoltage() > higher) {
+				sameVolt = false;
+			}
 			boolean samePower = givenState.getPower() == getPower();
 			boolean sameEnergy = givenState.getEnergy() == getEnergy();
 			boolean sameONOFFstate = givenState.isOn() == isOn();
