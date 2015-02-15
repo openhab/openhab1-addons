@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.mpower.internal;
 
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -15,11 +16,22 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.mpower.MpowerBindingProvider;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.binding.mpower.internal.connector.MpowerSSHConnector;
+import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.items.ItemRegistry;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.persistence.FilterCriteria;
+import org.openhab.core.persistence.HistoricItem;
+import org.openhab.core.persistence.QueryablePersistenceService;
+import org.openhab.core.persistence.FilterCriteria.Ordering;
+import org.openhab.core.persistence.extensions.PersistenceExtensions;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -30,43 +42,78 @@ import org.slf4j.LoggerFactory;
  * 
  * @author magcode
  */
-public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
+public class MpowerBinding extends AbstractBinding<MpowerBindingProvider>
 		implements ManagedService {
-
+	private QueryablePersistenceService persistenceService;
+	private ServiceReference persistenceServiceReference;
 	private static final Logger logger = LoggerFactory
 			.getLogger(MpowerBinding.class);
 
-	private long refreshInterval = 60000;
 	private static final String CONFIG_USERNAME = "user";
 	private static final String CONFIG_HOST = "host";
 	private static final String CONFIG_PASSWORD = "password";
-	private static final String CONFIG_SECURE = "secure";
 	private static final String CONFIG_REFRESH = "refresh";
-
-	private Map<String, MpowerConnector> connectors = new HashMap<String, MpowerConnector>();
+	private Map<String, MpowerSSHConnector> connectors = new HashMap<String, MpowerSSHConnector>();
 
 	public MpowerBinding() {
 	}
 
 	public void activate() {
+		
+		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+		try {
+			ServiceReference<?>[] all2 = context.getServiceReferences("org.openhab.core.persistence.QueryablePersistenceService", null);
+			persistenceServiceReference = all2[0];
+			persistenceService = (QueryablePersistenceService) context.getService(persistenceServiceReference);
+			
+
+			FilterCriteria filter = new FilterCriteria();
+			filter.setEndDate(timestamp.toDate());
+			filter.setItemName(item.getName());
+			filter.setPageSize(1);
+			filter.setOrdering(Ordering.DESCENDING);
+			Iterable<HistoricItem> result = qService.query(filter);
+			if(result.iterator().hasNext()) {
+				return result.iterator().next();
+			} else {
+				return null;
+			}
+			
+			int i = all.length;
+			i = all2.length;
+		} catch (InvalidSyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ServiceReference<?> serviceReference  = context.getServiceReference("org.openhab.core.persistence.extensions");
+		ServiceReference<?> serviceReference2 = context.getServiceReference(ItemRegistry.class.getName());
+		PersistenceExtensions service = (PersistenceExtensions) context.getService(serviceReference);
+		this.service = service;
+
 	}
 
 	public void deactivate() {
 		shutDown();
+		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+		context.ungetService(persistenceServiceReference);
+	}
+
+	protected Map<String, MpowerSSHConnector> getConnectors() {
+		return this.connectors;
 	}
 
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
+	// @Override
 	protected long getRefreshInterval() {
-		return refreshInterval;
+		return 2000;
 	}
 
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
+	// @Override
 	protected String getName() {
 		return "Ubiquiti mPower Binding";
 	}
@@ -74,16 +121,15 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
+	// @Override
 	protected void execute() {
-		// we don't care
 	}
 
 	/**
 	 * stop all connectors
 	 */
 	private void shutDown() {
-		for (MpowerConnector connector : connectors.values()) {
+		for (MpowerSSHConnector connector : connectors.values()) {
 			connector.stop();
 			connector = null;
 		}
@@ -161,12 +207,6 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 						aConfig.setHost((String) config.get(key));
 					}
 
-					if (CONFIG_SECURE.equals(configOption)) {
-						Boolean secure = Boolean.parseBoolean((String) config
-								.get(key));
-						aConfig.setSecure(secure);
-					}
-
 					if (CONFIG_REFRESH.equals(configOption)) {
 						Long refresh = Long.parseLong((String) config.get(key));
 						aConfig.setRefreshInterval(refresh);
@@ -180,22 +220,21 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 			for (Map.Entry<String, MpowerConfig> entry : bindingConfigs
 					.entrySet()) {
 				MpowerConfig aConfig = entry.getValue();
-				logger.debug("Creating and starting new connector ",
-						aConfig.getId());
-				MpowerConnector conn = new MpowerConnector(aConfig.getHost(),
-						aConfig.getId(), aConfig.getUser(),
-						aConfig.getPassword(), aConfig.isSecure(),
-						aConfig.getRefreshInterval(), this);
-				connectors.put(aConfig.getId(), conn);
-				conn.start();
-			}
+				if (aConfig.isValid()) {
 
-			String refreshIntervalString = (String) config.get(CONFIG_REFRESH);
-			if (StringUtils.isNotBlank(refreshIntervalString)) {
-				refreshInterval = Long.parseLong(refreshIntervalString);
-			}
+					logger.debug("Creating and starting new connector ",
+							aConfig.getId());
 
-			setProperlyConfigured(true);
+					MpowerSSHConnector connector = new MpowerSSHConnector(
+							aConfig.getHost(), aConfig.getId(),
+							aConfig.getUser(), aConfig.getPassword(), 3000L,
+							this);
+					connectors.put(aConfig.getId(), connector);
+					connector.start();
+				} else {
+					logger.warn("Invalid mPower configuration");
+				}
+			}
 		}
 	}
 
@@ -222,6 +261,7 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 					.getRefreshInterval();
 			boolean needsUpdate = bindingCfg.needsUpdate(socketNumber, refresh);
 			// only proceed if the data has changed
+
 			if (needsUpdate
 					&& (cachedState == null || !cachedState.equals(socketState))) {
 
@@ -266,23 +306,23 @@ public class MpowerBinding extends AbstractActiveBinding<MpowerBindingProvider>
 				logger.trace("suppressing update as socket state has not changed");
 			}
 
+			// switch changes we handle immediately
+			boolean switchHasChanged = false;
 			if (cachedState != null) {
-				// switch changes we forward immediately
-				boolean switchHasChanged = cachedState.isOn() != socketState
-						.isOn();
-				if (switchHasChanged) {
-					// update switch
-					String switchItemname = bindingCfg
-							.getSwitchItemName(socketState.getSocket());
-					if (StringUtils.isNotBlank(switchItemname)) {
-						OnOffType state = socketState.isOn() ? OnOffType.ON
-								: OnOffType.OFF;
-						eventPublisher.postUpdate(switchItemname, state);
-						// update the cache
-						bindingCfg.setCachedState(socketNumber, socketState);
-					}
-				}
+				switchHasChanged = cachedState.isOn() != socketState.isOn();
+			}
 
+			if (cachedState == null || switchHasChanged) {
+				// update switch
+				String switchItemname = bindingCfg
+						.getSwitchItemName(socketState.getSocket());
+				if (StringUtils.isNotBlank(switchItemname)) {
+					OnOffType state = socketState.isOn() ? OnOffType.ON
+							: OnOffType.OFF;
+					eventPublisher.postUpdate(switchItemname, state);
+					// update the cache
+					bindingCfg.setCachedState(socketNumber, socketState);
+				}
 			}
 		}
 	}
