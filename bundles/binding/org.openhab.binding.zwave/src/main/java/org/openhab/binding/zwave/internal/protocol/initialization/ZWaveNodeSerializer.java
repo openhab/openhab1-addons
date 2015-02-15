@@ -40,7 +40,7 @@ public class ZWaveNodeSerializer {
 
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveNodeSerializer.class);
 	private final XStream stream = new XStream(new StaxDriver());
-	private final String folderName = "etc/zwave";
+	private String folderName = "etc/zwave";
 
 	/**
 	 * Constructor. Creates a new instance of the {@link ZWaveNodeSerializer}
@@ -49,7 +49,14 @@ public class ZWaveNodeSerializer {
 	public ZWaveNodeSerializer() {
 		logger.trace("Initializing ZWaveNodeSerializer.");
 
-		File folder = new File(folderName);
+		// Change the folder for OH2
+//		ConfigConstants.getUserDataFolder();
+		File folder = new File("userdata");
+		if(folder.exists()) {
+			folderName = "userdata/zwave";
+		}
+
+		folder = new File(folderName);
 		// create path for serialization.
 		if (!folder.exists()) {
 			logger.debug("Creating directory {}", folderName);

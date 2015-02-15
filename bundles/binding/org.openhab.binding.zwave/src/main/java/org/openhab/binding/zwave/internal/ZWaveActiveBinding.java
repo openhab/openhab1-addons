@@ -313,9 +313,11 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 	 */
 	@Override
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-		if (config == null)
+		if (config == null) {
+			logger.info("ZWave 'updated' with null config");
 			return;
-		
+		}
+
 		// Check the serial port configuration value.
 		// This value is mandatory.
 		if (StringUtils.isNotBlank((String) config.get("port"))) {
