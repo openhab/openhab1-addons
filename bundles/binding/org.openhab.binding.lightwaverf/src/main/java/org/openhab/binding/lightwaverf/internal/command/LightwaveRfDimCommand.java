@@ -1,6 +1,7 @@
 package org.openhab.binding.lightwaverf.internal.command;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,7 +74,14 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
 
 	/**
 	 * Convert a 0-31 scale value to a percent type.
-	 * 
+	 *  0 -> 0%, 1 -> 4%, 2 -> 7%, 3 -> 10%, 4 -> 13%, 5 -> 16%
+	 *  6 -> 19%, 7 -> 22%, 8 -> 25%, 9 -> 29%, 10 -> 32%,
+	 *  11 -> 35%, 12 -> 38%, 13 -> 41%, 14 -> 44%, 15 -> 47%, 
+	 *  16 -> 50%, 17 -> 53%, 18 -> 57%, 19 -> 60%, 20 -> 63%, 
+	 *  21 -> 66%, 22 -> 69%, 23 -> 72%, 24 -> 75%, 25 -> 79%, 
+	 *  26 -> 82%, 27 -> 85%, 28 -> 88%, 29 -> 91%, 30 -> 94%, 
+	 *  31 -> 97%, 32 -> 100%, 
+	 *  
 	 * @param pt
 	 *            percent type to convert
 	 * @return converted value 0-31
@@ -111,4 +119,21 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
 		return messageId;
 	}	
 
+	@Override
+	public boolean equals(Object that) {
+		if(that instanceof LightwaveRfDimCommand){
+			return 	Objects.equals(this.messageId, ((LightwaveRfDimCommand) that).messageId) &&
+					Objects.equals(this.roomId, ((LightwaveRfDimCommand) that).roomId) &&
+					Objects.equals(this.deviceId, ((LightwaveRfDimCommand) that).deviceId) &&
+					Objects.equals(this.openhabDimLevel, ((LightwaveRfDimCommand) that).openhabDimLevel) &&
+					Objects.equals(this.lightWaveDimLevel, ((LightwaveRfDimCommand) that).lightWaveDimLevel);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(messageId, roomId, deviceId, openhabDimLevel, lightWaveDimLevel);
+	}	
+	
 }

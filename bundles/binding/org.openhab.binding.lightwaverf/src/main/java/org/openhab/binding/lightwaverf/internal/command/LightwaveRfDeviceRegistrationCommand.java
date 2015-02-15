@@ -1,5 +1,6 @@
 package org.openhab.binding.lightwaverf.internal.command;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,7 +43,6 @@ public class LightwaveRfDeviceRegistrationCommand extends AbstractLightwaveRfCom
 		return messageId;
 	}
 	
-
 	public String getRoomId() {
 		return null;
 	}
@@ -59,6 +59,24 @@ public class LightwaveRfDeviceRegistrationCommand extends AbstractLightwaveRfCom
 	public static boolean matches(String message) {
 		Matcher m = REG_EXP.matcher(message);
 		return m.matches();
+	}
+	
+	@Override
+	public boolean equals(Object that) {
+		if(that instanceof LightwaveRfDeviceRegistrationCommand){
+			return Objects.equals(this.messageId, ((LightwaveRfDeviceRegistrationCommand) that).messageId);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(messageId);
+	}
+	
+	@Override
+	public String toString() {
+		return "LightwaveRfDeviceRegistration[MessageId: " + messageId + "]";
 	}
 
 }

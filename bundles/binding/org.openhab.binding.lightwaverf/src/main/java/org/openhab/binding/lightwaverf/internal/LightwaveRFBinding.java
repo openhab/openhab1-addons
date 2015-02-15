@@ -17,6 +17,7 @@ import org.openhab.binding.lightwaverf.internal.message.LightwaveRFMessageListen
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,14 +37,13 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 
 	
 	private final Logger logger = LoggerFactory.getLogger(LightwaveRFBinding.class);
-	private LightwaverfConvertor messageConvertor; 
+	private LightwaverfConvertor messageConvertor = new LightwaverfConvertor(); 
 	private LightwaveRFReceiver receiver = null;
 	private LightwaveRFSender sender = null;
 
 	@Override
 	public void activate() {
 		try{
-			messageConvertor = new LightwaverfConvertor();
 			receiver = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_RECEIVE_ON);
 			receiver.start();
 			receiver.addListener(this);
@@ -72,10 +72,7 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand(" + itemName + ", " + command +") is called!");
-        String roomId = getRoomId(itemName);
-        String deviceId = getDeviceId(itemName);
-        LightwaveRFCommand lightwaverfMessageString = messageConvertor.convertToLightwaveRfMessage(roomId, deviceId, command);
-		sender.sendUDP(lightwaverfMessageString);
+		internalReceive(itemName, command);
 	}
 
 	@Override
@@ -84,10 +81,15 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveUpdate(" + itemName + ", " + newState + ") is called!");
-                String roomId = getRoomId(itemName);
-                String deviceId = getDeviceId(itemName);
-                LightwaveRFCommand lightwaverfMessageString = messageConvertor.convertToLightwaveRfMessage(roomId, deviceId, newState);
-                sender.sendUDP(lightwaverfMessageString);
+		internalReceive(itemName, newState);
+	}
+	
+	private void internalReceive(String itemName, Type command){
+		String roomId = getRoomId(itemName);
+        String deviceId = getDeviceId(itemName);
+        LightwaveRFCommand lightwaverfMessageString = messageConvertor.convertToLightwaveRfMessage(roomId, deviceId, command);
+        sender.sendUDP(lightwaverfMessageString);
+		
 	}
 
 	private String getRoomId(String itemName){
@@ -121,4 +123,21 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 			}
 		}
 	}
+	
+	/** 
+	 * Visible for testing only to allow us to add a mock of the Lightwave Sender
+	 * @param mockLightwaveRfSender
+	 */
+	void setLightaveRfSender(LightwaveRFSender lightwaveRfSender) {
+		this.sender = lightwaveRfSender;
+	}
+
+	/** 
+	 * Visible for testing only to allow us to add a mock Convertor
+	 * @param mockLightwaveRfConvertor
+	 */
+	void setLightwaveRfConvertor(LightwaverfConvertor mockLightwaveRfConvertor) {
+		this.messageConvertor = mockLightwaveRfConvertor;
+	}
+
 }

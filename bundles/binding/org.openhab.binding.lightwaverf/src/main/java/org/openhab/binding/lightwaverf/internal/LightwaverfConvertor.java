@@ -110,7 +110,7 @@ public class LightwaverfConvertor {
     private char getModeCode(String message){
     	Matcher m = REG_EXP.matcher(message);
     	if(m.matches()){
-    		String modeCode = m.group(0);
+    		String modeCode = m.group(1);
 			return modeCode.charAt(0);
     	}
     	return ' ';

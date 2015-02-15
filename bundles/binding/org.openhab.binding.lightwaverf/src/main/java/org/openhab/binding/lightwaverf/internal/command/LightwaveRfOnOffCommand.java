@@ -1,5 +1,6 @@
 package org.openhab.binding.lightwaverf.internal.command;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,5 +88,22 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implemen
 	public LightwaveRfMessageId getMessageId() {
 		return messageId;
 	}
+	
+	@Override
+	public boolean equals(Object that) {
+		if(that instanceof LightwaveRfOnOffCommand){
+			return 	Objects.equals(this.messageId, ((LightwaveRfOnOffCommand) that).messageId) &&
+					Objects.equals(this.roomId, ((LightwaveRfOnOffCommand) that).roomId) &&
+					Objects.equals(this.deviceId, ((LightwaveRfOnOffCommand) that).deviceId) &&
+					Objects.equals(this.on, ((LightwaveRfOnOffCommand) that).on);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(messageId, roomId, deviceId, on);
+	}
+	
 
 }

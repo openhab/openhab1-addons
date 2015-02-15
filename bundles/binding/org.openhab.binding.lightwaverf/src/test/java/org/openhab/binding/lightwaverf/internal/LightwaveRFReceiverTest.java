@@ -1,12 +1,12 @@
 package org.openhab.binding.lightwaverf.internal;
 
-import static org.junit.Assert.*;
-
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class LightwaveRFReceiverTest {
 
 	@Test
+	@Ignore
 	public void test() throws Exception {
 		LightwaveRFReceiver receiver = new LightwaveRFReceiver(new LightwaverfConvertor(), 9761);
 		receiver.start();
