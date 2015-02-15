@@ -1,10 +1,10 @@
-package org.openhab.binding.hue.internal;
+package org.openhab.action.hue.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.openhab.binding.hue.internal.Rule;
+import org.openhab.action.hue.internal.Rule;
 
 public class TestJsonGeneration {
 

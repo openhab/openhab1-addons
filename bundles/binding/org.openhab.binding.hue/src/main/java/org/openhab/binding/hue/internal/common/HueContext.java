@@ -1,4 +1,4 @@
-package org.openhab.binding.hue.internal;
+package org.openhab.binding.hue.internal.common;
 
 import org.openhab.binding.hue.internal.hardware.HueBridge;
 

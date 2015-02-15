@@ -1,4 +1,4 @@
-package org.openhab.binding.hue.internal;
+package org.openhab.action.hue.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;

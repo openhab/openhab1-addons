@@ -17,6 +17,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.hue.HueBindingProvider;
 import org.openhab.binding.hue.internal.HueLightBindingConfig.BindingType;
+import org.openhab.binding.hue.internal.common.HueContext;
 import org.openhab.binding.hue.internal.data.HueSettings;
 import org.openhab.binding.hue.internal.hardware.HueBridge;
 import org.openhab.binding.hue.internal.hardware.HueBulb;

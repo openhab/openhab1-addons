@@ -1,4 +1,4 @@
-package org.openhab.binding.hue.internal;
+package org.openhab.action.hue.internal;
 
 import static org.junit.Assert.*;
 
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.openhab.binding.hue.internal.Group;
-import org.openhab.binding.hue.internal.Rule;
+import org.openhab.action.hue.internal.Group;
+import org.openhab.action.hue.internal.Rule;
 
 
 public class TestActionCreation {

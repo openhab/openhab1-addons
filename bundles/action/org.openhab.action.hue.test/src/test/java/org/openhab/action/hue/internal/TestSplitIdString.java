@@ -1,12 +1,11 @@
-package org.openhab.binding.hue.internal;
+package org.openhab.action.hue.internal;
 
 import static org.junit.Assert.*;
 
 import java.util.List;
 
 import org.junit.Test;
-
-import static org.openhab.binding.hue.internal.HueActions.*;
+import static org.openhab.action.hue.internal.HueActions.*;
 
 public class TestSplitIdString {
 
