@@ -11,8 +11,8 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.action.tinkerforge</bundle.symbolicName>
 		<bundle.namespace>org.openhab.action.tinkerforge</bundle.namespace>
-		<deb.name>openhab-addon-action-TinkerForge</deb.name>
-		<deb.description>openhab addon action TinkerForge</deb.description>
+		<deb.name>openhab-addon-action-tinkerforge</deb.name>
+		<deb.description>openhab addon action for TinkerForge devices</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
