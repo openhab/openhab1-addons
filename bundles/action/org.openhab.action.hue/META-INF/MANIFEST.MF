@@ -28,4 +28,8 @@ Service-Component: OSGI-INF/action.xml
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.openhab.binding.hue;bundle-version="1.7.0"
 Bundle-ClassPath: .
+Export-Package: org.openhab.action.hue,
+ org.openhab.action.hue.internal
+Service-Component: OSGI-INF/action.xml
+
 

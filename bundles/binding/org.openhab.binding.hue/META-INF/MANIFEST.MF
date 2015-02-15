@@ -13,6 +13,7 @@ Import-Package: com.sun.jersey.api.client,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.codehaus.jackson.map,
+ org.codehaus.jackson.annotate,
  org.joda.time,
  org.openhab.core.binding,
  org.openhab.core.events,
@@ -28,11 +29,9 @@ Import-Package: com.sun.jersey.api.client,
 Bundle-SymbolicName: org.openhab.binding.hue;singleton:=true
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/huebinding.xml, OSGI-INF/action.xml
+Service-Component: OSGI-INF/genericbindingprovider.xml, OSGI-INF/huebinding.xml
 Bundle-ClassPath: .
-Export-Package: org.openhab.action.hue,
- org.openhab.action.hue.internal,
- org.openhab.binding.hue.internal.common,
+Export-Package: org.openhab.binding.hue.internal.common,
  org.openhab.binding.hue.internal.data,
  org.openhab.binding.hue.internal.hardware
 Bundle-ActivationPolicy: lazy
