@@ -190,6 +190,15 @@
 			<Model>ASR-ZW</Model>
 			<Label lang="en">Thermostat Receiver</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SCSC17</Model>
+			<Label lang="en">7 Day Room Thermostat</Label>
+			<ConfigFile>horstmann/scsc17.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0060</Id>
@@ -299,6 +308,7 @@
 			</Reference>
 			<Model>SE812</Model>
 			<Label lang="en">Siren</Label>
+			<ConfigFile>everspring/se812.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1426,6 +1436,10 @@
 				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>000C</Id>
+			</Reference>
 			<Model>PSM-02</Model>
 			<Label lang="en">Slim Multi-Sensor</Label>
 			<ConfigFile>philio/psm02.xml</ConfigFile>
@@ -1709,6 +1723,10 @@
 				<Type>0313</Type>
 				<Id>0108</Id>
 			</Reference>
+			<Reference>
+				<Type>0313</Type>
+				<Id>010B</Id>
+			</Reference>
 			<Model>SSA1/SSA2</Model>
 			<Label lang="en">Siren and Strobe Alarm</Label>
 			<ConfigFile>fortrezz/ssa1.xml</ConfigFile>
@@ -1802,5 +1820,30 @@
 			<ConfigFile>yale/yrd210.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
-	
+	<Manufacturer>
+		<Id>0166</Id>
+		<Name>Swiid</Name>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>SW-ZCS-1</Model>
+			<Label lang="en">Cord Switch</Label>
+			<ConfigFile>swiid/SW-ZCS-1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0131</Id>
+		<Name>Zipato</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>RGBWE27ZW</Model>
+			<Label lang="en">RGBW bulb</Label>
+			<ConfigFile>zipato/rgbwe27.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
