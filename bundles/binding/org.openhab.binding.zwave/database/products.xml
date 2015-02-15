@@ -1464,6 +1464,15 @@
 			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW</Label>
 			<ConfigFile>philio/pan06_1.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>PAN11-1</Model>
+			<Label lang="en">Smart Energy Plug In Switch</Label>
+			<ConfigFile>philio/pan11_1.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0096</Id>
