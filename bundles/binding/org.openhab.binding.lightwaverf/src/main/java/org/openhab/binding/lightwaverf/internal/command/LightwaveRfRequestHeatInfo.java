@@ -10,36 +10,37 @@ import org.openhab.binding.lightwaverf.internal.message.LightwaveRfGeneralMessag
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
 import org.openhab.core.types.State;
 
+public class LightwaveRfRequestHeatInfo extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
 
-public class LightwaveRfVersionMessage extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
-
-//	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),.*V=(.*)");
-	private static final Pattern REG_EXP = Pattern.compile("(\\d{1,3}).*V=\"(.*)\"\\s*");
-	
+	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!R([0-9])F*r\\s*");
+	private static final String FUNCTION = "*r";
 	
 	private final LightwaveRfMessageId messageId;
-	private final String version;
+	private final String roomId;
 	
-	public LightwaveRfVersionMessage(String message) throws LightwaveRfMessageException {
+	public LightwaveRfRequestHeatInfo(String message) throws LightwaveRfMessageException {
 		try{
 			Matcher m = REG_EXP.matcher(message);
 			m.matches();
-			this.messageId = new LightwaveRfGeneralMessageId(Integer.valueOf(m.group(1)));
-			this.version = m.group(2);
+			messageId = new LightwaveRfGeneralMessageId(Integer.valueOf(m.group(1)));
+			roomId = m.group(2);
 		}
 		catch(Exception e){
-			throw new LightwaveRfMessageException("Error decoding message: " + message, e);
+			throw new LightwaveRfMessageException("Error converting message: " + message);
 		}
 	}
 	
+	@Override
 	public String getLightwaveRfCommandString() {
-		return getVersionString(messageId, version); 
+		return getFunctionMessageString(messageId, roomId, FUNCTION);
 	}
 
+	@Override
 	public String getRoomId() {
-		return null;
+		return roomId;
 	}
 
+	@Override
 	public String getDeviceId() {
 		return null;
 	}
@@ -49,12 +50,13 @@ public class LightwaveRfVersionMessage extends AbstractLightwaveRfCommand implem
 		return null;
 	}
 
+	@Override
 	public LightwaveRfMessageId getMessageId() {
 		return messageId;
 	}
 
 	public static boolean matches(String message) {
-		return message.contains("?V=");
+		return message.contains(FUNCTION);
 	}
 
 }

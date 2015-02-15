@@ -34,6 +34,21 @@ public interface LightwaveRFBindingProvider extends BindingProvider {
 	String getRoomId(String itemString);
 
 	/**
+	 * Get the identifier for this object.
+	 * @param itemName
+	 * @return
+	 */
+//	String getIdentifier(String itemName);
+	
+	
+	/**
+	 * Returns a list of item names for this itemIdentifier
+	 * @param itemIdentifier
+	 * @return
+	 */
+//	List<String> getItemNames(String itemIdentifier);
+	
+	/**
 	 * Returns a list of all items that match this roomId, deviceId.
 	 * If deviceId is null then will return all items that match just the room
 	 * @param roomId

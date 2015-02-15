@@ -10,24 +10,24 @@ public class LightwaveRfDimCommandTest {
 
 	@Test
 	public void testDimCommandAsMessageLow() throws Exception {
-		String message = "10,!R2D3FdP1";
+		String message = "109,!R2D1FdP1|Kitchen|Kitchen Ceiling 4%\n";
 		LightwaveRFCommand command = new LightwaveRfDimCommand(message);
-		assertEquals("010,!R2D3FdP1\n", command.getLightwaveRfCommandString());
+		assertEquals("109,!R2D1FdP1\n", command.getLightwaveRfCommandString());
 		assertEquals("2", command.getRoomId());
-		assertEquals("3", command.getDeviceId());
-		assertEquals("010", command.getMessageId().getMessageIdString());
+		assertEquals("1", command.getDeviceId());
+		assertEquals("109", command.getMessageId().getMessageIdString());
 		assertEquals(PercentType.valueOf("4"), command.getState(LightwaveRfType.DIMMER));
 	}
 
 	@Test
 	public void testDimCommandAsMessageHigh() throws Exception {
-		String message = "10,!R2D3FdP32";
+		String message = "10,!R2D3FdP31|Kitchen|Kitchen Ceiling 96%\n";
 		LightwaveRFCommand command = new LightwaveRfDimCommand(message);
-		assertEquals("010,!R2D3FdP32\n", command.getLightwaveRfCommandString());
+		assertEquals("010,!R2D3FdP31\n", command.getLightwaveRfCommandString());
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
 		assertEquals("010", command.getMessageId().getMessageIdString());
-		assertEquals(PercentType.valueOf("100"), command.getState(LightwaveRfType.DIMMER));
+		assertEquals(PercentType.valueOf("97"), command.getState(LightwaveRfType.DIMMER));
 	}
 
 	@Test

@@ -15,7 +15,7 @@ import org.openhab.core.types.State;
 
 public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
 	
-	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!R([0-9])D([0-9])FdP([0-9]{1,2})");
+	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!R([0-9])D([0-9])FdP([0-9]{1,2}).*\\s*");
 	private static final BigDecimal HUNDRED = new BigDecimal(100);
 	
     private final String roomId;

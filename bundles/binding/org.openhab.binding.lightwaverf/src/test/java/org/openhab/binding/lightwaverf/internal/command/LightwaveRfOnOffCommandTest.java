@@ -11,12 +11,12 @@ public class LightwaveRfOnOffCommandTest {
 
 	@Test
 	public void testOnOffCommandAsMessageOn() throws Exception {
-		String message = "10,!R2D3F1";
+		String message = "104,!R2D3F1|Living Room|Angle Poise Off\n";
 		LightwaveRFCommand command = new LightwaveRfOnOffCommand(message);
-		assertEquals("010,!R2D3F1\n", command.getLightwaveRfCommandString());
+		assertEquals("104,!R2D3F1\n", command.getLightwaveRfCommandString());
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
-		assertEquals("010", command.getMessageId().getMessageIdString());
+		assertEquals("104", command.getMessageId().getMessageIdString());
 		assertEquals(OnOffType.ON, command.getState(LightwaveRfType.SWITCH));
 		assertEquals(PercentType.HUNDRED, command.getState(LightwaveRfType.DIMMER));
 	}

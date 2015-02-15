@@ -12,6 +12,8 @@ import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimUpDownCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatingInfoCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfOnOffCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRequestHeatInfo;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfSetHeatingTemperatureCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessage;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -22,15 +24,13 @@ import org.openhab.core.types.Type;
 
 public class LightwaverfConvertor {
 
-	private static final Pattern REG_EXP = Pattern.compile(".*F(.).*");
+	private static final Pattern REG_EXP = Pattern.compile(".*F(.).*\\s*");
 
 	// LightwaveRF messageId
     private int nextMessageId = 0;
     private final Lock lock = new ReentrantLock();
 
     
-    
-
     public LightwaveRFCommand convertToLightwaveRfMessage(String roomId, String deviceId, Type command){
     	if(deviceId == null){
     		return convertToLightwaveRfMessage(roomId, command);
@@ -90,6 +90,12 @@ public class LightwaverfConvertor {
     	}
     	else if(LightwaveRfHeatingInfoCommand.matches(message)){
     		return new LightwaveRfHeatingInfoCommand(message);
+    	}
+    	else if(LightwaveRfSetHeatingTemperatureCommand.matches(message)){
+    		return new LightwaveRfSetHeatingTemperatureCommand(message);
+    	}
+    	else if(LightwaveRfRequestHeatInfo.matches(message)){
+    		return new LightwaveRfRequestHeatInfo(message);
     	}
     	switch (getModeCode(message)) {
 		case '0':

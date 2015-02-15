@@ -6,6 +6,11 @@ import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
 
 public abstract class AbstractLightwaveRfCommand implements LightwaveRFCommand {
 
+	public String getFunctionMessageString(LightwaveRfMessageId messageId, String roomId, String function) {
+		return messageId.getMessageIdString() + ",!R" + roomId + "F" + function + "\n";
+	}
+
+	
 	public String getMessageString(LightwaveRfMessageId messageId, String function, String parameter) {
 		return messageId.getMessageIdString() + ",!F" + function + "p" + parameter + "\n";
 	}
@@ -19,7 +24,7 @@ public abstract class AbstractLightwaveRfCommand implements LightwaveRFCommand {
 	}
 	
 	public String getVersionString(LightwaveRfMessageId messageId, String version){
-		return messageId.getMessageIdString() + ",?V=" + version + "\n";
+		return messageId.getMessageIdString() + ",?V=\"" + version + "\"\n";
 	}
 
 	public String getOkString(LightwaveRfMessageId messageId){

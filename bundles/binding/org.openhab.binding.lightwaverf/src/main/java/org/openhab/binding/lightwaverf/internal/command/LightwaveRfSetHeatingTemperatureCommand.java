@@ -13,7 +13,7 @@ import org.openhab.core.types.State;
 public class LightwaveRfSetHeatingTemperatureCommand extends AbstractLightwaveRfCommand implements LightwaveRFCommand { 
 
 	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!R([0-9])DhF\\*tP([0-9\\.]{1,4})");
-	
+	private static final String FUNCTION = "*t";
 	/*
 	 * Commands Like
 	 * 104,!R1DhF*tP19.0
@@ -39,7 +39,7 @@ public class LightwaveRfSetHeatingTemperatureCommand extends AbstractLightwaveRf
 	}	
 	
 	public String getLightwaveRfCommandString() {
-		return getMessageString(messageId, roomId, deviceId, "*t", String.valueOf(setTemperature));
+		return getMessageString(messageId, roomId, deviceId, FUNCTION, String.valueOf(setTemperature));
 	}
 
 	public String getRoomId() {
@@ -62,6 +62,10 @@ public class LightwaveRfSetHeatingTemperatureCommand extends AbstractLightwaveRf
 
 	public LightwaveRfMessageId getMessageId() {
 		return messageId;
+	}
+
+	public static boolean matches(String message) {
+		return message.contains(FUNCTION);
 	}
 
 }

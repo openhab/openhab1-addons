@@ -75,7 +75,7 @@ public class LightwaveRFReceiver implements Runnable {
         	String message = null;
             try {
             	message = receiveUDP();
-                logger.debug("Message received: " + message);
+                logger.info("Message received: " + message);
                 LightwaveRFCommand command = messageConvertor.convertFromLightwaveRfMessage(message);
                 notifyListners(command);
             } 			
@@ -104,6 +104,7 @@ public class LightwaveRFReceiver implements Runnable {
         receivedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
         return receivedMessage;
     }
+    
     /**
     * Add listener to be notified of messages received on the socket
     * @param listener

@@ -8,7 +8,7 @@ public class LightwaveRfVersionMessageTest {
 
 	@Test
 	public void testValidMessage() throws Exception {
-		String message = "1,?V=\"U2.91Q\"";
+		String message = "1,?V=\"U2.91Q\"\r\n";
 		
 		LightwaveRfVersionMessage versionMessage = new LightwaveRfVersionMessage(message);
 		assertEquals("001,?V=\"U2.91Q\"\n", versionMessage.getLightwaveRfCommandString());
