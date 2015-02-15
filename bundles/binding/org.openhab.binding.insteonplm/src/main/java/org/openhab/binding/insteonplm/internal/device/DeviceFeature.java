@@ -202,6 +202,26 @@ public class DeviceFeature {
 	}
 	
 	/**
+	 * Publish new state to all device feature listeners, but give them
+	 * additional dataKey and dataValue information so they can decide
+	 * whether to publish the data to the bus.
+	 * 
+	 * @param newState state to be published
+	 * @param changeType what kind of changes to publish
+	 * @param dataKey the key on which to filter
+	 * @param dataValue the value that must be matched
+	 */
+	public void publish(State newState, StateChangeType changeType, String dataKey,
+			String dataValue) {
+		logger.debug("{}:{} publishing: {}", this.getDevice().getAddress(),
+					getName(), newState);
+		synchronized(m_listeners) {
+			for (DeviceFeatureListener listener : m_listeners) {
+				listener.stateChanged(newState, changeType, dataKey, dataValue);
+			}
+		}
+	}
+	/**
 	 * Publish new state to all device feature listeners
 	 * @param newState state to be published
 	 * @param changeType what kind of changes to publish

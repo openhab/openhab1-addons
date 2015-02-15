@@ -24,6 +24,15 @@
 			<Label lang="en">Wall Dimmer Switch</Label>
 			<ConfigFile>linear/wdz500-1.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4450</Type>
+				<Id>3030</Id>
+			</Reference>
+			<Model>PD300Z-2</Model>
+			<Label lang="en">Plug-in Wall Dimmer</Label>
+			<ConfigFile>linear/pd300z-2.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
@@ -181,10 +190,28 @@
 			<Model>ASR-ZW</Model>
 			<Label lang="en">Thermostat Receiver</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SCSC17</Model>
+			<Label lang="en">7 Day Room Thermostat</Label>
+			<ConfigFile>horstmann/scsc17.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0060</Id>
 		<Name>Everspring</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HSP02</Model>
+			<Label lang="en">Motion Detector</Label>
+			<ConfigFile>everspring/hsp02.xml</ConfigFile>
+		</Product>
 		<Product>
 			<Reference>
 				<Type>0003</Type>
@@ -281,6 +308,7 @@
 			</Reference>
 			<Model>SE812</Model>
 			<Label lang="en">Siren</Label>
+			<ConfigFile>everspring/se812.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -500,6 +528,15 @@
 		<Name>Aeon Labs</Name>
 		<Product>
 			<Reference>
+				<Type>0002</Type>
+				<Id>0059</Id>
+			</Reference>
+			<Model>ZW089</Model>
+			<Label lang="en">Door/Window Sensor</Label>
+			<ConfigFile>aeon/zw089.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0003</Type>
 				<Id>000a</Id>
 			</Reference>
@@ -664,6 +701,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0003</Type>
+				<Id>004B</Id>
+			</Reference>
+			<Model>SES3</Model>
+			<Label lang="en">Smart Energy Switch 3rd Edition</Label>
+			<ConfigFile>aeon/ses3.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0009</Id>
 			</Reference>
@@ -696,6 +742,24 @@
 			</Reference>
 			<Model>DSC25G2</Model>
 			<Label lang="en">Dimmer G2</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0201</Type>
+				<Id>0058</Id>
+			</Reference>
+			<Model>KeyFobG5</Model>
+			<Label lang="en">4 button keyfob - generation 5</Label>
+			<ConfigFile>aeon/keyfobg5.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0026</Id>
+			</Reference>
+			<Model>dsa38</Model>
+			<Label lang="en">1 button keyfob</Label>
+			<ConfigFile>aeon/dsa38.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -740,6 +804,15 @@
 				<Id>107</Id>
 			</Reference>
 			<Model>CT100</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct100.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>6501</Type>
+				<Id>000c</Id>
+			</Reference>
+			<Model>CT101</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
 			<ConfigFile>rtc/ct100.xml</ConfigFile>
 		</Product>
@@ -794,6 +867,10 @@
 			<Reference>
 				<Type>2002</Type>
 				<Id>0204</Id>
+			</Reference>
+			<Reference>
+				<Type>2002</Type>
+				<Id>0205</Id>
 			</Reference>
 			<Model>ZP3102</Model>
 			<Label lang="en">Motion Sensor</Label>
@@ -999,6 +1076,10 @@
 		<Product>
 			<Reference>
 				<Type>0501</Type>
+				<Id>0102</Id>
+			</Reference>
+			<Reference>
+				<Type>0501</Type>
 				<Id>1002</Id>
 			</Reference>
 			<Reference>
@@ -1043,11 +1124,15 @@
 		<Product>
 			<Reference>
 				<Type>0900</Type>
-				<Id>4000</Id>
+				<Id>1000</Id>
 			</Reference>
 			<Reference>
 				<Type>0900</Type>
-				<Id>1000</Id>
+				<Id>2000</Id>
+			</Reference>
+			<Reference>
+				<Type>0900</Type>
+				<Id>4000</Id>
 			</Reference>
 			<Model>FGRGBW</Model>
 			<Label lang="en">Fibaro RGBW Controller</Label>
@@ -1118,6 +1203,15 @@
 			<Label lang="en">Z-Wave Door/Window Sensor</Label>
 			<ConfigFile>eco/dwzwave2.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>TILTZWAVE1</Model>
+			<Label lang="en">Z-Wave Garage Door Sensor</Label>
+			<ConfigFile>eco/tiltzwave1.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>001E</Id>
@@ -1142,11 +1236,29 @@
 		<Product>
 			<Reference>
 				<Type>1000</Type>
+				<Id>0200</Id>
+			</Reference>
+			<Model>ZME_064374</Model>
+			<Label lang="en">Wall Plug Switch</Label>
+			<ConfigFile>zwaveme/zme_064374.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>1000</Type>
 				<Id>0001</Id>
 			</Reference>
 			<Model>ZME_054313Z</Model>
 			<Label lang="en">Flush mountable switch</Label>
 			<ConfigFile>zwaveme/zme_054313z.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0101</Id>
+			</Reference>
+			<Model>WALLC-S</Model>
+			<Label lang="en">Wall Controller</Label>
+			<ConfigFile>zwaveme/zme_wallcs.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1220,6 +1332,15 @@
 			<Model>TZ65D</Model>
 			<Label lang="en">Dual Paddle Wall Dimmer</Label>
 			<ConfigFile>tkb/tz65d.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0004</Id>
+			</Reference>
+			<Model>TZ06</Model>
+			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW</Label>
+			<ConfigFile>tkb/tz06.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1297,7 +1418,16 @@
 			<!--Use the same as 2.51 as I cannot see any difference http://www.pepper1.net/zwavedb/device/489-->
 			<ConfigFile>danfoss/lcz_251.xml</ConfigFile>
 		</Product>
-	</Manufacturer>
+		<Product>
+			<Reference>
+				<Type>8007</Type>
+				<Id>0200</Id>
+			</Reference>
+			<Model>HRVCCM</Model>
+			<Label lang="en">Danfoss Air CCM</Label>
+			<ConfigFile>danfoss/hrv_ccm.xml</ConfigFile>
+		</Product>
+    </Manufacturer>
 	<Manufacturer>
 		<Id>013C</Id>
 		<Name>Philio Technology Corporation</Name>
@@ -1305,6 +1435,10 @@
 			<Reference>
 				<Type>0002</Type>
 				<Id>0002</Id>
+			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>000C</Id>
 			</Reference>
 			<Model>PSM-02</Model>
 			<Label lang="en">Slim Multi-Sensor</Label>
@@ -1465,6 +1599,15 @@
 			<Label lang="en">Scene Capable Push On/Off</Label>
 			<ConfigFile>leviton/dzmx1-1lz.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+			        <Type>802</Type>
+			        <Id>261</Id>
+			</Reference>
+			<Model>VRCZ4-M0Z</Model>
+			<Label lang="en">4-Zone Controller</Label>
+			<ConfigFile>leviton/vrcz4-m0z.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>007e</Id>
@@ -1522,6 +1665,15 @@
 			<Label lang="en">Flush dimmer</Label>
 			<ConfigFile>qubino/zmnhda.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>5</Type>
+				<Id>1</Id>
+			</Reference>
+			<Model>ZMNHIA</Model>
+			<Label lang="en">Flush on/off thermostat</Label>
+			<ConfigFile>qubino/zmnhia.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>97</Id>
@@ -1570,6 +1722,10 @@
 			<Reference>
 				<Type>0313</Type>
 				<Id>0108</Id>
+			</Reference>
+			<Reference>
+				<Type>0313</Type>
+				<Id>010B</Id>
 			</Reference>
 			<Model>SSA1/SSA2</Model>
 			<Label lang="en">Siren and Strobe Alarm</Label>
@@ -1625,6 +1781,15 @@
 		<Name>POPP</Name>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>123665</Model>
+			<Label lang="en">Wall Plug Meter Switch</Label>
+			<ConfigFile>popp/123665.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>1100</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -1655,5 +1820,30 @@
 			<ConfigFile>yale/yrd210.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
-	
+	<Manufacturer>
+		<Id>0166</Id>
+		<Name>Swiid</Name>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>SW-ZCS-1</Model>
+			<Label lang="en">Cord Switch</Label>
+			<ConfigFile>swiid/SW-ZCS-1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0131</Id>
+		<Name>Zipato</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>RGBWE27ZW</Model>
+			<Label lang="en">RGBW bulb</Label>
+			<ConfigFile>zipato/rgbwe27.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>

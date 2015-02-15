@@ -378,6 +378,7 @@ public abstract class ZWaveCommandClass {
 		SCHEDULE_ENTRY_LOCK(0x4E,"SCHEDULE_ENTRY_LOCK",null),
 		BASIC_WINDOW_COVERING(0x50,"BASIC_WINDOW_COVERING",null),
 		MTP_WINDOW_COVERING(0x51,"MTP_WINDOW_COVERING",null),
+		CRC_16_ENCAP(0x56,"CRC_16_ENCAP",ZWaveCRC16EncapsulationCommandClass.class),
 		MULTI_INSTANCE(0x60,"MULTI_INSTANCE",ZWaveMultiInstanceCommandClass.class),
 		DOOR_LOCK(0x62,"DOOR_LOCK",null),
 		USER_CODE(0x63,"USER_CODE",null),

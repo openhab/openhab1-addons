@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>123665</Model>
+	<Label lang="en">Wall Plug Power Meter</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x25</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x32</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+		<Class>
+			<id>0x8e</id>
+		</Class>
+	</CommandClasses>
+	<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>integer</Type>
+			<Default>720</Default>
+			<Size>2</Size>
+			<Label lang="en">Watt Meter Report Period</Label>
+			<Help lang="en">If the setting is configured for 1hour (set value
+				=720), the device will report its instant power consumption every 1
+				hour to Z-Wave Controller. (in seconds)</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>2</Index>
+			<Type>integer</Type>
+			<Default>6</Default>
+			<Size>2</Size>
+			<Label lang="en">KWH Meter Report Period</Label>
+			<Help lang="en">if the setting is configured for 1hour (set value
+				=6), the device will report its Accumulated Power Consumption (KW/h)
+				every hour (in seconds)</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>4</Index>
+			<Type>integer</Type>
+			<Default>10000</Default>
+			<Size>2</Size>
+			<Label lang="en">Threshold of KWh for Load caution </Label>
+			<Help lang="en">This is a warning when the KWh of load over the
+				preset threshold value, if the Accumulated Power Consumption exceeds
+				the setting value the device will send a warning alarm command to
+				the controller.</Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>5</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label>Ignore start level</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="Switch Off">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Last Switch State (Default)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch On</Label>
+			</Item>
+			<Help lang="en"></Help>
+		</Parameter>
+
+		<Parameter>
+			<Index>11</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Label>Ignore start level</Label>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enabled (Default)</Label>
+			</Item>
+		</Parameter>
+
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Switch State</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

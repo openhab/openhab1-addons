@@ -43,7 +43,7 @@ public class RemoveFailedNodeMessageClass extends ZWaveCommandProcessor {
 
 		// Queue the request
 		SerialMessage newMessage = new SerialMessage(SerialMessageClass.RemoveFailedNodeID, SerialMessageType.Request, SerialMessageClass.RemoveFailedNodeID, SerialMessagePriority.High);
-		byte[] newPayload = { (byte) nodeId };
+		byte[] newPayload = { (byte) nodeId, (byte) 0xfe };
     	newMessage.setMessagePayload(newPayload);
     	return newMessage;
    	}
@@ -52,11 +52,10 @@ public class RemoveFailedNodeMessageClass extends ZWaveCommandProcessor {
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.debug("Got RemoveFailedNode response.");
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
-		
-		switch(incomingMessage.getMessagePayloadByte(0)) {
+
+		switch(incomingMessage.getMessagePayloadByte(1)) {
 			case FAILED_NODE_REMOVE_STARTED:
 				logger.debug("NODE {}: Remove failed node successfully placed on stack.", nodeId);
-				transactionComplete = true;
 				break;
 			case FAILED_NODE_NOT_PRIMARY_CONTROLLER:
 				logger.error("NODE {}: Remove failed node failed as not Primary Controller for node!", nodeId);

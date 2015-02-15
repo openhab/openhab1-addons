@@ -82,7 +82,7 @@ public class SunCalc {
 		Calendar cal = DateTimeUtils.truncateToMidnight(calendar);
 		Sun sun = new Sun();
 		for (int minutes = 0; minutes <= MINUTES_PER_DAY; minutes += CURVE_TIME_INTERVAL) {
-			setSunPosition(calendar, latitude, longitude, sun);
+			setSunPosition(cal, latitude, longitude, sun);
 			if (sun.getPosition().getElevation() < SUN_ANGLE) {
 				return false;
 			}

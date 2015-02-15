@@ -38,6 +38,7 @@ public class ModbusSerialSlave extends ModbusSlave {
 	private static int dataBits = 8;
 	private static String parity = "None"; // "none", "even" or "odd"
 	private static int stopBits = 1;
+	private static String serialEncoding = Modbus.DEFAULT_SERIAL_ENCODING;
 	
 	public void setPort(String port) {
 		ModbusSerialSlave.port = port;
@@ -59,7 +60,24 @@ public class ModbusSerialSlave extends ModbusSlave {
 	public void setStopbits(int stopBits) {
 		ModbusSerialSlave.stopBits = stopBits;
 	}
-	//	String port = null;
+
+	private boolean isEncodingValid(String serialEncoding) {
+		for (String str : Modbus.validSerialEncodings) {
+			if (str.trim().contains(serialEncoding))
+				return true;
+		}
+		return false;
+	}
+
+	public void setEncoding(String serialEncoding) {
+		serialEncoding = serialEncoding.toLowerCase();
+
+		if ( isEncodingValid(serialEncoding) ) {
+			ModbusSerialSlave.serialEncoding = serialEncoding;
+		} else {
+			logger.info("Encoding '" + serialEncoding + "' is unknown");
+		}
+	}
 
 	private static SerialConnection connection = null;
 
@@ -90,23 +108,23 @@ public class ModbusSerialSlave extends ModbusSlave {
 			//			}
 
 			if (connection == null) {
+				logger.debug("connection was null, going to create a new one");
 				SerialParameters params = new SerialParameters();
 				params.setPortName(port);
 				params.setBaudRate(baud);
 				params.setDatabits(dataBits);
 				params.setParity(parity);
 				params.setStopbits(stopBits);
-				params.setEncoding(Modbus.SERIAL_ENCODING_RTU);
+				params.setEncoding(serialEncoding);
 				params.setEcho(false);
 				connection = new SerialConnection(params);
-				connection.open();
 			}
 			if (!connection.isOpen()) {
 				connection.open();
 			}
 			((ModbusSerialTransaction)transaction).setSerialConnection(connection);
 		} catch (Exception e) {
-			logger.debug("ModbusSlave: Error connecting to master: " + e.getMessage());				
+			logger.error("ModbusSlave: Error connecting to master: " + e.getMessage());				
 			return false;
 		}
 		return true;

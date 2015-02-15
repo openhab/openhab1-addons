@@ -399,6 +399,8 @@ public class OmniLinkBinding extends AbstractBinding<OmniLinkBindingProvider>
 						
 						omni = c.reqSystemInformation().getModel() < 36;
 						
+						celius = c.reqSystemFormats().getTempFormat() > 1;
+						
 						/*
 						 * We need to explicitly tell the controller to send us
 						 * real time notifications

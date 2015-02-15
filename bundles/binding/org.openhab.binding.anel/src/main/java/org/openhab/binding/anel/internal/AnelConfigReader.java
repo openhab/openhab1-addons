@@ -29,7 +29,7 @@ public class AnelConfigReader {
 	/**
 	 * Refresh rate with which the state is regularly updated.
 	 */
-	private final static long DEFAULT_REFRESH_INTERVAL = 60000;
+	final static long DEFAULT_REFRESH_INTERVAL = 60000;
 
 	/**
 	 * If cache period is set to a positive integer, then this specifies the
@@ -68,7 +68,7 @@ public class AnelConfigReader {
 	static long readConfig(Dictionary<String, ?> config, Map<String, AnelConnectorThread> threads,
 			IInternalAnelBinding bindingFacade) throws ConfigurationException {
 		if (config == null || config.isEmpty())
-			return 0;
+			return DEFAULT_REFRESH_INTERVAL;
 
 		long cachePeriod = DEFAULT_CACHE_PERIOD;
 		long refresh = DEFAULT_REFRESH_INTERVAL;

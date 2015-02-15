@@ -9,6 +9,7 @@
 package org.openhab.binding.knx.internal.bus;
 
 import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -108,19 +109,21 @@ public class KNXBusReaderScheduler {
 				}
 			} catch (InterruptedException e) {
 				sLogger.debug("Schedule executor restart failed: interrupted while waiting for termination.");
+				Thread.currentThread().interrupt();
 			}
 			mScheduledExecutorService = Executors.newScheduledThreadPool(KNXConnection.getNumberOfThreads());
 			sLogger.debug("Schedule executor restart: started.");
 		}
 
-		for (int autoRefreshTimeInSecs : mScheduleMap.keySet()) {
+		for (Iterator<Integer> iterator = mScheduleMap.keySet().iterator(); iterator.hasNext();) {
+			int autoRefreshTimeInSecs = iterator.next();
 			List<Datapoint> dpList = mScheduleMap.get(autoRefreshTimeInSecs);
 			synchronized(dpList) {
 				sLogger.debug("Clearing list {}", autoRefreshTimeInSecs);
 				dpList.clear();
 			}
 			sLogger.debug("Removing list {} from scheduler", autoRefreshTimeInSecs);
-			mScheduleMap.remove(autoRefreshTimeInSecs);
+			iterator.remove();
 		}
 	}
 
@@ -196,9 +199,10 @@ public class KNXBusReaderScheduler {
 				 * a configuration file is reread.
 				 */
 
-				for (Datapoint dp : oldList) {
+				for (Iterator<Datapoint> iterator = oldList.iterator(); iterator.hasNext();) {
+					Datapoint dp = iterator.next();
 					if (dp.toString().equals(datapoint.toString())) {
-						oldList.remove(dp);
+						iterator.remove();
 					}
 				}
 
