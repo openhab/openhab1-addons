@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.action.hue.internal;
+package org.openhab.binding.hue.internal;
 
 import java.util.Dictionary;
 
@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class registers an OSGi service for the Homematic action.
+ * This class registers an OSGi service for the Hue action.
  * 
  * @author Gernot Eger
  * @since 1.7.0
@@ -39,6 +39,7 @@ public class HueActionService implements ActionService, ManagedService {
 	 */
 	@Override
 	public String getActionClassName() {
+		logger.debug("hue getActionClassName");
 		return HueActions.class.getCanonicalName();
 	}
 
@@ -47,6 +48,7 @@ public class HueActionService implements ActionService, ManagedService {
 	 */
 	@Override
 	public Class<?> getActionClass() {
+		logger.debug("hue getActionClass");
 		return HueActions.class;
 	}
 

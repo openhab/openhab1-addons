@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.action.hue.internal;
+package org.openhab.binding.hue.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,7 +15,6 @@ import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.action.hue.AbstractHueResource;
-import org.openhab.binding.hue.internal.HueContext;
 import org.openhab.binding.hue.internal.data.HueSettings;
 import org.openhab.binding.hue.internal.data.HueSettings.SettingsTree;
 import org.openhab.binding.hue.internal.hardware.HueBridge;

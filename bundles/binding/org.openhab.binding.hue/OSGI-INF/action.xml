@@ -10,7 +10,7 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.action.hue.action">
-	<implementation class="org.openhab.action.hue.internal.HueActionService" />
+	<implementation class="org.openhab.binding.hue.internal.HueActionService" />
 
 	<service>
 		<provide interface="org.openhab.core.scriptengine.action.ActionService" />

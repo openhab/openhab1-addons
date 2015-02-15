@@ -1,4 +1,4 @@
-package org.openhab.action.hue.internal;
+package org.openhab.binding.hue.internal;
 
 import java.util.List;
 
