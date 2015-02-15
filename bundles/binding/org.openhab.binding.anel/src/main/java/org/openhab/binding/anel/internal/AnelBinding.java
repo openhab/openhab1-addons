@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -75,7 +75,7 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	}
 
 	/** The refresh interval which is used to poll values from the Anel server. */
-	private long refreshInterval;
+	private long refreshInterval = AnelConfigReader.DEFAULT_REFRESH_INTERVAL;
 
 	/** Threads to communicate with Anel devices */
 	private final Map<String, AnelConnectorThread> connectorThreads = new HashMap<String, AnelConnectorThread>();
@@ -232,7 +232,7 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 
 		// clear map of previous threads because config changed
 		connectorThreads.clear();
-		refreshInterval = 0;
+		refreshInterval = AnelConfigReader.DEFAULT_REFRESH_INTERVAL;
 
 		// read new config
 		try {

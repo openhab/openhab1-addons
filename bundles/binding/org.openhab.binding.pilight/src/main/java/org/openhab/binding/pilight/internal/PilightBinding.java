@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,7 @@ package org.openhab.binding.pilight.internal;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -21,24 +21,27 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonGenerator.Feature;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.binding.pilight.PilightBindingProvider;
 import org.openhab.binding.pilight.internal.communication.Code;
 import org.openhab.binding.pilight.internal.communication.Config;
 import org.openhab.binding.pilight.internal.communication.Device;
+import org.openhab.binding.pilight.internal.communication.DeviceType;
 import org.openhab.binding.pilight.internal.communication.Location;
 import org.openhab.binding.pilight.internal.communication.Status;
 import org.openhab.binding.pilight.internal.communication.Update;
 import org.openhab.binding.pilight.internal.communication.Values;
 import org.openhab.core.binding.AbstractBinding;
-import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
@@ -54,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * @author Jeroen Idserda
  * @since 1.0
  */
-public class PilightBinding extends AbstractBinding<PilightBindingProvider> implements ManagedService,BindingChangeListener {
+public class PilightBinding extends AbstractBinding<PilightBindingProvider> implements ManagedService {
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(PilightBinding.class);
@@ -79,37 +82,78 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 	private void processStatus(PilightConnection connection, Status status) {
 		String type = status.getType();
 		
-		if (type.equals(Status.SWITCH_EVENT) || type.equals(Status.DIMMER_EVENT)) {
+		if (!type.equals(DeviceType.SERVER)) {
 			Entry<String, List<String>> objectInfo = status.getDevices().entrySet().iterator().next();
 			String instance = connection.getInstance();
 			String location = objectInfo.getKey();
 			String device = objectInfo.getValue().get(0);
 			
-			PilightBindingConfig config = getConfig(instance, location, device);
+			List<PilightBindingConfig> configs = getConfigs(instance, location, device);
 			
-			// Update can be for a device we're not aware of
-			if (config != null) {
-				
-				State state = OnOffType.valueOf(status.getValues().get("state").toUpperCase());
-
-				if (type.equals(Status.SWITCH_EVENT)) {
-					// noop, just use on/off state defined above
-				} else if (type.equals(Status.DIMMER_EVENT)) {
-					BigDecimal dimLevel = BigDecimal.ZERO;
-					
-					if (status.getValues().get("dimlevel") != null) 
-						dimLevel = getPercentageFromDimLevel(status.getValues().get("dimlevel"));
-					else {
-						// Dimmer items can can also be switched on or off in pilight. 
-						// When this happens, the dimmer value is not reported. At least we know it's on or off.
-						dimLevel = state.equals(OnOffType.ON) ? new BigDecimal("100") : BigDecimal.ZERO;
-					}
-					
-					state = new PercentType(dimLevel);
+			if (!configs.isEmpty()) {
+				if (type.equals(DeviceType.SWITCH) || type.equals(DeviceType.DIMMER)) {
+					processSwitchEvent(configs, status);
+				} else if (type.equals(DeviceType.VALUE)) {
+					processValueEvent(configs, status);
 				}
-				
-				eventPublisher.postUpdate(config.getItemName(), state);
 			}
+		}
+	}
+
+	private void processValueEvent(List<PilightBindingConfig> configs, Status status) {
+		for (PilightBindingConfig config : configs) {
+			String property = config.getProperty();
+			if (status.getValues().containsKey(property)) {
+				String value = status.getValues().get(property);
+				State state = getState(value, config);
+				
+				if (state != null) {
+					eventPublisher.postUpdate(config.getItemName(), state);
+				}
+			}
+		}
+	}
+
+	protected State getState(String value, PilightBindingConfig config) {
+		State state = null;
+		
+		if (config.getItemType().equals(StringItem.class)) {
+			state = new StringType(value);
+		} else if (config.getItemType().equals(NumberItem.class)) {
+			if (!StringUtils.isBlank(value)) {
+				// Number values are always received as an integer with an optional parameter describing 
+				// the number of decimals (scale, default = 0). 
+				BigDecimal numberValue = new BigDecimal(value);
+				numberValue = numberValue.divide(new BigDecimal(Math.pow(10,config.getScale())), config.getScale(), RoundingMode.HALF_UP);
+				state = new DecimalType(numberValue);
+			}
+		}
+		
+		return state;
+	}
+
+	private void processSwitchEvent(List<PilightBindingConfig> configs, Status status) {
+		String type = status.getType();
+		State state = OnOffType.valueOf(status.getValues().get("state").toUpperCase());
+
+		if (type.equals(DeviceType.SWITCH)) {
+			// noop, just use on/off state defined above
+		} else if (type.equals(DeviceType.DIMMER)) {
+			BigDecimal dimLevel = BigDecimal.ZERO;
+			
+			if (status.getValues().get("dimlevel") != null) 
+				dimLevel = getPercentageFromDimLevel(status.getValues().get("dimlevel"));
+			else {
+				// Dimmer items can can also be switched on or off in pilight. 
+				// When this happens, the dimmer value is not reported. At least we know it's on or off.
+				dimLevel = state.equals(OnOffType.ON) ? new BigDecimal("100") : BigDecimal.ZERO;
+			}
+			
+			state = new PercentType(dimLevel);
+		}
+		
+		for (PilightBindingConfig config : configs) {
+			eventPublisher.postUpdate(config.getItemName(), state);
 		}
 	}
 	
@@ -203,14 +247,14 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 		return null;
 	}
 	
-	private PilightBindingConfig getConfig(String instance, String location, String device) {
+	private List<PilightBindingConfig> getConfigs(String instance, String location, String device) {
 		for (PilightBindingProvider provider : providers) {
-			PilightBindingConfig config = provider.getBindingConfig(instance, location, device);
-			 if (config != null)
-				 return config;
+			List<PilightBindingConfig> configs = provider.getBindingConfigs(instance, location, device);
+			 if (!configs.isEmpty())
+				 return configs;
 		}
 			 
-		return null;
+		return new ArrayList<PilightBindingConfig>();
 	}
 		
 	/**
@@ -283,32 +327,45 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 			}
 		}));
 		connection.getListener().start();
+		setInitialState();
 	}
 
 	/**
-	 * Gets the state for {@code device} in {@code location} from the pilight config
+	 * Gets the state for item in {@code bindingConfig} from {@code pilightConfig}  
 	 * 
-	 * @param config pilight configuration 
-	 * @param location Location name
-	 * @param device Device name
-	 * @return State of {@code device}
+	 * @param pilightConfig The complete pilight configuration
+	 * @param bindingConfig Specific pilight item in openHAB
+	 * @return Current state of the item 
 	 */
-	private State getStateFromConfig(Config config, String location, String device) {
-		Location loc = config.getConfig().get(location);
-		if (location != null) {
-			Device dev = loc.getDevices().get(device);
+	private State getStateFromConfig(Config pilightConfig, PilightBindingConfig bindingConfig) {
+		Location loc = pilightConfig.getConfig().get(bindingConfig.getLocation());
+		if (loc != null) {
+			Device dev = loc.getDevices().get(bindingConfig.getDevice());
 			
 			if (dev != null) {
-				OnOffType state = OnOffType.valueOf(dev.getState().toUpperCase());
-				
-				if (dev.getDimlevel() != null && dev.getDimlevel() > 0) {
-					if (state.equals(OnOffType.ON))
-						return new PercentType(getPercentageFromDimLevel(dev.getDimlevel().toString()));
-					else
-						return new PercentType(0);
-				} 
-				
-				return state;	
+				String devType = dev.getType().toString();
+				if (devType.equals(DeviceType.SWITCH) || devType.equals(DeviceType.DIMMER)) {
+					OnOffType state = OnOffType.valueOf(dev.getState().toUpperCase());
+					
+					if (dev.getDimlevel() != null && dev.getDimlevel() > 0) {
+						if (state.equals(OnOffType.ON))
+							return new PercentType(getPercentageFromDimLevel(dev.getDimlevel().toString()));
+						else
+							return PercentType.ZERO;
+					}
+					
+					return state;
+				} else if (devType.equals(DeviceType.VALUE)) {
+					if (dev.getScale() != null) {
+						bindingConfig.setScale(dev.getScale());
+					}
+					
+					String property = bindingConfig.getProperty();
+					if (dev.getProperties().containsKey(property)) {
+						String value = dev.getProperties().get(property);
+						return getState(value, bindingConfig);
+					}
+				}
 			}
 		}
 		return null;
@@ -319,8 +376,25 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 	 */
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
+		logger.debug("Binding changed for item {}", itemName);
 		checkItemState(provider, itemName);
-		super.bindingChanged(provider, itemName);
+	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void allBindingsChanged(BindingProvider provider) {
+		logger.debug("All bindings changed");
+		for (String itemName : provider.getItemNames()) {
+			checkItemState(provider, itemName);
+		}
+	}
+	
+	private void setInitialState() {
+		for (PilightBindingProvider provider : providers) {
+			allBindingsChanged(provider);
+		}
 	}
 
 	/**
@@ -339,7 +413,7 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 				connection.getListener().refreshConfig(new IPilightConfigReceivedCallback() {
 					@Override
 					public void configReceived(PilightConnection connection) {
-						State state = getStateFromConfig(connection.getConfig(), config.getLocation(), config.getDevice());
+						State state = getStateFromConfig(connection.getConfig(), config);
 						if (state != null) {
 							eventPublisher.postUpdate(itemName, state);
 						}

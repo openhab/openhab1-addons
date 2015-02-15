@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -158,11 +158,11 @@ public class SerialMessage {
      * @return string the string representation
      */
     static public String bb2hex(byte[] bb) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		for (int i=0; i<bb.length; i++) {
-			result = result + String.format("%02X ", bb[i]);
+			result.append(String.format("%02X ", bb[i]));
 		}
-		return result;
+		return result.toString();
 	}
 	
 	/**

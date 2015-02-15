@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -52,6 +52,9 @@ public class InsteonDevice {
 	private Long						m_lastMsgReceived = 0L;
 	private boolean						m_isModem		= false;
 	private	 Deque<QEntry>				m_requestQueue  = new LinkedList<QEntry>();
+	private DeviceFeature.QueryStatus	m_requestQueueState = DeviceFeature.QueryStatus.QUERY_ANSWERED;
+	private static final long			QUERY_TIMEOUT	= 2000;
+	private long						m_lastQueryTime	= 0L;					
 	private	boolean						m_hasModemDBEntry = false;
 	private DeviceStatus				m_status		= DeviceStatus.INITIALIZED;
 	
@@ -68,13 +71,17 @@ public class InsteonDevice {
 	public String			getProductKey()		{ return m_productKey; }
 	public boolean 			hasModemDBEntry()	{ return m_hasModemDBEntry; }
 	public DeviceStatus 	getStatus()			{ return m_status; }
-	public InsteonAddress	getAddress() 		{ return (m_address);	}
+	public InsteonAddress	getAddress() 		{ return (m_address); }
 	public Driver			getDriver()			{ return m_driver; }
 	public boolean 			hasValidPorts()		{ return (!m_ports.isEmpty());	}
 	public long				getPollInterval()	{ return m_pollInterval; }
 	public boolean			isModem()	 		{ return m_isModem; }
 	public DeviceFeature	getFeature(String f) { 	return m_features.get(f);	}
 	public HashMap<String, DeviceFeature> getFeatures() { return m_features; }
+	public byte				getX10HouseCode()	{ return (m_address.getX10HouseCode()); }
+	public byte				getX10UnitCode()	{ return (m_address.getX10UnitCode()); }
+
+	
 	public boolean			hasProductKey(String key) {
 		return m_productKey != null && m_productKey.equals(key);
 	}
@@ -148,7 +155,9 @@ public class InsteonDevice {
 		logger.debug("processing command {} features: {}", command, m_features.size());
 		synchronized(m_features) {
 			for (DeviceFeature i : m_features.values()) {
-				i.handleCommand(c, command);
+				if (i.isReferencedByItem(c.getItemName())) {
+					i.handleCommand(c, command);
+				}
 			}
 		}
 	}
@@ -225,11 +234,42 @@ public class InsteonDevice {
 	 */
 	public Msg makeStandardMessage(byte flags, byte cmd1, byte cmd2)
 			throws FieldException, IOException {
+		return (makeStandardMessage(flags, cmd1, cmd2, -1));
+	}
+	/**
+	 * Helper method to make standard message, possibly with group
+	 * @param flags
+	 * @param cmd1
+	 * @param cmd2
+	 * @param group (-1 if not a group message)
+	 * @return standard message
+	 * @throws FieldException
+	 * @throws IOException
+	 */
+	public Msg makeStandardMessage(byte flags, byte cmd1, byte cmd2, int group)
+			throws FieldException, IOException {
 		Msg m = Msg.s_makeMessage("SendStandardMessage");
-		m.setAddress("toAddress", getAddress());
+		InsteonAddress addr = null;
+		if (group != -1) {
+			flags |= 0xc0; // mark message as group message
+			// and stash the group number into the address
+			addr = new InsteonAddress((byte) 0, (byte) 0, (byte) (group & 0xff));
+		} else {
+			addr = getAddress();
+		}
+		m.setAddress("toAddress", addr);
 		m.setByte("messageFlags", flags);
 		m.setByte("command1", cmd1);
 		m.setByte("command2", cmd2);
+		return m;
+	}
+	
+	public Msg makeX10Message(byte rawX10, byte X10Flag)
+			throws FieldException, IOException {
+		Msg m = Msg.s_makeMessage("SendX10Message");
+		m.setByte("rawX10", rawX10);
+		m.setByte("X10Flag", X10Flag);
+		m.setQuietTime(300L);
 		return m;
 	}
 
@@ -264,6 +304,17 @@ public class InsteonDevice {
 			if (m_requestQueue.isEmpty()) {
 				return 0L;
 			}
+			if (m_requestQueueState == DeviceFeature.QueryStatus.QUERY_PENDING) {
+				long dt = timeNow - (m_lastQueryTime + QUERY_TIMEOUT);
+				if (dt < 0) {
+					logger.debug("still waiting for query reply from {} for another {} usec",
+							m_address, dt);
+					return (m_lastQueryTime + QUERY_TIMEOUT);
+				} else {
+					logger.warn("gave up waiting for query reply from device {}", m_address);
+				}
+			} 
+			m_lastQueryTime = timeNow;
 			QEntry qe = m_requestQueue.poll();
 			qe.getFeature().setQueryStatus(DeviceFeature.QueryStatus.QUERY_PENDING);
 			long quietTime = qe.getMsg().getQuietTime();
@@ -282,13 +333,24 @@ public class InsteonDevice {
 	 * @param f device feature that sent this message (so we can associate the response message with it)
 	 */
 	public void enqueueMessage(Msg m, DeviceFeature f) {
+		enqueueDelayedMessage(m, f, 0);
+	}
+
+	/**
+	 * Enqueues message to be sent after a delay
+	 * @param m message to be sent
+	 * @param f device feature that sent this message (so we can associate the response message with it)
+	 * @param d time (in milliseconds)to delay before enqueuing message
+	 */
+	public void enqueueDelayedMessage(Msg m, DeviceFeature f, long delay) {
 		synchronized (m_requestQueue) {
 			m_requestQueue.add(new QEntry(f, m));
 		}
 		long now = System.currentTimeMillis();
-		RequestQueueManager.s_instance().addQueue(this, now);
+		logger.trace("enqueing direct message with delay {}", delay);
+		RequestQueueManager.s_instance().addQueue(this, now + delay);
 	}
-	
+
 	private void writeMessage(Msg m) throws IOException {
 		m_driver.writeMessage(getPort(), m);
 	}

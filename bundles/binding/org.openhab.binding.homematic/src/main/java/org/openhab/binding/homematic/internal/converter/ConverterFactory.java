@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.homematic.internal.converter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +48,7 @@ public class ConverterFactory {
 			return ((ValueBindingConfig) bindingConfig).getConverter();
 		}
 
-		List<Class<? extends State>> acceptedTypes = item.getAcceptedDataTypes();
+		List<Class<? extends State>> acceptedTypes = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
 		Collections.sort(acceptedTypes, typeComparator);
 
 		for (Class<? extends State> clazz : acceptedTypes) {

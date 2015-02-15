@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,6 +30,7 @@ import org.openhab.binding.insteonplm.internal.driver.Driver;
 import org.openhab.binding.insteonplm.internal.driver.DriverListener;
 import org.openhab.binding.insteonplm.internal.driver.ModemDBEntry;
 import org.openhab.binding.insteonplm.internal.driver.Poller;
+import org.openhab.binding.insteonplm.internal.message.FieldException;
 import org.openhab.binding.insteonplm.internal.message.Msg;
 import org.openhab.binding.insteonplm.internal.message.MsgListener;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -98,6 +99,7 @@ public class InsteonPLMActiveBinding
 	private int						m_messagesReceived		= 0;
 	private boolean					m_isActive		  		= false; // state of binding
 	private boolean					m_hasInitialItemConfig	= false;
+	private int						m_x10HouseUnit			= -1;
 
 	/**
 	 * Constructor
@@ -340,8 +342,11 @@ public class InsteonPLMActiveBinding
 				m_driver.addMsgListener(m_portListener, port);
 			}
 		}
+		logger.debug("setting driver listener");
 		m_driver.setDriverListener(m_portListener);
+		logger.debug("starting {} ports", m_driver.getNumberOfPorts());
 		m_driver.startAllPorts();
+		logger.debug("ports started");
 		switch (m_driver.getNumberOfPorts()) {
 		case 0:
 			logger.error("initialization complete, but found no ports!");
@@ -349,7 +354,7 @@ public class InsteonPLMActiveBinding
 		case 1:
 			logger.debug("initialization complete, found 1 port!");
 			break;
-		case 2:
+		default:
 			logger.warn("initialization complete, found {} ports.",
 					m_driver.getNumberOfPorts());
 			break;
@@ -465,7 +470,7 @@ public class InsteonPLMActiveBinding
 				dev.setHasModemDBEntry(true);
 			}
 		} else {
-			if (m_driver.isModemDBComplete()) {
+			if (m_driver.isModemDBComplete() && !addr.isX10()) {
 				logger.warn("device {} not found in the modem database. Did you forget to link?", addr);
 			}
 		}
@@ -507,25 +512,12 @@ public class InsteonPLMActiveBinding
 			if (msg.isEcho() || msg.isPureNack()) return;
 			m_messagesReceived++;
 			logger.debug("got msg: {}", msg);
-			InsteonAddress toAddr = msg.getAddr("toAddress");
-			if (!msg.isBroadcast() && !m_driver.isMsgForUs(toAddr)) {
-				// not for one of our modems, do not process
-				return;
+			if (msg.isX10()) {
+				handleX10Message(msg, fromPort);
+			} else {
+				handleInsteonMessage(msg, fromPort);
 			}
-
-			InsteonAddress fromAddr = msg.getAddr("fromAddress");
-			if (fromAddr == null) {
-				logger.debug("invalid fromAddress, ignoring msg {}", msg);
-				return;
-			}
-			synchronized (m_devices) {
-				InsteonDevice  dev = getDevice(fromAddr);
-				if (dev == null) {
-					logger.debug("dropping message from unknown device with address {}", fromAddr);
-				} else {
-					dev.handleMessage(fromPort, msg);
-				}
-			}
+			
 		}
 		/**
 		 * {@inheritDoc}
@@ -544,7 +536,8 @@ public class InsteonPLMActiveBinding
 				for (InsteonDevice dev : m_devices.values()) {
 					InsteonAddress a = dev.getAddress();
 					if (!dbes.containsKey(a)) {
-						logger.warn("device {} not found in the modem database. Did you forget to link?", a);
+						if (!a.isX10())
+							logger.warn("device {} not found in the modem database. Did you forget to link?", a);
 					} else {
 						if (!dev.hasModemDBEntry()) {
 							logger.info("device {}     found in the modem database!", a);
@@ -557,6 +550,48 @@ public class InsteonPLMActiveBinding
 				}
 			}
 			m_driver.unlockModemDBEntries();
+		}
+		private void handleInsteonMessage(Msg msg, String fromPort) {
+			InsteonAddress toAddr = msg.getAddr("toAddress");
+			if (!msg.isBroadcast() && !m_driver.isMsgForUs(toAddr)) {
+				// not for one of our modems, do not process
+				return;
+			}
+			InsteonAddress fromAddr = msg.getAddr("fromAddress");
+			if (fromAddr == null) {
+				logger.debug("invalid fromAddress, ignoring msg {}", msg);
+				return;
+			}
+			handleMessage(fromPort, fromAddr, msg);
+		}
+
+		private void handleX10Message(Msg msg, String fromPort) {
+			try {
+				int x10Flag	= msg.getByte("X10Flag") & 0xff;
+				int rawX10	= msg.getByte("rawX10") & 0xff;
+				if (x10Flag == 0x80) { // actual command
+					if (m_x10HouseUnit != -1) {
+						InsteonAddress fromAddr = new InsteonAddress((byte)m_x10HouseUnit);
+						handleMessage(fromPort, fromAddr, msg);
+					}
+				} else if (x10Flag == 0) {
+					// what unit the next cmd will apply to
+					m_x10HouseUnit = rawX10 & 0xFF; 
+				}
+			} catch (FieldException e) {
+				logger.error("got bad X10 message: {}", msg, e);
+				return;
+			}
+		}
+		private void handleMessage(String fromPort, InsteonAddress fromAddr, Msg msg) {
+			synchronized (m_devices) {
+				InsteonDevice  dev = getDevice(fromAddr);
+				if (dev == null) {
+					logger.debug("dropping message from unknown device with address {}", fromAddr);
+				} else {
+					dev.handleMessage(fromPort, msg);
+				}
+			}
 		}
 	}
 	

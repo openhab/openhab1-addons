@@ -27,7 +27,7 @@
 				<Label lang="en">Disable</Label>
 			</Item>
 			<Item>
-				<Value>-1</Value>
+				<Value>255</Value>
 				<Label lang="en">Enable</Label>
 			</Item>
 			<Help lang="en"><![CDATA[Controls the use of the temperature sensor on the device]]></Help>
@@ -44,7 +44,7 @@
 				<Label lang="en">Celsius</Label>
 			</Item>
 			<Item>
-				<Value>-1</Value>
+				<Value>255</Value>
 				<Label lang="en">Fahrenheit</Label>
 			</Item>
 			<Help lang="en"><![CDATA[Controls the temperature sensor scale]]></Help>
@@ -64,26 +64,31 @@
 		<Group>
 			<Index>1</Index>
 			<Maximum>4</Maximum>
+			<SetToController>true</SetToController>
 			<Label lang="en">Thermostat Mode Set</Label>
 		</Group>
 		<Group>
 			<Index>2</Index>
 			<Maximum>4</Maximum>
+			<SetToController>true</SetToController>
 			<Label lang="en">Binary Switch Set</Label>
 		</Group>
 		<Group>
 			<Index>3</Index>
 			<Maximum>4</Maximum>
+			<SetToController>true</SetToController>
 			<Label lang="en">Unsolicited Battery Level Reports</Label>
 		</Group>
 		<Group>
 			<Index>4</Index>
 			<Maximum>4</Maximum>
+			<SetToController>true</SetToController>
 			<Label lang="en">Thermostat Set Point Reports</Label>
 		</Group>
 		<Group>
 			<Index>5</Index>
 			<Maximum>4</Maximum>
+			<SetToController>true</SetToController>
 			<Label lang="en">Unsolicited Sensor Multilevel Reports</Label>
 		</Group>
 	</Associations>

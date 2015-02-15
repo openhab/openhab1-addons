@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -165,7 +165,7 @@ public class RRD4jService implements QueryablePersistenceService {
 		RrdDb db = getDB(itemName, consolidationFunction);
 		if(db!=null) {
 			long start = 0L;
-			long end = filter.getEndDate()==null ? System.currentTimeMillis()/1000 - 1 : filter.getEndDate().getTime()/1000;
+			long end = filter.getEndDate()==null ? System.currentTimeMillis()/1000 : filter.getEndDate().getTime()/1000;
 
 			try {
 				if(filter.getBeginDate()==null) {

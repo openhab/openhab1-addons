@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2013, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,12 +24,13 @@ import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
  * Queries the Netatmo API for the measures of a single device or module.
  * 
  * @author Andreas Brenk
+ * @author Gaël L'hopital
  * @since 1.4.0
  * @see <a href="http://dev.netatmo.com/doc/restapi/getmeasure">getmeasure</a>
  */
 public class MeasurementRequest extends AbstractRequest {
 
-	private static final String RESOURCE_URL = "http://api.netatmo.net/api/getmeasure";
+	private static final String RESOURCE_URL = API_BASE_URL + "getmeasure";
 
 	/**
 	 * @param deviceId
@@ -92,8 +93,9 @@ public class MeasurementRequest extends AbstractRequest {
 		String json = null;
 
 		try {
+			
 			json = executeQuery(url);
-
+			
 			final MeasurementResponse response = JSON.readValue(json,
 					MeasurementResponse.class);
 

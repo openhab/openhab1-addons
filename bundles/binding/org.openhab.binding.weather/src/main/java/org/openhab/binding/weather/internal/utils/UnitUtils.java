@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -167,6 +167,16 @@ public class UnitUtils {
 			}
 		}
 		return value;
+	}
+	
+	/**
+	 * Computes the sea level pressure depending of observed pressure,
+	 * temperature and altitude of the observed point
+	 */
+	public static double getSeaLevelPressure(double pressure, double temp,double altitude) {
+		double x = 0.0065 * altitude;
+		x = (1 - x/(temp + x + 273.15));
+		return pressure * Math.pow(x,-5.257);
 	}
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -50,7 +50,7 @@ abstract public class ResourceStateChangeListener {
 	
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
-	private GeneralBroadcaster broadcaster;
+	protected GeneralBroadcaster broadcaster;
 
 	public ResourceStateChangeListener(){
 		
@@ -79,7 +79,7 @@ abstract public class ResourceStateChangeListener {
 	        broadcaster.getBroadcasterConfig().getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
 	        broadcaster.getBroadcasterConfig().getBroadcasterCache().start();
 		
-		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
+	        broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override
 			public BroadcastAction filter(Object originalMessage, Object message) {
