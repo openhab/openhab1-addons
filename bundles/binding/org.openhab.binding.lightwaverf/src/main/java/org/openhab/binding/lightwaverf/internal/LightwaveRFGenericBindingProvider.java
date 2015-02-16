@@ -36,7 +36,7 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 	private static Pattern DEVICE_REG_EXP = Pattern.compile(".*device=([0-9]*).*");
 	private static Pattern POLL_REG_EXP = Pattern.compile(".*poll_interval=([0-9]*).*");
 	private static Pattern TYPE_REG_EXP = Pattern.compile(".*type=([^,]*).*");
-
+	private static Pattern SERIAL_REG_EXP = Pattern.compile(".*serial=([^,]*).*");
 	/**
 	 * {@inheritDoc}
 	 */
@@ -69,6 +69,19 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		return bindings;
 	}
 	
+	public List<String> getBindingItemsForSerial(String serialId) {
+		List<String> bindings = new ArrayList<String>();
+		for (String itemName : bindingConfigs.keySet()) {
+			LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
+			if(serialId != null && serialId.equals(itemConfig.getSerialId())){
+				bindings.add(itemName);
+			}
+		}
+		return bindings;
+		
+	}
+	
+	
 	@Override
 	public LightwaveRfType getTypeForItemName(String itemName){
 		LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
@@ -94,26 +107,41 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		try{
 			super.processBindingConfiguration(context, item, bindingConfig);
+			String roomId = null;
+			String deviceId = null;
+			LightwaveRfType type = null;
+			int poll = -1
+			String serialId = null;
+	
 	
 			Matcher roomMatcher = ROOM_REG_EXP.matcher(bindingConfig);
-			roomMatcher.matches();
-			String roomId = roomMatcher.group(1);
+			if(roomMatcher.matches()){
+				roomId = roomMatcher.group(1);
+			}
+
 			Matcher deviceMatcher = DEVICE_REG_EXP.matcher(bindingConfig);
-			deviceMatcher.matches();
-			String deviceId = deviceMatcher.group(1);
-			
+			if(deviceMatcher.matches()){
+				deviceId = deviceMatcher.group(1);
+			}
+
+			Matcher serialMatcher = SERIAL_REG_EXP.matcher(bindingConfig);
+			if(serialMatcher.matches()){
+				serialId = serialMatcher.group(1);
+			}
+
 			Matcher typeMatcher = TYPE_REG_EXP.matcher(bindingConfig);
-			typeMatcher.matches();
-			LightwaveRfType type = LightwaveRfType.valueOf(typeMatcher.group(1));
+			if(typeMatcher.matches()){
+				type = LightwaveRfType.valueOf(typeMatcher.group(1));
+			}
+			
 			Matcher pollMatcher = POLL_REG_EXP.matcher(bindingConfig);
-			int poll = -1;
 			if(pollMatcher.matches()){
 				poll = Integer.valueOf(pollMatcher.group(1));
 			}
 			
-			LightwaveRFBindingConfig config = new LightwaveRFBindingConfig(roomId, deviceId, type, poll);
+			LightwaveRFBindingConfig config = new LightwaveRFBindingConfig(roomId, deviceId, serialId, type, poll);
 			
-			logger.info(bindingConfig + "Room["+ config.getRoomId() + "] Device[" + config.getDeviceId() + "] Type[" + config.getType()+ "]");
+			logger.info(bindingConfig + "Room["+ config.getRoomId() + "] Device[" + config.getDeviceId() + "] Serial[" + serialId + "] Type[" + config.getType()+ "] Poll[" + poll + "]");
 			addBindingConfig(item, config);
 		}
 		catch(Exception e){
@@ -128,9 +156,10 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		private final LightwaveRfType type;
 		private final int pollTime;
 		
-		public LightwaveRFBindingConfig(String roomId, String deviceId, LightwaveRfType type, int pollTime) {
+		public LightwaveRFBindingConfig(String roomId, String deviceId, String serialId, LightwaveRfType type, int pollTime) {
 			this.roomId = roomId;
 			this.deviceId = deviceId;
+			this.serialId = serialId;
 			this.type = type;
 			this.pollTime = pollTime;
 		}
@@ -140,6 +169,10 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		}
 		public String getRoomId() {
 			return roomId;
+		}
+		
+		public String getSerialId() {
+			return serialId;
 		}
 		
 		public LightwaveRfType getType() {
