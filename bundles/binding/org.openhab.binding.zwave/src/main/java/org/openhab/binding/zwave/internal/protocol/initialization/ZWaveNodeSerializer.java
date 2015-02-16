@@ -50,13 +50,15 @@ public class ZWaveNodeSerializer {
 		logger.trace("Initializing ZWaveNodeSerializer.");
 
 		// Change the folder for OH2
-//		ConfigConstants.getUserDataFolder();
-		File folder = new File("userdata");
-		if(folder.exists()) {
-			folderName = "userdata/zwave";
+		// ConfigConstants.getUserDataFolder();
+		final String USERDATA_DIR_PROG_ARGUMENT = "smarthome.userdata";
+		final String eshUserDataFolder = System.getProperty(USERDATA_DIR_PROG_ARGUMENT);
+		if (eshUserDataFolder != null) {
+		    folderName = eshUserDataFolder + "/zwave";
 		}
 
-		folder = new File(folderName);
+		final File folder = new File(folderName);
+
 		// create path for serialization.
 		if (!folder.exists()) {
 			logger.debug("Creating directory {}", folderName);
