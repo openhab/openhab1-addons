@@ -6,14 +6,14 @@
 
 ## New Features
  * Tinkerforge Action Addon
- * Brick DC
- * Brick Servo
+ * Brick DC fully supported
+ * Brick Servo fully supported
 
 ## Other changes
  * updated Tinkerforge API to 2.1.4
 
 ## Brick DC
-###Incompatible changes
+### Incompatible changes
 * DriveMode now is one of "brake" or "coast" instead of "0" or "1"
 ```
 tinkerforge:dc_garage.driveMode=brake
