@@ -152,6 +152,7 @@
 			<Index>1</Index>
 			<Maximum>5</Maximum>
 			<Label lang="en">Group 1</Label>
+			<Help lang="en">Nodes in this group are turned ON/OFF by tapping the paddle or dimmed/brightened by holding the paddle. The LED will indicate the status of this group.</Help>
 			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
