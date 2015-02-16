@@ -51,10 +51,10 @@ public class TinkerForge {
 
   @ActionDoc(text = "sets the position of a TinkerForge servo", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
   public static boolean tfServoSetposition(@ParamDoc(name = "uid", text = "servo uid") String uid,
-      @ParamDoc(name = "uid", text = "servo number 0-6") String num,
-      @ParamDoc(name = "uid", text = "servo postion -9000 - 9000") String position,
-      @ParamDoc(name = "uid", text = "servo velocity") String velocity,
-      @ParamDoc(name = "uid", text = "servo acceleration") String acceleration) {
+      @ParamDoc(name = "num", text = "servo number 0-6") String num,
+      @ParamDoc(name = "position", text = "servo postion -9000 - 9000") String position,
+      @ParamDoc(name = "velocity", text = "servo velocity") String velocity,
+      @ParamDoc(name = "acceleration", text = "servo acceleration") String acceleration) {
     if (!TinkerForgeActionService.isProperlyConfigured) {
       logger.debug("TinkerForge action is not yet configured - execution aborted!");
       return false;

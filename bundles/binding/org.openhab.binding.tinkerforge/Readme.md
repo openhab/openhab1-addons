@@ -12,6 +12,72 @@
 ## Other changes
  * updated Tinkerforge API to 2.1.4
 
+## Brick DC
+###Incompatible changes
+* DriveMode now is one of "brake" or "coast" instead of "0" or "1"
+```
+tinkerforge:dc_garage.driveMode=brake
+```
+
+* switchOnVelocity in openhab.cfg is no longer needed and has gone.
+It is replaced by per item configuration:
+With the benefit that you can have serveral switch items with different speeds.
+~~tinkerforge:dc_garage.switchOnVelocity=10000~~
+```
+Switch DCSWITCH "DC Switch" {tinkerforge="uid=62Zduj, speed=14000"}
+```
+
+
+### Whats new?
+Support for Dimmer, Rollershuter and Number items. Besides that the speed
+can be set using a percent value.
+
+The number items show the current velocity. The values are reported using the VelocityListener. 
+"callbackPeriod" and "threshold" for the listener can be configured in openhab.cfg. There is more
+documentation about callback listeners at the official openHAB TinkerForgeBindig wiki page.
+
+* callbackPeriod: milliseconds
+* threshold: numeric value
+
+### New item configuration options
+* speed: the target speed (Switch)
+* max: the maximum speed (Dimmer, Rollershutter)
+* min: the minimum speed (Dimmer, Rollershutter)
+* step: the step value for increasing decreasing speed (Dimmer)
+* leftspeed: the speed when the left rollershutter controller is pressed or command "DOWN" was send
+* rightspeed: the speed when the right rollershutter controller is pressed or command "UP" was send
+* acceleration: acceleration overrides value from openhab.cfg
+* drivemode: drivemode  overrides value from openhab.cfg
+
+## Brick Servo
+### Whats new?
+Support for Dimmer, Rollershuter and Number items. Besides that the speed
+can be set using a percent value.
+
+Number items will show the current position. 
+
+# New item configuration options
+* velocity: the velocity used to reach the new position
+* max: the maximum position (Dimmer, Rollershutter)
+* min: the minimum position (Dimmer, Rollershutter)
+* step: the step value for increasing decreasing position (Dimmer)
+* leftposition: the target position to reach when the left rollershutter controller is pressed or command "DOWN" was send
+* rightposition: the target position to reach when the right rollershutter controller is pressed or command "UP" was send
+* acceleration: the acceleration
+
+### TinkerForge Action
+The new openHAB action TinkerForgeAction comes up with the action tfServoSetposition.
+tfServoSetposition(uid, num, position, velocity, acceleration) can be used to control the servo.
+#### Example
+```
+tfServoSetposition("6Crt5W", "servo0", "-9000", "65535", "65535")
+```
+
+## Tinkerforge Action Addon
+* tfServoSetposition as explained above
+* tfClearLCD(uid) uid is the uid of the LCD display. A call of tfClearLCD will clear the LCD display.
+
+
 # 1.5.0
 ## Bugfixes
   * Reconnect support for IO16 Bricklet
