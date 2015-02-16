@@ -10,7 +10,7 @@ import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
 
-public class LightwaveRfSetHeatingTemperatureCommand extends AbstractLightwaveRfCommand implements LightwaveRFCommand { 
+public class LightwaveRfSetHeatingTemperatureCommand extends AbstractLightwaveRfCommand implements LightwaveRfRoomMessage { 
 
 	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!R([0-9])DhF\\*tP([0-9\\.]{1,4})");
 	private static final String FUNCTION = "*t";
@@ -46,10 +46,6 @@ public class LightwaveRfSetHeatingTemperatureCommand extends AbstractLightwaveRf
 		return roomId;
 	}
 
-	public String getDeviceId() {
-		return deviceId;
-	}
-
 	@Override
 	public State getState(LightwaveRfType type) {
 		switch (type) {
@@ -68,4 +64,10 @@ public class LightwaveRfSetHeatingTemperatureCommand extends AbstractLightwaveRf
 		return message.contains(FUNCTION);
 	}
 
+	@Override
+	public LightwaveRfMessageType getMessageType() {
+		return LightwaveRfMessageType.ROOM;
+	}
+
+	
 }

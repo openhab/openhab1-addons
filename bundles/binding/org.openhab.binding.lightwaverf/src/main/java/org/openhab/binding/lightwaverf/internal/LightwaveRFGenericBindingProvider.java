@@ -61,7 +61,7 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		for (String itemName : bindingConfigs.keySet()) {
 			LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
 			if(roomId != null && roomId.equals(itemConfig.getRoomId())){
-				if(deviceId == null || deviceId.equals(itemConfig.getDeviceId())){
+				if(deviceId != null && deviceId.equals(itemConfig.getDeviceId())){
 					bindings.add(itemName);
 				}
 			}
@@ -80,7 +80,30 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		return bindings;
 		
 	}
-	
+
+	@Override
+	public List<String> getBindingItemsForRoom(String roomId) {
+		List<String> bindings = new ArrayList<String>();
+		for (String itemName : bindingConfigs.keySet()) {
+			LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
+			if(roomId != null && roomId.equals(itemConfig.getRoomId())){
+				bindings.add(itemName);
+			}
+		}
+		return bindings;
+	}
+
+	@Override
+	public List<String> getBindingItemsForType(LightwaveRfType type) {
+		List<String> bindings = new ArrayList<String>();
+		for (String itemName : bindingConfigs.keySet()) {
+			LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
+			if(type.equals(itemConfig.getType())){
+				bindings.add(itemName);
+			}
+		}
+		return bindings;
+	}
 	
 	@Override
 	public LightwaveRfType getTypeForItemName(String itemName){
@@ -110,7 +133,7 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 			String roomId = null;
 			String deviceId = null;
 			LightwaveRfType type = null;
-			int poll = -1
+			int poll = -1;
 			String serialId = null;
 	
 	
@@ -153,6 +176,7 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		// put member fields here which holds the parsed values
 		private final String roomId;
 		private final String deviceId;
+		private final String serialId;
 		private final LightwaveRfType type;
 		private final int pollTime;
 		
@@ -183,4 +207,6 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 			return pollTime;
 		}
 	}
+
+
 }

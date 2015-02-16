@@ -10,7 +10,7 @@ import org.openhab.binding.lightwaverf.internal.message.LightwaveRfGeneralMessag
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
 import org.openhab.core.types.State;
 
-public class LightwaveRfRequestHeatInfo extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
+public class LightwaveRfHeatInfoRequest extends AbstractLightwaveRfCommand implements LightwaveRfRoomMessage {
 
 	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!R([0-9])F\\*r\\s*");
 	private static final String FUNCTION = "*r";
@@ -18,7 +18,7 @@ public class LightwaveRfRequestHeatInfo extends AbstractLightwaveRfCommand imple
 	private final LightwaveRfMessageId messageId;
 	private final String roomId;
 	
-	public LightwaveRfRequestHeatInfo(String message) throws LightwaveRfMessageException {
+	public LightwaveRfHeatInfoRequest(String message) throws LightwaveRfMessageException {
 		try{
 			Matcher m = REG_EXP.matcher(message);
 			m.matches();
@@ -41,11 +41,6 @@ public class LightwaveRfRequestHeatInfo extends AbstractLightwaveRfCommand imple
 	}
 
 	@Override
-	public String getDeviceId() {
-		return null;
-	}
-
-	@Override
 	public State getState(LightwaveRfType type) {
 		return null;
 	}
@@ -57,6 +52,11 @@ public class LightwaveRfRequestHeatInfo extends AbstractLightwaveRfCommand imple
 
 	public static boolean matches(String message) {
 		return message.contains(FUNCTION);
+	}
+
+	@Override
+	public LightwaveRfMessageType getMessageType() {
+		return LightwaveRfMessageType.ROOM;
 	}
 
 }

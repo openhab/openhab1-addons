@@ -6,7 +6,7 @@ import org.junit.Test;
 public class LightwaveRFReceiverTest {
 
 	@Test
-//	@Ignore
+	@Ignore
 	public void test() throws Exception {
 		LightwaveRFReceiver receiver9760 = new LightwaveRFReceiver(new LightwaverfConvertor(), 9760);
 		LightwaveRFReceiver receiver9761 = new LightwaveRFReceiver(new LightwaverfConvertor(), 9761);

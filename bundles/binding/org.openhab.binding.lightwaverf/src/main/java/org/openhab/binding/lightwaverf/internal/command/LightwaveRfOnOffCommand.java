@@ -13,7 +13,7 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.State;
 
-public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
+public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implements LightwaveRfRoomDeviceMessage {
 
 	/**
 	 * Commands are like: 
@@ -105,5 +105,9 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implemen
 		return Objects.hash(messageId, roomId, deviceId, on);
 	}
 	
+	@Override
+	public LightwaveRfMessageType getMessageType() {
+		return LightwaveRfMessageType.ROOM_DEVICE;
+	}
 
 }

@@ -8,14 +8,13 @@ import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfGeneralMessageId;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 
 
 public class LightwaveRfVersionMessage extends AbstractLightwaveRfCommand implements LightwaveRFCommand {
 
-//	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),.*V=(.*)");
 	private static final Pattern REG_EXP = Pattern.compile("(\\d{1,3}).*V=\"(.*)\"\\s*");
-	
 	
 	private final LightwaveRfMessageId messageId;
 	private final String version;
@@ -36,17 +35,14 @@ public class LightwaveRfVersionMessage extends AbstractLightwaveRfCommand implem
 		return getVersionString(messageId, version); 
 	}
 
-	public String getRoomId() {
-		return null;
-	}
-
-	public String getDeviceId() {
-		return null;
-	}
-
 	@Override
 	public State getState(LightwaveRfType type) {
-		return null;
+		switch (type) {
+		case VERSION:
+			return StringType.valueOf(version);
+		default:
+			return null;
+		}
 	}
 
 	public LightwaveRfMessageId getMessageId() {
@@ -55,6 +51,11 @@ public class LightwaveRfVersionMessage extends AbstractLightwaveRfCommand implem
 
 	public static boolean matches(String message) {
 		return message.contains("?V=");
+	}
+
+	@Override
+	public LightwaveRfMessageType getMessageType() {
+		return LightwaveRfMessageType.VERSION;
 	}
 
 }

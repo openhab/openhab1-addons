@@ -12,7 +12,7 @@ public class LightwaveRfOnOffCommandTest {
 	@Test
 	public void testOnOffCommandAsMessageOn() throws Exception {
 		String message = "104,!R2D3F1|Living Room|Angle Poise Off\n";
-		LightwaveRFCommand command = new LightwaveRfOnOffCommand(message);
+		LightwaveRfRoomDeviceMessage command = new LightwaveRfOnOffCommand(message);
 		assertEquals("104,!R2D3F1\n", command.getLightwaveRfCommandString());
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
@@ -24,7 +24,7 @@ public class LightwaveRfOnOffCommandTest {
 	@Test
 	public void testOnOffCommandAsMessageOff() throws Exception {
 		String message = "10,!R2D3F0";
-		LightwaveRFCommand command = new LightwaveRfOnOffCommand(message);
+		LightwaveRfRoomDeviceMessage command = new LightwaveRfOnOffCommand(message);
 		assertEquals("010,!R2D3F0\n", command.getLightwaveRfCommandString());
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
@@ -35,7 +35,7 @@ public class LightwaveRfOnOffCommandTest {
 
 	@Test
 	public void testOnOffCommandAsParametersOn() throws Exception {
-		LightwaveRFCommand command = new LightwaveRfOnOffCommand(10, "2", "3", true);
+		LightwaveRfRoomDeviceMessage command = new LightwaveRfOnOffCommand(10, "2", "3", true);
 		assertEquals("010,!R2D3F1\n", command.getLightwaveRfCommandString());
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());
@@ -47,7 +47,7 @@ public class LightwaveRfOnOffCommandTest {
 	
 	@Test
 	public void testOnOffCommandAsParametersOff() throws Exception {
-		LightwaveRFCommand command = new LightwaveRfOnOffCommand(10, "2", "3", false);
+		LightwaveRfRoomDeviceMessage command = new LightwaveRfOnOffCommand(10, "2", "3", false);
 		assertEquals("010,!R2D3F0\n", command.getLightwaveRfCommandString());
 		assertEquals("2", command.getRoomId());
 		assertEquals("3", command.getDeviceId());

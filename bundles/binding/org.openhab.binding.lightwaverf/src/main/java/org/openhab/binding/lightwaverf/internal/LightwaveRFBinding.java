@@ -13,6 +13,11 @@ import java.util.List;
 
 import org.openhab.binding.lightwaverf.LightwaveRFBindingProvider;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomDeviceMessage;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomMessage;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfSerialMessage;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessage;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRFMessageListener;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
@@ -112,15 +117,54 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 		return null;
 	}
 	
-	public void messageRecevied(LightwaveRFCommand command) {
-		for(LightwaveRFBindingProvider provider : providers){
-			List<String> itemNames = provider.getBindingItemsForRoomDevice(command.getRoomId(), command.getDeviceId());
-			if(itemNames != null){
-				for(String itemName : itemNames){
-					State state = command.getState(provider.getTypeForItemName(itemName));
-					eventPublisher.postUpdate(itemName, state);
-				}
+	private void publishUpdate(List<String> itemNames, LightwaveRFCommand message, LightwaveRFBindingProvider provider){
+		boolean published = false;
+		if(itemNames != null && !itemNames.isEmpty()){
+			for(String itemName : itemNames){
+				State state = message.getState(provider.getTypeForItemName(itemName));
+				published = true;
+				eventPublisher.postUpdate(itemName, state);
 			}
+			if(!published){
+				logger.debug("No item for incoming message[{}]", message);
+			}
+		}
+	}
+	
+	@Override
+	public void roomDeviceMessageReceived(LightwaveRfRoomDeviceMessage message) {
+		for(LightwaveRFBindingProvider provider : providers){
+			List<String> itemNames = provider.getBindingItemsForRoomDevice(message.getRoomId(), message.getDeviceId());
+			publishUpdate(itemNames, message, provider);
+		}
+	}
+
+	@Override
+	public void roomMessageReceived(LightwaveRfRoomMessage message) {
+		for(LightwaveRFBindingProvider provider : providers){
+			List<String> itemNames = provider.getBindingItemsForRoom(message.getRoomId());
+			publishUpdate(itemNames, message, provider);
+		}
+	}
+
+	@Override
+	public void serialMessageReceived(LightwaveRfSerialMessage message) {
+		for(LightwaveRFBindingProvider provider : providers){
+			List<String> itemNames = provider.getBindingItemsForSerial(message.getSerial());
+			publishUpdate(itemNames, message, provider);
+		}
+	}
+
+	@Override
+	public void okMessageReceived(LightwaveRfCommandOk message) {
+		// Do nothing 
+	}
+
+	@Override
+	public void versionMessageReceived(LightwaveRfVersionMessage message) {
+		for(LightwaveRFBindingProvider provider : providers){
+			List<String> itemNames = provider.getBindingItemsForType(LightwaveRfType.VERSION);
+			publishUpdate(itemNames, message, provider);
 		}
 	}
 	
@@ -139,5 +183,4 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 	void setLightwaveRfConvertor(LightwaverfConvertor mockLightwaveRfConvertor) {
 		this.messageConvertor = mockLightwaveRfConvertor;
 	}
-
 }

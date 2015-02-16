@@ -8,7 +8,7 @@ public class LightwaveRfRequestHeatInfoTest {
 	@Test
 	public void test() throws Exception {
 		String message = "105,!R3F*r\n";
-		LightwaveRFCommand command = new LightwaveRfRequestHeatInfo(message);
+		LightwaveRfRoomMessage command = new LightwaveRfHeatInfoRequest(message);
 		assertEquals("3", command.getRoomId());
 		assertEquals("105,!R3F*r\n",command.getLightwaveRfCommandString());
 	}

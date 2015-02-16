@@ -8,9 +8,10 @@ import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfHeatingMessageId;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
 
-public class LightwaveRfHeatingInfoCommand implements LightwaveRFCommand {
+public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage {
 
 	/*
 	 * Commands Like
@@ -68,7 +69,7 @@ public class LightwaveRfHeatingInfoCommand implements LightwaveRFCommand {
 	private final String nextSlot;
 	private final int prof;
 	
-	public LightwaveRfHeatingInfoCommand(String message) {
+	public LightwaveRfHeatingInfoResponse(String message) {
 		messageId = new LightwaveRfHeatingMessageId(Integer.valueOf(getStringFromText(MESSAGE_ID_REG_EXP, message)));
 		mac = getStringFromText(MAC_ID_REG_EXP, message);
 		time = new Date(Long.valueOf(getStringFromText(TIME_ID_REG_EXP, message)));
@@ -133,15 +134,6 @@ public class LightwaveRfHeatingInfoCommand implements LightwaveRFCommand {
 		*/
 	}
 
-	public String getRoomId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getDeviceId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public State getState(LightwaveRfType type) {
@@ -151,9 +143,12 @@ public class LightwaveRfHeatingInfoCommand implements LightwaveRFCommand {
 		case HEATING_SIGNAL:
 			return new DecimalType(getSignal());
 		case HEATING_CURRENT_TEMP:
-			return new DecimalType(getCurrentTargetTemperature());
+			return new DecimalType(getCurrentTemperature());
 		case HEATING_TARGET_TEMP:
+		case HEATING_SET_TEMP:
 			return new DecimalType(getCurrentTargetTemperature());
+		case VERSION:
+			return new StringType(getVersion());
 		default:
 			return null;
 		}
@@ -194,6 +189,7 @@ public class LightwaveRfHeatingInfoCommand implements LightwaveRFCommand {
 		return currentTargetTemperature;
 	}
 
+	@Override
 	public String getSerial() {
 		return serial;
 	}
@@ -228,5 +224,10 @@ public class LightwaveRfHeatingInfoCommand implements LightwaveRFCommand {
 	
 	public String getVersion() {
 		return version;
+	}
+	
+	@Override
+	public LightwaveRfMessageType getMessageType() {
+		return LightwaveRfMessageType.SERIAL;
 	}
 }

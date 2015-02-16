@@ -1,10 +1,11 @@
 package org.openhab.binding.lightwaverf.internal.command;
 
-import static org.junit.Assert.*;
-
-import java.util.Date;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.StringType;
 
 public class LightwaveRfHeatingInfoCommandTest {
 
@@ -33,26 +34,34 @@ public class LightwaveRfHeatingInfoCommandTest {
 	@Test
 	public void test() {
 		String message = "*!{\"trans\":1506,\"mac\":\"03:02:71\",\"time\":1423850746,\"prod\":\"valve\",\"serial\":\"064402\",\"signal\":54,\"type\":\"temp\",\"batt\":2.99,\"ver\":56,\"state\":\"boost\",\"cTemp\":22.3,\"cTarg\":24.0,\"output\":100,\"nTarg\":20.0,\"nSlot\":\"18:45\",\"prof\":5}";
-		LightwaveRfHeatingInfoCommand command = new LightwaveRfHeatingInfoCommand(message);
-		
-		assertEquals("1506", command.getMessageId().getMessageIdString());
-		assertEquals("03:02:71", command.getMac());
-		assertEquals(new Date(1423850746), command.getTime());
-		assertEquals("valve", command.getProd());
-		assertEquals("064402", command.getSerial());
-		assertEquals(54.0, command.getSignal(), 0.001);
-		assertEquals("temp", command.getType());
-		assertEquals(2.99,command.getBatteryLevel(), 0.001);
-		assertEquals("56", command.getVersion());
-		assertEquals("boost", command.getState());
-		assertEquals(22.3, command.getCurrentTemperature(), 0.001);
-		assertEquals(24.0, command.getCurrentTargetTemperature(), 0.001);
-		assertEquals(100, command.getOutput(), 0.001);
-		assertEquals(20.0, command.getNextTargetTeperature(), 0.001);
-		assertEquals("18:45", command.getNextSlot());
-		assertEquals(5, command.getProf(), 0.01);
-		
+		LightwaveRfSerialMessage command = new LightwaveRfHeatingInfoResponse(message);
+		//LightwaveRfHeatingInfoResponse 
+		assertEquals(new DecimalType(2.99), command.getState(LightwaveRfType.HEATING_BATTERY));
+		assertEquals(new DecimalType("22.3").doubleValue(), ((DecimalType) command.getState(LightwaveRfType.HEATING_CURRENT_TEMP)).doubleValue(), 0.001);
+		assertEquals(new DecimalType(24.0), command.getState(LightwaveRfType.HEATING_SET_TEMP));
+		assertEquals(new DecimalType(54.0), command.getState(LightwaveRfType.HEATING_SIGNAL));
+		assertEquals(new DecimalType(24.0), command.getState(LightwaveRfType.HEATING_TARGET_TEMP));
+		assertEquals(new StringType("56"), command.getState(LightwaveRfType.VERSION));
 		assertEquals(message, command.getLightwaveRfCommandString());
+		assertEquals("064402", command.getSerial());
+		assertEquals("1506", command.getMessageId().getMessageIdString());
+		
+		LightwaveRfHeatingInfoResponse heatingInfoCommand = (LightwaveRfHeatingInfoResponse) command;
+		
+		assertEquals("03:02:71", heatingInfoCommand.getMac());
+		assertEquals("valve", heatingInfoCommand.getProd());
+		assertEquals(54.0, heatingInfoCommand.getSignal(), 0.001);
+		assertEquals("temp", heatingInfoCommand.getType());
+		assertEquals(2.99,heatingInfoCommand.getBatteryLevel(), 0.001);
+		assertEquals("56", heatingInfoCommand.getVersion());
+		assertEquals("boost", heatingInfoCommand.getState());
+		assertEquals(22.3, heatingInfoCommand.getCurrentTemperature(), 0.001);
+		assertEquals(24.0, heatingInfoCommand.getCurrentTargetTemperature(), 0.001);
+		assertEquals(100, heatingInfoCommand.getOutput(), 0.001);
+		assertEquals(20.0, heatingInfoCommand.getNextTargetTeperature(), 0.001);
+		assertEquals("18:45", heatingInfoCommand.getNextSlot());
+		assertEquals(5, heatingInfoCommand.getProf(), 0.01);
+		
 	}
 
 	

@@ -9,14 +9,12 @@ import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDeviceRegistrationCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimCommand;
-import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimUpDownCommand;
-import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatingInfoCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatingInfoResponse;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfOnOffCommand;
-import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRequestHeatInfo;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatInfoRequest;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfSetHeatingTemperatureCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessage;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
-import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Type;
@@ -45,11 +43,6 @@ public class LightwaverfConvertor {
         else if(command instanceof PercentType){
             int dimmingLevel = ((PercentType) command).intValue();
             return new LightwaveRfDimCommand(messageId, roomId, deviceId, dimmingLevel);
-        }
-        else if(command instanceof IncreaseDecreaseType){
-            boolean up = (command == IncreaseDecreaseType.INCREASE);
-            return new LightwaveRfDimUpDownCommand(messageId, roomId, deviceId, up);
-            
         }
         throw new RuntimeException("Unsupported Command: " + command);
     }
@@ -88,14 +81,14 @@ public class LightwaverfConvertor {
     	else if(LightwaveRfDeviceRegistrationCommand.matches(message)){
     		return new LightwaveRfDeviceRegistrationCommand(message);
     	}
-    	else if(LightwaveRfHeatingInfoCommand.matches(message)){
-    		return new LightwaveRfHeatingInfoCommand(message);
+    	else if(LightwaveRfHeatingInfoResponse.matches(message)){
+    		return new LightwaveRfHeatingInfoResponse(message);
     	}
     	else if(LightwaveRfSetHeatingTemperatureCommand.matches(message)){
     		return new LightwaveRfSetHeatingTemperatureCommand(message);
     	}
-    	else if(LightwaveRfRequestHeatInfo.matches(message)){
-    		return new LightwaveRfRequestHeatInfo(message);
+    	else if(LightwaveRfHeatInfoRequest.matches(message)){
+    		return new LightwaveRfHeatInfoRequest(message);
     	}
     	switch (getModeCode(message)) {
 		case '0':
@@ -103,9 +96,6 @@ public class LightwaverfConvertor {
 			return new LightwaveRfOnOffCommand(message);
 		case 'd':
 			return new LightwaveRfDimCommand(message);
-		case '>':
-		case '<':
-			return new LightwaveRfDimUpDownCommand(message);
 		case ' ':
 		default:
 			throw new LightwaveRfMessageException("Message not recorgnised: " + message);

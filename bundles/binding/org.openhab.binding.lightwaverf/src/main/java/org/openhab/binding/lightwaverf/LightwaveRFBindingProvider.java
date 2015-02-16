@@ -58,10 +58,34 @@ public interface LightwaveRFBindingProvider extends BindingProvider {
 	List<String> getBindingItemsForRoomDevice(String roomId, String deviceId);
 
 	/**
+	 * Returns a list of all items that match this room.
+	 * @param roomId
+	 * @return
+	 */
+	List<String> getBindingItemsForRoom(String roomId);
+
+	/**
+	 * Returns a list of all items that match this serial.
+	 * @param serial
+	 * @return
+	 */
+	List<String> getBindingItemsForSerial(String serial);
+	
+	/**
+	 * Returns a list of all items that match this Type
+	 * @param version
+	 * @return
+	 */
+	List<String> getBindingItemsForType(LightwaveRfType version);
+
+	/**
 	 * Returns the type for an item by itemName
 	 * @param itemName
 	 * @return
 	 */
 	LightwaveRfType getTypeForItemName(String itemName);
+
+
+
 
 }

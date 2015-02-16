@@ -10,12 +10,9 @@ public interface LightwaveRFCommand {
 
 	public String getLightwaveRfCommandString();
 	
-	public String getRoomId();
-	
-	public String getDeviceId();
-
 	public State getState(LightwaveRfType type);
 	
 	public LightwaveRfMessageId getMessageId();
+	public LightwaveRfMessageType getMessageType();
 	
 }

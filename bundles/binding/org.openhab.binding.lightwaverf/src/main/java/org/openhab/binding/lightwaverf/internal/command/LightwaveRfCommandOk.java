@@ -31,14 +31,6 @@ public class LightwaveRfCommandOk extends AbstractLightwaveRfCommand implements 
 		return getOkString(messageId);
 	}
 
-	public String getRoomId() {
-		return null;
-	}
-
-	public String getDeviceId() {
-		return null;
-	}
-
 	@Override
 	public State getState(LightwaveRfType type) {
 		return null;
@@ -52,4 +44,10 @@ public class LightwaveRfCommandOk extends AbstractLightwaveRfCommand implements 
 		Matcher m = REG_EXP.matcher(message);
 		return m.matches();
 	}
+	
+	@Override
+	public LightwaveRfMessageType getMessageType() {
+		return LightwaveRfMessageType.OK;
+	}
+
 }

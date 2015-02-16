@@ -6,6 +6,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomDeviceMessage;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomMessage;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfSerialMessage;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessage;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRFMessageListener;
 import org.slf4j.Logger;
@@ -77,7 +82,25 @@ public class LightwaveRFReceiver implements Runnable {
             	message = receiveUDP();
                 logger.info("Message received: " + message);
                 LightwaveRFCommand command = messageConvertor.convertFromLightwaveRfMessage(message);
-                notifyListners(command);
+                switch (command.getMessageType()) {
+				case OK:
+					notifyOkListners((LightwaveRfCommandOk) command);
+					break;
+				case ROOM_DEVICE:
+					notifyRoomDeviceListners((LightwaveRfRoomDeviceMessage) command);
+					break;
+				case ROOM:
+					notifyRoomListners((LightwaveRfRoomMessage) command);
+					break;
+				case SERIAL:
+					notifySerialListners((LightwaveRfSerialMessage) command);
+					break;
+				case VERSION:
+					notifyVersionListners((LightwaveRfVersionMessage) command);
+					break;
+				default:
+					break;
+				}
             } 			
             catch (IOException e) {
                 if(!(running == false && receiveSocket.isClosed())) {
@@ -123,9 +146,37 @@ public class LightwaveRFReceiver implements Runnable {
     * Notify all listeners of a message
     * @param message
     */
-    private void notifyListners(LightwaveRFCommand message) {
+    
+    private void notifyRoomDeviceListners(LightwaveRfRoomDeviceMessage message) {
         for(LightwaveRFMessageListener listener : listerns) {
-            listener.messageRecevied(message);
+            listener.roomDeviceMessageReceived(message);
         }
     }
+
+    private void notifyRoomListners(LightwaveRfRoomMessage message) {
+        for(LightwaveRFMessageListener listener : listerns) {
+            listener.roomMessageReceived(message);
+        }
+    }
+
+    private void notifySerialListners(LightwaveRfSerialMessage message) {
+        for(LightwaveRFMessageListener listener : listerns) {
+            listener.serialMessageReceived(message);
+        }
+    }
+    
+    private void notifyOkListners(LightwaveRfCommandOk message) {
+        for(LightwaveRFMessageListener listener : listerns) {
+            listener.okMessageReceived(message);
+        }
+    }
+    
+    private void notifyVersionListners(LightwaveRfVersionMessage message) {
+        for(LightwaveRFMessageListener listener : listerns) {
+            listener.versionMessageReceived(message);
+        }
+    }
+
+
+
 }

@@ -43,14 +43,6 @@ public class LightwaveRfDeviceRegistrationCommand extends AbstractLightwaveRfCom
 		return messageId;
 	}
 	
-	public String getRoomId() {
-		return null;
-	}
-
-	public String getDeviceId() {
-		return null;
-	}
-
 	@Override
 	public State getState(LightwaveRfType type) {
 		return null;
@@ -79,4 +71,10 @@ public class LightwaveRfDeviceRegistrationCommand extends AbstractLightwaveRfCom
 		return "LightwaveRfDeviceRegistration[MessageId: " + messageId + "]";
 	}
 
+	@Override
+	public LightwaveRfMessageType getMessageType() {
+		return LightwaveRfMessageType.DEVICE_REGISTRATION;
+	}
+
+	
 }

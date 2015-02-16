@@ -26,5 +26,11 @@ public class LightwaveRFStopPublisherCommand implements LightwaveRFCommand {
 	public LightwaveRfMessageId getMessageId() {
 		return null;
 	}
+	
+	@Override
+	public LightwaveRfMessageType getMessageType() {
+		return null;
+	}
+
 
 }
