@@ -2239,6 +2239,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getMBrickDC_MaxVelocity()
+  {
+    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getMBrickDC_MinVelocity()
+  {
+    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EAttribute getMBrickDC_DeviceType()
   {
     return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(0);
@@ -2251,7 +2271,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EAttribute getMBrickDC_Velocity()
   {
-    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -2261,7 +2281,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EAttribute getMBrickDC_Targetvelocity()
   {
-    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(3);
+    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -2271,7 +2291,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EAttribute getMBrickDC_CurrentVelocity()
   {
-    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(4);
+    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(6);
   }
 
   /**
@@ -2281,7 +2301,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EAttribute getMBrickDC_Acceleration()
   {
-    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(5);
+    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(7);
   }
 
   /**
@@ -2291,7 +2311,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EAttribute getMBrickDC_PwmFrequency()
   {
-    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(6);
+    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(8);
   }
 
   /**
@@ -2301,7 +2321,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
    */
   public EAttribute getMBrickDC_DriveMode()
   {
-    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(7);
+    return (EAttribute)mBrickDCEClass.getEStructuralFeatures().get(9);
   }
 
   /**
@@ -2312,6 +2332,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
   public EOperation getMBrickDC__Init()
   {
     return mBrickDCEClass.getEOperations().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EOperation getMBrickDC__SetSpeed__Short_int_String()
+  {
+    return mBrickDCEClass.getEOperations().get(1);
   }
 
   /**
@@ -6064,6 +6094,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     mBrickDCEClass = createEClass(MBRICK_DC);
     createEAttribute(mBrickDCEClass, MBRICK_DC__DEVICE_TYPE);
     createEAttribute(mBrickDCEClass, MBRICK_DC__THRESHOLD);
+    createEAttribute(mBrickDCEClass, MBRICK_DC__MAX_VELOCITY);
+    createEAttribute(mBrickDCEClass, MBRICK_DC__MIN_VELOCITY);
     createEAttribute(mBrickDCEClass, MBRICK_DC__VELOCITY);
     createEAttribute(mBrickDCEClass, MBRICK_DC__TARGETVELOCITY);
     createEAttribute(mBrickDCEClass, MBRICK_DC__CURRENT_VELOCITY);
@@ -6071,6 +6103,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     createEAttribute(mBrickDCEClass, MBRICK_DC__PWM_FREQUENCY);
     createEAttribute(mBrickDCEClass, MBRICK_DC__DRIVE_MODE);
     createEOperation(mBrickDCEClass, MBRICK_DC___INIT);
+    createEOperation(mBrickDCEClass, MBRICK_DC___SET_SPEED__SHORT_INT_STRING);
 
     mDualRelayBrickletEClass = createEClass(MDUAL_RELAY_BRICKLET);
     createEAttribute(mDualRelayBrickletEClass, MDUAL_RELAY_BRICKLET__DEVICE_TYPE);
@@ -7366,6 +7399,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEClass(mBrickDCEClass, MBrickDC.class, "MBrickDC", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMBrickDC_DeviceType(), theEcorePackage.getEString(), "deviceType", "brick_dc", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "10", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickDC_MaxVelocity(), theEcorePackage.getEShortObject(), "maxVelocity", "32767", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMBrickDC_MinVelocity(), theEcorePackage.getEShortObject(), "minVelocity", "-32767", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_Velocity(), theEcorePackage.getEShort(), "velocity", null, 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_Targetvelocity(), theEcorePackage.getEShort(), "targetvelocity", "0", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getMBrickDC_CurrentVelocity(), theEcorePackage.getEShort(), "currentVelocity", null, 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -7374,6 +7409,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage
     initEAttribute(getMBrickDC_DriveMode(), this.getDCDriveMode(), "driveMode", "BRAKE", 0, 1, MBrickDC.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEOperation(getMBrickDC__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+    op = initEOperation(getMBrickDC__SetSpeed__Short_int_String(), theEcorePackage.getEBoolean(), "setSpeed", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEShortObject(), "velocity", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEInt(), "acceleration", 0, 1, !IS_UNIQUE, IS_ORDERED);
+    addEParameter(op, theEcorePackage.getEString(), "drivemode", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
     initEClass(mDualRelayBrickletEClass, MDualRelayBricklet.class, "MDualRelayBricklet", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getMDualRelayBricklet_DeviceType(), theEcorePackage.getEString(), "deviceType", "bricklet_dual_relay", 0, 1, MDualRelayBricklet.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

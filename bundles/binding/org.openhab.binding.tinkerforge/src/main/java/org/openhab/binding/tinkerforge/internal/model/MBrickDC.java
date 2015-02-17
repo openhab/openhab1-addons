@@ -25,6 +25,8 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * <ul>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getThreshold <em>Threshold</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMaxVelocity <em>Max Velocity</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMinVelocity <em>Min Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getVelocity <em>Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getTargetvelocity <em>Targetvelocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getCurrentVelocity <em>Current Velocity</em>}</li>
@@ -66,6 +68,60 @@ public interface MBrickDC extends MSensor<DecimalValue>, ProgrammableSwitchActor
    * @generated
    */
   void setThreshold(BigDecimal value);
+
+  /**
+   * Returns the value of the '<em><b>Max Velocity</b></em>' attribute.
+   * The default value is <code>"32767"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Max Velocity</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Max Velocity</em>' attribute.
+   * @see #setMaxVelocity(Short)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickDC_MaxVelocity()
+   * @model default="32767" unique="false"
+   * @generated
+   */
+  Short getMaxVelocity();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMaxVelocity <em>Max Velocity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Max Velocity</em>' attribute.
+   * @see #getMaxVelocity()
+   * @generated
+   */
+  void setMaxVelocity(Short value);
+
+  /**
+   * Returns the value of the '<em><b>Min Velocity</b></em>' attribute.
+   * The default value is <code>"-32767"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Min Velocity</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Min Velocity</em>' attribute.
+   * @see #setMinVelocity(Short)
+   * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickDC_MinVelocity()
+   * @model default="-32767" unique="false"
+   * @generated
+   */
+  Short getMinVelocity();
+
+  /**
+   * Sets the value of the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMinVelocity <em>Min Velocity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Min Velocity</em>' attribute.
+   * @see #getMinVelocity()
+   * @generated
+   */
+  void setMinVelocity(Short value);
 
   /**
    * Returns the value of the '<em><b>Device Type</b></em>' attribute.
@@ -253,5 +309,13 @@ public interface MBrickDC extends MSensor<DecimalValue>, ProgrammableSwitchActor
    * @generated
    */
   void init();
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @model unique="false" velocityUnique="false" accelerationUnique="false" drivemodeUnique="false"
+   * @generated
+   */
+  boolean setSpeed(Short velocity, int acceleration, String drivemode);
 
 } // MBrickDC

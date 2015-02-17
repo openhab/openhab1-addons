@@ -8,11 +8,7 @@
  */
 package org.openhab.action.tinkerforge.internal;
 
-import java.util.Dictionary;
-
 import org.openhab.core.scriptengine.action.ActionService;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * @author Theo Weiss
  * @since 1.7.0
  */
-public class TinkerForgeActionService implements ActionService, ManagedService {
+public class TinkerForgeActionService implements ActionService {
 
   private static final Logger logger = LoggerFactory.getLogger(TinkerForgeActionService.class);
 
@@ -34,7 +30,6 @@ public class TinkerForgeActionService implements ActionService, ManagedService {
   /* default */static boolean isProperlyConfigured = false;
 
   public TinkerForgeActionService() {
-    isProperlyConfigured = true;
   }
 
   public void activate() {
@@ -53,14 +48,6 @@ public class TinkerForgeActionService implements ActionService, ManagedService {
   @Override
   public Class<?> getActionClass() {
     return TinkerForge.class;
-  }
-
-  /**
-   * @{inheritDoc
-   */
-  @Override
-  public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-    isProperlyConfigured = true;
   }
 
 }

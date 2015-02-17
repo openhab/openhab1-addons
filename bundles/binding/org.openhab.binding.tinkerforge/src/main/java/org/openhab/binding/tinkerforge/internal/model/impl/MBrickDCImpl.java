@@ -85,6 +85,8 @@ import com.tinkerforge.TimeoutException;
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getCallbackPeriod <em>Callback Period</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getDeviceType <em>Device Type</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getThreshold <em>Threshold</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getMaxVelocity <em>Max Velocity</em>}</li>
+ *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getMinVelocity <em>Min Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getVelocity <em>Velocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getTargetvelocity <em>Targetvelocity</em>}</li>
  *   <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickDCImpl#getCurrentVelocity <em>Current Velocity</em>}</li>
@@ -467,6 +469,46 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * @ordered
    */
   protected BigDecimal threshold = THRESHOLD_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getMaxVelocity() <em>Max Velocity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMaxVelocity()
+   * @generated
+   * @ordered
+   */
+  protected static final Short MAX_VELOCITY_EDEFAULT = new Short((short)32767);
+
+  /**
+   * The cached value of the '{@link #getMaxVelocity() <em>Max Velocity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMaxVelocity()
+   * @generated
+   * @ordered
+   */
+  protected Short maxVelocity = MAX_VELOCITY_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getMinVelocity() <em>Min Velocity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMinVelocity()
+   * @generated
+   * @ordered
+   */
+  protected static final Short MIN_VELOCITY_EDEFAULT = new Short((short)-32767);
+
+  /**
+   * The cached value of the '{@link #getMinVelocity() <em>Min Velocity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMinVelocity()
+   * @generated
+   * @ordered
+   */
+  protected Short minVelocity = MIN_VELOCITY_EDEFAULT;
 
   /**
    * The default value of the '{@link #getVelocity() <em>Velocity</em>}' attribute.
@@ -1123,6 +1165,52 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * <!-- end-user-doc -->
    * @generated
    */
+  public Short getMaxVelocity()
+  {
+    return maxVelocity;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMaxVelocity(Short newMaxVelocity)
+  {
+    Short oldMaxVelocity = maxVelocity;
+    maxVelocity = newMaxVelocity;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__MAX_VELOCITY, oldMaxVelocity, maxVelocity));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Short getMinVelocity()
+  {
+    return minVelocity;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMinVelocity(Short newMinVelocity)
+  {
+    Short oldMinVelocity = minVelocity;
+    minVelocity = newMinVelocity;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICK_DC__MIN_VELOCITY, oldMinVelocity, minVelocity));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getDeviceType()
   {
     return deviceType;
@@ -1532,7 +1620,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
    * 
    * @generated NOT
    */
-  private void setSpeed(Short speed, Integer acceleration, String drivemode, Integer pwm) {
+  private boolean setSpeed(Short speed, Integer acceleration, String drivemode, Integer pwm) {
     // use defaults if acceleration, drivemode or pwm are null
     Short xdrivemode = driveModeFromString(drivemode);
     Integer xacceleration = acceleration != null ? acceleration : this.acceleration;
@@ -1556,17 +1644,29 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       }
       setTargetvelocity(xspeed);
       tinkerforgeDevice.setVelocity(xspeed);
+      return true;
     } catch (TimeoutException e) {
       TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
     } catch (NotConnectedException e) {
       TinkerforgeErrorHandler.handleError(this,
           TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
     }
+    return false;
   }
 
   /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
+   * @generated NOT
+   */
+  public boolean setSpeed(Short velocity, int acceleration, String drivemode) {
+    return setSpeed(velocity, acceleration, drivemode, null);
+  }
+
+
+  /**
+   * <!-- begin-user-doc --> <!-- end-user-doc -->
+   * 
    * @generated NOT
    */
   public void stop() {
@@ -1789,6 +1889,10 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return getDeviceType();
       case ModelPackage.MBRICK_DC__THRESHOLD:
         return getThreshold();
+      case ModelPackage.MBRICK_DC__MAX_VELOCITY:
+        return getMaxVelocity();
+      case ModelPackage.MBRICK_DC__MIN_VELOCITY:
+        return getMinVelocity();
       case ModelPackage.MBRICK_DC__VELOCITY:
         return getVelocity();
       case ModelPackage.MBRICK_DC__TARGETVELOCITY:
@@ -1874,6 +1978,12 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return;
       case ModelPackage.MBRICK_DC__THRESHOLD:
         setThreshold((BigDecimal)newValue);
+        return;
+      case ModelPackage.MBRICK_DC__MAX_VELOCITY:
+        setMaxVelocity((Short)newValue);
+        return;
+      case ModelPackage.MBRICK_DC__MIN_VELOCITY:
+        setMinVelocity((Short)newValue);
         return;
       case ModelPackage.MBRICK_DC__VELOCITY:
         setVelocity((Short)newValue);
@@ -1967,6 +2077,12 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC__THRESHOLD:
         setThreshold(THRESHOLD_EDEFAULT);
         return;
+      case ModelPackage.MBRICK_DC__MAX_VELOCITY:
+        setMaxVelocity(MAX_VELOCITY_EDEFAULT);
+        return;
+      case ModelPackage.MBRICK_DC__MIN_VELOCITY:
+        setMinVelocity(MIN_VELOCITY_EDEFAULT);
+        return;
       case ModelPackage.MBRICK_DC__VELOCITY:
         setVelocity(VELOCITY_EDEFAULT);
         return;
@@ -2041,6 +2157,10 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
       case ModelPackage.MBRICK_DC__THRESHOLD:
         return THRESHOLD_EDEFAULT == null ? threshold != null : !THRESHOLD_EDEFAULT.equals(threshold);
+      case ModelPackage.MBRICK_DC__MAX_VELOCITY:
+        return MAX_VELOCITY_EDEFAULT == null ? maxVelocity != null : !MAX_VELOCITY_EDEFAULT.equals(maxVelocity);
+      case ModelPackage.MBRICK_DC__MIN_VELOCITY:
+        return MIN_VELOCITY_EDEFAULT == null ? minVelocity != null : !MIN_VELOCITY_EDEFAULT.equals(minVelocity);
       case ModelPackage.MBRICK_DC__VELOCITY:
         return velocity != VELOCITY_EDEFAULT;
       case ModelPackage.MBRICK_DC__TARGETVELOCITY:
@@ -2339,6 +2459,8 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
       case ModelPackage.MBRICK_DC___INIT:
         init();
         return null;
+      case ModelPackage.MBRICK_DC___SET_SPEED__SHORT_INT_STRING:
+        return setSpeed((Short)arguments.get(0), (Integer)arguments.get(1), (String)arguments.get(2));
       case ModelPackage.MBRICK_DC___SET_VALUE__BIGDECIMAL_DEVICEOPTIONS:
         setValue((BigDecimal)arguments.get(0), (DeviceOptions)arguments.get(1));
         return null;
@@ -2425,6 +2547,10 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
     result.append(deviceType);
     result.append(", threshold: ");
     result.append(threshold);
+    result.append(", maxVelocity: ");
+    result.append(maxVelocity);
+    result.append(", minVelocity: ");
+    result.append(minVelocity);
     result.append(", velocity: ");
     result.append(velocity);
     result.append(", targetvelocity: ");

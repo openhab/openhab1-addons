@@ -337,13 +337,15 @@ class MBrickDC extends MSensor<MDecimalValue>, ProgrammableSwitchActor, MDevice<
 	readonly String deviceType = "brick_dc"
 	op void init(){}
     BigDecimal threshold = "10"
+    Short maxVelocity = "32767"
+    Short minVelocity = "-32767"
 	short velocity
 	short targetvelocity = "0"
 	short currentVelocity
 	int acceleration = "10000"
 	int pwmFrequency = "15000"
 	DCDriveMode driveMode = "BRAKE"
-	
+	op boolean setSpeed(Short velocity, int acceleration, String drivemode)
 }
 
 class MDualRelayBricklet extends MDevice<MTinkerBrickletDualRelay>,

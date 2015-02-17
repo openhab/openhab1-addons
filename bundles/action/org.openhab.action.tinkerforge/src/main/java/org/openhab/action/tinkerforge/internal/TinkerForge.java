@@ -10,6 +10,7 @@ package org.openhab.action.tinkerforge.internal;
 
 import org.openhab.binding.tinkerforge.ecosystem.TinkerforgeContext;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
+import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MServo;
 import org.openhab.core.scriptengine.action.ActionDoc;
@@ -31,10 +32,6 @@ public class TinkerForge {
 
   @ActionDoc(text = "clears a TinkerForge LCD", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
   public static boolean tfClearLCD(@ParamDoc(name = "uid", text = "the device uid") String uid) {
-    if (!TinkerForgeActionService.isProperlyConfigured) {
-      logger.debug("TinkerForge action is not yet configured - execution aborted!");
-      return false;
-    }
     if (context.getEcosystem() != null) {
       MBaseDevice mDevice = context.getEcosystem().getDevice(uid, null);
       if (mDevice instanceof MBrickletLCD20x4) {
@@ -55,10 +52,6 @@ public class TinkerForge {
       @ParamDoc(name = "position", text = "servo postion -9000 - 9000") String position,
       @ParamDoc(name = "velocity", text = "servo velocity") String velocity,
       @ParamDoc(name = "acceleration", text = "servo acceleration") String acceleration) {
-    if (!TinkerForgeActionService.isProperlyConfigured) {
-      logger.debug("TinkerForge action is not yet configured - execution aborted!");
-      return false;
-    }
     if (context.getEcosystem() != null) {
       MBaseDevice mDevice = context.getEcosystem().getDevice(uid, num);
       if (mDevice instanceof MServo) {
@@ -67,6 +60,51 @@ public class TinkerForge {
             Integer.parseInt(acceleration));
       } else {
         logger.trace("no servo device found with uid {}, num {}", uid, num);
+        return false;
+      }
+    } else {
+      logger.error("Action failed ecosystem is null");
+    }
+    return false;
+
+  }
+
+  @ActionDoc(text = "sets the speed of a TinkerForge DC motor", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+  public static boolean tfDCMotorSetspeed(
+      @ParamDoc(name = "uid", text = "Brick DC uid") String uid,
+      @ParamDoc(name = "speed", text = "speed -32767 - 32767") Short speed,
+      @ParamDoc(name = "acceleration", text = "motor acceleration") Integer acceleration,
+      @ParamDoc(name = "drivemode", text = "drive mode \"break\" or \"coast\"") String drivemode) {
+    if (context.getEcosystem() != null) {
+      MBaseDevice mDevice = context.getEcosystem().getDevice(uid, null);
+      if (mDevice instanceof MBrickDC) {
+        logger.trace("servo setPoint action");
+        return ((MBrickDC) mDevice).setSpeed(speed, acceleration, drivemode);
+      } else {
+        logger.trace("no Brick DC device found with uid {}, num {}", uid);
+        return false;
+      }
+    } else {
+      logger.error("Action failed ecosystem is null");
+    }
+    return false;
+
+  }
+
+  @ActionDoc(text = "sets the speed of a TinkerForge DC motor", returns = "<code>true</code>, if successful and <code>false</code> otherwise.")
+  public static boolean tfDCMotorSetspeed(
+      @ParamDoc(name = "uid", text = "Brick DC uid") String uid,
+      @ParamDoc(name = "speed", text = "speed -32767 - 32767") String speed,
+      @ParamDoc(name = "acceleration", text = "motor acceleration") String acceleration,
+      @ParamDoc(name = "drivemode", text = "drive mode \"break\" or \"coast\"") String drivemode) {
+    if (context.getEcosystem() != null) {
+      MBaseDevice mDevice = context.getEcosystem().getDevice(uid, null);
+      if (mDevice instanceof MBrickDC) {
+        logger.trace("servo setPoint action");
+        return ((MBrickDC) mDevice).setSpeed(Short.parseShort(speed),
+            Integer.parseInt(acceleration), drivemode);
+      } else {
+        logger.trace("no Brick DC device found with uid {}, num {}", uid);
         return false;
       }
     } else {

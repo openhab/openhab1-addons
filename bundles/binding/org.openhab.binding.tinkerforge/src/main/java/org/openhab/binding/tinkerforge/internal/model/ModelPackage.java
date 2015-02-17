@@ -4589,13 +4589,31 @@ public interface ModelPackage extends EPackage
   int MBRICK_DC__THRESHOLD = MSENSOR_FEATURE_COUNT + 19;
 
   /**
+   * The feature id for the '<em><b>Max Velocity</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICK_DC__MAX_VELOCITY = MSENSOR_FEATURE_COUNT + 20;
+
+  /**
+   * The feature id for the '<em><b>Min Velocity</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICK_DC__MIN_VELOCITY = MSENSOR_FEATURE_COUNT + 21;
+
+  /**
    * The feature id for the '<em><b>Velocity</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICK_DC__VELOCITY = MSENSOR_FEATURE_COUNT + 20;
+  int MBRICK_DC__VELOCITY = MSENSOR_FEATURE_COUNT + 22;
 
   /**
    * The feature id for the '<em><b>Targetvelocity</b></em>' attribute.
@@ -4604,7 +4622,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__TARGETVELOCITY = MSENSOR_FEATURE_COUNT + 21;
+  int MBRICK_DC__TARGETVELOCITY = MSENSOR_FEATURE_COUNT + 23;
 
   /**
    * The feature id for the '<em><b>Current Velocity</b></em>' attribute.
@@ -4613,7 +4631,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__CURRENT_VELOCITY = MSENSOR_FEATURE_COUNT + 22;
+  int MBRICK_DC__CURRENT_VELOCITY = MSENSOR_FEATURE_COUNT + 24;
 
   /**
    * The feature id for the '<em><b>Acceleration</b></em>' attribute.
@@ -4622,7 +4640,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__ACCELERATION = MSENSOR_FEATURE_COUNT + 23;
+  int MBRICK_DC__ACCELERATION = MSENSOR_FEATURE_COUNT + 25;
 
   /**
    * The feature id for the '<em><b>Pwm Frequency</b></em>' attribute.
@@ -4631,7 +4649,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__PWM_FREQUENCY = MSENSOR_FEATURE_COUNT + 24;
+  int MBRICK_DC__PWM_FREQUENCY = MSENSOR_FEATURE_COUNT + 26;
 
   /**
    * The feature id for the '<em><b>Drive Mode</b></em>' attribute.
@@ -4640,7 +4658,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC__DRIVE_MODE = MSENSOR_FEATURE_COUNT + 25;
+  int MBRICK_DC__DRIVE_MODE = MSENSOR_FEATURE_COUNT + 27;
 
   /**
    * The number of structural features of the '<em>MBrick DC</em>' class.
@@ -4649,7 +4667,7 @@ public interface ModelPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MBRICK_DC_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 26;
+  int MBRICK_DC_FEATURE_COUNT = MSENSOR_FEATURE_COUNT + 28;
 
   /**
    * The operation id for the '<em>Fetch Sensor Value</em>' operation.
@@ -4760,13 +4778,22 @@ public interface ModelPackage extends EPackage
   int MBRICK_DC___INIT = MSENSOR_OPERATION_COUNT + 11;
 
   /**
+   * The operation id for the '<em>Set Speed</em>' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MBRICK_DC___SET_SPEED__SHORT_INT_STRING = MSENSOR_OPERATION_COUNT + 12;
+
+  /**
    * The number of operations of the '<em>MBrick DC</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MBRICK_DC_OPERATION_COUNT = MSENSOR_OPERATION_COUNT + 12;
+  int MBRICK_DC_OPERATION_COUNT = MSENSOR_OPERATION_COUNT + 13;
 
   /**
    * The feature id for the '<em><b>Logger</b></em>' attribute.
@@ -16094,6 +16121,28 @@ public interface ModelPackage extends EPackage
   EAttribute getMBrickDC_Threshold();
 
   /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMaxVelocity <em>Max Velocity</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Max Velocity</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMaxVelocity()
+   * @see #getMBrickDC()
+   * @generated
+   */
+  EAttribute getMBrickDC_MaxVelocity();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMinVelocity <em>Min Velocity</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Min Velocity</em>'.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickDC#getMinVelocity()
+   * @see #getMBrickDC()
+   * @generated
+   */
+  EAttribute getMBrickDC_MinVelocity();
+
+  /**
    * Returns the meta object for the attribute '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#getDeviceType <em>Device Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -16179,6 +16228,16 @@ public interface ModelPackage extends EPackage
    * @generated
    */
   EOperation getMBrickDC__Init();
+
+  /**
+   * Returns the meta object for the '{@link org.openhab.binding.tinkerforge.internal.model.MBrickDC#setSpeed(java.lang.Short, int, java.lang.String) <em>Set Speed</em>}' operation.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the '<em>Set Speed</em>' operation.
+   * @see org.openhab.binding.tinkerforge.internal.model.MBrickDC#setSpeed(java.lang.Short, int, java.lang.String)
+   * @generated
+   */
+  EOperation getMBrickDC__SetSpeed__Short_int_String();
 
   /**
    * Returns the meta object for class '{@link org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet <em>MDual Relay Bricklet</em>}'.
@@ -20546,6 +20605,22 @@ public interface ModelPackage extends EPackage
     EAttribute MBRICK_DC__THRESHOLD = eINSTANCE.getMBrickDC_Threshold();
 
     /**
+     * The meta object literal for the '<em><b>Max Velocity</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICK_DC__MAX_VELOCITY = eINSTANCE.getMBrickDC_MaxVelocity();
+
+    /**
+     * The meta object literal for the '<em><b>Min Velocity</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MBRICK_DC__MIN_VELOCITY = eINSTANCE.getMBrickDC_MinVelocity();
+
+    /**
      * The meta object literal for the '<em><b>Device Type</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -20608,6 +20683,14 @@ public interface ModelPackage extends EPackage
      * @generated
      */
     EOperation MBRICK_DC___INIT = eINSTANCE.getMBrickDC__Init();
+
+    /**
+     * The meta object literal for the '<em><b>Set Speed</b></em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EOperation MBRICK_DC___SET_SPEED__SHORT_INT_STRING = eINSTANCE.getMBrickDC__SetSpeed__Short_int_String();
 
     /**
      * The meta object literal for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MDualRelayBrickletImpl <em>MDual Relay Bricklet</em>}' class.

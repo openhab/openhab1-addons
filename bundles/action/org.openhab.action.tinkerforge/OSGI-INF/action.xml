@@ -9,14 +9,12 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.action.tinkerforge.action">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.openhab.action.tinkerforge">
 	<implementation class="org.openhab.action.tinkerforge.internal.TinkerForgeActionService" />
 
 	<service>
 		<provide interface="org.openhab.core.scriptengine.action.ActionService" />
-		<provide interface="org.osgi.service.cm.ManagedService" />
 	</service>
 
-	<property name="service.pid" type="String" value="org.openhab.tinkerforge.action" />
 	
 </scr:component>
