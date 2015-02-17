@@ -33,12 +33,13 @@ public class LightwaveRfDeviceRegistrationCommand extends AbstractLightwaveRfCom
 		this.messageId = new LightwaveRfGeneralMessageId(messageId);
 	}
 	
-	
+	@Override
 	public String getLightwaveRfCommandString() {
 		
 		return getMessageString(messageId, FUNCTION, PARAMETER);
 	}
 
+	@Override
 	public LightwaveRfMessageId getMessageId() {
 		return messageId;
 	}

@@ -27,6 +27,7 @@ public class LightwaveRfCommandOk extends AbstractLightwaveRfCommand implements 
 		}
 	}
 
+	@Override
 	public String getLightwaveRfCommandString() {
 		return getOkString(messageId);
 	}
@@ -36,6 +37,7 @@ public class LightwaveRfCommandOk extends AbstractLightwaveRfCommand implements 
 		return null;
 	}
 	
+	@Override
 	public LightwaveRfMessageId getMessageId() {
 		return messageId;
 	}

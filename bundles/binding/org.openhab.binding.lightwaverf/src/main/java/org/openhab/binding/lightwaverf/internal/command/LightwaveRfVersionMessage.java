@@ -31,6 +31,7 @@ public class LightwaveRfVersionMessage extends AbstractLightwaveRfCommand implem
 		}
 	}
 	
+	@Override
 	public String getLightwaveRfCommandString() {
 		return getVersionString(messageId, version); 
 	}
@@ -45,6 +46,7 @@ public class LightwaveRfVersionMessage extends AbstractLightwaveRfCommand implem
 		}
 	}
 
+	@Override
 	public LightwaveRfMessageId getMessageId() {
 		return messageId;
 	}

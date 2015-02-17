@@ -30,6 +30,7 @@ public final class LightwaveRFActivator implements BundleActivator {
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
+	@Override
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
 		logger.debug("LightwaveRF binding has been started.");
@@ -38,6 +39,7 @@ public final class LightwaveRFActivator implements BundleActivator {
 	/**
 	 * Called whenever the OSGi framework stops our bundle
 	 */
+	@Override
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
 		logger.debug("LightwaveRF binding has been stopped.");

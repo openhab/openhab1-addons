@@ -38,10 +38,12 @@ public class LightwaveRfSetHeatingTemperatureCommand extends AbstractLightwaveRf
 		this.setTemperature = setTemperature;
 	}	
 	
+	@Override
 	public String getLightwaveRfCommandString() {
 		return getMessageString(messageId, roomId, deviceId, FUNCTION, String.valueOf(setTemperature));
 	}
 
+	@Override
 	public String getRoomId() {
 		return roomId;
 	}
@@ -56,6 +58,7 @@ public class LightwaveRfSetHeatingTemperatureCommand extends AbstractLightwaveRf
 		}
 	}
 
+	@Override
 	public LightwaveRfMessageId getMessageId() {
 		return messageId;
 	}

@@ -49,10 +49,11 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
 	    	this.openhabDimLevel = convertLightwaveDimToOpenhabDim(lightWaveDimLevel);
 		}
 		catch(Exception e){
-			throw new LightwaveRfMessageException("Error converting message: " + message, e);
+			throw new LightwaveRfMessageException("Error converting Dimming message: " + message, e);
 		}
     }
     
+    @Override
     public String getLightwaveRfCommandString() {
     	String function = "d";
     	return getMessageString(messageId, roomId, deviceId, function, String.valueOf(lightWaveDimLevel));
@@ -96,10 +97,12 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
 						BigDecimal.ROUND_UP).intValue();
 	}
 
+	@Override
 	public String getRoomId() {
 		return roomId;
 	}
 
+	@Override
 	public String getDeviceId() {
 		return deviceId;
 	}
@@ -115,6 +118,7 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
 	}
 	
 
+	@Override
 	public LightwaveRfMessageId getMessageId() {
 		return messageId;
 	}	
@@ -139,6 +143,10 @@ public class LightwaveRfDimCommand extends AbstractLightwaveRfCommand implements
 	@Override
 	public LightwaveRfMessageType getMessageType() {
 		return LightwaveRfMessageType.ROOM_DEVICE;
+	}
+
+	public static boolean matches(String message) {
+		return message.contains("FdP");
 	}
 
 }

@@ -40,6 +40,7 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String getBindingType() {
 		return "lightwaverf";
 	}
@@ -47,6 +48,7 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 	/**
 	 * @{inheritDoc}
 	 */
+	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
 		//	throw new BindingConfigParseException("item '" + item.getName()
@@ -55,7 +57,7 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		//}
 	}
 
-
+	@Override
 	public List<String> getBindingItemsForRoomDevice(String roomId, String deviceId) {
 		List<String> bindings = new ArrayList<String>();
 		for (String itemName : bindingConfigs.keySet()) {
@@ -69,6 +71,7 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		return bindings;
 	}
 	
+	@Override
 	public List<String> getBindingItemsForSerial(String serialId) {
 		List<String> bindings = new ArrayList<String>();
 		for (String itemName : bindingConfigs.keySet()) {
@@ -111,12 +114,14 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		return itemConfig.getType();
 	}
 	
+	@Override
 	public String getRoomId(String itemString){
 		LightwaveRFBindingConfig config = (LightwaveRFBindingConfig) bindingConfigs.get(itemString);
 		return config.getRoomId();
 		
 	}
 
+	@Override
 	public String getDeviceId(String itemString){
 		LightwaveRFBindingConfig config = (LightwaveRFBindingConfig) bindingConfigs.get(itemString);
 		return config.getDeviceId();

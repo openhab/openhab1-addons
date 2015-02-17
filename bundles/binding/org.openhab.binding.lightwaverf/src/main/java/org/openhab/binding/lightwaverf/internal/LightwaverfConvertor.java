@@ -90,16 +90,13 @@ public class LightwaverfConvertor {
     	else if(LightwaveRfHeatInfoRequest.matches(message)){
     		return new LightwaveRfHeatInfoRequest(message);
     	}
-    	switch (getModeCode(message)) {
-		case '0':
-		case '1':
-			return new LightwaveRfOnOffCommand(message);
-		case 'd':
-			return new LightwaveRfDimCommand(message);
-		case ' ':
-		default:
-			throw new LightwaveRfMessageException("Message not recorgnised: " + message);
-		}
+    	else if(LightwaveRfDimCommand.matches(message)){
+    		return new LightwaveRfDimCommand(message);
+    	}
+    	else if(LightwaveRfOnOffCommand.matches(message)){
+    		return new LightwaveRfOnOffCommand(message);
+    	}
+		throw new LightwaveRfMessageException("Message not recorgnised: " + message);
     	
     }
     

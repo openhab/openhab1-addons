@@ -2,6 +2,7 @@ package org.openhab.binding.lightwaverf.internal;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 
@@ -74,13 +75,13 @@ public class LightwaveRFReceiver implements Runnable {
     * Run method, this will listen to the socket and receive messages.
     * The blocking is stopped when the socket is closed.
     */
+    @Override
     public void run() {
         logger.info("LightwaveRFReceiver Started");
         while(running) {
         	String message = null;
             try {
             	message = receiveUDP();
-                logger.info("Message received: " + message);
                 LightwaveRFCommand command = messageConvertor.convertFromLightwaveRfMessage(message);
                 switch (command.getMessageType()) {
 				case OK:
@@ -125,6 +126,8 @@ public class LightwaveRFReceiver implements Runnable {
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         receiveSocket.receive(receivePacket);
         receivedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
+        logger.info("Message received: " + receivedMessage);
+        logger.info("Message received: " + Arrays.toString(receivedMessage.toCharArray()));
         return receivedMessage;
     }
     

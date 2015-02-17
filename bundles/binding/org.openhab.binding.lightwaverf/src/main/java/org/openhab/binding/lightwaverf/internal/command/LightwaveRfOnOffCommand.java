@@ -60,15 +60,18 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implemen
 		}
 	}
 
+    @Override
     public String getLightwaveRfCommandString() {
         String function = on ? "1" : "0";
         return getMessageString(messageId, roomId, deviceId, function);
     }
 
+    @Override
 	public String getRoomId() {
 		return roomId;
 	}
 
+    @Override
 	public String getDeviceId() {
 		return deviceId;
 	}
@@ -85,6 +88,7 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implemen
 		}
 	}
 	
+	@Override
 	public LightwaveRfMessageId getMessageId() {
 		return messageId;
 	}
@@ -108,6 +112,10 @@ public class LightwaveRfOnOffCommand extends AbstractLightwaveRfCommand implemen
 	@Override
 	public LightwaveRfMessageType getMessageType() {
 		return LightwaveRfMessageType.ROOM_DEVICE;
+	}
+
+	public static boolean matches(String message) {
+		return message.contains("F0") || message.contains("F1");
 	}
 
 }

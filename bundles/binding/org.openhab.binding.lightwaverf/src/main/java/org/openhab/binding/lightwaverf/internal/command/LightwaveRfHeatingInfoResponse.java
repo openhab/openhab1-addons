@@ -94,6 +94,7 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 		return matcher.group(1);
 	}
 
+	@Override
 	public String getLightwaveRfCommandString() {
 		return new StringBuilder("*!{")
 			.append("\"trans\":").append(messageId.getMessageIdString())
@@ -113,27 +114,7 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 			.append(",\"nSlot\":\"").append(nextSlot)
 			.append("\",\"prof\":").append(prof)
 			.append("}").toString();
-
-		 /* *!{
-			 * 		"trans":1232,
-			 * 		"mac":"03:02:71",
-			 * 		"time":1423827547,
-			 * 		"prod":"valve",
-			 * 		"serial":"5A4F02",
-			 * 		"signal":0,
-			 * 		"type":"temp",
-			 * 		"batt":2.72,
-			 * 		"ver":56,
-			 * 		"state":"run",
-			 * 		"cTemp":17.8,
-			 * 		"cTarg":19.0,
-			 * 		"output":80,
-			 * 		"nTarg":24.0,
-			 * 		"nSlot":"06:00",
-			 * 		"prof":5
-		*/
 	}
-
 
 	@Override
 	public State getState(LightwaveRfType type) {
@@ -158,6 +139,7 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 		return state;
 	}
 
+	@Override
 	public LightwaveRfMessageId getMessageId() {
 		return messageId;
 	}

@@ -44,14 +44,18 @@ public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvid
 	private final Logger logger = LoggerFactory.getLogger(LightwaveRFBinding.class);
 	private LightwaverfConvertor messageConvertor = new LightwaverfConvertor(); 
 	private LightwaveRFReceiver receiver = null;
+	private LightwaveRFReceiver receiver9760 = null;
 	private LightwaveRFSender sender = null;
 
 	@Override
 	public void activate() {
 		try{
 			receiver = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_RECEIVE_ON);
-			receiver.start();
 			receiver.addListener(this);
+			receiver.start();
+			receiver9760 = new LightwaveRFReceiver(messageConvertor, 9760);
+			receiver9760.addListener(this);
+			receiver9760.start();
 			sender = new LightwaveRFSender(LIGHTWAVE_IP, LIGHTWAVE_PORT_TO_SEND_TO, POLL_TIME);
 			sender.start();
 			if(SEND_REGISTER_ON_STARTUP){
