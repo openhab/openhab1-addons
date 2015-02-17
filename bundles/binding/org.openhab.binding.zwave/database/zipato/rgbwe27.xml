@@ -3,6 +3,10 @@
 	<Model>RGBWE27ZW</Model>
 	<Label lang="en">Zipato RGBW bulb</Label>
 	<CommandClasses>
+		<Class>
+			<id>0x33</id>
+			<isGetSupported>false</isGetSupported>
+		</Class>
 		<Class><id>0x5e</id></Class>
 		<Class><id>0x86</id></Class>
 		<Class><id>0x72</id></Class>
