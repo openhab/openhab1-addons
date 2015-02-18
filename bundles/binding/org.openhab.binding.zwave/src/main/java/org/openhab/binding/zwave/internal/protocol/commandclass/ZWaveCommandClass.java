@@ -423,6 +423,9 @@ public abstract class ZWaveCommandClass {
 		MULTI_INSTANCE_ASSOCIATION(0x8E,"MULTI_INSTANCE_ASSOCIATION",null),
 		MULTI_CMD(0x8F,"MULTI_CMD",ZWaveMultiCommandCommandClass.class),
 		ENERGY_PRODUCTION(0x90,"ENERGY_PRODUCTION",null),
+		// Note that MANUFACTURER_PROPRIETARY shouldn't be instantiated directly
+		// The getInstance method will catch this and translate to the correct
+		// class for the device.
 		MANUFACTURER_PROPRIETARY(0x91,"MANUFACTURER_PROPRIETARY",null),
 		SCREEN_MD(0x92,"SCREEN_MD",null),
 		SCREEN_ATTRIBUTES(0x93,"SCREEN_ATTRIBUTES",null),
