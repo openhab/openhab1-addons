@@ -91,6 +91,14 @@
 		<Name>Intermatic</Name>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HA-01</Model>
+			<Label lang="en">Dual receptacle</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0003</Id>
 			</Reference>
