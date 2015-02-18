@@ -31,5 +31,5 @@ Bundle-ClassPath: .,
  lib/smack-resolver-javax-4.0.6.jar,
  lib/smack-tcp-4.0.6.jar,
  lib/xpp3-1.1.4c.jar,
- lib/java-pinning-jar-1.0.0.jar
+ lib/java-pinning-jar-1.0.1.jar
 Bundle-ActivationPolicy: lazy
