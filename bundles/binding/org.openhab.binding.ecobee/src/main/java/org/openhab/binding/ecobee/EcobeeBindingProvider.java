@@ -9,7 +9,6 @@
 package org.openhab.binding.ecobee;
 
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.items.ItemRegistry;
 
 /**
  * This interface is implemented by classes that can provide mapping information between openHAB items and Ecobee items.
@@ -67,16 +66,4 @@ public interface EcobeeBindingProvider extends BindingProvider {
 	 * @return <code>true</code> if this property can be written to the Ecobee API.
 	 */
 	boolean isOutBound(String itemName);
-
-	/**
-	 * Gets the ItemRegistry (catalog) used by this BindingProvider.
-	 * 
-	 * The {@code ItemRegistry} is injected into the {@code MiosBindingProvider}
-	 * through OSGi configuration. This method provider read-only access to the
-	 * {@code ItemRegistry}, which is the catalog of Items in use by this
-	 * system.
-	 * 
-	 * @return the ItemRegistry associated with this BindingProvider.
-	 */
-	public ItemRegistry getItemRegistry();
 }

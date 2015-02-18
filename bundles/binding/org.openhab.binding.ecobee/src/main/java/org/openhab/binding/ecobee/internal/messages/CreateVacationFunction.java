@@ -28,12 +28,8 @@ import java.util.Date;
 public final class CreateVacationFunction extends AbstractFunction {
 
 	public CreateVacationFunction(final String name, final Temperature coolHoldTemp, final Temperature heatHoldTemp,
-			final Date startDateTime, final Date endDateTime, final FanMode fan, final Integer fanMinOnTime) { // TODO
-																												// doc
-																												// says
-																												// String
-																												// not
-																												// Integer
+			final Date startDateTime, final Date endDateTime, final FanMode fan, final Integer fanMinOnTime) {
+		// TODO doc says String not Integer for fanMinOnTime parameter (@watou)
 		super("createVacation");
 
 		if (name == null || coolHoldTemp == null || heatHoldTemp == null) {

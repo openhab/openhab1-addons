@@ -15,7 +15,6 @@ import org.openhab.binding.ecobee.EcobeeBindingProvider;
 import org.openhab.binding.ecobee.internal.messages.Selection;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.items.ItemRegistry;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -199,41 +198,6 @@ public class EcobeeGenericBindingProvider extends AbstractGenericBindingProvider
 		return config != null ? config.outBound : false;
 	}
 
-	// Injected by the OSGi Container through the setItemRegistry and
-	// unsetItemRegistry methods.
-	private ItemRegistry itemRegistry;
-
-	/**
-	 * Invoked by the OSGi Framework.
-	 * 
-	 * This method is invoked by OSGi during the initialization of the
-	 * EcobeeBinding, so we have subsequent access to the ItemRegistry (needed to
-	 * get values from Items in openHAB)
-	 */
-	public void setItemRegistry(ItemRegistry itemRegistry) {
-		logger.debug("setItemRegistry: called");
-		this.itemRegistry = itemRegistry;
-	}
-
-	/**
-	 * Invoked by the OSGi Framework.
-	 * 
-	 * This method is invoked by OSGi during the initialization of the
-	 * EcobeeBinding, so we have subsequent access to the ItemRegistry (needed to
-	 * get values from Items in openHAB)
-	 */
-	public void unsetItemRegistry(ItemRegistry itemRegistry) {
-		logger.debug("unsetItemRegistry: called");
-		this.itemRegistry = null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ItemRegistry getItemRegistry() {
-		return this.itemRegistry;
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -290,7 +254,7 @@ public class EcobeeGenericBindingProvider extends AbstractGenericBindingProvider
 	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 
-		logger.debug("validateItemType called with bindingConfig={}", bindingConfig);
+		logger.trace("validateItemType called with bindingConfig={}", bindingConfig);
 
 		Matcher matcher = CONFIG_PATTERN.matcher(bindingConfig);
 
@@ -299,15 +263,6 @@ public class EcobeeGenericBindingProvider extends AbstractGenericBindingProvider
 
 		String property = matcher.group(2);
 
-		logger.debug("validateItemType called with property={}", property);
-
-		/*
-		 * FIXME: find alternative to check types
-		 * 
-		 * if (!EcobeeItemMapping.isValidItemType(item, property)) { throw new BindingConfigParseException( "item '" +
-		 * item.getName() + "' is of type '" + item.getClass().getSimpleName() + "'; only items that accept the '" +
-		 * EcobeeItemMapping.getStateClass(property) .getSimpleName() +
-		 * "' state are allowed - please check your *.items configuration."); }
-		 */
+		logger.trace("validateItemType called with property={}", property);
 	}
 }

@@ -150,7 +150,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 				return value.toString();
 			}
 		}, String.class);
-		// FIXME: complete type conversions from states to bean property types
 	}
 
 	/**
@@ -173,7 +172,31 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	 */
 	private Map<String, Revision> lastRevisionMap = new HashMap<String, Revision>();
 
+	// Injected by the OSGi Container through the setItemRegistry and
+	// unsetItemRegistry methods.
+	private ItemRegistry itemRegistry;
+
 	public EcobeeBinding() {
+	}
+
+	/**
+	 * Invoked by the OSGi Framework.
+	 * 
+	 * This method is invoked by OSGi during the initialization of the EcobeeBinding, so we have subsequent access to
+	 * the ItemRegistry (needed to get values from Items in openHAB)
+	 */
+	public void setItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = itemRegistry;
+	}
+
+	/**
+	 * Invoked by the OSGi Framework.
+	 * 
+	 * This method is invoked by OSGi during the initialization of the EcobeeBinding, so we have subsequent access to
+	 * the ItemRegistry (needed to get values from Items in openHAB)
+	 */
+	public void unsetItemRegistry(ItemRegistry itemRegistry) {
+		this.itemRegistry = null;
 	}
 
 	/**
@@ -182,7 +205,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	@Override
 	public void activate() {
 		super.activate();
-		setProperlyConfigured(true);
 	}
 
 	/**
@@ -215,7 +237,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	 */
 	@Override
 	protected void execute() {
-		logger.debug("Querying Ecobee API");
+		logger.trace("Querying Ecobee API");
 
 		try {
 			for (String userid : credentialsCache.keySet()) {
@@ -316,60 +338,60 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 
 		if (0 == thermostatIdentifiers.size()) {
 			logger.debug("No changes detected.");
-		} else {
-			logger.debug("Requesting full retrieval for {} thermostat(s).", thermostatIdentifiers.size());
+			return;
+		}
 
-			// Potentially decrease the number of thermostats for the full
-			// retrieval.
+		logger.debug("Requesting full retrieval for {} thermostat(s).", thermostatIdentifiers.size());
 
-			selection.setSelectionMatch(thermostatIdentifiers);
+		// Potentially decrease the number of thermostats for the full
+		// retrieval.
 
-			// TODO loop through possibly multiple pages
-			ThermostatRequest treq = new ThermostatRequest(oauthCredentials.accessToken, selection, null);
-			ThermostatResponse tres = treq.execute();
+		selection.setSelectionMatch(thermostatIdentifiers);
 
-			if (tres.isError()) {
-				logger.error("Error retrieving thermostats: {}", tres.getStatus());
-			} else {
+		// TODO loop through possibly multiple pages (@watou)
+		ThermostatRequest treq = new ThermostatRequest(oauthCredentials.accessToken, selection, null);
+		ThermostatResponse tres = treq.execute();
 
-				// Create a ID-based map of the thermostats we retrieved.
-				Map<String, Thermostat> thermostats = new HashMap<String, Thermostat>();
+		if (tres.isError()) {
+			logger.error("Error retrieving thermostats: {}", tres.getStatus());
+			return;
+		}
 
-				for (Thermostat t : tres.getThermostatList()) {
-					thermostats.put(t.getIdentifier(), t);
-				}
+		// Create a ID-based map of the thermostats we retrieved.
+		Map<String, Thermostat> thermostats = new HashMap<String, Thermostat>();
 
-				// Iterate through bindings and update all inbound values.
-				for (final EcobeeBindingProvider provider : this.providers) {
-					for (final String itemName : provider.getItemNames()) {
-						if (provider.isInBound(itemName)) {
-							final State newState = getState(provider, thermostats, itemName);
-							ItemRegistry reg = provider.getItemRegistry();
-							State oldState = reg.getItem(itemName).getState();
+		for (Thermostat t : tres.getThermostatList()) {
+			thermostats.put(t.getIdentifier(), t);
+		}
 
-							if ((oldState == null && newState != null)
-									|| (UnDefType.UNDEF.equals(oldState) && !UnDefType.UNDEF.equals(newState))
-									|| !oldState.equals(newState)) {
-								logger.debug("readEcobee: Updating itemName '{}' with newState '{}', oldState '{}'",
-										itemName, newState, oldState);
+		// Iterate through bindings and update all inbound values.
+		for (final EcobeeBindingProvider provider : this.providers) {
+			for (final String itemName : provider.getItemNames()) {
+				if (provider.isInBound(itemName)) {
+					final State newState = getState(provider, thermostats, itemName);
+					State oldState = (itemRegistry == null) ? null : itemRegistry.getItem(itemName).getState();
 
-								/*
-								 * we need to make sure that we won't send out this event to Ecobee again, when
-								 * receiving it on the openHAB bus
-								 */
-								ignoreEventSet.add(itemName + newState.toString());
-								logger.trace("Added event (item='{}', newState='{}') to the ignore event list",
-										itemName, newState);
-								this.eventPublisher.postUpdate(itemName, newState);
-							} else {
-								logger.trace("readEcobee: Ignoring item='{}' with newState='{}', oldState='{}'",
-										itemName, newState, oldState);
-							}
-						}
+					if ((oldState == null && newState != null)
+							|| (UnDefType.UNDEF.equals(oldState) && !UnDefType.UNDEF.equals(newState))
+							|| !oldState.equals(newState)) {
+						logger.debug("readEcobee: Updating itemName '{}' with newState '{}', oldState '{}'", itemName,
+								newState, oldState);
+
+						/*
+						 * we need to make sure that we won't send out this event to Ecobee again, when receiving it on
+						 * the openHAB bus
+						 */
+						ignoreEventSet.add(itemName + newState.toString());
+						logger.trace("Added event (item='{}', newState='{}') to the ignore event list", itemName,
+								newState);
+						this.eventPublisher.postUpdate(itemName, newState);
+					} else {
+						logger.trace("readEcobee: Ignoring item='{}' with newState='{}', oldState='{}'", itemName,
+								newState, oldState);
 					}
 				}
-			} // end if there was no error retrieving the thermostats
-		} // end if there were any changed thermostats to fetch
+			}
+		}
 	}
 
 	/**
@@ -475,43 +497,6 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			updateEcobee(itemName, (State) command);
 		}
 	}
-
-	/* *
-	 * Perform the given {@code command} against all targets referenced in {@code itemName}.
-	 * 
-	 * @param command the command to execute
-	 * 
-	 * @param the target(s) against which to execute this command / private void functionEcobee(final String itemName,
-	 * final Command command) {
-	 * 
-	 * // Find the first binding provider for this itemName. EcobeeBindingProvider provider = null; String
-	 * selectionMatch = null; for (EcobeeBindingProvider p : this.providers) { selectionMatch =
-	 * p.getThermostatIdentifier(itemName); if (selectionMatch != null) { provider = p; break; } }
-	 * 
-	 * if (provider == null) { logger.warn( "no matching binding provider found [itemName={}, command={}]", itemName,
-	 * command); return; } else { final Selection selection = new Selection(selectionMatch); List<AbstractFunction>
-	 * functions = new ArrayList<AbstractFunction>(); String property = provider.getProperty(itemName);
-	 * 
-	 * try { final Thermostat thermostat = null;
-	 * 
-	 * // EcobeeCommand cmd = ECOBEE_COMMANDS.get(property);
-	 * 
-	 * OAuthCredentials oauthCredentials = getOAuthCredentials(provider .getUserid(itemName));
-	 * 
-	 * if (oauthCredentials == null) { logger.warn( "Unable to locate credentials for item {}; aborting command.",
-	 * itemName); return; }
-	 * 
-	 * if (oauthCredentials.noAccessToken()) { if (!oauthCredentials.refreshTokens()) {
-	 * logger.warn("Sending command skipped."); return; } }
-	 * 
-	 * UpdateThermostatRequest request = new UpdateThermostatRequest( oauthCredentials.accessToken, selection,
-	 * functions, null); ApiResponse response = request.execute(); if (response.isError()) { final Status status =
-	 * response.getStatus(); if (status.isAccessTokenExpired()) { if (oauthCredentials.refreshTokens()) {
-	 * functionEcobee(itemName, command); } } else { logger.error( "Error sending thermostat function(s): {}",
-	 * response); } } } catch (Exception e) { logger.error("Unable to send thermostat function(s)", e); } }
-	 * 
-	 * // acknowledge // controlPlug // createVacation // deleteVacation // resumeProgram // sendMessage // setHold }
-	 */
 
 	private boolean isEcho(String itemName, State state) {
 		String ignoreEventSetKey = itemName + state.toString();
@@ -942,7 +927,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 			} else {
 				prefs.remove(REFRESH_TOKEN);
 			}
-			
+
 			if (this.accessToken != null) {
 				prefs.put(ACCESS_TOKEN, this.accessToken);
 			} else {

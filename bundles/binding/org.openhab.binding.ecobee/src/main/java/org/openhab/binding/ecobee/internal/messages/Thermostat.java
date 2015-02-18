@@ -193,7 +193,7 @@ public class Thermostat extends AbstractMessagePart {
 	}
 
 	/**
-	 * @return the current time in the thermostat's time zone TODO time zone adjust:
+	 * @return the current time in the thermostat's time zone TODO time zone adjust (@watou)
 	 *         http://wiki.fasterxml.com/JacksonFAQDateHandling
 	 */
 	@JsonProperty("thermostatTime")
@@ -663,10 +663,10 @@ public class Thermostat extends AbstractMessagePart {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Settings extends AbstractMessagePart {
 		private HvacMode hvacMode;
-		private String lastServiceDate; // TODO Jackson 1.9 dates
+		private String lastServiceDate; // TODO Jackson 1.9 dates (@watou)
 		private Boolean serviceRemindMe;
 		private Integer monthsBetweenService;
-		private String remindMeDate; // TODO Jackson 1.9 dates
+		private String remindMeDate; // TODO Jackson 1.9 dates (@watou)
 		private VentilatorMode vent;
 		private Integer ventilatorMinOnTime;
 		private Boolean serviceRemindTechnician;
@@ -1597,7 +1597,7 @@ public class Thermostat extends AbstractMessagePart {
 		 * @param dehumidifyWithAC
 		 *            whether the thermostat should use AC overcool to dehumidify. When set to true a positive integer
 		 *            value must be supplied for dehumidifyOvercoolOffset otherwise an API validation exception will be
-		 *            thrown. TODO implement constraint here.
+		 *            thrown. TODO implement constraint here (@watou).
 		 */
 		@JsonProperty("dehumidifyWithAC")
 		public void setDehumidifyWithAC(Boolean dehumidifyWithAC) {
@@ -2773,11 +2773,11 @@ public class Thermostat extends AbstractMessagePart {
 		private Date firstConnected;
 		private Date connectDateTime;
 		private String disconnectDateTime; // TODO: Jackson 1.9 can't handle
-											// date only (no time)
+											// date only (no time) (@watou)
 		private Date lastModified;
 		private Date lastStatusModified;
 		private String runtimeDate; // TODO: Jackson 1.9 can't handle date only
-									// (no time)
+									// (no time) (@watou)
 		private Integer runtimeInterval;
 		private Temperature actualTemperature;
 		private Integer actualHumidity;
@@ -2913,7 +2913,7 @@ public class Thermostat extends AbstractMessagePart {
 
 		/**
 		 * @return the desired fan mode. Values: auto, on or null if the HVAC system is off. TODO handle null as valid
-		 *         value.
+		 *         value (@watou).
 		 */
 		@JsonProperty("desiredFanMode")
 		public String getDesiredFanMode() {
@@ -2973,8 +2973,7 @@ public class Thermostat extends AbstractMessagePart {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class ExtendedRuntime extends AbstractMessagePart {
 		private Date lastReadingTimestamp;
-		private String runtimeDate; // TODO Jackson 1.9 can't also deal with
-									// date-only dates
+		private String runtimeDate; // TODO Jackson 1.9 can't also deal with date-only dates (@watou)
 		private Integer runtimeInterval;
 		private List<Temperature> actualTemperature;
 		private List<Integer> actualHumidity;
@@ -4681,7 +4680,7 @@ public class Thermostat extends AbstractMessagePart {
 		private String type;
 		private String name;
 		private Boolean running;
-		// TODO Jackson 1.9 dates
+		// TODO Jackson 1.9 dates (@watou)
 		private String startDate;
 		private String startTime;
 		private String endDate;
@@ -5638,10 +5637,10 @@ public class Thermostat extends AbstractMessagePart {
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class EquipmentSetting extends AbstractMessagePart {
-		private String filterLastChanged; // TODO Jackson 1.9 date handling
+		private String filterLastChanged; // TODO Jackson 1.9 date handling (@watou)
 		private Integer filterLife;
 		private String filterLifeUnits;
-		private String remindMeDate; // TODO Jackson 1.9 date handling
+		private String remindMeDate; // TODO Jackson 1.9 date handling (@watou)
 		private Boolean enabled;
 		private String type;
 		private Boolean remindTechnician;

@@ -33,7 +33,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 public abstract class AbstractFunction extends AbstractMessagePart {
 
-	// TODO needs to be in specific thermostat's local timezone
+	// TODO needs to be in specific thermostat's local timezone (@watou)
 	protected final static DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 	protected final static DateFormat hms = new SimpleDateFormat("HH:mm:ss");
 

@@ -9,7 +9,7 @@
 package org.openhab.binding.ecobee.internal.messages;
 
 /**
- * The send message function allows an alert message to be sent to the thermostat. TODO The message properties are same
+ * The send message function allows an alert message to be sent to the thermostat. The message properties are same
  * as those of the {@link Thermostat.Alert} object.
  * 
  * @see <a href="https://www.ecobee.com/home/developer/api/documentation/v1/functions/SendMessage.shtml">SendMessage</a>
