@@ -153,6 +153,15 @@
 			<Model>CA-9000</Model>
 			<Label lang="en">PIR Occupancy Sensor</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4841</Type>
+				<Id>0020</Id>
+			</Reference>
+			<Model>HA-20</Model>
+			<Label lang="en">Dimmer Switch</Label>
+			<ConfigFile>intermatic/ha20.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0059</Id>
