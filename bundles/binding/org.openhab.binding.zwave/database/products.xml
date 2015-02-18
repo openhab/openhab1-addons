@@ -279,6 +279,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0007</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ST815</Model>
+			<Label lang="en">Illumination Sensor</Label>
+			<ConfigFile>everspring/st815.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>000D</Type>
 				<Id>0001</Id>
 			</Reference>
