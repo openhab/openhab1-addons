@@ -8,10 +8,10 @@
  */
 package org.openhab.binding.dsmr.internal;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
@@ -22,6 +22,7 @@ import gnu.io.UnsupportedCommOperationException;
 
 import org.openhab.binding.dsmr.internal.messages.OBISMessage;
 import org.openhab.binding.dsmr.internal.messages.OBISMsgFactory;
+import org.openhab.binding.dsmr.internal.p1telegram.P1TelegramParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,30 +68,35 @@ import org.slf4j.LoggerFactory;
  * @since 1.7.0
  */
 public class DSMRPort {
-	/* Internal state based on DSMR specification */
-	private enum ReadState {
-		WAIT_FOR_START, IDENTIFICATION, DATA, END
-	};
-
 	/* logger */
 	private static final Logger logger = LoggerFactory
 			.getLogger(DSMRPort.class);
 
+	public enum PortSpeed {
+		LOW_SPEED, HIGH_SPEED
+	}
+
 	/* private object variables */
 	private final String portName;
-	private final DSMRVersion version;
 	private final int timeoutMSec;
+	private PortSpeed portSpeed;
+	private long portCreationTS;
+	private boolean portReceivedData;
 
 	/* serial port resources */
 	private SerialPort serialPort;
-	private BufferedReader reader;
+	private BufferedInputStream bis;
+	private byte[] buffer = new byte[1024]; // 1K
 
 	/* state variables */
-	private ReadState readerState;
 	private boolean isOpen = false;
 
 	/* helpers */
 	private OBISMsgFactory factory;
+	private P1TelegramParser p1Parser;
+
+	/* available data */
+	private List<OBISMessage> messages;
 
 	/*
 	 * The portLock is used for the shared data used when opening and closing
@@ -106,20 +112,22 @@ public class DSMRPort {
 	 * 
 	 * @param portName
 	 *            Device identifier of the post (e.g. /dev/ttyUSB0)
-	 * @param version
-	 *            Version of the DSMR Specification. See {@link DSMRVersion}
 	 * @param dsmrMeters
 	 *            List of available {@link DSMRMeter} in the binding
 	 * @param timeoutMSec
 	 *            communication timeout in milliseconds
 	 */
-	public DSMRPort(String portName, DSMRVersion version,
+	public DSMRPort(String portName, PortSpeed portSpeed,
 			List<DSMRMeter> dsmrMeters, int timeoutMSec) {
 		this.portName = portName;
-		this.version = version;
 		this.timeoutMSec = timeoutMSec;
+		this.portSpeed = portSpeed;
 
-		factory = new OBISMsgFactory(version, dsmrMeters);
+		messages = Collections.synchronizedList(new LinkedList<OBISMessage>());
+		factory = new OBISMsgFactory(dsmrMeters);
+		p1Parser = new P1TelegramParser(factory);
+		portCreationTS = System.currentTimeMillis();
+		portReceivedData = false;
 	}
 
 	/**
@@ -132,17 +140,44 @@ public class DSMRPort {
 	}
 
 	/**
+	 * Returns whether or not this port received valid data
+	 * 
+	 * @return whether or not this port received valid data
+	 */
+	public boolean portReceivedData() {
+		return portReceivedData;
+	}
+
+	/**
+	 * Returns the duration that this port is auto detecting (-1 if
+	 * autodetecting is finished)
+	 * 
+	 * @return the duration that this port is auto detecting (-1 if
+	 *         autodetecting is finished)
+	 */
+	public long getDetectingDuration() {
+		if (!portReceivedData) {
+			return System.currentTimeMillis() - portCreationTS;
+		} else {
+			return -1;
+		}
+	}
+
+	/**
 	 * Closes the DSMRPort and release OS resources
 	 */
 	public void close() {
 		synchronized (portLock) {
 			logger.info("Closing DSMR port");
 
+			// Clear received messages
+			messages.clear();
+
 			isOpen = false;
 			// Close resources
-			if (reader != null) {
+			if (bis != null) {
 				try {
-					reader.close();
+					bis.close();
 				} catch (IOException ioe) {
 					logger.debug("Failed to close reader", ioe);
 				}
@@ -152,7 +187,7 @@ public class DSMRPort {
 			}
 
 			// Release resources
-			reader = null;
+			bis = null;
 			serialPort = null;
 		}
 	}
@@ -170,8 +205,7 @@ public class DSMRPort {
 	 * @return List of {@link OBISMessage} with 0 or more entries
 	 */
 	public List<OBISMessage> read() {
-		List<OBISMessage> messages = new ArrayList<OBISMessage>();
-		long startTime = System.currentTimeMillis();
+		List<OBISMessage> receivedMessages = new LinkedList<OBISMessage>();
 
 		// open port if it is not open
 		if (!open()) {
@@ -179,51 +213,24 @@ public class DSMRPort {
 
 			close();
 
-			return messages;
+			return receivedMessages;
 		}
 
-		// Initialize readerState
-		readerState = ReadState.WAIT_FOR_START;
-
 		try {
-			// wait till we reached the end of the telegram or a timeout
-			while (readerState != ReadState.END
-					&& ((System.currentTimeMillis() - startTime) < (2 * timeoutMSec))) {
-				String line = reader.readLine();
-				logger.trace(line);
-				logger.debug("Reader state: " + readerState);
+			// Read without block
+			int bytesAvailable = bis.available();
+			while (bytesAvailable > 0) {
+				int bytesRead = bis.read(buffer, 0,
+						Math.min(bytesAvailable, buffer.length));
 
-				switch (readerState) {
-				case WAIT_FOR_START:
-					if (line.startsWith("/")) {
-						readerState = ReadState.IDENTIFICATION;
-					}
-					break;
-				case IDENTIFICATION:
-					if (line.length() == 0) {
-						readerState = ReadState.DATA;
-					}
-					break;
-				case DATA:
-					if (line.startsWith("!")) {
-						readerState = ReadState.END;
-					} else {
-						OBISMessage msg = factory.getMessage(line);
-						if (msg != null) {
-							messages.add(msg);
-						}
-					}
-					break;
-				case END:
-					break;
-				default:
-					logger.warn("Unsupported state:" + readerState);
-					break;
+				if (bytesRead > 0) {
+					receivedMessages.addAll(p1Parser.parseData(buffer, 0,
+							bytesRead));
+				} else {
+					logger.debug("Expected bytes " + bytesAvailable
+							+ " to read, but " + bytesRead + " bytes were read");
 				}
-			}
-			if (readerState != ReadState.END) {
-				logger.error("Reading took too long and is aborted (readingtime: "
-						+ (System.currentTimeMillis() - startTime) + " ms)");
+				bytesAvailable = bis.available();
 			}
 		} catch (IOException ioe) {
 			/*
@@ -252,8 +259,10 @@ public class DSMRPort {
 			}
 		}
 
-		// Return all received messages
-		return messages;
+		if (!portReceivedData && receivedMessages.size() > 0) {
+			portReceivedData = true;
+		}
+		return receivedMessages;
 	}
 
 	/**
@@ -293,28 +302,24 @@ public class DSMRPort {
 				serialPort.enableReceiveThreshold(1);
 				serialPort.enableReceiveTimeout(timeoutMSec);
 
-				// Configure Serial Port based on specified DSMR version
-				logger.debug("Configure serial port based on version "
-						+ version);
-				switch (version) {
-				case V21:
-				case V22:
-				case V30:
+				// Configure Serial Port based on specified port speed
+				logger.debug("Configure serial port speed " + portSpeed);
+				switch (portSpeed) {
+				case LOW_SPEED:
 					serialPort.setSerialPortParams(9600, SerialPort.DATABITS_7,
 							SerialPort.STOPBITS_1, SerialPort.PARITY_EVEN);
 					serialPort.setDTR(false);
 					serialPort.setRTS(true);
 
 					break;
-				case V40:
-				case V404:
+				case HIGH_SPEED:
 					serialPort.setSerialPortParams(115200,
 							SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
 							SerialPort.PARITY_NONE);
 
 					break;
 				default:
-					logger.error("Invalid version, closing port");
+					logger.error("Invalid speed, closing port");
 
 					return false;
 				}
@@ -335,8 +340,7 @@ public class DSMRPort {
 			// SerialPort is ready, open the reader
 			logger.info("SerialPort opened successful");
 			try {
-				reader = new BufferedReader(new InputStreamReader(
-						serialPort.getInputStream()));
+				bis = new BufferedInputStream(serialPort.getInputStream());
 			} catch (IOException ioe) {
 				logger.error(
 						"Failed to get inputstream for serialPort. Closing port",
@@ -350,5 +354,21 @@ public class DSMRPort {
 
 			return isOpen;
 		}
+	}
+
+	/**
+	 * Returns all available message in the DSMR port
+	 * 
+	 * @return List with all available OBISMessage objects
+	 */
+	public List<OBISMessage> getAvailableMessages() {
+		LinkedList<OBISMessage> availableMessages = new LinkedList<OBISMessage>();
+
+		availableMessages.addAll(messages);
+		messages.clear();
+
+		logger.debug("There are " + availableMessages.size()
+				+ " available OBIS messages");
+		return availableMessages;
 	}
 }
