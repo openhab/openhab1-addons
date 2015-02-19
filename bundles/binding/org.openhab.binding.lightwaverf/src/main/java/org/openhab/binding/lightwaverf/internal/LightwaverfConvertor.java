@@ -27,10 +27,6 @@ public class LightwaverfConvertor {
 
     
     public LightwaveRFCommand convertToLightwaveRfMessage(String roomId, String deviceId, LightwaveRfType deviceType, Type command){
-    	if(deviceId == null){
-    		return convertToLightwaveRfMessage(roomId, deviceType, command);
-    	}
-    	
     	int messageId = getAndIncrementMessageId();
     	
     	switch (deviceType) {
@@ -39,9 +35,9 @@ public class LightwaverfConvertor {
 		case HEATING_CURRENT_TEMP:
 		case HEATING_MODE:
 		case VERSION:
+		case HEATING_TARGET_TEMP:
 			throw new IllegalArgumentException(deviceType + " : is read only it can't be set");
 		case HEATING_SET_TEMP:
-		case HEATING_TARGET_TEMP:
 			return new LightwaveRfSetHeatingTemperatureCommand(messageId, roomId, ((DecimalType) command).doubleValue());
 		case DIMMER:
 		case SWITCH:

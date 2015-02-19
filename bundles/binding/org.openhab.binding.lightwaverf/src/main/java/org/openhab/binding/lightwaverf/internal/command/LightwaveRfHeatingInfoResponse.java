@@ -126,7 +126,6 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 		case HEATING_CURRENT_TEMP:
 			return new DecimalType(getCurrentTemperature());
 		case HEATING_TARGET_TEMP:
-		case HEATING_SET_TEMP:
 			return new DecimalType(getCurrentTargetTemperature());
 		case HEATING_MODE:
 			return new StringType(getState());

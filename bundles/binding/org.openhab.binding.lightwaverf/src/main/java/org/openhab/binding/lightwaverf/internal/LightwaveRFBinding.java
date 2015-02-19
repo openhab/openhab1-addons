@@ -260,8 +260,10 @@ public class LightwaveRfBinding extends
 			for (String itemName : itemNames) {
 				State state = message.getState(provider
 						.getTypeForItemName(itemName));
-				published = true;
-				eventPublisher.postUpdate(itemName, state);
+				if(state != null){
+					published = true;
+					eventPublisher.postUpdate(itemName, state);
+				}
 			}
 			if (!published) {
 				logger.debug("No item for incoming message[{}]", message);
