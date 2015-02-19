@@ -8,5 +8,6 @@ public enum LightwaveRfType {
 	HEATING_BATTERY,
 	HEATING_SIGNAL, 
 	HEATING_SET_TEMP,
+	HEATING_MODE,
 	VERSION;
 }
