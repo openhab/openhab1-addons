@@ -99,4 +99,9 @@ public class LightwaverfConvertor {
 	public LightwaveRFCommand getRegistrationCommand() {
 		return new LightwaveRfDeviceRegistrationCommand();
 	}
+
+	public LightwaveRFCommand getHeatRequest(String roomId) {
+		int messageId = getAndIncrementMessageId();
+		return new LightwaveRfHeatInfoRequest(messageId, roomId);
+	}
 }

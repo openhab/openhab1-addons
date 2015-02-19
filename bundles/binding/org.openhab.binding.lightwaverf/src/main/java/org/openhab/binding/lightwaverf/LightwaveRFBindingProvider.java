@@ -69,4 +69,11 @@ public interface LightwaveRfBindingProvider extends BindingProvider {
 	 * @return
 	 */
 	LightwaveRfType getTypeForItemName(String itemName);
+
+	/**
+	 * Get the poll interval for the given itemName
+	 * @param itemName
+	 * @return
+	 */
+	int getPollInterval(String itemName);
 }

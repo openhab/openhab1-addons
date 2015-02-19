@@ -34,7 +34,7 @@ public class LightwaveRfGenericBindingProvider extends AbstractGenericBindingPro
 	
 	private static Pattern ROOM_REG_EXP = Pattern.compile(".*room=([0-9]*).*");
 	private static Pattern DEVICE_REG_EXP = Pattern.compile(".*device=([0-9]*).*");
-	private static Pattern POLL_REG_EXP = Pattern.compile(".*poll_interval=([0-9]*).*");
+	private static Pattern POLL_REG_EXP = Pattern.compile(".*poll=([0-9]*).*");
 	private static Pattern TYPE_REG_EXP = Pattern.compile(".*type=([^,]*).*");
 	private static Pattern SERIAL_REG_EXP = Pattern.compile(".*serial=([^,]*).*");
 
@@ -158,25 +158,30 @@ public class LightwaveRfGenericBindingProvider extends AbstractGenericBindingPro
 		}
 		return bindings;
 	}
+
+	@Override
+	public int getPollInterval(String itemName) {
+		LightwaveRfBindingConfig itemConfig = (LightwaveRfBindingConfig) bindingConfigs.get(itemName);
+		return itemConfig != null ? itemConfig.getPollTime() : -1;
+	}	
 	
 	@Override
 	public LightwaveRfType getTypeForItemName(String itemName){
 		LightwaveRfBindingConfig itemConfig = (LightwaveRfBindingConfig) bindingConfigs.get(itemName);
-		return itemConfig.getType();
+		return itemConfig != null ? itemConfig.getType() : null;
 	}
 	
 	@Override
 	public String getRoomId(String itemString){
-		LightwaveRfBindingConfig config = (LightwaveRfBindingConfig) bindingConfigs.get(itemString);
-		return config.getRoomId();
+		LightwaveRfBindingConfig itemConfig = (LightwaveRfBindingConfig) bindingConfigs.get(itemString);
+		return itemConfig != null ? itemConfig.getRoomId() : null;
 		
 	}
 
 	@Override
 	public String getDeviceId(String itemString){
-		LightwaveRfBindingConfig config = (LightwaveRfBindingConfig) bindingConfigs.get(itemString);
-		return config.getDeviceId();
-		
+		LightwaveRfBindingConfig itemConfig = (LightwaveRfBindingConfig) bindingConfigs.get(itemString);
+		return itemConfig != null ? itemConfig.getDeviceId() : null;
 	}
 
 	
@@ -221,6 +226,4 @@ public class LightwaveRfGenericBindingProvider extends AbstractGenericBindingPro
 			return pollTime;
 		}
 	}
-	
-	
 }

@@ -16,12 +16,15 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.lightwaverf.LightwaveRfBindingProvider;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatInfoRequest;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomDeviceMessage;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomMessage;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfSerialMessage;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessage;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRFMessageListener;
 import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.binding.BindingChangeListener;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
@@ -30,15 +33,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implement this class if you are going create an actively polling service like
- * querying a Website/Device.
- * 
  * @author Neil Renaud
  * @since 1.7.0
  */
 public class LightwaveRfBinding extends
 		AbstractBinding<LightwaveRfBindingProvider> implements
-		LightwaveRFMessageListener {
+		LightwaveRFMessageListener, BindingChangeListener {
 
 	private static int POLL_TIME = 250;
 	// LightwaveRF WIFI hub port.
@@ -53,13 +53,14 @@ public class LightwaveRfBinding extends
 	private LightwaveRFReceiver receiverOnSendPort = null;
 	private LightwaveRFReceiver receiverOnReceiverPort = null;
 	private LightwaveRFSender sender = null;
+	private LightwaveRfHeatPoller heatPoller = null;
 
 	/**
 	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is
 	 * set in the activate() method and must not be accessed anymore once the
 	 * deactivate() method was called or before activate() was called.
 	 */
-	private BundleContext bundleContext;
+//	private BundleContext bundleContext;
 
 	public LightwaveRfBinding() {
 	}
@@ -75,7 +76,7 @@ public class LightwaveRfBinding extends
 	 *            ConfigAdmin service
 	 */
 	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
-		this.bundleContext = bundleContext;
+//		this.bundleContext = bundleContext;
 		try {
 
 			 String ipString = (String) configuration.get("ip");
@@ -98,6 +99,7 @@ public class LightwaveRfBinding extends
 				 SEND_REGISTER_ON_STARTUP = Boolean.parseBoolean(sendRegistrationMessageString);
 			 }		 
 			 
+			 messageConvertor = new LightwaverfConvertor();
 			
 			 receiverOnReceiverPort = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_RECEIVE_ON);
 			 receiverOnReceiverPort.addListener(this);
@@ -109,28 +111,36 @@ public class LightwaveRfBinding extends
 			
 			sender = new LightwaveRFSender(LIGHTWAVE_IP, LIGHTWAVE_PORT_TO_SEND_TO, POLL_TIME);
 			sender.start();
-
+			
+			heatPoller = new LightwaveRfHeatPoller(sender, messageConvertor);
+			
 			if (SEND_REGISTER_ON_STARTUP) {
 				sender.sendUDP(messageConvertor.getRegistrationCommand());
 			}
+			
 
 		
 		} catch (UnknownHostException e) {
 			logger.error("Error creating LightwaveRFSender", e);
 		}
-
-		// the configuration is guaranteed not to be null, because the component
-		// definition has the
-		// configuration-policy set to require. If set to 'optional' then the
-		// configuration may be null
-
-		// to override the default refresh interval one has to add a
-		// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
-
-		// read further config parameters here ...
-
 	}
-
+	
+	@Override
+	public void bindingChanged(BindingProvider provider, String itemName) {
+		super.bindingChanged(provider, itemName);
+		if(provider instanceof LightwaveRfBindingProvider){
+			LightwaveRfBindingProvider lightwaveProvider = (LightwaveRfBindingProvider) provider;
+			int poll = lightwaveProvider.getPollInterval(itemName);
+			if(poll > 0){
+				String roomId = lightwaveProvider.getRoomId(itemName);
+				heatPoller.addRoomToPoll(itemName, roomId, poll);
+			}
+			else{
+				heatPoller.removeRoomToPoll(itemName);
+			}
+		}
+	}
+	
 	/**
 	 * Called by the SCR when the configuration of a binding has been changed
 	 * through the ConfigAdmin service.
@@ -160,9 +170,11 @@ public class LightwaveRfBinding extends
 	 *            </ul>
 	 */
 	public void deactivate(final int reason) {
-		this.bundleContext = null;
+//		this.bundleContext = null;
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
+		heatPoller.stop();
+		
 		receiverOnReceiverPort.stop();
 		receiverOnSendPort.stop();
 		sender.stop();
@@ -170,6 +182,9 @@ public class LightwaveRfBinding extends
 		receiverOnReceiverPort = null;
 		receiverOnSendPort = null;
 		sender = null;
+		heatPoller = null;
+		
+		messageConvertor = null;
 	}
 
 	/**
@@ -272,6 +287,11 @@ public class LightwaveRfBinding extends
 
 	@Override
 	public void okMessageReceived(LightwaveRfCommandOk message) {
+		// Do nothing
+	}
+	
+	@Override
+	public void heatInfoMessageReceived(LightwaveRfHeatInfoRequest command) {
 		// Do nothing
 	}
 

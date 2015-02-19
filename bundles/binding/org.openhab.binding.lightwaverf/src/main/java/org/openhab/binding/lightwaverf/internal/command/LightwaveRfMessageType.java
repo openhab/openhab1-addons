@@ -6,6 +6,8 @@ public enum LightwaveRfMessageType {
 	ROOM,
 	SERIAL,
 	VERSION,
-	OK, DEVICE_REGISTRATION;
+	OK, 
+	DEVICE_REGISTRATION, 
+	HEAT_REQUEST;
 
 }

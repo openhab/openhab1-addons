@@ -1,6 +1,7 @@
 package org.openhab.binding.lightwaverf.internal.message;
 
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatInfoRequest;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomDeviceMessage;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomMessage;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfSerialMessage;
@@ -13,5 +14,6 @@ public interface LightwaveRFMessageListener {
 	public void serialMessageReceived(LightwaveRfSerialMessage message);
 	public void okMessageReceived(LightwaveRfCommandOk message);
 	public void versionMessageReceived(LightwaveRfVersionMessage message);
+	public void heatInfoMessageReceived(LightwaveRfHeatInfoRequest command);
 
 }

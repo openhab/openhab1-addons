@@ -18,6 +18,12 @@ public class LightwaveRfHeatInfoRequest extends AbstractLightwaveRfCommand imple
 	private final LightwaveRfMessageId messageId;
 	private final String roomId;
 	
+	public LightwaveRfHeatInfoRequest(int messageId, String roomId) {
+		this.messageId = new LightwaveRfGeneralMessageId(messageId);
+		this.roomId = roomId;
+	}
+	
+	
 	public LightwaveRfHeatInfoRequest(String message) throws LightwaveRfMessageException {
 		try{
 			Matcher m = REG_EXP.matcher(message);
@@ -56,7 +62,7 @@ public class LightwaveRfHeatInfoRequest extends AbstractLightwaveRfCommand imple
 
 	@Override
 	public LightwaveRfMessageType getMessageType() {
-		return LightwaveRfMessageType.ROOM;
+		return LightwaveRfMessageType.HEAT_REQUEST;
 	}
 
 }

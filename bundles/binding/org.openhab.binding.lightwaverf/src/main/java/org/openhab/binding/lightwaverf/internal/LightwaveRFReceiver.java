@@ -8,6 +8,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatInfoRequest;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomDeviceMessage;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomMessage;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfSerialMessage;
@@ -93,6 +94,9 @@ public class LightwaveRFReceiver implements Runnable {
 				case ROOM:
 					notifyRoomListners((LightwaveRfRoomMessage) command);
 					break;
+				case HEAT_REQUEST:
+					notifyHeatRequest((LightwaveRfHeatInfoRequest) command);
+					break;
 				case SERIAL:
 					notifySerialListners((LightwaveRfSerialMessage) command);
 					break;
@@ -115,7 +119,9 @@ public class LightwaveRFReceiver implements Runnable {
         }
         latch.countDown();
     }
-    /**
+
+
+	/**
      	 * Receive the next UDP packet on the socket
      	 * @return
     	 * @throws IOException
@@ -179,6 +185,12 @@ public class LightwaveRFReceiver implements Runnable {
             listener.versionMessageReceived(message);
         }
     }
+    
+	private void notifyHeatRequest(LightwaveRfHeatInfoRequest command) {
+        for(LightwaveRFMessageListener listener : listerns) {
+            listener.heatInfoMessageReceived(command);
+        }
+	}
 
 
 
