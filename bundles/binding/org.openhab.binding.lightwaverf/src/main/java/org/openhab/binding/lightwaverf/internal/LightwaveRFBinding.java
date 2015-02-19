@@ -216,8 +216,9 @@ public class LightwaveRfBinding extends
 	private void internalReceive(String itemName, Type command) {
 		String roomId = getRoomId(itemName);
 		String deviceId = getDeviceId(itemName);
+		LightwaveRfType deviceType = getType(itemName);
 		LightwaveRFCommand lightwaverfMessageString = messageConvertor
-				.convertToLightwaveRfMessage(roomId, deviceId, command);
+				.convertToLightwaveRfMessage(roomId, deviceId, deviceType, command);
 		sender.sendUDP(lightwaverfMessageString);
 
 	}
@@ -237,6 +238,16 @@ public class LightwaveRfBinding extends
 			String deviceId = provider.getDeviceId(itemName);
 			if (deviceId != null) {
 				return deviceId;
+			}
+		}
+		return null;
+	}
+	
+	private LightwaveRfType getType(String itemName) {
+		for (LightwaveRfBindingProvider provider : providers) {
+			LightwaveRfType type = provider.getTypeForItemName(itemName);
+			if (type != null) {
+				return type;
 			}
 		}
 		return null;

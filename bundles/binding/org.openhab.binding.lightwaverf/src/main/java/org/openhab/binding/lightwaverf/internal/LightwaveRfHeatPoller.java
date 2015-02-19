@@ -27,11 +27,11 @@ public class LightwaveRfHeatPoller  {
 	}
 	
 	public void removeRoomToPoll(String itemName){
-		logger.info("Cancelling polling for {}", itemName);
 		String roomId = itemNameToRoomMap.remove(itemName);
 		if(roomId != null){
 			ScheduledFuture<?> currentFuture = tasksMap.remove(roomId);
 			if(currentFuture != null){
+				logger.info("Cancelling polling for {}", itemName);
 				currentFuture.cancel(false);
 			}
 		}

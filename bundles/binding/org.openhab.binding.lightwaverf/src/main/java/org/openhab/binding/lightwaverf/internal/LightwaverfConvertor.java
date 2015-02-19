@@ -13,6 +13,7 @@ import org.openhab.binding.lightwaverf.internal.command.LightwaveRfOnOffCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfSetHeatingTemperatureCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessage;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Type;
@@ -25,46 +26,53 @@ public class LightwaverfConvertor {
     private final Lock lock = new ReentrantLock();
 
     
-    public LightwaveRFCommand convertToLightwaveRfMessage(String roomId, String deviceId, Type command){
+    public LightwaveRFCommand convertToLightwaveRfMessage(String roomId, String deviceId, LightwaveRfType deviceType, Type command){
     	if(deviceId == null){
-    		return convertToLightwaveRfMessage(roomId, command);
+    		return convertToLightwaveRfMessage(roomId, deviceType, command);
     	}
     	
     	int messageId = getAndIncrementMessageId();
     	
-    	if(command instanceof OnOffType){
-            boolean on = (command == OnOffType.ON);
-            return new LightwaveRfOnOffCommand(messageId, roomId, deviceId, on);
-        }
-        else if(command instanceof PercentType){
-            int dimmingLevel = ((PercentType) command).intValue();
-            return new LightwaveRfDimCommand(messageId, roomId, deviceId, dimmingLevel);
-        }
-        throw new RuntimeException("Unsupported Command: " + command);
+    	switch (deviceType) {
+		case HEATING_BATTERY:
+		case HEATING_SIGNAL:
+		case HEATING_CURRENT_TEMP:
+		case HEATING_MODE:
+		case VERSION:
+			throw new IllegalArgumentException(deviceType + " : is read only it can't be set");
+		case HEATING_SET_TEMP:
+		case HEATING_TARGET_TEMP:
+			return new LightwaveRfSetHeatingTemperatureCommand(messageId, roomId, ((DecimalType) command).doubleValue());
+		case DIMMER:
+		case SWITCH:
+	    	if(command instanceof OnOffType){
+	            boolean on = (command == OnOffType.ON);
+	            return new LightwaveRfOnOffCommand(messageId, roomId, deviceId, on);
+	        }
+	        else if(command instanceof PercentType){
+	            int dimmingLevel = ((PercentType) command).intValue();
+	            return new LightwaveRfDimCommand(messageId, roomId, deviceId, dimmingLevel);
+	        }
+	        else{
+	        	throw new RuntimeException("Unsupported Command: " + command);
+	        }
+		default:
+			throw new IllegalArgumentException(deviceType + " : is unexpected");
+		}
+    	
     }
 
-    /**
-     * Increment message counter, so different messages have different IDs
-     * Important for getting corresponding OK acknowledgements from port 9761 tagged with the same counter value
-     */
-    private int getAndIncrementMessageId() {
-    	try{
-    		lock.lock();
-			int myMessageId = nextMessageId;
-			if(myMessageId >= 999){
-				nextMessageId = 200;
-			}
-			return myMessageId;
-    	}
-    	finally{
-    		lock.unlock();
-    	}
-    }
-	public LightwaveRFCommand convertToLightwaveRfMessage(String roomId, Type command){
-    	if(roomId == null){
-    		throw new IllegalArgumentException("Item not found");
-    	}
-    	throw new IllegalArgumentException("Not implemented yet");
+	public LightwaveRFCommand convertToLightwaveRfMessage(String roomId, LightwaveRfType deviceType, Type command){
+		if(roomId == null){
+			throw new IllegalArgumentException("Item not found");
+		}
+
+		switch (deviceType) {
+		case HEATING_SET_TEMP:
+			return new LightwaveRfSetHeatingTemperatureCommand(getAndIncrementMessageId(), roomId, ((DecimalType) command).doubleValue());
+		default:
+			throw new IllegalArgumentException("Not implemented yet");
+		}
     }
     
     public LightwaveRFCommand convertFromLightwaveRfMessage(String message) throws LightwaveRfMessageException {
@@ -104,4 +112,22 @@ public class LightwaverfConvertor {
 		int messageId = getAndIncrementMessageId();
 		return new LightwaveRfHeatInfoRequest(messageId, roomId);
 	}
+	
+    /**
+     * Increment message counter, so different messages have different IDs
+     * Important for getting corresponding OK acknowledgements from port 9761 tagged with the same counter value
+     */
+    private int getAndIncrementMessageId() {
+    	try{
+    		lock.lock();
+			int myMessageId = nextMessageId;
+			if(myMessageId >= 999){
+				nextMessageId = 200;
+			}
+			return myMessageId;
+    	}
+    	finally{
+    		lock.unlock();
+    	}
+    }
 }

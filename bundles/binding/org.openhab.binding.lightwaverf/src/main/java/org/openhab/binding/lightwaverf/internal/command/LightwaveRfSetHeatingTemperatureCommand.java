@@ -32,8 +32,8 @@ public class LightwaveRfSetHeatingTemperatureCommand extends AbstractLightwaveRf
 		setTemperature = Double.valueOf(m.group(3));
 	}
 	
-	public LightwaveRfSetHeatingTemperatureCommand(LightwaveRfMessageId messageId, String roomId, double setTemperature) {
-		this.messageId = messageId;
+	public LightwaveRfSetHeatingTemperatureCommand(int messageId, String roomId, double setTemperature) {
+		this.messageId = new LightwaveRfGeneralMessageId(messageId);
 		this.roomId = roomId;
 		this.setTemperature = setTemperature;
 	}	
