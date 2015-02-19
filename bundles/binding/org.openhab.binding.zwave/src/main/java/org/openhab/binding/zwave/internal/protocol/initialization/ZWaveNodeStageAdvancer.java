@@ -544,6 +544,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 								// TODO: This will only remove the root nodes and ignores endpoint
 								// TODO: Do we need to search into multi_instance?
 								node.removeCommandClass(CommandClass.getCommandClass(dbClass.Id));
+								logger.debug("NODE {}: Node advancer: UPDATE_DATABASE - removing {}",
+										node.getNodeId(), CommandClass.getCommandClass(dbClass.Id).getLabel());
 								continue;
 							}
 
@@ -554,6 +556,18 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 							// If we found the command class, then set its options
 							if(zwaveClass != null) {
 								zwaveClass.setOptions(dbClass);
+								continue;
+							}
+
+							// Command class isn't found! Do we want to add it?
+							// TODO: Does this need to account for multiple endpoints!?!
+							if(dbClass.add != null && dbClass.add == true) {
+								ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(dbClass.Id, node, controller);
+								if (commandClass != null) {
+									logger.debug("NODE {}: Node advancer: UPDATE_DATABASE - adding {}",
+											node.getNodeId(), CommandClass.getCommandClass(dbClass.Id).getLabel());
+									node.addCommandClass(commandClass);
+								}
 							}
 						}
 					}

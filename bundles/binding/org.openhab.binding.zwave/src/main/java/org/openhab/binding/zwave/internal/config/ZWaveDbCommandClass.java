@@ -30,6 +30,9 @@ public class ZWaveDbCommandClass {
 	// If we want to remove this class, set to true
 	public Boolean remove;
 
+	// IF we want to add this class if it doesn't exist, set to true
+	public Boolean add;
+
 	// Sets whether or not get is supported by ZWaveGetCommandClass
 	public Boolean isGetSupported;
 	
