@@ -11,19 +11,17 @@
 	<properties>
 		<bundle.symbolicName>org.openhab.binding.lightwaverf</bundle.symbolicName>
 		<bundle.namespace>org.openhab.binding.lightwaverf</bundle.namespace>
-		<deb.name>openhab-addon-binding-LightwaveRF</deb.name>
-		<deb.description>openhab addon binding LightwaveRF</deb.description>
+		<deb.name>openhab-addon-binding-LightwaveRf</deb.name>
+		<deb.description>openhab addon binding LightwaveRf</deb.description>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openhab.binding</groupId>
 	<artifactId>org.openhab.binding.lightwaverf</artifactId>
 
-	<name>openHAB LightwaveRF Binding</name>
+	<name>openHAB LightwaveRf Binding</name>
 
 	<packaging>eclipse-plugin</packaging>
-
-	<version>1.7.0-SNAPSHOT</version>
 
 	<build>
 		<plugins>
@@ -34,18 +32,4 @@
 		</plugins>
 	</build>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.10</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
 </project>

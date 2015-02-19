@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,8 +10,10 @@ package org.openhab.binding.lightwaverf.internal;
 
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Map;
 
-import org.openhab.binding.lightwaverf.LightwaveRFBindingProvider;
+import org.apache.commons.lang.StringUtils;
+import org.openhab.binding.lightwaverf.LightwaveRfBindingProvider;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfRoomDeviceMessage;
@@ -23,168 +25,282 @@ import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.Type;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Implement this class if you are going create an actively polling service like
+ * querying a Website/Device.
+ * 
  * @author Neil Renaud
- * @since 1.6
+ * @since 1.7.0
  */
-public class LightwaveRFBinding extends AbstractBinding<LightwaveRFBindingProvider> implements LightwaveRFMessageListener {
+public class LightwaveRfBinding extends
+		AbstractBinding<LightwaveRfBindingProvider> implements
+		LightwaveRFMessageListener {
 
-    private static final int POLL_TIME = 250;
-    // LightwaveRF WIFI hub port.
-    private static final int LIGHTWAVE_PORT_TO_SEND_TO = 9760;
-    private static final int LIGHTWAVE_PORT_TO_RECEIVE_ON = 9761;
-    // LightwaveRF WIFI hub IP Address or broadcast address
-    private static final String LIGHTWAVE_IP = "255.255.255.255";
-    private static final boolean SEND_REGISTER_ON_STARTUP = true;
+	private static int POLL_TIME = 250;
+	// LightwaveRF WIFI hub port.
+	private static int LIGHTWAVE_PORT_TO_SEND_TO = 9760;
+	private static int LIGHTWAVE_PORT_TO_RECEIVE_ON = 9761;
+	// LightwaveRF WIFI hub IP Address or broadcast address
+	private static String LIGHTWAVE_IP = "255.255.255.255";
+	private static boolean SEND_REGISTER_ON_STARTUP = true;
 
-	
-	private final Logger logger = LoggerFactory.getLogger(LightwaveRFBinding.class);
-	private LightwaverfConvertor messageConvertor = new LightwaverfConvertor(); 
-	private LightwaveRFReceiver receiver = null;
-	private LightwaveRFReceiver receiver9760 = null;
+	private static final Logger logger = LoggerFactory.getLogger(LightwaveRfBinding.class);
+	private LightwaverfConvertor messageConvertor = new LightwaverfConvertor();
+	private LightwaveRFReceiver receiverOnSendPort = null;
+	private LightwaveRFReceiver receiverOnReceiverPort = null;
 	private LightwaveRFSender sender = null;
 
-	@Override
-	public void activate() {
-		try{
-			receiver = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_RECEIVE_ON);
-			receiver.addListener(this);
-			receiver.start();
-			receiver9760 = new LightwaveRFReceiver(messageConvertor, 9760);
-			receiver9760.addListener(this);
-			receiver9760.start();
-			sender = new LightwaveRFSender(LIGHTWAVE_IP, LIGHTWAVE_PORT_TO_SEND_TO, POLL_TIME);
-			sender.start();
-			if(SEND_REGISTER_ON_STARTUP){
-				sender.sendUDP(messageConvertor.getRegistrationCommand());
-			}
-		}
-		catch(UnknownHostException e){
-			logger.error("Error creating LightwaveRFSender", e);
-		}
+	/**
+	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is
+	 * set in the activate() method and must not be accessed anymore once the
+	 * deactivate() method was called or before activate() was called.
+	 */
+	private BundleContext bundleContext;
+
+	public LightwaveRfBinding() {
 	}
 
-	@Override
-	public void deactivate() {
-		receiver.stop();
-		receiver = null;
+	/**
+	 * Called by the SCR to activate the component with its configuration read
+	 * from CAS
+	 * 
+	 * @param bundleContext
+	 *            BundleContext of the Bundle that defines this component
+	 * @param configuration
+	 *            Configuration properties for this component obtained from the
+	 *            ConfigAdmin service
+	 */
+	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
+		this.bundleContext = bundleContext;
+		try {
+
+			 String ipString = (String) configuration.get("ip");
+			 if (StringUtils.isNotBlank(ipString)) {
+				 LIGHTWAVE_IP = ipString;
+			 }			
+			
+			 String portOneString = (String) configuration.get("receiveport");
+			 if (StringUtils.isNotBlank(portOneString)) {
+				 LIGHTWAVE_PORT_TO_RECEIVE_ON = Integer.parseInt(portOneString);
+			 }
+			
+			 String portTwoString = (String) configuration.get("sendport");
+			 if (StringUtils.isNotBlank(portTwoString)) {
+				 LIGHTWAVE_PORT_TO_SEND_TO = Integer.parseInt(portTwoString);
+			 }		 
+			 
+			 String sendRegistrationMessageString = (String) configuration.get("registeronstartup");
+			 if (StringUtils.isNotBlank(sendRegistrationMessageString)) {
+				 SEND_REGISTER_ON_STARTUP = Boolean.parseBoolean(sendRegistrationMessageString);
+			 }		 
+			 
+			
+			 receiverOnReceiverPort = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_RECEIVE_ON);
+			 receiverOnReceiverPort.addListener(this);
+			 receiverOnReceiverPort.start();
+
+			receiverOnSendPort = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_SEND_TO);
+			receiverOnSendPort.addListener(this);
+			receiverOnSendPort.start();
+			
+			sender = new LightwaveRFSender(LIGHTWAVE_IP, LIGHTWAVE_PORT_TO_SEND_TO, POLL_TIME);
+			sender.start();
+
+			if (SEND_REGISTER_ON_STARTUP) {
+				sender.sendUDP(messageConvertor.getRegistrationCommand());
+			}
+
+		
+		} catch (UnknownHostException e) {
+			logger.error("Error creating LightwaveRFSender", e);
+		}
+
+		// the configuration is guaranteed not to be null, because the component
+		// definition has the
+		// configuration-policy set to require. If set to 'optional' then the
+		// configuration may be null
+
+		// to override the default refresh interval one has to add a
+		// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
+
+		// read further config parameters here ...
+
+	}
+
+	/**
+	 * Called by the SCR when the configuration of a binding has been changed
+	 * through the ConfigAdmin service.
+	 * 
+	 * @param configuration
+	 *            Updated configuration properties
+	 */
+	public void modified(final Map<String, Object> configuration) {
+		// update the internal configuration accordingly
+	}
+
+	/**
+	 * Called by the SCR to deactivate the component when either the
+	 * configuration is removed or mandatory references are no longer satisfied
+	 * or the component has simply been stopped.
+	 * 
+	 * @param reason
+	 *            Reason code for the deactivation:<br>
+	 *            <ul>
+	 *            <li>0 – Unspecified
+	 *            <li>1 – The component was disabled
+	 *            <li>2 – A reference became unsatisfied
+	 *            <li>3 – A configuration was changed
+	 *            <li>4 – A configuration was deleted
+	 *            <li>5 – The component was disposed
+	 *            <li>6 – The bundle was stopped
+	 *            </ul>
+	 */
+	public void deactivate(final int reason) {
+		this.bundleContext = null;
+		// deallocate resources here that are no longer needed and
+		// should be reset when activating this binding again
+		receiverOnReceiverPort.stop();
+		receiverOnSendPort.stop();
 		sender.stop();
+
+		receiverOnReceiverPort = null;
+		receiverOnSendPort = null;
 		sender = null;
 	}
 
+	/**
+	 * @{inheritDoc
+	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
 		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
+		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand(" + itemName + ", " + command +") is called!");
+		logger.debug("internalReceiveCommand({},{}) is called!", itemName,
+				command);
 		internalReceive(itemName, command);
 	}
 
+	/**
+	 * @{inheritDoc
+	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
 		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the 
+		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate(" + itemName + ", " + newState + ") is called!");
+		logger.debug("internalReceiveUpdate({},{}) is called!", itemName,
+				newState);
 		internalReceive(itemName, newState);
 	}
-	
-	private void internalReceive(String itemName, Type command){
+
+	private void internalReceive(String itemName, Type command) {
 		String roomId = getRoomId(itemName);
-        String deviceId = getDeviceId(itemName);
-        LightwaveRFCommand lightwaverfMessageString = messageConvertor.convertToLightwaveRfMessage(roomId, deviceId, command);
-        sender.sendUDP(lightwaverfMessageString);
-		
+		String deviceId = getDeviceId(itemName);
+		LightwaveRFCommand lightwaverfMessageString = messageConvertor
+				.convertToLightwaveRfMessage(roomId, deviceId, command);
+		sender.sendUDP(lightwaverfMessageString);
+
 	}
 
-	private String getRoomId(String itemName){
-		for(LightwaveRFBindingProvider provider : providers){
+	private String getRoomId(String itemName) {
+		for (LightwaveRfBindingProvider provider : providers) {
 			String roomId = provider.getRoomId(itemName);
-			if(roomId != null){
+			if (roomId != null) {
 				return roomId;
 			}
 		}
 		return null;
 	}
 
-	private String getDeviceId(String itemName){
-		for(LightwaveRFBindingProvider provider : providers){
+	private String getDeviceId(String itemName) {
+		for (LightwaveRfBindingProvider provider : providers) {
 			String deviceId = provider.getDeviceId(itemName);
-			if(deviceId != null){
+			if (deviceId != null) {
 				return deviceId;
 			}
 		}
 		return null;
 	}
-	
-	private void publishUpdate(List<String> itemNames, LightwaveRFCommand message, LightwaveRFBindingProvider provider){
+
+	private void publishUpdate(List<String> itemNames,
+			LightwaveRFCommand message, LightwaveRfBindingProvider provider) {
 		boolean published = false;
-		if(itemNames != null && !itemNames.isEmpty()){
-			for(String itemName : itemNames){
-				State state = message.getState(provider.getTypeForItemName(itemName));
+		if (itemNames != null && !itemNames.isEmpty()) {
+			for (String itemName : itemNames) {
+				State state = message.getState(provider
+						.getTypeForItemName(itemName));
 				published = true;
 				eventPublisher.postUpdate(itemName, state);
 			}
-			if(!published){
+			if (!published) {
 				logger.debug("No item for incoming message[{}]", message);
 			}
 		}
 	}
-	
+
 	@Override
 	public void roomDeviceMessageReceived(LightwaveRfRoomDeviceMessage message) {
-		for(LightwaveRFBindingProvider provider : providers){
-			List<String> itemNames = provider.getBindingItemsForRoomDevice(message.getRoomId(), message.getDeviceId());
+		for (LightwaveRfBindingProvider provider : providers) {
+			List<String> itemNames = provider.getBindingItemsForRoomDevice(
+					message.getRoomId(), message.getDeviceId());
 			publishUpdate(itemNames, message, provider);
 		}
 	}
 
 	@Override
 	public void roomMessageReceived(LightwaveRfRoomMessage message) {
-		for(LightwaveRFBindingProvider provider : providers){
-			List<String> itemNames = provider.getBindingItemsForRoom(message.getRoomId());
+		for (LightwaveRfBindingProvider provider : providers) {
+			List<String> itemNames = provider.getBindingItemsForRoom(message
+					.getRoomId());
 			publishUpdate(itemNames, message, provider);
 		}
 	}
 
 	@Override
 	public void serialMessageReceived(LightwaveRfSerialMessage message) {
-		for(LightwaveRFBindingProvider provider : providers){
-			List<String> itemNames = provider.getBindingItemsForSerial(message.getSerial());
+		for (LightwaveRfBindingProvider provider : providers) {
+			List<String> itemNames = provider.getBindingItemsForSerial(message
+					.getSerial());
 			publishUpdate(itemNames, message, provider);
 		}
 	}
 
 	@Override
 	public void okMessageReceived(LightwaveRfCommandOk message) {
-		// Do nothing 
+		// Do nothing
 	}
 
 	@Override
 	public void versionMessageReceived(LightwaveRfVersionMessage message) {
-		for(LightwaveRFBindingProvider provider : providers){
-			List<String> itemNames = provider.getBindingItemsForType(LightwaveRfType.VERSION);
+		for (LightwaveRfBindingProvider provider : providers) {
+			List<String> itemNames = provider
+					.getBindingItemsForType(LightwaveRfType.VERSION);
 			publishUpdate(itemNames, message, provider);
 		}
 	}
-	
-	/** 
-	 * Visible for testing only to allow us to add a mock of the Lightwave Sender
+
+	/**
+	 * Visible for testing only to allow us to add a mock of the Lightwave
+	 * Sender
+	 * 
 	 * @param mockLightwaveRfSender
 	 */
 	void setLightaveRfSender(LightwaveRFSender lightwaveRfSender) {
 		this.sender = lightwaveRfSender;
 	}
 
-	/** 
+	/**
 	 * Visible for testing only to allow us to add a mock Convertor
+	 * 
 	 * @param mockLightwaveRfConvertor
 	 */
 	void setLightwaveRfConvertor(LightwaverfConvertor mockLightwaveRfConvertor) {
 		this.messageConvertor = mockLightwaveRfConvertor;
 	}
+
 }

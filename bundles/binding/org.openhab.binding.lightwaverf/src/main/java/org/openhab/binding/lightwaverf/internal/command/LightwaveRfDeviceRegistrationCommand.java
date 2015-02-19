@@ -29,8 +29,9 @@ public class LightwaveRfDeviceRegistrationCommand extends AbstractLightwaveRfCom
 		}
 	}
 	
-	public LightwaveRfDeviceRegistrationCommand(int messageId) {
-		this.messageId = new LightwaveRfGeneralMessageId(messageId);
+	public LightwaveRfDeviceRegistrationCommand() {
+		// MessageId for registration Message always has to be 100
+		this.messageId = new LightwaveRfGeneralMessageId(100);
 	}
 	
 	@Override

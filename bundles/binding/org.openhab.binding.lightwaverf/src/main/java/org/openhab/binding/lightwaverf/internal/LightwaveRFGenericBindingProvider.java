@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openhab.binding.lightwaverf.LightwaveRFBindingProvider;
+import org.openhab.binding.lightwaverf.LightwaveRfBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -24,23 +24,23 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for parsing the binding configuration.
- *
+ * 
  * @author Neil Renaud
- * @since 1.6
+ * @since 1.7.0
  */
-public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingProvider implements LightwaveRFBindingProvider {
+public class LightwaveRfGenericBindingProvider extends AbstractGenericBindingProvider implements LightwaveRfBindingProvider {
 
-	private static Logger logger = LoggerFactory.getLogger(LightwaveRFGenericBindingProvider.class);
+	private static Logger logger = LoggerFactory.getLogger(LightwaveRfGenericBindingProvider.class);
 	
 	private static Pattern ROOM_REG_EXP = Pattern.compile(".*room=([0-9]*).*");
 	private static Pattern DEVICE_REG_EXP = Pattern.compile(".*device=([0-9]*).*");
 	private static Pattern POLL_REG_EXP = Pattern.compile(".*poll_interval=([0-9]*).*");
 	private static Pattern TYPE_REG_EXP = Pattern.compile(".*type=([^,]*).*");
 	private static Pattern SERIAL_REG_EXP = Pattern.compile(".*serial=([^,]*).*");
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getBindingType() {
 		return "lightwaverf";
 	}
@@ -56,85 +56,15 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		//			+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
 		//}
 	}
-
-	@Override
-	public List<String> getBindingItemsForRoomDevice(String roomId, String deviceId) {
-		List<String> bindings = new ArrayList<String>();
-		for (String itemName : bindingConfigs.keySet()) {
-			LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
-			if(roomId != null && roomId.equals(itemConfig.getRoomId())){
-				if(deviceId != null && deviceId.equals(itemConfig.getDeviceId())){
-					bindings.add(itemName);
-				}
-			}
-		}
-		return bindings;
-	}
-	
-	@Override
-	public List<String> getBindingItemsForSerial(String serialId) {
-		List<String> bindings = new ArrayList<String>();
-		for (String itemName : bindingConfigs.keySet()) {
-			LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
-			if(serialId != null && serialId.equals(itemConfig.getSerialId())){
-				bindings.add(itemName);
-			}
-		}
-		return bindings;
-		
-	}
-
-	@Override
-	public List<String> getBindingItemsForRoom(String roomId) {
-		List<String> bindings = new ArrayList<String>();
-		for (String itemName : bindingConfigs.keySet()) {
-			LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
-			if(roomId != null && roomId.equals(itemConfig.getRoomId())){
-				bindings.add(itemName);
-			}
-		}
-		return bindings;
-	}
-
-	@Override
-	public List<String> getBindingItemsForType(LightwaveRfType type) {
-		List<String> bindings = new ArrayList<String>();
-		for (String itemName : bindingConfigs.keySet()) {
-			LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
-			if(type.equals(itemConfig.getType())){
-				bindings.add(itemName);
-			}
-		}
-		return bindings;
-	}
-	
-	@Override
-	public LightwaveRfType getTypeForItemName(String itemName){
-		LightwaveRFBindingConfig itemConfig = (LightwaveRFBindingConfig) bindingConfigs.get(itemName);
-		return itemConfig.getType();
-	}
-	
-	@Override
-	public String getRoomId(String itemString){
-		LightwaveRFBindingConfig config = (LightwaveRFBindingConfig) bindingConfigs.get(itemString);
-		return config.getRoomId();
-		
-	}
-
-	@Override
-	public String getDeviceId(String itemString){
-		LightwaveRFBindingConfig config = (LightwaveRFBindingConfig) bindingConfigs.get(itemString);
-		return config.getDeviceId();
-		
-	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
+		super.processBindingConfiguration(context, item, bindingConfig);
+		
 		try{
-			super.processBindingConfiguration(context, item, bindingConfig);
 			String roomId = null;
 			String deviceId = null;
 			LightwaveRfType type = null;
@@ -167,17 +97,96 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 				poll = Integer.valueOf(pollMatcher.group(1));
 			}
 			
-			LightwaveRFBindingConfig config = new LightwaveRFBindingConfig(roomId, deviceId, serialId, type, poll);
+			LightwaveRfBindingConfig config = new LightwaveRfBindingConfig(roomId, deviceId, serialId, type, poll);
 			
 			logger.info(bindingConfig + "Room["+ config.getRoomId() + "] Device[" + config.getDeviceId() + "] Serial[" + serialId + "] Type[" + config.getType()+ "] Poll[" + poll + "]");
-			addBindingConfig(item, config);
+		addBindingConfig(item, config);		
 		}
 		catch(Exception e){
 			throw new BindingConfigParseException("Error parsing binding for Context["+ context + "] Item[" + item + "] BindingConfig[" + bindingConfig + "] ErrorMessage: " + e.getMessage());
 		}
+		
 	}
 
-	class LightwaveRFBindingConfig implements BindingConfig {
+	@Override
+	public List<String> getBindingItemsForRoomDevice(String roomId, String deviceId) {
+		List<String> bindings = new ArrayList<String>();
+		for (String itemName : bindingConfigs.keySet()) {
+			LightwaveRfBindingConfig itemConfig = (LightwaveRfBindingConfig) bindingConfigs.get(itemName);
+			if(roomId != null && roomId.equals(itemConfig.getRoomId())){
+				if(deviceId != null && deviceId.equals(itemConfig.getDeviceId())){
+					bindings.add(itemName);
+				}
+			}
+		}
+		return bindings;
+	}
+	
+	@Override
+	public List<String> getBindingItemsForSerial(String serialId) {
+		List<String> bindings = new ArrayList<String>();
+		for (String itemName : bindingConfigs.keySet()) {
+			LightwaveRfBindingConfig itemConfig = (LightwaveRfBindingConfig) bindingConfigs.get(itemName);
+			if(serialId != null && serialId.equals(itemConfig.getSerialId())){
+				bindings.add(itemName);
+			}
+		}
+		return bindings;
+		
+	}
+
+	@Override
+	public List<String> getBindingItemsForRoom(String roomId) {
+		List<String> bindings = new ArrayList<String>();
+		for (String itemName : bindingConfigs.keySet()) {
+			LightwaveRfBindingConfig itemConfig = (LightwaveRfBindingConfig) bindingConfigs.get(itemName);
+			if(roomId != null && roomId.equals(itemConfig.getRoomId())){
+				bindings.add(itemName);
+			}
+		}
+		return bindings;
+	}
+
+	@Override
+	public List<String> getBindingItemsForType(LightwaveRfType type) {
+		List<String> bindings = new ArrayList<String>();
+		for (String itemName : bindingConfigs.keySet()) {
+			LightwaveRfBindingConfig itemConfig = (LightwaveRfBindingConfig) bindingConfigs.get(itemName);
+			if(type.equals(itemConfig.getType())){
+				bindings.add(itemName);
+			}
+		}
+		return bindings;
+	}
+	
+	@Override
+	public LightwaveRfType getTypeForItemName(String itemName){
+		LightwaveRfBindingConfig itemConfig = (LightwaveRfBindingConfig) bindingConfigs.get(itemName);
+		return itemConfig.getType();
+	}
+	
+	@Override
+	public String getRoomId(String itemString){
+		LightwaveRfBindingConfig config = (LightwaveRfBindingConfig) bindingConfigs.get(itemString);
+		return config.getRoomId();
+		
+	}
+
+	@Override
+	public String getDeviceId(String itemString){
+		LightwaveRfBindingConfig config = (LightwaveRfBindingConfig) bindingConfigs.get(itemString);
+		return config.getDeviceId();
+		
+	}
+
+	
+	/**
+	 * This is a helper class holding binding specific configuration details
+	 * 
+	 * @author Neil Renaud
+	 * @since 1.7.0
+	 */
+	class LightwaveRfBindingConfig implements BindingConfig {
 		// put member fields here which holds the parsed values
 		private final String roomId;
 		private final String deviceId;
@@ -185,7 +194,7 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 		private final LightwaveRfType type;
 		private final int pollTime;
 		
-		public LightwaveRFBindingConfig(String roomId, String deviceId, String serialId, LightwaveRfType type, int pollTime) {
+		public LightwaveRfBindingConfig(String roomId, String deviceId, String serialId, LightwaveRfType type, int pollTime) {
 			this.roomId = roomId;
 			this.deviceId = deviceId;
 			this.serialId = serialId;
@@ -212,6 +221,6 @@ public class LightwaveRFGenericBindingProvider extends AbstractGenericBindingPro
 			return pollTime;
 		}
 	}
-
-
+	
+	
 }

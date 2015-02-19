@@ -2,16 +2,14 @@ package org.openhab.binding.lightwaverf.internal;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfCommandOk;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDeviceRegistrationCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfDimCommand;
+import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatInfoRequest;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatingInfoResponse;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfOnOffCommand;
-import org.openhab.binding.lightwaverf.internal.command.LightwaveRfHeatInfoRequest;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfSetHeatingTemperatureCommand;
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRfVersionMessage;
 import org.openhab.binding.lightwaverf.internal.exception.LightwaveRfMessageException;
@@ -22,10 +20,8 @@ import org.openhab.core.types.Type;
 
 public class LightwaverfConvertor {
 
-	private static final Pattern REG_EXP = Pattern.compile(".*F(.).*\\s*");
-
 	// LightwaveRF messageId
-    private int nextMessageId = 0;
+    private int nextMessageId = 200;
     private final Lock lock = new ReentrantLock();
 
     
@@ -56,7 +52,7 @@ public class LightwaverfConvertor {
     		lock.lock();
 			int myMessageId = nextMessageId;
 			if(myMessageId >= 999){
-				nextMessageId = 0;
+				nextMessageId = 200;
 			}
 			return myMessageId;
     	}
@@ -100,16 +96,7 @@ public class LightwaverfConvertor {
     	
     }
     
-    private char getModeCode(String message){
-    	Matcher m = REG_EXP.matcher(message);
-    	if(m.matches()){
-    		String modeCode = m.group(1);
-			return modeCode.charAt(0);
-    	}
-    	return ' ';
-    }
-
 	public LightwaveRFCommand getRegistrationCommand() {
-		return new LightwaveRfDeviceRegistrationCommand(getAndIncrementMessageId());
+		return new LightwaveRfDeviceRegistrationCommand();
 	}
 }
