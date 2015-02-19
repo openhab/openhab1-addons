@@ -260,6 +260,10 @@ public class DSMRPort {
 			if ((System.currentTimeMillis() - autoDetectTS) > autoDetectTimeoutMSec) {
 				switchPortSpeed();
 				close();
+				if (open()) {
+					portState = PortState.AUTO_DETECT;
+					autoDetectTS = System.currentTimeMillis();
+				}
 			}
 			break;
 		case OPENED:
