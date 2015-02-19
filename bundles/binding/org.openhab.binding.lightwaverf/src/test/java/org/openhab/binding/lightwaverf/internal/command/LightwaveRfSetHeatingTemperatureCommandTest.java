@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
-import org.openhab.binding.lightwaverf.internal.message.LightwaveRfGeneralMessageId;
 import org.openhab.core.library.types.DecimalType;
 
 public class LightwaveRfSetHeatingTemperatureCommandTest {

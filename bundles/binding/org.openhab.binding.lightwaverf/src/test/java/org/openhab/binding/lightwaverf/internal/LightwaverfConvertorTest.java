@@ -67,7 +67,7 @@ public class LightwaverfConvertorTest {
 	public void testConvertToLightwaveRfMessageSetTempCommand() throws Exception {
 		LightwaverfConvertor convertor = new LightwaverfConvertor();
 		LightwaveRFCommand command = convertor.convertToLightwaveRfMessage("2", null, LightwaveRfType.HEATING_SET_TEMP, new DecimalType(21.5));
-		LightwaveRFCommand expected = new LightwaveRfSetHeatingTemperatureCommand("200,!R2F*tP21.5");
+		LightwaveRFCommand expected = new LightwaveRfSetHeatingTemperatureCommand("200,!R2DhF*tP21.5");
 		assertEquals(expected.getLightwaveRfCommandString(), command.getLightwaveRfCommandString());
 	}
 

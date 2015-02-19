@@ -12,7 +12,8 @@ import org.openhab.core.types.State;
 
 public class LightwaveRfSetHeatingTemperatureCommand extends AbstractLightwaveRfCommand implements LightwaveRfRoomMessage { 
 
-	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!R([0-9])DhF\\*tP([0-9\\.]{1,4})");
+	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!R([0-9])DhF\\*tP([0-9\\.]{1,5}).*\\s*");
+//	private static final Pattern REG_EXP = Pattern.compile("([0-9]{1,3}),!R([0-9])DhF\\*tP([0-9\\.]{1,4})");
 	private static final String FUNCTION = "*t";
 	/*
 	 * Commands Like
