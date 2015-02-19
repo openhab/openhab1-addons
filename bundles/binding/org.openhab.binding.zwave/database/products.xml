@@ -91,6 +91,14 @@
 		<Name>Intermatic</Name>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HA-01</Model>
+			<Label lang="en">Dual receptacle</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0003</Id>
 			</Reference>
@@ -152,6 +160,15 @@
 			</Reference>
 			<Model>CA-9000</Model>
 			<Label lang="en">PIR Occupancy Sensor</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4841</Type>
+				<Id>0020</Id>
+			</Reference>
+			<Model>HA-20</Model>
+			<Label lang="en">Dimmer Switch</Label>
+			<ConfigFile>intermatic/ha20.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
