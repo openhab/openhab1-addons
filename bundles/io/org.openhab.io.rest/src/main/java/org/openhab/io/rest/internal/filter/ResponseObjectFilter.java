@@ -46,16 +46,11 @@ public class ResponseObjectFilter implements PerRequestBroadcastFilter {
 	public BroadcastAction filter(String broadcasterId, AtmosphereResource resource, Object originalMessage, Object message) {
 		final  HttpServletRequest request = resource.getRequest();
 		
-		try {	
 			// websocket and HTTP streaming
 			if(ResponseTypeHelper.isStreamingTransport(request) && message instanceof PageBean && originalMessage instanceof Item) {
 				return new BroadcastAction(ACTION.CONTINUE,  getSingleResponseObject((PageBean)message, (Item)originalMessage, request)	);
 			}
 			
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			return new BroadcastAction(ACTION.ABORT,  message);
-		} 
 		// pass message to next filter
 		return new BroadcastAction(ACTION.CONTINUE,  message);
 	}

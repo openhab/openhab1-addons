@@ -33,7 +33,7 @@ public class GeneralBroadcaster extends JerseyBroadcaster {
 	@Override
 	public Broadcaster initialize(String name, URI uri, AtmosphereConfig config) {
 		super.initialize(name, uri, config);
-
+		
 		this.addBroadcasterLifeCyclePolicyListener(new BroadcasterLifeCyclePolicyListener() {
 			
 			@Override
@@ -44,12 +44,6 @@ public class GeneralBroadcaster extends JerseyBroadcaster {
 			@Override
 			public void onEmpty() {
 				logger.debug("broadcaster '{}' is empty", this.toString());
-			/*	for (ResourceStateChangeListener l : listeners){
-					l.unregisterItems();
-					listeners.remove(l);
-
-				} */
-				
 			}
 			
 			@Override
@@ -63,7 +57,7 @@ public class GeneralBroadcaster extends JerseyBroadcaster {
 				}
 			}
 		});
-
+		
 		return this;
 	}
 	

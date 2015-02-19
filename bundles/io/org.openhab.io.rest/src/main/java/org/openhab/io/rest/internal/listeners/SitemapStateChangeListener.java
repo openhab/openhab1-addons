@@ -151,7 +151,6 @@ public class SitemapStateChangeListener extends ResourceStateChangeListener {
 	
 	private PageBean getPageBean(HttpServletRequest request){
 		try {
-			String query = request.getQueryString();
 		String pathInfo = request.getPathInfo();
 		
 		String responseType = (new ResponseTypeHelper()).getResponseType(request);
