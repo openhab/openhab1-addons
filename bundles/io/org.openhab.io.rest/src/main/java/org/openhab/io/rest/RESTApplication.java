@@ -141,7 +141,7 @@ public class RESTApplication extends Application {
 			httpService.registerServlet(REST_SERVLET_ALIAS,
 				atmosphereServlet, getJerseyServletParams(), createHttpContext());
 
- 			logger.info("Started REST API at /rest");
+			logger.info("Started REST API at {}", REST_SERVLET_ALIAS);
 
  			if (discoveryService != null) {
  				discoveryService.registerService(getDefaultServiceDescription());
