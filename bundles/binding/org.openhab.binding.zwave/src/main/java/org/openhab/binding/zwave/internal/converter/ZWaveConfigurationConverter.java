@@ -99,14 +99,14 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 		if(cfgEvent.getParameter() != null && cfgEvent.getParameter().getIndex() != Integer.parseInt(parmNumber)) {
 			return;
 		}
-
-		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
+		
+		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, cfgEvent.getParameter().getValue());
 		if (converter == null) {
 			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring event.", event.getNodeId(), item.getName(), event.getEndpoint());
 			return;
 		}
 
-		State state = converter.convertFromValueToState(event.getValue());
+		State state = converter.convertFromValueToState(cfgEvent.getParameter().getValue());
 		this.getEventPublisher().postUpdate(item.getName(), state);
 	}
 

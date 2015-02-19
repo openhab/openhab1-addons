@@ -238,7 +238,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 		 * @param nodeId the nodeId of the event. Must be set to the controller node.
 		 */
 		public ZWaveConfigurationParameterEvent(int nodeId, ConfigurationParameter parameter) {
-			super(nodeId, nodeId, CommandClass.CONFIGURATION, parameter);
+			super(nodeId, 0, CommandClass.CONFIGURATION, parameter);
 		}
 
 		/**
