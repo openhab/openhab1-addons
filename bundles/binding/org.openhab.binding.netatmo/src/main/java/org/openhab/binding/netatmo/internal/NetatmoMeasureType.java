@@ -30,7 +30,8 @@ public enum NetatmoMeasureType {
 	LONGITUDE("Longitude"),
 	RFSTATUS("RfStatus"),
 	BATTERYVP("BatteryVp"),
-	TIMESTAMP("TimeStamp");
+	TIMESTAMP("TimeStamp"),
+	COORDINATE("Coordinate");
 	
 	String measure;
 
