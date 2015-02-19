@@ -14,6 +14,8 @@ import java.util.List;
 import org.openhab.binding.dsmr.DSMRBindingProvider;
 import org.openhab.binding.dsmr.internal.cosem.CosemValue;
 import org.openhab.binding.dsmr.internal.messages.OBISMessage;
+import org.openhab.binding.dsmr.internal.messages.OBISMsgFactory;
+import org.openhab.binding.dsmr.internal.p1telegram.P1TelegramParser;
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.types.State;
@@ -57,12 +59,12 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>
 
 	/* Serial port (configurable via openhab.cfg) */
 	private String port = "";
+
 	/* Meter - channel mapping (configurable via openhab.cfg) */
 	private final List<DSMRMeter> dsmrMeters = new ArrayList<DSMRMeter>();
 
 	/* DSMR Port object */
 	private DSMRPort dsmrPort;
-	private DSMRPort.PortSpeed portSpeed;
 
 	/*
 	 * the refresh interval which is used to poll values from the DSMR server
@@ -79,7 +81,6 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>
 	 * Default Constructor
 	 */
 	public DSMRBinding() {
-		portSpeed = DSMRPort.PortSpeed.HIGH_SPEED;
 	}
 
 	/**
@@ -126,7 +127,7 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>
 	}
 
 	/**
-	 * @{inhearticDoc
+	 * @{inheritDoc
 	 */
 	@Override
 	protected void execute() {
@@ -136,38 +137,13 @@ public class DSMRBinding extends AbstractActiveBinding<DSMRBindingProvider>
 			return;
 		}
 
-		if (dsmrPort != null) {
-			boolean receivedData = dsmrPort.portReceivedData();
-			long autoDetectDuration = dsmrPort.getDetectingDuration();
-
-			logger.debug("Port received any data:" + receivedData
-					+ ", auto detect duration:" + autoDetectDuration);
-
-			// Check if the port did receive data during its lifetime
-			if (!receivedData && autoDetectDuration > 2 * DSMR_UPDATE_INTERVAL) {
-				// No valid data received during auto detect. Close the port
-				logger.info("No valid data received for " + autoDetectDuration
-						+ "ms during autodetection, switch speed");
-
-				dsmrPort.close();
-
-				switch (portSpeed) {
-				case LOW_SPEED:
-					portSpeed = DSMRPort.PortSpeed.HIGH_SPEED;
-					break;
-				case HIGH_SPEED:
-					portSpeed = DSMRPort.PortSpeed.LOW_SPEED;
-					break;
-				}
-			}
-		}
-
 		// Check if a valid DSMR port exists. Open a new one if necessary
 		if (dsmrPort == null || !dsmrPort.isOpen()) {
-			logger.debug("Creating DSMR Port:" + port + ", speed:" + portSpeed);
+			logger.debug("Creating DSMR Port:" + port);
 
-			dsmrPort = new DSMRPort(port, portSpeed, dsmrMeters,
-					DSMR_UPDATE_INTERVAL);
+			dsmrPort = new DSMRPort(port, new P1TelegramParser(
+					new OBISMsgFactory(dsmrMeters)), DSMR_UPDATE_INTERVAL / 2,
+					DSMR_UPDATE_INTERVAL * 2);
 		}
 
 		// Read the DSMRPort

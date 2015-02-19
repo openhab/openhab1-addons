@@ -10,7 +10,6 @@ package org.openhab.binding.dsmr.internal;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import gnu.io.CommPort;
@@ -21,7 +20,6 @@ import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
 import org.openhab.binding.dsmr.internal.messages.OBISMessage;
-import org.openhab.binding.dsmr.internal.messages.OBISMsgFactory;
 import org.openhab.binding.dsmr.internal.p1telegram.P1TelegramParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,16 +70,19 @@ public class DSMRPort {
 	private static final Logger logger = LoggerFactory
 			.getLogger(DSMRPort.class);
 
-	public enum PortSpeed {
+	private enum PortState {
+		CLOSED, AUTO_DETECT, OPENED;
+	}
+
+	private enum PortSpeed {
 		LOW_SPEED, HIGH_SPEED
 	}
 
 	/* private object variables */
 	private final String portName;
-	private final int timeoutMSec;
-	private PortSpeed portSpeed;
-	private long portCreationTS;
-	private boolean portReceivedData;
+	private final int readTimeoutMSec;
+	private final int autoDetectTimeoutMSec;
+	private long autoDetectTS;
 
 	/* serial port resources */
 	private SerialPort serialPort;
@@ -89,14 +90,11 @@ public class DSMRPort {
 	private byte[] buffer = new byte[1024]; // 1K
 
 	/* state variables */
-	private boolean isOpen = false;
+	private PortState portState;
+	private PortSpeed portSpeed;
 
 	/* helpers */
-	private OBISMsgFactory factory;
 	private P1TelegramParser p1Parser;
-
-	/* available data */
-	private List<OBISMessage> messages;
 
 	/*
 	 * The portLock is used for the shared data used when opening and closing
@@ -112,22 +110,23 @@ public class DSMRPort {
 	 * 
 	 * @param portName
 	 *            Device identifier of the post (e.g. /dev/ttyUSB0)
-	 * @param dsmrMeters
-	 *            List of available {@link DSMRMeter} in the binding
-	 * @param timeoutMSec
+	 * @param p1Parser
+	 *            {@link P1TelegramParser}
+	 * @param readTimeoutMSec
 	 *            communication timeout in milliseconds
+	 * @param autoDetectTimeoutMSec
+	 *            timeout for auto detection in milliseconds (after this period
+	 *            the Serial Port speed will be changed)
 	 */
-	public DSMRPort(String portName, PortSpeed portSpeed,
-			List<DSMRMeter> dsmrMeters, int timeoutMSec) {
+	public DSMRPort(String portName, P1TelegramParser p1Parser,
+			int readTimeoutMSec, int autoDetectTimeoutMSec) {
 		this.portName = portName;
-		this.timeoutMSec = timeoutMSec;
-		this.portSpeed = portSpeed;
+		this.readTimeoutMSec = readTimeoutMSec;
+		this.autoDetectTimeoutMSec = autoDetectTimeoutMSec;
+		this.p1Parser = p1Parser;
 
-		messages = Collections.synchronizedList(new LinkedList<OBISMessage>());
-		factory = new OBISMsgFactory(dsmrMeters);
-		p1Parser = new P1TelegramParser(factory);
-		portCreationTS = System.currentTimeMillis();
-		portReceivedData = false;
+		portSpeed = PortSpeed.HIGH_SPEED;
+		portState = PortState.CLOSED;
 	}
 
 	/**
@@ -136,31 +135,7 @@ public class DSMRPort {
 	 * @return true if the DSMRPort is open, false otherwise
 	 */
 	public boolean isOpen() {
-		return isOpen;
-	}
-
-	/**
-	 * Returns whether or not this port received valid data
-	 * 
-	 * @return whether or not this port received valid data
-	 */
-	public boolean portReceivedData() {
-		return portReceivedData;
-	}
-
-	/**
-	 * Returns the duration that this port is auto detecting (-1 if
-	 * autodetecting is finished)
-	 * 
-	 * @return the duration that this port is auto detecting (-1 if
-	 *         autodetecting is finished)
-	 */
-	public long getDetectingDuration() {
-		if (!portReceivedData) {
-			return System.currentTimeMillis() - portCreationTS;
-		} else {
-			return -1;
-		}
+		return portState != PortState.CLOSED;
 	}
 
 	/**
@@ -170,10 +145,8 @@ public class DSMRPort {
 		synchronized (portLock) {
 			logger.info("Closing DSMR port");
 
-			// Clear received messages
-			messages.clear();
+			portState = PortState.CLOSED;
 
-			isOpen = false;
 			// Close resources
 			if (bis != null) {
 				try {
@@ -207,8 +180,10 @@ public class DSMRPort {
 	public List<OBISMessage> read() {
 		List<OBISMessage> receivedMessages = new LinkedList<OBISMessage>();
 
+		handlePortState();
+
 		// open port if it is not open
-		if (!open()) {
+		if (portState == PortState.CLOSED) {
 			logger.warn("Could not open DSMRPort, no values will be read");
 
 			close();
@@ -237,7 +212,7 @@ public class DSMRPort {
 			 * Read is interrupted. This can be due to a broken connection or
 			 * closing the port
 			 */
-			if (!isOpen) {
+			if (portState == PortState.CLOSED) {
 				// Closing on purpose
 				logger.info("Read aborted: DSMRPort is closed");
 			} else {
@@ -249,7 +224,7 @@ public class DSMRPort {
 				close();
 			}
 		} catch (NullPointerException npe) {
-			if (!isOpen) {
+			if (portState == PortState.CLOSED) {
 				// Port was closed
 				logger.info("Read aborted: DSMRPort is closed");
 			} else {
@@ -259,10 +234,52 @@ public class DSMRPort {
 			}
 		}
 
-		if (!portReceivedData && receivedMessages.size() > 0) {
-			portReceivedData = true;
+		if (portState == PortState.AUTO_DETECT && receivedMessages.size() > 0) {
+			portState = PortState.OPENED;
 		}
 		return receivedMessages;
+	}
+
+	/**
+	 * Checks the current port state and initiate actions based on it. 
+	 * <ul>
+	 * <li>CLOSED --> Port will be opened 
+	 * <li>AUTO_DETECT --> Auto detect period will be evaluated 
+	 * <li>OPENED --> Nothing has to be done
+	 * </ul>
+	 */
+	private void handlePortState() {
+		switch (portState) {
+		case CLOSED:
+			if (open()) {
+				portState = PortState.AUTO_DETECT;
+				autoDetectTS = System.currentTimeMillis();
+			}
+			break;
+		case AUTO_DETECT:
+			if ((System.currentTimeMillis() - autoDetectTS) > autoDetectTimeoutMSec) {
+				switchPortSpeed();
+				close();
+			}
+			break;
+		case OPENED:
+			/* do nothing */
+			break;
+		}
+	}
+
+	/**
+	 * Switch the Serial Port speed (LOW --> HIGH and vice versa).
+	 */
+	private void switchPortSpeed() {
+		switch (portSpeed) {
+		case HIGH_SPEED:
+			portSpeed = PortSpeed.LOW_SPEED;
+			break;
+		case LOW_SPEED:
+			portSpeed = PortSpeed.HIGH_SPEED;
+			break;
+		}
 	}
 
 	/**
@@ -285,7 +302,7 @@ public class DSMRPort {
 	private boolean open() {
 		synchronized (portLock) {
 			// Sanity check
-			if (isOpen) {
+			if (portState != PortState.CLOSED) {
 				return true;
 			}
 
@@ -296,11 +313,11 @@ public class DSMRPort {
 						.getPortIdentifier(portName);
 				logger.debug("Opening CommPortIdentifier");
 				CommPort commPort = portIdentifier.open(
-						"org.openhab.binding.dsmr", 2000);
+						"org.openhab.binding.dsmr", readTimeoutMSec);
 				logger.debug("Configure serial port");
 				serialPort = (SerialPort) commPort;
 				serialPort.enableReceiveThreshold(1);
-				serialPort.enableReceiveTimeout(timeoutMSec);
+				serialPort.enableReceiveTimeout(readTimeoutMSec);
 
 				// Configure Serial Port based on specified port speed
 				logger.debug("Configure serial port speed " + portSpeed);
@@ -350,25 +367,7 @@ public class DSMRPort {
 			}
 			logger.info("DSMR Port opened successful");
 
-			isOpen = true;
-
-			return isOpen;
+			return true;
 		}
-	}
-
-	/**
-	 * Returns all available message in the DSMR port
-	 * 
-	 * @return List with all available OBISMessage objects
-	 */
-	public List<OBISMessage> getAvailableMessages() {
-		LinkedList<OBISMessage> availableMessages = new LinkedList<OBISMessage>();
-
-		availableMessages.addAll(messages);
-		messages.clear();
-
-		logger.debug("There are " + availableMessages.size()
-				+ " available OBIS messages");
-		return availableMessages;
 	}
 }
