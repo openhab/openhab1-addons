@@ -38,12 +38,12 @@ public class ResponseObjectFilter implements PerRequestBroadcastFilter {
 	private static final Logger logger = LoggerFactory.getLogger(ResponseObjectFilter.class);
 	
 	@Override
-	public BroadcastAction filter(Object arg0, Object message) {
-		return new BroadcastAction(ACTION.CONTINUE, message);
+	public BroadcastAction filter(String broadcasterId, Object originalMessage, Object message) {
+		return new BroadcastAction(message);
 	}
 
 	@Override
-	public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
+	public BroadcastAction filter(String broadcasterId, AtmosphereResource resource, Object originalMessage, Object message) {
 		final  HttpServletRequest request = resource.getRequest();
 		
 		try {	

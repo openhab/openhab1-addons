@@ -17,10 +17,9 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriBuilder;
 
-import org.atmosphere.cache.UUIDBroadcasterCache;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.BroadcasterCache;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
-import org.atmosphere.cpr.BroadcastFilter.BroadcastAction;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.RESTApplication;
@@ -58,12 +57,14 @@ public class SitemapStateChangeListener extends ResourceStateChangeListener {
 		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override
-			public BroadcastAction filter(Object originalMessage, Object message) {
-				return new BroadcastAction(ACTION.CONTINUE,  message);
+			public BroadcastAction filter(String broadcasterId,
+					Object originalMessage, Object message) {
+				return new BroadcastAction(message);
 			}
 
 			@Override
-			public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
+			public BroadcastAction filter(String broadcasterId,
+					AtmosphereResource resource, Object originalMessage, Object message) {
 				//this will clear any cached messages before we add the new one
 				UUIDBroadcasterCache uuidCache = (UUIDBroadcasterCache)broadcaster.getBroadcasterConfig().getBroadcasterCache();
 				List<Object> entries = uuidCache.retrieveFromCache(null,resource);

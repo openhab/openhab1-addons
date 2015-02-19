@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -34,9 +33,9 @@ import org.apache.commons.lang.StringUtils;
 import org.atmosphere.annotation.Suspend.SCOPE;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereResource.TRANSPORT;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
-import org.atmosphere.cpr.HeaderConfig;
 import org.atmosphere.jersey.SuspendResponse;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -141,11 +140,11 @@ public class SitemapResource {
     		@PathParam("pageid") String pageId,
     		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
-    		@HeaderParam(HeaderConfig.X_ATMOSPHERE_TRANSPORT) String atmosphereTransport,
     		@Context AtmosphereResource resource) {
 		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		if(atmosphereTransport==null || atmosphereTransport.isEmpty()) {
 			String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+
+		if(TRANSPORT.UNDEFINED.equals(resource.transport())) {
 			if(responseType!=null) {
 		    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
 		    			new JSONWithPadding(getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build()), callback) : getPageBean(sitemapname, pageId, uriInfo.getBaseUriBuilder().build());
@@ -155,7 +154,8 @@ public class SitemapResource {
 			}
 		}
 		
-		GeneralBroadcaster sitemapBroadcaster = BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
+		BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
+		GeneralBroadcaster sitemapBroadcaster = broadcasterFactory.lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
 		sitemapBroadcaster.addStateChangeListener(new SitemapStateChangeListener());
 		
 		boolean resume = false;

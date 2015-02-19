@@ -16,7 +16,6 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -35,7 +34,7 @@ import javax.ws.rs.core.UriInfo;
 import org.atmosphere.annotation.Suspend.SCOPE;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.BroadcasterFactory;
-import org.atmosphere.cpr.HeaderConfig;
+import org.atmosphere.cpr.AtmosphereResource.TRANSPORT;
 import org.atmosphere.jersey.SuspendResponse;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
@@ -56,8 +55,6 @@ import org.openhab.io.rest.internal.resources.beans.ItemListBean;
 import org.openhab.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jersey.api.json.JSONWithPadding;
 
 /**
  * <p>This class acts as a REST resource for items and provides different methods to interact with them,
@@ -102,9 +99,8 @@ public class ItemResource {
 	@Produces( { MediaType.TEXT_PLAIN })
     public SuspendResponse<String> getPlainItemState(
     		@PathParam("itemname") String itemname, 
-    		@HeaderParam(HeaderConfig.X_ATMOSPHERE_TRANSPORT) String atmosphereTransport,
     		@Context AtmosphereResource resource) {
-    	if(atmosphereTransport==null || atmosphereTransport.isEmpty()) {
+	if(TRANSPORT.UNDEFINED.equals(resource.transport())) {
 	    	Item item = getItem(itemname);
 	    	if(item!=null) {
 				logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
@@ -114,7 +110,9 @@ public class ItemResource {
 	    		throw new WebApplicationException(404);
 	    	}
 		}
-    	GeneralBroadcaster itemBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
+
+	BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
+	GeneralBroadcaster itemBroadcaster = (GeneralBroadcaster) broadcasterFactory.lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
 		itemBroadcaster.addStateChangeListener(new ItemStateChangeListener());
 		return new SuspendResponse.SuspendResponseBuilder<String>()
 				.scope(SCOPE.REQUEST)
@@ -130,10 +128,9 @@ public class ItemResource {
     		@PathParam("itemname") String itemname, 
     		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
-    		@HeaderParam(HeaderConfig.X_ATMOSPHERE_TRANSPORT) String atmosphereTransport,
     		@Context AtmosphereResource resource) {
 		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-		if(atmosphereTransport==null || atmosphereTransport.isEmpty()) {
+		if(TRANSPORT.UNDEFINED.equals(resource.transport())) {
 			final String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
 			if(responseType!=null) {
 		    	final Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
@@ -145,7 +142,8 @@ public class ItemResource {
 			}
 		}
 		
-		GeneralBroadcaster itemBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
+		BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
+		GeneralBroadcaster itemBroadcaster = (GeneralBroadcaster) broadcasterFactory.lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
 		itemBroadcaster.addStateChangeListener(new ItemStateChangeListener());
 		
 		return new SuspendResponse.SuspendResponseBuilder<Response>()

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.atmosphere.cpr.BroadcasterFactory;
+import org.atmosphere.cpr.HeaderConfig;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.internal.broadcaster.GeneralBroadcaster;
@@ -39,12 +40,12 @@ public class SendPageUpdateFilter implements PerRequestBroadcastFilter {
 	private static final Logger logger = LoggerFactory.getLogger(SendPageUpdateFilter.class);
 	
 	@Override
-	public BroadcastAction filter(Object arg0, Object message) {
-		return new BroadcastAction(ACTION.CONTINUE, message);
+	public BroadcastAction filter(String broadcasterId, Object originalMessage, Object message) {
+		return new BroadcastAction(message);
 	}
 
 	@Override
-	public BroadcastAction filter(final AtmosphereResource resource, Object originalMessage, final Object message) {
+	public BroadcastAction filter(String broadcasterId, final AtmosphereResource resource, Object originalMessage, final Object message) {
 		final  HttpServletRequest request = resource.getRequest();
 		try {	
 			// broadcast page updates to streaming transports
@@ -58,7 +59,8 @@ public class SendPageUpdateFilter implements PerRequestBroadcastFilter {
 				                try {
 				                    Thread.sleep(300);
 			                		
-			                		GeneralBroadcaster delayedBroadcaster = (GeneralBroadcaster) BroadcasterFactory.getDefault().lookup(GeneralBroadcaster.class, delayedBroadcasterName);
+				                    BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
+							GeneralBroadcaster delayedBroadcaster = broadcasterFactory.lookup(GeneralBroadcaster.class, delayedBroadcasterName);
 			                		delayedBroadcaster.broadcast(message, resource);
 				                	
 									

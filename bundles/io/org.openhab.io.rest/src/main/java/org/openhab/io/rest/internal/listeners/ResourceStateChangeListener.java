@@ -87,15 +87,18 @@ abstract public class ResourceStateChangeListener {
 			}
 
 			@Override
-			public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
+			public BroadcastAction filter(String broadcasterId,
+					AtmosphereResource resource, Object originalMessage,
+					Object message) {
 				HttpServletRequest request = null;
 				BroadcastAction result = null;
 				try {
 				 request = resource.getRequest();
-				 Object responce = getResponseObject(request);
-				 result = new BroadcastAction(ACTION.CONTINUE,  responce);
+					Object response = getResponseObject(request);
+					result = new BroadcastAction(ACTION.CONTINUE, response);
 				} catch (Exception e) {
-					result = new BroadcastAction(ACTION.ABORT,  getResponseObject(request));					
+					result = new BroadcastAction(ACTION.ABORT,
+							getResponseObject(request));
 				}
 				 return result;
 			}
