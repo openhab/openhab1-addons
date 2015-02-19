@@ -58,14 +58,13 @@ public class SendPageUpdateFilter implements PerRequestBroadcastFilter {
 				            public void run() {
 				                try {
 				                    Thread.sleep(300);
-			                		
+				                    
 				                    BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
-							GeneralBroadcaster delayedBroadcaster = broadcasterFactory.lookup(GeneralBroadcaster.class, delayedBroadcasterName);
-			                		delayedBroadcaster.broadcast(message, resource);
-				                	
+			                		GeneralBroadcaster delayedBroadcaster = broadcasterFactory.lookup(GeneralBroadcaster.class, delayedBroadcasterName);
+			                		delayedBroadcaster.broadcast(message, resource);				                	
 									
 								} catch (Exception e) {
-									logger.error("Could not broadcast messages",e);
+									logger.error("Could not broadcast messages", e);
 								} 
 				            }
 				        });
@@ -73,42 +72,50 @@ public class SendPageUpdateFilter implements PerRequestBroadcastFilter {
 				}
 				// remove the widgets
 				if (originalMessage instanceof PageBean){
-					PageBean originalBean = (PageBean) message ;
-	        		PageBean responseBeam = new PageBean();
-	        		responseBeam.icon = originalBean.icon;
-	        		responseBeam.id = originalBean.id;
-	        		responseBeam.link = originalBean.link;
-	        		responseBeam.parent = originalBean.parent;
-	        		responseBeam.title = originalBean.title;
-	        		return new BroadcastAction(ACTION.CONTINUE,  responseBeam);
+	        		final PageBean responseBean = clonePageBeanWithoutWidgets((PageBean) message);
+	        		return new BroadcastAction(ACTION.CONTINUE,  responseBean);
 				}
 			}
 			
 			//pass message to next filter
-			return new BroadcastAction(ACTION.CONTINUE,  message);
+			return new BroadcastAction(ACTION.CONTINUE, message);
 		
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-			return new BroadcastAction(ACTION.ABORT,  message);
+			logger.error(e.getMessage(), e);
+			return new BroadcastAction(ACTION.ABORT, message);
 		} 
 		
 		
 	}
+
+	private PageBean clonePageBeanWithoutWidgets(PageBean originalBean) {
+		final PageBean responseBean = new PageBean();
+		responseBean.icon = originalBean.icon;
+		responseBean.id = originalBean.id;
+		responseBean.link = originalBean.link;
+		responseBean.parent = originalBean.parent;
+		responseBean.title = originalBean.title;
+		// TODO What to do with (the new) leaf attribute?
+		return responseBean;
+	}
 	
-	private boolean isPageUpdated(HttpServletRequest request, Object responseEntity){
-		String clientId = request.getHeader("X-Atmosphere-tracking-id");
+	private boolean isPageUpdated(HttpServletRequest request, Object responseEntity) {
+		// TODO: Atmosphere docs say, the param can be a request param, too!
+		final String clientId = request.getHeader(HeaderConfig.X_ATMOSPHERE_TRACKING_ID);
 		
 		// return false if the X-Atmosphere-tracking-id is not set
 		if(clientId == null || clientId.isEmpty()){
 			return false;
 		}
 		
-		CacheEntry entry =  ResourceStateChangeListener.getCachedEntries().get(clientId); 
+		final CacheEntry entry =  ResourceStateChangeListener.getCachedEntries().get(clientId); 
 		if(entry != null && entry.getData() instanceof PageBean){
-			Object firedEntity = entry.getData();
-			if( firedEntity == null ||  ((PageBean)firedEntity).icon != ((PageBean)responseEntity).icon ||  ((PageBean)firedEntity).title != ((PageBean)responseEntity).title    ) {
+			final PageBean firedEntity = (PageBean)entry.getData();
+			final PageBean responsePageBean = (PageBean)responseEntity;
+			if( firedEntity == null || 
+					firedEntity.icon != responsePageBean.icon ||  
+					firedEntity.title != responsePageBean.title    ) {
 		    	return true;
 		    }
 		}

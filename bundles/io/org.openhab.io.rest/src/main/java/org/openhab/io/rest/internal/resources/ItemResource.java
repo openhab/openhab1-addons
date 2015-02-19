@@ -83,12 +83,11 @@ public class ItemResource {
     		@Context HttpHeaders headers,
     		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
-
-		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+		if (logger.isDebugEnabled()) logger.debug("Received HTTP GET request at '{}' for media type '{}'.", uriInfo.getPath(), type);
+		final String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
 		if(responseType!=null) {
-	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-	    			new JSONWithPadding(new ItemListBean(getItemBeans()), callback) : new ItemListBean(getItemBeans());
+			final ItemListBean content = new ItemListBean(getItemBeans());
+	    	final Object responseObject = ResponseHelper.wrapContentIfNeccessary(callback, responseType, content); 
 	    	return Response.ok(responseObject, responseType).build();
 		} else {
 			return Response.notAcceptable(null).build();
@@ -100,19 +99,19 @@ public class ItemResource {
     public SuspendResponse<String> getPlainItemState(
     		@PathParam("itemname") String itemname, 
     		@Context AtmosphereResource resource) {
-	if(TRANSPORT.UNDEFINED.equals(resource.transport())) {
+    	if(TRANSPORT.UNDEFINED.equals(resource.transport())) {
 	    	Item item = getItem(itemname);
 	    	if(item!=null) {
-				logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
+				if (logger.isDebugEnabled()) logger.debug("Received HTTP GET request at '{}'.", uriInfo.getPath());
 				throw new WebApplicationException(Response.ok(item.getState().toString()).build());
 	    	} else {
-	    		logger.info("Received HTTP GET request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
+	    		if (logger.isDebugEnabled()) logger.info("Received HTTP GET request at '{}' for the unknown item '{}'.", uriInfo.getPath(), itemname);
 	    		throw new WebApplicationException(404);
 	    	}
 		}
-
-	BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
-	GeneralBroadcaster itemBroadcaster = (GeneralBroadcaster) broadcasterFactory.lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
+    	
+    	BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
+    	GeneralBroadcaster itemBroadcaster = (GeneralBroadcaster) broadcasterFactory.lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
 		itemBroadcaster.addStateChangeListener(new ItemStateChangeListener());
 		return new SuspendResponse.SuspendResponseBuilder<String>()
 				.scope(SCOPE.REQUEST)
@@ -129,21 +128,20 @@ public class ItemResource {
     		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
     		@Context AtmosphereResource resource) {
-		logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new String[] { uriInfo.getPath(), type });
+		if (logger.isDebugEnabled()) logger.debug("Received HTTP GET request at '{}' for media type '{}'.", uriInfo.getPath(), type);
 		if(TRANSPORT.UNDEFINED.equals(resource.transport())) {
 			final String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
 			if(responseType!=null) {
-		    	final Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-		    			new JSONWithPadding(getItemDataBean(itemname), callback) : getItemDataBean(itemname);
+				final ItemBean content = getItemDataBean(itemname);
+		    	final Object responseObject = ResponseHelper.wrapContentIfNeccessary(callback, responseType, content); 
 		    	throw new WebApplicationException(Response.ok(responseObject, responseType).build());  
-		
 			} else {
 				throw new WebApplicationException(Response.notAcceptable(null).build());
 			}
 		}
 		
 		BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
-		GeneralBroadcaster itemBroadcaster = (GeneralBroadcaster) broadcasterFactory.lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true);
+		GeneralBroadcaster itemBroadcaster = (GeneralBroadcaster) broadcasterFactory.lookup(GeneralBroadcaster.class, resource.getRequest().getPathInfo(), true); 
 		itemBroadcaster.addStateChangeListener(new ItemStateChangeListener());
 		
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
@@ -156,15 +154,15 @@ public class ItemResource {
     @PUT @Path("/{itemname: [a-zA-Z_0-9]*}/state")
 	@Consumes(MediaType.TEXT_PLAIN)	
 	public Response putItemState(@PathParam("itemname") String itemname, String value) {
-    	Item item = getItem(itemname);
+    	final Item item = getItem(itemname);
     	if(item!=null) {
-    		State state = TypeParser.parseState(item.getAcceptedDataTypes(), value);
+    		final State state = TypeParser.parseState(item.getAcceptedDataTypes(), value);
     		if(state!=null) {
-    			logger.debug("Received HTTP PUT request at '{}' with value '{}'.", uriInfo.getPath(), value);
+    			if (logger.isDebugEnabled()) logger.debug("Received HTTP PUT request at '{}' with value '{}'.", uriInfo.getPath(), value);
     			RESTApplication.getEventPublisher().postUpdate(itemname, state);
     			return Response.ok().build();
     		} else {
-    			logger.warn("Received HTTP PUT request at '{}' with an invalid status value '{}'.", uriInfo.getPath(), value);
+    			if (logger.isDebugEnabled()) logger.warn("Received HTTP PUT request at '{}' with an invalid status value '{}'.", uriInfo.getPath(), value);
     			return Response.status(Status.BAD_REQUEST).build();
     		}
     	} else {
@@ -177,7 +175,7 @@ public class ItemResource {
     @POST @Path("/{itemname: [a-zA-Z_0-9]*}")
 	@Consumes(MediaType.TEXT_PLAIN)	
 	public Response postItemCommand(@PathParam("itemname") String itemname, String value) {
-    	Item item = getItem(itemname);
+    	final Item item = getItem(itemname);
     	Command command = null;
     	if(item!=null) {
     		// support for TOGGLE, see https://code.google.com/p/openhab/issues/detail?id=336
@@ -250,7 +248,7 @@ public class ItemResource {
 	}
 
 	private ItemBean getItemDataBean(String itemname) {
-		Item item = getItem(itemname);
+		final Item item = getItem(itemname);
 		if(item!=null) {
 			return createItemBean(item, true, uriInfo.getBaseUri().toASCIIString());
 		} else {
