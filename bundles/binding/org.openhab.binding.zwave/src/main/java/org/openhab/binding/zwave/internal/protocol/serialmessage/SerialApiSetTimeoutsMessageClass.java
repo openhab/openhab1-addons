@@ -17,41 +17,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class processes a serial message to get the SUC node ID
+ * This class processes a serial message from the zwave controller
  * @author Chris Jackson
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class GetSucNodeIdMessageClass extends ZWaveCommandProcessor {
-	private static final Logger logger = LoggerFactory.getLogger(GetSucNodeIdMessageClass.class);
+public class SerialApiSetTimeoutsMessageClass extends ZWaveCommandProcessor {
+	private static final Logger logger = LoggerFactory.getLogger(SerialApiSetTimeoutsMessageClass.class);
 
-	int sucNode = 0;
-	
-	public SerialMessage doRequest() {
-		logger.debug("Get SUC NodeID");
-
+	public SerialMessage doRequest(int ackTimeout, int byteTimeout) {
 		// Queue the request
-		SerialMessage newMessage = new SerialMessage(SerialMessageClass.GetSucNodeId, SerialMessageType.Request,
-				SerialMessageClass.GetSucNodeId, SerialMessagePriority.High);
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.SerialApiSetTimeouts, 
+				SerialMessageType.Request, SerialMessageClass.SerialApiSetTimeouts, SerialMessagePriority.High);
 
+		byte[] newPayload = { (byte) ackTimeout, (byte)byteTimeout };
+
+    	newMessage.setMessagePayload(newPayload);
     	return newMessage;
 	}
 
 	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		logger.debug("Got SUC NodeID response.");
-
-		if(incomingMessage.getMessagePayloadByte(0) != 0x00) {
-			logger.debug("NODE {}: Node is SUC.", incomingMessage.getMessagePayloadByte(0));
-			sucNode = incomingMessage.getMessagePayloadByte(0);
-		} else {
-			logger.debug("No SUC Node is set");
-		}
+		logger.debug("Got SerialApiSetTimeouts response. ACK={}, BYTE={}",
+				incomingMessage.getMessagePayloadByte(0),
+				incomingMessage.getMessagePayloadByte(1));
 
 		checkTransactionComplete(lastSentMessage, incomingMessage);
+
 		return true;
-	}
-	
-	public int getSucNodeId() {
-		return sucNode;
 	}
 }
