@@ -10,6 +10,9 @@ package org.openhab.binding.zwave.internal.config;
 
 import java.util.List;
 
+import org.openhab.binding.zwave.internal.HexToIntegerConverter;
+import org.osgi.framework.Version;
+
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
@@ -34,8 +37,10 @@ public class ZWaveDbProduct {
 
 	@XStreamConverter(value=ToAttributedValueConverter.class, strings={"Filename"})
 	private class ZWaveDbConfigFile {
-		Double VersionMin;
-		Double VersionMax;
+		@XStreamConverter(VersionConverter.class)
+		Version VersionMin;
+		@XStreamConverter(VersionConverter.class)
+		Version VersionMax;
 		
 		String Filename;
 	}
@@ -45,6 +50,7 @@ public class ZWaveDbProduct {
 			return null;
 		}
 
+		Version vIn = new Version(Double.toString(version));
 		String filename = null;
 		// Check for a version'ed file
 		// There are multiple permutations of the file that we need to account for -:
@@ -52,18 +58,21 @@ public class ZWaveDbProduct {
 		// * Only a min version
 		// * Only a max version
 		// * Both min and max versions
+		// Versions need to be evaluated with the max and min specifiers separately
+		// i.e. the part either side of the decimal.
+		// So, version 1.3 is lower than version 1.11 
 		for(ZWaveDbConfigFile cfg : ConfigFile) {
 			// Find a default - ie one with no version information
-			if(cfg.VersionMin == null && cfg.VersionMax == null) {
+			if(cfg.VersionMin == null && cfg.VersionMax == null && filename == null) {
 				filename = cfg.Filename;
 				continue;
 			}
 
-			if(cfg.VersionMin != null && version < cfg.VersionMin) {
+			if(cfg.VersionMin != null && vIn.compareTo(cfg.VersionMin) < 0) {
 				continue;
 			}
 
-			if(cfg.VersionMax != null && version > cfg.VersionMax) {
+			if(cfg.VersionMax != null && vIn.compareTo(cfg.VersionMin) > 0) {
 				continue;
 			}
 			
