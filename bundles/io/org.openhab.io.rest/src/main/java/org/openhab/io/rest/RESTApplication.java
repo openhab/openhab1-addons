@@ -202,6 +202,9 @@ public class RESTApplication extends Application {
         jerseyServletParams.put("org.atmosphere.cpr.broadcasterLifeCyclePolicy", "IDLE_DESTROY");
         jerseyServletParams.put("org.atmosphere.cpr.CometSupport.maxInactiveActivity", "3000000");
         
+        jerseyServletParams.put("org.atmosphere.cpr.broadcaster.maxProcessingThreads", "10"); // Default: unlimited!
+        jerseyServletParams.put("org.atmosphere.cpr.broadcaster.maxAsyncWriteThreads", "10"); // Default: 200 on atmos 2.2
+        
         jerseyServletParams.put("com.sun.jersey.spi.container.ResourceFilter", "org.atmosphere.core.AtmosphereFilter");
         
         // required because of bug http://java.net/jira/browse/JERSEY-361
