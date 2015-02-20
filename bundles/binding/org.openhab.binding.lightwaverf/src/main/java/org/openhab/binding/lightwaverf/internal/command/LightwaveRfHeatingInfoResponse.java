@@ -1,5 +1,6 @@
 package org.openhab.binding.lightwaverf.internal.command;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,6 +8,7 @@ import java.util.regex.Pattern;
 import org.openhab.binding.lightwaverf.internal.LightwaveRfType;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfHeatingMessageId;
 import org.openhab.binding.lightwaverf.internal.message.LightwaveRfMessageId;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
@@ -129,6 +131,10 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 			return new DecimalType(getCurrentTargetTemperature());
 		case HEATING_MODE:
 			return new StringType(getState());
+		case HEATING_UPDATETIME:
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(getTime());
+			return new DateTimeType(cal);
 		case VERSION:
 			return new StringType(getVersion());
 		default:
