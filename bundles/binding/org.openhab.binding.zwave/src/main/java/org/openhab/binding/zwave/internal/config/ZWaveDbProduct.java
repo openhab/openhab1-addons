@@ -35,12 +35,13 @@ public class ZWaveDbProduct {
 	@XStreamImplicit
 	private List<ZWaveDbConfigFile> ConfigFile;
 
-	@XStreamConverter(value=ToAttributedValueConverter.class, strings={"Filename"})
+	@XStreamConverter(value=ToAttributedValueConverter.class, strings={"Filename", "VersionMin", "VersionMax"})
 	private class ZWaveDbConfigFile {
-		@XStreamConverter(VersionConverter.class)
-		Version VersionMin;
-		@XStreamConverter(VersionConverter.class)
-		Version VersionMax;
+//		@XStreamConverter(VersionConverter.class)
+//		Version VersionMin;
+		String VersionMin;
+//		@XStreamConverter(VersionConverter.class)
+		String VersionMax;
 		
 		String Filename;
 	}
@@ -68,12 +69,19 @@ public class ZWaveDbProduct {
 				continue;
 			}
 
-			if(cfg.VersionMin != null && vIn.compareTo(cfg.VersionMin) < 0) {
-				continue;
+			if(cfg.VersionMin != null) {
+				Version vMin = new Version(cfg.VersionMin);
+				if(vIn.compareTo(vMin) < 0) {
+					continue;
+				}
 			}
 
-			if(cfg.VersionMax != null && vIn.compareTo(cfg.VersionMin) > 0) {
-				continue;
+			if(cfg.VersionMax != null) {
+				Version vMax = new Version(cfg.VersionMax);
+
+				if(vIn.compareTo(vMax) > 0) {
+					continue;
+				}
 			}
 			
 			// This version matches the criterea

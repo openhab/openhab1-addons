@@ -90,8 +90,9 @@ public class ZWaveProductDatabase {
 			// this.Manufacturer = (ZWaveDbManufacturer)
 			InputStream x = entry.openStream();
 			database = (ZWaveDbRoot) xstream.fromXML(x);
-			if (database == null)
+			if (database == null) {
 				return;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
