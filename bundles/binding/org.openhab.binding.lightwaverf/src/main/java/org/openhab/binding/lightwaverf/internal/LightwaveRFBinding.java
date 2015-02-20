@@ -97,7 +97,12 @@ public class LightwaveRfBinding extends
 			 String sendRegistrationMessageString = (String) configuration.get("registeronstartup");
 			 if (StringUtils.isNotBlank(sendRegistrationMessageString)) {
 				 SEND_REGISTER_ON_STARTUP = Boolean.parseBoolean(sendRegistrationMessageString);
-			 }		 
+			 }	
+			 
+			 logger.info("LightwaveBinding: IP[{}]", LIGHTWAVE_IP);
+			 logger.info("LightwaveBinding: ReceivePort[{}]", LIGHTWAVE_PORT_TO_RECEIVE_ON);
+			 logger.info("LightwaveBinding: Send Port[{}]", LIGHTWAVE_PORT_TO_SEND_TO);
+			 logger.info("LightwaveBinding: Register On Startup[{}]", SEND_REGISTER_ON_STARTUP);
 			 
 			 messageConvertor = new LightwaverfConvertor();
 			
@@ -208,8 +213,7 @@ public class LightwaveRfBinding extends
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate({},{}) is called!", itemName,
-				newState);
+		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
 		internalReceive(itemName, newState);
 	}
 
@@ -217,8 +221,7 @@ public class LightwaveRfBinding extends
 		String roomId = getRoomId(itemName);
 		String deviceId = getDeviceId(itemName);
 		LightwaveRfType deviceType = getType(itemName);
-		LightwaveRFCommand lightwaverfMessageString = messageConvertor
-				.convertToLightwaveRfMessage(roomId, deviceId, deviceType, command);
+		LightwaveRFCommand lightwaverfMessageString = messageConvertor.convertToLightwaveRfMessage(roomId, deviceId, deviceType, command);
 		sender.sendUDP(lightwaverfMessageString);
 
 	}
@@ -266,7 +269,7 @@ public class LightwaveRfBinding extends
 				}
 			}
 			if (!published) {
-				logger.debug("No item for incoming message[{}]", message);
+				logger.info("No item for incoming message[{}]", message);
 			}
 		}
 	}

@@ -132,8 +132,7 @@ public class LightwaveRFReceiver implements Runnable {
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         receiveSocket.receive(receivePacket);
         receivedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
-        logger.info("Message received: " + receivedMessage);
-        logger.info("Message received: " + Arrays.toString(receivedMessage.toCharArray()));
+        logger.debug("Message received: " + receivedMessage);
         return receivedMessage;
     }
     

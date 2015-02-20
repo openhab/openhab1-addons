@@ -99,8 +99,8 @@ public class LightwaveRfGenericBindingProvider extends AbstractGenericBindingPro
 			
 			LightwaveRfBindingConfig config = new LightwaveRfBindingConfig(roomId, deviceId, serialId, type, poll);
 			
-			logger.info(bindingConfig + "Room["+ config.getRoomId() + "] Device[" + config.getDeviceId() + "] Serial[" + serialId + "] Type[" + config.getType()+ "] Poll[" + poll + "]");
-		addBindingConfig(item, config);		
+			logger.info("ConfigString[{}] Room[{}] Device[{}] Serial[{}] Type[{}] Poll[{}]", bindingConfig, roomId, deviceId, serialId, type, poll);
+			addBindingConfig(item, config);			
 		}
 		catch(Exception e){
 			throw new BindingConfigParseException("Error parsing binding for Context["+ context + "] Item[" + item + "] BindingConfig[" + bindingConfig + "] ErrorMessage: " + e.getMessage());

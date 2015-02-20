@@ -132,7 +132,7 @@ public class LightwaveRFSender implements Runnable {
      */
     private void netsendUDP(LightwaveRFCommand command) {
         try {
-            logger.info("Sending command[" + command.getLightwaveRfCommandString() + "]");
+            logger.debug("Sending command[" + command.getLightwaveRfCommandString() + "]");
             byte[] sendData = new byte[1024];
             sendData = getData(command);
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, lightwaveWifiLinkPortIn);

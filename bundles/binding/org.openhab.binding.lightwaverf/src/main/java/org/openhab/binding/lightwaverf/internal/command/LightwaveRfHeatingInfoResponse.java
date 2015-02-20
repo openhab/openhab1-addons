@@ -127,13 +127,14 @@ public class LightwaveRfHeatingInfoResponse implements LightwaveRfSerialMessage 
 			return new DecimalType(getSignal());
 		case HEATING_CURRENT_TEMP:
 			return new DecimalType(getCurrentTemperature());
-		case HEATING_TARGET_TEMP:
+		case HEATING_SET_TEMP:
 			return new DecimalType(getCurrentTargetTemperature());
 		case HEATING_MODE:
 			return new StringType(getState());
 		case HEATING_UPDATETIME:
 			Calendar cal = Calendar.getInstance();
-			cal.setTime(getTime());
+			// The date seems to be in a strange timezone so at the moment we use server date.
+//			cal.setTime(getTime());
 			return new DateTimeType(cal);
 		case VERSION:
 			return new StringType(getVersion());
