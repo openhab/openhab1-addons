@@ -47,6 +47,7 @@ public class CosemValueDescriptor {
 
 	/**
 	 * Returns the class of the CosemValue
+	 * 
 	 * @return the class of the CosemValue
 	 */
 	public Class<? extends CosemValue<? extends State>> getCosemValueClass() {
@@ -55,6 +56,7 @@ public class CosemValueDescriptor {
 
 	/**
 	 * Returns the unit
+	 * 
 	 * @return the unit
 	 */
 	public String getUnit() {
@@ -62,7 +64,7 @@ public class CosemValueDescriptor {
 	}
 
 	/**
-	 * Returns the DSMR item id 
+	 * Returns the DSMR item id
 	 * 
 	 * @return the DSMR item id
 	 */
