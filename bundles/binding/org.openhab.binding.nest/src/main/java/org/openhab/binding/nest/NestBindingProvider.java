@@ -8,6 +8,9 @@
  */
 package org.openhab.binding.nest;
 
+import java.util.List;
+
+import org.openhab.binding.nest.internal.NestType;
 import org.openhab.core.binding.BindingProvider;
 
 /**
@@ -16,4 +19,18 @@ import org.openhab.core.binding.BindingProvider;
  */
 public interface NestBindingProvider extends BindingProvider {
 
+	/**
+	 * Get all itemNames for this ID
+	 * @param nestId
+	 * @return
+	 */
+	List<String> getItemNameFromNestId(String nestId);
+
+	/**
+	 * Get the NestType for this itemName
+	 * @param itemName
+	 * @return
+	 */
+	NestType getTypeForItemName(String itemName);
+	
 }

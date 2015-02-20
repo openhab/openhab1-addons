@@ -3,9 +3,9 @@ Private-Package: org.openhab.binding.nest.internal
 Ignore-Package: org.openhab.binding.nest.internal
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB Nest Binding
-Bundle-SymbolicName: org.openhab.binding.nest
+Bundle-SymbolicName: org.openhab.binding.nest;singleton:=true
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.7.0.qualifier
+Bundle-Version: 1.7.0.SNAPSHOT
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Nest binding of the open Home Aut
  omation Bus (openHAB)
@@ -25,4 +25,36 @@ Export-Package: org.openhab.binding.nest
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-ClassPath: .
+Require-Bundle: org.junit
+Bundle-ClassPath: .,
+ firebase-client-jvm-1.1.1.jar,
+ tubesock-0.0.9.jar,
+ httpclient-4.3.5.jar,
+ httpcore-4.3.2.jar,
+ json-20141113.jar,
+ ant-antlr.jar,
+ ant-apache-bcel.jar,
+ ant-apache-bsf.jar,
+ ant-apache-log4j.jar,
+ ant-apache-oro.jar,
+ ant-apache-regexp.jar,
+ ant-apache-resolver.jar,
+ ant-apache-xalan2.jar,
+ ant-commons-logging.jar,
+ ant-commons-net.jar,
+ ant-jai.jar,
+ ant-javamail.jar,
+ ant-jdepend.jar,
+ ant-jmf.jar,
+ ant-jsch.jar,
+ ant-junit.jar,
+ ant-junit4.jar,
+ ant-launcher.jar,
+ ant-netrexx.jar,
+ ant-swing.jar,
+ ant-testutil.jar,
+ ant.jar,
+ jdi.jar,
+ jdimodel.jar,
+ junit.jar,
+ quartz-all-2.1.7.jar

@@ -8,12 +8,23 @@
  */
 package org.openhab.binding.nest.internal;
 
+import java.util.List;
 import java.util.Map;
 
-import org.openhab.binding.nest.NestBindingProvider;
-
 import org.apache.commons.lang.StringUtils;
-import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.binding.nest.NestBindingProvider;
+import org.openhab.binding.nest.internal.api.NestAPI;
+import org.openhab.binding.nest.internal.api.NestAPI.AuthenticationListener;
+import org.openhab.binding.nest.internal.api.listeners.Listener;
+import org.openhab.binding.nest.internal.api.listeners.Listener.SmokeCOAlarmListener;
+import org.openhab.binding.nest.internal.api.listeners.Listener.StructureListener;
+import org.openhab.binding.nest.internal.api.listeners.Listener.ThermostatListener;
+import org.openhab.binding.nest.internal.api.model.SmokeCOAlarm;
+import org.openhab.binding.nest.internal.api.model.Structure;
+import org.openhab.binding.nest.internal.api.model.Thermostat;
+import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
@@ -28,25 +39,14 @@ import org.slf4j.LoggerFactory;
  * @author Neil Renaud
  * @since 1.7.0
  */
-public class NestBinding extends AbstractActiveBinding<NestBindingProvider> {
+public class NestBinding extends AbstractBinding<NestBindingProvider> implements AuthenticationListener, SmokeCOAlarmListener, ThermostatListener, StructureListener {
 
-	private static final Logger logger = 
-		LoggerFactory.getLogger(NestBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(NestBinding.class);
 
-	/**
-	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is set in the activate()
-	 * method and must not be accessed anymore once the deactivate() method was called or before activate()
-	 * was called.
-	 */
-	private BundleContext bundleContext;
-
-	
-	/** 
-	 * the refresh interval which is used to poll values from the Nest
-	 * server (optional, defaults to 60000ms)
-	 */
-	private long refreshInterval = 60000;
-	
+	private NestAPI nestApi;
+	private String clientId;
+	private String clientSecret;
+	private String code;
 	
 	public NestBinding() {
 	}
@@ -59,22 +59,27 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> {
 	 * @param configuration Configuration properties for this component obtained from the ConfigAdmin service
 	 */
 	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
-		this.bundleContext = bundleContext;
-
-		// the configuration is guaranteed not to be null, because the component definition has the
-		// configuration-policy set to require. If set to 'optional' then the configuration may be null
-		
-			
-		// to override the default refresh interval one has to add a 
-		// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
-		String refreshIntervalString = (String) configuration.get("refresh");
-		if (StringUtils.isNotBlank(refreshIntervalString)) {
-			refreshInterval = Long.parseLong(refreshIntervalString);
+		String clientIdString = (String) configuration.get("clientid");
+		if (StringUtils.isNotBlank(clientIdString)) {
+			clientId = clientIdString;
 		}
-
-		// read further config parameters here ...
-
-		setProperlyConfigured(true);
+		String clientSecretString = (String) configuration.get("clientsecret");
+		if (StringUtils.isNotBlank(clientSecretString)) {
+			clientSecret = clientSecretString;
+		}
+		String codeString = (String) configuration.get("code");
+		if (StringUtils.isNotBlank(codeString)) {
+			code = codeString;
+		}
+		
+		Listener.Builder builder = new Listener.Builder();
+		builder.setSmokeCOAlarmListener(this)
+				.setStructureListener(this)
+				.setThermostatListener(this);
+		
+		nestApi = new NestAPI(clientId, clientSecret);
+		nestApi.addUpdateListener(builder.build());
+		nestApi.authenticate(code, this);
 	}
 	
 	/**
@@ -100,36 +105,12 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> {
      * </ul>
 	 */
 	public void deactivate(final int reason) {
-		this.bundleContext = null;
 		// deallocate resources here that are no longer needed and 
 		// should be reset when activating this binding again
 	}
-
 	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected long getRefreshInterval() {
-		return refreshInterval;
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected String getName() {
-		return "Nest Refresh Service";
-	}
 	
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void execute() {
-		// the frequently executed code (polling) goes here ...
-		logger.debug("execute() method is called!");
-	}
+	
 
 	/**
 	 * @{inheritDoc}
@@ -153,4 +134,89 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> {
 		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
 	}
 
+
+	@Override
+	public void onAuthenticationSuccess() {
+		logger.info("Nest authentication successful");
+	}
+
+
+	@Override
+	public void onAuthenticationFailure(int errorCode) {
+		logger.error("Nest authentication unsuccessful, errorcode[{}]", errorCode);
+	}
+
+
+	@Override
+	public void onStructureUpdated(Structure structure) {
+		for(NestBindingProvider provider : providers){
+			List<String> itemNames = provider.getItemNameFromNestId(structure.getStructureID());
+			for(String itemName : itemNames){
+				NestType type = provider.getTypeForItemName(itemName);
+				State state = getState(structure, type);
+				eventPublisher.postUpdate(itemName, state);
+			}
+		}
+	}
+
+
+	@Override
+	public void onThermostatUpdated(Thermostat thermostat) {
+		for(NestBindingProvider provider : providers){
+			List<String> itemNames = provider.getItemNameFromNestId(thermostat.getDeviceID());
+			for(String itemName : itemNames){
+				NestType type = provider.getTypeForItemName(itemName);
+				State state = getState(thermostat, type);
+				eventPublisher.postUpdate(itemName, state);
+			}
+		}
+	}
+	
+	@Override
+	public void onSmokeCOAlarmUpdated(SmokeCOAlarm protect) {
+		for(NestBindingProvider provider : providers){
+			List<String> itemNames = provider.getItemNameFromNestId(protect.getDeviceID());
+			for(String itemName : itemNames){
+				NestType type = provider.getTypeForItemName(itemName);
+				State state = getState(protect, type);
+				eventPublisher.postUpdate(itemName, state);
+			}
+		}
+	}
+
+	private State getState(Thermostat thermostat, NestType type){
+		switch (type) {
+		case THERMOSTAT_TARGET_TEMP:
+			return new DecimalType(thermostat.getTargetTemperatureC());
+		default:
+			return null;
+		}
+	}
+
+	private State getState(SmokeCOAlarm protect, NestType type){
+		switch (type) {
+		case PROTECT_BATTERY_STATE:
+			return new StringType(protect.getBatteryHealth());
+		default:
+			return null;
+		}
+	}
+
+	private State getState(Structure structure, NestType type){
+		switch (type) {
+		case HOUSE_AWAY_STATE:
+			switch (structure.getAwayState()) {
+			case AUTO_AWAY:
+			case AWAY:
+			case HOME:
+			case UNKNOWN:
+				return new StringType(structure.getAwayState().getKey());
+			default :
+				return null;
+			}
+		default:
+			return null;
+		}
+	}
+	
 }
