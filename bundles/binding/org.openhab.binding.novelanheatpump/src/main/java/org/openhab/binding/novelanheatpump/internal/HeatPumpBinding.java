@@ -49,6 +49,11 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 	public static int PARAM_HEATING_OPERATION_MODE = 3;
 	/** Parameter code for heating temperature */
 	public static int PARAM_HEATING_TEMPERATURE = 1;
+	/** Parameter code for warmwater operation mode */
+	public static int PARAM_WARMWATER_OPERATION_MODE = 4;
+	/** Parameter code for warmwater temperature */
+	public static int PARAM_WARMWATER_TEMPERATURE = 2;
+	
 
 	/** Default refresh interval (currently 1 minute) */
 	private long refreshInterval = 60000L;
@@ -148,6 +153,8 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 
 			handleEventType(new DecimalType((double) heatpumpParams[PARAM_HEATING_TEMPERATURE] / 10), HeatpumpCommandType.TYPE_HEATING_TEMPERATURE);
 			handleEventType(new DecimalType(heatpumpParams[PARAM_HEATING_OPERATION_MODE]), HeatpumpCommandType.TYPE_HEATING_OPERATION_MODE);
+			handleEventType(new DecimalType((double) heatpumpParams[PARAM_WARMWATER_TEMPERATURE] / 10), HeatpumpCommandType.TYPE_WARMWATER_TEMPERATURE);
+			handleEventType(new DecimalType(heatpumpParams[PARAM_WARMWATER_OPERATION_MODE]), HeatpumpCommandType.TYPE_WARMWATER_OPERATION_MODE);
 			
 
 		} catch (UnknownHostException e) {
@@ -352,6 +359,33 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 						}
 					}else{
 						logger.warn("Headpump heating temperature item " + itemName + " must be from type:" + DecimalType.class.getSimpleName());						
+					}
+					break;
+				case TYPE_WARMWATER_OPERATION_MODE:
+					if(command instanceof DecimalType){
+						int value = ((DecimalType)command).intValue();
+						HeatpumpOperationMode mode = HeatpumpOperationMode.fromValue(value);
+						if(mode != null){
+							if(sendParamToHeatpump(PARAM_WARMWATER_OPERATION_MODE, mode.getValue())){
+								logger.info("Heatpump warmwater operation mode set to " + mode.name());
+							}
+							
+						}else{
+							logger.warn("Headpump warmwater operation mode with value " + value + " is unknown.");
+						}
+					}else{
+						logger.warn("Headpump warmwater operation mode item " + itemName + " must be from type:" + DecimalType.class.getSimpleName());						
+					}
+					break;
+				case TYPE_WARMWATER_TEMPERATURE:
+					if(command instanceof DecimalType){
+						float temperature = ((DecimalType)command).floatValue();
+						int value = (int)(temperature * 10.);
+						if(sendParamToHeatpump(PARAM_WARMWATER_TEMPERATURE, value)){
+							logger.info("Heatpump warmwater temeprature set to " + temperature);							
+						}
+					}else{
+						logger.warn("Headpump warmwater temperature item " + itemName + " must be from type:" + DecimalType.class.getSimpleName());						
 					}
 					break;
 				default:
