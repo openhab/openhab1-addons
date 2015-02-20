@@ -256,20 +256,24 @@ public class LightwaveRfBinding extends
 		return null;
 	}
 
-	private void publishUpdate(List<String> itemNames,
-			LightwaveRFCommand message, LightwaveRfBindingProvider provider) {
+	private void publishUpdate(List<String> itemNames, LightwaveRFCommand message, LightwaveRfBindingProvider provider) {
+		logger.info("Publishing Update {} to {}",message, itemNames);
 		boolean published = false;
 		if (itemNames != null && !itemNames.isEmpty()) {
 			for (String itemName : itemNames) {
-				State state = message.getState(provider
-						.getTypeForItemName(itemName));
+				LightwaveRfType deviceType = provider.getTypeForItemName(itemName);
+				State state = message.getState(deviceType);
 				if(state != null){
+					logger.info("Update from LightwaveRf ItemName[{}], State[{}]", itemName, state);
 					published = true;
 					eventPublisher.postUpdate(itemName, state);
 				}
+				else{
+					logger.info("State was null for {} type {}, message {}",itemName, deviceType, message);
+				}
 			}
 			if (!published) {
-				logger.info("No item for incoming message[{}]", message);
+				logger.warn("No item for incoming message[{}]", message);
 			}
 		}
 	}
@@ -277,8 +281,7 @@ public class LightwaveRfBinding extends
 	@Override
 	public void roomDeviceMessageReceived(LightwaveRfRoomDeviceMessage message) {
 		for (LightwaveRfBindingProvider provider : providers) {
-			List<String> itemNames = provider.getBindingItemsForRoomDevice(
-					message.getRoomId(), message.getDeviceId());
+			List<String> itemNames = provider.getBindingItemsForRoomDevice(message.getRoomId(), message.getDeviceId());
 			publishUpdate(itemNames, message, provider);
 		}
 	}
@@ -286,8 +289,7 @@ public class LightwaveRfBinding extends
 	@Override
 	public void roomMessageReceived(LightwaveRfRoomMessage message) {
 		for (LightwaveRfBindingProvider provider : providers) {
-			List<String> itemNames = provider.getBindingItemsForRoom(message
-					.getRoomId());
+			List<String> itemNames = provider.getBindingItemsForRoom(message.getRoomId());
 			publishUpdate(itemNames, message, provider);
 		}
 	}
@@ -295,8 +297,7 @@ public class LightwaveRfBinding extends
 	@Override
 	public void serialMessageReceived(LightwaveRfSerialMessage message) {
 		for (LightwaveRfBindingProvider provider : providers) {
-			List<String> itemNames = provider.getBindingItemsForSerial(message
-					.getSerial());
+			List<String> itemNames = provider.getBindingItemsForSerial(message.getSerial());
 			publishUpdate(itemNames, message, provider);
 		}
 	}
