@@ -34,8 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is main service class that helps exchanging data between OpenHAB and
- * Satel module in both directions. Implements regular OpenHAB binding service.
+ * This is main service class that helps exchanging data between openHAB and
+ * Satel module in both directions. Implements regular openHAB binding service.
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0
@@ -69,11 +69,6 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider> im
 	 */
 	@Override
 	public void execute() {
-		if (!isProperlyConfigured()) {
-			logger.warn("Binding not properly configured, exiting");
-			return;
-		}
-
 		if (!this.satelModule.isInitialized()) {
 			logger.debug("Module not initialized yet, skipping refresh");
 			return;
@@ -93,14 +88,15 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider> im
 	public void updated(Dictionary<String, ?> config) throws ConfigurationException {
 		logger.trace("Binding configuration updated");
 
-		if (config == null)
+		if (config == null) {
 			return;
+		}
 
 		this.refreshInterval = getLongValue(config, "refresh", 10000);
-		this.userCode = (String) config.get("user_code");
+		this.userCode = getStringValue(config, "user_code", null);
 
 		int timeout = getIntValue(config, "timeout", 5000);
-		String host = (String) config.get("host");
+		String host = getStringValue(config, "host", null);;
 		if (StringUtils.isNotBlank(host)) {
 			this.satelModule = new Ethm1Module(host, getIntValue(config, "port", 7094), timeout,
 					(String) config.get("encryption_key"));
@@ -203,6 +199,15 @@ public class SatelBinding extends AbstractActiveBinding<SatelBindingProvider> im
 		}
 
 		return commands;
+	}
+
+	private static String getStringValue(Dictionary<String, ?> config, String name, String defaultValue) {
+		String val = (String) config.get(name);
+		if (StringUtils.isNotBlank(val)) {
+			return val;
+		} else {
+			return defaultValue;
+		}
 	}
 
 	private static int getIntValue(Dictionary<String, ?> config, String name, int defaultValue)

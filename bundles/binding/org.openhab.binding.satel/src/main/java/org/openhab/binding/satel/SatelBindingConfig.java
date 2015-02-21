@@ -18,7 +18,7 @@ import org.openhab.core.types.State;
 
 /**
  * Base interface that all Satel configuration classes must implement. Provides
- * methods to converts data between OpenHAB and Satel module.
+ * methods to convert data between openHAB and Satel module.
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0
@@ -26,7 +26,7 @@ import org.openhab.core.types.State;
 public interface SatelBindingConfig extends BindingConfig {
 
 	/**
-	 * Converts data from {@link SatelEvent} to OpenHAB state of specified item.
+	 * Converts data from {@link SatelEvent} to openHAB state of specified item.
 	 * 
 	 * @param item
 	 *            an item to get new state for
@@ -37,7 +37,7 @@ public interface SatelBindingConfig extends BindingConfig {
 	State convertEventToState(Item item, SatelEvent event);
 
 	/**
-	 * Converts OpenHAB command to proper Satel message that changes state of
+	 * Converts openHAB command to proper Satel message that changes state of
 	 * bound object (output, zone).
 	 * 
 	 * @param command
