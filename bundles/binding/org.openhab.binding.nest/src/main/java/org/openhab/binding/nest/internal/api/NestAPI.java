@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.openhab.binding.nest.internal.api.listeners.Listener;
 import org.openhab.binding.nest.internal.api.model.AccessToken;
@@ -38,7 +37,9 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
+import com.firebase.client.Logger.Level;
 import com.firebase.client.ValueEventListener;
+//import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SuppressWarnings("unused")
 public final class NestAPI implements ValueEventListener {
@@ -73,7 +74,7 @@ public final class NestAPI implements ValueEventListener {
         Firebase.goOffline();
         Firebase.goOnline();
         Config defaultConfig = Firebase.getDefaultConfig();
-//        defaultConfig.setLogLevel(Logger.g.Level.DEBUG);
+//        defaultConfig.setLogLevel(Level.ERROR);
         mFirebaseRef = new Firebase(APIUrls.NEST_FIREBASE_URL);
         mListeners = new ArrayList<>();
     }
@@ -90,8 +91,13 @@ public final class NestAPI implements ValueEventListener {
 
     public void authenticate(String code, AuthenticationListener listener) {
     	AccessToken token = getAccessToken(code);
-        logger.info(TAG, "authenticating with token: " + token.getToken());
-        mFirebaseRef.auth(token.getToken(), new NestFirebaseAuthListener(listener));
+    	if(token != null){
+    		logger.info(TAG, "authenticating with token: " + token.getToken());
+    		mFirebaseRef.auth(token.getToken(), new NestFirebaseAuthListener(listener));
+    	}
+    	else{
+    		logger.warn("Warning couldn't log in with code provided[{}]", code);
+    	}
     }
     
     
@@ -108,13 +114,16 @@ public final class NestAPI implements ValueEventListener {
 
             InputStream in = new BufferedInputStream(conn.getInputStream());
             String result = readStream(in);
+//            ObjectMapper mapper = new ObjectMapper();
+//            AccessToken token = mapper.readValue(result, AccessToken.class);
             JSONObject object = new JSONObject(result);
-
-            return AccessToken.fromJSON(object);
-        } catch (JSONException e){
-        	System.out.println(TAG + " Unable to load access token. "+ e);
-            return null;
-        }
+            AccessToken token = AccessToken.fromJSON(object);
+            return token;
+        } 
+//        catch (JSONException e){
+//        	System.out.println(TAG + " Unable to load access token. "+ e);
+//            return null;
+//        }
         catch (IOException excep) {
         	System.out.println(TAG +  " Unable to load access token. "+ excep);
             return null;
@@ -462,6 +471,11 @@ public final class NestAPI implements ValueEventListener {
             return mBuilder.toString();
         }
     }
+
+	public static String getAuthUrl(String clientId) {
+//		https://home.nest.com/login/oauth2?client_id=204b41ce-edc4-4a1d-b38a-5910b8082a7b&state=STATE
+		return String.format(APIUrls.CLIENT_CODE_URL, clientId, "STATE");
+	}
 
     // Marker for Firebase to retrieve a strongly-typed collection
 //    private static class StringObjectMapIndicator extends GenericTypeIndicator<T> {}

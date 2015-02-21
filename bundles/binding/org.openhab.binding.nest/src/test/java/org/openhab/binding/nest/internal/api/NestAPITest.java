@@ -42,7 +42,7 @@ public class NestAPITest {
 //				.setClientSecret(clientSecret)
 //				.build();
 		
-		String code = "Y9BH8JHU";
+		String code = "6KPV7AG6";
 		
 //		AccessToken accessToken = loadInBackground(code, mClientMetadata);
 		

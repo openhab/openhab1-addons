@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class NestGenericBindingProvider extends AbstractGenericBindingProvider implements NestBindingProvider {
 	private static final Logger logger = LoggerFactory.getLogger(NestGenericBindingProvider.class);
-	private static final Pattern ID_REG_EXP = Pattern.compile(".*id=([0-9]*).*");
+	private static final Pattern ID_REG_EXP = Pattern.compile(".*id=([^,]*).*");
 	private static final Pattern TYPE_REG_EXP = Pattern.compile(".*type=([^,]*).*");
 	
 	/**
@@ -74,7 +74,7 @@ public class NestGenericBindingProvider extends AbstractGenericBindingProvider i
 			
 			NestBindingConfig config = new NestBindingConfig(id, type);
 			
-			logger.info("ConfigString[{}] Id[{}] Type[{}]", bindingConfig, id, type);
+			logger.info("ConfigString[{}] ItemName[{}] Id[{}] Type[{}]", bindingConfig, item.getName(), id, type);
 			addBindingConfig(item, config);			
 		}
 		catch(Exception e){
@@ -112,6 +112,15 @@ public class NestGenericBindingProvider extends AbstractGenericBindingProvider i
 		NestBindingConfig config = (NestBindingConfig) bindingConfigs.get(itemName);
 		if(config != null){
 			return config.getType();
+		}
+		return null;
+	}
+
+	@Override
+	public String getIdForItemName(String itemName) {
+		NestBindingConfig config = (NestBindingConfig) bindingConfigs.get(itemName);
+		if(config != null){
+			return config.getNestId();
 		}
 		return null;
 	}

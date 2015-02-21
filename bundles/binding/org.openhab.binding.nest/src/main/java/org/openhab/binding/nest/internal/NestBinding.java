@@ -25,6 +25,8 @@ import org.openhab.binding.nest.internal.api.listeners.Listener.StructureListene
 import org.openhab.binding.nest.internal.api.listeners.Listener.ThermostatListener;
 import org.openhab.binding.nest.internal.api.model.SmokeCOAlarm;
 import org.openhab.binding.nest.internal.api.model.Structure;
+import org.openhab.binding.nest.internal.api.model.Structure.AwayState;
+import org.openhab.binding.nest.internal.api.model.Structure.ETA;
 import org.openhab.binding.nest.internal.api.model.Thermostat;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.library.types.DateTimeType;
@@ -33,6 +35,7 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.Type;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +55,6 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 	private NestAPI nestApi;
 	private String clientId;
 	private String clientSecret;
-	private String code;
 	
 	public NestBinding() {
 	}
@@ -73,30 +75,24 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 		if (StringUtils.isNotBlank(clientSecretString)) {
 			clientSecret = clientSecretString;
 		}
-		
-		for(NestBindingProvider provider : providers){
-			List<String> itemNames = provider.getItemNamesForType(NestType.NEST_CODE);
-			if(itemNames.size() != 1 ){
-				logger.error("Can only work with one nest code type");
-			}
-			else{
-				// Get Code here
-			}
-		}
-		
-		String codeString = (String) configuration.get("code");
-		if (StringUtils.isNotBlank(codeString)) {
-			code = codeString;
-		}
-		
+		logger.info("Creating Nest API Binding for clientId[{}] clientSecret[{}]", clientId, clientSecret);
+		logger.info("Binding started but not connected waiting for code from Nest website");
+		logger.info("To get a code go to URL: {}", NestAPI.getAuthUrl(clientId));
+		logger.info("Then set the code state in Openhab");
+		logger.info("Something like: http://localhost:8080/CMD?Nest_Code=<code>");
+		logger.info("Where \"NestCode\" is the name of the Nest code type in your item file");
+	}
+	
+	
+	private void connectToNestApi(String code){
+		this.nestApi = new NestAPI(clientId, clientSecret);
 		Listener.Builder builder = new Listener.Builder();
-		builder.setSmokeCOAlarmListener(this)
-				.setStructureListener(this)
-				.setThermostatListener(this);
-		
-		nestApi = new NestAPI(clientId, clientSecret);
-		nestApi.addUpdateListener(builder.build());
+		builder.setSmokeCOAlarmListener(this);
+		builder.setStructureListener(this);
+		builder.setThermostatListener(this);
+		this.nestApi.addUpdateListener(builder.build());
 		nestApi.authenticate(code, this);
+
 	}
 	
 	/**
@@ -124,6 +120,7 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 	public void deactivate(final int reason) {
 		// deallocate resources here that are no longer needed and 
 		// should be reset when activating this binding again
+		nestApi = null;
 	}
 	
 	
@@ -138,6 +135,7 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
+		internalReceive(itemName, command);
 	}
 	
 	/**
@@ -149,6 +147,56 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
+		internalReceive(itemName, newState);
+	}
+	
+	private void internalReceive(String itemName, Type newType){
+		for(NestBindingProvider provider : providers){
+			String id = provider.getIdForItemName(itemName);
+			NestType nestType = provider.getTypeForItemName(itemName);
+			if(id != null && nestType != null){
+				switch (nestType) {
+				case NEST_CODE:
+					connectToNestApi(((StringType) newType).toString());
+					break;
+				case HOUSE_AWAY_STATE:
+					AwayState awayState = newType.equals(OnOffType.ON) ? AwayState.HOME : AwayState.AWAY;
+					nestApi.setStructureAway(id, awayState, new CompletionListener("Away State: " + awayState));
+					break;
+				case HOUSE_ETA_EARLIEST:
+				case HOUSE_ETA_LATEST:
+					logger.info("ETA Setting not implemented yet");
+					break;
+				case THERMOSTAT_TARGET_TEMP:
+					long targetTemp = ((DecimalType) newType).longValue();
+					nestApi.setTargetTemperatureC(id, targetTemp, new CompletionListener("Setting Temp as" + targetTemp + " on " + id));
+					break;
+				case THERMOSTAT_TARGET_TEMP_F:
+					long targetTempF = ((DecimalType) newType).longValue();
+					nestApi.setTargetTemperatureF(id, targetTempF, new CompletionListener("Setting Temp F as" + targetTempF + " on " + id));
+					break;
+				case THERMOSTAT_TARGET_HIGH_TEMP:
+					long targetTempHigh = ((DecimalType) newType).longValue();
+					nestApi.setTargetTemperatureHighC(id, targetTempHigh, new CompletionListener("Setting High C as" + targetTempHigh + " on " + id));
+					break;
+				case THERMOSTAT_TARGET_HIGH_TEMP_F:
+					long targetTempHighF = ((DecimalType) newType).longValue();
+					nestApi.setTargetTemperatureHighF(id, targetTempHighF, new CompletionListener("Setting High F as" + targetTempHighF + " on " + id));
+					break;
+				case THERMOSTAT_TARGET_LOW_TEMP:
+					long targetTempLow = ((DecimalType) newType).longValue();
+					nestApi.setTargetTemperatureLowC(id, targetTempLow, new CompletionListener("Setting Low C as" + targetTempLow + " on " + id));
+					break;
+				case THERMOSTAT_TARGET_LOW_TEMP_F:
+					long targetTempLowF = ((DecimalType) newType).longValue();
+					nestApi.setTargetTemperatureLowF(id, targetTempLowF, new CompletionListener("Setting Low F as" + targetTempLowF + " on " + id));
+					break;
+				default:
+					logger.error("Attempting to set read only itemName[{}] to [{}]", itemName, newType);
+					break;
+				}
+			}
+		}
 	}
 
 
@@ -166,38 +214,56 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 
 	@Override
 	public void onStructureUpdated(Structure structure) {
+		logger.debug("Structure update received {}", structure);
+		boolean published = false;
 		for(NestBindingProvider provider : providers){
 			List<String> itemNames = provider.getItemNameFromNestId(structure.getStructureID());
 			for(String itemName : itemNames){
 				NestType type = provider.getTypeForItemName(itemName);
 				State state = getState(structure, type);
+				published = true;
 				eventPublisher.postUpdate(itemName, state);
 			}
+		}
+		if(!published){
+			logger.info("There were no items to update for Structure with ID[{}]", structure.getStructureID());
 		}
 	}
 
 
 	@Override
 	public void onThermostatUpdated(Thermostat thermostat) {
+		logger.debug("Thermostat update received {}", thermostat);
+		boolean published = false;
 		for(NestBindingProvider provider : providers){
 			List<String> itemNames = provider.getItemNameFromNestId(thermostat.getDeviceID());
 			for(String itemName : itemNames){
 				NestType type = provider.getTypeForItemName(itemName);
 				State state = getState(thermostat, type);
+				published = true;
 				eventPublisher.postUpdate(itemName, state);
 			}
+		}
+		if(!published){
+			logger.info("There were no items to update for Thermostat with ID[{}]", thermostat.getDeviceID());
 		}
 	}
 	
 	@Override
 	public void onSmokeCOAlarmUpdated(SmokeCOAlarm protect) {
+		logger.debug("Protect update received {}", protect);
+		boolean published = false;
 		for(NestBindingProvider provider : providers){
 			List<String> itemNames = provider.getItemNameFromNestId(protect.getDeviceID());
 			for(String itemName : itemNames){
 				NestType type = provider.getTypeForItemName(itemName);
 				State state = getState(protect, type);
+				published = true;
 				eventPublisher.postUpdate(itemName, state);
 			}
+		}
+		if(!published){
+			logger.info("There were no items to update for Nest Protect with ID[{}]", protect.getDeviceID());
 		}
 	}
 
@@ -216,7 +282,8 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 		case THERMOSTAT_TARGET_LOW_TEMP_F:
 			return new DecimalType(thermostat.getTargetTemperatureLowF());
 		case THERMOSTAT_CURRENT_HUMIDITY:
-			throw new IllegalArgumentException("Not supported:" + type);
+			logger.error("Nest Type Not supported yet:" + type);
+			return DecimalType.ZERO;
 		case THERMOSTAT_CURRENT_TEMP:
 			return new DecimalType(thermostat.getAmbientTemperatureC());
 		case THERMOSTAT_CURRENT_TEMP_F:
@@ -274,9 +341,16 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 	private State getState(Structure structure, NestType type) {
 		switch (type) {
 		case HOUSE_ETA_EARLIEST:
+			ETA etaEarliest = structure.getETA();
+			if(etaEarliest != null){
+				return parseDate(etaEarliest.getEstimatedArrivalWindowBegin());
+			}
 			return parseDate(structure.getETA().getEstimatedArrivalWindowBegin());
 		case HOUSE_ETA_LATEST:
-			return parseDate(structure.getETA().getEstimatedArrivalWindowEnd());
+			ETA etaLatest = structure.getETA();
+			if(etaLatest != null){
+				return parseDate(etaLatest.getEstimatedArrivalWindowEnd());
+			}
 		case HOUSE_NAME:
 			return new StringType(structure.getName());
 		case HOUSE_AWAY_STATE:
@@ -307,6 +381,9 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 	
 	private DateTimeType parseDate(String dateAsString){
 		try{
+			if(dateAsString == null){
+				return null;
+			}
 			Date dateAsDate = NEST_DATE_FORMATTER.parse(dateAsString);
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(dateAsDate);
@@ -318,5 +395,45 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 		return null;
 		
 	}
+
+	private class CompletionListener implements org.openhab.binding.nest.internal.api.NestAPI.CompletionListener {
+		private final String message;
+		public CompletionListener(String message) {
+			this.message = message;
+		}
+
+		@Override
+		public void onComplete() {
+			logger.info("Setting set on Nest Product: {}", message);
+		}
 	
+	
+		@Override
+		public void onError(int errorCode) {
+			logger.info("Setting not set on Nest Product: {}", message);
+		}
+	}
+	
+	
+	private class TListener implements ThermostatListener {
+		@Override
+		public void onThermostatUpdated(Thermostat thermostat) {
+				System.out.println("Thermostat Update: " + thermostat);
+		}
+	}
+
+	private class PListener implements SmokeCOAlarmListener {
+		@Override
+		public void onSmokeCOAlarmUpdated(SmokeCOAlarm smokeCOAlarm) {
+			System.out.println("Protect Update: " + smokeCOAlarm);
+		}
+	}
+	
+	private class SListener implements StructureListener {
+		@Override
+		public void onStructureUpdated(Structure structure) {
+			System.out.println("Structure Update: " + structure);
+		}
+	}
+
 }
