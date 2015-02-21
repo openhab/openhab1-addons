@@ -8,6 +8,10 @@
  */
 package org.openhab.binding.nest.internal;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +27,9 @@ import org.openhab.binding.nest.internal.api.model.SmokeCOAlarm;
 import org.openhab.binding.nest.internal.api.model.Structure;
 import org.openhab.binding.nest.internal.api.model.Thermostat;
 import org.openhab.core.binding.AbstractBinding;
+import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -42,7 +48,7 @@ import org.slf4j.LoggerFactory;
 public class NestBinding extends AbstractBinding<NestBindingProvider> implements AuthenticationListener, SmokeCOAlarmListener, ThermostatListener, StructureListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(NestBinding.class);
-
+	private final SimpleDateFormat NEST_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
 	private NestAPI nestApi;
 	private String clientId;
 	private String clientSecret;
@@ -67,6 +73,17 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 		if (StringUtils.isNotBlank(clientSecretString)) {
 			clientSecret = clientSecretString;
 		}
+		
+		for(NestBindingProvider provider : providers){
+			List<String> itemNames = provider.getItemNamesForType(NestType.NEST_CODE);
+			if(itemNames.size() != 1 ){
+				logger.error("Can only work with one nest code type");
+			}
+			else{
+				// Get Code here
+			}
+		}
+		
 		String codeString = (String) configuration.get("code");
 		if (StringUtils.isNotBlank(codeString)) {
 			code = codeString;
@@ -188,6 +205,40 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 		switch (type) {
 		case THERMOSTAT_TARGET_TEMP:
 			return new DecimalType(thermostat.getTargetTemperatureC());
+		case THERMOSTAT_TARGET_TEMP_F:
+			return new DecimalType(thermostat.getTargetTemperatureF());
+		case THERMOSTAT_TARGET_HIGH_TEMP:
+			return new DecimalType(thermostat.getTargetTemperatureHighC());
+		case THERMOSTAT_TARGET_HIGH_TEMP_F:
+			return new DecimalType(thermostat.getTargetTemperatureHighF());
+		case THERMOSTAT_TARGET_LOW_TEMP:
+			return new DecimalType(thermostat.getTargetTemperatureLowC());
+		case THERMOSTAT_TARGET_LOW_TEMP_F:
+			return new DecimalType(thermostat.getTargetTemperatureLowF());
+		case THERMOSTAT_CURRENT_HUMIDITY:
+			throw new IllegalArgumentException("Not supported:" + type);
+		case THERMOSTAT_CURRENT_TEMP:
+			return new DecimalType(thermostat.getAmbientTemperatureC());
+		case THERMOSTAT_CURRENT_TEMP_F:
+			return new DecimalType(thermostat.getAmbientTemperatureF());
+		case THERMOSTAT_LAST_UPDATED:
+			return parseDate(thermostat.getLastConnection());
+		case THERMOSTAT_CAN_COOL:
+			return thermostat.canCool() ? OnOffType.ON : OnOffType.OFF;
+		case THERMOSTAT_CAN_HEAT:
+			return thermostat.canHeat() ? OnOffType.ON : OnOffType.OFF;
+		case THERMOSTAT_HAS_FAN:
+			return thermostat.hasFan() ? OnOffType.ON : OnOffType.OFF;
+		case THERMOSTAT_HVAC_MODE:
+			return new StringType(thermostat.getHVACmode().toString());
+		case THERMOSTAT_IS_ONLINE:
+			return thermostat.isOnline() ? OnOffType.ON : OnOffType.OFF;
+		case THERMOSTAT_NAME:
+			return new StringType(thermostat.getName());
+		case THERMOSTAT_LONG_NAME:
+			return new StringType(thermostat.getNameLong());
+		case THERMOSTAT_VERSION:
+			return new StringType(thermostat.getSoftwareVersion());
 		default:
 			return null;
 		}
@@ -197,14 +248,49 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 		switch (type) {
 		case PROTECT_BATTERY_STATE:
 			return new StringType(protect.getBatteryHealth());
+		case PROTECT_CO_ALARM_STATE:
+			return new StringType(protect.getCOAlarmState());
+		case PROTECT_SMOKE_ALARM_STATE:
+			return new StringType(protect.getSmokeAlarmState());
+		case PROTECT_IS_ONLINE:
+			return protect.isOnline() ? OnOffType.ON : OnOffType.OFF;
+		case PROTECT_LAST_CONNECTED:
+			return parseDate(protect.getLastConnection());
+		case PROTECT_LAST_MANUAL_TEST:
+			return parseDate(protect.getLastManualTestTime());
+		case PROTECT_NAME:
+			return new StringType(protect.getName());
+		case PROTECT_LONG_NAME:
+			return new StringType(protect.getNameLong());
+		case PROTECT_UI_COLOUR:
+			return new StringType(protect.getUIColorState());
+		case PROTECT_VERSION:
+			return new StringType(protect.getSoftwareVersion());
 		default:
 			return null;
 		}
 	}
 
-	private State getState(Structure structure, NestType type){
+	private State getState(Structure structure, NestType type) {
 		switch (type) {
+		case HOUSE_ETA_EARLIEST:
+			return parseDate(structure.getETA().getEstimatedArrivalWindowBegin());
+		case HOUSE_ETA_LATEST:
+			return parseDate(structure.getETA().getEstimatedArrivalWindowEnd());
+		case HOUSE_NAME:
+			return new StringType(structure.getName());
 		case HOUSE_AWAY_STATE:
+			switch (structure.getAwayState()) {
+			case AWAY:
+			case AUTO_AWAY:
+				return OnOffType.OFF;
+			case UNKNOWN:
+			case HOME:
+				return OnOffType.ON;
+			default:
+				return null;
+			}
+		case HOUSE_AWAY_STATE_STRING:
 			switch (structure.getAwayState()) {
 			case AUTO_AWAY:
 			case AWAY:
@@ -217,6 +303,20 @@ public class NestBinding extends AbstractBinding<NestBindingProvider> implements
 		default:
 			return null;
 		}
+	}
+	
+	private DateTimeType parseDate(String dateAsString){
+		try{
+			Date dateAsDate = NEST_DATE_FORMATTER.parse(dateAsString);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(dateAsDate);
+			return new DateTimeType(calendar);
+		}
+		catch(ParseException e){
+			logger.error("Error parsing date: {} with format {}", dateAsString, NEST_DATE_FORMATTER.toPattern());
+		}
+		return null;
+		
 	}
 	
 }

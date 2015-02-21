@@ -86,6 +86,10 @@ abstract class BaseDevice  {
     public String getNameLong() {
         return mNameLong;
     }
+    
+    public boolean isOnline(){
+    	return mIsOnline;
+    }
 
     /**
      * Returns the timestamp (in ISO-8601 format) at which the device last connected to the

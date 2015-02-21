@@ -137,21 +137,6 @@
 			<location>C:/Users/Neil/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant.jar</location>
 		</link>
 		<link>
-			<name>firebase-client-jvm-1.1.1.jar</name>
-			<type>1</type>
-			<location>C:/Users/Neil/.m2/repository/com/firebase/firebase-client-jvm/1.1.1/firebase-client-jvm-1.1.1.jar</location>
-		</link>
-		<link>
-			<name>httpclient-4.3.5.jar</name>
-			<type>1</type>
-			<location>C:/Users/Neil/.m2/repository/org/apache/httpcomponents/httpclient/4.3.5/httpclient-4.3.5.jar</location>
-		</link>
-		<link>
-			<name>httpcore-4.3.2.jar</name>
-			<type>1</type>
-			<location>C:/Users/Neil/.m2/repository/org/apache/httpcomponents/httpcore/4.3.2/httpcore-4.3.2.jar</location>
-		</link>
-		<link>
 			<name>jdi.jar</name>
 			<type>1</type>
 			<location>C:/Users/Neil/.m2/repository/.cache/tycho/org.eclipse.jdt.debug-3.7.101.v20120913-153601.jar/jdi.jar</location>
@@ -162,11 +147,6 @@
 			<location>C:/Users/Neil/.m2/repository/.cache/tycho/org.eclipse.jdt.debug-3.7.101.v20120913-153601.jar/jdimodel.jar</location>
 		</link>
 		<link>
-			<name>json-20141113.jar</name>
-			<type>1</type>
-			<location>C:/Users/Neil/.m2/repository/org/json/json/20141113/json-20141113.jar</location>
-		</link>
-		<link>
 			<name>junit.jar</name>
 			<type>1</type>
 			<location>C:/Users/Neil/.m2/repository/.cache/tycho/org.junit-4.10.0.v4_10_0_v20120426-0900.jar/junit.jar</location>
@@ -175,11 +155,6 @@
 			<name>quartz-all-2.1.7.jar</name>
 			<type>1</type>
 			<location>C:/Users/Neil/.m2/repository/.cache/tycho/org.openhab.core.scheduler-1.7.0-SNAPSHOT.jar/lib/quartz-all-2.1.7.jar</location>
-		</link>
-		<link>
-			<name>tubesock-0.0.9.jar</name>
-			<type>1</type>
-			<location>C:/Users/Neil/.m2/repository/com/firebase/tubesock/0.0.9/tubesock-0.0.9.jar</location>
 		</link>
 	</linkedResources>
 </projectDescription>

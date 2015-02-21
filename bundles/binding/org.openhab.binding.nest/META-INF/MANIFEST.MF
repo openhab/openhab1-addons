@@ -27,11 +27,6 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
 Require-Bundle: org.junit
 Bundle-ClassPath: .,
- firebase-client-jvm-1.1.1.jar,
- tubesock-0.0.9.jar,
- httpclient-4.3.5.jar,
- httpcore-4.3.2.jar,
- json-20141113.jar,
  ant-antlr.jar,
  ant-apache-bcel.jar,
  ant-apache-bsf.jar,
@@ -57,4 +52,11 @@ Bundle-ClassPath: .,
  jdi.jar,
  jdimodel.jar,
  junit.jar,
- quartz-all-2.1.7.jar
+ quartz-all-2.1.7.jar,
+ lib/firebase-client-jvm-2.2.0.jar,
+ lib/jackson-annotations-2.2.2.jar,
+ lib/jackson-core-2.2.2.jar,
+ lib/jackson-databind-2.2.2.jar,
+ lib/json-20141113.jar,
+ lib/tubesock-0.0.11.jar,
+ lib/httpclient-4.0.1.jar

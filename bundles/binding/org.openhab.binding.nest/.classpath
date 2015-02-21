@@ -3,13 +3,9 @@
 	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry exported="true" kind="lib" path="lib/httpclient-4.0.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="firebase-client-jvm-1.1.1.jar"/>
-	<classpathentry kind="lib" path="tubesock-0.0.9.jar"/>
-	<classpathentry kind="lib" path="httpclient-4.3.5.jar"/>
-	<classpathentry kind="lib" path="httpcore-4.3.2.jar"/>
-	<classpathentry kind="lib" path="json-20141113.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/com.google.inject/3.0.0.v201203062045/com.google.inject-3.0.0.v201203062045.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/javax.inject/1.0.0.v20091030/javax.inject-1.0.0.v20091030.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.eclipse.osgi/3.8.2.v20130124-134944/org.eclipse.osgi-3.8.2.v20130124-134944.jar"/>
@@ -44,8 +40,8 @@
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.apache.batik.util.gui/1.6.0.v201011041432/org.apache.batik.util.gui-1.6.0.v201011041432.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.apache.commons.cli/1.2.0.v201105210650/org.apache.commons.cli-1.2.0.v201105210650.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.apache.commons.lang/2.6.0.v201205030909/org.apache.commons.lang-2.6.0.v201205030909.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/commons-codec/commons-codec/1.6/commons-codec-1.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.apache.commons.logging/1.0.4.v201101211617/org.apache.commons.logging-1.0.4.v201101211617.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.apache.commons.codec/1.4.0.v201209201156/org.apache.commons.codec-1.4.0.v201209201156.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.apache.commons.httpclient/3.1.0.v201012070820/org.apache.commons.httpclient-3.1.0.v201012070820.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.eclipse.osgi.services/3.3.100.v20120522-1822/org.eclipse.osgi.services-3.3.100.v20120522-1822.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.eclipse.compare/3.5.301.v20130125-135424/org.eclipse.compare-3.5.301.v20130125-135424.jar"/>
@@ -120,7 +116,7 @@
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.eclipse.xtext.util/2.3.0.v201206120633/org.eclipse.xtext.util-2.3.0.v201206120633.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.antlr.runtime/3.2.0.v201101311130/org.antlr.runtime-3.2.0.v201101311130.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.eclipse.emf.mwe2.lib/2.3.0.v201206110920/org.eclipse.emf.mwe2.lib-2.3.0.v201206110920.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.slf4j.log4j/1.7.2.v20130115-1340/org.slf4j.log4j-1.7.2.v20130115-1340.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.apache.log4j/1.2.15.v201012070815/org.apache.log4j-1.2.15.v201012070815.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.eclipse.emf.mwe2.launch/2.3.0.v201206120758/org.eclipse.emf.mwe2.launch-2.3.0.v201206120758.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.eclipse.jdt.debug.ui/3.6.100.v20120530-1425/org.eclipse.jdt.debug.ui-3.6.100.v20120530-1425.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/com.google.guava/10.0.1.v201203051515/com.google.guava-10.0.1.v201203051515.jar"/>
@@ -172,8 +168,11 @@
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.eclipse.swt.gtk.linux.x86_64/3.100.1.v4236b/org.eclipse.swt.gtk.linux.x86_64-3.100.1.v4236b.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.eclipse.swt.win32.win32.x86/3.100.1.v4236b/org.eclipse.swt.win32.win32.x86-3.100.1.v4236b.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Neil/.m2/repository/p2/osgi/bundle/org.eclipse.swt.cocoa.macosx.x86_64/3.100.1.v4236b/org.eclipse.swt.cocoa.macosx.x86_64-3.100.1.v4236b.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/core/jackson-annotations/2.5.1/jackson-annotations-2.5.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/core/jackson-databind/2.5.1/jackson-databind-2.5.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/core/jackson-core/2.5.1/jackson-core-2.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/firebase-client-jvm-2.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-annotations-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-databind-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/json-20141113.jar"/>
+	<classpathentry kind="lib" path="lib/tubesock-0.0.11.jar" sourcepath="C:/Users/Neil/.m2/repository/com/firebase/tubesock/0.0.11/tubesock-0.0.11-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -23,6 +23,7 @@ public final class SmokeCOAlarm extends BaseDevice {
     private final String mCOAlarmState;
     private final String mSmokeAlarmState;
     private final String mUIColorState;
+    private final String mLastManualTestTime;
 
     private SmokeCOAlarm(Builder builder) {
         super(builder);
@@ -30,13 +31,15 @@ public final class SmokeCOAlarm extends BaseDevice {
         mCOAlarmState = builder.mCOAlarmState;
         mSmokeAlarmState = builder.mSmokeAlarmState;
         mUIColorState = builder.mUIColorState;
+        mLastManualTestTime = builder.mLastManualTestTime;
     }
 
     public static class Builder extends BaseDeviceBuilder<SmokeCOAlarm> {
-        private String mBatteryHealth;
+		private String mBatteryHealth;
         private String mCOAlarmState;
         private String mSmokeAlarmState;
         private String mUIColorState;
+        private String mLastManualTestTime;
 
         public SmokeCOAlarm fromJSON(JSONObject json) {
             super.fromJSON(json);
@@ -44,7 +47,13 @@ public final class SmokeCOAlarm extends BaseDevice {
             setCOAlarmState(json.optString(Keys.SMOKE_CO_ALARM.CO_ALARM_STATE));
             setSmokeAlarmState(json.optString(Keys.SMOKE_CO_ALARM.SMOKE_ALARM_STATE));
             setUIColorState(json.optString(Keys.SMOKE_CO_ALARM.UI_COLOR_STATE));
+            setLastManualTestTime(json.optString(Keys.SMOKE_CO_ALARM.LAST_MANUAL_TEST_TIME));
             return build();
+        }
+        
+        public Builder setLastManualTestTime(String lastManualTestTime){
+        	mLastManualTestTime = lastManualTestTime;
+        	return this;
         }
 
         public Builder setBatteryHealth(String batteryHealth) {
@@ -79,6 +88,7 @@ public final class SmokeCOAlarm extends BaseDevice {
         json.put(Keys.SMOKE_CO_ALARM.CO_ALARM_STATE, mCOAlarmState);
         json.put(Keys.SMOKE_CO_ALARM.SMOKE_ALARM_STATE, mSmokeAlarmState);
         json.put(Keys.SMOKE_CO_ALARM.UI_COLOR_STATE, mUIColorState);
+        json.put(Keys.SMOKE_CO_ALARM.LAST_MANUAL_TEST_TIME, mLastManualTestTime);
     }
 
     public String getBatteryHealth() {
@@ -95,5 +105,9 @@ public final class SmokeCOAlarm extends BaseDevice {
 
     public String getUIColorState() {
         return mUIColorState;
+    }
+    
+    public String getLastManualTestTime(){
+    	return mLastManualTestTime;
     }
 }

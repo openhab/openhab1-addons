@@ -11,9 +11,10 @@
 
 package org.openhab.binding.nest.internal.api.model;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+
 
 public final class AccessToken  {
     private final String mToken;

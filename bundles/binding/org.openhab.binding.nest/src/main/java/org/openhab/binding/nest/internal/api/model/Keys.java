@@ -59,6 +59,7 @@ public class Keys {
         public static final String CO_ALARM_STATE = "co_alarm_state";
         public static final String SMOKE_ALARM_STATE = "smoke_alarm_state";
         public static final String UI_COLOR_STATE = "ui_color_state";
+        public static final String LAST_MANUAL_TEST_TIME = "last_manual_test_time";
     }
 
     public static class STRUCTURE {

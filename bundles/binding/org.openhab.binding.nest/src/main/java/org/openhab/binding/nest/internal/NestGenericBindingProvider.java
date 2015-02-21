@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public class NestGenericBindingProvider extends AbstractGenericBindingProvider implements NestBindingProvider {
 	private static final Logger logger = LoggerFactory.getLogger(NestGenericBindingProvider.class);
 	private static final Pattern ID_REG_EXP = Pattern.compile(".*id=([0-9]*).*");
-	private static final Pattern TYPE_REG_EXP = Pattern.compile(".*type=([0-9]*).*");
+	private static final Pattern TYPE_REG_EXP = Pattern.compile(".*type=([^,]*).*");
 	
 	/**
 	 * {@inheritDoc}
@@ -94,6 +94,18 @@ public class NestGenericBindingProvider extends AbstractGenericBindingProvider i
 		return bindings;	
 	}
 	
+
+	@Override
+	public List<String> getItemNamesForType(NestType nestType) {
+		List<String> bindings = new ArrayList<String>();
+		for (String itemName : bindingConfigs.keySet()) {
+			NestBindingConfig itemConfig = (NestBindingConfig) bindingConfigs.get(itemName);
+			if(nestType != null && nestType.equals(itemConfig.getType())){
+				bindings.add(itemName);
+			}
+		}
+		return bindings;	
+	}	
 	
 	@Override
 	public NestType getTypeForItemName(String itemName) {
@@ -129,6 +141,4 @@ public class NestGenericBindingProvider extends AbstractGenericBindingProvider i
 			return id;
 		}
 	}
-
-
 }

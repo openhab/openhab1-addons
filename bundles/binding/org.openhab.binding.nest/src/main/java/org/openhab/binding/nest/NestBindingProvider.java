@@ -32,5 +32,7 @@ public interface NestBindingProvider extends BindingProvider {
 	 * @return
 	 */
 	NestType getTypeForItemName(String itemName);
+
+	List<String> getItemNamesForType(NestType nestCode);
 	
 }
