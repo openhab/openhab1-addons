@@ -34,6 +34,11 @@ public class OBISMessage {
 	private static final Logger logger = LoggerFactory
 			.getLogger(OBISMessage.class);
 
+	// Identifier of the first power failure date element
+	public static final int FIRST_POWER_FAILURE_DATE = 2;
+	// Identifier of the first power failure duration element
+	public static final int FIRST_POWER_FAILURE_DURATION = 3;
+
 	// OBIS Message Type
 	private final OBISMsgType msgType;
 
@@ -98,37 +103,44 @@ public class OBISMessage {
 				+ ", Needed items:" + msgType.cosemValueDescriptors.size());
 
 		/*
-		 *  It is not necessarily a problem if 'Needed items' > 'Received items'.
-		 *  Since some items have a dynamic number of values (e.g. Power Failure Log).
-		 *  
-		 *  Since the minority of the messages has such features, differences
-		 *  between received and needed could indicate problems
+		 * It is not necessarily a problem if 'Needed items' > 'Received items'.
+		 * Since some items have a dynamic number of values (e.g. Power Failure
+		 * Log).
+		 * 
+		 * Since the minority of the messages has such features, differences
+		 * between received and needed could indicate problems
 		 */
 		if (cosemStringValues.size() <= msgType.cosemValueDescriptors.size()) {
 			for (int i = 0; i < cosemStringValues.size(); i++) {
-				
-				CosemValue<? extends State> cosemValue = getCosemValue(msgType.cosemValueDescriptors.get(i));
+
+				CosemValue<? extends State> cosemValue = getCosemValue(msgType.cosemValueDescriptors
+						.get(i));
 				if (cosemValue != null) {
 					cosemValue.setValue(cosemStringValues.get(i));
 					cosemValues.add(cosemValue);
 				} else {
-					logger.error("Failed to parse:" + cosemStringValues.get(i), " for OBISMsgType:" + msgType);
+					logger.error("Failed to parse:" + cosemStringValues.get(i),
+							" for OBISMsgType:" + msgType);
 				}
 			}
 		} else {
-			throw new ParseException("Received items:" + cosemStringValues.size()
-					+ ", Needed items:" + msgType.cosemValueDescriptors.size(), 0);
+			throw new ParseException("Received items:"
+					+ cosemStringValues.size() + ", Needed items:"
+					+ msgType.cosemValueDescriptors.size(), 0);
 		}
-		
+
 		/*
 		 * Here we do a post processing on the values
 		 */
-		switch(msgType) { 
-			case EMETER_POWER_FAILURE_LOG: postProcessKaifaE0003(); break;
-			default: break;
+		switch (msgType) {
+		case EMETER_POWER_FAILURE_LOG:
+			postProcessKaifaE0003();
+			break;
+		default:
+			break;
 		}
 	}
-	
+
 	/**
 	 * Creates an empty CosemValue object
 	 * 
@@ -137,9 +149,10 @@ public class OBISMessage {
 	 * @return the instantiated CosemValue based on the specified
 	 *         CosemValueDescriptor
 	 */
-	private CosemValue<? extends State> getCosemValue(CosemValueDescriptor cosemValueDescriptor) {
-		Class<? extends CosemValue<? extends State>> cosemValueClass = 
-				cosemValueDescriptor.getCosemValueClass();
+	private CosemValue<? extends State> getCosemValue(
+			CosemValueDescriptor cosemValueDescriptor) {
+		Class<? extends CosemValue<? extends State>> cosemValueClass = cosemValueDescriptor
+				.getCosemValueClass();
 
 		String unit = cosemValueDescriptor.getUnit();
 		String dsmrItemId = cosemValueDescriptor.getDsmrItemId();
@@ -163,18 +176,20 @@ public class OBISMessage {
 	 */
 	private void postProcessKaifaE0003() {
 		logger.debug("postProcessKaifaE0003");
-		
-		CosemDate powerFailureDate = (CosemDate)cosemValues.get(1);
-		CosemInteger powerFailureDuration = (CosemInteger)cosemValues.get(2);
-		
+
+		CosemDate powerFailureDate = (CosemDate) cosemValues
+				.get(FIRST_POWER_FAILURE_DATE);
+		CosemInteger powerFailureDuration = (CosemInteger) cosemValues
+				.get(FIRST_POWER_FAILURE_DURATION);
+
 		Calendar epoch = Calendar.getInstance();
 		epoch.setTime(new Date(0));
-		
-		if(powerFailureDate.getValue().getCalendar().before(epoch) &&
-				powerFailureDuration.getValue().intValue() == Integer.MAX_VALUE) {
+
+		if (powerFailureDate.getValue().getCalendar().before(epoch)
+				&& powerFailureDuration.getValue().intValue() == Integer.MAX_VALUE) {
 			logger.debug("Filter invalid power failure entry");
-			cosemValues.remove(2); // powerFailureDuration
-			cosemValues.remove(1); // powerFailureDate
-		}	
+			cosemValues.remove(FIRST_POWER_FAILURE_DURATION);
+			cosemValues.remove(FIRST_POWER_FAILURE_DATE);
+		}
 	}
 }

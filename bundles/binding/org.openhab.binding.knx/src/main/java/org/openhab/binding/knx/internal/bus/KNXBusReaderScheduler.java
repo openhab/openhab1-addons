@@ -78,7 +78,8 @@ public class KNXBusReaderScheduler {
 				sLogger.debug("Auto refresh scheduler couldn't be terminated and termination timed out.");
 			}
 		} catch (InterruptedException e) {
-			sLogger.debug("Auto refresh scheduler: interrupted while waiting for termination.");
+			sLogger.warn("Auto refresh scheduler: interrupted while waiting for termination.");
+			Thread.currentThread().interrupt();
 		}
 
 		sLogger.trace("Stopping reader task");
@@ -150,7 +151,8 @@ public class KNXBusReaderScheduler {
 	/**
 	 * Schedules a <code>Datapoint</code> to be cyclicly read. When parameter
 	 * <code>autoRefreshTimeInSecs</code> is 0 then calling ths method is equal
-	 * to calling <link>readOnce</link>.
+	 * to calling <link>readOnce</link>. This function will return true if the <code>Datapoint</code>
+	 * was added or if it was already scheduled with an identical <code>autoRefreshTimeInSecs</code>.
 	 * 
 	 * @param datapoint
 	 *            the <code>Datapoint</code> to be read
@@ -185,7 +187,7 @@ public class KNXBusReaderScheduler {
 		if (oldListNumber > 0) { 
 			if (oldListNumber==autoRefreshTimeInSecs) {
 				sLogger.debug("Datapoint '{}' was already in  auto refresh list {}", datapoint.getName(), autoRefreshTimeInSecs);
-				return false;
+				return true;
 			}
 			List<Datapoint> oldList = mScheduleMap.get(oldListNumber);
 			synchronized(oldList) {
