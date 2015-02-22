@@ -13,15 +13,12 @@ import java.util.Map;
 
 import org.openhab.binding.zwave.internal.config.ZWaveDbConfigurationParameter;
 import org.openhab.binding.zwave.internal.config.ZWaveProductDatabase;
-import org.openhab.binding.zwave.internal.converter.command.MultiLevelIncreaseDecreaseCommandConverter;
-import org.openhab.binding.zwave.internal.converter.command.MultiLevelOnOffCommandConverter;
+import org.openhab.binding.zwave.internal.converter.command.IntegerCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.MultiLevelPercentCommandConverter;
 import org.openhab.binding.zwave.internal.converter.command.ZWaveCommandConverter;
 import org.openhab.binding.zwave.internal.converter.state.BigDecimalDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerPercentTypeConverter;
-import org.openhab.binding.zwave.internal.converter.state.IntegerOnOffTypeConverter;
-import org.openhab.binding.zwave.internal.converter.state.IntegerOpenClosedTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.ConfigurationParameter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
@@ -56,16 +53,13 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 	public ZWaveConfigurationConverter(ZWaveController controller, EventPublisher eventPublisher) {
 		super(controller, eventPublisher);
 
-		// State and commmand converters used by this converter. 
+		// State and commmand converters used by this converter.
 		this.addStateConverter(new IntegerDecimalTypeConverter());
 		this.addStateConverter(new IntegerPercentTypeConverter());
-		this.addStateConverter(new IntegerOnOffTypeConverter());
-		this.addStateConverter(new IntegerOpenClosedTypeConverter());
 		this.addStateConverter(new BigDecimalDecimalTypeConverter());
-		
-		this.addCommandConverter(new MultiLevelOnOffCommandConverter());
+
+		this.addCommandConverter(new IntegerCommandConverter());
 		this.addCommandConverter(new MultiLevelPercentCommandConverter());
-		this.addCommandConverter(new MultiLevelIncreaseDecreaseCommandConverter());
 	}
 
 	/**
@@ -116,10 +110,9 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 	@Override
 	public void receiveCommand(Item item, Command command, ZWaveNode node,
 			ZWaveConfigurationCommandClass commandClass, int endpointId, Map<String,String> arguments) {
-
 		ZWaveCommandConverter<?,?> converter = this.getCommandConverter(command.getClass());
 		if (converter == null) {
-			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring command.", node.getNodeId(), item.getName(), endpointId);
+			logger.warn("NODE {}: No converter found for item={}, type={}, endpoint={}, ignoring command.", node.getNodeId(), item.getName(), command.getClass().getSimpleName(), endpointId);
 			return;
 		}
 		String parmNumber = arguments.get("parameter");
@@ -127,6 +120,7 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 			logger.error("NODE {}: 'parameter' option must be specified.", node.getNodeId());
 			return;
 		}
+
 		int parmValue = Integer.parseInt(parmNumber);
 		if(parmValue <= 0 || parmValue > 255) {
 			logger.error("NODE {}: 'parameter' option must be between 1 and 255.", node.getNodeId());
@@ -150,7 +144,6 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter<ZWav
 			logger.error("NODE {}: Device has no parameter {}.", node.getNodeId(), parmValue);
 			return;
 		}
-
 		ConfigurationParameter configurationParameter = new ConfigurationParameter(parmValue, (Integer)converter.convertFromCommandToValue(item, command), dbParameter.Size);
 
 		// Set the parameter
