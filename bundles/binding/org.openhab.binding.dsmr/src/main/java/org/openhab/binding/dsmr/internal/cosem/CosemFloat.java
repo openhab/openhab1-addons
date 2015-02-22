@@ -46,7 +46,8 @@ public class CosemFloat extends CosemValue<DecimalType> {
 		try {
 			return new DecimalType(Float.parseFloat(cosemValue));
 		} catch (NumberFormatException nfe) {
-			throw new ParseException("Failed to parse value " + value + " as float", 0);
+			throw new ParseException("Failed to parse value " + value
+					+ " as float", 0);
 		}
 	}
 }

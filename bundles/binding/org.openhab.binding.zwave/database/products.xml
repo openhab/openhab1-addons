@@ -91,6 +91,14 @@
 		<Name>Intermatic</Name>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HA-01</Model>
+			<Label lang="en">Dual receptacle</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0003</Id>
 			</Reference>
@@ -153,6 +161,15 @@
 			<Model>CA-9000</Model>
 			<Label lang="en">PIR Occupancy Sensor</Label>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4841</Type>
+				<Id>0020</Id>
+			</Reference>
+			<Model>HA-20</Model>
+			<Label lang="en">Dimmer Switch</Label>
+			<ConfigFile>intermatic/ha20.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0059</Id>
@@ -189,6 +206,15 @@
 			</Reference>
 			<Model>ASR-ZW</Model>
 			<Label lang="en">Thermostat Receiver</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0004</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>SCSC17</Model>
+			<Label lang="en">7 Day Room Thermostat</Label>
+			<ConfigFile>horstmann/scsc17.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -270,6 +296,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0007</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ST815</Model>
+			<Label lang="en">Illumination Sensor</Label>
+			<ConfigFile>everspring/st815.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>000D</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -299,6 +334,7 @@
 			</Reference>
 			<Model>SE812</Model>
 			<Label lang="en">Siren</Label>
+			<ConfigFile>everspring/se812.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -308,6 +344,19 @@
 			<Model>ST812</Model>
 			<Label lang="en">Flood Sensor</Label>
 			<ConfigFile>everspring/st812.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0113</Id>
+		<Name>Evolve</Name>
+		<Product>
+			<Reference>
+				<Type>5457</Type>
+				<Id>3033</Id>
+			</Reference>
+			<Model>LTM-5</Model>
+			<Label lang="en">Wall Mount Accessory Switch</Label>
+			<ConfigFile>evolve/ltm-5.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -747,7 +796,7 @@
 				<Type>0001</Type>
 				<Id>0026</Id>
 			</Reference>
-			<Model>dsa38</Model>
+			<Model>DSA38</Model>
 			<Label lang="en">1 button keyfob</Label>
 			<ConfigFile>aeon/dsa38.xml</ConfigFile>
 		</Product>
@@ -945,19 +994,6 @@
 		<Product>
 			<Reference>
 				<Type>0100</Type>
-				<Id>0104</Id>
-			</Reference>
-			<Reference>
-				<Type>0100</Type>
-				<Id>0106</Id>
-			</Reference>
-			<Model>FGD211</Model>
-			<Label lang="en">Universal Dimmer 500W (1.4)</Label>
-			<ConfigFile>fibaro/fgd211-14.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>0100</Type>
 				<Id>0107</Id>
 			</Reference>
 			<Reference>
@@ -972,9 +1008,19 @@
 				<Type>0100</Type>
 				<Id>100A</Id>
 			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0104</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0106</Id>
+			</Reference>
 			<Model>FGD211</Model>
-			<Label lang="en">Universal Dimmer 500W (2.1)</Label>
-			<ConfigFile>fibaro/fgd211-21.xml</ConfigFile>
+			<Label lang="en">Universal Dimmer 500W</Label>
+			<ConfigFile VersionMax="1.8">fibaro/fgd211-14.xml</ConfigFile> <!-- VersionMin="1.4" -->
+			<ConfigFile VersionMin="1.9" VersionMax="1.11">fibaro/fgd211-19.xml</ConfigFile>
+			<ConfigFile VersionMin="2.1">fibaro/fgd211-21.xml</ConfigFile> <!-- VersionMax="2.3" -->
 		</Product>
 		<Product>
 			<Reference>
@@ -1017,6 +1063,10 @@
 			<Reference>
 				<Type>0200</Type>
 				<Id>0102</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0103</Id>
 			</Reference>
 			<Reference>
 				<Type>0200</Type>
@@ -1426,6 +1476,14 @@
 				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>000C</Id>
+			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>000D</Id>
+			</Reference>
 			<Model>PSM-02</Model>
 			<Label lang="en">Slim Multi-Sensor</Label>
 			<ConfigFile>philio/psm02.xml</ConfigFile>
@@ -1449,6 +1507,15 @@
 			<Label lang="en">In Wall Dual Relay(1 Way) Switch Module 2x 1.5kW</Label>
 			<Label lang="de">Einbau zweifach Schalter Modul 2x 1.5kW</Label>
 			<ConfigFile>philio/pan06_1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>PAN11-1</Model>
+			<Label lang="en">Smart Energy Plug In Switch</Label>
+			<ConfigFile>philio/pan11_1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -1698,6 +1765,10 @@
 		<Product>
 			<Reference>
 				<Type>453</Type>
+				<Id>10E</Id>
+			</Reference>
+			<Reference>
+				<Type>453</Type>
 				<Id>110</Id>
 			</Reference>
 			<Model>MIMOlite</Model>
@@ -1708,6 +1779,10 @@
 			<Reference>
 				<Type>0313</Type>
 				<Id>0108</Id>
+			</Reference>
+			<Reference>
+				<Type>0313</Type>
+				<Id>010B</Id>
 			</Reference>
 			<Model>SSA1/SSA2</Model>
 			<Label lang="en">Siren and Strobe Alarm</Label>
@@ -1802,5 +1877,30 @@
 			<ConfigFile>yale/yrd210.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
-	
+	<Manufacturer>
+		<Id>0166</Id>
+		<Name>Swiid</Name>
+		<Product>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Model>SW-ZCS-1</Model>
+			<Label lang="en">Cord Switch</Label>
+			<ConfigFile>swiid/SW-ZCS-1.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0131</Id>
+		<Name>Zipato</Name>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>RGBWE27ZW</Model>
+			<Label lang="en">RGBW bulb</Label>
+			<ConfigFile>zipato/rgbwe27.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>

@@ -8,11 +8,12 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -20,7 +21,6 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 @XStreamAlias("alarmCommandClass")
 public class ZWaveAlarmCommandClass extends ZWaveCommandClass 
-	implements ZWaveGetCommands {
+	implements ZWaveGetCommands, ZWaveCommandClassDynamicState {
 
 	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveAlarmCommandClass.class);
@@ -44,8 +44,15 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 	private static final int ALARM_GET = 0x04;
 	private static final int ALARM_REPORT = 0x05;
 	
-	private final Set<AlarmType> alarms = new HashSet<AlarmType>();
+	private final Map<AlarmType, Alarm> alarms = new HashMap<AlarmType, Alarm>();
 	
+	@XStreamOmitField
+	private boolean initialiseDone = false;
+	@XStreamOmitField
+	private boolean dynamicDone = false;
+
+	private boolean isGetSupported = true;
+
 	/**
 	 * Creates a new instance of the ZWaveAlarmCommandClass class.
 	 * @param node the node this command class belongs to
@@ -72,11 +79,11 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
 		logger.trace("Handle Message Alarm Request");
-		logger.debug(String.format("NODE %d: Received Alarm Request", this.getNode().getNodeId()));
+		logger.debug("NODE {}: Received Alarm Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 			case ALARM_GET:
-				logger.warn(String.format("Command 0x%02X not implemented.", command));
+				logger.warn("Command {} not implemented.", command);
 				return;
 			case ALARM_REPORT:
 				logger.trace("Process Alarm Report");
@@ -84,28 +91,30 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 				int alarmTypeCode = serialMessage.getMessagePayloadByte(offset + 1);
 				int value = serialMessage.getMessagePayloadByte(offset + 2);
 
-				logger.debug(String.format("NODE %d: Alarm report - Value = 0x%02x", this.getNode().getNodeId(), value));
+				logger.debug("NODE {}: Alarm report - Value = {}", this.getNode().getNodeId(), value);
 				
 				AlarmType alarmType = AlarmType.getAlarmType(alarmTypeCode);
 				
 				if (alarmType == null) {
-					logger.error(String.format("NODE %d: Unknown Alarm Type = 0x%02x, ignoring report.", this.getNode().getNodeId(), alarmTypeCode));
+					logger.error("NODE {}: Unknown Alarm Type = {}, ignoring report.", this.getNode().getNodeId(), alarmTypeCode);
 					return;
 				}
 				
 				// alarm type seems to be supported, add it to the list.
-				if (!alarms.contains(alarmType)) {
-					this.alarms.add(alarmType);
+				// alarm type seems to be supported, add it to the list.
+				Alarm alarm = alarms.get(alarmType);
+				if (alarm == null) {
+					alarm = new Alarm(alarmType);
+					this.alarms.put(alarmType, alarm);
 				}
+				alarm.setInitialised();
 
-				logger.debug(String.format("NODE %d: Alarm Type = %s (0x%02x)", this.getNode().getNodeId(), alarmType.getLabel(), alarmTypeCode));
+				logger.debug("NODE {}: Alarm Type = {} ({})", this.getNode().getNodeId(), alarmType.getLabel(), alarmTypeCode);
 				
 				ZWaveAlarmValueEvent zEvent = new ZWaveAlarmValueEvent(this.getNode().getNodeId(), endpoint, alarmType, value);
 				this.getController().notifyEventListeners(zEvent);
 				
-				if (this.getNode().getNodeStage() != NodeStage.DONE) {
-					this.getNode().advanceNodeStage(NodeStage.DONE);
-				}
+				dynamicDone = true;
 				break;
 			default:
 				logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
@@ -121,10 +130,11 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 	 * @return the serial message
 	 */
 	public SerialMessage getValueMessage() {
-		for (AlarmType alarmType : this.alarms) {
-			return getMessage(alarmType);
+		//TODO: Why does this return!!!???!!!
+		for (Map.Entry<AlarmType, Alarm> entry : this.alarms.entrySet()) {
+			return getMessage(entry.getValue().getAlarmType());
 		}
-		
+
 		// in case there are no supported alarms, get them.
 		
 		return getMessage(AlarmType.GENERAL);
@@ -135,6 +145,11 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 	 * @return the serial message
 	 */
 	public SerialMessage getMessage(AlarmType alarmType) {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+
 		logger.debug("NODE {}: Creating new message for application command ALARM_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
@@ -153,7 +168,18 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 	 */
 	@XStreamAlias("alarmType")
 	public enum AlarmType {
-		GENERAL(0, "General");
+		GENERAL(0, "General"), 
+		SMOKE(1, "Smoke"),
+		CARBON_MONOXIDE(2, "Carbon Monoxide"), 
+		CARBON_DIOXIDE(3, "Carbon Dioxide"), 
+		HEAT(4, "Heat"),
+		FLOOD(5, "Flood"),
+		ACCESS_CONTROL(6, "Access Control"),
+		BURGLAR(7, "Burglar"),
+		POWER_MANAGEMENT(8, "Power Management"),
+		SYSTEM(9, "System"),
+		EMERGENCY(10, "Emergency"),
+		COUNT(11, "Count");
 
 		/**
 		 * A mapping between the integer code and its corresponding Alarm type
@@ -205,6 +231,30 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 		}
 	}
 	
+	/**
+	 * Class to hold alarm state
+	 * @author Chris Jackson
+	 */
+	private class Alarm {
+		AlarmType alarmType;
+		boolean initialised = false;
+		
+		public Alarm(AlarmType type) {
+			alarmType = type;
+		}
+		
+		public AlarmType getAlarmType() {			
+			return alarmType;
+		}
+		
+		public void setInitialised() {
+			initialised = true;
+		}
+		
+		public boolean getInitialised() {
+			return initialised;
+		}
+	}
 	
 	/**
 	 * Z-Wave Alarm Event class. Indicates that an alarm value
@@ -233,5 +283,27 @@ public class ZWaveAlarmCommandClass extends ZWaveCommandClass
 		public AlarmType getAlarmType() {
 			return alarmType;
 		}
+	}
+
+	@Override
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
+		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
+
+		for (Map.Entry<AlarmType, Alarm> entry : this.alarms.entrySet()) {
+			if(refresh == true || entry.getValue().getInitialised() == false) {
+				result.add(getMessage(entry.getValue().getAlarmType()));
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		if(options.isGetSupported != null) {
+			isGetSupported = options.isGetSupported;
+		}
+		
+		return true;
 	}
 }
