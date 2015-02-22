@@ -37,10 +37,7 @@ public class ZWaveDbProduct {
 
 	@XStreamConverter(value=ToAttributedValueConverter.class, strings={"Filename", "VersionMin", "VersionMax"})
 	private class ZWaveDbConfigFile {
-//		@XStreamConverter(VersionConverter.class)
-//		Version VersionMin;
 		String VersionMin;
-//		@XStreamConverter(VersionConverter.class)
 		String VersionMax;
 		
 		String Filename;
