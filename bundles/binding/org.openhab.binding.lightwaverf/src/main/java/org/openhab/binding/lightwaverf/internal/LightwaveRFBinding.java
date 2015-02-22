@@ -41,7 +41,10 @@ public class LightwaveRfBinding extends
 		AbstractBinding<LightwaveRfBindingProvider> implements
 		LightwaveRFMessageListener, BindingChangeListener {
 
-	private static int POLL_TIME = 250;
+	private static final Logger logger = LoggerFactory.getLogger(LightwaveRfBinding.class);
+
+	private static int TIME_BETWEEN_SENT_MESSAGES_MS = 100;
+	private static int TIMEOUT_FOR_OK_MESSAGES_MS = 500;
 	// LightwaveRF WIFI hub port.
 	private static int LIGHTWAVE_PORT_TO_SEND_TO = 9760;
 	private static int LIGHTWAVE_PORT_TO_RECEIVE_ON = 9761;
@@ -49,19 +52,11 @@ public class LightwaveRfBinding extends
 	private static String LIGHTWAVE_IP = "255.255.255.255";
 	private static boolean SEND_REGISTER_ON_STARTUP = true;
 
-	private static final Logger logger = LoggerFactory.getLogger(LightwaveRfBinding.class);
 	private LightwaverfConvertor messageConvertor = new LightwaverfConvertor();
 	private LightwaveRFReceiver receiverOnSendPort = null;
 	private LightwaveRFReceiver receiverOnReceiverPort = null;
 	private LightwaveRFSender sender = null;
 	private LightwaveRfHeatPoller heatPoller = null;
-
-	/**
-	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is
-	 * set in the activate() method and must not be accessed anymore once the
-	 * deactivate() method was called or before activate() was called.
-	 */
-//	private BundleContext bundleContext;
 
 	public LightwaveRfBinding() {
 	}
@@ -77,7 +72,6 @@ public class LightwaveRfBinding extends
 	 *            ConfigAdmin service
 	 */
 	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
-//		this.bundleContext = bundleContext;
 		try {
 
 			 String ipString = (String) configuration.get("ip");
@@ -100,32 +94,48 @@ public class LightwaveRfBinding extends
 				 SEND_REGISTER_ON_STARTUP = Boolean.parseBoolean(sendRegistrationMessageString);
 			 }	
 			 
+			 String sendDelayString = (String) configuration.get("senddelay");
+			 if (StringUtils.isNotBlank(sendDelayString)) {
+				 TIME_BETWEEN_SENT_MESSAGES_MS = Integer.parseInt(sendDelayString);
+			 }	
+			 
+			 String okTimeoutString = (String) configuration.get("okTimeout");
+			 if (StringUtils.isNotBlank(okTimeoutString)) {
+				 TIMEOUT_FOR_OK_MESSAGES_MS = Integer.parseInt(okTimeoutString);
+			 }	
+			 
 			 logger.info("LightwaveBinding: IP[{}]", LIGHTWAVE_IP);
 			 logger.info("LightwaveBinding: ReceivePort[{}]", LIGHTWAVE_PORT_TO_RECEIVE_ON);
 			 logger.info("LightwaveBinding: Send Port[{}]", LIGHTWAVE_PORT_TO_SEND_TO);
 			 logger.info("LightwaveBinding: Register On Startup[{}]", SEND_REGISTER_ON_STARTUP);
+			 logger.info("LightwaveBinding: Send Delay [{}]", TIME_BETWEEN_SENT_MESSAGES_MS);
+			 logger.info("LightwaveBinding: Timeout for Ok Messages [{}]", TIMEOUT_FOR_OK_MESSAGES_MS);
 			 
 			 messageConvertor = new LightwaverfConvertor();
-			
-			 receiverOnReceiverPort = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_RECEIVE_ON);
-			 receiverOnReceiverPort.addListener(this);
-			 receiverOnReceiverPort.start();
 
-			receiverOnSendPort = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_SEND_TO);
+			 // Create the Sender and Receiver
+			 receiverOnReceiverPort = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_RECEIVE_ON);
+			 receiverOnSendPort = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_SEND_TO);
+			 sender = new LightwaveRFSender(LIGHTWAVE_IP, LIGHTWAVE_PORT_TO_SEND_TO, TIME_BETWEEN_SENT_MESSAGES_MS, TIMEOUT_FOR_OK_MESSAGES_MS);
+
+			 // Add Listeners
+			receiverOnReceiverPort.addListener(this);
 			receiverOnSendPort.addListener(this);
+			receiverOnReceiverPort.addListener(sender);
+			
+			// Start all the senders and receivers
+			receiverOnReceiverPort.start();
 			receiverOnSendPort.start();
-			
-			sender = new LightwaveRFSender(LIGHTWAVE_IP, LIGHTWAVE_PORT_TO_SEND_TO, POLL_TIME);
-//			receiverOnReceiverPort.addListener(sender);
-			
 			sender.start();
-			
-			heatPoller = new LightwaveRfHeatPoller(sender, messageConvertor);
+
 			
 			if (SEND_REGISTER_ON_STARTUP) {
 				sender.sendLightwaveCommand(messageConvertor.getRegistrationCommand());
 			}
 			
+			// Now the sender is started and we have sent the registration message 
+			// start the Heat Poller
+			heatPoller = new LightwaveRfHeatPoller(sender, messageConvertor);
 
 		
 		} catch (UnknownHostException e) {
@@ -180,7 +190,6 @@ public class LightwaveRfBinding extends
 	 *            </ul>
 	 */
 	public void deactivate(final int reason) {
-//		this.bundleContext = null;
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
 		heatPoller.stop();
@@ -193,7 +202,6 @@ public class LightwaveRfBinding extends
 		receiverOnSendPort = null;
 		sender = null;
 		heatPoller = null;
-		
 		messageConvertor = null;
 	}
 
@@ -205,8 +213,7 @@ public class LightwaveRfBinding extends
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand({},{}) is called!", itemName,
-				command);
+		logger.debug("internalReceiveCommand({},{}) is called!", itemName,command);
 		internalReceive(itemName, command);
 	}
 
@@ -320,8 +327,7 @@ public class LightwaveRfBinding extends
 	@Override
 	public void versionMessageReceived(LightwaveRfVersionMessage message) {
 		for (LightwaveRfBindingProvider provider : providers) {
-			List<String> itemNames = provider
-					.getBindingItemsForType(LightwaveRfType.VERSION);
+			List<String> itemNames = provider.getBindingItemsForType(LightwaveRfType.VERSION);
 			publishUpdate(itemNames, message, provider);
 		}
 	}

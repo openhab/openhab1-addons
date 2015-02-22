@@ -53,7 +53,7 @@ public class LightwaveRfHeatPoller  {
 			currentFuture.cancel(false);
 		}
 		
-		ScheduledFuture<?> future = executor.scheduleWithFixedDelay(new SendMessageThread(roomId), currentPoll, currentPoll, TimeUnit.SECONDS);
+		ScheduledFuture<?> future = executor.scheduleWithFixedDelay(new SendMessageThread(roomId), 0, currentPoll, TimeUnit.SECONDS);
 		tasksMap.put(roomId, future);
 		itemNameToRoomMap.put(itemName, roomId);
 	}
