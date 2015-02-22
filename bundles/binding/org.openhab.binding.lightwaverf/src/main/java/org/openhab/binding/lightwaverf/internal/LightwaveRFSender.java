@@ -1,5 +1,6 @@
 package org.openhab.binding.lightwaverf.internal;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -8,6 +9,7 @@ import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -29,13 +31,17 @@ import org.slf4j.LoggerFactory;
 public class LightwaveRFSender implements Runnable, LightwaveRFMessageListener {
     private static final Logger logger = LoggerFactory.getLogger(LightwaveRFSender.class);
     private static final LightwaveRFCommand STOP_MESSAGE = LightwaveRFCommand.STOP_MESSAGE;
+    private static final Integer ONE = new Integer(1);
+    private static final int MAX_RETRY_ATTEMPS = 5;
     
     // Map of countdown latches, used to notify when we have received an ok for one of our messages
-    private final Map<LightwaveRfMessageId, CountDownLatch> latchMap = new ConcurrentHashMap<LightwaveRfMessageId, CountDownLatch>();
+    private final ConcurrentMap<LightwaveRfMessageId, CountDownLatch> latchMap = new ConcurrentHashMap<LightwaveRfMessageId, CountDownLatch>();
     // Executor to keep executing this thread with a fixed delay
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     // Queue of messages to send
     private final BlockingDeque<LightwaveRFCommand> queue = new LinkedBlockingDeque<LightwaveRFCommand>();
+    // Map of Ints so we can count retry attempts.
+    private final ConcurrentMap<LightwaveRfMessageId, Integer> retryCountMap = new ConcurrentHashMap<LightwaveRfMessageId, Integer>();
     
     // Timeout for OK Messages - if we don't receive an ok in this time we will re-send. 
     // Set as short as you can without missing replies
@@ -91,15 +97,21 @@ public class LightwaveRFSender implements Runnable, LightwaveRFMessageListener {
             LightwaveRFCommand commandToSend = queue.take();
             CountDownLatch latch = new CountDownLatch(1);
             latchMap.putIfAbsent(commandToSend.getMessageId(), latch);
+            retryCountMap.putIfAbsent(commandToSend.getMessageId(), ONE);
             
             if(!commandToSend.equals(STOP_MESSAGE)) {
                 netsendUDP(commandToSend);
-                long t = System.currentTimeMillis();
                 boolean unlatched = latch.await(timeoutForOkMessagesMs, TimeUnit.MILLISECONDS);
-                System.out.println("Took: " + Long.toString(System.currentTimeMillis() - t) + " ms");
                 latchMap.remove(commandToSend);
                 if(!unlatched){
-                	// TODO we should count the attempts?
+                	Integer sendCount = retryCountMap.get(commandToSend.getMessageId());
+                	if(sendCount.intValue() >= MAX_RETRY_ATTEMPS){
+                		logger.error("Unable to send message {} after {} attemps giving up", commandToSend.getLightwaveRfCommandString(), MAX_RETRY_ATTEMPS );
+                		return;
+                	}
+                	Integer newRetryCount = Integer.valueOf(sendCount.intValue() + 1);
+                	logger.info("Ok message not received for {}, retrying again. Retry count {}", commandToSend.getLightwaveRfCommandString(), newRetryCount);
+                	retryCountMap.put(commandToSend.getMessageId(), newRetryCount);
                 	queue.addFirst(commandToSend);
                 }
             } else {
@@ -118,10 +130,10 @@ public class LightwaveRFSender implements Runnable, LightwaveRFMessageListener {
             if(running) {
                 queue.put(command);
             } else {
-                logger.info("Message not added to queue as we are shutting down Message[" + command + "]");
+                logger.info("Message not added to queue as we are shutting down Message[{}]");
             }
         } catch(InterruptedException e) {
-            logger.error("Error adding command[" + command + "] to queue", e);
+            logger.error("Error adding command[{}] to queue Throwable {}", command, e);
         }
     }
     
@@ -144,13 +156,13 @@ public class LightwaveRFSender implements Runnable, LightwaveRFMessageListener {
      */
     private void netsendUDP(LightwaveRFCommand command) {
         try {
-            logger.debug("Sending command[" + command.getLightwaveRfCommandString() + "]");
+            logger.debug("Sending command[{}]", command.getLightwaveRfCommandString());
             byte[] sendData = new byte[1024];
             sendData = command.getLightwaveRfCommandString().getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, lightwaveWifiLinkPortIn);
             transmitSocket.send(sendPacket);
         } 		catch (IOException e) {
-            logger.error("Error sending command[" + command + "]", e);
+            logger.error("Error sending command {}. Throwable {}", command , e);
         }
     }
 }

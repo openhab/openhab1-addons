@@ -64,7 +64,6 @@ public class LightwaveRFReceiver implements Runnable {
     */
     @Override
     public void run() {
-        logger.info("LightwaveRFReceiver Started");
     	String message = null;
         try {
         	message = receiveUDP();

@@ -22,13 +22,9 @@ public class LightwaveRFSenderTest {
  */
 		LightwaverfConvertor convertor = new LightwaverfConvertor();
 
-		LightwaveRFReceiver receiver1 = new LightwaveRFReceiver(convertor, 9760);
 		LightwaveRFReceiver receiver2 = new LightwaveRFReceiver(convertor, 9761);
 		LightwaveRFSender sender = new LightwaveRFSender("255.255.255.255", 9760, 1000, 1000);
-		receiver1.start();
 		receiver2.start();
-		
-		receiver1.addListener(sender);
 		receiver2.addListener(sender);
 		
 		sender.start();
