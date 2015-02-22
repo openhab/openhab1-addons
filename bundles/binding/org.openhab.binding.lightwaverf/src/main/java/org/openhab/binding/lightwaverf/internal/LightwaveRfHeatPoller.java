@@ -69,7 +69,7 @@ public class LightwaveRfHeatPoller  {
 		@Override
 		public void run() {
 			LightwaveRFCommand command = convertor.getHeatRequest(roomId);
-			sender.sendUDP(command);
+			sender.sendLightwaveCommand(command);
 		}
 	}
 

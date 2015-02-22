@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.lightwaverf.internal;
 
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
@@ -115,18 +116,22 @@ public class LightwaveRfBinding extends
 			receiverOnSendPort.start();
 			
 			sender = new LightwaveRFSender(LIGHTWAVE_IP, LIGHTWAVE_PORT_TO_SEND_TO, POLL_TIME);
+//			receiverOnReceiverPort.addListener(sender);
+			
 			sender.start();
 			
 			heatPoller = new LightwaveRfHeatPoller(sender, messageConvertor);
 			
 			if (SEND_REGISTER_ON_STARTUP) {
-				sender.sendUDP(messageConvertor.getRegistrationCommand());
+				sender.sendLightwaveCommand(messageConvertor.getRegistrationCommand());
 			}
 			
 
 		
 		} catch (UnknownHostException e) {
 			logger.error("Error creating LightwaveRFSender", e);
+		} catch (SocketException e) {
+			logger.error("Error creating LightwaveRFSender/Receiver", e);
 		}
 	}
 	
@@ -222,7 +227,7 @@ public class LightwaveRfBinding extends
 		String deviceId = getDeviceId(itemName);
 		LightwaveRfType deviceType = getType(itemName);
 		LightwaveRFCommand lightwaverfMessageString = messageConvertor.convertToLightwaveRfMessage(roomId, deviceId, deviceType, command);
-		sender.sendUDP(lightwaverfMessageString);
+		sender.sendLightwaveCommand(lightwaverfMessageString);
 
 	}
 

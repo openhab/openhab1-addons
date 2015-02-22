@@ -53,7 +53,7 @@ public class LightwaveRfBindingTest {
 		binding.setLightaveRfSender(mockLightwaveRfSender);
 		binding.setLightwaveRfConvertor(mockLightwaveRfConvertor);
 		binding.internalReceiveCommand("MySwitch", OnOffType.ON);
-		verify(mockLightwaveRfSender).sendUDP(mockLightwaveRfCommand);
+		verify(mockLightwaveRfSender).sendLightwaveCommand(mockLightwaveRfCommand);
 	}
 
 	@Test
@@ -68,7 +68,7 @@ public class LightwaveRfBindingTest {
 		binding.setLightaveRfSender(mockLightwaveRfSender);
 		binding.setLightwaveRfConvertor(mockLightwaveRfConvertor);
 		binding.internalReceiveUpdate("MySwitch", OnOffType.ON);
-		verify(mockLightwaveRfSender).sendUDP(mockLightwaveRfCommand);	
+		verify(mockLightwaveRfSender).sendLightwaveCommand(mockLightwaveRfCommand);	
 	}
 
 	

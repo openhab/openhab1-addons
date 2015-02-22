@@ -119,6 +119,9 @@ public class LightwaverfConvertor {
 			if(myMessageId >= 999){
 				nextMessageId = 200;
 			}
+			else{
+				nextMessageId++;
+			}
 			return myMessageId;
     	}
     	finally{

@@ -3,10 +3,13 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.openhab.binding.lightwaverf.internal.command.LightwaveRFCommand;
 import org.slf4j.Logger;
@@ -15,26 +18,28 @@ import org.slf4j.LoggerFactory;
 public class LightwaveRFSender implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(LightwaveRFSender.class);
     private static final LightwaveRFCommand STOP_MESSAGE = LightwaveRFCommand.STOP_MESSAGE;
-    // Poll time so we don't flood the LightwaveRF hub
-    private final int pollTime;
+    
+    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+    // Queue of messages to send
+    private final BlockingDeque<LightwaveRFCommand> queue = new LinkedBlockingDeque<LightwaveRFCommand>();
+    
+    // Time between commands so we don't flood the LightwaveRF hub
+    private final int timeBetweenCommand;
     // LightwaveRF WIFI hub port.
     private final int lightwaveWifiLinkPortIn;
-    // LightwaveRF WIFI hub IP Address or broadcast address
-    // Used to send messages
-    
+    // LightwaveRF WIFI hub IP Address or broadcast address to send messages to
     private final InetAddress ipAddress;
-    // Latch used to ensure we shutdown.
-    private CountDownLatch latch = new CountDownLatch(0);
-    // Simple queue of UDP transmission
-    private BlockingQueue<LightwaveRFCommand> queue = new LinkedBlockingQueue<LightwaveRFCommand>();
+    // Socket to transmit messages
+    private final DatagramSocket transmitSocket;
+
     // Boolean to indicate if we are running
     private boolean running = false;
-    private DatagramSocket transmitSocket = null;
 
-    public LightwaveRFSender(String lightwaveWifiLinkIp, int lightwaveWifiLinkPortIn, int pollTime) throws UnknownHostException {
+    public LightwaveRFSender(String lightwaveWifiLinkIp, int lightwaveWifiLinkPortIn, int timeBetweenCommand) throws UnknownHostException, SocketException {
     	this.lightwaveWifiLinkPortIn = lightwaveWifiLinkPortIn;
-    	this.pollTime = pollTime;
+    	this.timeBetweenCommand = timeBetweenCommand;
         ipAddress =  InetAddress.getByName(lightwaveWifiLinkIp);
+        transmitSocket = new DatagramSocket();
     }
     /**
      * Start the LightwaveRFSender
@@ -43,39 +48,20 @@ public class LightwaveRFSender implements Runnable {
     public synchronized void start() {
         logger.info("Starting LightwaveRFSender");
         running = true;
-        latch = new CountDownLatch(1);
-        initialiseSockets();
-        new Thread(this).start();
+        executor.scheduleWithFixedDelay(this, 0, timeBetweenCommand, TimeUnit.MILLISECONDS);
     }
 
     /**
      * Stop the LightwaveRFReseiver
      * Will set running to false, add a stop message to the queue so that it stops when empty,
-     * close and set the sockect to null
+     * close and set the socket to null
      */
     public synchronized void stop() {
         logger.info("Stopping LightwaveRFSender");
         running = false;
-        addStopMessage();
-        try {
-            latch.await();
-        } catch(InterruptedException e) {
-            logger.error("Error waiting for shutdown to complete", e);
-        }
+        executor.shutdownNow();
         transmitSocket.close();
-        transmitSocket = null;
         logger.info("LightwaveRFSender Stopped");
-    }
-
-    /**
-      * Initialise transmit sockets for UDP publishing
-      */
-    private void initialiseSockets() {
-        try {
-            transmitSocket = new DatagramSocket();
-        } catch (IOException e) {
-            logger.error("Error initalising socket", e);
-        }
     }
 
     /**
@@ -83,28 +69,23 @@ public class LightwaveRFSender implements Runnable {
      */
     @Override
     public void run() {
-        logger.info("LightwaveRFSender Started");
-        while(running) {
-            try {
-                LightwaveRFCommand commandToSend = queue.take();
-                if(!commandToSend.equals(STOP_MESSAGE)) {
-                    netsendUDP(commandToSend);
-                } else {
-                    logger.info("Stop message received");
-                    break;
-                }
-                Thread.sleep(pollTime);
-            } catch(InterruptedException e) {
-                logger.error("Error waiting on queue", e);
-            }
-        }
-        latch.countDown();
+	    logger.info("LightwaveRFSender Started");
+	        try {
+	            LightwaveRFCommand commandToSend = queue.take();
+	            if(!commandToSend.equals(STOP_MESSAGE)) {
+	                netsendUDP(commandToSend);
+	            } else {
+	                logger.info("Stop message received");
+	            }
+	        } catch(InterruptedException e) {
+	            logger.error("Error waiting on queue", e);
+	        }
     }
 
     /**
-    * Add UDP commands to queue.
+    * Add LightwaveRFCommand command to queue to send.
     */
-    public void sendUDP(LightwaveRFCommand command) {
+    public void sendLightwaveCommand(LightwaveRFCommand command) {
         try {
             if(running) {
                 queue.put(command);
@@ -117,34 +98,17 @@ public class LightwaveRFSender implements Runnable {
     }
 
     /**
-     * Add a stop message so we start shutting down
-     */
-    private void addStopMessage() {
-        try {
-            queue.put(STOP_MESSAGE);
-        } catch (InterruptedException e) {
-            logger.error("Error stoping LightwaveRFSender", e);
-        }
-    }
-
-    /**
     * Send the UDP commands
      */
     private void netsendUDP(LightwaveRFCommand command) {
         try {
             logger.debug("Sending command[" + command.getLightwaveRfCommandString() + "]");
             byte[] sendData = new byte[1024];
-            sendData = getData(command);
+            sendData = command.getLightwaveRfCommandString().getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, lightwaveWifiLinkPortIn);
             transmitSocket.send(sendPacket);
         } 		catch (IOException e) {
             logger.error("Error sending command[" + command + "]", e);
         }
     }
-
-    
-    private byte[] getData(LightwaveRFCommand command){
-    	return command.getLightwaveRfCommandString().getBytes();    	
-    }
-    
 }
