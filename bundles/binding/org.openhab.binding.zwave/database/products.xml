@@ -798,7 +798,7 @@
 			</Reference>
 			<Model>KeyFobG5</Model>
 			<Label lang="en">4 button keyfob</Label>
-			<ConfigFile>aeon/keyfob.xml</ConfigFile>
+			<ConfigFile>aeon/keyfobg1.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
