@@ -9,7 +9,12 @@
 package org.openhab.binding.satel.internal.types;
 
 /**
- * Available output control types.
+ * Available output control types:
+ * <ul>
+ * <li>ON - sets an output</li>
+ * <li>OFF - resets an output</li>
+ * <li>TOGGLE - inverts output state</li>
+ * </ul>
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0

@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Allows distributing incoming event to all registered listeners. Listeners
- * must implement {@link EventListener} interface.
+ * must implement {@link SatelEventListener} interface.
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public class EventDispatcher {
 	private static final Logger logger = LoggerFactory.getLogger(EventDispatcher.class);
 
-	private final Set<EventListener> eventListeners = new CopyOnWriteArraySet<EventListener>();
+	private final Set<SatelEventListener> eventListeners = new CopyOnWriteArraySet<SatelEventListener>();
 
 	/**
 	 * Add a listener for Satel events.
@@ -32,7 +32,7 @@ public class EventDispatcher {
 	 * @param eventListener
 	 *            the event listener to add.
 	 */
-	public void addEventListener(EventListener eventListener) {
+	public void addEventListener(SatelEventListener eventListener) {
 		this.eventListeners.add(eventListener);
 	}
 
@@ -42,7 +42,7 @@ public class EventDispatcher {
 	 * @param eventListener
 	 *            the event listener to remove.
 	 */
-	public void removeEventListener(EventListener eventListener) {
+	public void removeEventListener(SatelEventListener eventListener) {
 		this.eventListeners.remove(eventListener);
 	}
 
@@ -54,7 +54,7 @@ public class EventDispatcher {
 	 */
 	public void dispatchEvent(SatelEvent event) {
 		logger.debug("Distributing event: {}", event);
-		for (EventListener listener : eventListeners) {
+		for (SatelEventListener listener : eventListeners) {
 			logger.trace("Distributing to {}", listener);
 			listener.incomingEvent(event);
 		}

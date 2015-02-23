@@ -9,7 +9,13 @@
 package org.openhab.binding.satel.internal.types;
 
 /**
- * Available object types.
+ * Available object types:
+ * <ul>
+ * <li>input - various kinds of devices connected to inputs, like reed switches, PIRs, etc</li>
+ * <li>zone - group of inputs and outputs</li>
+ * <li>output - outputs to various devices like sirens, relays, etc.</li>
+ * <li>doors - inputs connected to reed switches mounted on doors</li>
+ * </ul>
  * 
  * @author Krzysztof Goworek
  * @since 1.7.0

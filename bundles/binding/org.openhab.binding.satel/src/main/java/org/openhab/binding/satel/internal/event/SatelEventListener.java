@@ -15,7 +15,7 @@ package org.openhab.binding.satel.internal.event;
  * @author Krzysztof Goworek
  * @since 1.7.0
  */
-public interface EventListener {
+public interface SatelEventListener {
 
 	/**
 	 * Event handler for Satel events.
