@@ -8,9 +8,14 @@
  */
 package org.openhab.binding.hue.internal.data;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.openhab.binding.hue.internal.HueSettingsParseException;
+import org.openhab.binding.hue.internal.hardware.HueTapState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +101,7 @@ public class HueSettings {
 	 * 
 	 * @return amount of lights connected to Hue hub
 	 */
-	public int getCount() {
+	public int getLightsCount() {
 		if (settingsData == null) {
 			logger.error("Hue bridge settings not initialized correctly.");
 			return -1;
@@ -104,6 +109,73 @@ public class HueSettings {
 		return settingsData.node("lights").count();
 	}
 
+	/**
+	 * Get the rules in thsi settings file
+	 * 
+	 * @return number of sensors connected to Hue hub
+	 */
+	public SettingsTree getRules() {
+		if (settingsData == null) {
+			logger.error("No settings data.");
+			return null;
+		}
+		
+		return settingsData.node("rules");
+	}
+	
+	/**
+	 * find the rule id for a rule name
+	 * @param name
+	 * @return
+	 */
+	public String getRule(String name) {
+		if (settingsData == null) {
+			logger.error("No settings data.");
+			return null;
+		}
+		
+		SettingsTree rules=getRules();
+		for(String id:rules.nodes()){
+			SettingsTree rule=rules.node(id);
+			if(rule.value("name").equals(name)){
+				return  id;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Determine number of sensors connected to Hue hub. This is not necessarily the number of tap devices!
+	 * 
+	 * @return number of sensors connected to Hue hub
+	 */
+	public int getSensorsCount() {
+		if (settingsData == null) {
+			logger.error("No settings data.");
+			return -1;
+		}
+		return settingsData.node("sensors").count();
+	}
+	
+	/**
+	 * retrieve a Map of all tap States. Key is the Tap Sensor id
+	 * @return
+	 */
+	public Map<Integer,HueTapState> getTapStates() throws HueSettingsParseException{
+		Map<Integer,HueTapState> states=new HashMap<Integer,HueTapState>();
+		SettingsTree sensors=settingsData.node("sensors");
+			
+		for(String deviceID:sensors.nodes()){
+			SettingsTree tn=sensors.node(deviceID);
+			if(tn.value("type").equals("ZGPSwitch")){
+				SettingsTree stateNode=tn.node("state");
+				HueTapState state=new HueTapState((Integer)stateNode.value("buttonevent"),(String)stateNode.value("lastupdated"));				
+				states.put(Integer.parseInt(deviceID),state);
+			}
+		}
+		return states;
+	}
+	
 	/**
 	 * Determines the color temperature of the given bulb.
 	 * 
@@ -191,7 +263,7 @@ public class HueSettings {
 	 * The SettingsTree represents the settings Json as a tree with some
 	 * convenience methods to get subtrees and the values of interest easily.
 	 */
-	class SettingsTree {
+	public class SettingsTree {
 
 		private Map<String, Object> dataMap;
 
@@ -212,14 +284,14 @@ public class HueSettings {
 		 * @return The child node named like nodeName. This will be a sub tree.
 		 */
 		@SuppressWarnings("unchecked")
-		protected SettingsTree node(String nodeName) {
+		public SettingsTree node(String nodeName) {
 			return new SettingsTree((Map<String, Object>) dataMap.get(nodeName));
 		}
 
 		/**
 		 * @return the amount of lights connected to Hue hub
 		 */
-		protected int count() {
+		public int count() {
 			return dataMap.size();
 		}
 
@@ -228,10 +300,13 @@ public class HueSettings {
 		 *            The name of the child node.
 		 * @return The child node named like nodeName. This will be an object.
 		 */
-		protected Object value(String valueName) {
+		public Object value(String valueName) {
 			return dataMap.get(valueName);
 		}
 
+		public Set<String> nodes(){
+			return dataMap.keySet();
+		}
 	}
 
 }

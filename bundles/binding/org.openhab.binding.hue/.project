@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>org.openhab.binding.hue</name>
-	<comment>This is the HTTP binding of the open Home Automation Bus (openHAB)</comment>
+	<comment>This is the open Home Automation Bus (openHAB). NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -30,4 +30,136 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>ant-antlr.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-antlr.jar</location>
+		</link>
+		<link>
+			<name>ant-apache-bcel.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-apache-bcel.jar</location>
+		</link>
+		<link>
+			<name>ant-apache-bsf.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-apache-bsf.jar</location>
+		</link>
+		<link>
+			<name>ant-apache-log4j.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-apache-log4j.jar</location>
+		</link>
+		<link>
+			<name>ant-apache-oro.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-apache-oro.jar</location>
+		</link>
+		<link>
+			<name>ant-apache-regexp.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-apache-regexp.jar</location>
+		</link>
+		<link>
+			<name>ant-apache-resolver.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-apache-resolver.jar</location>
+		</link>
+		<link>
+			<name>ant-apache-xalan2.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-apache-xalan2.jar</location>
+		</link>
+		<link>
+			<name>ant-commons-logging.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-commons-logging.jar</location>
+		</link>
+		<link>
+			<name>ant-commons-net.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-commons-net.jar</location>
+		</link>
+		<link>
+			<name>ant-jai.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-jai.jar</location>
+		</link>
+		<link>
+			<name>ant-javamail.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-javamail.jar</location>
+		</link>
+		<link>
+			<name>ant-jdepend.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-jdepend.jar</location>
+		</link>
+		<link>
+			<name>ant-jmf.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-jmf.jar</location>
+		</link>
+		<link>
+			<name>ant-jsch.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-jsch.jar</location>
+		</link>
+		<link>
+			<name>ant-junit.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-junit.jar</location>
+		</link>
+		<link>
+			<name>ant-junit4.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-junit4.jar</location>
+		</link>
+		<link>
+			<name>ant-launcher.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-launcher.jar</location>
+		</link>
+		<link>
+			<name>ant-netrexx.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-netrexx.jar</location>
+		</link>
+		<link>
+			<name>ant-swing.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-swing.jar</location>
+		</link>
+		<link>
+			<name>ant-testutil.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant-testutil.jar</location>
+		</link>
+		<link>
+			<name>ant.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.apache.ant-1.8.3.v201301120609.jar/lib/ant.jar</location>
+		</link>
+		<link>
+			<name>asm-3.1.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.openhab.io.rest.lib-1.7.0-SNAPSHOT.jar/lib/asm-3.1.jar</location>
+		</link>
+		<link>
+			<name>jdi.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.eclipse.jdt.debug-3.7.101.v20120913-153601.jar/jdi.jar</location>
+		</link>
+		<link>
+			<name>jdimodel.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.eclipse.jdt.debug-3.7.101.v20120913-153601.jar/jdimodel.jar</location>
+		</link>
+		<link>
+			<name>quartz-all-2.1.7.jar</name>
+			<type>1</type>
+			<location>D:/UserData/Gernot/.m2/repository/.cache/tycho/org.openhab.core.scheduler-1.7.0-SNAPSHOT.jar/lib/quartz-all-2.1.7.jar</location>
+		</link>
+	</linkedResources>
 </projectDescription>

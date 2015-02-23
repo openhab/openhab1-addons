@@ -10,7 +10,7 @@ package org.openhab.binding.hue;
 
 import java.util.List;
 
-import org.openhab.binding.hue.internal.HueBindingConfig;
+import org.openhab.binding.hue.internal.AbstractHueBindingConfig;
 import org.openhab.core.binding.BindingProvider;
 
 /**
@@ -33,7 +33,7 @@ public interface HueBindingProvider extends BindingProvider {
 	 * @return The configuration if there is an item with the given name, null
 	 *         otherwise.
 	 */
-	public HueBindingConfig getItemConfig(String itemName);
+	public AbstractHueBindingConfig getItemConfig(String itemName);
 
 	/**
 	 * Returns a list of item names

@@ -36,10 +36,10 @@ import org.slf4j.LoggerFactory;
  * @author Roman Hartmann
  * @since 1.2.0
  */
-public class HueBindingConfig implements BindingConfig {
+public class HueLightBindingConfig extends AbstractHueBindingConfig implements BindingConfig {
 
 	static final Logger logger = LoggerFactory
-			.getLogger(HueBindingConfig.class);
+			.getLogger(HueLightBindingConfig.class);
 
 	/**
 	 * The binding type of the hue item.
@@ -53,11 +53,6 @@ public class HueBindingConfig implements BindingConfig {
 	public enum BindingType {
 		switching, brightness, colorTemperature, rgb
 	}
-
-	/**
-	 * The number under which the bulb is filed in the Hue bridge.
-	 */
-	private final int deviceNumber;
 
 	/**
 	 * The binding type of the hue item.
@@ -103,15 +98,15 @@ public class HueBindingConfig implements BindingConfig {
 	 *            the bulb is dimmed up or down. Default is 25.
 	 * @throws BindingConfigParseException
 	 */
-	public HueBindingConfig(String deviceNumber, String type, String stepSize)
+	public HueLightBindingConfig(String deviceNumber, String type, String stepSize)
 			throws BindingConfigParseException {
-
-		this.deviceNumber = parseDeviceNumberConfigString(deviceNumber);
+		
+		super(deviceNumber);
 
 		if (type != null) {
 			this.type = parseBindingTypeConfigString(type);
 		} else {
-			this.type = HueBindingConfig.BindingType.brightness;
+			this.type = HueLightBindingConfig.BindingType.brightness;
 		}
 
 		if (stepSize != null) {
@@ -146,10 +141,10 @@ public class HueBindingConfig implements BindingConfig {
 	 * 
 	 * @param configString
 	 *            The binding type as a string.
-	 * @return The binding type as a {@link HueBindingConfig.BindingType}
+	 * @return The binding type as a {@link HueLightBindingConfig.BindingType}
 	 * @throws BindingConfigParseException
 	 */
-	private HueBindingConfig.BindingType parseBindingTypeConfigString(
+	private HueLightBindingConfig.BindingType parseBindingTypeConfigString(
 			String configString) throws BindingConfigParseException {
 
 		if (configString != null) {
@@ -158,37 +153,11 @@ public class HueBindingConfig implements BindingConfig {
 			} catch (Exception ignore) {
 			}
 		}
-		return HueBindingConfig.BindingType.switching;
+		return HueLightBindingConfig.BindingType.switching;
 	}
 
 	/**
-	 * Parses a device number string that has been found in the configuration.
-	 * 
-	 * @param configString
-	 *            The device number as a string.
-	 * @return The device number as an integer value.
-	 * @throws BindingConfigParseException
-	 */
-	private int parseDeviceNumberConfigString(String configString)
-			throws BindingConfigParseException {
-		try {
-			return Integer.parseInt(configString);
-		} catch (Exception e) {
-			throw new BindingConfigParseException(
-					"Error parsing device number.");
-		}
-	}
-
-	/**
-	 * @return The device number that has been declared in the binding
-	 *         configuration.
-	 */
-	public int getDeviceNumber() {
-		return deviceNumber;
-	}
-
-	/**
-	 * @return The binding type as a {@link HueBindingConfig.BindingType} that
+	 * @return The binding type as a {@link HueLightBindingConfig.BindingType} that
 	 *         has been declared in the binding configuration.
 	 */
 	public BindingType getType() {

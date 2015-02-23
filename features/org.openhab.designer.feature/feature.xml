@@ -355,12 +355,12 @@
          version="0.0.0"
          unpack="false"/>
 
-     <plugin
-           id="org.openhab.action.openwebif"
-           download-size="0"
-           install-size="0"
-           version="0.0.0"
-           unpack="false"/>
+   <plugin
+         id="org.openhab.action.openwebif"
+		 download-size="0"
+		 install-size="0"
+		 version="0.0.0"
+		 unpack="false"/>
 
    <plugin
          id="org.openhab.action.astro"
@@ -369,4 +369,10 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.openhab.action.hue"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 </feature>
