@@ -95,12 +95,15 @@ ZWaveCommandClassDynamicState {
 		logger.debug("NODE {}: Received Thermostat Mode Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
-		case THERMOSTAT_MODE_SET:
 		case THERMOSTAT_MODE_GET:
 		case THERMOSTAT_MODE_SUPPORTED_GET:
 			logger.warn("NODE {}: Command {} not implemented.", 
 				this.getNode().getNodeId(), command);
 			return;
+		case THERMOSTAT_MODE_SET:
+			logger.trace("NODE {}: Process Thermostat Mode Get as Report", this.getNode().getNodeId());
+			processThermostatModeReport(serialMessage, offset, endpoint);
+			break;
 		case THERMOSTAT_MODE_SUPPORTED_REPORT:
 			logger.debug("NODE {}: Process Thermostat Supported Mode Report", this.getNode().getNodeId());
 
