@@ -14,8 +14,7 @@ public class ParameterDefaults {
 	private String mCommandTransform;
 	private String mFormatted;
 
-	private ParameterDefaults(String formatted, String in, String out,
-			String command) {
+	private ParameterDefaults(String formatted, String in, String out, String command) {
 		mFormatted = formatted;
 		mInTransform = in;
 		mOutTransform = out;
