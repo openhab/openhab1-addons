@@ -1903,4 +1903,17 @@
 			<ConfigFile>zipato/rgbwe27.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>0138</Id>
+		<Name>BRK Brands</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>ZCOMBO</Model>
+			<Label lang="en">Smoke and Carbon Monoxide Alarm</Label>
+			<ConfigFile>brk/zcombo.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
 </Manufacturers>
