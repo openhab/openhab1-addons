@@ -12,11 +12,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +90,7 @@ public class ZWaveApplicationStatusClass extends ZWaveCommandClass {
 						scheduler.schedule(new Runnable() {
 							@Override
 							public void run() {
-								if (node== null || node.getNodeStage() != NodeStage.DONE)
+								if (node == null || node.getNodeState() != ZWaveNodeState.ALIVE)
 									return;
 								controller.pollNode(node);
 								

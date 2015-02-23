@@ -27,6 +27,7 @@
     <provider name="Yahoo" ids="7"/>
     <provider name="OpenWeatherMap" ids="620, 621, 622"/>
     <provider name="Hamweather" ids="SI, WM"/>
+    <provider name="WorldWeatherOnline" ids="320"/>
   </common-id-mapping>
   <common-id-mapping id="freezing-drizzle">
     <provider name="Yahoo" ids="8"/>

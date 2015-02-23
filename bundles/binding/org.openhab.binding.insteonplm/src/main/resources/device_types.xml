@@ -64,11 +64,19 @@ Example entry:
      <model>2842-222</model>
      <description>Motion Sensor</description>
      <feature name="contact">WirelessMotionSensorContact</feature>
-     <feature name="batterylevel">MotionSensorBatteryLevel</feature>
-     <feature name="lightlevel">MotionSensorLightLevel</feature>
+     <feature name="data">MotionSensorData</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
-
+ <device productKey="0x000050">
+     <model>2486DWH6</model>
+     <description>KeypadLinc Dimmer - 6 Button</description>
+     <feature name="loaddimmer">LoadDimmerButton</feature>
+     <feature name="keypadbuttonA">KeyPadButton3</feature>
+     <feature name="keypadbuttonB">KeyPadButton4</feature>
+     <feature name="keypadbuttonC">KeyPadButton5</feature>
+     <feature name="keypadbuttonD">KeyPadButton6</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
  <device productKey="0x000051">
      <model>2486DWH8</model>
      <description>KeypadLinc Dimmer</description>
@@ -125,7 +133,8 @@ Example entry:
  <device productKey="F00.00.03">
      <model>2845-222</model>
      <description>Hidden Door Sensor</description>
-     <feature name="contact">GenericContact</feature>
+     <feature name="contact">WirelessMotionSensorContact</feature>
+     <feature name="data">HiddenDoorSensorData</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 
@@ -262,6 +271,13 @@ Example entry:
      <feature name="keypadbuttonF">KeyPadButton6</feature>
      <feature name="keypadbuttonG">KeyPadButton7</feature>
      <feature name="keypadbuttonH">KeyPadButton8</feature>
+     <feature name="lastheardfrom">GenericLastTime</feature>
+ </device>
+
+ <device productKey="F00.00.17">
+     <model>2423A1</model>
+     <description>iMeter Solo Power Meter</description>
+     <feature name="meter">PowerMeter</feature>
      <feature name="lastheardfrom">GenericLastTime</feature>
  </device>
 

@@ -70,8 +70,15 @@ public class PilightGenericBindingProvider extends AbstractGenericBindingProvide
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 		
+		PilightBindingConfig config = parseBindingConfig(item, bindingConfig);
+
+		if (config != null) {
+			addBindingConfig(item, config);
+		}
+	}
+
+	protected PilightBindingConfig parseBindingConfig(Item item, String bindingConfig) {
 		bindingConfig =	bindingConfig.replace(" ", "");
-		
 		Matcher matcher = CONFIG_PATTERN.matcher(bindingConfig);
 		
 		if (matcher.matches()) {
@@ -108,11 +115,13 @@ public class PilightGenericBindingProvider extends AbstractGenericBindingProvide
 			} else {
 				logger.info("pilight:{} item {} bound to device {} in location {}{}", config.getInstance(), config.getItemName(), config.getDevice(), 
 						config.getLocation(), config.getProperty() != null ? ", property " + config.getProperty() : "");
-				addBindingConfig(item, config);
+				return config;
 			}
 		} else {
 			logger.error("Item config {} does not match instance#location:device,property=optional pattern", bindingConfig);
 		}
+		
+		return null;
 	}
 	
 	public PilightBindingConfig getBindingConfig(String itemName) {

@@ -9,7 +9,7 @@
 package org.openhab.binding.anel.internal;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -49,6 +49,12 @@ public class AnelDataParser {
 	 * <li>25. &lt;firmware version&gt; (may contain trailing line break)
 	 * </ul>
 	 * Source: http://www.anel-elektronik.de/forum_new/viewtopic.php?f=16&t=207
+	 * <p>
+	 * It turned out that the HOME variant has a different format which contains
+	 * only the first 16 segments. If that is the case, the remaining fields of
+	 * {@link AnelState} are simply ignored (and remain unset).
+	 * </p>
+	 * Source: https://github.com/openhab/openhab/issues/2068
 	 * 
 	 * @param data
 	 *            The data received from {@link AnelUDPConnector}.
@@ -62,15 +68,15 @@ public class AnelDataParser {
 		final String string = new String(data);
 		final String[] arr = string.split(":");
 
-		if (arr.length != 26)
-			throw new IllegalArgumentException("Data with 26 values expected but " + arr.length + " received: "
+		if (arr.length != 26 && arr.length != 16)
+			throw new IllegalArgumentException("Data with 16 or 26 values expected but " + arr.length + " received: "
 					+ string);
 		if (!arr[0].equals("NET-PwrCtrl"))
 			throw new IllegalArgumentException("Data must start with 'NET-PwrCtrl' but it didn't: " + arr[0]);
 		if (!state.host.equals(arr[2]) && !state.host.equalsIgnoreCase(arr[1].trim()))
 			return Collections.emptyMap(); // this came from another device
 
-		final Map<AnelCommandType, State> result = new HashMap<AnelCommandType, State>();
+		final Map<AnelCommandType, State> result = new LinkedHashMap<AnelCommandType, State>();
 
 		// check for switch changes, update cached state, and prepare command if
 		// needed
@@ -89,29 +95,33 @@ public class AnelDataParser {
 			addCommand(state.switchLocked, nr, (locked & (1 << nr)) > 0, "F" + (nr + 1) + "LOCKED", result);
 		}
 
-		// check for IO changes, update cached state, and prepare commands if
-		// needed
-		for (int nr = 0; nr < 8; nr++) {
-			final String[] ioState = arr[16 + nr].split(",");
-			if (ioState.length == 3) {
-				// expected format
-				addCommand(state.ioName, nr, ioState[0], "IO" + (nr + 1) + "NAME", result);
-				addCommand(state.ioIsInput, nr, "1".equals(ioState[1]), "IO" + (nr + 1) + "ISINPUT", result);
-				addCommand(state.ioState, nr, "1".equals(ioState[2]), "IO" + (nr + 1), result);
-			} else {
-				// unexpected format, set states to null
-				addCommand(state.ioName, nr, null, "IO" + (nr + 1) + "NAME", result);
-				addCommand(state.ioIsInput, nr, null, "IO" + (nr + 1) + "ISINPUT", result);
-				addCommand(state.ioState, nr, null, "IO" + (nr + 1), result);
-			}
-		}
+		// IO and temperature is only available if array has length 24
+		if (arr.length > 16) {
 
-		// example temperature string: '26.4°C'
-		// '°' is caused by some different encoding, so cut last 2 chars
-		final String temperature = arr[24].substring(0, arr[24].length() - 2);
-		if (hasTemperaturChanged(state, temperature)) {
-			result.put(AnelCommandType.TEMPERATURE, new DecimalType(temperature));
-			state.temperature = temperature;
+			// check for IO changes, update cached state, and prepare commands
+			// if needed
+			for (int nr = 0; nr < 8; nr++) {
+				final String[] ioState = arr[16 + nr].split(",");
+				if (ioState.length == 3) {
+					// expected format
+					addCommand(state.ioName, nr, ioState[0], "IO" + (nr + 1) + "NAME", result);
+					addCommand(state.ioIsInput, nr, "1".equals(ioState[1]), "IO" + (nr + 1) + "ISINPUT", result);
+					addCommand(state.ioState, nr, "1".equals(ioState[2]), "IO" + (nr + 1), result);
+				} else {
+					// unexpected format, set states to null
+					addCommand(state.ioName, nr, null, "IO" + (nr + 1) + "NAME", result);
+					addCommand(state.ioIsInput, nr, null, "IO" + (nr + 1) + "ISINPUT", result);
+					addCommand(state.ioState, nr, null, "IO" + (nr + 1), result);
+				}
+			}
+
+			// example temperature string: '26.4°C'
+			// '°' is caused by some different encoding, so cut last 2 chars
+			final String temperature = arr[24].substring(0, arr[24].length() - 2);
+			if (hasTemperaturChanged(state, temperature)) {
+				result.put(AnelCommandType.TEMPERATURE, new DecimalType(temperature));
+				state.temperature = temperature;
+			}
 		}
 
 		// maybe the device's name changed?!

@@ -40,7 +40,7 @@ public class DeviceListTest {
 		final DeviceListResponse response = request.execute();
 
 		assertFalse(response.isError());
-		assertEquals("http://api.netatmo.net/api/devicelist?access_token="
+		assertEquals("https://api.netatmo.net/api/devicelist?access_token="
 				+ ACCESS_TOKEN, request.getQuery());
 		assertEquals("ok", response.getStatus());
 

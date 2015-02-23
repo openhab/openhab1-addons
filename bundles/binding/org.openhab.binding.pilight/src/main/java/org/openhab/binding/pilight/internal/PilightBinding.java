@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonGenerator.Feature;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.binding.pilight.PilightBindingProvider;
@@ -34,7 +35,6 @@ import org.openhab.binding.pilight.internal.communication.Status;
 import org.openhab.binding.pilight.internal.communication.Update;
 import org.openhab.binding.pilight.internal.communication.Values;
 import org.openhab.core.binding.AbstractBinding;
-import org.openhab.core.binding.BindingChangeListener;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * @author Jeroen Idserda
  * @since 1.0
  */
-public class PilightBinding extends AbstractBinding<PilightBindingProvider> implements ManagedService,BindingChangeListener {
+public class PilightBinding extends AbstractBinding<PilightBindingProvider> implements ManagedService {
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(PilightBinding.class);
@@ -105,21 +105,28 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 			String property = config.getProperty();
 			if (status.getValues().containsKey(property)) {
 				String value = status.getValues().get(property);
-				State state = getStateFromProperty(value, config);
-				eventPublisher.postUpdate(config.getItemName(), state);
+				State state = getState(value, config);
+				
+				if (state != null) {
+					eventPublisher.postUpdate(config.getItemName(), state);
+				}
 			}
 		}
 	}
 
-	private State getStateFromProperty(String value, PilightBindingConfig config) {
+	protected State getState(String value, PilightBindingConfig config) {
 		State state = null;
 		
 		if (config.getItemType().equals(StringItem.class)) {
 			state = new StringType(value);
 		} else if (config.getItemType().equals(NumberItem.class)) {
-			BigDecimal numberValue = new BigDecimal(value).setScale(config.getScale());
-			numberValue = numberValue.divide(new BigDecimal(config.getScale()*10), config.getScale(), RoundingMode.HALF_UP);
-			state = new DecimalType(numberValue);
+			if (!StringUtils.isBlank(value)) {
+				// Number values are always received as an integer with an optional parameter describing 
+				// the number of decimals (scale, default = 0). 
+				BigDecimal numberValue = new BigDecimal(value);
+				numberValue = numberValue.divide(new BigDecimal(Math.pow(10,config.getScale())), config.getScale(), RoundingMode.HALF_UP);
+				state = new DecimalType(numberValue);
+			}
 		}
 		
 		return state;
@@ -320,6 +327,7 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 			}
 		}));
 		connection.getListener().start();
+		setInitialState();
 	}
 
 	/**
@@ -348,12 +356,14 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 					
 					return state;
 				} else if (devType.equals(DeviceType.VALUE)) {
-					bindingConfig.setScale(dev.getScale());
+					if (dev.getScale() != null) {
+						bindingConfig.setScale(dev.getScale());
+					}
 					
 					String property = bindingConfig.getProperty();
 					if (dev.getProperties().containsKey(property)) {
 						String value = dev.getProperties().get(property);
-						return getStateFromProperty(value, bindingConfig);
+						return getState(value, bindingConfig);
 					}
 				}
 			}
@@ -366,8 +376,25 @@ public class PilightBinding extends AbstractBinding<PilightBindingProvider> impl
 	 */
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
+		logger.debug("Binding changed for item {}", itemName);
 		checkItemState(provider, itemName);
-		super.bindingChanged(provider, itemName);
+	}
+	
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	public void allBindingsChanged(BindingProvider provider) {
+		logger.debug("All bindings changed");
+		for (String itemName : provider.getItemNames()) {
+			checkItemState(provider, itemName);
+		}
+	}
+	
+	private void setInitialState() {
+		for (PilightBindingProvider provider : providers) {
+			allBindingsChanged(provider);
+		}
 	}
 
 	/**
