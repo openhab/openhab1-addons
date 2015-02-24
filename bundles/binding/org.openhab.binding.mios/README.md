@@ -391,6 +391,26 @@ The `examples/transform/miosDimmerCommand.map` file has a definition that handle
     _defaultCommand=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=??)
 
 
+##### A Roller shutter...
+
+The simple version, using internal defaults for the `WindowCovering1` service of the Device:
+
+    Rollershutter Kitchen "Kitchen"	(GKitchen)  {mios="unit:micasa,device:13/service/WindowCovering1"}
+
+or the full version:
+
+    Rollershutter Kitchen "Kitchen"	(GKitchen)  {mios="unit:micasa,device:13/service/WindowCovering1,command:MAP(miosShutterCommand.map)"}
+
+Since Rollershutter Items in openHAB can be sent `UP`, `DOWN`, `DECREASE` or _&lt;PCTNumber>_ as the command, the mapping file must account for both the static commands (`UP`, `DOWN`, `DECREASE`) as well as the possibility of a _Command Value_ being sent.
+
+The `examples/transform/miosShutterCommand.map` file has a definition that handles this situation:
+
+    DOWN=urn:upnp-org:serviceId:WindowCovering1/Down()
+    UP=urn:upnp-org:serviceId:WindowCovering1/Up()
+    STOP=urn:upnp-org:serviceId:WindowCovering1/Stop()
+    _defaultCommand=urn:upnp-org:serviceId:Dimming1/SetLoadLevelTarget(newLoadlevelTarget=??)
+
+
 ##### A Thermostat...
 
 A Thermostat is composed of a number of pieces.  Each piece must be first bound to openHAB Items, and then a number of mappings must be put in place.

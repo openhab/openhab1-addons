@@ -79,14 +79,10 @@ public class MiosUnitConnector {
 	private static final String DEVICE_URL = "http://%s:%d/data_request?id=action&DeviceNum=%d&serviceId=%s&action=%s";
 	private static final String DEVICE_URL_PARAMS = DEVICE_URL + "&%s";
 
-	private static final Pattern DEVICE_PATTERN_WITH_PARAM = Pattern
+	private static final Pattern DEVICE_PATTERN = Pattern
 			.compile("(?<serviceName>.+)/"
 					+ "(?<serviceAction>.+)"
 					+ "\\(((?<serviceParam>[a-zA-Z]+[a-zA-Z0-9]*)(=(?<serviceValue>.+))?)?\\)");
-
-	private static final Pattern DEVICE_PATTERN_WITHOUT_PARAM = Pattern
-			.compile("(?<serviceName>.+)/"
-					+ "(?<serviceAction>.+)");
 
 	// the MiOS instance and openHAB event publisher handles
 	private final MiosUnit unit;
@@ -187,10 +183,6 @@ public class MiosUnitConnector {
 
 	private void callDevice(DeviceBindingConfig config, Command command,
 			State state) throws TransformationException {
-		String serviceName = "";
-		String serviceAction = "";
-		String serviceParam = "";
-		String serviceValue = "";
 
 		logger.debug(
 				"callDevice: Need to remote-invoke Device '{}' action '{}' and current state '{}')",
@@ -209,27 +201,17 @@ public class MiosUnitConnector {
 							config.toProperty() });
 			return;
 		}
-		
-		Matcher matcher = DEVICE_PATTERN_WITH_PARAM.matcher(newCommand);
-		if (matcher.matches()) {
-			serviceName   = matcher.group("serviceName");
-			serviceAction = matcher.group("serviceAction");
-			serviceParam  = matcher.group("serviceParam");
-			serviceValue  = matcher.group("serviceValue");
-		}
-		else {
-			matcher = DEVICE_PATTERN_WITHOUT_PARAM.matcher(newCommand);
-			if (matcher.matches()) {
-				serviceName   = matcher.group("serviceName");
-				serviceAction = matcher.group("serviceAction");
-				serviceParam  = null;
-				serviceValue  = null;
-			}
-		}
 
-		if (!serviceName.equals("")) {
+		Matcher matcher = DEVICE_PATTERN.matcher(newCommand);
+
+		if (matcher.matches()) {
 			try {
 				MiosUnit u = getMiosUnit();
+
+				String serviceName = matcher.group("serviceName");
+				String serviceAction = matcher.group("serviceAction");
+				String serviceParam = matcher.group("serviceParam");
+				String serviceValue = matcher.group("serviceValue");
 
 				logger.debug(
 						"callDevice: decoded as serviceName '{}' serviceAction '{}' serviceParam '{}' serviceValue '{}'",
@@ -660,7 +642,7 @@ public class MiosUnitConnector {
 				// Only reset these once we've successfully loaded/parsed the
 				// content.
 				this.loadTime = lt;
-				this.dataVersion = dv; 
+				this.dataVersion = dv;
 				this.failures = 0;
 			} else {
 				throw new RuntimeException(
