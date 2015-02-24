@@ -76,7 +76,7 @@ public final class NestAPI implements ValueEventListener {
         Config defaultConfig = Firebase.getDefaultConfig();
 //        defaultConfig.setLogLevel(Level.ERROR);
         mFirebaseRef = new Firebase(APIUrls.NEST_FIREBASE_URL);
-        mListeners = new ArrayList<>();
+        mListeners = new ArrayList<WeakReference<Listener>>();
     }
 
     /**
@@ -239,7 +239,7 @@ public final class NestAPI implements ValueEventListener {
      */
     public void addUpdateListener(Listener listener) {
         mFirebaseRef.addValueEventListener(this);
-        mListeners.add(new WeakReference<>(listener));
+        mListeners.add(new WeakReference<Listener>(listener));
     }
 
     /**
@@ -301,7 +301,7 @@ public final class NestAPI implements ValueEventListener {
     }
 
     private static List<Listener> listenersFromReferences(List<WeakReference<Listener>> listenerRefs) {
-        final List<Listener> listeners = new ArrayList<>();
+        final List<Listener> listeners = new ArrayList<Listener>();
         for (int i = listenerRefs.size() - 1; i >= 0; i--) {
             final WeakReference<Listener> listenerRef = listenerRefs.get(i);
             final Listener listener = listenerRef.get();
@@ -326,13 +326,11 @@ public final class NestAPI implements ValueEventListener {
         }
 
         final Map<String, Object> value = (Map<String, Object>) entry.getValue();
-        switch (entry.getKey()) {
-            case Keys.DEVICES:
+        if(entry.getKey().equals(Keys.DEVICES)){
                 updateDevices(value, listeners);
-                break;
-            case Keys.STRUCTURES:
+        }
+        else if(entry.getKey().equals(Keys.STRUCTURES)){
                 updateStructures(value, listeners);
-                break;
         }
     }
 
@@ -340,13 +338,11 @@ public final class NestAPI implements ValueEventListener {
     private static void updateDevices(Map<String, Object> devices, List<Listener> listeners) {
         for (Map.Entry<String, Object> entry : devices.entrySet()) {
             final Map<String, Object> value = (Map<String, Object>) entry.getValue();
-            switch (entry.getKey()) {
-                case Keys.THERMOSTATS:
+            if(entry.getKey().equals(Keys.THERMOSTATS)){
                     updateThermostats(value, listeners);
-                    break;
-                case Keys.SMOKE_CO_ALARMS:
+            }
+            else if(entry.getKey().equals(Keys.SMOKE_CO_ALARMS)){
                     updateSmokeCOAlarms(value, listeners);
-                    break;
             }
         }
     }
