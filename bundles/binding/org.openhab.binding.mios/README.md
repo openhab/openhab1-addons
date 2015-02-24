@@ -520,7 +520,7 @@ or the full version:
 
     Rollershutter Kitchen "Kitchen"	(GKitchen)  {mios="unit:micasa,device:13/service/WindowCovering1,command:MAP(miosShutterCommand.map)"}
 
-Since Rollershutter Items in openHAB can be sent `UP`, `DOWN`, `DECREASE` or _&lt;PCTNumber>_ as the command, the mapping file must account for both the static commands (`UP`, `DOWN`, `DECREASE`) as well as the possibility of a _Command Value_ being sent.
+Since Rollershutter Items in openHAB can be sent `UP`, `DOWN`, `STOP` or _&lt;PCTNumber>_ as the command, the mapping file must account for both the static commands (`UP`, `DOWN`, `STOP`) as well as the possibility of a _Command Value_ being sent.
 
 The `examples/transform/miosShutterCommand.map` file has a definition that handles this situation:
 
