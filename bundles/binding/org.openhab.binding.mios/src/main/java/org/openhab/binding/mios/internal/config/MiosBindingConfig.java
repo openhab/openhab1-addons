@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.openhab.binding.mios.internal.MiosActivator;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
@@ -24,6 +25,7 @@ import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
@@ -352,6 +354,8 @@ public abstract class MiosBindingConfig implements BindingConfig {
 				} catch (NumberFormatException nfe) {
 					result = DateTimeType.valueOf(value);
 				}
+			} else if (itemType.isAssignableFrom(ColorItem.class)) {
+				result = HSBType.valueOf(value);
 			} else {
 				result = StringType.valueOf(value);
 			}
