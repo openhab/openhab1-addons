@@ -794,6 +794,15 @@
 		<Product>
 			<Reference>
 				<Type>0001</Type>
+				<Id>0058</Id>
+			</Reference>
+			<Model>KeyFobG5</Model>
+			<Label lang="en">4 button keyfob</Label>
+			<ConfigFile>aeon/keyfobg1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
 				<Id>0026</Id>
 			</Reference>
 			<Model>DSA38</Model>
