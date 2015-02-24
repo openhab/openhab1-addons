@@ -177,19 +177,21 @@ public class OBISMessage {
 	private void postProcessKaifaE0003() {
 		logger.debug("postProcessKaifaE0003");
 
-		CosemDate powerFailureDate = (CosemDate) cosemValues
-				.get(FIRST_POWER_FAILURE_DATE);
-		CosemInteger powerFailureDuration = (CosemInteger) cosemValues
-				.get(FIRST_POWER_FAILURE_DURATION);
-
-		Calendar epoch = Calendar.getInstance();
-		epoch.setTime(new Date(0));
-
-		if (powerFailureDate.getValue().getCalendar().before(epoch)
-				&& powerFailureDuration.getValue().intValue() == Integer.MAX_VALUE) {
-			logger.debug("Filter invalid power failure entry");
-			cosemValues.remove(FIRST_POWER_FAILURE_DURATION);
-			cosemValues.remove(FIRST_POWER_FAILURE_DATE);
+		if (cosemValues.size() > FIRST_POWER_FAILURE_DURATION) {
+			CosemDate powerFailureDate = (CosemDate) cosemValues
+					.get(FIRST_POWER_FAILURE_DATE);
+			CosemInteger powerFailureDuration = (CosemInteger) cosemValues
+					.get(FIRST_POWER_FAILURE_DURATION);
+	
+			Calendar epoch = Calendar.getInstance();
+			epoch.setTime(new Date(0));
+	
+			if (powerFailureDate.getValue().getCalendar().before(epoch)
+					&& powerFailureDuration.getValue().intValue() == Integer.MAX_VALUE) {
+				logger.debug("Filter invalid power failure entry");
+				cosemValues.remove(FIRST_POWER_FAILURE_DURATION);
+				cosemValues.remove(FIRST_POWER_FAILURE_DATE);
+			}
 		}
 	}
 }
