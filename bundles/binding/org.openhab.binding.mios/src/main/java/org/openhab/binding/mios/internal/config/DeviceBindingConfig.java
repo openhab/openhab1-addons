@@ -164,11 +164,32 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 	private static Map<String, String> COMMAND_DEFAULTS = new HashMap<String, String>();
 
 	static {
+<<<<<<< HEAD
 		COMMAND_DEFAULTS.put("ON", "urn:upnp-org:serviceId:SwitchPower1/SetTarget(newTargetValue=1)");
 		COMMAND_DEFAULTS.put("OFF", "urn:upnp-org:serviceId:SwitchPower1/SetTarget(newTargetValue=0)");
 		COMMAND_DEFAULTS.put("TOGGLE", "urn:micasaverde-com:serviceId:HaDevice1/ToggleState()");
 		COMMAND_DEFAULTS.put("INCREASE", "urn:upnp-org:serviceId:Dimming1/StepUp()");
 		COMMAND_DEFAULTS.put("DECREASE", "urn:upnp-org:serviceId:Dimming1/StepDown()");
+=======
+		COMMAND_DEFAULTS
+				.put("ON",
+						"urn:upnp-org:serviceId:SwitchPower1/SetTarget(newTargetValue=1)");
+		COMMAND_DEFAULTS
+				.put("OFF",
+						"urn:upnp-org:serviceId:SwitchPower1/SetTarget(newTargetValue=0)");
+		COMMAND_DEFAULTS.put("TOGGLE",
+				"urn:micasaverde-com:serviceId:HaDevice1/ToggleState()");
+		COMMAND_DEFAULTS.put("INCREASE",
+				"urn:upnp-org:serviceId:Dimming1/StepUp()");
+		COMMAND_DEFAULTS.put("DECREASE",
+				"urn:upnp-org:serviceId:Dimming1/StepDown()");
+		COMMAND_DEFAULTS.put("UP",
+				"urn:upnp-org:serviceId:WindowCovering1/UP()");
+		COMMAND_DEFAULTS.put("DOWN",
+				"urn:upnp-org:serviceId:WindowCovering1/DOWN()");
+		COMMAND_DEFAULTS.put("UP",
+				"urn:upnp-org:serviceId:WindowCovering1/STOP()");
+>>>>>>> Reworked the code according to the remarks of mrguessed
 	}
 
 	private static Properties aliasMap = new Properties();
@@ -210,7 +231,12 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 		}
 	}
 
+<<<<<<< HEAD
 	private static final Pattern SERVICE_IN_PATTERN = Pattern.compile("service/(?<serviceName>.+)/(?<serviceVar>.+)");
+=======
+	private static final Pattern SERVICE_IN_PATTERN = Pattern
+			.compile("service/(?<serviceName>.+)(/(?<serviceVar>.+))*");
+>>>>>>> Reworked the code according to the remarks of mrguessed
 
 	private static final Pattern SERVICE_COMMAND_TRANSFORM_PATTERN = Pattern
 			.compile("(?<transform>(?<transformCommand>[a-zA-Z]+)\\((?<transformParam>.*)\\))");
@@ -274,7 +300,10 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 				iName = mapServiceAlias(iName);
 
 				// Rebuild, since we've normalized the name.
-				newInStuff = "service/" + iName + '/' + iVar;
+				newInStuff = "service/" + iName;
+				if (iVar != null) {
+					newInStuff = newInStuff + '/' + iVar;
+				}
 			}
 
 			//
