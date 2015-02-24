@@ -52,18 +52,11 @@ ZWaveCommandClassConverter<ZWaveThermostatOperatingStateCommandClass> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	void executeRefresh(ZWaveNode node,
+	SerialMessage executeRefresh(ZWaveNode node,
 			ZWaveThermostatOperatingStateCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
 		logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-		SerialMessage serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
-
-		if (serialMessage == null) {
-			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-			return;
-		}
-
-		this.getController().sendData(serialMessage);
+		return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
 	}
 
 	/**

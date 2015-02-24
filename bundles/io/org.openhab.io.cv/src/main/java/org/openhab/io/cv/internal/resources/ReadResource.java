@@ -15,7 +15,6 @@ import java.util.List;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -30,7 +29,6 @@ import org.atmosphere.annotation.Suspend.SCOPE;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
-import org.atmosphere.cpr.HeaderConfig;
 import org.atmosphere.jersey.SuspendResponse;
 import org.openhab.core.items.GroupItem;
 import org.openhab.core.items.Item;
@@ -83,12 +81,12 @@ public class ReadResource {
 			@QueryParam("i") long index,
 			@QueryParam("t") long time,
 			@QueryParam("jsoncallback") @DefaultValue("callback") String callback,
-			@HeaderParam(HeaderConfig.X_ATMOSPHERE_TRANSPORT) String atmosphereTransport,
-			@HeaderParam(HeaderConfig.X_CACHE_DATE) long cacheDate,
     		@Context AtmosphereResource resource) {
-		String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes());
-		logger.debug("Received HTTP GET request at '{}' for {} items at index '{}', time '{}', ResponseType: '{}'.",
-				new String[] { uriInfo.getPath(), String.valueOf(itemNames.size()), String.valueOf(index), String.valueOf(cacheDate), responseType});
+		final String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes());
+		if (logger.isDebugEnabled()) {
+			logger.debug("Received HTTP GET request at '{}' for {} items at index '{}', ResponseType: '{}'.",
+				uriInfo.getPath(), itemNames.size(), index, responseType);
+		}
 		if(index==0) {
 			// first request => return all values
 			if (responseType != null) {
@@ -97,8 +95,11 @@ public class ReadResource {
 				throw new WebApplicationException(Response.notAcceptable(null).build());
 			}
 		}
-		CometVisuBroadcaster itemBroadcaster = (CometVisuBroadcaster) BroadcasterFactory.getDefault().lookup(CometVisuBroadcaster.class, resource.getRequest().getPathInfo(), true);
+		
+		BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
+		CometVisuBroadcaster itemBroadcaster = (CometVisuBroadcaster) broadcasterFactory.lookup(CometVisuBroadcaster.class, resource.getRequest().getPathInfo(), true);
 		itemBroadcaster.addStateChangeListener(new ItemStateChangeListener(itemNames));
+		
 		return new SuspendResponse.SuspendResponseBuilder<Response>()
 			.scope(SCOPE.REQUEST)
 			.resumeOnBroadcast(!ResponseTypeHelper.isStreamingTransport(resource.getRequest()))

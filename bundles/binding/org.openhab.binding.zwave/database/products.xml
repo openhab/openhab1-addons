@@ -91,6 +91,14 @@
 		<Name>Intermatic</Name>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>HA-01</Model>
+			<Label lang="en">Dual receptacle</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0003</Id>
 			</Reference>
@@ -152,6 +160,15 @@
 			</Reference>
 			<Model>CA-9000</Model>
 			<Label lang="en">PIR Occupancy Sensor</Label>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4841</Type>
+				<Id>0020</Id>
+			</Reference>
+			<Model>HA-20</Model>
+			<Label lang="en">Dimmer Switch</Label>
+			<ConfigFile>intermatic/ha20.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -279,6 +296,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0007</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Model>ST815</Model>
+			<Label lang="en">Illumination Sensor</Label>
+			<ConfigFile>everspring/st815.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>000D</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -318,6 +344,19 @@
 			<Model>ST812</Model>
 			<Label lang="en">Flood Sensor</Label>
 			<ConfigFile>everspring/st812.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0113</Id>
+		<Name>Evolve</Name>
+		<Product>
+			<Reference>
+				<Type>5457</Type>
+				<Id>3033</Id>
+			</Reference>
+			<Model>LTM-5</Model>
+			<Label lang="en">Wall Mount Accessory Switch</Label>
+			<ConfigFile>evolve/ltm-5.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -755,6 +794,15 @@
 		<Product>
 			<Reference>
 				<Type>0001</Type>
+				<Id>0058</Id>
+			</Reference>
+			<Model>KeyFobG5</Model>
+			<Label lang="en">4 button keyfob</Label>
+			<ConfigFile>aeon/keyfobg1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
 				<Id>0026</Id>
 			</Reference>
 			<Model>DSA38</Model>
@@ -955,19 +1003,6 @@
 		<Product>
 			<Reference>
 				<Type>0100</Type>
-				<Id>0104</Id>
-			</Reference>
-			<Reference>
-				<Type>0100</Type>
-				<Id>0106</Id>
-			</Reference>
-			<Model>FGD211</Model>
-			<Label lang="en">Universal Dimmer 500W (1.4)</Label>
-			<ConfigFile>fibaro/fgd211-14.xml</ConfigFile>
-		</Product>
-		<Product>
-			<Reference>
-				<Type>0100</Type>
 				<Id>0107</Id>
 			</Reference>
 			<Reference>
@@ -982,9 +1017,19 @@
 				<Type>0100</Type>
 				<Id>100A</Id>
 			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0104</Id>
+			</Reference>
+			<Reference>
+				<Type>0100</Type>
+				<Id>0106</Id>
+			</Reference>
 			<Model>FGD211</Model>
-			<Label lang="en">Universal Dimmer 500W (2.1)</Label>
-			<ConfigFile>fibaro/fgd211-21.xml</ConfigFile>
+			<Label lang="en">Universal Dimmer 500W</Label>
+			<ConfigFile VersionMax="1.8">fibaro/fgd211-14.xml</ConfigFile> <!-- VersionMin="1.4" -->
+			<ConfigFile VersionMin="1.9" VersionMax="1.11">fibaro/fgd211-19.xml</ConfigFile>
+			<ConfigFile VersionMin="2.1">fibaro/fgd211-21.xml</ConfigFile> <!-- VersionMax="2.3" -->
 		</Product>
 		<Product>
 			<Reference>
@@ -1027,6 +1072,10 @@
 			<Reference>
 				<Type>0200</Type>
 				<Id>0102</Id>
+			</Reference>
+			<Reference>
+				<Type>0200</Type>
+				<Id>0103</Id>
 			</Reference>
 			<Reference>
 				<Type>0200</Type>
@@ -1439,6 +1488,10 @@
 			<Reference>
 				<Type>0002</Type>
 				<Id>000C</Id>
+			</Reference>
+			<Reference>
+				<Type>0002</Type>
+				<Id>000D</Id>
 			</Reference>
 			<Model>PSM-02</Model>
 			<Label lang="en">Slim Multi-Sensor</Label>
@@ -1857,6 +1910,19 @@
 			<Model>RGBWE27ZW</Model>
 			<Label lang="en">RGBW bulb</Label>
 			<ConfigFile>zipato/rgbwe27.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0138</Id>
+		<Name>BRK Brands</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>ZCOMBO</Model>
+			<Label lang="en">Smoke and Carbon Monoxide Alarm</Label>
+			<ConfigFile>brk/zcombo.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

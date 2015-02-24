@@ -139,6 +139,7 @@
     <module>org.openhab.binding.zibase</module>
     <module>org.openhab.binding.wago</module>
     <module>org.openhab.binding.networkupstools</module>
+    <module>org.openhab.binding.ecobee</module>
   </modules>
 
 </project>

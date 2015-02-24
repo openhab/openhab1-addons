@@ -8,10 +8,13 @@
  */
 package org.openhab.io.cv.internal.broadcaster;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.WeakHashMap;
 
+import org.atmosphere.cpr.AtmosphereConfig;
+import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterLifeCyclePolicyListener;
 import org.atmosphere.jersey.JerseyBroadcaster;
 import org.openhab.io.cv.internal.listeners.ResourceStateChangeListener;
@@ -28,8 +31,9 @@ public class CometVisuBroadcaster extends JerseyBroadcaster {
 	private static final Logger logger = LoggerFactory.getLogger(CometVisuBroadcaster.class);
 	protected Collection<ResourceStateChangeListener> listeners = Collections.newSetFromMap(new WeakHashMap<ResourceStateChangeListener, Boolean>());
 	
-	public CometVisuBroadcaster(String id, org.atmosphere.cpr.AtmosphereConfig config) {
-		super(id, config);
+	@Override
+	public Broadcaster initialize(String name, URI uri, AtmosphereConfig config) {
+		super.initialize(name, uri, config);
 		this.addBroadcasterLifeCyclePolicyListener(new BroadcasterLifeCyclePolicyListener() {
 			
 			@Override
@@ -51,6 +55,7 @@ public class CometVisuBroadcaster extends JerseyBroadcaster {
 				}
 			}
 		});
+		return this;
 	}
 	
 	public void addStateChangeListener(final ResourceStateChangeListener listener){

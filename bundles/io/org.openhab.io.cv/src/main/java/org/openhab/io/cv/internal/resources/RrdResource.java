@@ -76,8 +76,9 @@ public class RrdResource {
 			@QueryParam("start") String start, @QueryParam("end") String end,
 			@QueryParam("res") long res) {
 
-		logger.debug("Received GET request at '{}' for rrd '{}'.",
-				new String[] { uriInfo.getPath(), rrdName });
+		if (logger.isDebugEnabled())
+			logger.debug("Received GET request at '{}' for rrd '{}'.",
+					uriInfo.getPath(), rrdName);
 		String responseType = MediaTypeHelper.getResponseMediaType(headers
 				.getAcceptableMediaTypes());
 		
