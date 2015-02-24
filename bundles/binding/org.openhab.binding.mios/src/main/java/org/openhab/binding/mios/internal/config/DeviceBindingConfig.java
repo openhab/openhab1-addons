@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 import org.openhab.binding.mios.internal.MiosActivator;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.transform.TransformationException;
 import org.openhab.core.transform.TransformationHelper;
 import org.openhab.core.transform.TransformationService;
@@ -460,5 +461,15 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 		}
 
 		return result;
+	}
+
+	@Override
+	public void validateItemType(Item item) throws BindingConfigParseException {
+		Class<? extends Item> t = getItemType();
+
+		// Add support for Color Device Items.
+		if (!(t == ColorItem.class)) {
+			super.validateItemType(item);
+		}
 	}
 }
