@@ -87,6 +87,15 @@ public class MiosUnitConnector {
 	private Thread pollThread;
 	boolean running;
 
+	// Create a place to keep the last "status" attribute, for each Device, so we can compare incoming values for
+	// Duplicates (Devices & Scenes)
+	//
+	// The MiOS system will send duplicate values, so we need this data to avoid pumelling openHAB with unnecessary
+	// changes (and it can only be done here due to the async nature of openHAB store writes). This map is keyed by the
+	// DeviceId/SceneId form the MiOS system, which can be either a String, or an Integer.
+	private HashMap<String, Integer> deviceStatusCache = new HashMap<String, Integer>(100);
+	private HashMap<Integer, Integer> sceneStatusCache = new HashMap<Integer, Integer>(100);
+
 	/**
 	 * @param unit
 	 *            The host to connect to. Give a reachable hostname or IP address, without protocol or port
@@ -170,18 +179,18 @@ public class MiosUnitConnector {
 		}
 	}
 
-	private void invokeDevice(DeviceBindingConfig config, Command command, State state) throws TransformationException {
+	private void callDevice(DeviceBindingConfig config, Command command, State state) throws TransformationException {
 
-		logger.debug("invokeDevice: Need to remote-invoke Device '{}' action '{}' and current state '{}')",
-				new Object[] { config.toProperty(), command, state });
+		logger.debug("callDevice: Need to remote-invoke Device '{}' action '{}' and current state '{}')", new Object[] {
+				config.toProperty(), command, state });
 
 		String newCommand = config.transformCommand(command);
 		if (newCommand == null) {
-			logger.warn("invokeDevice: Command '{}' not supported, or missing command: mapping, for Item '{}'",
+			logger.warn("callDevice: Command '{}' not supported, or missing command: mapping, for Item '{}'",
 					command.toString(), config.getItemName());
 			return;
 		} else if (newCommand.equals("")) {
-			logger.trace("invokeDevice: Item '{}' has disabled the use of Command '{}' via it's configuration '{}'",
+			logger.trace("callDevice: Item '{}' has disabled the use of Command '{}' via it's configuration '{}'",
 					new Object[] { config.getItemName(), command.toString(), config.toProperty() });
 			return;
 		}
@@ -198,7 +207,7 @@ public class MiosUnitConnector {
 				String serviceValue = matcher.group("serviceValue");
 
 				logger.debug(
-						"invokeDevice: decoded as serviceName '{}' serviceAction '{}' serviceParam '{}' serviceValue '{}'",
+						"callDevice: decoded as serviceName '{}' serviceAction '{}' serviceParam '{}' serviceValue '{}'",
 						new Object[] { serviceName, serviceAction, serviceParam, serviceValue });
 
 				// Perform any necessary bind-variable style transformations on
@@ -224,20 +233,22 @@ public class MiosUnitConnector {
 				logger.debug("Really, trust me, this won't happen ;)   exception='{}'", uee);
 			}
 		} else {
-			logger.error("invokeDevice: The parameter is in the wrong format.  BindingConfig '{}', UPnP Action '{}'",
+			logger.error("callDevice: The parameter is in the wrong format.  BindingConfig '{}', UPnP Action '{}'",
 					config, newCommand);
 		}
 
 	}
 
-	private void invokeScene(SceneBindingConfig config, Command command) throws TransformationException {
+	private void callScene(SceneBindingConfig config, Command command, State state) throws TransformationException {
+		logger.debug("callScene: Need to remote-invoke Scene '{}'", config.toProperty());
 
 		String newCommand = config.transformCommand(command);
 
 		if (newCommand != null) {
-			invokeScene(config);
+			MiosUnit u = getMiosUnit();
+			callMios(String.format(SCENE_URL, u.getHostname(), u.getPort(), config.getMiosId()));
 		} else {
-			logger.warn("invokeScene: Command '{}' not supported, or missing command: declaration, for Item '{}'",
+			logger.warn("callScene: Command '{}' not supported, or missing command: declaration, for Item '{}'",
 					command.toString(), config.getItemName());
 		}
 	}
@@ -335,9 +346,9 @@ public class MiosUnitConnector {
 	 */
 	public void invokeCommand(MiosBindingConfig config, Command command, State state) throws Exception {
 		if (config instanceof SceneBindingConfig) {
-			invokeScene((SceneBindingConfig) config, command);
+			callScene((SceneBindingConfig) config, command, state);
 		} else if (config instanceof DeviceBindingConfig) {
-			invokeDevice((DeviceBindingConfig) config, command, state);
+			callDevice((DeviceBindingConfig) config, command, state);
 		} else {
 			logger.warn("Unhandled command execution for Command ('{}') on binding '{}'", command, config);
 		}
@@ -441,7 +452,7 @@ public class MiosUnitConnector {
 		}
 
 		private void processSystem(Map<String, Object> system, boolean incremental) {
-			for (Entry<String, Object> entry : system.entrySet()) {
+			for (Map.Entry<String, Object> entry : system.entrySet()) {
 				String key = entry.getKey();
 				Object value = entry.getValue();
 
@@ -506,25 +517,31 @@ public class MiosUnitConnector {
 							|| value instanceof Boolean) {
 						if (key.equals("time_created")) {
 							// fix [known] date-time values on the way through,
-							// so
-							// they use the native type.
+							// so they use the native type.
 							value = fixTimestamp(value);
+						} else if (key.equals("id")) {
+							// Skip "id", since it's done at the end.
+							continue;
 						}
 
-						// TODO: Consider putting the Device's ID attribute last
-						// in the list. When multiple value changes are being
-						// made, people may want something to indicate
-						// "these are the last" [bundle] of changes for this
-						// device.
-						//
-						// Otherwise they'll come out in JSON order
-						// (unpredictable) which may not be the order they're
-						// normally changed at the MiOS end. Making this last
-						// would be like having an "end of [device] transaction"
-						// marker.
+						boolean force = false;
+						boolean statusAttr = key.equals("status");
 
-						String property = "device:" + deviceId + '/' + da.getKey();
-						publish(property, value, incremental);
+						// Handle a bug in MiOS's JSON, where they send the STATUS Attribute even if it hasn't
+						// changed. This resulted in a lot of unnecessary writes to openHAB. We can do this
+						// because this thread is the single-source of values for the STATUS attribute.
+						if (statusAttr) {
+							Integer lastValue = deviceStatusCache.get(deviceId);
+							if (!value.equals(lastValue)) {
+								deviceStatusCache.put(deviceId, (Integer) value);
+								force = true;
+							}
+						}
+
+						if (!statusAttr || force) {
+							String property = "device:" + deviceId + '/' + key;
+							publish(property, value, incremental);
+						}
 					} else {
 						// No need to bring these into openHAB, they'll only
 						// bulk up
@@ -540,6 +557,7 @@ public class MiosUnitConnector {
 
 				// Enumerate Device State Variables
 				List<Object> deviceStates = getList(device, "states");
+				boolean variablesProcessed = false;
 
 				for (Object ds : deviceStates) {
 					@SuppressWarnings("unchecked")
@@ -550,6 +568,22 @@ public class MiosUnitConnector {
 					// Can be String or Integer
 					Object value = (Object) state.get("value");
 					publish(property, value, incremental);
+					variablesProcessed = true;
+				}
+
+				// The Device's ID attribute is last in the list and only
+				// sent when at-least-one UPnP State Variable has been changed.
+				//
+				// This is done to allow folks something to "trigger" off in a
+				// rule if they have cross-Item validation dependencies.
+				//
+				// Otherwise they'll come out in JSON order
+				// (unpredictable) which may not be the order they're
+				// normally changed at the MiOS end. Making this last
+				// would be like having an "end of [device] transaction"
+				// marker.
+				if (variablesProcessed) {
+					publish("device:" + deviceId + "/id", deviceId, incremental);
 				}
 			}
 		}
@@ -571,26 +605,39 @@ public class MiosUnitConnector {
 				// Enumerate Scene Attributes
 				for (Entry<String, Object> da : scene.entrySet()) {
 					String key = da.getKey();
-
 					Object value = da.getValue();
 
 					if (value instanceof String || value instanceof Integer || value instanceof Double
 							|| value instanceof Boolean) {
 						if (key.equals("Timestamp")) {
 							// fix [known] date-time values on the way through,
-							// so
-							// they use the native type.
+							// so they use the native type.
 							value = fixTimestamp(value);
 
 							// Fix the key so it's consistent with the one used
-							// at
-							// the System level.
+							// at the System level.
 							// TODO: Document this.
 							key = "TimeStamp";
 						}
 
-						String property = "scene:" + sceneId + "/" + key;
-						publish(property, value, incremental);
+						boolean force = false;
+						boolean statusAttr = key.equals("status");
+
+						// Handle a bug in MiOS's JSON, where they send the STATUS Attribute even if it hasn't
+						// changed. This resulted in a lot of unnecessary writes to openHAB. We can do this
+						// because this thread is the single-source of values for the STATUS attribute.
+						if (statusAttr) {
+							Integer lastValue = sceneStatusCache.get(sceneId);
+							if (!value.equals(lastValue)) {
+								sceneStatusCache.put(sceneId, (Integer) value);
+								force = true;
+							}
+						}
+
+						if (!statusAttr || force) {
+							String property = "scene:" + sceneId + "/" + key;
+							publish(property, value, incremental);
+						}
 					} else {
 						// No need to bring these into openHAB, they'll only
 						// bulk up
@@ -653,8 +700,7 @@ public class MiosUnitConnector {
 
 		// TODO: Need to make this stream-oriented, so we don't have to keep the
 		// entire (large) MiOS JSON string in memory at the same time as the
-		// parsed
-		// JSON result.
+		// parsed JSON result.
 		@SuppressWarnings("unchecked")
 		private Map<String, Object> readJson(String json) {
 			if (json == null)

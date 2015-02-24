@@ -468,9 +468,8 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 						// unnecessary manner.
 						//
 						if (incremental) {
-							logger.debug(
-									"internalPropertyUpdate: Updating (Incremental) itemName '{}' with value '{}'",
-									itemName, value);
+							logger.debug("internalPropertyUpdate: BOUND (Incr) Updating '{} {mios=\"{}\"}' to '{}'",
+									itemName, property, value);
 
 							eventPublisher.postUpdate(itemName, value);
 						} else {
@@ -481,14 +480,14 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 									|| (UnDefType.UNDEF.equals(oldValue) && !UnDefType.UNDEF.equals(value))
 									|| !oldValue.equals(value)) {
 								logger.debug(
-										"internalPropertyUpdate: Updating (Full) itemName '{}' with value '{}', oldValue '{}'",
-										new Object[] { itemName, value, oldValue });
+										"internalPropertyUpdate: BOUND (Full) Updating '{} {mios=\"{}\"}' to '{}', was '{}'",
+										new Object[] { itemName, property, value, oldValue });
 
 								eventPublisher.postUpdate(itemName, value);
 							} else {
 								logger.trace(
-										"internalPropertyUpdate: Ignoring (Full) itemName '{}' with value '{}', oldValue '{}'",
-										new Object[] { itemName, value, oldValue });
+										"internalPropertyUpdate: BOUND (Full) Ignoring '{} {mios=\"{}\"}' to '{}', was '{}'",
+										new Object[] { itemName, property, value, oldValue });
 							}
 						}
 						bound++;
@@ -503,7 +502,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		if (bound == 0) {
 			logger.trace("internalPropertyUpdate: NOT BOUND {mios=\"{}\"}, value={}", property, value);
 		} else {
-			logger.debug("internalPropertyUpdate: BOUND {mios=\"{}\"}, value={}, bound {} time(s)", new Object[] {
+			logger.trace("internalPropertyUpdate: BOUND {mios=\"{}\"}, value={}, bound {} time(s)", new Object[] {
 					property, value, bound });
 		}
 	}
