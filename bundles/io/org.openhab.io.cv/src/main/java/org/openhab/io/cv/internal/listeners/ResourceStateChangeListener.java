@@ -26,8 +26,6 @@ import org.openhab.io.cv.internal.cache.CVBroadcasterCache;
 import org.openhab.io.cv.internal.filter.ResponseObjectFilter;
 import org.openhab.io.cv.internal.resources.ReadResource;
 import org.openhab.io.cv.internal.resources.beans.ItemStateListBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,8 +37,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 abstract public class ResourceStateChangeListener {
-
-	private static final Logger logger = LoggerFactory.getLogger(ResourceStateChangeListener.class);
 
 	private Set<String> relevantItems = null;
 	private StateChangeListener stateChangeListener;
@@ -69,12 +65,13 @@ abstract public class ResourceStateChangeListener {
 		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override
-			public BroadcastAction filter(Object originalMessage, Object message) {
-				return new BroadcastAction(ACTION.CONTINUE,  message);
+			public BroadcastAction filter(String broadcasterId, Object originalMessage, Object message) {
+				return new BroadcastAction(message);
 			}
 
 			@Override
-			public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
+			public BroadcastAction filter(String broadcasterId, AtmosphereResource resource, 
+					Object originalMessage, Object message) {
 				 HttpServletRequest request = resource.getRequest();
 				 Object responseObject;
 				 if (message instanceof Item) {

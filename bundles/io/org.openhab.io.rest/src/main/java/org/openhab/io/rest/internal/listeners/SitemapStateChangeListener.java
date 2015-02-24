@@ -17,10 +17,9 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriBuilder;
 
-import org.atmosphere.cache.UUIDBroadcasterCache;
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.BroadcasterCache;
 import org.atmosphere.cpr.PerRequestBroadcastFilter;
-import org.atmosphere.cpr.BroadcastFilter.BroadcastAction;
 import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.RESTApplication;
@@ -58,18 +57,20 @@ public class SitemapStateChangeListener extends ResourceStateChangeListener {
 		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
 			
 			@Override
-			public BroadcastAction filter(Object originalMessage, Object message) {
-				return new BroadcastAction(ACTION.CONTINUE,  message);
+			public BroadcastAction filter(String broadcasterId,
+					Object originalMessage, Object message) {
+				return new BroadcastAction(message);
 			}
 
 			@Override
-			public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
+			public BroadcastAction filter(String broadcasterId,
+					AtmosphereResource resource, Object originalMessage, Object message) {
 				//this will clear any cached messages before we add the new one
-				UUIDBroadcasterCache uuidCache = (UUIDBroadcasterCache)broadcaster.getBroadcasterConfig().getBroadcasterCache();
-				List<Object> entries = uuidCache.retrieveFromCache(null,resource);
+				BroadcasterCache uuidCache = broadcaster.getBroadcasterConfig().getBroadcasterCache();
+				List<Object> entries = uuidCache.retrieveFromCache(broadcasterId, resource.uuid());
 				if(entries != null)
 					logger.trace("UUID {} had {} previous messages", resource.uuid(), entries.size());
-				return new BroadcastAction(ACTION.CONTINUE,  message);
+				return new BroadcastAction(ACTION.CONTINUE, message);
 			}
 		});
 	}
@@ -150,24 +151,23 @@ public class SitemapStateChangeListener extends ResourceStateChangeListener {
 	
 	private PageBean getPageBean(HttpServletRequest request){
 		try {
-			String query = request.getQueryString();
-		String pathInfo = request.getPathInfo();
-		
-		String responseType = (new ResponseTypeHelper()).getResponseType(request);
-		if(responseType!=null) {
-			URI basePath = UriBuilder.fromUri(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+(request.getContextPath().equals("null")?"":request.getContextPath()) + RESTApplication.REST_SERVLET_ALIAS +"/").build();
-			if (pathInfo.startsWith("/" + SitemapResource.PATH_SITEMAPS)) {
-	        	String[] pathSegments = pathInfo.substring(1).split("/");
-	            if(pathSegments.length>=3) {
-	            	String sitemapName = pathSegments[1];
-	            	String pageId = pathSegments[2];
-	            	Sitemap sitemap = (Sitemap) RESTApplication.getModelRepository().getModel(sitemapName + ".sitemap");
-	            	if(sitemap!=null) {
-						return SitemapResource.getPageBean(sitemapName, pageId, basePath);
-	            	}
-	            }
-	        }
-		}
+			String pathInfo = request.getPathInfo();
+			
+			String responseType = (new ResponseTypeHelper()).getResponseType(request);
+			if(responseType!=null) {
+				URI basePath = UriBuilder.fromUri(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+(request.getContextPath().equals("null")?"":request.getContextPath()) + RESTApplication.REST_SERVLET_ALIAS +"/").build();
+				if (pathInfo.startsWith("/" + SitemapResource.PATH_SITEMAPS)) {
+		        	String[] pathSegments = pathInfo.substring(1).split("/");
+		            if(pathSegments.length>=3) {
+		            	String sitemapName = pathSegments[1];
+		            	String pageId = pathSegments[2];
+		            	Sitemap sitemap = (Sitemap) RESTApplication.getModelRepository().getModel(sitemapName + ".sitemap");
+		            	if(sitemap!=null) {
+							return SitemapResource.getPageBean(sitemapName, pageId, basePath);
+		            	}
+		            }
+		        }
+			}
 		} catch (Exception e) {
 			return null;
 		}
