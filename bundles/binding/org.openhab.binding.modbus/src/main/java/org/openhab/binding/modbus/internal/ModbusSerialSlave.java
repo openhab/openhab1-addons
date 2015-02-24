@@ -75,7 +75,7 @@ public class ModbusSerialSlave extends ModbusSlave {
 		if ( isEncodingValid(serialEncoding) ) {
 			ModbusSerialSlave.serialEncoding = serialEncoding;
 		} else {
-			logger.info("Encoding '" + serialEncoding + "' is unknown");
+			logger.info("Encoding '{}' is unknown", serialEncoding);
 		}
 	}
 
@@ -124,7 +124,7 @@ public class ModbusSerialSlave extends ModbusSlave {
 			}
 			((ModbusSerialTransaction)transaction).setSerialConnection(connection);
 		} catch (Exception e) {
-			logger.error("ModbusSlave: Error connecting to master: " + e.getMessage());				
+			logger.error("ModbusSlave: Error connecting to master: {}", e.getMessage());
 			return false;
 		}
 		return true;
