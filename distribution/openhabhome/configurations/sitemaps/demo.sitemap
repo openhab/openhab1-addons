@@ -23,8 +23,15 @@ sitemap demo label="Demo House"
 			}
 		}
 	}
-	Frame label="Date" {
-		Text item=Date
+  Frame label="Date" {
+		Text item=Date {
+      Frame {
+				Switch item=Holiday
+				Text item=SpecialDay
+				Switch item=SchoolVacation 
+				Text item=SchoolVacationName
+			}
+    }
 	}
 	Frame label="Demo" {
 		Text label="Group Demo" icon="firstfloor" {
