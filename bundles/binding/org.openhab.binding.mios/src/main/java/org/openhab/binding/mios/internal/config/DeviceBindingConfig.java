@@ -247,7 +247,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 	}
 
 	private static final Pattern SERVICE_IN_PATTERN = Pattern
-			.compile("service/(?<serviceName>.+)(/(?<serviceVar>.+))*");
+			.compile("service/(?<serviceName>.+)/(?<serviceVar>.+)*");
 
 	private static final Pattern SERVICE_COMMAND_TRANSFORM_PATTERN = Pattern
 			.compile("(?<transform>(?<transformCommand>[a-zA-Z]+)\\((?<transformParam>.*)\\))");
