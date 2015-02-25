@@ -263,46 +263,14 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 					entry.getValue().remove(i);
 					i--;
 					
-					if (entry.getValue().size() == 0) {
-						Command c = null;
-						try {
-							c = TypeParser.parseCommand(itemRegistry.getItem(entry.getKey().getItemName()).getAcceptedCommandTypes(), "0");
-						} catch (ItemNotFoundException e) {
-							logger.error("cannot find item: {}", itemName);
-							return;
-						}
-						
-						logger.debug("setting value for '{}' to: {}", entry.getKey().getItemName(), c);
-						eventPublisher.postCommand(entry.getKey().getItemName(), c);
-					} else {
-						container = entry.getValue().get(entry.getValue().size() - 1);
-						
-						if (container.getType() == CalDavType.VALUE) {
-							Command c = null;
-							try {
-								c = TypeParser.parseCommand(itemRegistry.getItem(entry.getKey().getItemName()).getAcceptedCommandTypes(), container.getCommand());
-							} catch (ItemNotFoundException e) {
-								logger.error("cannot find item: {}", itemName);
-								return;
-							}
-							logger.debug("setting value for '{}' to: {}", entry.getKey().getItemName(), c);
-							eventPublisher.postCommand(entry.getKey().getItemName(), c);
-						} else if (container.getType() == CalDavType.DATE) {
-							Calendar cal = Calendar.getInstance();
-							cal.setTime(container.getChangeDate());
-							State c = new DateTimeType(cal);
-							logger.debug("setting value for '{}' to: {}", entry.getKey().getItemName(), c);
-							eventPublisher.postUpdate(entry.getKey().getItemName(), c);
-						} else {
-							logger.warn("unhandled type: " + container.getType());
-						}
-					}
+					this.updateItemState(itemName);
 				}
 			}
 		}
 	}
 	
-	private void addToEventMap(CalDavNextEventConfig config, String itemName, String command, Date changeDate, CalDavType type, String eventId, String scope) {
+	private void addToEventMap(CalDavNextEventConfig config, String itemName, String command, 
+			Date changeDate, CalDavType type, String eventId, String scope) {
 		if (!this.itemNextEventMap.containsKey(config)) {
 			logger.trace("creating initial list for config: {}", config.getItemName());
 			this.itemNextEventMap.put(config, new ArrayList<NextEventContainer>());
@@ -320,33 +288,47 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		Collections.sort(eventList, new Comparator<NextEventContainer>() {
 			@Override
 			public int compare(NextEventContainer o1, NextEventContainer o2) {
-				if (o2.getChangeDate().after(o1.getChangeDate())) {
-					return 1;
-				} else if (o2.getChangeDate().before(o1.getChangeDate())) {
-					return -1;
-				}
-				return 0;
+				return o1.getChangeDate().compareTo(o2.getChangeDate());
 			}
 		});
-		logger.trace("event list has been sorted");
+		logger.trace("event list has been sorted (events in list: {})", eventList.size());
 		
+		this.updateItemState(config.getItemName());
+	}
+	
+	private void updateItemState(String itemName) {
+		List<NextEventContainer> containerList = new ArrayList<NextEventContainer>();
+		for (Entry<CalDavNextEventConfig, List<NextEventContainer>> entry : this.itemNextEventMap.entrySet()) {
+			if (entry.getKey().getItemName().equals(itemName)) {
+				// handle this
+				containerList = entry.getValue();
+			}
+		}
+		
+		if (containerList.size() == 0) {
+			return;
+		}
+		
+		NextEventContainer container = containerList.get(0);
+		
+		CalDavType type = container.getType();
 		logger.trace("handling event of type: {}", type);
 		if (type == CalDavType.VALUE) {
 			Command c = null;
 			try {
-				c = TypeParser.parseCommand(itemRegistry.getItem(config.getItemName()).getAcceptedCommandTypes(), container.getCommand());
+				c = TypeParser.parseCommand(itemRegistry.getItem(itemName).getAcceptedCommandTypes(), container.getCommand());
 			} catch (ItemNotFoundException e) {
 				logger.error("cannot find item: {}", itemName);
 				return;
 			}
-			logger.debug("setting value for '{}' to: {}", config.getItemName(), c);
-			eventPublisher.postCommand(config.getItemName(), c);
+			logger.debug("setting value for '{}' to: {}", itemName, c);
+			eventPublisher.postCommand(itemName, c);
 		} else if (type == CalDavType.DATE) {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(container.getChangeDate());
 			State c = new DateTimeType(cal);
-			logger.debug("setting value for '{}' to: {}", config.getItemName(), c);
-			eventPublisher.postUpdate(config.getItemName(), c);
+			logger.debug("setting value for '{}' to: {}", itemName, c);
+			eventPublisher.postUpdate(itemName, c);
 		} else {
 			logger.warn("unhandled type: " + type);
 		}
