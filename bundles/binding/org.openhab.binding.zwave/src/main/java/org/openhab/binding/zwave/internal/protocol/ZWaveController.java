@@ -671,10 +671,9 @@ public class ZWaveController {
 	 * @param event the event to send.
 	 */
 	public void notifyEventListeners(ZWaveEvent event) {
-		logger.debug("Notifying event listeners");
+		logger.debug("Notifying event listeners: {}", event.getClass().getSimpleName());
 		ArrayList<ZWaveEventListener> copy = new ArrayList<ZWaveEventListener>(this.zwaveEventListeners);
 		for (ZWaveEventListener listener : copy) {
-			logger.trace("Notifying {}", listener.toString());
 			listener.ZWaveIncomingEvent(event);
 		}
 		
