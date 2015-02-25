@@ -87,8 +87,10 @@ public class HomematicCommunicator implements HomematicCallbackReceiver {
 
 				homematicCallbackServer.start();
 				homematicClient.registerCallback();
-
+				
 				scheduleFirstRefresh();
+
+				lastEventTime = System.currentTimeMillis();
 			} catch (Exception e) {
 				logger.error("Could not start Homematic communicator: " + e.getMessage(), e);
 				stop();
