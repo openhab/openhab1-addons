@@ -309,7 +309,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 							((ModbusSerialSlave) modbusSlave).setParity(chunks[3]);
 						}
 						if (chunks.length >= 5) {
-							((ModbusSerialSlave) modbusSlave).setStopbits(Integer.valueOf(chunks[4]));
+							((ModbusSerialSlave) modbusSlave).setStopbits(Double.valueOf(chunks[4]));
 						}
 						if (chunks.length == 6) {
 							((ModbusSerialSlave) modbusSlave).setEncoding(chunks[5]);

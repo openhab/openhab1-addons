@@ -37,7 +37,7 @@ public class ModbusSerialSlave extends ModbusSlave {
 	private static int baud = 9600;
 	private static int dataBits = 8;
 	private static String parity = "None"; // "none", "even" or "odd"
-	private static int stopBits = 1;
+	private static Double stopBits = 1.0;
 	private static String serialEncoding = Modbus.DEFAULT_SERIAL_ENCODING;
 	
 	public void setPort(String port) {
@@ -57,7 +57,7 @@ public class ModbusSerialSlave extends ModbusSlave {
 		ModbusSerialSlave.parity = parity;
 	}
 	
-	public void setStopbits(int stopBits) {
+	public void setStopbits(Double stopBits) {
 		ModbusSerialSlave.stopBits = stopBits;
 	}
 

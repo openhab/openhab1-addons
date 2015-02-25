@@ -16,10 +16,11 @@
 
 package net.wimpi.modbus.util;
 
-import net.wimpi.modbus.Modbus;
-
 import gnu.io.SerialPort;
+
 import java.util.Properties;
+
+import net.wimpi.modbus.Modbus;
 
 /**
  * Helper class wrapping all serial port communication parameters.
@@ -45,7 +46,7 @@ public class SerialParameters {
 
   /**
    * Constructs a new <tt>SerialParameters</tt> instance with
-   * default values.
+   * default values: 9600 boud - 8N1 - ASCII.
    */
   public SerialParameters() {
     m_PortName = "";
@@ -141,7 +142,10 @@ public class SerialParameters {
    *
    * @param rate the new baud rate.
    */
-  public void setBaudRate(int rate) {
+  public void setBaudRate(int rate) throws IllegalArgumentException {
+    if ( !SerialParameterValidator.isBaudRateValid(rate)) {
+      throw new IllegalArgumentException("invalid baud rate: " + Integer.toString(rate));
+    }
     m_BaudRate = rate;
   }//setBaudRate
 
@@ -150,8 +154,15 @@ public class SerialParameters {
    *
    * @param rate the new baud rate.
    */
-  public void setBaudRate(String rate) {
-    m_BaudRate = Integer.parseInt(rate);
+  public void setBaudRate(String rate) throws IllegalArgumentException {
+    int intBaudRate = 0;
+    try {
+      intBaudRate = Integer.parseInt(rate);
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException("baudString '" + rate
+          + "' can not be converted to a number: " + e.getMessage());
+    }
+    setBaudRate(intBaudRate);
   }//setBaudRate
 
   /**
@@ -178,7 +189,12 @@ public class SerialParameters {
    *
    * @param flowcontrol the new flow control type.
    */
-  public void setFlowControlIn(int flowcontrol) {
+  public void setFlowControlIn(int flowcontrol) throws IllegalArgumentException {
+    if (!SerialParameterValidator.isFlowControlValid(flowcontrol)) {
+      throw new  IllegalArgumentException("flowcontrol int '" +
+          flowcontrol + "' invalid");
+    }
+
     m_FlowControlIn = flowcontrol;
   }//setFlowControl
 
@@ -188,8 +204,13 @@ public class SerialParameters {
    *
    * @param flowcontrol the flow control for reading type.
    */
-  public void setFlowControlIn(String flowcontrol) {
-    m_FlowControlIn = stringToFlow(flowcontrol);
+  public void setFlowControlIn(String flowcontrol) throws IllegalArgumentException {
+    if (!SerialParameterValidator.isFlowControlValid(flowcontrol)) {
+      throw new IllegalArgumentException("flowcontrolIn string '"
+          + flowcontrol + "' unknown");
+    }
+
+    setFlowControlIn(stringToFlow(flowcontrol));
   }//setFlowControlIn
 
   /**
@@ -216,7 +237,12 @@ public class SerialParameters {
    *
    * @param flowControlOut new output flow control type as <tt>int</tt>.
    */
-  public void setFlowControlOut(int flowControlOut) {
+  public void setFlowControlOut(int flowControlOut) throws IllegalArgumentException {
+    if (!SerialParameterValidator.isFlowControlValid(flowControlOut)) {
+      throw new IllegalArgumentException("flowcontrol int '"
+          + flowControlOut + "' unknown");
+    }
+
     m_FlowControlOut = flowControlOut;
   }//setFlowControlOut
 
@@ -226,7 +252,12 @@ public class SerialParameters {
    *
    * @param flowControlOut the new output flow control type as <tt>String</tt>.
    */
-  public void setFlowControlOut(String flowControlOut) {
+  public void setFlowControlOut(String flowControlOut) throws IllegalArgumentException {
+    if (!SerialParameterValidator.isFlowControlValid(flowControlOut)) {
+      throw new IllegalArgumentException("flowcontrol string '"
+          + flowControlOut + "' unknown");
+    }
+
     m_FlowControlOut = stringToFlow(flowControlOut);
   }//setFlowControlOut
 
@@ -253,8 +284,28 @@ public class SerialParameters {
    *
    * @param databits the new number of data bits.
    */
-  public void setDatabits(int databits) {
-    m_Databits = databits;
+  public void setDatabits(int databits) throws IllegalArgumentException {
+    if (!SerialParameterValidator.isDataBitsValid(databits)) {
+      throw new IllegalArgumentException("Databit '" + databits + "' invalid");
+    }
+
+    switch (databits) {
+    case 5:
+      m_Databits = SerialPort.DATABITS_5;
+      break;
+    case 6:
+      m_Databits = SerialPort.DATABITS_6;
+      break;
+    case 7:
+      m_Databits = SerialPort.DATABITS_7;
+      break;
+    case 8:
+      m_Databits = SerialPort.DATABITS_8;
+      break;
+    default:
+      m_Databits = SerialPort.DATABITS_8;
+      break;
+    }
   }//setDatabits
 
   /**
@@ -262,19 +313,16 @@ public class SerialParameters {
    *
    * @param databits the new number of data bits as <tt>String</tt>.
    */
-  public void setDatabits(String databits) {
-    if (databits.equals("5")) {
-      m_Databits = SerialPort.DATABITS_5;
+  public void setDatabits(String databits) throws IllegalArgumentException {
+    int intDataBits = 0;
+    try {
+      intDataBits = Integer.parseInt(databits);
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException("databitsString '" + databits
+          + "' can not be converted to a number: " + e.getMessage());
     }
-    if (databits.equals("6")) {
-      m_Databits = SerialPort.DATABITS_6;
-    }
-    if (databits.equals("7")) {
-      m_Databits = SerialPort.DATABITS_7;
-    }
-    if (databits.equals("8")) {
-      m_Databits = SerialPort.DATABITS_8;
-    }
+
+    setDatabits(intDataBits);
   }//setDatabits
 
   /**
@@ -311,8 +359,21 @@ public class SerialParameters {
    *
    * @param stopbits the new number of stop bits setting.
    */
-  public void setStopbits(int stopbits) {
-    m_Stopbits = stopbits;
+  public void setStopbits(double stopbits) throws IllegalArgumentException {
+    if (!SerialParameterValidator.isStopbitsValid(stopbits)) {
+      throw new IllegalArgumentException("stopbit value '" +
+          stopbits + "' not valid");
+    }
+
+    if (stopbits == 1) {
+      m_Stopbits = SerialPort.STOPBITS_1;
+    } else if (stopbits == 1.5) {
+      m_Stopbits = SerialPort.STOPBITS_1_5;
+    } else if (stopbits == 2) {
+      m_Stopbits = SerialPort.STOPBITS_2;
+    } else {
+      m_Stopbits = SerialPort.STOPBITS_1;
+    }
   }//setStopbits
 
   /**
@@ -320,16 +381,16 @@ public class SerialParameters {
    *
    * @param stopbits the number of stop bits as <tt>String</tt>.
    */
-  public void setStopbits(String stopbits) {
-    if (stopbits.equals("1")) {
-      m_Stopbits = SerialPort.STOPBITS_1;
+  public void setStopbits(String stopbits) throws IllegalArgumentException {
+    double doubleStopBits = 1.0;
+    try {
+      doubleStopBits = Double.parseDouble(stopbits);
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException("stopbitsString '" + stopbits
+          + "' can not be converted to a number: " + e.getMessage());
     }
-    if (stopbits.equals("1.5")) {
-      m_Stopbits = SerialPort.STOPBITS_1_5;
-    }
-    if (stopbits.equals("2")) {
-      m_Stopbits = SerialPort.STOPBITS_2;
-    }
+
+    setStopbits(doubleStopBits);
   }//setStopbits
 
   /**
@@ -365,6 +426,10 @@ public class SerialParameters {
    * @param parity the new parity schema as <tt>int</tt>.
    */
   public void setParity(int parity) {
+    if (!SerialParameterValidator.isParityValid(parity)) {
+      throw new IllegalArgumentException("parity value '" +
+          parity + "' not valid");
+    }
     m_Parity = parity;
   }//setParity
 
@@ -374,17 +439,22 @@ public class SerialParameters {
    *
    * @param parity the new parity schema as <tt>String</tt>.
    */
-  public void setParity(String parity) {
+  public void setParity(String parity) throws IllegalArgumentException {
     parity = parity.toLowerCase();
+    int intParity = SerialPort.PARITY_NONE;
+
     if (parity.equals("none")) {
-      m_Parity = SerialPort.PARITY_NONE;
+      intParity = SerialPort.PARITY_NONE;
+    } else if (parity.equals("even")) {
+      intParity = SerialPort.PARITY_EVEN;
+    } else if (parity.equals("odd")) {
+      intParity = SerialPort.PARITY_ODD;
+    } else {
+      throw new IllegalArgumentException(
+          "unknown parity string '" + parity + "'");
     }
-    if (parity.equals("even")) {
-      m_Parity = SerialPort.PARITY_EVEN;
-    }
-    if (parity.equals("odd")) {
-      m_Parity = SerialPort.PARITY_ODD;
-    }
+
+    setParity(intParity);
   }//setParity
 
   /**
@@ -422,16 +492,14 @@ public class SerialParameters {
    * @see Modbus#SERIAL_ENCODING_RTU
    * @see Modbus#SERIAL_ENCODING_BIN
    */
-  public void setEncoding(String enc) {
+  public void setEncoding(String enc) throws IllegalArgumentException {
     enc = enc.toLowerCase();
-    if (enc.equals(Modbus.SERIAL_ENCODING_ASCII) ||
-        enc.equals(Modbus.SERIAL_ENCODING_RTU) ||
-        enc.equals(Modbus.SERIAL_ENCODING_BIN)
-    ) {
-      m_Encoding = enc;
-    } else {
-      m_Encoding = Modbus.DEFAULT_SERIAL_ENCODING;
+    if (!SerialParameterValidator.isEncodingValid(enc)) {
+      throw new IllegalArgumentException("encoding value '" + enc
+          + "' not valid");
     }
+
+    m_Encoding = enc;
   }//setEncoding
 
   /**
@@ -479,6 +547,11 @@ public class SerialParameters {
    * @param receiveTimeout the receiveTimeout in milliseconds.
    */
   public void setReceiveTimeout(int receiveTimeout) {
+    if (!SerialParameterValidator.isReceiveTimeoutValid(receiveTimeout)) {
+      throw new IllegalArgumentException("negative values like '"
+          + receiveTimeout + "' invalid as timeout");
+    }
+
     m_ReceiveTimeout = receiveTimeout;
   }//setReceiveTimeout
 
@@ -489,7 +562,7 @@ public class SerialParameters {
    * @param str the timeout as String.
    */
   public void setReceiveTimeout(String str) {
-   m_ReceiveTimeout = Integer.parseInt(str);
+   setReceiveTimeout(Integer.parseInt(str));
   }//setReceiveTimeout
 
   /**
