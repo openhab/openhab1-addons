@@ -114,7 +114,7 @@ public class SerialConnection
       m_SerialPort = (SerialPort)
           m_PortIdentifyer.open("Modbus Serial Master", 30000);
     } catch (PortInUseException e) {
-      logger.debug(e.getMessage());
+      logger.debug("open port failed: " + e.getMessage());
 
       throw new Exception(e.getMessage());
     }
@@ -127,7 +127,7 @@ public class SerialConnection
     } catch (Exception e) {
       //ensure it is closed
       m_SerialPort.close();
-      logger.debug(e.getMessage());
+      logger.debug("parameter setup failed: " + e.getMessage());
       throw e;
     }
 
