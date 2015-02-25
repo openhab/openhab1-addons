@@ -305,7 +305,7 @@ public class RRD4jService implements QueryablePersistenceService {
 	}
 	
 	static private String getUserDataFolder() {
-		String progArg = System.getProperty("smarthome.userdata");
+		String progArg = System.getProperty("openhab.userdata");
 		if (progArg != null) {
 			return progArg;
 		} else {

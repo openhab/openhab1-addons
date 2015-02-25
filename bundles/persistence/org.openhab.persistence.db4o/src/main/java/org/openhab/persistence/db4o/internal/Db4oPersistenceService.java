@@ -349,7 +349,7 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 	}
 
 	static private String getUserDataFolder() {
-		String progArg = System.getProperty("smarthome.userdata");
+		String progArg = System.getProperty("openhab.userdata");
 		if (progArg != null) {
 			return progArg;
 		} else {

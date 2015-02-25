@@ -5,7 +5,8 @@
 # behavior, those variables are:
 #
 # optional:
-#   OPENHAB_JAVA   --
+#   OPENHAB_JAVA   -- The path of the java runtime executable. The default
+#                     is /usr/bin/java.
 #   USER_AND_GROUP -- The user and group the openHAB is running as. The 
 #                     default is "openhab:openhab". In systemd environments
 #                     openhab.service must be adapted, when changing this.
@@ -13,10 +14,10 @@
 #   OPENHAB_ARGS   -- Additional arguments to the openHAB runtime.
 #   DEBUG          -- Start openHAB in debugging mode. The default is no, set 
 #                     it to yes for debugging purposes.
-#   HTTP_PORT      -- 
-#   HTTPS_PORT     -- 
-#   TELNET_PORT    -- 
-# Normaly systemd provides this variable using the /etc/default/openhab file.
+#   HTTP_PORT      -- The http port of the web ui. The default is 8080.
+#   HTTPS_PORT     -- The https port of the web ui. The default is 8443.
+#   TELNET_PORT    -- OSGi console port
+# Normally systemd provides this variable using the /etc/default/openhab file.
 
 include="`dirname "$0"`"/openhab.in.sh
 if [ -r "$include" ]; then
@@ -88,7 +89,7 @@ JAVA_ARGS_DEFAULT="-Dosgi.clean=true \
  -Dopenhab.configfile="${OPENHAB_CONF_DIR}/configurations/openhab.cfg" \
  -Dopenhab.configdir="${OPENHAB_CONF_DIR}/configurations" \
  -Dopenhab.logdir="${OPENHAB_LOG_DIR}" \
- -Dsmarthome.userdata="${OPENHAB_USER_DATA_DIR}"
+ -Dopenhab.userdata="${OPENHAB_USER_DATA_DIR}"
  -Djetty.home="${OPENHAB_DIR}" \
  -Djetty.port.ssl=${HTTPS_PORT} \
  -Djetty.config="${OPENHAB_CONF_DIR}/jetty" \

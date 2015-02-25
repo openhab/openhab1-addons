@@ -30,9 +30,9 @@ How it works
   - sub directories of /var/lib/openHAB/ are used for storing user data like persistence 
     database files, therefore /var/lib/openHAB/ is owned by the openHAB runtime user
     - rrd4j persistence stores its files in /var/lib/openhab/rrd4j, this is achieved by setting the 
-      the java system property smarthome.userdata=/var/lib/openhab.
+      the java system property openhab.userdata=/var/lib/openhab.
     - db4o persistence stores its files in /var/lib/openhab/db4o, this is achieved by setting
-      the java system property smarthome.userdata=/var/lib/openhab.
+      the java system property openhab.userdata=/var/lib/openhab.
 - systemd and sysv init from one deb package
   - is inspired by the deb packaging of elasticsearch:
     https://github.com/elasticsearch/elasticsearch/issues/8493
@@ -47,9 +47,9 @@ How it works
 
 Changes:
 - removed fragile handling of openhab group from deb packaging
-- updated db4o persistence service to use the smarthome.userdata system property
-- relies on evolved rrd4j persistence service, which uses the smarthome.userdata property
-- changed /etc/init.d/openhab to set smarthome.userdata property to /var/lib/openhab
+- updated db4o persistence service to use the openhab.userdata system property
+- changed rrd4j persistence service, to use openhab.userdata property instead of smarthome.userdata.
+- changed /etc/init.d/openhab to set openhab.userdata property to /var/lib/openhab
 - added systemd service description for openhab
 - added script which sets permissions on various runtime directories according to OPENHAB_USER_GROUP variable
 - removed symlink configuration from pom.xml for /usr/share/openhab/webapps/static to /var/lib/openhab/webapps,
