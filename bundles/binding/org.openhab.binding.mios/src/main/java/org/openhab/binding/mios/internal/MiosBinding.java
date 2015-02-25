@@ -12,10 +12,15 @@ import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.openhab.binding.mios.MiosActionProvider;
 import org.openhab.binding.mios.MiosBindingProvider;
+import org.openhab.binding.mios.internal.config.DeviceBindingConfig;
 import org.openhab.binding.mios.internal.config.MiosBindingConfig;
+import org.openhab.binding.mios.internal.config.SceneBindingConfig;
 import org.openhab.core.binding.AbstractBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
@@ -33,15 +38,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The MiOS Binding is responsible for coordinating changes to openHAB Items
- * from the corresponding/bound information from each configured MiOS Unit.
+ * The MiOS Binding is responsible for coordinating changes to openHAB Items from the corresponding/bound information
+ * from each configured MiOS Unit.
  * 
- * The Binding allows information from a MiOS Unit to be bound to openHAB Items,
- * as well a allowing openHAB Commands to be propagated back to the MiOS Unit
- * under control.
+ * The Binding allows information from a MiOS Unit to be bound to openHAB Items, as well a allowing openHAB Commands to
+ * be propagated back to the MiOS Unit under control.
  * 
- * The following types of information from a MiOS Unit can be bound to openHAB
- * Items:
+ * The following types of information from a MiOS Unit can be bound to openHAB Items:
  * <p>
  * 
  * <ul>
@@ -51,48 +54,40 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * <p>
  * 
- * Similarly, through a configurable set of openHAB Transformations, any
- * Commands sent to these Items can be proxied back to the corresponding MiOS
- * Unit.
+ * Similarly, through a configurable set of openHAB Transformations, any Commands sent to these Items can be proxied
+ * back to the corresponding MiOS Unit.
  * <p>
  * 
- * Data flowing between the MiOS Unit and openHAB can be transformed as it flows
- * between the two systems. This transformation is configurable, and is
- * expressed in the Item Binding using standard openHAB
+ * Data flowing between the MiOS Unit and openHAB can be transformed as it flows between the two systems. This
+ * transformation is configurable, and is expressed in the Item Binding using standard openHAB
  * {@code TransformationService} expressions.
  * <p>
  * 
- * Example MAP-based Transformation files are provided for commonly required
- * transformations. <br>
- * eg. For Switch Data flowing into openHAB {@code MAP(miosSwitchIn.map)}, and
- * for Switch Commands flowing in to MiOS {@code MAP(miosSwitchOut.map)}
+ * Example MAP-based Transformation files are provided for commonly required transformations. <br>
+ * eg. For Switch Data flowing into openHAB {@code MAP(miosSwitchIn.map)}, and for Switch Commands flowing in to MiOS
+ * {@code MAP(miosSwitchOut.map)}
  * <p>
  * 
  * The Binding follows the general interaction principals outlined in the MiOS
- * {@link <a href="http://wiki.micasaverde.com/index.php/UI_Simple">UI Simple</a>}
- * documentation.
+ * {@link <a href="http://wiki.micasaverde.com/index.php/UI_Simple">UI Simple</a>} documentation.
  * <p>
  * 
- * In effect, the binding behaves like a "remote control" to one or more
- * configured MiOS Units, utilizing a HTTP-based Long-poll to receive updates
- * occurring within each Unit, and transforming them into corresponding updates
- * to the openHAB Items that have been bound.
+ * In effect, the binding behaves like a "remote control" to one or more configured MiOS Units, utilizing a HTTP-based
+ * Long-poll to receive updates occurring within each Unit, and transforming them into corresponding updates to the
+ * openHAB Items that have been bound.
  * <p>
  * 
- * All updates are received asynchronously from the MiOS Units. This interaction
- * is managed by a per MiOS Unit {@link MiosUnitConnector} Polling Thread object
- * that utilizes a {@link MiosUnit MiOS Unit} configuration object to determine
- * the location of the MiOS Unit.
+ * All updates are received asynchronously from the MiOS Units. This interaction is managed by a per MiOS Unit
+ * {@link MiosUnitConnector} Polling Thread object that utilizes a {@link MiosUnit MiOS Unit} configuration object to
+ * determine the location of the MiOS Unit.
  * <p>
  * 
  * @author Mark Clark
  * @since 1.6.0
  */
-public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
-		ManagedService {
+public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements ManagedService, MiosActionProvider {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(MiosBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(MiosBinding.class);
 
 	private Map<String, MiosUnitConnector> connectors = new HashMap<String, MiosUnitConnector>();
 	private Map<String, MiosUnit> nameUnitMapper = null;
@@ -102,8 +97,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	}
 
 	/**
-	 * Invoked by OSGi Framework, once per instance, during the Binding
-	 * activation process.
+	 * Invoked by OSGi Framework, once per instance, during the Binding activation process.
 	 * 
 	 * OSGi is configured to do this in OSGI-INF/activebinding.xml
 	 */
@@ -113,11 +107,9 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	}
 
 	/**
-	 * Invoked by the OSGi Framework, once per instance, during the Binding
-	 * deactivation process.
+	 * Invoked by the OSGi Framework, once per instance, during the Binding deactivation process.
 	 * 
-	 * Internally this is used to close out any resources used by the MiOS
-	 * Binding.
+	 * Internally this is used to close out any resources used by the MiOS Binding.
 	 * 
 	 * OSGi is configured to do this in OSGI-INF/activebinding.xml
 	 */
@@ -137,8 +129,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	 */
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
-		logger.debug("bindingChanged: start provider '{}', itemName '{}'",
-				provider, itemName);
+		logger.debug("bindingChanged: start provider '{}', itemName '{}'", provider, itemName);
 
 		if (provider instanceof MiosBindingProvider) {
 			registerWatch((MiosBindingProvider) provider, itemName);
@@ -165,8 +156,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		logger.debug("registerAllWatches: start");
 
 		for (BindingProvider provider : providers) {
-			logger.debug("registerAllWatches: provider '{}'",
-					provider.getClass());
+			logger.debug("registerAllWatches: provider '{}'", provider.getClass());
 
 			if (provider instanceof MiosBindingProvider) {
 				MiosBindingProvider miosProvider = (MiosBindingProvider) provider;
@@ -179,8 +169,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	}
 
 	private void registerWatch(MiosBindingProvider miosProvider, String itemName) {
-		logger.debug("registerWatch: start miosProvider '{}', itemName '{}'",
-				miosProvider, itemName);
+		logger.debug("registerWatch: start miosProvider '{}', itemName '{}'", miosProvider, itemName);
 
 		String unitName = miosProvider.getMiosUnitName(itemName);
 
@@ -199,8 +188,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		for (BindingProvider provider : providers) {
 			if (provider instanceof MiosBindingProvider) {
 				if (provider.getItemNames().contains(itemName)) {
-					return ((MiosBindingProvider) provider)
-							.getMiosUnitName(itemName);
+					return ((MiosBindingProvider) provider).getMiosUnitName(itemName);
 				}
 			}
 		}
@@ -227,8 +215,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		// check if we have been initialized yet - can't process
 		// named units until we have read the binding config.
 		if (nameUnitMapper == null) {
-			logger.trace(
-					"Attempting to access the named MiOS Unit '{}' before the binding config has been loaded",
+			logger.trace("Attempting to access the named MiOS Unit '{}' before the binding config has been loaded",
 					unitName);
 			return null;
 		}
@@ -237,15 +224,12 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 
 		// Check this Unit name exists in our config
 		if (miosUnit == null) {
-			logger.error(
-					"Named MiOS Unit '{}' does not exist in the binding config",
-					unitName);
+			logger.error("Named MiOS Unit '{}' does not exist in the binding config", unitName);
 			return null;
 		}
 
 		// create a new connection handler
-		logger.debug("Creating new MiosConnector for '{}' on {}", unitName,
-				miosUnit.getHostname());
+		logger.debug("Creating new MiosConnector for '{}' on {}", unitName, miosUnit.getHostname());
 		connector = new MiosUnitConnector(miosUnit, this);
 		connectors.put(unitName, connector);
 
@@ -253,8 +237,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		try {
 			connector.open();
 		} catch (Exception e) {
-			logger.error("Connection failed for '{}' on {}", unitName,
-					miosUnit.getHostname());
+			logger.error("Connection failed for '{}' on {}", unitName, miosUnit.getHostname());
 		}
 
 		return connector;
@@ -266,16 +249,14 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
 		try {
-			logger.debug("internalReceiveCommand: itemName '{}', command '{}'",
-					itemName, command);
+			logger.debug("internalReceiveCommand: itemName '{}', command '{}'", itemName, command);
 
 			// Lookup the MiOS Unit name and property for this item
 			String unitName = getMiosUnitName(itemName);
 
 			MiosUnitConnector connector = getMiosConnector(unitName);
 			if (connector == null) {
-				logger.warn(
-						"Received command ({}) for item '{}' but no connector found for MiOS Unit '{}', ignoring",
+				logger.warn("Received command ({}) for item '{}' but no connector found for MiOS Unit '{}', ignoring",
 						new Object[] { command.toString(), itemName, unitName });
 				return;
 			}
@@ -290,8 +271,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 			for (BindingProvider provider : providers) {
 				if (provider instanceof MiosBindingProvider) {
 					MiosBindingProviderImpl miosProvider = (MiosBindingProviderImpl) provider;
-					MiosBindingConfig config = miosProvider
-							.getMiosBindingConfig(itemName);
+					MiosBindingConfig config = miosProvider.getMiosBindingConfig(itemName);
 
 					if (config != null) {
 						ItemRegistry reg = miosProvider.getItemRegistry();
@@ -301,13 +281,11 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 							State state = item.getState();
 							connector.invokeCommand(config, command, state);
 						} else {
-							logger.warn(
-									"internalReceiveCommand: Missing ItemRegistry for item '{}' command '{}'",
+							logger.warn("internalReceiveCommand: Missing ItemRegistry for item '{}' command '{}'",
 									itemName, command);
 						}
 					} else {
-						logger.trace(
-								"internalReceiveCommand: Missing BindingConfig for item '{}' command '{}'",
+						logger.trace("internalReceiveCommand: Missing BindingConfig for item '{}' command '{}'",
 								itemName, command);
 					}
 				}
@@ -323,9 +301,8 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
-		logger.trace(
-				"internalReceiveUpdate: itemName '{}', newState '{}', class '{}'",
-				new Object[] { itemName, newState, newState.getClass() });
+		logger.trace("internalReceiveUpdate: itemName '{}', newState '{}', class '{}'", new Object[] { itemName,
+				newState, newState.getClass() });
 
 		// No need to implement this for MiOS Bridge Binding since anything
 		// that needs to be sent back to the MiOS System will be done via a
@@ -339,8 +316,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void updated(Dictionary<String, ?> properties)
-			throws ConfigurationException {
+	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 		logger.trace(getName() + " updated()");
 
 		Map<String, MiosUnit> units = new HashMap<String, MiosUnit>();
@@ -373,8 +349,7 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 			}
 
 			boolean created = false;
-			String hackUnitName = (unitName == null) ? MiosUnit.CONFIG_DEFAULT_UNIT
-					: unitName;
+			String hackUnitName = (unitName == null) ? MiosUnit.CONFIG_DEFAULT_UNIT : unitName;
 			MiosUnit unit = units.get(hackUnitName);
 
 			if (unit == null) {
@@ -412,11 +387,10 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	}
 
 	/**
-	 * Push a value into all openHAB Items that match a given MiOS Property name
-	 * (from the Item Binding declaration).
+	 * Push a value into all openHAB Items that match a given MiOS Property name (from the Item Binding declaration).
 	 * <p>
-	 * In the process, this routine will perform Datatype conversions from Java
-	 * types to openHAB's type system. These conversions are as follows:
+	 * In the process, this routine will perform Datatype conversions from Java types to openHAB's type system. These
+	 * conversions are as follows:
 	 * <p>
 	 * <ul>
 	 * <li>{@code String} -> {@code StringType}
@@ -433,39 +407,29 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 	 * @exception IllegalArgumentException
 	 *                thrown if the value isn't one of the supported types.
 	 */
-	public void postPropertyUpdate(String property, Object value,
-			boolean incremental) throws Exception {
+	public void postPropertyUpdate(String property, Object value, boolean incremental) throws Exception {
 		if (value instanceof String) {
-			internalPropertyUpdate(property, new StringType(value == null ? ""
-					: (String) value), incremental);
+			internalPropertyUpdate(property, new StringType(value == null ? "" : (String) value), incremental);
 		} else if (value instanceof Integer) {
-			internalPropertyUpdate(property, new DecimalType((Integer) value),
-					incremental);
+			internalPropertyUpdate(property, new DecimalType((Integer) value), incremental);
 		} else if (value instanceof Calendar) {
-			internalPropertyUpdate(property,
-					new DateTimeType((Calendar) value), incremental);
+			internalPropertyUpdate(property, new DateTimeType((Calendar) value), incremental);
 		} else if (value instanceof Double) {
-			internalPropertyUpdate(property, new DecimalType((Double) value),
-					incremental);
+			internalPropertyUpdate(property, new DecimalType((Double) value), incremental);
 		} else if (value instanceof Boolean) {
 			postPropertyUpdate(property,
-					((Boolean) value).booleanValue() ? OnOffType.ON.toString()
-							: OnOffType.OFF.toString(), incremental);
+					((Boolean) value).booleanValue() ? OnOffType.ON.toString() : OnOffType.OFF.toString(), incremental);
 		} else {
-			throw new IllegalArgumentException(String.format(
-					"Unexpected Datatype, property=%s datatype=%s", property,
+			throw new IllegalArgumentException(String.format("Unexpected Datatype, property=%s datatype=%s", property,
 					value.getClass().toString()));
 		}
 	}
 
-	private void internalPropertyUpdate(String property, State value,
-			boolean incremental) throws Exception {
+	private void internalPropertyUpdate(String property, State value, boolean incremental) throws Exception {
 		int bound = 0;
 
 		if (value == null) {
-			logger.trace(
-					"internalPropertyUpdate: Value is null for Property '{}', ignored.",
-					property);
+			logger.trace("internalPropertyUpdate: Value is null for Property '{}', ignored.", property);
 			return;
 		}
 
@@ -473,11 +437,9 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 			if (provider instanceof MiosBindingProvider) {
 				MiosBindingProviderImpl miosProvider = (MiosBindingProviderImpl) provider;
 
-				for (String itemName : miosProvider
-						.getItemNamesForProperty(property)) {
+				for (String itemName : miosProvider.getItemNamesForProperty(property)) {
 
-					MiosBindingConfig config = miosProvider
-							.getMiosBindingConfig(itemName);
+					MiosBindingConfig config = miosProvider.getMiosBindingConfig(itemName);
 
 					if (config != null) {
 						// Transform whatever value we have, based upon the
@@ -487,9 +449,8 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 						State newValue = config.transformIn(value);
 
 						if (newValue != value) {
-							logger.trace(
-									"internalPropertyUpdate: transformation performed, from '{}' to '{}'",
-									value, newValue);
+							logger.trace("internalPropertyUpdate: transformation performed, from '{}' to '{}'", value,
+									newValue);
 
 							value = newValue;
 						}
@@ -507,9 +468,8 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 						// unnecessary manner.
 						//
 						if (incremental) {
-							logger.debug(
-									"internalPropertyUpdate: Updating (Incremental) itemName '{}' with value '{}'",
-									itemName, value);
+							logger.debug("internalPropertyUpdate: BOUND (Incr) Updating '{} {mios=\"{}\"}' to '{}'",
+									itemName, property, value);
 
 							eventPublisher.postUpdate(itemName, value);
 						} else {
@@ -517,26 +477,22 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 							State oldValue = reg.getItem(itemName).getState();
 
 							if ((oldValue == null && value != null)
-									|| (UnDefType.UNDEF.equals(oldValue) && !UnDefType.UNDEF
-											.equals(value))
+									|| (UnDefType.UNDEF.equals(oldValue) && !UnDefType.UNDEF.equals(value))
 									|| !oldValue.equals(value)) {
 								logger.debug(
-										"internalPropertyUpdate: Updating (Full) itemName '{}' with value '{}', oldValue '{}'",
-										new Object[] { itemName, value,
-												oldValue });
+										"internalPropertyUpdate: BOUND (Full) Updating '{} {mios=\"{}\"}' to '{}', was '{}'",
+										new Object[] { itemName, property, value, oldValue });
 
 								eventPublisher.postUpdate(itemName, value);
 							} else {
 								logger.trace(
-										"internalPropertyUpdate: Ignoring (Full) itemName '{}' with value '{}', oldValue '{}'",
-										new Object[] { itemName, value,
-												oldValue });
+										"internalPropertyUpdate: BOUND (Full) Ignoring '{} {mios=\"{}\"}' to '{}', was '{}'",
+										new Object[] { itemName, property, value, oldValue });
 							}
 						}
 						bound++;
 					} else {
-						logger.trace(
-								"internalPropertyUpdate: Found null BindingConfig for item '{}' property '{}'",
+						logger.trace("internalPropertyUpdate: Found null BindingConfig for item '{}' property '{}'",
 								itemName, property);
 					}
 				}
@@ -544,13 +500,112 @@ public class MiosBinding extends AbstractBinding<MiosBindingProvider> implements
 		}
 
 		if (bound == 0) {
-			logger.trace(
-					"internalPropertyUpdate: NOT BOUND {mios=\"{}\"}, value={}",
-					property, value);
+			logger.trace("internalPropertyUpdate: NOT BOUND {mios=\"{}\"}, value={}", property, value);
 		} else {
-			logger.debug(
-					"internalPropertyUpdate: BOUND {mios=\"{}\"}, value={}, bound {} time(s)",
-					new Object[] { property, value, bound });
+			logger.trace("internalPropertyUpdate: BOUND {mios=\"{}\"}, value={}, bound {} time(s)", new Object[] {
+					property, value, bound });
 		}
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean invokeMiosScene(String itemName) {
+		try {
+			logger.debug("invokeMiosScene item {}", itemName);
+
+			boolean sent = false;
+
+			// Lookup the MiOS Unit name and property for this item
+			String unitName = getMiosUnitName(itemName);
+
+			MiosUnitConnector connector = getMiosConnector(unitName);
+			if (connector == null) {
+				logger.warn(
+						"invokeMiosScene: Scene call for item '{}' but no connector found for MiOS Unit '{}', ignoring",
+						itemName, unitName);
+				return false;
+			}
+
+			if (!connector.isConnected()) {
+				logger.warn(
+						"invokeMiosScene: Scene call for item '{}' but the connection to the MiOS Unit '{}' is down, ignoring",
+						itemName, unitName);
+				return false;
+			}
+
+			for (BindingProvider provider : providers) {
+				if (provider instanceof MiosBindingProvider) {
+					MiosBindingProviderImpl miosProvider = (MiosBindingProviderImpl) provider;
+					MiosBindingConfig config = miosProvider.getMiosBindingConfig(itemName);
+
+					if ((config != null) && (config instanceof SceneBindingConfig)) {
+						connector.invokeScene((SceneBindingConfig) config);
+						sent = true;
+					} else {
+						logger.error(
+								"invokeMiosScene: Missing BindingConfig for item '{}', or not bound to a MiOS Scene.",
+								itemName);
+					}
+				}
+			}
+
+			return sent;
+		} catch (Exception e) {
+			logger.error("invokeMiosScene: Error handling command", e);
+			return false;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean invokeMiosAction(String itemName, String actionName, List<Entry<String, Object>> params) {
+		try {
+			logger.debug("invokeMiosAction item {}, action {}, params {}",
+					new Object[] { itemName, actionName, Integer.valueOf((params == null) ? 0 : params.size()) });
+
+			boolean sent = false;
+
+			// Lookup the MiOS Unit name and property for this item
+			String unitName = getMiosUnitName(itemName);
+
+			MiosUnitConnector connector = getMiosConnector(unitName);
+			if (connector == null) {
+				logger.warn(
+						"invokeMiosAction: Action call for item '{}' but no connector found for MiOS Unit '{}', ignoring",
+						itemName, unitName);
+				return false;
+			}
+
+			if (!connector.isConnected()) {
+				logger.warn(
+						"invokeMiosAction: Action call for item '{}' but the connection to the MiOS Unit '{}' is down, ignoring",
+						itemName, unitName);
+				return false;
+			}
+
+			for (BindingProvider provider : providers) {
+				if (provider instanceof MiosBindingProvider) {
+					MiosBindingProviderImpl miosProvider = (MiosBindingProviderImpl) provider;
+					MiosBindingConfig config = miosProvider.getMiosBindingConfig(itemName);
+
+					if ((config != null) && (config instanceof DeviceBindingConfig)) {
+						connector.invokeAction((DeviceBindingConfig) config, actionName, params);
+						sent = true;
+					} else {
+						logger.error(
+								"invokeMiosAction: Missing BindingConfig for item '{}', or not bound to a MiOS Device.",
+								itemName);
+					}
+				}
+			}
+
+			return sent;
+		} catch (Exception e) {
+			logger.error("invokeMiosScene: Error handling command", e);
+			return false;
+		}
+	}
+
 }

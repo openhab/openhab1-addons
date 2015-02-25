@@ -48,25 +48,24 @@ public class ApplicationCommandMessageClass  extends ZWaveCommandProcessor {
 		
 		int commandClassCode = incomingMessage.getMessagePayloadByte(3);
 		CommandClass commandClass = CommandClass.getCommandClass(commandClassCode);
-
 		if (commandClass == null) {
-			logger.error(String.format("NODE %d: Unsupported command class 0x%02x", nodeId, commandClassCode));
+			logger.error(String.format("NODE %d: Unknown command class 0x%02x", nodeId, commandClassCode));
 			return false;
 		}
 
-		logger.debug(String.format("NODE %d: Incoming command class %s (0x%02x)", nodeId, commandClass.getLabel(), commandClass.getKey()));
+		logger.debug("NODE {}: Incoming command class {}", nodeId, commandClass.getLabel(), commandClass.getKey());
 		ZWaveCommandClass zwaveCommandClass =  node.getCommandClass(commandClass);
 		
 		// Apparently, this node supports a command class that we did not get (yet) during initialization.
 		// Let's add it now then to support handling this message.
 		if (zwaveCommandClass == null) {
-			logger.debug(String.format("NODE %d: Command class %s (0x%02x) not found, trying to add it.", 
-					nodeId, commandClass.getLabel(), commandClass.getKey()));
+			logger.debug("NODE {}: Command class {} not found, trying to add it.", 
+					nodeId, commandClass.getLabel(), commandClass.getKey());
 			
 			zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
 			
 			if (zwaveCommandClass != null) {
-				logger.debug(String.format("NODE %d: Adding command class %s (0x%02x)", nodeId, commandClass.getLabel(), commandClass.getKey()));
+				logger.debug("NODE {}: Adding command class %s", nodeId, commandClass.getLabel());
 				node.addCommandClass(zwaveCommandClass);
 			}
 		}

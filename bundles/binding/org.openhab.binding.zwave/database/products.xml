@@ -794,6 +794,15 @@
 		<Product>
 			<Reference>
 				<Type>0001</Type>
+				<Id>0058</Id>
+			</Reference>
+			<Model>KeyFobG5</Model>
+			<Label lang="en">4 button keyfob</Label>
+			<ConfigFile>aeon/keyfobg1.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
 				<Id>0026</Id>
 			</Reference>
 			<Model>DSA38</Model>
@@ -1901,6 +1910,19 @@
 			<Model>RGBWE27ZW</Model>
 			<Label lang="en">RGBW bulb</Label>
 			<ConfigFile>zipato/rgbwe27.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>0138</Id>
+		<Name>BRK Brands</Name>
+		<Product>
+			<Reference>
+				<Type>0001</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>ZCOMBO</Model>
+			<Label lang="en">Smoke and Carbon Monoxide Alarm</Label>
+			<ConfigFile>brk/zcombo.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>
