@@ -59,8 +59,8 @@ public class Structure {
 
     public static class Builder {
         private String mStructureID;
-        private List<String> mThermostatIDs = new ArrayList<>();
-        private List<String> mSmokeCOAlarms = new ArrayList<>();
+        private List<String> mThermostatIDs = new ArrayList<String>();
+        private List<String> mSmokeCOAlarms = new ArrayList<String>();
         private String mName;
         private String mCountryCode;
         private String mPeakPeriodStartTime;
@@ -148,7 +148,7 @@ public class Structure {
     }
 
     private static List<String> convertToList(JSONArray array) {
-        List<String> list = new ArrayList<>();
+        List<String> list = new ArrayList<String>();
         try {
             if(array == null) {
                 return list;
@@ -172,13 +172,13 @@ public class Structure {
     /** Returns an unsorted list of all thermostat IDs that
      *  are paired with this structure. */
     public List<String> getThermostatIDs() {
-        return new ArrayList<>(mThermostatIDs);
+        return new ArrayList<String>(mThermostatIDs);
     }
 
     /** Returns an unsorted list of all Nest Protect IDs that
      *  are paired with this structure. */
     public List<String> getSmokeCOAlarms() {
-        return new ArrayList<>(mSmokeCOAlarms);
+        return new ArrayList<String>(mSmokeCOAlarms);
     }
 
     /**
@@ -360,7 +360,7 @@ public class Structure {
         }
 
         HashMap<String, Object> toMap() {
-            final HashMap<String, Object> etaMap = new HashMap<>();
+            final HashMap<String, Object> etaMap = new HashMap<String, Object>();
             etaMap.put(Keys.ETA.TRIP_ID, mTripID);
             etaMap.put(Keys.ETA.ESTIMATED_ARRIVAL_WINDOW_BEGIN, mEstimatedArrivalWindowBegin);
             etaMap.put(Keys.ETA.ESTIMATED_ARRIVAL_WINDOW_END, mEstimatedArrivalWindowEnd);
