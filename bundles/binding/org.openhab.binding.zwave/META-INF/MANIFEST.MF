@@ -24,7 +24,12 @@ Import-Package: gnu.io,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.osgi.service.event,
- org.slf4j
+ org.slf4j,
+ javax.security.auth,
+ javax.xml.namespace,
+ javax.xml.stream,
+ javax.xml.transform,
+ javax.xml.transform.stream
 Export-Package: org.openhab.binding.zwave,org.openhab.binding.zwave.in
  ternal.config
 Bundle-DocURL: http://www.openhab.org

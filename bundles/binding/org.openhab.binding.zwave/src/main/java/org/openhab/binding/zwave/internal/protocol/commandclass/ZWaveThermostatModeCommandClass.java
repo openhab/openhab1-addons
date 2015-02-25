@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -51,6 +51,13 @@ ZWaveCommandClassDynamicState {
 	private static final byte THERMOSTAT_MODE_SUPPORTED_REPORT = 0x5;
 
 	private final Set<ModeType> modeTypes = new HashSet<ModeType>();
+
+	@XStreamOmitField
+	private boolean initialiseDone = false;
+	@XStreamOmitField
+	private boolean dynamicDone = false;
+
+	private boolean isGetSupported = true;
 
 	/**
 	 * Creates a new instance of the ZWaveThermostatModeCommandClass class.
@@ -88,12 +95,15 @@ ZWaveCommandClassDynamicState {
 		logger.debug("NODE {}: Received Thermostat Mode Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
-		case THERMOSTAT_MODE_SET:
 		case THERMOSTAT_MODE_GET:
 		case THERMOSTAT_MODE_SUPPORTED_GET:
 			logger.warn("NODE {}: Command {} not implemented.", 
 				this.getNode().getNodeId(), command);
 			return;
+		case THERMOSTAT_MODE_SET:
+			logger.trace("NODE {}: Process Thermostat Mode Get as Report", this.getNode().getNodeId());
+			processThermostatModeReport(serialMessage, offset, endpoint);
+			break;
 		case THERMOSTAT_MODE_SUPPORTED_REPORT:
 			logger.debug("NODE {}: Process Thermostat Supported Mode Report", this.getNode().getNodeId());
 
@@ -114,21 +124,18 @@ ZWaveCommandClassDynamicState {
 					if(modeTypeToAdd != null){
 						this.modeTypes.add(modeTypeToAdd);
 						logger.debug("NODE {}: Added mode type {} ({})", this.getNode().getNodeId(), modeTypeToAdd.getLabel(), index);
-					} else {
+					}
+					else {
 						logger.warn("NODE {}: Unknown mode type {}", this.getNode().getNodeId(), index);
 					}
 				}
 			}
 
-			this.getNode().advanceNodeStage(NodeStage.DYNAMIC);
+			initialiseDone = true;
 			break;
 		case THERMOSTAT_MODE_REPORT:
 			logger.trace("NODE {}: Process Thermostat Mode Report", this.getNode().getNodeId());
 			processThermostatModeReport(serialMessage, offset, endpoint);
-
-			if (this.getNode().getNodeStage() != NodeStage.DONE)
-				this.getNode().advanceNodeStage(NodeStage.DONE);
-
 			break;
 		default:
 			logger.warn("NODE {}: Unsupported Command {} for command class {} ({}).",
@@ -160,9 +167,12 @@ ZWaveCommandClassDynamicState {
 		}
 
 		// mode type seems to be supported, add it to the list.
-		if (!this.modeTypes.contains(modeType))
-			this.modeTypes.add(modeType);
-
+		if (!modeTypes.contains(modeType)) {
+			modeTypes.add(modeType);
+		}
+		
+		dynamicDone = true;
+		
 		logger.debug("NODE {}: Thermostat Mode Report, value = {}", this.getNode().getNodeId(), modeType.getLabel());
 		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
 		this.getController().notifyEventListeners(zEvent);
@@ -172,9 +182,11 @@ ZWaveCommandClassDynamicState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> initialize() {
+	public Collection<SerialMessage> initialize(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		result.add(this.getSupportedMessage());
+		if(refresh == true || initialiseDone == false) {
+			result.add(this.getSupportedMessage());
+		}
 		return result;
 	}
 
@@ -182,9 +194,11 @@ ZWaveCommandClassDynamicState {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> getDynamicValues() {
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		result.add(getValueMessage());
+		if(refresh == true || dynamicDone == false) {
+			result.add(getValueMessage());
+		}
 		return result;
 	}
 
@@ -193,8 +207,13 @@ ZWaveCommandClassDynamicState {
 	 */
 	@Override
 	public SerialMessage getValueMessage() {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+		
 		logger.debug("NODE {}: Creating new message for application command THERMOSTAT_MODE_GET", this.getNode().getNodeId());
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Get);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
 		byte[] payload = {
 				(byte) this.getNode().getNodeId(),
 				2,
@@ -205,6 +224,15 @@ ZWaveCommandClassDynamicState {
 		return result;
 	}
 
+	@Override
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		if(options.isGetSupported != null) {
+			isGetSupported = options.isGetSupported;
+		}
+		
+		return true;
+	}
+
 	/**
 	 * Gets a SerialMessage with the THERMOSTAT_MODE_SUPPORTED_GET command 
 	 * @return the serial message, or null if the supported command is not supported.
@@ -212,7 +240,7 @@ ZWaveCommandClassDynamicState {
 	public SerialMessage getSupportedMessage() {
 		logger.debug("NODE {}: Creating new message for application command THERMOSTAT_MODE_SUPPORTED_GET", this.getNode().getNodeId());
 
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.High);
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Config);
 		byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
 				2, 
 				(byte) getCommandClass().getKey(), 
@@ -231,12 +259,13 @@ ZWaveCommandClassDynamicState {
 		logger.debug("NODE {}: setValueMessage {}, modeType empty {}", this.getNode().getNodeId(), value, modeTypes.isEmpty());
 
 		//if we do not have any mode types yet, get them
-		if(modeTypes.isEmpty())
+		if(modeTypes.isEmpty()) {
+			logger.warn("NODE {}: requesting mode types, set request ignored (try again later)", this.getNode().getNodeId());
 			return this.getSupportedMessage();
+		}
 
 		if(!modeTypes.contains(ModeType.getModeType(value))){
 			logger.error("NODE {}: Unsupported mode type {}", this.getNode().getNodeId(), value);
-
 			return null;
 		}
 

@@ -66,6 +66,6 @@ public class RequestNodeNeighborUpdateMessageClass extends ZWaveCommandProcessor
 			transactionComplete = true;
 			break;
 		}
-		return false;
+		return true;
 	}
 }

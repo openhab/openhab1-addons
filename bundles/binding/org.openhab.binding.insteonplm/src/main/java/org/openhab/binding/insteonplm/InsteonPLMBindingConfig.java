@@ -73,6 +73,14 @@ public class InsteonPLMBindingConfig implements BindingConfig {
 	public HashMap<String,String> getParameters() {
 		return params;
 	}
+	/**
+	 * Returns a parameter that starts with key=
+	 * @param key 
+	 * @return parameter value or null if not found
+	 */
+	public String getParameter(String key) {
+		return (params == null ? null : params.get(key));
+	}
 	
 	public String toString() {
 		String s = "addr=" + ((address != null) ? address.toString() : "null_address");

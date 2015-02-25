@@ -23,7 +23,13 @@ Import-Package: gnu.io,
  org.osgi.service.cm,
  org.osgi.service.component,
  org.osgi.service.event,
- org.slf4j
+ org.slf4j,
+ org.apache.http,
+ org.apache.http.auth,
+ org.apache.http.client,
+ org.apache.http.client.methods,
+ org.apache.http.impl.client,
+ org.apache.http.util
 Export-Package: org.openhab.binding.insteonplm
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

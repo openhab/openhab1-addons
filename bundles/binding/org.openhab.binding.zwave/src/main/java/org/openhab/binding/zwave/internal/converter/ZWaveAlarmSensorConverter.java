@@ -61,24 +61,16 @@ public class ZWaveAlarmSensorConverter extends ZWaveCommandClassConverter<ZWaveA
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void executeRefresh(ZWaveNode node, 
+	public SerialMessage executeRefresh(ZWaveNode node, 
 			ZWaveAlarmSensorCommandClass commandClass, int endpointId, Map<String,String> arguments) {
-		logger.debug("Generating poll message for {} for node {} endpoint {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
-		SerialMessage serialMessage;
+		logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
 		String alarmType = arguments.get("alarm_type");
 		
 		if (alarmType != null) {
-			serialMessage = node.encapsulate(commandClass.getMessage(AlarmType.getAlarmType(Integer.parseInt(alarmType))), commandClass, endpointId);
+			return node.encapsulate(commandClass.getMessage(AlarmType.getAlarmType(Integer.parseInt(alarmType))), commandClass, endpointId);
 		} else {
-			serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
+			return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
 		}
-			
-		if (serialMessage == null) {
-			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
-			return;
-		}
-		
-		this.getController().sendData(serialMessage);
 	}
 
 	/**

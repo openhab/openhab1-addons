@@ -50,8 +50,7 @@ public final class MiosActivator implements BundleActivator {
 	/**
 	 * Returns the OSGi BundleContext of this bundle.
 	 * 
-	 * The OSGi BundleContext is needed to talk with other services running
-	 * under OSGi.
+	 * The OSGi BundleContext is needed to talk with other services running under OSGi.
 	 * <p>
 	 * eg. openHAB's {@code TransformationService}.
 	 * 

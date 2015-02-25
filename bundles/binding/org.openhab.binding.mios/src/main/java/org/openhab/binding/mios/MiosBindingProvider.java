@@ -11,7 +11,6 @@ package org.openhab.binding.mios;
 import java.util.List;
 
 import org.openhab.core.binding.BindingProvider;
-import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemRegistry;
 
 /**
@@ -29,8 +28,7 @@ public interface MiosBindingProvider extends BindingProvider {
 	 * @param itemName
 	 *            the name of the Item.
 	 * 
-	 * @return the name of the MiOS Unit associated with the the Item
-	 *         {@code itemName}
+	 * @return the name of the MiOS Unit associated with the the Item {@code itemName}
 	 */
 	String getMiosUnitName(String itemName);
 
@@ -40,8 +38,7 @@ public interface MiosBindingProvider extends BindingProvider {
 	 * @param itemName
 	 *            the name of the Item.
 	 * 
-	 * @return the property string component for the Binding on the Item
-	 *         {@code itemName}
+	 * @return the property string component for the Binding on the Item {@code itemName}
 	 */
 	String getProperty(String itemName);
 
@@ -50,10 +47,8 @@ public interface MiosBindingProvider extends BindingProvider {
 	/**
 	 * Gets the ItemRegistry (catalog) used by this BindingProvider.
 	 * 
-	 * The {@code ItemRegistry} is injected into the {@code MiosBindingProvider}
-	 * through OSGi configuration. This method provider read-only access to the
-	 * {@code ItemRegistry}, which is the catalog of Items in use by this
-	 * system.
+	 * The {@code ItemRegistry} is injected into the {@code MiosBindingProvider} through OSGi configuration. This method
+	 * provider read-only access to the {@code ItemRegistry}, which is the catalog of Items in use by this system.
 	 * 
 	 * @return the ItemRegistry associated with this BindingProvider.
 	 */
