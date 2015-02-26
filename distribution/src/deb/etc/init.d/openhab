@@ -105,6 +105,7 @@ JAVA_ARGS_DEFAULT="-Dosgi.clean=true \
  -Djetty.logs="${OPENHAB_LOG_DIR}" \
  -Djetty.rundir="${OPENHAB_DIR}" \
  -Dfelix.fileinstall.dir="${OPENHAB_DIR}/addons" \
+ -Dfelix.fileinstall.filter=.*\\.jar \
  -Djava.library.path="${OPENHAB_DIR}/lib" \
  -Djava.security.auth.login.config="${OPENHAB_CONF_DIR}/login.conf" \
  -Dorg.quartz.properties="${OPENHAB_CONF_DIR}/quartz.properties" \

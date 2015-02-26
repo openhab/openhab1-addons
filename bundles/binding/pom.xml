@@ -22,6 +22,7 @@
     <module>org.openhab.binding.knx.test</module>
     <module>org.openhab.binding.serial</module>
     <module>org.openhab.binding.onewire</module>
+	<module>org.openhab.binding.onewire-cuno</module>
     <module>org.openhab.binding.wol</module>
     <module>org.openhab.binding.networkhealth</module>
     <module>org.openhab.binding.exec</module>
@@ -139,7 +140,7 @@
     <module>org.openhab.binding.zibase</module>
     <module>org.openhab.binding.wago</module>
     <module>org.openhab.binding.networkupstools</module>
-    <module>org.openhab.binding.caldav</module>
+	<module>org.openhab.binding.ecobee</module>	<module>org.openhab.binding.caldav</module>
 	<module>org.openhab.binding.caldav-presence</module>
   </modules>
 

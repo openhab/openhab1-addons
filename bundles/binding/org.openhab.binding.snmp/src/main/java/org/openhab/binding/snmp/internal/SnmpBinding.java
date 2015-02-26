@@ -89,7 +89,6 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 	public void activate() {
 		logger.debug("SNMP binding activated");
 		super.activate();
-		setProperlyConfigured(true);
 	}
 
 	public void deactivate() {
@@ -431,6 +430,7 @@ public class SnmpBinding extends AbstractActiveBinding<SnmpBindingProvider>
 		if (mapping) {
 			listen();
 		}
+		setProperlyConfigured(true);
 	}
 
 	private void sendPDU(CommunityTarget target, PDU pdu) {

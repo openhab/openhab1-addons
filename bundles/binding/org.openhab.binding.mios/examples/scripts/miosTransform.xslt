@@ -62,7 +62,7 @@ Group GDevices (GAll)
 </xsl:variable>
 /* Device - <xsl:value-of select="@name"/> */
 Number   <xsl:value-of select="$DeviceNameFixed"/>Id "ID [%d]" (GDevices) {mios="unit:<xsl:value-of select="$MIOS_UNIT"/>,device:<xsl:value-of select="@id"/>/id"}
-String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of select="@name"/> Device Status [%s]" (GDevices) {mios="unit:<xsl:value-of select="$MIOS_UNIT"/>,device:<xsl:value-of select="@id"/>/status"}
+String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of select="@name"/> Device Status [MAP(miosDeviceStatusUI.map):%s]" (GDevices) {mios="unit:<xsl:value-of select="$MIOS_UNIT"/>,device:<xsl:value-of select="@id"/>/status"}
 <xsl:for-each select="states">
   <xsl:apply-templates select="state[not (@service='urn:micasaverde-com:serviceId:HaDevice1' and @variable='IODevice')
                                      and not (@service='urn:micasaverde-com:serviceId:HaDevice1' and @variable='IODeviceXRef')
@@ -500,7 +500,7 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="normalize-space($ItemType) = 'Integer'"                                                                > [%d]</xsl:when>
 <xsl:when test="normalize-space($ItemType) = 'Number'"                                                                 > [%.4f]</xsl:when>
 <xsl:when test="normalize-space($ItemType) = 'DateTime'"                                                               > [%1$ta, %1$tm/%1$te %1$tR]</xsl:when>
-<xsl:when test="normalize-space($ItemType) = 'Contact'"                                                                > [%s]</xsl:when>
+<xsl:when test="normalize-space($ItemType) = 'Contact'"                                                                > [MAP(en.map):%s]</xsl:when>
 <xsl:when test="normalize-space($ItemType) = 'Switch'"                                                                 ></xsl:when>
 <xsl:when test="normalize-space($ItemType) = 'Dimmer'"                                                                 > [%d] %</xsl:when>
 <xsl:otherwise                                                                                                         > [%s]</xsl:otherwise>
@@ -562,6 +562,6 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 </xsl:variable>
 /* Scene - <xsl:value-of select="@name"/> */
 String   Scene<xsl:value-of select="$SceneNameFixed"/> "<xsl:value-of select="@name"/> Scene" &lt;sofa> <xsl:value-of select="$SceneGroups"/> {mios="unit:<xsl:value-of select="$MIOS_UNIT"/>,scene:<xsl:value-of select="@id"/>/status", autoupdate="false"}
-Contact  Scene<xsl:value-of select="$SceneNameFixed"/>Active "Active [%s]" &lt;sofa> <xsl:value-of select="$SceneGroups"/> {mios="unit:<xsl:value-of select="$MIOS_UNIT"/>,scene:<xsl:value-of select="@id"/>/active"}
+Contact  Scene<xsl:value-of select="$SceneNameFixed"/>Active "Active [MAP(en.map):%s]" &lt;sofa> <xsl:value-of select="$SceneGroups"/> {mios="unit:<xsl:value-of select="$MIOS_UNIT"/>,scene:<xsl:value-of select="@id"/>/active"}
 </xsl:template>
 </xsl:stylesheet>

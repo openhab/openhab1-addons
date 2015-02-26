@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import org.apache.commons.lang.StringUtils;
 import org.atmosphere.cpr.AtmosphereServlet;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.ItemRegistry;
@@ -140,7 +141,7 @@ public class RESTApplication extends Application {
 			httpService.registerServlet(REST_SERVLET_ALIAS,
 				atmosphereServlet, getJerseyServletParams(), createHttpContext());
 
- 			logger.info("Started REST API at /rest");
+			logger.info("Started REST API at {}", REST_SERVLET_ALIAS);
 
  			if (discoveryService != null) {
  				discoveryService.registerService(getDefaultServiceDescription());
@@ -195,7 +196,15 @@ public class RESTApplication extends Application {
         jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor.disableDefaults", "true");
         // use the default interceptors without PaddingAtmosphereInterceptor
         // see: https://groups.google.com/forum/#!topic/openhab/Z-DVBXdNiYE
-        jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor", "org.atmosphere.interceptor.DefaultHeadersInterceptor,org.atmosphere.interceptor.AndroidAtmosphereInterceptor,org.atmosphere.interceptor.SSEAtmosphereInterceptor,org.atmosphere.interceptor.JSONPAtmosphereInterceptor,org.atmosphere.interceptor.JavaScriptProtocol,org.atmosphere.interceptor.OnDisconnectInterceptor");
+        final String[] interceptors = {
+			"org.atmosphere.interceptor.CacheHeadersInterceptor",
+			"org.atmosphere.interceptor.AndroidAtmosphereInterceptor",
+			"org.atmosphere.interceptor.SSEAtmosphereInterceptor",
+			"org.atmosphere.interceptor.JSONPAtmosphereInterceptor",
+			"org.atmosphere.interceptor.JavaScriptProtocol",
+			"org.atmosphere.interceptor.OnDisconnectInterceptor"
+        };
+        jerseyServletParams.put("org.atmosphere.cpr.AtmosphereInterceptor", StringUtils.join(interceptors, ","));
 //      The BroadcasterCache is set in ResourceStateChangeListener.registerItems(), because otherwise
 //      it gets somehow overridden by other registered servlets (e.g. the CV-bundle)
         //jerseyServletParams.put("org.atmosphere.cpr.broadcasterCacheClass", "org.atmosphere.cache.UUIDBroadcasterCache");

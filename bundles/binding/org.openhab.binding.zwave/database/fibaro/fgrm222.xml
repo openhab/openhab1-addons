@@ -15,6 +15,10 @@
 		<Class><id>0x85</id></Class>
 		<Class><id>0x86</id></Class>
 		<Class><id>0x9a</id></Class>
+		<Class>
+			<id>0x91</id>
+			<add>true</add>
+		</Class>
 	</CommandClasses>
 	<Configuration>
 		<Parameter>

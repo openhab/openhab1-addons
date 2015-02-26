@@ -6,8 +6,24 @@
 		<Class><id>0x00</id></Class>
 		<Class><id>0x20</id></Class>
 		<Class><id>0x25</id></Class>
-		<Class><id>0x31</id></Class>
-		<Class><id>0x32</id></Class>
+		<Class>
+			<id>0x31</id>
+			<isGetSupported>false</isGetSupported>
+		</Class>
+		<Class>
+			<id>0x32</id>
+			<endpoint>1</endpoint>
+			<meterCanReset>true</meterCanReset>
+			<meterType>ELECTRIC</meterType>
+			<meterScale>E_W,E_KWh</meterScale>
+		</Class>
+		<Class>
+			<id>0x32</id>
+			<endpoint>2</endpoint>
+			<meterCanReset>true</meterCanReset>
+			<meterType>ELECTRIC</meterType>
+			<meterScale>E_W,E_KWh</meterScale>
+		</Class>
 		<Class><id>0x60</id></Class>
 		<Class><id>0x70</id></Class>
 		<Class><id>0x72</id></Class>

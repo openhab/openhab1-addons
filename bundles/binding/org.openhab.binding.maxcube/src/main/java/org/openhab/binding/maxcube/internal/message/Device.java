@@ -164,8 +164,11 @@ public abstract class Device {
 					logger.debug ("No temperature reading in {} mode", heatingThermostat.getMode()) ;
 				}
 			}
-			logger.debug ("Actual Temperature : {}",  (double)actualTemp / 10);
-			heatingThermostat.setTemperatureActual((double)actualTemp / 10);
+			
+			if (actualTemp != 0) {
+				logger.debug ("Actual Temperature : {}",  (double)actualTemp / 10);
+				heatingThermostat.setTemperatureActual((double)actualTemp / 10);
+			}
 			break;
 		case EcoSwitch:
 			String eCoSwitchData = Utils.toHex(raw[3] & 0xFF, raw[4] & 0xFF, raw[5] & 0xFF);
