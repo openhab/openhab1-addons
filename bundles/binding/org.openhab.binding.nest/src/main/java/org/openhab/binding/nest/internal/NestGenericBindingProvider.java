@@ -32,7 +32,7 @@ public class NestGenericBindingProvider extends AbstractGenericBindingProvider i
 	private static final Logger logger = LoggerFactory.getLogger(NestGenericBindingProvider.class);
 	private static final Pattern ID_REG_EXP = Pattern.compile(".*id=([^,]*).*");
 	private static final Pattern TYPE_REG_EXP = Pattern.compile(".*type=([^,]*).*");
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -80,6 +80,7 @@ public class NestGenericBindingProvider extends AbstractGenericBindingProvider i
 		catch(Exception e){
 			throw new BindingConfigParseException("Error parsing binding for Context["+ context + "] Item[" + item + "] BindingConfig[" + bindingConfig + "] ErrorMessage: " + e.getMessage());
 		}
+	
 	}
 	
 	@Override
@@ -105,7 +106,7 @@ public class NestGenericBindingProvider extends AbstractGenericBindingProvider i
 			}
 		}
 		return bindings;	
-	}	
+	}
 	
 	@Override
 	public NestType getTypeForItemName(String itemName) {
@@ -124,7 +125,6 @@ public class NestGenericBindingProvider extends AbstractGenericBindingProvider i
 		}
 		return null;
 	}
-
 	
 	/**
 	 * This is a helper class holding binding specific configuration details
@@ -150,4 +150,6 @@ public class NestGenericBindingProvider extends AbstractGenericBindingProvider i
 			return id;
 		}
 	}
+	
+	
 }

@@ -3,9 +3,9 @@ Private-Package: org.openhab.binding.nest.internal
 Ignore-Package: org.openhab.binding.nest.internal
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-Name: openHAB Nest Binding
-Bundle-SymbolicName: org.openhab.binding.nest;singleton:=true
+Bundle-SymbolicName: org.openhab.binding.nest
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.7.0.SNAPSHOT
+Bundle-Version: 1.7.0.qualifier
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the Nest binding of the open Home Aut
  omation Bus (openHAB)
@@ -25,38 +25,11 @@ Export-Package: org.openhab.binding.nest
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Require-Bundle: org.junit
 Bundle-ClassPath: .,
- ant-antlr.jar,
- ant-apache-bcel.jar,
- ant-apache-bsf.jar,
- ant-apache-log4j.jar,
- ant-apache-oro.jar,
- ant-apache-regexp.jar,
- ant-apache-resolver.jar,
- ant-apache-xalan2.jar,
- ant-commons-logging.jar,
- ant-commons-net.jar,
- ant-jai.jar,
- ant-javamail.jar,
- ant-jdepend.jar,
- ant-jmf.jar,
- ant-jsch.jar,
- ant-junit.jar,
- ant-junit4.jar,
- ant-launcher.jar,
- ant-netrexx.jar,
- ant-swing.jar,
- ant-testutil.jar,
- ant.jar,
- jdi.jar,
- jdimodel.jar,
- junit.jar,
- quartz-all-2.1.7.jar,
  lib/firebase-client-jvm-2.2.0.jar,
+ lib/httpclient-4.0.1.jar,
  lib/jackson-annotations-2.2.2.jar,
  lib/jackson-core-2.2.2.jar,
  lib/jackson-databind-2.2.2.jar,
  lib/json-20141113.jar,
- lib/tubesock-0.0.11.jar,
- lib/httpclient-4.0.1.jar
+ lib/tubesock-0.0.11.jar
