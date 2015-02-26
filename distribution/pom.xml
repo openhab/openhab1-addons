@@ -104,8 +104,8 @@
 											<path>usr/share/openhab/bin</path>
 											<path>var/lib/openhab</path>
 											<path>var/lib/openhab/workspace</path>
-											<path>var/lib/openhab/db4o</path>
-											<path>var/lib/openhab/rrd4j</path>
+											<path>var/lib/openhab/persistence/db4o</path>
+											<path>var/lib/openhab/persistence/rrd4j</path>
 											<path>var/log/openhab</path>
 										</paths>
 										<mapper>

@@ -18,9 +18,7 @@ stopOpenHAB() {
 
 case "$1" in
 	upgrade)
-		if [ "$RESTART_ON_UPGRADE" = "true" ] ; then
-			stopOpenHAB
-		fi
+		stopOpenHAB
 		;;
 	remove|deconfigure)
 		stopOpenHAB

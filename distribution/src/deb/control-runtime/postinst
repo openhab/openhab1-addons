@@ -34,7 +34,7 @@ case "$1" in
 			--gecos "openHAB runtime user" --home /var/lib/openhab "$OH_USER"
 		fi
 	# if $2 is set, this is an upgrade
-		if ( [ -n $2 ] && [ "$RESTART_ON_UPGRADE" = "true" ] ) ; then
+		if [ -n $2 ] ; then
 			startOpenHAB
 	# this is a fresh installation
 		elif [ -z $2 ] ; then

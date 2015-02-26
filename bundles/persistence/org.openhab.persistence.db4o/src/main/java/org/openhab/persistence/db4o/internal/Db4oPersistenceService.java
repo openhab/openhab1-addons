@@ -351,7 +351,7 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 	static private String getUserDataFolder() {
 		String progArg = System.getProperty("openhab.userdata");
 		if (progArg != null) {
-			return progArg;
+			return progArg + File.separator + "persistence";
 		} else {
 			return "etc";
 		}
