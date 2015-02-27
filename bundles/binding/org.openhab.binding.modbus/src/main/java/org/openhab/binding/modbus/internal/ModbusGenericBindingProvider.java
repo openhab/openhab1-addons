@@ -80,7 +80,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
-		logger.info("processBindingConfiguration : "+item+" : "+bindingConfig)
+		logger.info("processBindingConfiguration : "+item+" : "+bindingConfig);
 		if (bindingConfig != null) {
 			ModbusBindingConfig config = parseBindingConfig(item, bindingConfig);
 			addBindingConfig(item, config);
