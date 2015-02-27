@@ -39,7 +39,7 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	 * Delay before first initial refresh call for initialization (required at
 	 * any time after startup to make sure everything else is initialized).
 	 */
-	private static final int THREAD_INITIALIZATION_DELAY = 30000;
+	private static final int THREAD_INITIALIZATION_DELAY = 60000;
 
 	/** Interruption timeout when disconnecting all threads. */
 	private static final int THREAD_INTERRUPTION_TIMEOUT = 5000;
@@ -54,12 +54,14 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 		/**
 		 * Get all item names that are registered for the given command type.
 		 * 
+		 * @param device
+		 *            The device name for which items should be searched.
 		 * @param cmd
 		 *            A command type.
 		 * @return All item names that are registered for the given command
 		 *         type.
 		 */
-		Collection<String> getItemNamesForCommandType(AnelCommandType cmd);
+		Collection<String> getItemNamesForCommandType(String device, AnelCommandType cmd);
 
 		/**
 		 * Connectors should use this to send updates to the event bus.
@@ -84,8 +86,8 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 	private final IInternalAnelBinding bindingFacade = new IInternalAnelBinding() {
 
 		@Override
-		public Collection<String> getItemNamesForCommandType(AnelCommandType cmd) {
-			return AnelBinding.this.getItemNamesForCommandType(cmd);
+		public Collection<String> getItemNamesForCommandType(String device, AnelCommandType cmd) {
+			return AnelBinding.this.getItemNamesForCommandType(device, cmd);
 		}
 
 		@Override
@@ -269,15 +271,20 @@ public class AnelBinding extends AbstractActiveBinding<AnelBindingProvider> impl
 		}).start();
 	}
 
-	private Collection<String> getItemNamesForCommandType(AnelCommandType cmd) {
+	private Collection<String> getItemNamesForCommandType(String device, AnelCommandType cmd) {
 		if (cmd == null)
 			return Collections.emptyList();
 		final Set<String> itemNames = new HashSet<String>();
 		for (final AnelBindingProvider provider : providers) {
+			// for each provider, check all items
 			for (final String itemName : provider.getItemNames()) {
-				final AnelCommandType commandType = provider.getCommandType(itemName);
-				if (commandType.equals(cmd)) {
-					itemNames.add(itemName);
+				// we only want to collect items for our device
+				if (device.equals(provider.getDeviceId(itemName))) {
+					final AnelCommandType commandType = provider.getCommandType(itemName);
+					// if the item type matches, item should be returned
+					if (commandType.equals(cmd)) {
+						itemNames.add(itemName);
+					}
 				}
 			}
 		}
