@@ -140,6 +140,10 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 		State getItemState() {
 			return item.getState();
 		}
+
+		public void setItemState(State state) {
+			return item.setState(state);
+		}
 	
 		/**
 		 * Calculates new item state based on the new boolean value, current item state and item class

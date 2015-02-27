@@ -134,6 +134,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 
 			if (! newState.equals(currentState)) {
 				eventPublisher.postUpdate(itemName, newState);
+				config.setItemState(newState);
 			}
 		}
 	}
@@ -198,6 +199,7 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 					logger.debug("internalUpdateItem : currentState '" + currentState + "' newState : '" + newState + "'");
 					if (!newState.equals(currentState)) {
 						eventPublisher.postUpdate(itemName, newState);
+						config.setItemState(newState);
 					}
 				}
 			}
