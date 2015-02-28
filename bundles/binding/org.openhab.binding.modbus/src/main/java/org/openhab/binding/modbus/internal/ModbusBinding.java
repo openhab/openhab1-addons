@@ -130,7 +130,6 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 			}
 
 			State currentState = config.getItemState();
-			// logger.info("internalUpdateItem : "+itemName+" : currentState '" + currentState + "' newState : '" + newState + "'");
 
 			if (! newState.equals(currentState)) {
 				eventPublisher.postUpdate(itemName, newState);
@@ -196,7 +195,6 @@ public class ModbusBinding extends AbstractActiveBinding<ModbusBindingProvider> 
 					boolean state = coils.getBit(config.readRegister);
 					State currentState = provider.getConfig(itemName).getItemState();
 					State newState = provider.getConfig(itemName).translateBoolean2State(state);
-					// logger.debug("internalUpdateItem : currentState '" + currentState + "' newState : '" + newState + "'");
 					if (!newState.equals(currentState)) {
 						eventPublisher.postUpdate(itemName, newState);
 						config.state = newState;
