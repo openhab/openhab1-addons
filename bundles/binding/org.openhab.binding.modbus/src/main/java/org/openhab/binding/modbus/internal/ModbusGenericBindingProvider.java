@@ -138,7 +138,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 			return item;
 		}
 		
-		State getItemState() {
+		public State getItemState() {
 			return state != null ? state : item.getState();
 		}
 
