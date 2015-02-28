@@ -140,7 +140,7 @@ public class ModbusGenericBindingProvider extends AbstractGenericBindingProvider
 		State getItemState() {
 			return state != null ? state : item.getState();
 		}
-		
+
 		/**
 		 * Calculates new item state based on the new boolean value, current item state and item class
 		 * Used with item bound to "coil" type slaves
