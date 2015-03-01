@@ -51,6 +51,13 @@ public class PollingDelayFilter implements PerRequestBroadcastFilter {
 			boolean isItemMessage = originalMessage instanceof Item || originalMessage instanceof GroupItem;
 			boolean isStreamingTransport = ResponseTypeHelper.isStreamingTransport(request);
 			
+			//strange atmosphere bug, seems harmless, but pollutes the logs
+			//so lets see if this fails or not first before we call it again.
+			try {
+				resource.getRequest().getPathInfo();
+			} catch (Exception e) {
+				return new BroadcastAction(ACTION.ABORT, message);
+			}
 			if(!isStreamingTransport && message instanceof PageBean && isItemMessage) {
 				final String delayedBroadcasterName = resource.getRequest().getPathInfo();
 				executor.schedule(new Runnable() {
