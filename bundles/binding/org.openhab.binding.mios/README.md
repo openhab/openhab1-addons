@@ -512,13 +512,13 @@ The `examples/transform/miosDimmerCommand.map` file has a definition that handle
 
 ##### A Roller shutter...
 
-The simple version, using internal defaults for the `WindowCovering1` service of the Device (mind the '/' after WindowCovering1):
+The simple version, using internal defaults for the `WindowCovering1` service of the Device:
 
-    Rollershutter Kitchen "Kitchen"	(GKitchen)  {mios="unit:micasa,device:13/service/WindowCovering1/"}
+    Rollershutter Kitchen "Kitchen"	(GKitchen)  {mios="unit:micasa,device:13/service/WindowCovering1"}
 
 or the full version:
 
-    Rollershutter Kitchen "Kitchen"	(GKitchen)  {mios="unit:micasa,device:13/service/WindowCovering1/,command:MAP(miosShutterCommand.map)"}
+    Rollershutter Kitchen "Kitchen"	(GKitchen)  {mios="unit:micasa,device:13/service/WindowCovering1,command:MAP(miosShutterCommand.map)"}
 
 Since Rollershutter Items in openHAB can be sent `UP`, `DOWN`, `STOP` or _&lt;PCTNumber>_ as the command, the mapping file must account for both the static commands (`UP`, `DOWN`, `STOP`) as well as the possibility of a _Command Value_ being sent.
 

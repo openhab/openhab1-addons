@@ -213,7 +213,9 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 		}
 	}
 
-	private static final Pattern SERVICE_IN_PATTERN = Pattern.compile("service/(?<serviceName>.+)/(?<serviceVar>.+)*");
+	private static final Pattern SERVICE_IN_PATTERN = Pattern.compile("service/(?<serviceName>[^/]+)(/?<serviceVar>.+)*");
+	private static final int GROUP_SERVICE_NAME = 1;
+	private static final int GROUP_SERVICE_VAR  = 2;
 
 	private static final Pattern SERVICE_COMMAND_TRANSFORM_PATTERN = Pattern
 			.compile("(?<transform>(?<transformCommand>[a-zA-Z]+)\\((?<transformParam>.*)\\))");
@@ -270,8 +272,8 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 			// "/service/"
 			matcher = SERVICE_IN_PATTERN.matcher(newInStuff);
 			if (matcher.matches()) {
-				iName = matcher.group("serviceName");
-				iVar = matcher.group("serviceVar");
+				iName = matcher.group(GROUP_SERVICE_NAME);
+				iVar = matcher.group(GROUP_SERVICE_VAR);
 
 				// Handle service name aliases.
 				iName = mapServiceAlias(iName);
