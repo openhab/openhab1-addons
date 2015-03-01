@@ -140,6 +140,8 @@
     <module>org.openhab.binding.wago</module>
     <module>org.openhab.binding.networkupstools</module>
     <module>org.openhab.binding.ecobee</module>
+	<module>org.openhab.binding.caldav-command</module>
+	<module>org.openhab.binding.caldav-personal</module>
   </modules>
 
 </project>
