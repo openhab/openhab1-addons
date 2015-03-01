@@ -443,11 +443,11 @@ public class SerialParameters {
     parity = parity.toLowerCase();
     int intParity = SerialPort.PARITY_NONE;
 
-    if (parity.equals("none")) {
+    if (parity.equals("none") || parity.equals("n")) {
       intParity = SerialPort.PARITY_NONE;
-    } else if (parity.equals("even")) {
+    } else if (parity.equals("even") || parity.equals("e")) {
       intParity = SerialPort.PARITY_EVEN;
-    } else if (parity.equals("odd")) {
+    } else if (parity.equals("odd") || parity.equals("o")) {
       intParity = SerialPort.PARITY_ODD;
     } else {
       throw new IllegalArgumentException(
