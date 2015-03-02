@@ -140,6 +140,7 @@
     <module>org.openhab.binding.wago</module>
     <module>org.openhab.binding.networkupstools</module>
     <module>org.openhab.binding.ecobee</module>
+    <module>org.openhab.binding.smlreader</module>
   </modules>
 
 </project>
