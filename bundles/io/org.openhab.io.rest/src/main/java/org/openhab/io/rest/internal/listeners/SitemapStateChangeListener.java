@@ -17,12 +17,10 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriBuilder;
 
-import org.atmosphere.cpr.AtmosphereResource;
-import org.atmosphere.cpr.BroadcasterCache;
-import org.atmosphere.cpr.PerRequestBroadcastFilter;
-import org.atmosphere.cpr.BroadcastFilter.BroadcastAction.ACTION;
+import org.atmosphere.cpr.BroadcasterConfig;
 import org.openhab.core.items.Item;
 import org.openhab.io.rest.RESTApplication;
+import org.openhab.io.rest.internal.cache.SingleMessageBroadcastCache;
 import org.openhab.io.rest.internal.resources.ResponseTypeHelper;
 import org.openhab.io.rest.internal.resources.SitemapResource;
 import org.openhab.io.rest.internal.resources.beans.PageBean;
@@ -50,29 +48,10 @@ public class SitemapStateChangeListener extends ResourceStateChangeListener {
 	private static final Logger logger = LoggerFactory.getLogger(SitemapStateChangeListener.class);
 	
 	@Override
-	public void registerItems() {
-		super.registerItems();
-		//if other filters have let this through then clear out any cached messages for the client.
-		//There should at most be only one message (version of the sitemap) in the cache for a client.
-		broadcaster.getBroadcasterConfig().addFilter(new PerRequestBroadcastFilter() {
-			
-			@Override
-			public BroadcastAction filter(String broadcasterId,
-					Object originalMessage, Object message) {
-				return new BroadcastAction(message);
-			}
-
-			@Override
-			public BroadcastAction filter(String broadcasterId,
-					AtmosphereResource resource, Object originalMessage, Object message) {
-				//this will clear any cached messages before we add the new one
-				BroadcasterCache uuidCache = broadcaster.getBroadcasterConfig().getBroadcasterCache();
-				List<Object> entries = uuidCache.retrieveFromCache(broadcasterId, resource.uuid());
-				if(entries != null)
-					logger.trace("UUID {} had {} previous messages", resource.uuid(), entries.size());
-				return new BroadcastAction(ACTION.CONTINUE, message);
-			}
-		});
+	public void configureCache(BroadcasterConfig config){
+		config.setBroadcasterCache(new SingleMessageBroadcastCache());
+		config.getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
+		config.getBroadcasterCache().start();
 	}
 	
 	@Override

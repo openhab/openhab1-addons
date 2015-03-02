@@ -79,13 +79,21 @@ abstract public class ResourceStateChangeListener {
 		return cachedEntries;
 	}
 	
+	/**
+	 * Configure what cache we want to use
+	 * @param config
+	 */
+	public void configureCache(BroadcasterConfig config){
+		config.setBroadcasterCache(new UUIDBroadcasterCache());
+		config.getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
+		config.getBroadcasterCache().start();
+	}
+	
 	public void registerItems(){
 		StartCacheExecutor();
 		BroadcasterConfig config = broadcaster.getBroadcasterConfig();
 		
-		config.setBroadcasterCache(new UUIDBroadcasterCache());
-		config.getBroadcasterCache().configure(broadcaster.getBroadcasterConfig());
-		config.getBroadcasterCache().start();
+		configureCache(config);
 
 		addBroadcastFilter(config, new PerRequestBroadcastFilter() {
 
