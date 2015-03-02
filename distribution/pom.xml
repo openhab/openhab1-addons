@@ -40,7 +40,6 @@
 								<descriptor>src/assemble/designer-linux.xml</descriptor>
 								<descriptor>src/assemble/designer-linux64.xml</descriptor>
 								<descriptor>src/assemble/addons.xml</descriptor>
-								<!--<descriptor>src/assemble/drools.xml</descriptor> -->
 								<descriptor>src/assemble/greent.xml</descriptor>
 								<descriptor>src/assemble/demo.xml</descriptor>
 							</descriptors>
@@ -497,6 +496,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openhab.action</groupId>
+			<artifactId>org.openhab.action.mios</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.action</groupId>
 			<artifactId>org.openhab.action.astro</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
@@ -583,12 +588,6 @@
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.vdr</artifactId>
-			<version>${project.version}</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.openhab.core</groupId>
-			<artifactId>org.openhab.core.drools</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
@@ -1153,6 +1152,12 @@
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.networkupstools</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.ecobee</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>

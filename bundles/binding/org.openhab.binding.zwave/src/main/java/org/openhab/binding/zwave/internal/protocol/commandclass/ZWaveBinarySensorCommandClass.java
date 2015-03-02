@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openhab.binding.zwave.internal.config.ZWaveDbCommandClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -20,7 +21,6 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,12 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 
 	private static final int SENSOR_BINARY_GET = 0x02;
 	private static final int SENSOR_BINARY_REPORT = 0x03;
-	
+
+	@XStreamOmitField
+	private boolean dynamicDone = false;
+
+	private boolean isGetSupported = true;
+
 	/**
 	 * Creates a new instance of the ZWaveBinarySensorCommandClass class.
 	 * @param node the node this command class belongs to
@@ -78,7 +83,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 			case SENSOR_BINARY_GET:
-				logger.warn(String.format("NODE %d: Command 0x%02X not implemented.", this.getNode().getNodeId(), command));
+				logger.warn("NODE {}: Command {} not implemented.", this.getNode().getNodeId(), command);
 				return;
 			case SENSOR_BINARY_REPORT:
 				logger.trace("Process Sensor Binary Report");
@@ -94,13 +99,12 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 						sensorType = SensorType.UNKNOWN;
 				}
 
-				logger.debug(String.format("NODE %d: Sensor Binary report, type=%s, value=0x%02X", this.getNode().getNodeId(), sensorType.getLabel(), value));
+				logger.debug("NODE {}: Sensor Binary report, type={}, value={}", this.getNode().getNodeId(), sensorType.getLabel(), value);
 
 				ZWaveBinarySensorValueEvent zEvent = new ZWaveBinarySensorValueEvent(this.getNode().getNodeId(), endpoint, sensorType, value);
 				this.getController().notifyEventListeners(zEvent);
 				
-				if (this.getNode().getNodeStage() != NodeStage.DONE)
-					this.getNode().advanceNodeStage(NodeStage.DONE);
+				dynamicDone = true;
 				break;
 			default:
 			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).", 
@@ -116,6 +120,11 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 	 * @return the serial message
 	 */
 	public SerialMessage getValueMessage() {
+		if(isGetSupported == false) {
+			logger.debug("NODE {}: Node doesn't support get requests", this.getNode().getNodeId());
+			return null;
+		}
+		
 		logger.debug("NODE {}: Creating new message for application command SENSOR_BINARY_GET", this.getNode().getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Get);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
@@ -132,19 +141,28 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
     	result.setMessagePayload(newPayload);
     	return result;		
 	}
-	
+
+	@Override
+	public boolean setOptions (ZWaveDbCommandClass options) {
+		if(options.isGetSupported != null) {
+			isGetSupported = options.isGetSupported;
+		}
+		
+		return true;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<SerialMessage> getDynamicValues() {
+	public Collection<SerialMessage> getDynamicValues(boolean refresh) {
 		ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-		
-		result.add(getValueMessage());
-		
+		if(refresh == true || dynamicDone == false) {
+			result.add(getValueMessage());
+		}
 		return result;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -159,7 +177,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass implements 
 	 * @author Chris Jackson
 	 * @since 1.5.0
 	 */
-	@XStreamAlias("sensorType")
+	@XStreamAlias("binarySensorType")
 	public enum SensorType {
 		UNKNOWN(0x00, "Unknown"),
 		GENERAL(0x01, "General Purpose"),

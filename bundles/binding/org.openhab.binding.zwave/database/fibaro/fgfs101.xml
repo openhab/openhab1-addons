@@ -26,7 +26,7 @@
 			<Default>0</Default>
 			<Size>2</Size>
 			<Label lang="en">Alarm Cancellation Delay</Label>
-			<Help lang="en">Additional delay after an alarm has ceased. The parameter allows you to specify additional time, after which the alarm is cancelled once its violation has ceased.</Help>
+			<Help lang="en"><![CDATA[Additional delay after an alarm has ceased. The parameter allows you to specify additional time, after which the alarm is cancelled once its violation has ceased]]></Help>
 		</Parameter>
 		<Parameter>
 			<Index>2</Index>
@@ -36,21 +36,21 @@
 			<Label lang="en">Acoustic and visual signals On / Off in case of flooding</Label>			
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">acoustic and visual alarms inactive</Label>
+				<Label lang="en">Acoustic and visual alarms inactive</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">acoustic alarm inactive, visual alarm active</Label>
+				<Label lang="en">Acoustic alarm inactive, visual alarm active</Label>
 			</Item>
 			<Item>
 				<Value>2</Value>
-				<Label lang="en">acoustic alarm active, visual alarm inactive</Label>
+				<Label lang="en">Acoustic alarm active, visual alarm inactive</Label>
 			</Item>
 			<Item>
 				<Value>3</Value>
-				<Label lang="en">acoustic and visual alarms active</Label>
+				<Label lang="en">Acoustic and visual alarms active</Label>
 			</Item>
-			<Help lang="en">parameter allows for LED indicator and acoustic alarm deactivation in case of flooding detection</Help>
+			<Help lang="en"><![CDATA[Parameter allows for LED indicator and acoustic alarm deactivation in case of flooding detection]]></Help>
 		</Parameter>
 
 		<Parameter>
@@ -67,7 +67,7 @@
 				<Value>-127</Value>
 				<Label lang="en">BASIC_SET</Label>
 			</Item>
-			<Help lang="en">parameter determines a type of command frame sent by the Sensor in case flooding has been detected or cancelled</Help>
+			<Help lang="en"><![CDATA[Parameter determines a type of command frame sent by the Sensor in case flooding has been detected or cancelled]]></Help>
 		</Parameter>
 
 		<Parameter>
@@ -79,7 +79,7 @@
 			<Size>1</Size>
 			<Label lang="en">Forced Level of Dimming group 1</Label>
 			<Help lang="en"><![CDATA[Value of the parameter specifying the forced level of dimming / opening sun blinds when comes "switch on" / "open" command to devices from association group no. 1.<BR/>
-In the case of alarm frames the alarm priority is specified. Possible parameter settings: (1 � 99) and 255. Value of 255 makes it possible to activate the device when using the Dimmer module it means activating the device and setting it to the previous stored condition, e.g. when Dimmer is set to 30%, then deactivated, and then reactivated using command 255, it will automatically be set to the previous condition, i.e. 30%.]]></Help>
+In the case of alarm frames the alarm priority is specified. Possible parameter settings: (1-99) and 255. Value of 255 makes it possible to activate the device when using the Dimmer module it means activating the device and setting it to the previous stored condition, e.g. when Dimmer is set to 30%, then deactivated, and then reactivated using command 255, it will automatically be set to the previous condition, i.e. 30%.]]></Help>
 		</Parameter>
 
 		<Parameter>
@@ -89,11 +89,11 @@ In the case of alarm frames the alarm priority is specified. Possible parameter 
 			<Size>1</Size>
 			<Item>
 				<Value>0</Value>
-				<Label lang="en">alarm (flooding) cancellation inactive</Label>
+				<Label lang="en">Alarm (flooding) cancellation inactive</Label>
 			</Item>
 			<Item>
 				<Value>1</Value>
-				<Label lang="en">alarm (flooding) cancellation active</Label>
+				<Label lang="en">Alarm (flooding) cancellation active</Label>
 			</Item>
 			<Label lang="en">Alarm cancelling or turning a device off (Basic) command frame deactivation</Label>
 			<Help lang="en"><![CDATA[Allows for deactivating device turn off and alarm cancellation functions for the devices assigned to 1-st association group]]></Help>
@@ -107,7 +107,7 @@ In the case of alarm frames the alarm priority is specified. Possible parameter 
 			<Default>300</Default>
 			<Size>2</Size>
 			<Label lang="en">Interval between successive readings of temperature sensors</Label>
-			<Help lang="en">Interval between successive readings of temperature from all sensors connected to the device in seconds. Note: taking temperature readings from the sensor does not result in sending a temperature condition report to the central hub.</Help>
+			<Help lang="en">Interval between successive readings of temperature from all sensors connected to the device in seconds.<BR/><B>NOTE:</B> taking temperature readings from the sensor does not result in sending a temperature condition report to the central hub.</Help>
 		</Parameter>
 
 		<Parameter>
@@ -118,13 +118,15 @@ In the case of alarm frames the alarm priority is specified. Possible parameter 
 			<Default>50</Default>
 			<Size>2</Size>
 			<Label lang="en">Insensitiveness to temperature changes.</Label>
-			<Help lang="en"><![CDATA[]]></Help>
+			<Help lang="en"><![CDATA[Determines a minimum temperature change value (insensitivity level; def: 0,5C), resulting in a temperature report being sent to the main controller, according to the Parameter 10 settings]]></Help>
 		</Parameter>
+        
 		<Parameter>
 			<Index>13</Index>
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+            <Label lang="en">Alarm BROADCAST</Label>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Broadcast inactive</Label>
@@ -141,9 +143,148 @@ In the case of alarm frames the alarm priority is specified. Possible parameter 
 				<Value>3</Value>
 				<Label lang="en">Flood and Tamper broadcast mode active</Label>
 			</Item>
-			<Label lang="en">Transmitting the alarm or control frame broadcast mode</Label>
 			<Help lang="en"><![CDATA[Transmitting the alarm or control frame in "broadcast" mode (i.e. to all devices within range), information sent in this mode is not repeated by the mesh network.<BR/><B>NOTE:</B> If the broadcast mode of information transmission is activated for a given channel, then transmission of information in singlecast mode to devices assigned to the association group of this channel is deactivated.]]></Help>
 		</Parameter>
+        
+        <Parameter>
+            <Index>50</Index>
+            <Type>byte</Type>
+            <Minimum>-10000</Minimum>
+            <Maximum>10000</Maximum>
+            <Default>1500</Default>
+            <Size>2</Size>
+            <Label lang="en">Low temperature alarm threshold</Label>
+            <Help lang="en"><![CDATA[The parameter stores a temperature value (def. 15C), below which LED indicator blinks with a colour determined by a Parameter 61 settings. By default the LED indicator blinks blue.<BR/><B>NOTE:</B> The main controller does not interpret negative numbers as decimals. That’s why read value may be different than entered. Negative numbers are coded in U2 standard.]]></Help>
+        </Parameter>
+        
+        <Parameter>
+            <Index>51</Index>
+            <Type>byte</Type>
+            <Minimum>-10000</Minimum>
+            <Maximum>10000</Maximum>
+            <Default>3500</Default>
+            <Size>2</Size>
+            <Label lang="en">High temperature alarm threshold</Label>
+            <Help lang="en"><![CDATA[The parameter stores a temperature value (def. 35C), above which LED indicator blinks with a colour determined by the Parameter 62 settings. By default the LED indicator blinks red]]></Help>
+        </Parameter>
+        
+        <Parameter>
+            <Index>61</Index>
+            <Type>byte</Type>
+            <Minimum>0</Minimum>
+            <Maximum>16777215</Maximum>
+            <Default>255</Default>
+            <Size>4</Size>
+            <Label lang="en">Low temperature alarm indicator colour</Label>
+            <Help lang="en"><![CDATA[Default is blue (0x000000FF).<BR/><B>NOTE:</B> A main controller interprets colours as a sum of it component colours value. Each colours value is a number from 0 to 255. Eg: Indicated colour = 65536 * RED value + 256 * GREEN value + BLUE value]]></Help>
+        </Parameter>
+        
+        <Parameter>
+            <Index>62</Index>
+            <Type>byte</Type>
+            <Minimum>0</Minimum>
+            <Maximum>16777215</Maximum>
+            <Default>16711680</Default>
+            <Size>4</Size>
+            <Label lang="en">High temperature alarm indicator colour</Label>
+            <Help lang="en"><![CDATA[Default is red (0x00FF0000).<BR/><B>NOTE:</B> A main controller interprets colours as a sum of it component colours value. Each colours value is a number from 0 to 255. Eg: Indicated colour = 65536 * RED value + 256 * GREEN value + BLUE value]]></Help>
+        </Parameter>
+        
+        <Parameter>
+            <Index>63</Index>
+            <Type>list</Type>
+            <Default>2</Default>
+            <Size>1</Size>
+            <Label lang="en">Managing a LED indicator under standard operation</Label>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">LED indicator doesn’t indicate the temperature</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">LED indicator indicates the temperature (blink) every Temperature Measurement Interval (Parameter 10, constant current and battery) or Wake Up Interval (battery mode)</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">LED indicator indicates the temperature continuously, only in constant power mode</Label>
+            </Item>
+            <Help lang="en"><![CDATA[Parameter determines LED indicator’s operation. Set to 0 turns the indicator off, saving a battery life]]></Help>
+        </Parameter>
+        
+        <Parameter>
+            <Index>73</Index>
+            <Type>byte</Type>
+            <Minimum>-10000</Minimum>
+            <Maximum>10000</Maximum>
+            <Default>0</Default>
+            <Size>2</Size>
+            <Label lang="en">Temperature measurement compensation</Label>
+            <Help lang="en"><![CDATA[Parameter stores a temperature value to be added to or deducted from the current temperature measured by internal temperature sensor in order to compensate the difference between air temperature and temperature at the floor level]]></Help>
+        </Parameter>
+        
+        <Parameter>
+            <Index>74</Index>
+            <Type>list</Type>
+            <Default>2</Default>
+            <Size>1</Size>
+            <Label lang="en">Alarm frame sent to 2-nd Association Group activation</Label>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Tamper alarms inactive</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Button tamper alarm active</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Movement tamper alarm active</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en">Button and movement tampers alarm active</Label>
+            </Item>
+            <Help lang="en"><![CDATA[(MOVEMENT_TAMPER / BUTTON_TAMPER) The device is able to turn on alarms resulting from sensor’s vibrations e.g. when the sensor is moved, or the TMP button released. 2-nd Association Group alarms are not cancelled.]]></Help>
+        </Parameter>
+        
+        <Parameter>
+            <Index>75</Index>
+            <Type>byte</Type>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Default>0</Default>
+            <Size>2</Size>
+            <Label lang="en">Visual and audible alarms duration</Label>
+            <Help lang="en"><![CDATA[The user can silence the Flood Sensor. Because the Sensor’s alarm may last for a long time, it’s possible to turn off visual and audible alarm signaling to save battery. The parameter determines a time period after which alarm will become “quiet” - still active but the device will go into battery saving mode. Visual or acoustic alarm will be reactivated after time period specified in the Parameter 76. When alarm status ceases, alarm will be turned off immediately. The value of 0 means visual and acoustic alarms are active indefinitely. The value of 65535 means "each 1 second". In battery power mode the Sensor will never go to sleep which may shorten battery life significantly.<BR/><B>NOTE:</B> The parameter is ignored when Parameter 2 is set to 0]]></Help>
+        </Parameter>
+        
+        <Parameter>
+            <Index>76</Index>
+            <Type>byte</Type>
+            <Minimum>0</Minimum>
+            <Maximum>65535</Maximum>
+            <Default>0</Default>
+            <Size>2</Size>
+            <Label lang="en">Visual and audible alarms duration</Label>
+            <Help lang="en"><![CDATA[Parameter determines a time period after which an alarm frame will be retransmitted. The value of 0 cancels an alarm frame retransmission. The value of 65535 means "each 1 second".<BR/><B>NOTE:</B> In case a time period set in this parameter is shorter than the one specified in parameter 75, the device will not quiet the alarm, it will remain active]]></Help>
+        </Parameter>
+        
+        <Parameter>
+            <Index>77</Index>
+            <Type>list</Type>
+            <Default>0</Default>
+            <Size>1</Size>
+            <Label lang="en">Flood sensor functionality turned off</Label>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Default flood sensor operation (flood detection, reactions)</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Built in flood sensor TURNED OFF (doesn’t change its state in the main controller, doesn’t send Alarms and Basic Set frames with flood state changes. Always visible in the main controller as turned off)</Label>
+            </Item>
+            <Help lang="en"><![CDATA[Allows for turning of the internal flood sensor. Tamper and built in temperature sensor will remain active]]></Help>
+        </Parameter>
 
 	</Configuration>
 

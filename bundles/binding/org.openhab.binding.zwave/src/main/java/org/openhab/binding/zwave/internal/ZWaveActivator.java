@@ -33,7 +33,7 @@ public final class ZWaveActivator implements BundleActivator {
 	 */
 	public void start(BundleContext bc) throws Exception {
 		context = bc;
-		logger.debug("Z-Wave binding has been started.");
+		logger.debug("Z-Wave binding started. Version {}", ZWaveActivator.getVersion());
 	}
 
 	/**
@@ -42,7 +42,7 @@ public final class ZWaveActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bc) throws Exception {
 		context = null;
-		logger.debug("Z-Wave binding has been stopped.");
+		logger.debug("Z-Wave binding stopped.");
 	}
 	
 	/**

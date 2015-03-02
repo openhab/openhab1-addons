@@ -21,7 +21,6 @@
     <module>org.openhab.core.test</module>
     <module>org.openhab.core.library</module>
     <module>org.openhab.core.library.test</module>
-    <module>org.openhab.core.drools</module>
     <module>org.openhab.core.persistence</module>
     <module>org.openhab.core.persistence.test</module>
     <module>org.openhab.core.scheduler</module>

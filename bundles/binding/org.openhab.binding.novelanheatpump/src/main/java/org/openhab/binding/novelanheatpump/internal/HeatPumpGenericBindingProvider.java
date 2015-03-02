@@ -109,6 +109,10 @@ public class HeatPumpGenericBindingProvider extends AbstractGenericBindingProvid
 		return itemNames.toArray(new String[itemNames.size()]);
 	}
 	
+	public HeatPumpBindingConfig getHeatPumpBindingConfig(String itemName){
+		return (HeatPumpBindingConfig)bindingConfigs.get(itemName);
+	}	
+	
 	
 	static class HeatPumpBindingConfig implements BindingConfig {
 		

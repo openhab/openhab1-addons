@@ -20,6 +20,7 @@
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<WriteOnly>true</WriteOnly>
 			<Label lang="en">Sensor report type on Get without endpoint</Label>
 			<Label lang="de">Berichtstyp bei GET ohne Sensorendpunkt</Label>
 			<Item>
@@ -48,6 +49,7 @@
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<WriteOnly>true</WriteOnly>
 			<Label lang="en">Wake up for 10 minutes when batteries are inserted</Label>
 			<Label lang="de">Beim einsetzen der Batterien für 10 Minuten aufwecken</Label>
 			<Item>
@@ -96,6 +98,7 @@
 			<Type>list</Type>
 			<Default>1</Default>
 			<Size>1</Size>
+			<WriteOnly>true</WriteOnly>
 			<Label lang="en">Command to send when movement</Label>
 			<Item>
 				<Value>1</Value>
