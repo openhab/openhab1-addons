@@ -473,9 +473,13 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
       try {
         Item item = itemRegistry.getItem(itemName);
         if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
-          return valueStr.equals(DIGITAL_VALUE_OFF) ? OnOffType.OFF : OnOffType.ON;
+          return string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF)
+              ? OnOffType.OFF
+              : OnOffType.ON;
         } else if (item instanceof ContactItem) {
-          return valueStr.equals(DIGITAL_VALUE_OFF) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
+          return string2DigitalValue(valueStr).equals(DIGITAL_VALUE_OFF)
+              ? OpenClosedType.CLOSED
+              : OpenClosedType.OPEN;
         }
       } catch (ItemNotFoundException e) {
         logger.warn("Could not find item '{}' in registry", itemName);
@@ -483,6 +487,24 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService, 
     }
     // just return a DecimalType as a fallback
     return new DecimalType(valueStr);
+  }
+
+  /**
+   * Maps a string value which expresses a {@link BigDecimal.ZERO } to DIGITAL_VALUE_OFF, all others
+   * to DIGITAL_VALUE_ON
+   * 
+   * @param value to be mapped
+   * @return
+   */
+  private String string2DigitalValue(String value) {
+    BigDecimal num = new BigDecimal(value);
+    if (num.compareTo(BigDecimal.ZERO) == 0) {
+      logger.trace("digitalvalue {}", DIGITAL_VALUE_OFF);
+      return DIGITAL_VALUE_OFF;
+    } else {
+      logger.trace("digitalvalue {}", DIGITAL_VALUE_ON);
+      return DIGITAL_VALUE_ON;
+    }
   }
 
 }
