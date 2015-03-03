@@ -19,6 +19,7 @@ import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.openhab.binding.nest.internal.messages.Thermostat.HvacMode;
@@ -131,13 +132,16 @@ public class DataModel extends AbstractMessagePart {
 	private Devices devices;
 	@JsonProperty("structures")
 	private Map<String, Structure> structures_by_id;
+	@JsonIgnore
 	private Map<String, Structure> structures_by_name;
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Devices extends AbstractMessagePart implements DataModelElement {
 		private Map<String, Thermostat> thermostats_by_id;
+		@JsonIgnore
 		private Map<String, Thermostat> thermostats_by_name;
 		private Map<String, SmokeCOAlarm> smoke_co_alarms_by_id;
+		@JsonIgnore
 		private Map<String, SmokeCOAlarm> smoke_co_alarms_by_name;
 
 		/**
@@ -162,6 +166,7 @@ public class DataModel extends AbstractMessagePart {
 		 * 
 		 * @return the thermostats_by_name;
 		 */
+		@JsonIgnore
 		public Map<String, Thermostat> getThermostats() {
 			return this.thermostats_by_name;
 		}
@@ -186,6 +191,7 @@ public class DataModel extends AbstractMessagePart {
 		/**
 		 * @return the smoke_co_alarms_by_name
 		 */
+		@JsonIgnore
 		public Map<String, SmokeCOAlarm> getSmoke_co_alarms() {
 			return this.smoke_co_alarms_by_name;
 		}
@@ -238,11 +244,14 @@ public class DataModel extends AbstractMessagePart {
 		@SuppressWarnings("deprecation")
 		public String getKey(String expression) {
 			String key = super.getKey(expression);
-			try {
-				return URLDecoder.decode(key, "UTF-8");
-			} catch (UnsupportedEncodingException ex) {
-				return URLDecoder.decode(key);
+			if (key != null) {
+				try {
+					return URLDecoder.decode(key, "UTF-8");
+				} catch (UnsupportedEncodingException ex) {
+					return URLDecoder.decode(key);
+				}
 			}
+			return null;
 		}
 	}
 
@@ -386,14 +395,19 @@ public class DataModel extends AbstractMessagePart {
 		 * Find the Structure, Thermostat or SmokeCOAlarm that the given property is trying to update.
 		 */
 		Object oldObject = null;
-		for (String beanProperty = property; beanProperty.indexOf('.') > 0; beanProperty = beanProperty.substring(0,
-				beanProperty.lastIndexOf('.') - 1)) {
+		String beanProperty = property;
+		do {
 			Object obj = this.getProperty(beanProperty);
 			if (obj instanceof Structure || obj instanceof Thermostat || obj instanceof SmokeCOAlarm) {
 				oldObject = obj;
 				break;
 			}
-		}
+			if (beanProperty.indexOf('.') != -1) {
+				beanProperty = beanProperty.substring(0, beanProperty.lastIndexOf('.'));
+			} else {
+				break;
+			}
+		} while (beanProperty.length() > 0);
 
 		/**
 		 * Now based on the type of the object, create a new DataModel that has an empty one, properly mapped by ID and
@@ -446,6 +460,11 @@ public class DataModel extends AbstractMessagePart {
 		 */
 		if (updateDataModel != null) {
 			updateDataModel.setProperty(property, newState);
+			updateDataModel.structures_by_name = null;
+			if (updateDataModel.devices != null) {
+				updateDataModel.devices.smoke_co_alarms_by_name = null;
+				updateDataModel.devices.thermostats_by_name = null;
+			}
 		}
 
 		return updateDataModel;

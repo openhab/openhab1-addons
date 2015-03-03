@@ -62,4 +62,5 @@ public abstract class AbstractRequest extends AbstractMessage implements Request
 
 		return new NestException(message, cause);
 	}
+
 }
