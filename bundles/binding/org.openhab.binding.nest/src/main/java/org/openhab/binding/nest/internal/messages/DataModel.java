@@ -22,6 +22,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.openhab.binding.nest.internal.messages.Structure.AwayState;
 import org.openhab.binding.nest.internal.messages.Thermostat.HvacMode;
 import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.AlarmState;
 import org.openhab.binding.nest.internal.messages.SmokeCOAlarm.BatteryHealth;
@@ -49,6 +50,17 @@ public class DataModel extends AbstractMessagePart {
 		ConvertUtilsBean convertUtils = new ConvertUtilsBean();
 
 		// Register bean type converters
+		convertUtils.register(new Converter() {
+			@SuppressWarnings("rawtypes")
+			@Override
+			public Object convert(Class type, Object value) {
+				if (value instanceof StringType) {
+					return AwayState.forValue(value.toString());
+				} else {
+					return null;
+				}
+			}
+		}, AwayState.class);
 		convertUtils.register(new Converter() {
 			@SuppressWarnings("rawtypes")
 			@Override

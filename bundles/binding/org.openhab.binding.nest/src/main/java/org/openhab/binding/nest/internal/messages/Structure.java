@@ -34,13 +34,14 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
 	 * 
 	 * @see <a href="https://developer.nest.com/documentation/cloud/structure-guide">Structure state</a>
 	 * @see <a href="https://developer.nest.com/documentation/cloud/away-guide">Away Guide</a>
+	 * @see <a href="https://developer.nest.com/documentation/cloud/api-overview#away">API Overview</a>
 	 */
-	public static enum State {
-		HOME("home"), AWAY("away");
+	public static enum AwayState {
+		HOME("home"), AWAY("away"), AUTO_AWAY("auto-away"), UNKNOWN("unknown");
 
 		private final String state;
 
-		private State(String state) {
+		private AwayState(String state) {
 			this.state = state;
 		}
 
@@ -50,8 +51,8 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
 		}
 
 		@JsonCreator
-		public static State forValue(String v) {
-			for (State s : State.values()) {
+		public static AwayState forValue(String v) {
+			for (AwayState s : AwayState.values()) {
 				if (s.state.equals(v)) {
 					return s;
 				}
@@ -129,7 +130,7 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
 	@JsonProperty("smoke_co_alarms")
 	private List<String> smoke_co_alarm_id_list;
 	private Map<String, SmokeCOAlarm> smoke_co_alarms_by_name;
-	private State away;
+	private AwayState away;
 	private String name;
 	private String country_code;
 	private String postal_code;
@@ -186,7 +187,7 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
 	 * @return the away state
 	 */
 	@JsonProperty("away")
-	public State getAway() {
+	public AwayState getAway() {
 		return this.away;
 	}
 
@@ -195,7 +196,7 @@ public class Structure extends AbstractMessagePart implements DataModelElement {
 	 *            the away to set
 	 */
 	@JsonProperty("away")
-	public void setAway(State away) {
+	public void setAway(AwayState away) {
 		this.away = away;
 	}
 
