@@ -58,6 +58,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
     private List<String> calendars = new ArrayList<String>();
 	private List<String> homeIdentifier = new ArrayList<String>();
 	
+//	private ItemRegistry itemRegistry;
+	
 	private ConcurrentHashMap<String, CalDavEvent> eventMap = new ConcurrentHashMap<String, CalDavEvent>();
 	
 	public CalDavBinding() {
@@ -74,12 +76,23 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	}
 	
 	public void activate() {
-		
+//		BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+//		if (bundleContext != null) {
+//
+//			ServiceReference<?> serviceReference2 = bundleContext.getServiceReference(ItemRegistry.class.getName());
+//			if (serviceReference2 != null) {
+//				itemRegistry = (ItemRegistry) bundleContext.getService(serviceReference2);
+//			} else
+//				logger.error("itemregistry=null");
+//		} else
+//			logger.error("bundleContext=null");
+
 	}
 	
 	public void deactivate() {
-		// deallocate resources here that are no longer needed and 
-		// should be reset when activating this binding again
+		if (this.calDavLoader != null) {
+			this.calDavLoader.removeListener(this);
+		}
 	}
 
 	
@@ -112,9 +125,20 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
-		this.updateItemsForEvent();
+		if (!(provider instanceof CalDavBindingProvider)) {
+			return;
+		}
+		CalDavConfig config = ((CalDavBindingProvider) provider).getConfig(itemName);
+		if (config == null) {
+			logger.warn("cannot find binding config for item: {}", itemName);
+			eventPublisher.postUpdate(itemName, org.openhab.core.types.UnDefType.UNDEF);
+			return;
+		}
+		this.updateItem(itemName, config);
 	}
-
+	
+	
+	
 	@Override
 	public void eventRemoved(CalDavEvent event) {
         if (!calendars.contains(event.getCalendarId())) {
@@ -237,6 +261,13 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			logger.debug("sending command {} for item {}", command, itemName);
 			eventPublisher.postUpdate(itemName, command);
 			logger.trace("command {} successfuly send", command);
+//			try {
+//				Item item = this.itemRegistry.getItem(itemName);
+//				State state = item.getState();
+//			} catch (ItemNotFoundException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 		
 		
@@ -250,8 +281,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 				continue;
 			}
 			
-			if (!event.getStart().before(now)
-					&& !event.getEnd().after(now)) {
+			if (!(event.getStart().before(now)
+					&& event.getEnd().after(now))) {
 				continue;
 			}
 			

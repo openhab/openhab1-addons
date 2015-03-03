@@ -150,11 +150,11 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
 		}
 		
 		logger.debug("adding item: {}", item.getName());
-		this.bindingConfigs.put(item.getName(), new CalDavConfig(
+		this.addBindingConfig(item, new CalDavConfig(
 				calendar, typeEnum, NumberUtils.toInt(eventNr == null ? "0" : eventNr), valueEnum)
 		);
 	}
-
+	
 	@Override
 	public CalDavConfig getConfig(String item) {
 		return (CalDavConfig) this.bindingConfigs.get(item);

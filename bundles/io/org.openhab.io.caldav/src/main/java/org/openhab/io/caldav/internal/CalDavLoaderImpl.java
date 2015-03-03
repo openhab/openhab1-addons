@@ -23,6 +23,10 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
@@ -34,6 +38,9 @@ import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.util.CompatibilityHints;
 
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.openhab.core.service.AbstractActiveService;
 import org.openhab.io.caldav.CalDavEvent;
 import org.openhab.io.caldav.CalDavLoader;
@@ -46,6 +53,7 @@ import org.slf4j.LoggerFactory;
 import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
 import com.github.sardine.SardineFactory;
+import com.github.sardine.impl.SardineImpl;
 
 /**
  * Default implementation of the CalDAV loader.
@@ -233,8 +241,10 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			throws IOException, ParserException {
 		List<CalDavEvent> eventList = new ArrayList<CalDavEvent>();
 
-		Sardine sardine = SardineFactory.begin(config.getUsername(),
-				config.getPassword());
+//		Sardine sardine = SardineFactory.begin(config.getUsername(),
+//				config.getPassword());
+		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setHostnameVerifier(new AllowAllHostnameVerifier());
+		Sardine sardine = new SardineImpl(httpClientBuilder, config.getUsername(), config.getPassword());
 
 		CompatibilityHints.setHintEnabled(
 				CompatibilityHints.KEY_RELAXED_PARSING, true);
