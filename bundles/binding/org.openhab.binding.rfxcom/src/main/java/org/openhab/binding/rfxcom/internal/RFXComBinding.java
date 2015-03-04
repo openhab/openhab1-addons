@@ -49,7 +49,7 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 
 	private static byte seqNbr = 0;
 	private static RFXComTransmitterMessage responseMessage = null;
-	private Object notifierObject = new Object();
+	private final Object notifierObject = new Object();
 
 	private MessageLister eventLister = new MessageLister();
 
@@ -85,7 +85,12 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		executeCommand(itemName, command);
+		logger.info("RFXComBinding.internalReceiveCommand: " + itemName + " " + command);
+		if(itemName != null) {
+			if(executeCommand(itemName, command) && command instanceof State) {
+				eventPublisher.postUpdate(itemName, (State)command);
+			}
+		}
 	}
 
 	/**
@@ -126,91 +131,107 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 		return seqNbr;
 	}
 
-	private void executeCommand(String itemName, Type command) {
-		if (itemName != null) {
-			RFXComBindingProvider provider = findFirstMatchingBindingProvider(itemName);
-			if (provider == null) {
-				logger.warn(
-						"Cannot execute command because no binding provider was found for itemname '{}'",
-						itemName);
-				return;
-			}
-
-			if (provider.isInBinding(itemName) == false) {
-				logger.debug(
-						"Received command (item='{}', state='{}', class='{}')",
-						new Object[] { itemName, command.toString(),
-								command.getClass().toString() });
-				RFXComSerialConnector connector = RFXComConnection
-						.getCommunicator();
-
-				if (connector == null) {
-					logger.warn("RFXCom controller is not initialized!");
-					return;
-				}
-
-				String id = provider.getId(itemName);
-				PacketType packetType = provider.getPacketType(itemName);
-				Object subType = provider.getSubType(itemName);
-				RFXComValueSelector valueSelector = provider
-						.getValueSelector(itemName);
-
-				try {
-					RFXComMessageInterface obj = RFXComMessageFactory.getMessageInterface(packetType);
-					obj.convertFromState(valueSelector, id, subType, command, getNextSeqNumber());
-					byte[] data = obj.decodeMessage();
-					
-					logger.debug("Transmitting data: {}",
-							DatatypeConverter.printHexBinary(data));
-
-					setResponseMessage(null);
-					connector.sendMessage(data);
-					
-				} catch (RFXComException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					logger.error("Message sending to RFXCOM controller failed.", e);	
-				}
-				
-				try {
-
-					synchronized (notifierObject) {
-						notifierObject.wait(timeout);
-					}
-
-					RFXComTransmitterMessage resp = getResponseMessage();
-
-					switch (resp.response) {
-					case ACK:
-					case ACK_DELAYED:
-						logger.debug(
-								"Command succesfully transmitted, '{}' received",
-								resp.response);
-						break;
-
-					case NAK:
-					case NAK_INVALID_AC_ADDRESS:
-					case UNKNOWN:
-						logger.error("Command transmit failed, '{}' received",
-								resp.response);
-						break;
-					}
-
-				} catch (InterruptedException ie) {
-					logger.error(
-							"No acknowledge received from RFXCOM controller, timeout {}ms ",
-							timeout);
-				}
-			}
-			else
-			{
-				logger.warn(
-						"Provider is not in binding '{}'",
-						provider.toString());
-			}
-
+	/**
+	 * 
+	 * @return true if the command was successfully sent, false otherwise
+	 */
+	private boolean executeCommand(String itemName, Type command) {
+		final RFXComBindingProvider provider = findFirstMatchingBindingProvider(itemName);
+		if (provider == null) {
+			logger.warn(
+					"Cannot execute command because no binding provider was found for itemname '{}'",
+					itemName);
+			return false;
 		}
 
+		if (!provider.isInBinding(itemName)) {
+			logger.debug(
+					"Received command (item='{}', state='{}', class='{}')",
+					new Object[] { itemName, command.toString(),
+							command.getClass().toString() });
+			RFXComSerialConnector connector = RFXComConnection
+					.getCommunicator();
+
+			if (connector == null) {
+				logger.warn("RFXCom controller is not initialized!");
+				return false;
+			}
+			
+			if(!connector.isConnected()) {
+				logger.warn("RFXCom controller is not connected");
+				return false;
+			}
+
+			return executeCommand0(itemName, command, provider, connector);
+		}
+		else {
+			logger.warn(
+					"Provider is not in binding '{}'",
+					provider.toString());
+			
+			return false;
+		}
+	}
+
+	private boolean executeCommand0(String itemName, Type command,
+			final RFXComBindingProvider provider,
+			RFXComSerialConnector connector) {
+		String id = provider.getId(itemName);
+		PacketType packetType = provider.getPacketType(itemName);
+		Object subType = provider.getSubType(itemName);
+		RFXComValueSelector valueSelector = provider
+				.getValueSelector(itemName);
+
+		try {
+			RFXComMessageInterface obj = RFXComMessageFactory.getMessageInterface(packetType);
+			obj.convertFromState(valueSelector, id, subType, command, getNextSeqNumber());
+			byte[] data = obj.decodeMessage();
+
+			logger.debug("Transmitting data: {}",
+					DatatypeConverter.printHexBinary(data));
+
+			setResponseMessage(null);
+			connector.sendMessage(data);
+
+		} catch (RFXComException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			logger.error("Message sending to RFXCOM controller failed.", e);	
+		}
+
+		boolean success = false;
+		try {
+
+			synchronized (notifierObject) {
+				notifierObject.wait(timeout);
+			}
+
+			RFXComTransmitterMessage resp = getResponseMessage();
+
+			switch (resp.response) {
+			case ACK:
+			case ACK_DELAYED:
+				logger.debug(
+						"Command succesfully transmitted, '{}' received",
+						resp.response);
+				success = true;
+				break;
+
+			case NAK:
+			case NAK_INVALID_AC_ADDRESS:
+			case UNKNOWN:
+				logger.error("Command transmit failed, '{}' received",
+						resp.response);
+				break;
+			}
+
+		} catch (InterruptedException ie) {
+			logger.error(
+					"No acknowledge received from RFXCOM controller, timeout {}ms ",
+					timeout);
+		}
+		
+		return success;
 	}
 
 	public static synchronized RFXComTransmitterMessage getResponseMessage() {

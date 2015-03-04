@@ -9,7 +9,7 @@
 package org.openhab.binding.rfxcom;
 
 import org.openhab.binding.rfxcom.internal.messages.RFXComBaseMessage.PacketType;
-import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 
 /**
  * This interface is implemented by classes that can provide mapping information
@@ -21,7 +21,7 @@ import org.openhab.core.binding.BindingProvider;
  * @author Pauli Anttila
  * @since 1.2.0
  */
-public interface RFXComBindingProvider extends BindingProvider {
+public interface RFXComBindingProvider extends AutoUpdateBindingProvider {
 
 	/**
 	 * Returns the id to the given <code>itemName</code>.

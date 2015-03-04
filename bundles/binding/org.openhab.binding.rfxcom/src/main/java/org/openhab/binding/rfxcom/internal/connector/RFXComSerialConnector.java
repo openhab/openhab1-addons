@@ -222,4 +222,8 @@ public class RFXComSerialConnector implements RFXComConnectorInterface {
 			logger.debug("Data listener stopped");
 		}
 	}
+
+	public boolean isConnected() {
+		return out != null;
+	}
 }
