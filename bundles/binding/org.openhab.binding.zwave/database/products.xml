@@ -857,6 +857,18 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>5002</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Reference>
+				<Type>5003</Type>
+				<Id>0109</Id>
+			</Reference>
+			<Model>CT80</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>6501</Type>
 				<Id>000c</Id>
 			</Reference>
