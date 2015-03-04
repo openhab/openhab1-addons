@@ -393,6 +393,90 @@ public class PersistenceExtensions implements ManagedService {
 	}
 	
 	/**
+	 * Gets the variance value of the state of a given <code>item</code> since a certain point in time. 
+	 * The default persistence service is used. 
+	 * 
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check 
+	 * @return the variance of the value since the given point in time
+	 */
+	static public DecimalType varianceSince(Item item, AbstractInstant timestamp) {
+		if(isDefaultServiceAvailable()) {
+			return varianceSince(item, timestamp, defaultService);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the variance value of the state of a given <code>item</code> since a certain point in time. 
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
+	 * 
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check 
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the variance of the value since the given point in time
+	 */
+	static public DecimalType varianceSince(Item item, AbstractInstant timestamp, String serviceName) {
+		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
+		Iterator<HistoricItem> it = result.iterator();
+
+		DecimalType average = averageSince(item, timestamp, serviceName);
+				
+		DecimalType value = (DecimalType) item.getStateAs(DecimalType.class);
+		if (value == null) {
+			value = DecimalType.ZERO;
+		}
+
+		double variance = Math.pow(value.doubleValue(), 2);
+		int quantity = 1;
+		while(it.hasNext()) {
+			State state = it.next().getState();
+			if (state instanceof DecimalType) {
+				value = (DecimalType) state;
+				variance += Math.pow(value.doubleValue()- average.doubleValue(), 2);
+				quantity++;
+			}
+		}
+		variance /= quantity;
+
+		return new DecimalType(variance);
+	}
+
+	/**
+	 * Gets the standard deviation value of the state of a given <code>item</code> since a certain point in time. 
+	 * The default persistence service is used. 
+	 * 
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check 
+	 * @return the standard deviation of the value since the given point in time
+	 */
+	static public DecimalType deviationSince(Item item, AbstractInstant timestamp) {
+		if(isDefaultServiceAvailable()) {
+			return deviationSince(item, timestamp, defaultService);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the standard deviation value of the state of a given <code>item</code> since a certain point in time. 
+	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
+	 * 
+	 * @param item the item to get the average state value for
+	 * @param the point in time to start the check 
+	 * @param serviceName the name of the {@link PersistenceService} to use
+	 * @return the standard deviation of the value since the given point in time
+	 */
+	static public DecimalType deviationSince(Item item, AbstractInstant timestamp, String serviceName) {
+		DecimalType variance = varianceSince(item, timestamp, defaultService);
+		double deviation = Math.sqrt(variance.doubleValue());
+		
+ 		return new DecimalType(deviation);
+	}
+	
+	
+	/**
 	 * Query for the last update timestamp of a given <code>item</code>.
 	 * The default persistence service is used.
 	 *
