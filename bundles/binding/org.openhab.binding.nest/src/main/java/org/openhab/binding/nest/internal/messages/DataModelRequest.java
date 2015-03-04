@@ -8,10 +8,6 @@
  */
 package org.openhab.binding.nest.internal.messages;
 
-import static org.openhab.io.net.http.HttpUtil.executeUrl;
-
-import java.util.Properties;
-
 import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -76,9 +72,7 @@ public class DataModelRequest extends AbstractRequest {
 	}
 
 	protected String executeQuery(final String url) {
-		Properties headers = new Properties();
-		headers.putAll(HTTP_HEADERS);
-		return executeUrl(HTTP_GET, url, headers, null, null, HTTP_REQUEST_TIMEOUT);
+		return executeUrl(HTTP_GET, url, null, null);
 	}
 
 	private String buildQueryString() {

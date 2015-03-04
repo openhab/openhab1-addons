@@ -8,8 +8,6 @@
  */
 package org.openhab.binding.nest.internal.messages;
 
-import static org.openhab.io.net.http.HttpUtil.executeUrl;
-
 import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openhab.binding.nest.internal.NestException;
@@ -75,7 +73,7 @@ public class AccessTokenRequest extends AbstractRequest {
 	}
 
 	protected String executeQuery(final String url) {
-		return executeUrl(HTTP_POST, url, HTTP_HEADERS, null, null, HTTP_REQUEST_TIMEOUT);
+		return executeUrl(HTTP_POST, url, null, null);
 	}
 
 	private String buildQueryString() {
