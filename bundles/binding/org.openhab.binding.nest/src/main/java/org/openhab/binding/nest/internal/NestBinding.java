@@ -162,7 +162,6 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 		}
 
 		DataModel newDataModel = dmres;
-		DataModel oldDataModel = this.oldDataModel;
 		this.oldDataModel = newDataModel;
 
 		// Iterate through bindings and update all inbound values.
@@ -171,26 +170,16 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 				if (provider.isInBound(itemName)) {
 					final String property = provider.getProperty(itemName);
 					final State newState = getState(newDataModel, property);
-					final State oldState = getState(oldDataModel, property);
 
-					if ((oldState == null && newState != null)
-							|| (UnDefType.UNDEF.equals(oldState) && !UnDefType.UNDEF.equals(newState))
-							|| !oldState.equals(newState)) {
-						logger.debug("readNest: Updating itemName '{}' with newState '{}', oldState '{}'", itemName,
-								newState, oldState);
+					logger.trace("Updating itemName '{}' with newState '{}'", itemName, newState);
 
-						/*
-						 * we need to make sure that we won't send out this event to Nest again, when receiving it on
-						 * the openHAB bus
-						 */
-						ignoreEventSet.add(itemName + newState.toString());
-						logger.trace("Added event (item='{}', newState='{}') to the ignore event list", itemName,
-								newState);
-						this.eventPublisher.postUpdate(itemName, newState);
-					} else {
-						logger.trace("readNest: Ignoring item='{}' with newState='{}', oldState='{}'", itemName,
-								newState, oldState);
-					}
+					/*
+					 * we need to make sure that we won't send out this event to Nest again, when receiving it on the
+					 * openHAB bus
+					 */
+					ignoreEventSet.add(itemName + newState.toString());
+					logger.trace("Added event (item='{}', newState='{}') to the ignore event set", itemName, newState);
+					this.eventPublisher.postUpdate(itemName, newState);
 				}
 			}
 		}
@@ -272,7 +261,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 	 */
 	@Override
 	protected void internalReceiveUpdate(final String itemName, final State newState) {
-		logger.trace("Received update (item='{}', state='{}')", itemName, newState.toString());
+		logger.trace("Received update (item='{}', state='{}')", itemName, newState);
 		if (!isEcho(itemName, newState)) {
 			updateNest(itemName, newState);
 		}
@@ -298,7 +287,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 			ignoreEventSet.remove(ignoreEventSetKey);
 			logger.trace(
 					"We received this event (item='{}', state='{}') from Nest, so we don't send it back again -> ignore!",
-					itemName, state.toString());
+					itemName, state);
 			return true;
 		} else {
 			return false;
@@ -330,12 +319,12 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 		} else {
 
 			try {
-				logger.debug("About to set property '{}' to '{}'", property, newState);
+				logger.trace("About to set property '{}' to '{}'", property, newState);
 
 				// Ask the old DataModel to generate a new DataModel that only contains the update we want to send
 				DataModel updateDataModel = oldDataModel.updateDataModel(property, newState);
 
-				logger.debug("Data model for update: {}", updateDataModel);
+				logger.trace("Data model for update: {}", updateDataModel);
 
 				if (updateDataModel == null) {
 					return;
@@ -538,10 +527,8 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 		}
 
 		/**
-		 * Only load the accessToken if the pinCode that was saved with it
-		 * matches the current pinCode.  Otherwise, we could continue to try
-		 * to use an accessToken that does not match the credentials in
-		 * openhab.cfg.
+		 * Only load the accessToken if the pinCode that was saved with it matches the current pinCode. Otherwise, we
+		 * could continue to try to use an accessToken that does not match the credentials in openhab.cfg.
 		 */
 		private void load() {
 			Preferences prefs = getPrefsNode();
