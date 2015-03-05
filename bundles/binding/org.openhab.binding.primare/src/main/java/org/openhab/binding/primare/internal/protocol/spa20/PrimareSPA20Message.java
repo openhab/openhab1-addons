@@ -56,20 +56,9 @@ public class PrimareSPA20Message extends PrimareMessage {
 	 */
 	public PrimareSPA20Message(Command command, PrimareSPA20Command deviceCmd) {
 
+		byte[] message = null;
+
 		switch (deviceCmd) {
-
-			// Model-specific initialization message, need to set verbose mode
-			// to get responses via RS-232 interface
-		case INIT:
-			// Verbose mode on
-			message = PrimareSPA20Message.setDeviceVariable(13, 1);
-			break;
-
-			// Model-specific ping, select something generating a response
-		case PING:
-			// Query power on status
-			message = PrimareSPA20Message.queryDeviceVariable(1);
-			break;
 			
 			// Variable 1 = Power/Standby 0..1, 0=Standby (default), 1=Operate
 		case POWER_QUERY:
@@ -308,9 +297,6 @@ public class PrimareSPA20Message extends PrimareMessage {
 			break;
 
 			// Variable 19 = Recall settings 0..2,  0=factory settings, 1=memory factory settings 2=memory installer settings
-		case RECALL_MEMORY_QUERY:
-			message = PrimareSPA20Message.queryDeviceVariable(19);
-			break;
 		case RECALL_MEMORY:
 			message = PrimareSPA20Message.toggleDeviceVariable(19);
 			break;
@@ -357,10 +343,39 @@ public class PrimareSPA20Message extends PrimareMessage {
 		case LATE_NIGHT_MODE_ON:
 			message = PrimareSPA20Message.setDeviceVariable(25, 1);
 			break;
+			
+			// Composite message: full status query
+		case ALL_QUERY:
+			messageParts = new byte[][]{ PrimareSPA20Message.queryDeviceVariable(1),
+						     PrimareSPA20Message.queryDeviceVariable(2),
+						     PrimareSPA20Message.queryDeviceVariable(3),
+						     PrimareSPA20Message.queryDeviceVariable(4),
+						     PrimareSPA20Message.queryDeviceVariable(5),
+						     PrimareSPA20Message.queryDeviceVariable(6),
+						     PrimareSPA20Message.queryDeviceVariable(7),
+						     PrimareSPA20Message.queryDeviceVariable(8),
+						     PrimareSPA20Message.queryDeviceVariable(9),
+						     PrimareSPA20Message.queryDeviceVariable(10),
+						     PrimareSPA20Message.queryDeviceVariable(11),
+						     PrimareSPA20Message.queryDeviceVariable(12),
+						     PrimareSPA20Message.queryDeviceVariable(13),
+						     PrimareSPA20Message.queryDeviceVariable(14),
+						     PrimareSPA20Message.queryDeviceVariable(16),
+						     PrimareSPA20Message.queryDeviceVariable(17),
+						     PrimareSPA20Message.queryDeviceVariable(18),
+						     PrimareSPA20Message.queryDeviceVariable(20),
+						     PrimareSPA20Message.queryDeviceVariable(21),
+						     PrimareSPA20Message.queryDeviceVariable(22),
+						     PrimareSPA20Message.queryDeviceVariable(23),
+						     PrimareSPA20Message.queryDeviceVariable(25) };
+			break;
 		}
 
+		if (message != null)
+			messageParts = new byte[][]{ message };
+
 		logger.trace("New PrimareSPA20Message is (hex) [{}]",
-			     PrimareUtils.byteArrayToHex(message));
+			     PrimareUtils.byteArraysToHex(messageParts));
 	}
 	
 	

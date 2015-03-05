@@ -42,17 +42,16 @@ public class PrimareSPA20MessageFactory extends PrimareMessageFactory {
 	}
 
 
-	// Without verbose mode the device sends no responses to write (set) commands
+	// Request full status at connection initialization
 	public PrimareSPA20Message[] getInitMessages() {
-		return new PrimareSPA20Message[] { getMessage(null, PrimareSPA20Command.VERBOSE_ON),
-						   getMessage(null, PrimareSPA20Command.POWER_QUERY) };
+		return new PrimareSPA20Message[] { getMessage(null, PrimareSPA20Command.VERBOSE_ON),  // send response after update
+						   getMessage(null, PrimareSPA20Command.ALL_QUERY) };
 	}
-
-	// Ping periodically to recover from non-verbose mode
-	public PrimareSPA20Message[] getPingMessages() {
-		return new PrimareSPA20Message[] { getMessage(null, PrimareSPA20Command.VERBOSE_ON),
-						   getMessage(null, PrimareSPA20Command.PRODUCTLINE_QUERY) };
 	
+	public PrimareSPA20Message[] getPingMessages() {
+		return new PrimareSPA20Message[] { getMessage(null, PrimareSPA20Command.VERBOSE_ON), // send response after update
+						   getMessage(null, PrimareSPA20Command.POWER_QUERY) };
+		
 	}
-    
+	
 }

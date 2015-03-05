@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Base class for Primare messages
+ * Base class for Primare messages. Consists of one or more message parts.
  * 
  * @author Veli-Pekka Juslin
  * @since 1.7.0
@@ -28,14 +28,10 @@ public abstract class PrimareMessage {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PrimareMessage.class);
     
-	protected byte[] message;
+	protected byte[][] messageParts;
     
-	public byte[] raw() {
-		return message;
-	}
-    
-	public byte[] escaped() {
-		return PrimareUtils.escapeMessage(message);
+	public byte[][] getMessageParts() {
+		return messageParts;
 	}
 }
 

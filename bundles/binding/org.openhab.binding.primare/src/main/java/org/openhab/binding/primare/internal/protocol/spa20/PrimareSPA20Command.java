@@ -16,8 +16,6 @@ package org.openhab.binding.primare.internal.protocol.spa20;
  */
 public enum PrimareSPA20Command {
     
-        INIT,  // Primare model-specific device initialization commands
-	PING,  // Primare model-specific device ping commands
 	POWER_QUERY,
 	POWER_TOGGLE,
 	POWER_ON,
@@ -84,7 +82,6 @@ public enum PrimareSPA20Command {
 	IR_INPUT_TOGGLE,
 	IR_INPUT_FRONT,
 	IR_INPUT_BACK,
-	RECALL_MEMORY_QUERY,
 	RECALL_MEMORY,
 	RECALL_MEMORY_DIRECT_USER_SETTINGS,
 	RECALL_MEMORY_DIRECT_FACTORY_SETTINGS,
@@ -96,5 +93,6 @@ public enum PrimareSPA20Command {
 	LATE_NIGHT_MODE_QUERY,
 	LATE_NIGHT_MODE_TOGGLE,
 	LATE_NIGHT_MODE_ON,
-	LATE_NIGHT_MODE_OFF;
+	LATE_NIGHT_MODE_OFF,
+	ALL_QUERY;  // Composite command, query all status variables
 }

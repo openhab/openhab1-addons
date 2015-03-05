@@ -34,4 +34,5 @@ public class PrimareSPA20ResponseFactory extends PrimareResponseFactory {
 	public PrimareSPA20Response getResponse(byte[] message) {
 		return new PrimareSPA20Response(message);
 	}
+
 }

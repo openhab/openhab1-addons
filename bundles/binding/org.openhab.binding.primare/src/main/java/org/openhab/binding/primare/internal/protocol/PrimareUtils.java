@@ -42,6 +42,14 @@ public class PrimareUtils {
 		return sb.toString().trim();
 	}
 
+	public static String byteArraysToHex(byte[][] a) {
+		StringBuilder sb = new StringBuilder();
+		for(byte[] b: a)
+			sb.append(String.format("%s ", byteArrayToHex(b)));
+		return sb.toString().trim();
+	}
+
+
 
 	// DLE (0x10) requires ecaping (double DLE) before sending to device
 	// Do not escape DLE at a.length-2

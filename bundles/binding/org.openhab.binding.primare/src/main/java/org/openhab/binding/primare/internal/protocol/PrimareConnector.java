@@ -129,19 +129,24 @@ public abstract class PrimareConnector {
 	   (double DLE)
 	   Override this in concrete class if necessary
 	*/
-	public void sendMessage(byte[] msg) throws Exception {
+	private void sendMessagePart(byte[] msg) throws Exception {
 		sendBytes(PrimareUtils.escapeMessage(msg));
 		messageSentAt = new Date();
 	}
+
+	private void sendMessage(byte[][] msgs) throws Exception {
+		for (byte[] msg : msgs)
+			sendMessagePart(msg);
+	}
 	
 	public void sendMessage(PrimareMessage deviceMsg) throws Exception {
-		sendMessage(deviceMsg.raw());
+		sendMessage(deviceMsg.getMessageParts());
 		messageSentAt = new Date();
 	}
     
 	public void sendMessage(PrimareMessage[] deviceMsgs) throws Exception {
 		for (PrimareMessage deviceMsg : deviceMsgs)
-			sendMessage(deviceMsg.raw());
+			sendMessage(deviceMsg);
 	}
 
 	

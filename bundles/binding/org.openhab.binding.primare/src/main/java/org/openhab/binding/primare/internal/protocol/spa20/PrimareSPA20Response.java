@@ -13,6 +13,7 @@ import java.util.Arrays;
 import org.openhab.binding.primare.internal.protocol.PrimareUtils;
 import org.openhab.binding.primare.internal.protocol.PrimareResponse;
 import org.openhab.binding.primare.internal.protocol.spa20.PrimareSPA20Command;
+import org.openhab.binding.primare.internal.protocol.spa20.PrimareSPA20MessageFactory;
 
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DimmerItem;
@@ -197,7 +198,6 @@ public class PrimareSPA20Response extends PrimareResponse {
 			break;
 
 			// Variable 19 = Recall settings 0..2,  0=factory settings, 1=memory factory settings 2=memory installer settings
-		case RECALL_MEMORY_QUERY:
 		case RECALL_MEMORY:
 		case RECALL_MEMORY_DIRECT_USER_SETTINGS:
 		case RECALL_MEMORY_DIRECT_FACTORY_SETTINGS:
@@ -247,7 +247,7 @@ public class PrimareSPA20Response extends PrimareResponse {
 	 * 
 	 * @return
 	 */
-
+	
 	public State openHabState(Class<? extends Item> itemType) {
 		State state = UnDefType.UNDEF;
 
@@ -267,11 +267,11 @@ public class PrimareSPA20Response extends PrimareResponse {
 			} else if (itemType == DimmerItem.class) {
 				index = (int) message[2];
 				state = new PercentType(index);
-			
+				
 			} else if (itemType == RollershutterItem.class) {
 				index = (int) message[2];
 				state = new PercentType(index);
-			
+				
 			} else if (itemType == StringItem.class) {
 				s = new String(Arrays.copyOfRange(message, 2, message.length-2));
 				state = new StringType(s);
@@ -282,5 +282,4 @@ public class PrimareSPA20Response extends PrimareResponse {
 		
 		return state;
 	}
-
 }
