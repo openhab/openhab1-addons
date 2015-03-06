@@ -784,6 +784,10 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0058</Id>
+			</Reference>
+			<Reference>
 				<Type>0201</Type>
 				<Id>0058</Id>
 			</Reference>
