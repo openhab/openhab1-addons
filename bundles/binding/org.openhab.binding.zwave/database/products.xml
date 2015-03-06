@@ -828,8 +828,8 @@
 		</Product>
 		<Product>
 			<Reference>
-				<Type>FFFF</Type>
-				<Id>FFFF</Id>
+				<Type>0003</Type>
+				<Id>000B</Id>
 			</Reference>
 			<Model>SmartStrip</Model>
 			<Label lang="en">Smart Strip</Label>
