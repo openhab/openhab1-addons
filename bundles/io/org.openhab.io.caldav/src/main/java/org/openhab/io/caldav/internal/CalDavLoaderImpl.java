@@ -43,6 +43,7 @@ import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.util.CompatibilityHints;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
@@ -76,6 +77,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 	private static final String PROP_URL = "url";
 	private static final String PROP_PASSWORD = "password";
 	private static final String PROP_USERNAME = "username";
+	private static final String PROP_DISABLE_CERTIFICATE_VERIFICATION = "disableCertificateVerification";
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(CalDavLoaderImpl.class);
@@ -119,6 +121,8 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 					calDavConfig.setReloadMinutes(Integer.parseInt(value));
 				} else if (paramKey.equals(PROP_PRELOAD_TIME)) {
 					calDavConfig.setPreloadMinutes(Integer.parseInt(value));
+				} else if (paramKey.equals(PROP_DISABLE_CERTIFICATE_VERIFICATION)) {
+					calDavConfig.setDisableCertificateVerification(BooleanUtils.toBoolean(value));
 				}
 			}
 
@@ -248,28 +252,32 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 			throws IOException, ParserException {
 		List<CalDavEvent> eventList = new ArrayList<CalDavEvent>();
 
-//		Sardine sardine = SardineFactory.begin(config.getUsername(),
-//				config.getPassword());
-		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setHostnameVerifier(new AllowAllHostnameVerifier());
-		try {
-			httpClientBuilder.setSslcontext(new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy()
-			{
-			    public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException
-			    {
-			        return true;
-			    }
-			}).build());
-		} catch (KeyManagementException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (KeyStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Sardine sardine = null;
+		if (config.isDisableCertificateVerification()) {
+			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setHostnameVerifier(new AllowAllHostnameVerifier());
+			try {
+				httpClientBuilder.setSslcontext(new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy()
+				{
+				    public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException
+				    {
+				        return true;
+				    }
+				}).build());
+			} catch (KeyManagementException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (KeyStoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			sardine = new SardineImpl(httpClientBuilder, config.getUsername(), config.getPassword());
+		} else {
+			sardine = new SardineImpl(config.getUsername(), config.getPassword());
 		}
-		Sardine sardine = new SardineImpl(httpClientBuilder, config.getUsername(), config.getPassword());
+		
 
 		CompatibilityHints.setHintEnabled(
 				CompatibilityHints.KEY_RELAXED_PARSING, true);

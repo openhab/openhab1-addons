@@ -21,6 +21,7 @@ public class CalDavConfig {
 	private String url;
 	private int reloadMinutes;
 	private int preloadMinutes;
+	private boolean disableCertificateVerification;
 	
 	public CalDavConfig() {
 		super();
@@ -81,6 +82,15 @@ public class CalDavConfig {
 
 	public void setPreloadMinutes(int preloadMinutes) {
 		this.preloadMinutes = preloadMinutes;
+	}
+
+	public boolean isDisableCertificateVerification() {
+		return disableCertificateVerification;
+	}
+
+	public void setDisableCertificateVerification(
+			boolean disableCertificateVerification) {
+		this.disableCertificateVerification = disableCertificateVerification;
 	}
 	
 	
