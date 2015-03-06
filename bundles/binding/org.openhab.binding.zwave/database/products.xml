@@ -857,6 +857,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0000</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>3M-30</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct30.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>6401</Type>
 				<Id>0015</Id>
 			</Reference>
@@ -883,6 +892,7 @@
 			</Reference>
 			<Model>CT80</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct30.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
