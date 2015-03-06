@@ -353,13 +353,60 @@ public class PrimareBinding extends AbstractBinding<PrimareBindingProvider> impl
 	private void initializeItem(String itemName) {
 
 		logger.debug("Called initializeItem for {}, ignored", itemName);
-
-		// Defer initialization until we known that the device is connected
-		// Initializatiom moved to connect() method of PrimareConnector
-
-		// If there are any item initialization tasks not requiring a connection,
-		// add them here.
 		
+		for (PrimareBindingProvider provider : providers) {
+			
+			String initCmd = provider.getItemInitCommand(itemName);
+			
+			if (initCmd == null) {
+				logger.debug("No init command found for item {}", itemName);
+				continue;
+			}
+			
+			logger.debug("Initialize item {} with {}",
+				     itemName, initCmd);
+			
+			String[] commandParts = initCmd.split(":");
+			String deviceId = commandParts[0];
+			String deviceCmd = commandParts[1];
+	    
+			if (deviceId == null || deviceCmd == null) {
+				logger.warn("Initializing - ignore item:{} initCmd:{} - failed to find both device id and command in {}",
+					    itemName, initCmd, initCmd);
+				continue;
+			}
+
+			DeviceConfig deviceConfig = deviceConfigCache.get(deviceId);
+			if (deviceConfig == null) {
+				logger.warn("Ignore item:{} initCmd:{} - no configuration found for device {}",
+					    itemName, initCmd, deviceId);
+				continue;
+			}
+
+			PrimareConnector connector = deviceConfig.getInitializedConnector();
+
+			if (connector == null) {
+				logger.warn("Ignore device:{} item:{} initCmd:{} - no connector (IP or serial) found for device {}",
+					    deviceId, itemName, initCmd, deviceId);
+				continue;
+			}
+
+			if (!connector.isConnected()) {
+				logger.warn("Ignore device:{} item:{} initCmd:{} - {} not connected",
+					    deviceId, itemName, initCmd, deviceConfig.toString());
+				continue;
+			}
+
+			
+			try {
+				// There are no arguments for a device init command
+				connector.sendCommand(null, deviceCmd);
+			} catch (Exception e) {
+				logger.warn("Ignore device:{} item:{} initCmd:{} Message send error {}",
+					    deviceId, itemName, initCmd, e.getMessage());
+			}
+		}
+
 		return;
 	}
 	
