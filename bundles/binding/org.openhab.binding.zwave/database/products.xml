@@ -826,6 +826,15 @@
 			<Label lang="en">1 button keyfob</Label>
 			<ConfigFile>aeon/dsa38.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>FFFF</Type>
+				<Id>FFFF</Id>
+			</Reference>
+			<Model>SmartStrip</Model>
+			<Label lang="en">Smart Strip</Label>
+			<ConfigFile>aeon/smart_strip.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0098</Id>
