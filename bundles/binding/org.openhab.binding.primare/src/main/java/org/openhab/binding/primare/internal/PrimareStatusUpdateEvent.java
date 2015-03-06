@@ -11,7 +11,7 @@ package org.openhab.binding.primare.internal;
 import java.util.EventObject;
 
 /**
- * The listener interface for receiving status updates from Primare receiver.
+ * Listener interface for receiving status updates from Primare receiver.
  * 
  * @author Pauli Anttila, Veli-Pekka Juslin
  * @since 1.7.0

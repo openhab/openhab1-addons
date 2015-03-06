@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Connector for Serial communication.
+ * Connector for Primare serial communication.
  * 
  * @author Pauli Anttila, Evert van Es, Veli-Pekka Juslin
  * @since 1.7.0

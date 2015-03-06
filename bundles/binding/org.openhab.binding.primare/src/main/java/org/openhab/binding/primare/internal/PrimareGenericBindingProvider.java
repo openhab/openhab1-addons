@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * The syntax of the binding configuration strings accepted is the following:
  * <p>
  * <code>
- * 	primare="&lt;openHAB-command>:&lt;device-id>:&lt;device-command>[,&lt;openHAB-command>:&lt;device-id>:&lt;device-command>][,...]"
+ * 	primare="&lt;openHAB-command&gt;:&lt;device-id&gt;:&lt;device-command&gt;[,&lt;openHAB-command&gt;:&lt;device-id&gt;:&lt;device-command&gt;][,...]"
  * </code>
  * <p>
  * where parts in brackets [] signify an optional information.

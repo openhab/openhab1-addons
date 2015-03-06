@@ -18,10 +18,10 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Class for Primare responses to be extended by model-specific
+ * Abstract base class for Primare responses to be extended by model-specific
  * implementation classes
- * This class is used for converting OpenHAB commands
- * to a byte array representation to be sent to the Primare.
+ * This class is used for converting Primare device messages received as byte streams
+ * to PrimareReponse instances
  * 
  * @author Veli-Pekka Juslin
  * @since 1.7.0

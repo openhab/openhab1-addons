@@ -26,7 +26,10 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Base class for Primare communication.
+ * Abstract base class for Primare communication. It contains the communication
+ * methods and Primare model-specific message factories for converting 
+ * OpenHAB commands to Primare messages.
+ * 
  * 
  * @author Veli-Pekka Juslin
  * @since 1.7.0

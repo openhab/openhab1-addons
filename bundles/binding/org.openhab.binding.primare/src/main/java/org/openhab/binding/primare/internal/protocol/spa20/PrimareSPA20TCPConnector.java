@@ -12,18 +12,30 @@ import org.openhab.binding.primare.internal.protocol.spa20.PrimareSPA20MessageFa
 import org.openhab.binding.primare.internal.protocol.spa20.PrimareSPA20ResponseFactory;
 import org.openhab.binding.primare.internal.protocol.PrimareTCPConnector;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Connector for TCP communication.
+ * Connector for Primare SP31/SP31.7/SPA20/SPA21 TCP communication.
  * 
  * @author juslive
  * @since 1.7.0
  */
 public class PrimareSPA20TCPConnector extends PrimareTCPConnector {
 	
+	/**
+	 * Create a {@link PrimareTCPConnector} capable of communicating
+	 * with a Primare SP31/SP31.7/SPA20/SPA21 device using TCP/IP
+	 *
+	 * @param deviceId
+	 *            device id as given in OpenHAB configuration
+	 * @param host
+	 *            host name or IP address
+	 * @param port
+	 *            port number
+	 *
+	 * @return Primare TCP connector instance
+	 */
 	public PrimareSPA20TCPConnector(String deviceId, String host, int port) {
 		super(deviceId, host, port, 
 		      new PrimareSPA20MessageFactory(),

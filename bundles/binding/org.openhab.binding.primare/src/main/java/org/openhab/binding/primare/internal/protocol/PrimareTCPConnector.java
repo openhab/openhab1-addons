@@ -33,7 +33,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Connector for TCP communication.
+ * Connector for Primare TCP communication. This connector has only
+ * been tested with a linux box running socat between a socket and a 
+ * serial interface, not a Primare device with a built-in Ethernet
+ * interface.
  * 
  * @author juslive
  * @since 1.7.0

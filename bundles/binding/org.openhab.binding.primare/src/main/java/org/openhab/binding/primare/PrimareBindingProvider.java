@@ -31,7 +31,7 @@ public interface PrimareBindingProvider extends BindingProvider {
 	Class<? extends Item> getItemType(String itemName);
 	
 	/**
-	 * Returns the command to the given <code>itemName</code>.
+	 * Returns the command to the given <code>itemName</code> and <code>command</code>.
 	 * 
 	 * @param itemName
 	 *            the item for which to find a command.

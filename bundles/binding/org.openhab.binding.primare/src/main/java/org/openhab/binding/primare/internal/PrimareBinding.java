@@ -54,7 +54,8 @@ import org.slf4j.LoggerFactory;
  * @author Pauli Anttila, Veli-Pekka Juslin
  * @since 1.7.0
  */
-public class PrimareBinding extends AbstractBinding<PrimareBindingProvider> implements ManagedService, BindingChangeListener, PrimareEventListener {
+public class PrimareBinding extends AbstractBinding<PrimareBindingProvider> 
+	implements ManagedService, BindingChangeListener, PrimareEventListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(PrimareBinding.class);
 
@@ -164,14 +165,18 @@ public class PrimareBinding extends AbstractBinding<PrimareBindingProvider> impl
 
 	/**
 	 * Find the first matching {@link PrimareBindingProvider} according to
-	 * <code>itemName</code>.
+	 * <code>itemName</code> and <code>command</code>.
 	 * 
 	 * @param itemName
+	 *            the item for which to find a provider
+	 * @param command
+	 *            the openHAB command for which to find a provider
 	 * 
 	 * @return the matching binding provider or <code>null</code> if no binding
 	 *         provider could be found
 	 */
 	private PrimareBindingProvider findFirstMatchingBindingProvider(String itemName, String command) {
+
 		PrimareBindingProvider firstMatchingProvider = null;
 
 		for (PrimareBindingProvider provider : this.providers) {
@@ -181,7 +186,7 @@ public class PrimareBinding extends AbstractBinding<PrimareBindingProvider> impl
 				break;
 			}
 		}
-
+		
 		if (firstMatchingProvider == null) {
 			for (PrimareBindingProvider provider : this.providers) {
 				String tmp = provider.getDeviceCommand(itemName, WILDCARD_COMMAND_KEY);
@@ -190,7 +195,7 @@ public class PrimareBinding extends AbstractBinding<PrimareBindingProvider> impl
 					break;
 				}
 			}
-
+			
 		}
 
 		return firstMatchingProvider;
@@ -298,7 +303,9 @@ public class PrimareBinding extends AbstractBinding<PrimareBindingProvider> impl
 		}
 	}
 	
-	
+	/**
+	 * {@inheritDoc}
+	 */	
 	@Override
 	public void statusUpdateReceived(EventObject event, String deviceId, byte[] data) {
 
@@ -345,7 +352,8 @@ public class PrimareBinding extends AbstractBinding<PrimareBindingProvider> impl
 
 
 	/**
-	 * Initialize item value. Method send query to receiver if init query is configured to binding item configuration
+	 * Initialize item value. Method sends a query to receiver if init query is
+	 * configured to binding item configuration
 	 * 
 	 * @param itemType
 	 * 

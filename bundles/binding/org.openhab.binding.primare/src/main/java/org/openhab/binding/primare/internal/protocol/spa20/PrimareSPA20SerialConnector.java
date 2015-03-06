@@ -22,7 +22,18 @@ import org.slf4j.LoggerFactory;
  * @since 1.7.0
  */
 public class PrimareSPA20SerialConnector extends PrimareSerialConnector {
-	
+
+	/**
+	 * Create a {@link PrimareTCPConnector} capable of communicating
+	 * with a Primare SP31/SP31.7/SPA20/SPA21 device using a serial port
+	 *
+	 * @param deviceId
+	 *            device id as given in OpenHAB configuration
+	 * @param serialPortName
+	 *            serial port name (e.g. /dev/ttyS0)
+	 *
+	 * @return Primare Serial connector instance
+	 */
 	public PrimareSPA20SerialConnector(String deviceId, String serialPortName) {
 		super(deviceId, serialPortName, 
 		      new PrimareSPA20MessageFactory(),

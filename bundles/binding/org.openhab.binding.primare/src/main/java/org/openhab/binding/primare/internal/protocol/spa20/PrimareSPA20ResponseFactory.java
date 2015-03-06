@@ -19,9 +19,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Class for Primare SP31.7/SP31/SPA20/SPA21 messages
- * This class is used for converting OpenHAB commands
- * to a byte array representation to be sent to the Primare.
+ * Class for creating Primare SP31.7/SP31/SPA20/SPA21 responses
+ * from data received from the Primare device
  * 
  * @author Veli-Pekka Juslin
  * @since 1.7.0

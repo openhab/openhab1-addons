@@ -19,7 +19,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Base class for Primare messages. Consists of one or more message parts.
+ * Abstract base class for Primare messages. A message consists of one or more message parts,
+ * each being an (unescaped) byte array.
  * 
  * @author Veli-Pekka Juslin
  * @since 1.7.0

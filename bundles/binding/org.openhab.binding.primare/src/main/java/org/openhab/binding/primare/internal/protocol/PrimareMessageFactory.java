@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Class for Primare messages to be extended by model-specific
- * implementation classes
- * This class is used for converting OpenHAB commands
+ * Abstract base class for Primare messages to be extended by model-specific
+ * implementation classes.
+ * The class is used for converting OpenHAB commands
  * to a byte array representation to be sent to the Primare.
  * 
  * @author Veli-Pekka Juslin
@@ -33,12 +33,20 @@ public abstract class PrimareMessageFactory {
     
 	public abstract PrimareMessage getMessage(Command command, String deviceCmdString);
     
-	// Initialize device to some sensible state
-	// public abstract PrimareMessage getInitMessage();
+
+	/**
+	 * Get messages for initializing the device
+	 * 
+	 * @return messages for device initialization
+	 */
 	public abstract PrimareMessage[] getInitMessages();
+
 	
-	// A message triggering an asynchronous response
-	// public abstract PrimareMessage getPingMessage();
+	/**
+	 * Get messages for pinging the device
+	 * 
+	 * @return messages for device ping
+	 */
 	public abstract PrimareMessage[] getPingMessages();    
 	
 }
