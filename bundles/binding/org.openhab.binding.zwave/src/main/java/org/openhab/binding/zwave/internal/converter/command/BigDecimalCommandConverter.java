@@ -18,7 +18,7 @@ import org.openhab.core.library.types.DecimalType;
  * @author Matthew Bowman
  * @since 1.4.0
  */
-public class DecimalCommandConverter extends
+public class BigDecimalCommandConverter extends
 		ZWaveCommandConverter<DecimalType, BigDecimal> {
 
 	/**

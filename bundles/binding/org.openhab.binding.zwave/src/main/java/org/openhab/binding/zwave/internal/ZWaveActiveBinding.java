@@ -454,8 +454,9 @@ public class ZWaveActiveBinding extends AbstractActiveBinding<ZWaveBindingProvid
 			for (String itemName : provider.getItemNames()) {
 				ZWaveBindingConfig bindingConfig = provider.getZwaveBindingConfig(itemName);
 				
-				if (bindingConfig.getNodeId() != event.getNodeId() || bindingConfig.getEndpoint() != event.getEndpoint())
+				if (bindingConfig.getNodeId() != event.getNodeId() || bindingConfig.getEndpoint() != event.getEndpoint()) {
 					continue;
+				}
 				
 				converterHandler.handleEvent(provider, itemName, event);
 				handled = true;

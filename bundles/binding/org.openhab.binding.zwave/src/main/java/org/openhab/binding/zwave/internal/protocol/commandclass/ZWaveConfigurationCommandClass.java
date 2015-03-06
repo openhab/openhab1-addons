@@ -19,6 +19,7 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -229,18 +230,15 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 	 * @author Chris Jackson
 	 * @since 1.4.0
 	 */
-	public class ZWaveConfigurationParameterEvent extends ZWaveEvent {
+	public class ZWaveConfigurationParameterEvent extends ZWaveCommandClassValueEvent {
 
-		private final ConfigurationParameter parameter;
-		
 		/**
 		 * Constructor. Creates a new instance of the ZWaveConfigurationParameterEvent
 		 * class.
 		 * @param nodeId the nodeId of the event. Must be set to the controller node.
 		 */
 		public ZWaveConfigurationParameterEvent(int nodeId, ConfigurationParameter parameter) {
-			super(nodeId);
-			this.parameter = parameter;
+			super(nodeId, 0, CommandClass.CONFIGURATION, parameter);
 		}
 
 		/**
@@ -248,7 +246,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 		 * @return the configuration parameter.
 		 */
 		public ConfigurationParameter getParameter() {
-			return parameter;
+			return (ConfigurationParameter) this.getValue();
 		}
 	}
 }
