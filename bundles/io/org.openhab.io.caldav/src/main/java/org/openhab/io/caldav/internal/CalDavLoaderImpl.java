@@ -11,6 +11,11 @@ package org.openhab.io.caldav.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
@@ -39,6 +44,8 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.openhab.core.service.AbstractActiveService;
@@ -244,6 +251,24 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 //		Sardine sardine = SardineFactory.begin(config.getUsername(),
 //				config.getPassword());
 		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setHostnameVerifier(new AllowAllHostnameVerifier());
+		try {
+			httpClientBuilder.setSslcontext(new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy()
+			{
+			    public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException
+			    {
+			        return true;
+			    }
+			}).build());
+		} catch (KeyManagementException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Sardine sardine = new SardineImpl(httpClientBuilder, config.getUsername(), config.getPassword());
 
 		CompatibilityHints.setHintEnabled(
