@@ -10,7 +10,6 @@ package org.openhab.binding.zwave.internal.config;
 
 import java.util.List;
 
-import org.openhab.binding.zwave.internal.HexToIntegerConverter;
 import org.osgi.framework.Version;
 
 import com.thoughtworks.xstream.annotations.XStreamConverter;
