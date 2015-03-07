@@ -315,6 +315,10 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0102</Type>
+				<Id>0001</Id>
+			</Reference>
+			<Reference>
 				<Type>0002</Type>
 				<Id>0001</Id>
 			</Reference>
@@ -643,6 +647,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0002</Type>
+				<Id>004A</Id>
+			</Reference>
+			<Model>4in1MS</Model>
+			<Label lang="en">4 in One MultiSensor (G5)</Label>
+			<ConfigFile>aeon/4in1ms_g5.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0006</Type>
 				<Id>0002</Id>
 			</Reference>
@@ -784,6 +797,10 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0058</Id>
+			</Reference>
+			<Reference>
 				<Type>0201</Type>
 				<Id>0058</Id>
 			</Reference>
@@ -808,6 +825,15 @@
 			<Model>DSA38</Model>
 			<Label lang="en">1 button keyfob</Label>
 			<ConfigFile>aeon/dsa38.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>000B</Id>
+			</Reference>
+			<Model>SmartStrip</Model>
+			<Label lang="en">Smart Strip</Label>
+			<ConfigFile>aeon/smart_strip.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -840,6 +866,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0000</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>3M-30</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct30.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>6401</Type>
 				<Id>0015</Id>
 			</Reference>
@@ -854,6 +889,19 @@
 			<Model>CT100</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
 			<ConfigFile>rtc/ct100.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>5002</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Reference>
+				<Type>5003</Type>
+				<Id>0109</Id>
+			</Reference>
+			<Model>CT80</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct30.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>

@@ -21,5 +21,5 @@ import org.openhab.core.binding.BindingProvider;
 public interface SamsungAcBindingProvider extends BindingProvider {
 	String getAirConditionerInstance(String itemname);
 	CommandEnum getProperty(String itemname);
-	String getItemName(CommandEnum property);
+	String getItemName(String acName, CommandEnum property);
 }

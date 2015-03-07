@@ -9,6 +9,8 @@
 package org.openhab.io.rest.internal.filter;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,6 +36,8 @@ import org.slf4j.LoggerFactory;
 public class PollingDelayFilter implements PerRequestBroadcastFilter {
 	private static final Logger logger = LoggerFactory.getLogger(PollingDelayFilter.class);
 	
+	ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+	
 	@Override
 	public BroadcastAction filter(String broadcasterId, Object originalMessage, Object message) {
 		return new BroadcastAction(message);
@@ -47,12 +51,18 @@ public class PollingDelayFilter implements PerRequestBroadcastFilter {
 			boolean isItemMessage = originalMessage instanceof Item || originalMessage instanceof GroupItem;
 			boolean isStreamingTransport = ResponseTypeHelper.isStreamingTransport(request);
 			
+			//strange atmosphere bug, seems harmless, but pollutes the logs
+			//so lets see if this fails or not first before we call it again.
+			try {
+				resource.getRequest().getPathInfo();
+			} catch (Exception e) {
+				return new BroadcastAction(ACTION.ABORT, message);
+			}
 			if(!isStreamingTransport && message instanceof PageBean && isItemMessage) {
 				final String delayedBroadcasterName = resource.getRequest().getPathInfo();
-				Executors.newSingleThreadExecutor().submit(new Runnable() {
+				executor.schedule(new Runnable() {
 		            public void run() {
 		                try {
-		                    Thread.sleep(300);
 		                    BroadcasterFactory broadcasterFactory = resource.getAtmosphereConfig().getBroadcasterFactory();
 							GeneralBroadcaster delayedBroadcaster = broadcasterFactory.lookup(GeneralBroadcaster.class, delayedBroadcasterName);
 							if(delayedBroadcaster != null)
@@ -61,7 +71,7 @@ public class PollingDelayFilter implements PerRequestBroadcastFilter {
 							logger.error("Could not broadcast message", e);
 						} 
 		            }
-		        });
+		        }, 300, TimeUnit.MILLISECONDS);
 			} else {
 				//pass message to next filter
 				return new BroadcastAction(ACTION.CONTINUE, message);
