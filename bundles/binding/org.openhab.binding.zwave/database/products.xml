@@ -1353,7 +1353,7 @@
 				<Type>1000</Type>
 				<Id>0003</Id>
 			</Reference>
-			<Model>ZME_0643x</Model>
+			<Model>ZME_05459</Model>
 			<Label lang="en">Blinds controller</Label>
 			<ConfigFile>zwaveme/zme_blindscontroller.xml</ConfigFile>
 		</Product>
