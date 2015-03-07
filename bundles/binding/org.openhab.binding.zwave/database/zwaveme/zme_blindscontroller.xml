@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-	<Model>WCD2</Model>
+	<Model>ZME_05459</Model>
 	<Label lang="en">Blind Control</Label>
 	<CommandClasses>
 		<Class><id>0x20</id></Class>
@@ -204,7 +204,146 @@
 			<Label lang="en">Invert buttons</Label>
 			<Help lang="en">Allows exchanging the functionality of the buttons</Help>
 		</Parameter>
-		<!-- NOTE: contue from param number 12 -->
+		<Parameter>
+			<Index>12</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">No</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">By single press and hold</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">By double press and hold</Label>
+			</Item>
+			<Label lang="en">Switch by buttons</Label>
+			<Help lang="en">If disabled, the local operations by buttons will not switch the load, but only send commands to On/Off association group. In this mode buttons are not linked with the switch anymore. They can be used separately: buttons to control remote device, switch will operate by RF commands only.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>13</Index>
+			<Type>list</Type>
+			<Default>4</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Action on button single press or hold</Label>
+			<Help lang="en">Defines which command should be sent on button single press or hold. Basic and Scene Activation commands are sent to Association group. Use Scene Controller Conf to set up Scene ID for Scene Activation. Switch All commands are sent broadcast.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>14</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disabled</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch On/Off (send Basic Set)</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch All</Label>
+			</Item>
+			<Item>
+				<Value>3</Value>
+				<Label lang="en">Send Scenes</Label>
+			</Item>
+			<Item>
+				<Value>4</Value>
+				<Label lang="en">Switch On/Off and Dim (send Basic Set and Switch Multilevel)</Label>
+			</Item>
+			<Item>
+				<Value>5</Value>
+				<Label lang="en">Send Preconfigured Scenes</Label>
+			</Item>
+			<Label lang="en">Action on button double press or hold</Label>
+			<Help lang="en">Defines which command should be sent on button double press or press-hold. Basic and Scene Activation commands are sent to Association group. Use Scene Controller Conf to set up Scene ID for Scene Activation. Switch All commands are sent broadcast. If not disabled, the device will wait for a click timeout to see if the second click would be pressed. This will introduce a small delay for single click commands</Help>
+		</Parameter>
+		<Parameter>
+			<Index>15</Index>
+			<Type>list</Type>
+			<Default>1</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Switch off only</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Switch on only</Label>
+			</Item>
+			<Item>
+				<Value>255</Value>
+				<Label lang="en">Switch all on and off</Label>
+			</Item>
+			<Label lang="en">Send the following Switch All commands</Label>
+			<Help lang="en">Defines what to do when a Switch All command arrives.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>16</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Close</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Open if closed else close</Label>
+			</Item>
+			<Item>
+				<Value>2</Value>
+				<Label lang="en">Open</Label>
+			</Item>
+			<Label lang="en">What to do on button Down press</Label>
+			<Help lang="en">Defines how to interpret button Down press. Depends on "Switch by buttons" parameter. If not Disabled this parameter will affect the action selected by the latter parameter. Can be used in conjunction with Auto Off function.</Help>
+		</Parameter>
+		<Parameter>
+			<Index>17</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Close blinds</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Open blinds</Label>
+			</Item>
+			<Label lang="en">Action on Auto open or close function</Label>
+			<Help lang="en">Defines the action to perform upon auto open or auto close.</Help>
+		</Parameter>
 	</Configuration>
 
 	<Associations>
