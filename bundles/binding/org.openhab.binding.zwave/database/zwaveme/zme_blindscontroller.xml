@@ -48,19 +48,17 @@
 		</Parameter>
 		<Parameter>
 			<Index>2</Index>
-			<Type>list</Type>
+			<Type>short</Type>
+			<Minimum>0</Minimum>
+			<Maximum>65535</Maximum>
 			<Default>0</Default>
 			<Size>2</Size>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Disabled</Label>
 			</Item>
-			<Item>
-				<Value>1 - 65535</Value>
-				<Label lang="en">Seconds</Label>
-			</Item>
 			<Label lang="en">Automatically open or close after</Label>
-			<Help lang="en">If not zero, automatically open or close blind after a user defined time</Help>
+			<Help lang="en">If not zero, automatically open or close blind after a user defined time in seconds</Help>
 		</Parameter>
 		<Parameter>
 			<Index>3</Index>
@@ -88,48 +86,42 @@
 		</Parameter>
 		<Parameter>
 			<Index>4</Index>
-			<Type>list</Type>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
 			<Default>60</Default>
 			<Size>1</Size>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Keep in permanent motion</Label>
 			</Item>
-			<Item>
-				<Value>1 - 255</Value>
-				<Label lang="en">Seconds</Label>
-			</Item>
 			<Label lang="en">Full close time</Label>
-			<Help lang="en">Time to go from opened to closed state. Used to estimate the current level. Note that in Permanent motion mode the reported value would a be Closed or Opened, while all Basic and Multilevel Set values (1-99, 255) would Open except 0 value that would Close.</Help>
+			<Help lang="en">Time in seconds to go from opened to closed state. Used to estimate the current level. Note that in Permanent motion mode the reported value would a be Closed or Opened, while all Basic and Multilevel Set values (1-99, 255) would Open except 0 value that would Close.</Help>
 		</Parameter>
 		<Parameter>
 			<Index>5</Index>
-			<Type>list</Type>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>255</Maximum>
 			<Default>60</Default>
 			<Size>1</Size>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Keep in permanent motion</Label>
 			</Item>
-			<Item>
-				<Value>1 - 255</Value>
-				<Label lang="en">Seconds</Label>
-			</Item>
 			<Label lang="en">Full open time</Label>
-			<Help lang="en">Time to go from closed to open state. This value may differ from Full close time for some blinds due to gravity. Used to estimate the current level. Note that in Permanent motion mode the reported value would a be Closed or Opened, while all Basic and Multilevel Set values (1-99, 255) would Open except 0 value that would Close.</Help>
+			<Help lang="en">Time in seconds to go from closed to open state. This value may differ from Full close time for some blinds due to gravity. Used to estimate the current level. Note that in Permanent motion mode the reported value would a be Closed or Opened, while all Basic and Multilevel Set values (1-99, 255) would Open except 0 value that would Close.</Help>
 		</Parameter>
 		<Parameter>
 			<Index>6</Index>
-			<Type>list</Type>
+			<Type>byte</Type>
+			<Minimum>0</Minimum>
+			<Maximum>232</Maximum>
 			<Default>0</Default>
 			<Size>1</Size>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Disabled</Label>
-			</Item>
-			<Item>
-				<Value>1 - 232</Value>
-				<Label lang="en">Node ID</Label>
 			</Item>
 			<Label lang="en">Node ID of the blocking device</Label>
 			<Help lang="en">Id of the device which commands would be interpreted not as Open/Close, but as block/unblock. Usefull with door opening detector: if the door is open, block the blind not to break shades while they move.</Help>
