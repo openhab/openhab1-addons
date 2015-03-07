@@ -47,7 +47,7 @@
 			<Default>0</Default>
 			<Size>1</Size>
 			<Label lang="en">Dim Level Memory</Label>
-			<Help lang="en">y default, the LB60Z-1 bulb will go to full brightness when turned on. To have the bulb turn on to the last dim level setting, set parameter 1 to 1.</Help>
+			<Help lang="en">By default, the LB60Z-1 bulb will go to full brightness when turned on. To have the bulb turn on to the last dim level setting, set parameter 1 to 1.</Help>
 			<Item>
 				<Value>0</Value>
 				<Label lang="en">Disable dim level memory</Label>
