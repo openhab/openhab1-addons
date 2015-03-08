@@ -6,3 +6,5 @@ Architecture: all
 Maintainer: [[deb.maintainer]]
 Description: [[deb.description]]
 Distribution: [[deb.distribution]]
+Depends: adduser
+Homepage: http://www.openhab.org
