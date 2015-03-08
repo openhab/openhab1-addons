@@ -176,6 +176,17 @@ public enum ComfoAirCommandType {
 		}
 	},
 
+	EWT_MODE {
+		{
+			key = "ewt_mode";
+			data_type = DataTypeBoolean.class;
+			read_command = 0x37;
+			read_reply_command = 0x3c;
+			read_reply_data_pos = new int[] { 6 };
+			read_reply_data_bits = 0x80;
+		}
+	},
+
 	BYPASS_MODE {
 		{
 			key = "bypass_mode";
