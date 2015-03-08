@@ -1968,4 +1968,17 @@
             <ConfigFile>dragontech/wd100.xml</ConfigFile>
         </Product>
     </Manufacturer>
+    <Manufacturer>
+        <Id>003b</Id>
+        <Name>Schlage</Name>
+        <Product>
+            <Reference>
+                <Type>6349</Type>
+                <Id>5044</Id>
+            </Reference>
+            <Model>BE468</Model>
+            <Label lang="en">Touchscreen Deadbolt</Label>
+            <ConfigFile>schlage/be468.xml</ConfigFile>
+        </Product>
+    </Manufacturer>
 </Manufacturers>
