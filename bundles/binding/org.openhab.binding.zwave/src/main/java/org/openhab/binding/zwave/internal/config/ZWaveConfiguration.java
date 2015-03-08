@@ -539,11 +539,11 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 				if(networkMonitor != null) {
 					record = new OpenHABConfigurationRecord(domain, "LastHeal", "Heal Status", true);
 					if (node.getHealState() == null) {
-                        record.value = networkMonitor.getNodeState(nodeId);
+						record.value = networkMonitor.getNodeState(nodeId);
 					}
-                    else {
-                        record.value = node.getHealState();
-                    }
+					else {
+						record.value = node.getHealState();
+					}
 					
 					records.add(record);
 				}
@@ -623,32 +623,38 @@ public class ZWaveConfiguration implements OpenHABConfigurationService, ZWaveEve
 			} else if (arg.equals("associations/")) {
 				if (database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(), node.getApplicationVersion()) != false) {
 					List<ZWaveDbAssociationGroup> groupList = database.getProductAssociationGroups();
+					if (groupList == null) {
+						return records;
+					}
 
-					if (groupList != null) {
-						// Loop through the associations and add all groups to the
-						// records...
-						for (ZWaveDbAssociationGroup group : groupList) {
-							record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/",
-									database.getLabel(group.Label), true);
+					// Get the association command class for this node if it's supported
+					ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
+						.getCommandClass(CommandClass.ASSOCIATION);
+					if (associationCommandClass == null) {
+						return null;
+					}
 
-							// Add the description
-							record.description = database.getLabel(group.Help);
-							
-							// For the 'value', describe how many devices are set and the maximum allowed
-							ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
-									.getCommandClass(CommandClass.ASSOCIATION);
-							int memberCnt = 0;
-							List<Integer> members = associationCommandClass.getGroupMembers(group.Index);
-							if(members != null) {
-								memberCnt = members.size();
-							}
-							record.value = memberCnt + " of " + group.Maximum + " group members";
+					// Loop through the associations and add all groups to the
+					// records...
+					for (ZWaveDbAssociationGroup group : groupList) {
+						record = new OpenHABConfigurationRecord(domain, "association" + group.Index + "/",
+							database.getLabel(group.Label), true);
 
-							// Add the action for refresh
-							record.addAction("Refresh", "Refresh");
+						// Add the description
+						record.description = database.getLabel(group.Help);
 
-							records.add(record);
+						// For the 'value', describe how many devices are set and the maximum allowed
+						int memberCnt = 0;
+						List<Integer> members = associationCommandClass.getGroupMembers(group.Index);
+						if(members != null) {
+							memberCnt = members.size();
 						}
+						record.value = memberCnt + " of " + group.Maximum + " group members";
+
+						// Add the action for refresh
+						record.addAction("Refresh", "Refresh");
+
+						records.add(record);
 					}
 				}
 			} else if (arg.startsWith("associations/association")) {
