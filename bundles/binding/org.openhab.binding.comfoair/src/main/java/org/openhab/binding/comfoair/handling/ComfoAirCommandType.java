@@ -146,20 +146,20 @@ public enum ComfoAirCommandType {
 		}
 	},
 
-	EWT_TEMPERATUR_HIGH {
+	EWT_TEMPERATUR_LOW {
 		{
-			key = "ewt_temperatur_high";
-			data_type = DataTypeTemperature.class;
+			key = "ewt_temperatur_low";
+			data_type = DataTypeNumber.class;
 			read_command = 0xeb;
 			read_reply_command = 0xec;
 			read_reply_data_pos = new int[] { 0 };
 		}
 	},
 
-	EWT_TEMPERATUR_LOW {
+	EWT_TEMPERATUR_HIGH {
 		{
-			key = "ewt_temperatur_low";
-			data_type = DataTypeTemperature.class;
+			key = "ewt_temperatur_high";
+			data_type = DataTypeNumber.class;
 			read_command = 0xeb;
 			read_reply_command = 0xec;
 			read_reply_data_pos = new int[] { 1 };
