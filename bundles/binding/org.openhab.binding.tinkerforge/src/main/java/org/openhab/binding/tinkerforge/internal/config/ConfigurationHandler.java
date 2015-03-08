@@ -92,7 +92,7 @@ public class ConfigurationHandler {
     bricklet_soundintensity, bricklet_moisture, bricklet_distanceUS, 
     bricklet_voltageCurrent, voltageCurrent_voltage, voltageCurrent_current, 
     voltageCurrent_power, bricklet_tilt, io4_actuator, io4sensor, bricklet_io4, 
-    bricklet_halleffect
+    bricklet_halleffect, bricklet_joystick, bricklet_linear_poti
   }
 
 
@@ -220,7 +220,9 @@ public class ConfigurationHandler {
         || deviceType.equals(TypeKey.voltageCurrent_voltage.name())
         || deviceType.equals(TypeKey.voltageCurrent_current.name())
         || deviceType.equals(TypeKey.voltageCurrent_power.name())
-        || deviceType.equals(TypeKey.bricklet_halleffect)) {
+        || deviceType.equals(TypeKey.bricklet_joystick.name())
+        || deviceType.equals(TypeKey.bricklet_halleffect.name())
+        || deviceType.equals(TypeKey.bricklet_linear_poti.name())) {
       logger.debug("{} setting base config", LoggerConstants.CONFIG);
       TFBaseConfiguration tfBaseConfiguration = modelFactory.createTFBaseConfiguration();
       if (deviceType.equals(TypeKey.bricklet_barometer)) {

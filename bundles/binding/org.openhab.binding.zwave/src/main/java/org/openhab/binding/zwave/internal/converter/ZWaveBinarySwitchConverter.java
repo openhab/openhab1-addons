@@ -79,7 +79,7 @@ public class ZWaveBinarySwitchConverter extends ZWaveCommandClassConverter<ZWave
 		ZWaveStateConverter<?,?> converter = this.getStateConverter(item, event.getValue());
 		
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring event.", item.getName(), event.getNodeId(), event.getEndpoint());
+			logger.warn("NODE {}: No converter found for item = {}, node = {} endpoint = {}, ignoring event.", event.getNodeId(), item.getName(), event.getEndpoint());
 			return;
 		}
 		
@@ -96,21 +96,22 @@ public class ZWaveBinarySwitchConverter extends ZWaveCommandClassConverter<ZWave
 		ZWaveCommandConverter<?,?> converter = this.getCommandConverter(command.getClass());
 		
 		if (converter == null) {
-			logger.warn("No converter found for item = {}, node = {} endpoint = {}, ignoring command.", item.getName(), node.getNodeId(), endpointId);
+			logger.warn("NODE {}: No converter found for item = {}, endpoint = {}, ignoring command.", node.getNodeId(), item.getName(), endpointId);
 			return;
 		}
-		
+
 		SerialMessage serialMessage = node.encapsulate(commandClass.setValueMessage((Integer)converter.convertFromCommandToValue(item, command)), commandClass, endpointId);
 		
 		if (serialMessage == null) {
-			logger.warn("Generating message failed for command class = {}, node = {}, endpoint = {}", commandClass.getCommandClass().getLabel(), node.getNodeId(), endpointId);
+			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
 			return;
 		}
 		
 		this.getController().sendData(serialMessage);
-		
-		if (command instanceof State)
+
+		if (command instanceof State) {
 			this.getEventPublisher().postUpdate(item.getName(), (State)command);
+		}
 	}
 
 	/**
