@@ -20,7 +20,6 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageCl
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
-import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,6 +173,12 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage setConfigMessage(ConfigurationParameter parameter) {
+		if(parameter != null && parameter.getReadOnly() == true) {
+			logger.debug("NODE {}: CONFIGURATIONCMD_SET ignored for parameter {} - parameter is read only",
+					this.getNode().getNodeId(), parameter);
+			return null;
+		}
+
 		logger.debug("NODE {}: Creating new message for application command CONFIGURATIONCMD_SET", this.getNode()
 				.getNodeId());
 		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
@@ -201,6 +206,25 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 	 */
 	public ConfigurationParameter getParameter(Integer index) {
 		return this.configParameters.get(index);
+	}
+	
+	/**
+	 * Sets a parameter as Read Only
+	 * Some parameters in some devices can not be written to. Trying to write them results
+	 * in a timeout and this should be avoided.
+	 * @param index the parameter index
+	 * @param readOnly true if the parameter can not be read
+	 */
+	public void setParameterReadOnly(Integer index, boolean readOnly) {
+		ConfigurationParameter configurationParameter;
+
+		// Check if the parameter exists in our list
+		configurationParameter = this.configParameters.get(index);
+		if(configurationParameter == null) {
+			configurationParameter = new ConfigurationParameter(index, 0, 1);
+		}
+
+		configurationParameter.setReadOnly(readOnly);
 	}
 	
 	/**
