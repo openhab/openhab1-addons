@@ -287,7 +287,7 @@ public enum ComfoAirCommandType {
 	int[] possible_values;
 
 	/*
-	 * Cmd code to swich properties on the comforair.
+	 * Cmd code to change properties on the comfoair.
 	 */
 	int change_command;
 	/*
