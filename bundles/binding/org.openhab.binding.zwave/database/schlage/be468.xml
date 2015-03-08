@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Product>
-    <Model>PA-100</Model>
-    <Label lang="en">Plug-in On/Off Switch</Label>
+    <Model>BE-468</Model>
+    <Label lang="en">Touchscreen Deadbolt</Label>
     <CommandClasses>
         <Class><id>0x20</id></Class>
         <Class><id>0x22</id></Class>
@@ -99,11 +99,7 @@
             <Index>1</Index>
             <Maximum>2</Maximum>
             <Label lang="en">Group 1</Label>
-        </Group>
-        <Group>
-            <Index>2</Index>
-            <Maximum>3</Maximum>
-            <Label lang="en">Group 2</Label>
+            <SetToController>true</SetToController>
         </Group>
     </Associations>
 </Product>
