@@ -11,6 +11,7 @@ package org.openhab.binding.mios.internal.config;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.openhab.core.items.Item;
@@ -23,8 +24,7 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * 
  * The system-specific form of a MiOS Binding is:<br>
  * <ul>
- * <li><nobr> <tt>mios="unit:<i>unitName</i>,system:/<i>attrName</i></tt>
- * </nobr>
+ * <li><nobr> <tt>mios="unit:<i>unitName</i>,system:/<i>attrName</i></tt> </nobr>
  * </ul>
  * <p>
  * 
@@ -68,28 +68,21 @@ public class SystemBindingConfig extends MiosBindingConfig {
 			Properties tmp = new Properties();
 			tmp.load(input);
 
-			for (Map.Entry<Object, Object> e : tmp.entrySet()) {
-				paramDefaults.put((String) e.getKey(),
-						ParameterDefaults.parse((String) e.getValue()));
+			for (Entry<Object, Object> e : tmp.entrySet()) {
+				paramDefaults.put((String) e.getKey(), ParameterDefaults.parse((String) e.getValue()));
 			}
 
-			logger.debug(
-					"Successfully loaded System Parameter defaults from '{}', entries '{}'",
-					PARAM_DEFAULTS, paramDefaults.size());
+			logger.debug("Successfully loaded System Parameter defaults from '{}', entries '{}'", PARAM_DEFAULTS,
+					paramDefaults.size());
 		} catch (Exception e) {
 			// Pre-shipped with the Binding, so it should never error out.
-			logger.error(
-					"Failed to load System Parameter defaults file '{}', Exception",
-					PARAM_DEFAULTS, e);
+			logger.error("Failed to load System Parameter defaults file '{}', Exception", PARAM_DEFAULTS, e);
 		}
 	}
 
-	private SystemBindingConfig(String context, String itemName,
-			String unitName, String stuff, Class<? extends Item> itemType,
-			String inTransform, String outTransform)
-			throws BindingConfigParseException {
-		super(context, itemName, unitName, 0, stuff, itemType, null,
-				inTransform, outTransform);
+	private SystemBindingConfig(String context, String itemName, String unitName, String stuff,
+			Class<? extends Item> itemType, String inTransform, String outTransform) throws BindingConfigParseException {
+		super(context, itemName, unitName, 0, stuff, itemType, null, inTransform, outTransform);
 	}
 
 	/**
@@ -97,33 +90,25 @@ public class SystemBindingConfig extends MiosBindingConfig {
 	 * 
 	 * @return an initialized MiOS System Binding Configuration object.
 	 */
-	public static final MiosBindingConfig create(String context,
-			String itemName, String unitName, String stuff,
-			Class<? extends Item> itemType, String inTransform,
-			String outTransform) throws BindingConfigParseException {
+	public static final MiosBindingConfig create(String context, String itemName, String unitName, String stuff,
+			Class<? extends Item> itemType, String inTransform, String outTransform) throws BindingConfigParseException {
 		ParameterDefaults pd = paramDefaults.get(stuff);
 		if (pd != null) {
-			logger.trace("System ParameterDefaults FOUND '{}' for '{}', '{}'",
-					itemName, stuff, pd);
+			logger.trace("System ParameterDefaults FOUND '{}' for '{}', '{}'", itemName, stuff, pd);
 			if (inTransform == null) {
 				inTransform = pd.getInTransform();
-				logger.trace(
-						"System ParameterDefaults '{}' defaulted in: to '{}'",
-						itemName, inTransform);
+				logger.trace("System ParameterDefaults '{}' defaulted in: to '{}'", itemName, inTransform);
 			}
 			if (outTransform == null) {
 				outTransform = pd.getOutTransform();
-				logger.trace(
-						"System ParameterDefaults '{}' defaulted out: to '{}'",
-						itemName, outTransform);
+				logger.trace("System ParameterDefaults '{}' defaulted out: to '{}'", itemName, outTransform);
 			}
 		} else {
-			logger.trace("System ParameterDefaults NOT FOUND '{}' for '{}'",
-					itemName, stuff);
+			logger.trace("System ParameterDefaults NOT FOUND '{}' for '{}'", itemName, stuff);
 		}
 
-		MiosBindingConfig c = new SystemBindingConfig(context, itemName,
-				unitName, stuff, itemType, inTransform, outTransform);
+		MiosBindingConfig c = new SystemBindingConfig(context, itemName, unitName, stuff, itemType, inTransform,
+				outTransform);
 
 		c.initialize();
 		return c;
@@ -140,15 +125,12 @@ public class SystemBindingConfig extends MiosBindingConfig {
 	}
 
 	/**
-	 * This method throws a {@link TransformationException}, as MiOS System
-	 * attributes don't support being called.
+	 * This method throws a {@link TransformationException}, as MiOS System attributes don't support being called.
 	 * 
 	 * @throws TransformationException
 	 */
 	@Override
-	public String transformCommand(Command command)
-			throws TransformationException {
-		throw new TransformationException(
-				"System attributes don't support Command Transformations");
+	public String transformCommand(Command command) throws TransformationException {
+		throw new TransformationException("System attributes don't support Command Transformations");
 	}
 }

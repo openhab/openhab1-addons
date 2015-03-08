@@ -34,4 +34,4 @@ java $debug_opts \
 	-Dfelix.fileinstall.active.level=4 \
 	-Djava.awt.headless=true \
 	-jar $cp $* \
-	-console 
+	-console

@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -95,12 +94,15 @@ ZWaveCommandClassDynamicState {
 		logger.debug("NODE {}: Received Thermostat Mode Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
-		case THERMOSTAT_MODE_SET:
 		case THERMOSTAT_MODE_GET:
 		case THERMOSTAT_MODE_SUPPORTED_GET:
 			logger.warn("NODE {}: Command {} not implemented.", 
 				this.getNode().getNodeId(), command);
 			return;
+		case THERMOSTAT_MODE_SET:
+			logger.trace("NODE {}: Process Thermostat Mode Get as Report", this.getNode().getNodeId());
+			processThermostatModeReport(serialMessage, offset, endpoint);
+			break;
 		case THERMOSTAT_MODE_SUPPORTED_REPORT:
 			logger.debug("NODE {}: Process Thermostat Supported Mode Report", this.getNode().getNodeId());
 
@@ -169,9 +171,9 @@ ZWaveCommandClassDynamicState {
 		}
 		
 		dynamicDone = true;
-		
+
 		logger.debug("NODE {}: Thermostat Mode Report, value = {}", this.getNode().getNodeId(), modeType.getLabel());
-		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), new BigDecimal(value));
+		ZWaveCommandClassValueEvent zEvent = new ZWaveCommandClassValueEvent(this.getNode().getNodeId(), endpoint, this.getCommandClass(), value);
 		this.getController().notifyEventListeners(zEvent);
 	}
 

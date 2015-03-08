@@ -8,6 +8,8 @@
  */
 package org.openhab.io.transport.cul;
 
+import java.util.Map;
+
 /**
  * An interface representing a culfw based device. Can only be obtained via
  * CULManager and has to be closed via CULManager. Classes implementing this
@@ -57,4 +59,12 @@ public interface CULHandler {
 	 * @return number of 10ms transmit credits remaining
 	 */
 	public int getCredit10ms();
+
+
+	/**
+	 * Checks if all properties which are used by the CULHandler implementation are equal
+	 *
+	 * @return true if all are equal
+	 */
+	public boolean arePropertiesEqual(Map<String, ?> properties);
 }

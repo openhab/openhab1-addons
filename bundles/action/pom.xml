@@ -28,6 +28,7 @@
     <module>org.openhab.action.homematic</module>
     <module>org.openhab.action.openwebif</module>
     <module>org.openhab.action.weather</module>
+    <module>org.openhab.action.mios</module>
     <module>org.openhab.action.astro</module>
   </modules>
 

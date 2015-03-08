@@ -21,8 +21,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openhab.io.rest.internal.resources.beans.RootBean;
 
-import com.sun.jersey.api.json.JSONWithPadding;
-
 /**
  * <p>This class acts as an entry point / root resource for the REST API.</p>
  * <p>In good HATEOAS manner, it provides links to other offered resources.</p>
@@ -45,10 +43,9 @@ public class RootResource {
     		@Context HttpHeaders headers,
     		@QueryParam("type") String type, 
     		@QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-    	String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
+    	final String responseType = MediaTypeHelper.getResponseMediaType(headers.getAcceptableMediaTypes(), type);
     	if(responseType!=null) {
-	    	Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
-	    			new JSONWithPadding(getRootBean(), callback) : getRootBean();
+	    	final Object responseObject = ResponseHelper.wrapContentIfNeccessary(callback, responseType, getRootBean()); 
 	    	return Response.ok(responseObject, responseType).build();
     	} else {
 			return Response.notAcceptable(null).build();

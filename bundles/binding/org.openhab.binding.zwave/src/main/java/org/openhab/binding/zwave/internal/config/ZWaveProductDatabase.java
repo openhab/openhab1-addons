@@ -11,6 +11,7 @@ package org.openhab.binding.zwave.internal.config;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 
 import org.osgi.framework.FrameworkUtil;
@@ -89,8 +90,9 @@ public class ZWaveProductDatabase {
 			// this.Manufacturer = (ZWaveDbManufacturer)
 			InputStream x = entry.openStream();
 			database = (ZWaveDbRoot) xstream.fromXML(x);
-			if (database == null)
+			if (database == null) {
 				return;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -341,7 +343,7 @@ public class ZWaveProductDatabase {
 	 */
 	public List<ZWaveDbConfigurationParameter> getProductConfigParameters() {
 		if (LoadProductFile() == null) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		return productFile.getConfiguration();

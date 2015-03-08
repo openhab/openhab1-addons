@@ -48,13 +48,16 @@ public class AnelDataParser {
 	 * <li>24. &lt;temperature&gt;
 	 * <li>25. &lt;firmware version&gt; (may contain trailing line break)
 	 * </ul>
-	 * Source: http://www.anel-elektronik.de/forum_new/viewtopic.php?f=16&t=207
+	 * Source: <a
+	 * href="http://www.anel-elektronik.de/forum_new/viewtopic.php?f=16&t=207"
+	 * >Anel forum (German)</a>
 	 * <p>
 	 * It turned out that the HOME variant has a different format which contains
 	 * only the first 16 segments. If that is the case, the remaining fields of
 	 * {@link AnelState} are simply ignored (and remain unset).
 	 * </p>
-	 * Source: https://github.com/openhab/openhab/issues/2068
+	 * Source: <a href="https://github.com/openhab/openhab/issues/2068">Issue
+	 * 2068</a>
 	 * 
 	 * @param data
 	 *            The data received from {@link AnelUDPConnector}.
