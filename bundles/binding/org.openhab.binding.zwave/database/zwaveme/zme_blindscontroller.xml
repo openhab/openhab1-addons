@@ -361,6 +361,7 @@
 			<Index>3</Index>
 			<Maximum>8</Maximum>
 			<Label lang="en">Send Reports on blind state change</Label>
+			<SetToController>true</SetToController>
 		</Group>
 	</Associations>
 </Product>
