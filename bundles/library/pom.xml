@@ -17,7 +17,6 @@
 
   <modules>
     <module>org.openhab.library.tel</module>
-    <module>org.openhab.library.gps</module>
   </modules>
 
 </project>
