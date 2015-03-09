@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
 		<Id>0000</Id>
@@ -1971,6 +1971,19 @@
 			<Model>ZCOMBO</Model>
 			<Label lang="en">Smoke and Carbon Monoxide Alarm</Label>
 			<ConfigFile>brk/zcombo.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>003b</Id>
+		<Name>Schlage</Name>
+		<Product>
+			<Reference>
+				<Type>6349</Type>
+				<Id>5044</Id>
+			</Reference>
+			<Model>BE468</Model>
+			<Label lang="en">Touchscreen Deadbolt</Label>
+			<ConfigFile>schlage/be468.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>
