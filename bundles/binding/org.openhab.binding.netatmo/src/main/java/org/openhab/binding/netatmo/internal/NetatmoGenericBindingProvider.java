@@ -12,8 +12,8 @@ import org.openhab.binding.netatmo.NetatmoBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.DateTimeItem;
+import org.openhab.core.library.items.LocationItem;
 import org.openhab.core.library.items.NumberItem;
-import org.openhab.library.gps.items.CoordinateItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -80,7 +80,7 @@ public class NetatmoGenericBindingProvider extends
 	 */
 	@Override
 	public void validateItemType(final Item item, final String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof NumberItem || item instanceof DateTimeItem || item instanceof CoordinateItem)) {
+		if (!(item instanceof NumberItem || item instanceof DateTimeItem || item instanceof LocationItem)) {
 			throw new BindingConfigParseException(
 				"item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + 
 				"', only NumberItems, DateTimeItems and CoordinateItems are allowed - please check your *.items configuration");

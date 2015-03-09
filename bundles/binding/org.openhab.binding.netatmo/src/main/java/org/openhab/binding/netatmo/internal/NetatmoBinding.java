@@ -36,7 +36,7 @@ import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.library.gps.types.CoordinateType;
+import org.openhab.core.library.types.PointType;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -70,7 +70,7 @@ public class NetatmoBinding extends
      */
     private long refreshInterval = 300000;
     
-    private CoordinateType stationPosition = null;
+    private PointType stationPosition = null;
 
     private Map<String, OAuthCredentials> credentialsCache = new HashMap<String, OAuthCredentials>();
 
@@ -143,7 +143,7 @@ public class NetatmoBinding extends
                             case ALTITUDE: case LATITUDE: case LONGITUDE: case WIFISTATUS: case COORDINATE:
                                 for (Device device : oauthCredentials.deviceListResponse.getDevices()) {
                                 	if (stationPosition == null) {
-                                		stationPosition = new CoordinateType(new DecimalType(device.getLatitude()), new DecimalType(device.getLongitude()), new DecimalType(device.getAltitude()));                                     	
+                                		stationPosition = new PointType(new DecimalType(device.getLatitude()), new DecimalType(device.getLongitude()), new DecimalType(device.getAltitude()));                                     	
                                 	}
                                     if (device.getId().equals(deviceId)) {
                                         switch (measureType) {
