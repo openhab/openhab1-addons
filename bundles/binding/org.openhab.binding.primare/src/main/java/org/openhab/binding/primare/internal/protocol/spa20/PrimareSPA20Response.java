@@ -8,12 +8,26 @@
  */
 package org.openhab.binding.primare.internal.protocol.spa20;
 
+import java.util.Arrays;
+
 import org.openhab.binding.primare.internal.protocol.PrimareUtils;
 import org.openhab.binding.primare.internal.protocol.PrimareResponse;
 import org.openhab.binding.primare.internal.protocol.spa20.PrimareSPA20Command;
 import org.openhab.binding.primare.internal.protocol.spa20.PrimareSPA20MessageFactory;
 
+import org.openhab.core.items.Item;
+import org.openhab.core.library.items.DimmerItem;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
+import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -225,6 +239,57 @@ public class PrimareSPA20Response extends PrimareResponse {
 		return relevant;
 	}
 	
+
+	/**
+	 * Convert received response message containing a Primare device variable value
+	 * to suitable OpenHAB state for the given itemType
+	 * 
+	 * @param itemType
+	 * 
+	 * @return openHAB state
+	 */
+	@Override
+	public State openHabState(Class<? extends Item> itemType) {
+		State state = UnDefType.UNDEF;
+		
+		try {
+			int index;
+			String s;
+		
+			if (itemType == SwitchItem.class) {
+				index = (int) message[2];
+				// Documentation and behavior mismatch with MUTE (var 9)
+				// observed with SPA20, software version 1.50 Nov 2 2003
+				if (message[1] == 9) {
+					logger.trace("MUTE (variable 9) converted opposite to documentation");
+					state = index == 0 ? OnOffType.ON : OnOffType.OFF;
+				} else {
+					state = index == 0 ? OnOffType.OFF : OnOffType.ON;
+				}			
+
+			} else if (itemType == NumberItem.class) {
+				index = (int) message[2];
+				state = new DecimalType(index);
+			
+			} else if (itemType == DimmerItem.class) {
+				index = (int) message[2];
+				state = new PercentType(index);
+				
+			} else if (itemType == RollershutterItem.class) {
+				index = (int) message[2];
+				state = new PercentType(index);
+				
+			} else if (itemType == StringItem.class) {
+				s = new String(Arrays.copyOfRange(message, 2, message.length-2));
+				state = new StringType(s);
+			}
+		} catch (Exception e) {
+			logger.debug("Cannot convert value '{}' to data type {}", message[1], itemType);
+		}
+		
+		return state;
+	}
+
 
 
 
