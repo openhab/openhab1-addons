@@ -33,6 +33,15 @@
 			<Label lang="en">Plug-in Wall Dimmer</Label>
 			<ConfigFile>linear/pd300z-2.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4754</Type>
+				<Id>3038</Id>
+			</Reference>
+			<Model>LB60Z-1</Model>
+			<Label lang="en">Dimmable LED Light Bulb</Label>
+			<ConfigFile>linear/lb60z-1.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
