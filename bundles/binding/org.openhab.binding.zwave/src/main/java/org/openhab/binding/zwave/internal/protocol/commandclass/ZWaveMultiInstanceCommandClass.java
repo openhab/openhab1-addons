@@ -44,6 +44,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * 
  * @author Jan-Willem Spuij
  * @author Chris Jackson
+ * @author Michiel Leegwater
  * @since 1.3.0
  */
 @XStreamAlias("multiInstanceCommandClass")
@@ -321,30 +322,10 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			}
 
 			// Add the device classes
-			Basic basic = this.getNode().getDeviceClass().getBasicDeviceClass();
-			Generic generic = Generic.getGeneric(genericDeviceClass);
-			if (generic == null) {
-				logger.error(String.format("NODE %d: Endpoint %d has invalid device class. generic = 0x%02x, specific = 0x%02x.", 
-						this.getNode().getNodeId(), endpoint, genericDeviceClass, specificDeviceClass));
+			if (!updateDeviceClass(endpoint, genericDeviceClass, specificDeviceClass, dynamic)) {
+				// Updating device class failed, already logged, continue with next endpoint
 				continue;
 			}
-			Specific specific = Specific.getSpecific(generic, specificDeviceClass);
-			if (specific == null) {
-				logger.error(String.format("NODE %d: Endpoint %d has invalid device class. generic = 0x%02x, specific = 0x%02x.", 
-						this.getNode().getNodeId(), endpoint, genericDeviceClass, specificDeviceClass));
-				continue;
-			}
-
-			logger.debug("NODE {}: Endpoint Id = {}", this.getNode().getNodeId(), endpointId);
-			logger.debug("NODE {}: Endpoints is dynamic = {}", this.getNode().getNodeId(), dynamic ? "true" : false);
-			logger.debug(String.format("NODE %d: Basic = %s 0x%02x", this.getNode().getNodeId(), basic.getLabel(), basic.getKey()));
-			logger.debug(String.format("NODE %d: Generic = %s 0x%02x", this.getNode().getNodeId(), generic.getLabel(), generic.getKey()));
-			logger.debug(String.format("NODE %d: Specific = %s 0x%02x", this.getNode().getNodeId(), specific.getLabel(), specific.getKey()));
-			
-			ZWaveDeviceClass deviceClass = endpoint.getDeviceClass();
-			deviceClass.setBasicDeviceClass(basic);
-			deviceClass.setGenericDeviceClass(generic);
-			deviceClass.setSpecificDeviceClass(specific);
 			
 			// Add basic command class, if it's also supported by the parent node.
 			if (supportsBasicCommandClass) {
@@ -353,34 +334,7 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 			}
 
 			// Add all the command classes supported by this endpoint
-			for (int i = 0; i < serialMessage.getMessagePayload().length - offset - 3; i++) {
-				// Get the command class ID
-				int data = serialMessage.getMessagePayloadByte(offset + 3 + i);
-				if(data == 0xef)  {
-					// TODO: Implement control command classes
-					break;
-				}
-				
-				// Create the command class
-				ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, this.getNode(), this.getController(), endpoint);
-				if (commandClass == null) {
-					continue;
-				}
-
-				logger.debug("NODE {}: Endpoint {}: Adding command class {}.",
-						this.getNode().getNodeId(), endpointId, commandClass.getCommandClass().getLabel());
-				endpoint.addCommandClass(commandClass);
-
-				ZWaveCommandClass parentClass = this.getNode().getCommandClass(commandClass.getCommandClass());
-
-				// Copy version info to endpoint classes.
-				if (parentClass != null) {
-					commandClass.setVersion(parentClass.getVersion());
-				}
-
-				// With V2, we only have a single instance
-				commandClass.setInstances(1);
-			}
+			addSupportedCommandClasses(serialMessage, offset, endpoint);
 		}
 
 		if (!this.endpointsAreTheSameDeviceClass) {
@@ -390,6 +344,80 @@ public class ZWaveMultiInstanceCommandClass extends ZWaveCommandClass {
 					return;
 				}
 			}
+		}
+	}
+
+	/**
+	 * Determines the device class properties of the endpoint.
+	 * @param endpoint The endpoint to update.
+	 * @param genericDeviceClass The generic device class of the parent device of the endpoint
+	 * @param specificDeviceClass The specific device class of the parent device of the endpoint
+	 * @param dynamic True when the endpoint is dynamic.
+	 * @return True when successful, false otherwise
+	 */
+	private boolean updateDeviceClass(ZWaveEndpoint endpoint, int genericDeviceClass, int specificDeviceClass, boolean dynamic) {
+		Basic basic = this.getNode().getDeviceClass().getBasicDeviceClass();
+		Generic generic = Generic.getGeneric(genericDeviceClass);
+		if (generic == null) {
+			logger.error(String.format("NODE %d: Endpoint %d has invalid device class. generic = 0x%02x, specific = 0x%02x.", 
+					this.getNode().getNodeId(), endpoint, genericDeviceClass, specificDeviceClass));
+			return false;
+		}
+		Specific specific = Specific.getSpecific(generic, specificDeviceClass);
+		if (specific == null) {
+			logger.error(String.format("NODE %d: Endpoint %d has invalid device class. generic = 0x%02x, specific = 0x%02x.", 
+					this.getNode().getNodeId(), endpoint, genericDeviceClass, specificDeviceClass));
+			return false;
+		}
+
+		logger.debug("NODE {}: Endpoint Id = {}", this.getNode().getNodeId(), endpoint.getEndpointId());
+		logger.debug("NODE {}: Endpoints is dynamic = {}", this.getNode().getNodeId(), dynamic ? "true" : false);
+		logger.debug(String.format("NODE %d: Basic = %s 0x%02x", this.getNode().getNodeId(), basic.getLabel(), basic.getKey()));
+		logger.debug(String.format("NODE %d: Generic = %s 0x%02x", this.getNode().getNodeId(), generic.getLabel(), generic.getKey()));
+		logger.debug(String.format("NODE %d: Specific = %s 0x%02x", this.getNode().getNodeId(), specific.getLabel(), specific.getKey()));
+		
+		ZWaveDeviceClass deviceClass = endpoint.getDeviceClass();
+		deviceClass.setBasicDeviceClass(basic);
+		deviceClass.setGenericDeviceClass(generic);
+		deviceClass.setSpecificDeviceClass(specific);
+		
+		return true;
+	}
+
+	/**
+	 * Adds command classes to the endpoint based on the message from the device.
+	 * @param serialMessage The message to get command classes from.
+	 * @param offset The offset in the message.
+	 * @param endpoint The endpoint
+	 */
+	private void addSupportedCommandClasses(SerialMessage serialMessage, int offset, ZWaveEndpoint endpoint) {
+		for (int i = 0; i < serialMessage.getMessagePayload().length - offset - 3; i++) {
+			// Get the command class ID
+			int data = serialMessage.getMessagePayloadByte(offset + 3 + i);
+			if (data == 0xef)  {
+				// TODO: Implement control command classes
+				break;
+			}
+			
+			// Create the command class
+			ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(data, this.getNode(), this.getController(), endpoint);
+			if (commandClass == null) {
+				continue;
+			}
+
+			logger.debug("NODE {}: Endpoint {}: Adding command class {}.",
+					this.getNode().getNodeId(), endpoint.getEndpointId(), commandClass.getCommandClass().getLabel());
+			endpoint.addCommandClass(commandClass);
+
+			ZWaveCommandClass parentClass = this.getNode().getCommandClass(commandClass.getCommandClass());
+
+			// Copy version info to endpoint classes.
+			if (parentClass != null) {
+				commandClass.setVersion(parentClass.getVersion());
+			}
+
+			// With V2, we only have a single instance
+			commandClass.setInstances(1);
 		}
 	}
 	
