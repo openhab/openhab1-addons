@@ -1973,7 +1973,6 @@
 			<ConfigFile>brk/zcombo.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
-<<<<<<< HEAD
     <Manufacturer>
         <Id>0184</Id>
         <Name>Dragon Tech Industrial, Ltd.</Name>
@@ -2018,7 +2017,6 @@
             <ConfigFile>schlage/be468.xml</ConfigFile>
         </Product>
     </Manufacturer>
-=======
 	<Manufacturer>
 		<Id>003b</Id>
 		<Name>Schlage</Name>
@@ -2032,5 +2030,4 @@
 			<ConfigFile>schlage/be468.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
->>>>>>> 60aedd68ad903932af247b2ddc0571ac60d7f4c4
 </Manufacturers>
