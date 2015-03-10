@@ -23,6 +23,7 @@ public class ConfigurationParameter {
 	private final int index;
 	private final int size;
 	private int value;
+	private boolean readOnly;
 	private boolean writeOnly;
 	
 	/***
@@ -92,5 +93,21 @@ public class ConfigurationParameter {
 	 */
 	public boolean getWriteOnly() {
 		return writeOnly;
+	}
+
+	/**
+	 * Sets the parameter as a ReadOnly parameter
+	 * @param read true if the parameters is readonly
+	 */
+	public void setReadOnly(boolean read) {
+		readOnly = read;
+	}
+
+	/**
+	 * Returns true if this parameter is read only
+	 * @return true if the parameter should not be written to
+	 */
+	public boolean getReadOnly() {
+		return readOnly;
 	}
 }

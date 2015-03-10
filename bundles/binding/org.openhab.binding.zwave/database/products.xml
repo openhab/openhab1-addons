@@ -33,6 +33,15 @@
 			<Label lang="en">Plug-in Wall Dimmer</Label>
 			<ConfigFile>linear/pd300z-2.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4754</Type>
+				<Id>3038</Id>
+			</Reference>
+			<Model>LB60Z-1</Model>
+			<Label lang="en">Dimmable LED Light Bulb</Label>
+			<ConfigFile>linear/lb60z-1.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
@@ -315,7 +324,7 @@
 		</Product>
 		<Product>
 			<Reference>
-				<Type>0102</Type>
+				<Type>0202</Type>
 				<Id>0001</Id>
 			</Reference>
 			<Reference>
@@ -328,7 +337,7 @@
 			</Reference>
 			<Model>HSM02</Model>
 			<Label lang="en">Door/Window Contact</Label>
-			<Label lang="de">Tür/Fenster Kontakt</Label>
+			<Label lang="de">TÃ¼r/Fenster Kontakt</Label>
 			<ConfigFile>everspring/hsm02.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -466,7 +475,7 @@
 				<Id>0000</Id>
 			</Reference>
 			<Model>064459</Model>
-			<Label lang="en">Düwi Remote Control</Label>
+			<Label lang="en">DÃ¼wi Remote Control</Label>
 			<ConfigFile>reitz/064459.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -633,7 +642,7 @@
 			</Reference>
 			<Model>DoorSensor</Model>
 			<Label lang="en">Door/Window sensor</Label>
-			<Label lang="de">Tür-Fenster-Sensor</Label>
+			<Label lang="de">TÃ¼r-Fenster-Sensor</Label>
 			<ConfigFile>aeon/doorsensor.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -979,7 +988,7 @@
 			</Reference>
 			<Model>ZD2102</Model>
 			<Label lang="en">Door Window Sensor</Label>
-			<Label lang="de">Tür-Fenster-Sensor</Label>
+			<Label lang="de">TÃ¼r-Fenster-Sensor</Label>
 			<ConfigFile>vision/zd2102.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -1350,6 +1359,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>1000</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>ZME_05459</Model>
+			<Label lang="en">Blinds controller</Label>
+			<ConfigFile>zwaveme/zme_blindscontroller.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0100</Type>
 				<Id>0101</Id>
 			</Reference>
@@ -1384,6 +1402,10 @@
 			<ConfigFile>zwaveme/zme_wcd2.xml</ConfigFile>
 		</Product>
 		<Product>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0004</Id>
+			</Reference>
 			<Reference>
 				<Type>1000</Type>
 				<Id>0004</Id>
@@ -1585,7 +1607,7 @@
 			</Reference>
 			<Model>NQ-9021</Model>
 			<Label lang="en">NorthQ Electrical Meter</Label>
-			<Label lang="de">NorthQ Stromzähler</Label>
+			<Label lang="de">NorthQ StromzÃ¤hler</Label>
 			<ConfigFile>northq/nq9021.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -1595,7 +1617,7 @@
 			</Reference>
 			<Model>NQ-9022</Model>
 			<Label lang="en">NorthQ Electrical Meter</Label>
-			<Label lang="de">NorthQ Stromzähler</Label>
+			<Label lang="de">NorthQ StromzÃ¤hler</Label>
 			<ConfigFile>northq/nq9021.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
@@ -2002,6 +2024,19 @@
             <Model>WD-100</Model>
             <Label lang="en">Wall Dimmer Switch</Label>
             <ConfigFile>dragontech/wd100.xml</ConfigFile>
+        </Product>
+    </Manufacturer>
+    <Manufacturer>
+        <Id>003b</Id>
+        <Name>Schlage</Name>
+        <Product>
+            <Reference>
+                <Type>6349</Type>
+                <Id>5044</Id>
+            </Reference>
+            <Model>BE468</Model>
+            <Label lang="en">Touchscreen Deadbolt</Label>
+            <ConfigFile>schlage/be468.xml</ConfigFile>
         </Product>
     </Manufacturer>
 </Manufacturers>
