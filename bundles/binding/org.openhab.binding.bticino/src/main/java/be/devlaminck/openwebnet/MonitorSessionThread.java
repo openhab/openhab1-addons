@@ -65,7 +65,8 @@ public class MonitorSessionThread extends Thread {
 	}
 
 	public void buildEventFromFrame(String frame) {
-		logger.info("Received OpenWebNet frame '" + frame
+		if (log.isInfoEnabled())
+			logger.info("Received OpenWebNet frame '" + frame
 				+ "' now translate it to an event.");
 		String who = null;
 		String what = null;
@@ -77,8 +78,13 @@ public class MonitorSessionThread extends Thread {
 		String[] frameParts = null;
 		ProtocolRead event = null;
 
+		if (frame.isEmpty()) {
+			logger.error("Empty frame");
+			return
+		}
+		
 		int length = frame.length();
-		if (frame.isEmpty() || !frame.endsWith("##")) {
+		if (!frame.endsWith("##")) {
 			logger.error("Malformed frame " + frame + " "
 					+ frame.substring(length - 2, length));
 			return;
@@ -194,6 +200,7 @@ public class MonitorSessionThread extends Thread {
 			}
 			// TERMOREGULATION
 			if (who.equalsIgnoreCase("4")) {
+				messageType = "thermoregulation";
 				objectClass = "Thermo";
 				objectName = who + "*" + where;
 
@@ -507,7 +514,7 @@ public class MonitorSessionThread extends Thread {
 			// THERMOREGULATION
 			case 4:
 				messageType = "thermoregulation";
-				objectClass = "Temperature";
+				objectClass = "Thermo";
 
 				switch (Integer.parseInt(what)) {
 				case 0:
@@ -725,8 +732,8 @@ public class MonitorSessionThread extends Thread {
 			if (objectName != null) {
 				event.addProperty("object.name", objectName);
 			}
-
-			logger.info("Frame " + frame + " is " + messageType
+			if (log.isInfoEnabled())
+				logger.info("Frame " + frame + " is " + messageType
 					+ " message. Notify it as OpenHab event "
 					+ messageDescription == "No Description set" ? ""
 					: messageDescription); // for debug
