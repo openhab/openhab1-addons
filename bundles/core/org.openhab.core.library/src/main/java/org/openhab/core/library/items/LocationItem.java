@@ -18,9 +18,9 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 
-
 /**
- * This item identifies a telephone call by its origin and destination.
+ * A LocationItem can be used to store GPS related informations, addresses...
+ * This is useful for location awareness related functions
  * 
  * @author Gaël L'hopital
  * @since 1.7.0
@@ -47,8 +47,8 @@ public class LocationItem extends GenericItem {
 	}
 	
 	/**
-	 * Compute the distance with another Coordinate type,
-	 *
+	 * Compute the distance with another Point type,
+	 * http://stackoverflow.com/questions/837872/calculate-distance-in-meters-when-you-know-longitude-and-latitude-in-java
 	 * @return distance between the two points in meters
 	 */
 	public DecimalType distanceFrom(PointType away){

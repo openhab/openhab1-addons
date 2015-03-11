@@ -43,9 +43,7 @@ public class PointType implements ComplexType, Command, State {
 	public static final State EMPTY = new PointType(new DecimalType(0), new DecimalType(0));
 	
 	public PointType(DecimalType latitude, DecimalType longitude) {
-		this.latitude = latitude.doubleValue();
-		this.longitude = longitude.doubleValue();
-		canonicalize();
+		canonicalize(latitude.doubleValue(),longitude.doubleValue());
 	}
 	
 	public PointType(DecimalType latitude, DecimalType longitude, DecimalType altitude) {
@@ -65,8 +63,7 @@ public class PointType implements ComplexType, Command, State {
 		if (StringUtils.isNotBlank(value)) {
 			String[] elements = value.split(",");
 			if (elements.length >= 2) {
-				this.latitude = Double.parseDouble(elements[0]);
-				this.longitude = Double.parseDouble(elements[1]);
+				canonicalize(Double.parseDouble(elements[0]),Double.parseDouble(elements[1]));
 				if (elements.length == 3) {
 					this.altitude = Double.parseDouble(elements[2]);
 				}
@@ -137,9 +134,10 @@ public class PointType implements ComplexType, Command, State {
 	 * -90 &lt;= latitude &lt;= +90 - 180 &lt; longitude &lt;= +180
 	 * </pre>
 	 */
-	private void canonicalize() {
-		latitude = (latitude + 180) % 360;
-		if (latitude < 0) latitude += 360;
+	private void canonicalize(double aLat, double aLon) {
+		latitude = (aLat + 180) % 360;
+		longitude = aLon;
+		if (latitude < 0) this.latitude += 360;
 		
 		latitude -= 180;
 		if (latitude > 90) {
