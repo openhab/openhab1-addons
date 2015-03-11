@@ -3,6 +3,7 @@ package org.openhab.binding.onewire.internal.deviceproperties;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Dennis Riegelbauer
  * @since 1.7.0
- *
+ * 
  */
 public class OneWireDevicePropertyBindingConfigFactory {
 
@@ -37,6 +38,8 @@ public class OneWireDevicePropertyBindingConfigFactory {
 			lvNewBindingConfig = new OneWireDevicePropertyContactBindingConfig(pvBindingConfig);
 		} else if (pvItem instanceof SwitchItem) {
 			lvNewBindingConfig = new OneWireDevicePropertySwitchBindingConfig(pvBindingConfig);
+		} else if (pvItem instanceof StringItem) {
+			lvNewBindingConfig = new OneWireDevicePropertyStringBindingConfig(pvBindingConfig);
 		} else {
 			throw new UnsupportedOperationException("the item-type " + pvItem.getClass() + " cannot be a onewire device");
 		}
@@ -54,7 +57,13 @@ public class OneWireDevicePropertyBindingConfigFactory {
 	 * @throws BindingConfigParseException
 	 */
 	public static boolean isValidItemType(Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
-		return ((pvItem instanceof NumberItem) || (pvItem instanceof ContactItem) || (pvItem instanceof SwitchItem));
+		boolean lvIsValidItem = ((pvItem instanceof NumberItem) || (pvItem instanceof ContactItem) || (pvItem instanceof SwitchItem) || (pvItem instanceof StringItem));
+		
+		if (!lvIsValidItem) {
+			LOGGER.error("Item "+pvItem.getName()+" of type "+pvItem.getClass().getSimpleName()+" with configuration "+pvBindingConfig+" is not a valid onewire ItemType!");
+		}
+		
+		return lvIsValidItem;
 	}
 
 }

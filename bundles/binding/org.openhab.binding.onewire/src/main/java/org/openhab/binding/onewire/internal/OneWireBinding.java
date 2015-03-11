@@ -128,12 +128,17 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 				for (String lvItemName : lvBindigConfigs.keySet()) {
 					LOGGER.debug("Initializing read of item {}.", lvItemName);
 					AbstractOneWireDevicePropertyBindingConfig lvBindingConfig = (AbstractOneWireDevicePropertyBindingConfig) lvBindigConfigs.get(lvItemName);
-					ivOneWireReaderScheduler.updateOnce(lvItemName);
-
-					int lvAutoRefreshTimeInSecs = lvBindingConfig.getAutoRefreshInSecs();
-					if (lvAutoRefreshTimeInSecs > 0) {
-						if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvAutoRefreshTimeInSecs)) {
-							LOGGER.warn("Clouldn't add to OneWireUpdate scheduler", lvBindingConfig);
+					
+					if (lvBindingConfig != null) {
+						int lvAutoRefreshTimeInSecs = lvBindingConfig.getAutoRefreshInSecs();
+						if (lvAutoRefreshTimeInSecs > -1) {
+							ivOneWireReaderScheduler.updateOnce(lvItemName);
+						}
+	
+						if (lvAutoRefreshTimeInSecs > 0) {
+							if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvAutoRefreshTimeInSecs)) {
+								LOGGER.warn("Clouldn't add to OneWireUpdate scheduler", lvBindingConfig);
+							}
 						}
 					}
 				}
@@ -157,10 +162,18 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 
 			if (lvBindingConfig != null) {
 				LOGGER.debug("Initializing read of item {}.", lvItemName);
-				ivOneWireReaderScheduler.updateOnce(lvItemName);
+				int lvAutoRefreshTimeInSecs = lvBindingConfig.getAutoRefreshInSecs();
+				
+				if (lvAutoRefreshTimeInSecs>-1) {
+					ivOneWireReaderScheduler.updateOnce(lvItemName);
+				}
 
-				if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvBindingConfig.getAutoRefreshInSecs())) {
-					LOGGER.warn("Clouldn't add to OneWireUpdate scheduler", lvBindingConfig);
+				if (lvAutoRefreshTimeInSecs > 0) {
+					if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvAutoRefreshTimeInSecs)) {
+						LOGGER.warn("Clouldn't add to OneWireUpdate scheduler", lvBindingConfig);
+					}
+				} else {
+					LOGGER.debug("Didnt't add to OneWireUpdate scheduler, because refresh is <= 0: " + lvBindingConfig.toString());
 				}
 			}
 		}
@@ -215,8 +228,8 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 			AbstractOneWireDevicePropertyBindingConfig pvBindingConfig = getBindingConfig(pvItemName);
 
 			if (pvBindingConfig == null) {
-				LOGGER.error("no bindingConfig found for itemName=" + pvItemName + " cannot update! It will be removed from scheduler");	
-				ivOneWireReaderScheduler.removeItem(pvItemName); 
+				LOGGER.error("no bindingConfig found for itemName=" + pvItemName + " cannot update! It will be removed from scheduler");
+				ivOneWireReaderScheduler.removeItem(pvItemName);
 				return;
 			}
 
@@ -233,10 +246,10 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 						}
 					}
 				} else {
-					LOGGER.error("There is no Item for ItemName="+pvItemName);
+					LOGGER.error("There is no Item for ItemName=" + pvItemName);
 				}
 			} else {
-				LOGGER.error("Set Item for itemName="+pvItemName+" to Undefined, because the readvalue is null");
+				LOGGER.error("Set Item for itemName=" + pvItemName + " to Undefined, because the readvalue is null");
 				eventPublisher.postUpdate(lvItem.getName(), UnDefType.UNDEF);
 			}
 		}

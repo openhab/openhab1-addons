@@ -13,6 +13,8 @@ import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
 import org.osgi.service.cm.ConfigurationException;
+import org.owfs.jowfsclient.Enums.OwBusReturn;
+import org.owfs.jowfsclient.Enums.OwPersistence;
 import org.owfs.jowfsclient.Enums.OwTemperatureScale;
 import org.owfs.jowfsclient.OwfsConnection;
 import org.owfs.jowfsclient.OwfsConnectionConfig;
@@ -38,17 +40,17 @@ public class OneWireConnection {
 	private static OwfsConnection cvOwConnection = null;
 
 	/**
-	 * ip of the owserver (must be set in obenHab.cfg) 
+	 * ip of the owserver (must be set in obenHab.cfg)
 	 */
 	private static String cvIp = null;
 
 	/**
-	 * port of the owserver (can be set in obenHab.cfg) 
+	 * port of the owserver (can be set in obenHab.cfg)
 	 */
 	private static int cvPort = 4304;
-	
+
 	/**
-	 * Default TempScale is Celsius (can be set in obenHab.cfg) 
+	 * Default TempScale is Celsius (can be set in obenHab.cfg)
 	 */
 	private static OwTemperatureScale cvTempScale = OwTemperatureScale.CELSIUS;
 
@@ -69,7 +71,9 @@ public class OneWireConnection {
 	 */
 	public static synchronized OwfsConnection getConnection() {
 		if (cvOwConnection == null) {
-			connect();
+			if (!connect()) {
+				return null;
+			}
 		}
 		return cvOwConnection;
 	}
@@ -84,10 +88,13 @@ public class OneWireConnection {
 			OwfsConnectionFactory owfsConnectorFactory = new OwfsConnectionFactory(cvIp, cvPort);
 			OwfsConnectionConfig owConnectionConfig = new OwfsConnectionConfig(cvIp, cvPort);
 			owConnectionConfig.setTemperatureScale(cvTempScale);
+			owConnectionConfig.setPersistence(OwPersistence.ON);
+			owConnectionConfig.setBusReturn(OwBusReturn.ON);
 			owfsConnectorFactory.setConnectionConfig(owConnectionConfig);
 
 			try {
 				cvOwConnection = owfsConnectorFactory.createNewConnection();
+				cvOwConnection.listDirectory("/");
 				LOGGER.info("Connected to owserver [IP '" + cvIp + "' Port '" + cvPort + "']");
 				cvIsEstablished = true;
 				return true;
@@ -102,8 +109,23 @@ public class OneWireConnection {
 		}
 	}
 
+	/**
+	 * Reconnects to owserver
+	 * 
+	 * @return
+	 */
+	public static synchronized boolean reconnect() {
+		LOGGER.info("Trying to reconnect to owserver...");
+		try {
+			cvOwConnection.disconnect();
+		} catch (Exception lvException) {
+			LOGGER.error("Error while disconnecting from owserver: " + lvException, lvException);
+		}
+		cvOwConnection = null;
+		return connect();
+	}
 
-	public static void updated(Dictionary<String, ?> pvConfig) throws ConfigurationException {
+	public static synchronized void updated(Dictionary<String, ?> pvConfig) throws ConfigurationException {
 		if (pvConfig != null) {
 			LOGGER.debug("OneWire configuration present. Setting up owserver connection.");
 			cvIp = (String) pvConfig.get("ip");
@@ -128,11 +150,11 @@ public class OneWireConnection {
 			}
 
 			if (cvOwConnection == null) {
-				LOGGER.debug("Not connected yet. Trying to connect...");
+				LOGGER.debug("Not connected to owserver yet. Trying to connect...");
 				if (!connect()) {
 					LOGGER.warn("Inital connection to owserver failed!");
 				} else {
-					LOGGER.debug("Success: connected.");
+					LOGGER.debug("Success: connected to owserver.");
 				}
 			}
 		} else {
@@ -155,7 +177,7 @@ public class OneWireConnection {
 	 * @throws IOException
 	 * @throws OwfsException
 	 */
-	private static boolean checkIfDeviceExists(String pvDevicePropertyPath) throws IOException, OwfsException {
+	private static synchronized boolean checkIfDeviceExists(String pvDevicePropertyPath) throws IOException, OwfsException {
 		String[] pvDevicePropertyPathParts = pvDevicePropertyPath.trim().split("/");
 
 		String lvDevicePath = pvDevicePropertyPathParts[0];
@@ -170,28 +192,30 @@ public class OneWireConnection {
 	 * @param pvDevicePropertyPath
 	 * @return device property value as String
 	 */
-	public static String readFromOneWire(String pvDevicePropertyPath) {
-		String lvReadValue = null;
-
-		try {
-			LOGGER.debug("trying to reed from '{}': ", new Object[] { pvDevicePropertyPath });
-			if (checkIfDeviceExists(pvDevicePropertyPath)) {
-				int lvAttempt = 1;
-				while (lvReadValue == null && lvAttempt <= cvRetry) {
-					lvReadValue = OneWireConnection.getConnection().read(pvDevicePropertyPath);
-					LOGGER.debug("Read value '{}' from {}, attempt={}", new Object[] { lvReadValue, pvDevicePropertyPath, lvAttempt });
-					lvAttempt++;
+	public static synchronized String readFromOneWire(String pvDevicePropertyPath) {		
+		int lvAttempt = 1;
+		while (lvAttempt <= cvRetry) {
+			try {
+				LOGGER.debug("trying to read from '{}', read attempt={}", new Object[] { pvDevicePropertyPath, lvAttempt });
+				if (checkIfDeviceExists(pvDevicePropertyPath)) {
+					String lvReadValue = OneWireConnection.getConnection().read(pvDevicePropertyPath);
+					LOGGER.debug("Read value '{}' from {}, read attempt={}", new Object[] { lvReadValue, pvDevicePropertyPath, lvAttempt });
+					return lvReadValue;
+				} else {
+					LOGGER.info("there is no device for path {}, read attempt={}", new Object[] { pvDevicePropertyPath, lvAttempt });
 				}
-			} else {
-				LOGGER.info("there is no device for path {}", pvDevicePropertyPath);
+			} catch (OwfsException oe) {
+				LOGGER.error("reading from path " + pvDevicePropertyPath + " attempt " + lvAttempt + " throws exception", oe);
+				reconnect();
+			} catch (IOException ioe) {
+				LOGGER.error("couldn't establish network connection while read attempt " + lvAttempt + " '" + pvDevicePropertyPath + "' ip:port=" + cvIp + ":" + cvPort, ioe);
+				reconnect();
+			} finally {
+				lvAttempt++;
 			}
-		} catch (OwfsException oe) {
-			LOGGER.error("reading from path " + pvDevicePropertyPath + " throws exception", oe);
-		} catch (IOException ioe) {
-			LOGGER.error("couldn't establish network connection while reading '" + pvDevicePropertyPath + "' ip:port=" + cvIp + ":" + cvPort, ioe);
 		}
 
-		return lvReadValue;
+		return null;
 	}
 
 	/**
@@ -200,18 +224,26 @@ public class OneWireConnection {
 	 * @param pvDevicePropertyPath
 	 * @param pvValue
 	 */
-	public static void writeToOneWire(String pvDevicePropertyPath, String pvValue) {
-		try {
-			if (checkIfDeviceExists(pvDevicePropertyPath) && (pvValue != null)) {
-				LOGGER.debug("writing value '{}' to {}", new Object[] { pvValue, pvDevicePropertyPath });
-				OneWireConnection.getConnection().write(pvDevicePropertyPath, pvValue);
-			} else {
-				LOGGER.info("there is no sensor for path {}", pvDevicePropertyPath);
+	public static synchronized void writeToOneWire(String pvDevicePropertyPath, String pvValue) {
+		int lvAttempt = 1;
+		while (lvAttempt <= cvRetry) {
+			try {
+				LOGGER.debug("trying to write '{}' to '{}', write attempt={}", new Object[] { pvValue, pvDevicePropertyPath, lvAttempt });
+				if (checkIfDeviceExists(pvDevicePropertyPath)) {
+					OneWireConnection.getConnection().write(pvDevicePropertyPath, pvValue);
+					return; // Success, exit
+				} else {
+					LOGGER.info("there is no device for path {}, write attempt={}", new Object[] { pvDevicePropertyPath, lvAttempt });
+				}
+			} catch (OwfsException oe) {
+				LOGGER.error("writing " + pvValue + " to path " + pvDevicePropertyPath + " attempt " + lvAttempt + " throws exception", oe);
+				reconnect();
+			} catch (IOException ioe) {
+				LOGGER.error("couldn't establish network connection while write attempt " + lvAttempt + " to '" + pvDevicePropertyPath + "' ip:port=" + cvIp + ":" + cvPort, ioe);
+				reconnect();
+			} finally {
+				lvAttempt++;
 			}
-		} catch (OwfsException oe) {
-			LOGGER.debug("writing to path " + pvDevicePropertyPath + " throws exception", oe);
-		} catch (IOException ioe) {
-			LOGGER.error("couldn't establish network connection while writing to '" + pvDevicePropertyPath + "'", ioe);
 		}
 	}
 }

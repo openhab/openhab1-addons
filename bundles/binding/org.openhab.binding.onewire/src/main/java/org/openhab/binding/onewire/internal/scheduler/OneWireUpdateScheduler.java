@@ -189,7 +189,7 @@ public class OneWireUpdateScheduler {
 		}
 
 		if (pvAutoRefreshTimeInSecs < 0) {
-			LOGGER.error("AutoRefreshTimeInSecs must be >= 0 for itemName '{}'", pvItemName);
+			LOGGER.debug("AutoRefreshTimeInSecs must be >= 0 for itemName '{}'", pvItemName);
 			return false;
 		}
 
