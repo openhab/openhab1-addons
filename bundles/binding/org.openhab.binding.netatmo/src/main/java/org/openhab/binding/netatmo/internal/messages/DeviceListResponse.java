@@ -408,11 +408,11 @@ public class DeviceListResponse extends AbstractResponse {
 		 }
 		
 		 public Double getLatitude() {
-			 return this.place.location.get(0);
+			 return this.place.location.get(1);
 		 }
 		
 		 public Double getLongitude() {
-			 return this.place.location.get(1);
+			 return this.place.location.get(0);
 		 }
 		
 	}

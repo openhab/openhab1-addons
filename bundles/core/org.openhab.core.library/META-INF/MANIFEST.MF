@@ -11,7 +11,8 @@ Bundle-License: http://www.eclipse.org/legal/epl-v10.html
 Bundle-SymbolicName: org.openhab.core.library
 Bundle-DocURL: http://www.openhab.org
 Originally-Created-By: Apache Maven Bundle Plugin
-Import-Package: org.openhab.core.events,
+Import-Package: org.apache.commons.lang,
+ org.openhab.core.events,
  org.openhab.core.items,
  org.openhab.core.types,
  org.osgi.framework
