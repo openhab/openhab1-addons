@@ -495,7 +495,7 @@ public class DSCAlarmActiveBinding extends AbstractActiveBinding<DSCAlarmBinding
     	switch (connectorType) {
 	    	case SERIAL:
 	     		if (api == null) {
-	    			api = new API(serialPort, baudRate);
+	    			api = new API(serialPort, baudRate, userCode);
 	    		}
 	     		break;
 	    	case TCP:

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
 		<Id>0000</Id>
@@ -32,6 +32,15 @@
 			<Model>PD300Z-2</Model>
 			<Label lang="en">Plug-in Wall Dimmer</Label>
 			<ConfigFile>linear/pd300z-2.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>4754</Type>
+				<Id>3038</Id>
+			</Reference>
+			<Model>LB60Z-1</Model>
+			<Label lang="en">Dimmable LED Light Bulb</Label>
+			<ConfigFile>linear/lb60z-1.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -314,6 +323,10 @@
 			<ConfigFile>everspring/sf812.xml</ConfigFile>
 		</Product>
 		<Product>
+			<Reference>
+				<Type>0202</Type>
+				<Id>0001</Id>
+			</Reference>
 			<Reference>
 				<Type>0002</Type>
 				<Id>0001</Id>
@@ -643,6 +656,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0002</Type>
+				<Id>004A</Id>
+			</Reference>
+			<Model>4in1MS</Model>
+			<Label lang="en">4 in One MultiSensor (G5)</Label>
+			<ConfigFile>aeon/4in1ms_g5.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0006</Type>
 				<Id>0002</Id>
 			</Reference>
@@ -784,6 +806,10 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0001</Type>
+				<Id>0058</Id>
+			</Reference>
+			<Reference>
 				<Type>0201</Type>
 				<Id>0058</Id>
 			</Reference>
@@ -808,6 +834,15 @@
 			<Model>DSA38</Model>
 			<Label lang="en">1 button keyfob</Label>
 			<ConfigFile>aeon/dsa38.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>000B</Id>
+			</Reference>
+			<Model>SmartStrip</Model>
+			<Label lang="en">Smart Strip</Label>
+			<ConfigFile>aeon/smart_strip.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
@@ -840,6 +875,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>0000</Type>
+				<Id>0000</Id>
+			</Reference>
+			<Model>3M-30</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct30.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>6401</Type>
 				<Id>0015</Id>
 			</Reference>
@@ -854,6 +898,19 @@
 			<Model>CT100</Model>
 			<Label lang="en">Z-Wave Thermostat</Label>
 			<ConfigFile>rtc/ct100.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>5002</Type>
+				<Id>0100</Id>
+			</Reference>
+			<Reference>
+				<Type>5003</Type>
+				<Id>0109</Id>
+			</Reference>
+			<Model>CT80</Model>
+			<Label lang="en">Z-Wave Thermostat</Label>
+			<ConfigFile>rtc/ct30.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
@@ -1302,6 +1359,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>1000</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>ZME_05459</Model>
+			<Label lang="en">Blinds controller</Label>
+			<ConfigFile>zwaveme/zme_blindscontroller.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0100</Type>
 				<Id>0101</Id>
 			</Reference>
@@ -1336,6 +1402,10 @@
 			<ConfigFile>zwaveme/zme_wcd2.xml</ConfigFile>
 		</Product>
 		<Product>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0004</Id>
+			</Reference>
 			<Reference>
 				<Type>1000</Type>
 				<Id>0004</Id>
@@ -1923,6 +1993,19 @@
 			<Model>ZCOMBO</Model>
 			<Label lang="en">Smoke and Carbon Monoxide Alarm</Label>
 			<ConfigFile>brk/zcombo.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
+		<Id>003b</Id>
+		<Name>Schlage</Name>
+		<Product>
+			<Reference>
+				<Type>6349</Type>
+				<Id>5044</Id>
+			</Reference>
+			<Model>BE468</Model>
+			<Label lang="en">Touchscreen Deadbolt</Label>
+			<ConfigFile>schlage/be468.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 </Manufacturers>

@@ -78,13 +78,20 @@ public class API {
 	 * @param sPort
 	 * @param baud
 	 */	
-	public API(String sPort, int baud) {
+	public API(String sPort, int baud, String userCode) {
 		if (StringUtils.isNotBlank(sPort)) {
 			serialPort = sPort;
 		}
 
 		if(isValidBaudRate(baud))
 			baudRate = baud;
+		
+		if (StringUtils.isNotBlank(userCode)) {
+			this.dscAlarmUserCode = userCode;
+		}
+		
+		//The IT-100 requires 6 digit codes. Shorter codes are right padded with 0.
+		this.dscAlarmUserCode = StringUtils.rightPad(dscAlarmUserCode, 6, '0');
 
 		connectorType = DSCAlarmConnectorType.SERIAL;
 	}

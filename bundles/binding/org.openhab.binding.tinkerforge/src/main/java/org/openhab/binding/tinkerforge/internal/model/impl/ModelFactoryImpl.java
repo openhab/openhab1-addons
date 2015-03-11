@@ -65,10 +65,15 @@ import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfigu
 import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.PercentValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.UpDownType;
 import org.slf4j.Logger;
 
 import com.tinkerforge.BrickDC;
@@ -77,6 +82,7 @@ import com.tinkerforge.BrickletAmbientLight;
 import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
+import com.tinkerforge.BrickletDualButton;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletHallEffect;
 import com.tinkerforge.BrickletHumidity;
@@ -85,8 +91,10 @@ import com.tinkerforge.BrickletIO4;
 import com.tinkerforge.BrickletIndustrialDigitalIn4;
 import com.tinkerforge.BrickletIndustrialDigitalOut4;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
+import com.tinkerforge.BrickletJoystick;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
+import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
@@ -155,6 +163,16 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
     {
       case ModelPackage.ECOSYSTEM: return createEcosystem();
       case ModelPackage.MBRICKD: return createMBrickd();
+      case ModelPackage.MBRICKLET_DUAL_BUTTON: return createMBrickletDualButton();
+      case ModelPackage.DUAL_BUTTON_LEFT_BUTTON: return createDualButtonLeftButton();
+      case ModelPackage.DUAL_BUTTON_RIGHT_BUTTON: return createDualButtonRightButton();
+      case ModelPackage.DUAL_BUTTON_LEFT_LED: return createDualButtonLeftLed();
+      case ModelPackage.DUAL_BUTTON_RIGHT_LED: return createDualButtonRightLed();
+      case ModelPackage.MBRICKLET_LINEAR_POTI: return createMBrickletLinearPoti();
+      case ModelPackage.MBRICKLET_JOYSTICK: return createMBrickletJoystick();
+      case ModelPackage.JOYSTICK_XPOSITION: return createJoystickXPosition();
+      case ModelPackage.JOYSTICK_YPOSITION: return createJoystickYPosition();
+      case ModelPackage.JOYSTICK_BUTTON: return createJoystickButton();
       case ModelPackage.MBRICK_SERVO: return createMBrickServo();
       case ModelPackage.MSERVO: return createMServo();
       case ModelPackage.MBRICK_DC: return createMBrickDC();
@@ -224,6 +242,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
       case ModelPackage.REMOTE_SWITCH_CCONFIGURATION: return createRemoteSwitchCConfiguration();
       case ModelPackage.MULTI_TOUCH_DEVICE_CONFIGURATION: return createMultiTouchDeviceConfiguration();
       case ModelPackage.BRICKLET_MULTI_TOUCH_CONFIGURATION: return createBrickletMultiTouchConfiguration();
+      case ModelPackage.DIMMABLE_CONFIGURATION: return createDimmableConfiguration();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -239,8 +258,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     switch (eDataType.getClassifierID())
     {
-      case ModelPackage.DC_DRIVE_MODE:
-        return createDCDriveModeFromString(eDataType, initialValue);
       case ModelPackage.NO_SUB_IDS:
         return createNoSubIdsFromString(eDataType, initialValue);
       case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
@@ -267,6 +284,18 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTemperatureIRSubIdsFromString(eDataType, initialValue);
       case ModelPackage.VOLTAGE_CURRENT_SUB_IDS:
         return createVoltageCurrentSubIdsFromString(eDataType, initialValue);
+      case ModelPackage.CONFIG_OPTS_MOVE:
+        return createConfigOptsMoveFromString(eDataType, initialValue);
+      case ModelPackage.CONFIG_OPTS_DIMMABLE:
+        return createConfigOptsDimmableFromString(eDataType, initialValue);
+      case ModelPackage.CONFIG_OPTS_SET_POINT:
+        return createConfigOptsSetPointFromString(eDataType, initialValue);
+      case ModelPackage.CONFIG_OPTS_SWITCH_SPEED:
+        return createConfigOptsSwitchSpeedFromString(eDataType, initialValue);
+      case ModelPackage.DC_DRIVE_MODE:
+        return createDCDriveModeFromString(eDataType, initialValue);
+      case ModelPackage.CONFIG_OPTS_SERVO:
+        return createConfigOptsServoFromString(eDataType, initialValue);
       case ModelPackage.MIP_CONNECTION:
         return createMIPConnectionFromString(eDataType, initialValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -337,10 +366,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return createTinkerBrickletSegmentDisplay4x7FromString(eDataType, initialValue);
       case ModelPackage.TINKER_BRICKLET_LED_STRIP:
         return createTinkerBrickletLEDStripFromString(eDataType, initialValue);
+      case ModelPackage.BRICKLET_JOYSTICK:
+        return createBrickletJoystickFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_LINEAR_POTI:
+        return createTinkerBrickletLinearPotiFromString(eDataType, initialValue);
+      case ModelPackage.TINKER_BRICKLET_DUAL_BUTTON:
+        return createTinkerBrickletDualButtonFromString(eDataType, initialValue);
       case ModelPackage.HSB_TYPE:
         return createHSBTypeFromString(eDataType, initialValue);
+      case ModelPackage.UP_DOWN_TYPE:
+        return createUpDownTypeFromString(eDataType, initialValue);
+      case ModelPackage.PERCENT_VALUE:
+        return createPercentValueFromString(eDataType, initialValue);
       case ModelPackage.DEVICE_OPTIONS:
         return createDeviceOptionsFromString(eDataType, initialValue);
+      case ModelPackage.PERCENT_TYPE:
+        return createPercentTypeFromString(eDataType, initialValue);
+      case ModelPackage.INCREASE_DECREASE_TYPE:
+        return createIncreaseDecreaseTypeFromString(eDataType, initialValue);
+      case ModelPackage.DIRECTION_VALUE:
+        return createDirectionValueFromString(eDataType, initialValue);
       case ModelPackage.ENUM:
         return createEnumFromString(eDataType, initialValue);
       default:
@@ -358,8 +403,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     switch (eDataType.getClassifierID())
     {
-      case ModelPackage.DC_DRIVE_MODE:
-        return convertDCDriveModeToString(eDataType, instanceValue);
       case ModelPackage.NO_SUB_IDS:
         return convertNoSubIdsToString(eDataType, instanceValue);
       case ModelPackage.INDUSTRIAL_DIGITAL_IN_SUB_IDS:
@@ -386,6 +429,18 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTemperatureIRSubIdsToString(eDataType, instanceValue);
       case ModelPackage.VOLTAGE_CURRENT_SUB_IDS:
         return convertVoltageCurrentSubIdsToString(eDataType, instanceValue);
+      case ModelPackage.CONFIG_OPTS_MOVE:
+        return convertConfigOptsMoveToString(eDataType, instanceValue);
+      case ModelPackage.CONFIG_OPTS_DIMMABLE:
+        return convertConfigOptsDimmableToString(eDataType, instanceValue);
+      case ModelPackage.CONFIG_OPTS_SET_POINT:
+        return convertConfigOptsSetPointToString(eDataType, instanceValue);
+      case ModelPackage.CONFIG_OPTS_SWITCH_SPEED:
+        return convertConfigOptsSwitchSpeedToString(eDataType, instanceValue);
+      case ModelPackage.DC_DRIVE_MODE:
+        return convertDCDriveModeToString(eDataType, instanceValue);
+      case ModelPackage.CONFIG_OPTS_SERVO:
+        return convertConfigOptsServoToString(eDataType, instanceValue);
       case ModelPackage.MIP_CONNECTION:
         return convertMIPConnectionToString(eDataType, instanceValue);
       case ModelPackage.MTINKER_DEVICE:
@@ -456,10 +511,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
         return convertTinkerBrickletSegmentDisplay4x7ToString(eDataType, instanceValue);
       case ModelPackage.TINKER_BRICKLET_LED_STRIP:
         return convertTinkerBrickletLEDStripToString(eDataType, instanceValue);
+      case ModelPackage.BRICKLET_JOYSTICK:
+        return convertBrickletJoystickToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_LINEAR_POTI:
+        return convertTinkerBrickletLinearPotiToString(eDataType, instanceValue);
+      case ModelPackage.TINKER_BRICKLET_DUAL_BUTTON:
+        return convertTinkerBrickletDualButtonToString(eDataType, instanceValue);
       case ModelPackage.HSB_TYPE:
         return convertHSBTypeToString(eDataType, instanceValue);
+      case ModelPackage.UP_DOWN_TYPE:
+        return convertUpDownTypeToString(eDataType, instanceValue);
+      case ModelPackage.PERCENT_VALUE:
+        return convertPercentValueToString(eDataType, instanceValue);
       case ModelPackage.DEVICE_OPTIONS:
         return convertDeviceOptionsToString(eDataType, instanceValue);
+      case ModelPackage.PERCENT_TYPE:
+        return convertPercentTypeToString(eDataType, instanceValue);
+      case ModelPackage.INCREASE_DECREASE_TYPE:
+        return convertIncreaseDecreaseTypeToString(eDataType, instanceValue);
+      case ModelPackage.DIRECTION_VALUE:
+        return convertDirectionValueToString(eDataType, instanceValue);
       case ModelPackage.ENUM:
         return convertEnumToString(eDataType, instanceValue);
       default:
@@ -521,6 +592,116 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
   {
     MBrickdImpl mBrickd = new MBrickdImpl();
     return mBrickd;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletDualButton createMBrickletDualButton()
+  {
+    MBrickletDualButtonImpl mBrickletDualButton = new MBrickletDualButtonImpl();
+    return mBrickletDualButton;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonLeftButton createDualButtonLeftButton()
+  {
+    DualButtonLeftButtonImpl dualButtonLeftButton = new DualButtonLeftButtonImpl();
+    return dualButtonLeftButton;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonRightButton createDualButtonRightButton()
+  {
+    DualButtonRightButtonImpl dualButtonRightButton = new DualButtonRightButtonImpl();
+    return dualButtonRightButton;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonLeftLed createDualButtonLeftLed()
+  {
+    DualButtonLeftLedImpl dualButtonLeftLed = new DualButtonLeftLedImpl();
+    return dualButtonLeftLed;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DualButtonRightLed createDualButtonRightLed()
+  {
+    DualButtonRightLedImpl dualButtonRightLed = new DualButtonRightLedImpl();
+    return dualButtonRightLed;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletLinearPoti createMBrickletLinearPoti()
+  {
+    MBrickletLinearPotiImpl mBrickletLinearPoti = new MBrickletLinearPotiImpl();
+    return mBrickletLinearPoti;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MBrickletJoystick createMBrickletJoystick()
+  {
+    MBrickletJoystickImpl mBrickletJoystick = new MBrickletJoystickImpl();
+    return mBrickletJoystick;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public JoystickXPosition createJoystickXPosition()
+  {
+    JoystickXPositionImpl joystickXPosition = new JoystickXPositionImpl();
+    return joystickXPosition;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public JoystickYPosition createJoystickYPosition()
+  {
+    JoystickYPositionImpl joystickYPosition = new JoystickYPositionImpl();
+    return joystickYPosition;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public JoystickButton createJoystickButton()
+  {
+    JoystickButtonImpl joystickButton = new JoystickButtonImpl();
+    return joystickButton;
   }
 
   /**
@@ -968,6 +1149,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public DimmableConfiguration createDimmableConfiguration()
+  {
+    DimmableConfigurationImpl dimmableConfiguration = new DimmableConfigurationImpl();
+    return dimmableConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public MServo createMServo()
   {
     MServoImpl mServo = new MServoImpl();
@@ -1336,6 +1528,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public ConfigOptsServo createConfigOptsServoFromString(EDataType eDataType, String initialValue)
+  {
+    ConfigOptsServo result = ConfigOptsServo.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertConfigOptsServoToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public NoSubIds createNoSubIdsFromString(EDataType eDataType, String initialValue)
   {
     NoSubIds result = NoSubIds.get(initialValue);
@@ -1613,6 +1827,94 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertVoltageCurrentSubIdsToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ConfigOptsMove createConfigOptsMoveFromString(EDataType eDataType, String initialValue)
+  {
+    ConfigOptsMove result = ConfigOptsMove.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertConfigOptsMoveToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ConfigOptsDimmable createConfigOptsDimmableFromString(EDataType eDataType, String initialValue)
+  {
+    ConfigOptsDimmable result = ConfigOptsDimmable.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertConfigOptsDimmableToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ConfigOptsSetPoint createConfigOptsSetPointFromString(EDataType eDataType, String initialValue)
+  {
+    ConfigOptsSetPoint result = ConfigOptsSetPoint.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertConfigOptsSetPointToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ConfigOptsSwitchSpeed createConfigOptsSwitchSpeedFromString(EDataType eDataType, String initialValue)
+  {
+    ConfigOptsSwitchSpeed result = ConfigOptsSwitchSpeed.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertConfigOptsSwitchSpeedToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }
@@ -2182,6 +2484,66 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public BrickletJoystick createBrickletJoystickFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletJoystick)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertBrickletJoystickToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletLinearPoti createTinkerBrickletLinearPotiFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletLinearPoti)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletLinearPotiToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BrickletDualButton createTinkerBrickletDualButtonFromString(EDataType eDataType, String initialValue)
+  {
+    return (BrickletDualButton)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertTinkerBrickletDualButtonToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public HSBType createHSBTypeFromString(EDataType eDataType, String initialValue)
   {
     return (HSBType)super.createFromString(eDataType, initialValue);
@@ -2202,6 +2564,46 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public UpDownType createUpDownTypeFromString(EDataType eDataType, String initialValue)
+  {
+    return (UpDownType)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertUpDownTypeToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public PercentValue createPercentValueFromString(EDataType eDataType, String initialValue)
+  {
+    return (PercentValue)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertPercentValueToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public DeviceOptions createDeviceOptionsFromString(EDataType eDataType, String initialValue)
   {
     return (DeviceOptions)super.createFromString(eDataType, initialValue);
@@ -2213,6 +2615,66 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory
    * @generated
    */
   public String convertDeviceOptionsToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public PercentType createPercentTypeFromString(EDataType eDataType, String initialValue)
+  {
+    return (PercentType)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertPercentTypeToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public IncreaseDecreaseType createIncreaseDecreaseTypeFromString(EDataType eDataType, String initialValue)
+  {
+    return (IncreaseDecreaseType)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertIncreaseDecreaseTypeToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public DirectionValue createDirectionValueFromString(EDataType eDataType, String initialValue)
+  {
+    return (DirectionValue)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertDirectionValueToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }
