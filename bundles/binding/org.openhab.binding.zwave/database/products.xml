@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Manufacturers>
 	<Manufacturer>
 		<Id>0000</Id>
@@ -337,7 +337,7 @@
 			</Reference>
 			<Model>HSM02</Model>
 			<Label lang="en">Door/Window Contact</Label>
-			<Label lang="de">Tür/Fenster Kontakt</Label>
+			<Label lang="de">TÃ¼r/Fenster Kontakt</Label>
 			<ConfigFile>everspring/hsm02.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -475,7 +475,7 @@
 				<Id>0000</Id>
 			</Reference>
 			<Model>064459</Model>
-			<Label lang="en">Düwi Remote Control</Label>
+			<Label lang="en">DÃ¼wi Remote Control</Label>
 			<ConfigFile>reitz/064459.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -642,7 +642,7 @@
 			</Reference>
 			<Model>DoorSensor</Model>
 			<Label lang="en">Door/Window sensor</Label>
-			<Label lang="de">Tür-Fenster-Sensor</Label>
+			<Label lang="de">TÃ¼r-Fenster-Sensor</Label>
 			<ConfigFile>aeon/doorsensor.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -988,7 +988,7 @@
 			</Reference>
 			<Model>ZD2102</Model>
 			<Label lang="en">Door Window Sensor</Label>
-			<Label lang="de">Tür-Fenster-Sensor</Label>
+			<Label lang="de">TÃ¼r-Fenster-Sensor</Label>
 			<ConfigFile>vision/zd2102.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -1607,7 +1607,7 @@
 			</Reference>
 			<Model>NQ-9021</Model>
 			<Label lang="en">NorthQ Electrical Meter</Label>
-			<Label lang="de">NorthQ Stromzähler</Label>
+			<Label lang="de">NorthQ StromzÃ¤hler</Label>
 			<ConfigFile>northq/nq9021.xml</ConfigFile>
 		</Product>
 		<Product>
@@ -1617,7 +1617,7 @@
 			</Reference>
 			<Model>NQ-9022</Model>
 			<Label lang="en">NorthQ Electrical Meter</Label>
-			<Label lang="de">NorthQ Stromzähler</Label>
+			<Label lang="de">NorthQ StromzÃ¤hler</Label>
 			<ConfigFile>northq/nq9021.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
@@ -1995,17 +1995,48 @@
 			<ConfigFile>brk/zcombo.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
-	<Manufacturer>
-		<Id>003b</Id>
-		<Name>Schlage</Name>
-		<Product>
-			<Reference>
-				<Type>6349</Type>
-				<Id>5044</Id>
-			</Reference>
-			<Model>BE468</Model>
-			<Label lang="en">Touchscreen Deadbolt</Label>
-			<ConfigFile>schlage/be468.xml</ConfigFile>
-		</Product>
-	</Manufacturer>
+    <Manufacturer>
+        <Id>0184</Id>
+        <Name>Dragon Tech Industrial, Ltd.</Name>
+        <Product>
+            <Reference>
+                <Type>4447</Type>
+                <Id>3031</Id>
+            </Reference>
+            <Model>PA-100</Model>
+            <Label lang="en">Plug-in On/Off Switch</Label>
+            <ConfigFile>dragontech/pa100.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>4447</Type>
+                <Id>3033</Id>
+            </Reference>
+            <Model>WS-100</Model>
+            <Label lang="en">Wall On/Off Switch</Label>
+            <ConfigFile>dragontech/ws100.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>4447</Type>
+                <Id>3034</Id>
+            </Reference>
+            <Model>WD-100</Model>
+            <Label lang="en">Wall Dimmer Switch</Label>
+            <ConfigFile>dragontech/wd100.xml</ConfigFile>
+        </Product>
+    </Manufacturer>
+    <Manufacturer>
+        <Id>003b</Id>
+        <Name>Schlage</Name>
+        <Product>
+            <Reference>
+                <Type>6349</Type>
+                <Id>5044</Id>
+            </Reference>
+            <Model>BE468</Model>
+            <Label lang="en">Touchscreen Deadbolt</Label>
+            <ConfigFile>schlage/be468.xml</ConfigFile>
+        </Product>
+    </Manufacturer>
 </Manufacturers>
