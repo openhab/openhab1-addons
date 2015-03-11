@@ -16,6 +16,18 @@ public interface AKM868Listener {
 	 * @param ID of key and if the ID is present
 	 */
 	public void publishUpdate(String id, boolean isPresent);
+	
+	/**
+	 * Inform all the interested items, that the key was pressed short
+	 * @param ID of key 
+	 */
+	public void publishKeyPressedShort(String id);
+	
+	/**
+	 * Inform all the interested items, that the key was pressed long
+	 * @param ID of key 
+	 */
+	public void publishKeyPressedLong(String id);
 }
 	
 

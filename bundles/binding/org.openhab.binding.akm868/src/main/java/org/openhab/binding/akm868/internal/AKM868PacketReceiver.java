@@ -88,11 +88,32 @@ public class AKM868PacketReceiver implements Runnable{
 					if (elements.length > 5) // Packet not valid
 						return;
 					String id = elements[2];
+					String action = elements[3];
+					String packetValid = elements[4];
+					
+					if (!packetValid.equalsIgnoreCase("OK")) {
+						logger.debug("Packet not valid: "+ line);
+						return;
+					}
+					
+					if (action.equals("1")) {
+						logger.debug("Found 1 => KeyPressedShort");
+						listener.publishKeyPressedShort(id);
+						
+					}
+					
+					if (action.equals("5")) {
+						logger.debug("Found 5 => KeyPressedLong");
+						listener.publishKeyPressedLong(id);
+						
+					}
+					
 					int timerCount = timerList.size();
 					boolean containsTimer = false;
 					if (timerList.size() > 0) {
 						for (int i = 0; i<timerCount; i++) {
 							if (timerList.get(i).getId() == new Integer(id).intValue()) {
+								logger.debug("Timer found....restarting timer for id: "+id);
 								timerList.get(i).restart();
 								containsTimer = true;
 								break;
@@ -102,15 +123,15 @@ public class AKM868PacketReceiver implements Runnable{
 							}
 						}
 						if (!containsTimer) {
+							logger.debug("Timer not found....starting new timer for id: "+id);
 							timerList.add(new AKM868Timer(new Integer(id).intValue()));
 							listener.publishUpdate(new Integer(id).toString(), true);
-							logger.debug("Timer started for id: "+ id);
 						}
 						
 					} else {
+						logger.debug("Timer not found....starting new timer for id: "+id);
 						timerList.add(new AKM868Timer(new Integer(id).intValue()));
 						listener.publishUpdate(new Integer(id).toString(), true);
-						logger.debug("First Timer started: Id: "+ id);
 					}
 				}
 				

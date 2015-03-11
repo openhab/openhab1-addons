@@ -27,4 +27,8 @@ public interface AKM868BindingProvider extends BindingProvider {
 	 * Returns the id of the object by itemName.
 	 */
 	public String getId(String itemName);
+	/**
+	 * Returns the channel of the object by itemName.
+	 */
+	public String getChannel(String itemName) ;
 }

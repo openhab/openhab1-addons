@@ -64,13 +64,35 @@ public class AKM868GenericBindingProvider extends AbstractGenericBindingProvider
 		return config != null ? config.id : null;
 	}
 	
+	public String getChannel(String itemName) {
+		AKM868BindingConfig config = (AKM868BindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.channel : null;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		AKM868BindingConfig config = new AKM868BindingConfig(bindingConfig);
+		
+		String id = "";
+		String channel = "";
+		
+		// Parse bindingconfig and separate values
+		String separator = ",";
+		String bindingConfigElements [] = bindingConfig.split(separator);
+		for (String configElement : bindingConfigElements) {
+			String assingment="=";
+			String assignments [] = configElement.split(assingment);
+			if (assignments[0].equalsIgnoreCase("id")) {
+				id = assignments[1];
+			}
+			else if (assignments[0].equalsIgnoreCase("channel")) {
+				channel = assignments[1];
+			}
+		}
+		AKM868BindingConfig config = new AKM868BindingConfig(id, channel);
 //		logger.debug("AKM868GenericBindingProvider: processBindingConfig");
 		//parse bindingconfig here ...
 		items.put(item.getName(), item);
@@ -81,9 +103,11 @@ public class AKM868GenericBindingProvider extends AbstractGenericBindingProvider
 	class AKM868BindingConfig implements BindingConfig {
 		// put member fields here which holds the parsed values
 		public String id;
+		public String channel;
 		
-		public AKM868BindingConfig(String id) {
+		public AKM868BindingConfig(String id, String channel) {
 			this.id = id;
+			this.channel = channel;
 		}
 	}
 	

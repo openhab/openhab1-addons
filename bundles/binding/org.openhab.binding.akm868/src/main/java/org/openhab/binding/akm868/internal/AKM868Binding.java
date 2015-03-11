@@ -99,7 +99,7 @@ public class AKM868Binding extends AbstractActiveBinding<AKM868BindingProvider> 
 		// the code being executed when a command was sent on the openHAB
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("AKM 868: internalReceiveCommand() is called!");
+//		logger.debug("AKM 868: internalReceiveCommand() is called!");
 	}
 	
 	/**
@@ -110,7 +110,7 @@ public class AKM868Binding extends AbstractActiveBinding<AKM868BindingProvider> 
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the 
 		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("AKM 868:internalReceiveUpdate() is called!");
+//		logger.debug("AKM 868:internalReceiveUpdate() is called!");
 	}
 		
 	/**
@@ -158,9 +158,42 @@ public class AKM868Binding extends AbstractActiveBinding<AKM868BindingProvider> 
 		for (AKM868BindingProvider provider : providers) {
 			for (String itemName : provider.getItemNames()) {
 				
-				if (provider.getId(itemName).equals(id)) {
+				if (provider.getId(itemName).equals(id) && provider.getChannel(itemName).equals("0")) {
 					logger.debug("Publishing state for: "+itemName+" -state: "+provider.getId(itemName));
 					eventPublisher.postUpdate(itemName, isPresent==true ? OnOffType.ON : OnOffType.OFF);
+				}
+
+			}
+		}
+		
+	}
+
+
+	@Override
+	public void publishKeyPressedShort(String id) {
+		
+		for (AKM868BindingProvider provider : providers) {
+			for (String itemName : provider.getItemNames()) {
+				
+				if (provider.getId(itemName).equals(id) && provider.getChannel(itemName).equals("1")) {
+					logger.debug("Publishing state for: "+itemName+" -state: ON");
+					eventPublisher.postUpdate(itemName, OnOffType.ON );
+				}
+
+			}
+		}
+		
+	}
+
+
+	@Override
+	public void publishKeyPressedLong(String id) {
+		for (AKM868BindingProvider provider : providers) {
+			for (String itemName : provider.getItemNames()) {
+				
+				if (provider.getId(itemName).equals(id) && provider.getChannel(itemName).equals("5")) {
+					logger.debug("Publishing state for: "+itemName+" -state: ON");
+					eventPublisher.postUpdate(itemName, OnOffType.ON );
 				}
 
 			}
