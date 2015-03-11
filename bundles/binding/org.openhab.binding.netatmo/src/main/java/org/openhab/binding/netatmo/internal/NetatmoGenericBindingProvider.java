@@ -83,7 +83,7 @@ public class NetatmoGenericBindingProvider extends
 		if (!(item instanceof NumberItem || item instanceof DateTimeItem || item instanceof LocationItem)) {
 			throw new BindingConfigParseException(
 				"item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName() + 
-				"', only NumberItems, DateTimeItems and CoordinateItems are allowed - please check your *.items configuration");
+				"', only NumberItems, DateTimeItems and LocationItems are allowed - please check your *.items configuration");
 		}
 	}
 	
