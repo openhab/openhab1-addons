@@ -8,9 +8,22 @@
  */
 package org.openhab.binding.resolvbus.internal;
 
+import java.io.File;
+import java.io.StringReader;
+import java.util.Dictionary;
 import java.util.Map;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.openhab.binding.resolvbus.ResolVBUSBindingProvider;
+import org.openhab.binding.resolvbus.model.ResolVBUSConfig;
+import org.openhab.binding.resolvbus.model.ResolVBUSDevice;
+
+
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -28,11 +41,17 @@ import org.slf4j.LoggerFactory;
  * @author Michael Heckmann
  * @since 1.7.0
  */
-public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProvider> {
+public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProvider> implements ManagedService, ResolVBUSListener{
 
 	private static final Logger logger = 
 		LoggerFactory.getLogger(ResolVBUSBinding.class);
 
+	private ResolVBUSReceiver packetReceiver; 
+	private String host;
+	private int port;
+	private ResolVBUSConfig config;
+
+	
 	/**
 	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is set in the activate()
 	 * method and must not be accessed anymore once the deactivate() method was called or before activate()
@@ -49,6 +68,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	
 	
 	public ResolVBUSBinding() {
+		packetReceiver = new ResolVBUSReceiver(this);
 	}
 		
 	
@@ -63,18 +83,41 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 
 		// the configuration is guaranteed not to be null, because the component definition has the
 		// configuration-policy set to require. If set to 'optional' then the configuration may be null
-		
-			
 		// to override the default refresh interval one has to add a 
 		// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
-		String refreshIntervalString = (String) configuration.get("refresh");
-		if (StringUtils.isNotBlank(refreshIntervalString)) {
-			refreshInterval = Long.parseLong(refreshIntervalString);
+
+		if (configuration != null) {
+			String refreshIntervalString = (String) configuration.get("refresh");
+			if (StringUtils.isNotBlank(refreshIntervalString)) {
+				refreshInterval = Long.parseLong(refreshIntervalString);
+			}
+			
+			String hostString = (String) configuration.get("host");
+			if (StringUtils.isNotBlank(hostString)) {
+				host = hostString;
+			}
+			String portString = (String) configuration.get("port");
+			if (StringUtils.isNotBlank(portString)) {
+				port = Integer.parseInt(portString);
+			}
+			
+				
+			// read further config parameters here ...
+			try {
+				loadConfig();
+				// make sure that there is no listener running
+				packetReceiver.stopListener();
+				// send the parsed information to the listener
+				packetReceiver.initializeReceiver(host,port, config);
+				// start the listener
+				new Thread(packetReceiver).start();
+				setProperlyConfigured(true);
+				
+			} catch (JAXBException e) {
+				logger.debug("Couldn't read XML Conifg: "+e.getMessage());
+			}
+			
 		}
-
-		// read further config parameters here ...
-
-		setProperlyConfigured(true);
 	}
 	
 	/**
@@ -101,8 +144,9 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	 */
 	public void deactivate(final int reason) {
 		this.bundleContext = null;
-		// deallocate resources here that are no longer needed and 
-		// should be reset when activating this binding again
+		logger.debug("Stoppig ResolVBUS listener...");
+		if (packetReceiver != null)
+			packetReceiver.stopListener();
 	}
 
 	
@@ -153,4 +197,25 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
 	}
 
+
+	public void publishUpdate(String name, String value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void updated(Dictionary<String, ?> properties)
+			throws ConfigurationException {
+
+	}
+	
+	public void loadConfig() throws JAXBException {
+
+		JAXBContext jc;
+		jc = JAXBContext.newInstance(ResolVBUSConfig.class);
+		Unmarshaller unmarshaller = jc.createUnmarshaller();
+		config = (ResolVBUSConfig) unmarshaller.unmarshal(new File("VBusSpecificationResol.xml"));
+	
+	}
+		
 }

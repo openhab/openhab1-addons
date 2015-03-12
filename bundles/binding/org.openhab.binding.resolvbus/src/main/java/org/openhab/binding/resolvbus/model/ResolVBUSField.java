@@ -1,5 +1,9 @@
 package org.openhab.binding.resolvbus.model;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -14,6 +18,18 @@ import javax.xml.bind.annotation.XmlType;
 
 public class ResolVBUSField {
 
-	
+	@XmlElement(required = true)
+	protected BigInteger offset;
+	@XmlElement(required = true)
+	protected String name;
+	@XmlElement(required = true)
+	protected BigInteger bitSize;
+	@XmlElement(required = true)
+	protected BigDecimal factor;
+	protected String format;
+	@XmlElement(required = true)
+	protected String unit;
+	@XmlAttribute
+	protected String commonUsage;
 	
 }

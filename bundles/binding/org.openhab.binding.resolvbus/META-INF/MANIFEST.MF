@@ -18,6 +18,7 @@ Import-Package: org.apache.commons.lang,
  org.openhab.core.types,
  org.openhab.model.item.binding,
  org.osgi.framework,
+ org.osgi.service.cm;version="1.4.0",
  org.osgi.service.component,
  org.osgi.service.event,
  org.slf4j
