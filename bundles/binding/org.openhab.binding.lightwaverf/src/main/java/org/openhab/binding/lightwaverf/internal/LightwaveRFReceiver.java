@@ -2,7 +2,12 @@ package org.openhab.binding.lightwaverf.internal;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.Enumeration;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -29,12 +34,42 @@ public class LightwaveRFReceiver implements Runnable {
     
     private final LightwaverfConvertor messageConvertor;
     private final DatagramSocket receiveSocket;
+    private final Set<InetAddress> localIps;
+    
     
     private boolean running = false;
     
     public LightwaveRFReceiver(LightwaverfConvertor messageConvertor, int port) throws SocketException {
     	this.messageConvertor = messageConvertor;
     	this.receiveSocket = new DatagramSocket(port);
+    	localIps = getIpAddresses();
+    }
+    
+    /**
+     * Gets a list of INetAddresses for this server. Allowing us to filter out broadcast packets 
+     * we receive that we originally sent 
+     * @return
+     */
+    private Set<InetAddress> getIpAddresses(){
+    	Set<InetAddress> ips = new LinkedHashSet<InetAddress>();
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+                // filters out 127.0.0.1 and inactive interfaces
+                if (iface.isLoopback() || !iface.isUp())
+                    continue;
+
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                while(addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    ips.add(addr);
+                }
+            }
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
+        return ips;
     }
     	
     /**
@@ -113,6 +148,10 @@ public class LightwaveRFReceiver implements Runnable {
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         receiveSocket.receive(receivePacket);
         receivedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
+        if(localIps.contains(receivePacket.getAddress())){
+            logger.debug("Own Message received and will be discarded: {}", receivedMessage);
+            return null;
+        }
         logger.debug("Message received: " + receivedMessage);
         return receivedMessage;
     }
