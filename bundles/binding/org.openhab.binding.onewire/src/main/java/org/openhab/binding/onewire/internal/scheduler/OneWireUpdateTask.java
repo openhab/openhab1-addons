@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OneWireUpdateTask extends Thread {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(OneWireUpdateTask.class);
+	private static final Logger logger = LoggerFactory.getLogger(OneWireUpdateTask.class);
 
 	private final BlockingQueue<String> ivUpdateQueue;
 
@@ -50,19 +50,19 @@ public class OneWireUpdateTask extends Thread {
 		String lvItemName = null;
 		try {
 			while (true) {
-				LOGGER.debug("Autorefresh: Waiting for new item in update queue");
+				logger.debug("Autorefresh: Waiting for new item in update queue");
 				lvItemName = ivUpdateQueue.take();
-				LOGGER.debug("Autorefresh: got new item {} in update queue", lvItemName);
+				logger.debug("Autorefresh: got new item {} in update queue", lvItemName);
 
 				if (lvItemName != null) {
-					LOGGER.debug("Autorefresh: Trying to update Item: {}", lvItemName);
+					logger.debug("Autorefresh: Trying to update Item: {}", lvItemName);
 					ivWantsUpdateListener.devicePropertyWantsUpdate(new OneWireDevicePropertyWantsUpdateEvent(this, lvItemName));
 				}
 			}
 		} catch (InterruptedException ex) {
-			LOGGER.debug("Autorefresh: OneWireUpdateTask wait on blockingqueue interrupted: {}", ex.getMessage());
+			logger.debug("Autorefresh: OneWireUpdateTask wait on blockingqueue interrupted: {}", ex.getMessage());
 		}
-		LOGGER.debug("Autorefresh: OneWireUpdateTask interrupted.");
+		logger.debug("Autorefresh: OneWireUpdateTask interrupted.");
 	}
 
 	/**

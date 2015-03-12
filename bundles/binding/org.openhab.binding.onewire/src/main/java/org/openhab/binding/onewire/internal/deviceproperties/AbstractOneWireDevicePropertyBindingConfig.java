@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractOneWireDevicePropertyBindingConfig implements BindingConfig {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOneWireDevicePropertyBindingConfig.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractOneWireDevicePropertyBindingConfig.class);
 
 	/**
 	 * deviceId like <code>28.67C6697351FF</code>
@@ -70,7 +70,7 @@ public abstract class AbstractOneWireDevicePropertyBindingConfig implements Bind
 
 		// DeviceId and property must be filled
 		if (this.ivDeviceId == null || this.ivDeviceId.trim().equals("") || this.ivPropertyName == null || this.ivPropertyName.trim().equals("")) {
-			LOGGER.error("deviceId and propertyName not set in config!");
+			logger.error("deviceId and propertyName not set in config!");
 			throw new BindingConfigParseException("Onewire sensor configuration must contain at least the deviceId and the propertyName");
 		}
 	}
@@ -152,9 +152,9 @@ public abstract class AbstractOneWireDevicePropertyBindingConfig implements Bind
 		Type lvType = convertReadValueToUnmodifiedType(pvReadValue);
 
 		for (InterfaceOneWireTypeModifier lvTypeModifier : getTypeModifieryList()) {
-			LOGGER.debug("type of " + getDevicePropertyPath() + " before modifier:" + lvTypeModifier.getModifierName() + "type=" + lvType.toString());
+			logger.debug("type of " + getDevicePropertyPath() + " before modifier:" + lvTypeModifier.getModifierName() + "type=" + lvType.toString());
 			lvType = lvTypeModifier.modify4Read(lvType);
-			LOGGER.debug("type of " + getDevicePropertyPath() + " after modifier:" + lvTypeModifier.getModifierName() + "type=" + lvType.toString());
+			logger.debug("type of " + getDevicePropertyPath() + " after modifier:" + lvTypeModifier.getModifierName() + "type=" + lvType.toString());
 		}
 
 		return lvType;

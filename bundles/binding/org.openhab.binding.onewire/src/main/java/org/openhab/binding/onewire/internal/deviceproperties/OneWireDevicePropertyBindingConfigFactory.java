@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OneWireDevicePropertyBindingConfigFactory {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(OneWireDevicePropertyBindingConfigFactory.class);
+	private static final Logger logger = LoggerFactory.getLogger(OneWireDevicePropertyBindingConfigFactory.class);
 
 	/**
 	 * @param pvItem
@@ -27,7 +27,7 @@ public class OneWireDevicePropertyBindingConfigFactory {
 	 * @throws BindingConfigParseException
 	 */
 	public static AbstractOneWireDevicePropertyBindingConfig createOneWireDeviceProperty(Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
-		LOGGER.debug("createOneWireDeviceProperty: " + pvItem.getName() + "bindingConfig:" + pvBindingConfig);
+		logger.debug("createOneWireDeviceProperty: " + pvItem.getName() + "bindingConfig:" + pvBindingConfig);
 
 		AbstractOneWireDevicePropertyBindingConfig lvNewBindingConfig = null;
 		if (OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig.isBindingConfigToCreate(pvItem, pvBindingConfig)) {
@@ -44,7 +44,7 @@ public class OneWireDevicePropertyBindingConfigFactory {
 			throw new UnsupportedOperationException("the item-type " + pvItem.getClass() + " cannot be a onewire device");
 		}
 
-		LOGGER.debug("created newBindingConfig: " + lvNewBindingConfig.toString());
+		logger.debug("created newBindingConfig: " + lvNewBindingConfig.toString());
 
 		return lvNewBindingConfig;
 	}
@@ -60,7 +60,7 @@ public class OneWireDevicePropertyBindingConfigFactory {
 		boolean lvIsValidItem = ((pvItem instanceof NumberItem) || (pvItem instanceof ContactItem) || (pvItem instanceof SwitchItem) || (pvItem instanceof StringItem));
 		
 		if (!lvIsValidItem) {
-			LOGGER.error("Item "+pvItem.getName()+" of type "+pvItem.getClass().getSimpleName()+" with configuration "+pvBindingConfig+" is not a valid onewire ItemType!");
+			logger.error("Item "+pvItem.getName()+" of type "+pvItem.getClass().getSimpleName()+" with configuration "+pvBindingConfig+" is not a valid onewire ItemType!");
 		}
 		
 		return lvIsValidItem;

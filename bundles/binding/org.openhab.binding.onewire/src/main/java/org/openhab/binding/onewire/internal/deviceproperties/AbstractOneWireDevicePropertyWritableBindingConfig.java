@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractOneWireDevicePropertyWritableBindingConfig extends AbstractOneWireDevicePropertyBindingConfig {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractOneWireDevicePropertyWritableBindingConfig.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractOneWireDevicePropertyWritableBindingConfig.class);
 
 	public AbstractOneWireDevicePropertyWritableBindingConfig(String pvBindingConfig) throws BindingConfigParseException {
 		super(pvBindingConfig);
@@ -26,9 +26,9 @@ public abstract class AbstractOneWireDevicePropertyWritableBindingConfig extends
 	 */
 	public String convertTypeToString(Type pvType) {
 		for (InterfaceOneWireTypeModifier lvTypeModifier : getTypeModifieryList()) {
-			LOGGER.debug("type of " + getDevicePropertyPath() + " before modifier:" + lvTypeModifier.getModifierName() + "type=" + pvType.toString());
+			logger.debug("type of " + getDevicePropertyPath() + " before modifier:" + lvTypeModifier.getModifierName() + "type=" + pvType.toString());
 			pvType = lvTypeModifier.modify4Write(pvType);
-			LOGGER.debug("type of " + getDevicePropertyPath() + " after modifier:" + lvTypeModifier.getModifierName() + "state=" + pvType.toString());
+			logger.debug("type of " + getDevicePropertyPath() + " after modifier:" + lvTypeModifier.getModifierName() + "state=" + pvType.toString());
 		}
 
 		return convertTypeToUnmodifiedString(pvType);

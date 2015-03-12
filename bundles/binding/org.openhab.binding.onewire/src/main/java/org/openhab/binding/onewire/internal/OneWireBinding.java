@@ -34,12 +34,12 @@ import org.slf4j.LoggerFactory;
 /**
  * The 1-wire items / device properties are scheduled and refreshed via OneWireUpdateScheduler for this binding
  * 
- * @author Dennis Riegelbauer
- * @since 1.7.0
+ * @author Thomas.Eichstaedt-Engelen, Dennis Riegelbauer
+ * @since 0.6.0
  */
 public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> implements ManagedService, InterfaceOneWireDevicePropertyWantsUpdateListener {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(OneWireBinding.class);
+	private static final Logger logger = LoggerFactory.getLogger(OneWireBinding.class);
 
 	/**
 	 * Scheduler for items
@@ -54,14 +54,14 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 	@Override
 	public void activate() {
 		super.activate();
-		LOGGER.debug("activate onewire-binding");
+		logger.debug("activate onewire-binding");
 		ivOneWireReaderScheduler.start();
 	}
 
 	@Override
 	public void deactivate() {
 		super.deactivate();
-		LOGGER.debug("deactivate onewire-binding");
+		logger.debug("deactivate onewire-binding");
 		ivOneWireReaderScheduler.stop();
 	}
 
@@ -72,7 +72,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 	 */
 	public void updated(Dictionary<String, ?> pvConfig) throws ConfigurationException {
 
-		LOGGER.debug("updated onewire-binding");
+		logger.debug("updated onewire-binding");
 
 		if (pvConfig != null) {
 			OneWireConnection.updated(pvConfig);
@@ -90,7 +90,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 		AbstractOneWireDevicePropertyBindingConfig lvBindigConfig = getBindingConfig(pvItemName);
 
 		if (lvBindigConfig instanceof AbstractOneWireDevicePropertyWritableBindingConfig) {
-			LOGGER.debug("received command " + pvCommand.toString() + " for item " + pvItemName);
+			logger.debug("received command " + pvCommand.toString() + " for item " + pvItemName);
 
 			AbstractOneWireDevicePropertyWritableBindingConfig lvWritableBindingConfig = (AbstractOneWireDevicePropertyWritableBindingConfig) lvBindigConfig;
 
@@ -98,7 +98,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 
 			OneWireConnection.writeToOneWire(lvWritableBindingConfig.getDevicePropertyPath(), lvStringValue);
 		} else {
-			LOGGER.debug("received command " + pvCommand.toString() + " for item " + pvItemName + " which is not writable");
+			logger.debug("received command " + pvCommand.toString() + " for item " + pvItemName + " which is not writable");
 		}
 	}
 
@@ -118,7 +118,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 	 */
 	private void scheduleAllBindings(BindingProvider pvProvider) {
 		if (OneWireConnection.isConnectionEstablished()) {
-			LOGGER.debug("scheduleAllBindings");
+			logger.debug("scheduleAllBindings");
 
 			if (pvProvider instanceof OneWireBindingProvider) {
 				OneWireBindingProvider lvBindingProvider = (OneWireBindingProvider) pvProvider;
@@ -126,7 +126,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 
 				Map<String, BindingConfig> lvBindigConfigs = lvBindingProvider.getBindingConfigs();
 				for (String lvItemName : lvBindigConfigs.keySet()) {
-					LOGGER.debug("Initializing read of item {}.", lvItemName);
+					logger.debug("Initializing read of item {}.", lvItemName);
 					AbstractOneWireDevicePropertyBindingConfig lvBindingConfig = (AbstractOneWireDevicePropertyBindingConfig) lvBindigConfigs.get(lvItemName);
 					
 					if (lvBindingConfig != null) {
@@ -137,7 +137,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 	
 						if (lvAutoRefreshTimeInSecs > 0) {
 							if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvAutoRefreshTimeInSecs)) {
-								LOGGER.warn("Clouldn't add to OneWireUpdate scheduler", lvBindingConfig);
+								logger.warn("Clouldn't add to OneWireUpdate scheduler", lvBindingConfig);
 							}
 						}
 					}
@@ -153,7 +153,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 	 * java.lang.String)
 	 */
 	public void bindingChanged(BindingProvider lvProvider, String lvItemName) {
-		LOGGER.debug("bindingChanged() for item {} msg received.", lvItemName);
+		logger.debug("bindingChanged() for item {} msg received.", lvItemName);
 
 		if (lvProvider instanceof OneWireBindingProvider) {
 			OneWireBindingProvider lvBindingProvider = (OneWireBindingProvider) lvProvider;
@@ -161,7 +161,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 			AbstractOneWireDevicePropertyBindingConfig lvBindingConfig = lvBindingProvider.getBindingConfig(lvItemName);
 
 			if (lvBindingConfig != null) {
-				LOGGER.debug("Initializing read of item {}.", lvItemName);
+				logger.debug("Initializing read of item {}.", lvItemName);
 				int lvAutoRefreshTimeInSecs = lvBindingConfig.getAutoRefreshInSecs();
 				
 				if (lvAutoRefreshTimeInSecs>-1) {
@@ -170,10 +170,10 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 
 				if (lvAutoRefreshTimeInSecs > 0) {
 					if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvAutoRefreshTimeInSecs)) {
-						LOGGER.warn("Clouldn't add to OneWireUpdate scheduler", lvBindingConfig);
+						logger.warn("Clouldn't add to OneWireUpdate scheduler", lvBindingConfig);
 					}
 				} else {
-					LOGGER.debug("Didnt't add to OneWireUpdate scheduler, because refresh is <= 0: " + lvBindingConfig.toString());
+					logger.debug("Didnt't add to OneWireUpdate scheduler, because refresh is <= 0: " + lvBindingConfig.toString());
 				}
 			}
 		}
@@ -188,7 +188,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 	public void devicePropertyWantsUpdate(OneWireDevicePropertyWantsUpdateEvent pvWantsUpdateEvent) {
 		String lvItemName = pvWantsUpdateEvent.getItemName();
 
-		LOGGER.debug("Item " + lvItemName + " wants update!");
+		logger.debug("Item " + lvItemName + " wants update!");
 
 		updateItemFromOneWire(lvItemName);
 	}
@@ -228,7 +228,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 			AbstractOneWireDevicePropertyBindingConfig pvBindingConfig = getBindingConfig(pvItemName);
 
 			if (pvBindingConfig == null) {
-				LOGGER.error("no bindingConfig found for itemName=" + pvItemName + " cannot update! It will be removed from scheduler");
+				logger.error("no bindingConfig found for itemName=" + pvItemName + " cannot update! It will be removed from scheduler");
 				ivOneWireReaderScheduler.removeItem(pvItemName);
 				return;
 			}
@@ -246,10 +246,10 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 						}
 					}
 				} else {
-					LOGGER.error("There is no Item for ItemName=" + pvItemName);
+					logger.error("There is no Item for ItemName=" + pvItemName);
 				}
 			} else {
-				LOGGER.error("Set Item for itemName=" + pvItemName + " to Undefined, because the readvalue is null");
+				logger.error("Set Item for itemName=" + pvItemName + " to Undefined, because the readvalue is null");
 				eventPublisher.postUpdate(lvItem.getName(), UnDefType.UNDEF);
 			}
 		}

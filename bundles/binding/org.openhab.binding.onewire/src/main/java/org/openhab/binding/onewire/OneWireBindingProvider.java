@@ -21,7 +21,7 @@ import org.openhab.core.items.Item;
  * 
  * Implementing classes should register themselves as a service in order to be taken into account.
  * 
- * @author Dennis Riegelbauer
+ * @author Thomas.Eichstaedt-Engelen, Dennis Riegelbauer
  * @since 0.6.0
  */
 public interface OneWireBindingProvider extends BindingProvider {

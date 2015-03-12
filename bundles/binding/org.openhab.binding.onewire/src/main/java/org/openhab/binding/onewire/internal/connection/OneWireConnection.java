@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OneWireConnection {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(OneWireConnection.class);
+	private static final Logger logger = LoggerFactory.getLogger(OneWireConnection.class);
 
 	/**
 	 * Connection to the owserver server
@@ -95,16 +95,16 @@ public class OneWireConnection {
 			try {
 				cvOwConnection = owfsConnectorFactory.createNewConnection();
 				cvOwConnection.listDirectory("/");
-				LOGGER.info("Connected to owserver [IP '" + cvIp + "' Port '" + cvPort + "']");
+				logger.info("Connected to owserver [IP '" + cvIp + "' Port '" + cvPort + "']");
 				cvIsEstablished = true;
 				return true;
 			} catch (Exception exception) {
-				LOGGER.error("Couldn't connect to owserver [IP '" + cvIp + "' Port '" + cvPort + "']: ", exception.getLocalizedMessage());
+				logger.error("Couldn't connect to owserver [IP '" + cvIp + "' Port '" + cvPort + "']: ", exception.getLocalizedMessage());
 				cvIsEstablished = false;
 				return false;
 			}
 		} else {
-			LOGGER.warn("Couldn't connect to owserver because of missing connection parameters [IP '{}' Port '{}'].", cvIp, cvPort);
+			logger.warn("Couldn't connect to owserver because of missing connection parameters [IP '{}' Port '{}'].", cvIp, cvPort);
 			return false;
 		}
 	}
@@ -115,11 +115,11 @@ public class OneWireConnection {
 	 * @return
 	 */
 	public static synchronized boolean reconnect() {
-		LOGGER.info("Trying to reconnect to owserver...");
+		logger.info("Trying to reconnect to owserver...");
 		try {
 			cvOwConnection.disconnect();
 		} catch (Exception lvException) {
-			LOGGER.error("Error while disconnecting from owserver: " + lvException, lvException);
+			logger.error("Error while disconnecting from owserver: " + lvException, lvException);
 		}
 		cvOwConnection = null;
 		return connect();
@@ -127,7 +127,7 @@ public class OneWireConnection {
 
 	public static synchronized void updated(Dictionary<String, ?> pvConfig) throws ConfigurationException {
 		if (pvConfig != null) {
-			LOGGER.debug("OneWire configuration present. Setting up owserver connection.");
+			logger.debug("OneWire configuration present. Setting up owserver connection.");
 			cvIp = (String) pvConfig.get("ip");
 
 			String lvPortConfig = (String) pvConfig.get("port");
@@ -150,15 +150,15 @@ public class OneWireConnection {
 			}
 
 			if (cvOwConnection == null) {
-				LOGGER.debug("Not connected to owserver yet. Trying to connect...");
+				logger.debug("Not connected to owserver yet. Trying to connect...");
 				if (!connect()) {
-					LOGGER.warn("Inital connection to owserver failed!");
+					logger.warn("Inital connection to owserver failed!");
 				} else {
-					LOGGER.debug("Success: connected to owserver.");
+					logger.debug("Success: connected to owserver.");
 				}
 			}
 		} else {
-			LOGGER.info("OneWireBinding configuration is not present. Please check your configuration file or if not needed remove the OneWireBinding addon.");
+			logger.info("OneWireBinding configuration is not present. Please check your configuration file or if not needed remove the OneWireBinding addon.");
 		}
 	}
 
@@ -181,7 +181,7 @@ public class OneWireConnection {
 		String[] pvDevicePropertyPathParts = pvDevicePropertyPath.trim().split("/");
 
 		String lvDevicePath = pvDevicePropertyPathParts[0];
-		LOGGER.debug("check if device exisits '{}': ", new Object[] { lvDevicePath });
+		logger.debug("check if device exisits '{}': ", new Object[] { lvDevicePath });
 
 		return OneWireConnection.getConnection().exists(lvDevicePath);
 	}
@@ -196,19 +196,19 @@ public class OneWireConnection {
 		int lvAttempt = 1;
 		while (lvAttempt <= cvRetry) {
 			try {
-				LOGGER.debug("trying to read from '{}', read attempt={}", new Object[] { pvDevicePropertyPath, lvAttempt });
+				logger.debug("trying to read from '{}', read attempt={}", new Object[] { pvDevicePropertyPath, lvAttempt });
 				if (checkIfDeviceExists(pvDevicePropertyPath)) {
 					String lvReadValue = OneWireConnection.getConnection().read(pvDevicePropertyPath);
-					LOGGER.debug("Read value '{}' from {}, read attempt={}", new Object[] { lvReadValue, pvDevicePropertyPath, lvAttempt });
+					logger.debug("Read value '{}' from {}, read attempt={}", new Object[] { lvReadValue, pvDevicePropertyPath, lvAttempt });
 					return lvReadValue;
 				} else {
-					LOGGER.info("there is no device for path {}, read attempt={}", new Object[] { pvDevicePropertyPath, lvAttempt });
+					logger.info("there is no device for path {}, read attempt={}", new Object[] { pvDevicePropertyPath, lvAttempt });
 				}
 			} catch (OwfsException oe) {
-				LOGGER.error("reading from path " + pvDevicePropertyPath + " attempt " + lvAttempt + " throws exception", oe);
+				logger.error("reading from path " + pvDevicePropertyPath + " attempt " + lvAttempt + " throws exception", oe);
 				reconnect();
 			} catch (IOException ioe) {
-				LOGGER.error("couldn't establish network connection while read attempt " + lvAttempt + " '" + pvDevicePropertyPath + "' ip:port=" + cvIp + ":" + cvPort, ioe);
+				logger.error("couldn't establish network connection while read attempt " + lvAttempt + " '" + pvDevicePropertyPath + "' ip:port=" + cvIp + ":" + cvPort, ioe);
 				reconnect();
 			} finally {
 				lvAttempt++;
@@ -228,18 +228,18 @@ public class OneWireConnection {
 		int lvAttempt = 1;
 		while (lvAttempt <= cvRetry) {
 			try {
-				LOGGER.debug("trying to write '{}' to '{}', write attempt={}", new Object[] { pvValue, pvDevicePropertyPath, lvAttempt });
+				logger.debug("trying to write '{}' to '{}', write attempt={}", new Object[] { pvValue, pvDevicePropertyPath, lvAttempt });
 				if (checkIfDeviceExists(pvDevicePropertyPath)) {
 					OneWireConnection.getConnection().write(pvDevicePropertyPath, pvValue);
 					return; // Success, exit
 				} else {
-					LOGGER.info("there is no device for path {}, write attempt={}", new Object[] { pvDevicePropertyPath, lvAttempt });
+					logger.info("there is no device for path {}, write attempt={}", new Object[] { pvDevicePropertyPath, lvAttempt });
 				}
 			} catch (OwfsException oe) {
-				LOGGER.error("writing " + pvValue + " to path " + pvDevicePropertyPath + " attempt " + lvAttempt + " throws exception", oe);
+				logger.error("writing " + pvValue + " to path " + pvDevicePropertyPath + " attempt " + lvAttempt + " throws exception", oe);
 				reconnect();
 			} catch (IOException ioe) {
-				LOGGER.error("couldn't establish network connection while write attempt " + lvAttempt + " to '" + pvDevicePropertyPath + "' ip:port=" + cvIp + ":" + cvPort, ioe);
+				logger.error("couldn't establish network connection while write attempt " + lvAttempt + " to '" + pvDevicePropertyPath + "' ip:port=" + cvIp + ":" + cvPort, ioe);
 				reconnect();
 			} finally {
 				lvAttempt++;

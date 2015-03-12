@@ -31,12 +31,12 @@ import org.slf4j.LoggerFactory;
  * The syntax of the binding configuration is listed in each available OneWireDevicePropertyBindingConfig class
  * <p>
  * 
- * @author Dennis Riegelbauer
- * @since 1.7.0
+ * @author Thomas.Eichstaedt-Engelen, Dennis Riegelbauer
+ * @since 0.6.0
  */
 public class OneWireGenericBindingProvider extends AbstractGenericBindingProvider implements OneWireBindingProvider {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(OneWireGenericBindingProvider.class);
+	private static final Logger logger = LoggerFactory.getLogger(OneWireGenericBindingProvider.class);
 
 	/* (non-Javadoc)
 	 * @see org.openhab.model.item.binding.BindingConfigReader#getBindingType()
@@ -49,7 +49,7 @@ public class OneWireGenericBindingProvider extends AbstractGenericBindingProvide
 	 * @see org.openhab.model.item.binding.BindingConfigReader#validateItemType(org.openhab.core.items.Item, java.lang.String)
 	 */
 	public void validateItemType(Item pvItem, String pvBindingConfig) throws BindingConfigParseException {
-		LOGGER.debug("validateItemType: " + pvItem.getName() + "bindingConfig:" + pvBindingConfig);
+		logger.debug("validateItemType: " + pvItem.getName() + "bindingConfig:" + pvBindingConfig);
 
 		if (OneWireDevicePropertyBindingConfigFactory.isValidItemType(pvItem, pvBindingConfig)) {
 			return;

@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig extends OneWireDevicePropertyNumberBindingConfig {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig.class);
+	private static final Logger logger = LoggerFactory.getLogger(OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig.class);
 
 	private BigDecimal ivMaxWarningValue = null;
 	private BigDecimal ivMinWarningValue = null;
@@ -66,7 +66,7 @@ public class OneWireDevicePropertySwitchMinMaxNumberWarningBindingConfig extends
 		}
 
 		if (!(ivMaxWarningValue != null || ivMinWarningValue != null)) {
-			LOGGER.error("maxWarning or minWarning must be set in config!");
+			logger.error("maxWarning or minWarning must be set in config!");
 			throw new BindingConfigParseException("Onewire sensor configuration must contain maxWarning or minWarning Value!");
 		}
 	}

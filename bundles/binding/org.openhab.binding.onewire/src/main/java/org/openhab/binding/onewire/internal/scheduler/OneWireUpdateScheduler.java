@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class OneWireUpdateScheduler {
-	private static final Logger LOGGER = LoggerFactory.getLogger(OneWireUpdateScheduler.class);
+	private static final Logger logger = LoggerFactory.getLogger(OneWireUpdateScheduler.class);
 
 	/**
 	 * Number of threads executing in parallel for auto refresh feature. Default value is <code>5</code>
@@ -80,13 +80,13 @@ public class OneWireUpdateScheduler {
 	 * Starts the scheduler
 	 */
 	public void start() {
-		LOGGER.debug("Starting auto refresh scheduler");
+		logger.debug("Starting auto refresh scheduler");
 
-		LOGGER.debug("Starting reader task.");
+		logger.debug("Starting reader task.");
 
 		ivOneWireUpdateTask.start();
 
-		LOGGER.debug("Starting schedule executor.");
+		logger.debug("Starting schedule executor.");
 		ivScheduledExecutorService = Executors.newScheduledThreadPool(cvNumberOfThreads);
 
 		ivIsRunning = true;
@@ -96,24 +96,24 @@ public class OneWireUpdateScheduler {
 	 * Stop the scheduler
 	 */
 	public void stop() {
-		LOGGER.debug("Stopping auto refresh scheduler");
+		logger.debug("Stopping auto refresh scheduler");
 
-		LOGGER.debug("Clearing all items from the refresher queue");
+		logger.debug("Clearing all items from the refresher queue");
 		ivUpdateQueue.clear();
 
-		LOGGER.debug("Terminating schedule executor.");
+		logger.debug("Terminating schedule executor.");
 		ivScheduledExecutorService.shutdown();
 		try {
 			if (ivScheduledExecutorService.awaitTermination(cvScheduledExecutorServiceShutdownTimeout, TimeUnit.SECONDS)) {
-				LOGGER.debug("Auto refresh scheduler successfully terminated");
+				logger.debug("Auto refresh scheduler successfully terminated");
 			} else {
-				LOGGER.debug("Auto refresh scheduler couldn't be terminated and termination timed out.");
+				logger.debug("Auto refresh scheduler couldn't be terminated and termination timed out.");
 			}
 		} catch (InterruptedException e) {
-			LOGGER.debug("Auto refresh scheduler: interrupted while waiting for termination.");
+			logger.debug("Auto refresh scheduler: interrupted while waiting for termination.");
 		}
 
-		LOGGER.debug("Stopping reader task");
+		logger.debug("Stopping reader task");
 		ivOneWireUpdateTask.interrupt();
 		ivIsRunning = false;
 	}
@@ -122,24 +122,24 @@ public class OneWireUpdateScheduler {
 	 * Clears all items from the scheduler
 	 */
 	public synchronized void clear() {
-		LOGGER.debug("Clearing all items from auto refresh scheduler");
+		logger.debug("Clearing all items from auto refresh scheduler");
 		ivUpdateQueue.clear();
 
 		// Restarting schedule executor
 		if (ivScheduledExecutorService != null) {
-			LOGGER.debug("Schedule executor restart.");
+			logger.debug("Schedule executor restart.");
 			ivScheduledExecutorService.shutdown();
 			try {
 				if (ivScheduledExecutorService.awaitTermination(cvScheduledExecutorServiceShutdownTimeout, TimeUnit.SECONDS)) {
-					LOGGER.debug("Schedule executor restart: successfully terminated old instance");
+					logger.debug("Schedule executor restart: successfully terminated old instance");
 				} else {
-					LOGGER.debug("Schedule executor restart failed: termination timed out.");
+					logger.debug("Schedule executor restart failed: termination timed out.");
 				}
 			} catch (InterruptedException e) {
-				LOGGER.debug("Schedule executor restart failed: interrupted while waiting for termination.");
+				logger.debug("Schedule executor restart failed: interrupted while waiting for termination.");
 			}
 			ivScheduledExecutorService = Executors.newScheduledThreadPool(cvNumberOfThreads);
-			LOGGER.debug("Schedule executor restart: started.");
+			logger.debug("Schedule executor restart: started.");
 		}
 
 		for (Iterator<Integer> lvIterator = cvScheduleMap.keySet().iterator(); lvIterator.hasNext();) {
@@ -147,10 +147,10 @@ public class OneWireUpdateScheduler {
 
 			List<String> lvItemListe = cvScheduleMap.get(autoRefreshTimeInSecs);
 			synchronized (lvItemListe) {
-				LOGGER.debug("Clearing list {}", autoRefreshTimeInSecs);
+				logger.debug("Clearing list {}", autoRefreshTimeInSecs);
 				lvItemListe.clear();
 			}
-			LOGGER.debug("Removing list {} from scheduler", autoRefreshTimeInSecs);
+			logger.debug("Removing list {} from scheduler", autoRefreshTimeInSecs);
 			lvIterator.remove();
 		}
 	}
@@ -164,11 +164,11 @@ public class OneWireUpdateScheduler {
 	 */
 	public synchronized boolean updateOnce(String pvItemName) {
 		if (pvItemName == null) {
-			LOGGER.error("Argument itemName cannot be null");
+			logger.error("Argument itemName cannot be null");
 			return false;
 		}
 
-		LOGGER.debug("Item '{}':  one time reading scheduled.", pvItemName);
+		logger.debug("Item '{}':  one time reading scheduled.", pvItemName);
 		return ivUpdateQueue.add(pvItemName);
 	}
 	
@@ -184,12 +184,12 @@ public class OneWireUpdateScheduler {
 	 */
 	public synchronized boolean scheduleUpdate(String pvItemName, int pvAutoRefreshTimeInSecs) {
 		if (pvItemName == null) {
-			LOGGER.error("Argument itemName cannot be null");
+			logger.error("Argument itemName cannot be null");
 			return false;
 		}
 
 		if (pvAutoRefreshTimeInSecs < 0) {
-			LOGGER.debug("AutoRefreshTimeInSecs must be >= 0 for itemName '{}'", pvItemName);
+			logger.debug("AutoRefreshTimeInSecs must be >= 0 for itemName '{}'", pvItemName);
 			return false;
 		}
 
@@ -201,12 +201,12 @@ public class OneWireUpdateScheduler {
 		int lvOldListNumber = getAutoRefreshTimeInSecs(pvItemName);
 		if (lvOldListNumber > 0) {
 			if (lvOldListNumber == pvAutoRefreshTimeInSecs) {
-				LOGGER.debug("item '{}' was already in  auto refresh list {}", pvItemName, pvAutoRefreshTimeInSecs);
+				logger.debug("item '{}' was already in  auto refresh list {}", pvItemName, pvAutoRefreshTimeInSecs);
 				return false;
 			}
 			List<String> lvOldList = cvScheduleMap.get(lvOldListNumber);
 			synchronized (lvOldList) {
-				LOGGER.debug("item '{}' already present in different list: {}, removing", pvItemName, lvOldListNumber);
+				logger.debug("item '{}' already present in different list: {}, removing", pvItemName, lvOldListNumber);
 				/*
 				 * The simple method to remove a <code>item</code> from a list would be
 				 * <code>itemListe.remove(item)</code> Unfortunately, this cannot be used as the
@@ -226,11 +226,11 @@ public class OneWireUpdateScheduler {
 
 		// Check if we have a list for autoRefreshTimeInSecs. If not create it.
 		if (!cvScheduleMap.containsKey(pvAutoRefreshTimeInSecs)) {
-			LOGGER.debug("Creating auto refresh list: {}.", pvAutoRefreshTimeInSecs);
+			logger.debug("Creating auto refresh list: {}.", pvAutoRefreshTimeInSecs);
 			cvScheduleMap.put(pvAutoRefreshTimeInSecs, new LinkedList<String>());
 			if (ivIsRunning) {
 				// Start scheduled task for the new time
-				LOGGER.debug("Starting auto refresh cycle {}", pvAutoRefreshTimeInSecs);
+				logger.debug("Starting auto refresh cycle {}", pvAutoRefreshTimeInSecs);
 				ivScheduledExecutorService.scheduleAtFixedRate(new AutoRefreshTask(pvAutoRefreshTimeInSecs), pvAutoRefreshTimeInSecs, pvAutoRefreshTimeInSecs, TimeUnit.SECONDS);
 			}
 		}
@@ -238,7 +238,7 @@ public class OneWireUpdateScheduler {
 		// Add the item to the list
 		List<String> lvItemListe = cvScheduleMap.get(pvAutoRefreshTimeInSecs);
 		synchronized (lvItemListe) {
-			LOGGER.debug("Adding item '{}' to auto refresh list {}.", pvItemName, pvAutoRefreshTimeInSecs);
+			logger.debug("Adding item '{}' to auto refresh list {}.", pvItemName, pvAutoRefreshTimeInSecs);
 			return lvItemListe.add(pvItemName);
 		}
 	}
@@ -281,7 +281,7 @@ public class OneWireUpdateScheduler {
 		for (int lvNumber : cvScheduleMap.keySet()) {
 			List<String> lvItemListe = cvScheduleMap.get(lvNumber);
 			if (lvItemListe.contains(pvItemName)) {
-				LOGGER.debug("remove item=" + pvItemName + " from scheduler!");
+				logger.debug("remove item=" + pvItemName + " from scheduler!");
 				lvItemListe.remove(pvItemName);
 			}
 		}
@@ -307,12 +307,12 @@ public class OneWireUpdateScheduler {
 			synchronized (cvScheduleMap) {
 				lvItemNameList = cvScheduleMap.get(ivAutoRefreshTimeInSecs);
 				if (lvItemNameList == null) {
-					LOGGER.debug("Autorefresh: List {} was deleted. Terminating thread.", ivAutoRefreshTimeInSecs);
+					logger.debug("Autorefresh: List {} was deleted. Terminating thread.", ivAutoRefreshTimeInSecs);
 				} else {
-					LOGGER.debug("Autorefresh: Adding {} item(s) with refresh time {} to reader queue.", lvItemNameList.size(), ivAutoRefreshTimeInSecs);
-					LOGGER.debug("Update Task isAlive: " + ivOneWireUpdateTask.isAlive());
+					logger.debug("Autorefresh: Adding {} item(s) with refresh time {} to reader queue.", lvItemNameList.size(), ivAutoRefreshTimeInSecs);
+					logger.debug("Update Task isAlive: " + ivOneWireUpdateTask.isAlive());
 					if (!ivOneWireUpdateTask.isAlive()) {
-						LOGGER.debug("create and start a new Update Task again...");
+						logger.debug("create and start a new Update Task again...");
 
 						OneWireUpdateTask lvNewOneWireUpdateTask = new OneWireUpdateTask(ivUpdateQueue, ivOneWireUpdateTask.getIvWantsUpdateListener());
 						ivOneWireUpdateTask = lvNewOneWireUpdateTask;
