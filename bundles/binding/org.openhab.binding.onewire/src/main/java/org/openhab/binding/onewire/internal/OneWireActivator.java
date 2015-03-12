@@ -21,20 +21,20 @@ import org.slf4j.LoggerFactory;
  */
 public final class OneWireActivator implements BundleActivator {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(OneWireActivator.class);
+	private static final Logger logger = LoggerFactory.getLogger(OneWireActivator.class);
 
 	/**
 	 * Called whenever the OSGi framework starts our bundle
 	 */
 	public void start(BundleContext pvBundleContext) throws Exception {
-		LOGGER.debug("OneWire binding has been started.");
+		logger.debug("OneWire binding has been started.");
 	}
 
 	/**
 	 * Called whenever the OSGi framework stops our bundle
 	 */
 	public void stop(BundleContext pvBundleContext) throws Exception {
-		LOGGER.debug("OneWire binding has been stopped.");
+		logger.debug("OneWire binding has been stopped.");
 	}
 
 }
