@@ -65,9 +65,8 @@ public class MonitorSessionThread extends Thread {
 	}
 
 	public void buildEventFromFrame(String frame) {
-		if (logger.isInfoEnabled())
-			logger.info("Received OpenWebNet frame '" + frame
-				+ "' now translate it to an event.");
+		logger.info("Received OpenWebNet frame '" + frame
+			+ "' now translate it to an event.");
 		String who = null;
 		String what = null;
 		String where = null;
@@ -732,11 +731,10 @@ public class MonitorSessionThread extends Thread {
 			if (objectName != null) {
 				event.addProperty("object.name", objectName);
 			}
-			if (logger.isInfoEnabled())
-				logger.info("Frame " + frame + " is " + messageType
-					+ " message. Notify it as OpenHab event "
-					+ messageDescription == "No Description set" ? ""
-					: messageDescription); // for debug
+			logger.info("Frame " + frame + " is " + messageType
+				+ " message. Notify it as OpenHab event "
+				+ messageDescription == "No Description set" ? ""
+				: messageDescription); // for debug
 
 			// Notify all the listeners an event has been received
 			pluginReference.notifyEvent(event);
