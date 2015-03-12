@@ -287,8 +287,7 @@ public class BticinoDevice implements IBticinoEventListener {
 					}
 				}
 			} else if (l_item instanceof NumberItem) {
-				if (logger.isDebugEnabled())
-					logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR NumberItem [" + l_item.getName() + "], TRANSLATE TO OPENHAB BUS EVENT");
+				logger.debug("Gateway [" + m_gateway_id + "], RECEIVED EVENT FOR NumberItem [" + l_item.getName() + "], TRANSLATE TO OPENHAB BUS EVENT");
 			
 				// THERMOREGULATION
 				if (p_protocol_read.getProperty("messageType")
