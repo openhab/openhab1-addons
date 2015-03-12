@@ -358,7 +358,7 @@ public class PersistenceExtensions implements ManagedService {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * Gets the average value of the state of a given <code>item</code> since a certain point in time. 
 	 * The {@link PersistenceService} identified by the <code>serviceName</code> is used. 
@@ -371,26 +371,38 @@ public class PersistenceExtensions implements ManagedService {
 	static public DecimalType averageSince(Item item, AbstractInstant timestamp, String serviceName) {
 		Iterable<HistoricItem> result = getAllStatesSince(item, timestamp, serviceName);
 		Iterator<HistoricItem> it = result.iterator();
-		
-		DecimalType value = (DecimalType) item.getStateAs(DecimalType.class);
-		if (value == null) {
-			value = DecimalType.ZERO;
-		}
-		
-		double average = value.doubleValue();
-		int quantity = 1;
+
+		double total = 0;
+		int quantity = 0;
+		DecimalType histValue = null;
 		while(it.hasNext()) {
 			State state = it.next().getState();
 			if (state instanceof DecimalType) {
-				value = (DecimalType) state;
-				average += value.doubleValue();
+				histValue = (DecimalType) state;
+				total += histValue.doubleValue();
 				quantity++;
 			}
 		}
-		average /= quantity;
 		
-		return new DecimalType(average);
+		// If the current value has not been persisted it should be included in the average as well.
+		// Assume that any current value different from the last historical value has not been 
+		// persisted and include it.
+		DecimalType currentValue = (DecimalType) item.getStateAs(DecimalType.class);
+		if (currentValue != null && currentValue != histValue ) {
+			total += currentValue.doubleValue();
+			quantity++;
+		}
+
+		if (quantity == 0 ){
+			return null;
+		}
+		else{
+			double average = total / quantity;
+			return new DecimalType(average);
+			
+		}
 	}
+
 	
 	/**
 	 * Gets the variance value of the state of a given <code>item</code> since a certain point in time. 
@@ -422,25 +434,39 @@ public class PersistenceExtensions implements ManagedService {
 		Iterator<HistoricItem> it = result.iterator();
 
 		DecimalType average = averageSince(item, timestamp, serviceName);
-				
-		DecimalType value = (DecimalType) item.getStateAs(DecimalType.class);
-		if (value == null) {
-			value = DecimalType.ZERO;
+		if (average == null) {
+			return null;
 		}
-
-		double variance = Math.pow(value.doubleValue(), 2);
-		int quantity = 1;
+				
+		double total = 0;
+		int quantity = 0;
+		DecimalType histValue = null;
 		while(it.hasNext()) {
 			State state = it.next().getState();
 			if (state instanceof DecimalType) {
-				value = (DecimalType) state;
-				variance += Math.pow(value.doubleValue()- average.doubleValue(), 2);
+				histValue = (DecimalType) state;
+				total += Math.pow(histValue.doubleValue()- average.doubleValue(), 2);
 				quantity++;
 			}
 		}
-		variance /= quantity;
 
-		return new DecimalType(variance);
+		// If the current value has not been persisted it should be included in the average as well.
+		// Assume that any current value different from the last historical value has not been 
+		// persisted and include it.
+		DecimalType currentValue = (DecimalType) item.getStateAs(DecimalType.class);
+		if (currentValue != null && currentValue != histValue ) {
+			total += Math.pow(currentValue.doubleValue()- average.doubleValue(), 2);
+			quantity++;
+		}
+
+		if (quantity == 0 ){
+			return null;
+		}
+		else{
+			double variance = total / quantity;
+			return new DecimalType(variance);
+		}
+
 	}
 
 	/**
@@ -469,7 +495,7 @@ public class PersistenceExtensions implements ManagedService {
 	 * @return the standard deviation of the value since the given point in time
 	 */
 	static public DecimalType deviationSince(Item item, AbstractInstant timestamp, String serviceName) {
-		DecimalType variance = varianceSince(item, timestamp, defaultService);
+		DecimalType variance = varianceSince(item, timestamp, serviceName);
 		double deviation = Math.sqrt(variance.doubleValue());
 		
  		return new DecimalType(deviation);
