@@ -99,6 +99,7 @@ public class MonitorSessionThread extends Thread {
 			return;
 		}
 
+		// Status request frame
 		if (frame.substring(0, 2).equalsIgnoreCase("*#")) {
 			// remove *# and ##
 			frame = frame.substring(2, length - 2);
@@ -412,9 +413,12 @@ public class MonitorSessionThread extends Thread {
 			// notify event
 			logger.info(OWNUtilities.getDateTime() + " Rx: " + frame + " "
 					+ "(" + messageDescription + ")");
-
+			
+			// Notify all the listeners an event has been received
+			pluginReference.notifyEvent(event);
 		}
 
+		// Command frame
 		if (!(frame.substring(0, 2).equalsIgnoreCase("*#"))
 				&& (frame.substring(0, 1).equalsIgnoreCase("*"))) {
 			// remove delimiter chars * and ##
@@ -440,12 +444,12 @@ public class MonitorSessionThread extends Thread {
 
 				// For virtual configuration we receive for light on 1000#1
 				// so assuming the second part is the what
-        		        what_parts = what.split("#");
-        			if (what_parts.length > 1) {
-                			virtual_where = true;
-                    			// take the last part for the what
-                    			what = what_parts[what_parts.length - 1];
-                		}
+                what_parts = what.split("#");
+                if (what_parts.length > 1) {
+                	virtual_where = true;
+                    // take the last part for the what
+                    what = what_parts[what_parts.length - 1];
+                }
 
 				switch (Integer.parseInt(what)) {
 				// Light OFF
