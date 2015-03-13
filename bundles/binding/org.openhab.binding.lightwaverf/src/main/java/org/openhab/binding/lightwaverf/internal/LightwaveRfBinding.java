@@ -42,7 +42,8 @@ public class LightwaveRfBinding extends
 		AbstractBinding<LightwaveRfBindingProvider> implements
 		LightwaveRFMessageListener, BindingChangeListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(LightwaveRfBinding.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(LightwaveRfBinding.class);
 
 	private static int TIME_BETWEEN_SENT_MESSAGES_MS = 100;
 	private static int TIMEOUT_FOR_OK_MESSAGES_MS = 500;
@@ -72,112 +73,130 @@ public class LightwaveRfBinding extends
 	 *            Configuration properties for this component obtained from the
 	 *            ConfigAdmin service
 	 */
-	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
+	public void activate(final BundleContext bundleContext,
+			final Map<String, Object> configuration) {
 		try {
 
-			 String ipString = (String) configuration.get("ip");
-			 if (StringUtils.isNotBlank(ipString)) {
-				 LIGHTWAVE_IP = ipString;
-			 }			
-			
-			 String portOneString = (String) configuration.get("receiveport");
-			 if (StringUtils.isNotBlank(portOneString)) {
-				 LIGHTWAVE_PORT_TO_RECEIVE_ON = Integer.parseInt(portOneString);
-			 }
-			
-			 String portTwoString = (String) configuration.get("sendport");
-			 if (StringUtils.isNotBlank(portTwoString)) {
-				 LIGHTWAVE_PORT_TO_SEND_TO = Integer.parseInt(portTwoString);
-			 }		 
-			 
-			 String sendRegistrationMessageString = (String) configuration.get("registeronstartup");
-			 if (StringUtils.isNotBlank(sendRegistrationMessageString)) {
-				 SEND_REGISTER_ON_STARTUP = Boolean.parseBoolean(sendRegistrationMessageString);
-			 }	
-			 
-			 String sendDelayString = (String) configuration.get("senddelay");
-			 if (StringUtils.isNotBlank(sendDelayString)) {
-				 TIME_BETWEEN_SENT_MESSAGES_MS = Integer.parseInt(sendDelayString);
-			 }	
-			 
-			 String okTimeoutString = (String) configuration.get("okTimeout");
-			 if (StringUtils.isNotBlank(okTimeoutString)) {
-				 TIMEOUT_FOR_OK_MESSAGES_MS = Integer.parseInt(okTimeoutString);
-			 }	
-			 
-			 logger.info("LightwaveBinding: IP[{}]", LIGHTWAVE_IP);
-			 logger.info("LightwaveBinding: ReceivePort[{}]", LIGHTWAVE_PORT_TO_RECEIVE_ON);
-			 logger.info("LightwaveBinding: Send Port[{}]", LIGHTWAVE_PORT_TO_SEND_TO);
-			 logger.info("LightwaveBinding: Register On Startup[{}]", SEND_REGISTER_ON_STARTUP);
-			 logger.info("LightwaveBinding: Send Delay [{}]", TIME_BETWEEN_SENT_MESSAGES_MS);
-			 logger.info("LightwaveBinding: Timeout for Ok Messages [{}]", TIMEOUT_FOR_OK_MESSAGES_MS);
-			 
-			 messageConvertor = new LightwaverfConvertor();
+			String ipString = (String) configuration.get("ip");
+			if (StringUtils.isNotBlank(ipString)) {
+				LIGHTWAVE_IP = ipString;
+			}
 
-			 // Create the Sender and Receiver
-			 receiverOnReceiverPort = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_RECEIVE_ON);
-			 receiverOnSendPort = new LightwaveRFReceiver(messageConvertor, LIGHTWAVE_PORT_TO_SEND_TO);
-			 sender = new LightwaveRFSender(LIGHTWAVE_IP, LIGHTWAVE_PORT_TO_SEND_TO, TIME_BETWEEN_SENT_MESSAGES_MS, TIMEOUT_FOR_OK_MESSAGES_MS);
+			String portOneString = (String) configuration.get("receiveport");
+			if (StringUtils.isNotBlank(portOneString)) {
+				LIGHTWAVE_PORT_TO_RECEIVE_ON = Integer.parseInt(portOneString);
+			}
 
-			 // Add Listeners
+			String portTwoString = (String) configuration.get("sendport");
+			if (StringUtils.isNotBlank(portTwoString)) {
+				LIGHTWAVE_PORT_TO_SEND_TO = Integer.parseInt(portTwoString);
+			}
+
+			String sendRegistrationMessageString = (String) configuration
+					.get("registeronstartup");
+			if (StringUtils.isNotBlank(sendRegistrationMessageString)) {
+				SEND_REGISTER_ON_STARTUP = Boolean
+						.parseBoolean(sendRegistrationMessageString);
+			}
+
+			String sendDelayString = (String) configuration.get("senddelay");
+			if (StringUtils.isNotBlank(sendDelayString)) {
+				TIME_BETWEEN_SENT_MESSAGES_MS = Integer
+						.parseInt(sendDelayString);
+			}
+
+			String okTimeoutString = (String) configuration.get("okTimeout");
+			if (StringUtils.isNotBlank(okTimeoutString)) {
+				TIMEOUT_FOR_OK_MESSAGES_MS = Integer.parseInt(okTimeoutString);
+			}
+
+			logger.info("LightwaveBinding: IP[{}]", LIGHTWAVE_IP);
+			logger.info("LightwaveBinding: ReceivePort[{}]",
+					LIGHTWAVE_PORT_TO_RECEIVE_ON);
+			logger.info("LightwaveBinding: Send Port[{}]",
+					LIGHTWAVE_PORT_TO_SEND_TO);
+			logger.info("LightwaveBinding: Register On Startup[{}]",
+					SEND_REGISTER_ON_STARTUP);
+			logger.info("LightwaveBinding: Send Delay [{}]",
+					TIME_BETWEEN_SENT_MESSAGES_MS);
+			logger.info("LightwaveBinding: Timeout for Ok Messages [{}]",
+					TIMEOUT_FOR_OK_MESSAGES_MS);
+
+			messageConvertor = new LightwaverfConvertor();
+
+			// Create the Sender and Receiver
+			receiverOnReceiverPort = new LightwaveRFReceiver(messageConvertor,
+					LIGHTWAVE_PORT_TO_RECEIVE_ON);
+			receiverOnSendPort = new LightwaveRFReceiver(messageConvertor,
+					LIGHTWAVE_PORT_TO_SEND_TO);
+			sender = new LightwaveRFSender(LIGHTWAVE_IP,
+					LIGHTWAVE_PORT_TO_SEND_TO, TIME_BETWEEN_SENT_MESSAGES_MS,
+					TIMEOUT_FOR_OK_MESSAGES_MS);
+
+			// Add Listeners
 			receiverOnReceiverPort.addListener(this);
 			receiverOnSendPort.addListener(this);
 			receiverOnReceiverPort.addListener(sender);
-			
+
 			// Start all the senders and receivers
 			receiverOnReceiverPort.start();
 			receiverOnSendPort.start();
 			sender.start();
 
-			
 			if (SEND_REGISTER_ON_STARTUP) {
-				sender.sendLightwaveCommand(messageConvertor.getRegistrationCommand());
+				sender.sendLightwaveCommand(messageConvertor
+						.getRegistrationCommand());
 			}
-			
-			// Now the sender is started and we have sent the registration message 
+
+			// Now the sender is started and we have sent the registration
+			// message
 			// start the Heat Poller
 			heatPoller = new LightwaveRfHeatPoller(sender, messageConvertor);
 
-			// Now register pollers if we have them. It might be that provider hasn't 
-			// been setup yet and in that case they'll be registered by the bindingChanged method
+			// Now register pollers if we have them. It might be that provider
+			// hasn't
+			// been setup yet and in that case they'll be registered by the
+			// bindingChanged method
 			for (LightwaveRfBindingProvider provider : providers) {
 				Collection<String> itemNames = provider.getItemNames();
 				registerHeatingPollers(provider, itemNames);
-			}			
-		
+			}
+
 		} catch (UnknownHostException e) {
 			logger.error("Error creating LightwaveRFSender", e);
 		} catch (SocketException e) {
 			logger.error("Error creating LightwaveRFSender/Receiver", e);
 		}
 	}
-	
+
 	@Override
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		super.bindingChanged(provider, itemName);
-		if(provider instanceof LightwaveRfBindingProvider){
+		if (provider instanceof LightwaveRfBindingProvider) {
 			logger.info("LightwaveRf Binding changed for: {}", itemName);
-			registerHeatingPoller((LightwaveRfBindingProvider) provider, itemName);
+			registerHeatingPoller((LightwaveRfBindingProvider) provider,
+					itemName);
 		}
 	}
 
-	private void registerHeatingPollers(LightwaveRfBindingProvider provider, Collection<String> itemNames){
-		for(String itemName : itemNames){
+	private void registerHeatingPollers(LightwaveRfBindingProvider provider,
+			Collection<String> itemNames) {
+		for (String itemName : itemNames) {
 			registerHeatingPoller(provider, itemName);
 		}
-	}	
-	
-	private void registerHeatingPoller(LightwaveRfBindingProvider provider, String itemName){
+	}
+
+	private void registerHeatingPoller(LightwaveRfBindingProvider provider,
+			String itemName) {
 		int poll = provider.getPollInterval(itemName);
-		if(poll > 0){
+		if (poll > 0) {
 			String roomId = provider.getRoomId(itemName);
 			heatPoller.addRoomToPoll(itemName, roomId, poll);
-		}
-		else{
+		} else {
 			heatPoller.removeRoomToPoll(itemName);
 		}
 	}
-	
+
 	/**
 	 * Called by the SCR when the configuration of a binding has been changed
 	 * through the ConfigAdmin service.
@@ -210,7 +229,7 @@ public class LightwaveRfBinding extends
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
 		heatPoller.stop();
-		
+
 		receiverOnReceiverPort.stop();
 		receiverOnSendPort.stop();
 		sender.stop();
@@ -227,10 +246,8 @@ public class LightwaveRfBinding extends
 	 */
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
-		// the code being executed when a command was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveCommand({},{}) is called!", itemName,command);
+		logger.debug("internalReceiveCommand({},{}) is called!", itemName,
+				command);
 		internalReceive(itemName, command);
 	}
 
@@ -239,10 +256,8 @@ public class LightwaveRfBinding extends
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
-		// the code being executed when a state was sent on the openHAB
-		// event bus goes here. This method is only called if one of the
-		// BindingProviders provide a binding for the given 'itemName'.
-		logger.debug("internalReceiveUpdate({},{}) is called!", itemName, newState);
+		logger.debug("internalReceiveUpdate({},{}) is called!", itemName,
+				newState);
 		internalReceive(itemName, newState);
 	}
 
@@ -250,7 +265,9 @@ public class LightwaveRfBinding extends
 		String roomId = getRoomId(itemName);
 		String deviceId = getDeviceId(itemName);
 		LightwaveRfType deviceType = getType(itemName);
-		LightwaveRFCommand lightwaverfMessageString = messageConvertor.convertToLightwaveRfMessage(roomId, deviceId, deviceType, command);
+		LightwaveRFCommand lightwaverfMessageString = messageConvertor
+				.convertToLightwaveRfMessage(roomId, deviceId, deviceType,
+						command);
 		sender.sendLightwaveCommand(lightwaverfMessageString);
 
 	}
@@ -274,7 +291,7 @@ public class LightwaveRfBinding extends
 		}
 		return null;
 	}
-	
+
 	private LightwaveRfType getType(String itemName) {
 		for (LightwaveRfBindingProvider provider : providers) {
 			LightwaveRfType type = provider.getTypeForItemName(itemName);
@@ -285,32 +302,38 @@ public class LightwaveRfBinding extends
 		return null;
 	}
 
-	private void publishUpdate(List<String> itemNames, LightwaveRFCommand message, LightwaveRfBindingProvider provider) {
-		logger.info("Publishing Update {} to {}",message, itemNames);
+	private void publishUpdate(List<String> itemNames,
+			LightwaveRFCommand message, LightwaveRfBindingProvider provider) {
+		logger.debug("Publishing Update {} to {}", message, itemNames);
 		boolean published = false;
-		if (itemNames != null && !itemNames.isEmpty()) {
+		if (itemNames != null) {
 			for (String itemName : itemNames) {
-				LightwaveRfType deviceType = provider.getTypeForItemName(itemName);
+				LightwaveRfType deviceType = provider
+						.getTypeForItemName(itemName);
 				State state = message.getState(deviceType);
-				if(state != null){
-					logger.info("Update from LightwaveRf ItemName[{}], State[{}]", itemName, state);
+				if (state != null) {
+					logger.info(
+							"Update from LightwaveRf ItemName[{}], State[{}]",
+							itemName, state);
 					published = true;
 					eventPublisher.postUpdate(itemName, state);
-				}
-				else{
-					logger.info("State was null for {} type {}, message {}",itemName, deviceType, message);
+				} else {
+					logger.info("State was null for {} type {}, message {}",
+							itemName, deviceType, message);
 				}
 			}
-			if (!published) {
-				logger.warn("No item for incoming message[{}]", message);
-			}
+		}
+		if (!published) {
+			logger.warn("No item for incoming message[{}]",
+					message.getLightwaveRfCommandString());
 		}
 	}
 
 	@Override
 	public void roomDeviceMessageReceived(LightwaveRfRoomDeviceMessage message) {
 		for (LightwaveRfBindingProvider provider : providers) {
-			List<String> itemNames = provider.getBindingItemsForRoomDevice(message.getRoomId(), message.getDeviceId());
+			List<String> itemNames = provider.getBindingItemsForRoomDevice(
+					message.getRoomId(), message.getDeviceId());
 			publishUpdate(itemNames, message, provider);
 		}
 	}
@@ -318,7 +341,8 @@ public class LightwaveRfBinding extends
 	@Override
 	public void roomMessageReceived(LightwaveRfRoomMessage message) {
 		for (LightwaveRfBindingProvider provider : providers) {
-			List<String> itemNames = provider.getBindingItemsForRoom(message.getRoomId());
+			List<String> itemNames = provider.getBindingItemsForRoom(message
+					.getRoomId());
 			publishUpdate(itemNames, message, provider);
 		}
 	}
@@ -326,7 +350,8 @@ public class LightwaveRfBinding extends
 	@Override
 	public void serialMessageReceived(LightwaveRfSerialMessage message) {
 		for (LightwaveRfBindingProvider provider : providers) {
-			List<String> itemNames = provider.getBindingItemsForSerial(message.getSerial());
+			List<String> itemNames = provider.getBindingItemsForSerial(message
+					.getSerial());
 			publishUpdate(itemNames, message, provider);
 		}
 	}
@@ -335,7 +360,7 @@ public class LightwaveRfBinding extends
 	public void okMessageReceived(LightwaveRfCommandOk message) {
 		// Do nothing
 	}
-	
+
 	@Override
 	public void heatInfoMessageReceived(LightwaveRfHeatInfoRequest command) {
 		// Do nothing
@@ -344,7 +369,8 @@ public class LightwaveRfBinding extends
 	@Override
 	public void versionMessageReceived(LightwaveRfVersionMessage message) {
 		for (LightwaveRfBindingProvider provider : providers) {
-			List<String> itemNames = provider.getBindingItemsForType(LightwaveRfType.VERSION);
+			List<String> itemNames = provider
+					.getBindingItemsForType(LightwaveRfType.VERSION);
 			publishUpdate(itemNames, message, provider);
 		}
 	}
@@ -367,5 +393,4 @@ public class LightwaveRfBinding extends
 	void setLightwaveRfConvertor(LightwaverfConvertor mockLightwaveRfConvertor) {
 		this.messageConvertor = mockLightwaveRfConvertor;
 	}
-
 }

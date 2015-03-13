@@ -13,13 +13,6 @@ public class LightwaveRFSenderTest {
 	@Ignore
 	public void test() throws Exception {
 		
-/*
-20:03:07.104 DEBUG o.o.b.l.i.LightwaveRfBinding[:203]- internalReceiveCommand(Kitchen_Cupboard,OFF) is called!
-20:03:07.114 DEBUG o.o.b.l.i.LightwaveRfBinding[:203]- internalReceiveCommand(LivingRoom_AnglePoise,OFF) is called!
-20:03:07.115 DEBUG o.o.b.l.i.LightwaveRfBinding[:203]- internalReceiveCommand(LivingRoom_CubeLight,OFF) is called!
-20:03:07.129 DEBUG o.o.b.l.i.LightwaveRfBinding[:203]- internalReceiveCommand(LivingRoom_DiningTable,OFF) is called!
-20:03:07.151 DEBUG o.o.b.l.i.LightwaveRfBinding[:203]- internalReceiveCommand(Hallway_GroundFloor,OFF) is called!
- */
 		LightwaverfConvertor convertor = new LightwaverfConvertor();
 
 		LightwaveRFReceiver receiver2 = new LightwaveRFReceiver(convertor, 9761);

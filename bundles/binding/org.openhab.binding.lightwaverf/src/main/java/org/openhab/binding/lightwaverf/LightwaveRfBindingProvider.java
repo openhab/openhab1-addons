@@ -18,9 +18,10 @@ import org.openhab.core.binding.BindingProvider;
  * @since 1.7.0
  */
 public interface LightwaveRfBindingProvider extends BindingProvider {
-	
+
 	/**
 	 * Returns the Lightwave DeviceId for this itemString
+	 * 
 	 * @param itemString
 	 * @return
 	 */
@@ -28,14 +29,16 @@ public interface LightwaveRfBindingProvider extends BindingProvider {
 
 	/**
 	 * Returns the Lightwave DeviceId for this itemString
+	 * 
 	 * @param itemString
 	 * @return
 	 */
 	String getRoomId(String itemString);
-		
+
 	/**
-	 * Returns a list of all items that match this roomId, deviceId.
-	 * If deviceId is null then will return all items that match just the room
+	 * Returns a list of all items that match this roomId, deviceId. If deviceId
+	 * is null then will return all items that match just the room
+	 * 
 	 * @param roomId
 	 * @param deviceId
 	 * @return
@@ -44,6 +47,7 @@ public interface LightwaveRfBindingProvider extends BindingProvider {
 
 	/**
 	 * Returns a list of all items that match this room.
+	 * 
 	 * @param roomId
 	 * @return
 	 */
@@ -51,13 +55,15 @@ public interface LightwaveRfBindingProvider extends BindingProvider {
 
 	/**
 	 * Returns a list of all items that match this serial.
+	 * 
 	 * @param serial
 	 * @return
 	 */
 	List<String> getBindingItemsForSerial(String serial);
-	
+
 	/**
 	 * Returns a list of all items that match this Type
+	 * 
 	 * @param version
 	 * @return
 	 */
@@ -65,6 +71,7 @@ public interface LightwaveRfBindingProvider extends BindingProvider {
 
 	/**
 	 * Returns the type for an item by itemName
+	 * 
 	 * @param itemName
 	 * @return
 	 */
@@ -72,6 +79,7 @@ public interface LightwaveRfBindingProvider extends BindingProvider {
 
 	/**
 	 * Get the poll interval for the given itemName
+	 * 
 	 * @param itemName
 	 * @return
 	 */
