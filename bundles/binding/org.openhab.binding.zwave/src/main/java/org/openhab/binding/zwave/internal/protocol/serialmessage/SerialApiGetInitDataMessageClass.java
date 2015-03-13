@@ -36,7 +36,7 @@ public class SerialApiGetInitDataMessageClass extends ZWaveCommandProcessor {
 	
 	@Override
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		logger.debug(String.format("Got MessageSerialApiGetInitData response."));
+		logger.debug("Got MessageSerialApiGetInitData response.");
 		int nodeBytes = incomingMessage.getMessagePayloadByte(2);
 		
 		if (nodeBytes != NODE_BYTES) {

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>LB60Z-1</Model>
+	<Label lang="en">Dimmable LED Light Bulb</Label>
+	<CommandClasses>
+		<Class>
+			<id>0x20</id>
+		</Class>
+		<Class>
+			<id>0x26</id>
+		</Class>
+		<Class>
+			<id>0x27</id>
+		</Class>
+		<Class>
+			<id>0x59</id>
+		</Class>
+		<Class>
+			<id>0x5A</id>
+		</Class>
+		<Class>
+			<id>0x5E</id>
+		</Class>
+		<Class>
+			<id>0x70</id>
+		</Class>
+		<Class>
+			<id>0x72</id>
+		</Class>
+		<Class>
+			<id>0x73</id>
+		</Class>
+		<Class>
+			<id>0x7A</id>
+		</Class>
+		<Class>
+			<id>0x85</id>
+		</Class>
+		<Class>
+			<id>0x86</id>
+		</Class>
+	</CommandClasses>
+		<Configuration>
+		<Parameter>
+			<Index>1</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Label lang="en">Dim Level Memory</Label>
+			<Help lang="en">By default, the LB60Z-1 bulb will go to full brightness when turned on. To have the bulb turn on to the last dim level setting, set parameter 1 to 1.</Help>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Disable dim level memory</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Enable dim level memory</Label>
+			</Item>
+		</Parameter>
+	</Configuration>
+		<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<Label lang="en">Lifeline</Label>
+			<SetToController>true</SetToController>
+		</Group>
+	</Associations>
+</Product>

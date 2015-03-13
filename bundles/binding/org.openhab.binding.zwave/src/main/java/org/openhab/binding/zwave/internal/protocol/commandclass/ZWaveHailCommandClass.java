@@ -13,7 +13,7 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,22 +60,25 @@ public class ZWaveHailCommandClass extends ZWaveCommandClass {
 	public void handleApplicationCommandRequest(SerialMessage serialMessage, 
 			int offset, int endpoint) {
 		logger.trace("Handle Message Manufacture Specific Request");
-		logger.debug(String.format("Received Hail command for Node ID = %d", this.getNode().getNodeId()));
+		logger.debug("NODE {}: Received Hail command (v{})", this.getNode().getNodeId(), this.getVersion());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
 			case HAIL:
-				logger.trace("Process Hail command");				
-				logger.debug(String.format("Request an update of the dynamic values for node id %d", this.getNode().getNodeId()));
+				logger.trace("Process Hail command");
 				
-				// We only rerequest dynamic values for nodes that are completely initialized.
-				if (this.getNode().getNodeStage() != NodeStage.DONE)
+				logger.debug("NODE {}: Request an update of the dynamic values", this.getNode().getNodeId());
+				
+				// We only re-request dynamic values for nodes that are completely initialized.
+				if (this.getNode().getNodeState() != ZWaveNodeState.ALIVE || this.getNode().isInitializationComplete() == false) {
 					return;
+				}
 				
 				getController().pollNode(getNode());
 				
 				break;
 			default:
-			logger.warn(String.format("Unsupported Command 0x%02X for command class %s (0x%02X).", 
+			logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).",
+					this.getNode().getNodeId(),
 					command, 
 					this.getCommandClass().getLabel(),
 					this.getCommandClass().getKey()));

@@ -14,6 +14,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.openhab.binding.insteonplm.InsteonPLMBindingConfig;
+import org.openhab.binding.insteonplm.internal.device.DeviceFeatureListener.StateChangeType;
 import org.openhab.binding.insteonplm.internal.driver.Driver;
 import org.openhab.binding.insteonplm.internal.driver.ModemDBEntry;
 import org.openhab.binding.insteonplm.internal.message.FieldException;
@@ -67,7 +68,14 @@ public abstract class CommandHandler {
 		}
 		return def;
 	}
-
+	/**
+	 * Shorthand to return class name for logging purposes
+	 * @return name of the class
+	 */
+	protected String nm() {
+		return (this.getClass().getSimpleName());
+	}
+	
 	protected int getMaxLightLevel(InsteonPLMBindingConfig conf, int defaultLevel) {
 		HashMap<String, String> params = conf.getParameters();
 		if (conf.getFeature().contains("dimmer") && params.containsKey("dimmermax")) {
@@ -114,7 +122,7 @@ public abstract class CommandHandler {
 		WarnCommandHandler(DeviceFeature f) { super(f); }
 		@Override
 		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
-			logger.warn("command {} is not implemented yet!", cmd);
+			logger.warn("{}: command {} is not implemented yet!", nm(), cmd);
 		}
 	}
 
@@ -136,19 +144,19 @@ public abstract class CommandHandler {
 					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x11, (byte) level,
 								s_getGroup(conf));
 					dev.enqueueMessage(m, m_feature);
-					logger.info("LightOnOffCommandHandler: sent msg to switch {} to {}", dev.getAddress(),
+					logger.info("{}: sent msg to switch {} to {}", nm(), dev.getAddress(),
 							level == 0xff ? "on" : level);
 				} else if (cmd == OnOffType.OFF) {
 					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x13, (byte) 0x00,
 									s_getGroup(conf));
 					dev.enqueueMessage(m, m_feature);
-					logger.info("LightOnOffCommandHandler: sent msg to switch {} off", dev.getAddress());
+					logger.info("{}: sent msg to switch {} off", nm(), dev.getAddress());
 				}
 				// expect to get a direct ack after this!
 			} catch (IOException e) {
-				logger.error("command send i/o error: ", e);
+				logger.error("{}: command send i/o error: ", nm(), e);
 			} catch (FieldException e) {
-				logger.error("command send message creation error ", e);
+				logger.error("{}: command send message creation error ", nm(), e);
 			}
 		}
 	}
@@ -184,19 +192,19 @@ public abstract class CommandHandler {
 					m.setByte("userData2", (byte) 0x09);
 					m.setByte("userData3", (byte) 0x01);
 					dev.enqueueMessage(m, m_feature);
-					logger.info("LEDOnOffCommandHandler: sent msg to switch {} on", dev.getAddress());
+					logger.info("{}: sent msg to switch {} on", nm(), dev.getAddress());
 				} else if (cmd == OnOffType.OFF) {
 					Msg m = dev.makeExtendedMessage((byte) 0x1f, (byte)0x2e,  (byte)0x00);
 					m.setByte("userData1", (byte)button);
 					m.setByte("userData2", (byte) 0x09);
 					m.setByte("userData3", (byte) 0x00);
 					dev.enqueueMessage(m, m_feature);
-					logger.info("LEDOnOffCommandHandler: sent msg to switch {} off", dev.getAddress());
+					logger.info("{}: sent msg to switch {} off", nm(), dev.getAddress());
 				}
 			} catch (IOException e) {
-				logger.error("command send i/o error: ", e);
+				logger.error("{}: command send i/o error: ", nm(), e);
 			} catch (FieldException e) {
-				logger.error("command send message creation error ", e);
+				logger.error("{}: command send message creation error ", nm(), e);
 			}
 		}
 	}
@@ -216,12 +224,12 @@ public abstract class CommandHandler {
 				Msg mcmd = dev.makeX10Message(houseCommandCode,(byte)0x80); // send command code
 				dev.enqueueMessage(mcmd, m_feature);
 					String onOff = cmd == OnOffType.ON ? "ON" : "OFF";
-					logger.info("X10OnOffCommandHandler: sent msg to switch {} {}", dev.getAddress(), onOff);
+					logger.info("{}: sent msg to switch {} {}", nm(), dev.getAddress(), onOff);
 				}
 			} catch (IOException e) {
-				logger.error("command send i/o error: ", e);
+				logger.error("{}: command send i/o error: ", nm(), e);
 			} catch (FieldException e) {
-				logger.error("command send message creation error ", e);
+				logger.error("{}: command send message creation error ", nm(), e);
 			}
 		}
 	}
@@ -240,7 +248,7 @@ public abstract class CommandHandler {
 				Msg munit = dev.makeX10Message(houseUnitCode, (byte)0x00); // send unit code
 				dev.enqueueMessage(munit, m_feature);
 				PercentType pc = (PercentType)cmd;
-				logger.debug("changing level of {} to {}", dev.getAddress(), pc.intValue());
+				logger.debug("{}: changing level of {} to {}", nm(), dev.getAddress(), pc.intValue());
 				int level = (pc.intValue() * 32) / 100;
 				byte cmdCode = (level >= 16) ?
 							X10.Command.PRESET_DIM_2.code() : X10.Command.PRESET_DIM_1.code();
@@ -251,9 +259,9 @@ public abstract class CommandHandler {
 				Msg mcmd = dev.makeX10Message(cmdCode,(byte)0x80); // send command code
 				dev.enqueueMessage(mcmd, m_feature);
 			} catch (IOException e) {
-				logger.error("command send i/o error: ", e);
+				logger.error("{}: command send i/o error: ", nm(), e);
 			} catch (FieldException e) {
-				logger.error("command send message creation error ", e);
+				logger.error("{}: command send message creation error ", nm(), e);
 			}
 		}
 		static private final int [] s_X10CodeForLevel = {0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
@@ -275,13 +283,12 @@ public abstract class CommandHandler {
 					Msg mcmd = dev.makeX10Message(houseCommandCode,(byte)0x80); // send command code
 					dev.enqueueMessage(mcmd, m_feature);
 					String bd = cmd == IncreaseDecreaseType.INCREASE ? "BRIGHTEN" : "DIM";
-					logger.info("X10IncreaseDecreaseCommandHandler: sent msg to switch {} {}",
-								dev.getAddress(), bd);
+					logger.info("{}: sent msg to switch {} {}", nm(), dev.getAddress(), bd);
 				}
 			} catch (IOException e) {
-				logger.error("command send i/o error: ", e);
+				logger.error("{}: command send i/o error: ", nm(), e);
 			} catch (FieldException e) {
-				logger.error("command send message creation error ", e);
+				logger.error("{}: command send message creation error ", nm(), e);
 			}
 		}
 	}
@@ -294,11 +301,11 @@ public abstract class CommandHandler {
 				if (cmd == OnOffType.ON) {
 					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x11, (byte) 0xff);
 					dev.enqueueMessage(m, m_feature);
-					logger.info("IOLincOnOffCommandHandler: sent msg to switch {} on", dev.getAddress());
+					logger.info("{}: sent msg to switch {} on", nm(), dev.getAddress());
 				} else if (cmd == OnOffType.OFF) {
 					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x13, (byte) 0x00);
 					dev.enqueueMessage(m, m_feature);
-					logger.info("IOLincOnOffCommandHandler: sent msg to switch {} off", dev.getAddress());
+					logger.info("{}: sent msg to switch {} off", nm(), dev.getAddress());
 				}
 				// This used to be configurable, but was made static to make
 				// the architecture of the binding cleaner.
@@ -315,31 +322,31 @@ public abstract class CommandHandler {
 					}
 				}, delay);
 			} catch (IOException e) {
-				logger.error("command send i/o error: ", e);
+				logger.error("{}: command send i/o error: ", nm(), e);
 			} catch (FieldException e) {
-				logger.error("command send message creation error: ", e);
+				logger.error("{}: command send message creation error: ", nm(), e);
 			}
 		}
 	}
 
-	public static class IncreaseDecreaseHandler extends CommandHandler {
-		IncreaseDecreaseHandler(DeviceFeature f) { super(f); }
+	public static class IncreaseDecreaseCommandHandler extends CommandHandler {
+		IncreaseDecreaseCommandHandler(DeviceFeature f) { super(f); }
 		@Override
 		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
 			try {
 				if (cmd == IncreaseDecreaseType.INCREASE) {
 					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x15, (byte) 0x00);
 					dev.enqueueMessage(m, m_feature);
-					logger.info("IncreaseDecreaseHandler: sent msg to brighten {}", dev.getAddress());
+					logger.info("{}: sent msg to brighten {}", nm(), dev.getAddress());
 				} else if (cmd == IncreaseDecreaseType.DECREASE) {
 					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x16, (byte) 0x00);
 					dev.enqueueMessage(m, m_feature);
-					logger.info("IncreaseDecreaseHandler: sent msg to dimm {}", dev.getAddress());
+					logger.info("{}: sent msg to dimm {}", nm(), dev.getAddress());
 				}
 			} catch (IOException e) {
-				logger.error("command send i/o error: ", e);
+				logger.error("{}: command send i/o error: ", nm(), e);
 			} catch (FieldException e) {
-				logger.error("command send message creation error ", e);
+				logger.error("{}: command send message creation error ", nm(), e);
 			}
 		}
 	}
@@ -355,19 +362,55 @@ public abstract class CommandHandler {
 					level = getMaxLightLevel(conf, level);
 					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x11, (byte) level);
 					dev.enqueueMessage(m, m_feature);
-					logger.info("PercentHandler: sent msg to set {} to {}", dev.getAddress(), level);
+					logger.info("{}: sent msg to set {} to {}", nm(), dev.getAddress(), level);
 				} else { // switch off
 					Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x13, (byte) 0x00);
 					dev.enqueueMessage(m, m_feature);
-					logger.info("PercentHandler: sent msg to set {} to zero by switching off", dev.getAddress());
+					logger.info("{}: sent msg to set {} to zero by switching off", nm(), dev.getAddress());
 				}
 			} catch (IOException e) {
-				logger.error("command send i/o error: ", e);
+				logger.error("{}: command send i/o error: ", nm(), e);
 			} catch (FieldException e) {
-				logger.error("command send message creation error ", e);
+				logger.error("{}: command send message creation error ", nm(), e);
 			}
 		}
 	}
+
+	public static class PowerMeterCommandHandler extends CommandHandler {
+		PowerMeterCommandHandler(DeviceFeature f) { super(f); }
+		@Override
+		public void handleCommand(InsteonPLMBindingConfig conf, Command cmd, InsteonDevice dev) {
+			String cmdParam = conf.getParameter("cmd");
+			if (cmdParam == null) {
+				logger.error("{} ignoring cmd {} because no cmd= is configured!", nm(), cmd);
+				return;
+			}
+			try {
+				if (cmd == OnOffType.ON) {
+					if (cmdParam.equals("reset")) {
+						Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x80, (byte) 0x00);
+						dev.enqueueMessage(m, m_feature);
+						logger.info("{}: sent reset msg to power meter {}", nm(), dev.getAddress());
+						m_feature.publish(OnOffType.OFF, StateChangeType.ALWAYS, "cmd", "reset");
+					} else if (cmdParam.equals("update")) {
+						Msg m = dev.makeStandardMessage((byte) 0x0f, (byte) 0x82, (byte) 0x00);
+						dev.enqueueMessage(m, m_feature);
+						logger.info("{}: sent update msg to power meter {}", nm(), dev.getAddress());
+						m_feature.publish(OnOffType.OFF, StateChangeType.ALWAYS, "cmd", "update");
+					} else {
+						logger.error("{}: ignoring unknown cmd {} for power meter {}", nm(), cmdParam, dev.getAddress());
+					}
+				} else if (cmd == OnOffType.OFF) {
+					logger.info("{}: ignoring off request for power meter {}", nm(), dev.getAddress());
+				}
+			} catch (IOException e) {
+				logger.error("{}: command send i/o error: ", nm(), e);
+			} catch (FieldException e) {
+				logger.error("{}: command send message creation error ", nm(), e);
+			}
+		}
+	}
+
 	public static class ModemCommandHandler extends CommandHandler {
 		ModemCommandHandler(DeviceFeature f) { super(f); }
 		@Override
@@ -375,12 +418,12 @@ public abstract class CommandHandler {
 			if (!(cmd instanceof OnOffType) || ((OnOffType) cmd) != OnOffType.ON) return;
 			String removeAddr = conf.getParameters().get("remove_address");
 			if (!InsteonAddress.s_isValid(removeAddr)) {
-				logger.debug("invalid remove address: {}", removeAddr);
+				logger.debug("{}: invalid remove address: {}", nm(), removeAddr);
 				return;
 			}
 			InsteonAddress addr = new InsteonAddress(removeAddr);
 			if (removeFromModem(addr)) {
-				logger.debug("successfully removed device {} from modem db", addr);
+				logger.debug("{} successfully removed device {} from modem db", nm(), addr);
 			}
 		}
 
@@ -402,15 +445,15 @@ public abstract class CommandHandler {
 						m.setByte("linkData3", (byte)0x00);
 						dbe.getPort().writeMessage(m);
 						removed = true;
-						logger.info("wrote erase message: {}", m);
+						logger.info("{}: wrote erase message: {}", nm(), m);
 					}
 				} else {
-					logger.warn("address {} not found in modem database!", aAddr);
+					logger.warn("{}: address {} not found in modem database!", nm(), aAddr);
 				}
 			} catch (FieldException e) {
-				logger.error("field exception: ", e);
+				logger.error("{}: field exception: ", nm(), e);
 			} catch (IOException e) {
-				logger.error("i/o exception: ", e);
+				logger.error("{}: i/o exception: ", nm(), e);
 			} finally {
 				driver.unlockModemDBEntries();
 			}

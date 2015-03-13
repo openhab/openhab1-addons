@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
@@ -33,7 +32,7 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(IdentifyNodeMessageClass.class);
 
 	public SerialMessage doRequest(int nodeId) {
-		SerialMessage newMessage = new SerialMessage(nodeId, SerialMessageClass.IdentifyNode, SerialMessageType.Request, SerialMessageClass.IdentifyNode, SerialMessagePriority.High);
+		SerialMessage newMessage = new SerialMessage(SerialMessageClass.IdentifyNode, SerialMessageType.Request, SerialMessageClass.IdentifyNode, SerialMessagePriority.High);
     	byte[] newPayload = { (byte) nodeId };
     	newMessage.setMessagePayload(newPayload);
     	return newMessage;
@@ -43,21 +42,27 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 	public boolean handleResponse(ZWaveController zController, SerialMessage lastSentMessage, SerialMessage incomingMessage) {
 		logger.trace("Handle Message Get Node ProtocolInfo Response");
 		
+		// Check that this request is consistent with the response
+		if(lastSentMessage.getMessageClass() != SerialMessageClass.IdentifyNode) {
+			logger.warn("Got IdentifyNodeMessage without request, ignoring. Last message was {}.", lastSentMessage.getMessageClass());
+			return false;
+		}
+
 		int nodeId = lastSentMessage.getMessagePayloadByte(0);
 		logger.debug("NODE {}: ProtocolInfo", nodeId);
-		
+
 		ZWaveNode node = zController.getNode(nodeId);
-		
+
 		boolean listening = (incomingMessage.getMessagePayloadByte(0) & 0x80)!=0 ? true : false;
 		boolean routing = (incomingMessage.getMessagePayloadByte(0) & 0x40)!=0 ? true : false;
 		int version = (incomingMessage.getMessagePayloadByte(0) & 0x07) + 1;
 		boolean frequentlyListening = (incomingMessage.getMessagePayloadByte(1) & 0x60)!= 0 ? true : false;
-		
+
 		logger.debug("NODE {}: Listening = {}", nodeId, listening);
 		logger.debug("NODE {}: Routing = {}", nodeId, routing);
 		logger.debug("NODE {}: Version = {}", nodeId, version);
-		logger.debug("NODE {}: fLIRS = {}", nodeId, frequentlyListening);
-		
+		logger.debug("NODE {}: FLIRS = {}", nodeId, frequentlyListening);
+
 		node.setListening(listening);
 		node.setRouting(routing);
 		node.setVersion(version);
@@ -68,21 +73,21 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 			logger.error(String.format("NODE %d: Basic device class 0x%02x not found", nodeId, incomingMessage.getMessagePayloadByte(3)));
 			return false;
 		}
-		logger.debug(String.format("NODE %d: Basic = %s 0x%02x", nodeId, basic.getLabel(), basic.getKey()));
+		logger.debug("NODE {}: Basic = {}", nodeId, basic.getLabel());
 
 		Generic generic = Generic.getGeneric(incomingMessage.getMessagePayloadByte(4));
 		if (generic == null) {
 			logger.error(String.format("NODE %d: Generic device class 0x%02x not found", nodeId, incomingMessage.getMessagePayloadByte(4)));
 			return false;
 		}
-		logger.debug(String.format("NODE %d: Generic = %s 0x%02x", nodeId, generic.getLabel(), generic.getKey()));
+		logger.debug("NODE {}: Generic = {}", nodeId, generic.getLabel());
 
 		Specific specific = Specific.getSpecific(generic, incomingMessage.getMessagePayloadByte(5));
 		if (specific == null) {
 			logger.error(String.format("NODE %d: Specific device class 0x%02x not found", nodeId, incomingMessage.getMessagePayloadByte(5)));
 			return false;
 		}
-		logger.debug(String.format("NODE %d: Specific = %s 0x%02x", nodeId, specific.getLabel(), specific.getKey()));
+		logger.debug("NODE {}: Specific = {}", nodeId, specific.getLabel());
 		
 		ZWaveDeviceClass deviceClass = node.getDeviceClass();
 		deviceClass.setBasicDeviceClass(basic);
@@ -96,22 +101,21 @@ public class IdentifyNodeMessageClass  extends ZWaveCommandProcessor {
 		// Add mandatory command classes as specified by it's generic device class.
 		for (CommandClass commandClass : generic.getMandatoryCommandClasses()) {
 			ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
-			if (zwaveCommandClass != null)
+			if (zwaveCommandClass != null) {
 				zController.getNode(nodeId).addCommandClass(zwaveCommandClass);
+			}
 		}
 
 		// Add mandatory command classes as specified by it's specific device class.
 		for (CommandClass commandClass : specific.getMandatoryCommandClasses()) {
 			ZWaveCommandClass zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), node, zController);
-			if (zwaveCommandClass != null)
+			if (zwaveCommandClass != null) {
 				node.addCommandClass(zwaveCommandClass);
+			}
 		}
 
-    	// advance node stage of the current node.
-		node.advanceNodeStage(NodeStage.PING);
-		
 		checkTransactionComplete(lastSentMessage, incomingMessage);
 
-		return false;
+		return true;
 	}
 }

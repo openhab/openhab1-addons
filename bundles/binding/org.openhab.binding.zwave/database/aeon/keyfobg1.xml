@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>KeyFobG5</Model>
+	<Label lang="en">4 button keyfob</Label>
+	<CommandClasses>
+		<Class><id>0x20</id></Class>
+		<Class><id>0x59</id></Class>
+		<Class><id>0x5a</id></Class>
+		<Class><id>0x5e</id></Class>
+		<Class><id>0x70</id></Class>
+		<Class><id>0x72</id></Class>
+		<Class><id>0x73</id></Class>
+		<Class><id>0x80</id></Class>
+		<Class><id>0x84</id></Class>
+		<Class><id>0x85</id></Class>
+		<Class><id>0x86</id></Class>
+		<Class><id>0x2b</id></Class>
+		<Class><id>0x26</id></Class>
+	</CommandClasses>
+
+	<Configuration>
+		<Parameter>
+			<Index>250</Index>
+			<Type>list</Type>
+			<Default>0</Default>
+			<Size>1</Size>
+			<Item>
+				<Value>0</Value>
+				<Label lang="en">Group Mode</Label>
+			</Item>
+			<Item>
+				<Value>1</Value>
+				<Label lang="en">Scene Mode</Label>
+			</Item>
+			<Label lang="en">Use Mode setting</Label>
+			<Help lang="en">Defines the Use Mode setting of the fob</Help>
+		</Parameter>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>5</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Group 1</Label>
+		</Group>
+	</Associations>
+</Product>

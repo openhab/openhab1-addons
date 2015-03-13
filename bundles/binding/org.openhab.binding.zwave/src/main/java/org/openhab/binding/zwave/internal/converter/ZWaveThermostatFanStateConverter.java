@@ -10,7 +10,7 @@ package org.openhab.binding.zwave.internal.converter;
 
 import java.util.Map;
 
-import org.openhab.binding.zwave.internal.converter.state.BigDecimalDecimalTypeConverter;
+import org.openhab.binding.zwave.internal.converter.state.IntegerDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
@@ -45,25 +45,18 @@ ZWaveCommandClassConverter<ZWaveThermostatFanStateCommandClass> {
 	public ZWaveThermostatFanStateConverter(ZWaveController controller,
 			EventPublisher eventPublisher) {
 		super(controller, eventPublisher);
-		this.addStateConverter(new BigDecimalDecimalTypeConverter());
+		this.addStateConverter(new IntegerDecimalTypeConverter());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	void executeRefresh(ZWaveNode node,
+	SerialMessage executeRefresh(ZWaveNode node,
 			ZWaveThermostatFanStateCommandClass commandClass, int endpointId,
 			Map<String, String> arguments) {
 		logger.debug("NODE {}: Generating poll message for {} endpoint {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-		SerialMessage serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
-
-		if (serialMessage == null) {
-			logger.warn("NODE {}: Generating message failed for command class = {}, endpoint = {}", node.getNodeId(), commandClass.getCommandClass().getLabel(), endpointId);
-			return;
-		}
-
-		this.getController().sendData(serialMessage);
+		return node.encapsulate(commandClass.getValueMessage(), commandClass, endpointId);
 	}
 
 	/**

@@ -113,7 +113,7 @@ public class MysqlPersistenceService implements QueryablePersistenceService, Man
 	
 	public void activate() {
 		// Initialise the type array
-		sqlTypes.put("COLORITEM", "CHAR(25)");
+		sqlTypes.put("COLORITEM", "VARCHAR(70)");
 		sqlTypes.put("CONTACTITEM", "VARCHAR(6)");
 		sqlTypes.put("DATETIMEITEM", "DATETIME(3)");
 		sqlTypes.put("DIMMERITEM", "TINYINT");
