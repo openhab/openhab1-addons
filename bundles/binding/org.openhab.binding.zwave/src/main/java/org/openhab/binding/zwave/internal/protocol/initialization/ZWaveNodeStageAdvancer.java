@@ -721,11 +721,13 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
 					if(group.SetToController == true) {
 						// Check if we're already a member
 						if(associationCls.getGroupMembers(group.Index).contains(controller.getOwnNodeId())) {
-							logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - ASSOCIATION already set for group {}", node.getNodeId(), group.Index);
+							logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - ASSOCIATION set for group {}", node.getNodeId(), group.Index);
 						}
 						else {
 							logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - Adding ASSOCIATION to group {}", node.getNodeId(), group.Index);
+							// Set the association, and request the update so we confirm if it's set 
 							addToQueue(associationCls.setAssociationMessage(group.Index, controller.getOwnNodeId()));
+							addToQueue(associationCls.getAssociationMessage(group.Index));
 						}
 					}
 				}
