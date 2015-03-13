@@ -302,7 +302,7 @@ public class LightwaveRfBinding extends
 				}
 			}
 			if (!published) {
-				logger.warn("No item for incoming message[{}]", message);
+				logger.warn("No item for incoming message[{}]", message.getLightwaveRfCommandString());
 			}
 		}
 	}
