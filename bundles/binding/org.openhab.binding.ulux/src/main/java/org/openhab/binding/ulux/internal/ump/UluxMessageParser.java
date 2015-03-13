@@ -73,7 +73,7 @@ public class UluxMessageParser {
 		// 14: 0100, design id, e.g. "1"
 		final short designId = buffer.getShort();
 
-		if (buffer.limit() != length) {
+		if ((short) buffer.limit() != length) {
 			throw new UluxException("Datagram length does not match!");
 		}
 
