@@ -367,5 +367,4 @@ public class LightwaveRfBinding extends
 	void setLightwaveRfConvertor(LightwaverfConvertor mockLightwaveRfConvertor) {
 		this.messageConvertor = mockLightwaveRfConvertor;
 	}
-
 }
