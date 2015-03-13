@@ -10,6 +10,7 @@ package org.openhab.binding.lightwaverf.internal;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -137,6 +138,12 @@ public class LightwaveRfBinding extends
 			// start the Heat Poller
 			heatPoller = new LightwaveRfHeatPoller(sender, messageConvertor);
 
+			// Now register pollers if we have them. It might be that provider hasn't 
+			// been setup yet and in that case they'll be registered by the bindingChanged method
+			for (LightwaveRfBindingProvider provider : providers) {
+				Collection<String> itemNames = provider.getItemNames();
+				registerHeatingPollers(provider, itemNames);
+			}			
 		
 		} catch (UnknownHostException e) {
 			logger.error("Error creating LightwaveRFSender", e);
@@ -149,15 +156,25 @@ public class LightwaveRfBinding extends
 	public void bindingChanged(BindingProvider provider, String itemName) {
 		super.bindingChanged(provider, itemName);
 		if(provider instanceof LightwaveRfBindingProvider){
-			LightwaveRfBindingProvider lightwaveProvider = (LightwaveRfBindingProvider) provider;
-			int poll = lightwaveProvider.getPollInterval(itemName);
-			if(poll > 0){
-				String roomId = lightwaveProvider.getRoomId(itemName);
-				heatPoller.addRoomToPoll(itemName, roomId, poll);
-			}
-			else{
-				heatPoller.removeRoomToPoll(itemName);
-			}
+			logger.info("LightwaveRf Binding changed for: {}", itemName);
+			registerHeatingPoller((LightwaveRfBindingProvider) provider, itemName);
+		}
+	}
+
+	private void registerHeatingPollers(LightwaveRfBindingProvider provider, Collection<String> itemNames){
+		for(String itemName : itemNames){
+			registerHeatingPoller(provider, itemName);
+		}
+	}	
+	
+	private void registerHeatingPoller(LightwaveRfBindingProvider provider, String itemName){
+		int poll = provider.getPollInterval(itemName);
+		if(poll > 0){
+			String roomId = provider.getRoomId(itemName);
+			heatPoller.addRoomToPoll(itemName, roomId, poll);
+		}
+		else{
+			heatPoller.removeRoomToPoll(itemName);
 		}
 	}
 	
