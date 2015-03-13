@@ -288,7 +288,7 @@ public class LightwaveRfBinding extends
 	private void publishUpdate(List<String> itemNames, LightwaveRFCommand message, LightwaveRfBindingProvider provider) {
 		logger.info("Publishing Update {} to {}",message, itemNames);
 		boolean published = false;
-		if (itemNames != null && !itemNames.isEmpty()) {
+		if (itemNames != null) {
 			for (String itemName : itemNames) {
 				LightwaveRfType deviceType = provider.getTypeForItemName(itemName);
 				State state = message.getState(deviceType);
@@ -367,5 +367,4 @@ public class LightwaveRfBinding extends
 	void setLightwaveRfConvertor(LightwaverfConvertor mockLightwaveRfConvertor) {
 		this.messageConvertor = mockLightwaveRfConvertor;
 	}
-
 }
