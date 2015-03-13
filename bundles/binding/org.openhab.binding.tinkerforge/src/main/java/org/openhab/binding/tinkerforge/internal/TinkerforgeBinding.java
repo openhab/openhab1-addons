@@ -20,9 +20,11 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.openhab.binding.tinkerforge.TinkerforgeBindingProvider;
+import org.openhab.binding.tinkerforge.ecosystem.TinkerforgeContext;
 import org.openhab.binding.tinkerforge.internal.config.ConfigurationHandler;
 import org.openhab.binding.tinkerforge.internal.model.ColorActor;
 import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
 import org.openhab.binding.tinkerforge.internal.model.IODevice;
@@ -38,27 +40,39 @@ import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.MTextActor;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.MoveActor;
 import org.openhab.binding.tinkerforge.internal.model.NumberActor;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
+import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.PercentValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.binding.tinkerforge.internal.types.UnDefValue;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.UpDownType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
@@ -136,6 +150,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
   private ModelFactory modelFactory;
   private OHConfig ohConfig;
   private boolean isConnected;
+  private TinkerforgeContext context = TinkerforgeContext.getInstance();
 
   public TinkerforgeBinding() {
     modelFactory = ModelFactory.eINSTANCE;
@@ -157,6 +172,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
       logger.debug("disconnect called");
       tinkerforgeEcosystem.disconnect();
       tinkerforgeEcosystem = null;
+      context.setEcosystem(null);
       isConnected = false;
     }
   }
@@ -166,6 +182,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
    */
   private void connectModel() {
     tinkerforgeEcosystem = modelFactory.createEcosystem();
+    context.setEcosystem(tinkerforgeEcosystem);
     listen2Model(tinkerforgeEcosystem);
     logger.debug("{} connectModel called", LoggerConstants.TFINIT);
     isConnected = true;
@@ -280,10 +297,10 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         } else {
           TFConfig deviceTfConfig = EcoreUtil.copy(deviceConfig.getTfConfig());
           logger.debug("{} setting tfConfig for {}", LoggerConstants.TFINIT, logId);
-          ((MTFConfigConsumer<EObject>) device).setTfConfig(deviceTfConfig);
-          device.enable();
           logger.debug("{} adding/enabling device {} with config: {}", LoggerConstants.TFINIT,
               logId, deviceTfConfig);
+          ((MTFConfigConsumer<EObject>) device).setTfConfig(deviceTfConfig);
+          device.enable();
         }
       } else if (device instanceof IODevice) {
         logger.debug("{} ignoring unconfigured  IODevice: {}", LoggerConstants.TFINIT, logId);
@@ -309,7 +326,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
    *        .
    */
   private void initializeTFDevices(Notification notification) {
-    logger.debug("{} notifier {}", LoggerConstants.TFINIT, notification.getNotifier());
+    logger.trace("{} notifier {}", LoggerConstants.TFINIT, notification.getNotifier());
     if (notification.getNotifier() instanceof MBrickd) {
       logger.debug("{} notifier is Brickd", LoggerConstants.TFINIT);
       int featureID = notification.getFeatureID(MBrickd.class);
@@ -385,19 +402,38 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
       if (featureID == ModelPackage.MSENSOR__SENSOR_VALUE) {
         processValue((MBaseDevice) sensor, notification);
       }
-    } else if (notification.getNotifier() instanceof MSwitchActor) {
+    }
+    if (notification.getNotifier() instanceof SetPointActor<?>) {
+      SetPointActor<?> actor = (SetPointActor<?>) notification.getNotifier();
+      int setpointFeatureID = notification.getFeatureID(SetPointActor.class);
+      if (setpointFeatureID == ModelPackage.SET_POINT_ACTOR__PERCENT_VALUE) {
+        processValue((MBaseDevice) actor, notification);
+      }
+    }
+    if (notification.getNotifier() instanceof MoveActor) {
+      MoveActor actor = (MoveActor) notification.getNotifier();
+      int moveFeatureID = notification.getFeatureID(MoveActor.class);
+      if (moveFeatureID == ModelPackage.MOVE_ACTOR__DIRECTION) {
+        processValue((MBaseDevice) actor, notification);
+      }
+    }
+    if (notification.getNotifier() instanceof MSwitchActor) {
       MSwitchActor switchActor = (MSwitchActor) notification.getNotifier();
       int featureID = notification.getFeatureID(MSwitchActor.class);
       if (featureID == ModelPackage.MSWITCH_ACTOR__SWITCH_STATE) {
         processValue((MBaseDevice) switchActor, notification);
       }
-    } else if (notification.getNotifier() instanceof DigitalActor) {
+    }
+    if (notification.getNotifier() instanceof DigitalActor) {
       DigitalActor actor = (DigitalActor) notification.getNotifier();
       int featureID = notification.getFeatureID(DigitalActor.class);
       if (featureID == ModelPackage.DIGITAL_ACTOR__DIGITAL_STATE) {
         processValue((MBaseDevice) actor, notification);
       }
-    } else {
+
+    }
+    // TODO hier muss noch was fuer die dimmer und rollershutter rein
+    else {
       logger.trace("{} ignored notifier {}", LoggerConstants.TFMODELUPDATE,
           notification.getNotifier());
     }
@@ -535,6 +571,10 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
    */
   protected void updateItemValues(TinkerforgeBindingProvider provider, String itemName,
       boolean only_poll_enabled) {
+    if ( tinkerforgeEcosystem == null){
+      logger.warn("tinkerforge ecosystem not yet ready");
+      return;
+    }
     String deviceUid = provider.getUid(itemName);
     Item item = provider.getItem(itemName);
     String deviceSubId = provider.getSubId(itemName);
@@ -553,8 +593,8 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
       } else {
         if (mDevice instanceof MSensor) {
           ((MSensor<?>) mDevice).fetchSensorValue();
-        } else if (mDevice instanceof MInSwitchActor && item instanceof SwitchItem) {
-          ((MInSwitchActor) mDevice).fetchSwitchState();
+        } else if (mDevice instanceof SwitchSensor && item instanceof SwitchItem) {
+          ((SwitchSensor) mDevice).fetchSwitchState();
         } else if (mDevice instanceof DigitalActor) {
           ((DigitalActor) mDevice).fetchDigitalValue();
         }
@@ -570,6 +610,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
 
   private void postUpdate(String uid, String subId, TinkerforgeValue sensorValue) {
     // TODO undef handling
+    logger.trace("postUpdate for uid {} subid {}", uid, subId);
     Map<String, TinkerforgeBindingProvider> providerMap = getBindingProviders(uid, subId);
     if (providerMap.size() == 0) {
       logger.debug("{} found no item for uid {}, subid {}", LoggerConstants.TFMODELUPDATE, uid,
@@ -584,11 +625,15 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         if (itemType.isAssignableFrom(NumberItem.class)
             || itemType.isAssignableFrom(StringItem.class)) {
           value = DecimalType.valueOf(String.valueOf(sensorValue));
+          logger.trace("found item to update for DecimalValue {}", itemName);
         } else if (itemType.isAssignableFrom(ContactItem.class)) {
           value =
               sensorValue.equals(DecimalValue.ZERO) ? OpenClosedType.CLOSED : OpenClosedType.OPEN;
         } else if (itemType.isAssignableFrom(SwitchItem.class)) {
           value = sensorValue.equals(DecimalValue.ZERO) ? OnOffType.OFF : OnOffType.ON;
+        } else {
+          logger.trace("no update for DecimalValue for item {}", itemName);
+          continue;
         }
       } else if (sensorValue instanceof HighLowValue) {
         if (itemType.isAssignableFrom(NumberItem.class)
@@ -601,8 +646,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         } else if (itemType.isAssignableFrom(SwitchItem.class)) {
           value = sensorValue == HighLowValue.HIGH ? OnOffType.ON : OnOffType.OFF;
         } else {
-          logger.error("{} unsupported item type {} for item {}", LoggerConstants.TFMODELUPDATE,
-              provider.getItem(itemName), itemName);
+          continue;
         }
       } else if (sensorValue instanceof OnOffValue) {
         if (itemType.isAssignableFrom(NumberItem.class)
@@ -614,8 +658,21 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
         } else if (itemType.isAssignableFrom(SwitchItem.class)) {
           value = sensorValue == OnOffValue.ON ? OnOffType.ON : OnOffType.OFF;
         } else {
-          logger.error("{} unsupported item type {} for item {}", LoggerConstants.TFMODELUPDATE,
-              provider.getItem(itemName), itemName);
+          continue;
+        }
+      } else if (sensorValue instanceof PercentValue) {
+        if (itemType.isAssignableFrom(RollershutterItem.class)
+            || itemType.isAssignableFrom(DimmerItem.class)) {
+          value = new PercentType(((PercentValue) sensorValue).toBigDecimal());
+        } else {
+          continue;
+        }
+      } else if (sensorValue instanceof DirectionValue) {
+        if (itemType.isAssignableFrom(RollershutterItem.class)) {
+          value = sensorValue == DirectionValue.RIGHT ? UpDownType.UP : UpDownType.DOWN;
+          logger.trace("found item to update for UpDownValue {}", itemName);
+        } else {
+          continue;
         }
       } else if (sensorValue == UnDefValue.UNDEF || sensorValue == null) {
         value = UnDefType.UNDEF;
@@ -671,14 +728,17 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
           if (mDevice != null && mDevice.getEnabledA().get()) {
             if (command instanceof OnOffType) {
               logger.trace("{} found onoff command", LoggerConstants.COMMAND);
+              OnOffType cmd = (OnOffType) command;
               if (mDevice instanceof MInSwitchActor) {
-                OnOffType cmd = (OnOffType) command;
                 OnOffValue state = cmd == OnOffType.OFF ? OnOffValue.OFF : OnOffValue.ON;
                 ((MSwitchActor) mDevice).turnSwitch(state);
               } else if (mDevice instanceof DigitalActor) {
-                OnOffType cmd = (OnOffType) command;
                 HighLowValue state = cmd == OnOffType.OFF ? HighLowValue.LOW : HighLowValue.HIGH;
                 ((DigitalActor) mDevice).turnDigital(state);
+              } else if (mDevice instanceof ProgrammableSwitchActor) {
+                OnOffValue state = cmd == OnOffType.OFF ? OnOffValue.OFF : OnOffValue.ON;
+                ((ProgrammableSwitchActor) mDevice).turnSwitch(state,
+                    provider.getDeviceOptions(itemName));
               } else {
                 logger.error("{} received OnOff command for non-SwitchActor",
                     LoggerConstants.COMMAND);
@@ -687,6 +747,13 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
               logger.trace("{} found string command", LoggerConstants.COMMAND);
               if (mDevice instanceof MTextActor) {
                 ((MTextActor) mDevice).setText(command.toString());
+              }
+            } else if (command instanceof PercentType) {
+              if (mDevice instanceof SetPointActor) {
+                ((SetPointActor<?>) mDevice).setValue(((PercentType) command),
+                    provider.getDeviceOptions(itemName));
+              } else {
+                logger.error("found no percenttype actor");
               }
             } else if (command instanceof DecimalType) {
               logger.debug("{} found number command", LoggerConstants.COMMAND);
@@ -699,9 +766,43 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
               } else {
                 if (mDevice instanceof NumberActor) {
                   ((NumberActor) mDevice).setNumber(((DecimalType) command).toBigDecimal());
+                } else if ( mDevice instanceof SetPointActor){
+                  ((SetPointActor<?>) mDevice).setValue(((DecimalType) command).toBigDecimal(),
+                      provider.getDeviceOptions(itemName));
+                }
+                else {
+                  logger.error("found no number actor");
                 }
               }
-            } else {
+            } else if (command instanceof UpDownType) {
+              UpDownType cmd = (UpDownType) command;
+              logger.debug("{} UpDownType command {}", itemName, cmd);
+              if (mDevice instanceof MoveActor) {
+                ((MoveActor) mDevice).move((UpDownType) command,
+                    provider.getDeviceOptions(itemName));
+              }
+            }
+            else if (command instanceof StopMoveType){
+              StopMoveType cmd = (StopMoveType) command;
+              if (mDevice instanceof MoveActor) {
+                if ( cmd == StopMoveType.STOP){
+                  ((MoveActor) mDevice).stop();
+                } else {
+                  ((MoveActor) mDevice).moveon(provider.getDeviceOptions(itemName));
+                }
+              }
+               logger.debug("{} StopMoveType command {}", itemName, cmd);
+            }
+            else if (command instanceof IncreaseDecreaseType){
+              IncreaseDecreaseType cmd = (IncreaseDecreaseType) command;
+              if (mDevice instanceof DimmableActor) {
+                ((DimmableActor<?>) mDevice).dimm((IncreaseDecreaseType) command,
+                    provider.getDeviceOptions(itemName));
+              }
+              logger.debug("{} IncreaseDecreaseType command {}", itemName, cmd);
+            }
+
+            else {
               logger.error("{} got unknown command type: {}", LoggerConstants.COMMAND,
                   command.toString());
             }

@@ -97,8 +97,9 @@ public abstract class ZWaveConverterBase {
 	 * @return a converter object that converts between the value and the state;
 	 */
 	protected ZWaveStateConverter<?,?> getStateConverter(Item item, Object value) {
-		if(item == null)
+		if(item == null) {
 			return null;
+		}
 
 		List<Class<? extends State>> list = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
 		Collections.sort(list, new StateComparator());
@@ -106,8 +107,9 @@ public abstract class ZWaveConverterBase {
 		for (Class<? extends State> stateClass : list) {
 			ZWaveStateConverter<?,?> result = stateConverters.get(stateClass);
 
-			if (result == null || !result.getType().isInstance(value))
+			if (result == null || !result.getType().isInstance(value)) {
 				continue;
+			}
 			
 			return result;
 		}

@@ -29,7 +29,7 @@ public class Weather {
 	public static final String VIRTUAL_TEMP_MINMAX = "temperature.minMax";
 	private static final String[] VIRTUAL_PROPERTIES = new String[] { VIRTUAL_TEMP_MINMAX };
 
-	private Athmosphere athmosphere = new Athmosphere();
+	private Atmosphere atmosphere = new Atmosphere();
 	private Clouds clouds = new Clouds();
 	private Condition condition = new Condition();
 	private Precipitation precipitation = new Precipitation();
@@ -71,10 +71,10 @@ public class Weather {
 	}
 
 	/**
-	 * Returns athmosphere data.
+	 * Returns atmosphere data.
 	 */
-	public Athmosphere getAthmosphere() {
-		return athmosphere;
+	public Atmosphere getAtmosphere() {
+		return atmosphere;
 	}
 
 	/**
@@ -170,7 +170,7 @@ public class Weather {
 		if (this instanceof org.openhab.binding.weather.internal.model.Forecast) {
 			tsb.append("day", ((org.openhab.binding.weather.internal.model.Forecast) this).getDay());
 		}
-		tsb.append(temperature).append(athmosphere).append(clouds).append(condition).append(precipitation).append(wind)
+		tsb.append(temperature).append(atmosphere).append(clouds).append(condition).append(precipitation).append(wind)
 				.append(error);
 
 		return tsb.toString();

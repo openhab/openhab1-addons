@@ -101,50 +101,17 @@
 											<path>etc/openhab/jetty/contexts</path>
 											<path>etc/openhab/jetty/etc</path>
 											<path>usr/share/openhab</path>
+											<path>usr/share/openhab/bin</path>
 											<path>var/lib/openhab</path>
-											<path>var/lib/openhab/persistence</path>
-											<path>var/lib/openhab/webapps</path>
+											<path>var/lib/openhab/workspace</path>
+											<path>var/lib/openhab/persistence/db4o</path>
+											<path>var/lib/openhab/persistence/rrd4j</path>
+											<path>var/log/openhab</path>
 										</paths>
 										<mapper>
 											<type>perm</type>
 											<user>root</user>
 											<group>root</group>
-										</mapper>
-									</data>
-									<data>
-										<type>directory</type>
-										<src>${basedir}/src/deb/var/lib/openhab/webapps</src>
-										<excludes>**/.gitignore</excludes>
-										<mapper>
-											<type>perm</type>
-											<prefix>/var/lib/openhab/webapps</prefix>
-											<user>root</user>
-											<group>openhab</group>
-											<dirmode>2775</dirmode>
-										</mapper>
-									</data>
-									<data>
-										<type>directory</type>
-										<src>${basedir}/src/deb/var/lib/openhab</src>
-										<excludes>webapps/**,**/.gitignore</excludes>
-										<mapper>
-											<type>perm</type>
-											<prefix>/var/lib/openhab</prefix>
-											<user>root</user>
-											<group>openhab</group>
-											<dirmode>2775</dirmode>
-										</mapper>
-									</data>
-									<data>
-										<type>directory</type>
-										<src>${basedir}/src/deb/var/log</src>
-										<excludes>**/.gitignore</excludes>
-										<mapper>
-											<type>perm</type>
-											<prefix>/var/log</prefix>
-											<user>root</user>
-											<group>openhab</group>
-											<dirmode>2775</dirmode>
 										</mapper>
 									</data>
 									<data>
@@ -163,6 +130,50 @@
 										<mapper>
 											<type>perm</type>
 											<prefix>/etc/init.d</prefix>
+											<filemode>755</filemode>
+											<user>root</user>
+											<group>root</group>
+										</mapper>
+									</data>
+									<data>
+										<src>${basedir}/src/deb/bin/openhab.sh</src>
+										<type>file</type>
+										<mapper>
+											<type>perm</type>
+											<prefix>/usr/share/openhab/bin</prefix>
+											<filemode>755</filemode>
+											<user>root</user>
+											<group>root</group>
+										</mapper>
+									</data>
+									<data>
+										<src>${basedir}/src/deb/bin/openhab.in.sh</src>
+										<type>file</type>
+										<mapper>
+											<type>perm</type>
+											<prefix>/usr/share/openhab/bin</prefix>
+											<filemode>755</filemode>
+											<user>root</user>
+											<group>root</group>
+										</mapper>
+									</data>
+									<data>
+										<src>${basedir}/src/deb/bin/setpermissions.sh</src>
+										<type>file</type>
+										<mapper>
+											<type>perm</type>
+											<prefix>/usr/share/openhab/bin</prefix>
+											<filemode>755</filemode>
+											<user>root</user>
+											<group>root</group>
+										</mapper>
+									</data>
+									<data>
+										<src>${basedir}/src/deb/systemd/openhab.service</src>
+										<type>file</type>
+										<mapper>
+											<type>perm</type>
+											<prefix>/usr/lib/systemd/system</prefix>
 											<filemode>755</filemode>
 											<user>root</user>
 											<group>root</group>
@@ -285,9 +296,9 @@
 										<mapper>
 											<type>perm</type>
 											<prefix>/etc/openhab/configurations</prefix>
-											<filemode>640</filemode>
+											<filemode>440</filemode>
 											<user>root</user>
-											<group>openhab</group>
+											<group>root</group>
 										</mapper>
 									</data>
 									<data>
@@ -326,9 +337,9 @@
 										<mapper>
 											<type>perm</type>
 											<prefix>/etc/openhab/jetty/etc</prefix>
-											<filemode>640</filemode>
+											<filemode>440</filemode>
 											<user>root</user>
-											<group>openhab</group>
+											<group>root</group>
 										</mapper>
 									</data>
 									<data>
@@ -344,7 +355,7 @@
 									<data>
 										<src>${basedir}/target/distribution-${project.version}-runtime.zip</src>
 										<type>archive</type>
-										<excludes>configurations/**,contexts/**,etc/**,start.bat,start.sh,start_debug.bat,start_debug.sh</excludes>
+										<excludes>configurations/**,contexts/**,etc/**,webapps/static/uuid,webapps/static/version,start.bat,start.sh,start_debug.bat,start_debug.sh</excludes>
 										<mapper>
 											<type>perm</type>
 											<prefix>/usr/share/openhab</prefix>
@@ -374,12 +385,6 @@
 										<type>link</type>
 										<linkName>/usr/share/openhab/etc</linkName>
 										<linkTarget>/etc/openhab/jetty/etc</linkTarget>
-										<symlink>true</symlink>
-									</data>
-									<data>
-										<type>link</type>
-										<linkName>/usr/share/openhab/webapps/static</linkName>
-										<linkTarget>/var/lib/openhab/webapps/static</linkTarget>
 										<symlink>true</symlink>
 									</data>
 								</dataSet>
@@ -503,6 +508,12 @@
 		<dependency>
 			<groupId>org.openhab.action</groupId>
 			<artifactId>org.openhab.action.astro</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.action</groupId>
+			<artifactId>org.openhab.action.tinkerforge</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
@@ -1158,6 +1169,18 @@
 		<dependency>
 			<groupId>org.openhab.binding</groupId>
 			<artifactId>org.openhab.binding.ecobee</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.nest</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency> 
+			<groupId>org.openhab.binding</groupId>
+			<artifactId>org.openhab.binding.satel</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>

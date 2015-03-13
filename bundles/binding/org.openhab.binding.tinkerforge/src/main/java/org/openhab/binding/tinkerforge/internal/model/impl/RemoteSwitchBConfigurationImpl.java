@@ -35,7 +35,7 @@ import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration
  *
  * @generated
  */
-public class RemoteSwitchBConfigurationImpl extends MinimalEObjectImpl.Container implements RemoteSwitchBConfiguration
+public class RemoteSwitchBConfigurationImpl extends DimmableConfigurationImpl implements RemoteSwitchBConfiguration
 {
   /**
    * The default value of the '{@link #getAddress() <em>Address</em>}' attribute.

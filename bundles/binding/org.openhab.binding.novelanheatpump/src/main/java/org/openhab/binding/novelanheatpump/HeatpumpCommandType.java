@@ -316,7 +316,7 @@ public enum HeatpumpCommandType {
 	//in german Heizung Temperatur (Parallelverschiebung)
 	TYPE_HEATING_TEMPERATURE {
 		{
-			command = "heating_temperatur";
+			command = "heating_temperature";
 			itemClass = NumberItem.class;
 		}
 	},	
@@ -330,7 +330,7 @@ public enum HeatpumpCommandType {
 	//in german Warmwasser Temperatur
 	TYPE_WARMWATER_TEMPERATURE {
 		{
-			command = "warmwater_temperatur";
+			command = "warmwater_temperature";
 			itemClass = NumberItem.class;
 		}
 	};
