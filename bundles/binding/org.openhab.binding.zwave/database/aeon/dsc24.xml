@@ -20,6 +20,7 @@
 			<Type>list</Type>
 			<Default>0</Default>
 			<Size>1</Size>
+			<WriteOnly>true</WriteOnly>
 			<Label lang="en">Multilevel Sensor Report Content</Label>
 			<Item>
 				<Value>0</Value>

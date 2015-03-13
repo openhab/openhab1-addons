@@ -32,7 +32,8 @@ public class CosemString extends CosemValue<StringType> {
 	}
 
 	/**
-	 * Parses a String value (that represents an integer) to an openHAB StringType
+	 * Parses a String value (that represents an integer) to an openHAB
+	 * StringType
 	 * 
 	 * @param cosemValue
 	 *            the value to parse

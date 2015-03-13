@@ -2,14 +2,30 @@
 
 set -e
 
+removeOpenHABInit() {
+	if [ -x /bin/systemctl ] ; then
+		/bin/systemctl --no-reload disable openhab.service > /dev/null 2>&1 || :
+	else
+		update-rc.d openhab remove > /dev/null 2>&1 || :
+	fi
+}
+
 case "$1" in
 	remove)
-		update-rc.d openhab remove > /dev/null 2>&1
+		removeOpenHABInit
 		;;
 	purge)
+		removeOpenHABInit
 		if getent passwd openhab > /dev/null 2>&1; then
-			deluser --quiet openhab
+			deluser --quiet openhab || true
 		fi
+		if getent group openhab > /dev/null 2>&1; then
+			delgroup --quiet openhab || true
+		fi
+		rm -rf /var/log/openhab
+		rm -rf /var/lib/openhab
+		rm -rf /usr/share/openhab/webapps/static
+		rm -rf /etc/openhab
 		;;
 	abort-install|abort-upgrade|disappear|failed-upgrade|upgrade)
 		;;

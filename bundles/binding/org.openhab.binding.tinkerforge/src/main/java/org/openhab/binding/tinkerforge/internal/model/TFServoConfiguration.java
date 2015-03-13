@@ -34,7 +34,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  * @model
  * @generated
  */
-public interface TFServoConfiguration extends TFConfig
+public interface TFServoConfiguration extends DimmableConfiguration
 {
   /**
    * Returns the value of the '<em><b>Velocity</b></em>' attribute.

@@ -36,6 +36,7 @@ import org.openhab.binding.netatmo.internal.NetatmoMeasureType;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.PointType;
 import org.openhab.core.types.State;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -68,6 +69,8 @@ public class NetatmoBinding extends
      * (optional, defaults to 300000ms)
      */
     private long refreshInterval = 300000;
+    
+    private PointType stationPosition = null;
 
     private Map<String, OAuthCredentials> credentialsCache = new HashMap<String, OAuthCredentials>();
 
@@ -137,14 +140,18 @@ public class NetatmoBinding extends
                                     }
                                 }
                                 break;
-                            case ALTITUDE: case LATITUDE: case LONGITUDE: case WIFISTATUS:
+                            case ALTITUDE: case LATITUDE: case LONGITUDE: case WIFISTATUS: case COORDINATE:
                                 for (Device device : oauthCredentials.deviceListResponse.getDevices()) {
+                                	if (stationPosition == null) {
+                                		stationPosition = new PointType(new DecimalType(device.getLatitude()), new DecimalType(device.getLongitude()), new DecimalType(device.getAltitude()));                                     	
+                                	}
                                     if (device.getId().equals(deviceId)) {
                                         switch (measureType) {
-                                            case ALTITUDE: state = new DecimalType(device.getAltitude()); break;
-                                            case LATITUDE: state = new DecimalType(device.getLatitude()); break;
-                                            case LONGITUDE: state = new DecimalType(device.getLongitude()); break;
+                                            case LATITUDE: state = stationPosition.getLatitude(); break;
+                                            case LONGITUDE: state = stationPosition.getLongitude(); break;
+                                            case ALTITUDE: state = stationPosition.getAltitude(); break;
                                             case WIFISTATUS: state = new DecimalType(device.getWifiStatus()); break;
+                                            case COORDINATE: state = stationPosition; break;
                                         }
                                     }
                                 }

@@ -342,8 +342,11 @@ public class InsteonPLMActiveBinding
 				m_driver.addMsgListener(m_portListener, port);
 			}
 		}
+		logger.debug("setting driver listener");
 		m_driver.setDriverListener(m_portListener);
+		logger.debug("starting {} ports", m_driver.getNumberOfPorts());
 		m_driver.startAllPorts();
+		logger.debug("ports started");
 		switch (m_driver.getNumberOfPorts()) {
 		case 0:
 			logger.error("initialization complete, but found no ports!");
@@ -351,7 +354,7 @@ public class InsteonPLMActiveBinding
 		case 1:
 			logger.debug("initialization complete, found 1 port!");
 			break;
-		case 2:
+		default:
 			logger.warn("initialization complete, found {} ports.",
 					m_driver.getNumberOfPorts());
 			break;
