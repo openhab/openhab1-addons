@@ -301,10 +301,10 @@ public class LightwaveRfBinding extends
 					logger.info("State was null for {} type {}, message {}",itemName, deviceType, message);
 				}
 			}
-			if (!published) {
-				logger.warn("No item for incoming message[{}]", message.getLightwaveRfCommandString());
-			}
 		}
+		if (!published) {
+			logger.warn("No item for incoming message[{}]", message.getLightwaveRfCommandString());
+		}		
 	}
 
 	@Override
