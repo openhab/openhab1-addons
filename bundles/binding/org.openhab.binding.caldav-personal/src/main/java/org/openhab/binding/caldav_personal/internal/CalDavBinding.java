@@ -130,8 +130,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		}
 		CalDavConfig config = ((CalDavBindingProvider) provider).getConfig(itemName);
 		if (config == null) {
-			logger.warn("cannot find binding config for item: {}", itemName);
-			eventPublisher.postUpdate(itemName, org.openhab.core.types.UnDefType.UNDEF);
+//			logger.warn("cannot find binding config for item: {}", itemName);
+//			eventPublisher.postUpdate(itemName, org.openhab.core.types.UnDefType.UNDEF);
 			return;
 		}
 		this.updateItem(itemName, config);
@@ -254,8 +254,10 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 				String startEnd = DF.format(event.getStart()) + " - " + DF.format(event.getEnd());
 				command = new StringType(startEnd);
 				break;
-			default:
-				logger.error("unhandled value: {}", config.getValue());
+			case NAMEANDTIME:
+				String startEnd2 = DF.format(event.getStart()) + " - " + DF.format(event.getEnd());
+				String name = event.getName();
+				command = new StringType(name + " @ " + startEnd2);
 			}
 			
 			logger.debug("sending command {} for item {}", command, itemName);

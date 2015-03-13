@@ -23,7 +23,7 @@ public class CalDavConfig implements BindingConfig {
 	}
 	
 	public static enum Value {
-		NAME, DESCRIPTION, PLACE, START, END, TIME
+		NAME, DESCRIPTION, PLACE, START, END, TIME, NAMEANDTIME
 	}
 	
 	private final String calendar;

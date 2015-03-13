@@ -39,6 +39,9 @@ import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.PeriodList;
+import net.fortuna.ical4j.model.TimeZone;
+import net.fortuna.ical4j.model.TimeZoneRegistry;
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.util.CompatibilityHints;
@@ -77,6 +80,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 	private static final String PROP_URL = "url";
 	private static final String PROP_PASSWORD = "password";
 	private static final String PROP_USERNAME = "username";
+	private static final String PROP_TIMEZONE = "timeZone";
 	private static final String PROP_DISABLE_CERTIFICATE_VERIFICATION = "disableCertificateVerification";
 
 	private static final Logger LOG = LoggerFactory
@@ -88,6 +92,9 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 	private ConcurrentHashMap<String, TimerTask> timerBeginMap = new ConcurrentHashMap<String, TimerTask>();
 	private ConcurrentHashMap<String, TimerTask> timerEndMap = new ConcurrentHashMap<String, TimerTask>();
 	private List<EventNotifier> eventListenerList = new ArrayList<EventNotifier>();
+	
+	
+	private int tzOffsetMillis;
 
 	@Override
 	public void updated(Dictionary<String, ?> config)
@@ -98,6 +105,11 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				String key = iter.nextElement();
 				LOG.trace("configuration parameter: " + key);
 				if (key.equals("service.pid")) {
+					continue;
+				} else if (key.equals(PROP_TIMEZONE)) {
+					TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
+					TimeZone timezone = registry.getTimeZone(config.get(key) + "");
+					tzOffsetMillis = timezone.getRawOffset();
 					continue;
 				}
 				String[] keys = key.split(":");
@@ -317,11 +329,17 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 							// date is already ended, ignoring
 							continue;
 						}
+						
+						TimeZone tzStart = vEvent.getStartDate().getTimeZone();
+						TimeZone tzEnd = vEvent.getEndDate().getTimeZone();
+						
 						CalDavEvent event = new CalDavEvent(vEvent.getSummary()
-								.getValue(), vEvent.getUid().getValue(),
-								config.getKey(), new Date(p.getStart()
-										.getTime()), new Date(p.getEnd()
-										.getTime()));
+								.getValue(), 
+								vEvent.getUid().getValue(),
+								config.getKey(), 
+								new Date(p.getRangeStart().getTime() - (tzStart == null ? tzOffsetMillis : 0)), 
+								new Date(p.getRangeEnd().getTime() - (tzEnd == null ? tzOffsetMillis : 0))
+						);
 						if (vEvent.getLastModified() != null) {
 							event.setLastChanged(vEvent.getLastModified().getDate());
 						} else {
