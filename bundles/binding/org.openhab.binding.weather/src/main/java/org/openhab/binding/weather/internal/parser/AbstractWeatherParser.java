@@ -15,7 +15,7 @@ import org.apache.commons.lang.reflect.FieldUtils;
 import org.openhab.binding.weather.internal.converter.Converter;
 import org.openhab.binding.weather.internal.metadata.MetadataHandler;
 import org.openhab.binding.weather.internal.metadata.ProviderMappingInfo;
-import org.openhab.binding.weather.internal.model.Athmosphere;
+import org.openhab.binding.weather.internal.model.Atmosphere;
 import org.openhab.binding.weather.internal.model.Forecast;
 import org.openhab.binding.weather.internal.model.Precipitation;
 import org.openhab.binding.weather.internal.model.ProviderName;
@@ -130,9 +130,9 @@ public abstract class AbstractWeatherParser implements WeatherParser {
 			temp.setCurrent(null);
 		}
 
-		Athmosphere athm = weather.getAthmosphere();
-		if (temp.getFeel() == null && temp.getCurrent() != null && athm.getHumidity() != null) {
-			Double humidex = UnitUtils.getHumidex(temp.getCurrent(), athm.getHumidity());
+		Atmosphere atm = weather.getAtmosphere();
+		if (temp.getFeel() == null && temp.getCurrent() != null && atm.getHumidity() != null) {
+			Double humidex = UnitUtils.getHumidex(temp.getCurrent(), atm.getHumidity());
 			temp.setFeel(humidex);
 		}
 
@@ -168,16 +168,16 @@ public abstract class AbstractWeatherParser implements WeatherParser {
 	 */
 	@Override
 	public void postProcess(Weather weather) throws Exception {
-		Double currentPressure = weather.getAthmosphere().getPressure();
+		Double currentPressure = weather.getAtmosphere().getPressure();
 		if (currentPressure != null && weather.getForecast().size() > 0) {
-			Double fcPressure = weather.getForecast().get(0).getAthmosphere().getPressure();
+			Double fcPressure = weather.getForecast().get(0).getAtmosphere().getPressure();
 			if (fcPressure != null) {
 				if (fcPressure > currentPressure) {
-					weather.getAthmosphere().setPressureTrend("up");
+					weather.getAtmosphere().setPressureTrend("up");
 				} else if (fcPressure < currentPressure) {
-					weather.getAthmosphere().setPressureTrend("down");
+					weather.getAtmosphere().setPressureTrend("down");
 				} else {
-					weather.getAthmosphere().setPressureTrend("equal");
+					weather.getAtmosphere().setPressureTrend("equal");
 				}
 			}
 		}
