@@ -23,7 +23,7 @@ import com.myhome.fcrisciani.connector.MyHomeJavaConnector;
  * openwebnet) and on code of Flavio Fcrisciani
  * (https://github.com/fcrisciani/java-myhome-library) released under EPL
  * 
- * @author Tom De Vlaminck
+ * @author Tom De Vlaminck, Lago Moreno
  * @serial 1.0
  * @since 1.7.0
  */
@@ -203,9 +203,8 @@ public class MonitorSessionThread extends Thread {
 				objectClass = "Thermo";
 				objectName = who + "*" + where;
 
-				String temperature = null;
 				if (frameParts[2].equalsIgnoreCase("0")) {
-					temperature = frameParts[3];
+					String temperature = frameParts[3];
 					temperature = OWNUtilities.convertTemperature(temperature);
 					messageDescription = "Temperature value";
 					if (temperature != null) {
@@ -431,15 +430,8 @@ public class MonitorSessionThread extends Thread {
 				where = "";
 			event = new ProtocolRead(frame);
 			objectName = who + "*" + where;
-
-			// Virtual configurator support
-			// where=XXYY (XX = A (01-10), YY = PL (01-15))
-			// eg. A=10 and PL=5 the where will be 1005, A=2 and PL=12 the where
-			// will be 0212
-			// split in parts, if 2 parts with riser
-			// todo
-			boolean virtual_where = (where.length() == 4);
-
+			boolean virtual_where = false;
+			String[] what_parts;
 			switch (Integer.parseInt(who)) {
 			// LIGHTING
 			case 1:
@@ -448,11 +440,12 @@ public class MonitorSessionThread extends Thread {
 
 				// For virtual configuration we receive for light on 1000#1
 				// so assuming the second part is the what
-				if (virtual_where) {
-					String[] what_parts = what.split("#");
-					// take the last part for the what
-					what = what_parts[what_parts.length - 1];
-				}
+        		        what_parts = what.split("#");
+        			if (what_parts.length > 1) {
+                			virtual_where = true;
+                    			// take the last part for the what
+                    			what = what_parts[what_parts.length - 1];
+                		}
 
 				switch (Integer.parseInt(what)) {
 				// Light OFF
@@ -686,7 +679,7 @@ public class MonitorSessionThread extends Thread {
 				messageType = "CEN Basic and Evolved";
 				objectClass = "CEN";
 
-				String[] what_parts = what.split("#");
+				what_parts = what.split("#");
 
 				if (what_parts.length == 1) {
 					// type of pressure
