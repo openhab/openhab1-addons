@@ -180,7 +180,7 @@
 	<message-handler cmd="0x03" group="1">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x11" group="1">NoOpMsgHandler</message-handler>
 	<message-handler cmd="0x13" group="1">NoOpMsgHandler</message-handler>
-	<message-handler cmd="0x2e">HiddenDooorSensorDataReplyHandler</message-handler>
+	<message-handler cmd="0x2e">HiddenDoorSensorDataReplyHandler</message-handler>
 	<command-handler command="OnOffType">NoOpCommandHandler</command-handler>
 	<poll-handler>NoPollHandler</poll-handler>
 </feature>

@@ -10,7 +10,6 @@ package org.openhab.binding.zwave.internal.converter;
 
 import java.util.Map;
 
-import org.openhab.binding.zwave.internal.converter.state.BigDecimalDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.IntegerDecimalTypeConverter;
 import org.openhab.binding.zwave.internal.converter.state.ZWaveStateConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;

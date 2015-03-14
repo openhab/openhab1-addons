@@ -33,6 +33,15 @@
 			<Label lang="en">Plug-in Wall Dimmer</Label>
 			<ConfigFile>linear/pd300z-2.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>4754</Type>
+				<Id>3038</Id>
+			</Reference>
+			<Model>LB60Z-1</Model>
+			<Label lang="en">Dimmable LED Light Bulb</Label>
+			<ConfigFile>linear/lb60z-1.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0150</Id>
@@ -315,7 +324,7 @@
 		</Product>
 		<Product>
 			<Reference>
-				<Type>0102</Type>
+				<Type>0202</Type>
 				<Id>0001</Id>
 			</Reference>
 			<Reference>
@@ -1350,6 +1359,15 @@
 		</Product>
 		<Product>
 			<Reference>
+				<Type>1000</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>ZME_05459</Model>
+			<Label lang="en">Blinds controller</Label>
+			<ConfigFile>zwaveme/zme_blindscontroller.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
 				<Type>0100</Type>
 				<Id>0101</Id>
 			</Reference>
@@ -1384,6 +1402,10 @@
 			<ConfigFile>zwaveme/zme_wcd2.xml</ConfigFile>
 		</Product>
 		<Product>
+			<Reference>
+				<Type>0400</Type>
+				<Id>0004</Id>
+			</Reference>
 			<Reference>
 				<Type>1000</Type>
 				<Id>0004</Id>
@@ -1973,4 +1995,48 @@
 			<ConfigFile>brk/zcombo.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
+	<Manufacturer>
+		<Id>003b</Id>
+		<Name>Schlage</Name>
+		<Product>
+			<Reference>
+				<Type>6349</Type>
+				<Id>5044</Id>
+			</Reference>
+			<Model>BE468</Model>
+			<Label lang="en">Touchscreen Deadbolt</Label>
+			<ConfigFile>schlage/be468.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+    <Manufacturer>
+        <Id>0184</Id>
+        <Name>Dragon Tech Industrial, Ltd.</Name>
+        <Product>
+            <Reference>
+                <Type>4447</Type>
+                <Id>3031</Id>
+            </Reference>
+            <Model>PA-100</Model>
+            <Label lang="en">Plug-in On/Off Switch</Label>
+            <ConfigFile>dragontech/pa100.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>4447</Type>
+                <Id>3033</Id>
+            </Reference>
+            <Model>WS-100</Model>
+            <Label lang="en">Wall On/Off Switch</Label>
+            <ConfigFile>dragontech/ws100.xml</ConfigFile>
+        </Product>
+        <Product>
+            <Reference>
+                <Type>4447</Type>
+                <Id>3034</Id>
+            </Reference>
+            <Model>WD-100</Model>
+            <Label lang="en">Wall Dimmer Switch</Label>
+            <ConfigFile>dragontech/wd100.xml</ConfigFile>
+        </Product>
+    </Manufacturer>
 </Manufacturers>
