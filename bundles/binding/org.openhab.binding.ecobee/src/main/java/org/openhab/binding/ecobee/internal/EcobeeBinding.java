@@ -10,6 +10,7 @@ package org.openhab.binding.ecobee.internal;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -165,7 +166,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	/**
 	 * used to store events that we have sent ourselves; we need to remember them for not reacting to them
 	 */
-	private Set<String> ignoreEventSet = new HashSet<String>();
+	private Set<String> ignoreEventSet = Collections.synchronizedSet(new HashSet<String>());
 
 	/**
 	 * The most recently received list of revisions, or an empty Map if none have been retrieved yet.
@@ -500,8 +501,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 
 	private boolean isEcho(String itemName, State state) {
 		String ignoreEventSetKey = itemName + state.toString();
-		if (ignoreEventSet.contains(ignoreEventSetKey)) {
-			ignoreEventSet.remove(ignoreEventSetKey);
+		if (ignoreEventSet.remove(ignoreEventSetKey)) {
 			logger.trace(
 					"We received this event (item='{}', state='{}') from Ecobee, so we don't send it back again -> ignore!",
 					itemName, state.toString());

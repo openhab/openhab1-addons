@@ -10,6 +10,7 @@ package org.openhab.binding.knx.internal.bus;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,7 +61,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 	/**
 	 * used to store events that we have sent ourselves; we need to remember them for not reacting to them
 	 */
-	private List<String> ignoreEventList = new ArrayList<String>();
+	private Set<String> ignoreEventSet = Collections.synchronizedSet(new HashSet<String>());
 
 	private KNXBusReaderScheduler mKNXBusReaderScheduler = new KNXBusReaderScheduler();
 
@@ -116,9 +117,8 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 	}
 
 	private boolean isEcho(String itemName, Type type) {
-		String ignoreEventListKey = itemName + type.toString();
-		if (ignoreEventList.contains(ignoreEventListKey)) {
-			ignoreEventList.remove(ignoreEventListKey);
+		String ignoreEventSetKey = itemName + type.toString();
+		if (ignoreEventSet.remove(ignoreEventSetKey)) {
 			logger.trace("We received this event (item='{}', state='{}') from KNX, so we don't send it back again -> ignore!", itemName, type.toString());
 			return true;
 		}
@@ -196,7 +196,7 @@ public class KNXBinding extends AbstractBinding<KNXBindingProvider> implements
 						if (type!=null) {
 							// we need to make sure that we won't send out this event to
 							// the knx bus again, when receiving it on the openHAB bus
-							ignoreEventList.add(itemName + type.toString());
+							ignoreEventSet.add(itemName + type.toString());
 							logger.trace("Added event (item='{}', type='{}') to the ignore event list", itemName, type.toString());
 
 							if (type instanceof Command && isCommandGA(destination)) {

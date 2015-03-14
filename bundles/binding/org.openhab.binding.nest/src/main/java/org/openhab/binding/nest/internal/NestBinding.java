@@ -10,6 +10,7 @@ package org.openhab.binding.nest.internal;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -76,7 +77,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 	/**
 	 * used to store events that we have sent ourselves; we need to remember them for not reacting to them
 	 */
-	private Set<String> ignoreEventSet = new HashSet<String>();
+	private Set<String> ignoreEventSet = Collections.synchronizedSet(new HashSet<String>());
 
 	/**
 	 * The most recently received data model, or <code>null</code> if none have been retrieved yet.
@@ -283,8 +284,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 
 	private boolean isEcho(String itemName, State state) {
 		String ignoreEventSetKey = itemName + state.toString();
-		if (ignoreEventSet.contains(ignoreEventSetKey)) {
-			ignoreEventSet.remove(ignoreEventSetKey);
+		if (ignoreEventSet.remove(ignoreEventSetKey)) {
 			logger.debug(
 					"We received this event (item='{}', state='{}') from Nest, so we don't send it back again -> ignore!",
 					itemName, state);
