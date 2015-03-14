@@ -11,7 +11,7 @@ package org.openhab.binding.dsmr.internal;
 /**
  * DSMR Meter represents a meter for this binding.
  * <p>
- * The main Electricity meter {@link DSMRMeterType}.ELECTRICTY is available 
+ * The main Electricity meter {@link DSMRMeterType}.ELECTRICTY is available
  * implicit and an instance of this class for this meter is not necessary.
  * 
  * @author M. Volaart

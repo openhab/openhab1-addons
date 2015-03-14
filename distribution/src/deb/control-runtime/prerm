@@ -2,21 +2,28 @@
 
 set -e
 
+[ -f /etc/default/openhab ] && . /etc/default/openhab
+
+stopOpenHAB() {
+	if [ -x /bin/systemctl ] ; then
+		/bin/systemctl --no-reload stop openhab.service > /dev/null 2>&1 || :
+	elif [ -x "/etc/init.d/openhab" ]; then
+		if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+			invoke-rc.d openhab stop || true
+		else
+			/etc/init.d/openhab stop || true
+		fi
+	fi
+}
+
 case "$1" in
-	deconfigure|remove|upgrade)
-		if [ -x /etc/init.d/openhab ]; then
-			if which invoke-rc.d > /dev/null 2>&1; then
-				invoke-rc.d openhab stop
-			else
-				/etc/init.d/openhab stop
-			fi
-        fi
+	upgrade)
+		stopOpenHAB
+		;;
+	remove|deconfigure)
+		stopOpenHAB
 		;;
 	failed-upgrade)
-		;;
-	*)
-		echo "prerm called with unknown argument \`$1'" >&2
-		exit 1
 		;;
 esac
 

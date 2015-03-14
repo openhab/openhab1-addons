@@ -131,6 +131,17 @@ public class Event {
 	}
 
 	/**
+	 * Returns the delay of the event in seconds.
+	 */
+	public double getDelay() {
+		if (bindingConfig instanceof ValueBindingConfig) {
+			ValueBindingConfig vbConfig = (ValueBindingConfig)bindingConfig;
+			return vbConfig.getDelay();
+		}
+		return 0;
+	}
+
+	/**
 	 * Returns true if the type is a ON command.
 	 */
 	public boolean isOnType() {

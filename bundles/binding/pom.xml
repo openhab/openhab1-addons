@@ -74,6 +74,7 @@
     <module>org.openhab.binding.systeminfo</module>
     <module>org.openhab.binding.piface</module>
     <module>org.openhab.binding.pilight</module>
+    <module>org.openhab.binding.pilight.test</module>
     <module>org.openhab.binding.fritzaha</module>
     <module>org.openhab.binding.tinkerforge</module>
     <module>org.openhab.binding.nibeheatpump</module>
@@ -135,6 +136,12 @@
     <module>org.openhab.binding.enigma2</module>
     <module>org.openhab.binding.enigma2.test</module>
     <module>org.openhab.binding.bticino</module>
+    <module>org.openhab.binding.zibase</module>
+    <module>org.openhab.binding.wago</module>
+    <module>org.openhab.binding.networkupstools</module>
+    <module>org.openhab.binding.ecobee</module>
+    <module>org.openhab.binding.nest</module>
+    <module>org.openhab.binding.satel</module>
   </modules>
 
 </project>

@@ -29,6 +29,8 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 	@XStreamOmitField
 	private static final Logger logger = LoggerFactory.getLogger(ZWaveMultiCommandCommandClass.class);
 
+	private static final int MULTI_COMMMAND_ENCAP = 0x01;
+
 	/**
 	 * Creates a new instance of the ZWaveMultiCommandCommandClass class.
 	 * @param node the node this command class belongs to
@@ -58,7 +60,7 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 		logger.debug("NODE {}: Received Multi-Command Request", this.getNode().getNodeId());
 		int command = serialMessage.getMessagePayloadByte(offset);
 		switch (command) {
-		case 0x01:			// Multi Cmd Encapsulation
+		case MULTI_COMMMAND_ENCAP:			// Multi Cmd Encapsulation
 			handleMultiCommandEncapResponse(serialMessage, offset+1);
 			break;
 		}
@@ -84,15 +86,31 @@ public class ZWaveMultiCommandCommandClass extends ZWaveCommandClass {
 			int commandClassCode = serialMessage.getMessagePayloadByte(offset + 1);
 			commandClass = CommandClass.getCommandClass(commandClassCode);			
 			if (commandClass == null) {
-				logger.error(String.format("NODE %d: Unsupported command class 0x%02x", this.getNode().getNodeId(), commandClassCode));
+				logger.error(String.format("NODE %d: Unknown command class 0x%02x", getNode().getNodeId(), commandClassCode));
 			}
 			else {
-				zwaveCommandClass  = this.getNode().getCommandClass(commandClass);
+				logger.debug("NODE {}: Incoming command class {}", getNode().getNodeId(), commandClass.getLabel());
+				zwaveCommandClass  = getNode().getCommandClass(commandClass);
+			
+				// Apparently, this node supports a command class that we did not get (yet) during initialization.
+				// Let's add it now then to support handling this message.
 				if (zwaveCommandClass == null) {
-					logger.error(String.format("NODE %d: CommandClass %s (0x%02x) not implemented.", this.getNode().getNodeId(), commandClass.getLabel(), commandClassCode));
+					logger.debug("NODE {}: Command class {} not found, trying to add it.", 
+							getNode().getNodeId(), commandClass.getLabel(), commandClass.getKey());
+					
+					zwaveCommandClass = ZWaveCommandClass.getInstance(commandClass.getKey(), getNode(), this.getController());
+	
+					if (zwaveCommandClass != null) {
+						logger.debug("NODE {}: Adding command class %s", getNode().getNodeId(), commandClass.getLabel());
+						getNode().addCommandClass(zwaveCommandClass);
+					}
+				}
+	
+				if (zwaveCommandClass == null) {
+					logger.error("NODE {}: CommandClass %s not implemented.", this.getNode().getNodeId(), commandClass.getLabel());
 				}
 				else {
-					logger.debug(String.format("NODE %d: Calling handleApplicationCommandRequest.", this.getNode().getNodeId()));
+					logger.debug("NODE {}: Calling handleApplicationCommandRequest.", this.getNode().getNodeId());
 					zwaveCommandClass.handleApplicationCommandRequest(serialMessage, offset + 2, 1);
 				}
 			}

@@ -9,7 +9,6 @@
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
@@ -53,8 +52,20 @@ public abstract class ZWaveCommandProcessor {
 	 * @param incomingMessage The response from the controller
 	 */
 	protected void checkTransactionComplete(SerialMessage lastSentMessage, SerialMessage incomingMessage) {
-		if (incomingMessage.getMessageClass() == lastSentMessage.getExpectedReply() && !incomingMessage.isTransActionCanceled()) {
+		// First, check if we're waiting for an ACK from the controller
+		// This is used for multi-stage transactions to ensure we get all parts of the 
+		// transaction before completing.
+		if(lastSentMessage.isAckPending()) {
+			logger.trace("Message has Ack Pending");
+			return;
+		}
+
+		logger.debug("Sent message {}", lastSentMessage.toString());
+		logger.debug("Recv message {}", incomingMessage.toString());
+		logger.debug("Checking transaction complete: class={}, expected={}, cancelled={}", incomingMessage.getMessageClass(), lastSentMessage.getExpectedReply(), incomingMessage.isTransactionCanceled());
+		if (incomingMessage.getMessageClass() == lastSentMessage.getExpectedReply() && !incomingMessage.isTransactionCanceled()) {
 			transactionComplete = true;
+			logger.debug("         transaction complete!");
 		}
 	}
 
@@ -111,6 +122,7 @@ public abstract class ZWaveCommandProcessor {
 			messageMap.put(SerialMessage.SerialMessageClass.SendData, SendDataMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.SerialApiGetCapabilities, SerialApiGetCapabilitiesMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.SerialApiGetInitData, SerialApiGetInitDataMessageClass.class);
+			messageMap.put(SerialMessage.SerialMessageClass.SerialApiSetTimeouts, SerialApiSetTimeoutsMessageClass.class);
 			messageMap.put(SerialMessage.SerialMessageClass.SetSucNodeID, SetSucNodeMessageClass.class);
 		}
 
@@ -118,17 +130,7 @@ public abstract class ZWaveCommandProcessor {
 		try {
 			constructor = messageMap.get(serialMessage).getConstructor();
 			return constructor.newInstance();
-		} catch (NoSuchMethodException e) {
-			logger.error("Command processor error: {}", e);
-		} catch (InvocationTargetException e) {
-			logger.error("Command processor error: {}", e);
-		} catch (InstantiationException e) {
-			logger.error("Command processor error: {}", e);
-		} catch (IllegalAccessException e) {
-			logger.error("Command processor error: {}", e);
-		} catch (SecurityException e) {
-			logger.error("Command processor error: {}", e);
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
 			logger.error("Command processor error: {}", e);
 		}
 		

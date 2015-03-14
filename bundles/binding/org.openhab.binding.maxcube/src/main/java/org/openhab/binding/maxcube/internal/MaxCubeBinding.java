@@ -146,21 +146,14 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	
 	@Override
 	public void deactivate() {
-		if(socket!=null) {
-			try {
-				socket.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-			}
-			socket = null;
-		}
+		socketClose();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void execute() {
+	public synchronized void execute() {
 		if (ip == null) {
 			logger.debug("Update prior to completion of interface IP configuration");
 			return;
@@ -257,8 +250,7 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				}
 			}
 			if(!exclusive) {
-				socket.close();
-				socket = null;
+				socketClose();
 			}
 
 			for (MaxCubeBindingProvider provider : providers) {
@@ -317,13 +309,15 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 				}
 			}
 		} catch (UnknownHostException e) {
-			logger.info("Cannot establish connection with MAX!Cube lan gateway while connecting to '{}'", ip);
-			logger.debug(Utils.getStackTrace(e));
-			socket = null;
+			logger.info("Host error occurred while connecting to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
+			socketClose();
 		} catch (IOException e) {
-			logger.info("Cannot read data from MAX!Cube lan gateway while connecting to '{}'", ip);
-			logger.debug(Utils.getStackTrace(e));
-			socket = null; //reconnect on next execution
+			logger.info("IO error occurred while connecting to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
+			socketClose(); //reconnect on next execution
+		} catch (Exception e) {
+			logger.info("Error occurred while connecting to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
+			logger.info(Utils.getStackTrace(e));
+			socketClose(); //reconnect on next execution
 		}
 	}
 
@@ -412,11 +406,15 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 						socket = null;
 					}
 				} catch (UnknownHostException e) {
-					logger.warn("Cannot establish connection with MAX!cube lan gateway while sending command to '{}'", ip);
-					logger.debug(Utils.getStackTrace(e));
+					logger.info("Host error occurred while connecting to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
+					socketClose();
 				} catch (IOException e) {
-					logger.warn("Cannot write data from MAX!Cube lan gateway while connecting to '{}'", ip);
-					logger.debug(Utils.getStackTrace(e));
+					logger.info("IO error occurred while writing to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
+					socketClose(); //reconnect on next execution
+				} catch (Exception e) {
+					logger.info("Error occurred while writing to MAX! Cube lan gateway '{}': {}", ip, e.getMessage());
+					logger.info(Utils.getStackTrace(e));
+					socketClose(); //reconnect on next execution
 				}
 				logger.debug("Command Sent to {}", ip);
 			} else {
@@ -440,11 +438,23 @@ public class MaxCubeBinding extends AbstractActiveBinding<MaxCubeBindingProvider
 	
 	private boolean socketConnect() throws UnknownHostException, IOException {
 		socket = new Socket(ip, port);
+		socket.setSoTimeout(2000);
 		logger.debug("open new connection... to "+ip+" port "+port);
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		writer = new OutputStreamWriter(socket.getOutputStream());
 		requestCount = 0;
 		return true;
+	}
+
+	private void socketClose() {
+		if(socket!=null) {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				// Ignore
+			}
+			socket = null;
+		}
 	}
 
 	private Device findDevice(String serialNumber, ArrayList<Device> devices) {

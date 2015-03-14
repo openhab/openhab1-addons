@@ -15,7 +15,6 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
-import org.openhab.binding.zwave.internal.protocol.NodeStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,11 +61,7 @@ public class ZWaveNoOperationCommandClass extends ZWaveCommandClass {
 	@Override
 	public void handleApplicationCommandRequest(SerialMessage serialMessage,
 			int offset, int endpoint) {
-		logger.trace("Handle No Operation Request");
-		logger.debug(String.format("NODE {}: Received No Operation", this.getNode().getNodeId()));
-		
-		// advance node stage.
-		this.getNode().advanceNodeStage(NodeStage.DETAILS);
+		logger.debug("NODE {}: Received No Operation", this.getNode().getNodeId());
 	}
 
 	/**
@@ -74,13 +69,12 @@ public class ZWaveNoOperationCommandClass extends ZWaveCommandClass {
 	 * @return the serial message
 	 */
 	public SerialMessage getNoOperationMessage() {
-		logger.debug("NODE {}: Creating new message for application command No Operation", this.getNode().getNodeId());
-		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Low);
+		logger.debug("NODE {}: Creating new message for command No Operation", this.getNode().getNodeId());
+		SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData, SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Poll);
     	byte[] newPayload = { 	(byte) this.getNode().getNodeId(), 
     							1, 
 								(byte) getCommandClass().getKey() }; 
     	result.setMessagePayload(newPayload);
     	return result;		
 	}
-
 }

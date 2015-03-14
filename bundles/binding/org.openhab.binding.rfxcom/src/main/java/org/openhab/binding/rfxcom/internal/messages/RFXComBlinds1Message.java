@@ -70,7 +70,10 @@ public class RFXComBlinds1Message extends RFXComBaseMessage {
 		RF01(2),
 		AC114(3),
 		YR1326(4),		//Additional commands.
-		MEDIAMOUNT(5),	//MEDIA MOUNT have different direction commands then the rest!! needs to bee fixed.
+		MEDIAMOUNT(5),	//MEDIA MOUNT have different direction commands than the rest!! Needs to be fixed.
+		DC106(6),
+		FOREST(7),
+		CS4330(8),		// Chamberlain CS4330
 		
 		UNKNOWN(255);
 

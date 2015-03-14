@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+	<Model>HA-20</Model>
+	<Label lang="en">Dimmer Switch</Label>
+	<CommandClasses>
+	</CommandClasses>
+	<Configuration>
+	</Configuration>
+
+	<Associations>
+		<Group>
+			<Index>1</Index>
+			<Maximum>4</Maximum>
+			<SetToController>true</SetToController>
+			<Label lang="en">Group 1</Label>
+		</Group>
+	</Associations>
+</Product>

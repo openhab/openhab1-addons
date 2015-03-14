@@ -31,16 +31,16 @@ public class MessageTypeFilter implements PerRequestBroadcastFilter {
 	private static final Logger logger = LoggerFactory.getLogger(MessageTypeFilter.class);
 	
 	@Override
-	public BroadcastAction filter(Object arg0, Object message) {
-		return new BroadcastAction(ACTION.CONTINUE, message);
+	public BroadcastAction filter(String broadcasterId, Object originalMessage, Object message) {
+		return new BroadcastAction(message);
 	}
 
 	@Override
-	public BroadcastAction filter(AtmosphereResource resource, Object originalMessage, Object message) {
+	public BroadcastAction filter(String broadcasterId, AtmosphereResource resource, Object originalMessage, Object message) {
 		final  HttpServletRequest request = resource.getRequest();
 		ResponseTypeHelper responseTypeHelper = new ResponseTypeHelper();
 		String responseType = responseTypeHelper.getResponseType(request);
-		try {	
+		try {
 			Object responseObject = responseType.equals(MediaTypeHelper.APPLICATION_X_JAVASCRIPT) ?
     			new JSONWithPadding(message, responseTypeHelper.getQueryParam(request, "callback")) : message;  			
 	    	return new BroadcastAction(

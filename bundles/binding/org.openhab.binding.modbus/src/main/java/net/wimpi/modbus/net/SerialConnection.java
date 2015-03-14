@@ -102,7 +102,7 @@ public class SerialConnection
           CommPortIdentifier.getPortIdentifier(m_Parameters.getPortName());
     } catch (NoSuchPortException e) {
       if(Modbus.debug) System.out.println(e.getMessage());
-      throw new Exception(e.getMessage());
+      throw new Exception("Could not get port identifier, maybe insufficient permissions. " + e.getMessage());
     }
     //System.out.println("Got Port Identifier");
 

@@ -15,6 +15,7 @@ import org.openhab.binding.samsungac.SamsungAcBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
  * Number ac_set_temp "Set temp [%.1f]"			{samsungac="[<AC_NAME>|AC_FUN_TEMPSET]"}
  * Number ac_direction "Direction"				{samsungac="[<AC_NAME>|AC_FUN_DIRECTION]"}
  * Number ac_windlevel "Windlevel"				{samsungac="[<AC_NAME>|AC_FUN_WINDLEVEL]"}
+ * String ac_error "Error"						{samsungac="[<AC_NAME>|AC_FUN_ERROR]"}
  * </pre>
  * 
  * @author Stein Tore Tøsse
@@ -60,10 +62,10 @@ public class SamsungAcGenericBindingProvider extends
 	 */
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem) && !(item instanceof NumberItem)) {
+		if (!(item instanceof SwitchItem) && !(item instanceof NumberItem) && !(item instanceof StringItem)) {
 			throw new BindingConfigParseException("item '" + item.getName()
 					+ "' is of type '" + item.getClass().getSimpleName()
-					+ "', but only Number and Switchs items are allowed.");
+					+ "', but only Number, Strings and Switchs items are allowed.");
 		}
 	}
 
@@ -93,17 +95,17 @@ public class SamsungAcGenericBindingProvider extends
 		return new SamsungAcBindingConfig(acInstance, item.getName(), property);
 	}
 
-	public BindingConfig getItem(CommandEnum property) {
+	public BindingConfig getItem(String acName, CommandEnum property) {
 		for (BindingConfig config : bindingConfigs.values()) {
 			SamsungAcBindingConfig con = (SamsungAcBindingConfig) config;
-			if (property.equals(con.getProperty()))
+			if (property.equals(con.getProperty()) && con.acInstance.equals(acName) )
 				return con;
 		}
 		return null;
 	}
-
-	public String getItemName(CommandEnum property) {
-		SamsungAcBindingConfig con = (SamsungAcBindingConfig) getItem(property);
+	
+	public String getItemName(String acName, CommandEnum property) {
+		SamsungAcBindingConfig con = (SamsungAcBindingConfig) getItem(acName, property);
 		if (con != null && property.equals(con.getProperty()))
 			return con.getItemName();
 		return null;

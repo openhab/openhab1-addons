@@ -143,5 +143,5 @@ terminal ID:
 	(('0'..'9')+ ('a'..'z' | 'A'..'Z' | '_') ('0'..'9' | 'a'..'z' | 'A'..'Z' | '_')*);
 
 terminal FLOAT returns ecore::EBigDecimal:
-	INT '.' INT;
+	'-'? INT '.' INT;
 	

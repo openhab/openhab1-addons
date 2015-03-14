@@ -66,9 +66,9 @@
                 </Parameter>
                 <Parameter>
                         <Index>121</Index>
-                        <Type>byte</Type>
-                        <Default>256</Default>
-                        <Size>1</Size>
+                        <Type>int</Type>
+                        <Default>4</Default>
+                        <Size>4</Size>
                         <Label lang="en">Send those commands to associated devices on open/close/tamper events</Label>
 						<Help lang="en"><![CDATA[Bit mapped<BR/>
 						0	   ->  	Battery report<BR/>

@@ -165,7 +165,7 @@ public class RRD4jService implements QueryablePersistenceService {
 		RrdDb db = getDB(itemName, consolidationFunction);
 		if(db!=null) {
 			long start = 0L;
-			long end = filter.getEndDate()==null ? System.currentTimeMillis()/1000 - 1 : filter.getEndDate().getTime()/1000;
+			long end = filter.getEndDate()==null ? System.currentTimeMillis()/1000 : filter.getEndDate().getTime()/1000;
 
 			try {
 				if(filter.getBeginDate()==null) {
@@ -305,9 +305,9 @@ public class RRD4jService implements QueryablePersistenceService {
 	}
 	
 	static private String getUserDataFolder() {
-		String progArg = System.getProperty("smarthome.userdata");
+		String progArg = System.getProperty("openhab.userdata");
 		if (progArg != null) {
-			return progArg;
+			return progArg + File.separator + "persistence";
 		} else {
 			return "etc";
 		}

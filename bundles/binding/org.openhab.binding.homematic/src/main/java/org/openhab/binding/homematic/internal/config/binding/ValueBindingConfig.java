@@ -19,6 +19,7 @@ import org.openhab.binding.homematic.internal.converter.state.Converter;
 public abstract class ValueBindingConfig extends HomematicBindingConfig {
 	protected Converter<?> converter;
 	protected boolean forceUpdate;
+	protected double delay;
 
 	/**
 	 * Returns a custom converter.
@@ -32,5 +33,12 @@ public abstract class ValueBindingConfig extends HomematicBindingConfig {
 	 */
 	public boolean isForceUpdate() {
 		return forceUpdate;
+	}
+	
+	/**
+	 * Returns the delay in seconds.
+	 */
+	public double getDelay() {
+		return delay;
 	}
 }

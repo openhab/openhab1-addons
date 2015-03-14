@@ -74,10 +74,14 @@ public class ScaleTransformationService extends LocalizableTransformationService
 				double maxLimit = Double.parseDouble(matcher.group(3));
 
 				// a bit of a trick to include/exclude limits of the segment
-				if (matcher.group(1).equals(']'))
-					minLimit = minLimit - 0.0000000001;
-				if (matcher.group(1).equals('['))
+				if (matcher.group(1).equals("]"))
 					minLimit = minLimit + 0.0000000001;
+				if (matcher.group(1).equals("["))
+					minLimit = minLimit - 0.0000000001;
+				if (matcher.group(4).equals("]"))
+					maxLimit = maxLimit + 0.0000000001;
+				if (matcher.group(4).equals("["))
+					maxLimit = maxLimit - 0.0000000001;
 
 				if ((minLimit < value) && (value < maxLimit)) {
 					result = matcher.group(5);
