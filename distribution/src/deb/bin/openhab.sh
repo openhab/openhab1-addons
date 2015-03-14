@@ -89,7 +89,7 @@ JAVA_ARGS_DEFAULT="-Dosgi.clean=true \
  -Dopenhab.configfile="${OPENHAB_CONF_DIR}/configurations/openhab.cfg" \
  -Dopenhab.configdir="${OPENHAB_CONF_DIR}/configurations" \
  -Dopenhab.logdir="${OPENHAB_LOG_DIR}" \
- -Dopenhab.userdata="${OPENHAB_USER_DATA_DIR}"
+ -Dsmarthome.userdata="${OPENHAB_USER_DATA_DIR}"
  -Djetty.home="${OPENHAB_DIR}" \
  -Djetty.port.ssl=${HTTPS_PORT} \
  -Djetty.config="${OPENHAB_CONF_DIR}/jetty" \
