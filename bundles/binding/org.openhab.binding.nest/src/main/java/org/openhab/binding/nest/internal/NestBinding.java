@@ -285,7 +285,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 		String ignoreEventSetKey = itemName + state.toString();
 		if (ignoreEventSet.contains(ignoreEventSetKey)) {
 			ignoreEventSet.remove(ignoreEventSetKey);
-			logger.debug(
+			logger.trace(
 					"We received this event (item='{}', state='{}') from Nest, so we don't send it back again -> ignore!",
 					itemName, state);
 			return true;
