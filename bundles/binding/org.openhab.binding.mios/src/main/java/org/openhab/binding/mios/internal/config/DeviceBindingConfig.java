@@ -169,6 +169,9 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 		COMMAND_DEFAULTS.put("TOGGLE", "urn:micasaverde-com:serviceId:HaDevice1/ToggleState()");
 		COMMAND_DEFAULTS.put("INCREASE", "urn:upnp-org:serviceId:Dimming1/StepUp()");
 		COMMAND_DEFAULTS.put("DECREASE", "urn:upnp-org:serviceId:Dimming1/StepDown()");
+		COMMAND_DEFAULTS.put("UP", "urn:upnp-org:serviceId:WindowCovering1/UP()");
+		COMMAND_DEFAULTS.put("DOWN", "urn:upnp-org:serviceId:WindowCovering1/DOWN()");
+		COMMAND_DEFAULTS.put("STOP", "urn:upnp-org:serviceId:WindowCovering1/STOP()");
 	}
 
 	private static Properties aliasMap = new Properties();
@@ -210,7 +213,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 		}
 	}
 
-	private static final Pattern SERVICE_IN_PATTERN = Pattern.compile("service/(?<serviceName>.+)/(?<serviceVar>.+)");
+	private static final Pattern SERVICE_IN_PATTERN = Pattern.compile("service/(?<serviceName>[^/]+)(/(?<serviceVar>[^/]+))?");
 
 	private static final Pattern SERVICE_COMMAND_TRANSFORM_PATTERN = Pattern
 			.compile("(?<transform>(?<transformCommand>[a-zA-Z]+)\\((?<transformParam>.*)\\))");
@@ -268,13 +271,17 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 			matcher = SERVICE_IN_PATTERN.matcher(newInStuff);
 			if (matcher.matches()) {
 				iName = matcher.group("serviceName");
-				iVar = matcher.group("serviceVar");
+				// Sometimes there is no serviceVar!
+				try { iVar = matcher.group("serviceVar"); } catch (IllegalArgumentException e) {};  
 
 				// Handle service name aliases.
 				iName = mapServiceAlias(iName);
 
 				// Rebuild, since we've normalized the name.
-				newInStuff = "service/" + iName + '/' + iVar;
+				newInStuff = "service/" + iName;
+				if (iVar != null) {
+					newInStuff = newInStuff + '/' + iVar;
+				}
 			}
 
 			//
