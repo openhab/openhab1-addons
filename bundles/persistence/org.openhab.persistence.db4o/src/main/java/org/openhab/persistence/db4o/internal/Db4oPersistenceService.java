@@ -68,7 +68,7 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 	
 	private static final String SERVICE_NAME = "db4o";
 	
-    public static final String DB_FOLDER = getUserPersistenceDataFolder() + File.separator + "db4o";
+	private static final String DB_FOLDER = getUserPersistenceDataFolder() + File.separator + "db4o";
 	private static final String DB_FILE_NAME = "store.db4o";
 
 	private static final String SCHEDULER_GROUP = "DB4O_SchedulerGroup";
