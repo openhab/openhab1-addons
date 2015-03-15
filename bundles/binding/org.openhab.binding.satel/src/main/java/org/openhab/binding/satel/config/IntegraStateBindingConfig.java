@@ -104,12 +104,12 @@ public class IntegraStateBindingConfig extends SatelBindingConfig {
 				for (int i = 0; i < objectNumbersStr.length; ++i) {
 					int objectNumber = Integer.parseInt(objectNumbersStr[i]);
 					if (objectNumber < 1 || objectNumber > 256) {
-						throw new BindingConfigParseException(String.format("Invalid object number: {}", bindingConfig));
+						throw new BindingConfigParseException(String.format("Invalid object number: %s", bindingConfig));
 					}
 					objectNumbers[i] = objectNumber;
 				}
 			} catch (NumberFormatException e) {
-				throw new BindingConfigParseException(String.format("Invalid object number: {}", bindingConfig));
+				throw new BindingConfigParseException(String.format("Invalid object number: %s", bindingConfig));
 			}
 		}
 

@@ -99,18 +99,18 @@ public abstract class SatelBindingConfig implements BindingConfig {
 			try {
 				return Enum.valueOf(enumType, next().toUpperCase());
 			} catch (Exception e) {
-				throw new BindingConfigParseException(String.format("Invalid {}: {}", description, bindingConfig));
+				throw new BindingConfigParseException(String.format("Invalid %s: %s", description, this.bindingConfig));
 			}
 		}
 
 		@Override
 		public boolean hasNext() {
-			return idx < configElements.length;
+			return idx < this.configElements.length;
 		}
 
 		@Override
 		public String next() {
-			return configElements[idx++];
+			return this.configElements[idx++];
 		}
 
 		@Override
@@ -147,7 +147,7 @@ public abstract class SatelBindingConfig implements BindingConfig {
 			if (iterator.hasNext()) {
 				// options are always the last element
 				// if anything left, throw exception
-				throw new BindingConfigParseException(String.format("Too many elements: {}",
+				throw new BindingConfigParseException(String.format("Too many elements: %s",
 						iterator.getBindingConfig()));
 			}
 		}
