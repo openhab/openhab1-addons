@@ -319,7 +319,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 		} else {
 
 			try {
-				logger.trace("About to set property '{}' to '{}'", property, newState);
+				logger.debug("About to set property '{}' to '{}'", property, newState);
 
 				// Ask the old DataModel to generate a new DataModel that only contains the update we want to send
 				DataModel updateDataModel = oldDataModel.updateDataModel(property, newState);
