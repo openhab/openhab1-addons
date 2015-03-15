@@ -327,8 +327,9 @@ public class DataModel extends AbstractMessagePart {
 	 * 
 	 * @return name-based map of thermostats
 	 */
+	@JsonIgnore
 	public Map<String, Thermostat> getThermostats() {
-		return devices.getThermostats();
+		return (devices == null) ? null : devices.getThermostats();
 	}
 
 	/**
@@ -336,8 +337,9 @@ public class DataModel extends AbstractMessagePart {
 	 * 
 	 * @return name-based map of smoke_co_alarms
 	 */
+	@JsonIgnore
 	public Map<String, SmokeCOAlarm> getSmoke_co_alarms() {
-		return devices.getSmoke_co_alarms();
+		return (devices == null) ? null : devices.getSmoke_co_alarms();
 	}
 
 	/**
@@ -357,6 +359,7 @@ public class DataModel extends AbstractMessagePart {
 		this.structures_by_id = structures_by_id;
 	}
 
+	@JsonIgnore
 	public Map<String, Structure> getStructures() {
 		return this.structures_by_name;
 	}
