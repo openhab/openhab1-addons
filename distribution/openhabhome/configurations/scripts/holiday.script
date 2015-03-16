@@ -1,0 +1,234 @@
+var int year = now.getYear
+
+var int a = year % 19
+var int b = year / 100
+var int c = year % 100
+var int d = b / 4
+var int e = b % 4
+var int f = (b + 8) / 25
+var int g = (b - f + 1) / 3
+var int h = (19 * a + b - d - g + 15) % 30
+var int i = c / 4
+var int k = c % 4
+var int L = (32 + 2 * e + 2 * i - h - k) % 7
+var int m = (a + 11 * h + 22 * L) / 451
+
+var int month = (h + L - 7 * m + 114) / 31
+var int day = ((h + L - 7 * m + 114) % 31) + 1
+
+var org.joda.time.DateTime easterSunday = parse(year+"-"+month+"-"+day)
+var org.joda.time.DateTime stAdvent = parse(year+"-12-25").minusDays(((parse(year+"-12-25").getDayOfWeek) + 21))
+var int dayOfYear = now.getDayOfYear
+
+logInfo("Holiday-Script", "Heute ist Tag "+dayOfYear+" von "+year)
+logInfo("Holiday-Script", "Ostersonntag ist: "+easterSunday)
+
+// Feiertag 
+var boolean holiday = false
+var String holidayName = null
+
+// Schulferien
+var boolean schoolvac = false
+var String schoolvacName = null
+
+// bundesweiter Feiertag
+if (dayOfYear==parse(year+"-01-01").getDayOfYear) {
+    holidayName = "new_years_day" // Neujahr
+    holiday = true
+}
+// Baden-Württemberg, Bayern, Sachsen-Anhalt
+else if (dayOfYear==parse(year+"-01-06").getDayOfYear) {
+    holidayName = "holy_trinity"// Heilige 3 Könige
+    holiday = true 
+}
+// Carnival ;-)
+else if (dayOfYear==easterSunday.getDayOfYear-48) {
+    holidayName = "carnival_monday" // Rosenmontag
+    holiday = false
+}
+// bundesweiter Feiertag
+else if (dayOfYear==easterSunday.getDayOfYear-2) {
+    holidayName = "good_friday" // Karfreitag
+    holiday = true
+}
+// Brandenburg
+else if (dayOfYear==easterSunday.getDayOfYear) {
+    holidayName = "easter_sunday" // Ostersonntag
+    holiday = false
+}
+// bundesweiter Feiertag
+else if (dayOfYear==easterSunday.getDayOfYear+1) {
+    holidayName = "easter_monday" // Ostermontag
+    holiday = true
+}
+// bundesweiter Feiertag
+else if (dayOfYear==parse(year+"-05-01").getDayOfYear) {
+    holidayName = "1st_may"// Tag der Arbeit
+    holiday = true 
+}
+// bundesweiter Feiertag
+else if (dayOfYear==easterSunday.getDayOfYear+39) {
+    holidayName = "ascension_day" // Christi Himmelfahrt
+    holiday = true
+}
+// Brandenburg
+else if (dayOfYear==easterSunday.getDayOfYear+49) {
+    holidayName = "whit_sunday" // Pfingstsonntag
+    holiday = false
+}
+// bundesweiter Feiertag
+else if (dayOfYear==easterSunday.getDayOfYear+50) {
+    holidayName = "whit_monday" // Pfingstmontag
+    holiday = true
+}
+// Baden-Württemberg, Bayern, Hessen, NRW, Rheinland-Pfalz, Saarland sowie regional in Sachsen, Thüringen
+else if (dayOfYear==easterSunday.getDayOfYear+60) {
+    holidayName = "corpus_christi" // Frohnleichnahm
+    holiday = true
+}
+// Saarland sowie regional in Bayern
+else if (dayOfYear==parse(year+"-08-15").getDayOfYear) {
+    holidayName = "assumption_day" // Mariä Himmelfahrt
+    holiday = false
+}
+// bundesweiter Feiertag
+else if (dayOfYear==parse(year+"-10-03").getDayOfYear) {
+    holidayName = "reunification" // Tag der deutschen Einheit
+    holiday = true
+}
+// Brandenburg, Mecklenburg-Vorpommern, Sachsen, Sachsen-Anhalt, Thüringen
+else if (dayOfYear==parse(year+"-10-31").getDayOfYear) {
+    holidayName = "reformation_day" // Reformationstag
+    holiday = false
+}
+// Baden-Württemberg, Bayern, NRW, Rheinland-Pfalz, Saarland
+else if (dayOfYear==parse(year+"-11-01").getDayOfYear) {
+    holidayName = "all_saints_day" // Allerheiligen
+    holiday = true
+}
+// religiöser Tag
+else if (dayOfYear==stAdvent.getDayOfYear-14) {
+    holidayName = "remembrance_day" // Volkstrauertag
+    holiday = false
+}
+// religiöser Tag
+else if (dayOfYear==stAdvent.getDayOfYear-7) {
+    holidayName = "sunday_in_commemoration_of_the_dead" // Totensonntag
+    holiday = false
+}
+// Sachsen
+else if (dayOfYear==stAdvent.getDayOfYear-11) {
+    holidayName = "day_of_repentance" // Buß- und Bettag
+    holiday = false
+}
+// kann auch der 4te Advent sein
+else if (dayOfYear==parse(year+"-12-24").getDayOfYear) {
+    holidayName = "christmas_eve" // Heiligabend
+    holiday = true
+}
+// bundesweiter Feiertag
+else if (dayOfYear==parse(year+"-12-25").getDayOfYear) {
+    holidayName = "1st_christmas_day" // 1. Weihnachtstag
+    holiday = true
+}
+// bundesweiter Feiertag
+else if (dayOfYear==parse(year+"-12-26").getDayOfYear) {
+    holidayName = "2nd_christmas_day" // 2. Weihnachtstag
+    holiday = true
+}
+// Silvester
+else if (dayOfYear==parse(year+"-12-31").getDayOfYear) {
+    holidayName = "new_years_eve" // Silvester
+    holiday = false
+}
+// Schulferien Bayern 2015 - Daten von http://www.schulferien.org
+if (year == 2015) {
+	if (dayOfYear >= parse(year+"-02-16").getDayOfYear && 
+		dayOfYear <= parse(year+"-02-20").getDayOfYear	) {
+		schoolvacName = "Winterferien"
+		schoolvac = true
+	} else if (dayOfYear >= parse(year+"-03-30").getDayOfYear && 
+		dayOfYear <= parse(year+"-04-11").getDayOfYear	) {
+		schoolvacName = "Osterferien"
+		schoolvac = true
+	} else if (dayOfYear >= parse(year+"-05-26").getDayOfYear && 
+		dayOfYear <= parse(year+"-06-05").getDayOfYear	) {
+		schoolvacName = "Pfingstferien"
+		schoolvac = true
+	} else if (dayOfYear >= parse(year+"-08-01").getDayOfYear && 
+		dayOfYear <= parse(year+"-09-14").getDayOfYear	) {
+		schoolvacName = "Sommerferien"
+		schoolvac = true
+	} else if (dayOfYear >= parse(year+"-11-02").getDayOfYear && 
+		dayOfYear <= parse(year+"-11-07").getDayOfYear	) {
+		schoolvacName = "Herbstferien"
+		schoolvac = true
+	} else if (dayOfYear >= parse(year+"-12-24").getDayOfYear&& 
+		dayOfYear <= parse(year+"-12-31").getDayOfYear) {
+		schoolvacName = "Weihnachtsferien"
+		schoolvac = true
+	}
+}
+// Schulferien Bayern 2016 - Daten von http://www.schulferien.org
+if (year == 2016) {
+	if (dayOfYear >= parse(year+"-01-01").getDayOfYear && 
+		dayOfYear <= parse(year+"-01-05").getDayOfYear	) {
+		schoolvacName = "Weihnachtsferien"
+		schoolvac = true
+	} else if (dayOfYear >= parse(year+"-02-08").getDayOfYear && 
+		dayOfYear <= parse(year+"-02-12").getDayOfYear	) {
+		schoolvacName = "Winterferien"
+		schoolvac = true
+	} else if (dayOfYear >= parse(year+"-03-21").getDayOfYear && 
+		dayOfYear <= parse(year+"-04-01").getDayOfYear	) {
+		schoolvacName = "Osterferien"
+		schoolvac = true
+	} else if (dayOfYear >= parse(year+"-05-17").getDayOfYear && 
+		dayOfYear <= parse(year+"-05-28").getDayOfYear	) {
+		schoolvacName = "Pfingstferien"
+		schoolvac = true
+	} else if (dayOfYear >= parse(year+"-07-30").getDayOfYear && 
+		dayOfYear <= parse(year+"-09-12").getDayOfYear	) {
+		schoolvacName = "Sommerferien"
+		schoolvac = true
+	} else if (dayOfYear >= parse(year+"-10-31").getDayOfYear && 
+		dayOfYear <= parse(year+"-11-04").getDayOfYear	) {
+		schoolvacName = "Herbstferien"
+		schoolvac = true
+	} else if (dayOfYear >= parse(year+"-12-24").getDayOfYear&& 
+		dayOfYear <= parse(year+"-12-31").getDayOfYear) {
+		schoolvacName = "Weihnachtsferien"
+		schoolvac = true
+	}
+}
+// Name Feiertag setzen
+if (holidayName!=null) {
+    logInfo("Holiday-Script", "Feiertag: "+holidayName) 
+    postUpdate(SpecialDay,holidayName)
+} else {
+	postUpdate(SpecialDay,"undefined")
+}
+// Schalter Feiertag setzen
+if (holiday) {
+    logInfo("Holiday-Script", "Heute ist EIN Feiertag!")
+    postUpdate(Holiday,ON)
+}
+else {
+    logInfo("Holiday-Script", "Heute ist KEIN Feiertag!")
+    postUpdate(Holiday,OFF)
+}
+// Name Schulferien setzen
+if (schoolvacName!=null) {
+    logInfo("Holiday-Script", "Ferien: "+schoolvacName)
+    postUpdate(SchoolVacationName,schoolvacName)
+} else {
+    postUpdate(SchoolVacationName,"keine Schulferien")	
+}
+// Schalter Schulferien setzen
+if (schoolvac) {
+    logInfo("Holiday-Script", "Heute ist EIN Ferientag!")
+    postUpdate(SchoolVacation,ON)
+} else {
+    logInfo("Holiday-Script", "Heute ist KEIN Ferientag!")
+    postUpdate(SchoolVacation,OFF)
+}
