@@ -285,7 +285,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 		String ignoreEventSetKey = itemName + state.toString();
 		if (ignoreEventSet.contains(ignoreEventSetKey)) {
 			ignoreEventSet.remove(ignoreEventSetKey);
-			logger.debug(
+			logger.trace(
 					"We received this event (item='{}', state='{}') from Nest, so we don't send it back again -> ignore!",
 					itemName, state);
 			return true;
@@ -319,7 +319,7 @@ public class NestBinding extends AbstractActiveBinding<NestBindingProvider> impl
 		} else {
 
 			try {
-				logger.trace("About to set property '{}' to '{}'", property, newState);
+				logger.debug("About to set property '{}' to '{}'", property, newState);
 
 				// Ask the old DataModel to generate a new DataModel that only contains the update we want to send
 				DataModel updateDataModel = oldDataModel.updateDataModel(property, newState);

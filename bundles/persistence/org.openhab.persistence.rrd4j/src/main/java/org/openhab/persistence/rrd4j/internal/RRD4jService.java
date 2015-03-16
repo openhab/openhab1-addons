@@ -58,7 +58,7 @@ public class RRD4jService implements QueryablePersistenceService {
 
 	private static final String DATASOURCE_STATE = "state";
 
-	protected final static String DB_FOLDER = getUserDataFolder() + File.separator + "rrd4j";
+	public final static String DB_FOLDER = getUserPersistenceDataFolder() + File.separator + "rrd4j";
 	
 	private static final Logger logger = LoggerFactory.getLogger(RRD4jService.class);
 
@@ -223,7 +223,7 @@ public class RRD4jService implements QueryablePersistenceService {
             } else {
             	File folder = new File(DB_FOLDER);
             	if(!folder.exists()) {
-            		folder.mkdir();
+            		folder.mkdirs();
             	}
             	// create a new database file
                 db = new RrdDb(getRrdDef(function, file));
@@ -304,8 +304,8 @@ public class RRD4jService implements QueryablePersistenceService {
 		return new DecimalType(value);
 	}
 	
-	static private String getUserDataFolder() {
-		String progArg = System.getProperty("openhab.userdata");
+	static private String getUserPersistenceDataFolder() {
+		String progArg = System.getProperty("smarthome.userdata");
 		if (progArg != null) {
 			return progArg + File.separator + "persistence";
 		} else {

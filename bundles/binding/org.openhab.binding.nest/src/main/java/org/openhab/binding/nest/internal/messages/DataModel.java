@@ -11,6 +11,7 @@ package org.openhab.binding.nest.internal.messages;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -146,6 +147,8 @@ public class DataModel extends AbstractMessagePart {
 	private Map<String, Structure> structures_by_id;
 	@JsonIgnore
 	private Map<String, Structure> structures_by_name;
+	@JsonIgnore
+	Date last_connection;
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class Devices extends AbstractMessagePart implements DataModelElement {
@@ -327,8 +330,9 @@ public class DataModel extends AbstractMessagePart {
 	 * 
 	 * @return name-based map of thermostats
 	 */
+	@JsonIgnore
 	public Map<String, Thermostat> getThermostats() {
-		return devices.getThermostats();
+		return (devices == null) ? null : devices.getThermostats();
 	}
 
 	/**
@@ -336,8 +340,9 @@ public class DataModel extends AbstractMessagePart {
 	 * 
 	 * @return name-based map of smoke_co_alarms
 	 */
+	@JsonIgnore
 	public Map<String, SmokeCOAlarm> getSmoke_co_alarms() {
-		return devices.getSmoke_co_alarms();
+		return (devices == null) ? null : devices.getSmoke_co_alarms();
 	}
 
 	/**
@@ -357,6 +362,7 @@ public class DataModel extends AbstractMessagePart {
 		this.structures_by_id = structures_by_id;
 	}
 
+	@JsonIgnore
 	public Map<String, Structure> getStructures() {
 		return this.structures_by_name;
 	}
@@ -367,6 +373,23 @@ public class DataModel extends AbstractMessagePart {
 	 */
 	public void setStructures_by_name(final Map<String, Structure> structures_by_name) {
 		this.structures_by_name = structures_by_name;
+	}
+
+	/**
+	 * @param last_connection
+	 *            the last time we obtained the data model from the Nest API
+	 */
+	@JsonIgnore
+	public void setLast_connection(final Date last_connection) {
+		this.last_connection = last_connection;
+	}
+
+	/**
+	 * @return the last_connection
+	 */
+	@JsonIgnore
+	public Date getLast_connection() {
+		return this.last_connection;
 	}
 
 	/**
