@@ -169,6 +169,9 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 		COMMAND_DEFAULTS.put("TOGGLE", "urn:micasaverde-com:serviceId:HaDevice1/ToggleState()");
 		COMMAND_DEFAULTS.put("INCREASE", "urn:upnp-org:serviceId:Dimming1/StepUp()");
 		COMMAND_DEFAULTS.put("DECREASE", "urn:upnp-org:serviceId:Dimming1/StepDown()");
+		COMMAND_DEFAULTS.put("UP", "urn:upnp-org:serviceId:WindowCovering1/Up()");
+		COMMAND_DEFAULTS.put("DOWN", "urn:upnp-org:serviceId:WindowCovering1/Down()");
+		COMMAND_DEFAULTS.put("STOP", "urn:upnp-org:serviceId:WindowCovering1/Stop()");
 	}
 
 	private static Properties aliasMap = new Properties();
@@ -210,7 +213,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 		}
 	}
 
-	private static final Pattern SERVICE_IN_PATTERN = Pattern.compile("service/(?<serviceName>.+)/(?<serviceVar>.+)");
+	private static final Pattern SERVICE_IN_PATTERN = Pattern.compile("service/(?<serviceName>[^/]+)(/(?<serviceVar>[^/]+))?");
 
 	private static final Pattern SERVICE_COMMAND_TRANSFORM_PATTERN = Pattern
 			.compile("(?<transform>(?<transformCommand>[a-zA-Z]+)\\((?<transformParam>.*)\\))");
@@ -274,7 +277,7 @@ public class DeviceBindingConfig extends MiosBindingConfig {
 				iName = mapServiceAlias(iName);
 
 				// Rebuild, since we've normalized the name.
-				newInStuff = "service/" + iName + '/' + iVar;
+				newInStuff = "service/" + iName + (iVar == null ? "" : '/' + iVar);
 			}
 
 			//
