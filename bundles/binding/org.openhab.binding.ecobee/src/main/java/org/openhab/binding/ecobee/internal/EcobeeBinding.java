@@ -9,7 +9,9 @@
 package org.openhab.binding.ecobee.internal;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -165,7 +167,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	/**
 	 * used to store events that we have sent ourselves; we need to remember them for not reacting to them
 	 */
-	private Set<String> ignoreEventSet = new HashSet<String>();
+	private List<String> ignoreEventList = Collections.synchronizedList(new ArrayList<String>());
 
 	/**
 	 * The most recently received list of revisions, or an empty Map if none have been retrieved yet.
@@ -381,7 +383,7 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 						 * we need to make sure that we won't send out this event to Ecobee again, when receiving it on
 						 * the openHAB bus
 						 */
-						ignoreEventSet.add(itemName + newState.toString());
+						ignoreEventList.add(itemName + newState.toString());
 						logger.trace("Added event (item='{}', newState='{}') to the ignore event list", itemName,
 								newState);
 						this.eventPublisher.postUpdate(itemName, newState);
@@ -499,9 +501,8 @@ public class EcobeeBinding extends AbstractActiveBinding<EcobeeBindingProvider> 
 	}
 
 	private boolean isEcho(String itemName, State state) {
-		String ignoreEventSetKey = itemName + state.toString();
-		if (ignoreEventSet.contains(ignoreEventSetKey)) {
-			ignoreEventSet.remove(ignoreEventSetKey);
+		String ignoreEventListKey = itemName + state.toString();
+		if (ignoreEventList.remove(ignoreEventListKey)) {
 			logger.trace(
 					"We received this event (item='{}', state='{}') from Ecobee, so we don't send it back again -> ignore!",
 					itemName, state.toString());
