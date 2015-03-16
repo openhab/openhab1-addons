@@ -164,6 +164,17 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		
 		this.updateItemsForEvent();
 	}
+	
+	@Override
+	public void eventChanged(CalDavEvent event) {
+		if (!calendars.contains(event.getCalendarId())) {
+            return;
+        }
+		
+		logger.debug("event changed: {}", event.getShortName());
+		
+		this.updateItemsForEvent();
+	}
 
 	@Override
 	public void eventBegins(CalDavEvent event) {
@@ -231,6 +242,8 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 				eventPublisher.postUpdate(itemName, org.openhab.core.types.UnDefType.UNDEF);
 				return;
 			}
+			
+			logger.debug("found {} events for config: {}", subList.size(), config);
 			
 			CalDavEvent event = subList.get(config.getEventNr() - 1);
 			logger.trace("found event {} for config {}", event.getShortName(), config);
@@ -328,7 +341,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	private List<CalDavEvent> removeWithMatchingPlace(List<CalDavEvent> list) {
 		List<CalDavEvent> out = new ArrayList<CalDavEvent>();
 		for (CalDavEvent event : list) {
-			if (!this.homeIdentifierMatch(event.getLocation())) {
+			if (this.homeIdentifierMatch(event.getLocation())) {
 				continue;
 			}
 			out.add(event);
@@ -361,5 +374,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			return arg0.getStart().compareTo(arg1.getStart());
 		}
 	}
+
+	
 
 }

@@ -17,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -27,10 +28,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
-
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
@@ -50,7 +49,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.openhab.core.service.AbstractActiveService;
 import org.openhab.io.caldav.CalDavEvent;
@@ -63,7 +61,6 @@ import org.slf4j.LoggerFactory;
 
 import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
-import com.github.sardine.SardineFactory;
 import com.github.sardine.impl.SardineImpl;
 
 /**
@@ -181,7 +178,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		this.eventListenerList.remove(notifier);
 	}
 
-	private void addEvent(CalDavEvent event) {
+	private synchronized void addEvent(CalDavEvent event) {
 		if (!this.eventCache.containsKey(event.getCalendarId())) {
 			LOG.debug("creating event map for calendar: {}", event.getCalendarId());
 			this.eventCache.put(event.getCalendarId(), new ConcurrentHashMap<String, CalDavEvent>());
@@ -203,12 +200,10 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 				}
 				
 				// override event
-				eventMap.remove(event.getId());
 				eventMap.put(event.getId(), event);
 				
 				for (EventNotifier notifier : eventListenerList) {
-					notifier.eventRemoved(event);
-					notifier.eventLoaded(event);
+					notifier.eventChanged(event);
 				}
 				
 				createJob(event);
@@ -226,7 +221,29 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		}
 	}
 	
-	private void createJob(final CalDavEvent event) {
+	private synchronized void removeDeletedEvents(String eventMapKey, List<String> oldMap) {
+		ConcurrentHashMap<String, CalDavEvent> eventMap = this.eventCache.get(eventMapKey);
+		
+		for (String eventId : oldMap) {
+			CalDavEvent event = eventMap.get(eventId);
+			LOG.debug("remove deleted event: {}", event.getShortName());
+			eventMap.remove(eventId);
+			// cancel old jobs
+			if (timerBeginMap.contains(eventId)) {
+				timerBeginMap.get(eventId).cancel();
+				timerBeginMap.remove(eventId);
+			}
+			if (timerEndMap.contains(eventId)) {
+				timerEndMap.get(eventId).cancel();
+				timerEndMap.remove(eventId);
+			}
+			for (EventNotifier notifier : eventListenerList) {
+				notifier.eventRemoved(event);
+			}
+		}
+	}
+	
+	private synchronized void createJob(final CalDavEvent event) {
 		TimerTask timerTaskBegin = new TimerTask() {
 			@Override
 			public void run() {
@@ -260,7 +277,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		LOG.debug("end timer scheduled for event '{}' @ {}", event.getShortName(), event.getEnd());
 	}
 
-	private List<CalDavEvent> loadEvents(CalDavConfig config)
+	private synchronized List<CalDavEvent> loadEvents(CalDavConfig config, List<String> currentLoad)
 			throws IOException, ParserException {
 		List<CalDavEvent> eventList = new ArrayList<CalDavEvent>();
 
@@ -353,6 +370,7 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 							event.setContent(vEvent.getDescription().getValue());
 						}
 						addEvent(event);
+						currentLoad.add(event.getId());
 					}
 
 				}
@@ -371,29 +389,39 @@ public class CalDavLoaderImpl extends AbstractActiveService implements
 		}
 		LOG.trace("starting execution...");
 
+		ScheduledExecutorService execService = Executors.newScheduledThreadPool(configMap.values().size());
 		for (final CalDavConfig config : configMap.values()) {
-			new Timer(true).schedule(new TimerTask() {
-
+			execService.scheduleAtFixedRate(new Runnable() {
 				@Override
 				public void run() {
-
-					Executors.newSingleThreadExecutor().submit(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								LOG.debug("loading events for config: "
-										+ config.getKey());
-								loadEvents(config);
-							} catch (IOException e) {
-								LOG.error("error while loading calendar entries: " + e.getMessage(), e);
-							} catch (ParserException e) {
-								LOG.error("error while loading calendar entries: " + e.getMessage(), e);
-							}
-						}
-					});
-
+					try {
+						LOG.debug("loading events for config: "
+								+ config.getKey());
+						ConcurrentHashMap<String, CalDavEvent> map = eventCache.get(config.getKey());
+						List<String> oldMap = Collections.list(map != null ? map.keys() : Collections.enumeration(new ArrayList<String>()));
+						List<String> loadedCalendarIds = new ArrayList<String>();
+						loadEvents(config, loadedCalendarIds);
+						oldMap.removeAll(loadedCalendarIds);
+						// stop all events in oldMap
+						removeDeletedEvents(config.getKey(), oldMap);
+						printAllEvents();
+					} catch (IOException e) {
+						LOG.error("error while loading calendar entries: " + e.getMessage(), e);
+					} catch (ParserException e) {
+						LOG.error("error while loading calendar entries: " + e.getMessage(), e);
+					}
 				}
-			}, 10000, config.getReloadMinutes() * 1000 * 60);
+			}, 10, config.getReloadMinutes() * 60, TimeUnit.SECONDS);
+		}
+	}
+	
+	private synchronized void printAllEvents() {
+		for (ConcurrentHashMap<String, CalDavEvent> map : this.eventCache.values()) {
+			LOG.trace("------------ list " + map.size() + " -------------");
+			for (CalDavEvent event : map.values()) {
+				LOG.info(event.getShortName());
+			}
+			LOG.trace("------------ list end ---------");
 		}
 	}
 

@@ -68,7 +68,7 @@ public class CalDavEvent {
 	}
 
 	public String getId() {
-		return id;
+		return this.calendarId + "-" + this.id + "-" + this.start.hashCode() + "-" + this.end.hashCode();
 	}
 
 	public void setId(String id) {

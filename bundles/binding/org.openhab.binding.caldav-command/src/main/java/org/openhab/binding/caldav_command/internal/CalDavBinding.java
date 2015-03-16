@@ -22,7 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.openhab.binding.caldav_command.CalDavBindingProvider;
 
 import org.openhab.core.binding.AbstractBinding;
-import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
@@ -138,7 +137,14 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		return out.toString();
 	}
 	
-	private void handleForEventMap(CalDavEvent event, String scope) {
+	private CalDavBindingProvider getCalDavBindingProvider() {
+		for (CalDavBindingProvider provider : providers) {
+			return provider;
+		}
+		return null;
+	}
+	
+	private void handleForEventMap(CalDavEvent event, String scope, boolean add) {
 		if (!readCalendars.contains(event.getCalendarId())) {
 			logger.trace("event '{}' is not in used calendars", event.getShortName());
 			return;
@@ -174,24 +180,19 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 				return;
 			}
 			
-			CalDavBindingProvider provider = null;
-			for (CalDavBindingProvider provider_ : providers) {
-				provider = provider_;
-			}
+			CalDavBindingProvider provider = getCalDavBindingProvider();
 			if (provider == null) {
 				logger.error("cannot find any provider");
 				return;
 			}
 			List<CalDavNextEventConfig> configList = provider.getConfigForListenerItem(itemName);
 			for (CalDavNextEventConfig config : configList) {
-				if (scope == SCOPE_BEGIN) {
-					this.addToEventMap(config, config.getItemNameToListenTo(), commandString, event.getStart(), config.getType(), event.getId(), SCOPE_BEGIN);
+				if (add) {
+					this.addToEventMap(config, config.getItemNameToListenTo(), commandString, event.getStart(), config.getType(), event.getId(), scope);
 				} else {
-					this.addToEventMap(config, config.getItemNameToListenTo(), commandString, event.getEnd(), config.getType(), event.getId(), SCOPE_END);
+					this.removeFromEventMap(itemName, event.getId(), scope);		
 				}
 			}
-			
-			
 		}
 	}
 	
@@ -200,14 +201,9 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 	@Override
 	protected void internalReceiveCommand(String itemName, Command command) {
 		// get binding provider
-		CalDavBindingProvider provider = null;
-		for (BindingProvider provider_ : this.providers) {
-			if (provider_ instanceof CalDavBindingProvider) {
-				provider = (CalDavBindingProvider) provider_;
-			}
-		}
+		CalDavBindingProvider provider = getCalDavBindingProvider();
 		if (provider == null) {
-			logger.error("no provider found");
+			logger.error("cannot find any provider");
 			return;
 		}
 		
@@ -238,14 +234,23 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 
 	@Override
 	public void eventRemoved(CalDavEvent event) {
-		this.handleForEventMap(event, SCOPE_BEGIN);
-		this.handleForEventMap(event, SCOPE_END);
+		this.handleForEventMap(event, SCOPE_BEGIN, false);
+		this.handleForEventMap(event, SCOPE_END, false);
 	}
 
 	@Override
 	public void eventLoaded(CalDavEvent event) {
-		this.handleForEventMap(event, SCOPE_BEGIN);
-		this.handleForEventMap(event, SCOPE_END);
+		this.handleForEventMap(event, SCOPE_BEGIN, true);
+		this.handleForEventMap(event, SCOPE_END, true);
+	}
+	
+	@Override
+	public void eventChanged(CalDavEvent event) {
+		this.handleForEventMap(event, SCOPE_BEGIN, false);
+		this.handleForEventMap(event, SCOPE_END, false);
+		
+		this.handleForEventMap(event, SCOPE_BEGIN, true);
+		this.handleForEventMap(event, SCOPE_END, true);
 	}
 
 	@Override
@@ -295,11 +300,11 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 				eventPublisher.postCommand(itemName, command);
 			}
 			
-			this.removeFromEventMap(itemName, commandString, scope.equals(SCOPE_BEGIN) ? event.getStart() : event.getEnd(), event.getId(), scope);
+			this.removeFromEventMap(itemName, event.getId(), scope);
 		}
 	}
 	
-	private void removeFromEventMap(String itemName, String command, Date changeDate, String eventId, String scope) {
+	private void removeFromEventMap(String itemName, String eventId, String scope) {
 		for (Entry<CalDavNextEventConfig, List<NextEventContainer>> entry : this.itemNextEventMap.entrySet()) {
 			for (int i = 0; i < entry.getValue().size(); i++) {
 				NextEventContainer container = entry.getValue().get(i);
