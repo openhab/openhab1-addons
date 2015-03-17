@@ -188,7 +188,7 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 			List<CalDavNextEventConfig> configList = provider.getConfigForListenerItem(itemName);
 			for (CalDavNextEventConfig config : configList) {
 				if (add) {
-					this.addToEventMap(config, config.getItemNameToListenTo(), commandString, event.getStart(), config.getType(), event.getId(), scope);
+					this.addToEventMap(config, config.getItemNameToListenTo(), commandString, scope.equals(SCOPE_BEGIN) ? event.getStart() : event.getEnd(), config.getType(), event.getId(), scope);
 				} else {
 					this.removeFromEventMap(itemName, event.getId(), scope);		
 				}
@@ -343,17 +343,6 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 		container.setScope(scope);
 		eventList.add(container);
 		
-		Collections.sort(eventList, new Comparator<NextEventContainer>() {
-			@Override
-			public int compare(NextEventContainer o1, NextEventContainer o2) {
-				return o2.getChangeDate().compareTo(o1.getChangeDate());
-			}
-		});
-		logger.trace("event list has been sorted (events in list: {})", eventList.size());
-		for (int i = 0; i < eventList.size(); i++) {
-			logger.trace("{}: {}", i, eventList.get(i).getEventId());
-		}
-		
 		this.updateItemState(config.getItemName());
 	}
 	
@@ -366,6 +355,19 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
 				// handle this
 				containerList = entry.getValue();
 			}
+		}
+		
+		Collections.sort(containerList, new Comparator<NextEventContainer>() {
+			@Override
+			public int compare(NextEventContainer o1, NextEventContainer o2) {
+				return o2.getChangeDate().compareTo(o1.getChangeDate());
+			}
+		});
+		
+		logger.trace("list all events for item: {}", itemName);
+		int i = 0;
+		for (NextEventContainer c : containerList) {
+			logger.info("{}: {} -> {}", i++, c.getChangeDate(), c.getCommand());
 		}
 		
 		if (containerList.size() == 0) {
