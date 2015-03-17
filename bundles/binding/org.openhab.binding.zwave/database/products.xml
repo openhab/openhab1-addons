@@ -1555,6 +1555,11 @@
 				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
+			<Model>PSM-02</Model>
+			<Label lang="en">Slim Multi-Sensor</Label>
+			<ConfigFile>philio/psm02.xml</ConfigFile>
+		</Product>
+		<Product>
 			<Reference>
 				<Type>0002</Type>
 				<Id>000C</Id>
@@ -1563,9 +1568,9 @@
 				<Type>0002</Type>
 				<Id>000D</Id>
 			</Reference>
-			<Model>PSM-02</Model>
+			<Model>PST-02</Model>
 			<Label lang="en">Slim Multi-Sensor</Label>
-			<ConfigFile>philio/psm02.xml</ConfigFile>
+			<ConfigFile>philio/pst02.xml</ConfigFile>
 		</Product>
 		<Product>
 			<Reference>
