@@ -134,8 +134,8 @@ public class NetatmoBinding extends
                                 for (Module module : oauthCredentials.deviceListResponse.getModules()) {
                                     if (module.getId().equals(moduleId)) {
                                         switch (measureType) {
-                                            case BATTERYVP: state = new DecimalType(module.getBatteryVp()); break;
-                                            case RFSTATUS: state = new DecimalType(module.getRfStatus()); break;
+                                            case BATTERYVP: state = new DecimalType(module.getBatteryLevel()); break;
+                                            case RFSTATUS: state = new DecimalType(module.getRfLevel()); break;
                                         }
                                     }
                                 }
@@ -150,7 +150,7 @@ public class NetatmoBinding extends
                                             case LATITUDE: state = stationPosition.getLatitude(); break;
                                             case LONGITUDE: state = stationPosition.getLongitude(); break;
                                             case ALTITUDE: state = stationPosition.getAltitude(); break;
-                                            case WIFISTATUS: state = new DecimalType(device.getWifiStatus()); break;
+                                            case WIFISTATUS: state = new DecimalType(device.getWifiLevel()); break;
                                             case COORDINATE: state = stationPosition; break;
                                         }
                                     }
