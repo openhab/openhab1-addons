@@ -385,7 +385,7 @@ public class DeviceListResponse extends AbstractResponse {
 			builder.append("stationName", this.stationName);
 			builder.append("type", this.type);
 			builder.append("owner", this.owner);
-			builder.append("wifistatus",this.wifiStatus);
+			builder.append("wifistatus", this.wifiStatus);
 
 			return builder.toString();
 		}
@@ -407,7 +407,6 @@ public class DeviceListResponse extends AbstractResponse {
 				result = 1;
 			else if (level < WIFI_STATUS_THRESHOLD_0)
 				result = 0;
-			
 
 			return result;
 		}
@@ -499,7 +498,7 @@ public class DeviceListResponse extends AbstractResponse {
 				result = 1;
 			else if (level < RF_STATUS_THRESHOLD_0)
 				result = 0;
-			
+
 			return result;
 		}
 
@@ -510,7 +509,7 @@ public class DeviceListResponse extends AbstractResponse {
 		public Integer getBatteryVp() {
 			return this.batteryVp;
 		}
-		
+
 		public Double getBatteryLevel() {
 			int value;
 			int minima;
