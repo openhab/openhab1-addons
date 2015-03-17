@@ -9,11 +9,16 @@
 package org.openhab.binding.resolvbus;
 
 import org.openhab.core.binding.BindingProvider;
+import org.openhab.core.items.Item;
 
 /**
  * @author Michael Heckmann
  * @since 1.7.0
  */
 public interface ResolVBUSBindingProvider extends BindingProvider {
+	
+	public String getName(String itemName);
+	
+	public Item getItem(String itemName);
 
 }

@@ -41,7 +41,6 @@ public class ResolVBUSReceiver implements Runnable {
 
 		try {
 			this.config = config;
-			getDeviceConfig();
 			vBusSocket = new Socket(host, port);
 			inStream = vBusSocket.getInputStream();
 			logger.debug("Connected to: " + host + ":" + port);
@@ -52,9 +51,6 @@ public class ResolVBUSReceiver implements Runnable {
 		}
 	}
 
-	private void getDeviceConfig() {
-
-	}
 
 	/**
 	 * Stop the thread
@@ -83,7 +79,7 @@ public class ResolVBUSReceiver implements Runnable {
 		try {
 			byte [] bBuffer = new byte[1];
 			
-			//Waiting for input which is send periodically
+			//Waiting for input which is sent periodically
 			while (running) {
 				
 				do {
@@ -103,7 +99,8 @@ public class ResolVBUSReceiver implements Runnable {
 					continue;							
 				}
 				
-				processData();	
+				listener.processInputStream(resolStream);
+				
 				resolStreamRAW.clear();
 				while (bBuffer[0] != (byte) 0xAA) {
 					inStream.read(bBuffer);
@@ -121,14 +118,6 @@ public class ResolVBUSReceiver implements Runnable {
 		}
 	}
 
-	private void processData() {
-		if (resolStream!= null) {
-			logger.debug("Processing resolStream...");
-			logger.debug(resolStream.toString());
-			
-		}
-		
-	}
 
 	private boolean initDevice() {
 		String inputString;

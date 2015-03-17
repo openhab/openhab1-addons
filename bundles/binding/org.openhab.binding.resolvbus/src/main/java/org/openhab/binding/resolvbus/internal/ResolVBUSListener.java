@@ -1,5 +1,7 @@
 package org.openhab.binding.resolvbus.internal;
 
+import org.openhab.binding.resolvbus.model.ResolVBUSInputStream;
+
 public interface ResolVBUSListener {
 	
 	/**
@@ -9,5 +11,6 @@ public interface ResolVBUSListener {
 	 */
 	public void publishUpdate(String name, String value);
 	
+	public void processInputStream(ResolVBUSInputStream vbusStream);
 
 }

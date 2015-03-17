@@ -1,6 +1,14 @@
 sitemap demo label="Demo House"
 {
+	Frame label="test"{
 	Text item=TempSensor1
+	Text item=TempSensor2
+	Text item=PumpSpeed
+	Text item=time
+	Text item=time2
+	
+//	Setpoint item=Temperature1 minValue=1 maxValue=100 step=1
+	}
 	
 //	Frame {
 //		Group item=gFF label="First Floor" icon="firstfloor"

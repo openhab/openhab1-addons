@@ -9,6 +9,8 @@
 package org.openhab.binding.resolvbus.internal;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.Map;
 
@@ -19,17 +21,25 @@ import javax.xml.bind.Unmarshaller;
 import org.openhab.binding.resolvbus.ResolVBUSBindingProvider;
 import org.openhab.binding.resolvbus.model.ResolVBUSConfig;
 import org.openhab.binding.resolvbus.model.ResolVBUSDevice;
+import org.openhab.binding.resolvbus.model.ResolVBUSField;
+import org.openhab.binding.resolvbus.model.ResolVBUSInputStream;
+import org.openhab.binding.resolvbus.model.ResolVBUSPacket;
 
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 
 import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
+import org.openhab.core.library.types.DateTimeType;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NumberType;
 	
 
 /**
@@ -48,6 +58,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	private String host;
 	private int port;
 	private ResolVBUSConfig config;
+	private String pathToXML;
 
 	
 	/**
@@ -99,10 +110,15 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				port = Integer.parseInt(portString);
 			}
 			
+			String pathString = (String) configuration.get("pathToXML");
+			if (StringUtils.isNotBlank(pathString)) {
+				pathToXML = pathString;
+			}
+			
 				
 			// read further config parameters here ...
 			try {
-				loadConfig();
+				loadXMLConfig();
 				// make sure that there is no listener running
 				packetReceiver.stopListener();
 				// send the parsed information to the listener
@@ -198,7 +214,20 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 
 
 	public void publishUpdate(String name, String value) {
-		// TODO Auto-generated method stub
+
+		DecimalType valueAsType = new DecimalType(value);
+		eventPublisher.postUpdate(name, valueAsType);
+		
+	}
+	
+	public void publishUpdateTime(String name, double time) {
+
+		Calendar today = Calendar.getInstance();
+		today.setTimeInMillis((new Date().getTime()));
+		today.set(Calendar.HOUR_OF_DAY, (int) time/60);
+		today.set(Calendar.MINUTE, ((int) time) % 60);
+		DateTimeType valueAsType = new DateTimeType(today);
+		eventPublisher.postUpdate(name, valueAsType);
 		
 	}
 
@@ -208,13 +237,60 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 
 	}
 	
-	public void loadConfig() throws JAXBException {
+	public void loadXMLConfig() throws JAXBException {
 
 		JAXBContext jc;
 		jc = JAXBContext.newInstance(ResolVBUSConfig.class);
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
 		// TODO Insert correct path to XML in resource folder 
-		config = (ResolVBUSConfig) unmarshaller.unmarshal(new File("/Users/michael/Documents/openhab/myFork/openhab/bundles/binding/org.openhab.binding.resolvbus/src/main/resources/VBusSpecificationResol.xml"));
+//		config = (ResolVBUSConfig) unmarshaller.unmarshal(new File("/Users/michael/Documents/openhab/myFork/openhab/bundles/binding/org.openhab.binding.resolvbus/src/main/resources/VBusSpecificationResol.xml"));
+		config = (ResolVBUSConfig) unmarshaller.unmarshal(new File(pathToXML+"/VBusSpecificationResol.xml"));
+		if (config == null) {
+			logger.debug("Error reading XML Configuration");
+		}
+	}
+
+
+	@Override
+	public void processInputStream(ResolVBUSInputStream vbusStream) {
+		
+		ResolVBUSPacket packet = config.getPacketWithDevice(vbusStream.getSourceAddress());
+		
+		if (packet == null) {
+			logger.debug("No XML-Packet found for address: "+ vbusStream.getSourceAddress());
+		}
+		
+		if (packet != null) {
+			for (ResolVBUSBindingProvider provider : providers) {
+				for (String itemName : provider.getItemNames()) {
+					double value;
+					String itemConfig = provider.getName(itemName);
+					logger.debug("Updating item: "+itemName+" who has config: "+itemConfig);
+					if (itemConfig != null) {
+						ResolVBUSField field = packet.getFieldWithName(itemConfig);
+						if (field == null) {
+							logger.debug("No XML Field found for: "+itemConfig);
+							continue;
+						}
+						
+						value = ResolVBUSUtility.getValueWithVBUSField(vbusStream, field);
+						
+						if (field.getFormat()!= null && field.getFormat().equalsIgnoreCase("t")) {
+							publishUpdateTime(itemName, value);
+							continue;
+						}
+						
+						publishUpdate(itemName, new Double(value).toString());
+					}
+					
+					
+				}
+				
+			}
+		}
+				
+		
+		
 	}
 		
 }

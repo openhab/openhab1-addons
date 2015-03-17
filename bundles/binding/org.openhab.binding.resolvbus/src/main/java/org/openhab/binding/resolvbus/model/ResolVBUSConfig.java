@@ -5,6 +5,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -34,5 +36,16 @@ public class ResolVBUSConfig {
 		this.packet = packet;
 	}
 
+	public ResolVBUSPacket getPacketWithDevice(String deviceAddress) {
+		
+		List<ResolVBUSPacket> packetList = new ArrayList<ResolVBUSPacket>(getPacket());
+		
+		for (ResolVBUSPacket packet : packetList) {
+			if (packet.getSource().equals("0x"+deviceAddress))
+				return packet;
+		}
+		return null;
+		
+	}
 
 }

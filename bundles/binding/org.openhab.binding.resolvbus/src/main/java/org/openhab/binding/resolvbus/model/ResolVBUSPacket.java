@@ -63,5 +63,13 @@ public class ResolVBUSPacket {
 	public void setFields(List<ResolVBUSField> field) {
 		this.field = field;
 	}
+	public ResolVBUSField getFieldWithName(String itemName) {
+		
+		for (ResolVBUSField field : getField()) {
+			if (field.getName().equalsIgnoreCase(itemName))
+				return field;
+		}
+		return null;
+	}
 
 }

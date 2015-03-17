@@ -11,30 +11,28 @@ public class ResolVBUSInputStream {
 	private static final Logger logger = 
 			LoggerFactory.getLogger(ResolVBUSInputStream.class);
 	
-	private int sourceAddress;
-	private int destinationAdress;
+	private String sourceAddress;
+	private String destinationAdress;
 	private int protocolVersion;
 	private boolean errorFree;
 	private int command;
-	private char[] rawCharData;
 	private byte[] rawByteData;
-	private char[] payloadChar;
 	private byte[] payloadByte;
 
-	public int getSourceAddress() {
-		return sourceAddress;
-	}
-
-	public void setSourceAddress(int sourceAddress) {
-		this.sourceAddress = sourceAddress;
-	}
-
-	public int getDestinationAdress() {
+	public String getDestinationAdress() {
 		return destinationAdress;
 	}
 
-	public void setDestinationAdress(int destinationAdress) {
+	public void setDestinationAdress(String destinationAdress) {
 		this.destinationAdress = destinationAdress;
+	}
+
+	public String getSourceAddress() {
+		return sourceAddress;
+	}
+
+	public void setSourceAddress(String sourceAddress) {
+		this.sourceAddress = sourceAddress;
 	}
 
 	public int getProtocolVersion() {
@@ -61,22 +59,10 @@ public class ResolVBUSInputStream {
 		this.command = command;
 	}
 
-
-
-	public char[] getPayloadChar() {
-		return payloadChar;
-	}
-
-	public void setPayloadChar(char[] payload) {
-		this.payloadChar = payload;
-	}
-
 	public ResolVBUSInputStream(List<Byte> rawData) {
 		int rawDataSize = rawData.size();
-		this.rawCharData = new char [rawDataSize];
 		this.rawByteData = new byte [rawDataSize];
 		for (int i = 0; i< rawDataSize;i++) {
-			this.rawCharData[i] = (char) (rawData.get(0)&0xFFFF);
 			this.rawByteData[i] = rawData.remove(0);
 		}
 		processPacket();
@@ -84,12 +70,11 @@ public class ResolVBUSInputStream {
 
 	private void processPacket() {
 
-		if (rawCharData.length < 9) {
-			logger.debug("Stream to short, current length: "+rawCharData.length);
-			
+		if (rawByteData.length < 9) {
+			logger.debug("Stream to short");
 			return;
 		}
-
+		
 		if (checkMSB()) {
 			logger.debug("MSB is set => Stream has errors");
 			errorFree = false;
@@ -97,36 +82,40 @@ public class ResolVBUSInputStream {
 		}
 
 		// SyncFlag?
-		if (rawCharData[0] != (char) ((byte) 0xAA&0xffff)) {
+		if (rawByteData[0] != (byte) 0xAA) {
 			logger.debug("No Sync Flag");
 			errorFree = false;
 			return;
 		}
 
-		destinationAdress = rawCharData[1];
-		destinationAdress |= (rawCharData[2] << 8);
+		byte [] destAddress = {rawByteData[2],rawByteData[1]};
+		destinationAdress = ResolVBUSUtility.bytesToHex(destAddress);
+//		destinationAdress = rawByteData[1];
+//		destinationAdress |= (rawByteData[2] << 8);
 
-		sourceAddress = rawCharData[3];
-		sourceAddress |= (rawCharData[4] << 8);
+		byte [] srcAddress= {rawByteData[4],rawByteData[3]};
+		sourceAddress = ResolVBUSUtility.bytesToHex(srcAddress);
+//		sourceAddress = rawByteData[3];
+//		sourceAddress |= (rawByteData[4] << 8);
 
-		protocolVersion = rawCharData[5];
+		protocolVersion = rawByteData[5];
 
-		command = rawCharData[6];
-		command |= (rawCharData[7] << 8);
+		command = rawByteData[6];
+		command |= (rawByteData[7] << 8);
 
 		// Number of PayloadFrames
-		int payloadCount = rawCharData[8];
+		int payloadCount = rawByteData[8];
 
 		// Verify checksum of Header
-		if (ResolVBUSUtility.calcChecksum(rawCharData, 1, 8) != rawCharData[9]) {
+		if (ResolVBUSUtility.calcChecksum(rawByteData, 1, 8) != rawByteData[9]) {
+			logger.debug("Header Checksum failure");
 			errorFree = false;
 			return;
 		}
 
-		payloadChar = new char[4 * payloadCount];
 		payloadByte = new byte[4 * payloadCount];
 		
-		if (rawCharData.length < (15 + 6 * (payloadCount - 1))) {
+		if (rawByteData.length < (15 + 6 * (payloadCount - 1))) {
 			errorFree = false;
 			return;
 		}
@@ -138,21 +127,14 @@ public class ResolVBUSInputStream {
 			
 			// Verify checksum
 		
-			if (ResolVBUSUtility.calcChecksum(rawCharData, offset, 5) != rawCharData[15 + i * 6]) {
-				logger.debug("Error in: "+i);
-				logger.debug("ChecksumC:"+(int) ResolVBUSUtility.calcChecksum(rawCharData, offset, 5));
-				logger.debug("Checksum:"+(int) rawCharData[15 + i * 6]);
+			if (ResolVBUSUtility.calcChecksum(rawByteData, offset, 5) != rawByteData[15 + i * 6]) {
+				logger.debug("Payload Error in: "+i);
+				logger.debug("Payload ChecksumC:"+(int) ResolVBUSUtility.calcChecksum(rawByteData, offset, 5));
+				logger.debug("Payload Checksum:"+(int) rawByteData[15 + i * 6]);
 //				logger.debug(VBusUtility.bytesToHex(rawData));
 				errorFree = false;
 			}
 
-			// Insert Septett and copy to payLoadData
-			ResolVBUSUtility.VBus_InjectSeptett(rawCharData, offset, 4);
-			payloadChar[i * 4] = rawCharData[offset];
-			payloadChar[i * 4 + 1] = rawCharData[offset + 1];
-			payloadChar[i * 4 + 2] = rawCharData[offset + 2];
-			payloadChar[i * 4 + 3] = rawCharData[offset + 3];
-			
 			// Insert Septett and copy to payLoadData
 			ResolVBUSUtility.VBus_InjectSeptett(rawByteData, offset, 4);
 			payloadByte[i * 4] = rawByteData[offset];
@@ -174,8 +156,8 @@ public class ResolVBUSInputStream {
 	}
 
 	private boolean checkMSB() {
-		for (int i = 1; i < rawCharData.length; i++) {
-			if ((rawCharData[i] & 0x80) ==  0x80) {
+		for (int i = 1; i < rawByteData.length; i++) {
+			if ((rawByteData[i] & 0x80) ==  0x80) {
 				return false;
 			}
 		}

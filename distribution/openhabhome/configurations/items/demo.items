@@ -1,7 +1,11 @@
 Number TempSensor1 "Temperatur Sensor 1 [%.1f °C]" {resolvbus="Temperature sensor 1"}
+Number TempSensor2 "Temperatur Sensor 2 [%.1f °C]" {resolvbus="Temperature sensor 2"}
+Number PumpSpeed "PumpSpeed [%.0f %%]" {resolvbus="Pump speed 1"}
+DateTime time "Zeit [%1$tA, %1$td.%1$tm.%1$tY]" {resolvbus="System time"}
+DateTime time2 "Zeit [%1$tR]" {resolvbus="System time"}
+//Number Temperature1  "Temperature [%.1f °C]"  <temperature> (Temperature)
 
-
-
+Group Temperature	"Living Room" 
 
 //Group All
 //Group gGF 		(All)

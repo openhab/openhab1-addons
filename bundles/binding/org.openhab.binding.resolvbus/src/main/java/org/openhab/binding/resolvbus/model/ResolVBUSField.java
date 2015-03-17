@@ -35,5 +35,61 @@ public class ResolVBUSField {
 	
 	@XmlAttribute
 	protected String commonUsage;
+
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	public BigInteger getOffset() {
+		return offset;
+	}
+
+	public void setOffset(BigInteger offset) {
+		this.offset = offset;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public BigInteger getBitSize() {
+		return bitSize;
+	}
+
+	public void setBitSize(BigInteger bitSize) {
+		this.bitSize = bitSize;
+	}
+
+	public BigDecimal getFactor() {
+		return factor;
+	}
+
+	public void setFactor(BigDecimal factor) {
+		this.factor = factor;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
+
+	public String getCommonUsage() {
+		return commonUsage;
+	}
+
+	public void setCommonUsage(String commonUsage) {
+		this.commonUsage = commonUsage;
+	}
 	
 }

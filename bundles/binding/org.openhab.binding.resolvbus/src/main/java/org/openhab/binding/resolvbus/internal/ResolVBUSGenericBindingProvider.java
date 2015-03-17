@@ -8,6 +8,9 @@
  */
 package org.openhab.binding.resolvbus.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openhab.binding.resolvbus.ResolVBUSBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
@@ -15,6 +18,8 @@ import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -24,6 +29,9 @@ import org.openhab.model.item.binding.BindingConfigParseException;
  * @since 1.7.0
  */
 public class ResolVBUSGenericBindingProvider extends AbstractGenericBindingProvider implements ResolVBUSBindingProvider {
+	
+	static final Logger logger = LoggerFactory.getLogger(ResolVBUSGenericBindingProvider.class);
+	private Map<String, Item> items = new HashMap<String, Item>();
 
 	/**
 	 * {@inheritDoc}
@@ -50,11 +58,20 @@ public class ResolVBUSGenericBindingProvider extends AbstractGenericBindingProvi
 	@Override
 	public void processBindingConfiguration(String context, Item item, String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
-		ResolVBUSBindingConfig config = new ResolVBUSBindingConfig();
+		ResolVBUSBindingConfig config = new ResolVBUSBindingConfig(bindingConfig);
 		
 		//parse bindingconfig here ...
-		
+		items.put(item.getName(), item);
 		addBindingConfig(item, config);		
+	}
+	
+	public String getName(String itemName) {
+		ResolVBUSBindingConfig config = (ResolVBUSBindingConfig) bindingConfigs.get(itemName);
+		return config != null ? config.name : null;
+	}
+	
+	public Item getItem(String itemName) {
+		return items.get(itemName);
 	}
 	
 	
@@ -66,6 +83,12 @@ public class ResolVBUSGenericBindingProvider extends AbstractGenericBindingProvi
 	 */
 	class ResolVBUSBindingConfig implements BindingConfig {
 		// put member fields here which holds the parsed values
+		public String name;
+		
+		public ResolVBUSBindingConfig(String name) {
+			this.name = name;
+		}
+		
 	}
 	
 	
