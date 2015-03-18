@@ -47,7 +47,7 @@ public class MochadX10BindingConfig implements BindingConfig {
 	 */
 	private String transmitMethod;
 	
-	private Item item;
+	private Class<? extends Item> itemType;
 	
 	/**
 	 * Constructor of the MochadX10BindingConfig.
@@ -58,8 +58,8 @@ public class MochadX10BindingConfig implements BindingConfig {
 	 * @param address
 	 * 			The address of the X10 module
 	 */
-	public MochadX10BindingConfig(Item item, String transmitMethod, String address) {
-		this.item = item;
+	public MochadX10BindingConfig(Class<? extends Item> itemType, String transmitMethod, String address) {
+		this.itemType = itemType;
 		this.address = address.toLowerCase();
 		this.transmitMethod = transmitMethod.toLowerCase();
 	}
@@ -72,12 +72,12 @@ public class MochadX10BindingConfig implements BindingConfig {
 	}
 	
 	/**
-	 * @return the item specified in the binding
+	 * @return the item class
 	 */
-	public Item getItem() {
-		return item;
+	protected Class<? extends Item> getItemType() {
+		return itemType;
 	}
-	
+
 	/**
 	 * @return the transmission method specified in the binding
 	 */

@@ -10,6 +10,8 @@ package org.openhab.binding.mochadx10.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openhab.binding.mochadx10.MochadX10BindingProvider;
 import org.openhab.core.binding.BindingConfig;
@@ -42,6 +44,11 @@ public class MochadX10GenericBindingProvider extends AbstractGenericBindingProvi
 
 	static final Logger logger = LoggerFactory.getLogger(MochadX10GenericBindingProvider.class);
 
+	/**
+	 * The regular expression that specifies an X10 address
+	 */
+	private static final Pattern X10_ADDRESS_PATTERN = Pattern.compile("[a-p]([1-9]|1[0-6])");
+	
 	@Override
 	public String getBindingType() {
 		return "mochadx10";
@@ -91,7 +98,7 @@ public class MochadX10GenericBindingProvider extends AbstractGenericBindingProvi
 				validateAddress(address);
 				validateTransmitMethod(transmitMethod);
 				
-				BindingConfig mochadX10BindingConfig = (BindingConfig) new MochadX10BindingConfig(item, transmitMethod, address);
+				BindingConfig mochadX10BindingConfig = (BindingConfig) new MochadX10BindingConfig(item.getClass(), transmitMethod, address);
 				addBindingConfig(item, mochadX10BindingConfig);
 			} else {
 				throw new BindingConfigParseException("No binding config specified (item=" + item
@@ -123,8 +130,9 @@ public class MochadX10GenericBindingProvider extends AbstractGenericBindingProvi
 	 * @throws BindingConfigParseException
 	 */
 	private void validateAddress(String address) throws BindingConfigParseException {
-		String lowerCaseAddress = address.toLowerCase();
-		if ( !lowerCaseAddress.matches("[a-p]([1-9]|1[0-6])") ) {
+		Matcher matcher = X10_ADDRESS_PATTERN.matcher(address.toLowerCase());
+
+		if ( !matcher.matches() ) {
 			throw new BindingConfigParseException("The specified address '" + address + "' is not a valid X10 address.");
 		}
 	}

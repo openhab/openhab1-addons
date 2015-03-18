@@ -154,7 +154,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider> 
 			}
 		}
 		else if ( command instanceof PercentType ) {
-			if ( deviceConfig.getItem() instanceof DimmerItem ) {
+			if ( deviceConfig.getItemType() == DimmerItem.class ) {
 				if ( ((PercentType) command).intValue() == 0 ) {
 					// If percent value equals 0 the x10 "off" command is used instead of xdim
 					commandStr = "off";
@@ -165,7 +165,7 @@ public class MochadX10Binding extends AbstractBinding<MochadX10BindingProvider> 
 					commandStr = "xdim " + dim_value;
 				}
 			}
-			else if ( deviceConfig.getItem() instanceof RollershutterItem ) {
+			else if ( deviceConfig.getItemType() == RollershutterItem.class ) {
 				Double invert_level = 100 - ((PercentType) command).doubleValue();
 				long level = Math.round(invert_level * 25.0/100);
 				commandStr = "extended_code_1 0 1 " + level;
