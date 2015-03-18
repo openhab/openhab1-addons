@@ -502,7 +502,7 @@ String   <xsl:value-of select="$DeviceNameFixed"/>DeviceStatus "<xsl:value-of se
 <xsl:when test="normalize-space($ItemType) = 'DateTime'"                                                               > [%1$ta, %1$tm/%1$te %1$tR]</xsl:when>
 <xsl:when test="normalize-space($ItemType) = 'Contact'"                                                                > [MAP(en.map):%s]</xsl:when>
 <xsl:when test="normalize-space($ItemType) = 'Switch'"                                                                 ></xsl:when>
-<xsl:when test="normalize-space($ItemType) = 'Dimmer'"                                                                 > [%d] %</xsl:when>
+<xsl:when test="normalize-space($ItemType) = 'Dimmer'"                                                                 > [%d %%]</xsl:when>
 <xsl:otherwise                                                                                                         > [%s]</xsl:otherwise>
 </xsl:choose>
 </xsl:variable>
