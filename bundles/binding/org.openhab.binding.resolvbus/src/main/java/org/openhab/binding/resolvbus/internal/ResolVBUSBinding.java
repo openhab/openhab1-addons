@@ -20,7 +20,6 @@ import javax.xml.bind.Unmarshaller;
 
 import org.openhab.binding.resolvbus.ResolVBUSBindingProvider;
 import org.openhab.binding.resolvbus.model.ResolVBUSConfig;
-import org.openhab.binding.resolvbus.model.ResolVBUSDevice;
 import org.openhab.binding.resolvbus.model.ResolVBUSField;
 import org.openhab.binding.resolvbus.model.ResolVBUSInputStream;
 import org.openhab.binding.resolvbus.model.ResolVBUSPacket;
@@ -32,15 +31,14 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.StringType;
+
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NumberType;
-	
+
 
 /**
  * Implement this class if you are going create an actively polling service
@@ -58,7 +56,6 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 	private String host;
 	private int port;
 	private ResolVBUSConfig config;
-	private String pathToXML;
 
 	
 	/**
@@ -110,12 +107,7 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 				port = Integer.parseInt(portString);
 			}
 			
-			String pathString = (String) configuration.get("pathToXML");
-			if (StringUtils.isNotBlank(pathString)) {
-				pathToXML = pathString;
-			}
-			
-				
+	
 			// read further config parameters here ...
 			try {
 				loadXMLConfig();
@@ -242,16 +234,13 @@ public class ResolVBUSBinding extends AbstractActiveBinding<ResolVBUSBindingProv
 		JAXBContext jc;
 		jc = JAXBContext.newInstance(ResolVBUSConfig.class);
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
-		// TODO Insert correct path to XML in resource folder 
-//		config = (ResolVBUSConfig) unmarshaller.unmarshal(new File("/Users/michael/Documents/openhab/myFork/openhab/bundles/binding/org.openhab.binding.resolvbus/src/main/resources/VBusSpecificationResol.xml"));
-		config = (ResolVBUSConfig) unmarshaller.unmarshal(new File(pathToXML+"/VBusSpecificationResol.xml"));
+		config = (ResolVBUSConfig) unmarshaller.unmarshal(getClass().getResourceAsStream("/xml/VBusSpecificationResol.xml"));
 		if (config == null) {
 			logger.debug("Error reading XML Configuration");
 		}
 	}
 
 
-	@Override
 	public void processInputStream(ResolVBUSInputStream vbusStream) {
 		
 		ResolVBUSPacket packet = config.getPacketWithDevice(vbusStream.getSourceAddress());

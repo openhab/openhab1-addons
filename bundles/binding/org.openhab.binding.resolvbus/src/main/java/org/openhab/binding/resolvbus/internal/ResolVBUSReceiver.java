@@ -67,7 +67,6 @@ public class ResolVBUSReceiver implements Runnable {
 		vBusSocket = null;
 	}
 
-	@Override
 	public void run() {
 		if (vBusSocket == null)
 			throw new IllegalStateException(

@@ -43,7 +43,6 @@ public class ResolVBUSGenericBindingProvider extends AbstractGenericBindingProvi
 	/**
 	 * @{inheritDoc}
 	 */
-	@Override
 	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 		//if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
 		//	throw new BindingConfigParseException("item '" + item.getName()
