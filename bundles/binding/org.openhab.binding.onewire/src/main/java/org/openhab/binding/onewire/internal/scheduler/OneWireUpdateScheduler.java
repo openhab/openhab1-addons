@@ -320,7 +320,16 @@ public class OneWireUpdateScheduler {
 						ivOneWireUpdateTask.start();
 					}
 					synchronized (lvItemNameList) {
-						ivUpdateQueue.addAll(lvItemNameList);
+						//increase performance one slower systems on startup
+						//only add items to queue which aren't already in queue
+						for (String lvItemName : lvItemNameList) {
+							if (!ivUpdateQueue.contains(lvItemName)) {
+								logger.debug("add item "+lvItemName+" to updateQueue");
+								ivUpdateQueue.add(lvItemName);
+							} else {
+								logger.debug("didn't add item "+lvItemName+" to updateQueue, it is alread there");
+							}
+						}
 					}
 				}
 			}

@@ -9,8 +9,10 @@
 package org.openhab.binding.onewire.internal;
 
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.onewire.OneWireBindingProvider;
 import org.openhab.binding.onewire.internal.connection.OneWireConnection;
 import org.openhab.binding.onewire.internal.deviceproperties.AbstractOneWireDevicePropertyBindingConfig;
@@ -45,6 +47,16 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 	 * Scheduler for items
 	 */
 	private OneWireUpdateScheduler ivOneWireReaderScheduler;
+	
+	/**
+	 * Use the Cache to post only changed values for items to the eventPublisher
+	 */
+	private boolean ivPostOnlyChangedValues = true;
+	
+	/**
+	 * Cache of item values
+	 */
+	private HashMap<String,State> ivCacheItemStates = new HashMap<String,State>();
 
 	public OneWireBinding() {
 		super();
@@ -75,6 +87,13 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 		logger.debug("updated onewire-binding");
 
 		if (pvConfig != null) {
+			//Basic config
+			String lvPostOnlyChangedValues = (String) pvConfig.get("post_only_changed_values");
+			if (StringUtils.isNotBlank(lvPostOnlyChangedValues)) {
+				ivPostOnlyChangedValues = Boolean.getBoolean(lvPostOnlyChangedValues);
+			}
+			
+			//Connection config
 			OneWireConnection.updated(pvConfig);
 		}
 
@@ -123,6 +142,7 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 			if (pvProvider instanceof OneWireBindingProvider) {
 				OneWireBindingProvider lvBindingProvider = (OneWireBindingProvider) pvProvider;
 				ivOneWireReaderScheduler.clear();
+				ivCacheItemStates.clear();
 
 				Map<String, BindingConfig> lvBindigConfigs = lvBindingProvider.getBindingConfigs();
 				for (String lvItemName : lvBindigConfigs.keySet()) {
@@ -152,24 +172,26 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 	 * @see org.openhab.core.binding.AbstractBinding#bindingChanged(org.openhab.core.binding.BindingProvider,
 	 * java.lang.String)
 	 */
-	public void bindingChanged(BindingProvider lvProvider, String lvItemName) {
-		logger.debug("bindingChanged() for item {} msg received.", lvItemName);
+	public void bindingChanged(BindingProvider pvProvider, String pvItemName) {
+		logger.debug("bindingChanged() for item {} msg received.", pvItemName);
 
-		if (lvProvider instanceof OneWireBindingProvider) {
-			OneWireBindingProvider lvBindingProvider = (OneWireBindingProvider) lvProvider;
+		if (pvProvider instanceof OneWireBindingProvider) {
+			ivCacheItemStates.remove(pvItemName);
+			
+			OneWireBindingProvider lvBindingProvider = (OneWireBindingProvider) pvProvider;
 
-			AbstractOneWireDevicePropertyBindingConfig lvBindingConfig = lvBindingProvider.getBindingConfig(lvItemName);
+			AbstractOneWireDevicePropertyBindingConfig lvBindingConfig = lvBindingProvider.getBindingConfig(pvItemName);
 
 			if (lvBindingConfig != null) {
-				logger.debug("Initializing read of item {}.", lvItemName);
+				logger.debug("Initializing read of item {}.", pvItemName);
 				int lvAutoRefreshTimeInSecs = lvBindingConfig.getAutoRefreshInSecs();
 				
 				if (lvAutoRefreshTimeInSecs>-1) {
-					ivOneWireReaderScheduler.updateOnce(lvItemName);
+					ivOneWireReaderScheduler.updateOnce(pvItemName);
 				}
 
 				if (lvAutoRefreshTimeInSecs > 0) {
-					if (!ivOneWireReaderScheduler.scheduleUpdate(lvItemName, lvAutoRefreshTimeInSecs)) {
+					if (!ivOneWireReaderScheduler.scheduleUpdate(pvItemName, lvAutoRefreshTimeInSecs)) {
 						logger.warn("Clouldn't add to OneWireUpdate scheduler", lvBindingConfig);
 					}
 				} else {
@@ -237,12 +259,17 @@ public class OneWireBinding extends AbstractBinding<OneWireBindingProvider> impl
 
 			Item lvItem = getItem(pvItemName);
 			if (lvReadValue != null) {
-				Type lvType = pvBindingConfig.convertReadValueToType(lvReadValue);
+				Type lvNewType = pvBindingConfig.convertReadValueToType(lvReadValue);
 				if (lvItem != null) {
 					synchronized (lvItem) {
-						if (!lvItem.getState().equals(lvReadValue)) {
-							State lvState = (State) lvType;
-							eventPublisher.postUpdate(lvItem.getName(), lvState);
+						State lvNewState = (State) lvNewType;
+						State lvCachedState = ivCacheItemStates.get(pvItemName);
+						if (!ivPostOnlyChangedValues || !lvNewState.equals(lvCachedState)) {
+							ivCacheItemStates.remove(pvItemName);
+							ivCacheItemStates.put(pvItemName, lvNewState);
+							eventPublisher.postUpdate(lvItem.getName(), lvNewState);
+						} else {
+							logger.debug("didn't post update to eventPublisher, because state did not changed for item "+pvItemName);
 						}
 					}
 				} else {
