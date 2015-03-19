@@ -11,6 +11,10 @@ package org.openhab.binding.rfxcom.internal;
 import java.io.IOException;
 import java.util.EventObject;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -48,8 +52,7 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 	private static final int timeout = 5000;
 
 	private static byte seqNbr = 0;
-	private static RFXComTransmitterMessage responseMessage = null;
-	private final Object notifierObject = new Object();
+	private final ResultRegistry resultRegistry = new ResultRegistry();
 
 	private MessageLister eventLister = new MessageLister();
 
@@ -182,31 +185,27 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 		RFXComValueSelector valueSelector = provider
 				.getValueSelector(itemName);
 
+		final Future<RFXComTransmitterMessage> result;
 		try {
 			RFXComMessageInterface obj = RFXComMessageFactory.getMessageInterface(packetType);
-			obj.convertFromState(valueSelector, id, subType, command, getNextSeqNumber());
+			final byte seqNumber = getNextSeqNumber();
+			obj.convertFromState(valueSelector, id, subType, command, seqNumber);
 			byte[] data = obj.decodeMessage();
 
 			logger.debug("Transmitting data: {}",
 					DatatypeConverter.printHexBinary(data));
 
-			setResponseMessage(null);
+			result = resultRegistry.registerCommand(seqNumber);
 			connector.sendMessage(data);
 
-		} catch (RFXComException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			logger.error("Message sending to RFXCOM controller failed.", e);	
+		} catch (IOException | RFXComException e) {
+			logger.error("Message sending to RFXCOM controller failed.", e);
+			return false;
 		}
 
 		boolean success = false;
 		try {
-
-			synchronized (notifierObject) {
-				notifierObject.wait(timeout);
-			}
-
-			RFXComTransmitterMessage resp = getResponseMessage();
+			final RFXComTransmitterMessage resp = result.get(timeout, TimeUnit.MILLISECONDS);
 
 			switch (resp.response) {
 			case ACK:
@@ -225,22 +224,13 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 				break;
 			}
 
-		} catch (InterruptedException ie) {
+		} catch (InterruptedException | ExecutionException | TimeoutException ie) {
 			logger.error(
 					"No acknowledge received from RFXCOM controller, timeout {}ms ",
 					timeout);
 		}
 		
 		return success;
-	}
-
-	public static synchronized RFXComTransmitterMessage getResponseMessage() {
-		return responseMessage;
-	}
-
-	public synchronized void setResponseMessage(
-			RFXComTransmitterMessage responseMessage) {
-		RFXComBinding.responseMessage = responseMessage;
 	}
 
 	private class MessageLister implements RFXComEventListener {
@@ -253,21 +243,14 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 				
 				if (obj instanceof RFXComTransmitterMessage) {
 					RFXComTransmitterMessage resp = (RFXComTransmitterMessage) obj;
-
-					if (resp.seqNbr == getSeqNumber()) {
-						logger.debug("Transmitter response received:\n{}",
-								obj.toString());
-						setResponseMessage(resp);
-						synchronized (notifierObject) {
-							notifierObject.notify();
-						}
-					}
-
+					resultRegistry.responseReceived(resp);
 				} else {
-					String id2 = obj.generateDeviceId();
+					logger.debug("received message: {}", obj.toString());
+					
+					final String deviceId = obj.generateDeviceId();
 
-					List<RFXComValueSelector> supportedValueSelectors = obj
-							.getSupportedValueSelectors();
+					final List<RFXComValueSelector> supportedValueSelectors = 
+							obj.getSupportedValueSelectors();
 
 					if (supportedValueSelectors != null) {
 
@@ -277,7 +260,7 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 								String id1 = provider.getId(itemName);
 								boolean inBinding = provider.isInBinding(itemName);
 
-								if (id1.equals(id2) && inBinding) {
+								if (id1.equals(deviceId) && inBinding) {
 
 									RFXComValueSelector valueSelector = provider
 											.getValueSelector(itemName);
@@ -302,5 +285,4 @@ public class RFXComBinding extends AbstractBinding<RFXComBindingProvider> {
 			}
 		}
 	}
-
 }
